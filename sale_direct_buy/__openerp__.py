@@ -39,8 +39,7 @@
         'sale_order_confirm',
         'product_bom'
     ],
-    "init_xml": [],
-    "update_xml": [
+    "data": [
         'sale_order_view.xml'
     ],
     "active": False,

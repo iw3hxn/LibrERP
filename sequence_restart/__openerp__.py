@@ -39,8 +39,7 @@
 	"depends": [
 		"base",
 	],
-	"init_xml": [],
-	"update_xml": [
+	"data": [
 		'sequence_view.xml'
 	],
 	"active": False,

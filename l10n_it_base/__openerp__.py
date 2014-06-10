@@ -43,29 +43,10 @@ Funcionalities:
         'base'
     ],
     "init_xml": [],
-    "update_xml": [
+    "data": [
         'partner/partner_view.xml',
         "security/ir.model.access.csv",
-#        'partner/data_it/res.region.csv',
-#        'partner/data_it/res.province.csv',
-#        'partner/data_it/res.city.csv',
-#        'partner/data_it/res.partner.title.csv',
-#        'partner/data_it/res.country.csv',
-#        'partner/data_si/res.region.csv',
-#        'partner/data_si/res.province.csv',
-#        'partner/data_si/res.city.csv',
-#        'partner/data_si/res.partner.title.csv',
-#        'partner/data_si/res.country.csv',
-#        'partner/data_no/res.region.csv',
-#        'partner/data_no/res.province.csv',
-#        'partner/data_no/res.city.csv',
-#        'partner/data_no/res.country.csv',
-#        'partner/data_us/res.country.csv'
     ],
-    "demo_xml": [],
     "active": False,
     "installable": True
 }
-
-# http://www.istat.it/strumenti/definizioni/comuni/
-# i dati dovrebbero essere sincronizzati con questi

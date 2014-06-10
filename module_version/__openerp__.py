@@ -22,7 +22,7 @@
 
 {
     'name': 'Show modules to upgrade',
-    'version': '1.0.3',
+    'version': '3.0.0.3',
     'category': 'Tools',
     'description': """
         Modules add a column that shows if module should be upgraded.
@@ -33,12 +33,10 @@
     'depends': [
         'base',
     ],
-    'init_xml': [],
-    'update_xml': [
+    'data': [
         "module_view.xml"
     ],
-    'demo_xml': [],
     'test': [],
     'installable': True,
-    'auto_install': False,
+    'auto_install': True,
 }
