@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+    
+    
+    <record id="base.export_customer" model="res.groups">
+        <field name="name">Export Customer</field>
+    </record>
+
+</data>
+</openerp>

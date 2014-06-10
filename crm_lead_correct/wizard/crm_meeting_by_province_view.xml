@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_crm_meeting_by_province" model="ir.ui.view">
+            <field name="name">Meeting Report by Zone</field>
+            <field name="model">crm.meeting.by.province</field>
+            <field name="priority" eval="10" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            <form string="Print Zone wise Report">
+                <group col="4" colspan="4">
+                    <field name="date_from" colspan="2"/>
+                    <field name="date_to" colspan="2"/>
+                </group>
+                <newline/>
+                <newline/>
+                <newline/>
+                <group col="4" colspan="4">
+                    <separator colspan="4"/>
+                    <group col="2" colspan="2">
+                        
+                    </group>
+                    <group col="4" colspan="2">
+                        <button special="cancel" colspan="2"  string="Cancel" icon='gtk-cancel'/>
+                        <button name="print_report" colspan="2" string="Print" type="object"  icon="gtk-print"/>
+                    </group>
+                    
+                </group>
+            </form>
+            </field>
+        </record>
+        <record id="action_crm_meeting_by_province" model="ir.actions.act_window">
+            <field name="name">Meeting Report by Zone</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm.meeting.by.province</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_crm_meeting_by_province"
+                  name="Print Meetings by Zone"
+                  id="menu_crm_meeting_by_province_values"
+                  parent="crm.menu_meeting_sale"
+                  groups="base.group_extended"
+                  sequence="2" />
+    </data>
+</openerp>

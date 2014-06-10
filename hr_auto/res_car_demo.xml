@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="res_car_type_luxurious" model="res.car.type">
+            <field name="name">Luxurious</field>
+            <field name="code">lux</field>
+        </record>
+        <record id="res_car_type_economy" model="res.car.type">
+            <field name="name">Economy</field>
+            <field name="code">eco</field>
+        </record>
+        <record id="res_car_type_sports" model="res.car.type">
+            <field name="name">Sports</field>
+            <field name="code">spo</field>
+        </record>
+        <record id="res_car_type_minivan" model="res.car.type">
+            <field name="name">Minivan</field>
+            <field name="code">min</field>
+        </record>
+        
+        <record id="res_car_service_type_interim" model="res.car.service.type">
+            <field name="name">interim</field>
+            <field eval="True" name="required_next_service"/>
+        </record>
+        <record id="res_car_service_type_full" model="res.car.service.type">
+            <field name="name">full</field>
+            <field eval="True" name="required_next_service"/>
+        </record>
+        
+    </data>
+</openerp>

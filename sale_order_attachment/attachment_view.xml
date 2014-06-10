@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_wizard_download_attachments" model="ir.ui.view">
+                <field name="name">wizard.print.assigned.assets.form</field>
+                <field name="model">wizard.download.attachments</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form col="6" string="Download Product Attachments">
+                        <group col="5" fill="0" height="100" states="choose">
+                            <group colspan="5">
+                                <button special="cancel" icon="gtk-cancel" string="Cancel"/>
+                                <button type="object" name="download_attachment" icon="gtk-go-forward"
+                                        string="Download Attachments"/>
+                            </group>
+                            <field invisible="1" name="state"/>
+                        </group>
+                        
+                        <group col="6" fill="0" states="get">
+                            <separator colspan="5" string="Download done"/>
+                            <!--<field name="name" invisible="1" width="100"/>-->
+                            <!--<field name="data" nolabel="1" readonly="1" width="100" fieldname="name"/>-->
+                            <field name="data" filename="name"/>
+                            <field name="name" select="1" invisible="1" />
+                        </group>
+                        
+                    </form>
+                </field>
+        </record>
+            
+        <record id="action_wizard_download_attachments" model="ir.actions.act_window">
+            <field name="name">Download Products Attachments</field>
+            <field name="res_model">wizard.download.attachments</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wizard_download_attachments"/> 
+            <field name="target">new</field>
+        </record>
+            
+        <record id="menu_download_product_attachments" model="ir.values">
+            <field name="object" eval="True" />
+            <field name="name">Menu Download Attachments</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_download_attachments'))" />
+            <field name="key">action</field>
+            <field name="model">sale.order</field>
+        </record>
+    </data>
+</openerp>

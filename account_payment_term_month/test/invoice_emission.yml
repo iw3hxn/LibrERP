@@ -1,0 +1,150 @@
+-
+  I create a account payment term record.
+-
+  !record {model: account.payment.term, id: account_payment_term_daysendofmonth0}:
+    line_ids:
+      - days: 30
+        name: default
+        days2: -1
+        value: balance
+    name: 30 days end of month
+-
+  I create a supplier invoice
+-
+  !record {model: account.invoice, id: account_invoice_supplier0}:
+    check_total: 3000.0
+    date_invoice: !eval "'%s-01-30' %(datetime.now().year)"
+    invoice_line:
+      - price_unit: 300.0
+        product_id: product.product_product_pc1
+        quantity: 10.0
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_3
+    payment_term: account_payment_term_daysendofmonth0
+    reference_type: none
+    type: in_invoice
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier0}
+- 
+  I check that payment expiration is wrong at year-03-31
+-
+  !assert {model: account.invoice, id: account_invoice_supplier0}:
+    - date_due == '%s-03-31' %(datetime.now().year)
+-
+  I create another end of month payment term with commercial_month
+-
+  !record {model: account.payment.term, id: account_payment_term_daysendofmonth1}:
+    line_ids:
+      - name: default
+        months: 1
+        days2: -1
+        value: balance
+    name: 30 days end of month
+-
+  I create an invoice with the commercial_month payment term
+-
+  !record {model: account.invoice, id: account_invoice_supplier1}:
+    check_total: 3000.0
+    date_invoice: !eval "'%s-01-30' %(datetime.now().year)"
+    invoice_line:
+      - price_unit: 300.0
+        product_id: product.product_product_pc1
+        quantity: 10.0
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_3
+    payment_term: account_payment_term_daysendofmonth1
+    reference_type: none
+    type: in_invoice
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier1}
+- 
+  I check that payment expiration is correct at year-02-28
+-
+  !assert {model: account.invoice, id: account_invoice_supplier1}:
+    - date_due == '%s-02-28' %(datetime.now().year)
+-
+  I create another supplier invoice with date on the 1st of a 31 days month
+-
+  !record {model: account.invoice, id: account_invoice_supplier2}:
+    check_total: 3000.0
+    date_invoice: !eval "'%s-07-01' %(datetime.now().year)"
+    invoice_line:
+      - price_unit: 300.0
+        product_id: product.product_product_pc1
+        quantity: 10.0
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_3
+    payment_term: account_payment_term_daysendofmonth0
+    reference_type: none
+    type: in_invoice
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier2}
+- 
+  I check that payment expiration is wrong at year-07-31
+-
+  !assert {model: account.invoice, id: account_invoice_supplier2}:
+    - date_due == '%s-07-31' %(datetime.now().year)
+-
+  I create an invoice with the commercial_month payment term
+-
+  !record {model: account.invoice, id: account_invoice_supplier3}:
+    check_total: 3000.0
+    date_invoice: !eval "'%s-07-01' %(datetime.now().year)"
+    invoice_line:
+      - price_unit: 300.0
+        product_id: product.product_product_pc1
+        quantity: 10.0
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_3
+    payment_term: account_payment_term_daysendofmonth1
+    reference_type: none
+    type: in_invoice
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier3}
+- 
+  I check that payment expiration is correct at year-08-31
+-
+  !assert {model: account.invoice, id: account_invoice_supplier3}:
+    - date_due == '%s-08-31' %(datetime.now().year)
+-
+  I create a 10 days after end of month payment term with commercial_month
+-
+  !record {model: account.payment.term, id: account_payment_term_daysendofmonth10daysafter}:
+    line_ids:
+      - name: default
+        months: 1
+        days2: 10
+        value: balance
+    name: 30 days end of month at 10 of month
+-
+  I create an invoice with the commercial_month payment term
+-
+  !record {model: account.invoice, id: account_invoice_supplier4}:
+    check_total: 3000.0
+    date_invoice: !eval "'%s-07-01' %(datetime.now().year)"
+    invoice_line:
+      - price_unit: 300.0
+        product_id: product.product_product_pc1
+        quantity: 10.0
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_3
+    payment_term: account_payment_term_daysendofmonth10daysafter
+    reference_type: none
+    type: in_invoice
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier4}
+- 
+  I check that payment expiration is correct at year-09-10
+-
+  !assert {model: account.invoice, id: account_invoice_supplier4}:
+    - date_due == '%s-09-10' %(datetime.now().year)

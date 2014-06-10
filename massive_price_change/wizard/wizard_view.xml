@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+	<data>
+
+		<!-- ====================================================== -->
+		<!-- 				WIZARD MASSIVE PRICE CHANGE				-->
+		<!-- ====================================================== -->
+		<record id="wzd_massive_price_change_wizard" model="ir.ui.view">
+			<field name="name">wzd.massive_price_change.wizard</field>
+			<field name="model">wzd.massive_price_change</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Change Price">
+					<field name="name" colspan="4" required="1"/>
+					<field name="price_type" colspan="4" required="1"/>
+					<field name="value" colspan="4" required="1"/>
+					<button string="Close" special="cancel" icon="gtk-cancel" />
+					<button string="Change" name="change" type="object" icon="gtk-ok" />
+				</form>
+			</field>
+		</record>
+
+		<!-- ====================================================== -->
+		<!-- 				WIZARD MASSIVE PRICE ACTION				-->
+		<!-- ====================================================== -->
+		<record id="action_massive_price_change_wizard" model="ir.actions.act_window">
+			<field name="name">Massive Price Chage</field>
+			<field name="res_model">wzd.massive_price_change</field>
+			<field name="src_model">product.product</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+			<field name="view_id" ref="wzd_massive_price_change_wizard"/>
+		</record>
+		
+		<!-- ====================================================== -->
+		<!-- 				WIZARD MASSIVE PRICE AZIONE				-->
+		<!-- ====================================================== -->
+		<record model="ir.values" id="act_massive_price_change_wizard">
+			<field name="model_id" ref="product.model_product_product" />
+			<field name="object" eval="1" />
+			<field name="name">Massive Price Chage</field>
+			<field name="key2">client_action_multi</field>
+			<field name="value" eval="'ir.actions.act_window,' + str(ref('action_massive_price_change_wizard'))" />
+			<field name="key">action</field>
+			<field name="model">product.product</field>
+		</record>
+
+	</data>
+</openerp>

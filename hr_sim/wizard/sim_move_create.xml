@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+  		<record id="view_sim_move_create" model="ir.ui.view">
+            <field name="name">sim.move.create.form</field>
+            <field name="model">sim.move.create</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Move Sim">
+                	<group colspan="4" >
+						<separator string="Move Information" colspan="4"/>
+						<field name="description" colspan="2" />
+						<field name="dest_location" required="False" />
+						<field name="move_date" />
+						<field name="sim_use_id" widget="selection"/>
+						<field name="user_id" invisible="1"/>
+                    </group>
+					
+					<separator string="SIMs" colspan="4"/>
+					<field name="sim_ids" nolabel="1" colspan="4" />
+					
+                    <separator string="" colspan="4" />
+                    <group colspan="4" col="6">
+                    	<button icon="gtk-cancel" special="cancel"
+                    		string="Cancel" />
+                    	<button icon="gtk-save" string="Create Move"
+                    		name="sim_move" type="object" />
+                    </group>
+               </form>
+            </field>
+  		</record>
+        <record id="action_sim_move_create" model="ir.actions.act_window">
+            <field name="name">Move Sim</field>
+            <field name="res_model">sim.move.create</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+           <field name="view_id" ref="view_sim_move_create"/> 
+           <field name="target">new</field>
+        </record>
+		
+		<record id="res_sim_move_create" model="ir.values">
+            <field name="model_id" ref="hr_sim.model_res_sim" />
+            <field name="object" eval="1" />
+            <field name="name">Move Sim</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_sim_move_create'))" />
+            <field name="key">action</field>
+            <field name="model">res.sim</field>
+        </record>
+    </data>
+</openerp>

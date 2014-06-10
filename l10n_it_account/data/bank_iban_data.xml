@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="base_iban.bank_swift_field" model="res.partner.bank.type.field">
+            <field name="name">bank_bic</field>
+            <field name="bank_type_id" ref="base_iban.bank_iban"/>
+            <field eval="False" name="required"/>
+            <field eval="False" name="readonly"/>
+        </record>
+
+    </data>
+</openerp>

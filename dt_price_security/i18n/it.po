@@ -1,0 +1,167 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* dt_price_security
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-22 18:22+0000\n"
+"PO-Revision-Date: 2014-02-22 18:22+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: dt_price_security
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr "Il Riferimento Ordine deve essere unico per azienda!"
+
+#. module: dt_price_security
+#: sql_constraint:res.users:0
+msgid "You can not have two users with the same login !"
+msgstr "Non è possibile inserire due utenti con lo stesso nome di login!"
+
+#. module: dt_price_security
+#: constraint:res.users:0
+msgid "The chosen company is not in the allowed companies for this user"
+msgstr "L'azienda selezionata non è tra quelle a cui è permesso l'accesso a questo utente"
+
+#. module: dt_price_security
+#: model:ir.model,name:dt_price_security.model_price_security_discount_restriction
+msgid "Discount Restriction"
+msgstr "Restrizioni Scontistica"
+
+#. module: dt_price_security
+#: code:addons/dt_price_security/res_users.py:54
+#, python-format
+msgid "Discount out of range"
+msgstr "Discount out of range"
+
+#. module: dt_price_security
+#: field:account.invoice.line,price_unit_copy:0
+#: field:sale.order.line,price_unit_copy:0
+msgid "Unit Price"
+msgstr "Prezzo Unitario"
+
+#. module: dt_price_security
+#: field:account.invoice.line,user_can_modify_prices:0
+#: field:sale.order.line,user_can_modify_prices:0
+msgid "User Can modify prices"
+msgstr "Utente può modificare i prezzi"
+
+#. module: dt_price_security
+#: view:res.users:0
+#: field:res.users,discount_restriction_ids:0
+msgid "Discount Restrictions"
+msgstr "Discount Restrictions"
+
+#. module: dt_price_security
+#: code:addons/dt_price_security/product.py:75
+#, python-format
+msgid "Violation of permissions"
+msgstr "Violation of permissions"
+
+#. module: dt_price_security
+#: model:ir.model,name:dt_price_security.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: dt_price_security
+#: field:price_security.discount_restriction,max_discount:0
+msgid "Max. Discount"
+msgstr "Max. Discount"
+
+#. module: dt_price_security
+#: field:account.invoice.line,product_can_modify_prices:0
+#: field:sale.order.line,product_can_modify_prices:0
+msgid "Product Can modify prices"
+msgstr "Product Can modify prices"
+
+#. module: dt_price_security
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr "Codice Fornitore Univoco"
+
+#. module: dt_price_security
+#: field:price_security.discount_restriction,user_id:0
+msgid "User"
+msgstr "Utente"
+
+#. module: dt_price_security
+#: help:product.product,list_price_copy:0
+msgid "Base price for computing the customer price. Sometimes called the catalog price."
+msgstr "Base price for computing the customer price. Sometimes called the catalog price."
+
+#. module: dt_price_security
+#: field:price_security.discount_restriction,pricelist_id:0
+#: field:sale.order,pricelist_id_copy:0
+msgid "Pricelist"
+msgstr "Listino Prezzi"
+
+#. module: dt_price_security
+#: field:price_security.discount_restriction,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: dt_price_security
+#: help:product.product,can_modify_prices:0
+msgid "If checked all users can modify the price of this product in a sale order or invoice."
+msgstr "Se flaggato tutti gli utenti possono modificare il prezzo in un ordine di vendita o in fattura."
+
+#. module: dt_price_security
+#: code:addons/dt_price_security/res_users.py:55
+#, python-format
+msgid "The applied discount is out of range with respect to the allowed. The discount can be between %s and %s for the current price list."
+msgstr "Lo sconto applicato è fuori dai parametri concessi. Lo sconto per il listino corrente può essere tra %s e %s."
+
+#. module: dt_price_security
+#: field:product.product,can_modify_prices:0
+#: model:res.groups,name:dt_price_security.can_modify_prices
+msgid "Can modify prices"
+msgstr "Può modificare prezzi"
+
+#. module: dt_price_security
+#: code:addons/dt_price_security/product.py:76
+#, python-format
+msgid "You do not have the necesary permissions to modify the price of the products"
+msgstr "Non hai i permessi necessari per modificare il prezzo del prodotto"
+
+#. module: dt_price_security
+#: field:product.product,list_price_copy:0
+msgid "Sale Price"
+msgstr "Prezzo di Vendita"
+
+#. module: dt_price_security
+#: code:addons/dt_price_security/res_users.py:56
+#, python-format
+msgid "The applied discount is out of range with respect to the allowed. You cannot give any discount with the current price list."
+msgstr "Lo sconto applicato è fuori dal range accordato. Non puoi fare questo sconto con il seguente listino prezzi."
+
+#. module: dt_price_security
+#: model:ir.model,name:dt_price_security.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Righe Fattura"
+
+#. module: dt_price_security
+#: model:ir.model,name:dt_price_security.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: dt_price_security
+#: field:price_security.discount_restriction,min_discount:0
+msgid "Min. Discount"
+msgstr "Sconto Minimo"
+
+#. module: dt_price_security
+#: model:ir.model,name:dt_price_security.model_sale_order
+msgid "Sales Order"
+msgstr "Ordine di vendita"
+
+#. module: dt_price_security
+#: model:ir.model,name:dt_price_security.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Linea d'ordine di vendita"

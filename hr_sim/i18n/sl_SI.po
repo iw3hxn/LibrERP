@@ -1,0 +1,1349 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* hr_sim
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-28 12:36+0000\n"
+"PO-Revision-Date: 2013-11-28 12:36+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Blue"
+msgstr "Blue"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Giu"
+msgstr "Jun"
+
+#. module: hr_sim
+#: field:res.sim.payment,sim_type_id:0
+msgid "Tipo SIM"
+msgstr "Tip SIM"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,fax_number:0
+msgid "Fax Number"
+msgstr "Št. faksa"
+
+#. module: hr_sim
+#: model:ir.actions.report.xml,name:hr_sim.report_print_sim_location
+#: report:print.sim.location:0
+#: view:wizard.print.sim.location:0
+msgid "Sim Locations"
+msgstr "Sim Locations"
+
+#. module: hr_sim
+#: field:res.sim.move.line,return_datetime:0
+msgid "Returned"
+msgstr "Returned"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_type
+msgid "Sim Types"
+msgstr "Tipi SIM"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Fuchsia"
+msgstr "Fuksija"
+
+#. module: hr_sim
+#: field:res.sim,sim_moves:0
+msgid "Sim Moves"
+msgstr "SIM premiki"
+
+#. module: hr_sim
+#: field:wizard.print.traffic.detail,name:0
+msgid "Filename"
+msgstr "Filename"
+
+#. module: hr_sim
+#: field:res.sim.payment,jan:0
+msgid "Jan"
+msgstr "Jan"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:183
+#, python-format
+msgid "You cannot modify the Object linked to the Document Type!\n"
+"Create another Document instead !"
+msgstr "You cannot modify the Object linked to the Document Type!\n"
+"Create another Document instead !"
+
+#. module: hr_sim
+#: field:res.sim,parents:0
+msgid "Parents"
+msgstr "Nadrejeni"
+
+#. module: hr_sim
+#: report:print.sim.location:0
+msgid "From Date"
+msgstr "From Date"
+
+#. module: hr_sim
+#: field:res.sim.payment,apr_supplier:0
+msgid "Supplier Apr"
+msgstr "Dobavitelj Apr"
+
+#. module: hr_sim
+#: selection:res.sim.payment,type:0
+msgid "Supplier"
+msgstr "Dobavitelj"
+
+#. module: hr_sim
+#: field:res.sim.apn.management,sim_apn_group_id:0
+msgid "Group"
+msgstr "Group"
+
+#. module: hr_sim
+#: field:res.sim.payment,oct:0
+msgid "Oct"
+msgstr "Okt"
+
+#. module: hr_sim
+#: view:res.sim.move.line:0
+#: field:res.sim.traffic,sim_id:0
+msgid "SIM"
+msgstr "SIM"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:981
+#, python-format
+msgid "Too many rows with supplier payment"
+msgstr "Too many rows with supplier payment"
+
+#. module: hr_sim
+#: report:print.sim.location:0
+msgid "Printing Date"
+msgstr "Printing Date"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Brown"
+msgstr "Rjava"
+
+#. module: hr_sim
+#: model:ir.ui.menu,name:hr_sim.menu_config_sim_apn_management_type
+msgid "APN Management Types"
+msgstr "APN Management Types"
+
+#. module: hr_sim
+#: field:res.sim.payment,oct_protocollo:0
+msgid "Protocollo Ott"
+msgstr "Protokol Okt"
+
+#. module: hr_sim
+#: field:res.sim.payment,jul_supplier:0
+msgid "Supplier Lug"
+msgstr "Dobavitelj Jul"
+
+#. module: hr_sim
+#: field:res.sim.allocation,company_id:0
+msgid "Company"
+msgstr "Company"
+
+#. module: hr_sim
+#: field:res.sim.location,model:0
+msgid "Object"
+msgstr "Objekt"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Dark Blue"
+msgstr "Temno modra"
+
+#. module: hr_sim
+#: selection:wizard.print.traffic.detail,state:0
+msgid "choose"
+msgstr "choose"
+
+#. module: hr_sim
+#: field:res.sim.payment,feb_protocollo:0
+msgid "Protocollo Feb"
+msgstr "Protokol Feb"
+
+#. module: hr_sim
+#: view:wizard.print.sim.location:0
+msgid "View Sim Locations"
+msgstr "View Sim Locations"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+#: field:res.sim.payment,nov:0
+msgid "Nov"
+msgstr "Nov"
+
+#. module: hr_sim
+#: model:res.groups,name:hr_sim.group_sim_extended
+msgid "Sim / Extended View"
+msgstr "Sim / Extended View"
+
+#. module: hr_sim
+#: view:res.sim.apn_group:0
+#: view:res.sim.subscription.type:0
+msgid "Define subscription type"
+msgstr "Nastavi tip naročnine"
+
+#. module: hr_sim
+#: field:res.sim,prefix_fax_number:0
+msgid "Prefix Fax Number"
+msgstr "Predpona št. faks"
+
+#. module: hr_sim
+#: field:res.sim.move.line,source_location_name:0
+msgid "Source Loc."
+msgstr "Source Loc."
+
+#. module: hr_sim
+#: selection:wizard.print.traffic.detail,state:0
+msgid "get"
+msgstr "get"
+
+#. module: hr_sim
+#: view:res.sim.apn_group:0
+#: field:res.sim.apn_group,management_ids:0
+msgid "Group APN Management"
+msgstr "Group APN Management"
+
+#. module: hr_sim
+#: report:print.sim.location:0
+msgid "To"
+msgstr "To"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Dic"
+msgstr "Dec"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_res_sim
+#: model:ir.ui.menu,name:hr_sim.menu_my_res_sim_tree
+msgid "My Sims"
+msgstr "Moje SIM kartice"
+
+#. module: hr_sim
+#: field:res.sim.payment,payment_amount:0
+#: field:res.sim.traffic,amount:0
+msgid "Amount"
+msgstr "Znesek"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Set"
+msgstr "Sep"
+
+#. module: hr_sim
+#: field:res.sim.payment,dec_fattura:0
+msgid "Fattura Dic"
+msgstr "Račun Dec"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Numero Primario"
+msgstr "Primarna številka"
+
+#. module: hr_sim
+#: field:res.sim,data_number:0
+msgid "Data Number"
+msgstr "Podatkovna številka"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Set Detault Work-Phone"
+msgstr "Nastavi privzeti delovni telefon"
+
+#. module: hr_sim
+#: view:wizard.print.sim.location:0
+msgid "Select period"
+msgstr "Select period"
+
+#. module: hr_sim
+#: field:res.sim.payment,feb_fattura:0
+msgid "Fattura Feb"
+msgstr "Račun Feb"
+
+#. module: hr_sim
+#: field:hr.employee,sim_ids:0
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_sim
+#: model:ir.ui.menu,name:hr_sim.menu_res_sim_tree
+msgid "Sims"
+msgstr "SIM kartice"
+
+#. module: hr_sim
+#: field:res.sim.payment,oct_supplier:0
+msgid "Supplier Ott"
+msgstr "Dobavitelj Okt"
+
+#. module: hr_sim
+#: model:res.groups,name:hr_sim.group_sim_move_manager
+msgid "Sim / Move Manager"
+msgstr "Sim / Move Manager"
+
+#. module: hr_sim
+#: field:res.sim,pin:0
+msgid "Pin"
+msgstr "PIN"
+
+#. module: hr_sim
+#: field:res.sim.payment,may_supplier:0
+msgid "Supplier Mag"
+msgstr "Dobavitelj Maj"
+
+#. module: hr_sim
+#: field:res.sim.move.line,move_id:0
+msgid "Move"
+msgstr "Move"
+
+#. module: hr_sim
+#: field:res.sim.payment,nov_fattura:0
+msgid "Fattura Nov"
+msgstr "Račun Nov"
+
+#. module: hr_sim
+#: view:res.sim.allocation:0
+msgid "SIM moves"
+msgstr "SIM moves"
+
+#. module: hr_sim
+#: field:res.sim.allocation,datetime:0
+#: field:res.sim.move.line,datetime:0
+msgid "Datetime"
+msgstr "Datum/čas"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:909
+#: field:res.sim.apn.management,warning:0
+#, python-format
+msgid "Warning"
+msgstr "Warning"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:981
+#: code:addons/hr_sim/res_sim.py:1036
+#: code:addons/hr_sim/res_sim.py:1041
+#: code:addons/hr_sim/wizard/sim_move_create.py:95
+#, python-format
+msgid "Warning!"
+msgstr "Warning!"
+
+#. module: hr_sim
+#: field:res.sim.payment,aug_supplier:0
+msgid "Supplier Ago"
+msgstr "Dobavitelj Avg"
+
+#. module: hr_sim
+#: field:res.sim.payment,mar_supplier:0
+msgid "Supplier Mar"
+msgstr "Dobavitelj Mar"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_sim_apn_management_type
+#: model:ir.model,name:hr_sim.model_res_sim_apn_management_type
+#: field:res.sim.apn.management,name:0
+#: view:res.sim.apn.management.type:0
+#: field:res.sim.apn.management.type,name:0
+msgid "APN Management Type"
+msgstr "APN Management Type"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:780
+#: code:addons/hr_sim/res_sim.py:845
+#: code:addons/hr_sim/res_sim.py:852
+#, python-format
+msgid "Operation forbidden"
+msgstr "Operation forbidden"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Fattura"
+msgstr "Račun"
+
+#. module: hr_sim
+#: field:res.sim.payment,nov_supplier:0
+msgid "Supplier Nov"
+msgstr "Dobavitelj Nov"
+
+#. module: hr_sim
+#: field:res.sim.payment,dec_sum:0
+msgid "Sum Dic"
+msgstr "Sum Dec"
+
+#. module: hr_sim
+#: field:res.sim.payment,nov_sum:0
+msgid "Sum Nov"
+msgstr "Sum Nov"
+
+#. module: hr_sim
+#: selection:res.sim.payment,type:0
+msgid "Sum"
+msgstr "Sum"
+
+#. module: hr_sim
+#: field:res.sim.apn.management,limit:0
+msgid "MB limit"
+msgstr "MB limit"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_view_sim_move_form
+#: model:ir.ui.menu,name:hr_sim.menu_sim_move_view
+msgid "SIM Moves"
+msgstr "SIM premiki"
+
+#. module: hr_sim
+#: model:res.groups,name:hr_sim.group_sim_super_manager
+msgid "Sim / Super Manager"
+msgstr "Sim / Super Manager"
+
+#. module: hr_sim
+#: field:res.sim.payment,sum_of_year:0
+msgid "Sum of Years"
+msgstr "Vsota let"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Numero Dati"
+msgstr "Podatkovna številka"
+
+#. module: hr_sim
+#: report:print.sim.location:0
+msgid "Location"
+msgstr "Location"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Lug"
+msgstr "Jul"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_hr_employee
+#: field:res.sim,employee_id:0
+msgid "Employee"
+msgstr "Zaposleni"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Prefisso Primario"
+msgstr "Primarni prefix"
+
+#. module: hr_sim
+#: field:res.sim.payment,type:0
+msgid "Type"
+msgstr "Tip"
+
+#. module: hr_sim
+#: field:res.sim.payment,jun_supplier:0
+msgid "Supplier Giu"
+msgstr "Dobavitelj Jun"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Red"
+msgstr "Rdeča"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:183
+#, python-format
+msgid "Error !"
+msgstr "Error !"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:1041
+#, python-format
+msgid "SIM Allocation can't be modified."
+msgstr "SIM Allocation can't be modified."
+
+#. module: hr_sim
+#: field:res.sim,united_fax_number:0
+msgid "Fax number"
+msgstr "Št. faksa"
+
+#. module: hr_sim
+#: field:res.sim,puk:0
+msgid "Puk"
+msgstr "PUK"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_sim_apn_group
+#: model:ir.model,name:hr_sim.model_res_sim_apn_group
+#: model:ir.ui.menu,name:hr_sim.menu_config_sim_apn_group
+#: field:res.sim,apn_group_id:0
+#: view:res.sim.apn_group:0
+#: field:res.sim.apn_group,name:0
+msgid "APN Group"
+msgstr "Skupina APN"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Protocollo"
+msgstr "Protokol"
+
+#. module: hr_sim
+#: field:res.sim.payment,jun_protocollo:0
+msgid "Protocollo Giu"
+msgstr "Protokol Jun"
+
+#. module: hr_sim
+#: constraint:res.sim:0
+msgid "Error! Subscription start date must be lower then contract end date."
+msgstr "Napaka! Datum pričetka naročniškega razmerja mora biti nižji od datuma končanja."
+
+#. module: hr_sim
+#: field:res.sim.payment,jan_protocollo:0
+msgid "Protocollo Gen"
+msgstr "Protokol Jan"
+
+#. module: hr_sim
+#: model:ir.ui.menu,name:hr_sim.menu_config_res_sim
+msgid "Configuration"
+msgstr "Konfiguracija"
+
+#. module: hr_sim
+#: view:res.sim.allocation:0
+msgid "SIM Lines"
+msgstr "SIM Lines"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_sim_smart
+#: model:ir.ui.menu,name:hr_sim.menu_res_sim_tree_smart
+msgid "Sim Smart"
+msgstr "Sim Smart"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Ago"
+msgstr "Avg"
+
+#. module: hr_sim
+#: report:print.sim.location:0
+msgid "Location Type"
+msgstr "Location Type"
+
+#. module: hr_sim
+#: field:res.sim.payment,oct_fattura:0
+msgid "Fattura Ott"
+msgstr "Račun Okt"
+
+#. module: hr_sim
+#: field:res.sim,main_number:0
+msgid "Main number"
+msgstr "Glavna številka"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Forest Green"
+msgstr "Gozdno zelena"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,not_available:0
+msgid "Not Available"
+msgstr "Ni na voljo"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Green"
+msgstr "Zelena"
+
+#. module: hr_sim
+#: field:res.sim.payment,dec_protocollo:0
+msgid "Protocollo Dic"
+msgstr "Protokol Dec"
+
+#. module: hr_sim
+#: field:res.sim.payment,jan_fattura:0
+msgid "Fattura Gen"
+msgstr "Račun Jan"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_use
+msgid "Sim Uses"
+msgstr "Sim Uses"
+
+#. module: hr_sim
+#: field:res.sim.apn.management,block:0
+msgid "Block"
+msgstr "Block"
+
+#. module: hr_sim
+#: field:res.sim.payment,feb_sum:0
+msgid "Sum Feb"
+msgstr "Sum Feb"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Sim Payment"
+msgstr "Sim plačilo"
+
+#. module: hr_sim
+#: sql_constraint:res.sim:0
+msgid "SIM Internal Code must be unique !"
+msgstr "SIM interna koda mora biti unikatna !"
+
+#. module: hr_sim
+#: field:res.sim.payment,apr_fattura:0
+msgid "Fattura Apr"
+msgstr "Račun Apr"
+
+#. module: hr_sim
+#: field:res.sim.payment,may_fattura:0
+msgid "Fattura Mag"
+msgstr "Račun Maj"
+
+#. module: hr_sim
+#: view:res.sim.type:0
+msgid "Define sim type"
+msgstr "Define sim type"
+
+#. module: hr_sim
+#: field:res.sim.payment,sep_fattura:0
+msgid "Fattura Set"
+msgstr "Račun Sep"
+
+#. module: hr_sim
+#: field:res.sim.allocation,dest_location:0
+#: field:res.sim.move.line,dest_location:0
+#: field:sim.move.create,dest_location:0
+msgid "Destination Location"
+msgstr "Destination Location"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:1053
+#, python-format
+msgid "You can only delete the last SIM movement!"
+msgstr "You can only delete the last SIM movement!"
+
+#. module: hr_sim
+#: field:res.sim.payment,mar_fattura:0
+msgid "Fattura Mar"
+msgstr "Račun Mar"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_payment
+msgid "Sim payment line"
+msgstr "SIM plačilna postavka"
+
+#. module: hr_sim
+#: field:res.sim,prefix_data_number:0
+msgid "Prefix Data Number"
+msgstr "Predpona podatkovne številke"
+
+#. module: hr_sim
+#: field:res.sim,row_color:0
+#: field:res.sim.use,row_color:0
+#: field:wizard.print.traffic.detail,state:0
+msgid "unknown"
+msgstr "neznano"
+
+#. module: hr_sim
+#: field:res.sim,with_employee:0
+msgid "With Employee?"
+msgstr "Z uslužbencem?"
+
+#. module: hr_sim
+#: field:res.sim,subscription_start_date:0
+#: field:wizard.print.sim.location,start_date:0
+#: field:wizard.print.traffic.detail,start_date:0
+msgid "Start Date"
+msgstr "Datum začetka"
+
+#. module: hr_sim
+#: field:res.sim.payment,may_protocollo:0
+msgid "Protocollo Mag"
+msgstr "Protokol Maj"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Prefisso Dati"
+msgstr "Podatkovni prefix"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Cadet Blue"
+msgstr "Kadetsko modra"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+#: field:res.sim.payment,feb:0
+msgid "Feb"
+msgstr "Feb"
+
+#. module: hr_sim
+#: field:res.sim.payment,aug:0
+msgid "Aug"
+msgstr "Avg"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_wizard_print_traffic_detail
+msgid "Create Report"
+msgstr "Create Report"
+
+#. module: hr_sim
+#: field:res.sim.allocation,user_id:0
+#: field:res.sim.move.line,user_id:0
+#: field:sim.move.create,user_id:0
+msgid "Moved By"
+msgstr "Premaknil uporabnik"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_use
+#: model:ir.ui.menu,name:hr_sim.menu_res_use_tree
+#: view:res.sim.use:0
+msgid "Sim Use"
+msgstr "Sim uporaba"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:853
+#: code:addons/hr_sim/res_sim.py:909
+#, python-format
+msgid "You can not add more then one record with type is sum for same year"
+msgstr "You can not add more then one record with type is sum for same year"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,note:0
+#: field:res.sim.payment,note:0
+#: field:res.sim.subscription.type,note:0
+msgid "Note"
+msgstr "Opombe"
+
+#. module: hr_sim
+#: report:print.sim.location:0
+msgid "To Date"
+msgstr "To Date"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Black"
+msgstr "Črna"
+
+#. module: hr_sim
+#: field:res.sim.allocation,dest_location_name:0
+#: field:res.sim.move.line,dest_location_name:0
+msgid "Destination Loc."
+msgstr "Ciljna lokacija"
+
+#. module: hr_sim
+#: report:print.sim.location:0
+msgid "From"
+msgstr "From"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:1036
+#, python-format
+msgid "This is a wrong place for creating a move."
+msgstr "This is a wrong place for creating a move."
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:886
+#, python-format
+msgid "You can not remove a payment line !"
+msgstr "You can not remove a payment line !"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:1045
+#, python-format
+msgid "You can only delete one SIM Allocation at a time!"
+msgstr "You can only delete one SIM Allocation at a time!"
+
+#. module: hr_sim
+#: model:res.groups,name:hr_sim.group_sim_user
+msgid "Sim / User"
+msgstr "Sim / User"
+
+#. module: hr_sim
+#: model:res.groups,name:hr_sim.group_sim_manager
+msgid "Sim / Manager"
+msgstr "Sim / Manager"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_subscription_type
+#: model:ir.ui.menu,name:hr_sim.menu_res_subscription_type_tree
+#: field:res.sim,subscription_type_id:0
+#: view:res.sim.subscription.type:0
+#: field:res.sim.subscription.type,name:0
+#: field:res.sim.type,name:0
+msgid "Subscription Type"
+msgstr "Tip naročniške pogodbe"
+
+#. module: hr_sim
+#: field:res.sim.payment,sep_supplier:0
+msgid "Supplier Set"
+msgstr "Dobavitelj Sep"
+
+#. module: hr_sim
+#: field:res.sim.payment,jun:0
+msgid "Jun"
+msgstr "Jun"
+
+#. module: hr_sim
+#: field:res.sim.payment,jul:0
+msgid "Jul"
+msgstr "Jul"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Dati"
+msgstr "Podatki"
+
+#. module: hr_sim
+#: model:ir.actions.report.xml,name:hr_sim.sim_list_report_id
+msgid "Stampa Lista SIM"
+msgstr "Stampa Lista SIM"
+
+#. module: hr_sim
+#: field:res.sim.location,active:0
+msgid "Active"
+msgstr "Aktivno"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Prefisso Fax"
+msgstr "Faks prefix"
+
+#. module: hr_sim
+#: field:res.sim.payment,feb_supplier:0
+msgid "Supplier Feb"
+msgstr "Dobavitelj Feb"
+
+#. module: hr_sim
+#: field:res.sim,data:0
+msgid "Data"
+msgstr "Podatkovna"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Gen"
+msgstr "Jan"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Mese"
+msgstr "Mesec"
+
+#. module: hr_sim
+#: field:res.sim.traffic,call_type:0
+msgid "Call Type"
+msgstr "Call Type"
+
+#. module: hr_sim
+#: model:ir.actions.report.xml,name:hr_sim.sim_move_report_id
+msgid "Stampa Movimento"
+msgstr "Stampa Movimento"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_traffic
+msgid "Traffic information"
+msgstr "Traffic information"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_location
+#: view:res.sim.location:0
+msgid "Sim Reference Locations"
+msgstr "Sim referenčne lokacije"
+
+#. module: hr_sim
+#: field:res.sim,default:0
+msgid "Default"
+msgstr "Privzeto"
+
+#. module: hr_sim
+#: help:res.sim.location,active:0
+msgid "If the active field is set to False, it will allow you to hide the sim allocation without removing it."
+msgstr "Če je aktivno polje nastavljeno na False, ne bo dovoljeno skrivanje dodelitve brez odstranitve."
+
+#. module: hr_sim
+#: field:res.sim.payment,contract_id:0
+msgid "Contract"
+msgstr "Pogodba"
+
+#. module: hr_sim
+#: field:res.sim.payment,payment_date:0
+msgid "Date"
+msgstr "Datum"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_subscription_type
+msgid "Subscription Types"
+msgstr "Tip naročniške pogodbe"
+
+#. module: hr_sim
+#: field:res.sim,voice:0
+msgid "Voice"
+msgstr "Glasovna"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:886
+#: code:addons/hr_sim/res_sim.py:1045
+#: code:addons/hr_sim/res_sim.py:1053
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_wizard_print_sim_location
+msgid "Create Report for Sim Locations"
+msgstr "Create Report for Sim Locations"
+
+#. module: hr_sim
+#: field:res.sim.payment,dec:0
+msgid "Dec"
+msgstr "Dec"
+
+#. module: hr_sim
+#: field:res.sim.payment,jul_fattura:0
+msgid "Fattura Lug"
+msgstr "Račun Jul"
+
+#. module: hr_sim
+#: field:res.sim.use,name:0
+msgid "Use Type"
+msgstr "Tip uporabe"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_view_sim_payment_form
+#: model:ir.ui.menu,name:hr_sim.menu_sim_payment_view
+msgid "SIM Payment"
+msgstr "SIM Payment"
+
+#. module: hr_sim
+#: field:res.sim.subscription.type,code:0
+msgid "Code"
+msgstr "Koda"
+
+#. module: hr_sim
+#: field:res.sim.payment,jul_protocollo:0
+msgid "Protocollo Lug"
+msgstr "Protokol Jul"
+
+#. module: hr_sim
+#: field:res.sim.payment,sep:0
+msgid "Sep"
+msgstr "Sep"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Ott"
+msgstr "Okt"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_res_sim_location_form
+#: model:ir.ui.menu,name:hr_sim.menu_res_sim_location_tree
+msgid "Sim References"
+msgstr "SIM sklici"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,sim_internal_number:0
+msgid "Number"
+msgstr "Številka"
+
+#. module: hr_sim
+#: constraint:hr.employee:0
+msgid "Error ! You cannot create recursive Hierarchy of Employees."
+msgstr "Napaka! Ne morete izdelati rekurzivne hierarhije zaposlencev."
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+#: field:res.sim.payment,apr:0
+msgid "Apr"
+msgstr "Apr"
+
+#. module: hr_sim
+#: field:res.sim.payment,jun_sum:0
+msgid "Sum Giu"
+msgstr "Sum Jun"
+
+#. module: hr_sim
+#: view:sim.move.create:0
+msgid "Create Move"
+msgstr "Ustvari premik"
+
+#. module: hr_sim
+#: field:res.sim.payment,mar_protocollo:0
+msgid "Protocollo Mar"
+msgstr "Protokol Mar"
+
+#. module: hr_sim
+#: view:sim.move.create:0
+#: view:wizard.print.sim.location:0
+msgid "Cancel"
+msgstr "Prekliči"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "ICCID"
+msgstr "ICCID"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Moves"
+msgstr "Premiki"
+
+#. module: hr_sim
+#: view:sim.move.create:0
+msgid "Move Information"
+msgstr "Informacije o premiku"
+
+#. module: hr_sim
+#: field:res.sim.payment,aug_fattura:0
+msgid "Fattura Ago"
+msgstr "Račun Avg"
+
+#. module: hr_sim
+#: field:res.sim.payment,have_lost:0
+msgid "Have Loss?"
+msgstr "Izguba?"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Reset"
+msgstr "Reset"
+
+#. module: hr_sim
+#: field:res.sim.move.line,source_location:0
+msgid "Source Location"
+msgstr "Source Location"
+
+#. module: hr_sim
+#: field:res.sim.payment,sep_protocollo:0
+msgid "Protocollo Set"
+msgstr "Protokol Sep"
+
+#. module: hr_sim
+#: field:res.sim.payment,mar_sum:0
+msgid "Sum Mar"
+msgstr "Sum Mar"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:781
+#, python-format
+msgid "You are not allowed to change type or year for type once it defined as sum."
+msgstr "You are not allowed to change type or year for type once it defined as sum."
+
+#. module: hr_sim
+#: field:res.sim.payment,aug_sum:0
+msgid "Sum Ago"
+msgstr "Sum Avg"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Orange"
+msgstr "Oranžna"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Numero Fax"
+msgstr "Št. faksa"
+
+#. module: hr_sim
+#: field:res.sim.payment,apr_sum:0
+msgid "Sum Apr"
+msgstr "Sum Apr"
+
+#. module: hr_sim
+#: field:res.sim,sim_use_id:0
+#: field:sim.move.create,sim_use_id:0
+msgid "Utilizzo"
+msgstr "Uporaba"
+
+#. module: hr_sim
+#: field:res.sim.allocation,sim_move_lines:0
+msgid "SIM lines"
+msgstr "SIM lines"
+
+#. module: hr_sim
+#: view:hr.employee:0
+#: model:ir.model,name:hr_sim.model_res_sim
+#: model:ir.ui.menu,name:hr_sim.menu_res_sim
+#: model:ir.ui.menu,name:hr_sim.menu_sim
+#: view:res.sim:0
+#: field:res.sim.move.line,sim_id:0
+#: field:res.sim.payment,sim_id:0
+msgid "Sim"
+msgstr "SIM"
+
+#. module: hr_sim
+#: field:res.sim.payment,may_sum:0
+msgid "Sum Mag"
+msgstr "Sum Maj"
+
+#. module: hr_sim
+#: field:res.sim.allocation,name:0
+#: field:res.sim.move.line,description:0
+#: field:sim.move.create,description:0
+msgid "Comment/Reason"
+msgstr "Komentar/Razlog"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,payment_ids:0
+msgid "Payment History"
+msgstr "Zgodovina plačil"
+
+#. module: hr_sim
+#: field:res.sim.payment,jan_supplier:0
+msgid "Supplier Gen"
+msgstr "Dobavitelj Jan"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+#: field:res.sim.payment,mar:0
+msgid "Mar"
+msgstr "Mar"
+
+#. module: hr_sim
+#: field:res.sim.traffic,call_date:0
+msgid "Call Date"
+msgstr "Call Date"
+
+#. module: hr_sim
+#: field:res.sim.payment,may:0
+msgid "May"
+msgstr "Maj"
+
+#. module: hr_sim
+#: field:res.sim.payment,jun_fattura:0
+msgid "Fattura Giu"
+msgstr "Račun Jun"
+
+#. module: hr_sim
+#: field:res.sim.traffic,dest_number:0
+msgid "Phone number"
+msgstr "Telefonska številka"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_allocation
+msgid "res.sim.allocation"
+msgstr "res.sim.allocation"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Fornitore"
+msgstr "Dobavitelj"
+
+#. module: hr_sim
+#: field:res.sim.payment,dec_supplier:0
+msgid "Supplier Dic"
+msgstr "Dobavitelj Dec"
+
+#. module: hr_sim
+#: field:sim.move.create,move_date:0
+msgid "Move Date"
+msgstr "Move Date"
+
+#. module: hr_sim
+#: field:res.sim,imei:0
+msgid "ICCID Number"
+msgstr "ICCID številka"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Mag"
+msgstr "Maj"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_apn_management
+msgid "Management Services APN"
+msgstr "Management Services APN"
+
+#. module: hr_sim
+#: help:res.sim,sim_internal_number:0
+msgid "Internal Number"
+msgstr "Interna številka"
+
+#. module: hr_sim
+#: field:res.sim.payment,jan_sum:0
+msgid "Sum Gen"
+msgstr "Sum Jan"
+
+#. module: hr_sim
+#: selection:res.sim.payment,type:0
+msgid "Customer"
+msgstr "Kupec"
+
+#. module: hr_sim
+#: field:res.sim,subscription_end_date:0
+#: field:wizard.print.sim.location,end_date:0
+#: field:wizard.print.traffic.detail,end_date:0
+msgid "End Date"
+msgstr "Datum zaključka"
+
+#. module: hr_sim
+#: field:res.sim,number:0
+msgid "Phone Number"
+msgstr "Telefonska številka"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Somma"
+msgstr "Sum"
+
+#. module: hr_sim
+#: field:res.sim,complete_name:0
+#: field:res.sim.location,name:0
+msgid "Name"
+msgstr "Polno ime"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_type
+#: model:ir.ui.menu,name:hr_sim.menu_res_type_tree
+#: field:res.sim,sim_type_id:0
+#: view:res.sim.type:0
+msgid "Sim Type"
+msgstr "Tip SIM"
+
+#. module: hr_sim
+#: field:res.sim,prefix_number:0
+msgid "Prefix Phone Number"
+msgstr "Predpona telefonske številke"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Aqua"
+msgstr "Aqua"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Grey"
+msgstr "Grey"
+
+#. module: hr_sim
+#: field:res.sim.traffic,data_packets:0
+#: field:res.sim.traffic,duration:0
+msgid "Duration"
+msgstr "Duration"
+
+#. module: hr_sim
+#: field:res.sim.payment,oct_sum:0
+msgid "Sum Ott"
+msgstr "Sum Okt"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_sim_move_create
+#: model:ir.model,name:hr_sim.model_sim_move_create
+#: view:sim.move.create:0
+msgid "Move Sim"
+msgstr "Premakni SIM"
+
+#. module: hr_sim
+#: field:res.sim.apn.management,number:0
+msgid "N. Assigned"
+msgstr "N. Assigned"
+
+#. module: hr_sim
+#: field:res.sim.payment,nov_protocollo:0
+msgid "Protocollo Nov"
+msgstr "Protokol Nov"
+
+#. module: hr_sim
+#: field:res.sim.payment,sep_sum:0
+msgid "Sum Set"
+msgstr "Sum Sep"
+
+#. module: hr_sim
+#: field:res.sim.traffic,description:0
+msgid "Description"
+msgstr "Description"
+
+#. module: hr_sim
+#: view:res.sim.allocation:0
+#: view:res.sim.move.line:0
+#: view:sim.move.create:0
+#: field:sim.move.create,sim_ids:0
+msgid "SIMs"
+msgstr "SIM kartice"
+
+#. module: hr_sim
+#: field:res.sim.payment,jul_sum:0
+msgid "Sum Lug"
+msgstr "Sum Jul"
+
+#. module: hr_sim
+#: field:res.sim.payment,aug_protocollo:0
+msgid "Protocollo Ago"
+msgstr "Protokol Avg"
+
+#. module: hr_sim
+#: field:res.sim.payment,sequence:0
+msgid "Sequence"
+msgstr "Zaporedje"
+
+#. module: hr_sim
+#: field:res.sim.use,color:0
+msgid "Color"
+msgstr "Barva"
+
+#. module: hr_sim
+#: field:res.sim.traffic,contract:0
+msgid "Internet Contract"
+msgstr "Internet Contract"
+
+#. module: hr_sim
+#: field:res.sim.payment,apr_protocollo:0
+msgid "Protocollo Apr"
+msgstr "Protokol Apr"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_move_line
+msgid "SIMs movement"
+msgstr "Premiki SIM kartic"
+
+#. module: hr_sim
+#: field:res.sim,has_date_option:0
+#: field:res.sim.subscription.type,has_date_option:0
+msgid "Has date options ?"
+msgstr "Ima datumske opcije ?"
+
+#. module: hr_sim
+#: view:res.sim.allocation:0
+msgid "SIM Move"
+msgstr "SIM Move"
+
+#. module: hr_sim
+#: field:wizard.print.traffic.detail,data:0
+msgid "File"
+msgstr "File"
+
+#. module: hr_sim
+#: field:res.sim.payment,year:0
+msgid "Year"
+msgstr "Leto"
+
+#. module: hr_sim
+#: field:res.sim,united_data_number:0
+msgid "Data number"
+msgstr "Podatkovna številka"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_wizard_print_sim_location
+msgid "Print Sim Locations"
+msgstr "Print Sim Locations"
+
+#. module: hr_sim
+#: sql_constraint:res.sim:0
+msgid "ICCID Code must be unique !"
+msgstr "ICCID koda mora biti unikatna !"
+
+#. module: hr_sim
+#: field:res.sim,location:0
+#: field:res.sim,location_name:0
+msgid "Matching"
+msgstr "Matching"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:846
+#, python-format
+msgid "You have not defined the sim for given payment line"
+msgstr "You have not defined the sim for given payment line"
+

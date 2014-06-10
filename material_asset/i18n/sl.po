@@ -1,0 +1,979 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* material_asset
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-29 08:58+0000\n"
+"PO-Revision-Date: 2013-11-29 10:19+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Blue"
+msgstr "Modra"
+
+#. module: material_asset
+#: view:stock.move:0
+msgid "Process Now"
+msgstr "Začni postopek"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Fuchsia"
+msgstr "Fuksija"
+
+#. module: material_asset
+#: view:asset.document:0 field:asset.document,comments:0
+msgid "Comments"
+msgstr "Komentarji"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "Group By..."
+msgstr "Grupiraj po..."
+
+#. module: material_asset
+#: view:asset.move:0
+msgid "Asset Lines"
+msgstr "Postavke delovnega sredstva"
+
+#. module: material_asset
+#: field:asset.asset,parents:0
+msgid "Parents"
+msgstr "Nadrejeni"
+
+#. module: material_asset
+#: view:asset.asset:0 field:asset.document,asset_id:0
+#: field:asset.move.line,asset_id:0 field:asset.property,asset_id:0
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_asset_form
+#: model:ir.model,name:material_asset.model_account_asset_asset
+#: model:ir.model,name:material_asset.model_asset_asset
+#: model:ir.ui.menu,name:material_asset.menu_asset
+#: field:resource.resource,asset_id:0
+msgid "Asset"
+msgstr "Delovno sredstvo"
+
+#. module: material_asset
+#: field:asset.asset,product_id:0 view:asset.product:0
+#: model:ir.ui.menu,name:material_asset.menu_asset_product_form
+msgid "Asset Product"
+msgstr "Proizvod - Delovno sredstvo"
+
+#. module: material_asset
+#: view:asset.asset:0 field:asset.asset,document_ids:0 view:asset.document:0
+#: field:asset.document,name:0
+msgid "Document"
+msgstr "Dokument"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "SIM"
+msgstr "SIM"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Brown"
+msgstr "Rjava"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:988
+#, python-format
+msgid "You can't create an asset without a product"
+msgstr "Ni možno ustvariti sredstva brez proizvoda"
+
+#. module: material_asset
+#: constraint:stock.move:0
+msgid "You can not move products from or to a location of the type view."
+msgstr "Premiki proizvodov na lokacije tipa pogled niso mogoči."
+
+#. module: material_asset
+#: field:asset.asset,company_id:0 field:asset.move,company_id:0
+msgid "Company"
+msgstr "Podjetje"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Dark Blue"
+msgstr "Temno modra"
+
+#. module: material_asset
+#: field:asset.asset,new_serial_number:0 field:asset.asset,serial_number:0
+msgid "Serial Number"
+msgstr "Serijska številka"
+
+#. module: material_asset
+#: sql_constraint:project.place:0
+msgid "Code must be unique!"
+msgstr "Koda mora biti unikatna!"
+
+#. module: material_asset
+#: view:asset.move:0
+msgid "Asset Move"
+msgstr "Premik delovnega sredstva"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1065
+#, python-format
+msgid "Asset deletion is not permitted."
+msgstr "Brisanje delovnih sredstev ni dovoljeno."
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_image
+msgid "asset.image"
+msgstr "Slika delovnega sredstva"
+
+#. module: material_asset
+#: constraint:asset.category:0
+msgid "Error! You can not create recursive categories."
+msgstr "Napaka! Ustvarjanje rekurzivnih kategorij ni mogoče."
+
+#. module: material_asset
+#: field:asset.document,valid_start_date:0
+#: field:asset.document.expiry.bymonth,date_from:0
+msgid "Valid Start Date"
+msgstr "Datum začetka veljavnosti"
+
+#. module: material_asset
+#: view:asset.asset:0 field:asset.asset,asset_ids:0
+#: field:asset.asset,asset_move_line_ids:0
+#: field:asset.asset,sim_move_line_ids:0 view:asset.move:0
+#: view:asset.move.create:0 field:asset.move.create,asset_ids:0
+#: view:asset.move.line:0 field:asset.product,asset_ids:0 view:hr.employee:0
+#: field:hr.employee,asset_ids:0
+#: model:ir.actions.act_window,name:material_asset.asset_normal_action_tree
+#: model:ir.ui.menu,name:material_asset.menu_asset_asset
+#: model:ir.ui.menu,name:material_asset.menu_asset_asset_form
+#: field:project.place,asset_ids:0 view:res.car:0 field:res.car,asset_ids:0
+msgid "Assets"
+msgstr "Delovna sredstva"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_res_car
+msgid "Car"
+msgstr "Vozilo"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1148
+#, python-format
+msgid "Error!"
+msgstr "Napaka"
+
+#. module: material_asset
+#: field:asset.use,name:0
+msgid "Use Type"
+msgstr "Tip uporabe"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1148
+#, python-format
+msgid "Strange move. Please contact support"
+msgstr "Čuden premik. Pokličite podporo"
+
+#. module: material_asset
+#: field:asset.asset,date_end:0
+msgid "Ending Date"
+msgstr "Rok veljavnosti"
+
+#. module: material_asset
+#: view:asset.asset:0 field:asset.asset,asset_moves:0
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_move_form
+#: model:ir.ui.menu,name:material_asset.menu_asset_move_view
+msgid "Asset Moves"
+msgstr "Premiki delovnih sredstev"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_stock_move
+msgid "Stock Move"
+msgstr "Premik zaloge"
+
+#. module: material_asset
+#: field:asset.move.line,move_id:0
+msgid "Move"
+msgstr "Premik"
+
+#. module: material_asset
+#: field:asset.asset,asset_asset_id:0
+msgid "Account Asset"
+msgstr "Konto delovnega sredstva"
+
+#. module: material_asset
+#: field:asset.asset,barcode:0
+msgid "Bar Code"
+msgstr "Črtna koda"
+
+#. module: material_asset
+#: field:asset.move,datetime:0 field:asset.move.line,datetime:0
+msgid "Datetime"
+msgstr "Datum/čas"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_category
+msgid "asset.category"
+msgstr "Kategorija delovnega sredstva"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1484
+#, python-format
+msgid "Assign Category"
+msgstr "Dodeli kategorijo"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "All SIMs"
+msgstr "Vse SIM kartice"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1137
+#: code:addons/material_asset/asset.py:1145
+#: code:addons/material_asset/asset.py:1150
+#: code:addons/material_asset/asset.py:1154
+#: code:addons/material_asset/wizard/asset_move_create.py:108
+#: code:addons/material_asset/wizard/asset_move_create.py:131
+#, python-format
+msgid "Warning!"
+msgstr "Pozor!"
+
+#. module: material_asset
+#: model:asset.category,name:material_asset.asset_default_category
+msgid "No category"
+msgstr "Brez kategorije"
+
+#. module: material_asset
+#: view:asset.assign.category:0
+msgid "Choose Category for a New Asset"
+msgstr "Izberi kategorijo za novo sredstvo"
+
+#. module: material_asset
+#: field:asset.asset,name:0
+msgid "Inventory Code"
+msgstr "Številka inventarja"
+
+#. module: material_asset
+#: view:stock.location:0
+msgid "Chained Locations"
+msgstr "Verižne lokacije"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_move_create
+msgid "Create Asset Move"
+msgstr "Ustvari premik delovnega sredstva"
+
+#. module: material_asset
+#: view:asset.asset:0 view:asset.document:0
+msgid "Documents"
+msgstr "Dokumenti"
+
+#. module: material_asset
+#: model:ir.ui.menu,name:material_asset.menu_asset_category_form
+msgid "Asset by Category"
+msgstr "Delovna sredstva po kategorijah"
+
+#. module: material_asset
+#: field:asset.category,child_id:0
+msgid "Child Categories"
+msgstr "Podrejene kategorije"
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.action_assets_location_tree
+#: model:ir.ui.menu,name:material_asset.asset_locations_menu
+msgid "Locations"
+msgstr "Lokacije"
+
+#. module: material_asset
+#: view:stock.location:0
+msgid "Accounting Information"
+msgstr "Računovodski podatki"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_stock_location
+#: view:stock.location:0
+msgid "Location"
+msgstr "Lokacija"
+
+#. module: material_asset
+#: field:asset.product,user:0
+#: model:ir.model,name:material_asset.model_hr_employee
+msgid "Employee"
+msgstr "Uslužbenec"
+
+#. module: material_asset
+#: model:ir.actions.act_window,help:material_asset.action_asset_create
+msgid "Can create asset directly from product on warehouse"
+msgstr "Delovno sredstvo lahko ustvarite direktno iz proizvoda v skladišču"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Red"
+msgstr "Rdeča"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1166
+#, python-format
+msgid "You can only delete the last Asset Move!"
+msgstr "Brišete lahko le zadnji premik sredstva!"
+
+#. module: material_asset
+#: constraint:account.asset.asset:0
+msgid "Error ! You can not create recursive assets."
+msgstr "Napaka ! Ustvarjanje rekurzivnih delovnih sredstev ni mogoče."
+
+#. module: material_asset
+#: field:asset.asset,added:0
+msgid "Added"
+msgstr "Dodano"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "Search Asset"
+msgstr "Najdi delovno sredstvo"
+
+#. module: material_asset
+#: view:asset.document.expiry.bymonth:0
+msgid "Print"
+msgstr "Natisni"
+
+#. module: material_asset
+#: view:stock.move:0
+msgid "Today"
+msgstr "Danes"
+
+#. module: material_asset
+#: model:ir.ui.menu,name:material_asset.menu_asset_config
+msgid "Configuration"
+msgstr "Konfiguracija"
+
+#. module: material_asset
+#: field:asset.asset,date_start:0
+msgid "Starting Date"
+msgstr "Datum začetka veljavnosti"
+
+#. module: material_asset
+#: model:ir.ui.menu,name:material_asset.menu_asset_asset_tree_smart
+msgid "Assets Smart"
+msgstr "Preglednica delovnih sredstev"
+
+#. module: material_asset
+#: model:ir.actions.report.xml,name:material_asset.ddt_report_id
+msgid "Print Move"
+msgstr "Natisni premik"
+
+#. module: material_asset
+#: field:asset.category,parent_id:0
+msgid "Parent Category"
+msgstr "Nadrejena kategorija"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_assign_category
+msgid "Assign category to a new asset product"
+msgstr "Dodeli kategorijo novega delovnega sredstva/proizvoda"
+
+#. module: material_asset
+#: view:asset.move.create:0
+msgid "Create Move For Asset"
+msgstr "Ustvari premik delovnega sredstva"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Forest Green"
+msgstr "Gozdno zelena"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Green"
+msgstr "Zelena"
+
+#. module: material_asset
+#: view:asset.asset:0 model:ir.model,name:material_asset.model_asset_property
+msgid "Property"
+msgstr "Lastnost"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "All Associated Assets"
+msgstr "Vsa povezana delovna sredstva"
+
+#. module: material_asset
+#: view:asset.document.type:0
+msgid "Define document type"
+msgstr "Določi tip dokumenta"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_document_type
+msgid "Documents Types"
+msgstr "Tip dokumenta"
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.action_asset_document_expire_bymonth
+msgid "Document Expire Report Monthly"
+msgstr "Poročilo o zapadlih dokumentih"
+
+#. module: material_asset
+#: field:asset.move,dest_location:0 field:asset.move.create,dest_location:0
+#: field:asset.move.line,dest_location:0
+msgid "Destination Location"
+msgstr "Ciljna lokacija"
+
+#. module: material_asset
+#: view:asset.asset:0 field:asset.asset,image:0
+msgid "Image"
+msgstr "Slika"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_project_place
+msgid "project.place"
+msgstr "Projektna lokacija"
+
+#. module: material_asset
+#: sql_constraint:asset.asset:0
+msgid "Inventory code should be unique!"
+msgstr "Inventarna številka mora biti unikatna!"
+
+#. module: material_asset
+#: field:asset.product,product_product_id:0
+msgid "Automatically created field to link to parent product.product"
+msgstr "Samodejno ustvarjeno polje s povezavo na izvor product.product"
+
+#. module: material_asset
+#: field:asset.asset,location:0 field:asset.asset,location_name:0
+msgid "Current Location"
+msgstr "Trenutna lokacija"
+
+#. module: material_asset
+#: field:asset.product,inventory_code:0
+msgid "Numero di inventario"
+msgstr "Inventarna številka"
+
+#. module: material_asset
+#: view:asset.assign.category:0
+msgid "Select category"
+msgstr "Izberi kategorijo"
+
+#. module: material_asset
+#: view:asset.product:0
+msgid "Search Asset Product"
+msgstr "Najdi delovno sredstvo - proizvod"
+
+#. module: material_asset
+#: view:stock.move:0
+msgid "Unit Of Measure"
+msgstr "Enota mere"
+
+#. module: material_asset
+#: view:stock.location:0
+msgid "Additional Information"
+msgstr "Dodatni podatki"
+
+#. module: material_asset
+#: view:asset.category:0 field:asset.product,asset_category_id:0
+msgid "Category"
+msgstr "Kategorija"
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_product_form
+msgid "Asset Products"
+msgstr "Delovna sredstva - proizvodi"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Cadet Blue"
+msgstr "Kadetsko modra"
+
+#. module: material_asset
+#: field:asset.move,user_id:0 field:asset.move.create,user_id:0
+#: field:asset.move.line,user_id:0
+msgid "Moved By"
+msgstr "Premaknil"
+
+#. module: material_asset
+#: view:asset.asset:0 field:asset.asset,note:0
+msgid "Note"
+msgstr "Opombe"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1017 constraint:asset.asset:0
+#, python-format
+msgid "Duplicate asset serial number"
+msgstr "Duplikat serijske številke delovnega sredstva"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Black"
+msgstr "Črna"
+
+#. module: material_asset
+#: field:asset.move,dest_location_name:0
+#: field:asset.move.line,dest_location_name:0
+msgid "Destination Loc."
+msgstr "Ciljna lok."
+
+#. module: material_asset
+#: view:asset.move.create:0
+msgid "Move Information"
+msgstr "Informacije o premiku"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1137
+#, python-format
+msgid "This is a wrong place for creating a move."
+msgstr "To je napačen kraj za ustvarjanje premikov."
+
+#. module: material_asset
+#: view:stock.location:0
+msgid "Localization"
+msgstr "Lokalizacija"
+
+#. module: material_asset
+#: constraint:stock.move:0
+msgid "You try to assign a lot which is not from the same product"
+msgstr "Poskušate dodeliti lot, ki ni vezan na ta proizvod"
+
+#. module: material_asset
+#: field:asset.asset,row_color:0 field:asset.use,row_color:0
+msgid "unknown"
+msgstr "neznano"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_document
+msgid "Asset Document"
+msgstr "Dokument delovnega sredstva"
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.action_asset_create
+#: model:ir.ui.menu,name:material_asset.menu_action_asset_create
+msgid "From Product to Asset"
+msgstr "Iz proizvodov v delovno sredstvo"
+
+#. module: material_asset
+#: field:asset.document,expired:0
+msgid "Is it expired?"
+msgstr "Je zapadlo?"
+
+#. module: material_asset
+#: view:asset.use:0
+#: model:ir.actions.act_window,name:material_asset.open_module_tree_asset_use
+#: model:ir.ui.menu,name:material_asset.menu_asset_use_tree
+msgid "Asset Use"
+msgstr "Namen uporabe delovnega sredstva"
+
+#. module: material_asset
+#: view:asset.document.expiry.bymonth:0
+msgid "Print Document Expiry Report Monthly"
+msgstr "Natisni mesečno poročilo o zapadlosti dokumentov"
+
+#. module: material_asset
+#: field:asset.asset,removed:0
+msgid "Removed"
+msgstr "Odstranjeno"
+
+#. module: material_asset
+#: constraint:hr.employee:0
+msgid "Error ! You cannot create recursive Hierarchy of Employees."
+msgstr "Napaka! Ne morete izdelati rekurzivne hierarhije zaposlencev."
+
+#. module: material_asset
+#: field:asset.asset,partner_id:0
+msgid "Manufacturer"
+msgstr "Proizvajalec"
+
+#. module: material_asset
+#: view:asset.move:0
+msgid "Asset moves"
+msgstr "Premiki delovnih sredstev"
+
+#. module: material_asset
+#: field:asset.move.create,move_date:0
+msgid "Move Date"
+msgstr "Datum premika"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1154
+#, python-format
+msgid "Asset Move can't be modified."
+msgstr "Premika delovnega sredstva ni mogoče spreminjati."
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Aqua"
+msgstr "Aqua"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:988
+#: code:addons/material_asset/asset.py:1065
+#, python-format
+msgid "Invalid action!"
+msgstr "Neveljavno dejanje!"
+
+#. module: material_asset
+#: field:asset.asset,active:0 field:asset.document,active:0
+msgid "Active"
+msgstr "Aktivno"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1158
+#: code:addons/material_asset/asset.py:1166
+#, python-format
+msgid "Error"
+msgstr "Napaka"
+
+#. module: material_asset
+#: field:asset.move,description:0 field:asset.move.create,description:0
+msgid "Move Description"
+msgstr "Opis premika"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1150
+#, python-format
+msgid "You can't create empty move"
+msgstr "Ustvarjanje praznih premikov ni mogoče"
+
+#. module: material_asset
+#: view:asset.assign.category:0
+msgid "Assign"
+msgstr "Dodeli"
+
+#. module: material_asset
+#: field:asset.document.type,repeatable:0
+msgid "Repeatable?"
+msgstr "Ponovljivo?"
+
+#. module: material_asset
+#: model:res.groups,name:material_asset.group_assets_user
+msgid "Assets / User"
+msgstr "Delovna sredstva / Uporabnik"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1158
+#, python-format
+msgid "You can only delete one Asset Move at a time!"
+msgstr "Možno je hkratno brisanje samo enega premika sredstva!"
+
+#. module: material_asset
+#: field:asset.category,code:0 field:asset.document.type,code:0
+msgid "Code"
+msgstr "Koda"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "Old"
+msgstr "Staro"
+
+#. module: material_asset
+#: field:asset.property,group_id:0 field:asset.property.group,name:0
+#: model:ir.model,name:material_asset.model_asset_property_group
+msgid "Property Group"
+msgstr "Skupina lastnosti"
+
+#. module: material_asset
+#: constraint:account.asset.asset:0
+msgid ""
+"Prorata temporis can be applied only for time method \"number of "
+"depreciations\"."
+msgstr ""
+"\"Prorata temporis\" lahko uporabimo le pri metodi \"število amortizacij\""
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_proprerty_form
+#: model:ir.ui.menu,name:material_asset.menu_asset_property_form
+msgid "Asset Property"
+msgstr "Lastnosti delovnega sredstva"
+
+#. module: material_asset
+#: field:asset.asset,property_ids:0 view:asset.property:0
+msgid "Properties"
+msgstr "Lastnosti"
+
+#. module: material_asset
+#: field:asset.category,asset_sequence_id:0
+msgid "Asset sequence"
+msgstr "Zaporedje delovnega sredstva"
+
+#. module: material_asset
+#: sql_constraint:res.car:0
+msgid "Plate name must be unique !"
+msgstr "Registracijska številka mora biti unikatna !"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "Other"
+msgstr "Drugo"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_product
+msgid "asset.product"
+msgstr "Proizvod vezan na delovno sredstvo"
+
+#. module: material_asset
+#: field:asset.assign.category,category_id:0
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_category_list
+#: model:ir.ui.menu,name:material_asset.menu_asset_category_list
+msgid "Asset Category"
+msgstr "Kategorija delovnega sredstva"
+
+#. module: material_asset
+#: field:asset.document,valid_end_date:0
+#: field:asset.document.expiry.bymonth,date_to:0
+msgid "Valid End Date"
+msgstr "Rok veljavnosti"
+
+#. module: material_asset
+#: view:asset.assign.category:0 view:asset.document.expiry.bymonth:0
+#: view:asset.move.create:0
+msgid "Cancel"
+msgstr "Prekliči"
+
+#. module: material_asset
+#: view:stock.move:0
+msgid "Moves"
+msgstr "Premiki"
+
+#. module: material_asset
+#: view:stock.location:0
+msgid "Stock Location"
+msgstr "Lokacija zaloge"
+
+#. module: material_asset
+#: view:asset.property.group:0
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_proprerty_group_form
+#: model:ir.ui.menu,name:material_asset.menu_asset_property_group_form
+msgid "Asset Property Group"
+msgstr "Skupina lastnosti delovnih sredstev"
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.action_asset_move_create
+msgid "Move Asset"
+msgstr "Premakni delovno sredstvo"
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.open_module_tree_document
+#: model:ir.ui.menu,name:material_asset.menu_asset_document_tree
+msgid "Asset's Documents"
+msgstr "Dokumentacija delovnih sredstev"
+
+#. module: material_asset
+#: constraint:stock.move:0
+msgid "You must assign a production lot for this product"
+msgstr "Dodeliti morate proizvodni lot za ta proizvod"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Orange"
+msgstr "Oranžna"
+
+#. module: material_asset
+#: view:stock.move:0
+msgid "Orders planned for today"
+msgstr "Nalogi planirani za danes"
+
+#. module: material_asset
+#: view:asset.document:0
+msgid "Details"
+msgstr "Podrobnosti"
+
+#. module: material_asset
+#: field:asset.asset,asset_use_id:0 field:asset.move.create,asset_use_id:0
+msgid "Utilizzo"
+msgstr "Uporaba"
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_category_form2
+msgid "Assets Category"
+msgstr "Kategorije delovnih sredstev"
+
+#. module: material_asset
+#: field:asset.asset,ven_prod_name:0
+msgid "Vendor Product Name"
+msgstr "Proizvajalčev naziv proizvoda"
+
+#. module: material_asset
+#: view:asset.asset:0 field:asset.asset,have_sim:0 field:asset.asset,sim_ids:0
+msgid "Sim"
+msgstr "Sim"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "Product"
+msgstr "Proizvod"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:983
+#, python-format
+msgid "An asset with Inventory code: {0} was created"
+msgstr "Ustvarjeno je bilo delovno sredstvo s kodo: {0} "
+
+#. module: material_asset
+#: view:asset.property:0 field:asset.property,description:0
+#: field:asset.property.group,description:0
+msgid "Description"
+msgstr "Opis"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1016 constraint:asset.asset:0
+#: constraint:asset.document:0
+#, python-format
+msgid "Error! Documents start date must be lower then contract end date."
+msgstr "Napaka! Datum izdaje dokumenta mora biti pred datumom prenehanja."
+
+#. module: material_asset
+#: model:res.groups,name:material_asset.group_assets_manager
+msgid "Assets / Manager"
+msgstr "Delovna sredstva / Upravitelj"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_use
+msgid "Asset Uses"
+msgstr "Nameni uporabe delovnega sredstva"
+
+#. module: material_asset
+#: view:stock.location:0
+msgid "Chained Location"
+msgstr "Verižna lokacija"
+
+#. module: material_asset
+#: view:asset.asset:0 field:asset.asset,is_kit:0
+#: field:asset.move.line,is_kit:0
+msgid "Kit"
+msgstr "Kit"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1145
+#, python-format
+msgid "Product should be moved with the time superior to last move"
+msgstr "Proizvod je lahko premaknjen le s časom novejšim od zadnjega premika"
+
+#. module: material_asset
+#: field:asset.move.line,source_location_name:0
+msgid "Source Loc."
+msgstr "Izvorna lok."
+
+#. module: material_asset
+#: code:addons/material_asset/wizard/asset_move_create.py:108
+#, python-format
+msgid "Unknown destination."
+msgstr "Neznana destinacija."
+
+#. module: material_asset
+#: model:res.groups,name:material_asset.group_assets_manager_mover
+msgid "Assets / Manage Move"
+msgstr "Delovna sredstva / Upravljanje premika"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_document_expiry_bymonth
+msgid "Print Monthly Document Expiry Report"
+msgstr "Natisni poročilo o zapadlih dokumentih"
+
+#. module: material_asset
+#: field:asset.asset,ven_prod_code:0
+msgid "Vendor Product code"
+msgstr "Proizvajalčeva koda proizvoda"
+
+#. module: material_asset
+#: field:asset.asset,has_date_option:0 field:asset.document,has_date_option1:0
+#: field:asset.document.type,has_date_option1:0
+msgid "Has date options?"
+msgstr "Ima rok veljavnosti?"
+
+#. module: material_asset
+#: field:asset.asset,complete_name:0 field:asset.category,complete_name:0
+#: field:asset.category,name:0 field:asset.move,name:0
+#: field:asset.property,name:0
+msgid "Name"
+msgstr "Naziv"
+
+#. module: material_asset
+#: selection:asset.use,color:0
+msgid "Grey"
+msgstr "Siva"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_resource_resource
+msgid "Resource Detail"
+msgstr "Podrobnosti vira"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_move_line
+msgid "Assets moved together"
+msgstr "Delovna sredstva zbrana v skupine"
+
+#. module: material_asset
+#: view:asset.asset:0
+msgid "Associated Assets"
+msgstr "Povezana delovna sredstva"
+
+#. module: material_asset
+#: view:asset.category:0
+msgid "Search Category"
+msgstr "Najdi kategorijo"
+
+#. module: material_asset
+#: field:asset.move.line,return_datetime:0
+msgid "Returned"
+msgstr "Vrnjeno"
+
+#. module: material_asset
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_asset_tree_smart
+msgid "Asset Smart"
+msgstr "Preglednica delovnih sredstev"
+
+#. module: material_asset
+#: field:asset.move.line,source_location:0
+msgid "Source Location"
+msgstr "Izvorna lokacija"
+
+#. module: material_asset
+#: field:asset.use,color:0
+msgid "Color"
+msgstr "Barva"
+
+#. module: material_asset
+#: field:asset.document.type,duration:0
+msgid "Month Duration"
+msgstr "Mesečno trajanje"
+
+#. module: material_asset
+#: field:asset.move,asset_line_ids:0
+msgid "Asset lines"
+msgstr "Postavke delovnega sredstva"
+
+#. module: material_asset
+#: field:asset.category,has_date_option:0
+#: field:asset.product,has_date_option:0
+msgid "Has date options ?"
+msgstr "Ima rok veljavnosti ?"
+
+#. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_move
+msgid "asset.move"
+msgstr "Premik delovnega sredstva"
+
+#. module: material_asset
+#: view:asset.move.create:0
+msgid "Create Move"
+msgstr "Ustvari premik"
+
+#. module: material_asset
+#: view:stock.move:0
+msgid "Stock Moves"
+msgstr "Premiki zaloge"
+
+#. module: material_asset
+#: field:asset.document,document_type_id:0
+#: field:asset.document.expiry.bymonth,category_id:0
+#: view:asset.document.type:0 field:asset.document.type,name:0
+#: model:ir.actions.act_window,name:material_asset.open_module_tree_document_type
+#: model:ir.ui.menu,name:material_asset.menu_asset_document_type_tree
+msgid "Document Type"
+msgstr "Tip dokumenta"
+
+#. module: material_asset
+#: field:asset.property,location:0
+msgid "Matching"
+msgstr "Skladnost"

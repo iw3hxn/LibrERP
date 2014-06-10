@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="view_generate_purchase_order_wizard" model="ir.ui.view">
+            <field name="name">Generate Purchase Order</field>
+            <field name="model">sale_to_purchase_order.generate_purchase_order</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Generate Purchase Order">
+                    <group col="4" colspan="4">
+                        <label colspan="4" width="500"
+                               string="You are on about to generate a Purchase Order from this Sale Order. To do so please complete the following mandatory fields first."/>
+                        <newline/>
+                        
+                        <field name="partner_id" colspan="4" on_change="onchange_partner_id(partner_id)"
+                               context="{'search_default_supplier': True, 'default_supplier': True, 'default_customer': False}"/>
+                        
+                        <field name="pricelist_id" colspan="4"/>
+                        
+                        <field name="warehouse_id" colspan="4"/>
+                        
+                        <button string="Cancel" colspan="2" special="cancel" icon="gtk-cancel" />
+                        <button name="generate_purchase_order" string="Generate Purchase Order"
+                                icon="gtk-go-forward" type="object" colspan="2"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <act_window name="Generate Purchase Order"
+            id="action_generate_purchase_order"
+            src_model="sale.order"
+            res_model="sale_to_purchase_order.generate_purchase_order"
+            view_mode="form" target="new" view_type="form"
+            view_id="view_generate_purchase_order_wizard"/>
+        
+    </data>
+</openerp>

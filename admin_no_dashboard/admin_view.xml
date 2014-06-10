@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+	<record id="base.menu_administration" model="ir.ui.menu">
+		<field name="action" ref="base.action_res_users"/>
+	</record>
+    </data>
+</openerp>

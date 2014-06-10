@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data >
+    
+    <!--
+    Resource: sale.shop
+    -->
+        <record id="sale.shop" model="sale.shop">
+
+            
+            <field name="sequence_id" ref="sale.seq_sale_order"/>
+            
+        </record>
+
+    </data>
+</openerp>

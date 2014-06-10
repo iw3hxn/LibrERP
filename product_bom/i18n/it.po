@@ -1,0 +1,204 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* product_bom
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-12-24 08:58+0000\n"
+"PO-Revision-Date: 2013-12-24 08:58+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_create_product
+msgid "Product / Can Create"
+msgstr "Prodotto / Può Crearli"
+
+#. module: product_bom
+#: selection:res.company,ref_stock:0
+msgid "Real Stock"
+msgstr "Stock Reale"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_supplier_product
+msgid "Product / Can View Supplier"
+msgstr "Prodotto / Può vedere i Fornitori"
+
+#. module: product_bom
+#: constraint:mrp.bom:0
+msgid "BoM line product should not be same as BoM product."
+msgstr "Il prodotto della riga della BoM non dovrebbe essere lo stesso del prodotto della BoM."
+
+#. module: product_bom
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Attenzione: non puoi creare aziende ricorsive"
+
+#. module: product_bom
+#: field:product.product,immediately_usable_qty:0
+msgid "Immediately Usable"
+msgstr "Disponibilità Immediata"
+
+#. module: product_bom
+#: field:res.company,ref_stock:0
+msgid "Reference Stock for BoM Stock"
+msgstr "Reference Stock for BoM Stock"
+
+#. module: product_bom
+#: help:product.product,bom_stock:0
+msgid "Quantities of products based on Bill of Materials, useful to know how much of this product you could produce.Computed as:\n"
+" Reference stock of this product + how much could I produce of this product with the BoMComponents"
+msgstr "Quantità di prodotto basato sulla Distinata Base, utile per capire quanto prodotto è possibile produrre. Calcolato come:\n"
+" Quantità disponibile del prodotto + quanto posso produrre di questo prodotto con i prodotti che compongono la Distinta Base"
+
+#. module: product_bom
+#: view:product.product:0
+msgid "BoMs"
+msgstr "Distinte Base"
+
+#. module: product_bom
+#: sql_constraint:mrp.bom:0
+msgid "All product quantities must be greater than 0.\n"
+"You should install the mrp_subproduct module if you want to manage extra products on BoMs !"
+msgstr "Tutte le quantità devono essere maggiori di 0.\n"
+"Dovreste installare il modulo mrp_subproducts se volete gestire prodotti extra nelle distinte base!"
+
+#. module: product_bom
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Il nome azienda deve essere unico!"
+
+#. module: product_bom
+#: code:addons/product_bom/product.py:379
+#, python-format
+msgid "Quantity On Hand"
+msgstr "Quantità disponibile"
+
+#. module: product_bom
+#: code:addons/product_bom/product.py:436
+#, python-format
+msgid "Outgoing"
+msgstr "Uscita"
+
+#. module: product_bom
+#: view:res.company:0
+msgid "Stock - Various"
+msgstr "Varie - Magazzino"
+
+#. module: product_bom
+#: view:product.product:0
+#: field:product.product,is_kit:0
+msgid "Kit"
+msgstr "Kit"
+
+#. module: product_bom
+#: code:addons/product_bom/product.py:398
+#, python-format
+msgid "Quantity Available"
+msgstr "Quantità Disponibile Prevista"
+
+#. module: product_bom
+#: view:res.company:0
+msgid "Configuration"
+msgstr "Configurazione"
+
+#. module: product_bom
+#: code:addons/product_bom/product.py:462
+#: field:product.product,bom_stock:0
+#, python-format
+msgid "Bill of Materials Stock"
+msgstr "Quantità Possibile con Distinta Base"
+
+#. module: product_bom
+#: constraint:mrp.bom:0
+msgid "Error ! You cannot create recursive BoM."
+msgstr "Errore! Impossibile creare BoM ricorsive."
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_sell_price
+msgid "Product / Show Sell Price"
+msgstr "Prodotto / Vedere Prezzo di Vendita"
+
+#. module: product_bom
+#: help:product.product,immediately_usable_qty:0
+msgid "Quantity of products really available for sale.Computed as: Quantity On Hand - Outgoing."
+msgstr "Quantità di prodotti realmente disponibili per la vendita. Calcolato come quantità disponibile - uscite."
+
+#. module: product_bom
+#: code:addons/product_bom/product.py:418
+#, python-format
+msgid "Incoming"
+msgstr "Ingresso"
+
+#. module: product_bom
+#: view:product.product:0
+msgid "BoMs Line"
+msgstr "Righe Distinta Base"
+
+#. module: product_bom
+#: model:ir.model,name:product_bom.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: product_bom
+#: model:ir.model,name:product_bom.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: product_bom
+#: model:ir.model,name:product_bom.model_mrp_bom
+msgid "Bill of Material"
+msgstr "Distinta Base"
+
+#. module: product_bom
+#: selection:res.company,ref_stock:0
+msgid "Virtual Stock"
+msgstr "Stock Virtuale"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_unlink_product
+msgid "Product / Can Unlink"
+msgstr "Prodotto / Può Cancellarli"
+
+#. module: product_bom
+#: code:addons/product_bom/product.py:368
+#: field:product.product,cost_price:0
+#, python-format
+msgid "Cost Price (incl. BoM)"
+msgstr "Prezzo di Costo"
+
+#. module: product_bom
+#: selection:res.company,ref_stock:0
+msgid "Immediately Usable Stock"
+msgstr "Quantità immediatamente disponibile"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_cost_price
+msgid "Product / Show Cost Price"
+msgstr "Prodotto / Vedere Prezzo di Costo"
+
+#. module: product_bom
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Errore: codice EAN non valido"
+
+#. module: product_bom
+#: field:product.product,bom_lines:0
+msgid "Boms"
+msgstr "Boms"
+
+#. module: product_bom
+#: help:product.product,cost_price:0
+msgid "The cost price is the standard price or, if the product has a bom, the sum of all standard price of its components. it take also care of the bom costing like cost per cylce."
+msgstr "Il prezzo di costo è il prezzo standard o se è definita una distinta base il suo costo."
+
+#. module: product_bom
+#: view:product.product:0
+msgid "BOM"
+msgstr "Distinta Base"

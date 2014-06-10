@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_partner_property_form">
+			<field name="name">res.partner.product.property.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <page string="Sales &amp; Purchases" position="inside">
+                    <group colspan="2" col="2" name="metel">
+                        <separator string="Metel Properties" colspan="2"/>
+                        <field name="metel_code"/>
+                        <field name="metel_category"/>
+                    </group>
+                </page>
+            </field>
+        </record>
+        
+		<!-- Voce di menu per avviare il wizard -->
+		<menuitem 
+			parent="purchase.menu_purchase_config_pricelist"
+			name="Import Metel Sonepar Pricelist file"
+			action="action_product_metel_import"
+			id="menu_product_metel_importPricelist"
+		/>
+    </data>
+</openerp>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="seq_type_proforma_invoice" model="ir.sequence.type">
+            <field name="name">Proforma Invoice</field>
+            <field name="code">account.invoice.proforma</field>
+        </record>
+
+        <record id="seq_proforma_invoice" model="ir.sequence">
+            <field name="name">Proforma Invoice</field>
+            <field name="code">account.invoice.proforma</field>
+            <field name="prefix">PRO/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

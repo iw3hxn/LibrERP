@@ -1,0 +1,16 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_project_plant_type","project.plant.type","model_project_plant_type","group_plant_manager",1,1,1,1
+"read_project_plant_type","project.plant.type","model_project_plant_type","group_plant_user",1,0,0,0
+"access_project_agreement_type","project.agreement.type","model_project_agreement_type","group_place_manager",1,1,1,1
+"read_project_agreement_type","project.agreement.type","model_project_agreement_type","group_place_user",1,0,0,0
+"access_project_plant","project.plant","model_project_plant","group_plant_manager",1,1,1,1
+"read_project_plant","project.plant","model_project_plant","group_plant_user",1,0,0,0
+"read_project_plant_place","project.plant","model_project_plant","group_place_user",1,0,0,0
+"access_project_place","project.place","model_project_place","group_place_manager",1,1,1,1
+"read_project_place","project.place","model_project_place","group_place_user",1,0,0,0
+"access_plant_property","plant.property","model_plant_property","group_plant_manager",1,1,1,1
+"read_plant_property","plant.property","model_plant_property","group_plant_user",1,0,0,0
+"access_plant_property_group","plant.property.group","model_plant_property_group","group_plant_manager",1,1,1,1
+"read_plant_property_group","plant.property.group","model_plant_property_group","group_plant_user",1,0,0,0
+"access_project_place_type","project.place.type","model_project_place_type","group_place_configurator",1,1,1,1
+"read_project_place_type","project.place.type","model_project_place_type","group_place_user",1,0,0,0

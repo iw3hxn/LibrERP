@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2012-04-05 09:16+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Paolo <p.chiara@isa.it>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: product_filter_availability_ext_isa
+#: model:ir.model,name:product_filter_availability_ext_isa.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: product_filter_availability_ext_isa
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Errore: Codice ean non valido"
+
+#. module: product_filter_availability_ext_isa
+#: view:product.product:0
+msgid "Availability > 0"
+msgstr "Disponibilità > 0"
+

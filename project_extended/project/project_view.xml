@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_inherit_project_tasks_tab" model="ir.ui.view">
+            <field name="name">project.project.tasks.tab</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                 <xpath expr='//page[@string="Tasks Stages"]' position="before">
+                    <page string="Tasks">
+                        <field name="tasks" nolabel="1">
+                        <tree editable="top" colors="grey:state in ('cancelled','done');blue:state == 'pending';red:date_deadline and (date_deadline&lt;current_date) and  (state in ('draft','pending','open'))" string="Tasks">
+                    <field name="sequence" invisible="not context.get('seq_visible', False)"/>
+                    <field name="name"/>
+                    <field name="user_id" readonly="1" />
+                    <field name="delegated_user_id" />
+                    <field name="planned_hours" />
+                    <field name="effective_hours" widget="float_time" sum="Spent Hours" invisible="1"/>
+                    <field name="remaining_hours" widget="float_time" sum="Remaining Hours" />
+                    <field name="date_deadline" />
+                    <field name="type_id" />
+                    <field name="progress" widget="progressbar" />
+                    <field name="state" invisible="context.get('set_visible',False)"/>
+                    
+                </tree>
+
+                        </field>
+                    </page>
+                 </xpath>
+            </field>
+        </record>
+
+        <record id="view_project_project_tree_extended" model="ir.ui.view">
+            <field name="name">project.project.tree.extended</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.view_project"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                 <field name="date" position="replace">
+                    <field name = "date" />
+                 </field>
+                 <field name="progress_rate" position="replace">
+                    <field name="total_sell" />
+                    <field name="total_spent" />
+                    <field name="total_invoice" />
+                    
+                 </field>
+                 <field name="state" position="after">
+                    <field name = "task_count" groups="project.group_project_manager" />
+                 </field>
+            </field>
+        </record>
+
+        <record id="project.open_view_task_list_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">kanban</field>
+            <field name="act_window_id" ref="project.action_view_task"/>
+        </record>
+        
+    </data>
+</openerp>

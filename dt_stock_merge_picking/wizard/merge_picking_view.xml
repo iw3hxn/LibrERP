@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="merge_picking_form_init" model="ir.ui.view">
+			<field name="name">Merge Picking</field>
+			<field name="model">stock.picking.merge.wizard</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Merge Picking">
+					<separator colspan="4" string="Picking target to merge into" />
+					<field name="target_picking_id" required="1"
+						domain="[('state','&lt;&gt;','done'),('state','&lt;&gt;','cancel')]" />
+					<group col="2" colspan="4">
+						<button icon="gtk-cancel" special="cancel" string="Do not merge" />
+						<button name="do_target" string="Choose Target" type="object"
+							icon="gtk-go-forward" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<act_window id="action_merge_picking" name="Merge Pickings (manual)"
+			res_model="stock.picking.merge.wizard" src_model="stock.picking"
+			view_type="form" view_mode="form" target="new" view_id="merge_picking_form_init"
+			domain="[('target_picking_id', '=', active_id)]" />
+
+		<menuitem action="action_merge_picking" id="menu_stock_moves_merge_picking"
+			parent="stock.menu_stock_warehouse_mgmt" sequence="100" />
+
+
+		<record id="merge_picking_form_target" model="ir.ui.view">
+			<field name="name">Merge Picking</field>
+			<field name="model">stock.picking.merge.wizard</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Merge Picking">
+					<field name="target_picking_id" required="1" readonly="1" />
+					<field name="target_picking_id_state" invisible="1" />
+					<field name="target_picking_id_type" invisible="1" />
+					<field name="target_picking_id_invoice_state" invisible="1" />
+
+					<field name="target_picking_id_stock_journal_id" invisible="1" />
+					<field name="target_picking_id_location_id" invisible="1" />
+					<field name="target_picking_id_location_dest_id" invisible="1" />
+					<field name="target_picking_id_address_id" invisible="1" />
+					<field name="target_picking_id_company_id" invisible="1" />
+
+					<separator colspan="4" string="Pickings to merge into the target" />
+					<field name="picking_ids" colspan="4" nolabel="1"
+						domain="[('id','&lt;&gt;',target_picking_id),
+						        ('state','=',target_picking_id_state),
+						        ('type','=',target_picking_id_type),
+						        ('invoice_state','=',target_picking_id_invoice_state),
+						        ('stock_journal_id','=',target_picking_id_stock_journal_id),
+						        ('location_id','=',target_picking_id_location_id),
+						        ('location_dest_id','=',target_picking_id_location_dest_id),
+						        ('address_id','=',target_picking_id_address_id),
+						        ('company_id','=',target_picking_id_company_id),
+						        ]" />
+					<group col="2" colspan="4">
+						<button icon="gtk-cancel" special="cancel" string="Do not merge" />
+						<button name="do_check" string="Check" type="object"
+							icon="gtk-go-forward" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record id="merge_picking_form_checked" model="ir.ui.view">
+			<field name="name">Merge Picking</field>
+			<field name="model">stock.picking.merge.wizard</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Merge Picking">
+					<field name="target_picking_id" required="1" readonly="1" />
+					<separator colspan="4" string="Pickings to merge into the target" />
+					<field name="picking_ids" colspan="4" nolabel="1" readonly="1" />
+					<separator colspan="4" string="Please verify and check to merge" />
+					<field name="commit_merge" />
+					<group col="2" colspan="4">
+						<button icon="gtk-cancel" special="cancel" string="Do not merge" />
+						<button name="do_merge" string="Merge" type="object"
+							icon="terp-accessories-archiver+" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record id="merge_picking_form_done" model="ir.ui.view">
+			<field name="name">Merge Picking</field>
+			<field name="model">stock.picking.merge.wizard</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Merge Picking">
+					<separator colspan="4" string="Merge completed." />
+					<button icon="gtk-cancel" special="cancel" string="Close" />
+				</form>
+			</field>
+		</record>
+
+	</data>
+</openerp>

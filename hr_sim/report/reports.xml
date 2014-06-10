@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record id="sim_move_report_id" model="ir.actions.report.xml">
+            <field name="name">Stampa Movimento</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">res.sim.allocation</field>
+            <field name="report_name">sim_move</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
+            <field name="report_rml">hr_sim/report/sim_move_it.odt</field>
+            <field name="parser_state">default</field>
+            <field name="process_sep" eval="1"/>
+        </record>
+
+        <ir_set>
+            <field eval="'action'" name="key"/>
+            <field eval="'client_print_multi'" name="key2"/>
+            <field eval="['res.sim.allocation']" name="models"/>
+            <field name="name">Print Move</field>
+            <field eval="'ir.actions.report.xml,'+str(sim_move_report_id)" name="value"/>
+            <field eval="True" name="isobject"/>
+            <field eval="True" name="replace"/>
+        </ir_set>
+        
+        
+        
+        
+        <record id="sim_list_report_id" model="ir.actions.report.xml">
+            <field name="name">Stampa Lista SIM</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">res.sim</field>
+            <field name="report_name">sim_list</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
+            <field name="report_rml">hr_sim/report/sim.odt</field>
+            <field name="parser_state">default</field>
+        </record>
+
+        <ir_set>
+            <field eval="'action'" name="key"/>
+            <field eval="'client_print_multi'" name="key2"/>
+            <field eval="['res.sim']" name="models"/>
+            <field name="name">Stampa Lista SIM</field>
+            <field eval="'ir.actions.report.xml,'+str(sim_list_report_id)" name="value"/>
+            <field eval="True" name="isobject"/>
+            <field eval="True" name="replace"/>
+        </ir_set>
+        
+        
+        
+        <report
+            id="report_print_sim_location"
+            string="Sim Locations"
+            model="res.sim"
+            name="print.sim.location"
+            rml="hr_sim/report/print_sim_location.rml"
+            menu="False"
+            auto="False"/>
+    </data>
+</openerp>
+

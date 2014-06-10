@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="dt_price_security.can_modify_prices" model="res.groups">
+            <field name="name">Can modify prices</field>
+        </record>
+        
+        <record id="dt_price_security.hide_purchase_prices" model="res.groups">
+            <field name="name">Hide purchase prices</field>
+        </record>
+    
+        <record id="access_discount_restriction" model="ir.model.access">
+			<field name="model_id" ref="dt_price_security.model_price_security_discount_restriction"/>
+			<field name="name">access.report_aeroo_generator.report_configuration</field>
+			<field eval="1" name="perm_read"/>
+			<field eval="1" name="perm_write"/>
+			<field eval="1" name="perm_create"/>
+			<field eval="1" name="perm_unlink"/>
+		</record>
+		
+		<record model="ir.rule" id="journal_security_rule">
+            <field name="name">Journals only to specified users</field>
+            <field name="model_id" ref="product.model_product_pricelist"/>
+            <field name="domain_force">[('type','!=','purchase')]</field>
+            <field name="groups" eval="[(4, ref('dt_price_security.hide_purchase_prices'))]"/>
+        </record>
+    </data>
+</openerp>

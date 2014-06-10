@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+	<record id="account.menu_finance" model="ir.ui.menu">
+		<field name="action" ref="account.action_invoice_tree1"/>
+	</record>
+    </data>
+</openerp>

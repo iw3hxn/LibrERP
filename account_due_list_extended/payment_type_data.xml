@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="True">
+
+        <record id="payment_type_rd" model="account.payment.term.type">
+            <!--ield name="domain">partner</field-->
+            <field name="name">RD</field>
+            <field name="description">Rimessa Diretta</field>
+        </record>
+        <record id="payment_type_rb" model="account.payment.term.type">
+            <!--ield name="domain">partner</field-->
+            <field name="name">RB</field>
+            <field name="description">Ricevuta Bancaria</field>
+        </record>
+        <record id="payment_type_bb" model="account.payment.term.type">
+            <!--ield name="domain">partner</field-->
+            <field name="name">BB</field>
+            <field name="description">Bonifico Bancario</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="view_select_fiscal_position_form" model="ir.ui.view">
+            <field name="name">select.fiscal.position.form</field>
+            <field name="model">select.fiscal.position</field>
+            <field name="type">form</field>
+            <field name="mode">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="property_account_position" required="True" colspan="3" />
+                    <group colspan="3" col="2">
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button type="object" name="action_select_position" string="Ok" icon="gtk-ok"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

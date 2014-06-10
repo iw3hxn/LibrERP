@@ -1,0 +1,344 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* l10n_it_account
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-20130325-004646\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-14 16:50+0000\n"
+"PO-Revision-Date: 2013-10-29 16:34+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:45
+#, python-format
+msgid "Cannot create invoice! Post the invoice with a greater date"
+msgstr "Ni možno ustvariti računa! Obstajajo računi z novejšim datumom od tega računa. Posodobi datum."
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Compute"
+msgstr "Preračunaj"
+
+#. module: l10n_it_account
+#: model:ir.model,name:l10n_it_account.model_account_invoice
+msgid "Invoice"
+msgstr "Račun"
+
+#. module: l10n_it_account
+#: field:res.partner,birth_date:0
+msgid "Date of birth"
+msgstr "Datum rojstva"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Notes"
+msgstr "Opombe"
+
+#. module: l10n_it_account
+#: model:ir.module.module,description:l10n_it_account.module_meta_information
+msgid ""
+"This module customizes OpenERP in order to fit italian laws and mores - Account version\n"
+"\n"
+"Functionalities:\n"
+"\n"
+"- Fiscal code computation for partner\n"
+"- Check invoice date consistency\n"
+"\n"
+msgstr ""
+"This module customizes OpenERP in order to fit italian laws and mores - Account version\n"
+"\n"
+"Functionalities:\n"
+"\n"
+"- Fiscal code computation for partner\n"
+"- Check invoice date consistency\n"
+"\n"
+
+#. module: l10n_it_account
+#: help:res.partner,fiscalcode:0
+msgid "Italian Fiscal Code"
+msgstr "Italijanska davčna številka"
+
+#. module: l10n_it_account
+#: field:res.partner,sex:0
+msgid "Sex"
+msgstr "Spol"
+
+#. module: l10n_it_account
+#: field:res.partner,fiscalcode_surname:0
+msgid "Surname"
+msgstr "Priimek"
+
+#. module: l10n_it_account
+#: field:res.partner,fiscalcode_firstname:0
+msgid "First name"
+msgstr "Ime"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+#: field:res.partner,fiscalcode:0
+msgid "Fiscal Code"
+msgstr "Davčna številka"
+
+#. module: l10n_it_account
+#: model:ir.module.module,shortdesc:l10n_it_account.module_meta_information
+msgid "Italian Localisation - Account"
+msgstr "Slovenska lokalizacija - Računovodstvo"
+
+#. module: l10n_it_account
+#: selection:res.partner,sex:0
+msgid "Female"
+msgstr "Ženska"
+
+#. module: l10n_it_account
+#: model:ir.model,name:l10n_it_account.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Compute Fiscal Code"
+msgstr "Preračunaj davčno številko"
+
+#. module: l10n_it_account
+#: selection:res.partner,sex:0
+msgid "Male"
+msgstr "Moški"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:44
+#, python-format
+msgid "Date Inconsistency"
+msgstr "Nekonsistenca datuma"
+
+#. module: l10n_it_account
+#: field:res.partner,birth_city:0
+msgid "City of birth"
+msgstr "Kraj rojstva"
+
+#. module: base_vat_unique
+#: model:ir.module.module,shortdesc:base_vat_unique.module_name_translation
+msgid "Base VAT Unique"
+msgstr "Unikatni ID za DDV"
+
+#. module: base_vat_unique
+#: model:ir.module.module,description:base_vat_unique.module_name_translation
+msgid "Check VAT Number is unique."
+msgstr "Preveri, da je ID za DDV unikaten."
+
+#. module: base_vat_unique
+#: code:addons/base_vat_unique/base_vat_unique.py:0
+#, python-format
+msgid "Error! Specified VAT Number already exists for any other registered partner."
+msgstr "Napaka! ID za DDV že obstaja pri drugem registriranem partnerju."
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_direct
+#: model:account.payment.term,note:l10n_it_account.payment_direct
+msgid "Direct Payment"
+msgstr "Direktno plačilo"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_90_days_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_90_days_1
+msgid "90 Days - End of Month"
+msgstr "90 dni od konca meseca"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_days_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_days_1
+msgid "60 Days - End of Month"
+msgstr "60 dni od konca meseca"
+
+#. module: l10n_it_account
+#: field:res.partner,birth_date:0
+msgid "Date of birth"
+msgstr "Datum rojstva"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_90_120_days_3
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_90_120_days_3
+msgid "3 payment - 60 days - 90 days - 120 days - End of Month"
+msgstr "3 plačila, 60, 90, 120 dni od konca meseca"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_90_120_net_3
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_90_120_net_3
+msgid "3 payment - 60 days - 90 days - 120 days - Same day of Month"
+msgstr "3 plačila, 60, 90, 120 dni neto"
+
+#. module: l10n_it_account
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr "Unikatna koda kupca"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_30_60_days_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_30_60_days_2
+msgid "2 payment - 30 days - 60 days - End of Month"
+msgstr "2 Plačili, 30, 60 dni od konca meseca"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Compute"
+msgstr "Preračunaj"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_30_60_net_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_30_60_net_2
+msgid "2 payment - 30 days - 60 days - Same day of Month"
+msgstr "2 Plačili, 30, 60 dni neto"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_90_days_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_90_days_2
+msgid "2 payment - 60 days - 90 days - End of Month"
+msgstr "2 Plačili, 60, 90 dni od konca meseca"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_90_net_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_90_net_1
+msgid "90 Days - Same day of Month"
+msgstr "90 dni neto"
+
+#. module: l10n_it_account
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr "Unikatna koda dobavitelja"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_90_120_days_10_monthly_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_90_120_days_10_monthly_2
+msgid "2 payment - 90 days - 120 days - Day 10 of Month"
+msgstr "2 plačili, 90, 120 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_90_120_days_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_90_120_days_2
+msgid "2 payment - 90 days - 120 days - End of Month"
+msgstr "2 plačili, 90, 120 dni od konca meseca"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Notes"
+msgstr "Opombe"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:46
+#, python-format
+msgid "Cannot create invoice! Post the invoice with a greater date"
+msgstr "Ni možno ustvariti računa! Obstajajo računi z novejšim datumom od tega računa. Posodobi datum."
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_30_days_10_monthly_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_30_days_10_monthly_1
+msgid "30 Days - Day 10 of Month"
+msgstr "30 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: model:ir.model,name:l10n_it_account.model_account_invoice
+msgid "Invoice"
+msgstr "Račun"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_90_net_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_90_net_2
+msgid "2 payment - 60 days - 90 days - Same day of Month"
+msgstr "2 Plačili, 60, 90 dni neto"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_90_days_10_monthly_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_90_days_10_monthly_2
+msgid "2 payment - 60 days - 90 days - Day 10 of Month"
+msgstr "2 Plačili, 60, 90 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_90_120_net_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_90_120_net_2
+msgid "2 payment - 90 days - 120 days - Same day of Month"
+msgstr "2 plačili, 90, 120 dni neto"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_net_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_net_1
+msgid "60 Days - Same day of Month"
+msgstr "60 dni neto"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_30_60_90_days_3
+#: model:account.payment.term,note:l10n_it_account.payment_term_30_60_90_days_3
+msgid "3 payment - 30 days - 60 days - 90 days - End of Month"
+msgstr "3 plačila, 30, 60, 90 dni od konca meseca"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_90_days_10_monthly_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_90_days_10_monthly_1
+msgid "90 Days - Day 10 of Month"
+msgstr "90 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_30_60_90_days_10_monthly_3
+#: model:account.payment.term,note:l10n_it_account.payment_term_30_60_90_days_10_monthly_3
+msgid "3 payment - 30 days - 60 days - 90 days - Day 10 of Month"
+msgstr "3 plačila, 30, 60, 90 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_90_120_days_10_monthly_3
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_90_120_days_10_monthly_3
+msgid "3 payment - 60 days - 90 days - 120 days - Day 10 of Month"
+msgstr "3 plačila, 60, 90, 120 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr "Št. računa mora biti unikatna za vsako podjetje!"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_30_60_days_10_monthly_2
+#: model:account.payment.term,note:l10n_it_account.payment_term_30_60_days_10_monthly_2
+msgid "2 payment - 30 days - 60 days - Day 10 of Month"
+msgstr "2 Plačili, 30, 60 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_60_days_10_monthly_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_60_days_10_monthly_1
+msgid "60 Days - Day 10 of Month"
+msgstr "60 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_30_60_90_net_3
+#: model:account.payment.term,note:l10n_it_account.payment_term_30_60_90_net_3
+msgid "3 payment - 30 days - 60 days - 90 days - Same day of Month"
+msgstr "3 plačila, 30, 60, 90 dni neto"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_120_net_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_120_net_1
+msgid "120 Days - Same day of Month"
+msgstr "120 dni neto"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_120_days_10_monthly_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_120_days_10_monthly_1
+msgid "120 Days - Day 10 of Month"
+msgstr "120 dni od 10. v mesecu"
+
+#. module: l10n_it_account
+#: model:account.payment.term,name:l10n_it_account.payment_term_120_days_1
+#: model:account.payment.term,note:l10n_it_account.payment_term_120_days_1
+msgid "120 Days - End of Month"
+msgstr "120 dni od konca meseca"
+
+#. module: l10n_it_account
+#: model:account.payment.term.line,name:l10n_it_account.1_payment_term_60_net_line
+#: model:account.payment.term.line,note:l10n_it_account.1_payment_term_60_net_line
+msgid "120 Days - End of Month"
+msgstr "120 dni od konca meseca"
+

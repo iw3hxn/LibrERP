@@ -1,0 +1,46 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* stock_picking_filter
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-21 16:25+0000\n"
+"PO-Revision-Date: 2014-02-21 16:25+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_picking_filter
+#: view:stock.picking:0
+msgid "Last Month"
+msgstr "Mese Precedente"
+
+#. module: stock_picking_filter
+#: help:stock.picking,year:0
+msgid "Select year"
+msgstr "Scegli l'Anno"
+
+#. module: stock_picking_filter
+#: view:stock.picking:0
+msgid "Current Month"
+msgstr "Mese Corrente"
+
+#. module: stock_picking_filter
+#: view:stock.picking:0
+msgid "Year"
+msgstr "Anno"
+
+#. module: stock_picking_filter
+#: view:stock.picking:0
+msgid "Picking of the last month"
+msgstr "Movimenti del mese precedente"
+
+#. module: stock_picking_filter
+#: view:stock.picking:0
+msgid "Picking of the current month"
+msgstr "Movimenti del mese corrente"

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="res_partner_category_myf" model="res.partner.category">
+            <field name="name">Fornitori</field>
+        </record>
+
+    <record id="res_partner_category_fb" model="res.partner.category">
+        <field name="name">Fornitori bum</field>
+            <field name="parent_id" ref="res_partner_category_myf"/>
+    </record>
+
+        <record id="res_partner_fornitorediprova" model="res.partner">
+            <field name="name">Fornitore di prova</field>
+            <field eval="[(6,0,[ref('res_partner_category_fb')])]" name="category_id"/>
+            <field name="supplier">1</field>
+            <field eval="0" name="customer"/>
+            <field name="address" eval="[]"/>
+            <field name="website">woodywoodpecker.com</field>
+        </record>
+
+        <record id="res_partner_address_fdp" model="res.partner.address">
+            <field name="city">Champs sur Marne</field>
+            <field name="name">Montecchio Maggiore</field>
+            <field name="zip">36075</field>
+            <field model="res.country" name="country_id" search="[('name','=','Italia')]"/>
+            <field name="email">info@axelor.com</field>
+            <field name="phone">+33 1 64 61 04 01</field>
+            <field name="street">12 rue Albert Einstein</field>
+            <field name="type">default</field>
+            <field name="partner_id" ref="res_partner_fornitorediprova"/>
+        </record>
+
+    </data>
+</openerp>

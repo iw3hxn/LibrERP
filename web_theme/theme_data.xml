@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <!-- Default Colors -->
+        <record id="res_color_red" model="res.company.color">
+            <field name="name">Rosso</field>
+            <field name="color_top">#CC4E45</field>
+            <!--<field name="color_mid">#B52D20</field>-->
+            <field name="color_mid">#transparent</field>
+            <field name="color_low">#7A211A</field>
+            <field name="button_top">#bd5e54</field>
+            <field name="button_mid">#90322a</field>
+            <field name="link_top">#9A0404</field>
+        </record>
+        <record id="res_color_blue" model="res.company.color">
+            <field name="name">Blu</field>
+            <field name="color_top">#73AEC9</field>
+            <!--<field name="color_mid">#338AB0</field>-->
+            <field name="color_mid">#transparent</field>
+            <field name="color_low">#0571A6</field>
+            <field name="button_top">#4E626A</field>
+            <field name="button_mid">#396F86</field>
+            <field name="link_top">#069</field>
+        </record>
+        <record id="res_color_green" model="res.company.color">
+            <field name="name">Verde</field>
+            <field name="color_top">#138724</field>
+            <!--<field name="color_mid">#2bae3c</field>-->
+            <field name="color_mid">#transparent</field>
+            <field name="color_low">#1f9730</field>
+            <field name="button_top">#138724</field>
+            <field name="button_mid">#387c42</field>
+            <field name="link_top">#2DAD40</field>
+        </record>
+        <record id="res_color_grey" model="res.company.color">
+            <field name="name">Grigio</field>
+            <field name="color_top">#ffffff</field>
+            <!--<field name="color_mid">#484848</field>-->
+            <field name="color_mid">#e6e6e6</field>
+            <field name="color_low">#e6e6e6</field>
+            <field name="button_top">#e6e6e6</field>
+            <field name="button_mid">#e6e6e6</field>
+            <field name="link_top">#A52A2A</field>
+        </record>
+		
+    </data>
+</openerp>

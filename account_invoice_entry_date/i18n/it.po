@@ -1,0 +1,60 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_invoice_entry_date
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-26 18:05+0000\n"
+"PO-Revision-Date: 2014-02-26 18:05+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_invoice_entry_date
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr "Nell'azienda il numero fattura dev'essere univoco!"
+
+#. module: account_invoice_entry_date
+#: view:account.invoice:0
+msgid "Maturities"
+msgstr "Scadenze"
+
+#. module: account_invoice_entry_date
+#: help:account.invoice,registration_date:0
+msgid "Keep empty to use the current date"
+msgstr "Lasciare vuoto per utilizzare la data corrente"
+
+#. module: account_invoice_entry_date
+#: view:account.invoice:0
+msgid "Amount"
+msgstr "Importo"
+
+#. module: account_invoice_entry_date
+#: code:addons/account_invoice_entry_date/invoice.py:62
+#, python-format
+msgid "The invoice date cannot be later than the date of registration!"
+msgstr "La data di fatturazione non può essere successiva alla data di registrazione!"
+
+#. module: account_invoice_entry_date
+#: model:ir.model,name:account_invoice_entry_date.model_account_invoice
+msgid "Invoice"
+msgstr "Fattura"
+
+#. module: account_invoice_entry_date
+#: field:account.invoice,registration_date:0
+msgid "Registration Date"
+msgstr "Data di registrazione"
+
+#. module: account_invoice_entry_date
+#: code:addons/account_invoice_entry_date/invoice.py:62
+#, python-format
+msgid "Error date !"
+msgstr "Data errata !"
+
+

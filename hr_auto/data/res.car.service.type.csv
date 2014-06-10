@@ -1,0 +1,7 @@
+id,required_next_service,name
+st1,True,Tagliando manutenzione
+st2,,Sostituzione pneumatici
+st3,True,Rotazione pneumatici estate inverno
+st4,,Riparazione meccanica
+st5,,Riparazione Cristalli
+st6,,Riparazione carrozzeria

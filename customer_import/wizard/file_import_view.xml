@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+    
+        <!-- Wizard: schermata che chiede percorso del file ed encoding del testo -->
+        <record id="view_file_import_form" model="ir.ui.view">
+            <field name="name">filedata.import.form</field>
+            <field name="model">filedata.import</field>
+            <!-- Tipo di vista, ovvero architettura principale della vista, in questo caso è un form -->
+            <field name="type">form</field>
+            <field name="mode">form</field>
+            <!-- Specifica della struttura della vista usando XML -->
+            <field name="arch" type="xml">
+                <form>
+                    <field name="state" invisible="1"/>
+                    <!-- Items visibles in state "import" -->
+                    <group colspan="8" col="8" states="import">
+                        <!-- Percorso del file -->
+			<field name="file_name" invisible="1" />
+                        <field name="content_base64" filename="file_name" />
+                    </group>
+                   
+                    <!-- Items per lo stato end -->
+                    <group colspan="8" col="8" states="end">
+                        <label string="Import file. Verra segnalata la fine del'importazione, nelle 'Richieste' (Configurazione -> Personalizzazione -> Oggetti Basso Livello -> Richieste -> Richieste)."/>
+                    </group>
+                   
+                   <!-- Separatore --> 
+                    <group colspan="8" col="8">    
+                        <separator string="" colspan="8"/>
+                        <label colspan="6" width="220"/>
+                    </group>
+                    
+                    <!-- Pulsanti per lo stato "import" -->
+                    <group colspan="8" col="8" states="import">
+                        <button icon="gtk-cancel" special="cancel" string="Annulla"/>
+                        <button type="object" name="actionCheckEncoding" string="Inizia Importazione" icon="gtk-ok"/>
+                    </group>
+                    
+                    <!-- Items visibles in state "end" -->
+                    <group colspan="8" col="8" states="end">
+                        <button icon="gtk-ok" special="cancel" string="Chiudi"/>
+                    </group>
+                    
+                </form>
+            <!-- Fine della descrizione della struttura della vista -->
+            
+            </field>
+        </record>
+        
+        <!-- Azione per aprire il wizard, questa azione viene associata ad una voce di menu definita in purchase_import_pricelist/partner_properties_view.xml -->
+        <record id="customers_file_import" model="ir.actions.act_window">
+            <field name="name">Importazione Clienti in formato Excel (xls)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">filedata.import</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_file_import_form"/>
+            <field name="target">new</field>
+        </record>
+    
+	<menuitem action="customers_file_import" id="menu_customers_import_file" name="Import Customers" parent="base.menu_config_address_book"/>
+
+    </data>
+</openerp>

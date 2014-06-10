@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		
+		<record id="ept_ftp_backup_setting_search_4_ept" model="ir.ui.view">
+            <field name="name">ept.ftpbackup.search.ept</field>
+            <field name="model">ept.ftpbackup</field>
+            <field name="type">search</field>
+			<field name="arch" type="xml">
+            	<search string="FTP Settings">
+					<field name="name" />
+					<field name="ept_ftp_host" />
+                    <field name="ept_ftp_username" />
+					<field name="state" />
+				</search>
+            </field>
+        </record>
+		
+        <record id="ept_ftp_backup_setting_form_4_ept" model="ir.ui.view">
+            <field name="name">ept.ftpbackup.form.ept</field>
+            <field name="model">ept.ftpbackup</field>
+            <field name="type">form</field>
+			<field name="arch" type="xml">
+            	<form string="FTP Settings">
+                    <separator string="FTP Settings" colspan="4" />
+					<field name="name" />
+					<field name="ept_ftp_host" />
+                    <field name="ept_ftp_username" />
+                    <field name="ept_ftp_password" password="1" />
+                    <field name="ept_ftp_location" invisible="1" />
+                    <field name="to_ept_location" string ="To Locations" />
+					<field name="is_ftp_active"  />
+					<newline/>
+					<button string="Test Connection" name="testConnection" type="object" colspan="4"
+						icon="gtk-network"
+						/>
+					<group colspan="4" col="4">
+						<field name="state"/>
+						<button string="Confirm" name="btn_confirm" states="draft" type="object" icon="gtk-yes" />
+						<button string="Set to Draft" name="btn_draft" states="confirmed" type="object" icon="gtk-no"/>
+					</group>
+				</form>
+            </field>
+        </record>
+		
+		<record id="ept_ftp_backup_setting_tree_4_ept" model="ir.ui.view">
+            <field name="name">ept.ftpbackup.tree.ept</field>
+            <field name="model">ept.ftpbackup</field>
+            <field name="type">tree</field>
+			<field name="arch" type="xml">
+            	<tree string="FTP Settings">
+					<field name="name" />
+					<field name="ept_ftp_host" />
+                    <field name="ept_ftp_username" />
+                    <field name="ept_ftp_password" password="1" />
+                    <field name="ept_ftp_location" invisible="1" />
+                    <field name="to_ept_location" string ="To Locations" />
+					<field name="is_ftp_active"  />
+					<field name="state" />
+				</tree>
+            </field>
+        </record>
+ 		<record id="ept_action_ftpbackup_form" model="ir.actions.act_window">
+            <field name="name">FTP Backup</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ept.ftpbackup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="ept_ftp_backup_setting_tree_4_ept"/>
+			<field name="search_view_id" ref="ept_ftp_backup_setting_search_4_ept" />
+        </record>
+		
+		<menuitem  id="eptftp_backup" name="FTP Settings" 
+            parent="db_backup_ept_menu" sequence="0"
+            action = "ept_action_ftpbackup_form"
+            />				
+    </data>
+</openerp>

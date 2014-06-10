@@ -1,0 +1,10 @@
+name = 'openerp-web'
+version = '2014'
+description = "Web Client of SimplERP, the Simple Open Source ERPe"
+long_description = "SimplERP Web is the web client of the Open Source ERP, a free enterprise management software"
+author = "Didotech SRL"
+author_email = "info@didotech.com"
+support_email = 'support@didotech.com'
+url = "http://www.simplerp.com/"
+download_url = ''
+license = "AGPL"

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--
+        Board for CEO and Senior management
+        -->
+
+        <record id="ceo_case_lead" model="ir.actions.act_window">
+            <field name="name">Open Leads</field>
+            <field name="res_model">crm.lead</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['|', ('type','=','lead'), ('type','=',False)]</field>
+            <field name="context">{'search_default_new':1, 'default_type': 'lead', 'search_default_section_id': section_id, 'stage_type': 'lead'}</field>
+            <field name="view_id" ref="crm.crm_case_tree_view_leads"/>
+            <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        </record>
+
+        <record id="ceo_case_oppor" model="ir.actions.act_window">
+            <field name="name">Open Opportunities</field>
+            <field name="res_model">crm.lead</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','in',['draft','open']), ('type', '=', 'opportunity')]</field>
+            <field name="context">{'default_user_id': uid, 'default_type': 'opportunity'}</field>
+        </record>
+
+        <record id="ceo_oppor_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="crm.crm_case_my_open_oppor"/>
+            <field name="act_window_id" ref="ceo_case_oppor"/>
+        </record>
+
+        <record id="ceo_oppor_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="crm.crm_case_form_view_oppor"/>
+            <field name="act_window_id" ref="ceo_case_oppor"/>
+        </record>
+
+        <record id="ceo_project_issues" model="ir.actions.act_window">
+            <field name="name">Open Issues</field>
+            <field name="res_model">project.issue</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','in',['draft','open'])]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project_issue.project_issue_tree_view"/>
+        </record>
+
+        <record id="ceo_pending_issues" model="ir.actions.act_window">
+            <field name="name">Pending Issues</field>
+            <field name="res_model">project.issue</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','pending')]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project_issue.project_issue_tree_view"/>
+        </record>
+
+        <record id="ceo_closed_issues" model="ir.actions.act_window">
+            <field name="name">Closed Issues</field>
+            <field name="res_model">project.issue</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','done')]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project_issue.project_issue_tree_view"/>
+        </record>
+
+        <record id="ceo_helpdesk" model="ir.actions.act_window">
+            <field name="name">Helpdesk Requests</field>
+            <field name="res_model">crm.helpdesk</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,calendar,form</field>
+            <field name="domain">[('state', 'in', ('draft','open','pending'))]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="crm_helpdesk.crm_case_tree_view_helpdesk"/>
+            <field name="search_view_id" ref="crm_helpdesk.view_crm_case_helpdesk_filter"/>
+        </record>
+        
+         <record id="referenced_helpdesk_view" model="ir.ui.view">
+            <field name="name">Helpdesk Ref. tree</field>
+            <field name="model">crm.helpdesk</field>
+            <field name="inherit_id" ref="crm_helpdesk.crm_case_tree_view_helpdesk"/>
+            <field name="type">tree</field>
+
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="ref"/>
+                    <field name="ref2"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="ceo_my_open_tasks" model="ir.actions.act_window">
+            <field name="name">My Open Tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('user_id','=',uid),('state','=','open')]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project.view_task_search_form"/>
+        </record>
+
+        <record id="ceo_my_delegated_tasks" model="ir.actions.act_window">
+            <field name="name">My Delegated Tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('parent_ids.user_id','=',uid),('state', 'in', ('draft','open','pending'))]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project.view_delegated_task_tree"/>
+        </record>
+
+        <record id="ceo_other_tasks" model="ir.actions.act_window">
+            <field name="name">My Pending Tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('user_id','in',(uid,False)),('state','in',('draft','pending'))]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project.view_task_tree2"/>
+        </record>
+
+        <record id="ceo_closed_tasks" model="ir.actions.act_window">
+            <field name="name">Finished tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=',('done'))]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project.view_task_tree2"/>
+        </record>
+
+        <record id="ceo_unassigned_tasks" model="ir.actions.act_window">
+            <field name="name">Unassigned Tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph,kanban</field>
+            <field name="domain">[('user_id','=',False)]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project.view_task_search_form"/>
+        </record>
+
+        <record id="ceo_projects" model="ir.actions.act_window">
+            <field name="name">Projects</field>
+            <field name="res_model">project.project</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,gantt</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_Current':1}</field>
+            <field name="view_id" ref="project.view_project"/>
+            <field name="search_view_id" ref="project.view_project_project_filter"/>
+        </record>
+
+        <record id="ceo_analytic" model="ir.actions.act_window">
+            <field name="name">Analytics</field>
+            <field name="res_model">account.analytic.account</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,graph,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="account.view_account_analytic_account_tree"/>
+            <field name="search_view_id" ref="account.view_account_analytic_account_search"/>
+        </record>
+
+        <record id="board_ceo_form" model="ir.ui.view">
+            <field name="name">board.ceo.form</field>
+            <field name="model">board.board</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="CEO board">
+                    <board style="1-1">
+                        <column>
+                            <action string="Open Leads" name="%(ceo_case_lead)d" creatable="true"/>
+                            <!--
+                            <action string="Open Cases/Opportunities" name="%(ceo_case_oppor)d" creatable="true" context="{'group_by':['partner_id']}"/>
+                            -->
+                            <action string="Open Cases/Opportunities" name="%(ceo_case_oppor)d" creatable="true"/>
+                            <action string="Open Issues" name="%(ceo_project_issues)d" creatable="true"/>
+                            <action string="Pending Issues" name="%(ceo_pending_issues)d"/>
+                            <action string="Helpdesk" name="%(ceo_helpdesk)d" creatable="true"/>
+                        </column>
+
+                        <column>
+                        	 <!--
+                            <action string="My tasks" name="%(ceo_my_open_tasks)d" creatable="true" context="{'group_by':['project_id']}"/>
+                            -->
+                            <action string="My tasks" name="%(ceo_my_open_tasks)d" creatable="true"/>
+                            <action string="Delegated tasks" name="%(ceo_my_delegated_tasks)d"/>
+                            <action string="Pending or unassigned tasks" name="%(ceo_other_tasks)d"/>
+                            <action string="PROJECTS" name="%(ceo_projects)d" creatable="true"/>
+                            <action string="Analytics" name="%(ceo_analytic)d"/>
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+        <record id="open_board_ceo" model="ir.actions.act_window">
+            <field name="name">CEO Dashboard</field>
+            <field name="res_model">board.board</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="usage">menu</field>
+            <field name="view_id" ref="board_ceo_form"/>
+        </record>
+
+        <menuitem action="open_board_ceo" web_icon="images/ceo.png" web_icon_hover="images/ceo-hover.png" icon="terp-graph" id="menu_board_ceo" sequence="-1" groups="project.group_project_manager"/>
+
+            <menuitem name="CRM" id="menu_ceo_crm" sequence="1" parent="menu_board_ceo"/>
+            <menuitem action="ceo_case_lead" id="menu_ceo_leads" parent="menu_ceo_crm" sequence="1"/>
+            <menuitem action="ceo_case_oppor" id="menu_ceo_oppor" parent="menu_ceo_crm" sequence="2"/>
+            <menuitem action="ceo_helpdesk" id="menu_ceo_helpdesk" parent="menu_ceo_crm" sequence="3"/>
+            
+
+            <menuitem name="Project Management Office" id="menu_ceo_pmo" sequence="2" parent="menu_board_ceo"/>
+                <menuitem name="Projects and Analytic" id="menu_ceo_pna" sequence="1" parent="menu_ceo_pmo"/>
+                <menuitem action="ceo_projects" id="menu_ceo_project" parent="menu_ceo_pna" sequence="1"/>
+                <menuitem action="ceo_analytic" id="menu_ceo_analytic" parent="menu_ceo_pna" sequence="2"/>
+            <menuitem name="Issues" id="menu_ceo_issmenu" sequence="2" parent="menu_ceo_pmo"/>
+                <menuitem action="ceo_project_issues" id="menu_ceo_issues" parent="menu_ceo_issmenu" sequence="1"/>
+                <menuitem action="ceo_pending_issues" id="menu_pending_issues" parent="menu_ceo_issmenu" sequence="2"/>
+                <menuitem action="ceo_closed_issues" id="menu_closed_issues" parent="menu_ceo_issmenu" sequence="3"/>
+            <menuitem name="Tasks" id="menu_ceo_taskmenu" sequence="3" parent="menu_ceo_pmo"/>
+                <menuitem action="ceo_my_open_tasks" id="menu_ceo_tasks" parent="menu_ceo_taskmenu" sequence="1"/>
+                <menuitem action="ceo_my_delegated_tasks" id="menu_delegated_tasks" parent="menu_ceo_taskmenu" sequence="2"/>
+                <menuitem action="ceo_other_tasks" id="menu_other_tasks" parent="menu_ceo_taskmenu" sequence="3"/>
+                <menuitem action="ceo_closed_tasks" id="menu_closed_tasks" parent="menu_ceo_taskmenu" sequence="4"/>
+
+    </data>
+</openerp>

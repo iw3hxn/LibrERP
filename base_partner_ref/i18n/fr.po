@@ -1,0 +1,54 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* base_partner_ref
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.3\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-11-24 14:32+0000\n"
+"PO-Revision-Date: 2011-11-24 14:32+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base_partner_ref
+#: field:res.partner,property_supplier_ref:0
+msgid "Our Supplier Ref."
+msgstr "Notre réf. fournisseur"
+
+#. module: base_partner_ref
+#: field:res.partner,property_customer_ref:0
+msgid "Our Customer Ref."
+msgstr "Notre ref. client"
+
+#. module: base_partner_ref
+#: help:res.partner,property_customer_ref:0
+msgid "The reference attributed by the partner to the current company as a customer of theirs."
+msgstr "La référence attribuée par le partenaire à la société actuellement utilisée comme client chez eux."
+
+#. module: base_partner_ref
+#: model:ir.model,name:base_partner_ref.model_res_partner
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: base_partner_ref
+#: model:ir.module.module,shortdesc:base_partner_ref.module_meta_information
+msgid "Manage references at the partner's"
+msgstr "Gestion des références chez les partenaires"
+
+#. module: base_partner_ref
+#: help:res.partner,property_supplier_ref:0
+msgid "The reference attributed by the partner to the current company as a supplier of theirs."
+msgstr "La référence attribuée par le partenaire à la société actuellement utilisée comme fournisseur chez eux."
+
+#. module: base_partner_ref
+#: model:ir.module.module,description:base_partner_ref.module_meta_information
+msgid "This module Lets you enter the customer and supplier references attributed by the partners in their information systems.\n"
+"These references may be different for each company managed in the OpenERP database."
+msgstr "Ce module permet de saisir les références client et fournisseur attribuées par les partenaires dans leurs systèmes d'information.\n"
+"Ces références peuvent être différentes pour chaque société gérée dans la base de données OpenERP."
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record model="ir.ui.view" id="view_fido_company_form">
+            <field name="name">res.company.enable_partner_subaccount.inherit</field>
+            <field name="model">res.company</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <page string="Configuration" position="inside">
+                    <separator string="Partner Subaccount" colspan="4"/>
+                    <field name="enable_partner_subaccount" />
+                </page>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <!-- bottone stampa clienti/fornitori -->
+        <report id="report_customer_supplier"
+                name="customer.supplier"
+                auto="False"
+                model="res.partner"
+                file="l10n_it_account_report/report/customer_supplier.mako"
+                string="Customer / Supplier "
+                report_type="webkit" 
+                webkit_header="l10n_it_account_report.ir_header_webkit_base_partner"/>
+
+        <record id="report_customer_supplier" model="ir.actions.report.xml">
+        </record>
+
+    </data>
+</openerp>

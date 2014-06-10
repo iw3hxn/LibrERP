@@ -1,0 +1,148 @@
+﻿# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* product_metel
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 5.0.6\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2010-02-13 08:49:31+0000\n"
+"PO-Revision-Date: 2010-02-13 08:49:31+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_metel
+#: model:ir.module.module,description:product_metel.module_meta_information
+msgid "Import and export Metel formatted pricelist"
+msgstr "Importa ed esporta Listini Metel"
+
+#. module: product_metel
+#: wizard_button:metel.pricelist,import,end:0
+msgid "End"
+msgstr "Fine"
+
+#. module: product_metel
+#: view:res.partner:0
+msgid "Sales & Purchases"
+msgstr ""
+
+#. module: product_metel
+#: constraint:ir.model:0
+msgid "The Object name must start with x_ and not contain any special character !"
+msgstr ""
+
+#. module: product_metel
+#: wizard_view:metel.pricelist,init:0
+msgid "Please select metel pricelist file to import."
+msgstr "Selezionare il file del listino da importare"
+
+#. module: product_metel
+#: field:res.partner,metel_category:0
+msgid "Import Category"
+msgstr "Categoria importazione"
+
+#. module: product_metel
+#: code:addons\product_metel\wizard\metel_import.py:0
+#, python-format
+msgid "Metel Import Completed"
+msgstr "Importazione Metel completata"
+
+#. module: product_metel
+#: code:addons\product_metel\wizard\wizard_metel_import.py:0
+#, python-format
+msgid "Error: could not find a partner with this metel code: %s"
+msgstr "Errore: impossibile trovare un partner con questo codice metel: %s"
+
+#. module: product_metel
+#: wizard_field:metel.pricelist,import,uo_message:0
+msgid "Status"
+msgstr "Stato"
+
+#. module: product_metel
+#: code:addons\product_metel\wizard\wizard_metel_import.py:0
+#, python-format
+msgid "Error: no import category defined for the partner."
+msgstr "Errore: non è stata specificata una categoria per il partner."
+
+#. module: product_metel
+#: code:addons\product_metel\wizard\wizard_metel_import.py:0
+#, python-format
+msgid "Import operation in progress"
+msgstr "Importazione dei dati in corso"
+
+#. module: product_metel
+#: model:ir.model,name:product_metel.model_product_metel_fileimport
+msgid "product.metel.fileimport"
+msgstr ""
+
+#. module: product_metel
+#: model:ir.ui.menu,name:product_metel.menu_metel_import_action
+msgid "Import Metel Pricelist file"
+msgstr "Importa listino Metel"
+
+#. module: product_metel
+#: wizard_button:metel.pricelist,init,import:0
+msgid "Import pricelist"
+msgstr "Importa listino"
+
+#. module: product_metel
+#: field:res.partner,metel_code:0
+msgid "Metel Code"
+msgstr "Codice Metel"
+
+#. module: product_metel
+#: wizard_field:metel.pricelist,init,metel_file:0
+msgid "Metel pricelist file"
+msgstr "File del listino Metel"
+
+#. module: product_metel
+#: constraint:ir.ui.view:0
+msgid "Invalid XML for View Architecture!"
+msgstr ""
+
+#. module: product_metel
+#: model:ir.actions.wizard,name:product_metel.wizard_metel_pricelist
+msgid "Import Metel pricelist file"
+msgstr "Importa file listino Metel"
+
+#. module: product_metel
+#: field:product.metel.fileimport,tmpfilename:0
+msgid "File Metel"
+msgstr "File Metel"
+
+#. module: product_metel
+#: model:ir.module.module,shortdesc:product_metel.module_meta_information
+msgid "Metel Listprice Import/Export"
+msgstr "Importazione/Esportazione Listini Metel"
+
+#. module: product_metel
+#: view:res.partner:0
+msgid "Metel Properties"
+msgstr "Proprietà Metel"
+
+#. module: product_metel
+#: code:addons\product_metel\wizard\metel_import.py:0
+#, python-format
+msgid "Imported products: %d \nUpdated products: %d"
+msgstr "Nuovi prodotti importati: %d\Prodotti aggiornati: %d"
+
+#. module: product_metel
+#: wizard_view:metel.pricelist,import:0
+msgid "Metel pricelist import report"
+msgstr "Rapporto di importazione file Metel"
+
+#. module: product_metel
+#: wizard_button:metel.pricelist,init,end:0
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: product_metel
+#: wizard_view:metel.pricelist,import:0
+#: wizard_view:metel.pricelist,init:0
+msgid "Metel pricelist import"
+msgstr "Importazione listino Metel"
+

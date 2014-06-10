@@ -1,0 +1,3440 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* google_meeting
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 5.0.6\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2010-06-24 08:10:02+0000\n"
+"PO-Revision-Date: 2010-06-24 08:10:02+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Canary"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Melbourne"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+9"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+8"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Lisbon"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+3"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+2"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+1"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+0"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Nipigon"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+6"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+5"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Miquelon"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Wallis"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/Davis"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Coral_Harbour"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Dhaka"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/St_Lucia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/Newfoundland"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Kashgar"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Phoenix"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Kaliningrad"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+7"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Mazatlan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Arctic/Longyearbyen"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Guernsey"
+msgstr ""
+
+#. module: google_meeting
+#: help:crm.case,write_date:0
+msgid "tiny event modify date"
+msgstr "modifier la date de la crm "
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "GB"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/Rothera"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Stockholm"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Fiji"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Apia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+4"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Pago_Pago"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Rangoon"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Mexico_City"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Ensenada"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Puerto_Rico"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Mauritius"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Berlin"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Zurich"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Casablanca"
+msgstr ""
+
+#. module: google_meeting
+#: constraint:ir.ui.view:0
+msgid "Invalid XML for View Architecture!"
+msgstr "XML non valide pour l'architecture de la vue"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Kuching"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Warsaw"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Krasnoyarsk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Canberra"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Bermuda"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Ujung_Pandang"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Currie"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Tehran"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Saigon"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Baku"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/St_Barthelemy"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Porto_Acre"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/Cordoba"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Libya"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Danmarkshavn"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Scoresbysund"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Eirunepe"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Caracas"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Baghdad"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Monrovia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/St_Vincent"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Portugal"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Tiraspol"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Vancouver"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT0"
+msgstr ""
+
+#. module: google_meeting
+#: help:crm.case,event_modify_date:0
+msgid "google event modify date"
+msgstr "date de modification de l'evenement Google"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Thimphu"
+msgstr ""
+
+#. module: google_meeting
+#: field:crm.case,event_modify_date:0
+msgid "Google Modify Date"
+msgstr "Modifier la date Google"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Ouagadougou"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Belize"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Port_of_Spain"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Greenwich"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Tashkent"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Tokyo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Kiritimati"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Sydney"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Riga"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Dili"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Mbabane"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Oral"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Aden"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Isle_of_Man"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Istanbul"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Magadan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Lindeman"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Michigan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Galapagos"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Bogota"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Asmara"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Chicago"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Kwajalein"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Broken_Hill"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Cuiaba"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Christmas"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Jayapura"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Brussels"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Iceland"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Chongqing"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/NSW"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/Pacific"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Noronha"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Podgorica"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Algiers"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Harare"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Ndjamena"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Costa_Rica"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Ljubljana"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Mayotte"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Phnom_Penh"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Managua"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Pangnirtung"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+12"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Tijuana"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Fakaofo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Martinique"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Antigua"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indiana/Indianapolis"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/La_Rioja"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Tahiti"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Brunei"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Zagreb"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Asuncion"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Vienna"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Mexico/General"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Hobart"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Belfast"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Juneau"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Inuvik"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Montreal"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Seoul"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Brazil/East"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Comoro"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Paris"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Hongkong"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Tallinn"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Mahe"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Calcutta"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/South"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/Jujuy"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Adak"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Singapore"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "PRC"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Nairobi"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Thimbu"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Maceio"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Cairo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Moscow"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/Palmer"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Ulaanbaatar"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Rainy_River"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Kampala"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Colombo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/Mountain"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Adelaide"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Cambridge_Bay"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Luanda"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "posixrules"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Chatham"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indiana/Winamac"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Dacca"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Cordoba"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Tbilisi"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Gibraltar"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Karachi"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Harbin"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Lord_Howe"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-9"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-8"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-1"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Tasmania"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-3"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-2"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-5"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-4"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-7"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-6"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Boa_Vista"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Eire"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Lima"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Reunion"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Stanley"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "CET"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-13"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Blanc-Sablon"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/West"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/Syowa"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Jamaica"
+msgstr ""
+
+#. module: google_meeting
+#: model:ir.module.module,description:google_meeting.module_meta_information
+msgid "\n"
+"        Export crm.case (crm) to google calendar\n"
+"    "
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Kiev"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Budapest"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/Eastern"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Midway"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Goose_Bay"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/Vostok"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Amman"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Sakhalin"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Windhoek"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Pacific"
+msgstr ""
+
+#. module: google_meeting
+#: wizard_view:google.meeting.synch,init:0
+msgid "This Wizard Synchronize CRM between OpenERP and Google Calendar"
+msgstr "Ce wizard synchronise les CRM entre openERP et Google Calendar"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Katmandu"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Guyana"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Sao_Paulo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Turkey"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Yancowinna"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Perth"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Djibouti"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Jakarta"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Pyongyang"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "EST5EDT"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Johannesburg"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/East-Saskatchewan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Tel_Aviv"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Istanbul"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Irkutsk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Iran"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/ACT"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Niamey"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/North"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Belem"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Bishkek"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Nouakchott"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Ashkhabad"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Vilnius"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Cayenne"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Mogadishu"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "NZ"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Kentucky/Monticello"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Rio_Branco"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Cancun"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Havana"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Chile/EasterIsland"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Guam"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Kosrae"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/Atlantic"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Arizona"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Azores"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Eucla"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Shanghai"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Alaska"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Godthab"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Beirut"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Maputo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Bahrain"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Ashgabat"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Riyadh"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Jan_Mayen"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Faeroe"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Montevideo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Anguilla"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Damascus"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/North_Dakota/Center"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "UCT"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indiana/Vevay"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/St_Helena"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Barbados"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Vatican"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indiana/Vincennes"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Almaty"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Queensland"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Santo_Domingo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Brazzaville"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Nome"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Taipei"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Yakutat"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "W-SU"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/Mendoza"
+msgstr ""
+
+#. module: google_meeting
+#: view:crm.case:0
+#: view:res.users:0
+msgid "Google"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Zulu"
+msgstr ""
+
+#. module: google_meeting
+#: wizard_button:google.meeting.synch,init,synch:0
+msgid "Synchronize"
+msgstr "Synchroniser"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Egypt"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Araguaina"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/UTC"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Brazil/Acre"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Asmera"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/Mawson"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Buenos_Aires"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Maseru"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Atikokan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/St_Johns"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Yap"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Atka"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Libreville"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Freetown"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Bissau"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Samara"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Amsterdam"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Tirane"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Saipan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Abidjan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Zaporozhye"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "HST"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/El_Salvador"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Madrid"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Santiago"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/Buenos_Aires"
+msgstr ""
+
+#. module: google_meeting
+#: field:crm.case,google_event_id:0
+msgid "Google Event Id"
+msgstr "Id de l'evenement Google"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Skopje"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "WET"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Aruba"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Navajo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indianapolis"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Regina"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Truk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Funafuti"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Universal"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Merida"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Guatemala"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Sao_Tome"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Makassar"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Bujumbura"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Chisinau"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Monterrey"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Yekaterinburg"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Hawaii"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/Casey"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Enderbury"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Thule"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Louisville"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Moncton"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Helsinki"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Cape_Verde"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Tegucigalpa"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Cocos"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Boise"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Guadeloupe"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Nassau"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Prague"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Halifax"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Hovd"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/Saskatchewan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Manaus"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Rankin_Inlet"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/UCT"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "GB-Eire"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/Greenwich"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Catamarca"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Chihuahua"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Iqaluit"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/Rio_Gallegos"
+msgstr ""
+
+#. module: google_meeting
+#: wizard_view:google.meeting.synch,init:0
+msgid "Select Timezone"
+msgstr "Selectionner le fuseau horaire"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Gambier"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Volgograd"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Bamako"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Uzhgorod"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Banjul"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Aqtau"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Malabo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Minsk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "PST8PDT"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/ComodRivadavia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Madeira"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Noumea"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "GMT0"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Kinshasa"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Malta"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Samoa"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/Ushuaia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Chungking"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Bangkok"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Niue"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Brisbane"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Recife"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "MST"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Yerevan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/La_Paz"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Poland"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Urumqi"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Lusaka"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Indiana-Starke"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Guadalcanal"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Yellowknife"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/LHI"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Vientiane"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Kuwait"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Conakry"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/Tucuman"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Oslo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/St_Kitts"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Panama"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Gaborone"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Palau"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Guayaquil"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Kuala_Lumpur"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/London"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Menominee"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Kamchatka"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Vladivostok"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Brazil/DeNoronha"
+msgstr ""
+
+#. module: google_meeting
+#: model:ir.actions.wizard,name:google_meeting.wizard_meeting_calendar_synch
+#: model:ir.ui.menu,name:google_meeting.menu_tools_google_calendar_synch
+msgid "Synchronize Crm"
+msgstr "Synchroniser Crm"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Qatar"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Israel"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "NZ-CHAT"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Dubai"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Yakutsk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Omsk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Bangui"
+msgstr ""
+
+#. module: google_meeting
+#: field:res.users,google_timezone:0
+msgid "Google timezone"
+msgstr "fuseau horaire Google"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "UTC"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Paramaribo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-11"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-10"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Lubumbashi"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-12"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-14"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Marquesas"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Central"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Bratislava"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Anadyr"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/New_York"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Norfolk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "CST6CDT"
+msgstr ""
+
+#. module: google_meeting
+#: model:ir.module.module,shortdesc:google_meeting.module_meta_information
+msgid "Google calendar"
+msgstr "Calendrier Google"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Rarotonga"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Dominica"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Porto-Novo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Samarkand"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Dushanbe"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Kentucky/Louisville"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Toronto"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Bahia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Maldives"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Accra"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/South_Pole"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Muscat"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Virgin"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Edmonton"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Wake"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indiana/Tell_City"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Darwin"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Whitehorse"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Swift_Current"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Copenhagen"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Fort_Wayne"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Montserrat"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Mendoza"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Mountain"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Simferopol"
+msgstr ""
+
+#. module: google_meeting
+#: field:res.users,google_auto:0
+msgid "Synchro Scheduler"
+msgstr "Programmer la synchro."
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Blantyre"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Detroit"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Shiprock"
+msgstr ""
+
+#. module: google_meeting
+#: model:ir.ui.menu,name:google_meeting.menu_google
+msgid "Google Import-Export"
+msgstr "Google synchro."
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Grenada"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Faroe"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indiana/Petersburg"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Pontianak"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Jamaica"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Athens"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Port-au-Prince"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Cayman"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/Universal"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Dar_es_Salaam"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Curacao"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Kerguelen"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Khartoum"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Manila"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Lome"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Jujuy"
+msgstr ""
+
+#. module: google_meeting
+#: wizard_field:google.meeting.synch,init,timezone_select:0
+msgid "Time Zone"
+msgstr "Fuseau horaire"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Douala"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "EET"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/San_Juan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/North_Dakota/New_Salem"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Port_Moresby"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Jersey"
+msgstr ""
+
+#. module: google_meeting
+#: help:res.users,google_auto:0
+msgid "check this for automatic synchro"
+msgstr "Cocher pour activer la synchro. Google automatique"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Macao"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Andorra"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "ROK"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Cuba"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Luxembourg"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Honolulu"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "ROC"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/St_Thomas"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Majuro"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Hong_Kong"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Macau"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "MST7MDT"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Belgrade"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Choibalsan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Eastern"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Mariehamn"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/McMurdo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Thunder_Bay"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Los_Angeles"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Kabul"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Antananarivo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Sarajevo"
+msgstr ""
+
+#. module: google_meeting
+#: field:crm.case,write_date:0
+msgid "Date Modified"
+msgstr "Date modifiee"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/Reykjavik"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Nicosia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+11"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT+10"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Ponape"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Japan"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Ulan_Bator"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Kwajalein"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Tongatapu"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Marigot"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Pitcairn"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Easter"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/East-Indiana"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Atlantic/South_Georgia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/El_Aaiun"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Pacific-New"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Chile/Continental"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Campo_Grande"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Dawson_Creek"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Rosario"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Australia/Victoria"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "US/Aleutian"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Bucharest"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Porto_Velho"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Monaco"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indiana/Marengo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Ceuta"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Rome"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Winnipeg"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Knox_IN"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Aqtobe"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Dakar"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Fortaleza"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Samoa"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Tarawa"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Dawson"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Addis_Ababa"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Efate"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Johnston"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "GMT"
+msgstr ""
+
+#. module: google_meeting
+#: field:res.users,google_calendar:0
+msgid "Google Calendar Id"
+msgstr "Id de l'agenda Google"
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/Yukon"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Qyzylorda"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/San_Marino"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Jerusalem"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "MET"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Auckland"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Tortola"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/Zulu"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Denver"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Indian/Chagos"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Glace_Bay"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Hermosillo"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Tunis"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT-0"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Vaduz"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Resolute"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Etc/GMT"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Gaza"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Dublin"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "GMT+0"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Antarctica/DumontDUrville"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Argentina/Catamarca"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Indiana/Knox"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Nicosia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Timbuktu"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Asia/Novosibirsk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "EST"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Mexico/BajaNorte"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Kigali"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Brazil/West"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Grand_Turk"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Mexico/BajaSur"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Canada/Central"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Lagos"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "GMT-0"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Europe/Sofia"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Singapore"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Africa/Tripoli"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "America/Anchorage"
+msgstr ""
+
+#. module: google_meeting
+#: selection:google.meeting.synch,init,timezone_select:0
+#: selection:res.users,google_timezone:0
+msgid "Pacific/Nauru"
+msgstr ""
+

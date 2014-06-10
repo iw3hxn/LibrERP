@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- base.action.rule form-->
+        <record id="view_base_action_rule_form_reis" model="ir.ui.view">
+            <field name="name">base.action.rule.form.reis</field>
+            <field name="model">base.action.rule</field>
+            <field name="inherit_id" ref="base_action_rule.view_base_action_rule_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <group name="partner" position="after">
+                    <group col="2" colspan="2">
+                        <separator colspan="4" string="Evaluated expression"/>
+                        <field name="trg_evalexpr" colspan="4" nolabel="1"/>
+                        <field name="trg_evalexpr_dbg" colspan="4"/>
+                    </group>
+                </group>
+                <field name="server_action_id" position ="after">
+                       <separator colspan="4" string="E-mail template for message to send"/>
+                       <field name="email_template_id"/>
+                       <field name="email_template_force"/>
+                </field>
+            </field>
+       </record>
+
+        <!-- base.action.rule tree-->
+        <record id="view_base_action_rule_tree_reis" model="ir.ui.view">
+            <field name="name">base.action.rule.tree.reis</field>
+            <field name="model">base.action.rule</field>
+            <field name="inherit_id" ref="base_action_rule.view_base_action_rule_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="model_id"/>
+                </field>
+                <field name="name" position="after">
+                    <field name="email_template_id"/>
+                    <field name="trg_evalexpr"/>
+                </field>
+            </field>
+       </record>
+
+        <!-- base.action.rule search-->
+        <record id="view_base_action_rule_tree_reis" model="ir.ui.view">
+            <field name="name">base.action.rule.tree.reis</field>
+            <field name="model">base.action.rule</field>
+            <field name="inherit_id" ref="base_action_rule.view_base_action_rule_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="model_id"/>
+                </field>
+                <field name="name" position="after">
+                    <field name="email_template_id"/>
+                    <field name="trg_evalexpr"/>
+                </field>
+            </field>
+       </record>
+
+   </data>
+</openerp>
+
+
+
+
+
+
+

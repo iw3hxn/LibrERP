@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+    <record model="ir.ui.view" id="account_fiscalyear_seq_view_tree">
+      <field name="name">account.fiscalyear.sequ_code.view.tree</field>
+      <field name="model">account.fiscalyear</field>
+      <field name="inherit_id" ref="account.view_account_fiscalyear_tree"/>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <field name="code" position="after">
+          <field name="sequence_code"/>
+        </field>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="account_fiscalyear_seq_view_form">
+      <field name="name">account.fiscalyear.sequ_code.view.form</field>
+      <field name="model">account.fiscalyear</field>
+      <field name="inherit_id" ref="account.view_account_fiscalyear_form"/>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <field name="code" position="after">
+          <field name="sequence_code"/>
+        </field>
+      </field>
+    </record>
+  </data>
+</openerp>

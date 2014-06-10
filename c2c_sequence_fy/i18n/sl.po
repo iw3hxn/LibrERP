@@ -1,0 +1,387 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* c2c_sequence_fy
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-26 13:05+0000\n"
+"PO-Revision-Date: 2014-02-26 14:20+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: c2c_sequence_fy
+#: sql_constraint:ir.sequence.type:0
+msgid "`code` must be unique."
+msgstr "'oznaka' mora biti edinstvena"
+
+#. module: c2c_sequence_fy
+#: constraint:account.move:0
+msgid "You can not create more than one move per period on centralized journal"
+msgstr ""
+"Na centraliziranem dnevniku lahko kreirate le eno vknjižbo  na obdobje."
+
+#. module: c2c_sequence_fy
+#: sql_constraint:account.sequence.period:0
+msgid "Main Sequence must be different from current !"
+msgstr "Glavno zaporedje mora biti različno od trenutnega!"
+
+#. module: c2c_sequence_fy
+#: selection:account.journal,create_sequence:0
+#: selection:ir.sequence.type,create_sequence:0
+msgid "Create"
+msgstr "Ustvari"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence:0
+msgid "Current Fiscal Year: %(fy)s (see sequence code in fiscalyear)"
+msgstr "Tekoče fiskalno leto: %(fy)s (glej sekvenčno kodo za fiskalno leto)"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:109
+#, python-format
+msgid "No sequence defined on the journal !"
+msgstr "V dnevniku ni definiranega zaporedja!"
+
+#. module: c2c_sequence_fy
+#: sql_constraint:account.journal:0
+msgid "The name of the journal must be unique per company !"
+msgstr "Ime dnevnika mora biti enotno za podjetje!"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:95
+#, python-format
+msgid ""
+"You can not validate a non-balanced entry !\n"
+"Make sure you have configured payment terms properly !\n"
+"The latest payment term line should be of the type \"Balance\" !"
+msgstr "Ni možno potrditi neusklajene postavke !"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:48
+#, python-format
+msgid "Please verify that an account is defined in the journal."
+msgstr "Prosimo, potrdite da je konto definiran v dnevniku."
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:47
+#, python-format
+msgid "Configuration Error !"
+msgstr "Napaka v nastavitvah!"
+
+#. module: c2c_sequence_fy
+#: selection:ir.sequence.type,create_sequence:0
+msgid "Create per Period (Month)"
+msgstr "Ustvari za obdobje (mesec)"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence:0
+msgid "Period Sequence"
+msgstr "Sekvenca obdobja"
+
+#. module: c2c_sequence_fy
+#: model:ir.actions.act_window,help:c2c_sequence_fy.action_sequence_configuration_installer
+msgid ""
+"For all accounting-based sequences it is better to use the fiscal year "
+"instead of the calendar year."
+msgstr ""
+"Za vse sekvence, ki temeljijo na računovodstvu, je uporaba fiskalnega leta "
+"boljša od uporabe koledarskega leta."
+
+#. module: c2c_sequence_fy
+#: help:account.journal,prefix_pattern:0
+msgid "Prefix pattern for the sequence if not defined in sequence"
+msgstr "Vzorec predpone za sekvenco, če ni določena v sekvenci"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence.installer:0
+msgid "Configure Sequences"
+msgstr "Nastavi sekvence"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:62
+#, python-format
+msgid "Error !"
+msgstr "Napaka!"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:63
+#, python-format
+msgid "The account entries lines are not in valid state."
+msgstr "Postavke na kontu nimajo pravilnega statusa."
+
+#. module: c2c_sequence_fy
+#: constraint:account.fiscalyear:0
+msgid "Error! The start date of the fiscal year must be before his end date."
+msgstr ""
+"Napaka! Začetni datum poslovnega leta mora biti pred zaključnim datumom."
+
+#. module: c2c_sequence_fy
+#: help:account.journal,create_sequence:0
+#: help:ir.sequence.type,create_sequence:0
+msgid ""
+"Sequence will be created on the fly using the code of the journal and for fy "
+"the fy prefix to compose the prefix"
+msgstr ""
+"Sekvenca bo ustvarjena takoj z uporabo kode dnevnika in s predpono "
+"fiskalnega leta za fiskalno leto"
+
+#. module: c2c_sequence_fy
+#: model:ir.model,name:c2c_sequence_fy.model_account_journal
+msgid "Journal"
+msgstr "Dnevnik"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:95
+#: code:addons/c2c_sequence_fy/ir_sequence.py:280
+#: code:addons/c2c_sequence_fy/ir_sequence.py:286
+#, python-format
+msgid "Integrity Error !"
+msgstr "Napaka celovitosti!"
+
+#. module: c2c_sequence_fy
+#: model:ir.model,name:c2c_sequence_fy.model_ir_sequence_installer
+msgid "ir.sequence.installer"
+msgstr "ir.sequence.installer"
+
+#. module: c2c_sequence_fy
+#: selection:account.journal,create_sequence:0
+#: selection:ir.sequence.type,create_sequence:0
+msgid "Create per Fiscal Year"
+msgstr "Ustvari za fiskalno leto"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:67
+#, python-format
+msgid "No Analytic Journal !"
+msgstr "Ni analitičnega dnevnika!"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence.installer:0
+msgid ""
+"You may choose to replace all '(year)' prefix and suffix occurrences by "
+"'(fy)'."
+msgstr ""
+"Izberete lahko zamenjavo vseh '(leto)' predpon in dodatkov s '(fiskalno "
+"leto)'."
+
+#. module: c2c_sequence_fy
+#: model:ir.model,name:c2c_sequence_fy.model_ir_sequence
+msgid "ir.sequence"
+msgstr "ir.sequence"
+
+#. module: c2c_sequence_fy
+#: selection:account.journal,create_sequence:0
+#: selection:ir.sequence.type,create_sequence:0
+msgid "No creation"
+msgstr "Ni bilo ustvarjeno"
+
+#. module: c2c_sequence_fy
+#: field:account.journal,prefix_pattern:0
+#: field:ir.sequence.type,prefix_pattern:0
+msgid "Prefix Pattern"
+msgstr "Vzorec predpone"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:67
+#, python-format
+msgid "You have to assign an analytic journal on the '%s' journal!"
+msgstr "Dnevniku '%s' ste dodelili analitični dnevnik."
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence.installer:0
+msgid "Sequence Configuration"
+msgstr "Nastavitve sekvenc"
+
+#. module: c2c_sequence_fy
+#: field:account.journal,create_sequence:0
+#: field:ir.sequence.type,create_sequence:0
+msgid "Create Sequence"
+msgstr "Ustvari sekvenco"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/ir_sequence.py:281
+#, python-format
+msgid "Missing sequence-code %s"
+msgstr "Manjkajoča sekvenčna koda %s"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence.installer:0
+msgid "title"
+msgstr "Naziv"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:77
+#, python-format
+msgid "Statement %s is confirmed, journal items are created."
+msgstr "Izpisek %s  je potrjen,postavke so kreirane."
+
+#. module: c2c_sequence_fy
+#: field:account.journal,suffix_pattern:0
+#: field:ir.sequence.type,suffix_pattern:0
+msgid "Suffix Pattern"
+msgstr "Vzorec dodatka (suffix)"
+
+#. module: c2c_sequence_fy
+#: model:ir.model,name:c2c_sequence_fy.model_ir_sequence_type
+msgid "ir.sequence.type"
+msgstr "ir.sequence.type"
+
+#. module: c2c_sequence_fy
+#: selection:account.journal,create_sequence:0
+msgid "Create per Period"
+msgstr "Ustvari za obdobje"
+
+#. module: c2c_sequence_fy
+#: model:ir.model,name:c2c_sequence_fy.model_account_fiscalyear
+msgid "Fiscal Year"
+msgstr "Poslovno leto"
+
+#. module: c2c_sequence_fy
+#: constraint:account.journal:0
+msgid ""
+"Configuration error! The currency chosen should be shared by the default "
+"accounts too."
+msgstr ""
+"Konfiguracijska napaka! Izbrano valuto je potrebno deliti z privzetimi konti."
+
+#. module: c2c_sequence_fy
+#: help:ir.sequence.type,prefix_pattern:0
+msgid "Prefix pattern for the sequence"
+msgstr "Vzorec predpone za sekvenco"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/account_move.py:109
+#, python-format
+msgid "Error"
+msgstr "Napaka"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence:0
+msgid "Abbreviated name of the sequence-code: %(stn)s"
+msgstr "Skrajšano ime za sekvenčno kodo: %(stn)s"
+
+#. module: c2c_sequence_fy
+#: field:account.fiscalyear,sequence_code:0
+msgid "Sequence Code"
+msgstr "Sekvenčna koda"
+
+#. module: c2c_sequence_fy
+#: help:ir.sequence.type,suffix_pattern:0
+msgid "Suffix pattern for the sequence"
+msgstr "Vzorec dodatka (suffix) za sekvenco"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence:0
+msgid "Period Sequences"
+msgstr "Sekvence obdobij"
+
+#. module: c2c_sequence_fy
+#: model:ir.model,name:c2c_sequence_fy.model_account_move
+msgid "Account Entry"
+msgstr "Temeljnica"
+
+#. module: c2c_sequence_fy
+#: field:account.sequence.period,sequence_main_id:0
+msgid "Main Sequence"
+msgstr "Glavno zaporedje"
+
+#. module: c2c_sequence_fy
+#: model:ir.model,name:c2c_sequence_fy.model_account_sequence_period
+msgid "account.sequence.period"
+msgstr "account.sequence.period"
+
+#. module: c2c_sequence_fy
+#: field:ir.sequence.installer,config_logo:0
+msgid "Image"
+msgstr "Slika"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence:0
+msgid "Abbreviated name of the journal: %(jn)s"
+msgstr "Skrajšano ime za dnevnik: %(jn)s"
+
+#. module: c2c_sequence_fy
+#: code:addons/c2c_sequence_fy/ir_sequence.py:287
+#, python-format
+msgid "Automatic creation not allowed for sequence-code %s with %s"
+msgstr "Ni dovoljeno samodejno ustvarjanje za sekvenčno kodo %s with %s"
+
+#. module: c2c_sequence_fy
+#: field:account.sequence.period,period_id:0
+msgid "Period"
+msgstr "Obdobje"
+
+#. module: c2c_sequence_fy
+#: constraint:account.bank.statement:0
+msgid "The journal and period chosen have to belong to the same company."
+msgstr "Dnevnik in obdobje knjiženja morata pripadati istemu podjetju."
+
+#. module: c2c_sequence_fy
+#: model:ir.model,name:c2c_sequence_fy.model_account_bank_statement
+msgid "Bank Statement"
+msgstr "Bančni izpisek"
+
+#. module: c2c_sequence_fy
+#: model:ir.actions.act_window,name:c2c_sequence_fy.action_sequence_configuration_installer
+msgid "Convert calendar-year to fiscal-year"
+msgstr "Pretvori koledarsko leto v poslovno leto"
+
+#. module: c2c_sequence_fy
+#: field:account.sequence.period,sequence_id:0
+msgid "Sequence"
+msgstr "Sekvenca (zaporedje)"
+
+#. module: c2c_sequence_fy
+#: sql_constraint:account.journal:0
+msgid "The code of the journal must be unique per company !"
+msgstr "Koda dnevnika mora biti edinstvena za podjetje!"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence:0
+msgid "Periods"
+msgstr "Obdobja"
+
+#. module: c2c_sequence_fy
+#: field:ir.sequence,period_ids:0
+msgid "Sequences"
+msgstr "Zaporedja"
+
+#. module: c2c_sequence_fy
+#: help:account.fiscalyear,sequence_code:0
+msgid ""
+"This code will be used to format the start date of the fiscalyear for the "
+"placeholder 'fy' defined for sequences as prefix and suffix.\n"
+"Example: a fiscal year starting on March 1st with a sequence code %Ya will "
+"generate 2011a.\n"
+"This allows to handle multiple fiscal years per calendar year and fiscal "
+"years not matching calendar years easily"
+msgstr ""
+"Ta koda bo uporabljena za formatiranje začetnega datuma fiskalnega leta za "
+"uporabo predpone ali dodatka, kot definirano v sekvencah.\n"
+"Primer: fiskalno let začeto 1. marca 2011 s sekvenčno kodo %Ya bo generiralo "
+"2011a..\n"
+"To omogoča upravljanje večjega številka fiskalnih let za vsako koledarsko "
+"leto in upravljanje fiskalnih let, ki se ne ujemajo s koledarskimi."
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence:0
+msgid "Abbreviated code of the sequence-code: %(stc)s"
+msgstr "Skrajšana koda za sekvenčno kodo: %(stc)s"
+
+#. module: c2c_sequence_fy
+#: help:account.journal,suffix_pattern:0
+msgid "Suffix pattern for the sequence if not defined in sequence"
+msgstr "Vzorec dodatka (suffix) za sekvenco če ni definiran v sekvenci"
+
+#. module: c2c_sequence_fy
+#: view:ir.sequence:0
+msgid "Number of period (April = 01 if FY start in Arpil) : %(pe)s"
+msgstr ""
+"Številka obdobja (April = 01 če fiskalno leto začne z aprilom) : %(pe)s"

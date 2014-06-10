@@ -1,0 +1,4 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+
+VB_group_account_payment_term_type_user,account_payment_term_type user,model_account_payment_term_type,group_account_payment_term_type_user,1,0,0,0
+VB_group_account_payment_term_type_manager,account_payment_term_type user,model_account_payment_term_type,group_account_payment_term_type_manager,1,1,1,1

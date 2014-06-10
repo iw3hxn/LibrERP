@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+    
+        <record id="view_partner_form_fiscalcode_data" model="ir.ui.view">
+            <field name="name">res.partner.fiscalcode.data</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/notebook/page[@string='Notes']" position="after">
+                         <page string="Fiscal Code"  attrs="{'invisible': [('individual', '=', False)]}">
+                            <separator colspan="4"/>
+                            <field name="fiscalcode"/>
+                            <newline/>
+                            <group colspan="4">
+                                <separator string="Compute Fiscal Code" colspan="4"/>
+                                <field name="fiscalcode_surname"/>
+                                <field name="fiscalcode_firstname"/>
+                                <field name="birth_date"/>
+                                <field name="birth_city"/>
+                                <field name="sex"/>
+                                <button name="compute_fiscal_code" type="object" string="Compute"/>
+                            </group>
+                        </page>                
+                    </xpath>
+                    <field name="vat_subjected" position="after">
+                        <field name="cf" />
+                        <field name="individual"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+        
+        <record id="view_partner_form_virtual_fiscalcode_data" model="ir.ui.view">
+            <field name="name">res.partner.virtual.fiscalcode.data</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="property_account_position" position="replace">
+                        <field name="property_account_position" widget="selection" readonly="True" />
+                        <button name="action_select_fiscal_position" string="Seleziona Posizione Fiscale" type="object" icon="gtk-execute"  />
+                    </field>
+                </data>
+            </field>
+        </record>
+        
+        <record id="view_partner_tree_fiscalcode_data" model="ir.ui.view">
+            <field name="name">res.partner.fiscalcode.tree</field>
+            <field name="model">res.partner</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <field name="phone" position="before">
+                    <field name="vat" />
+                    <field name="fiscalcode" />
+                </field>
+            </field>
+        </record>
+        
+        <record id="view_partner_search_fiscalcode_data" model="ir.ui.view">
+            <field name="name">res.partner.fiscalcode.search</field>
+            <field name="model">res.partner</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">   
+                       <field name="vat" select="1"/>
+                       <field name="fiscalcode" select="1"/>
+                </field>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

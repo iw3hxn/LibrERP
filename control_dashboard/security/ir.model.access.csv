@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_alert_group_system,alert_group_system,model_fake_ir_alert,base.group_system,1,1,1,1
+access_alert_group_manager,alert_group_manager,model_fake_ir_alert,base.group_erp_manager,1,1,1,1
+access_alert_group_user,alert_group_user,model_fake_ir_alert,base.group_user,1,0,0,0
+access_alert_system,alert_system,model_ir_alert,base.group_system,1,1,1,1
+access_alert_manager,alert_manager,model_ir_alert,base.group_erp_manager,1,1,1,1
+access_alert_user,alert_user,model_ir_alert,base.group_user,1,0,0,0
+access_alert_states_system,alert_states_system,model_ir_alert_states,base.group_system,1,1,1,1
+access_alert_states_manager,alert_states_manager,model_ir_alert_states,base.group_erp_manager,1,1,1,1
+access_alert_states_user,alert_states_user,model_ir_alert_states,base.group_user,1,0,0,0
+access_alert_config_system,alert_config_system,model_ir_alert_config,base.group_system,1,1,1,1
+access_alert_config_manager,alert_config_manager,model_ir_alert_config,base.group_erp_manager,1,1,1,1
+access_alert_config_user,alert_config_user,model_ir_alert_config,base.group_user,1,0,0,0

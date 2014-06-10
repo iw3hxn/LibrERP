@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		
+		<record model="ir.ui.view" id="view_backup_conf_tree">
+			<field name="name">Configure Backup</field>
+			<field name="model">db.autobackup.ept</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Database Backup Configuration">
+					<field name='name'/>
+					<field name="host" />
+					<field name="port"  />
+					<field name='backup_dir'/>
+					<field name='FTP_id' />
+					<field name="active" />
+				</tree>
+			</field>
+		</record>
+
+		
+		<record model="ir.ui.view" id="view_backup_conf_form">
+				<field name="name">Configure Backup</field>
+				<field name="model">db.autobackup.ept</field>
+				<field name="type">form</field>
+				<field name="arch" type="xml">
+					<form string="Database Backup Configuration">
+						<group col="4" colspan="4" >
+							<separator string="Database Configuration" colspan="4"/>
+							<newline/>		
+							<field name="name" />
+							<field name="active" />
+							<field name="host" />
+							<field name="port"  />
+							<field name="backup_dir" colspan="4"  />
+							<field name="ftp_enable" />
+							<field name='FTP_id' domain="[('state','=','confirmed')]" attrs="{'invisible':[('ftp_enable','=',False)],'required':[('ftp_enable','=',True)]}" />
+							<field name="keep_backup_local" attrs="{'invisible':[('ftp_enable','=',False)]}" />
+							<newline />
+							<notebook colspan="4">
+								<page string="Email Settings">
+									<field name="ept_enable_email_notification" string="Enable notification"  />
+									<field name="email_ids" string="Email Ids" 
+										attrs="{'invisible':[('ept_enable_email_notification','=',False)]}" />
+									<field name="user_ids" string="Users" colspan="4"
+										attrs="{'invisible':[('ept_enable_email_notification','=',False)]}" />
+								</page>
+								<page string="Backup History">
+										<field colspan="4" mode="tree" name="history_line" nolabel="1">
+										<tree string="Backup History">
+											<field name="name" />
+											<field name="date_time" />
+											<field name="path" />
+											<field name="file_size" />
+											<field name="automatic" />
+											<field name="done_by" />
+											<field name="message" />
+										</tree>
+									</field>
+								</page>
+							</notebook>		
+								
+								<newline/>
+							<separator string="Help"  colspan="4" />
+							<newline/>
+							<group colspan="4">
+								<label   align="0.0" string="This configures the scheduler for automatic backup of the given database running on given host at given port on regular intervals." />
+								<newline/>
+								<label  align="0.0"  string="Automatic backup of all the databases under this can be scheduled as follows: "/>
+								<newline/>
+								<label  align="0.0" string="1) Go to Administration / Configuration / Scheduler / Scheduled Actions"/>
+								<newline/>
+								<label align="0.0"  string="2) Schedule new action(create a new record)"/>
+								<newline/>
+								<label align="0.0"  string="3) Set 'Object' to 'db.autobackup.ept' and 'Function' to 'schedule_backup' under page 'Technical Data'"/>
+								<newline/>
+								<label align="0.0"  string="4) Set other values as per your preference"/>
+								<newline/>
+								<label align="0.0"  string="5) If you want to transfer automatic backup to FTP server then you need to configure FTP server."/>
+								<newline/>
+								<label align="0.0"  string="6) Configure FTP server via Settings / Configuration / Database Backup / FTP Settings menu."/>
+								<newline/>
+								<label align="0.0"  string="7) If FTP Server is properly configured then your Database backup will be automatically transfer to configured path in FTP Settings."/>
+								<newline/>
+								<label align="0.0"  string="8) After enable FTP in backup configuration, if user don't want to store backup at local side then user need to uncheck 'Keep Backup on Local Path ? ' checkbox."/>
+								<newline/>
+								<label align="0.0"  string="9) User can be able to take manually backup via Settings / Configuration / Darabase Backup / Manual Database Backup menu."/>
+							</group>
+						</group>	
+
+					</form>
+				</field>
+		</record>
+		
+		<menuitem parent="base.menu_config" id="db_backup_ept_menu" name="Database Backup" />
+		
+		<record model="ir.actions.act_window" id="action_backup_conf_form">
+			<field name="name">Configure Backup</field>
+			<field name="res_model">db.autobackup.ept</field>
+			<field name="view_type">form</field>
+			<field name='view_mode'>tree,form</field>
+			<field name='view_id' ref='view_backup_conf_tree'/>
+		</record>
+		
+		<menuitem 
+			parent="db_backup_ept_menu" 
+			action="action_backup_conf_form" 
+			name="Backup Configuration" 
+			id="backup_conf_menu" 
+			sequence="1" />
+		
+				
+		<record model="ir.actions.act_window" id="ept_database_backup_action">
+			<field name="name">Database Backup</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">db.autobackup.ept</field>
+			<field name="view_id" ref="view_backup_conf_tree"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>			
+		</record>
+
+       <!-- <menuitem id="emipro_ftpbackpu"
+                  name="DB Backup" 
+				  sequence="0"
+                  web_icon="images/logo.png"
+                  web_icon_hover="images/logo.jpg"                  
+				  />
+		
+		<menuitem id="ept_Backup_master" name="Database Backup"
+            parent="db_backup_ept_menu" sequence="0" groups=""
+            action = ""
+            />-->
+
+		<!--<menuitem groups="" id="ept_menu_BackupConfiguration" name="Backup Configuration" 
+            parent="db_backup_ept_menu" sequence="0"
+            action = "ept_database_backup_action"
+            />-->
+	</data>
+</openerp>

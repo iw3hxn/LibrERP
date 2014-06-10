@@ -1,0 +1,267 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+    	
+		
+	<!--REMAKE OF STANDARD VIEW FOR INCREASE USABILITY-->
+		
+		
+	<record model="ir.ui.view" id="crm.crm_case_form_view_leads">
+        <field name="name">CRM - Leads Form</field>
+        <field name="model">crm.lead</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Leads Form">
+                <group colspan="4" col="7">
+                    <field name="name" required="1" string="Subject" readonly="1"/>
+                    <field name="priority"/>
+                    <field name="categ_id"
+                        widget="selection"
+                        domain="[('object_id.model','=','crm.lead')]"/>
+                    <button
+                         name="%(crm.action_crm_lead2opportunity_partner)d"
+                         string="Convert to Opportunity"
+                         help="Convert to Opportunity" icon="gtk-go-forward"
+                         type="action"
+                         />
+                    <newline />
+                    <field name="user_id" />
+                    <field name="section_id" widget="selection" />
+                    <field name="stage_id" domain="section_id and [('section_ids', '=', section_id)] or []" />
+                    <group col="2" colspan="1">
+                        <button name="stage_previous" string=""
+                            states="open,pending,draft" type="object"
+                            icon="gtk-go-back" context="{'stage_type': 'lead'}" />
+                        <button name="stage_next" string=""
+                            states="open,pending,draft" type="object"
+                            icon="gtk-go-forward" context="{'stage_type': 'lead'}" />
+                    </group>
+                    <field name="type" invisible="1"/>
+                </group>
+				<group colspan="4" col="7">
+                        <separator string="Categorization" colspan="7" col="7"/>
+                        <field name="company_id" groups="base.group_multi_company" widget="selection" colspan="2"/>
+                        <field name="type_id" select="1" widget="selection"/>
+                        <field name="channel_id" select="1" widget="selection"/>
+                        <field name="referred"/>
+                   
+				</group>
+
+                <notebook colspan="4">
+                <page string="Lead">
+                    <group colspan="4" col="2">
+                        <field name="partner_name" string="Partner Name" />
+						<field name="partner_category_id" widget="selection" />
+                    </group>
+                    <group colspan="2" col="4">
+                        <separator string="Contact" colspan="4" col="4"/>
+                        <field name="contact_name" colspan="4"/>
+                        <newline/>
+                        <field domain="[('domain', '=', 'contact')]" name="title" widget="selection"/>
+                        <field name="function_id" widget="selection" />
+                        <field name="street" colspan="4"/>
+                        <field name="street2" colspan="4"/>
+						<field name="zip"  on_change="on_change_zip(zip)"/>
+						<field name="city" on_change="on_change_city(city,zip)"/>
+						<field name="find_city" invisible="1" />              
+						<field name="province" on_change="on_change_province(province)" attrs="{'readonly':[('find_city','!=',False)]}"/>
+						<field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}"/>
+
+                        <field name="country_id" completion="1" attrs="{'readonly':[('region','!=',False)]}"/>
+                        
+                    </group>
+                    <group colspan="2" col="3">
+                        <separator string="Communication" colspan="4" col="3"/>
+                        <field name="email_from" widget="email"/>
+                        <button string="Mail"
+                            name="%(mail.action_email_compose_message_wizard)d"
+                            icon="terp-mail-message-new" type="action" colspan="1"/>
+                        <newline/>
+                        <field name="phone"/>
+						<newline/>
+						<field name="website" widget="url"/>
+                        <newline/>
+                        <field name="fax"/>
+                        <newline/>
+                        <field name="mobile"/>
+                        <newline/>
+                        <separator string="Links" colspan="4" col="3"/>
+                        <field name="partner_id" string="Customer"/>
+                        <button
+                            name="%(crm.action_crm_lead2partner)d"
+                            icon="terp-partner" type="action"
+                            string="Create"
+                            attrs="{'invisible':[('partner_id','!=',False)]}"/>
+                    </group>
+                    <separator colspan="4" string="Notes"/>
+                    <field name="description" nolabel="1" colspan="4"/>
+                    <separator colspan="4"/>
+                    <group col="8" colspan="4">
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,done" statusbar_colors='{"pending":"blue"}'/>
+                        <button name="case_cancel" string="Cancel"
+                            states="draft,open,pending" type="object"
+                            icon="gtk-cancel" />
+                        <button name="case_open" string="Open"
+                            states="draft,pending" type="object"
+                            icon="gtk-go-forward" />
+                        <button name="case_mark_lost" string="Close"
+                            states="open,pending" type="object"
+                            icon="gtk-close" />
+                        <button name="case_pending" string="Pending"
+                            states="open" type="object"
+                            icon="gtk-media-pause" />
+                        <button name="case_escalate" string="Escalate"
+                            states="open,pending" type="object"
+                            groups="base.group_extended"
+                            icon="gtk-go-up" />
+                        <button name="case_reset"
+                            string="Reset to Draft" states="done,cancel"
+                            type="object" icon="gtk-convert" />
+                    </group>
+                 </page>
+                 <page string="Communication &amp; History">
+                   <group colspan="4">
+                       <field colspan="4" name="email_cc" widget="char" size="512"/>
+                   </group>
+                    <field name="message_ids" colspan="4" nolabel="1" mode="tree" readonly="1">
+                        <tree string="History">
+                            <field name="display_text" string="History Information"/>
+                            <field name="email_from" invisible="1"/>
+                            <button
+                                string="Reply" attrs="{'invisible': [('email_from', '=', False)]}"
+                                name="%(mail.action_email_compose_message_wizard)d"
+                                context="{'mail.compose.message.mode':'reply', 'message_id':active_id}"
+                                icon="terp-mail-replied" type="action" />
+                        </tree>
+                    </field>
+                    <button string="Add Internal Note"
+                        name="%(crm.action_crm_add_note)d"
+                        context="{'model': 'crm.lead' }"
+                        icon="terp-document-new" type="action" />
+                    <button string="Send New Email"
+                        name="%(mail.action_email_compose_message_wizard)d"
+                        icon="terp-mail-message-new" type="action"/>
+                 </page>
+                 <page string="Extra Info" groups="crm.extended_view">
+                    
+                    <group colspan="2" col="2">
+                        <separator string="Dates" colspan="2" col="2"/>
+                        <field name="create_date"/>
+                        <field name="write_date"/>
+                        <field name="date_open"/>
+                        <field name="date_closed"/>
+                    </group>
+                    <group colspan="2" col="2">
+                        <separator string="Mailings" colspan="2" col="2"/>
+                        <field name="optin" on_change="on_change_optin(optin)"/>
+                        <field name="optout" on_change="on_change_optout(optout)"/>
+                    </group>
+                    <group colspan="2" col="2">
+                        <separator string="Statistics" colspan="2" col="2"/>
+                        <field name="day_open"/>
+                        <field name="day_close"/>
+                    </group>
+                 </page>
+                </notebook>
+            </form>
+	        </field>
+		</record>
+    
+         
+        <record id="view_lead_tree_inherit_categ_id" model="ir.ui.view">
+            <field name="name">crm.lead.tree.categ_id</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="replace">
+                    <field name="categ_id" />
+                </field>
+            </field>
+        </record>
+
+        <record id="view_lead_form_inherit_city_search" model="ir.ui.view">
+            <field name="name">crm.lead.city.search</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="country_id" position="before">
+                    <newline/>
+                    <field name="city" />
+                    <field name="province" widget="selection"/>
+                    <field name="region" widget="selection"/>
+                </field>
+                <field name="country_id" position="after">
+                    <field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
+                    <field name="channel_id" />
+                </field>
+
+            </field>
+        </record>
+
+		<record model="ir.ui.view" id="crm.crm_case_tree_view_leads">
+			<field name="name">Leads</field>
+			<field name="model">crm.lead</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Leads"  colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+					<field name="row_color" invisible="1" />
+					<field name="date_deadline" invisible="1"/>
+					<field name="create_date"/>
+					<field name="name" string="Subject"/>
+					<field name="contact_name"/>
+					<field name="country_id" invisible="context.get('invisible_country', True)" />
+					<field name="city" />
+					<field name="province" />
+					<field name="region" />
+					<field name="email_from"/>
+					<field name="phone"/>
+	
+					<field name="categ_id" invisible="1"/>
+					<field name="type_id" invisible="1"/>
+					<field name="referred" invisible="1"/>
+					<field name="channel_id" />
+					<field name="subjects" invisible="1"/>
+	
+					<field name="stage_id"/>
+					<button name="stage_previous" string="Previous Stage"
+						states="open,pending" type="object" icon="gtk-go-back" />
+					<button name="stage_next" string="Next Stage"
+						states="open,pending" type="object"
+						icon="gtk-go-forward" />
+					<field name="section_id" invisible="context.get('invisible_section', True)" />
+					<field name="user_id" />
+					<field name="state" />
+					<button name="case_open" string="Open"
+						states="draft,pending" type="object"
+						icon="gtk-go-forward" />
+					<button name="case_close" string="Close"
+						states="open,draft,pending" type="object"
+						icon="gtk-close" />
+					<button name="%(crm.action_crm_lead2opportunity_partner)d"
+						string="Convert to Opportunity"
+						states="draft,open,pending" icon="gtk-index"
+						type="action" />
+					<button name="case_escalate" string="Escalate"
+						states="open,draft,pending" type="object"
+						icon="gtk-go-up" />
+				</tree>
+			</field>
+		</record>
+		
+		
+        <record id="view_lead_form_inherit_phonecall" model="ir.ui.view">
+            <field name="name">crm.lead.phonecalls.view</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="description" position="after">
+                    <field name="phonecall_ids" nolabel="1" colspan="4"/>
+                    <field name="meeting_ids" nolabel="1" colspan="4"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

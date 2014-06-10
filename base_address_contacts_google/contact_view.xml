@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- google.contact_account  -->
+        <record model="ir.ui.view" id="google_contact_account_form">
+            <field name="name">google.contact_account.form</field>
+            <field name="model">google.contact_account</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Google Contact Account">
+                    <group name="login">
+                        <field name="name"/>
+                        <field name="password" password="True"/>
+                    </group>
+                    <group>
+                        <button name="check_login" type="object" string="Check Login" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="google_contact_account_tree">
+            <field name="name">google.contact_account.tree</field>
+            <field name="model">google.contact_account</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Google Contact Accounts">
+                    <field name="name" select="1"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="google_contact_account_act">
+            <field name="name">Google Contact Accounts</field>
+            <field name="res_model">google.contact_account</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain"></field>
+        </record>
+
+
+        <!-- inherited re.partner.contact -->
+        <record model="ir.ui.view" id="view_res_partner_address_contact_inherit_google_contact" >
+            <field name="name">view_res_partner_address_contact_inherit_google_contact</field>
+            <field name="model">res.partner.address.contact</field>
+            <field name="inherit_id" ref="base_address_contacts.view_partner_contact_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/notebook/page[@string='Notes']" position="after">
+                        <page string="Google">
+                        <group colspan="2" col="2" name="capacity">
+                            <separator string="Google Contact" colspan="2"/>
+                            <field name="google_account_id" select="1"  attrs="{'readonly':[('google_id','!=',False)]}" />
+                            <field name="google_id" readonly="1"/>
+                        </group></page>
+                    </xpath>                    
+                </data>
+            </field>
+        </record>
+
+        <menuitem id="menu_google_contact" parent="base.menu_config_address_book" name="Google Contact" sequence="10"/>
+            <menuitem id="menu_google_contact_account" parent="menu_google_contact" name="Accounts" sequence="5" action="google_contact_account_act" />
+
+        <record id="view_res_company_form_inherit" model="ir.ui.view">
+            <field name="name">res.company.form.inherit</field>
+            <field name="model">res.company</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <page string="Configuration" position="inside">
+                    <separator string="Google Contacts Synchronization Account" colspan="4"/>
+                    <field name="google_account_id"/>
+                </page>
+            </field>
+        </record>
+    </data>
+</openerp>

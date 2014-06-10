@@ -1,0 +1,15 @@
+"id","chart_template_id/id","name","description","type","amount","type_tax_use","price_include","child_depend","account_collected_id/id","account_paid_id/id","base_code_id/id","tax_code_id/id","ref_base_code_id/id","ref_tax_code_id/id","base_sign","tax_sign","ref_base_sign","ref_tax_sign","include_base_amount","sequence","parent_id/id"
+"sivat_out_1","si_chart","Izstopni DDV 0%","DDV-I-0","percent","0.000","Sale","True","False",,,"vat_0000",,"vat_0000",,"1.0","0.0","-1.0","0.0","False","1",
+"sivat_out_2","si_chart","Izstopni DDV 9.5%","DDV-I-9.5","percent","0.095","Sale","True","False","k260","k260","vat_0001","vat_1000","vat_0001","vat_1000","1.0","1.0","-1.0","-1.0","False","1",
+"sivat_out_3","si_chart","Izstopni DDV 22%","DDV-I-22","percent","0.220","Sale","True","False","k260","k260","vat_0002","vat_1001","vat_0002","vat_1001","1.0","1.0","-1.0","-1.0","False","1",
+"sivat_in_1","si_chart","Vstopni DDV 0%","DDV-V-0","percent","0.000","Purchase","True","False",,,"vat_0010",,"vat_0010",,"1.0","0.0","-1.0","0.0","False","1",
+"sivat_in_2","si_chart","Vstopni DDV 9,5%","DDV-V-9.5","percent","0.095","Purchase","True","False","k160","k160","vat_0011","vat_1010","vat_0011","vat_1010","1.0","1.0","-1.0","-1.0","False","1",
+"sivat_in_3","si_chart","Vstopni DDV 22%","DDV-V-22","percent","0.220","Purchase","True","False","k160","k160","vat_0012","vat_1011","vat_0012","vat_1011","1.0","1.0","-1.0","-1.0","False","1",
+"sivat_no_1","si_chart","Vstopni DDV 9,5% - neodbitni ","NO-DDV-low","percent","0.095","Purchase","True","False","k160","k160","vat_0100","vat_1100","vat_0100","vat_0100","1.0","1.0","-1.0","-1.0","False","1",
+"sivat_no_2","si_chart","Vstopni DDV 22% - neodbitni","NO-DDV-base","percent","0.220","Purchase","True","False","k160","k160","vat_0101","vat_1101","vat_0101","vat_0101","1.0","1.0","-1.0","-1.0","False","1",
+"sivat_self_1","si_chart","Vstopni DDV znižana stopnja - samoobdavčitev","SO-DDV-low","balance","0.000","Purchase","False","True",,,"vat_0011",,"vat_0011",,"1.0","0.0","-1.0","0.0","False","1",
+"sivat_self_11","si_chart","Vstopni DDV 9,5% - samoobdavčitev","SO-DDV-V-9.5","percent","0.095","Purchase","False","False","k160","k160",,"vat_1010",,"vat_1010","0.0","1.0","0.0","-1.0","False","1","sivat_self_1"
+"sivat_self_12","si_chart","Izstopni DDV 9,5% - samoobdavčitev","SO-DDV-I-9.5","percent","-0.095","Purchase","False","False","k260","k260",,"vat_1000",,"vat_1000","0.0","1.0","0.0","-1.0","False","1","sivat_self_1"
+"sivat_self_2","si_chart","Vstopni DDV osnovna stopnja - samoobdavčitev","SO-DDV-base","balance","0.000","Purchase","False","True",,,"vat_0012",,"vat_0012",,"1.0","0.0","-1.0","0.0","False","1",
+"sivat_self_21","si_chart","Vstopni DDV 22% - samoobdavčitev","SO-DDV-V-22","percent","0.220","Purchase","False","False","k160","k160",,"vat_1011",,"vat_1011","0.0","1.0","0.0","-1.0","False","1","sivat_self_2"
+"sivat_self_22","si_chart","Izstopni DDV 22% - samoobdavčitev","SO-DDV-I-22","percent","-0.220","Purchase","False","False","k260","k260",,"vat_1101",,"vat_1001","0.0","1.0","0.0","-1.0","False","1","sivat_self_2"

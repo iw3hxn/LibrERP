@@ -1,0 +1,207 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* base_address_contacts
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-13 22:00+0000\n"
+"PO-Revision-Date: 2014-04-13 22:00+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base_address_contacts
+#: model:ir.actions.act_window,name:base_address_contacts.action_partner_contact_form
+#: model:ir.ui.menu,name:base_address_contacts.menu_partner_contact_form
+#: view:res.partner:0
+msgid "Contacts"
+msgstr "Contatti"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,first_name:0
+msgid "First Name"
+msgstr "Nome"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,title:0
+msgid "Title"
+msgstr "Titolo"
+
+#. module: base_address_contacts
+#: model:ir.model,name:base_address_contacts.model_res_partner_title
+msgid "res.partner.title"
+msgstr "res.partner.title"
+
+#. module: base_address_contacts
+#: help:res.partner.address.contact,active:0
+msgid "If the active field is set to False,                 it will allow you to hide the partner contact without removing it."
+msgstr "E' possibile nascondere il contatto senza doverlo cancellare"
+
+#. module: base_address_contacts
+#: field:res.contact.function,name:0
+#: field:res.partner.address.contact,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,function_id:0
+msgid "Function"
+msgstr "Funzione"
+
+#. module: base_address_contacts
+#: model:ir.model,name:base_address_contacts.model_res_partner_address_contact
+msgid "Address Contact"
+msgstr "Indirizzo Contatto"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,email:0
+msgid "E-Mail"
+msgstr "Email"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+#: field:res.partner.address.contact,address_id:0
+msgid "Address"
+msgstr "Indirizzo"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,active:0
+msgid "Active"
+msgstr "Attivo"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,country_id:0
+msgid "Nationality"
+msgstr "Nazionalità"
+
+#. module: base_address_contacts
+#: field:res.partner.address,pec:0
+msgid "PEC"
+msgstr "PEC"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+msgid "Categories"
+msgstr "Categorie"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,website:0
+msgid "Website"
+msgstr "Sito Web"
+
+#. module: base_address_contacts
+#: field:res.partner.address,contact_ids:0
+msgid "Functions and Contacts"
+msgstr "Ruoli e Contatti"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,lang_id:0
+msgid "Language"
+msgstr "Lingua"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,mobile:0
+msgid "Mobile"
+msgstr "Cellulare"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+#: view:res.partner.address.contact:0
+#: field:res.partner.address.contact,comment:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+#: view:res.partner.address.contact:0
+msgid "Extra Information"
+msgstr "Informazioni Aggiuntive"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,birthdate:0
+msgid "Birthdate"
+msgstr "Data di Nascita"
+
+#. module: base_address_contacts
+#: constraint:res.partner.address:0
+msgid "\n"
+" There are just an address of type default"
+msgstr "\n"
+" Esiste già un indirizzo di Tipo Predefinito"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+msgid "Contact"
+msgstr "Contatto"
+
+#. module: base_address_contacts
+#: model:ir.actions.act_window,name:base_address_contacts.action_function_contact
+#: model:ir.model,name:base_address_contacts.model_res_contact_function
+#: model:ir.ui.menu,name:base_address_contacts.menu_partner_title_contact
+#: view:res.contact.function:0
+msgid "Contact Function"
+msgstr "Funzione del Contatto"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+msgid "Postal Address"
+msgstr "Indirizzo postale"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,partner_id:0
+msgid "Main Employer"
+msgstr "Impiego Principale"
+
+#. module: base_address_contacts
+#: view:res.partner.address.contact:0
+msgid "Partner Contact"
+msgstr "Contatti"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+msgid "Addresses"
+msgstr "Indirizzi"
+
+#. module: base_address_contacts
+#: field:res.partner.title,sequence:0
+msgid "Sequence"
+msgstr "Sequenza"
+
+#. module: base_address_contacts
+#: field:res.partner.address.contact,last_name:0
+msgid "Last Name"
+msgstr "Cognome"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+#: view:res.partner.address.contact:0
+msgid "Communication"
+msgstr "Comunicazione"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+#: view:res.partner.address.contact:0
+msgid "General"
+msgstr "Generale"
+
+#. module: base_address_contacts
+#: view:res.partner:0
+#: view:res.partner.address.contact:0
+#: field:res.partner.address.contact,photo:0
+msgid "Photo"
+msgstr "Foto"
+
+#. module: base_address_contacts
+#: view:res.partner.address.contact:0
+msgid "Partner"
+msgstr "Fornitore"
+
+#. module: base_address_contacts
+#: model:ir.model,name:base_address_contacts.model_res_partner_address
+msgid "Partner Addresses"
+msgstr "Indirizzi Partner"

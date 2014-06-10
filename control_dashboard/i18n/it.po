@@ -1,0 +1,497 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* control_dashboard
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-20130325-004646\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-19 14:23+0000\n"
+"PO-Revision-Date: 2013-06-19 14:23+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: control_dashboard
+#: model:ir.actions.act_window,name:control_dashboard.fake_ir_alert_act
+msgid "Family Alerts"
+msgstr "Avvisi Ragruppati"
+
+#. module: control_dashboard
+#: view:fake.ir.alert:0
+#: view:ir.alert:0
+msgid "Information"
+msgstr "Informazioni"
+
+#. module: control_dashboard
+#: view:board.board:0
+msgid "Alert Board"
+msgstr "Cruscotto Avvisi"
+
+#. module: control_dashboard
+#: model:ir.actions.act_window,name:control_dashboard.ir_alert_config_act
+msgid "Config Alerts"
+msgstr "Configurazione Cruscotto Avvisi"
+
+#. module: control_dashboard
+#: model:ir.actions.act_window,name:control_dashboard.ir_alert_act
+#: model:ir.ui.menu,name:control_dashboard.menu_ir_alert_act
+msgid "Alerts"
+msgstr "Avvisi"
+
+#. module: control_dashboard
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Attenzione: non puoi creare aziende ricorsive"
+
+#. module: control_dashboard
+#: model:ir.ui.menu,name:control_dashboard.menu_appointment_attendee_invitations
+msgid "Event Invitations"
+msgstr "Inviti all'evento"
+
+#. module: control_dashboard
+#: field:ir.alert.config,action_id:0
+msgid "Action View"
+msgstr "Vista Action"
+
+#. module: control_dashboard
+#: view:fake.ir.alert:0
+#: view:ir.alert:0
+msgid "Send Link"
+msgstr "Chiama Oggetto"
+
+#. module: control_dashboard
+#: view:ir.alert.config:0
+msgid "Manage Dashboard Message"
+msgstr "Gestione Cruscotto Messaggi"
+
+#. module: control_dashboard
+#: view:ir.alert:0
+msgid "Group By..."
+msgstr "Raggruppato per..."
+
+#. module: control_dashboard
+#: field:ir.alert.config,state_id:0
+msgid "State"
+msgstr "Stato"
+
+#. module: control_dashboard
+#: view:fake.ir.alert:0
+#: view:ir.alert:0
+msgid "States"
+msgstr "Stati"
+
+#. module: control_dashboard
+#: view:board.board:0
+msgid "Warnings"
+msgstr "Attenzione"
+
+#. module: control_dashboard
+#: field:fake.ir.alert,type:0
+msgid "Type Alert"
+msgstr "Tipo Avviso"
+
+#. module: control_dashboard
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Il nome azienda deve essere unico!"
+
+#. module: control_dashboard
+#: view:fake.ir.alert:0
+#: view:ir.alert:0
+msgid "Email"
+msgstr "Email"
+
+#. module: control_dashboard
+#: view:ir.alert.config:0
+msgid "Config Models Alert"
+msgstr "Configurazione Modelli Avvisi"
+
+#. module: control_dashboard
+#: view:fake.ir.alert:0
+msgid "Family Scheduled Alerts"
+msgstr "Avvisi Raggruppati"
+
+#. module: control_dashboard
+#: model:ir.model,name:control_dashboard.model_wiz_ir_alert
+msgid "Records of family alerts."
+msgstr "Record dei Avvisi Raggruppati."
+
+#. module: control_dashboard
+#: model:ir.ui.menu,name:control_dashboard.menu_appointments
+#: model:ir.ui.menu,name:control_dashboard.next_id_14
+msgid "Appointment"
+msgstr "Appuntamenti"
+
+#. module: control_dashboard
+#: model:ir.actions.act_window,name:control_dashboard.action_alert_board_activity
+#: model:ir.actions.act_window,name:control_dashboard.action_alert_board_warning
+msgid "My Alerts"
+msgstr "Avvisi Miei"
+
+#. module: control_dashboard
+#: model:ir.ui.menu,name:control_dashboard.menu_family_alert
+msgid "Family Alert"
+msgstr "Avvisi Raggruppati"
+
+#. module: control_dashboard
+#: model:ir.model,name:control_dashboard.model_mail_compose_message
+msgid "E-mail composition wizard"
+msgstr "Wizard di composizione E-mail"
+
+#. module: control_dashboard
+#: field:fake.ir.alert,email_message:0
+msgid "Email Message"
+msgstr "Messaggio Email"
+
+#. module: control_dashboard
+#: view:fake.ir.alert:0
+#: field:fake.ir.alert,link:0
+#: view:ir.alert:0
+#: field:ir.alert.states,model_id:0
+msgid "Object"
+msgstr "Oggetto"
+
+#. module: control_dashboard
+#: model:ir.ui.menu,name:control_dashboard.menu_alert
+msgid "Alert"
+msgstr "Avviso"
+
+#. module: control_dashboard
+#: field:fake.ir.alert,mail_addresses:0
+msgid "Mail Addresses"
+msgstr "Indirizzi EMail"
+
+#. module: control_dashboard
+#: field:ir.alert.config,parent_id:0
+msgid "Parent Message"
+msgstr "Messaggio di Ragruppamento"
+
+#. module: control_dashboard
+#: field:fake.ir.alert,user_id:0
+#: view:ir.alert:0
+msgid "User"
+msgstr "Utente"
+
+#. module: control_dashboard
+#: model:ir.model,name:control_dashboard.model_ir_objects_state
+msgid "ir.objects.state"
+msgstr "ir.objects.state"
+
+#. module: control_dashboard
+#: view:ir.alert:0
+msgid "Execution"
+msgstr "Esecuzione"
+
+#. module: control_dashboard
+#: view:fake.ir.alert:0
+#: view:ir.alert:0
+msgid "Send Mail"
+msgstr "Invia EMail"
+
+#. module: control_dashboard
+#: view:ir.alert:0
+msgid "Action to Trigger"
+msgstr "Azione da eseguire"
+
+#. module: control_dashboard
+#: field:fake.ir.alert,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: control_dashboard
+#: model:ir.ui.menu,name:control_dashboard.next_id_13
+msgid "Scheduler Alert"
+msgstr "Gestione Avvisi"
+
+#. module: control_dashboard
+#: view:fake.ir.alert:0
+#: field:fake.ir.alert,note:0
+#: view:ir.alert:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: control_dashboard
+#: model:ir.model,name:control_dashboard.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: control_dashboard
+#: field:ir.alert.states,name:0
+msgid "State name"
+msgstr "Nome Stato"
+
+#. module: control_dashboard
+#: view:ir.alert.config:0
+msgid "Manage Email Message"
+msgstr "Gestione Messaggi Email"
+
+#. module: control_dashboard
+#: field:fake.ir.alert,alert_id:0
+msgid "Alert Id"
+msgstr "Id Avvisi"
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:312
+#: code:addons/control_dashboard/ir_alert.py:321
+#: code:addons/control_dashboard/ir_alert.py:327
+#: code:addons/control_dashboard/ir_alert.py:337
+#: code:addons/control_dashboard/ir_alert.py:348
+#: code:addons/control_dashboard/ir_alert.py:357
+#: code:addons/control_dashboard/ir_alert.py:363
+#: code:addons/control_dashboard/ir_alert.py:373
+#: code:addons/control_dashboard/ir_alert.py:400
+#: code:addons/control_dashboard/ir_alert.py:409
+#: code:addons/control_dashboard/ir_alert.py:415
+#: code:addons/control_dashboard/ir_alert.py:429
+#: code:addons/control_dashboard/ir_alert.py:440
+#: code:addons/control_dashboard/ir_alert.py:449
+#: code:addons/control_dashboard/ir_alert.py:455
+#: code:addons/control_dashboard/ir_alert.py:469
+#, python-format
+msgid "Error"
+msgstr "Errore"
+
+#. module: control_dashboard
+#: model:ir.ui.menu,name:control_dashboard.menu_appointment_crm_meeting_avail_alarm
+msgid "Alarms"
+msgstr "Avvisi"
+
+#. module: control_dashboard
+#: view:board.board:0
+msgid "My Activities TODO"
+msgstr "Lista Mie Attività"
+
+#. module: control_dashboard
+#: field:fake.ir.alert,state:0
+msgid "State Alert"
+msgstr "Stato per Avviso"
+
+#. module: control_dashboard
+#: view:board.board:0
+msgid "My appointments"
+msgstr "Appuntamenti miei"
+
+#. module: control_dashboard
+#: selection:fake.ir.alert,type:0
+msgid "Activity TODO"
+msgstr "Lista Attività"
+
+#. module: control_dashboard
+#: view:ir.alert:0
+msgid "Scheduled Alerts"
+msgstr "Avvisi Schedulati"
+
+#. module: control_dashboard
+#: field:ir.alert.states,value:0
+msgid "State value"
+msgstr "valore dello Stato"
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:348
+#: code:addons/control_dashboard/ir_alert.py:440
+#, python-format
+msgid "missing curly brackets in 'E-Mail's message'."
+msgstr "mancano le parentesi graffe nel 'Messaggio' di e-mail."
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:312
+#: code:addons/control_dashboard/ir_alert.py:400
+#, python-format
+msgid "missing curly brackets in alert message."
+msgstr "mancano le parentesi graffe nel 'Messaggio' di Avviso."
+
+#. module: control_dashboard
+#: field:ir.alert.config,is_parent:0
+msgid "Is Parent?"
+msgstr "Messaggio di Gruppo?"
+
+#. module: control_dashboard
+#: field:ir.alert,alert_config_id:0
+msgid "Message Config index"
+msgstr "indice Configurazione Messaggio."
+
+#. module: control_dashboard
+#: view:ir.alert:0
+msgid "Technical Data"
+msgstr "Dati Tecnici"
+
+#. module: control_dashboard
+#: model:ir.ui.menu,name:control_dashboard.menu_alert_config
+msgid "Alert Config"
+msgstr "Configurazione Avvisi"
+
+#. module: control_dashboard
+#: field:ir.alert,is_child:0
+msgid "Is Child?"
+msgstr "Messaggio di Gruppo?"
+
+#. module: control_dashboard
+#: selection:fake.ir.alert,type:0
+msgid "Warning"
+msgstr "Attenzione"
+
+#. module: control_dashboard
+#: selection:fake.ir.alert,state:0
+msgid "Done"
+msgstr "Fatto"
+
+#. module: control_dashboard
+#: view:ir.alert:0
+msgid "Users"
+msgstr "Utenti"
+
+#. module: control_dashboard
+#: selection:fake.ir.alert,state:0
+msgid "Cancel"
+msgstr "Cancella"
+
+#. module: control_dashboard
+#: model:ir.actions.act_window,name:control_dashboard.open_board_alert
+msgid "Alerts Dashboard"
+msgstr "Cruscotto Avvisi"
+
+#. module: control_dashboard
+#: field:fake.ir.alert,subject:0
+msgid "Subject"
+msgstr "Soggetto"
+
+#. module: control_dashboard
+#: selection:fake.ir.alert,state:0
+msgid "Open"
+msgstr "Aperto"
+
+#. module: control_dashboard
+#: model:ir.actions.act_window,name:control_dashboard.action_alert_for_appointment
+msgid "My Appointments"
+msgstr "Appuntamenti Miei"
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:363
+#: code:addons/control_dashboard/ir_alert.py:455
+#, python-format
+msgid "Value not valid for ' + string_in_error + \". Missing dot or '}' in E-Mail message.\"))\n"
+"\n"
+"                if (first_control == 'object"
+msgstr "Valore non valido, per ' + string_in_error + \". Omissione del punto o di '}' nel messaggio di E-Mail.\"))\n"
+"\n"
+"                if (first_control == 'object"
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:415
+#, python-format
+msgid "Value not valid for ' + string_in_error + \". Missing dot or '}' in alert message.\"))\n"
+"\n"
+"                if (first_control == 'object"
+msgstr "Valore non valido, per ' + string_in_error + \". Omissione del punto o di '}' nel messaggio di avviso.\"))\n"
+"\n"
+"                if (first_control == 'object"
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:409
+#, python-format
+msgid "Value not valid for ' + string_in_error + \". Valid value is 'object', for parent message (number record) or 'object.<name field>' for object field, in alert message.\"))\n"
+"\n"
+"                if first_control == 'object':\n"
+"                    second_control = message[position_ini+7:position_ini+8]\n"
+"                    if second_control not in ('}', '."
+msgstr "Valore non valido, per ' + string_in_error + \". Valore Valido, è 'object', per messaggio di ragruppamento (numero di messaggi), o 'object.<nome campo>' per campi del oggetto, nel messaggio di avviso.\"))\n"
+"\n"
+"                if first_control == 'object':\n"
+"                    second_control = message[position_ini+7:position_ini+8]\n"
+"                    if second_control not in ('}', '."
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:429
+#, python-format
+msgid "Value not valid for ' + string_in_error + \". field '\" + control_field + \"' not in object, in alert message.\"))\n"
+"\n"
+"                message = message[position_fin +1 :]\n"
+"\n"
+"        #control E-Mail message\n"
+"        if 'email_message' in vals.keys():\n"
+"            email_message = vals['email_message']\n"
+"            number = email_message.count('{"
+msgstr "Valore non valido, per ' + string_in_error + \". Campo '\" + control_field + \"' non esistente per l'oggetto, nel messaggio di avviso.\"))\n"
+"\n"
+"                message = message[position_fin +1 :]\n"
+"\n"
+"        #control E-Mail message\n"
+"        if 'email_message' in vals.keys():\n"
+"            email_message = vals['email_message']\n"
+"            number = email_message.count('{"
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:373
+#: code:addons/control_dashboard/ir_alert.py:469
+#, python-format
+msgid "Valore non valido, per ' + string_in_error + \". Campo '\" + control_field + \"' not in object, in E-Mail message.\"))\n"
+"\n"
+"                email_message = email_message[position_fin +1 :]\n"
+"\n"
+"        #search actions id\n"
+"        if vals.has_key('is_parent"
+msgstr "Value not valid for ' + string_in_error + \". field '\" + control_field + \"' non esistente per l'oggetto, nel messaggio di E-Mail.\"))\n"
+"\n"
+"                email_message = email_message[position_fin +1 :]\n"
+"\n"
+"        #search actions id\n"
+"        if vals.has_key('is_parent"
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:357
+#: code:addons/control_dashboard/ir_alert.py:449
+#, python-format                                     
+msgid "Value not valid for ' + string_in_error + \". Valid value is 'object', for parent message (number record) or 'object.<name field>' for object field, in E-Mail message.\"))\n"
+"\n"
+"                if first_control == 'object':\n"
+"                    second_control = email_message[position_ini+7:position_ini+8]\n"
+"                    if second_control not in ('}', '."
+msgstr "Valore non valido, per ' + string_in_error + \". Valore Valido, è 'object', per messaggio di ragruppamento (numero di messaggi), o 'object.<nome campo>' per campi del oggetto, nel messaggio di E-Mail.\"))\n"
+"\n"
+"                if first_control == 'object':\n"
+"                    second_control = email_message[position_ini+7:position_ini+8]\n"
+"                    if second_control not in ('}', '."
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:337
+#, python-format
+msgid "Value not valid for ' + string_in_error + \". field '\" + control_field + \"' not in object, in alert message.\"))\n"
+"\n"
+"            message = message[position_fin +1 :]\n"
+"\n"
+"        #control E-Mail message\n"
+"        if vals.has_key('flag_email"
+msgstr "Valore non valido, per ' + string_in_error + \". campo '\" + control_field + \"' non presente nel oggetto, nel messaggio di avviso.\"))\n"
+"\n"
+"            message = message[position_fin +1 :]\n"
+"\n"
+"        #control E-Mail message\n"
+"        if vals.has_key('flag_email"
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:321
+#, python-format
+msgid "Value not valid for ' + string_in_error + \". Valid value is 'object', for parent message (number record) or 'object.<name field>' for object field, in alert message.\"))\n"
+"\n"
+"            if first_control == 'object':\n"
+"                second_control = message[position_ini+7:position_ini+8]\n"
+"                if second_control not in ('}', '."
+msgstr "Valore non valido, per ' + string_in_error + \". Valore Valido, è 'object', per messaggio di ragruppamento (numero di messaggi), o 'object.<nome campo>' per campi del oggetto, nel messaggio di E-Mail.\"))\n"
+"\n"
+"            if first_control == 'object':\n"
+"                second_control = message[position_ini+7:position_ini+8]\n"
+"                if second_control not in ('}', '."
+
+#. module: control_dashboard
+#: code:addons/control_dashboard/ir_alert.py:327
+#, python-format
+msgid "Value not valid for ' + string_in_error + \". Missing dot or '}' in alert message.\"))\n"
+"\n"
+"            if (first_control == 'object"
+msgstr "Valore non valido, per ' + string_in_error + \". Ommesso il punto o '}' nel messaggio di avviso.\"))\n"
+"\n"
+"            if (first_control == 'object"

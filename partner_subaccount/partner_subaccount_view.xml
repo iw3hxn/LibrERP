@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_partner_ref_inherit_view" model="ir.ui.view">
+			<field name="name">view.partner.ref.form.inherit</field>
+			<field name="model">res.partner</field>
+			<field name="type">form</field>
+            <field name="inherit_id" ref="base_partner_ref.view_partner_ref_inherit"/>
+			<field name="arch" type="xml">
+                <field name="customer" position="after">
+                    <field name="block_ref_customer" invisible="1" />
+                    <field name="block_ref_supplier" invisible="1" />
+                </field>
+                <field name="property_supplier_ref" position="replace">
+                    <field name="property_supplier_ref" attrs="{'readonly':[('block_ref_supplier','=',True),('supplier','=',False)]}"/>
+                </field>
+                <field name="property_customer_ref" position="replace">
+                    <field name="property_customer_ref" attrs="{'readonly':[('block_ref_customer','=',True),('customer','=',False)]}"/>
+                </field>
+		    <field name="property_account_payable" position="replace">
+                    <field name="property_account_payable" attrs="{'readonly':[('block_ref_supplier','=',True),('supplier','=',False)]}"/>
+                </field>
+                <field name="property_account_receivable" position="replace">
+                    <field name="property_account_receivable" attrs="{'readonly':[('block_ref_customer','=',True),('customer','=',False)]}"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+
+

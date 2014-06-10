@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order">
+        <field name="name">sale.order.margin.view.form</field>
+        <field name="type">form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <field name="amount_total" position="after">
+                <field name="margin" groups="sale.view_margin"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order_line">
+        <field name="name">sale.order.line.margin.view.form</field>
+        <field name="type">form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="priority">1100</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/form//field[@name='price_unit']" position="after">
+                <field name="purchase_price" groups="sale.view_margin"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order_line_form">
+        <field name="name">sale.order.line.tree.margin.view.form</field>
+        <field name="type">form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="priority">1100</field>
+        <field name="arch" type="xml">
+           <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/tree//field[@name='price_unit']" position="after">
+                <field name="purchase_price"  groups="sale.view_margin"/>
+                <field name="margin" groups="sale.view_margin"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order_tree">
+        <field name="name">sale.order.margin.view.tree</field>
+        <field name="type">tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree" />
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="margin" groups="sale.view_margin"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order_line_tree">
+        <field name="name">sale.order.margin.line.view.tree</field>
+        <field name="type">tree</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_order_line_tree" />
+        <field name="arch" type="xml">
+            <field name="price_subtotal" position="after">
+                <field name="margin" groups="sale.view_margin"/>
+            </field>
+        </field>
+    </record>   
+
+
+</data>
+</openerp>

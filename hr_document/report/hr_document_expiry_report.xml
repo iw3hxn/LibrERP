@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+       <report auto="False" id="hr_document_expiry_report" model="hr.employee" name="hr.document.expiry" rml="hr_document/report/hr_document_expiry_report.rml" string="Documents"/>
+    </data>
+</openerp>

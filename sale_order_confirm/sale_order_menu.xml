@@ -1,0 +1,110 @@
+<openerp>
+    <data>
+
+        <record id="action_order_form_quotation_smart" model="ir.actions.act_window">
+            <field name="name">Quotation Orders Smart</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="search_view_id" ref="view_sales_order_filter_quotation"/>
+            <field name="context">{"search_default_draft": 1}</field>
+            <field name="domain">[('state','in',('draft','send_to_customer','wait_customer_validation'))]</field>
+        </record>
+        
+        <menuitem action="action_order_form_quotation_smart" id="menu_sale_order_quotation_smart" parent="base.menu_sales" sequence="3" 
+                groups="sale.view_sale_smart"  />
+         
+        <record id="sale.open_view_tree_smart" model="ir.actions.act_window.view">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="sale.view_order_tree" />
+            <field name="act_window_id" ref="sale_order_confirm.action_order_form_quotation_smart"/>
+        </record>
+        
+      
+        <record id="sale.open_view_form_smart" model="ir.actions.act_window.view">
+            <field name="sequence" eval="11"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="sale_order_confirm.view_order_form_smart"/>
+            <field name="act_window_id" ref="sale_order_confirm.action_order_form_quotation_smart"/>
+        </record>
+        
+        
+        
+        <record id="action_order_form_quotation" model="ir.actions.act_window">
+            <field name="name">Quotation Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="search_view_id" ref="view_sales_order_filter_quotation"/>
+            <field name="context">{"search_default_draft": 1}</field>
+            <field name="domain">[('state','in',('draft','send_to_customer','wait_customer_validation'))]</field>
+        </record>
+        <menuitem action="action_order_form_quotation" id="menu_sale_order_quotation" parent="base.menu_sales" sequence="4" 
+                  groups="base.group_sale_salesman,base.group_sale_manager"/>
+
+        <record id="action_order_form_technical" model="ir.actions.act_window">
+            <field name="name">Quotation Technical Review</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="search_view_id" ref="view_sales_order_filter_simple"/>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="domain">[('state','=','wait_technical_validation')]</field>
+        </record>
+        <menuitem action="action_order_form_technical" id="menu_sale_order_technical" parent="base.menu_sales" sequence="5" 
+                  groups="sale.verify_technical" />
+
+
+        <record id="action_order_form_manager" model="ir.actions.act_window">
+            <field name="name">Quotation Manager Review</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="search_view_id" ref="view_sales_order_filter_simple"/>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="domain">[('state','=','wait_manager_validation')]</field>
+        </record>
+        <menuitem action="action_order_form_manager" id="menu_sale_order_manager" parent="base.menu_sales" sequence="7" 
+                  groups="sale.verify_manager" />
+
+        <record id="action_order_to_send" model="ir.actions.act_window">
+            <field name="name">Quotation Ready To Send</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="search_view_id" ref="view_sales_order_filter_simple"/>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="domain">[('state','=','send_to_customer')]</field>
+        </record>
+        <menuitem action="action_order_to_send" id="menu_sale_order_to_send" parent="base.menu_sales" sequence="8" 
+                  groups="base.group_sale_salesman,base.group_sale_manager"/>
+
+        <record id="action_order_waiting_customer" model="ir.actions.act_window">
+            <field name="name">Quotation Waiting Customer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="search_view_id" ref="view_sales_order_filter_simple"/>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="domain">[('state','=','wait_customer_validation')]</field>
+        </record>
+
+        <menuitem action="action_order_waiting_customer" id="menu_sale_order_waiting_customer" parent="base.menu_sales" sequence="9" 
+                  groups="base.group_sale_salesman,base.group_sale_manager"/>
+
+        <record id="sale.action_order_form" model="ir.actions.act_window">
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+        </record>
+
+   </data>
+</openerp>
+
+

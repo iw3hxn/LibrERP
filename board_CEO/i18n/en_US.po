@@ -1,0 +1,112 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* board_CEO
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-23 12:29+0000\n"
+"PO-Revision-Date: 2013-11-23 12:29+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: board_CEO
+#: model:ir.actions.act_window,name:board_CEO.open_board_ceo
+#: model:ir.ui.menu,name:board_CEO.menu_board_ceo
+msgid "CEO Dashboard"
+msgstr "CEO Dashboard"
+
+#. module: board_CEO
+#: view:board.board:0
+msgid "Delegated tasks"
+msgstr "Delegated tasks"
+
+#. module: board_CEO
+#: model:ir.actions.act_window,name:board_CEO.ceo_other_tasks
+msgid "My Pending Tasks"
+msgstr "My Pending Tasks"
+
+#. module: board_CEO
+#: view:board.board:0
+msgid "My tasks"
+msgstr "My tasks"
+
+#. module: board_CEO
+#: view:board.board:0
+msgid "Helpdesk"
+msgstr "Helpdesk"
+
+#. module: board_CEO
+#: model:ir.actions.act_window,name:board_CEO.ceo_my_delegated_tasks
+msgid "My Delegated Tasks"
+msgstr "My Delegated Tasks"
+
+#. module: board_CEO
+#: view:board.board:0
+msgid "Pending or unassigned tasks"
+msgstr "Pending or unassigned tasks"
+
+#. module: board_CEO
+#: view:board.board:0
+#: model:ir.actions.act_window,name:board_CEO.ceo_analytic
+msgid "Analytics"
+msgstr "Analytics"
+
+#. module: board_CEO
+#: view:board.board:0
+msgid "Open Cases/Opportunities"
+msgstr "Open Cases/Opportunities"
+
+#. module: board_CEO
+#: view:board.board:0
+#: model:ir.actions.act_window,name:board_CEO.ceo_case_lead
+msgid "Open Leads"
+msgstr "Open Leads"
+
+#. module: board_CEO
+#: view:board.board:0
+#: model:ir.actions.act_window,name:board_CEO.ceo_pending_issues
+msgid "Pending Issues"
+msgstr "Pending Issues"
+
+#. module: board_CEO
+#: model:ir.actions.act_window,name:board_CEO.ceo_my_open_tasks
+msgid "My Open Tasks"
+msgstr "My Open Tasks"
+
+#. module: board_CEO
+#: view:board.board:0
+msgid "CEO board"
+msgstr "CEO board"
+
+#. module: board_CEO
+#: view:board.board:0
+#: model:ir.actions.act_window,name:board_CEO.ceo_project_issues
+msgid "Open Issues"
+msgstr "Open Issues"
+
+#. module: board_CEO
+#: model:ir.actions.act_window,name:board_CEO.ceo_case_oppor
+msgid "Open Opportunities"
+msgstr "Open Opportunities"
+
+#. module: board_CEO
+#: model:ir.actions.act_window,name:board_CEO.ceo_helpdesk
+msgid "Helpdesk Requests"
+msgstr "Helpdesk Requests"
+
+#. module: board_CEO
+#: view:board.board:0
+msgid "PROJECTS"
+msgstr "PROJECTS"
+
+#. module: board_CEO
+#: model:ir.actions.act_window,name:board_CEO.ceo_projects
+msgid "Projects"
+msgstr "Projects"
+

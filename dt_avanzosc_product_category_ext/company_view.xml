@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record model="ir.ui.view" id="view_tax_company_form">
+            <field name="name">res.company.tax_on_category.inherit</field>
+            <field name="model">res.company</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product_no_tax.view_tax_company_form"/>
+            <field name="arch" type="xml">
+                <field name="hide_tax_on_product" position="before"> 
+                    <field name="manage_tax_on_category" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

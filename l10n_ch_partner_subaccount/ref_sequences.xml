@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record forcecreate="1" id="seq_type_supplier_ref" model="ir.sequence.type">
+            <field name="name">Supplier ref Sequence</field>
+            <field name="code">SEQ_SUPPLIER_REF</field>
+        </record>
+        
+        <record forcecreate="1" id="seq_supplier_ref" model="ir.sequence">
+            <field name="name">Supplier reference Sequence</field>
+            <field name="code">SEQ_SUPPLIER_REF</field>
+            <field eval="3" name="padding"/>
+            <field name="prefix">F</field>
+        </record>
+
+        <record forcecreate="1" id="seq_type_customer_ref" model="ir.sequence.type">
+            <field name="name">Customer ref Sequence</field>
+            <field name="code">SEQ_CUSTOMER_REF</field>
+        </record>
+        
+        <record forcecreate="1" id="seq_customer_ref" model="ir.sequence">
+            <field name="name">Customer reference Sequence</field>
+            <field name="code">SEQ_CUSTOMER_REF</field>
+            <field eval="3" name="padding"/>
+            <field name="prefix">C</field>
+        </record>
+
+    </data>
+</openerp>

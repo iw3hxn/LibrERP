@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <!-- Add flag "move_products" in invoice form -->
+        <record id="view_invoice_immediate" model="ir.ui.view">
+            <field name="name">invoice.immediate</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="name" position="after">
+                        <field name="move_products" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}" on_change="onchange_move_products(partner_id)" />
+                        <field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />
+                    </field>
+                </data>
+            </field>
+        </record>
+        
+        <record id="view_supplier_invoice_immediate" model="ir.ui.view">
+            <field name="name">supplier.invoice.immediate</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/group/group" position="after">
+                        <field name="move_products" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}" on_change="onchange_move_products(partner_id)" />
+                        <field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+    </data>
+</openerp>

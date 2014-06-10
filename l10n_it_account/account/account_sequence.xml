@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="seq_type_account_fiscal_position" model="ir.sequence.type">
+            <field name="name">Inventory Code</field>
+            <field name="code">account.fiscal.position</field>
+        </record>
+        <record id="seq_fp_item" model="ir.sequence">
+            <field name="name">Numero Lettera Intenti</field>
+            <field name="code">account.fiscal.position</field>
+            <field name="prefix">FP</field>
+            <field name="padding">3</field>
+        </record>
+    </data>
+</openerp>

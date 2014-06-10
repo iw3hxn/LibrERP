@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!-- Chart Template -->
+        <record id="si_chart" model="account.chart.template">
+            <field name="name">Slovenija - Enotni kontni plan</field>
+            <field name="account_root_id" ref="si_0"/>
+            <field name="tax_code_root_id" ref="vat"/>
+            <field name="bank_account_view_id" ref="c_11"/>
+            <field name="property_account_receivable" ref="c_12"/>
+            <field name="property_account_payable" ref="c_22"/>
+            <field name="property_account_expense_categ" ref="k700"/>
+            <field name="property_account_income_categ" ref="k760"/>
+            <field name="property_account_expense" ref="k700"/>
+            <field name="property_account_income" ref="k760"/>
+            <field name="property_reserve_and_surplus_account" ref="c_92"/>
+
+        </record>
+    </data>
+</openerp>

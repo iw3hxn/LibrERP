@@ -1,0 +1,165 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* tko_sale_validation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.3\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2012-03-08 15:54+0000\n"
+"PO-Revision-Date: 2012-03-08 15:54+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: tko_sale_validation
+#: view:sale.order:0
+msgid "Validate Order"
+msgstr "Validar Ordem"
+
+#. module: tko_sale_validation
+#: view:cancel.sale.order:0
+msgid "Don't Refuse"
+msgstr "Não Recusar"
+
+#. module: tko_sale_validation
+#: model:ir.actions.act_window,name:tko_sale_validation.action_config_sale_limit_amount
+#: view:sale.validation.installer:0
+msgid "Configure Limit Amount for Sale"
+msgstr "Configure Quantia Limite para a Venda"
+
+#. module: tko_sale_validation
+#: field:sale.order,validation_observation:0
+msgid "Observations"
+msgstr "Observações"
+
+#. module: tko_sale_validation
+#: field:sale.validation.installer,limit_amount:0
+msgid "Maximum Sale Amount"
+msgstr "Valor Máximo de Venda"
+
+#. module: tko_sale_validation
+#: help:sale.validation.installer,limit_amount:0
+msgid "Maximum amount after which internal validation of sale is required."
+msgstr "Valor máximo após o qual a validação interna da venda é requerida."
+
+#. module: tko_sale_validation
+#: model:ir.model,name:tko_sale_validation.model_sale_validation_installer
+msgid "sale.validation.installer"
+msgstr "sale.validation.installer"
+
+#. module: tko_sale_validation
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique !"
+msgstr "A Referência da ordem tem de ser unica!"
+
+#. module: tko_sale_validation
+#: view:sale.order:0
+msgid "Return to Quotation"
+msgstr "Voltar a Cotação"
+
+#. module: tko_sale_validation
+#: field:sale.validation.installer,progress:0
+msgid "Configuration Progress"
+msgstr "Processo de Configuração"
+
+#. module: tko_sale_validation
+#: view:sale.validation.installer:0
+msgid "title"
+msgstr "titulo"
+
+#. module: tko_sale_validation
+#: view:cancel.sale.order:0
+#: view:sale.order:0
+msgid "Refuse Order"
+msgstr "Recusar Ordem"
+
+#. module: tko_sale_validation
+#: view:sale.order:0
+msgid "Refused"
+msgstr "Recusado"
+
+#. module: tko_sale_validation
+#: view:sale.order:0
+msgid "Validate"
+msgstr "Validar"
+
+#. module: tko_sale_validation
+#: view:sale.validation.installer:0
+msgid "Sale Application Configuration"
+msgstr "Configuração da Aplicação de Vendas"
+
+#. module: tko_sale_validation
+#: view:sale.order:0
+msgid "Cancel Order"
+msgstr "Cancelar Ordem de Venda"
+
+#. module: tko_sale_validation
+#: view:cancel.sale.order:0
+#: model:ir.model,name:tko_sale_validation.model_cancel_sale_order
+msgid "Cancel Sale Order"
+msgstr "Cancelar ordem de Venda"
+
+#. module: tko_sale_validation
+#: field:sale.order,validation_date:0
+msgid "Validation Date"
+msgstr "Validar Data"
+
+#. module: tko_sale_validation
+#: view:cancel.sale.order:0
+msgid "Please describe the reason to cancel the sale order."
+msgstr "Descreva o motivo de recusa da ordem de venda."
+
+#. module: tko_sale_validation
+#: view:sale.order:0
+msgid "Quotations"
+msgstr "Cotações"
+
+#. module: tko_sale_validation
+#: model:ir.actions.act_window,name:tko_sale_validation.action_open_cancel_sale_order_wizard
+msgid "Sale Order Cancel"
+msgstr "Recusa de ordem de venda"
+
+#. module: tko_sale_validation
+#: field:cancel.sale.order,cancel_description:0
+msgid "Description"
+msgstr "Motivo"
+
+#. module: tko_sale_validation
+#: help:sale.order,validation_date:0
+msgid "Date on which sale order has been approved"
+msgstr "Data de aprovação da ordem de Venda"
+
+#. module: tko_sale_validation
+#: field:sale.validation.installer,config_logo:0
+msgid "Image"
+msgstr "Imagem"
+
+#. module: tko_sale_validation
+#: view:sale.order:0
+msgid "Sale Validation"
+msgstr "Validação da ordem de venda"
+
+#. module: tko_sale_validation
+#: view:sale.validation.installer:0
+msgid "res_config_contents"
+msgstr "res_config_contents"
+
+#. module: tko_sale_validation
+#: field:sale.order,validation_user:0
+msgid "Validated by"
+msgstr "Validado por"
+
+#. module: tko_sale_validation
+#: model:ir.model,name:tko_sale_validation.model_sale_order
+msgid "Sales Order"
+msgstr "Ordem de Venda"
+
+#. module: tko_sale_validation
+#: view:sale.validation.installer:0
+msgid "Define minimum amount after which sale needs to be validated."
+msgstr "Define o valor mínimo após o qual a Venda necessita de ser validada."
+

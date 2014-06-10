@@ -1,0 +1,291 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* project_calendar
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-25 08:33+0000\n"
+"PO-Revision-Date: 2013-11-25 08:33+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: project_calendar
+#: model:ir.model,name:project_calendar.model_project_calendar_conf_information
+#: view:project.calendar:0
+#: view:project.calendar.conf:0
+msgid "Information"
+msgstr "Informazioni"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:348
+#: code:addons/project_calendar/project_calendar.py:349
+#: field:project.calendar.conf.information,model:0
+#, python-format
+msgid "Object"
+msgstr "Oggetto"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:143
+#, python-format
+msgid "Remove finished tasks"
+msgstr "Rimuovi le task finite"
+
+#. module: project_calendar
+#: view:project.calendar.conf:0
+msgid "Number of months to synchronize before and after the current date"
+msgstr "Numero di mesi da sincronizzare prima e dopo la data corrente"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "Group By..."
+msgstr "Raggruppa per..."
+
+#. module: project_calendar
+#: view:project.calendar.conf:0
+msgid "Calendar models"
+msgstr "Modelli Calendari"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:49
+#: code:addons/project_calendar/project_calendar.py:357
+#: field:project.calendar,location:0
+#: field:project.calendar.conf.information,location:0
+#, python-format
+msgid "Location"
+msgstr "Luogo"
+
+#. module: project_calendar
+#: field:project.calendar.conf.information,mail:0
+msgid "Mail"
+msgstr "Mail"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:353
+#: view:project.calendar:0
+#: field:project.calendar.conf.information,date_start:0
+#, python-format
+msgid "Start date"
+msgstr "Data Inizio"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:47
+#: field:project.calendar,model_name:0
+#, python-format
+msgid "Type"
+msgstr "Tipo"
+
+#. module: project_calendar
+#: view:project.calendar.conf:0
+msgid "Update the project calendar"
+msgstr "Aggiorna il calendario progetti"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:350
+#: field:project.calendar.conf,name:0
+#: field:project.calendar.conf.information,name:0
+#, python-format
+msgid "Name"
+msgstr "Name"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:50
+#: code:addons/project_calendar/project_calendar.py:358
+#: field:project.calendar.conf.information,attendee:0
+#, python-format
+msgid "Attendee"
+msgstr "Partecipante"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:351
+#: field:project.calendar.conf.information,description:0
+#, python-format
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: project_calendar
+#: field:project.calendar.conf,conf_info:0
+msgid "conf info"
+msgstr "conf info"
+
+#. module: project_calendar
+#: view:project.calendar.conf.information:0
+msgid "Models"
+msgstr "Modelli"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:142
+#: field:project.calendar.conf,periode_end:0
+#, python-format
+msgid "After"
+msgstr "Dopo"
+
+#. module: project_calendar
+#: view:project.calendar.conf.information:0
+msgid "Objects"
+msgstr "Oggetti"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "New model"
+msgstr "Nuovo Modello"
+
+#. module: project_calendar
+#: view:project.calendar.conf.information:0
+msgid "Fields informations"
+msgstr "Campi Informativi"
+
+#. module: project_calendar
+#: view:project.calendar.conf:0
+msgid "Manual update"
+msgstr "Aggiornamento Manuale"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "Open original model"
+msgstr "Apri modello originale"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:352
+#: view:project.calendar:0
+#: field:project.calendar.conf.information,user_id:0
+#, python-format
+msgid "Responsible"
+msgstr "Responsabile"
+
+#. module: project_calendar
+#: view:project.calendar.conf:0
+msgid "Clean calendar objects"
+msgstr "Cancella il Calendario"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "Search Shared Calendar"
+msgstr "Ricerca i Calendari Conclusivi"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "Order Date"
+msgstr "Order Date"
+
+#. module: project_calendar
+#: model:ir.ui.menu,name:project_calendar.project_calendar_menu_mainform
+#: model:ir.ui.menu,name:project_calendar.project_configuration_sc_menu_mainform_conf
+msgid "Project calendar"
+msgstr "Project calendar"
+
+#. module: project_calendar
+#: model:ir.actions.act_window,name:project_calendar.action_project_calendar_config_form
+#: view:project.calendar.conf:0
+msgid "Object calendar's configuration"
+msgstr "Configurazione Calendario"
+
+#. module: project_calendar
+#: view:project.calendar.conf.information:0
+msgid "Model"
+msgstr "Modello"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "Object's"
+msgstr "Oggetti"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "Object calendar's"
+msgstr "Calendario degli Oggetti"
+
+#. module: project_calendar
+#: field:project.calendar,project_task_id:0
+msgid "Automatically created field to link to parent project.task"
+msgstr "Automatically created field to link to parent project.task"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:355
+#: field:project.calendar.conf.information,date_end:0
+#, python-format
+msgid "End date"
+msgstr "Data Termine"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:347
+#: view:project.calendar.conf:0
+#: field:project.calendar.conf.information,conf_id:0
+#, python-format
+msgid "Configuration"
+msgstr "Configurazione"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:138
+#: help:project.calendar.conf,name:0
+#, python-format
+msgid "The name of the configuration."
+msgstr "Il nome della configurazione."
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:48
+#: field:project.calendar,model_id:0
+#, python-format
+msgid "Original id"
+msgstr "id Originale"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "Extra information"
+msgstr "Informazioni Aggiuntive"
+
+#. module: project_calendar
+#: model:ir.actions.act_window,name:project_calendar.action_project_calendar_form
+#: model:ir.model,name:project_calendar.model_project_calendar
+msgid "Project Calendar"
+msgstr "Calendario Attività"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:140
+#: view:project.calendar.conf:0
+#: field:project.calendar.conf,cron:0
+#, python-format
+msgid "Cron"
+msgstr "Cron"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:354
+#: field:project.calendar.conf.information,date_deadline:0
+#, python-format
+msgid "Deadline"
+msgstr "Data Termine"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:356
+#: field:project.calendar.conf.information,planned_hours:0
+#, python-format
+msgid "Duration"
+msgstr "Durata"
+
+#. module: project_calendar
+#: model:ir.ui.menu,name:project_calendar.planning_menu_mainform
+#: view:project.calendar:0
+msgid "Calendar"
+msgstr "Calendario"
+
+#. module: project_calendar
+#: view:project.calendar.conf:0
+msgid "Clean calendar configuration"
+msgstr "Cancella configurazione Calendario"
+
+#. module: project_calendar
+#: view:project.calendar:0
+msgid "Times"
+msgstr "Times"
+
+#. module: project_calendar
+#: code:addons/project_calendar/project_calendar.py:141
+#: field:project.calendar.conf,periode_start:0
+#, python-format
+msgid "Before"
+msgstr "Prima di"

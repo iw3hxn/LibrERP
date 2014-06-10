@@ -1,0 +1,92 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* product_catalog_extend
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-20130325-004646\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-04-11 20:50+0000\n"
+"PO-Revision-Date: 2013-04-11 20:50+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_catalog_extend
+#: model:ir.model,name:product_catalog_extend.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: product_catalog_extend
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Il nome azienda deve essere unico!"
+
+#. module: product_catalog_extend
+#: field:res.company,report_footer_line1:0
+msgid "Footer Line 1"
+msgstr "Piè di pagina - Riga 1"
+
+#. module: product_catalog_extend
+#: field:res.company,report_footer_line2:0
+msgid "Footer Line 2"
+msgstr "Piè di pagina - Riga 2"
+
+#. module: product_catalog_extend
+#: model:ir.model,name:product_catalog_extend.model_product_catalog_wizard
+#: view:product.catalog.wizard:0
+msgid "#print Product Catalog Report"
+msgstr "#Stampa Listino Prodotti"
+
+#. module: product_catalog_extend
+#: model:ir.model,name:product_catalog_extend.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: product_catalog_extend
+#: view:product.catalog.wizard:0
+msgid "Print"
+msgstr "Stampa"
+
+#. module: product_catalog_extend
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Attenzione: non puoi creare aziende ricorsive"
+
+#. module: product_catalog_extend
+#: field:product.catalog.wizard,category_id:0
+msgid "Category Type"
+msgstr "Tipo Categoria"
+
+#. module: product_catalog_extend
+#: model:ir.actions.act_window,name:product_catalog_extend.act_product_catalog_wizard
+msgid "Product Catalog"
+msgstr "Stampa Catalogo Prodotti"
+
+#. module: product_catalog_extend
+#: field:product.catalog.wizard,pricelist_id:0
+msgid "Pricelist 1"
+msgstr "Listino Prezzi 1"
+
+#. module: product_catalog_extend
+#: field:product.catalog.wizard,pricelist_id2:0
+msgid "Pricelist 2"
+msgstr "Listino Prezzi 2"
+
+#. module: product_catalog_extend
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Errore: codice EAN non valido"
+
+#. module: product_catalog_extend
+#: view:product.catalog.wizard:0
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: product_catalog_extend
+#: field:product.product,price2:0
+msgid "Pricelist"
+msgstr "Listino Prezzi"

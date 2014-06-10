@@ -1,0 +1,131 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* mass_editing
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-26 10:42+0000\n"
+"PO-Revision-Date: 2014-05-26 12:46+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: sl\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: mass_editing
+#: model:ir.actions.act_window,name:mass_editing.action_mass_object_form
+#: model:ir.ui.menu,name:mass_editing.menu_mass_editing
+#: model:ir.ui.menu,name:mass_editing.menu_mass_object_view
+msgid "Mass Editing"
+msgstr "Masovno urejanje"
+
+#. module: mass_editing
+#: view:mass.object:0
+msgid ""
+"Display a button in the sidebar of related documents to open a composition "
+"wizard"
+msgstr ""
+"Prikaži gumb v stranski vrstici povezanih dokumentov za zagon čarovnika za "
+"sestavljanje"
+
+#. module: mass_editing
+#: model:ir.model,name:mass_editing.model_mass_editing_wizard
+msgid "mass.editing.wizard"
+msgstr "mass.editing.wizard"
+
+#. module: mass_editing
+#: view:mass.object:0
+msgid "Object"
+msgstr "Predmet"
+
+#. module: mass_editing
+#: field:mass.object,name:0
+msgid "Name"
+msgstr "Naziv"
+
+#. module: mass_editing
+#: view:mass.object:0
+msgid "Advance"
+msgstr "Napreduj"
+
+#. module: mass_editing
+#: view:mass.object:0 field:mass.object,field_ids:0
+msgid "Fields"
+msgstr "Polja"
+
+#. module: mass_editing
+#: field:mass.editing.wizard,serpent_image:0
+msgid "Image"
+msgstr "Slika"
+
+#. module: mass_editing
+#: code:addons/mass_editing/mass_editing.py:96
+#, python-format
+msgid "Deletion of the action record failed."
+msgstr "Izbris zapisa ni uspel"
+
+#. module: mass_editing
+#: help:mass.object,ref_ir_act_window:0
+msgid ""
+"Sidebar action to make this template available on records of the related "
+"document model"
+msgstr ""
+"Dejanje stranske vrstice za omogočitev predloge na vnosih povezanega modela "
+"dokumenta"
+
+#. module: mass_editing
+#: model:ir.model,name:mass_editing.model_mass_object
+msgid "mass.object"
+msgstr "mass.object"
+
+#. module: mass_editing
+#: field:mass.object,model_ids:0
+msgid "Model List"
+msgstr "Seznam modelov"
+
+#. module: mass_editing
+#: code:addons/mass_editing/mass_editing.py:96
+#, python-format
+msgid "Warning"
+msgstr "Opozorilo"
+
+#. module: mass_editing
+#: field:mass.object,ref_ir_act_window:0
+msgid "Sidebar action"
+msgstr "Dejanje stranske vrstice"
+
+#. module: mass_editing
+#: view:mass.object:0
+msgid "Remove sidebar button"
+msgstr "Odstrani stranski gumb"
+
+#. module: mass_editing
+#: field:mass.object,ref_ir_value:0
+msgid "Sidebar button"
+msgstr "Stranski gumb"
+
+#. module: mass_editing
+#: field:mass.object,model_id:0
+msgid "Model"
+msgstr "Model"
+
+#. module: mass_editing
+#: help:mass.object,ref_ir_value:0
+msgid "Sidebar button to open the sidebar action"
+msgstr "Stranski gumb za odpiranje dejanj stranske vrstice"
+
+#. module: mass_editing
+#: view:mass.object:0
+msgid "Add sidebar button"
+msgstr "Dodaj stranski gumb"
+
+#. module: mass_editing
+#: code:addons/mass_editing/mass_editing.py:62
+#, python-format
+msgid "Mass Editing (%s)"
+msgstr "Masovno urejanje (%s)"

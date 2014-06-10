@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+    <record id="db_backup_manager_ept" model="res.groups">
+        <field name="name">Administration/DB Backup Manager</field>
+    </record>
+    
+	
+
+    <record model="ir.ui.menu" id="db_backup_ept_menu">
+        <field eval="[(4, ref('db_backup_manager_ept'))]" name="groups_id"/>
+    </record>
+
+    <record model="ir.ui.menu" id="backup_conf_menu">
+        <field eval="[(4, ref('db_backup_manager_ept'))]" name="groups_id"/>
+    </record>
+	
+	<record model="ir.ui.menu" id="menu_db_manual_backup">
+        <field eval="[(4, ref('db_backup_manager_ept'))]" name="groups_id"/>
+    </record>
+	
+    <record model="ir.ui.menu" id="eptftp_backup">
+        <field eval="[(4, ref('db_backup_manager_ept'))]" name="groups_id"/>
+    </record>
+</data>
+</openerp>

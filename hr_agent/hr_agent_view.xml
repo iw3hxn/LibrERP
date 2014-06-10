@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_hr_agent_commission_tree" model="ir.ui.view">
+            <field name="name">view.hr.agent.commission.tree</field>
+            <field name="model">hr.agent.commission</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="commission agent's" editable="top">
+                    <field name="product_id"/>
+                    <field name="category_id" widget="selection"/>
+                    <field name="customer_id"/>
+                    <field name="commission_percent"/>
+                    <field name="fixed_commission"/>
+                </tree>
+            </field>
+        </record>
+    
+        <record id="view_hr_area_manager_commission_tree" model="ir.ui.view">
+            <field name="name">view.hr.area.manager.commission.tree</field>
+            <field name="model">hr.area.manager.commission</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="area manager's fixed commission" editable="top">
+                    <field domain="[('is_agent','=',True)]" name="agent_id" widget="selection"/>
+                    <field name="commission_percent"/>
+                    <field name="from_revenues"/>
+                    <field name="to_revenues"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_employee_agent_form">
+        <field name="name">view.employee.agent.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form" />
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="/form/notebook/page[@string='Personal Information']" position="after">
+                    <page string="Agent" attrs="{'invisible':[('this_agent','=',False)]}">
+                        <group colspan="2" col="4">
+                            <field name="area_manager_desc" invisible="1"/>
+                            <field name="is_agent" invisible="1"/>
+                            <field name="is_area_manager" invisible="1"/>
+                            <field name="this_agent" invisible="1"/>
+                            <field domain="[('job_id','=',area_manager_desc)]" name="area_manager_id"/>
+                            <field name="res_partner_zone_id" widget="selection"/>
+                            <separator colspan="4"/>
+                        </group>
+                    <newline/>
+                        <group colspan="2" col="2">
+                        <field name="hr_agent_commission_ids"  nolabel="1"/>
+                        <newline/>
+                        <field attrs="{'invisible':[('is_area_manager','=',False)]}" name="hr_area_manager_commission_ids" nolabel="1"/>
+                        </group>
+                    </page>
+                </xpath>
+            </data>
+        </field>
+        </record>
+        
+        <!-- inherit field in account.voucher -->
+        <record model="ir.ui.view" id="view_inherit_account_voucher_form">
+        <field name="name">view.inherit.account.voucher.form</field>
+            <field name="model">account.voucher</field>
+            <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            <field name="name" position="after">
+                        <field name="flag_payment" invisible="1"/>
+                    </field>
+                </field>
+            </record>
+        
+        <!-- inherit field in res.users -->
+        <record model="ir.ui.view" id="view_inherit_res_users_form">
+        <field name="name">view.inherit.res.users.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook" position="before">
+                    <field name="is_agent" invisible="1"/>
+                </xpath>
+            </field>
+            </record>
+        
+        <!-- inherit two fields in res.company -->
+        <record model="ir.ui.view" id="view_inherit_res_company_form">
+        <field name="name">view.inherit.res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="company_registry" position="after">
+                    <group colspan="4" col="4">
+                        <newline/>
+                        <separator string=""/>
+                    </group>
+                    <newline/>
+                        <field name="agent_id"/>
+                        <field name="area_manager_id"/>
+                    </field>
+                </field>
+            </record>
+        
+        <!-- inherit in sale.order -->
+        <record model="ir.ui.view" id="view_inherit_sale_order_tree">
+            <field name="name">view.inherit.sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree" />
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field domain="[('job_id','=',area_manager_desc)]" name="internal_user_id"/>
+                </field>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_inherit_sale_order_form">
+            <field name="name">view.inherit.sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="pricelist_id" position="after">
+                    <newline/>
+                    <field name="is_area_manager" invisible="1"/>
+                    <field domain="[('is_agent','=',True)]" name="internal_user_id" widget="selection"/>
+                    <field name="trimester" invisible="1"/>
+                    <field name="flag_paid" invisible="1"/>
+                    <newline/>
+                    <field name="sale_commission_amount" attrs="{'readonly':True}"/>
+                    <field attrs="{'invisible':[('is_area_manager','=',False)], 'readonly':True}" name="area_manager_commission"/>
+                </field>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_inherit_sale_order_filter">
+            <field name="name">view.inherit.sale.order.filter</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter" />
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="internal_user_id"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+

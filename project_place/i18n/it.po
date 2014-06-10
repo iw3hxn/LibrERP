@@ -1,0 +1,362 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* project_place
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-23 15:46+0000\n"
+"PO-Revision-Date: 2013-07-23 15:46+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_place
+msgid "project.place"
+msgstr "project.place"
+
+#. module: project_place
+#: view:project.place:0
+msgid "Contacts"
+msgstr "Contatti"
+
+#. module: project_place
+#: field:project.plant,plant_type_id:0
+msgid "Plan Type"
+msgstr "Tipo Impianto"
+
+#. module: project_place
+#: field:project.plant,plant_agreement_id:0
+msgid "Agreement Type"
+msgstr "Tipo Accordo"
+
+#. module: project_place
+#: view:project.place:0
+msgid "Projects "
+msgstr "Progetti "
+
+#. module: project_place
+#: constraint:stock.move:0
+msgid "You must assign a production lot for this product"
+msgstr "È necessario assegnare un lotto di produzione per questo prodotto"
+
+#. module: project_place
+#: field:project.plant,ticket_close_time_out:0
+#: help:project.plant,ticket_close_time_out:0
+msgid "Time Out to Close Ticket"
+msgstr "Tempo Chiusura Ticket"
+
+#. module: project_place
+#: model:res.groups,name:project_place.group_plant_user
+msgid "Plant / User"
+msgstr "Plant / User"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,note:0
+msgid "Note"
+msgstr "Note"
+
+#. module: project_place
+#: model:res.groups,name:project_place.group_place_manager
+msgid "Place / Manager"
+msgstr "Place / Manager"
+
+#. module: project_place
+#: model:res.groups,name:project_place.group_place_user
+msgid "Place / User"
+msgstr "Place / User"
+
+#. module: project_place
+#: field:project.place,stock_move_out_ids:0
+#: field:project.plant,stock_move_out_ids:0
+msgid "Products Out"
+msgstr "Prodotti - uscita"
+
+#. module: project_place
+#: model:res.groups,name:project_place.group_place_user_sla
+msgid "Place / User SLA View"
+msgstr "Place / User SLA View"
+
+#. module: project_place
+#: constraint:project.project:0
+msgid "Error! project start-date must be lower then project end-date."
+msgstr "Errore ! La data inizio del progetto deve essere antecedente alla data fine."
+
+#. module: project_place
+#: field:plant.property,name:0
+#: field:project.agreement.type,name:0
+#: field:project.plant.type,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: project_place
+#: model:ir.actions.act_window,name:project_place.action_project_plant
+#: model:ir.ui.menu,name:project_place.menu_project_plant
+#: field:plant.property,plant_id:0
+msgid "Plant"
+msgstr "Impianto"
+
+#. module: project_place
+#: field:plant.property,description:0
+#: field:plant.property.group,description:0
+msgid "Description"
+msgstr "Description"
+
+#. module: project_place
+#: model:ir.actions.act_window,name:project_place.action_view_plant_property_group_form
+#: model:ir.ui.menu,name:project_place.menu_plant_property_group_form
+#: view:plant.property.group:0
+msgid "Plant Property Group"
+msgstr "Gruppo Proprietà Impianti"
+
+#. module: project_place
+#: constraint:stock.move:0
+msgid "You try to assign a lot which is not from the same product"
+msgstr "Si sta cercando di assegnare un lotto non derivante dallo stesso prodotto"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Products In Stock"
+msgstr "Prodotti Stock"
+
+#. module: project_place
+#: view:project.plant:0
+msgid "Street2 : "
+msgstr "Indirizzo2 : "
+
+#. module: project_place
+#: view:project.plant.type:0
+msgid "Project Plant Type"
+msgstr "Tipo Impianto Progetto"
+
+#. module: project_place
+#: sql_constraint:project.place:0
+#: sql_constraint:project.plant:0
+msgid "Code must be unique!"
+msgstr "Codice deve essere univoco!"
+
+#. module: project_place
+#: field:project.plant,ticket_approve_time_out:0
+#: help:project.plant,ticket_approve_time_out:0
+msgid "Time Out to Approve Ticket"
+msgstr "Tempo per Apertura Ticket"
+
+#. module: project_place
+#: field:project.place,member_ids:0
+#: field:project.plant,member_ids:0
+msgid "Members"
+msgstr "Membri"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,address_id:0
+#: view:project.plant:0
+#: field:project.plant,address_id:0
+msgid "Address"
+msgstr "Indirizzo"
+
+#. module: project_place
+#: model:res.groups,name:project_place.group_plant_user_sla
+msgid "Plant / User SLA View"
+msgstr "Plant / User SLA View"
+
+#. module: project_place
+#: field:project.plant,property_ids:0
+msgid "Properties"
+msgstr "Propietà"
+
+#. module: project_place
+#: model:ir.module.category,name:project_place.module_category_place_management
+msgid "Place Management"
+msgstr "Place Management"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,plant_ids:0
+msgid "Plants"
+msgstr "Impianti"
+
+#. module: project_place
+#: field:project.place,stock_location_id:0
+#: field:project.plant,stock_location_id:0
+msgid "Stock Location"
+msgstr "Località del magazzino"
+
+#. module: project_place
+#: field:project.plant,asset_ids:0
+msgid "Assets"
+msgstr "Assets"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Products at Place"
+msgstr "Prodotti sul luogo"
+
+#. module: project_place
+#: model:ir.module.category,description:project_place.module_category_place_management
+msgid "Helps you handle your Place"
+msgstr "Helps you handle your Place"
+
+#. module: project_place
+#: model:res.groups,name:project_place.group_plant_manager
+msgid "Plant / Manager"
+msgstr "Plant / Manager"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "UoM"
+msgstr "Unità di Misura"
+
+#. module: project_place
+#: view:project.plant.type:0
+#: field:project.plant.type,department_ids:0
+msgid "Departments"
+msgstr "Dipartimenti"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_project
+msgid "Project"
+msgstr "Progetti"
+
+#. module: project_place
+#: field:stock.move,invoice_state:0
+msgid "Invoce Control"
+msgstr "Controllo Fatturazione"
+
+#. module: project_place
+#: view:project.place:0
+msgid "Contatti"
+msgstr "Contatti"
+
+#. module: project_place
+#: view:project.place:0
+msgid "Contact"
+msgstr "Contatto"
+
+#. module: project_place
+#: model:ir.actions.act_window,name:project_place.action_project_place
+#: model:ir.ui.menu,name:project_place.menu_project_place
+#: field:project.plant,place_id:0
+msgid "Place"
+msgstr "Luogo"
+
+#. module: project_place
+#: view:project.place:0
+msgid "Project Place"
+msgstr "Luogo del progetto"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_plant
+msgid "project.plant"
+msgstr "project.plant"
+
+#. module: project_place
+#: field:project.place,stock_move_in_ids:0
+#: field:project.plant,stock_move_in_ids:0
+msgid "Products In"
+msgstr "Prodotti - entrata"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_plant_property
+#: view:project.plant:0
+msgid "Property"
+msgstr "Proprietà"
+
+#. module: project_place
+#: sql_constraint:project.agreement.type:0
+#: sql_constraint:project.plant.type:0
+msgid "Name must be unique!"
+msgstr "Il titolo deve essere univoco!"
+
+#. module: project_place
+#: field:project.place,code:0
+#: field:project.plant,code:0
+msgid "Code"
+msgstr "Codice"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Products Return Stock"
+msgstr "Prodotti - rientro stock"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Reference"
+msgstr "Riferimento"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_stock_move
+msgid "Stock Move"
+msgstr "Movimento di magazzino"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_plant_property_group
+#: field:plant.property,group_id:0
+#: field:plant.property.group,name:0
+msgid "Property Group"
+msgstr "Gruppo proprietà"
+
+#. module: project_place
+#: field:project.project,location_ids:0
+msgid "Locations"
+msgstr "Luoghi"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "General"
+msgstr "Generico"
+
+#. module: project_place
+#: view:project.plant:0
+msgid "Project Plant"
+msgstr "Impianto"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_agreement_type
+msgid "project.agreement.type"
+msgstr "project.agreement.type"
+
+#. module: project_place
+#: view:project.plant:0
+msgid "Service Options"
+msgstr "SLA"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,project_ids:0
+msgid "Projects"
+msgstr "Progetti"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Products"
+msgstr "Prodotti"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_res_partner_address
+msgid "Partner Addresses"
+msgstr "Indirizzi Partner"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_plant_type
+msgid "project.plant.type"
+msgstr "project.plant.type"
+
+#. module: project_place
+#: model:ir.actions.act_window,name:project_place.action_project_pant_type
+#: model:ir.ui.menu,name:project_place.menu_project_plant_type
+msgid "Plant Types"
+msgstr "Tipi di Impianto"

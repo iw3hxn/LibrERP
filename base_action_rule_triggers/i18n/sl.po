@@ -1,0 +1,96 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* base_action_rule_triggers
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-26 12:40+0000\n"
+"PO-Revision-Date: 2014-02-26 13:45+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: base_action_rule_triggers
+#: help:base.action.rule,email_template_force:0
+msgid ""
+"If not checked, it will be sent the next time the e-mail scheduler runs."
+msgstr ""
+"Če ni označeno, bo razposlano ob naslednjem zagonu e-poštnega "
+"razporejevalnika."
+
+#. module: base_action_rule_triggers
+#: sql_constraint:res.users:0
+msgid "You can not have two users with the same login !"
+msgstr "Ne morete imeti dveh uporabnikov z istim prijavnim imenom!"
+
+#. module: base_action_rule_triggers
+#: model:ir.model,name:base_action_rule_triggers.model_base_action_rule
+msgid "Action Rules"
+msgstr "Pravila dejanj"
+
+#. module: base_action_rule_triggers
+#: constraint:base.action.rule:0
+msgid "Error: The mail is not well formated"
+msgstr "Napaka: E-poštno sporočilo je slabo oblikovano"
+
+#. module: base_action_rule_triggers
+#: field:base.action.rule,email_template_force:0
+msgid "Send immediately"
+msgstr "Takoj pošlji"
+
+#. module: base_action_rule_triggers
+#: field:base.action.rule,trg_evalexpr_dbg:0
+msgid "Debug Evaluated expression"
+msgstr "Razhroščevanje ocenjenega izraza"
+
+#. module: base_action_rule_triggers
+#: field:base.action.rule,email_template_id:0
+msgid "E-mail template"
+msgstr "E-poštna predloga"
+
+#. module: base_action_rule_triggers
+#: help:base.action.rule,trg_evalexpr:0
+msgid ""
+"Python expression, able to use a \"new\" and \"old\" dictionaries, with the "
+"changed columns."
+msgstr ""
+"Python izraz, lahko uzporablja \"new\" in \"old\" slovarje s spremenjenimi "
+"stolpci."
+
+#. module: base_action_rule_triggers
+#: constraint:base.action.rule:0
+msgid "Error: Your evaluated expression is not valid!"
+msgstr "Napaka: Vaš ocenjeni izraz ni veljaven!"
+
+#. module: base_action_rule_triggers
+#: help:base.action.rule,trg_evalexpr_dbg:0
+msgid ""
+"Write detailed information to log, to help debugging trigger expressions."
+msgstr ""
+"Zapiši podrobne podatke v dnevnik za pomoč razhroščevanju sprožilnih izrazov."
+
+#. module: base_action_rule_triggers
+#: model:ir.model,name:base_action_rule_triggers.model_res_users
+msgid "res.users"
+msgstr "res.users"
+
+#. module: base_action_rule_triggers
+#: constraint:res.users:0
+msgid "The chosen company is not in the allowed companies for this user"
+msgstr "Izbrano podjetje ni v dovoljenih podjetjih za tega uporabnika"
+
+#. module: base_action_rule_triggers
+#: view:base.action.rule:0 field:base.action.rule,trg_evalexpr:0
+msgid "Evaluated expression"
+msgstr "Ocenjeni izraz"
+
+#. module: base_action_rule_triggers
+#: view:base.action.rule:0
+msgid "E-mail template for message to send"
+msgstr "E-poštna predloga sporočila za pošiljanje"

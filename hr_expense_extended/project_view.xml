@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+        <record id="project_task_expenses_view" model="ir.ui.view">
+            <field name="name">project.task.expenses</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <!--<field name="type">form</field>-->
+            <field name="arch" type="xml">
+                <page string="Extra Info" position="after">
+                    <page string="Expenses" groups="base.group_extended" >
+                        <field name="expense_line_ids" nolabel="1" context="{}">
+                            <form string="Expense">
+                                <group colspan="4" col="6">
+                                    <field name="product_id" required="True" on_change="onchange_product_id(product_id, uom_id, parent.user_id, context)" />
+                                    <field name="name" />
+                                    <field name="payer" />
+                                    <field name="unit_amount" />
+                                    <field name="unit_quantity" />
+                                    <field name="task_id" invisible="True" />
+                                    <field name="date_value" required="True" />
+                                    <field name="uom_id" invisible="True" />
+                                </group>
+                            </form>
+                            <tree string="Expenses">
+                                <field name="date_value" required="True" />
+                                <field name="name" />
+                                <field name="payer" />
+                                <field name="unit_amount" />
+                                <field name="unit_quantity" />
+                                <field name="total_amount" sum="Total"/>
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

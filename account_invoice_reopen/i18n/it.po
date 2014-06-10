@@ -1,0 +1,93 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_invoice_reopen
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-16 11:12+0000\n"
+"PO-Revision-Date: 2013-09-16 11:12+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_invoice_reopen
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr "Nell'azienda il numero fattura dev'essere univoco!"
+
+#. module: account_invoice_reopen
+#: view:account.invoice:0
+msgid "Reset to Draft"
+msgstr "Reimposta a 'Bozza'"
+
+#. module: account_invoice_reopen
+#: code:addons/account_invoice_reopen/account_invoice.py:88
+#: code:addons/account_invoice_reopen/account_invoice.py:94
+#: code:addons/account_invoice_reopen/account_invoice.py:128
+#, python-format
+msgid "Error !"
+msgstr "Errore !"
+
+#. module: account_invoice_reopen
+#: view:account.invoice:0
+msgid "Reset To Draft"
+msgstr "Reimposta a Bozza"
+
+#. module: account_invoice_reopen
+#: model:ir.model,name:account_invoice_reopen.model_account_journal
+msgid "Journal"
+msgstr "Sezionale"
+
+#. module: account_invoice_reopen
+#: sql_constraint:account.journal:0
+msgid "The name of the journal must be unique per company !"
+msgstr "Il nome del sezionale deve essere unico per ogni azienda!"
+
+#. module: account_invoice_reopen
+#: code:addons/account_invoice_reopen/account_invoice.py:81
+#, python-format
+msgid "Invalid"
+msgstr "Invalido"
+
+#. module: account_invoice_reopen
+#: code:addons/account_invoice_reopen/account_invoice.py:88
+#, python-format
+msgid "You can not reopen invoice of this journal [%s]! You need to need to set \"Allow Update Posted Entries\" first"
+msgstr "Non puoi riaprire la fattura del sezionale [%s]! Devi selezionare prima nel sezionale\"Permetti Aggiornamento\" "
+
+#. module: account_invoice_reopen
+#: code:addons/account_invoice_reopen/account_invoice.py:94
+#, python-format
+msgid "You can not reopen an invoice which is partially paid! You need to unreconcile related payment entries first!"
+msgstr "Non si può riaprire una fattura parzialmente pagata! Devi prima eliminare i relativi pagamenti!"
+
+#. module: account_invoice_reopen
+#: model:ir.model,name:account_invoice_reopen.model_account_invoice
+msgid "Invoice"
+msgstr "Fattura"
+
+#. module: account_invoice_reopen
+#: sql_constraint:account.journal:0
+msgid "The code of the journal must be unique per company !"
+msgstr "Il codice del sezionale deve essere unico per una stessa azienda!"
+
+#. module: account_invoice_reopen
+#: field:account.journal,reopen_posted:0
+msgid "Allow Update of Posted Entries"
+msgstr "Permetti Aggiornamento"
+
+#. module: account_invoice_reopen
+#: code:addons/account_invoice_reopen/account_invoice.py:128
+#, python-format
+msgid "You can not reopen an invoice if the journal is set to skip draft!"
+msgstr "Non puoi riaprire una fattura se nel sezionale è settato \"Salta lo stato 'Bozza' per le registrazioni manuali!\" "
+
+#. module: account_invoice_reopen
+#: help:account.journal,reopen_posted:0
+msgid "Allows to reopen posted invoices, sets the move state to unposted"
+msgstr "Permette di riaprire fatture confermate, modificando anche i movimenti di magazzino"

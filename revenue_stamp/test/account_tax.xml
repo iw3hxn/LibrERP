@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+       <record id="base_code_id_esca" model="account.tax.code">
+            <field name="name">imponibile esc%</field>
+        </record>
+        <record id="tax_code_id_esca" model="account.tax.code">
+            <field name="name">IVA esc%</field>
+            <field name="stamp_in_invoice">True</field>
+        </record>
+        <record id="tax_esc" model="account.tax">
+            <field name="name">esc %</field>
+            <field name="amount">0</field>
+            <field name="base_code_id" eval="base_code_id_esca"/>
+            <field name="tax_code_id" eval="tax_code_id_esca"/>
+        </record>
+       <record id="base_code_id_22a" model="account.tax.code">
+            <field name="name">imponibile 22%</field>
+        </record>
+        <record id="tax_code_id_22a" model="account.tax.code">
+            <field name="name">IVA 22%</field>
+        </record>
+        <record id="tax_22" model="account.tax">
+            <field name="name">22 %</field>
+            <field name="amount">0.22</field>
+            <field name="base_code_id" eval="base_code_id_22a"/>
+        </record>
+        <record id="unique_revenue_product" model="unique.revenue.product">
+            <field name="name">Marca da bollo</field>
+            <field name="unique_revenue_stamp">True</field>
+        </record>
+        <record id="product_revenue_stamp1" model="product.product">
+            <field name="default_code">Bollo</field>
+            <field name="list_price">2.0</field>
+            <field name="standard_price">2.0</field>
+            <field name="name">Marca da Bollo</field>
+            <field name="type">consu</field>
+            <field eval="False" name="purchase_ok"/>
+            <field eval="False" name="sale_ok"/>
+            <field name="unique_revenue_stamp_id" ref="unique_revenue_product"></field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>        
+        
+        <!--views-->
+        <record id="view_project_plant_type_form" model="ir.ui.view">
+            <field name="name">project.plant.type.form</field>
+            <field name="model">project.plant.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Project Plant Type">
+                    <field name="name" />
+                    <field name="color" />
+                    <newline/>
+                    <separator string="Departments" colspan="4" col="4" />
+                    <field name="department_ids" nolabel="1" colspan="4"  />
+                </form>
+            </field>
+        </record>
+        <record id="view_project_plant_type_tree" model="ir.ui.view">
+            <field name="name">project.plant.type.tree</field>
+            <field name="model">project.plant.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Project Plant Type" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="name" />
+                    <field name="row_color" invisible="1" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_project_plant_type_filter" model="ir.ui.view">
+            <field name="name">project.plant.type.select</field>
+            <field name="model">project.plant.type</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Project Plant Type">
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_project_pant_type">
+            <field name="name">Plant Types</field>
+            <field name="res_model">project.plant.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_project_plant_type_tree"/>
+            <field name="search_view_id" ref="view_project_plant_type_filter"/>
+        </record>
+        
+        <menuitem name="Plant Types" id="menu_project_plant_type"  parent="project.menu_definitions"
+            action="action_project_pant_type" sequence="5" groups="project_place.group_plant_manager"/>
+        
+        
+        <record id="view_project_plant_form" model="ir.ui.view">
+            <field name="name">project.plant.form</field>
+            <field name="model">project.plant</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Project Plant">
+                    <field name="code" />
+                    <field name="plant_type_id" widget="selection" />
+                    <field name="plant_agreement_id" widget="selection" />
+                    <field name="place_id" invisible="1"/>
+                    <newline />
+                    <notebook colspan="6">
+                        <page string="General" >
+                            <group colspan="2" col="4">
+                                <separator string="Address" colspan="4" col="4" />
+                                <field name="street"/><newline/>
+                                <label string="Street2 : " align="1.0"/>
+                                <group colspan="1" col="2">
+                                    <field name="street2" nolabel="1"/>
+                                </group>
+                                <newline/>
+                                <field name="zip" on_change="on_change_zip(zip)" />
+                                <field name="city" on_change="on_change_city(city,zip)"/> 
+                                <field name="find_city" invisible="1" />   
+                                <field name="province" on_change="on_change_province(province)" attrs="{'readonly':[('find_city','!=',False)]}"/>
+                                <field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}"/>
+                                <field name="country_id" completion="1" attrs="{'readonly':[('region','!=',False)]}"/>
+                            </group>
+                            <group colspan="2" col="4" >
+                                <separator string="Service Options" colspan="4" col="4" />
+                                <field name="ticket_close_time_out" widget="float_time"/>
+                                <field name="ticket_approve_time_out" widget="float_time"/>
+                            </group>
+                            <!--<group colspan="2" col="4">-->
+                            <!--    <field name="lat" colspan="1"/>-->
+                            <!--    <field name="lng" colspan="1"/>-->
+                            <!--    <field name="map" widget="gmap" colspan="6"/>-->
+                            <!--</group>-->
+                        </page>
+                        <page string="Products">
+                            <separator string="Products In Stock" colspan="4" />
+                            <field name="stock_move_in_ids" nolabel="1" colspan="4">
+                                <tree colors="grey:state in ('cancel');red:(state not in ('cancel','done')) and date > current_date" string="Products at Place" >
+                                    <field name="name"/>
+                                    <field name="picking_id" string="Reference"/>
+                                    <field name="origin"/>
+                                    <field name="create_date" invisible="1"/>
+                                    <field name="partner_id" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="product_qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)"/>
+                                    <field name="product_uom" string="UoM"/>
+                                    <field name="product_uos" groups="product.group_uos"/>
+                                    <field name="prodlot_id" groups="base.group_extended"/>
+                                    <field name="tracking_id" groups="base.group_extended" />
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="date"/>
+                                    <field name="date_expected" invisible="1"/>
+                                    <field name="state"/>
+                                    <field name="invoice_state"/>
+                                </tree>
+                            </field>
+                            <separator string="Products Return Stock" colspan="4" />
+                            <field name="stock_move_out_ids" nolabel="1" colspan="4">
+                                <tree colors="grey:state in ('cancel');red:(state not in ('cancel','done')) and date > current_date" string="Products at Place" >
+                                    <field name="name"/>
+                                    <field name="picking_id" string="Reference"/>
+                                    <field name="origin"/>
+                                    <field name="create_date" invisible="1"/>
+                                    <field name="partner_id" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="product_qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)"/>
+                                    <field name="product_uom" string="UoM"/>
+                                    <field name="product_uos" groups="product.group_uos"/>
+                                    <field name="prodlot_id" groups="base.group_extended"/>
+                                    <field name="tracking_id" groups="base.group_extended" />
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="date"/>
+                                    <field name="date_expected" invisible="1"/>
+                                    <field name="state"/>
+                                    <field name="invoice_state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        
+<!--                        <page string="Asset">-->
+<!--                            <separator string="Asset" colspan="4" />-->
+<!--                            <field name="asset_ids" nolabel="1" colspan="4" >-->
+<!--								<tree colors="SlateBlue: is_kit == False">-->
+<!--									<field name="complete_name" />-->
+<!--									<field name="location_name" />-->
+<!--									<field name="added" string="Added" />-->
+<!--									<field name="is_kit" />-->
+<!--									<field name="have_sim" groups="hr_sim.group_sim_user"/>-->
+<!--								</tree>-->
+<!--							</field>-->
+<!--                        </page>-->
+                        
+                        <!--<page string="Images and Documents">-->
+                        <!--    <separator string="Images" colspan="4" />-->
+                        <!--    <field name="web_gallery_image_ids" nolabel="1" colspan="4"/>-->
+                        <!--    <newline />-->
+                        <!--    <separator string="Documents" colspan="4"  />-->
+                        <!--    <field name="web_gallery_doc_ids" nolabel="1" colspan="4"/>-->
+                        <!--</page>-->
+
+                       <!--<page string="Contact"> -->
+                       <!--  <field colspan="4" mode="tree,form" name="job_ids" nolabel="1">  -->
+                       <!--  <tree editable="top" string="Contacts">  -->
+                       <!--  	<field name="sequence_partner"/>  -->
+                       <!--  	<field name="contact_id" on_change="onchange_contact_id(contact_id)"/>  -->
+                       <!--  	<field name="function"/>  -->
+                       <!--  	<field name="phone"/>  -->
+                       <!--  	<field name="mobile"/> -->
+                       <!--  	<field name="fax"/>  -->
+                       <!--  	<field name="extension"/>  -->
+                       <!--  	<field name="other"/>  -->
+                       <!--     <field name="email"/>  -->
+                       <!-- </tree> -->
+                       <!-- </field> -->
+                       <!-- </page>-->
+
+                        <page string="Property"> 
+                            <field colspan="4" mode="tree,form" name="property_ids" nolabel="1">  
+                                <tree editable="top" string="Property">  
+                                    <field name="group_id" widget="selection"/>
+                                    <field name="name"/> 
+                                </tree> 
+                            </field> 
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_project_plant_tree" model="ir.ui.view">
+            <field name="name">project.plant.tree</field>
+            <field name="model">project.plant</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Project Plant" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="code" />
+                    <field name="plant_type_id" />
+                    <field name="row_color" invisible="1" />
+                    <field name="zip" />
+                    <field name="city" />
+                    <field name="province" />
+                    <field name="place_id" />
+                    <field name="ticket_close_time_out" groups="project_place.group_plant_user_sla" />
+                    <field name="ticket_approve_time_out" groups="project_place.group_plant_user_sla" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_project_plant_filter" model="ir.ui.view">
+            <field name="name">project.plant.select</field>
+            <field name="model">project.plant</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Project Plant">
+                    <field name="code" />
+                    <field name="plant_type_id" widget="selection" />
+                    <field name="province" />
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_project_plant">
+            <field name="name">Plant</field>
+            <field name="res_model">project.plant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'nocreate': '1'}</field>
+            <field name="view_id" ref="view_project_plant_tree"/>
+            <field name="search_view_id" ref="view_project_plant_filter"/>
+        </record>
+        
+        <menuitem name="Plant" id="menu_project_plant"  parent="project.menu_project_management"
+            action="action_project_plant" sequence="5" groups="project_place.group_plant_user"/>
+        
+        <record id="view_project_place_form" model="ir.ui.view">
+            <field name="name">project.place.form</field>
+            <field name="model">project.place</field>
+            <field name="type">form</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+
+            <form string="Project Place">
+                    <group colspan="4" col="6">
+                        <field name="name" required="1"/>
+                        <field name="code" required="1"/>
+                        <field name="partner_id" required="1"/>
+                    </group>
+                    <group colspan="2" col="2">    
+                        <field name="place_type_id" widget="selection" on_change="onchange_place_type_id(place_type_id)" />
+                        <field name="place_type_need_more_info" invisible="1" />
+                        <field name="place_type_more" attrs="{'invisible': [('place_type_need_more_info','=',False)]}" nolabel="1"/>
+                    </group>
+                    <newline/>
+                    <notebook colspan="6">
+                        <page string="General">
+                            <group colspan="2" col="4">
+                                <separator string="Address" colspan="4" col="4"/>
+                                <field name="street"/>
+                                <field name="street2"/>
+                                <newline/>
+                                <field name="zip" on_change="on_change_zip(zip)" />
+                                <field name="city" on_change="on_change_city(city,zip)"/>
+                                <field name="find_city" invisible="1" />
+                                <field name="province" on_change="on_change_province(province)" attrs="{'readonly':[('find_city','!=',False)]}"/>
+                                <field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}"/>
+                                <field name="country_id" completion="1" attrs="{'readonly':[('region','!=',False)]}"/>
+                            </group>
+                            <group colspan="2" col="4">
+                                <separator string="Contatti"  colspan="4" col="4"/>
+                                <field name="phone"/>
+                                <field name="fax"/>
+                                <field name="mobile" />
+                                <field name="email"/>
+                            </group>
+
+                            <group colspan="4" col="4">
+                                <separator string="Note"  colspan="4" col="4" />
+                                <field name="note" nolabel="1"/>
+                            </group>
+                            <group colspan="4" col="4" groups="project_place.group_plant_user">
+                                <separator string="Plants" colspan="4" col="4"/>
+                                <field name="plant_ids" colspan="4" nolabel="1" context="{'default_place_id': active_id}"/>
+                            </group>
+                        </page>
+                        <page string="Contact" groups="project_place.group_place_extended">
+                            <field colspan="4" mode="tree,form" name="contact_ids" nolabel="1">
+                                <tree string="Contacts" editable="top">
+                                    <field name="title"/>
+                                    <field name="last_name" select="1"/>
+                                    <field name="first_name" select="1"/>
+                                    <field name="function_id"/>
+                                    <field name="mobile"/>
+                                    <field name="email"/>
+                                    <field name="lang_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Projects" groups="project_place.group_place_extended">
+                            <separator string="Projects " colspan="4"/>
+                            <field name="project_ids" colspan="4" nolabel="1"/>
+                        </page>
+                        <page string="Products" groups="project_place.group_place_extended">
+                            <separator string="Products In Stock" colspan="4"/>
+                            <field name="stock_move_in_ids" nolabel="1" colspan="4">
+                                <tree colors="grey:state in ('cancel');red:(state not in ('cancel','done')) and date &gt; current_date" string="Products at Place">
+                                    <field name="name"/>
+                                    <field name="picking_id" string="Reference"/>
+                                    <field name="origin"/>
+                                    <field name="create_date" invisible="1"/>
+                                    <field name="partner_id" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="product_qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)"/>
+                                    <field name="product_uom" string="UoM"/>
+                                    <field name="product_uos" groups="product.group_uos"/>
+                                    <field name="prodlot_id" groups="base.group_extended"/>
+                                    <field name="tracking_id" groups="base.group_extended" />
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="date"/>
+                                    <field name="date_expected" invisible="1"/>
+                                    <field name="state"/>
+                                    <field name="invoice_state"/>
+                                </tree>
+                            </field>
+                            <separator string="Products Return Stock" colspan="4"/>
+                            <field name="stock_move_out_ids" nolabel="1" colspan="4">
+                                <tree colors="grey:state in ('cancel');red:(state not in ('cancel','done')) and date &gt; current_date" string="Products at Place">
+                                    <field name="name"/>
+                                    <field name="picking_id" string="Reference"/>
+                                    <field name="origin"/>
+                                    <field name="create_date" invisible="1"/>
+                                    <field name="partner_id" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="product_qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)"/>
+                                    <field name="product_uom" string="UoM"/>
+                                    <field name="product_uos" groups="product.group_uos"/>
+                                    <field name="prodlot_id" groups="base.group_extended"/>
+                                    <field name="tracking_id" groups="base.group_extended" />
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="date"/>
+                                    <field name="date_expected" invisible="1"/>
+                                    <field name="state"/>
+                                    <field name="invoice_state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <!--<page string="Asset">-->
+                        <!--    <separator string="Asset" colspan="4" />-->
+                        <!--    <field name="asset_ids" nolabel="1" colspan="4" >-->
+                        <!--        <tree colors="SlateBlue: is_kit == False">-->
+                        <!--            <field name="complete_name" />-->
+                        <!--            <field name="location_name" />-->
+                        <!--            <field name="added" string="Added" />-->
+                        <!--            <field name="is_kit" />-->
+                        <!--            <field name="have_sim" groups="hr_sim.group_sim_user"/>-->
+                        <!--        </tree>-->
+                        <!--    </field>-->
+                        <!--</page>-->
+                        <!---->
+                        <!--<page string="Images and Documents">-->
+                        <!--    <separator string="Images" colspan="4" />-->
+                        <!--    <field name="web_gallery_image_ids" />-->
+                        <!--    <newline />-->
+                        <!--    <separator string="Documents" colspan="4"  />-->
+                        <!--    <field name="web_gallery_doc_ids" />-->
+                        <!--</page>-->
+
+                    </notebook>
+                </form>
+
+
+            </field>
+        </record>
+        
+        <record id="view_project_place_tree" model="ir.ui.view">
+            <field name="name">project.place.tree</field>
+            <field name="model">project.place</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Project Place">
+                    <field name="partner_id" />
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="zip" />
+                    <field name="street" />
+                    <field name="city" />
+                    <field name="province" />
+                    <field name="region" />
+                    
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_project_place_filter" model="ir.ui.view">
+            <field name="name">project.place.select</field>
+            <field name="model">project.place</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Project Place">
+                    <field name="partner_id" />
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="city" />
+                    <field name="province" widget="selection" />
+                    <field name="region" widget="selection"/>
+                    
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_project_place">
+            <field name="name">Place</field>
+            <field name="res_model">project.place</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_project_place_tree"/>
+            <field name="search_view_id" ref="view_project_place_filter"/>
+        </record>
+        <menuitem name="Place" id="menu_project_place"  parent="project.menu_project_management"
+            action="action_project_place" sequence="5"/>
+           
+        
+        
+        <record id="view_plant_property_group_tree" model="ir.ui.view">
+            <field name="name">plant.property.group.tree</field>
+            <field name="model">plant.property.group</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Plant Property Group" editable="top">
+                    <field name="name" />
+                    <field name="description" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_plant_property_group_form" model="ir.actions.act_window">
+            <field name="name">Plant Property Group</field>
+            <field name="res_model">plant.property.group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_plant_property_group_form" name="Plant Property Group"
+                  parent="project.menu_definitions" action="action_view_plant_property_group_form"
+                  groups="project_place.group_plant_manager"/>
+        
+        <record id="view_place_type_tree" model="ir.ui.view">
+            <field name="name">project.place.type.tree</field>
+            <field name="model">project.place.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Place Type" editable="top">
+                    <field name="name" />
+                    <field name="need_more_info" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_place_type_form" model="ir.actions.act_window">
+            <field name="name">Place Type</field>
+            <field name="res_model">project.place.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <menuitem id="menu_place_type_form" name="Place Type"
+                  parent="project.menu_definitions" action="action_view_place_type_form"
+                  groups="project_place.group_place_manager"/>
+
+    </data>
+</openerp>

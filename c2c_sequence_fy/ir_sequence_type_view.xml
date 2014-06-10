@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+    <!-- sequence type -->
+    <record model="ir.ui.view" id="c2c_sequence_type_form_view">
+      <field name="name">sequence.type.pattern.form</field>
+      <field name="model">ir.sequence.type</field>
+      <field name="inherit_id" ref="base.sequence_type_form_view"/>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <field name="code" position="after">
+          <field name="prefix_pattern"/>
+          <field name="suffix_pattern"/>
+          <field name="create_sequence"/>
+        </field>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="c2c_sequence_type_tree_view">
+      <field name="name">sequence.type.view.tree</field>
+      <field name="model">ir.sequence.type</field>
+      <field name="inherit_id" ref="base.sequence_type_tree_view"/>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <field name="code" position="after">
+          <field name="prefix_pattern"/>
+          <field name="suffix_pattern"/>
+          <field name="create_sequence"/>
+        </field>
+      </field>
+    </record>
+  </data>
+</openerp>

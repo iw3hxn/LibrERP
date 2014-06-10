@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<openerp>
+    <data>
+        <record id="google_meeting_cron" model="ir.cron">
+            <field name="name">Synchro Google meetings</field>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model" eval="'project.task'" />
+            <field name="function" eval="'synchro_scheduler'"/>
+            <field name="args" eval="'()'"/>
+        </record>
+    </data>
+</openerp>

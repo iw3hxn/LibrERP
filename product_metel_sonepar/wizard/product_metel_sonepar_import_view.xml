@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	ATTENZIONE:
+	nella lista di file XML presente alla voce update_xml del dictionary nel file __openrp__.py
+	del modulo product_metel IL PRESENTE FILE VA INSERITO IN LISTA PRIMA DEI FILES CHE CONTENGONO
+	DEFINIZIONI CHE RIFERISCONO GLI IDs QUI DICHIARATI, quindi il file metel_view.xml
+-->
+<openerp>
+    <data>
+		<!-- Wizard: schermata che chiede percorso del file ed encoding del testo -->
+		<record id="view_product_metel_sonepar_import_form" model="ir.ui.view">
+			<!-- Nome della vista -->
+			<field name="name">product.metel.sonepar.import.form</field>
+			<!-- Modello (tabella del BD) di cui la vista visualizza i dati -->
+			<field name="model">product.metel.sonepar.import</field>
+			<!-- Tipo di vista, ovvero architettura principale della vista, in questo caso è un form -->
+			<field name="type">form</field>
+			<field name="mode">form</field>
+			<!-- Specifica della struttura della vista usando XML -->
+			<field name="arch" type="xml">
+				<!-- Inizio della descrizione della struttura della vista -->
+				<form>
+					<!-- Invisible field used for hiding and showing widgets based on state value and accessing preview text -->
+					<field name="state" invisible="1"/>
+					<field name="preview_text_original" invisible="1"/>
+					<!-- Items visibles in state "import" -->
+					<group colspan="8" col="8" states="import">
+						<field name="huge" />
+						<field name="file_path" attrs="{'invisible': [('huge','=',False)]}" />
+						<!-- Percorso del file e codifica con cui importarlo -->
+						<field name="pricelist_base64" attrs="{'invisible': [('huge','=',True)]}"/>
+						<!-- Fornitore -->
+						<field name="supplier" domain="[('supplier','=','True'),]"/>
+					</group>
+					
+					<!-- Items visibles in state "preview" -->
+					<!-- Textbox per la preview -->
+					<!--<group colspan="8" col="8" states="preview">-->
+						<!-- Box del testo decodificato -->
+						<!--<field name="preview_text_decoded" nolabel="1"/>-->
+					<!--</group>-->
+					
+					<!-- Items visibles in state "import" e "preview" -->
+					<group colspan="4" col="4" states="import,preview">
+						<!-- Scelta dell'encoding -->
+						<field name="text_encoding" on_change="onChangeEncoding(context, text_encoding, state)"/>
+				    </group>
+				   
+				    <!-- Items per lo stato end -->
+				    <group colspan="8" col="8" states="end">
+						<label string="Importing METEL pricelist. You will be notified with a message when the import rocess is finished"/>
+					</group>
+				   
+				    <!-- Separatore --> 
+					<group colspan="8" col="8">    
+						<separator string="" colspan="8"/>
+						<label colspan="6" width="220"/>
+					</group>
+					
+					<!-- Pulsanti per lo stato "import" -->
+					<group colspan="8" col="8" states="import">
+						<button icon="gtk-cancel" special="cancel" string="Cancel"/>
+						<button type="object" name="actionCheckEncoding" string="Start import" icon="gtk-ok"/>
+					</group>
+					
+					<!-- Pulsanti per lo stato "preview" -->
+					<group colspan="8" col="8" states="preview">
+						<separator string="" colspan="8"/>
+						<label colspan="6" width="220"/>
+						<button icon="gtk-cancel" special="cancel" string="Cancel"/>
+						<button type="object" name="actionStartImport" string="Start import" icon="gtk-ok"/>
+					</group>
+					
+					<!-- Items visibles in state "end" -->
+					<group colspan="8" col="8" states="end">
+						<button icon="gtk-ok" special="cancel" string="Close"/>
+					</group>
+				</form>
+			</field>
+		</record>
+		
+		<!-- Azione per aprire il wizard, questa azione viene associata ad una voce di menu definita in product_metel/metel_view.xml -->
+		<record id="action_product_metel_import" model="ir.actions.act_window">
+			<field name="name">Import METEL Sonepar pricelist</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">product.metel.sonepar.import</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<!-- Non è necessario specificare la view_id perchè c'è una sola view per product.metel.import -->
+			<!-- <field name="view_id" ref="view_product_metel_import_form"/> -->
+			<field name="target">new</field>	<!-- This line identify this action as an action that starts a wizard -->
+		</record>
+    </data>
+</openerp>

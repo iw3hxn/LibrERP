@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <!-- 
+        <record id="view_asset_location_form" model="ir.ui.view">
+            <field name="name">stock.location.form</field>
+            <field name="model">stock.location</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Stock Location">
+                    <group col="2" colspan="2">
+                        <separator string="Location" colspan="2"/>
+                        <field name="name"/>
+                        <field name="arch" type="xml">
+                            <data>
+                                <field name="usage" position="replace" />
+                                <field name="location_id" position="replace" />
+                            </data>
+                        </field>
+                    </group>
+                    <group col="4" colspan="2">
+                        <separator string="Additional Information" colspan="4"/>
+                        <field name="arch" type="xml">
+                            <field name="address_id" position="replace" />
+                        </field>
+                        <field name="company_id" groups="base.group_multi_company" widget="selection" colspan="4"/>
+                        <field name="icon" groups="base.group_extended" colspan="4"/>
+                        <field name="scrap_location" groups="base.group_extended"/>
+                        <field name="active" groups="base.group_extended"/>
+                    </group>
+                    <group col="2" colspan="2" groups="base.group_extended">
+                        <separator string="Chained Locations" colspan="2"/>
+                        <field name="chained_location_type"/>
+                        <field name="chained_location_id"  attrs="{'required':[('chained_location_type','=','fixed')], 'invisible':[('chained_location_type','!=','fixed')]}" string="Chained Location"/>
+                        <field name="chained_auto_packing"/>
+                        <field name="chained_delay"/>
+                        <field name="chained_journal_id"/>
+                        <field name="chained_picking_type"/>
+                        <field name="chained_company_id" widget="selection"/>
+                    </group>
+                    <group col="2" colspan="2">
+                        <separator string="Localization" colspan="2"/>
+                        <field name="posx"/>
+                        <field name="posy"/>
+                        <field name="posz"/>
+                        <separator string="Accounting Information" colspan="2" groups="base.group_extended"/>
+                        <field name="valuation_in_account_id" attrs="{'readonly':[('usage','not in',('inventory','production'))]}" groups="base.group_extended"/>
+                        <field name="valuation_out_account_id" attrs="{'readonly':[('usage','not in',('inventory','production'))]}" groups="base.group_extended"/>
+                    </group>
+                    <separator string="Additional Information" colspan="4"/>
+                    <field colspan="4" name="comment" nolabel="1"/>
+                </form>
+            </field>
+        </record>
+        
+      -->  
+        <record id="view_asset_location_tree" model="ir.ui.view">
+            <field name="name">stock.location.tree</field>
+            <field name="model">stock.location</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <tree string="Stock Location" colors="blue:usage=='view';darkred:usage=='internal'">
+                    <field name="complete_name"/>
+                    <field name="usage" />
+                    <field name="stock_real" invisible="'product_id' not in context"/>
+                    <field name="stock_virtual" invisible="'product_id' not in context"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_assets_location_tree">
+            <field name="name">Locations</field>
+            <field name="res_model">stock.location</field>
+            <field name="view_id" ref="view_asset_location_tree"  />
+            <field name="domain">[('usage','=','assets'),]</field>
+        </record>
+        
+        <menuitem name="Locations" parent="material_asset.menu_asset_config" id="asset_locations_menu" action="action_assets_location_tree" />
+        
+     </data>
+</openerp>    

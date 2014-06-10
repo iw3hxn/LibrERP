@@ -1,0 +1,150 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* hr_document
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.2\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-12-02 11:41+0000\n"
+"PO-Revision-Date: 2011-12-02 11:41+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_document
+#: model:ir.model,name:hr_document.model_hr_document
+msgid "HR Employee Document"
+msgstr "Dokumentacija zaposlenih"
+
+#. module: hr_document
+#: view:hr.document:0
+#: view:hr.employee:0
+#: field:hr.employee,document_ids:0
+msgid "Documents"
+msgstr "Dokumenti"
+
+#. module: hr_document
+#: view:hr.document.expiry.bymonth:0
+msgid "Print Attendance Report Monthly"
+msgstr "Natisni poročilo"
+
+#. module: hr_document
+#: view:hr.document:0
+#: field:hr.document,comments:0
+msgid "Comments"
+msgstr "Komentarji"
+
+#. module: hr_document
+#: field:hr.document,employee_id:0
+#: model:ir.model,name:hr_document.model_hr_employee
+msgid "Employee"
+msgstr "Uslužbenec"
+
+#. module: hr_document
+#: view:hr.document:0
+msgid "Details"
+msgstr "Podrobnosti"
+
+#. module: hr_document
+#: view:hr.document.expiry.bymonth:0
+msgid "Print"
+msgstr "Natisni"
+
+#. module: hr_document
+#: view:hr.document:0
+#: field:hr.document,name:0
+msgid "Document"
+msgstr "Dokument"
+
+#. module: hr_document
+#: constraint:hr.document:0
+msgid "Error! Documents start date must be lower then contract end date."
+msgstr "Napaka! Datum začetka mora biti pred datumom zapadlosti."
+
+#. module: hr_document
+#: field:hr.document,active:0
+msgid "Active"
+msgstr "Aktivno"
+
+#. module: hr_document
+#: model:ir.model,name:hr_document.model_hr_document_expiry_bymonth
+msgid "Print Monthly Document Expiry Report"
+msgstr "Natisni poročilo o zapadlosti dokumentov"
+
+#. module: hr_document
+#: constraint:hr.employee:0
+msgid "Error ! You cannot create recursive Hierarchy of Employees."
+msgstr "Napaka ! Ni možno ustvariti rekurzivne hierarhije zaposlenih"
+
+#. module: hr_document
+#: field:hr.document,valid_start_date:0
+#: field:hr.document.expiry.bymonth,date_from:0
+msgid "Valid Start Date"
+msgstr "Datum izdaje"
+
+#. module: hr_document
+#: constraint:hr.employee:0
+msgid "Error ! You cannot select a department for which the employee is the manager."
+msgstr "Napaka ! Izbira oddelka, kjer je zaposleni hkrati manager, ni možna."
+
+#. module: hr_document
+#: model:ir.actions.act_window,name:hr_document.open_module_tree_document
+#: model:ir.ui.menu,name:hr_document.menu_hr_document_tree
+msgid "Employees's Documents"
+msgstr "Dokumentacija zaposlenih"
+
+#. module: hr_document
+#: field:hr.document.type,code:0
+msgid "Code"
+msgstr "Koda"
+
+#. module: hr_document
+#: view:hr.document.type:0
+msgid "Define document type"
+msgstr "Definiraj tip dokumenta"
+
+#. module: hr_document
+#: model:ir.model,name:hr_document.model_hr_document_type
+msgid "Documents Types"
+msgstr "Tipi dokumentov"
+
+#. module: hr_document
+#: model:ir.actions.act_window,name:hr_document.action_hr_document_expire_bymonth
+msgid "Document Expire Report Monthly"
+msgstr "Poročilo o zapadlosti dokumentov"
+
+#. module: hr_document
+#: field:hr.document,valid_end_date:0
+#: field:hr.document.expiry.bymonth,date_to:0
+msgid "Valid End Date"
+msgstr "Datum veljavnosti"
+
+#. module: hr_document
+#: field:hr.document,has_date_option:0
+#: field:hr.document.type,has_date_option:0
+msgid "Has date options ?"
+msgstr "Ima rok veljavnosti ?"
+
+#. module: hr_document
+#: view:hr.document.expiry.bymonth:0
+msgid "Cancel"
+msgstr "Prekliči"
+
+#. module: hr_document
+#: field:hr.document,document_type_id:0
+#: view:hr.document.type:0
+#: field:hr.document.type,name:0
+#: model:ir.actions.act_window,name:hr_document.open_module_tree_document_type
+#: model:ir.ui.menu,name:hr_document.menu_hr_document_type_tree
+msgid "Document Type"
+msgstr "Tip dokumenta"
+
+#. module: hr_document
+#: model:ir.actions.act_window,name:hr_document.open_module_tree_my_document
+#: model:ir.ui.menu,name:hr_document.menu_my_hr_document_tree
+msgid "My Documents"
+msgstr "Moji dokumenti"

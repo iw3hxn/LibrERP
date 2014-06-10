@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="0">
+		
+		<record model="ir.module.category" id="hr_sim.module_category_sim">
+			<field name="name">Sim</field>
+			<field name="description">Extend groups for SIM</field>
+			<field name="sequence">30</field>
+		</record>
+		 
+        <record model="res.groups" id="group_sim_manager">
+        	<field name="name">Sim / Manager</field>
+			<field name="category_id" ref="hr_sim.module_category_sim"/>
+		</record>
+        
+        <record model="res.groups" id="group_sim_super_manager">
+            <field name="name">Sim / Super Manager</field>
+			<field name="category_id" ref="hr_sim.module_category_sim"/>	
+        </record>
+        
+        <record model="res.groups" id="group_sim_move_manager">
+            <field name="name">Sim / Move Manager</field>
+			<field name="category_id" ref="hr_sim.module_category_sim"/>
+        </record>
+        
+        <record model="res.groups" id="group_sim_user">
+        	<field name="name">Sim / User</field>
+			<field name="category_id" ref="hr_sim.module_category_sim"/>
+        </record>
+
+		<record model="res.groups" id="group_sim_extended">
+        	<field name="name">Sim / Extended View</field>
+			<field name="category_id" ref="hr_sim.module_category_sim"/>
+        </record>
+		
+		
+		
+	</data>
+</openerp>

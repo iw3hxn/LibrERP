@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record model="ir.ui.view" id="project_task_time_control">
+            <field name="name">project.task.time.control.form</field>
+            <field name="model">project.task</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="project.view_task_form2" />
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <button name="work_start_btn" states="draft,open,working" type="object" string="Start" icon="gtk-apply"/>
+                    <button name="work_end_btn" states="working" type="object" string="Stop" icon="gtk-cancel" context="{'default_task_id': active_id}" />
+                </field>
+                <field name="notes" position="before">
+                    <field name="other_users_ids" />
+                </field>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="project_task_time_control_tree">
+            <field name="name">project.task.time.control.tree</field>
+            <field name="model">project.task</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="project.view_task_tree2" />
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <button name="work_start_btn" states="draft,open,working" type="object" string="Start" icon="gtk-apply"/>
+                    <button name="work_end_btn" states="working" type="object" string="Stop" icon="gtk-cancel" />
+                </field>
+                <field name="project_id" position="before">
+                    <field name="working_users"/>
+                </field>
+                <xpath expr="//tree[@string='Tasks']" position="attributes">
+                    <attribute name="colors">grey:state in ('cancelled','done');blue:state == 'pending';red:date_deadline and (date_deadline&lt;current_date) and (state in ('draft','pending','open'));blue:state == ('working')</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+
+        <record model="ir.ui.view" id="project_task_time_control_tree_task_view_pannel">
+            <field name="name">project.task.time.control.tree.task.panel</field>
+            <field name="model">project.task</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="project.view_task_tree" />
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <button name="work_start_btn" states="draft,open,working" type="object" string="Start" icon="gtk-apply"/>
+                    <button name="work_end_btn" states="working" type="object" string="Stop" icon="gtk-cancel" />
+                </field>
+                <field name="project_id" position="before">
+                    <field name="working_users"/>
+                    </field>
+                <xpath expr="//tree[@string='My Tasks']" position="attributes">
+                    <attribute name="colors">red:date_deadline&lt;current_date;blue:date_deadline==current_date;black:date_deadline&gt;current_date;blue:state == ('working')</attribute>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="project_task_time_control_search_view">
+            <field name="name">project.task.time.control.search</field>
+            <field name="model">project.task</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="project.view_task_search_form" />
+            <field name="arch" type="xml">
+                <filter name="open" position="after">
+                    <filter name="working" string="Working" domain="[('state','=','working')]" help="Tasks in state working" icon="terp-camera_test"/>
+                </filter>
+                <field name="user_id" position="replace">
+                    <field name="user_id">
+                    <filter domain="['|',('user_id','=',uid),('other_users_ids','in',uid)]" help="My Tasks" icon="terp-personal"/>
+                    <filter domain="[('user_id','=',False)]" help="Unassigned Tasks" icon="terp-personal-"/>
+                 </field>
+              </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="project_task_time_control_search_view_gtd">
+                <field name="name">project.task.time.control.search_gtd</field>
+                <field name="model">project.task</field>
+                <field name="type">search</field>
+                <field name="inherit_id" ref="project_gtd.view_task_gtd_search" />
+                <field name="arch" type="xml">
+                    <filter name="open" position="after">
+                        <filter name="working" string="working" domain="[('state','=','working')]" help="Tasks in state working" icon="terp-camera_test"/>
+                    </filter>
+                </field>
+            </record>
+            
+        <record model="ir.actions.act_window" id="project_gtd.open_gtd_task">
+            <field name="name">My Tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="search_view_id" ref="project_gtd.view_task_gtd_search"/>
+            <field name="context">{'set_editable':True,'set_visible':True,'gtd':True,'user_invisible':True, "search_default_open": 1}</field>
+            <field name="domain">['|',('user_id','=',uid),('other_users_ids','in',uid)]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,gantt,graph,kanban</field>
+        </record>
+
+        <record id="project.my_open_tasks_action" model="ir.actions.act_window">
+            <field name="name">My Open Tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['|',('user_id','=',uid),('other_users_ids','in',uid),('state','in',['open','working'])]</field>
+            <field name="view_id" ref="project.view_task_tree"/>
+        </record>
+
+    </data>
+</openerp>
+

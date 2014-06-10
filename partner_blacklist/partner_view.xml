@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="base.view_partner_tree" model="ir.ui.view">
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                    <tree string="Partners" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                        <field name="name"/>
+                        <field name="ref" groups="base.group_extended"/>
+                        <field name="phone"/>
+                        <field name="email"/>
+                        <field name="city"/>
+                        <field name="country"/>
+                        <field name="user_id"/>
+                        <field name="blacklist" invisible="1"/>
+                        <field name="row_color" invisible="1" />
+                    </tree>
+            </field>
+        </record>                        
+        
+        <record id="view_partner_warning_form_in" model="ir.ui.view">
+            <field name="name">res.partner.warning.form.inherit.in</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.view_res_partner_reconcile"/>
+            <field name="arch" type="xml">
+                <field name="last_reconciliation_date" position="after" >
+                    <field name="blacklist" on_change="onchange_blacklist(blacklist)"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

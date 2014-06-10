@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+	
+		<record model="ir.ui.view" id="res_letter_in_search_view">
+			<field name="name">res.letter.search</field>
+			<field name="model">res.letter</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="Letters" >
+					
+					<filter name="action_rec_draft"
+							domain="[('state','=','draft')]"
+							icon="terp-document-new" 
+							string="Draft"/>
+					
+					<filter name="action_rec_ret"
+							domain="[('state','=','rec')]"
+							icon="STOCK_OK" 
+							string="Received"/>
+					
+					<filter name="action_rec_ret"
+							domain="[('state','=','rec_ret')]"
+							icon="STOCK_UNDO" 
+							string="Received but Returned"/>
+					
+					<filter name="action_rec_bad"
+							domain="[('state','=','rec_bad')]"
+							icon="STOCK_DIALOG_WARNING" 
+							string="Received Damage"/>
+					
+					<filter name="action_rec_cancel"
+							domain="[('state','=','cancel')]"
+							icon="STOCK_CANCEL" 
+							string="Cancel"/>
+					
+					<separator orientation="vertical"/>
+										
+					<field name="name" />
+					<field name="number" />
+					<field name="move" invisible="1"/>
+					<field name="type" widget="selection"/>
+					<field name="class" widget="selection"/>
+					<newline />
+					<field name="date" />
+					<field name="partner_id" widget="many2one"/>
+					<field name="user_id" widget="selection"/>
+					<field name="channel_id" widget="selection"/>
+					<field name="company_id" widget="selection"/>
+					<field name="row_color" invisible="1"/>
+				</search>
+			</field>
+		</record>
+	
+		<record model="ir.ui.view" id="res_letter_in_tree_view">
+			<field name="name">res.letter.tree</field>
+			<field name="model">res.letter</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Letters" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';" >
+
+					<field name="name" />
+					<field name="number" />
+					<field name="move" invisible="1"/>
+					<field name="type" />
+					<field name="class" />
+					<field name="date" />
+					<field name="partner_id" />
+					<field name="user_id" />
+					<field name="state" />
+					<field name="active" invisible="1"/>
+					<field name="channel_id" />
+					<field name="company_id" />
+					<field name="row_color" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="res_letter_in_form_view">
+			<field name="name">res.letter.form</field>
+			<field name="model">res.letter</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Letter">
+					<group col="4" colspan="2">
+						<field name="number" select="1" readonly="1" />
+						<field name="move" select="1" invisible="1" />
+					</group>
+					<group col="6" colspan="3">
+						<field name="name" select="1" />
+						<field name="partner_id" select="1" />
+						<field name="address_id" domain="[('partner_id','=',partner_id)]"/>
+					</group>
+					<group col="4" colspan="2">
+						<field name="type" select="1"
+							widget="selection"
+                                                        domain="[('move','=','in')]" />
+						<field name="class" select="1"
+							widget="selection"  />
+					</group>
+					<group col="6" colspan="3">
+						<field name="date" select="1"
+							string="Received Date" />
+						<field name="channel_id" select="2"
+							widget="selection" string="Inbound Source" />
+						<field name="ref_data" select="2" />
+					</group>
+					<group col="4" colspan="2">
+						<field name="weight" />
+						<field name="size" />
+					</group>
+					<group col="6" colspan="3">
+						<field name="user_id" select="2" string="Receiver"/>
+						<field name="snd_rec_id" select="2"
+							string="Received For" />
+						
+					</group>
+                    <newline/>
+					<notebook>
+						<page string="Letter Line(s)">
+							<field name="child_line" colspan="4"
+								nolabel="1" />
+						</page>
+						<page string="History">
+							<field name="history_line" colspan="4"
+								nolabel="1" >
+								<tree editable="top"> 				
+									<field name="register_id" widget="selection" />
+									<field name="name" />
+									<field name="date" />
+									<field name="user_id" widget="selection"/>
+								</tree> 
+                    
+							</field>
+						</page>
+						<page string="Extra Info.">
+							<field name="company_id" select="2"
+								widget="selection" />
+							<field name="active" select="2" />
+							<group col="4" colspan="4">
+								<separator colspan="4" string="Reference"/>
+								<field name="ref_ids" colspan="4" nolabel="1">
+									<tree string="Reference">
+										<field name="ref_name"/>
+									</tree>
+									<form string="Reference">
+										<field name="name" invisible="1"/>
+										<field name="int_ref"/>
+									</form>
+								</field>
+							</group>
+							<separator string="Note" />
+							<field name="note" select="2" colspan="4"
+								nolabel="1" />
+						</page>
+					</notebook>
+					<newline />
+					<group col="6" colspan="3">
+						<button name="action_received" states="draft"
+							string="Received" type="object" icon="STOCK_OK" />
+						<button name="action_cancel" states="draft"
+							string="Cancel" type="object" icon="STOCK_CANCEL" />
+					</group>
+					<group col="6" colspan="3">
+						<button name="action_rec_ret" states="draft"
+							string="Received but Returned" type="object" icon="STOCK_UNDO" />
+						<button name="action_rec_bad" states="draft"
+							string="Received Damage" type="object" icon="STOCK_DIALOG_WARNING" />
+						<button name="action_set_draft"
+							string="Set To Draft" type="object" icon="STOCK_CONVERT" />
+					</group>
+					<newline/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,rec,rec_bad,rec_ret,cancel" statusbar_colors='{"draft":"red","cancel":"red","rec":"green"}'/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="res_letter_in_calendar_view">
+			<field name="name">Inbound Letters Calendar</field>
+			<field name="model">res.letter</field>
+			<field name="type">calendar</field>
+			<field name="priority" eval="2" />
+			<field name="arch" type="xml">
+				<calendar string="Letteres" date_start="date"
+					color="user_id">
+					<field name="name" />
+					<field name="partner_id" />
+				</calendar>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window"
+			id="action_res_letter_in_tree_view">
+			<field name="name">Inbound Letters</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.letter</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,calendar</field>
+			<field name="domain">[('move','=','in')]</field>
+			<field name="context">{'move':'in'}</field>
+			<field name="view_id" ref="res_letter_in_tree_view" />
+			<field name="search_view_id" ref="res_letter_in_search_view" />
+		</record>
+
+		<record model="ir.actions.act_window.view"
+			id="action_res_letter_in_tree_mode">
+			<field name="sequence" eval="1" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="res_letter_in_tree_view" />
+			<field name="act_window_id"
+				ref="action_res_letter_in_tree_view" />
+		</record>
+		<record model="ir.actions.act_window.view"
+			id="action_res_letter_in_form_mode">
+			<field name="sequence" eval="2" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="res_letter_in_form_view" />
+			<field name="act_window_id"
+				ref="action_res_letter_in_tree_view" />
+		</record>
+		<record model="ir.actions.act_window.view"
+			id="action_res_letter_in_calendar_mode">
+			<field name="sequence" eval="3" />
+			<field name="view_mode">calendar</field>
+			<field name="view_id" ref="res_letter_in_calendar_view" />
+			<field name="act_window_id"
+				ref="action_res_letter_in_tree_view" />
+		</record>
+
+
+		<menuitem id="res_letter_in_menu" name="Inbound Letters"
+			parent="res_letter_menu" action="action_res_letter_in_tree_view" />
+
+		
+		
+		
+		<record model="ir.ui.view" id="res_letter_out_search_view">
+			<field name="name">res.letter.search</field>
+			<field name="model">res.letter</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="Letters" >
+					
+					<filter name="action_rec_draft"
+							domain="[('state','=','draft')]"
+							icon="terp-document-new" 
+							string="Draft"/>
+					
+					<filter name="action_rec_ret"
+							domain="[('state','=','sent')]"
+							icon="STOCK_EXECUTE" 
+							string="Sent"/>
+					
+
+					<filter name="action_rec_cancel"
+							domain="[('state','=','cancel')]"
+							icon="STOCK_CANCEL" 
+							string="Cancel"/>
+					
+					<separator orientation="vertical"/>
+					<field name="name" />
+					<field name="number" />
+					<field name="move" invisible="1"/>
+					<field name="type" widget="selection"/>
+					<field name="class" widget="selection"/>
+					<newline />
+					<field name="date" />
+					<field name="partner_id" widget="many2one"/>
+					<field name="user_id" widget="selection"/>
+					<field name="channel_id" widget="selection"/>
+					<field name="company_id" widget="selection"/>
+					<field name="row_color" invisible="1"/>
+				</search>
+			</field>
+		</record>
+
+
+
+		<record model="ir.ui.view" id="res_letter_out_tree_view">
+			<field name="name">res.letter.tree</field>
+			<field name="model">res.letter</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Letters" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+					<field name="name" />
+					<field name="number" />
+					<field name="move" invisible="1"/>
+					<field name="type" />
+					<field name="class" />
+					<field name="date" />
+					<field name="partner_id" />
+					<field name="user_id" />
+					<field name="state" />
+					<field name="active" invisible="1"/>
+					<field name="channel_id" />
+					<field name="company_id" />
+					<field name="row_color" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="res_letter_out_form_view">
+			<field name="name">res.letter.form</field>
+			<field name="model">res.letter</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Letter">
+					<group col="4" colspan="2">
+						<field name="number" select="1" readonly="1" />
+						<field name="move" select="1" invisible="1"/>
+					</group>
+					<group col="6" colspan="3">
+						<field name="name" select="1" />
+						<field name="partner_id" select="1" />
+						<field name="address_id" domain="[('partner_id','=',partner_id)]"/>
+					</group>
+					<group col="4" colspan="2">
+						<field name="type" select="1"
+							widget="selection"
+                                                        domain="[('move','=','out')]" />
+						<field name="class" select="1"
+							widget="selection" />
+					</group>
+					<group col="6" colspan="3">
+						<field name="date" select="1"
+							string="Sent Date" />
+						<field name="channel_id" select="2"
+							string="Outbound Source" widget="selection" />
+						<field name="ref_data" select="2" />
+					</group>
+					<group col="4" colspan="2">
+						<field name="weight" />
+						<field name="size" />
+					</group>
+					<group col="6" colspan="3">
+						<field name="user_id" select="2" />
+						<field name="snd_rec_id" select="2"
+							string="Send By" />
+						
+					</group>
+					<newline/>
+					<notebook>
+						<page string="Letter Line(s)">
+							<field name="child_line" colspan="4"
+								nolabel="1" />
+						</page>
+						<page string="History">
+							<field name="history_line" colspan="4"
+								nolabel="1" >
+								<tree editable="top"> 				
+									<field name="register_id" widget="selection" />
+									<field name="name" />
+									<field name="date" />
+									<field name="user_id" widget="selection"/>
+								</tree> 
+                    
+							</field>
+						</page>
+						<page string="Extra Info.">
+							<field name="company_id" select="2"
+								widget="selection" />
+							<field name="active" select="2" />
+							<group col="4" colspan="4">
+								<separator colspan="4" string="Reference"/>
+								<field name="ref_ids" colspan="4" nolabel="1">
+									<tree string="Reference">
+										<field name="ref_name"/>
+									</tree>
+									<form string="Reference">
+										<field name="name" invisible="1"/>
+										<field name="int_ref"/>
+									</form>
+								</field>
+							</group>
+							<separator string="Note" />
+							<field name="note" select="2" colspan="4"
+								nolabel="1" />
+						</page>
+					</notebook>
+					<newline />
+					<group col="6" colspan="3">
+						<button name="action_sent" states="draft"
+							string="Sent" type="object" icon="STOCK_EXECUTE" />
+						<button name="action_cancel" states="draft"
+							string="Cancel" type="object" icon="STOCK_CANCEL" />
+						<button name="action_set_draft"
+							string="Set To Draft" type="object" icon="STOCK_CONVERT" />
+					</group>
+					<newline/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,sent,cancel" statusbar_colors='{"draft":"red","cancel":"red","sent":"green"}'/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="res_letter_out_calendar_view">
+			<field name="name">Outbound Letter Calendar</field>
+			<field name="model">res.letter</field>
+			<field name="type">calendar</field>
+			<field name="priority" eval="2" />
+			<field name="arch" type="xml">
+				<calendar string="Letteres" date_start="date"
+					color="user_id">
+					<field name="name" />
+					<field name="partner_id" />
+				</calendar>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window"
+			id="action_res_letter_out_tree_view">
+			<field name="name">Outbound Letters</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.letter</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,calendar</field>
+			<field name="domain">[('move','=','out')]</field>
+			<field name="context">{'move':'out'}</field>
+			<field name="view_id" ref="res_letter_out_tree_view" />
+			<field name="search_view_id" ref="res_letter_out_search_view" />
+		</record>
+
+		<record model="ir.actions.act_window.view"
+			id="action_res_letter_out_tree_mode">
+			<field name="sequence" eval="1" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="res_letter_out_tree_view" />
+			<field name="act_window_id"
+				ref="action_res_letter_out_tree_view" />
+		</record>
+		<record model="ir.actions.act_window.view"
+			id="action_res_letter_out_form_mode">
+			<field name="sequence" eval="2" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="res_letter_out_form_view" />
+			<field name="act_window_id"
+				ref="action_res_letter_out_tree_view" />
+		</record>
+		<record model="ir.actions.act_window.view"
+			id="action_res_letter_out_calendar_mode">
+			<field name="sequence" eval="3" />
+			<field name="view_mode">calendar</field>
+			<field name="view_id" ref="res_letter_out_calendar_view" />
+			<field name="act_window_id"
+				ref="action_res_letter_out_tree_view" />
+		</record>
+
+
+		 <record id="seq_type_letter_ref_ref" model="ir.sequence.type">
+            <field name="name">Reference</field>
+            <field name="code">letter.ref</field>
+        </record>
+
+        <record id="seq_letter_ref" model="ir.sequence">
+            <field name="name">Reference</field>
+            <field name="code">letter.ref</field>
+            <field name="padding">5</field>
+        </record>
+
+		<menuitem id="res_letter_out_menu" name="Outbound Letters"
+			parent="res_letter_menu" action="action_res_letter_out_tree_view" />
+
+		<record model="ir.ui.view" id="view_employee_form_letter_inherit">
+            <field name="name">hr.employee.form.letter.inherit</field>
+            <field name="type">form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                   <page string="Letter">
+                        <field name="letter_ids" nolabel="1" />
+                  </page>
+               </notebook>
+             </field>
+       </record>
+
+
+	</data>
+</openerp>

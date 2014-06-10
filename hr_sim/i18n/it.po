@@ -1,0 +1,958 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* hr_sim
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.4\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2013-01-08 23:25+0000\n"
+"PO-Revision-Date: 2013-01-08 23:25+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Blue"
+msgstr "Blue"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_location
+#: view:res.sim.location:0
+msgid "Sim Reference Locations"
+msgstr "Sim Reference Locations"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,fax_number:0
+msgid "Fax Number"
+msgstr "NUMERO FAX"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_type
+msgid "Sim Types"
+msgstr "Tipo SIM"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Fuchsia"
+msgstr "Fuchsia"
+
+#. module: hr_sim
+#: field:wizard.print.traffic.detail,name:0
+msgid "Filename"
+msgstr "Filename"
+
+#. module: hr_sim
+#: field:res.sim.payment,jan:0
+msgid "Jan"
+msgstr "Gen"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:106
+#, python-format
+msgid "You cannot modify the Object linked to the Document Type!\n"
+"Create another Document instead !"
+msgstr "You cannot modify the Object linked to the Document Type!\n"
+"Create another Document instead !"
+
+#. module: hr_sim
+#: selection:res.sim.payment,type:0
+msgid "Supplier"
+msgstr "Fornitore"
+
+#. module: hr_sim
+#: field:res.sim.apn.management,sim_apn_group_id:0
+msgid "Group"
+msgstr "Gruppo"
+
+#. module: hr_sim
+#: field:res.sim.payment,oct:0
+msgid "Oct"
+msgstr "Ott"
+
+#. module: hr_sim
+#: view:res.sim.move.line:0
+#: field:res.sim.traffic,sim_id:0
+msgid "SIM"
+msgstr "SIM"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Brown"
+msgstr "Brown"
+
+#. module: hr_sim
+#: model:ir.ui.menu,name:hr_sim.menu_config_sim_apn_management_type
+msgid "APN Management Types"
+msgstr "Tipi di gestione APN"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "March"
+msgstr "Marzo"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_wizard_print_traffic_detail
+msgid "Print Traffic Detail"
+msgstr "Stampa Dettaglio Traffico"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Prefisso Dati"
+msgstr "Prefisso Dati"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Dark Blue"
+msgstr "Dark Blue"
+
+#. module: hr_sim
+#: selection:wizard.print.traffic.detail,state:0
+msgid "choose"
+msgstr "choose"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_traffic
+msgid "Traffic information"
+msgstr "Informazioni Traffico"
+
+#. module: hr_sim
+#: view:wizard.print.traffic.detail:0
+msgid "Download Traffic Detail"
+msgstr "Scarica il Dettaglio Traffico"
+
+#. module: hr_sim
+#: field:res.sim.payment,nov:0
+msgid "Nov"
+msgstr "Nov"
+
+#. module: hr_sim
+#: view:res.sim.apn_group:0
+#: view:res.sim.subscription.type:0
+msgid "Define subscription type"
+msgstr "Definisci il Tipo di Contratto"
+
+#. module: hr_sim
+#: field:res.sim,prefix_fax_number:0
+msgid "Prefix Fax Number"
+msgstr "NUMERO PRIMARIO"
+
+#. module: hr_sim
+#: selection:wizard.print.traffic.detail,state:0
+msgid "get"
+msgstr "get"
+
+#. module: hr_sim
+#: view:res.sim.apn_group:0
+#: field:res.sim.apn_group,management_ids:0
+msgid "Group APN Management"
+msgstr "Gestione Gruppo APN"
+
+#. module: hr_sim
+#: constraint:hr.employee:0
+msgid "Error ! You cannot select a department for which the employee is the manager."
+msgstr "Errore ! Non è possibile selezionare un dipartimento di cui il dipendente è manager."
+
+#. module: hr_sim
+#: field:res.sim.apn.management,number:0
+msgid "N. Assigned"
+msgstr "N. Assegnato"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_res_sim
+#: model:ir.ui.menu,name:hr_sim.menu_my_res_sim_tree
+msgid "My Sims"
+msgstr "Mie Sim"
+
+#. module: hr_sim
+#: field:res.sim.payment,payment_amount:0
+#: field:res.sim.traffic,amount:0
+msgid "Amount"
+msgstr "Totale"
+
+#. module: hr_sim
+#: field:res.sim.use,name:0
+msgid "Use Type"
+msgstr "Utilizzo"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Numero Primario"
+msgstr "Numero Primario"
+
+#. module: hr_sim
+#: field:res.sim,data_number:0
+msgid "Data Number"
+msgstr "NUMERO DATI"
+
+#. module: hr_sim
+#: view:hr.employee:0
+#: view:res.sim:0
+msgid "Set Detault Work-Phone"
+msgstr "Imposta il Telefono di Lavoro"
+
+#. module: hr_sim
+#: view:wizard.print.traffic.detail:0
+msgid "Select period"
+msgstr "Seleziona il Periodo"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_use
+msgid "Sim Uses"
+msgstr "Utilizzo Sim"
+
+#. module: hr_sim
+#: field:hr.employee,sim_ids:0
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_sim
+#: model:ir.ui.menu,name:hr_sim.menu_res_sim_tree
+msgid "Sims"
+msgstr "Sim"
+
+#. module: hr_sim
+#: field:res.sim,pin:0
+msgid "Pin"
+msgstr "Pin"
+
+#. module: hr_sim
+#: field:res.sim.move.line,move_id:0
+msgid "Move"
+msgstr "Spostamenti"
+
+#. module: hr_sim
+#: view:res.sim.allocation:0
+msgid "SIM moves"
+msgstr "Spostamenti SIM"
+
+#. module: hr_sim
+#: field:res.sim.move.line,datetime:0
+msgid "Datetime"
+msgstr "Data Ora"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:680
+#: field:res.sim.apn.management,warning:0
+#, python-format
+msgid "Warning"
+msgstr "Warning"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:744
+#: code:addons/hr_sim/res_sim.py:749
+#, python-format
+msgid "Warning!"
+msgstr "Warning!"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_sim_apn_management_type
+#: model:ir.model,name:hr_sim.model_res_sim_apn_management_type
+#: field:res.sim.apn.management,name:0
+#: view:res.sim.apn.management.type:0
+#: field:res.sim.apn.management.type,name:0
+msgid "APN Management Type"
+msgstr "Tipi di gestione APN"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:555
+#: code:addons/hr_sim/res_sim.py:620
+#: code:addons/hr_sim/res_sim.py:627
+#, python-format
+msgid "Operation forbidden"
+msgstr "Operazione Non Permessa"
+
+#. module: hr_sim
+#: selection:res.sim.payment,type:0
+msgid "Sum"
+msgstr "Somma"
+
+#. module: hr_sim
+#: field:res.sim.apn.management,limit:0
+msgid "MB limit"
+msgstr "MB limit"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_view_sim_move_form
+#: model:ir.ui.menu,name:hr_sim.menu_sim_move_view
+msgid "SIM Moves"
+msgstr "Spostamenti SIM"
+
+#. module: hr_sim
+#: field:res.sim.payment,sum_of_year:0
+msgid "Sum of Years"
+msgstr "Somma Anno"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Numero Dati"
+msgstr "Numero Dati"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:556
+#, python-format
+msgid "You are not allowed to change type or year for type once it defined as sum."
+msgstr "Non è permesso cambiare tipo o anno se si era già definito come Somma."
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_hr_employee
+#: field:res.sim,employee_id:0
+msgid "Employee"
+msgstr "Dipendente"
+
+#. module: hr_sim
+#: field:res.sim.payment,type:0
+msgid "Type"
+msgstr "Tipo"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Red"
+msgstr "Red"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:106
+#, python-format
+msgid "Error !"
+msgstr "Errore !"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:749
+#, python-format
+msgid "SIM Allocation can't be modified."
+msgstr "La locazione della SIM non può esser modificata."
+
+#. module: hr_sim
+#: field:res.sim,united_fax_number:0
+msgid "Fax number"
+msgstr "Numero Fax"
+
+#. module: hr_sim
+#: field:res.sim,puk:0
+msgid "Puk"
+msgstr "Puk"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_sim_apn_group
+#: model:ir.model,name:hr_sim.model_res_sim_apn_group
+#: model:ir.ui.menu,name:hr_sim.menu_config_sim_apn_group
+#: field:res.sim,apn_group_id:0
+#: view:res.sim.apn_group:0
+#: field:res.sim.apn_group,name:0
+msgid "APN Group"
+msgstr "Gruppo APN"
+
+#. module: hr_sim
+#: field:res.sim.payment,reinvoice_1:0
+msgid "Amount 1"
+msgstr "Amount 1"
+
+#. module: hr_sim
+#: field:res.sim.payment,reinvoice_2:0
+msgid "Amount 2"
+msgstr "Amount 2"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_res_sim_location_form
+#: model:ir.ui.menu,name:hr_sim.menu_res_sim_location_tree
+msgid "Sim References"
+msgstr "Sim References"
+
+#. module: hr_sim
+#: constraint:res.sim:0
+msgid "Error! Subscription start date must be lower then contract end date."
+msgstr "Errore! La data di inizio deve essere inferiore a quella di fine."
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "July"
+msgstr "Luglio"
+
+#. module: hr_sim
+#: model:ir.ui.menu,name:hr_sim.menu_config_res_sim
+msgid "Configuration"
+msgstr "Configurazione"
+
+#. module: hr_sim
+#: view:res.sim.allocation:0
+msgid "SIM Lines"
+msgstr "Linee SIM"
+
+#. module: hr_sim
+#: sql_constraint:hr.employee:0
+msgid "Fascal Code must be unique !"
+msgstr "Il codice fiscale deve essere univoco !"
+
+#. module: hr_sim
+#: field:res.sim,main_number:0
+msgid "Main number"
+msgstr "Numero Primario"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Forest Green"
+msgstr "Forest Green"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,not_available:0
+msgid "Not Available"
+msgstr "Non disponibile"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Green"
+msgstr "Green"
+
+#. module: hr_sim
+#: field:res.sim,voice:0
+msgid "Voice"
+msgstr "Voce"
+
+#. module: hr_sim
+#: field:res.sim.apn.management,block:0
+msgid "Block"
+msgstr "Block"
+
+#. module: hr_sim
+#: view:res.sim.payment:0
+msgid "Sim Payment"
+msgstr "Pagamenti Sim"
+
+#. module: hr_sim
+#: sql_constraint:res.sim:0
+msgid "SIM Internal Code must be unique !"
+msgstr "Il CODICE INTERNO deve essere univoco !"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "April"
+msgstr "Aprile"
+
+#. module: hr_sim
+#: field:res.sim.payment,apr:0
+msgid "Apr"
+msgstr "Apr"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "December"
+msgstr "Dicembre"
+
+#. module: hr_sim
+#: field:res.sim.payment,month:0
+msgid "Month"
+msgstr "Mese"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_payment
+msgid "Sim payment line"
+msgstr "Righe consumi Sim"
+
+#. module: hr_sim
+#: field:res.sim,prefix_data_number:0
+msgid "Prefix Data Number"
+msgstr "NUMERO DATI"
+
+#. module: hr_sim
+#: field:res.sim,subscription_start_date:0
+#: field:wizard.print.traffic.detail,start_date:0
+msgid "Start Date"
+msgstr "Data Inizio"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Cadet Blue"
+msgstr "Cadet Blue"
+
+#. module: hr_sim
+#: field:res.sim.payment,feb:0
+msgid "Feb"
+msgstr "Feb"
+
+#. module: hr_sim
+#: field:res.sim.payment,aug:0
+msgid "Aug"
+msgstr "Aug"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_wizard_print_traffic_detail
+msgid "Create Report"
+msgstr "Crea il Report"
+
+#. module: hr_sim
+#: field:res.sim.move.line,user_id:0
+msgid "Moved By"
+msgstr "Spostato da"
+
+#. module: hr_sim
+#: field:res.sim.payment,jun:0
+msgid "Jun"
+msgstr "Giu"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_use
+#: model:ir.ui.menu,name:hr_sim.menu_res_use_tree
+#: view:res.sim.use:0
+msgid "Sim Use"
+msgstr "Utilizzo Sim"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:628
+#: code:addons/hr_sim/res_sim.py:680
+#, python-format
+msgid "You can not add more then one record with type is sum for same year"
+msgstr "Non è possibile preare più di una riga somma per lo stesso anno"
+
+#. module: hr_sim
+#: field:res.sim,has_date_option:0
+#: field:res.sim.subscription.type,has_date_option:0
+msgid "Has date options ?"
+msgstr "Da data scadenza"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,note:0
+#: field:res.sim.payment,note:0
+#: field:res.sim.subscription.type,note:0
+msgid "Note"
+msgstr "Note"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Black"
+msgstr "Black"
+
+#. module: hr_sim
+#: field:res.sim.move.line,dest_location_name:0
+msgid "Destination Loc."
+msgstr "Loc. di Destinazione"
+
+#. module: hr_sim
+#: view:sim.move.create:0
+msgid "Move Information"
+msgstr "Informazioni spostamento"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:744
+#, python-format
+msgid "This is a wrong place for creating a move."
+msgstr "Lo spostamento non può essere eseguito da qui."
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:660
+#, python-format
+msgid "You can not remove a payment line !"
+msgstr "Non si può cancellare una linea di Pagamento!"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:753
+#, python-format
+msgid "You can not remove a SIM Allocation !"
+msgstr "Non puoi cancellare un allocazione della SIM. Utilizza uno Sposta Sim !"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "August"
+msgstr "Agosto"
+
+#. module: hr_sim
+#: field:res.sim,row_color:0
+#: field:res.sim.use,row_color:0
+#: field:wizard.print.traffic.detail,state:0
+msgid "unknown"
+msgstr "unknown"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "June"
+msgstr "Giugno"
+
+#. module: hr_sim
+#: field:res.sim.payment,jul:0
+msgid "Jul"
+msgstr "Lug"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Dati"
+msgstr "Dati"
+
+#. module: hr_sim
+#: field:res.sim.payment,payment_date:0
+msgid "Date"
+msgstr "Date"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Prefisso Fax"
+msgstr "Prefisso Fax"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "November"
+msgstr "Novembre"
+
+#. module: hr_sim
+#: field:res.sim,data:0
+msgid "Data"
+msgstr "Data"
+
+#. module: hr_sim
+#: constraint:hr.employee:0
+msgid "Error ! You cannot create recursive Hierarchy of Employees."
+msgstr "Errore! Non si può creare una gerarchia recursiva dei dipendenti."
+
+#. module: hr_sim
+#: field:res.sim.traffic,call_type:0
+msgid "Call Type"
+msgstr "Tipo Chiamata"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "October"
+msgstr "Ottobre"
+
+#. module: hr_sim
+#: field:res.sim,default:0
+msgid "Default"
+msgstr "Default"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "January"
+msgstr "Gennaio"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Aqua"
+msgstr "Aqua"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_subscription_type
+msgid "Subscription Types"
+msgstr "Tipi contratti"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:660
+#: code:addons/hr_sim/res_sim.py:753
+#: code:addons/hr_sim/res_sim.py:783
+#, python-format
+msgid "Error"
+msgstr "Errore"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:783
+#, python-format
+msgid "You can not remove a SIM movement !"
+msgstr "Non puoi cancellare un movimento SIM !"
+
+#. module: hr_sim
+#: field:res.sim.payment,dec:0
+msgid "Dec"
+msgstr "Dic"
+
+#. module: hr_sim
+#: field:res.sim.subscription.type,code:0
+msgid "Code"
+msgstr "Codice"
+
+#. module: hr_sim
+#: field:res.sim.payment,sep:0
+msgid "Sep"
+msgstr "Set"
+
+#. module: hr_sim
+#: view:wizard.print.traffic.detail:0
+msgid "Export done"
+msgstr "Esportazione Eseguita"
+
+#. module: hr_sim
+#: view:res.sim.type:0
+msgid "Define sim type"
+msgstr "Definisci tipo di Sim"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,sim_internal_number:0
+msgid "Number"
+msgstr "Numero"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Prefisso Primario"
+msgstr "Prefisso Primario"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "September"
+msgstr "Settembre"
+
+#. module: hr_sim
+#: view:sim.move.create:0
+msgid "Create Move"
+msgstr "Crea Movimentazione"
+
+#. module: hr_sim
+#: field:res.sim.move.line,dest_location:0
+msgid "Destination Location"
+msgstr "Loc. di Destinazione"
+
+#. module: hr_sim
+#: view:sim.move.create:0
+#: view:wizard.print.traffic.detail:0
+msgid "Cancel"
+msgstr "Cancella"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "ICCID"
+msgstr "ICCID"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Moves"
+msgstr "Movimenti"
+
+#. module: hr_sim
+#: field:res.sim.payment,have_lost:0
+msgid "Have Loss?"
+msgstr "Have Loss?"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_subscription_type
+#: model:ir.ui.menu,name:hr_sim.menu_res_subscription_type_tree
+#: field:res.sim,subscription_type_id:0
+#: view:res.sim.subscription.type:0
+#: field:res.sim.subscription.type,name:0
+#: field:res.sim.type,name:0
+msgid "Subscription Type"
+msgstr "Tipo Contratto"
+
+#. module: hr_sim
+#: field:res.sim.move.line,source_location:0
+msgid "Source Location"
+msgstr "Locazione Sorgente"
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Orange"
+msgstr "Orange"
+
+#. module: hr_sim
+#: view:res.sim:0
+msgid "Numero Fax"
+msgstr "Numero Fax"
+
+#. module: hr_sim
+#: field:res.sim,sim_use_id:0
+msgid "Utilizzo"
+msgstr "Utilizzo"
+
+#. module: hr_sim
+#: field:res.sim.allocation,sim_move_lines:0
+msgid "SIM lines"
+msgstr "Linee SIM"
+
+#. module: hr_sim
+#: view:hr.employee:0
+#: model:ir.model,name:hr_sim.model_res_sim
+#: model:ir.ui.menu,name:hr_sim.menu_res_sim
+#: model:ir.ui.menu,name:hr_sim.menu_sim
+#: view:res.sim:0
+#: field:res.sim.move.line,sim_id:0
+#: field:res.sim.payment,sim_id:0
+msgid "Sim"
+msgstr "Sim"
+
+#. module: hr_sim
+#: field:res.sim.move.line,description:0
+#: field:sim.move.create,description:0
+msgid "Comment/Reason"
+msgstr "Motivazione"
+
+#. module: hr_sim
+#: view:res.sim:0
+#: field:res.sim,payment_ids:0
+msgid "Payment History"
+msgstr "Storico Consumi"
+
+#. module: hr_sim
+#: field:res.sim.payment,mar:0
+msgid "Mar"
+msgstr "Mar"
+
+#. module: hr_sim
+#: field:res.sim.traffic,description:0
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: hr_sim
+#: field:res.sim.payment,may:0
+#: selection:res.sim.payment,month:0
+msgid "May"
+msgstr "Mag"
+
+#. module: hr_sim
+#: field:res.sim.traffic,dest_number:0
+msgid "Phone number"
+msgstr "Numero Telefono"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_allocation
+msgid "res.sim.allocation"
+msgstr "res.sim.allocation"
+
+#. module: hr_sim
+#: field:sim.move.create,move_date:0
+msgid "Move Date"
+msgstr "Data Spostamento"
+
+#. module: hr_sim
+#: field:res.sim,imei:0
+msgid "ICCID Number"
+msgstr "ICCID"
+
+#. module: hr_sim
+#: field:res.sim.move.line,source_location_name:0
+msgid "Source Loc."
+msgstr "Loc. Sorgente"
+
+#. module: hr_sim
+#: help:res.sim,sim_internal_number:0
+msgid "Internal Number"
+msgstr "Codice Interno"
+
+#. module: hr_sim
+#: selection:res.sim.payment,type:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: hr_sim
+#: field:res.sim,subscription_end_date:0
+#: field:wizard.print.traffic.detail,end_date:0
+msgid "End Date"
+msgstr "Data Fine"
+
+#. module: hr_sim
+#: selection:res.sim.payment,month:0
+msgid "February"
+msgstr "Febbraio"
+
+#. module: hr_sim
+#: field:res.sim,number:0
+msgid "Phone Number"
+msgstr "Numero Telefono"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.open_module_tree_type
+#: model:ir.ui.menu,name:hr_sim.menu_res_type_tree
+#: field:res.sim,sim_type_id:0
+#: view:res.sim.type:0
+msgid "Sim Type"
+msgstr "Tipo Sim"
+
+#. module: hr_sim
+#: field:res.sim,prefix_number:0
+msgid "Prefix Phone Number"
+msgstr "PREFISSO 1"
+
+#. module: hr_sim
+#: constraint:hr.employee:0
+msgid "The fiscal code doesn't seem to be correct."
+msgstr "Il codice fiscale non sembra corretto."
+
+#. module: hr_sim
+#: selection:res.sim.use,color:0
+msgid "Grey"
+msgstr "Grey"
+
+#. module: hr_sim
+#: field:res.sim.traffic,data_packets:0
+#: field:res.sim.traffic,duration:0
+msgid "Duration"
+msgstr "Durata"
+
+#. module: hr_sim
+#: view:wizard.print.traffic.detail:0
+msgid "Download Traffic"
+msgstr "Download del Traffico"
+
+#. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_sim_move_create
+#: model:ir.model,name:hr_sim.model_sim_move_create
+#: view:sim.move.create:0
+msgid "Move Sim"
+msgstr "Sposta la SIM"
+
+#. module: hr_sim
+#: field:res.sim.traffic,call_date:0
+msgid "Call Date"
+msgstr "Data Chiamata"
+
+#. module: hr_sim
+#: view:res.sim.allocation:0
+#: view:res.sim.move.line:0
+#: view:sim.move.create:0
+#: field:sim.move.create,sim_ids:0
+msgid "SIMs"
+msgstr "SIM"
+
+#. module: hr_sim
+#: field:res.sim.payment,sequence:0
+msgid "Sequence"
+msgstr "Sequenza"
+
+#. module: hr_sim
+#: field:res.sim.use,color:0
+msgid "Color"
+msgstr "Colore"
+
+#. module: hr_sim
+#: field:res.sim.traffic,contract:0
+msgid "Internet Contract"
+msgstr "Contratto Internet"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_move_line
+msgid "SIMs movement"
+msgstr "Spostamenti Sim"
+
+#. module: hr_sim
+#: model:ir.model,name:hr_sim.model_res_sim_apn_management
+msgid "Management Services APN"
+msgstr "Gestione Servizi APN"
+
+#. module: hr_sim
+#: view:res.sim.allocation:0
+msgid "SIM Move"
+msgstr "Spostamenti Sim"
+
+#. module: hr_sim
+#: field:wizard.print.traffic.detail,data:0
+msgid "File"
+msgstr "File"
+
+#. module: hr_sim
+#: field:res.sim.payment,year:0
+msgid "Year"
+msgstr "Anno"
+
+#. module: hr_sim
+#: field:res.sim,united_data_number:0
+msgid "Data number"
+msgstr "Numero Dati"
+
+#. module: hr_sim
+#: sql_constraint:res.sim:0
+msgid "ICCID Code must be unique !"
+msgstr "Il codice ICCID deve essere univoco !"
+
+#. module: hr_sim
+#: code:addons/hr_sim/res_sim.py:621
+#, python-format
+msgid "You have not defined the sim for given payment line"
+msgstr "You have not defined the sim for given payment line"
+

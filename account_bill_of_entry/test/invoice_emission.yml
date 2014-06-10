@@ -1,0 +1,89 @@
+-
+  I create a account payment term record.
+-
+  !record {model: account.payment.term, id: account_payment_term_daysendofmonth0}:
+    line_ids:
+      - days: 30
+        days2: -1
+        name: one
+        sequence: 5
+        value: balance
+        value_amount: 0.0
+    name: 30 days end of month
+-
+  I create a supplier invoice
+-
+  !record {model: account.invoice, id: account_invoice_supplier0}:
+    account_id: account.a_pay
+    address_contact_id: base.res_partner_address_3000
+    address_invoice_id: base.res_partner_address_3000
+    check_total: 3000.0
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: '2014-01-30'
+    invoice_line:
+      - account_id: account.a_expense
+        name: '[PC1] Basic PC'
+        price_unit: 300.0
+        product_id: product.product_product_pc1
+        quantity: 10.0
+        uos_id: product.product_uom_unit
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_desertic_hispafuentes
+    payment_term: account_payment_term_daysendofmonth0
+    reference_type: none
+    type: in_invoice
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier0}
+- 
+  I check that payment expiration is wrong at 2014-03-31
+-
+  !assert {model: account.invoice, id: account_invoice_supplier0}:
+    - date_due == '2014-03-31'
+-
+  I create another end of month payment term with commercial_year true
+-
+  !record {model: account.payment.term, id: account_payment_term_daysendofmonth1}:
+    line_ids:
+      - days: 30
+        days2: -1
+        name: one
+        sequence: 5
+        value: balance
+        value_amount: 0.0
+    name: 30 days end of month
+    commercial_year: true
+-
+  I create an invoice with the commercial_year payment term
+-
+  !record {model: account.invoice, id: account_invoice_supplier1}:
+    account_id: account.a_pay
+    address_contact_id: base.res_partner_address_3000
+    address_invoice_id: base.res_partner_address_3000
+    check_total: 3000.0
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: '2014-01-30'
+    invoice_line:
+      - account_id: account.a_expense
+        name: '[PC1] Basic PC'
+        price_unit: 300.0
+        product_id: product.product_product_pc1
+        quantity: 10.0
+        uos_id: product.product_uom_unit
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_desertic_hispafuentes
+    payment_term: account_payment_term_daysendofmonth1
+    reference_type: none
+    type: in_invoice
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier1}
+- 
+  I check that payment expiration is correct at 2014-02-28
+-
+  !assert {model: account.invoice, id: account_invoice_supplier1}:
+    - date_due == '2014-02-28'

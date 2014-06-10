@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_db_autobackup_ept,db.autobackup.ept,db_backup_ept.model_db_autobackup_ept,db_backup_ept.db_backup_manager_ept,1,1,1,1
+access_db_backup_line ,db.backup.line,db_backup_ept.model_db_backup_line,db_backup_ept.db_backup_manager_ept,1,1,1,1
+access_ept_ftpbackup,ept.ftpbackup,db_backup_ept.model_ept_ftpbackup,db_backup_ept.db_backup_manager_ept,1,1,1,1

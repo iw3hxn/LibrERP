@@ -1,0 +1,205 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* dt_avanzosc_product_category_ext
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-01-30 14:17+0000\n"
+"PO-Revision-Date: 2014-01-30 14:17+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: dt_avanzosc_product_category_ext
+#: selection:product.category,provision_type:0
+msgid "Service"
+msgstr "Servizio"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,uom_po_id:0
+msgid "Purchase UoM"
+msgstr "UM Acquisto"
+
+#. module: dt_avanzosc_product_category_ext
+#: help:product.category,purchase_taxes_ids:0
+msgid "Taxes applied on purchase orders"
+msgstr "Tasse applicate all'acquisto"
+
+#. module: dt_avanzosc_product_category_ext
+#: help:product.category,uos_coef:0
+#: help:product.category,uos_id:0
+msgid "See product definition"
+msgstr "See product definition"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,uos_id:0
+msgid "Unit of Sale"
+msgstr "Unità di Vendita"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,procure_method:0
+msgid "Procurement Method"
+msgstr "Metodo di approvvigionamento"
+
+#. module: dt_avanzosc_product_category_ext
+#: view:product.category:0
+msgid "Sale taxes"
+msgstr "Tasse di Vendita"
+
+#. module: dt_avanzosc_product_category_ext
+#: model:ir.model,name:dt_avanzosc_product_category_ext.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: dt_avanzosc_product_category_ext
+#: selection:product.category,supply_method:0
+msgid "Buy"
+msgstr "Comprare"
+
+#. module: dt_avanzosc_product_category_ext
+#: view:product.category:0
+msgid "Purchase taxes"
+msgstr "Tasse d'Acquisto"
+
+#. module: dt_avanzosc_product_category_ext
+#: help:product.category,uom_po_id:0
+msgid "Unit of Measure for purchase"
+msgstr "Unità di Misura per Acquisti"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,uos_coef:0
+msgid "UOM -> UOS coef"
+msgstr "UOM -> UOS coef"
+
+#. module: dt_avanzosc_product_category_ext
+#: view:product.category:0
+msgid "Secondary Unit (UoS)"
+msgstr "Unità Secondaria"
+
+#. module: dt_avanzosc_product_category_ext
+#: selection:product.category,supply_method:0
+msgid "Produce"
+msgstr "Produrre"
+
+#. module: dt_avanzosc_product_category_ext
+#: selection:product.category,procure_method:0
+msgid "Make to Order"
+msgstr "Produrre su Ordine"
+
+#. module: dt_avanzosc_product_category_ext
+#: selection:product.category,procure_method:0
+msgid "Make to Stock"
+msgstr "Produrre per Magazzino"
+
+#. module: dt_avanzosc_product_category_ext
+#: help:product.category,uom_id:0
+msgid "Default Unit of Measure"
+msgstr "Unità di Misura di Default"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,provision_type:0
+msgid "Product Type"
+msgstr "Tipo Prodotto"
+
+#. module: dt_avanzosc_product_category_ext
+#: view:product.category:0
+msgid "Provision"
+msgstr "Approvvigionamento di Default"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:res.company,manage_tax_on_category:0
+msgid "Manage Tax on Category"
+msgstr "Gestisci tasse sui prodotti differenziate per categoria"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,sale_taxes_ids:0
+msgid "Sale Taxes"
+msgstr "Tasse Vendita"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,purchase_taxes_ids:0
+msgid "Purchase Taxes"
+msgstr "Tasse Acquisti"
+
+
+#. module: dt_avanzosc_product_category_ext
+#: view:product.category:0
+msgid "Sale and Purchase Units (UoM)"
+msgstr "Sale and Purchase Units (UoM)"
+
+#. module: dt_avanzosc_product_category_ext
+#: help:product.category,procure_method:0
+msgid "'Make to Stock': When needed, take from the stock or wait until re-supplying. 'Make to Order': When needed, purchase or produce for the procurement request."
+msgstr "'Produrre per magazzino': Se richiesto, prelevare dal magazzino o attendere fino al riassortimento. 'Produrre su Ordine': Se richiesto, comprare o produrre alla richiesta di approvvigionamento."
+
+#. module: dt_avanzosc_product_category_ext
+#: model:ir.model,name:dt_avanzosc_product_category_ext.model_product_category
+msgid "Product Category"
+msgstr "Categoria Prodotto"
+
+#. module: dt_avanzosc_product_category_ext
+#: help:product.category,sale_taxes_ids:0
+msgid "Taxes applied on sale orders"
+msgstr "Taxes applied on sale orders"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,manage_tax_on_category:0
+msgid "Manage Tax on category"
+msgstr "Gestisci Tasse nelle categorie"
+
+#. module: dt_avanzosc_product_category_ext
+#: selection:product.category,provision_type:0
+msgid "Stockable Product"
+msgstr "Prodotto Stoccabile"
+
+#. module: dt_avanzosc_product_category_ext
+#: selection:product.category,provision_type:0
+msgid "Consumable"
+msgstr "Consumabile"
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,supply_method:0
+msgid "Supply method"
+msgstr "Metodo Rifornimento"
+
+#. module: dt_avanzosc_product_category_ext
+#: constraint:product.category:0
+msgid "Error ! You cannot create recursive categories."
+msgstr "Errore! Non è possibile creare categorie ricorsive."
+
+#. module: dt_avanzosc_product_category_ext
+#: field:product.category,uom_id:0
+msgid "Default UoM"
+msgstr "Default UoM"
+
+#. module: dt_avanzosc_product_category_ext
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Errore: codice ean non valido"
+
+#. module: dt_avanzosc_product_category_ext
+#: code:addons/dt_avanzosc_product_category_ext/product_product_ext.py:95
+#, python-format
+msgid "Caution"
+msgstr "Attenzione"
+
+#. module: dt_avanzosc_product_category_ext
+#: code:addons/dt_avanzosc_product_category_ext/product_product_ext.py:96
+#, python-format
+msgid "The product category has changed, thanks to control :\n"
+"* Sale and Purchase taxes\n"
+"* Unit sale and stock\n"
+"* The price with return unit"
+msgstr "Si è cambiato la categoria verificare :\n"
+"* Tasse di Acquisto e Vendita\n"
+"* Prezzo di Vendita ed Unità di Prodotto\n"
+
+#. module: dt_avanzosc_product_category_ext
+#: help:product.category,provision_type:0
+msgid "Will change the way procurements are processed. Consumable are product where you don't manage stock."
+msgstr "Cambia il processo di approvvigionamento. Consumabili sono prodotti dove non viene gestita la giacenza"

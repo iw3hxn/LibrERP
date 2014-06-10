@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<document filename="test.pdf">
+  <template pageSize="(595.0,842.0)" title="Report Meetings per Province" author="Carlo Vettore" allowSplitting="20">
+    <pageTemplate id="first">
+      <frame id="first" x1="57.0" y1="57.0" width="481" height="728"/>
+    </pageTemplate>
+  </template>
+  <stylesheet>
+    <blockTableStyle id="Standard_Outline">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table1">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+     
+    </blockTableStyle>
+    <blockTableStyle id="Table2">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <!--<lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>-->
+    </blockTableStyle>
+    <blockTableStyle id="Table3">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="2,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="3,-1" stop="3,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="4,-1" stop="4,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="5,-1" stop="5,-1"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table4">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <lineStyle kind="LINEBELOW" colorName="#e6e6e6" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#e6e6e6" start="1,-1" stop="1,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#e6e6e6" start="2,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#e6e6e6" start="3,-1" stop="3,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#e6e6e6" start="4,-1" stop="4,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#e6e6e6" start="5,-1" stop="5,-1"/>
+    </blockTableStyle>
+    <initialize>
+      <paraStyle name="all" alignment="justify"/>
+    </initialize>
+    <paraStyle name="P1" fontName="Helvetica" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="P2" fontName="Helvetica" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="P3" fontName="Helvetica" fontSize="10.0" leading="13" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="P4" fontName="Helvetica-Bold" fontSize="7.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="P5" fontName="Helvetica" fontSize="7.0" leading="8" alignment="CENTER"/>
+    <paraStyle name="P6" fontName="Helvetica-Bold" fontSize="7.0" leading="10" alignment="CENTER"/>
+    <paraStyle name="P7" fontName="Helvetica-Bold" fontSize="7.0" leading="10" alignment="LEFT"/>
+    <paraStyle name="P8" fontName="Helvetica-Bold" fontSize="8.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="P9" fontName="Helvetica" fontSize="7.0" leading="13" alignment="LEFT"/>
+    
+    <paraStyle name="Standard" fontName="Helvetica"/>
+    <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Text body" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="List" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="Caption" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
+    <paraStyle name="Index" fontName="Helvetica"/>
+    <paraStyle name="terp_header" fontName="Helvetica-Bold" fontSize="10.0" leading="19" alignment="LEFT" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="terp_default_8" fontName="Helvetica" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="terp_default_Centre_8" fontName="Helvetica" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="terp_default_Centre_9" fontName="Helvetica" fontSize="9.0" leading="11" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="terp_header_Centre" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="Table Contents" fontName="Helvetica"/>
+    <paraStyle name="terp_tblheader_Details" fontName="Helvetica-Bold" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="terp_default_1" fontName="Helvetica" fontSize="2.0" leading="3" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <images/>
+  </stylesheet>
+  <story>
+    <para style="terp_header_Centre">Meeting Details</para>
+    <para style="terp_default_Centre_9">From [[ data['form']['date_from'] ]] To [[ data['form']['date_to'] ]]</para>
+    <para style="terp_default_Centre_9">
+      <font color="white"> </font>
+    </para>
+    
+    <para style="P1">
+      <font color="white"> </font>
+    </para>
+    <blockTable colWidths="550.0" style="Table1">
+      <tr>
+        <td>
+          <para style="P2">[[repeatIn(get_provinces(data['form']), 'o')]]</para>
+          <para style="P2">
+            <font color="white"> </font>
+          </para>
+          <blockTable colWidths="478.0" style="Table2">
+            <tr>
+              <td>
+                <para style="P8"><font face="Helvetica" size="8.0">Province: </font>[[o['name'] or '']]</para>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                
+                <blockTable colWidths="90.0,100.0,90.0,75.0,180.0" style="Table3">
+                  <tr>
+                    <td>
+                      <para style="P7">Date</para>
+                    </td>
+                    <td>
+                      <para style="P7">Partner</para>
+                    </td>
+                    <td>
+                      <para style="P7">Phone</para>
+                    </td>
+                    <td>
+                      <para style="P7">Meeting Type</para>
+                    </td>
+                    <td>
+                      <para style="P7">Description</para>
+                    </td>
+                  </tr>
+                </blockTable>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                [[ repeatIn(o['meetings'], 'd') ]]
+                <blockTable colWidths="90.0,100.0,90.0,75.0,180.0" style="Table4">
+                  <tr>
+                    <td>
+                      <para style="P9">[[ d.date ]]</para>
+                    </td>
+                    <td>
+                      <para style="P9">[[ d.partner_id.name ]]</para>
+                    </td>
+                    <td>
+                      <para style="P9">[[ d.partner_address_id.phone ]]</para>
+                    </td>
+                    <td>
+                      <para style="P9">[[ d.categ_id.name ]]</para>
+                    </td>
+                    <td>
+                      <para style="P9">[[ d.description ]]</para>
+                    </td>
+                  </tr>
+                </blockTable>
+              </td>
+            </tr>
+          </blockTable>
+          <para style="P2">
+            <font color="white"> </font>
+          </para>
+        </td>
+      </tr>
+    </blockTable>
+    <para style="P1">
+      <font color="white"> </font>
+    </para>
+  </story>
+</document>
+

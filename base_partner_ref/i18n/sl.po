@@ -1,0 +1,63 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* base_partner_ref
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-26 12:56+0000\n"
+"PO-Revision-Date: 2014-02-26 13:59+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: base_partner_ref
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr "Unikatna koda dobavitelja"
+
+#. module: base_partner_ref
+#: field:res.partner,property_supplier_ref:0
+msgid "Supplier Ref."
+msgstr "Koda dobavitelja"
+
+#. module: base_partner_ref
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr "Unikatna koda kupca"
+
+#. module: base_partner_ref
+#: sql_constraint:res.partner:0
+msgid ""
+"Error! Specified VAT Number already exists for any other registered partner."
+msgstr ""
+"Napaka! DDV številka, ki ste jo določili že obstaja pri drugem partnerju."
+
+#. module: base_partner_ref
+#: field:res.partner,property_customer_ref:0
+msgid "Customer Ref."
+msgstr "Sklic kupca"
+
+#. module: base_partner_ref
+#: model:ir.model,name:base_partner_ref.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: base_partner_ref
+#: help:res.partner,property_customer_ref:0
+msgid ""
+"The reference attributed by the partner to the current company as a customer "
+"of theirs."
+msgstr "Koda dodeljena partnerju v vlogi stranke."
+
+#. module: base_partner_ref
+#: help:res.partner,property_supplier_ref:0
+msgid ""
+"The reference attributed by the partner to the current company as a supplier "
+"of theirs."
+msgstr "Koda dodeljena partnerju v vlogi dobavitelja"

@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_product_product_price_history_form">
+            <field name="name">product.product.price.history.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Price History" attrs="{'invisible':[('type','=','service')]}" groups="purchase.group_purchase_user">
+                        <field colspan="4" mode="tree,form" name="product_history" nolabel="1" widget="one2many_list">
+                            <form string="Price History">
+                                <field name="date_to" />
+                                <field name="list_price" />
+                                <field name="standard_price" />
+                            </form>
+                            <tree string="Price History">
+                                <field name="date_to" />
+                                <field name="list_price" />
+                                <field name="standard_price" />
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+

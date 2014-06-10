@@ -1,0 +1,200 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* l10n_it_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.2\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-05-11 21:48+0000\n"
+"PO-Revision-Date: 2013-12-11 13:42+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. module: l10n_it_base
+#: model:ir.model,name:l10n_it_base.model_res_city view:res.city:0
+#: field:res.city,name:0
+msgid "City"
+msgstr "Byen"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.12
+#: model:res.partner.title,shortcut:l10n_it_base.12
+msgid "Dott."
+msgstr "dr."
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.14
+#: model:res.partner.title,shortcut:l10n_it_base.14
+msgid "Arch."
+msgstr "Arkitekten"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.8
+msgid "Persona Fisica"
+msgstr "Fysisken personen"
+
+#. module: l10n_it_base
+#: field:res.province,code:0
+msgid "Province Code"
+msgstr "Provinsen/Kommunen kode"
+
+#. module: l10n_it_base
+#: field:res.city,web_site:0
+msgid "Web Site"
+msgstr "Webområdet"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.1
+msgid "Impresa Famigliare"
+msgstr "Familiebedrift"
+
+#. module: l10n_it_base
+#: field:res.city,cadaster_code:0
+msgid "Cadaster Code"
+msgstr "Jordebok kode"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.13
+#: model:res.partner.title,shortcut:l10n_it_base.13
+msgid "Notaio"
+msgstr "Notar"
+
+#. module: l10n_it_base
+#: field:res.region,name:0
+msgid "Region Name"
+msgstr "Regionnavn"
+
+#. module: l10n_it_base
+#: help:res.region,name:0
+msgid "The full name of the region."
+msgstr "Det fulle navnet på regionen"
+
+#. module: l10n_it_base
+#: model:ir.actions.act_window,name:l10n_it_base.action_province
+#: model:ir.ui.menu,name:l10n_it_base.menu_province_partner
+msgid "Provinces"
+msgstr "Provincer/Kommuner"
+
+#. module: l10n_it_base
+#: model:res.partner.title,shortcut:l10n_it_base.8
+msgid "PF"
+msgstr "FP"
+
+#. module: l10n_it_base
+#: model:ir.actions.act_window,name:l10n_it_base.action_city
+#: model:ir.ui.menu,name:l10n_it_base.menu_city_partner
+msgid "Cities"
+msgstr "Byer"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.9
+#: model:res.partner.title,shortcut:l10n_it_base.9
+msgid "Spett.le"
+msgstr "Dear"
+
+#. module: l10n_it_base
+#: help:res.province,code:0
+msgid "The province code in two chars."
+msgstr "Provins-kode"
+
+#. module: l10n_it_base
+#: model:ir.model,name:l10n_it_base.model_res_province
+#: field:res.city,province_id:0 field:res.partner.address,province:0
+#: view:res.province:0
+msgid "Province"
+msgstr "Provinsen/Kommunen"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.10
+#: model:res.partner.title,shortcut:l10n_it_base.10
+msgid "Ing."
+msgstr "ing."
+
+#. module: l10n_it_base
+#: field:res.city,istat_code:0
+msgid "ISTAT code"
+msgstr "Kode ISTAT"
+
+#. module: l10n_it_base
+#: field:res.city,zip:0
+msgid "ZIP"
+msgstr "Postnummer"
+
+#. module: l10n_it_base
+#: field:res.region,country_id:0
+msgid "Country"
+msgstr "Land"
+
+#. module: l10n_it_base
+#: model:ir.model,name:l10n_it_base.model_res_region field:res.city,region:0
+#: field:res.partner.address,region:0 field:res.province,region:0
+msgid "Region"
+msgstr "Regionen"
+
+#. module: l10n_it_base
+#: field:res.city,phone_prefix:0
+msgid "Telephone Prefix"
+msgstr "Telefonen prefiks"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.15
+#: model:res.partner.title,shortcut:l10n_it_base.15
+msgid "Avv."
+msgstr "Advokat"
+
+#. module: l10n_it_base
+#: model:ir.module.module,description:l10n_it_base.module_meta_information
+msgid ""
+"Italian Localization module - Base version\n"
+"\n"
+"Funcionalities:\n"
+"\n"
+"- Comuni italiani\n"
+"- res.partner.title italiani\n"
+"- Province e regioni\n"
+"- Automatistmi su res.partner.address\n"
+"\n"
+msgstr ""
+
+#. module: l10n_it_base
+#: model:res.partner.title,shortcut:l10n_it_base.1
+msgid "IF"
+msgstr "FB"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.11
+#: model:res.partner.title,shortcut:l10n_it_base.11
+msgid "Egr. Sig.ra"
+msgstr "Mrs."
+
+#. module: l10n_it_base
+#: help:res.province,name:0
+msgid "The full name of the province."
+msgstr "Det fulle navnet på provinsen"
+
+#. module: l10n_it_base
+#: model:res.partner.title,name:l10n_it_base.16
+#: model:res.partner.title,shortcut:l10n_it_base.16
+msgid "Egr. Sig."
+msgstr "Mr."
+
+#. module: l10n_it_base
+#: field:res.province,name:0
+msgid "Province Name"
+msgstr "Kommunenavn"
+
+#. module: l10n_it_base
+#: model:ir.model,name:l10n_it_base.model_res_partner_address
+msgid "Partner Addresses"
+msgstr "Partner adresser"
+
+#. module: l10n_it_base
+#: model:ir.module.module,shortdesc:l10n_it_base.module_meta_information
+msgid "Italian Localisation - Base"
+msgstr "Italiensk lokalisering - Base"

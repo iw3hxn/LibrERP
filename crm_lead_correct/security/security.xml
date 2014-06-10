@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+    <record model="ir.module.category" id="crm.module_category_crm">
+        <field name="name">CRM</field>
+        <field name="description">Extend groups for CRM</field>
+        <field name="sequence">40</field>
+    </record>
+    
+    <record id="crm.view_lead" model="res.groups">
+        <field name="name">Lead View</field>
+        <field name="category_id" ref="crm.module_category_crm"/>
+    </record>
+    
+    <record id="crm.view_opportunity" model="res.groups">
+        <field name="name">Opportunity View</field>
+        <field name="category_id" ref="crm.module_category_crm"/>
+    </record>
+    
+    <record id="crm.extended_view" model="res.groups">
+        <field name="name">CRM Extended View</field>
+        <field name="category_id" ref="crm.module_category_crm"/>
+    </record>
+    
+</data>
+</openerp>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        <record id="act_reopen" model="workflow.activity">
+            <field name="wkf_id" ref="account.wkf"/>
+            <field name="name">reopen</field>
+            <field name="action">action_reopen()
+write({'state':'draft'})</field>
+            <field name="kind">function</field>
+        </record>
+        <record id="t12o" model="workflow.transition">
+            <field name="act_from" ref="account.act_open"/>
+            <field name="act_to" ref="act_reopen"/>
+            <field name="signal">invoice_reopen</field>
+        </record>
+        <record id="t14o" model="workflow.transition">
+            <field name="act_from" ref="account.act_open_test"/>
+            <field name="act_to" ref="act_reopen"/>
+            <field name="signal">invoice_reopen</field>
+        </record>
+        <record id="act_reopen_open" model="workflow.transition">
+            <field name="act_from" ref="act_reopen"/>
+            <field name="act_to" ref="account.act_open"/>
+            <field name="signal">invoice_open</field>
+        </record>
+        <record id="t12" model="workflow.transition">
+            <field name="act_from" ref="act_reopen"/>
+            <field name="act_to" ref="account.act_cancel"/>
+            <field name="signal">invoice_cancel</field>
+        </record>
+        -->
+        <!-- new -->
+        <!-- 20120502
+   <record id="trans_open_draft" model="workflow.transition">
+       <field name="act_from" ref="account.act_open"/>
+       <field name="act_to" ref="account.act_draft"/>
+   </record>
+-->
+   
+
+    </data>
+</openerp>

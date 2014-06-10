@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+
+        <record id="view_order_form_reopen_inherit" model="ir.ui.view">
+            <field name="name">view.order.form.reopen.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <button name="action_cancel" position="after">
+                    <button name="action_reopen" type="object" states="progress" string="Reset To Quotation" icon="gtk-convert" groups="base.group_extended" />
+                </button>
+            </field>
+        </record>
+
+
+
+    </data>
+</openerp>

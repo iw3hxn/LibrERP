@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		
+		<record model="ir.ui.view" id="product_category_form_view_ext">
+			<field name="name">product.category.form.view.ext</field>
+			<field name="model">product.category</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="product.product_category_form_view" />
+			<field name="arch" type="xml">
+				<field name="type" position="after"> 
+					<group colspan="2" col="2">
+                    	<separator string="Provision" colspan="4" />
+                    		<field name="provision_type"/>
+                    		<field name="procure_method"/>
+                    </group>
+					<field name="manage_tax_on_category" invisible="1" />
+					<group colspan="2" col="2" attrs="{'invisible': [('manage_tax_on_category','=',False)]}">
+						<separator string="Sale taxes" colspan="4"/>
+						<field name="sale_taxes_ids" nolabel="1" colspan="4"/>
+						<separator string="Purchase taxes" colspan="4"/>
+						<field name="purchase_taxes_ids" nolabel="1" colspan="4"/>
+					</group>
+                    <group colspan="2" col="2">
+                        <separator string="Sale and Purchase Units (UoM)" colspan="4"/>
+                            <field name="uom_id"/>
+                            <field name="uom_po_id"/>
+                        <separator string="Secondary Unit (UoS)" colspan="4"/>
+                            <field name="uos_id"/>
+                            <field name="uos_coef"/>
+                    </group>
+                </field>
+			</field>
+		</record>
+		
+	</data>
+</openerp>

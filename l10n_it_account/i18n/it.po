@@ -1,0 +1,181 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* l10n_it_account
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-20130325-004646\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-14 16:50+0000\n"
+"PO-Revision-Date: 2013-05-14 16:50+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:45
+#, python-format
+msgid "Cannot create invoice! Post the invoice with a greater date"
+msgstr "Impossibile registrare la fattura in contabilità! Esistono fatture registrate con data successiva alla fattura corrente; inserisci una data superiore per il documento"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Compute"
+msgstr "Calcola"
+
+#. module: l10n_it_account
+#: model:ir.model,name:l10n_it_account.model_account_invoice
+msgid "Invoice"
+msgstr "Fattura"
+
+#. module: l10n_it_account
+#: field:res.partner,birth_date:0
+msgid "Date of birth"
+msgstr "Data di nascita"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: l10n_it_account
+#: model:ir.module.module,description:l10n_it_account.module_meta_information
+msgid "This module customizes OpenERP in order to fit italian laws and mores - Account version\n"
+"\n"
+"Functionalities:\n"
+"\n"
+"- Fiscal code computation for partner\n"
+"- Check invoice date consistency\n"
+"\n"
+""
+msgstr "Questo modulo personalizza OpenERP al fine di rispettare le leggi e le usanze italiane - Versione contabilità\n"
+"Funzionalità:\n"
+"\n"
+"- Calcolo del codice fiscale sul partner\n"
+"- Controllo della consistenza delle date delle fatture\n"
+"\n"
+""
+
+#. module: l10n_it_account
+#: help:res.partner,fiscalcode:0
+msgid "Italian Fiscal Code"
+msgstr "Codice Fiscale Italiano"
+
+#. module: l10n_it_account
+#: field:res.partner,sex:0
+msgid "Sex"
+msgstr "Sesso"
+
+#. module: l10n_it_account
+#: field:res.partner,fiscalcode_surname:0
+msgid "Surname"
+msgstr "Cognome"
+
+#. module: l10n_it_account
+#: field:res.partner,fiscalcode_firstname:0
+msgid "First name"
+msgstr "Nome"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+#: field:res.partner,fiscalcode:0
+msgid "Fiscal Code"
+msgstr "Codice fiscale"
+
+#. module: l10n_it_account
+#: model:ir.module.module,shortdesc:l10n_it_account.module_meta_information
+msgid "Italian Localisation - Account"
+msgstr "Localizzazione Italiana - Contabilità"
+
+#. module: l10n_it_account
+#: selection:res.partner,sex:0
+msgid "Female"
+msgstr "Femmina"
+
+#. module: l10n_it_account
+#: model:ir.model,name:l10n_it_account.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Compute Fiscal Code"
+msgstr "Calcola codice fiscale"
+
+#. module: l10n_it_account
+#: selection:res.partner,sex:0
+msgid "Male"
+msgstr "Maschio"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:44
+#, python-format
+msgid "Date Inconsistency"
+msgstr "Inconsistenza nelle date"
+
+#. module: l10n_it_account
+#: field:res.partner,birth_city:0
+msgid "City of birth"
+msgstr "Luogo di Nascita"
+
+#. module: base_vat_unique
+#: model:ir.module.module,shortdesc:base_vat_unique.module_name_translation
+msgid "Base VAT Unique"
+msgstr "P.Iva Unica"
+
+#. module: base_vat_unique
+#: model:ir.module.module,description:base_vat_unique.module_name_translation
+msgid "Check VAT Number is unique."
+msgstr "Verifica che la P.Iva sia univoca"
+
+#. module: base_vat_unique
+#: code:addons/base_vat_unique/base_vat_unique.py:0
+#, python-format
+msgid "Error! Specified VAT Number already exists for any other registered partner."
+msgstr "La P.Iva esigia esistente in qualche altro partner"
+
+#. module: l10n_it_account
+#: field:res.partner,birth_date:0
+msgid "Date of birth"
+msgstr "Data di nascita"
+
+#. module: l10n_it_account
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr "Codice Cliente Univoco"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Compute"
+msgstr "Calcola"
+
+#. module: l10n_it_account
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr "Codice Fornitore Univoco"
+
+#. module: l10n_it_account
+#: view:res.partner:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:46
+#, python-format
+msgid "Cannot create invoice! Post the invoice with a greater date"
+msgstr "Impossibile registrare la fattura in contabilità! Esistono fatture registrate con data successiva alla fattura corrente; inserisci una data superiore per il documento"
+
+#. module: l10n_it_account
+#: model:ir.model,name:l10n_it_account.model_account_invoice
+msgid "Invoice"
+msgstr "Fattura"
+
+#. module: l10n_it_account
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr "Nell'azienda il numero fattura dev'essere univoco!"
+
+

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        
+        <record id="view_expenses_project_line_tree" model="ir.ui.view">
+            <field name="name">hr.expense.project.line.tree</field>
+            <field name="model">hr.expense.line</field>
+            <field name="inherit_id" ref="hr_expense.view_expenses_line_tree"/>
+            <!--<field name="type">tree</field>-->
+            <field name="arch" type="xml">
+                <field name="analytic_account" position="replace">
+                    <field name="task_id" />
+                    <field name="payer" />
+                </field>
+            </field>
+        </record>
+        
+        <record id="view_expenses_project" model="ir.ui.view">
+            <field name="name">hr.expense.project</field>
+            <field name="model">hr.expense.expense</field>
+            <field name="inherit_id" ref="hr_expense.view_expenses_form"/>
+            <!--<field name="type">form</field>-->
+            <field name="arch" type="xml">
+                <field name="name" position="attributes">
+                    <attribute name="readonly">True</attribute>
+                </field>
+                <field name="line_ids" position="replace">
+                    <field colspan="4" name="line_ids" nolabel="1" context="{'currency_id': currency_id}" >
+                        <tree editable="top" string="Expense Lines">
+                            <field name="sequence" invisible="1"/>
+                            <field name="task_id"/>
+                            <field name="date_value"/>
+                            <field name="ref"/>
+                            <field name="product_id" on_change="onchange_product_id(product_id, uom_id, parent.employee_id, context)" required="1"/>
+                            <field name="payer" />
+                            <field name="name" invisible="1"/>
+                            <field name="unit_quantity"/>
+                            <field name="uom_id" on_change="onchange_product_id(product_id, uom_id, parent.employee_id, context)"/>
+                            <field name="unit_amount"/>
+                            <field name="total_amount" sum="Total"/>
+                        </tree>
+                    </field>
+                </field>
+            </field>
+        </record>
+        
+        <record id="view_expenses_complete_name" model="ir.ui.view">
+            <field name="name">hr.expense.complete.name</field>
+            <field name="model">hr.expense.expense</field>
+            <field name="inherit_id" ref="hr_expense.view_expenses_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="replace">
+                    <field name="complete_name" />
+                </field>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

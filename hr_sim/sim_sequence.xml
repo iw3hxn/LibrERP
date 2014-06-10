@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Sequences for Sim Card -->
+
+        <record id="seq_type_letter_in" model="ir.sequence.type">
+            <field name="name">Sim Internal Code</field>
+            <field name="code">sim.card</field>
+        </record>
+
+        <record id="seq_in_letter" model="ir.sequence">
+            <field name="name">Sim Card</field>
+            <field name="code">sim.card</field>
+            <field name="padding">1</field>
+        </record>
+
+    </data>
+</openerp>
+
+

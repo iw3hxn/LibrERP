@@ -1,0 +1,222 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* dt_product_serial
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.4\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2012-08-18 13:33+0000\n"
+"PO-Revision-Date: 2012-08-18 15:43+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_stock_picking_prodlot_selection
+msgid "stock.picking.prodlot.selection"
+msgstr "stock.picking.prodlot.selection"
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_stock_production_lot
+msgid "Production lot"
+msgstr "Proizvodni lot"
+
+#. module: dt_product_serial
+#: help:stock.production.lot,last_location_id:0
+msgid "Display the current stock location of this production lot"
+msgstr "Pokaži trenutno lokacijo zaloge za ta proizvodni lot"
+
+#. module: dt_product_serial
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Napaka! Ni možno ustvariti rekurzivnih podjetij."
+
+#. module: dt_product_serial
+#: selection:product.product,lot_split_type:0
+msgid "None"
+msgstr "Noben"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:57
+#, python-format
+msgid "First and last lot numbers must have the same length."
+msgstr "Prva in zadnja številka lota morata imeti isto dolžino"
+
+#. module: dt_product_serial
+#: field:stock.production.lot,last_location_id:0
+msgid "Last location"
+msgstr "Zadnja lokacija"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:104
+#, python-format
+msgid "Not enough stock available of production lot %s."
+msgstr "Ni dovolj zaloge za proizvodni lot %s."
+
+#. module: dt_product_serial
+#: field:stock.move,new_tracking_code:0
+msgid "Tracking fast input"
+msgstr "Hitri vnos tracking"
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_stock_picking
+msgid "Picking List"
+msgstr "Dobavnica"
+
+#. module: dt_product_serial
+#: sql_constraint:stock.production.lot:0
+msgid "The combination of serial number and internal reference must be unique !"
+msgstr "Kombinacija serijske številke in internega sklica mora biti unikatna !"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:69
+#, python-format
+msgid "First and last lot numbers differ in non-numeric values."
+msgstr "Prva in zadnja številka lota se ne ujemata v ne-številčnih vrednostih."
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_product_product
+#: field:stock.picking.prodlot.selection,product_id:0
+msgid "Product"
+msgstr "Proizvod"
+
+#. module: dt_product_serial
+#: constraint:stock.move:0
+msgid "You try to assign a lot which is not from the same product"
+msgstr "Ta lot ni iz istega proizvoda"
+
+#. module: dt_product_serial
+#: selection:product.product,lot_split_type:0
+msgid "Single"
+msgstr "Posamezen"
+
+#. module: dt_product_serial
+#: field:res.company,autosplit_is_active:0
+msgid "Active auto split"
+msgstr "Aktiviraj samodejno deljenje"
+
+#. module: dt_product_serial
+#: field:res.company,is_group_invoice_line:0
+msgid "Group invoice lines"
+msgstr "Grupiraj obračunske postavke"
+
+#. module: dt_product_serial
+#: view:res.company:0
+msgid "Configuration"
+msgstr "Nastavitve"
+
+#. module: dt_product_serial
+#: field:stock.picking.prodlot.selection,first_lot:0
+msgid "First Lot Number"
+msgstr "Prva številka lota"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/stock.py:146
+#, python-format
+msgid "Error :"
+msgstr "Napaka :"
+
+#. module: dt_product_serial
+#: selection:product.product,lot_split_type:0
+msgid "Logistical Unit"
+msgstr "Logistična enota"
+
+#. module: dt_product_serial
+#: help:res.company,is_group_invoice_line:0
+msgid "If active, OpenERP will group the identical invoice lines. If inactive, each move line will generate one invoice line."
+msgstr "Če je aktivirano, bo sistem grupiral identične obračunske postavke. Če je neaktivno, bo vsak premik generiral svojo obračunsko postavko."
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_res_company
+msgid "Companies"
+msgstr "Podjetja"
+
+#. module: dt_product_serial
+#: field:product.product,lot_split_type:0
+msgid "Lot split type"
+msgstr "Tip razdeljevanja"
+
+#. module: dt_product_serial
+#: constraint:stock.move:0
+msgid "You must assign a production lot for this product"
+msgstr "Temu proizvodu morate dodeliti proizvodni lot"
+
+#. module: dt_product_serial
+#: help:product.product,lot_split_type:0
+msgid "None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"
+msgstr "None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"
+
+#. module: dt_product_serial
+#: field:stock.move,new_prodlot_code:0
+msgid "Prodlot fast input"
+msgstr "Proizvodni lot - hitri vnos"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:57
+#: code:addons/dt_product_serial/prodlot_wizard.py:69
+#: code:addons/dt_product_serial/prodlot_wizard.py:83
+#: code:addons/dt_product_serial/prodlot_wizard.py:94
+#: code:addons/dt_product_serial/prodlot_wizard.py:101
+#: code:addons/dt_product_serial/prodlot_wizard.py:104
+#, python-format
+msgid "Invalid lot numbers"
+msgstr "Neveljavne številke lotov"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:94
+#, python-format
+msgid "Production lot %s not found."
+msgstr "Proizvodni lot %s ni najden."
+
+#. module: dt_product_serial
+#: view:res.company:0
+msgid "Product serial"
+msgstr "Serijska številka proizvoda"
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_stock_move
+msgid "Stock Move"
+msgstr "Premik zaloge"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:83
+#, python-format
+msgid "First lot number is greater than the last one."
+msgstr "Prva številka lota je višja od zadnje številke."
+
+#. module: dt_product_serial
+#: view:stock.picking:0
+msgid "Manual split"
+msgstr "Ročno razdeljevanje"
+
+#. module: dt_product_serial
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Napaka: Koda EAN ni veljavna"
+
+#. module: dt_product_serial
+#: help:res.company,autosplit_is_active:0
+msgid "Active the automatic split of move lines on the pickings."
+msgstr "Aktiviraj samodejno razdeljevanje postavk premikov na dobavnicah."
+
+#. module: dt_product_serial
+#: field:stock.picking.prodlot.selection,last_lot:0
+msgid "Last Lot Number"
+msgstr "Zadnja številka lota"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/stock.py:146
+#, python-format
+msgid "Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information."
+msgstr "Proizvod '%s' ima 'Tip razdeljevanja' = 'Logistična enota' , a manjkajo podatki o pakiranju."
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:101
+#, python-format
+msgid "Production lot %s exists but not for product %s."
+msgstr "Proizvodni lot %s obstaja, a ni za proizvod %s."
+

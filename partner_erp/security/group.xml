@@ -1,0 +1,17 @@
+<openerp>
+<data noupdate="1">
+
+<!--
+Users Groups
+-->
+<record model="res.groups" id="partner_erp.group_support_erp">
+<field name="name">ERP Support</field>
+</record>
+<record model="res.groups" id="partner_erp.group_support_erp_manager">
+<field name="name">ERP Support Manager</field>
+</record>
+
+    </data>
+</openerp>
+
+

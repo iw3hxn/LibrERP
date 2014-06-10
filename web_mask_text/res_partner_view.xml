@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+         <record id="view_partner_form"  model="ir.ui.view">
+            <field name="name">res.partner.form.inherit</field>
+            <field name="model" >res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="phone" position="attributes" >
+                    <attribute name="mask">99.99.99.99.99.99</attribute>
+                    <attribute name="placeholder">12.34.56.78.90.12</attribute>
+                    <attribute name = "required">1</attribute>
+                </field>
+                <field name="mobile" position="attributes" >
+                    <attribute name="mask">99.99.99.99.99.99</attribute>
+                    <attribute name="placeholder">12.34.56.78.90.12</attribute>
+                </field>
+                <field name="fax" position="attributes" >
+                    <attribute name="mask">99.99.99.99.99.99</attribute>
+                    <attribute name="placeholder">12.34.56.78.90.12</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

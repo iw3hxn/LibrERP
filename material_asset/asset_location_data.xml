@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="asset_location_asset" model="asset.location.property">
+            <field name="name">Asset</field>
+            <field name="model">asset.asset</field>
+            <field name="type">other</field>
+        </record>
+        
+        <!--base/res/res_partner.py-->
+        <record id="asset_location_customer" model="asset.location.property">
+            <field name="name">Customer</field>
+            <field name="model">res.partner</field>
+            <field name="location_field">address_id</field>
+            <field name="type">address</field>
+        </record>
+        
+        <record id="asset_location_partner_address" model="asset.location.property">
+            <field name="name">Partner Address</field>
+            <field name="model">res.partner.address</field>
+            <!--It's Ok to leave 'selectable' empty. It's the only way to set it' value to False-->
+            <field name="selectable"></field>
+            <field name="type">address</field>
+        </record>
+        
+        <!--base_contact/base_contact.py requires module base_contact-->
+<!--        <record id="asset_location_Contact" model="asset.location.property">
+            <field name="name">Contact</field>
+            <field name="model">res.partner.contact</field>
+            <field name="location_field">address_id</field>
+            <field name="type">address</field>
+        </record>-->
+        
+        <record id="asset_location_employee" model="asset.location.property">
+            <field name="name">Employee</field>
+            <field name="model">hr.employee</field>
+            <field name="type">other</field>
+        </record>
+        
+        <record id="asset_location_project" model="asset.location.property">
+            <field name="name">Project</field>
+            <field name="model">project.project</field>
+            <field name="type">other</field>
+        </record>
+        
+        <record id="asset_location_stock" model="asset.location.property">
+            <field name="name">Warehouse</field>
+            <field name="model">stock.location</field>
+            <field name="type">location</field>
+        </record>
+        
+        <record id="asset_location_car" model="asset.location.property">
+            <field name="name">Car</field>
+            <field name="model">res.car</field>
+            <field name="type">other</field>
+        </record>
+        
+        <record id="asset_location_place" model="asset.location.property">
+            <field name="name">Place</field>
+            <field name="model">project.place</field>
+            <field name="location_field">stock_location_id</field>
+            <field name="type">location</field>
+        </record>
+        
+        <record id="asset_location_plant" model="asset.location.property">
+            <field name="name">Plant</field>
+            <field name="model">project.plant</field>
+            <field name="location_field">stock_location_id</field>
+            <field name="type">location</field>
+        </record>
+        
+        
+    </data>
+</openerp>

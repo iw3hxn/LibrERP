@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <record id="view_res_car_type_form" model="ir.ui.view">
+        <field name="name">res.car.type.form</field>
+        <field name="model">res.car.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Car Type">
+                <group col="4" colspan="4">
+                    <field name="name" select="1"/>
+                    <field name="code"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="view_res_car_type_tree" model="ir.ui.view">
+        <field name="name">res.car.type.tree</field>
+        <field name="model">res.car.type</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Car Type">
+                <field name="name" select="1"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_res_car_type_filter" model="ir.ui.view">
+        <field name="name">res.car.type.filter</field>
+        <field name="model">res.car.type</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Car Type">
+                <field name="name"/>
+                <field name="code" />
+            </search>
+         </field>
+     </record>
+    <record id="open_module_tree_res_car_type" model="ir.actions.act_window">
+        <field name="name">Car Type</field>
+        <field name="res_model">res.car.type</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_res_car_type_filter"/>
+    </record>
+    
+    <menuitem name="Car"   id="menu_config_res_car" parent="hr.menu_hr_management" sequence="6" />
+    
+    <menuitem action="open_module_tree_res_car_type" id="menu_res_car_type_tree" parent="menu_config_res_car" sequence="6" />
+
+    <record id="view_res_car_service_type_form" model="ir.ui.view">
+        <field name="name">res.car.service.type.form</field>
+        <field name="model">res.car.service.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Service Type">
+                <field name="name"/>
+                <field name="required_next_service"/>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_res_car_service_type_tree" model="ir.ui.view">
+        <field name="name">res.car.service.type.tree</field>
+        <field name="model">res.car.service.type</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Service Type" editable="top">
+                <field name="name"/>
+                <field name="required_next_service"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_res_car_service_type_filter" model="ir.ui.view">
+        <field name="name">res.car.service.type.filter</field>
+        <field name="model">res.car.service.type</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Service Type">
+                <field name="name"/>
+            </search>
+         </field>
+     </record>
+
+    <record id="open_module_tree_res_car_service_type" model="ir.actions.act_window">
+        <field name="name">Service Type</field>
+        <field name="res_model">res.car.service.type</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_res_car_service_type_filter"/>
+    </record>
+
+    <menuitem action="open_module_tree_res_car_service_type" id="menu_res_car_service_type_tree" parent="menu_config_res_car" sequence="6" />
+
+    <record id="view_res_car_form" model="ir.ui.view">
+        <field name="name">res.car.form</field>
+        <field name="model">res.car</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Car">
+                <field name="plate"/>
+                <field name="car_type_id" widget="selection"/>
+                <field name="telepass"/>
+                <field name="fuel_card_number"/>
+                <field name="is_available" />
+                <notebook colspan="4">
+                    <page string="Car Fuel History">
+                        <field name="km_ids" colspan="2" nolabel="1">
+                            <tree editable="top">
+                                <field name="date"/>
+                                <field name="km"/>
+                                <field name="month_fuel_cost"/>
+                                <field name="note" />
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Telepass History">
+                        <field name="telepass_ids" colspan="2" nolabel="1">
+                            <tree editable="top">
+                                <field name="date"/>
+                                <field name="spent"/>
+                                <field name="note" />
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Car Services">
+                        <field name="service_ids" colspan="2" nolabel="1" >
+                            <form>
+                                <field name="service_date"/>
+                                <field name="service_type_id" widget="selection" on_change="onchange_service_type_id(service_type_id)"/>
+                                <field name="km"/>
+                                <field name="spent"/>
+                                <field name="next_service_km" attrs="{'required':[('required_next_service','=',True)]}"/>
+                                <field name="required_next_service" invisible="1" />
+                                <field name="note" />
+                            </form>
+                            <tree editable="top">
+                                <field name="service_date"/>
+                                <field name="service_type_id" widget="selection" on_change="onchange_service_type_id(service_type_id)"/>
+                                <field name="km"/>
+                                <field name="spent"/>
+                                <field name="next_service_km" attrs="{'required':[('required_next_service','=',True)]}"/>
+                                <field name="required_next_service" invisible="1" />
+                                <field name="note" />
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Contract">
+                        <field name="contract_ids" colspan="4" nolabel="1" readonly="1">
+                            <tree colors="blue:state in ('draft','confirmed');gray:state in ('release','cancel')">
+                                <field name="employee_id"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="state" />
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Documents">
+                        <field name="documents_ids" nolabel="1">
+                            <form>
+                                <group colspan="4" col="4">
+                                <field name="name"/>
+                                <field name="document_type_id" widget="selection" on_change="onchange_document_type_id(document_type_id)"/>
+                                <field name="valid_start_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="valid_end_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="has_date_option" invisible="1"/>
+                                <field name="active"/>
+                                </group>
+<!--                                <notebook colspan="4" >
+                                    <page string="Documents">
+                                        <group colspan="4" col="4">
+                                            <separator colspan="4" string="Documents" />
+                                            <field name="web_gallery_doc_ids" nolabel="1" colspan="4" />
+                                        </group>
+                                    </page>
+                                </notebook>-->
+                            </form>
+                            <tree colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                <field name="name"/>
+                                <field name="document_type_id"/>
+                                <field name="valid_start_date"/>
+                                <field name="valid_end_date"/>
+                                <field name="row_color" invisible="1" />
+                            </tree>
+                        </field>
+                  </page>
+                  <page string="Notes">
+                    <field name="note" colspan="4" nolabel="1"/>
+                  </page>
+                  <!--<page string="Location">
+                    <group colspan="6" col="6">
+                        <separator string="Map" colspan="6" />
+                        <field name="lat" colspan="1" />
+                        <field name="lng" colspan="1" />
+                        <field name="map" widget="gmap" colspan="6" />
+                    </group>
+                  </page>-->
+                </notebook>
+            </form>
+        </field>
+    </record>
+    <record id="view_res_car_tree" model="ir.ui.view">
+        <field name="name">res.car.tree</field>
+        <field name="model">res.car</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Cars">
+                <field name="plate"/>
+                <field name="car_type_id"/>
+                <field name="telepass"/>
+                <field name="current_driver"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_res_car_filter" model="ir.ui.view">
+        <field name="name">res.car.filter</field>
+        <field name="model">res.car</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Car">
+                <filter icon="terp-personal+" domain="[('is_available','=',True)]" name="is_available" string="Available" groups="base.group_extended"/>
+                <field name="plate"/>
+                <field name="car_type_id"/>
+                <field name="telepass"/>
+                
+            </search>
+         </field>
+     </record>
+
+    <record id="open_module_tree_res_car" model="ir.actions.act_window">
+        <field name="name">Cars</field>
+        <field name="res_model">res.car</field>
+        <field name="context">{"search_default_is_available":eval('True')}</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_res_car_filter"/>
+    </record>
+    <menuitem action="open_module_tree_res_car" id="menu_res_car_tree" parent="hr.menu_hr_main" sequence="6" />
+
+    <record model="ir.ui.view" id="view_employee_form_inherit">
+            <field name="name">hr.employee.form.inherit</field>
+            <field name="type">form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                   <page string="Car History">
+                        <field name="contract_ids" nolabel="1">
+                            <form>
+                                <field name="car_id"/>
+                                <newline />
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <group col="8" colspan="4">
+                                    <field name="state" colspan="1" />
+                                    <button name="button_assigned" states="draft" string="Assign" icon="gtk-execute"/>
+                                    <button name="button_released" states="assigned" string="Release" icon="gtk-go-forward"/>
+                               </group>
+                            </form>
+                            <tree >
+                                <field name="car_id"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </tree>
+                        </field>
+                  </page>
+               </notebook>
+             </field>
+       </record>
+
+    <!--record model="ir.ui.view" id="view_employee_form_inherit1">
+        <field name="name">hr.employee.form.inherit1</field>
+        <field name="type">form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <field name="work_phone" position="replace">
+               <field name="work_phone" readonly="1"/>
+            </field>
+         </field>
+    </record-->
+
+    <record id="view_res_car_contract_form" model="ir.ui.view">
+        <field name="name">res.car.contract.form</field>
+        <field name="model">res.car.contract</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Assign Auto"  >
+                <field name="employee_id" select="1" domain="[('car_id','=', False)]" />
+                <field name="car_id" domain="[('employee_id','=', False)]" />
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <group col="8" colspan="4">
+	                <field name="state" colspan="1" />
+	                <button name="button_assigned" states="draft" string="Assign" icon="gtk-execute"/>
+	                <button name="button_released" states="assigned" string="Release" icon="gtk-go-forward"/>
+	           </group>
+            </form>
+        </field>
+    </record>
+    <record id="view_res_car_contract_tree" model="ir.ui.view">
+        <field name="name">res.car.contract.tree</field>
+        <field name="model">res.car.contract</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Assign Auto">
+                <field name="employee_id" select="1"/>
+                <field name="car_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="isactive"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_res_car_contract_filter" model="ir.ui.view">
+        <field name="name">res.car.contract.filter</field>
+        <field name="model">res.car.contract</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Assign Auto">
+                <field name="employee_id" select="1"/>
+                <field name="car_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </search>
+         </field>
+     </record>
+    <record id="open_module_tree_res_car_contract" model="ir.actions.act_window">
+        <field name="name">My Auto</field>
+        <field name="res_model">res.car.contract</field>
+        <field name="view_type">form</field>
+        <field name="domain">[('employee_id.user_id','=',uid)]</field>
+        <field name="search_view_id" ref="view_res_car_contract_filter"/>
+    </record>
+    
+    <record model="res.groups" id="auto_access_group">
+        <field name="name">auto_access_group</field>
+    </record>
+
+    <record id="open_module_tree_res_car_contract_admin" model="ir.actions.act_window">
+        <field name="name">All Assigned Auto</field>
+        <field name="res_model">res.car.contract</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_res_car_contract_filter"/>
+    </record>
+    
+
+    <menuitem action="open_module_tree_res_car_contract" id="menu_res_car_contract_tree" parent="hr.menu_hr_main" sequence="6"/>
+    <menuitem action="open_module_tree_res_car_contract_admin" id="menu_res_car_contract_tree_admin" parent="hr.menu_hr_main" sequence="6" groups="auto_access_group"/>
+
+    <record id="view_res_car_service_form" model="ir.ui.view">
+            <field name="name">res.car.service.form</field>
+            <field name="model">res.car.service</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Service">
+                    <field name="service_date"/>
+                    <field name="service_type_id" widget="selection" on_change="onchange_service_type_id(service_type_id)"/>
+                    <field name="km"/>
+                    <field name="spent"/>
+                    <field name="next_service_km" attrs="{'required':[('required_next_service','=',True)]}"/>
+                    <field name="required_next_service" invisible="1" />
+                    <field name="note" />
+                </form>
+            </field>
+        </record>
+        <record id="view_res_car_service_tree" model="ir.ui.view">
+            <field name="name">res.car.service.tree</field>
+            <field name="model">res.car.service</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Service">
+                    <field name="service_date"/>
+                    <field name="service_type_id"/>
+                    <field name="km"/>
+                    <field name="spent"/>
+                    <field name="next_service_km"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_res_car_service_filter" model="ir.ui.view">
+            <field name="name">res.car.service.filter</field>
+            <field name="model">res.car.service</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Service">
+                    <field name="service_date"/>
+                    <field name="service_type_id"/>
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_tree_res_car_service" model="ir.actions.act_window">
+            <field name="name">Service</field>
+            <field name="res_model">res.car.service</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_res_car_service_filter"/>
+        </record>
+        <record id="view_res_car_km_form" model="ir.ui.view">
+            <field name="name">res.car.km.form</field>
+            <field name="model">res.car.km</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Km">
+                    <field name="date"/>
+                    <field name="km"/>
+                    <field name="month_fuel_cost"/>
+                </form>
+            </field>
+        </record>
+        <record id="view_res_car_km_tree" model="ir.ui.view">
+            <field name="name">res.car.km.tree</field>
+            <field name="model">res.car.km</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Km">
+                    <field name="date"/>
+                    <field name="km"/>
+                    <field name="month_fuel_cost"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_res_car_km_filter" model="ir.ui.view">
+            <field name="name">res.car.km.filter</field>
+            <field name="model">res.car.km</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Km">
+                    <field name="date"/>
+                    <field name="km"/>
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_tree_res_car_km" model="ir.actions.act_window">
+            <field name="name">Km</field>
+            <field name="res_model">res.car.km</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_res_car_km_filter"/>
+        </record>
+
+    </data>
+</openerp>

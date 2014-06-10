@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+        <record id="view_users_meeting_form" model="ir.ui.view">
+            <field name="name">res.users.meeting.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="google_base_account.view_users_gogole_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="gmail_password" position="after">
+                    <separator string="Google Calendar" colspan="4" />
+                    <field name="google_calendar"/>
+                    <field name="google_timezone"/>
+                    <field name="google_auto"/>
+                </field>
+            </field>
+        </record>
+    
+    
+        <record id="view_project_calendar_google" model="ir.ui.view">
+            <field name="name">project.calendar.google.form</field>
+            <field name="type">form</field>
+            <field name="model">project.task</field>
+            <!--<field name="inherit_id" ref="project.view_task_form2" />-->
+            <field name="inherit_id" ref="project_calendar.view_project_calendar_form" />
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Google">
+                        <field name="google_event_id" colspan="4"/>
+                        <field name="event_modify_date" colspan="4"/>
+                        <field name="date_write" colspan="4"/>
+                        <field name="date_create" colspan="4"/>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    
+    </data>
+</openerp>

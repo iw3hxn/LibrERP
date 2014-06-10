@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+  		<record id="view_wizard_print_traffic_detail" model="ir.ui.view">
+            <field name="name">wizard.print.traffic.detail.form</field>
+            <field name="model">wizard.print.traffic.detail</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form col="6" string="Download Traffic Detail">
+                    <group col="5" fill="0" height="100" states="choose">
+                        <separator string="Select period" colspan="5"/>
+                        <field name="start_date" colspan="2" />
+                        <field name="end_date" colspan="2" />
+                        <separator colspan="5"/>
+                        <group colspan="5">
+                            <button special="cancel" icon="gtk-cancel" string="Cancel"/>
+                            <button type="object" name="print_traffic_detail" icon="gtk-go-forward"
+                                    string="Download Traffic"/>
+                        </group>
+                        <field invisible="1" name="state"/>
+                    </group>
+                    <group col="6" fill="0" states="get">
+                        <separator colspan="6" string="Export done"/>
+                        <field name="name" invisible="1" width="100"/>
+                        <field name="data" nolabel="1" readonly="1" width="100" fieldname="name"/>
+                    </group>
+                </form>
+            </field>
+  		</record>
+		
+        <record id="action_wizard_print_traffic_detail" model="ir.actions.act_window">
+            <field name="name">Print Traffic Detail</field>
+            <field name="res_model">wizard.print.traffic.detail</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wizard_print_traffic_detail"/> 
+            <field name="target">new</field>
+        </record>
+		
+		<record id="menu_print_detail" model="ir.values">
+            <field name="object" eval="True" />
+            <field name="name">Traffic Detail Menu</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_print_traffic_detail'))" />
+            <field name="key">action</field>
+            <field name="model">res.sim</field>
+        </record>
+    </data>
+</openerp>
+ 

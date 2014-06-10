@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        
+        <record id="module_tree_version" model="ir.ui.view">
+            <field name="name">ir.module.module.tree.version</field>
+            <field name="model">ir.module.module</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="base.module_tree"/>
+            <field name="arch" type="xml">
+                <field name="latest_version" position="after">
+                    <field name="need_upgrade" />
+                    <field name="check_upgrade" invisible="1" />
+                </field>
+                <field name="state" position="after">
+                    <button name="button_upgrade" states="installed" string="Upgrade" icon="terp-gtk-go-back-rtl" type="object"/>
+                    <button name="button_upgrade_cancel" states="to upgrade" string="Cancel Upgrade" icon="gtk-cancel" type="object"/>   
+                </field>
+            </field>
+        </record>
+        
+        <record id="view_module_filter_inherit_upgrade" model="ir.ui.view">
+            <field name="name">ir.module.module.list.select.inherit.upgrade</field>
+            <field name="model">ir.module.module</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="base.view_module_filter"/>
+            <field name="arch" type="xml">
+                <filter icon="terp-dialog-close" string="Not Installed" position="after">
+                    <!--<field name="need_upgrade" invisible="1" />-->
+                    <filter icon="terp-tools" string="To upgrade" domain="[('need_upgrade', '=', True), ('state', 'in', ['installed', 'to upgrade', 'to remove'])]"/>
+                </filter>
+            </field>
+        </record>
+        
+        <record id="base.open_module_tree" model="ir.actions.act_window">
+            <field name="name">Modules</field>
+            <field name="res_model">ir.module.module</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="context">{'search_default_app':0, 'search_default_no_hidden': 0}</field>
+            <field name="search_view_id" ref="base.view_module_filter"/>
+            <field name="help">You can install new modules in order to activate new features, menu, reports or data in your OpenERP instance. To install some modules, click on the button "Install" from the form view and then click on "Start Upgrade".</field>
+        </record>
+
+    </data>
+</openerp>

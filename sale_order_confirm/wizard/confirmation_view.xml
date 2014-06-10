@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="sale_order_confirm_line_list" model="ir.ui.view">
+            <field name="name">sale.order.confirm.line.list</field>
+            <field name="model">sale.order.confirm.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom" string="Product Order">
+                    <field name="order_id" />
+                    <field name="sale_line_id" />
+                    <field name="product_id" />
+                    <field name="name" />
+                    <field name="sequence" />
+                    <field name="price_unit"/>
+                    <field name="price_subtotal"/>
+                    <field name="quantity" />
+                    <field name="product_uom" />
+                    <field name="discount"/>
+                    <field name="wizard_id" />
+                    <field name="changed"/>
+                    <field name="tax_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sale_order_confirmation_form" model="ir.ui.view">
+            <field name="name">sale.order.confirm.form</field>
+            <field name="model">sale.order.confirm</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="order_date" invisible="1"/>
+                    <field name="sale_order_id" invisible="1"/>
+                    <field name="new_sale_order" invisible="1"/>
+                    <separator colspan="4" string="Products"/>
+                    <field name="confirm_line" on_change="onchange_line(confirm_line)" colspan="4" nolabel="1" mode="tree,form" width="550" height="200">
+                        <tree editable="bottom" string="Product Order">
+                            <field name="product_id" on_change="onchange_product(product_id, quantity, parent.sale_order_id, context)"/>
+                            <field name="name" />
+                            <field name="quantity" on_change="onchange_qty(product_id, quantity, discount, price_unit, parent.sale_order_id, context)"/>
+                            <field name="product_uom"/>
+                            <field name="discount" on_change="onchange_discount(quantity, discount, price_unit)"/>
+                            <field name="price_unit" on_change="onchange_price(quantity, discount, price_unit)" />
+                            <field name="changed" invisible="1"/>
+                            <field name="price_subtotal"/>
+                            <field name="tax_id" invisible="1"/>
+                        </tree>
+                    </field>
+                    <separator string="" colspan="4" />
+                    <label string="" colspan="2"/>
+                    <group col="2" colspan="2">
+                        <button icon='gtk-cancel' special="cancel" string="_Cancel" />
+                        <button name="sale_order_confirmated" string="_Confirmated" colspan="1" type="object" icon="gtk-go-forward" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="sale_order_confirm_action" model="ir.actions.act_window">
+            <field name="name">Sale Order Confirm</field>
+            <field name="res_model">sale.order.confirm</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+    </data>
+</openerp>

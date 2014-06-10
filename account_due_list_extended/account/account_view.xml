@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+	<data>
+		
+		<!-- ====================================================== -->
+		<!-- 				ACCOUNT.PAYMENT.TERM FORM				-->
+		<!-- ====================================================== -->
+		<record id="view_payment_term_form_type_extended" model="ir.ui.view">
+			<field name="name">account.payment.term.form.type_extended</field>
+			<field name="model">account.payment.term</field>
+			<field name="inherit_id" ref="account.view_payment_term_form"/>
+			<field name="arch" type="xml">
+				<field name="name" position="after" >
+					<field name="payment_term_type" />
+				</field>
+			</field>
+		</record>
+
+		<!-- ====================================================== -->
+		<!-- 				ACCOUNT.MOVE.LINE FILTER				-->
+		<!-- ====================================================== -->
+		<record id="view_payments_filter_type_extended" model="ir.ui.view">
+			<field name="name">Payments Select Exdended</field>
+			<field name="model">account.move.line</field>
+			<field name="inherit_id" ref="account_due_list.view_payments_filter"/>
+			<field name="arch" type="xml">
+				<field name="date_maturity" position="after">
+					<field name="payment_term_type" />
+				</field>
+				<filter icon="terp-dolar_ok!" string="Unreconciled" domain="[('reconcile_id','=',False)]" help="Unreconciled payments" position="replace">
+					<filter name="unreconciled_filter" icon="terp-dolar_ok!" string="Unreconciled" domain="[('reconcile_id','=',False)]" help="Unreconciled payments"/>
+					<filter name="reconciled_filter" icon="terp-dolar" string="Reconciled" domain="[('reconcile_id','!=',False)]" help="Reconciled payments"/>
+				</filter>
+			</field>
+		</record>
+		
+		<!-- ====================================================== -->
+		<!-- 				ACCOUNT.MOVE.LINE TREE					-->
+		<!-- ====================================================== -->
+		<record id="view_payments_tree_type_extended" model="ir.ui.view">
+			<field name="name">Account move line</field>
+			<field name="model">account.move.line</field>
+			<field name="inherit_id" ref="account_due_list.view_payments_tree"/>
+			<field name="arch" type="xml">
+				<field name="payment_term_id" position="after">
+					<field name="payment_term_type"/>
+				</field>
+				<field name="reconcile_partial_id" position="after">
+					<field name="importo"/>
+				</field>
+			</field>
+		</record>
+
+		<!-- ====================================================== -->
+		<!-- 				ACCOUNT.MOVE.LINE ACTION				-->
+		<!-- ====================================================== -->
+		<record model="ir.actions.act_window" id="account_due_list.action_invoice_payments">
+			<field name="name">Payments</field>
+			<field name="res_model">account.move.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="account_due_list.view_payments_tree"/>
+			<field name="search_view_id" ref="account_due_list.view_payments_filter"/>
+			<field name="domain">['|','&amp;',('account_id.type','=','payable'),('debit','=',0),'&amp;',('account_id.type','=','receivable'),('credit','=',0)]</field>
+			<field name="context">{'search_default_unreconciled_filter':1}</field>
+		</record>
+		
+		<menuitem name="Due Register" parent="account.menu_finance_entries" action="account_due_list.action_invoice_payments" id="account_due_list.menu_action_invoice_payments" sequence="5"/>
+
+
+		<!-- ====================================================== -->
+		<!-- 				PAYMENT TERM TYPE TREE					-->
+		<!-- ====================================================== -->
+		<record id="view_payments_type_tree" model="ir.ui.view">
+			<field name="name">account.payment.term.type.tree</field>
+			<field name="model">account.payment.term.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Payment">
+					<field name="name" select="1" />
+					<field name="description" select="1" />
+				</tree>
+			</field>
+		</record>
+
+		<!-- ====================================================== -->
+		<!-- 				PAYMENT TERM TYPE ACTION				-->
+		<!-- ====================================================== -->
+		<record model="ir.actions.act_window" id="action_view_payments_type">
+			<field name="name">Tipi di pagamento</field>
+			<field name="res_model">account.payment.term.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_payments_type_tree"/>
+		</record>
+
+		<!-- ====================================================== -->
+		<!-- 				PAYMENT TERM TYPE ACTION				-->
+		<!-- ====================================================== -->
+		<menuitem name="Tipi di pagamento" parent="account.menu_configuration_misc" id="menu_payments_type" action="action_view_payments_type"/>
+
+	</data>
+</openerp>

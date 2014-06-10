@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+        <record id="task_time_control_expenses" model="ir.ui.view">
+            <field name="name">task.time.control.expense.form</field>
+            <field name="model">task.time.control.confirm.wizard</field>
+            <field name="inherit_id" ref="task_time_control.task_time_control_confirm_wizard"/>
+            <field name="arch" type="xml">
+                <field name="time" position="after">
+                    <field name="user_id" invisible="True" />
+                    <newline/>
+                    <field name="expense_line_ids" nolabel="1" colspan="4" context="{}" >
+<!--                       <form string="Expense">
+                            <group colspan="4" col="6">
+                                <field name="product_id" required="True" on_change="onchange_product_id(product_id, context)" />
+                                <field name="name" />
+                                <field name="payer" />
+                                <field name="unit_amount" />
+                                <field name="unit_quantity" />
+                                <field name="date_value" required="True" />
+                            </group>
+                        </form>-->
+                        <tree string="Expenses" editable="top">
+                            <field name="date_value" />
+                            <field name="product_id" required="1" on_change="onchange_product_id(product_id, context)" widget="selection" />
+                            <field name="name" />
+                            <field name="payer" required="True"/>
+                            <field name="unit_amount" />
+                            <field name="unit_quantity" />
+                            <!--<field name="total_amount" sum="Total"/>-->
+                        </tree>
+                    </field>
+                </field>
+            </field>
+        </record>
+    
+    </data>
+</openerp>

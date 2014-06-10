@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+	
+		<record model="ir.ui.view" id="product_normal_form_view_ext">
+			<field name="name">product.normal.form.view.ext</field>
+			<field name="model">product.product</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="product.product_normal_form_view" />
+			<field name="arch" type="xml">
+                <field name="purchase_ok" position="replace">
+                    <field name="purchase_ok"  on_change="onchange_categ_id(categ_id, purchase_ok, type, is_kit)" />
+                </field>
+
+				<field name="categ_id" position="replace"> 
+					<field name="categ_id" on_change="onchange_categ_id(categ_id, purchase_ok)" />
+				</field>			
+				
+				<field name="type" position="attributes"> 
+					<attribute name="on_change">onchange_categ_id(categ_id, purchase_ok, type, is_kit)</attribute>
+				</field>	
+				<field name="procure_method" position="attributes"> 
+					<attribute name="on_change">onchange_categ_id(categ_id, purchase_ok, type, is_kit)</attribute>
+				</field>
+			</field>
+		</record>
+		
+	</data>
+</openerp>

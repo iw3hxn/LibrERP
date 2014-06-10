@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_ir_sequence_restart_inherit_view" model="ir.ui.view">
+			<field name="name">view.ir.sequence.restart.inherit</field>
+			<field name="model">ir.sequence</field>
+			<field name="type">form</field>
+            <field name="inherit_id" ref="base.sequence_view"/>
+			<field name="arch" type="xml">
+                <field name="implementation" position="after">
+                    <field name='restart_on_next_year' on_change="on_change_restart_on_next_year(code)" />
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
+
+

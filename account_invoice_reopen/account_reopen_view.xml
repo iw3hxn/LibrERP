@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="view_account_journal_form_inherit" model="ir.ui.view">
+            <field name="name">account.journal.form</field>
+            <field name="model">account.journal</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <field name="entry_posted" position="after">
+                    <field name="reopen_posted"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="invoice_form_reopen_inherit" model="ir.ui.view">
+            <field name="name">invoice.form.reopen.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page/group/group/button[@name='invoice_cancel']" position="after">
+                    <button name="action_reopen" type="object" states="open" string="Reset to Draft" icon="gtk-convert" groups="account.group_account_invoice"/>
+                </xpath>
+            </field>
+        </record>
+<!--
+        <record id="action_reopen_form_inherit2" model="ir.ui.view">
+            <field name="name">invoice.reopen.form.inherit2</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <button name="invoice_open" position="attributes">
+                    <attribute name="states">draft,draft_reset,proforma2</attribute>
+                </button>
+            </field>
+        </record>
+
+        <record id="action_reopen_form_inherit3" model="ir.ui.view">
+            <field name="name">invoice.reopen.form.inherit3</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <field name="state" position="attributes">
+                    <attribute name="statusbar_colors">{"proforma":"blue","proforma2":"blue","draft_reset":"red"}</attribute>
+                </field>
+            </field>
+        </record>
+-->
+        <record id="invoice_supplier_reopen_form_inherit" model="ir.ui.view">
+            <field name="name">invoice.supplier.reopen.form.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page/group/group/button[@name='invoice_cancel']" position="after">
+                    <button name="action_reopen" type="object" states="open" string="Reset To Draft" icon="gtk-convert" groups="account.group_account_invoice"/>
+                </xpath>
+            </field>
+        </record>
+
+<!--
+        <record id="invoice_supplier_reopen_form_inherit2" model="ir.ui.view">
+            <field name="name">invoice.supplier.reopen.form.inherit2</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <button name="invoice_open" position="attributes">
+                    <attribute name="states">draft,draft_reset,proforma2</attribute>
+                </button>
+            </field>
+        </record>
+
+        <record id="invoice_supplier_reopen_form_inherit3" model="ir.ui.view">
+            <field name="name">invoice.supplier.reopen.form.inherit3</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <field name="state" position="attributes">
+                    <attribute name="statusbar_colors">{"proforma":"blue","proforma2":"blue","draft_reset":"red"}</attribute>
+                </field>
+            </field>
+        </record>
+-->
+
+    </data>
+</openerp>

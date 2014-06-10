@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+	<record model="ir.ui.view" id="view_meeting_tree_inherit_province">
+		<field name="name">crm.meeting.province</field>
+		<field name="model">crm.meeting</field>
+		<field name="inherit_id" ref="crm.crm_case_tree_view_meet"/>
+		<field name="type">tree</field>
+		<field name="arch" type="xml">
+            
+		    <field name="partner_id" position="after">
+				<field name="province_id" />
+            </field>
+
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="view_meeting_search_inherit_province">
+		<field name="name">crm.meeting.province</field>
+		<field name="model">crm.meeting</field>
+		<field name="inherit_id" ref="crm.view_crm_case_meetings_filter"/>
+		<field name="type">search</field>
+		<field name="arch" type="xml">
+            
+		    <field name="user_id" position="after">
+				<field name="province_id" />
+            </field>
+
+		</field>
+	</record>
+		
+		
+	</data>
+</openerp>

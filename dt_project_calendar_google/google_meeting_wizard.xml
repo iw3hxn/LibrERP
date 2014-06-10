@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<!--<menuitem id="menu_google" name="Google Import-Export" parent="crm.menu_crm"/>-->
+
+		<wizard id="wizard_meeting_calendar_synch"  name="google.meeting.synch" string="Synchronize Crm"/>
+		<menuitem name="Synchronize Crm" id="menu_tools_google_calendar_synch" parent="base.menu_base_partner" action="wizard_meeting_calendar_synch" type="wizard"/>
+
+	</data>
+</openerp>

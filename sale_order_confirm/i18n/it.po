@@ -1,0 +1,650 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* sale_order_confirm
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-17 14:40+0000\n"
+"PO-Revision-Date: 2014-02-17 14:40+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm,new_sale_order:0
+msgid "New Sale Order"
+msgstr "Nuovo Ordine"
+
+#. module: sale_order_confirm
+#: field:res.company,need_tech_validation:0
+msgid "Need Technical Verification"
+msgstr "Richiesta Validazione Tecnica"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:149
+#, python-format
+msgid "Customer Validation"
+msgstr "Attesa Risposta Cliente"
+
+#. module: sale_order_confirm
+#: field:sale.order,credit_limit:0
+msgid "Fido Residuo"
+msgstr "Fido Residuo"
+
+#. module: sale_order_confirm
+#: sql_constraint:res.partner:0
+msgid "Error! Specified VAT Number already exists for any other registered partner."
+msgstr "Errore! Esiste già un partner con la stessa P.IVA."
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Recreate Invoice"
+msgstr "Ricrea Fattura"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.action_order_waiting_customer
+#: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_waiting_customer
+msgid "Quotation Waiting Customer"
+msgstr "Attesa Risposta Cliente"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:151
+#, python-format
+msgid "To Invoice"
+msgstr "Da Fatturare"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,product_uom:0
+msgid "Unit of Measure"
+msgstr "Unita di Misura"
+
+#. module: sale_order_confirm
+#: field:sale.order.line,qty_available:0
+msgid "Quantity On Hand"
+msgstr "Q.tà A Magazzino"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Confirm by Customer"
+msgstr "Confermato dal Cliente"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.action_order_form_quotation
+#: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_quotation
+msgid "Quotation Orders"
+msgstr "Preventivi"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Set to Draft"
+msgstr "Imposta come Bozza"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:154
+#, python-format
+msgid "Invoice Exception"
+msgstr "Eccezione Fattura"
+
+#. module: sale_order_confirm
+#: field:sale.order,revision_note:0
+#: view:sale.order.revision.note:0
+#: field:sale.order.revision.note,name:0
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: sale_order_confirm
+#: help:res.company,default_property_account_position:0
+msgid "The default fiscal position will determine taxes and the accounts used for the partner."
+msgstr "La posizione fiscale determina le tasse applicate per il Partner."
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,quantity:0
+msgid "Quantity"
+msgstr "Quantità"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,price_subtotal:0
+msgid "Subtotal"
+msgstr "Subtotale"
+
+#. module: sale_order_confirm
+#: field:sale.order,tech_validation:0
+msgid "Tech Validated ?"
+msgstr "Tech Validated ?"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Cancel Order"
+msgstr "Annulla Ordine"
+
+#. module: sale_order_confirm
+#: field:res.company,check_credit_limit:0
+msgid "Abilita gestione fido"
+msgstr "Abilita gestione fido"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,tax_id:0
+msgid "Taxes"
+msgstr "Tasse"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,order_id:0
+msgid "Order Reference"
+msgstr "Riferimento Ordine"
+
+#. module: sale_order_confirm
+#: field:sale.order,manager_validation:0
+msgid "Manager Validated ?"
+msgstr "Manager Validated ?"
+
+#. module: sale_order_confirm
+#: view:sale.order.confirm:0
+#: field:sale.order.confirm,confirm_line:0
+msgid "Products"
+msgstr "Prodotti"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:156
+#, python-format
+msgid "Cancelled"
+msgstr "Anullato"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:170
+#: field:sale.order,required_tech_validation:0
+#, python-format
+msgid "Required Technical Validation"
+msgstr "Richiede Validazione Tecnica"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:147
+#: field:sale.order,need_manager_validation:0
+#, python-format
+msgid "Manager Validation"
+msgstr "Revisione Manager"
+
+#. module: sale_order_confirm
+#: view:sale.order.confirm:0
+#: view:sale.order.revision.note:0
+msgid "_Cancel"
+msgstr "_Annulla"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: sale_order_confirm
+#: field:res.company,need_manager_validation:0
+msgid "Need Supervisor Verification"
+msgstr "Richiesta Verifica Supervisore"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Linea d'ordine di vendita"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.action_order_form_quotation_smart
+#: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_quotation_smart
+msgid "Quotation Orders Smart"
+msgstr "Preventivo Smart"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Confirm"
+msgstr "Conferma"
+
+#. module: sale_order_confirm
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Attenzione: non puoi creare aziende ricorsive"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:269
+#: field:sale.order.line,readonly_price_unit:0
+#, python-format
+msgid "Readonly Price Unit"
+msgstr "Prezzo di Vendita Sola Lettura"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.action_order_to_send
+#: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_to_send
+msgid "Quotation Ready To Send"
+msgstr "Quotazione da Spedire"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Untaxed amount"
+msgstr "Totale Imponibile"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Send to Customer"
+msgstr "Spedire al Cliente"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "My Sale Orders"
+msgstr "I Miei Ordini di Vendita"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Sales Order Lines"
+msgstr "Righe Ordine di Vendita"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:150
+#, python-format
+msgid "Waiting Schedule"
+msgstr "In attesa della Schedulazione"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Waiting Customer"
+msgstr "Attesa Risposta Cliente"
+
+#. module: sale_order_confirm
+#: field:sale.order.line,virtual_available:0
+msgid "Quantity Available"
+msgstr "Q.tà Disponibile"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Other Information"
+msgstr "Altre informazioni"
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Configuration"
+msgstr "Configurazione"
+
+#. module: sale_order_confirm
+#: field:res.company,default_credit_limit:0
+msgid "Fido di default"
+msgstr "Fido di default"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Dates"
+msgstr "Date"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Versions"
+msgstr "Versioni"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,changed:0
+msgid "Changed"
+msgstr "Cambiato"
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Margin Manager"
+msgstr "Gestione Margine"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Print Order"
+msgstr "Stampa Ordine"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,sequence:0
+msgid "Sequence"
+msgstr "Sequenza"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Recreate Packing"
+msgstr "Ricrea imballaggio"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,discount:0
+msgid "Discount (%)"
+msgstr "Sconto (%)"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_sale_order
+#: view:sale.order:0
+msgid "Sales Order"
+msgstr "Ordine di vendita"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Invoices"
+msgstr "Fatture"
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Parametri Default"
+msgstr "Parametri Default"
+
+#. module: sale_order_confirm
+#: field:res.partner,credit_limit_copy:0
+msgid "Credit Limit"
+msgstr "Limite Credito"
+
+#. module: sale_order_confirm
+#: field:sale.order.line,delivered_qty:0
+msgid "Delivered Qty"
+msgstr "Q.tà Consegnate"
+
+#. module: sale_order_confirm
+#: field:res.company,default_property_payment_term:0
+msgid "Dafault Payment Term"
+msgstr "Condizioni Pagamento"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Advance Invoice"
+msgstr "Fattura di acconto"
+
+#. module: sale_order_confirm
+#: field:sale.order,customer_validation:0
+msgid "Customer Validated ?"
+msgstr "Conferma Cliente ?"
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Sale Order Validation Params"
+msgstr "Parametri Validazione Ordine di Vendita"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:153
+#, python-format
+msgid "Shipping Exception"
+msgstr "Eccezione Spedizione"
+
+#. module: sale_order_confirm
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr "Codice Cliente Univoco"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.action_order_form_manager
+#: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_manager
+msgid "Quotation Manager Review"
+msgstr "Revisione Manager"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Reject"
+msgstr "Respingere"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Conditions"
+msgstr "Condizioni"
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Gestione Fido"
+msgstr "Gestione Fido"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Packings"
+msgstr "Imballaggi"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Create Final Invoice"
+msgstr "Creare la fattura finale"
+
+#. module: sale_order_confirm
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr "Codice Fornitore Univoco"
+
+#. module: sale_order_confirm
+#: model:res.groups,name:sale_order_confirm.credit_modifier
+msgid "Configuratore Credito"
+msgstr "Configuratore Credito"
+
+#. module: sale_order_confirm
+#: field:res.company,minimum_margin:0
+msgid "Minimun margin %"
+msgstr "Minimo Margine in %"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm,date:0
+msgid "Date"
+msgstr "Data"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:145
+#, python-format
+msgid "Quotation"
+msgstr "Preventivo"
+
+#. module: sale_order_confirm
+#: field:res.company,enable_margin_validation:0
+msgid "Enable Margin Verify"
+msgstr "Abilita verifica sul margine"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:155
+#, python-format
+msgid "Done"
+msgstr "Completato"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Ready To Send"
+msgstr "Da Spedire"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.sale_order_revision_note_action
+msgid "Sale Order Rejection"
+msgstr "Rifiuto Ordine di Vendita"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Quotations"
+msgstr "Preventivi"
+
+#. module: sale_order_confirm
+#: view:sale.order.confirm:0
+msgid "_Confirmated"
+msgstr "_Conferma"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "History"
+msgstr "Cronologia"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.sale_order_confirm_action
+msgid "Sale Order Confirm"
+msgstr "Conferma Ordine vendita"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "References"
+msgstr "Riferimenti"
+
+#. module: sale_order_confirm
+#: field:res.company,default_property_account_position:0
+msgid "Default Fiscal Position"
+msgstr "Posizione Fiscale"
+
+#. module: sale_order_confirm
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr "Il Riferimento Ordine deve essere unico per azienda!"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:152
+#, python-format
+msgid "In Progress"
+msgstr "In Progressione"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:173
+#: field:sale.order,required_manager_validation:0
+#, python-format
+msgid "Required Manager Validation"
+msgstr "Richiedi Validazione Manager"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,wizard_id:0
+msgid "Wizard"
+msgstr "Wizard"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:146
+#: field:sale.order,need_tech_validation:0
+#, python-format
+msgid "Technical Validation"
+msgstr "Revisione Tecnica"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,price_unit:0
+msgid "Unit Price"
+msgstr "Prezzo Unitario"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,order_line_id:0
+msgid "Order Line Reference"
+msgstr "Riferimento dettaglio Ordine"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Total Tax Excluded"
+msgstr "Totale non tassato"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Compute"
+msgstr "Calcola"
+
+#. module: sale_order_confirm
+#: view:sale.order.revision.note:0
+msgid "Reject with New Revision"
+msgstr "Rifiuta con una nuova versione"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,product_id:0
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,name:0
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: sale_order_confirm
+#: field:sale.order,email_sent_validation:0
+msgid "Email Sent to Customer ?"
+msgstr "Quotazione inviata al Cliente ?"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_sale_order_revision_note
+msgid "sale.order.revision.note"
+msgstr "sale.order.revision.note"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Create version"
+msgstr "Crea Nuova Revisione"
+
+#. module: sale_order_confirm
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Il nome azienda deve essere unico!"
+
+#. module: sale_order_confirm
+#: help:res.company,default_property_payment_term:0
+msgid "This default payment term will be used on creation of partner"
+msgstr "Termine di Pagamento di default per ogni nuovo cliente"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_sale_order_confirm
+msgid "Confirm wizard for Sale order"
+msgstr "Wizard per Conferma ordine di Vendita"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.action_order_form_technical
+#: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_technical
+msgid "Quotation Technical Review"
+msgstr "Revisione Tecnica"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Logistic"
+msgstr "Logistica"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_sale_order_confirm_line
+msgid "sale.order.confirm.line"
+msgstr "sale.order.confirm.line"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm,sale_order_id:0
+msgid "Order"
+msgstr "Ordine"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Search Sales Order"
+msgstr "Cerca ordine di vendita"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Ignore Exception"
+msgstr "Ignora eccezione"
+
+#. module: sale_order_confirm
+#: field:sale.order,last_revision_note:0
+msgid "Last Revision Note"
+msgstr "Note Ultima Revisione"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Print Quotation"
+msgstr "Stampa Preventivo"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:142
+#: field:sale.order,visible_credit_limit:0
+#, python-format
+msgid "Fido Residuo Visibile"
+msgstr "Fido Residuo Visibile"
+
+#. module: sale_order_confirm
+#: view:sale.order.confirm:0
+#: view:sale.order.confirm.line:0
+msgid "Product Order"
+msgstr "Prodotti ordinati"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Total Tax Included"
+msgstr "Totale (tasse incluse)"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:148
+#, python-format
+msgid "Send To Customer"
+msgstr "Spedire al Cliente"
+
+#. module: sale_order_confirm
+#: field:res.company,readonly_price_unit:0
+msgid "Read Only Price Unit on Sale Order"
+msgstr "Prezzo di Vendita solo da listino"

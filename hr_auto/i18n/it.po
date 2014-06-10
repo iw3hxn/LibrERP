@@ -1,0 +1,403 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* hr_auto
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.4\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2012-03-26 07:09+0000\n"
+"PO-Revision-Date: 2012-03-26 07:09+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_auto
+#: constraint:res.car.service:0
+msgid "Error! Please enter the next service Km."
+msgstr "Errore! Inserire il prossimo intervento in Km."
+
+#. module: hr_auto
+#: view:res.car:0
+msgid "Car Fuel History"
+msgstr "Storico Carta Carburante"
+
+#. module: hr_auto
+#: view:res.car:0
+#: field:res.car,documents_ids:0
+#: view:res.car.document:0
+msgid "Documents"
+msgstr "Documenti"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_res_car_service
+#: model:ir.model,name:hr_auto.model_res_car_service
+#: view:res.car.service:0
+msgid "Service"
+msgstr "Manutenzione"
+
+#. module: hr_auto
+#: model:ir.model,name:hr_auto.model_res_telepass
+#: field:res.car,telepass:0
+#: field:res.car,telepass_ids:0
+msgid "Telepass"
+msgstr "Telepass"
+
+#. module: hr_auto
+#: code:addons/hr_auto/res_car.py:237
+#, python-format
+msgid "Invalid Could Not Be Performed !"
+msgstr "Invalid Could Not Be Performed !"
+
+#. module: hr_auto
+#: view:res.car.document:0
+#: field:res.car.document,comments:0
+msgid "Comments"
+msgstr "Commenti"
+
+#. module: hr_auto
+#: field:res.car,service_ids:0
+msgid "Servcies"
+msgstr "Manutenzioni"
+
+#. module: hr_auto
+#: field:res.car,note:0
+#: field:res.car.km,note:0
+#: field:res.car.service,note:0
+#: field:res.telepass,note:0
+msgid "Note"
+msgstr "Note"
+
+#. module: hr_auto
+#: view:res.car.document.expiry.bymonth:0
+msgid "Print"
+msgstr "Stampa"
+
+#. module: hr_auto
+#: field:res.car.contract,state:0
+msgid "State"
+msgstr "Stato"
+
+#. module: hr_auto
+#: view:res.car.contract:0
+msgid "Assign Auto"
+msgstr "Assegna Auto"
+
+#. module: hr_auto
+#: selection:res.car.contract,state:0
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: hr_auto
+#: view:res.car.document:0
+msgid "Details"
+msgstr "Dettagli"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_res_car_type
+#: model:ir.ui.menu,name:hr_auto.menu_res_car_type_tree
+#: view:res.car.type:0
+msgid "Car Type"
+msgstr "Tipo Veicolo"
+
+#. module: hr_auto
+#: model:ir.model,name:hr_auto.model_hr_employee
+#: field:res.car,current_driver:0
+#: field:res.car,employee_id:0
+#: field:res.car.contract,employee_id:0
+msgid "Employee"
+msgstr "Dipendente"
+
+#. module: hr_auto
+#: view:res.car.document:0
+#: field:res.car.document,name:0
+msgid "Document"
+msgstr "Documento"
+
+#. module: hr_auto
+#: field:res.car,car_type_id:0
+#: field:res.car.service,service_type_id:0
+msgid "Type"
+msgstr "Tipo"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_document
+#: model:ir.ui.menu,name:hr_auto.menu_res_car_document_tree
+msgid "Car's Documents"
+msgstr "Documenti Veicolo"
+
+#. module: hr_auto
+#: code:addons/hr_auto/res_car.py:237
+#, python-format
+msgid "Cannot assign Car which start date is different then current date!"
+msgstr "Cannot assign Car which start date is different then current date!"
+
+#. module: hr_auto
+#: model:ir.model,name:hr_auto.model_res_car_type
+msgid "Car Types"
+msgstr "Tipi Veicoli"
+
+#. module: hr_auto
+#: field:res.car,plate:0
+msgid "Plate"
+msgstr "Targa"
+
+#. module: hr_auto
+#: constraint:res.car.document:0
+msgid "Error! Documents start date must be lower then contract end date."
+msgstr "Errore! La data di inizio deve essere inferiore alla data di scadenza."
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_res_car
+#: model:ir.ui.menu,name:hr_auto.menu_res_car_tree
+#: view:res.car:0
+msgid "Cars"
+msgstr "Veicoli"
+
+#. module: hr_auto
+#: field:res.car,fuel_card_number:0
+msgid "Fuel card number"
+msgstr "Numero Carta Carburante"
+
+#. module: hr_auto
+#: view:hr.employee:0
+msgid "Car History"
+msgstr "Storico Veicolo"
+
+#. module: hr_auto
+#: field:res.car.km,date:0
+#: field:res.car.service,service_date:0
+#: field:res.telepass,date:0
+msgid "Date"
+msgstr "Date"
+
+#. module: hr_auto
+#: field:res.car.contract,start_date:0
+msgid "Start Date"
+msgstr "Data Inizio"
+
+#. module: hr_auto
+#: view:res.car.document.expiry.bymonth:0
+msgid "Print Document Expiry Report Monthly"
+msgstr "Print Document Expiry Report Monthly"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_res_car_contract
+#: model:ir.ui.menu,name:hr_auto.menu_res_car_contract_tree
+msgid "My Auto"
+msgstr "Mie Auto"
+
+#. module: hr_auto
+#: constraint:hr.employee:0
+msgid "Error ! You cannot create recursive Hierarchy of Employees."
+msgstr "Errore ! Non è possibile creare una gerarchia ricorsiva di dipendenti"
+
+#. module: hr_auto
+#: field:res.car.contract,end_date:0
+msgid "End Date"
+msgstr "Data Fine"
+
+#. module: hr_auto
+#: field:res.car.document,valid_start_date:0
+#: field:res.car.document.expiry.bymonth,date_from:0
+msgid "Valid Start Date"
+msgstr "Data Inizio Validità"
+
+#. module: hr_auto
+#: field:res.car.type,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: hr_auto
+#: field:res.car.service,required_next_service:0
+#: field:res.car.service.type,required_next_service:0
+msgid "Have next service ?"
+msgstr "Ha manutenzione programmata?"
+
+#. module: hr_auto
+#: field:hr.employee,car_id:0
+#: model:ir.model,name:hr_auto.model_res_car
+#: model:ir.ui.menu,name:hr_auto.menu_config_res_car
+#: view:res.car:0
+#: field:res.car.contract,car_id:0
+#: field:res.car.document,car_id:0
+#: field:res.car.km,car_id:0
+#: field:res.car.service,car_id:0
+#: field:res.telepass,car_id:0
+msgid "Car"
+msgstr "Veicoli"
+
+#. module: hr_auto
+#: view:res.car:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: hr_auto
+#: field:res.car.service,next_service_km:0
+msgid "Next service in km"
+msgstr "Prossima assistenza in Km"
+
+#. module: hr_auto
+#: constraint:hr.employee:0
+msgid "Error ! You cannot select a department for which the employee is the manager."
+msgstr "Errore ! Non è possibile selezionare un dipartimento di cui il dipendente è manager."
+
+#. module: hr_auto
+#: field:res.car.service,spent:0
+#: field:res.telepass,spent:0
+msgid "Spent"
+msgstr "Spesa"
+
+#. module: hr_auto
+#: model:ir.model,name:hr_auto.model_res_car_contract
+#: view:res.car:0
+msgid "Contract"
+msgstr "Contratto"
+
+#. module: hr_auto
+#: field:res.car.contract,isactive:0
+#: field:res.car.document,active:0
+msgid "Active"
+msgstr "Attiva"
+
+#. module: hr_auto
+#: view:res.car:0
+msgid "Telepass History"
+msgstr "Storico Telepass"
+
+#. module: hr_auto
+#: view:hr.employee:0
+#: view:res.car.contract:0
+msgid "Release"
+msgstr "Rilasciata"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_res_car_km
+#: model:ir.model,name:hr_auto.model_res_car_km
+#: field:res.car,km_ids:0
+#: view:res.car.km:0
+#: field:res.car.km,km:0
+#: field:res.car.service,km:0
+msgid "Km"
+msgstr "Km"
+
+#. module: hr_auto
+#: field:res.car,contract_ids:0
+msgid "Employee History"
+msgstr "Storico assegnazione"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_res_car_contract_admin
+#: model:ir.ui.menu,name:hr_auto.menu_res_car_contract_tree_admin
+msgid "All Assigned Auto"
+msgstr "Tutte le assegnazioni auto"
+
+#. module: hr_auto
+#: view:hr.employee:0
+#: view:res.car.contract:0
+msgid "Assign"
+msgstr "Assegnata"
+
+#. module: hr_auto
+#: field:res.car.document.type,code:0
+#: field:res.car.type,code:0
+msgid "Code"
+msgstr "Codice"
+
+#. module: hr_auto
+#: view:res.car.document.type:0
+msgid "Define document type"
+msgstr "Definizione tipo documento"
+
+#. module: hr_auto
+#: model:ir.model,name:hr_auto.model_res_car_document_type
+msgid "Documents Types"
+msgstr "Tipo Documento"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.action_res_car_document_expire_bymonth
+msgid "Document Expire Report Monthly"
+msgstr "Report Scadenza Documenti"
+
+#. module: hr_auto
+#: model:ir.model,name:hr_auto.model_res_car_document_expiry_bymonth
+msgid "Print Monthly Document Expiry Report"
+msgstr "Stampa Report delle scadenze documenti"
+
+#. module: hr_auto
+#: constraint:res.car.contract:0
+msgid "Error! Contract Start and End dates are not valid"
+msgstr "Errore! Le date del contratto non sono valide"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_res_car_service_type
+#: model:ir.ui.menu,name:hr_auto.menu_res_car_service_type_tree
+#: view:res.car.service.type:0
+#: field:res.car.service.type,name:0
+msgid "Service Type"
+msgstr "Tipo Manutenzione"
+
+#. module: hr_auto
+#: view:res.car:0
+msgid "Car Services"
+msgstr "Manutenzioni Veicolo"
+
+#. module: hr_auto
+#: field:res.car.km,month_fuel_cost:0
+msgid "Monthly Fuel Cost"
+msgstr "Costo Carburante"
+
+#. module: hr_auto
+#: selection:res.car.contract,state:0
+msgid "Assigned"
+msgstr "Assegnata"
+
+#. module: hr_auto
+#: model:ir.model,name:hr_auto.model_res_car_document
+msgid "Car Document"
+msgstr "Documenti Veicolo"
+
+#. module: hr_auto
+#: sql_constraint:res.car:0
+msgid "Plate name must be unique !"
+msgstr "La targa deve essere univoca"
+
+#. module: hr_auto
+#: field:res.car.document,has_date_option:0
+#: field:res.car.document.type,has_date_option:0
+msgid "Has date options ?"
+msgstr "Ha data scadenza ?"
+
+#. module: hr_auto
+#: field:res.car.document,valid_end_date:0
+#: field:res.car.document.expiry.bymonth,date_to:0
+msgid "Valid End Date"
+msgstr "Data Fine Validità"
+
+#. module: hr_auto
+#: view:res.car.document.expiry.bymonth:0
+msgid "Cancel"
+msgstr "Cancella"
+
+#. module: hr_auto
+#: selection:res.car.contract,state:0
+msgid "Released"
+msgstr "Rilasciata"
+
+#. module: hr_auto
+#: model:ir.actions.act_window,name:hr_auto.open_module_tree_document_type
+#: model:ir.ui.menu,name:hr_auto.menu_res_car_document_type_tree
+#: field:res.car.document,document_type_id:0
+#: view:res.car.document.type:0
+#: field:res.car.document.type,name:0
+msgid "Document Type"
+msgstr "Tipo Documento"
+
+#. module: hr_auto
+#: model:ir.model,name:hr_auto.model_res_car_service_type
+msgid "Service Types"
+msgstr "Tipi manutenzione"
+

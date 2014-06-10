@@ -1,0 +1,125 @@
+-
+  In order to test partner subaccount I create a new customer.
+- 
+  Creating a res.partner record
+- 
+  !record {model: res.partner, id: res_partner_miocliente0}:
+    address:
+      - city: Montecchio Maggiore
+        color: 0.0
+        #complete_name: 'extraim: Montecchio Maggiore viauj'
+        #country_id: base.it
+        #find_city: true
+        #province: l10n_it_base.VI
+        #region: l10n_it_base.ven
+        street: viauj
+        zip: '36075'
+    block_ref_customer: true
+    credit_limit: 0.0
+    debit_limit: 0.0
+    #invoice_warn: no-message
+    name: CLIENTE
+    #picking_warn: no-message
+    property_customer_ref: C114
+    #purchase_warn: no-message
+    #sale_warn: no-message
+    customer: true
+-
+  Then I verify the partner is present
+- 
+  !assert {model: res.partner, id: res_partner_miocliente0}:
+    - name == 'CLIENTE'
+-
+  Then I verify the partner's code name is updated
+-
+  !assert {model: res.partner, id: res_partner_miocliente0, string: "The name is updated"}:
+    - property_account_receivable.name == name
+-
+  Then I modify the partner name = CLIENTExxx
+- 
+  !record {model: res.partner, id: res_partner_miocliente0}:
+      name: CLIENTExxx
+-
+  Then I verify the partner is updated = CLIENTExxx
+- 
+  !assert {model: res.partner, id: res_partner_miocliente0}:
+    - name == 'CLIENTExxx'
+-
+  Then I verify the partner's code name is updated
+-
+  !assert {model: res.partner, id: res_partner_miocliente0, string: "Account receivable name is updated"}:
+    - property_account_receivable.name == name
+-
+  Then I modify the partner flagging as supplier
+- 
+  !record {model: res.partner, id: res_partner_miocliente0}:
+      supplier: true
+-
+  Then I verify the partner is updated
+- 
+  !assert {model: res.partner, id: res_partner_miocliente0, string: "Account payable name is updated"}:
+    - property_account_payable.name == name
+-
+  In order to test partner subaccount I create a new customer and supplier.
+- 
+  Creating a res.partner record
+- 
+  !record {model: res.partner, id: res_partner_miocliente1}:
+    address:
+      - city: Montecchio Maggiore
+        color: 0.0
+        #complete_name: 'extraim: Montecchio Maggiore viauj'
+        #country_id: base.it
+        #find_city: true
+        #province: l10n_it_base.VI
+        #region: l10n_it_base.ven
+        street: viau22
+        zip: '36075'
+    block_ref_customer: true
+    block_ref_supplier: true
+    credit_limit: 0.0
+    debit_limit: 0.0
+    #invoice_warn: no-message
+    name: CLIENTE-FORNITORE
+    #picking_warn: no-message
+    property_customer_ref: C119
+    property_supplier_ref: F119
+    #purchase_warn: no-message
+    #sale_warn: no-message
+    customer: true
+    supplier: true
+-
+  Then I verify the partner is present
+- 
+  !assert {model: res.partner, id: res_partner_miocliente1}:
+    - name == 'CLIENTE-FORNITORE'
+-
+  Then I verify the partner's code name is updated
+-
+  !assert {model: res.partner, id: res_partner_miocliente1, string: "The name is updated"}:
+    - property_account_receivable.name == name
+-
+  Then I modify the partner name = CLIENTExxxFORNITORE
+- 
+  !record {model: res.partner, id: res_partner_miocliente1}:
+      name: CLIENTExxxFORNITORE
+-
+  Then I verify the partner is updated = CLIENTExxxFORNITORE
+- 
+  !assert {model: res.partner, id: res_partner_miocliente1}:
+    - name == 'CLIENTExxxFORNITORE'
+-
+  Then I verify the partner's code name is updated
+-
+  !assert {model: res.partner, id: res_partner_miocliente1, string: "Account receivable name is updated"}:
+    - property_account_receivable.name == name
+-
+  Then I modify the partner flagging as not supplier
+- 
+  !record {model: res.partner, id: res_partner_miocliente1}:
+      supplier: false
+-
+  Then I verify the partner is updated as not supplier
+- 
+  !assert {model: res.partner, id: res_partner_miocliente1, }:
+    - supplier == False

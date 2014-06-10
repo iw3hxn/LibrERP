@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+    <!-- Managing Commercial agent's Zones sequence -->
+    <record id="seq_commercial_zones" model="ir.sequence.type">
+      <field name="name">Number Commercial agent's Zones</field>
+      <field name="code">res.partner.zone</field>
+    </record>
+
+    <record id="seq_commercial_agent_zones" model="ir.sequence">
+      <field name="name">Number agent Zones</field>
+      <field name="code">res.partner.zone</field>
+      <field name="padding">3</field>
+      <field name="prefix">ZN </field>
+    </record>
+   
+  </data>
+</openerp>
+

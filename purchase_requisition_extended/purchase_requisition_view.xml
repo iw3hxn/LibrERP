@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="purchase_requisition_all_suppliers_form" model="ir.ui.view">
+            <field name="name">purchase.requisition.all.suppliers.form</field>
+            <field name="model">purchase.requisition</field>
+            <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <data>
+                    <tree string="Products" position="replace">
+                        <tree string="Products" colors="green: color=='green'; orange: color=='orange'; red: color=='red';" editable="bottom">
+                            <field name="product_id" on_change="onchange_product_id(product_id,product_uom_id)"/>
+                            <field name="product_qty"/>
+                            <field name="prefered_supplier" />
+                            <field name="product_uom_id"/>
+                            <field name="draft" />
+                            <field name="approved" />
+                            <field name="color" invisible="True" />
+                        </tree>
+                    </tree>
+                    <xpath expr="/form/notebook/page[@string='Quotations']/group" position="replace">
+                        <group col="8" colspan="4">
+                            <label colspan="2"  string=""/>
+                            <button name="request_prefered_suppliers" type="object" string="Request to Prefered Suppliers" icon="gtk-execute" attrs="{'readonly': [('state', '=', 'done')]}" colspan="2"/>
+                            <button name="request_to_suppliers" type="object" string="Request to All Suppliers" icon="gtk-execute" attrs="{'readonly': [('state', '=', 'done')]}" colspan="2" />
+                            <button name="%(purchase_requisition.action_purchase_requisition_partner)d" string="Request a Quotation" type="action" icon="gtk-execute"
+                                    attrs="{'readonly': [('state', '=', 'done')]}" colspan="2" />
+                        </group>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

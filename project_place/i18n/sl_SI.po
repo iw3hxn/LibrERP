@@ -1,0 +1,410 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* project_place
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.4\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2013-01-25 09:21+0000\n"
+"PO-Revision-Date: 2013-01-25 09:21+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,web_gallery_doc_ids:0
+#: view:project.plant:0
+#: field:project.plant,web_gallery_doc_ids:0
+msgid "Documents"
+msgstr "Dokumenti"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_agreement_type
+msgid "project.agreement.type"
+msgstr "project.agreement.type"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Contacts"
+msgstr "Stiki"
+
+#. module: project_place
+#: field:project.plant,plant_type_id:0
+msgid "Plan Type"
+msgstr "Tip objekta"
+
+#. module: project_place
+#: field:project.plant,plant_agreement_id:0
+msgid "Agreement Type"
+msgstr "Tip dogovora"
+
+#. module: project_place
+#: view:project.place:0
+msgid "Projects "
+msgstr "Projekti"
+
+#. module: project_place
+#: view:project.project:0
+msgid "Administration"
+msgstr "Administracija"
+
+#. module: project_place
+#: constraint:stock.move:0
+msgid "You must assign a production lot for this product"
+msgstr "Določiti morate proizvodno serijo tega artikla"
+
+#. module: project_place
+#: field:project.plant,ticket_close_time_out:0
+#: help:project.plant,ticket_close_time_out:0
+msgid "Time Out to Close Ticket"
+msgstr "Ticket - časovni zamik za zaprtje"
+
+#. module: project_place
+#: field:project.place,stock_location_id:0
+#: field:project.plant,stock_location_id:0
+msgid "Stock Location"
+msgstr "Lokacija zaloge"
+
+#. module: project_place
+#: view:project.place:0
+msgid "GEO Position"
+msgstr "GEO lokalizacija"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_res_partner_job
+msgid "Contact Partner Function"
+msgstr "Funkcija stik partnerja"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Asset"
+msgstr "Sredstvo"
+
+#. module: project_place
+#: field:project.place,stock_move_out_ids:0
+#: field:project.plant,stock_move_out_ids:0
+msgid "Products Out"
+msgstr "Izdelki - izhod"
+
+#. module: project_place
+#: constraint:project.project:0
+msgid "Error! project start-date must be lower then project end-date."
+msgstr "Napaka! Datum začetka projekta mora biti pred datumom konca."
+
+#. module: project_place
+#: field:project.place,code:0
+#: field:project.plant,code:0
+msgid "Code"
+msgstr "Koda lokacije"
+
+#. module: project_place
+#: field:project.project,code:0
+msgid "Code ID"
+msgstr "Code ID"
+
+#. module: project_place
+#: model:ir.module.module,description:project_place.module_meta_information
+msgid "\n"
+"        A generic module to manage project place and plants on Project.\n"
+"    "
+msgstr "\n"
+"        A generic module to manage project place and plants on Project.\n"
+"    "
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Added"
+msgstr "Dodano"
+
+#. module: project_place
+#: field:project.project,name2:0
+msgid "Project Name"
+msgstr "Naziv projekta"
+
+#. module: project_place
+#: field:res.partner.address,complete_name:0
+msgid "unknown"
+msgstr "unknown"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Products In Stock"
+msgstr "Izdelki na zalogi"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Street2 : "
+msgstr "Ulica2 : "
+
+#. module: project_place
+#: view:project.plant.type:0
+msgid "Project Plant Type"
+msgstr "Tip projektnega objekta"
+
+#. module: project_place
+#: sql_constraint:project.place:0
+#: sql_constraint:project.plant:0
+msgid "Code must be unique!"
+msgstr "Koda mora biti unikatna!"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_web_gallery_images
+msgid "web.gallery.images"
+msgstr "web.gallery.images"
+
+#. module: project_place
+#: field:project.plant,ticket_approve_time_out:0
+#: help:project.plant,ticket_approve_time_out:0
+msgid "Time Out to Approve Ticket"
+msgstr "Ticket - časovni zamik za potrditev "
+
+#. module: project_place
+#: field:project.place,member_ids:0
+#: field:project.plant,member_ids:0
+msgid "Members"
+msgstr "Člani"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,address_id:0
+#: view:project.plant:0
+#: field:project.plant,address_id:0
+msgid "Address"
+msgstr "Naslov"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_place
+msgid "project.place"
+msgstr "project.place"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,project_ids:0
+msgid "Projects"
+msgstr "Projekti"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_web_gallery_docs
+msgid "web.gallery.docs"
+msgstr "web.gallery.docs"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,plant_ids:0
+msgid "Plants"
+msgstr "Objekti"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,note:0
+msgid "Note"
+msgstr "Opombe"
+
+#. module: project_place
+#: field:project.plant,asset_ids:0
+msgid "Assets"
+msgstr "Sredstva"
+
+#. module: project_place
+#: view:project.project:0
+msgid "Places"
+msgstr "Kraji/lokacije"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Products at Place"
+msgstr "Izdelki na lokaciji"
+
+#. module: project_place
+#: field:res.partner.job,mobile:0
+msgid "Mobile"
+msgstr "GSM"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_plant
+msgid "project.plant"
+msgstr "project.plant"
+
+#. module: project_place
+#: model:ir.actions.act_window,name:project_place.action_project_plant
+#: model:ir.ui.menu,name:project_place.menu_project_plant
+#: field:web.gallery.docs,plant_id:0
+#: field:web.gallery.images,plant_id:0
+msgid "Plant"
+msgstr "Objekt"
+
+#. module: project_place
+#: view:project.plant.type:0
+#: field:project.plant.type,department_ids:0
+msgid "Departments"
+msgstr "Oddelki"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_project
+msgid "Project"
+msgstr "Projekt"
+
+#. module: project_place
+#: field:stock.move,invoice_state:0
+msgid "Invoce Control"
+msgstr "Obračunska kontrola"
+
+#. module: project_place
+#: view:project.place:0
+msgid "Contatti"
+msgstr "Stiki"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Contact"
+msgstr "Naziv"
+
+#. module: project_place
+#: model:ir.actions.act_window,name:project_place.action_project_place
+#: model:ir.ui.menu,name:project_place.menu_project_place
+#: field:project.plant,place_id:0
+#: field:web.gallery.docs,place_id:0
+#: field:web.gallery.images,place_id:0
+msgid "Place"
+msgstr "Kraj/lokacija"
+
+#. module: project_place
+#: view:project.place:0
+msgid "Project Place"
+msgstr "Kraj/lokacija projekta"
+
+#. module: project_place
+#: view:project.project:0
+msgid "Project Tasks"
+msgstr "Projektne naloge"
+
+#. module: project_place
+#: field:project.place,stock_move_in_ids:0
+#: field:project.plant,stock_move_in_ids:0
+msgid "Products In"
+msgstr "Izdelki - vhod"
+
+#. module: project_place
+#: sql_constraint:project.agreement.type:0
+#: sql_constraint:project.plant.type:0
+msgid "Name must be unique!"
+msgstr "Naziv mora biti unikaten!"
+
+#. module: project_place
+#: constraint:stock.move:0
+msgid "You try to assign a lot which is not from the same product"
+msgstr "Poskušate dodeliti številko šarže, ki se ne ujema z izdelkom"
+
+#. module: project_place
+#: view:project.project:0
+msgid "Tasks"
+msgstr "Naloge"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Products Return Stock"
+msgstr "Vračilo izdelkov"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Reference"
+msgstr "Sklic"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_stock_move
+msgid "Stock Move"
+msgstr "Prenos zaloge"
+
+#. module: project_place
+#: field:project.project,location_ids:0
+msgid "Locations"
+msgstr "Lokacije"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "General"
+msgstr "Splošno"
+
+#. module: project_place
+#: view:project.plant:0
+msgid "Project Plant"
+msgstr "Projektni objekt"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Images and Documents"
+msgstr "Slike in dokumenti"
+
+#. module: project_place
+#: view:project.plant:0
+msgid "Service Options"
+msgstr "Storitvene opcije"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "UoM"
+msgstr "Enota mere"
+
+#. module: project_place
+#: view:project.project:0
+msgid "Project Places"
+msgstr "Kraji/lokacije projektov"
+
+#. module: project_place
+#: view:project.place:0
+#: field:project.place,web_gallery_image_ids:0
+#: view:project.plant:0
+#: field:project.plant,web_gallery_image_ids:0
+msgid "Images"
+msgstr "Slike"
+
+#. module: project_place
+#: view:project.place:0
+#: view:project.plant:0
+msgid "Products"
+msgstr "Izdelki"
+
+#. module: project_place
+#: field:project.agreement.type,name:0
+#: field:project.plant.type,name:0
+msgid "Name"
+msgstr "Naziv"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_res_partner_address
+msgid "Partner Addresses"
+msgstr "Naslovi partnerja"
+
+#. module: project_place
+#: model:ir.model,name:project_place.model_project_plant_type
+msgid "project.plant.type"
+msgstr "project.plant.type"
+
+#. module: project_place
+#: model:ir.module.module,shortdesc:project_place.module_meta_information
+msgid "Generic Module/Project Place and Plants"
+msgstr "Generični Modul/Projektne lokacije in objekti"
+
+#. module: project_place
+#: model:ir.actions.act_window,name:project_place.action_project_pant_type
+#: model:ir.ui.menu,name:project_place.menu_project_plant_type
+msgid "Plant Types"
+msgstr "Tipi objektov"
+

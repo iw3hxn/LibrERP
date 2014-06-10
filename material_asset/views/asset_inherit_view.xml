@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="asset_view_move_form" model="ir.ui.view">
+            <field name="name">asset.stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="prodlot_id" position="replace" >
+                    <field name="prodlot_id" groups="base.group_extended"
+                            context="{'location_id':location_id, 'product_id':product_id}"
+                            domain="[('product_id','=?',product_id), ('stock_available', '>', 0)]"
+                            on_change="onchange_lot_id(prodlot_id,product_qty, location_id, product_id, product_uom)" colspan="3"/>
+                </field>
+            </field>
+        </record>    
+    </data>
+</openerp>

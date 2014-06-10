@@ -1,0 +1,229 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* sale_order_confirm
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-27 16:58+0000\n"
+"PO-Revision-Date: 2013-10-29 15:39+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. module: sale_order_confirm
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr "Sklic naročila mora biti unikaten za vsako podjetje!"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm,new_sale_order:0
+msgid "New Sale Order"
+msgstr "Nov prodajni nalog"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,wizard_id:0
+msgid "Wizard"
+msgstr "Čarovnik"
+
+#. module: sale_order_confirm
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Napaka! Ne morete ustvariti rekurzivnih podjetij."
+
+#. module: sale_order_confirm
+#: field:sale.order,credit_limit:0
+msgid "Fido Residuo"
+msgstr "Preostali kreditni limit"
+
+#. module: sale_order_confirm
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr "Unikatna koda kupca"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,price_unit:0
+msgid "Unit Price"
+msgstr "Cena enote"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,order_line_id:0
+msgid "Order Line Reference"
+msgstr "Sklic postavke naročila"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,product_uom:0
+msgid "Unit of Measure"
+msgstr "Enota mere"
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Gestione Fido"
+msgstr "Upravljanje kreditnih limitov"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,product_id:0
+msgid "Product"
+msgstr "Proizvod"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,name:0
+msgid "Description"
+msgstr "Opis"
+
+#. module: sale_order_confirm
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr "Unikatna koda dobavitelja"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,quantity:0
+msgid "Quantity"
+msgstr "Količina"
+
+#. module: sale_order_confirm
+#: model:res.groups,name:sale_order_confirm.credit_modifier
+msgid "Configuratore Credito"
+msgstr "Konfigurator kredita"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Confirm Order"
+msgstr "Potrdi naročilo"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm,date:0
+msgid "Date"
+msgstr "Datum"
+
+#. module: sale_order_confirm
+#: help:res.company,defalut_property_account_position:0
+msgid ""
+"The default fiscal position will determine taxes and the accounts used for "
+"the partner."
+msgstr "Privzeta fiskalna pozicija določa davke in konte za partnerje."
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Configuration"
+msgstr "Nastavitve"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,price_subtotal:0
+msgid "Subtotal"
+msgstr "Subtotal"
+
+#. module: sale_order_confirm
+#: field:res.company,default_credit_limit:0
+msgid "Fido di default"
+msgstr "Privzeti kreditni limit"
+
+#. module: sale_order_confirm
+#: field:res.company,check_credit_limit:0
+msgid "Abilita gestione fido"
+msgstr "Omogoči upravljanje kreditnega limita"
+
+#. module: sale_order_confirm
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Naziv podjetja mora biti unikaten!"
+
+#. module: sale_order_confirm
+#: help:res.company,default_property_payment_term:0
+msgid "This default payment term will be used on creation of partner"
+msgstr "Privzeti plačilni pogoj bo uporabljen ob ustvarjanju partnerja."
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_sale_order_confirm
+msgid "Confirm wizard for Sale order"
+msgstr "Čarovnik za potrditev prodajnega naloga"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,changed:0
+msgid "Changed"
+msgstr "Spremenjeno"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,tax_id:0
+msgid "Taxes"
+msgstr "Davki"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,order_id:0
+msgid "Order Reference"
+msgstr "Sklic naročila"
+
+#. module: sale_order_confirm
+#: view:sale.order.confirm:0 field:sale.order.confirm,confirm_line:0
+msgid "Products"
+msgstr "Proizvodi"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_sale_order_confirm_line
+msgid "sale.order.confirm.line"
+msgstr "sale.order.confirm.line"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm,sale_order_id:0
+msgid "Order"
+msgstr "Naročilo"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,discount:0
+msgid "Discount (%)"
+msgstr "Popust (%)"
+
+#. module: sale_order_confirm
+#: field:sale.order.confirm.line,sequence:0
+msgid "Sequence"
+msgstr "Sekvenca"
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Parametri Default"
+msgstr "Privzeti parametri"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.sale_order_confirm_action
+msgid "Sale Order Confirm"
+msgstr "Potrdi prodajni nalog"
+
+#. module: sale_order_confirm
+#: field:res.partner,credit_limit_copy:0
+msgid "Credit Limit"
+msgstr "Kreditni limit"
+
+#. module: sale_order_confirm
+#: field:sale.order,visible_credit_limit:0
+msgid "Fido Residuo Visibile"
+msgstr "Preostali vidni kreditni limit"
+
+#. module: sale_order_confirm
+#: view:sale.order.confirm:0
+msgid "_Cancel"
+msgstr "_Preklic"
+
+#. module: sale_order_confirm
+#: field:res.company,defalut_property_account_position:0
+msgid "Default Fiscal Position"
+msgstr "Privzeta fiskalna pozicija"
+
+#. module: sale_order_confirm
+#: field:res.company,default_property_payment_term:0
+msgid "Dafault Payment Term"
+msgstr "Privzeti plačilni pogoji"
+
+#. module: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_sale_order
+msgid "Sales Order"
+msgstr "Prodajni nalog"

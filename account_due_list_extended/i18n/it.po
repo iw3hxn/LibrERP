@@ -1,0 +1,119 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_due_list_extended
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-11 17:04+0000\n"
+"PO-Revision-Date: 2012-12-11 17:04+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid "The selected account of your Journal Entry forces to provide a secondary currency. You should remove the secondary currency on the account or select a multi-currency view on the journal."
+msgstr "The selected account of your Journal Entry forces to provide a secondary currency. You should remove the secondary currency on the account or select a multi-currency view on the journal."
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid "You can not create journal items on closed account."
+msgstr "Non è possibile creare sezionali su un conto chiuso."
+
+#. module: account_due_list_extended
+#: field:account.move.line,payment_term_type:0
+#: field:account.payment.term,payment_term_type:0
+msgid "Tipo di pagamento"
+msgstr "Tipo di pagamento"
+
+#. module: account_due_list_extended
+#: field:account.payment.term.type,name:0
+msgid "Codice"
+msgstr "Codice"
+
+#. module: account_due_list_extended
+#: model:ir.model,name:account_due_list_extended.model_account_payment_term_type
+msgid "Payment term type list"
+msgstr "Lista dei tipi di termini pagamento"
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid "Company must be the same for its related account and period."
+msgstr "L'azienda deve essere la stessa per i conti collegati ed il periodo"
+
+#. module: account_due_list_extended
+#: model:ir.actions.act_window,name:account_due_list_extended.action_view_payments_type
+#: model:ir.ui.menu,name:account_due_list_extended.menu_payments_type
+msgid "Tipi di pagamento"
+msgstr "Tipi di pagamento"
+
+#. module: account_due_list_extended
+#: view:account.move.line:0
+msgid "Reconciled"
+msgstr "Riconciliati"
+
+#. module: account_due_list_extended
+#: view:account.move.line:0
+msgid "Unreconciled payments"
+msgstr "Pagamenti non riconciliati"
+
+#. module: account_due_list_extended
+#: model:ir.model,name:account_due_list_extended.model_account_payment_term
+msgid "Payment Term"
+msgstr "Termini di pagamento"
+
+#. module: account_due_list_extended
+#: view:account.move.line:0
+msgid "Unreconciled"
+msgstr "Non riconciliate"
+
+#. module: account_due_list_extended
+#: field:account.payment.term.type,description:0
+msgid "Descrizione"
+msgstr "Descrizione"
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid "The date of your Journal Entry is not in the defined period! You should change the date or remove this constraint from the journal."
+msgstr "La data della voce di giornale non è nel periodo definito! Dovresti cambiare la data o rimuovere questo vincolo dal giornale."
+
+#. module: account_due_list_extended
+#: sql_constraint:account.move.line:0
+msgid "Wrong credit or debit value in accounting entry !"
+msgstr "Valore di credito o debito errato nella registrazione contabile !"
+
+#. module: account_due_list_extended
+#: field:account.move.line,importo:0
+msgid "Importo"
+msgstr "Importo"
+
+#. module: account_due_list_extended
+#: model:ir.actions.report.xml,name:account_due_list_extended.report_stampa_scadenzario
+msgid "Stampa Scadenzario"
+msgstr "Stampa Scadenzario"
+
+#. module: account_due_list_extended
+#: model:ir.model,name:account_due_list_extended.model_account_move_line
+msgid "Journal Items"
+msgstr "Voci sezionale"
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid "You can not create journal items on an account of type view."
+msgstr "Non è possibile effettuare registrazioni su un conto di tipo vista."
+
+#. module: account_due_list_extended
+#: view:account.payment.term.type:0
+msgid "Payment"
+msgstr "Pagamento"
+
+#. module: account_due_list_extended
+#: view:account.move.line:0
+msgid "Reconciled payments"
+msgstr "Pagamenti riconciliati"
+

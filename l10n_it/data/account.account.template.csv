@@ -1,0 +1,448 @@
+id,code,name,parent_id:id,user_type:id,type,reconcile
+0,0,Azienda,,account.data_account_type_view,view,FALSE
+A,A,ATTIVITA',0,account.data_account_type_view,view,FALSE
+P,P,PASSIVITA',0,account.data_account_type_view,view,FALSE
+2S,2S,CREDITI GIA' RICHIAMATI,A,account.data_account_type_view,view,FALSE
+2S10000,2S10000,crediti vs. soci richiamati,2S,account.data_account_type_asset,other,TRUE
+2T,2T,CREDITI DA RICHIAMARE,A,account.data_account_type_view,view,FALSE
+3H,3H,COSTI IMPIANTO-AMPLIAMENTO,A,account.data_account_type_view,view,FALSE
+3H12500,3H12500,spese di costituzione,3H,account.data_account_type_asset,other,TRUE
+3H12510,3H12510,spese modifica atto cost.,3H,account.data_account_type_asset,other,TRUE
+3I,3I,COSTI RICERCA-SVILUPPO-PUBBL.,A,account.data_account_type_view,view,FALSE
+3I12600,3I12600,costi di ricerca,3I,account.data_account_type_asset,other,TRUE
+3I12610,3I12610,costi di sviluppo,3I,account.data_account_type_asset,other,TRUE
+3I12620,3I12620,costi pubblicita',3I,account.data_account_type_asset,other,TRUE
+3J,3J,BREVETTI IND.-UTIL.OP.INGEGNO,A,account.data_account_type_view,view,FALSE
+3J12700,3J12700,diritti brevetto industr.,3J,account.data_account_type_asset,other,TRUE
+3J12720,3J12720,diritti utilizzaz. opere ing.,3J,account.data_account_type_asset,other,TRUE
+3K,3K,CONCESSIONI-LICENZE-MARCHI,A,account.data_account_type_view,view,FALSE
+3K12800,3K12800,concessioni,3K,account.data_account_type_asset,other,TRUE
+3K12810,3K12810,licenze,3K,account.data_account_type_asset,other,TRUE
+3K12820,3K12820,marchi industriali,3K,account.data_account_type_asset,other,TRUE
+3L,3L,AVVIAMENTO,A,account.data_account_type_view,view,FALSE
+3L12900,3L12900,avviamento,3L,account.data_account_type_asset,other,TRUE
+3M,3M,IMMOBIL. IN CORSO E ACCONTI,A,account.data_account_type_view,view,FALSE
+3M13000,3M13000,immob. immat. in corso,3M,account.data_account_type_asset,other,TRUE
+3M13010,3M13010,acconti su imm. immat.,3M,account.data_account_type_asset,other,TRUE
+3N,3N,MANUTENZIONI E RIPARAZIONI,A,account.data_account_type_view,view,FALSE
+3N13100,3N13100,manut.e riparaz.da amm.re,3N,account.data_account_type_asset,other,TRUE
+3N13110,3N13110,man.-rip.beni di terzi da amm.,3N,account.data_account_type_asset,other,TRUE
+3O,3O,ALTRE IMMOBILIZZAZIONI,A,account.data_account_type_view,view,FALSE
+3O13200,3O13200,software,3O,account.data_account_type_asset,other,TRUE
+3O13210,3O13210,spese accensione mutuo ammort.,3O,account.data_account_type_asset,other,TRUE
+46,46,TERRENI,A,account.data_account_type_view,view,FALSE
+4615000,4615000,terreni fabbricabili,46,account.data_account_type_asset,other,TRUE
+4615010,4615010,terreni agricoli,46,account.data_account_type_asset,other,TRUE
+48,48,FABBRICATI,A,account.data_account_type_view,view,FALSE
+4815200,4815200,fabbricati civili strum.,48,account.data_account_type_asset,other,TRUE
+4815205,4815205,fabbricati civili non strum.,48,account.data_account_type_asset,other,TRUE
+4815210,4815210,fabbricati industriali,48,account.data_account_type_asset,other,TRUE
+4A,4A,IMPIANTI E MACCHINARI,A,account.data_account_type_view,view,FALSE
+4A15400,4A15400,impianti specifici,4A,account.data_account_type_asset,other,TRUE
+4A15410,4A15410,macchinari specifici,4A,account.data_account_type_asset,other,TRUE
+4A15420,4A15420,impianti generici,4A,account.data_account_type_asset,other,TRUE
+4A15430,4A15430,macchinari generici,4A,account.data_account_type_asset,other,TRUE
+4C,4C,ATTREZZATURA IND. E COMM.,A,account.data_account_type_view,view,FALSE
+4C15600,4C15600,attrezzatura varia e minuta,4C,account.data_account_type_asset,other,TRUE
+4C15610,4C15610,scaffalature,4C,account.data_account_type_asset,other,TRUE
+4D,4D,ALTRI BENI,A,account.data_account_type_view,view,FALSE
+4D15700,4D15700,mobili officina,4D,account.data_account_type_asset,other,TRUE
+4D15710,4D15710,mobili ufficio,4D,account.data_account_type_asset,other,TRUE
+4D15720,4D15720,macchine ufficio elettroniche,4D,account.data_account_type_asset,other,TRUE
+4D15730,4D15730,appar. radiomobili ded. 50 %,4D,account.data_account_type_asset,other,TRUE
+4D15740,4D15740,beni inferiori a 1.000.000,4D,account.data_account_type_asset,other,TRUE
+4D15750,4D15750,autovett. iva detraibile 100%,4D,account.data_account_type_asset,other,TRUE
+4D15760,4D15760,autovett. iva indetraib. 100%,4D,account.data_account_type_asset,other,TRUE
+4D15770,4D15770,autoveicoli trasporto cose,4D,account.data_account_type_asset,other,TRUE
+4D15780,4D15780,costruzioni leggere,4D,account.data_account_type_asset,other,TRUE
+4F,4F,IMMOBILIZ. IN CORSO E ACCONTI,A,account.data_account_type_view,view,FALSE
+4F15900,4F15900,fabbricati in costruzione,4F,account.data_account_type_asset,other,TRUE
+4F15910,4F15910,impianti in via d'acquisizione,4F,account.data_account_type_asset,other,TRUE
+4V,4V,PARTECIPAZIONI A LUNGO TERMINE,A,account.data_account_type_view,view,FALSE
+4V17500,4V17500,partecipazioni in contr./coll.,4V,account.data_account_type_asset,other,TRUE
+4V17510,4V17510,altre partecipazioni,4V,account.data_account_type_asset,other,TRUE
+4W,4W,DEPOSITI CAUZIONALI FORNITORI,A,account.data_account_type_view,view,FALSE
+4W17700,4W17700,depositi cauzionali fornitori,4W,account.data_account_type_asset,other,TRUE
+4Y,4Y,CREDITI A LUNGO TERMINE,A,account.data_account_type_view,view,FALSE
+4Y18000,4Y18000,crediti vs contr/coll.a lungo,4Y,account.data_account_type_asset,other,TRUE
+4Y18010,4Y18010,erario c/iva a rimborso,4Y,account.data_account_type_asset,other,TRUE
+4Y18015,4Y18015,erario c/imposte a rimborso,4Y,account.data_account_type_asset,other,TRUE
+4Y18050,4Y18050,cambiali attive,4Y,account.data_account_type_asset,other,TRUE
+4Y18055,4Y18055,ricevute bancarie attive,4Y,account.data_account_type_asset,other,TRUE
+4Y18060,4Y18060,effetti all'incasso,4Y,account.data_account_type_asset,other,TRUE
+4Y18065,4Y18065,effetti allo sconto,4Y,account.data_account_type_asset,other,TRUE
+4Y18070,4Y18070,effetti insoluti e protestati,4Y,account.data_account_type_asset,other,TRUE
+52,52,ALTRI TITOLI A LUNGO TERMINE,A,account.data_account_type_view,view,FALSE
+5218200,5218200,titoli di stato a lungo t.,52,account.data_account_type_asset,other,TRUE
+5218210,5218210,obbligazioni,52,account.data_account_type_asset,other,TRUE
+5218220,5218220,certificati deposito,52,account.data_account_type_asset,other,TRUE
+5218400,5218400,azioni proprie,52,account.data_account_type_asset,other,TRUE
+5218410,5218410,diritti d'opzione,52,account.data_account_type_asset,other,TRUE
+5K,5K,MAGAZZINO,A,account.data_account_type_view,view,FALSE
+5K20000,5K20000,rim.materie prime,5K,account.data_account_type_asset,other,TRUE
+5K20010,5K20010,rimanenze mat.sussidiarie,5K,account.data_account_type_asset,other,TRUE
+5K20020,5K20020,rimanenze materie di consumo,5K,account.data_account_type_asset,other,TRUE
+5K20200,5K20200,rimanenze semilavorati,5K,account.data_account_type_asset,other,TRUE
+5K20400,5K20400,rim.prodotti in corso di lav.,5K,account.data_account_type_asset,other,TRUE
+5K20600,5K20600,rimanenze merci,5K,account.data_account_type_asset,other,TRUE
+5K20610,5K20610,rimanenze prodotti finiti,5K,account.data_account_type_asset,other,TRUE
+5K20620,5K20620,lavori in corso su ordinazione,5K,account.data_account_type_asset,other,TRUE
+5S,5S,ACCONTI A FORNITORI,A,account.data_account_type_view,view,FALSE
+5S20800,5S20800,acconti a forn.per mat.prime,5S,account.data_account_type_asset,other,TRUE
+5S20810,5S20810,acconti a forn. per merci,5S,account.data_account_type_asset,other,TRUE
+5S20820,5S20820,acconti a forn.per prodotti,5S,account.data_account_type_asset,other,TRUE
+64,64,CLIENTI,A,account.data_account_type_view,view,FALSE
+6410000,6410000,effetti all'incasso,64,account.data_account_type_receivable,receivable,TRUE
+6411000,6411000,effetti insoluti e protestati,64,account.data_account_type_receivable,receivable,TRUE
+7S,7S,CLIENTI OLTRE L'ANNO,A,account.data_account_type_view,view,FALSE
+87,87,ALTRI CREDITI,A,account.data_account_type_view,view,FALSE
+8728300,8728300,crediti a breve vs contr/coll,87,account.data_account_type_asset,other,TRUE
+8729500,8729500,soci c/prelev.utili,87,account.data_account_type_asset,other,TRUE
+8729502,8729502,tilolare c/prelevamento,87,account.data_account_type_asset,other,TRUE
+8729504,8729504,acconto su imposte sui redditi,87,account.data_account_type_asset,other,TRUE
+8729505,8729505,erario c/rit.attive compensi,87,account.data_account_type_asset,other,TRUE
+8729508,8729508,erario c/rit.att.su titoli,87,account.data_account_type_asset,other,TRUE
+8729509,8729509,erario c/rit.interessi attivi,87,account.data_account_type_asset,other,TRUE
+8729510,8729510,erario c/rit.attive dividendi,87,account.data_account_type_asset,other,TRUE
+8729511,8729511,enasarco c/rit.attive,87,account.data_account_type_asset,other,TRUE
+8729512,8729512,credito d'imposta reg.cassa,87,account.data_account_type_asset,other,TRUE
+8729513,8729513,erario c/IVA a credito,87,account.data_account_type_asset,other,TRUE
+8729520,8729520,crediti di competenza,87,account.data_account_type_asset,other,TRUE
+8729525,8729525,fornitori c/anticipi,87,account.data_account_type_asset,other,TRUE
+8C,8C,IVA C/ERARIO,A,account.data_account_type_view,view,FALSE
+8C30000,8C30000,iva c/erario,8C,account.data_account_type_asset,other,TRUE
+8C30001,8C30001,iva c/erario in sospeso,8C,account.data_account_type_asset,other,TRUE
+8C30002,8C30002,iva c/erario detr.a fine anno,8C,account.data_account_type_asset,other,TRUE
+8D,8D,PARTECIPAZIONI A BREVE TERMINE,A,account.data_account_type_view,view,FALSE
+8D30100,8D30100,partecip.in cont./col.a breve,8D,account.data_account_type_asset,other,TRUE
+8D30110,8D30110,partecipazioni tempor.detenute,8D,account.data_account_type_asset,other,TRUE
+8N,8N,ALTRI TITOLI A BREVE TERMINE,A,account.data_account_type_view,view,FALSE
+8N31100,8N31100,titoli di stato a breve t.,8N,account.data_account_type_asset,other,TRUE
+8N31600,8N31600,azioni proprie temporan.deten.,8N,account.data_account_type_asset,other,TRUE
+8W,8W,BANCHE C/ANTICIPI,A,account.data_account_type_view,view,FALSE
+8W32000,8W32000,banca c/anticipi,8W,account.data_account_type_asset,other,TRUE
+8W32100,8W32100,banca c/ri.ba. sbf,8W,account.data_account_type_receivable,receivable,TRUE
+96,96,DEPOSITI BANCARI E POSTALI,A,account.data_account_type_view,view,FALSE
+9633000,9633000,c/c bancari,96,account.data_account_type_bank,liquidity,TRUE
+9633020,9633020,c/c postali,96,account.data_account_type_bank,liquidity,TRUE
+9G,9G,ASSEGNI IN CASSA,A,account.data_account_type_view,view,FALSE
+9G34000,9G34000,assegni bancari,9G,account.data_account_type_cash,liquidity,TRUE
+9G34001,9G34001,assegni circolari,9G,account.data_account_type_cash,liquidity,TRUE
+9H,9H,DENARO E VALORI IN CASSA,A,account.data_account_type_view,view,FALSE
+9H34100,9H34100,cassa contanti,9H,account.data_account_type_cash,liquidity,TRUE
+9H34110,9H34110,valori bollati in cassa,9H,account.data_account_type_cash,liquidity,TRUE
+9H34120,9H34120,vaglia postali,9H,account.data_account_type_cash,liquidity,TRUE
+9H34130,9H34130,cedole,9H,account.data_account_type_cash,liquidity,TRUE
+9Q,9Q,RATEI ATTIVI,A,account.data_account_type_view,view,FALSE
+9Q35000,9Q35000,ratei attivi,9Q,account.data_account_type_asset,other,TRUE
+9S,9S,RISCONTI ATTIVI,A,account.data_account_type_view,view,FALSE
+9S35200,9S35200,risconti attivi,9S,account.data_account_type_asset,other,TRUE
+A0,A0,CAPITALE,P,account.data_account_type_view,view,FALSE
+A036000,A036000,capitale sociale,A0,account.data_account_type_liability,other,TRUE
+A036005,A036005,capitale netto,A0,account.data_account_type_liability,other,TRUE
+A036010,A036010,versamento soci c/capitale,A0,account.data_account_type_liability,other,TRUE
+A036020,A036020,contributi c/capitale,A0,account.data_account_type_liability,other,TRUE
+A036025,A036025,ulteriore patrimonio netto,A0,account.data_account_type_liability,other,TRUE
+A1,A1,RISERVE,P,account.data_account_type_view,view,FALSE
+A136100,A136100,riserva legale,A1,account.data_account_type_liability,other,TRUE
+A136500,A136500,riserva sovraprezzo azioni,A1,account.data_account_type_liability,other,TRUE
+A136600,A136600,riserva statutaria,A1,account.data_account_type_liability,other,TRUE
+A136601,A136601,riserva facoltativa,A1,account.data_account_type_liability,other,TRUE
+A136610,A136610,riserva azioni proprie,A1,account.data_account_type_liability,other,TRUE
+A136612,A136612,riserva di trasformazione,A1,account.data_account_type_liability,other,TRUE
+A136616,A136616,riserva acc.sopravv.attive,A1,account.data_account_type_liability,other,TRUE
+A136620,A136620,riserva rivalutazione l.72/83,A1,account.data_account_type_liability,other,TRUE
+A136621,A136621,riserva rivalutazione l.413/91,A1,account.data_account_type_liability,other,TRUE
+A136622,A136622,altre riserve di rivalutazione,A1,account.data_account_type_liability,other,TRUE
+A5,A5,RISERVE RETT. X NORME TRIBUT.,P,account.data_account_type_view,view,FALSE
+A536700,A536700,riserve per ammort.anticipati,A5,account.data_account_type_liability,other,TRUE
+A536800,A536800,riserva svalut. x norme trib.,A5,account.data_account_type_liability,other,TRUE
+A536850,A536850,riserva accant. x norme trib.,A5,account.data_account_type_liability,other,TRUE
+A8,A8,UTILE/PERDITA ESERCIZI PRECED.,P,account.data_account_type_view,view,FALSE
+A836900,A836900,perdita esercizi precedenti,A8,account.data_account_type_liability,other,TRUE
+A836920,A836920,utili indivisi portati a nuovo,A8,account.data_account_type_liability,other,TRUE
+A9,A9,UTILE/PERDITA ESERCIZIO,P,account.data_account_type_view,view,FALSE
+A936950,A936950,utile d'esercizio,A9,account.data_account_type_liability,other,TRUE
+A936970,A936970,perdita d'esercizio,A9,account.data_account_type_liability,other,TRUE
+AK,AK,F.DO AMM.IMMOBIL.IMMATERIALI,P,account.data_account_type_view,view,FALSE
+AK38010,AK38010,f.do amm.to spese costituzione,AK,account.data_account_type_asset,other,TRUE
+AK38015,AK38015,f.do amm. spese modifica atto,AK,account.data_account_type_asset,other,TRUE
+AK38020,AK38020,f.do amm.to costi di ricerca,AK,account.data_account_type_asset,other,TRUE
+AK38025,AK38025,f.do amm.to costi di sviluppo,AK,account.data_account_type_asset,other,TRUE
+AK38030,AK38030,f.do amm.to costi pubblicita',AK,account.data_account_type_asset,other,TRUE
+AK38035,AK38035,f.do amm.to brevetti industr.,AK,account.data_account_type_asset,other,TRUE
+AK38040,AK38040,f.do amm.to utilizz.opere ing.,AK,account.data_account_type_asset,other,TRUE
+AK38045,AK38045,f.do amm.to concessioni,AK,account.data_account_type_asset,other,TRUE
+AK38050,AK38050,f.do amm.to licenze,AK,account.data_account_type_asset,other,TRUE
+AK38055,AK38055,f.do amm.to marchi,AK,account.data_account_type_asset,other,TRUE
+AK38060,AK38060,f.do amm.to avviamento,AK,account.data_account_type_asset,other,TRUE
+AK38075,AK38075,f.do amm.to manut. e rip. amm.,AK,account.data_account_type_asset,other,TRUE
+AK38080,AK38080,f.do amm. man./rip.beni terzi,AK,account.data_account_type_asset,other,TRUE
+AK38085,AK38085,f.do amm.to software,AK,account.data_account_type_asset,other,TRUE
+AL,AL,F.DO AMM. FABBRICATI,P,account.data_account_type_view,view,FALSE
+AL38100,AL38100,f.do amm.to fabbr.civili str.,AL,account.data_account_type_asset,other,TRUE
+AL38105,AL38105,f.do amm.to fabbr.civ.no str.,AL,account.data_account_type_asset,other,TRUE
+AL38110,AL38110,f.do amm.to fabbr.industriali,AL,account.data_account_type_asset,other,TRUE
+AN,AN,F.DO AMM.IMPIANTI E MACCHINARI,P,account.data_account_type_view,view,FALSE
+AN38300,AN38300,f.do amm.to impianti specif.,AN,account.data_account_type_asset,other,TRUE
+AN38305,AN38305,f.do amm.to impianti generici,AN,account.data_account_type_asset,other,TRUE
+AN38310,AN38310,f.do amm.to macchinari spec.,AN,account.data_account_type_asset,other,TRUE
+AN38320,AN38320,f.do amm.to macchinari gener.,AN,account.data_account_type_asset,other,TRUE
+AP,AP,F.DO AMM. ATTREZZATURA IND/COM,P,account.data_account_type_view,view,FALSE
+AP38500,AP38500,f.do amm.to attrezzatura,AP,account.data_account_type_asset,other,TRUE
+AP38501,AP38501,f.do amm.to scaffalature,AP,account.data_account_type_asset,other,TRUE
+AQ,AQ,ALTRI F.DI AMMORTAMENTO,P,account.data_account_type_view,view,FALSE
+AQ38600,AQ38600,f.do amm.to mobili officina,AQ,account.data_account_type_asset,other,TRUE
+AQ38604,AQ38604,f.do amm.to mobili ufficio,AQ,account.data_account_type_asset,other,TRUE
+AQ38605,AQ38605,f.do amm.to macch.uff.elett.,AQ,account.data_account_type_asset,other,TRUE
+AQ38606,AQ38606,f.do amm.to autovetture,AQ,account.data_account_type_asset,other,TRUE
+AQ38607,AQ38607,f.do amm.to autocarri,AQ,account.data_account_type_asset,other,TRUE
+AQ38608,AQ38608,f.do amm.to costr.leggere,AQ,account.data_account_type_asset,other,TRUE
+AQ38621,AQ38621,f.do amm.to beni < 1.000.000,AQ,account.data_account_type_asset,other,TRUE
+AW,AW,F.DI SVALUTAZIONE,P,account.data_account_type_view,view,FALSE
+AW39200,AW39200,f.do svalutazione crediti,AW,account.data_account_type_liability,other,TRUE
+AW39220,AW39220,f.do rischi su cambi,AW,account.data_account_type_liability,other,TRUE
+AW39300,AW39300,f.do sval.partecip.contr/coll.,AW,account.data_account_type_liability,other,TRUE
+AW39310,AW39310,f.do svalut.altre partecipaz.,AW,account.data_account_type_liability,other,TRUE
+AY,AY,F.DI ACCANTONAMENTO,P,account.data_account_type_view,view,FALSE
+AY39400,AY39400,f.do manut.-revis.programmate,AY,account.data_account_type_liability,other,TRUE
+AY39410,AY39410,f.do concorsi ed operaz.premio,AY,account.data_account_type_liability,other,TRUE
+AY39420,AY39420,f.do garanzia prodotti,AY,account.data_account_type_liability,other,TRUE
+B4,B4,FONDO TFR E SIMILI,P,account.data_account_type_view,view,FALSE
+B440000,B440000,f.do t.f.r,B4,account.data_account_type_liability,other,TRUE
+B5,B5,FONDO IMPOSTE,P,account.data_account_type_view,view,FALSE
+B540100,B540100,f.do imposte differite,B5,account.data_account_type_liability,other,TRUE
+B6,B6,ALTRI FONDI,P,account.data_account_type_view,view,FALSE
+B640200,B640200,f.do acc.sopravv.attive,B6,account.data_account_type_liability,other,TRUE
+B640202,B640202,f.do acc.plusvalenze,B6,account.data_account_type_liability,other,TRUE
+CI,CI,OBBLIGAZIONI,P,account.data_account_type_view,view,FALSE
+CI45000,CI45000,obblig.v.con.ti/cont.te/col.te,CI,account.data_account_type_liability,other,TRUE
+CI45020,CI45020,altre obbligazioni,CI,account.data_account_type_liability,other,TRUE
+CL,CL,DEBITI VS.ALTRI FINANZIATORI,P,account.data_account_type_view,view,FALSE
+CL45300,CL45300,debiti a breve vs contr/coll.,CL,account.data_account_type_liability,other,TRUE
+CL45310,CL45310,finanziamento soci,CL,account.data_account_type_liability,other,TRUE
+CL45315,CL45315,finanziamento titolare,CL,account.data_account_type_liability,other,TRUE
+CS,CS,FORNITORI,P,account.data_account_type_view,view,FALSE
+DM,DM,FORNITORI OLTRE L'ANNO,P,account.data_account_type_view,view,FALSE
+DN,DN,EFFETTI PASSIVI,P,account.data_account_type_view,view,FALSE
+DN49100,DN49100,tratte bancarie,DN,account.data_account_type_liability,other,TRUE
+DN49120,DN49120,cambiali passive,DN,account.data_account_type_liability,other,TRUE
+DN49130,DN49130,ricevute bancarie passive,DN,account.data_account_type_liability,other,TRUE
+DR,DR,DEBITI TRIBUTARI,P,account.data_account_type_view,view,FALSE
+DR49500,DR49500,erario c/imposte di competenza,DR,account.data_account_type_liability,other,TRUE
+DR49501,DR49501,erario c/rit.passive compensi,DR,account.data_account_type_payable,payable,TRUE
+DR49503,DR49503,erario c/rit.passive dividendi,DR,account.data_account_type_liability,other,TRUE
+DR49505,DR49505,erario c/rit.su retribuzioni,DR,account.data_account_type_liability,other,TRUE
+DR49506,DR49506,erario c/IVA a debito,DR,account.data_account_type_liability,other,TRUE
+DS,DS,DEBITI VS. ISTITUTI PREV./ASS.,P,account.data_account_type_view,view,FALSE
+DS49600,DS49600,debiti vs. inps,DS,account.data_account_type_liability,other,TRUE
+DS49602,DS49602,debiti vs. enasarco,DS,account.data_account_type_liability,other,TRUE
+DS49603,DS49603,debiti vs. inail,DS,account.data_account_type_liability,other,TRUE
+DS49604,DS49604,debiti vs. f.a.s.i.,DS,account.data_account_type_liability,other,TRUE
+DS49620,DS49620,debiti vs.altri enti prev.,DS,account.data_account_type_liability,other,TRUE
+DT,DT,DEPOSITI CAUZIONALI DA CLIENTI,P,account.data_account_type_view,view,FALSE
+DT49700,DT49700,depositi cauzionali da clienti,DT,account.data_account_type_liability,other,TRUE
+DU,DU,ALTRI DEBITI,P,account.data_account_type_view,view,FALSE
+DU49800,DU49800,salari a dipend.non liquidati,DU,account.data_account_type_liability,other,TRUE
+DU49801,DU49801,amm.ri c/compensi da liquidare,DU,account.data_account_type_liability,other,TRUE
+DU49803,DU49803,debiti vari,DU,account.data_account_type_liability,other,TRUE
+DU49805,DU49805,debiti di competenza,DU,account.data_account_type_liability,other,TRUE
+DU49850,DU49850,clienti c/anticipi,DU,account.data_account_type_liability,other,TRUE
+DW,DW,RATEI PASSIVI,P,account.data_account_type_view,view,FALSE
+DW50000,DW50000,ratei passivi,DW,account.data_account_type_liability,other,TRUE
+DX,DX,RISCONTI PASSIVI,P,account.data_account_type_view,view,FALSE
+DX50100,DX50100,risconti passivi,DX,account.data_account_type_liability,other,TRUE
+O,O,CONTI D'ORDINE,0,account.data_account_type_view,view,FALSE
+E6,E6,BILANCIO APERTURA/CHIUSURA,O,account.data_account_type_view,view,FALSE
+E651000,E651000,bilancio apertura,E6,account.data_account_type_liability,other,TRUE
+E651010,E651010,bilancio di chiusura,E6,account.data_account_type_liability,other,TRUE
+E7,E7,GARANZIE,O,account.data_account_type_view,view,FALSE
+E751100,E751100,fidejussioni,E7,account.data_account_type_liability,other,TRUE
+E751101,E751101,avalli,E7,account.data_account_type_liability,other,TRUE
+E751102,E751102,altre garanzie personali,E7,account.data_account_type_liability,other,TRUE
+E751103,E751103,garanzie reali,E7,account.data_account_type_liability,other,TRUE
+E8,E8,ALTRI CONTI D'ORDINE,O,account.data_account_type_view,view,FALSE
+E851130,E851130,amministratori c/cauzioni,E8,account.data_account_type_liability,other,TRUE
+E851131,E851131,fornitori c/impegni,E8,account.data_account_type_liability,other,TRUE
+R,R,RICAVI,0,account.data_account_type_view,view,FALSE
+EB,EB,MERCI C/VENDITA VENTILAZIONE,R,account.data_account_type_view,view,FALSE
+EB51500,EB51500,merci c/vend. da ventilare,EB,account.data_account_type_income,other,TRUE
+EC,EC,MERCI C/VENDITA,R,account.data_account_type_view,view,FALSE
+EC51600,EC51600,merci c/vendite,EC,account.data_account_type_income,other,TRUE
+EC51620,EC51620,materie prime c/vendite,EC,account.data_account_type_income,other,TRUE
+EC51630,EC51630,imballaggi c/vendite,EC,account.data_account_type_income,other,TRUE
+EG,EG,PRESTAZIONI C/TERZI,R,account.data_account_type_view,view,FALSE
+EG52000,EG52000,trasporti c/terzi,EG,account.data_account_type_income,other,TRUE
+EG52010,EG52010,lavorazioni c/terzi,EG,account.data_account_type_income,other,TRUE
+EH,EH,RIMANENZE FINALI,R,account.data_account_type_view,view,FALSE
+EH52100,EH52100,rimanenze materie prime,EH,account.data_account_type_income,other,TRUE
+EH52105,EH52105,rimanenze.materie sussidiarie,EH,account.data_account_type_income,other,TRUE
+EH52110,EH52110,rimanenze materie di consumo,EH,account.data_account_type_income,other,TRUE
+EH52120,EH52120,rimanenze merci,EH,account.data_account_type_income,other,TRUE
+EH52125,EH52125,rimanenze semilavorati,EH,account.data_account_type_income,other,TRUE
+EH52130,EH52130,rimanen.prod. in corso di lav.,EH,account.data_account_type_income,other,TRUE
+EH52135,EH52135,rimanenze prodotti finiti,EH,account.data_account_type_income,other,TRUE
+EI,EI,VAR. LAVORI IN CORSO,R,account.data_account_type_view,view,FALSE
+EI52200,EI52200,rim.finali per lavori in corso,EI,account.data_account_type_income,other,TRUE
+EJ,EJ,INCR. IMMOB. LAVORI INTERNI,R,account.data_account_type_view,view,FALSE
+EK,EK,ALTRI RICAVI E PROVENTI,R,account.data_account_type_view,view,FALSE
+EK52400,EK52400,abbuoni attivi,EK,account.data_account_type_income,other,TRUE
+EK52401,EK52401,arrotondamenti attivi,EK,account.data_account_type_income,other,TRUE
+EK52402,EK52402,oscillazione cambi attivi,EK,account.data_account_type_income,other,TRUE
+EK52403,EK52403,rimborsi spese da clienti,EK,account.data_account_type_income,other,TRUE
+EK52404,EK52404,interessi att.clienti (mora),EK,account.data_account_type_income,other,TRUE
+EK52405,EK52405,interessi attivi erariali,EK,account.data_account_type_income,other,TRUE
+EK52406,EK52406,premi,EK,account.data_account_type_income,other,TRUE
+EK52407,EK52407,sconti attivi,EK,account.data_account_type_income,other,TRUE
+EK52408,EK52408,resi a fornitori,EK,account.data_account_type_income,other,TRUE
+EK52410,EK52410,contributi in c/esercizio,EK,account.data_account_type_income,other,TRUE
+EK52411,EK52411,affitti attivi,EK,account.data_account_type_income,other,TRUE
+EK52499,EK52499,proventi vari,EK,account.data_account_type_income,other,TRUE
+C,C,COSTI,0,account.data_account_type_view,view,FALSE
+F0,F0,MERCI C/ACQUISTI VENT.,C,account.data_account_type_view,view,FALSE
+F054000,F054000,merci c/acquisti da ventilare,F0,account.data_account_type_expense,other,TRUE
+F1,F1,MERCI C/ACQUISTI,C,account.data_account_type_view,view,FALSE
+F154100,F154100,merci c/acquisti,F1,account.data_account_type_expense,other,TRUE
+F154110,F154110,mat.prime c/acquisti,F1,account.data_account_type_expense,other,TRUE
+F154120,F154120,mat.sussidiarie c/acquisti,F1,account.data_account_type_expense,other,TRUE
+F154130,F154130,mat.consumo c/acquisti,F1,account.data_account_type_expense,other,TRUE
+F154140,F154140,imballaggi c/acquisti,F1,account.data_account_type_expense,other,TRUE
+FA,FA,COSTI PER SERVIZI,C,account.data_account_type_view,view,FALSE
+FA55000,FA55000,costi di produzione,FA,account.data_account_type_expense,other,TRUE
+FA55001,FA55001,spese di trasporto,FA,account.data_account_type_expense,other,TRUE
+FA55002,FA55002,oneri doganali,FA,account.data_account_type_expense,other,TRUE
+FA55003,FA55003,perizie,FA,account.data_account_type_expense,other,TRUE
+FA55005,FA55005,lavorazioni di terzi,FA,account.data_account_type_expense,other,TRUE
+FA55006,FA55006,prestazioni tecniche,FA,account.data_account_type_expense,other,TRUE
+FA55014,FA55014,manut.e ripar.su beni di prop.,FA,account.data_account_type_expense,other,TRUE
+FA55015,FA55015,manut.e rip.su beni di terzi,FA,account.data_account_type_expense,other,TRUE
+FA55016,FA55016,canoni di assistenza,FA,account.data_account_type_expense,other,TRUE
+FA55040,FA55040,manut.-ripar.autovetture,FA,account.data_account_type_expense,other,TRUE
+FA55050,FA55050,manut.-ripar.autoveicoli,FA,account.data_account_type_expense,other,TRUE
+FA55100,FA55100,provvigioni,FA,account.data_account_type_expense,other,TRUE
+FK,FK,COSTI PER IL GODIMENTO DI BENI,C,account.data_account_type_view,view,FALSE
+FK56000,FK56000,noleggi,FK,account.data_account_type_expense,other,TRUE
+FK56002,FK56002,affitti passivi,FK,account.data_account_type_expense,other,TRUE
+FK56005,FK56005,canoni leasing iva ded. 100%,FK,account.data_account_type_expense,other,TRUE
+FK56006,FK56006,canoni leasing iva ind. 100%,FK,account.data_account_type_expense,other,TRUE
+FK56007,FK56007,canoni leasing iva ded. 50%,FK,account.data_account_type_expense,other,TRUE
+FL,FL,COSTI PERSONALE,C,account.data_account_type_view,view,FALSE
+FL56100,FL56100,salari,FL,account.data_account_type_expense,other,TRUE
+FL56101,FL56101,stipendi,FL,account.data_account_type_expense,other,TRUE
+FL56120,FL56120,altri costi del personale,FL,account.data_account_type_expense,other,TRUE
+FM,FM,ONERI CONTRIBUTIVI,C,account.data_account_type_view,view,FALSE
+FM56200,FM56200,contributi inps,FM,account.data_account_type_expense,other,TRUE
+FM56201,FM56201,contributi inail,FM,account.data_account_type_expense,other,TRUE
+FM56202,FM56202,contributi enpals,FM,account.data_account_type_expense,other,TRUE
+FM56203,FM56203,contributi cassa edile,FM,account.data_account_type_expense,other,TRUE
+FM56204,FM56204,contributi dirigenti,FM,account.data_account_type_expense,other,TRUE
+FM56205,FM56205,contributi enasarco,FM,account.data_account_type_expense,other,TRUE
+FM56206,FM56206,altri oneri contributivi,FM,account.data_account_type_expense,other,TRUE
+FM56207,FM56207,contributi inps titolare,FM,account.data_account_type_expense,other,TRUE
+FM56208,FM56208,contributo integrativo 2%,FM,account.data_account_type_expense,other,TRUE
+FN,FN,ALTRI COSTI,C,account.data_account_type_view,view,FALSE
+FN56300,FN56300,scheda carbur. con iva detr.,FN,account.data_account_type_expense,other,TRUE
+FN56301,FN56301,scheda carburanti iva indetr.,FN,account.data_account_type_expense,other,TRUE
+FN56302,FN56302,fatt.carburanti/lubr.iva detr.,FN,account.data_account_type_expense,other,TRUE
+FN56303,FN56303,fatt.carburanti/lubr. iva ind.,FN,account.data_account_type_expense,other,TRUE
+FN56305,FN56305,forza motrice,FN,account.data_account_type_expense,other,TRUE
+FN56308,FN56308,beni strumentali < 1.000.000,FN,account.data_account_type_expense,other,TRUE
+FN56310,FN56310,combustibili,FN,account.data_account_type_expense,other,TRUE
+FN56315,FN56315,abbuoni passivi,FN,account.data_account_type_expense,other,TRUE
+FN56320,FN56320,perdite su crediti,FN,account.data_account_type_expense,other,TRUE
+FN56325,FN56325,perdite su cambi,FN,account.data_account_type_expense,other,TRUE
+FN56330,FN56330,minusvalenze,FN,account.data_account_type_expense,other,TRUE
+FN56335,FN56335,pubblicita',FN,account.data_account_type_expense,other,TRUE
+FP,FP,AMMORTAMENTI E SVALUTAZ.IMMOB.,C,account.data_account_type_view,view,FALSE
+FP56500,FP56500,ammort.ordinari beni materiali,FP,account.data_account_type_expense,other,TRUE
+FP56502,FP56502,ammortamenti beni immateriali,FP,account.data_account_type_expense,other,TRUE
+FR,FR,ESISTENZE INIZIALI,C,account.data_account_type_view,view,FALSE
+FR56700,FR56700,esist.iniz. materie prime,FR,account.data_account_type_expense,other,TRUE
+FR56701,FR56701,esistenze iniz. merci,FR,account.data_account_type_expense,other,TRUE
+FR56702,FR56702,esistenze iniz. semilavorati,FR,account.data_account_type_expense,other,TRUE
+FR56703,FR56703,esis.iniz.prod.in corso di lav,FR,account.data_account_type_expense,other,TRUE
+FR56704,FR56704,esistenze iniziali prod.finiti,FR,account.data_account_type_expense,other,TRUE
+FR56705,FR56705,esist.iniz. su lavori in corso,FR,account.data_account_type_expense,other,TRUE
+FS,FS,ACCANTONAMENTO PER RISCHI,C,account.data_account_type_view,view,FALSE
+FS56800,FS56800,acc.to.f.do svalut.crediti,FS,account.data_account_type_expense,other,TRUE
+FS56810,FS56810,acc.to f.do rischi su cambi,FS,account.data_account_type_expense,other,TRUE
+FS56820,FS56820,acc.f.do svalutazioni cambi,FS,account.data_account_type_expense,other,TRUE
+FS56825,FS56825,acc.f.do svalutazione partec.,FS,account.data_account_type_expense,other,TRUE
+FT,FT,ALTRI ACCANTONAMENTI,C,account.data_account_type_view,view,FALSE
+FT56900,FT56900,acc.indennita' anzianita',FT,account.data_account_type_expense,other,TRUE
+FT56930,FT56930,acc.to f.do imposte differite,FT,account.data_account_type_expense,other,TRUE
+FU,FU,ONERI DIVERSI DI GESTIONE,C,account.data_account_type_view,view,FALSE
+FU57000,FU57000,telefoniche,FU,account.data_account_type_expense,other,TRUE
+FU57001,FU57001,costi radiomobili det.50%,FU,account.data_account_type_expense,other,TRUE
+FU57002,FU57002,riscaldamento,FU,account.data_account_type_expense,other,TRUE
+FU57004,FU57004,pulizie,FU,account.data_account_type_expense,other,TRUE
+FU57005,FU57005,postali,FU,account.data_account_type_expense,other,TRUE
+FU57008,FU57008,viaggi e trasferte,FU,account.data_account_type_expense,other,TRUE
+FU57009,FU57009,assicurazioni,FU,account.data_account_type_expense,other,TRUE
+FU57010,FU57010,elaborazione dati,FU,account.data_account_type_expense,other,TRUE
+FU57015,FU57015,spese di rappresentanza,FU,account.data_account_type_expense,other,TRUE
+FU57016,FU57016,fiere e promozioni,FU,account.data_account_type_expense,other,TRUE
+FU57018,FU57018,erogazioni liberali,FU,account.data_account_type_expense,other,TRUE
+FU58000,FU58000,spese ristoranti con fatt.sing,FU,account.data_account_type_expense,other,TRUE
+FU58001,FU58001,spese ristoranti con doc.riep.,FU,account.data_account_type_expense,other,TRUE
+FU58002,FU58002,spese per omaggi con iva 38%,FU,account.data_account_type_expense,other,TRUE
+FU58004,FU58004,spese per omaggi < 50.000,FU,account.data_account_type_expense,other,TRUE
+FU58005,FU58005,spese per omaggi > 50.000,FU,account.data_account_type_expense,other,TRUE
+FU63000,FU63000,compensi a professionisti,FU,account.data_account_type_expense,other,TRUE
+FU63001,FU63001,compensi amministratori,FU,account.data_account_type_expense,other,TRUE
+FU63002,FU63002,compensi collegio sindacale,FU,account.data_account_type_expense,other,TRUE
+FU63020,FU63020,valori bollati,FU,account.data_account_type_expense,other,TRUE
+FU63040,FU63040,iva indetraibile per pro-rata,FU,account.data_account_type_expense,other,TRUE
+FU63100,FU63100,quote associative,FU,account.data_account_type_expense,other,TRUE
+FU63110,FU63110,vidimazioni libri sociali,FU,account.data_account_type_expense,other,TRUE
+FU64000,FU64000,imposte e tasse deducibili,FU,account.data_account_type_expense,other,TRUE
+FU64020,FU64020,imposte e tasse indeducibili,FU,account.data_account_type_expense,other,TRUE
+I2,I2,PROVENTI DA PARTECIPAZIONI,R,account.data_account_type_view,view,FALSE
+I265000,I265000,dividendi part.in contr/coll,I2,account.data_account_type_income,other,TRUE
+I265001,I265001,ricavi alien.part.contr/coll.,I2,account.data_account_type_income,other,TRUE
+I265010,I265010,proventi da altre partecipaz.,I2,account.data_account_type_income,other,TRUE
+I265011,I265011,ricavi alien.altre partecipaz.,I2,account.data_account_type_income,other,TRUE
+I6,I6,ALTRI PROVENTI FINANZIARI,R,account.data_account_type_view,view,FALSE
+I665400,I665400,interessi attivi c/c bancari,I6,account.data_account_type_income,other,TRUE
+I665401,I665401,inter.att.clienti per dilaz.,I6,account.data_account_type_income,other,TRUE
+I665402,I665402,interessi attivi su titoli,I6,account.data_account_type_income,other,TRUE
+JG,JG,ONERI FINANZIARI E BANCARI,C,account.data_account_type_view,view,FALSE
+JG70000,JG70000,interessi passivi contr/coll.,JG,account.data_account_type_expense,other,TRUE
+JG70001,JG70001,altri oneri fin.contr/coll.,JG,account.data_account_type_expense,other,TRUE
+JG70500,JG70500,oneri bancari,JG,account.data_account_type_expense,other,TRUE
+JG70501,JG70501,interessi passivi c/c,JG,account.data_account_type_expense,other,TRUE
+JG70502,JG70502,interessi passivi di sconto,JG,account.data_account_type_expense,other,TRUE
+JG70503,JG70503,interessi passivi finanziari,JG,account.data_account_type_expense,other,TRUE
+JG70504,JG70504,interessi passivi fornitori,JG,account.data_account_type_expense,other,TRUE
+JG70505,JG70505,interessi pass.import-export,JG,account.data_account_type_expense,other,TRUE
+JG70510,JG70510,interessi passivi mutuo,JG,account.data_account_type_expense,other,TRUE
+K5,K5,RIVALUTAZIONI ATTIVITA' FIN.,R,account.data_account_type_view,view,FALSE
+K572500,K572500,rivalutazioni di partecipaz.,K5,account.data_account_type_income,other,TRUE
+K572510,K572510,rivalutazione titoli,K5,account.data_account_type_income,other,TRUE
+K572515,K572515,rivalutazione crediti,K5,account.data_account_type_income,other,TRUE
+K7,K7,SVALUTAZIONI,C,account.data_account_type_view,view,FALSE
+K772700,K772700,svalutazione di partecipaz.,K7,account.data_account_type_expense,other,TRUE
+K772710,K772710,svalutazione titoli,K7,account.data_account_type_expense,other,TRUE
+K772715,K772715,svalutazione crediti,K7,account.data_account_type_expense,other,TRUE
+KU,KU,PROVENTI STRAORDINARI,R,account.data_account_type_view,view,FALSE
+KU75000,KU75000,sopravvenienze attive non tas.,KU,account.data_account_type_income,other,TRUE
+KU75001,KU75001,sopravvenienze attive,KU,account.data_account_type_income,other,TRUE
+KU75002,KU75002,plusval.alienazione immobili,KU,account.data_account_type_income,other,TRUE
+M8,M8,ONERI STRAORDINARI,C,account.data_account_type_view,view,FALSE
+M880000,M880000,sopravv. passive inded.,M8,account.data_account_type_expense,other,TRUE
+M880001,M880001,sopravvenienze passive,M8,account.data_account_type_expense,other,TRUE
+M880002,M880002,minusvalenze alien.immobili,M8,account.data_account_type_expense,other,TRUE
+MX,MX,IMPOSTE SUL REDDITO,C,account.data_account_type_view,view,FALSE
+MX82500,MX82500,imposte differite sul reddito,MX,account.data_account_type_expense,other,TRUE
+MX82501,MX82501,accantonam. ilor (soc.di per.),MX,account.data_account_type_expense,other,TRUE
+MX82502,MX82502,accontonam. ilor (soc.di cap.),MX,account.data_account_type_expense,other,TRUE
+MX82504,MX82504,accantonam. irpeg,MX,account.data_account_type_expense,other,TRUE
+MZ,MZ,RETTIFICHE X NORME TRIBUTARIE,C,account.data_account_type_view,view,FALSE
+MZ82700,MZ82700,ammortamenti anticipati,MZ,account.data_account_type_expense,other,TRUE
+MZ82710,MZ82710,costi indeducibili,MZ,account.data_account_type_expense,other,TRUE
+MZ82720,MZ82720,costi indeducibili al 50%,MZ,account.data_account_type_expense,other,TRUE
+N1,N1,ACCANTONAMENTI X NORME TRIB.,C,account.data_account_type_view,view,FALSE
+N182900,N182900,accant.f.do plusval.rinviate,N1,account.data_account_type_expense,other,TRUE
+N182910,N182910,accant.f.do sopravvenienze,N1,account.data_account_type_expense,other,TRUE
+NM,NM,PROFITTI E PERDITE,0,account.data_account_type_view,view,FALSE
+NM85000,NM85000,profitti e perdite,NM,account.data_account_type_asset,other,TRUE

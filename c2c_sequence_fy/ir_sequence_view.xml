@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+    <record model="ir.ui.view" id="sequence_view_fy_form">
+      <field name="name">sequence.view.fy.form</field>
+      <field name="model">ir.sequence</field>
+      <field name="inherit_id" ref="base.sequence_view"/>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <xpath expr="/form//separator[@string='Legend (for prefix, suffix)']" position="after">
+          <group colspan="4" col="1">
+            <label colspan="1" string="Current Fiscal Year: %%(fy)s (see sequence code in fiscalyear)"/>
+            <label colspan="1" string="Abbreviated name of the journal: %%(jn)s"/>
+            <label colspan="1" string="Abbreviated name of the sequence-code: %%(stn)s"/>
+            <label colspan="1" string="Abbreviated code of the sequence-code: %%(stc)s"/>
+            <label colspan="1" string="Number of period (April = 01 if FY start in Arpil) : %%(pe)s"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+    
+    
+        <record id="sequence_inherit_period_form" model="ir.ui.view">
+            <field name="name">ir.sequence.period.form</field>
+            <field name="model">ir.sequence</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.sequence_view"/>
+            <field name="arch" type="xml">
+                <page position="after">
+                    <page string="Periods" groups="base.group_extended">
+                        <field name="period_ids" nolabel="1" colspan="4">
+                            <tree string="Period Sequences" editable="bottom">
+                                <field name="period_id"/>
+                                <field name="sequence_id" domain="[('code','=',parent.code)]"/>
+                            </tree>
+                            <form string="Period Sequence">
+                                <field name="period_id"/>
+                                <field name="sequence_id" domain="[('code','=',parent.code)]"/>
+                            </form>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+  </data>
+</openerp>

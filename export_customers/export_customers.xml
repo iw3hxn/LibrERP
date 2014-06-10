@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--  =========== VIEWS =========== -->
+        <record model="ir.ui.view" id="view_export_customers_form">
+            <field name="name">view.export.customers.form</field>
+            <field name="model">export.customers</field>
+            <field name="type">form</field>
+            <field name="priority">16</field>
+            <field name="arch" type="xml">
+                <form col="3" string="Exporting Customers">
+
+                    <group col="2" fill="0">
+                        <separator colspan="2"/>
+                        <field name="filename" />
+                        <field name="name" invisible="1"/>
+                        <separator colspan="2"/>
+                        <group colspan="2">
+                            <button special="cancel" icon="gtk-cancel" string="Cancel"/>
+                            <button type="object" name="exporting_customers" icon="gtk-go-forward" string="Exporting"/>
+                        	<separator colspan="3"/>
+                        	<newline/>
+                                <field name="data" filename="name"/>
+                                <field name="name" select="1" invisible="1" />
+                        </group>
+                    </group>
+					<newline/>
+
+                </form>
+            </field>
+        </record>
+
+        <!--  =========== ACTIONS =========== -->
+        <record model="ir.actions.act_window" id="action_export_customers">
+            <field name="name">Export file clienti - formato CSV</field>
+            <field name="res_model">export.customers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!--  =========== MENU ITEMS =========== -->
+        <menuitem id="menu_export_customer" name="Exporting Customer"
+                    action="action_export_customers"
+                    parent="base.menu_address_book" 
+                    groups="base.export_customer" />
+
+    </data>
+</openerp>

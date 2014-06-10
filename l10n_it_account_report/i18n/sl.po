@@ -1,0 +1,278 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* l10n_it_account_report
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-03 10:35+0000\n"
+"PO-Revision-Date: 2013-11-03 11:36+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:112
+msgid "Banche"
+msgstr "Banke"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:53
+msgid "Indirizzo"
+msgstr "Naslov"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:44
+msgid "Nome"
+msgstr "Ime"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:117
+msgid "Numero Conto"
+msgstr "Št. računa"
+
+#. module: l10n_it_account_report
+#: field:partner.invoice.wizard,period_from_id:0
+msgid "Period From"
+msgstr "Period From"
+
+#. module: l10n_it_account_report
+#: code:addons/l10n_it_account_report/report/partner_invoice.py:54
+#, python-format
+msgid "Start period should be smaller than end period"
+msgstr "Start period should be smaller than end period"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:147
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:152
+#: code:addons/l10n_it_account_report/report/partner_invoice.py:114
+#, python-format
+msgid "Fatturato"
+msgstr "Promet"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:61
+msgid "Nazione"
+msgstr "Država"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:48
+msgid "Data Nascita"
+msgstr "Datum rojstva"
+
+#. module: l10n_it_account_report
+#: view:partner.invoice.wizard:0
+msgid "Print"
+msgstr "Print"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:125
+msgid "Documenti"
+msgstr "Dokumenti"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:28
+msgid "Fornitore"
+msgstr "Dobavitelj"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:64
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:65
+msgid "Telefono"
+msgstr "Telefon"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:40
+msgid "Dati Anagrafici"
+msgstr "Anagrafski podatki"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:134
+msgid "Mezzo trasp."
+msgstr "Transportno sredstvo"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:96
+msgid "Pagamenti"
+msgstr "Plačila"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:25
+msgid "/"
+msgstr "/"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:155
+msgid "Fatt.Netto Tot."
+msgstr "Skupaj neto promet"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:116
+msgid "Nome Banca"
+msgstr "Naziv banke"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:33
+msgid "P.Iva"
+msgstr "ID za DDV"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:150
+msgid "Esercizio"
+msgstr "Dejavnost"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:59
+msgid "C.A.P."
+msgstr "Poštna številka"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:151
+msgid "Mese"
+msgstr "Mesec"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:137
+msgid "Porto"
+msgstr "FCO"
+
+#. module: l10n_it_account_report
+#: field:partner.invoice.wizard,period_to_id:0
+msgid "Period To"
+msgstr "Period To"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:43
+msgid "Cognome"
+msgstr "Priimek"
+
+#. module: l10n_it_account_report
+#: model:ir.actions.act_window,name:l10n_it_account_report.action_partner_invoice_wizard
+#: model:ir.model,name:l10n_it_account_report.model_partner_invoice_wizard
+msgid "Total Invoice"
+msgstr "Total Invoice"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:60
+msgid "Prov."
+msgstr "Prov."
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:66
+msgid "Fax"
+msgstr "Fax"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:131
+msgid "Aspetto beni"
+msgstr "Videz blaga"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:49
+msgid "Sesso"
+msgstr "Spol"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:69
+msgid "Contatto E-Mail"
+msgstr "E-Mail"
+
+#. module: l10n_it_account_report
+#: code:addons/l10n_it_account_report/report/partner_invoice.py:114
+#, python-format
+msgid "Fatt. Netto"
+msgstr "Neto promet"
+
+#. module: l10n_it_account_report
+#: code:addons/l10n_it_account_report/report/partner_invoice.py:54
+#, python-format
+msgid "Error"
+msgstr "Napaka"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:45
+msgid "Cod.Fiscale"
+msgstr "Davčna številka"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:22
+msgid "Cliente"
+msgstr "Stranka"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:128
+msgid "Agente"
+msgstr "Agent"
+
+#. module: l10n_it_account_report
+#: code:addons/l10n_it_account_report/report/partner_invoice.py:72
+#, python-format
+msgid "No Data Available"
+msgstr "Ni razpol. podatkov"
+
+#. module: l10n_it_account_report
+#: code:addons/l10n_it_account_report/report/partner_invoice.py:72
+#, python-format
+msgid "No records found for your selection!"
+msgstr "No records found for your selection!"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:153
+msgid "Fatt.Netto"
+msgstr "Neto promet"
+
+#. module: l10n_it_account_report
+#: code:addons/l10n_it_account_report/report/partner_invoice.py:114
+#, python-format
+msgid "Periodo"
+msgstr "Obdobje"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:77
+msgid "Dati Generali"
+msgstr "Splošni podatki"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:99
+msgid "Tipo Pagam."
+msgstr "Tip plačila"
+
+#. module: l10n_it_account_report
+#: view:partner.invoice.wizard:0
+msgid "Periods"
+msgstr "Periods"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:56
+msgid "Località"
+msgstr "Lokacija"
+
+#. module: l10n_it_account_report
+#: model:ir.actions.report.xml,name:l10n_it_account_report.report_customer_supplier
+msgid "Customer / Supplier "
+msgstr "Customer / Supplier "
+
+#. module: l10n_it_account_report
+#: view:partner.invoice.wizard:0
+msgid "Cancel"
+msgstr "Cancel"
+
+#. module: l10n_it_account_report
+#: view:partner.invoice.wizard:0
+msgid "Select Period"
+msgstr "Select Period"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:32
+msgid "Rag.Soc."
+msgstr "Naziv"
+
+#. module: l10n_it_account_report
+#: report:addons/l10n_it_account_report/report/customer_supplier.mako:154
+msgid "Fatturato Tot."
+msgstr "Skupaj promet"

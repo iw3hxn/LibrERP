@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="1">
+    
+    <record model="ir.rule" id="partner_erp_rule">
+        <field name="name">erp_access</field>
+        <field name="model_id" search="[('model','=','res.partner.erp')]" model="ir.model"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('user_id','=',False), ('user_id','=',user.id)]</field>
+    </record>
+
+</data>
+</openerp>
+              

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="0">
+		
+		<record model="ir.module.category" id="product.module_category_assets">
+		    <field name="name">Assets</field>
+		    <field name="description">Extend groups for Product</field>
+		    <field name="sequence">20</field>
+		</record>
+		
+        <record model="res.groups" id="group_assets_manager">
+        	<field name="name">Assets / Manager</field>
+			<field name="category_id" ref="product.module_category_assets"/>
+        </record>
+        <record model="res.groups" id="group_assets_manager_mover">
+            <field name="name">Assets / Manage Move</field>
+			<field name="category_id" ref="product.module_category_assets"/>
+        </record>
+        <record model="res.groups" id="group_assets_user">
+        	<field name="name">Assets / User</field>
+			<field name="category_id" ref="product.module_category_assets"/>
+        </record>
+
+	</data>
+</openerp>

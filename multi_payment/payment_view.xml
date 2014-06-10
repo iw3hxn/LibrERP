@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+
+        <record id="view_account_statement_multi_pay" model="ir.ui.view">
+            <field name="name">account.statement.from.invoice.lines.form.multi.pay</field>
+            <field name="model">account.statement.from.invoice.lines</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Import Entries">
+                    <group colspan="4" expand="1">
+                        <separator string="Payable and Receivables" colspan="4"/>
+                        <field height="300" width="700" name="line_ids" colspan="4" nolabel="1" domain="[('account_id.type','in',['receivable','payable']),('reconcile_id','=',False), ('state', '=', 'valid')]"/>
+                    </group>
+                    <group colspan="4" col="6">
+                        <label string ="" colspan="2"/>
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button icon="gtk-execute" string="Ok" name="populate_statement" type="object"/>
+                   </group>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_view_account_statement_multi_pay" model="ir.actions.act_window">
+            <field name="name">Import Entries</field>
+            <field name="res_model">account.statement.from.invoice.lines</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_account_statement_multi_pay"/>
+            <field name="target">new</field>
+            <field name="context">{'statement_id': active_id}</field>
+        </record>
+
+<!-- New view to do multipayment-->
+        <record id="view_bank_statement_form_multi_pay" model="ir.ui.view">
+            <field name="name">account.bank.statement.form.multi.pay</field>
+            <field name="model">account.bank.statement</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Pagamenti cumulativi">
+                    <group col="7" colspan="4">
+                        <field name="name" select="1"/>
+                        <field name="date" select="1" on_change="onchange_date(date, company_id)"/>
+                        <field name="journal_id" domain="[('type', '=', 'bank')]" on_change="onchange_journal_id(journal_id)" select="1" widget="selection"/>
+                        <newline/>
+                        <field name="period_id"/>
+                        <field name="balance_start" invisible="1"/>
+                        <field name="balance_end_real" invisible="1"/>
+                        <field name="currency" invisible="1"/>
+                        <button name="%(action_view_account_statement_multi_pay)d"
+                            string="Import Invoices" type="action" icon="gtk-execute"
+                            attrs="{'invisible':[('state','=','confirm')]}"/>
+                        <field name='company_id' widget="selection" groups="base.group_multi_company" />
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Transaction" name="statement_line_ids">
+                            <field colspan="4" name="line_ids" nolabel="1" context="{'date':date}">
+                                <tree editable="bottom" string="Statement lines">
+                                    <field name="sequence" readonly="1" invisible="1"/>
+                                    <field name="date" groups="base.group_extended"/>
+                                    <field name="name"/>
+                                    <field name="ref"/>
+                                    <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
+                                    <field name="type" on_change="onchange_type(partner_id, type)"/>
+                                    <field domain="[('journal_id','=',parent.journal_id), ('company_id', '=', parent.company_id)]" name="account_id"/>
+                                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting" domain="[('company_id', '=', parent.company_id), ('type', '&lt;&gt;', 'view')]"/>
+                                    <field name="amount"/>
+                                </tree>
+                                <form string="Statement lines">
+                                    <field name="date"/>
+                                    <field name="name"/>
+                                    <field name="ref"/>
+                                    <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
+                                    <field name="type" on_change="onchange_type(partner_id, type)"/>
+                                    <field domain="[('journal_id', '=', parent.journal_id), ('type', '&lt;&gt;', 'view'), ('company_id', '=', parent.company_id)]" name="account_id"/>
+                                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting" domain="[('company_id', '=', parent.company_id), ('type', '&lt;&gt;', 'view')]"/>
+                                    <field name="amount"/>
+                                    <field name="sequence" readonly="0"/>
+                                    <separator colspan="4" string="Notes"/>
+                                    <field colspan="4" name="note" nolabel="1"/>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group col="8" colspan="4">
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                        <field name="balance_end" invisible="1"/>
+                        <button name="button_cancel" states="confirm" string="Cancel" type="object" icon="gtk-cancel"/>
+                        <!--button name="button_dummy" states="draft" string="Compute" type="object" icon="terp-stock_format-scientific"/-->
+                        <button name="button_confirm_bank" states="draft" string="Confirm" type="object"  icon="terp-camera_test"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_bank_statement_search_multi_pay" model="ir.ui.view">
+            <field name="name">account.bank.statement.search.multi.pay</field>
+            <field name="model">account.bank.statement</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Multi Payments">
+                    <group>
+                        <filter string="Draft" domain="[('state','=','draft')]" icon="terp-document-new"/>
+                        <filter string="Confirmed" domain="[('state','=','confirm')]" icon="terp-camera_test"/>
+                        <separator orientation="vertical"/>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="period_id"/>
+                        <field name="journal_id" widget="selection" domain="[('type', '=', 'bank')]" />
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Journal" context="{'group_by': 'journal_id'}" icon="terp-folder-orange"/>
+                        <filter string="State" context="{'group_by': 'state'}" icon="terp-stock_effects-object-colorize"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Period" context="{'group_by': 'period_id'}" icon="terp-go-month"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_bank_statement_tree_multi_pay" model="ir.actions.act_window">
+            <field name="name">Pagamenti multipli</field>
+            <field name="res_model">account.bank.statement</field>
+            <field name="view_type">tree</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="domain">[('journal_id.type', '=', 'bank')]</field>
+            <field name="context">{'journal_type':'bank'}</field>
+            <field name="search_view_id" ref="view_bank_statement_search_multi_pay"/>
+            <field name="help">Un pagamento multiplo avviene solitamente a fine mese per il pagamento dei fornitori, può avvenire anche quando si incassa una distinta di ri.ba. di più clienti.</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_bank_statement_form_bank_multi_pay">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_bank_statement_form_multi_pay"/>
+            <field name="act_window_id" ref="action_bank_statement_tree_multi_pay"/>
+        </record>
+
+        <menuitem string="Multi Payments" action="action_bank_statement_tree_multi_pay" id="menu_bank_statement_tree_multi_pay" parent="account.menu_finance_bank_and_cash" sequence="7"/>
+
+<!-- ELIMINATO
+('journal_id.type','not in',['bank','cash']),
+-->
+
+
+        <record id="view_account_move_line_filter_ext" model="ir.ui.view">
+            <field name="name">account.move.line.filter.ext</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="arch" type="xml">
+                <data>
+                    <filter string="Unbalanced" position="after">
+                        <filter icon="terp-sale" string="Receivable" domain="[('account_id.type','=','receivable')]" help="Receivable payments"/>
+                        <filter icon="terp-purchase" string="Payable" domain="[('account_id.type','=','payable')]" help="Payable payments"/>
+                    <separator orientation="vertical"/>
+                    </filter>
+                    <field name="date" position="after">
+                        <field name="date_maturity"/>
+                    </field>
+                    <field name="partner_id" position="replace"/>
+                    <field name="account_id" position="replace"/>
+                    <field name="journal_id" position="before">
+                        <field name="partner_id">
+                            <filter help="Next Partner Entries to reconcile" name="next_partner" context="{'next_partner_only': 1}" icon="terp-gtk-jump-to-ltr" domain="[('account_id.reconcile','=',True),('reconcile_id','=',False)]"/>
+                        </field>
+                        <field name="account_id"/>
+                    </field>
+
+                </data>
+            </field>
+        </record>
+
+        <!-- TODO open this form only from this view
+            record id="view_account_move_line_filter_ext" model="ir.ui.view">
+            <field name="name">Journal Items</field>
+            <field name="model">account.move.line</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Journal Items">
+                    <group>
+                        <filter icon="terp-document-new" string="Unbalanced" domain="[('state','=','draft')]" help="Unbalanced Journal Items"/>
+                        <filter icon="terp-sale" string="Receivable" domain="[('account_id.type','=','receivable')]" help="Receivable payments"/>
+                        <filter icon="terp-purchase" string="Payable" domain="[('account_id.type','=','payable')]" help="Payable payments"/>
+
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-document-new" string="Unposted" domain="[('move_id.state','=','draft')]" help="Unposted Journal Items"/>
+                        <filter name="posted" icon="terp-camera_test" string="Posted" domain="[('move_id.state','=','posted')]" help="Posted Journal Items"/>
+                        <separator orientation="vertical"/>
+                        <filter
+                            icon="terp-dolar_ok!"
+                            string="Unreconciled"
+                            domain="[('reconcile_id','=',False), ('account_id.reconcile','=',True)]" help="Unreconciled Journal Items"
+                            name="unreconciled"/>
+                        <separator orientation="vertical"/>
+                        <field name="move_id" string="Number (Move)"/>
+                        <field name="date"/>
+                        <field name="date_maturity"/>
+                    </group>
+                    <newline/>
+                    <group>
+                        <field name="partner_id">
+                            <filter help="Next Partner Entries to reconcile" name="next_partner" context="{'next_partner_only': 1}" icon="terp-gtk-jump-to-ltr" domain="[('account_id.reconcile','=',True),('reconcile_id','=',False)]"/>
+                        </field>
+                        <field name="account_id"/>
+                        <field name="journal_id" widget="selection" context="{'journal_id':self}"/>
+                        <field name="period_id" context="{'period_id':self}"/>
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Journal" icon="terp-folder-orange" domain="[]" context="{'group_by':'journal_id'}"/>
+                        <filter string="Account"  icon="terp-folder-green" context="{'group_by':'account_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Period" icon="terp-go-month" domain="[]" context="{'group_by':'period_id'}"/>
+                    </group>
+                    <newline/>
+                </search>
+            </field>
+        </record-->
+
+
+</data>
+</openerp>

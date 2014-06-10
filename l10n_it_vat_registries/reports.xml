@@ -1,0 +1,340 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="1">
+        <record id="ir_header_webkit_vat_registry_sale" model="ir.header_webkit">
+            <field name="orientation">Landscape</field>
+            <field name="format">A4</field>
+            <field name="margin_top">35</field>
+            <field name="html"><![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+    <% setLang(company.partner_id.lang or "en_US") %>
+
+    <h3>Registro I.V.A. Vendite</h3>
+    <table style="border-bottom: 4px solid black; width: 100%; padding-bottom: 8px">
+     <tr>
+        <td>
+            <div> <strong>${company.partner_id.name or ''|entity} </strong> - ${company.partner_id.address and company.partner_id.address[0].street or ''|entity} ${company.partner_id.address and company.partner_id.address[0].street2 or ''|entity} - ${company.partner_id.address and company.partner_id.address[0].zip or ''|entity} ${company.partner_id.address and company.partner_id.address[0].city or ''|entity} ( ${company.partner_id.address and company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity} ) - P. IVA: ${company.partner_id.vat or ''|entity} / Codice Fiscale: ${company.partner_id.fiscalcode or ''|entity}
+            </div>
+        </td>
+     </tr> 
+    </table>
+    <br/>
+    </body>
+</html>]]>
+</field>
+            <field name="footer_html"><![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) {
+            if(x[i] == 'page') {y[j].textContent = eval(vars[x[i]]) + ${fiscal_page_base};}
+            else{y[j].textContent = vars[x[i]];}
+            }
+
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table style="border-top: 1px solid black; width: 100%">
+            <tr >
+                <td style="text-align:right;font-size:12;" width="95%">Page ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
+            </tr>
+        </table>
+    </body>
+</html>]]></field><field name="css" ><![CDATA[
+tr {
+    page-break-inside: avoid;
+}
+thead{
+    display: table-header-group; /* http://code.google.com/p/wkhtmltopdf/issues/detail?id=9#c8 */
+}
+]]> </field>
+            <field  name="name">Registro IVA vendite</field>
+        </record>
+
+        <record id="ir_header_webkit_vat_registry_purchase" model="ir.header_webkit">
+            <field name="orientation">Landscape</field>
+            <field name="format">A4</field>
+            <field name="margin_top">35</field>
+            <field name="html"><![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+    <% setLang(company.partner_id.lang or "en_US") %>
+
+    <h3>Registro I.V.A. Acquisti</h3>
+    <table style="border-bottom: 4px solid black; width: 100%; padding-bottom: 8px">
+     <tr>
+        <td>
+            <div> <strong>${company.partner_id.name or ''|entity} </strong> - ${company.partner_id.address and company.partner_id.address[0].street or ''|entity} ${company.partner_id.address and company.partner_id.address[0].street2 or ''|entity} - ${company.partner_id.address and company.partner_id.address[0].zip or ''|entity} ${company.partner_id.address and company.partner_id.address[0].city or ''|entity} ( ${company.partner_id.address and company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity} ) - P. IVA: ${company.partner_id.vat or ''|entity} / Codice Fiscale: ${company.partner_id.fiscalcode or ''|entity}
+            </div>
+        </td>
+     </tr> 
+    </table>
+
+    <br/>
+    </body>
+</html>]]>
+</field>
+            <field name="footer_html"><![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) {
+            if(x[i] == 'page') {y[j].textContent = eval(vars[x[i]]) + ${fiscal_page_base};}
+            else{y[j].textContent = vars[x[i]];}
+            }
+
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table style="border-top: 1px solid black; width: 100%">
+            <tr >
+                <td style="text-align:right;font-size:12;" width="95%">Page ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
+            </tr>
+        </table>
+    </body>
+</html>]]></field><field name="css" ><![CDATA[
+tr {
+    page-break-inside: avoid;
+}
+thead{
+    display: table-header-group; /* http://code.google.com/p/wkhtmltopdf/issues/detail?id=9#c8 */
+}
+]]> </field>
+            <field  name="name">Registro IVA acquisti</field>
+        </record>
+
+
+        <record id="ir_header_webkit_vat_registry_general" model="ir.header_webkit">
+            <field name="orientation">Landscape</field>
+            <field name="format">A4</field>
+            <field name="margin_top">35</field>
+            <field name="html"><![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+    <% setLang(company.partner_id.lang or "en_US") %>
+    <h3>Registro Generale</h3>
+    <table style="border-bottom: 4px solid black; width: 100%; padding-bottom: 8px">
+     <tr>
+        <td>
+            <div> <strong>${company.partner_id.name or ''|entity} </strong> - ${company.partner_id.address and company.partner_id.address[0].street or ''|entity} ${company.partner_id.address and company.partner_id.address[0].street2 or ''|entity} - ${company.partner_id.address and company.partner_id.address[0].zip or ''|entity} ${company.partner_id.address and company.partner_id.address[0].city or ''|entity} ( ${company.partner_id.address and company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity} ) - P. IVA: ${company.partner_id.vat or ''|entity} / Codice Fiscale: ${company.partner_id.fiscalcode or ''|entity}
+            </div>
+        </td>
+     </tr> 
+    </table>    <br/>
+    </body>
+</html>]]>
+</field>
+            <field name="footer_html"><![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) {
+            if(x[i] == 'page') {y[j].textContent = eval(vars[x[i]]) + ${fiscal_page_base};}
+            else{y[j].textContent = vars[x[i]];}
+            }
+
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table style="border-top: 1px solid black; width: 100%">
+            <tr >
+                <td style="text-align:right;font-size:12;" width="95%">Page ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
+            </tr>
+        </table>
+    </body>
+</html>]]></field><field name="css" ><![CDATA[
+tr {
+    page-break-inside: avoid;
+}
+thead{
+    display: table-header-group; /* http://code.google.com/p/wkhtmltopdf/issues/detail?id=9#c8 */
+}
+]]> </field>
+            <field  name="name">Registro generale</field>
+        </record>
+
+
+
+        <record id="ir_header_webkit_vat_registry_corrispettivi" model="ir.header_webkit">
+            <field name="orientation">Landscape</field>
+            <field name="format">A4</field>
+            <field name="margin_top">35</field>
+            <field name="html"><![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+    <% setLang(company.partner_id.lang or "en_US") %>
+    <h3>Registro I.V.A. Corrispettivi</h3>
+    <table style="border-bottom: 4px solid black; width: 100%; padding-bottom: 8px">
+     <tr>
+        <td>
+            <div> <strong>${company.partner_id.name or ''|entity} </strong> - ${company.partner_id.address and company.partner_id.address[0].street or ''|entity} ${company.partner_id.address and company.partner_id.address[0].street2 or ''|entity} - ${company.partner_id.address and company.partner_id.address[0].zip or ''|entity} ${company.partner_id.address and company.partner_id.address[0].city or ''|entity} ( ${company.partner_id.address and company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity} ) - P. IVA: ${company.partner_id.vat or ''|entity} / Codice Fiscale: ${company.partner_id.fiscalcode or ''|entity}
+            </div>
+        </td>
+     </tr> 
+    </table>
+    <br/>
+    </body>
+</html>]]>
+</field>
+            <field name="footer_html"><![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) {
+            if(x[i] == 'page') {y[j].textContent = eval(vars[x[i]]) + ${fiscal_page_base};}
+            else{y[j].textContent = vars[x[i]];}
+            }
+
+                }
+            }
+        </script>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table style="border-top: 1px solid black; width: 100%">
+            <tr >
+                <td style="text-align:right;font-size:12;" width="95%">Page ${objects[0].period_id and objects[0].period_id.fiscalyear_id and objects[0].period_id.fiscalyear_id.name or ''|entity}/<span class="page"/></td><td style="text-align:left;font-size:12;"></td>
+            </tr>
+        </table>
+    </body>
+</html>]]></field><field name="css" ><![CDATA[
+tr {
+    page-break-inside: avoid;
+}
+thead{
+    display: table-header-group; /* http://code.google.com/p/wkhtmltopdf/issues/detail?id=9#c8 */
+}
+]]> </field>
+            <field  name="name">Registro IVA corrispettivi</field>
+        </record>
+
+        <record id="registro_iva_vendite_report_id" model="ir.actions.report.xml">
+            <field name="name">Customer Invoices VAT Registry</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">account.move</field>
+            <field name="report_name">registro_iva_vendite</field>
+            <field name="report_type">webkit</field>
+            <field name="report_rml">l10n_it_vat_registries/templates/registro_iva_vendite.mako</field>
+            <field name="webkit_header" ref="ir_header_webkit_vat_registry_sale"/>
+        </record>
+        <record id="registro_iva_acquisti_report_id" model="ir.actions.report.xml">
+            <field name="name">Supplier Invoices VAT Registry</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">account.move</field>
+            <field name="report_name">registro_iva_acquisti</field>
+            <field name="report_type">webkit</field>
+            <field name="report_rml">l10n_it_vat_registries/templates/registro_iva_acquisti.mako</field>
+            <field name="webkit_header" ref="ir_header_webkit_vat_registry_purchase"/>
+        </record>
+        <record id="registro_iva_corrispettivi_report_id" model="ir.actions.report.xml">
+            <field name="name">Corrispettivi VAT Registry</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">account.move</field>
+            <field name="report_name">registro_iva_corrispettivi</field>
+            <field name="report_type">webkit</field>
+            <field name="report_rml">l10n_it_vat_registries/templates/registro_iva_corrispettivi.mako</field>
+            <field name="webkit_header" ref="ir_header_webkit_vat_registry_corrispettivi"/>
+        </record>
+
+        <record id="registro_generale_report_id" model="ir.actions.report.xml">
+            <field name="name">General Registry</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">account.move</field>
+            <field name="report_name">registro_generale</field>
+            <field name="report_type">webkit</field>
+            <field name="report_rml">l10n_it_vat_registries/templates/registro_generale.mako</field>
+            <field name="webkit_header" ref="ir_header_webkit_vat_registry_general"/>
+        </record>
+    </data>
+</openerp>
+

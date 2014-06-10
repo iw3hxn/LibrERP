@@ -1,0 +1,82 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_payment_term_month
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-02 20:42+0000\n"
+"PO-Revision-Date: 2014-06-02 22:57+0100\n"
+"Last-Translator: Sergio Corato <sergiocorato@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: account_payment_term_month
+#: constraint:account.payment.term.line:0
+msgid "Percentages for Payment Term Line must be between 0 and 1, Example: 0.02 for 2% "
+msgstr "La percentuale per il pagamento parziale deve essere un numero fra 0 ed 1, ad esempio: 0.02 per il 2% "
+
+#. module: account_payment_term_month
+#: help:account.payment.term,month_to_be_delayed2:0
+msgid "Second month with no payments allowed."
+msgstr "Secondo mese escluso dai pagamenti"
+
+#. module: account_payment_term_month
+#: field:account.payment.term,month_to_be_delayed1:0
+msgid "First month without payments"
+msgstr "Primo mese escluso dai pagamenti"
+
+#. module: account_payment_term_month
+#: model:ir.model,name:account_payment_term_month.model_account_payment_term
+msgid "Payment Term"
+msgstr "Termine di pagamento"
+
+#. module: account_payment_term_month
+#: field:account.payment.term,days_to_be_delayed1:0
+msgid "Days of delay for first month"
+msgstr "Giorni di dilazione per il primo mese escluso"
+
+#. module: account_payment_term_month
+#: field:account.payment.term,month_to_be_delayed2:0
+msgid "Second month without payments"
+msgstr "Secondo mese escluso dai pagamenti"
+
+#. module: account_payment_term_month
+#: help:account.payment.term,days_to_be_delayed2:0
+msgid "Number of days of delay for second month without payments."
+msgstr "Giorni di dilazione per il secondo mese escluso"
+
+#. module: account_payment_term_month
+#: help:account.payment.term.line,months:0
+msgid "Number of month to add before computation of the day of month. If Date=15-01, Number of month=1, Day of Month=-1, then the due date is 28-02. If compilated, there is no need to compile the field Days."
+msgstr "Numero di mesi da aggiungere prima del calcolo del giorno del mese. Se la data = 29/01, Numero di mesi = 1, Giorno del mese = -1 allora la data di scadenza sarà 28/02. Se compilato, non è necessario indicare i Giorni."
+
+#. module: account_payment_term_month
+#: help:account.payment.term,month_to_be_delayed1:0
+msgid "First month with no payments allowed."
+msgstr "Primo mese escluso dai pagamenti"
+
+#. module: account_payment_term_month
+#: field:account.payment.term.line,months:0
+msgid "Number of month"
+msgstr "Numero di mesi"
+
+#. module: account_payment_term_month
+#: help:account.payment.term,days_to_be_delayed1:0
+msgid "Number of days of delay for first month without payments."
+msgstr "Giorni di dilazione per il primo mese escluso"
+
+#. module: account_payment_term_month
+#: model:ir.model,name:account_payment_term_month.model_account_payment_term_line
+msgid "Payment Term Line"
+msgstr "Riga termine di pagamento"
+
+#. module: account_payment_term_month
+#: field:account.payment.term,days_to_be_delayed2:0
+msgid "Days of delay for second month"
+msgstr "Giorni di dilazione per il secondo mese escluso"
+

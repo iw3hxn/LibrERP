@@ -1,0 +1,1859 @@
+diff -ENwbur web_classic/static/lib/jquery.ui/js/ui.tabs.closable.min.js web_git/static/lib/jquery.ui/js/ui.tabs.closable.min.js
+--- web_classic/static/lib/jquery.ui/js/ui.tabs.closable.min.js	1970-01-01 01:00:00.000000000 +0100
++++ web_git/static/lib/jquery.ui/js/ui.tabs.closable.min.js	2013-06-23 17:11:06.000000000 +0200
+@@ -0,0 +1,10 @@
++/*!
++ * Copyright (c) 2010 Andrew Watts
++ *
++ * Dual licensed under the MIT (MIT_LICENSE.txt)
++ * and GPL (GPL_LICENSE.txt) licenses
++ * 
++ * http://github.com/andrewwatts/ui.tabs.closable
++ */
++(function(){var c=$.ui.tabs.prototype._tabify;$.extend($.ui.tabs.prototype,{_tabify:function(){var a=this;c.apply(this,arguments);a.options.closable===true&&this.lis.filter(function(){return $("span.ui-icon-circle-close",this).length===0}).each(function(){$(this).append('<a href="#"><span class="ui-icon ui-icon-circle-close"></span></a>').find("a:last").hover(function(){$(this).css("cursor","pointer")},function(){$(this).css("cursor","default")}).click(function(){var b=a.lis.index($(this).parent());
++if(b>-1){if(false===a._trigger("closableClick",null,a._ui($(a.lis[b]).find("a")[0],a.panels[b])))return;a.remove(b)}return false}).end()})}})})(jQuery);
+\ No newline at end of file
+diff -ENwbur web_classic/static/src/css/base.css web_git/static/src/css/base.css
+--- web_classic/static/src/css/base.css	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/css/base.css	2013-06-24 15:31:24.000000000 +0200
+@@ -8,12 +8,13 @@
+     margin: 0;
+     height: 100%;
+     font-size: 80%;
+-    font-family: Ubuntu, Helvetica, sans-serif;
++    font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+ }
+ 
++
+ .openerp, .openerp textarea, .openerp input, .openerp select, .openerp option,
+ .openerp button, .openerp .ui-widget {
+-    font-family: Ubuntu, Helvetica, sans-serif;
++    font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+     font-size:85%;
+ }
+ 
+@@ -75,10 +76,10 @@
+     top: 0;
+     right: 50%;
+     padding: 4px 12px;
+-    background: #A61300;
++    background: #0000FF;
+     color: white;
+     text-align: center;
+-    border: 1px solid #900;
++    border: 1px solid #0000FE;
+     border-top: none;
+     -moz-border-radius-bottomright: 8px;
+     -moz-border-radius-bottomleft: 8px;
+@@ -98,7 +99,7 @@
+ .login {
+     padding: 0;
+     margin: 0;
+-    font-family: "Lucida Grande", Helvetica, Verdana, Arial;
++    font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+     background: url("/web/static/src/img/pattern.png") repeat;
+     color: #eee;
+     font-size: 14px;
+@@ -126,15 +127,15 @@
+     cursor: pointer;
+     padding: 6px 16px;
+     font-size: 13px;
+-    font-family: "Lucida Grande", Helvetica, Verdana, Arial;
++    font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+     border: 1px solid #222222;
+     color: white;
+     margin: 0;
+-    background: #600606;
+-    background: -moz-linear-gradient(#b92020, #600606);
+-    background: -webkit-gradient(linear, left top, left bottom, from(#b92020), to(#600606));
+-    background: -ms-linear-gradient(top, #b92020, #600606);
+-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b92020', endColorstr='#600606',GradientType=0 );
++    background: #87CEEB;
++    background: -moz-linear-gradient(#bdbdbd, #a5a8ab);
++    background: -webkit-gradient(linear, left top, left bottom, from(#bdbdbd), to(#a5a8ab));
++    background: -ms-linear-gradient(top, #bdbdbd, #a5a8ab);
++    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bdbdbd', endColorstr='#a5a8ab',GradientType=0 );
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     border-radius: 4px;
+@@ -147,7 +148,7 @@
+ .login input, .login select {
+     width: 252px;
+     font-size: 14px;
+-    font-family: "Lucida Grande", Helvetica, Verdana, Arial;
++    font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+     border: 1px solid #999999;
+     background: whitesmoke;
+     -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3);
+@@ -189,10 +190,10 @@
+     bottom: 0;
+     text-shadow: 0 1px 1px #999999;
+     background: #600606;
+-    background: -moz-linear-gradient(#b41616, #600606);
+-    background: -webkit-gradient(linear, left top, left bottom, from(#b41616), to(#600606));
+-    background: -ms-linear-gradient(top, #b41616, #600606);
+-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b41616', endColorstr='#600606',GradientType=0 );
++    background: -moz-linear-gradient(#bdbdbd, #a5a8ab);
++    background: -webkit-gradient(linear, left top, left bottom, from(#bdbdbd), to(#a5a8ab));
++    background: -ms-linear-gradient(top, #bdbdbd, #a5a8ab);
++    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bdbdbd', endColorstr='#a5a8ab',GradientType=0 );
+ }
+ 
+ .login .pane {
+@@ -218,15 +219,23 @@
+     font-size: 18px;
+ }
+ 
+-.login #logo {
++.login .logo {
+     position: absolute;
+-    top: -70px;
+-    left: 0;
+     width: 100%;
+     margin: 0 auto;
+     text-align: center;
+ }
+ 
++#left_logo {
++    top: 100px;
++    left: 275px;
++}
++
++#right_logo {
++    top: 103px;
++    right: 270px;
++}
++
+ .login .footer {
+     position: absolute;
+     bottom: -40px;
+@@ -256,7 +265,7 @@
+ 
+ .openerp .login .login_error_message {
+     display: none;
+-    background-color: #b41616;
++    background-color: #0000FF;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     border-radius: 4px;
+@@ -340,7 +349,7 @@
+ }
+ 
+ table.db_option_table input.required {
+-    background-color: #D2D2FF !important;
++    background-color: #FF0000 !important;
+ }
+ 
+ .db_option_table label {
+@@ -396,14 +405,14 @@
+ /* Menu */
+ .openerp .menu {
+     height: 34px;
+-    background: #cc4e45; /* Old browsers */
+-    background: -moz-linear-gradient(top, #cc4e45 0%, #b52d20 8%, #7a211a 100%); /* FF3.6+ */
+-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cc4e45), color-stop(8%,#b52d20), color-stop(100%,#7a211a)); /* Chrome,Safari4+ */
+-    background: -webkit-linear-gradient(top, #cc4e45 0%,#b52d20 8%,#7a211a 100%); /* Chrome10+,Safari5.1+ */
+-    background: -o-linear-gradient(top, #cc4e45 0%,#b52d20 8%,#7a211a 100%); /* Opera11.10+ */
+-    background: -ms-linear-gradient(top, #cc4e45 0%,#b52d20 8%,#7a211a 100%); /* IE10+ */
+-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#CC4E45', endColorstr='#7A211A',GradientType=0 ); /* IE6-9 */
+-    background: linear-gradient(top, #cc4e45 0%,#b52d20 8%,#7a211a 100%); /* W3C */
++    background: #d2d2d2; /* Old browsers */
++    background: -moz-linear-gradient(top, #d2d2d2 0%, #9f9f9f 8%, #686868 100%); /* FF3.6+ */
++    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d2d2d2), color-stop(8%,#9f9f9f), color-stop(100%,#686868)); /* Chrome,Safari4+ */
++    background: -webkit-linear-gradient(top, #d2d2d2 0%,#9f9f9f 8%,#686868 100%); /* Chrome10+,Safari5.1+ */
++    background: -o-linear-gradient(top, #d2d2d2 0%,#9f9f9f 8%,#686868 100%); /* Opera11.10+ */
++    background: -ms-linear-gradient(top, #d2d2d2 0%,#9f9f9f 8%,#686868 100%); /* IE10+ */
++    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2d2d2', endColorstr='#686868',GradientType=0 ); /* IE6-9 */
++    background: linear-gradient(top, #d2d2d2 0%,#9f9f9f 8%,#686868 100%); /* W3C */
+ }
+ .openerp .menu td {
+     text-align: center;
+@@ -412,20 +421,20 @@
+ .openerp .menu a {
+     display:block;
+     min-width: 60px;
+-    height: 20px;
++    height: 18px;
+     margin: 3px 2px;
+-    padding: 0 8px;
++    padding: 0px 8px 6px 8px;
+ 
+     background: #bd5e54; /* Old browsers */
+-    background: -moz-linear-gradient(top, #bd5e54 0%, #90322a 60%); /* FF3.6+ */
+-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bd5e54), color-stop(60%,#90322a)); /* Chrome,Safari4+ */
+-    background: -webkit-linear-gradient(top, #bd5e54 0%,#90322a 60%); /* Chrome10+,Safari5.1+ */
+-    background: -o-linear-gradient(top, #bd5e54 0%,#90322a 60%); /* Opera11.10+ */
+-    background: -ms-linear-gradient(top, #bd5e54 0%,#90322a 60%); /* IE10+ */
+-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#BD5E54', endColorstr='#90322A',GradientType=0 ); /* IE6-9 */
+-    background: linear-gradient(top, #bd5e54 0%,#90322a 60%); /* W3C */
++    background: -moz-linear-gradient(top, #bdbdbd 0%, #a5a8ab 60%); /* FF3.6+ */
++    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bdbdbd), color-stop(60%,#a5a8ab)); /* Chrome,Safari4+ */
++    background: -webkit-linear-gradient(top, #bdbdbd 0%,#a5a8ab 60%); /* Chrome10+,Safari5.1+ */
++    background: -o-linear-gradient(top, #bdbdbd 0%,#a5a8ab 60%); /* Opera11.10+ */
++    background: -ms-linear-gradient(top, #bdbdbd 0%,#a5a8ab 60%); /* IE10+ */
++    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bdbdbd', endColorstr='#a5a8ab',GradientType=0 ); /* IE6-9 */
++    background: linear-gradient(top, #bdbdbd 0%,#a5a8ab 60%); /* W3C */
+ 
+-    border: 1px solid #5E1A14;
++    border: 1px solid #9f9f9f;
+     border-radius: 4px;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+@@ -440,6 +449,7 @@
+ 
+     white-space: nowrap;
+ }
++
+ .openerp .menu a:hover,
+ .openerp .menu a:focus,
+ .openerp .menu a.active {
+@@ -498,6 +508,15 @@
+     position: relative;
+     font-size:85%;
+ }
++
++.openerp .secondary_menu img,
++.openerp .menu img {
++    position:relative;
++    top: 4px;
++    height: 16px;
++    width: 16px;
++}
++
+ .openerp .secondary_menu.oe_folded {
+     width: 20px;
+     min-width: 20px;
+@@ -584,7 +603,7 @@
+     float: left;
+     height: 63px;
+     width: 200px;
+-    border: 1px solid white;
++    border: 0px solid white;
+     border-right-color: black;
+     border-bottom-color: black;
+     background: #FFFFFF;
+@@ -593,12 +612,12 @@
+     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#CECECE',GradientType=0 );
+ }
+ .openerp .company_logo {
+-    margin-top: 7px;
+-    margin-left: 10px;
++    margin-top: 0px;
++    margin-left: 0px;
+     display: block;
+     background: url(/web/static/src/img/logo.png);
+-    width:180px;
+-    height:46px;
++    width:200px;
++    height:63px;
+ }
+ .openerp .header_title {
+     float: left;
+@@ -709,10 +728,16 @@
+ .openerp h2.oe_view_title {
+     font-size: 110%;
+     font-weight: normal;
+-    margin: 2px 0;
++    margin: 0 0;
++    margin-left: 10px;
+     color: #252424;
+     text-shadow: white 0 1px 0;
+ }
++
++.openerp oe_view_title > a {
++    margin-left: 10px;
++}
++
+ .openerp div[id^="notebook"] .oe_view_title {
+     font-size:85%;
+     padding-bottom:4px;
+@@ -720,7 +745,8 @@
+ 
+ /* View Manager */
+ .openerp .oe_vm_switch {
+-    float: right;
++    margin-top: 3px;
++    float: left;
+ }
+ .openerp .oe-view-manager-header .oe_view_title {
+     font-size:150%;
+@@ -928,6 +954,15 @@
+ .openerp .oe-listview tr.odd {
+     background-color: #f3f3f3;
+ }
++.openerp .oe-listview tr.odd.selected {
++    background-color: #73B0FF;
++}
++.openerp .oe-listview tr.even.selected {
++    background-color: #9CC7FF;
++}
++.openerp .oe-listview tr.selected:hover {
++    background-color: #529DFF;
++}
+ .openerp .oe-listview tbody tr:hover {
+     background-color: #ecebf2;
+ }
+@@ -947,13 +982,22 @@
+ }
+ 
+ .openerp .oe-record-delete button,
++.openerp .oe-record-edit-link button,
+ .openerp button.oe-edit-row-save {
+     border: none;
+-    height: 12px;
+-    width: 12px;
+-    background: url("/web/static/src/img/iconset-b-remove.png") no-repeat scroll center center transparent;
++    height: 16px;
++    width: 16px;
++    background: url("/web/static/src/img/recycle_bin_empty.png") no-repeat scroll center center transparent;
+     cursor: pointer;
+ }
++.openerp .oe-record-edit-link button {
++    background: url("/web/static/src/img/pencil.gif") no-repeat scroll center center transparent;
++}
++.openerp .oe-record-delete button:hover,
++.openerp button.oe-edit-row-save:hover {
++    background: url("/web/static/src/img/recycle_bin_full.png") no-repeat scroll center center transparent;
++}
++
+ .openerp button.oe-edit-row-save {
+     background-image: url('/web/static/src/img/icons/save-document.png');
+ }
+@@ -996,6 +1040,7 @@
+ 
+ .openerp .oe-listview td.oe-actions {
+     border-bottom:none;
++    width: 90%;
+ }
+ 
+ .openerp .oe-listview .oe-record-selector, .openerp .oe-listview .oe-record-edit-link {
+@@ -1047,7 +1092,7 @@
+     white-space: nowrap;
+ }
+ .openerp .oe-listview th.oe-list-pager {
+-    text-align: right;
++    text-align: left;
+     white-space: nowrap;
+ }
+ .openerp .oe-list-pager .oe-pager-state {
+@@ -1199,6 +1244,15 @@
+     box-shadow: none;
+     font-weight: bold;
+ }
++.oe_form_buttons {
++    position: relative;
++    top: -5px;
++}
++.oe_form_header {
++    overflow: auto;
++    padding: 3px 0 3px 2px;
++    margin: 3px 0 3px 2px;
++}
+ .openerp .oe_form_frame_cell input[type="checkbox"] {
+     margin-top: 3px;
+     vertical-align: middle;
+@@ -1254,7 +1308,7 @@
+     float: left;
+ }
+ .openerp .oe_form_pager, .openerp .oe_list_pager {
+-    float: right;
++    float: left;
+     font-size: 80%;
+     color: gray;
+     font-weight: bold;
+@@ -1349,7 +1403,11 @@
+ }
+ .openerp .oe_form_field_one2many .oe-listview .oe-edit-row-save,
+ .openerp .oe_form_field_one2many_list .oe-listview .oe-edit-row-save {
+-    background-image: url("/web/static/src/img/iconset-b-remove.png");
++    background-image: url("/web/static/src/img/recycle_bin_empty.png");
++}
++.openerp .oe_form_field_one2many .oe-listview .oe-edit-row-save:hover,
++.openerp .oe_form_field_one2many_list .oe-listview .oe-edit-row-save:hover {
++    background-image: url("/web/static/src/img/recycle_bin_full.png");
+ }
+ 
+ .openerp .oe_forms .oe-listview th.oe-sortable .ui-icon,
+@@ -2168,10 +2226,7 @@
+   margin: 0 20px;
+ }
+ 
+-.openerp .oe_vm_switch {
+-    margin:2px 0 0 0;
+-}
+-
++.openerp .oe_vm_switch_reload,
+ .openerp .oe_vm_switch_form,
+ .openerp .oe_vm_switch_page,
+ .openerp .oe_vm_switch_tree,
+@@ -2188,7 +2243,18 @@
+     border: none;
+     background-position: 0px 0px;
+ }
++.openerp .oe_vm_switch_reload {
++    margin-left: 10px;
++    background: url("/web/static/src/img/reload-icon.png") repeat-x scroll left top transparent;
++}
+ 
++.openerp .oe_vm_switch_reload:active,
++.openerp .oe_vm_switch_reload:hover,
++.openerp .oe_vm_switch_reload:focus {
++    background-position: 0px -21px;
++}
++
++.openerp .oe_vm_switch_reload span,
+ .openerp .oe_vm_switch_form span,
+ .openerp .oe_vm_switch_page span,
+ .openerp .oe_vm_switch_tree span,
+@@ -2390,6 +2456,12 @@
+     text-shadow: 0 1px 1px white !important;
+ }
+ 
++.openerp .oe_button.oe_button_small {
++    padding: 3px 3px;
++    margin: 2px 2px;
++    height: 24px;
++    width: 24px;
++}
+ .openerp select.oe_search-view-filters-management {
+     font-style: oblique;
+     color: #999999;
+@@ -2424,3 +2496,10 @@
+ a img {
+    border: none;
+ }
++.ui-tabs .ui-tabs-panel {
++padding-top: 0;
++}
++
++.oe_debug_view {
++    float: right;
++}
+Binary files web_classic/static/src/img/favicon.ico and web_git/static/src/img/favicon.ico differ
+Binary files web_classic/static/src/img/icons/color-picker.png and web_git/static/src/img/icons/color-picker.png differ
+Binary files web_classic/static/src/img/icons/gtk-about.png and web_git/static/src/img/icons/gtk-about.png differ
+Binary files web_classic/static/src/img/icons/gtk-add.png and web_git/static/src/img/icons/gtk-add.png differ
+Binary files web_classic/static/src/img/icons/gtk-apply.png and web_git/static/src/img/icons/gtk-apply.png differ
+Binary files web_classic/static/src/img/icons/gtk-bold.png and web_git/static/src/img/icons/gtk-bold.png differ
+Binary files web_classic/static/src/img/icons/gtk-cancel.png and web_git/static/src/img/icons/gtk-cancel.png differ
+Binary files web_classic/static/src/img/icons/gtk-cdrom.png and web_git/static/src/img/icons/gtk-cdrom.png differ
+Binary files web_classic/static/src/img/icons/gtk-clear.png and web_git/static/src/img/icons/gtk-clear.png differ
+Binary files web_classic/static/src/img/icons/gtk-close.png and web_git/static/src/img/icons/gtk-close.png differ
+Binary files web_classic/static/src/img/icons/gtk-color-picker.png and web_git/static/src/img/icons/gtk-color-picker.png differ
+Binary files web_classic/static/src/img/icons/gtk-connect.png and web_git/static/src/img/icons/gtk-connect.png differ
+Binary files web_classic/static/src/img/icons/gtk-convert.png and web_git/static/src/img/icons/gtk-convert.png differ
+Binary files web_classic/static/src/img/icons/gtk-copy.png and web_git/static/src/img/icons/gtk-copy.png differ
+Binary files web_classic/static/src/img/icons/gtk-cut.png and web_git/static/src/img/icons/gtk-cut.png differ
+Binary files web_classic/static/src/img/icons/gtk-delete.png and web_git/static/src/img/icons/gtk-delete.png differ
+Binary files web_classic/static/src/img/icons/gtk-dialog-authentication.png and web_git/static/src/img/icons/gtk-dialog-authentication.png differ
+Binary files web_classic/static/src/img/icons/gtk-dialog-error.png and web_git/static/src/img/icons/gtk-dialog-error.png differ
+Binary files web_classic/static/src/img/icons/gtk-dialog-info.png and web_git/static/src/img/icons/gtk-dialog-info.png differ
+Binary files web_classic/static/src/img/icons/gtk-dialog-question.png and web_git/static/src/img/icons/gtk-dialog-question.png differ
+Binary files web_classic/static/src/img/icons/gtk-dialog-warning.png and web_git/static/src/img/icons/gtk-dialog-warning.png differ
+Binary files web_classic/static/src/img/icons/gtk-directory.png and web_git/static/src/img/icons/gtk-directory.png differ
+Binary files web_classic/static/src/img/icons/gtk-directory-remote.png and web_git/static/src/img/icons/gtk-directory-remote.png differ
+Binary files web_classic/static/src/img/icons/gtk-disconnect.png and web_git/static/src/img/icons/gtk-disconnect.png differ
+Binary files web_classic/static/src/img/icons/gtk-dnd-multiple.png and web_git/static/src/img/icons/gtk-dnd-multiple.png differ
+Binary files web_classic/static/src/img/icons/gtk-dnd.png and web_git/static/src/img/icons/gtk-dnd.png differ
+Binary files web_classic/static/src/img/icons/gtk-edit.png and web_git/static/src/img/icons/gtk-edit.png differ
+Binary files web_classic/static/src/img/icons/gtk-execute.png and web_git/static/src/img/icons/gtk-execute.png differ
+Binary files web_classic/static/src/img/icons/gtk-file.png and web_git/static/src/img/icons/gtk-file.png differ
+Binary files web_classic/static/src/img/icons/gtk-find-and-replace.png and web_git/static/src/img/icons/gtk-find-and-replace.png differ
+Binary files web_classic/static/src/img/icons/gtk-find.png and web_git/static/src/img/icons/gtk-find.png differ
+Binary files web_classic/static/src/img/icons/gtk-floppy.png and web_git/static/src/img/icons/gtk-floppy.png differ
+Binary files web_classic/static/src/img/icons/gtk-fullscreen.png and web_git/static/src/img/icons/gtk-fullscreen.png differ
+Binary files web_classic/static/src/img/icons/gtk-go-back.png and web_git/static/src/img/icons/gtk-go-back.png differ
+Binary files web_classic/static/src/img/icons/gtk-go-down.png and web_git/static/src/img/icons/gtk-go-down.png differ
+Binary files web_classic/static/src/img/icons/gtk-go-forward.png and web_git/static/src/img/icons/gtk-go-forward.png differ
+Binary files web_classic/static/src/img/icons/gtk-goto-bottom.png and web_git/static/src/img/icons/gtk-goto-bottom.png differ
+Binary files web_classic/static/src/img/icons/gtk-goto-first.png and web_git/static/src/img/icons/gtk-goto-first.png differ
+Binary files web_classic/static/src/img/icons/gtk-goto-last.png and web_git/static/src/img/icons/gtk-goto-last.png differ
+Binary files web_classic/static/src/img/icons/gtk-goto-top.png and web_git/static/src/img/icons/gtk-goto-top.png differ
+Binary files web_classic/static/src/img/icons/gtk-go-up.png and web_git/static/src/img/icons/gtk-go-up.png differ
+Binary files web_classic/static/src/img/icons/gtk-harddisk.png and web_git/static/src/img/icons/gtk-harddisk.png differ
+Binary files web_classic/static/src/img/icons/gtk-help.png and web_git/static/src/img/icons/gtk-help.png differ
+Binary files web_classic/static/src/img/icons/gtk-home.png and web_git/static/src/img/icons/gtk-home.png differ
+Binary files web_classic/static/src/img/icons/gtk-indent.png and web_git/static/src/img/icons/gtk-indent.png differ
+Binary files web_classic/static/src/img/icons/gtk-index.png and web_git/static/src/img/icons/gtk-index.png differ
+Binary files web_classic/static/src/img/icons/gtk-info.png and web_git/static/src/img/icons/gtk-info.png differ
+Binary files web_classic/static/src/img/icons/gtk-italic.png and web_git/static/src/img/icons/gtk-italic.png differ
+Binary files web_classic/static/src/img/icons/gtk-jump-to.png and web_git/static/src/img/icons/gtk-jump-to.png differ
+Binary files web_classic/static/src/img/icons/gtk-justify-center.png and web_git/static/src/img/icons/gtk-justify-center.png differ
+Binary files web_classic/static/src/img/icons/gtk-justify-fill.png and web_git/static/src/img/icons/gtk-justify-fill.png differ
+Binary files web_classic/static/src/img/icons/gtk-justify-left.png and web_git/static/src/img/icons/gtk-justify-left.png differ
+Binary files web_classic/static/src/img/icons/gtk-justify-right.png and web_git/static/src/img/icons/gtk-justify-right.png differ
+Binary files web_classic/static/src/img/icons/gtk-leave-fullscreen.png and web_git/static/src/img/icons/gtk-leave-fullscreen.png differ
+Binary files web_classic/static/src/img/icons/gtk-media-forward.png and web_git/static/src/img/icons/gtk-media-forward.png differ
+Binary files web_classic/static/src/img/icons/gtk-media-next.png and web_git/static/src/img/icons/gtk-media-next.png differ
+Binary files web_classic/static/src/img/icons/gtk-media-pause.png and web_git/static/src/img/icons/gtk-media-pause.png differ
+Binary files web_classic/static/src/img/icons/gtk-media-play.png and web_git/static/src/img/icons/gtk-media-play.png differ
+Binary files web_classic/static/src/img/icons/gtk-media-previous.png and web_git/static/src/img/icons/gtk-media-previous.png differ
+Binary files web_classic/static/src/img/icons/gtk-media-record.png and web_git/static/src/img/icons/gtk-media-record.png differ
+Binary files web_classic/static/src/img/icons/gtk-media-rewind.png and web_git/static/src/img/icons/gtk-media-rewind.png differ
+Binary files web_classic/static/src/img/icons/gtk-media-stop.png and web_git/static/src/img/icons/gtk-media-stop.png differ
+Binary files web_classic/static/src/img/icons/gtk-missing-image.png and web_git/static/src/img/icons/gtk-missing-image.png differ
+Binary files web_classic/static/src/img/icons/gtk-network.png and web_git/static/src/img/icons/gtk-network.png differ
+Binary files web_classic/static/src/img/icons/gtk-new.png and web_git/static/src/img/icons/gtk-new.png differ
+Binary files web_classic/static/src/img/icons/gtk-no.png and web_git/static/src/img/icons/gtk-no.png differ
+Binary files web_classic/static/src/img/icons/gtk-ok.png and web_git/static/src/img/icons/gtk-ok.png differ
+Binary files web_classic/static/src/img/icons/gtk-open.png and web_git/static/src/img/icons/gtk-open.png differ
+Binary files web_classic/static/src/img/icons/gtk-paste.png and web_git/static/src/img/icons/gtk-paste.png differ
+Binary files web_classic/static/src/img/icons/gtk-paste-v.png and web_git/static/src/img/icons/gtk-paste-v.png differ
+Binary files web_classic/static/src/img/icons/gtk-preferences.png and web_git/static/src/img/icons/gtk-preferences.png differ
+Binary files web_classic/static/src/img/icons/gtk-print.png and web_git/static/src/img/icons/gtk-print.png differ
+Binary files web_classic/static/src/img/icons/gtk-print-preview.png and web_git/static/src/img/icons/gtk-print-preview.png differ
+Binary files web_classic/static/src/img/icons/gtk-properties.png and web_git/static/src/img/icons/gtk-properties.png differ
+Binary files web_classic/static/src/img/icons/gtk-quit.png and web_git/static/src/img/icons/gtk-quit.png differ
+Binary files web_classic/static/src/img/icons/gtk-redo.png and web_git/static/src/img/icons/gtk-redo.png differ
+Binary files web_classic/static/src/img/icons/gtk-refresh.png and web_git/static/src/img/icons/gtk-refresh.png differ
+Binary files web_classic/static/src/img/icons/gtk-remove.png and web_git/static/src/img/icons/gtk-remove.png differ
+Binary files web_classic/static/src/img/icons/gtk-revert-to-saved.png and web_git/static/src/img/icons/gtk-revert-to-saved.png differ
+Binary files web_classic/static/src/img/icons/gtk-save-as.png and web_git/static/src/img/icons/gtk-save-as.png differ
+Binary files web_classic/static/src/img/icons/gtk-save.png and web_git/static/src/img/icons/gtk-save.png differ
+Binary files web_classic/static/src/img/icons/gtk-select-color.png and web_git/static/src/img/icons/gtk-select-color.png differ
+Binary files web_classic/static/src/img/icons/gtk-select-font.png and web_git/static/src/img/icons/gtk-select-font.png differ
+Binary files web_classic/static/src/img/icons/gtk-sort-ascending.png and web_git/static/src/img/icons/gtk-sort-ascending.png differ
+Binary files web_classic/static/src/img/icons/gtk-sort-descending.png and web_git/static/src/img/icons/gtk-sort-descending.png differ
+Binary files web_classic/static/src/img/icons/gtk-spell-check.png and web_git/static/src/img/icons/gtk-spell-check.png differ
+Binary files web_classic/static/src/img/icons/gtk-stop.png and web_git/static/src/img/icons/gtk-stop.png differ
+Binary files web_classic/static/src/img/icons/gtk-strikethrough.png and web_git/static/src/img/icons/gtk-strikethrough.png differ
+Binary files web_classic/static/src/img/icons/gtk-undelete.png and web_git/static/src/img/icons/gtk-undelete.png differ
+Binary files web_classic/static/src/img/icons/gtk-underline.png and web_git/static/src/img/icons/gtk-underline.png differ
+Binary files web_classic/static/src/img/icons/gtk-undo.png and web_git/static/src/img/icons/gtk-undo.png differ
+Binary files web_classic/static/src/img/icons/gtk-unindent.png and web_git/static/src/img/icons/gtk-unindent.png differ
+Binary files web_classic/static/src/img/icons/gtk-yes.png and web_git/static/src/img/icons/gtk-yes.png differ
+Binary files web_classic/static/src/img/icons/gtk-zoom-100.png and web_git/static/src/img/icons/gtk-zoom-100.png differ
+Binary files web_classic/static/src/img/icons/gtk-zoom-fit.png and web_git/static/src/img/icons/gtk-zoom-fit.png differ
+Binary files web_classic/static/src/img/icons/gtk-zoom-in.png and web_git/static/src/img/icons/gtk-zoom-in.png differ
+Binary files web_classic/static/src/img/icons/gtk-zoom-out.png and web_git/static/src/img/icons/gtk-zoom-out.png differ
+Binary files web_classic/static/src/img/icons/kanban-apply.png and web_git/static/src/img/icons/kanban-apply.png differ
+Binary files web_classic/static/src/img/icons/kanban-pause.png and web_git/static/src/img/icons/kanban-pause.png differ
+Binary files web_classic/static/src/img/icons/kanban-stop.png and web_git/static/src/img/icons/kanban-stop.png differ
+Binary files web_classic/static/src/img/icons/save-document.png and web_git/static/src/img/icons/save-document.png differ
+Binary files web_classic/static/src/img/icons/star-off.png and web_git/static/src/img/icons/star-off.png differ
+Binary files web_classic/static/src/img/icons/star-on.png and web_git/static/src/img/icons/star-on.png differ
+Binary files web_classic/static/src/img/icons/STOCK_ABOUT.png and web_git/static/src/img/icons/STOCK_ABOUT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_ADD.png and web_git/static/src/img/icons/STOCK_ADD.png differ
+Binary files web_classic/static/src/img/icons/STOCK_APPLY.png and web_git/static/src/img/icons/STOCK_APPLY.png differ
+Binary files web_classic/static/src/img/icons/STOCK_BOLD.png and web_git/static/src/img/icons/STOCK_BOLD.png differ
+Binary files web_classic/static/src/img/icons/stock_calendar.png and web_git/static/src/img/icons/stock_calendar.png differ
+Binary files web_classic/static/src/img/icons/STOCK_CANCEL.png and web_git/static/src/img/icons/STOCK_CANCEL.png differ
+Binary files web_classic/static/src/img/icons/STOCK_CDROM.png and web_git/static/src/img/icons/STOCK_CDROM.png differ
+Binary files web_classic/static/src/img/icons/STOCK_CLEAR.png and web_git/static/src/img/icons/STOCK_CLEAR.png differ
+Binary files web_classic/static/src/img/icons/STOCK_CLOSE.png and web_git/static/src/img/icons/STOCK_CLOSE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_COLOR_PICKER.png and web_git/static/src/img/icons/STOCK_COLOR_PICKER.png differ
+Binary files web_classic/static/src/img/icons/STOCK_CONNECT.png and web_git/static/src/img/icons/STOCK_CONNECT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_CONVERT.png and web_git/static/src/img/icons/STOCK_CONVERT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_COPY.png and web_git/static/src/img/icons/STOCK_COPY.png differ
+Binary files web_classic/static/src/img/icons/STOCK_CUT.png and web_git/static/src/img/icons/STOCK_CUT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DELETE.png and web_git/static/src/img/icons/STOCK_DELETE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DIALOG_AUTHENTICATION.png and web_git/static/src/img/icons/STOCK_DIALOG_AUTHENTICATION.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DIALOG_ERROR.png and web_git/static/src/img/icons/STOCK_DIALOG_ERROR.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DIALOG_INFO.png and web_git/static/src/img/icons/STOCK_DIALOG_INFO.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DIALOG_QUESTION.png and web_git/static/src/img/icons/STOCK_DIALOG_QUESTION.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DIALOG_WARNING.png and web_git/static/src/img/icons/STOCK_DIALOG_WARNING.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DIRECTORY_MENU.png and web_git/static/src/img/icons/STOCK_DIRECTORY_MENU.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DIRECTORY.png and web_git/static/src/img/icons/STOCK_DIRECTORY.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DISCONNECT.png and web_git/static/src/img/icons/STOCK_DISCONNECT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DND_MULTIPLE.png and web_git/static/src/img/icons/STOCK_DND_MULTIPLE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_DND.png and web_git/static/src/img/icons/STOCK_DND.png differ
+Binary files web_classic/static/src/img/icons/STOCK_EDIT.png and web_git/static/src/img/icons/STOCK_EDIT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_EXECUTE.png and web_git/static/src/img/icons/STOCK_EXECUTE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_FILE.png and web_git/static/src/img/icons/STOCK_FILE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_FIND_AND_REPLACE.png and web_git/static/src/img/icons/STOCK_FIND_AND_REPLACE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_FIND.png and web_git/static/src/img/icons/STOCK_FIND.png differ
+Binary files web_classic/static/src/img/icons/STOCK_FLOPPY.png and web_git/static/src/img/icons/STOCK_FLOPPY.png differ
+Binary files web_classic/static/src/img/icons/STOCK_FULLSCREEN.png and web_git/static/src/img/icons/STOCK_FULLSCREEN.png differ
+Binary files web_classic/static/src/img/icons/stock_gantt.png and web_git/static/src/img/icons/stock_gantt.png differ
+Binary files web_classic/static/src/img/icons/STOCK_GO_BACK.png and web_git/static/src/img/icons/STOCK_GO_BACK.png differ
+Binary files web_classic/static/src/img/icons/STOCK_GO_DOWN.png and web_git/static/src/img/icons/STOCK_GO_DOWN.png differ
+Binary files web_classic/static/src/img/icons/STOCK_GO_FORWARD.png and web_git/static/src/img/icons/STOCK_GO_FORWARD.png differ
+Binary files web_classic/static/src/img/icons/STOCK_GOTO_BOTTOM.png and web_git/static/src/img/icons/STOCK_GOTO_BOTTOM.png differ
+Binary files web_classic/static/src/img/icons/STOCK_GOTO_FIRST.png and web_git/static/src/img/icons/STOCK_GOTO_FIRST.png differ
+Binary files web_classic/static/src/img/icons/STOCK_GOTO_LAST.png and web_git/static/src/img/icons/STOCK_GOTO_LAST.png differ
+Binary files web_classic/static/src/img/icons/STOCK_GOTO_TOP.png and web_git/static/src/img/icons/STOCK_GOTO_TOP.png differ
+Binary files web_classic/static/src/img/icons/STOCK_GO_UP.png and web_git/static/src/img/icons/STOCK_GO_UP.png differ
+Binary files web_classic/static/src/img/icons/stock_graph.png and web_git/static/src/img/icons/stock_graph.png differ
+Binary files web_classic/static/src/img/icons/STOCK_HARDDISK.png and web_git/static/src/img/icons/STOCK_HARDDISK.png differ
+Binary files web_classic/static/src/img/icons/STOCK_HELP.png and web_git/static/src/img/icons/STOCK_HELP.png differ
+Binary files web_classic/static/src/img/icons/STOCK_HOME.png and web_git/static/src/img/icons/STOCK_HOME.png differ
+Binary files web_classic/static/src/img/icons/STOCK_INDENT.png and web_git/static/src/img/icons/STOCK_INDENT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_INDEX.png and web_git/static/src/img/icons/STOCK_INDEX.png differ
+Binary files web_classic/static/src/img/icons/STOCK_INFO.png and web_git/static/src/img/icons/STOCK_INFO.png differ
+Binary files web_classic/static/src/img/icons/STOCK_ITALIC.png and web_git/static/src/img/icons/STOCK_ITALIC.png differ
+Binary files web_classic/static/src/img/icons/STOCK_JUMP_TO.png and web_git/static/src/img/icons/STOCK_JUMP_TO.png differ
+Binary files web_classic/static/src/img/icons/STOCK_JUSTIFY_CENTER.png and web_git/static/src/img/icons/STOCK_JUSTIFY_CENTER.png differ
+Binary files web_classic/static/src/img/icons/STOCK_JUSTIFY_FILL.png and web_git/static/src/img/icons/STOCK_JUSTIFY_FILL.png differ
+Binary files web_classic/static/src/img/icons/STOCK_JUSTIFY_LEFT.png and web_git/static/src/img/icons/STOCK_JUSTIFY_LEFT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_JUSTIFY_RIGHT.png and web_git/static/src/img/icons/STOCK_JUSTIFY_RIGHT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_LEAVE_FULLSCREEN.png and web_git/static/src/img/icons/STOCK_LEAVE_FULLSCREEN.png differ
+Binary files web_classic/static/src/img/icons/stock_log.png and web_git/static/src/img/icons/stock_log.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MEDIA_FORWARD.png and web_git/static/src/img/icons/STOCK_MEDIA_FORWARD.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MEDIA_NEXT.png and web_git/static/src/img/icons/STOCK_MEDIA_NEXT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MEDIA_PAUSE.png and web_git/static/src/img/icons/STOCK_MEDIA_PAUSE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MEDIA_PLAY.png and web_git/static/src/img/icons/STOCK_MEDIA_PLAY.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MEDIA_PREVIOUS.png and web_git/static/src/img/icons/STOCK_MEDIA_PREVIOUS.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MEDIA_RECORD.png and web_git/static/src/img/icons/STOCK_MEDIA_RECORD.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MEDIA_REWIND.png and web_git/static/src/img/icons/STOCK_MEDIA_REWIND.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MEDIA_STOP.png and web_git/static/src/img/icons/STOCK_MEDIA_STOP.png differ
+Binary files web_classic/static/src/img/icons/STOCK_MISSING_IMAGE.png and web_git/static/src/img/icons/STOCK_MISSING_IMAGE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_NETWORK.png and web_git/static/src/img/icons/STOCK_NETWORK.png differ
+Binary files web_classic/static/src/img/icons/STOCK_NEW.png and web_git/static/src/img/icons/STOCK_NEW.png differ
+Binary files web_classic/static/src/img/icons/STOCK_NO.png and web_git/static/src/img/icons/STOCK_NO.png differ
+Binary files web_classic/static/src/img/icons/STOCK_OK.png and web_git/static/src/img/icons/STOCK_OK.png differ
+Binary files web_classic/static/src/img/icons/STOCK_OPEN.png and web_git/static/src/img/icons/STOCK_OPEN.png differ
+Binary files web_classic/static/src/img/icons/STOCK_PASTE.png and web_git/static/src/img/icons/STOCK_PASTE.png differ
+Binary files web_classic/static/src/img/icons/stock_person.png and web_git/static/src/img/icons/stock_person.png differ
+Binary files web_classic/static/src/img/icons/stock.png and web_git/static/src/img/icons/stock.png differ
+Binary files web_classic/static/src/img/icons/STOCK_PREFERENCES.png and web_git/static/src/img/icons/STOCK_PREFERENCES.png differ
+Binary files web_classic/static/src/img/icons/STOCK_PRINT.png and web_git/static/src/img/icons/STOCK_PRINT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_PRINT_PREVIEW.png and web_git/static/src/img/icons/STOCK_PRINT_PREVIEW.png differ
+Binary files web_classic/static/src/img/icons/STOCK_PROPERTIES.png and web_git/static/src/img/icons/STOCK_PROPERTIES.png differ
+Binary files web_classic/static/src/img/icons/STOCK_QUIT.png and web_git/static/src/img/icons/STOCK_QUIT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_REDO.png and web_git/static/src/img/icons/STOCK_REDO.png differ
+Binary files web_classic/static/src/img/icons/STOCK_REFRESH.png and web_git/static/src/img/icons/STOCK_REFRESH.png differ
+Binary files web_classic/static/src/img/icons/STOCK_REMOVE.png and web_git/static/src/img/icons/STOCK_REMOVE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_REVERT_TO_SAVED.png and web_git/static/src/img/icons/STOCK_REVERT_TO_SAVED.png differ
+Binary files web_classic/static/src/img/icons/STOCK_SAVE_AS.png and web_git/static/src/img/icons/STOCK_SAVE_AS.png differ
+Binary files web_classic/static/src/img/icons/STOCK_SAVE.png and web_git/static/src/img/icons/STOCK_SAVE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_SELECT_COLOR.png and web_git/static/src/img/icons/STOCK_SELECT_COLOR.png differ
+Binary files web_classic/static/src/img/icons/STOCK_SELECT_FONT.png and web_git/static/src/img/icons/STOCK_SELECT_FONT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_SORT_ASCENDING.png and web_git/static/src/img/icons/STOCK_SORT_ASCENDING.png differ
+Binary files web_classic/static/src/img/icons/STOCK_SORT_DESCENDING.png and web_git/static/src/img/icons/STOCK_SORT_DESCENDING.png differ
+Binary files web_classic/static/src/img/icons/STOCK_SPELL_CHECK.png and web_git/static/src/img/icons/STOCK_SPELL_CHECK.png differ
+Binary files web_classic/static/src/img/icons/STOCK_STOP.png and web_git/static/src/img/icons/STOCK_STOP.png differ
+Binary files web_classic/static/src/img/icons/STOCK_STRIKETHROUGH.png and web_git/static/src/img/icons/STOCK_STRIKETHROUGH.png differ
+Binary files web_classic/static/src/img/icons/stock_translate.png and web_git/static/src/img/icons/stock_translate.png differ
+Binary files web_classic/static/src/img/icons/STOCK_UNDELETE.png and web_git/static/src/img/icons/STOCK_UNDELETE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_UNDERLINE.png and web_git/static/src/img/icons/STOCK_UNDERLINE.png differ
+Binary files web_classic/static/src/img/icons/STOCK_UNDO.png and web_git/static/src/img/icons/STOCK_UNDO.png differ
+Binary files web_classic/static/src/img/icons/STOCK_UNINDENT.png and web_git/static/src/img/icons/STOCK_UNINDENT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_YES.png and web_git/static/src/img/icons/STOCK_YES.png differ
+Binary files web_classic/static/src/img/icons/STOCK_ZOOM_100.png and web_git/static/src/img/icons/STOCK_ZOOM_100.png differ
+Binary files web_classic/static/src/img/icons/STOCK_ZOOM_FIT.png and web_git/static/src/img/icons/STOCK_ZOOM_FIT.png differ
+Binary files web_classic/static/src/img/icons/STOCK_ZOOM_IN.png and web_git/static/src/img/icons/STOCK_ZOOM_IN.png differ
+Binary files web_classic/static/src/img/icons/STOCK_ZOOM_OUT.png and web_git/static/src/img/icons/STOCK_ZOOM_OUT.png differ
+Binary files web_classic/static/src/img/icons/terp-accessories-archiver-minus.png and web_git/static/src/img/icons/terp-accessories-archiver-minus.png differ
+Binary files web_classic/static/src/img/icons/terp-accessories-archiver.png and web_git/static/src/img/icons/terp-accessories-archiver.png differ
+Binary files web_classic/static/src/img/icons/terp-accessories-archiver+.png and web_git/static/src/img/icons/terp-accessories-archiver+.png differ
+Binary files web_classic/static/src/img/icons/terp-account.png and web_git/static/src/img/icons/terp-account.png differ
+Binary files web_classic/static/src/img/icons/terp-administration.png and web_git/static/src/img/icons/terp-administration.png differ
+Binary files web_classic/static/src/img/icons/terp-calendar.png and web_git/static/src/img/icons/terp-calendar.png differ
+Binary files web_classic/static/src/img/icons/terp-call-start.png and web_git/static/src/img/icons/terp-call-start.png differ
+Binary files web_classic/static/src/img/icons/terp-camera_test.png and web_git/static/src/img/icons/terp-camera_test.png differ
+Binary files web_classic/static/src/img/icons/terp-check.png and web_git/static/src/img/icons/terp-check.png differ
+Binary files web_classic/static/src/img/icons/terp-crm.png and web_git/static/src/img/icons/terp-crm.png differ
+Binary files web_classic/static/src/img/icons/terp-dialog-close.png and web_git/static/src/img/icons/terp-dialog-close.png differ
+Binary files web_classic/static/src/img/icons/terp-document-new.png and web_git/static/src/img/icons/terp-document-new.png differ
+Binary files web_classic/static/src/img/icons/terp-dolar_ok!.png and web_git/static/src/img/icons/terp-dolar_ok!.png differ
+Binary files web_classic/static/src/img/icons/terp-dolar.png and web_git/static/src/img/icons/terp-dolar.png differ
+Binary files web_classic/static/src/img/icons/terp-emblem-important.png and web_git/static/src/img/icons/terp-emblem-important.png differ
+Binary files web_classic/static/src/img/icons/terp-face-plain.png and web_git/static/src/img/icons/terp-face-plain.png differ
+Binary files web_classic/static/src/img/icons/terp-folder-blue.png and web_git/static/src/img/icons/terp-folder-blue.png differ
+Binary files web_classic/static/src/img/icons/terp-folder-green.png and web_git/static/src/img/icons/terp-folder-green.png differ
+Binary files web_classic/static/src/img/icons/terp-folder-orange.png and web_git/static/src/img/icons/terp-folder-orange.png differ
+Binary files web_classic/static/src/img/icons/terp-folder-violet.png and web_git/static/src/img/icons/terp-folder-violet.png differ
+Binary files web_classic/static/src/img/icons/terp-folder-yellow.png and web_git/static/src/img/icons/terp-folder-yellow.png differ
+Binary files web_classic/static/src/img/icons/terp-gdu-smart-failing.png and web_git/static/src/img/icons/terp-gdu-smart-failing.png differ
+Binary files web_classic/static/src/img/icons/terp-gnome-cpu-frequency-applet+.png and web_git/static/src/img/icons/terp-gnome-cpu-frequency-applet+.png differ
+Binary files web_classic/static/src/img/icons/terp-go-home.png and web_git/static/src/img/icons/terp-go-home.png differ
+Binary files web_classic/static/src/img/icons/terp-go-month.png and web_git/static/src/img/icons/terp-go-month.png differ
+Binary files web_classic/static/src/img/icons/terp-go-today.png and web_git/static/src/img/icons/terp-go-today.png differ
+Binary files web_classic/static/src/img/icons/terp-go-week.png and web_git/static/src/img/icons/terp-go-week.png differ
+Binary files web_classic/static/src/img/icons/terp-go-year.png and web_git/static/src/img/icons/terp-go-year.png differ
+Binary files web_classic/static/src/img/icons/terp-graph.png and web_git/static/src/img/icons/terp-graph.png differ
+Binary files web_classic/static/src/img/icons/terp-gtk-go-back-ltr.png and web_git/static/src/img/icons/terp-gtk-go-back-ltr.png differ
+Binary files web_classic/static/src/img/icons/terp-gtk-go-back-rtl.png and web_git/static/src/img/icons/terp-gtk-go-back-rtl.png differ
+Binary files web_classic/static/src/img/icons/terp-gtk-jump-to-ltr.png and web_git/static/src/img/icons/terp-gtk-jump-to-ltr.png differ
+Binary files web_classic/static/src/img/icons/terp-gtk-jump-to-rtl.png and web_git/static/src/img/icons/terp-gtk-jump-to-rtl.png differ
+Binary files web_classic/static/src/img/icons/terp-gtk-media-pause.png and web_git/static/src/img/icons/terp-gtk-media-pause.png differ
+Binary files web_classic/static/src/img/icons/terp-gtk-select-all.png and web_git/static/src/img/icons/terp-gtk-select-all.png differ
+Binary files web_classic/static/src/img/icons/terp-gtk-stop.png and web_git/static/src/img/icons/terp-gtk-stop.png differ
+Binary files web_classic/static/src/img/icons/terp-hr.png and web_git/static/src/img/icons/terp-hr.png differ
+Binary files web_classic/static/src/img/icons/terp-idea.png and web_git/static/src/img/icons/terp-idea.png differ
+Binary files web_classic/static/src/img/icons/terp-locked.png and web_git/static/src/img/icons/terp-locked.png differ
+Binary files web_classic/static/src/img/icons/terp-mail_delete.png and web_git/static/src/img/icons/terp-mail_delete.png differ
+Binary files web_classic/static/src/img/icons/terp-mail-forward.png and web_git/static/src/img/icons/terp-mail-forward.png differ
+Binary files web_classic/static/src/img/icons/terp-mail-message-new.png and web_git/static/src/img/icons/terp-mail-message-new.png differ
+Binary files web_classic/static/src/img/icons/terp-mail-.png and web_git/static/src/img/icons/terp-mail-.png differ
+Binary files web_classic/static/src/img/icons/terp-mail-replied.png and web_git/static/src/img/icons/terp-mail-replied.png differ
+Binary files web_classic/static/src/img/icons/terp-marketing.png and web_git/static/src/img/icons/terp-marketing.png differ
+Binary files web_classic/static/src/img/icons/terp-mrp.png and web_git/static/src/img/icons/terp-mrp.png differ
+Binary files web_classic/static/src/img/icons/terp-partner.png and web_git/static/src/img/icons/terp-partner.png differ
+Binary files web_classic/static/src/img/icons/terp-personal-.png and web_git/static/src/img/icons/terp-personal-.png differ
+Binary files web_classic/static/src/img/icons/terp-personal.png and web_git/static/src/img/icons/terp-personal.png differ
+Binary files web_classic/static/src/img/icons/terp-personal+.png and web_git/static/src/img/icons/terp-personal+.png differ
+Binary files web_classic/static/src/img/icons/terp-product.png and web_git/static/src/img/icons/terp-product.png differ
+Binary files web_classic/static/src/img/icons/terp-project.png and web_git/static/src/img/icons/terp-project.png differ
+Binary files web_classic/static/src/img/icons/terp-purchase.png and web_git/static/src/img/icons/terp-purchase.png differ
+Binary files web_classic/static/src/img/icons/terp-rating-rated.png and web_git/static/src/img/icons/terp-rating-rated.png differ
+Binary files web_classic/static/src/img/icons/terp-report.png and web_git/static/src/img/icons/terp-report.png differ
+Binary files web_classic/static/src/img/icons/terp-sale.png and web_git/static/src/img/icons/terp-sale.png differ
+Binary files web_classic/static/src/img/icons/terp-stage.png and web_git/static/src/img/icons/terp-stage.png differ
+Binary files web_classic/static/src/img/icons/terp-stock_align_left_24.png and web_git/static/src/img/icons/terp-stock_align_left_24.png differ
+Binary files web_classic/static/src/img/icons/terp-stock_effects-object-colorize.png and web_git/static/src/img/icons/terp-stock_effects-object-colorize.png differ
+Binary files web_classic/static/src/img/icons/terp-stock_format-default.png and web_git/static/src/img/icons/terp-stock_format-default.png differ
+Binary files web_classic/static/src/img/icons/terp-stock_format-scientific.png and web_git/static/src/img/icons/terp-stock_format-scientific.png differ
+Binary files web_classic/static/src/img/icons/terp-stock.png and web_git/static/src/img/icons/terp-stock.png differ
+Binary files web_classic/static/src/img/icons/terp-stock_symbol-selection.png and web_git/static/src/img/icons/terp-stock_symbol-selection.png differ
+Binary files web_classic/static/src/img/icons/terp-stock_zoom.png and web_git/static/src/img/icons/terp-stock_zoom.png differ
+Binary files web_classic/static/src/img/icons/terp-tools.png and web_git/static/src/img/icons/terp-tools.png differ
+Binary files web_classic/static/src/img/icons/terp-translate.png and web_git/static/src/img/icons/terp-translate.png differ
+Binary files web_classic/static/src/img/logo1.png and web_git/static/src/img/logo1.png differ
+Binary files web_classic/static/src/img/logo.png and web_git/static/src/img/logo.png differ
+Binary files web_classic/static/src/img/recycle_bin_empty.png and web_git/static/src/img/recycle_bin_empty.png differ
+Binary files web_classic/static/src/img/recycle_bin_full.png and web_git/static/src/img/recycle_bin_full.png differ
+Binary files web_classic/static/src/img/reload-icon.png and web_git/static/src/img/reload-icon.png differ
+Binary files web_classic/static/src/img/throbber2.gif and web_git/static/src/img/throbber2.gif differ
+Binary files web_classic/static/src/img/throbber.gif and web_git/static/src/img/throbber.gif differ
+diff -ENwbur web_classic/static/src/js/chrome.js web_git/static/src/js/chrome.js
+--- web_classic/static/src/js/chrome.js	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/js/chrome.js	2013-06-23 17:11:06.000000000 +0200
+@@ -659,6 +659,7 @@
+             return func(self.session.uid, ["name", "company_id"]).pipe(function(res) {
+                 self.$content = $(QWeb.render("Header-content", {widget: self, user: res}));
+                 self.$content.appendTo(self.$element);
++                self.$element.find("a.request").click(self.on_request);
+                 self.$element.find(".logout").click(self.on_logout);
+                 self.$element.find("a.preferences").click(self.on_preferences);
+                 self.$element.find(".about").click(self.on_about);
+@@ -736,6 +737,12 @@
+ 
+     on_action: function(action) {
+     },
++    
++    
++    on_request: function(){
++
++    },
++    
+     on_preferences: function(){
+         var self = this;
+         var action_manager = new openerp.web.ActionManager(this);
+@@ -750,7 +757,8 @@
+                         search_view: false,
+                         sidebar: false,
+                         views_switcher: false,
+-                        pager: false
++                        pager: false,
++                        without_tab: true
+                     }
+                 }));
+             });
+@@ -1079,12 +1087,8 @@
+             if(self.action_manager)
+                 self.action_manager.stop();
+             self.action_manager = new openerp.web.ActionManager(self);
+-            self.action_manager.appendTo($("#oe_app"));
++            //self.action_manager.appendTo($("#oe_app"));
+             self.bind_hashchange();
+-            if (!self.session.openerp_entreprise) {
+-                var version_label = self._get_version_label();
+-                self.$element.find('.oe_footer_powered').append(_.str.sprintf('<span> - <a href="http://www.openerp.com/support-or-publisher-warranty-contract" target="_blank">%s</a></span>', version_label));
+-            }
+             self.set_title();
+         });
+     },
+diff -ENwbur web_classic/static/src/js/core.js web_git/static/src/js/core.js
+--- web_classic/static/src/js/core.js	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/js/core.js	2013-06-24 00:27:23.000000000 +0200
+@@ -1250,7 +1250,7 @@
+ 
+ /** Configure blockui */
+ if ($.blockUI) {
+-    $.blockUI.defaults.baseZ = 1100;
++    $.blockUI.defaults.baseZ = 2200;
+     $.blockUI.defaults.message = '<img src="/web/static/src/img/throbber2.gif">';
+ }
+ 
+diff -ENwbur web_classic/static/src/js/view_form.js web_git/static/src/js/view_form.js
+--- web_classic/static/src/js/view_form.js	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/js/view_form.js	2013-07-12 07:18:01.334333000 +0200
+@@ -119,6 +119,9 @@
+ 
+         this.$form_header.find('button.oe_form_button_save').click(this.on_button_save);
+         this.$form_header.find('button.oe_form_button_cancel').click(this.on_button_cancel);
++        this.$form_header.find('button.oe_form_button_create').click(this.on_button_create);
++        this.$form_header.find('button.oe_form_button_duplicate').click(this.on_button_duplicate);
++        this.$form_header.find('button.oe_form_button_delete').click(this.on_button_delete);
+ 
+         if (!this.sidebar && this.options.sidebar && this.options.sidebar_id) {
+             this.sidebar = new openerp.web.Sidebar(this, this.options.sidebar_id);
+@@ -474,12 +477,50 @@
+             return $.Deferred().reject();
+         }
+     },
++    on_button_create: function() {
++        this.previous_index = this.dataset.index;
++        this.dataset.index = null;
++        return this.do_switch_view('form');
++    },
++    on_button_duplicate: function() {
++        var self = this;
++        var def = $.Deferred();
++        $.when(this.has_been_loaded).then(function() {
++            self.dataset.call('copy', [self.datarecord.id, {}, self.dataset.context]).then(function(new_id) {
++                return self.on_created({ result : new_id });
++            }).then(function() {
++                return self.do_switch_view('form');
++            }).then(function() {
++                def.resolve();
++            });
++        });
++        return def.promise();
++    },
++    on_button_delete: function() {
++        var self = this;
++        var def = $.Deferred();
++        $.when(this.has_been_loaded).then(function() {
++            if (self.datarecord.id && confirm(_t("Do you really want to delete this record?"))) {
++                self.dataset.unlink([self.datarecord.id]).then(function() {
++                    self.on_pager_action('next');
++                    def.resolve();
++                });
++            } else {
++                $.async_when().then(function () {
++                    def.reject();
++                })
++            }
++        });
++        return def.promise();
++    },
+     on_button_save: function() {
+         var self = this;
+         return this.do_save().then(function(result) {
+-            self.do_prev_view({'created': result.created, 'default': 'page'});
++            //self.do_prev_view({'default': 'page'});
++            self.do_switch_view('page')
+         });
+     },
++    
+     on_button_cancel: function() {
+         if (this.can_be_discarded()) {
+             return this.do_prev_view({'default': 'page'});
+@@ -832,7 +873,8 @@
+         this.$element.find('.oe-sidebar-attachment-delete').click(this.on_attachment_delete);
+     },
+     on_attachment_changed: function(e) {
+-        window[this.element_id + '_iframe'] = this.do_update;
++        //bugfix 2514_2513
++        window[this.element_id + '_iframe_callback'] = this.do_update;
+         var $e = $(e.target);
+         if ($e.val() != '') {
+             this.$element.find('form.oe-binary-form').submit();
+@@ -926,7 +968,11 @@
+                     op, JSON.stringify(expr));
+         }
+     }
++    if(stack.length){
++        return _.any(stack, _.identity);
++    }else{
+     return _.all(stack, _.identity);
++    }
+ };
+ 
+ openerp.web.form.Widget = openerp.web.OldWidget.extend(/** @lends openerp.web.form.Widget# */{
+@@ -1063,6 +1109,17 @@
+             var fields_values = this._build_eval_context(blacklist);
+             v_context = new openerp.web.CompoundContext(v_context).set_eval_context(fields_values);
+         }
++        var active_id, active_ids, active_model;
++        for (i in v_context.__eval_context.__contexts) { //TODO: remove this and fix CompoundContext
++            active_id = active_id || v_context.__eval_context.__contexts[i].active_id;
++            active_ids = active_ids || v_context.__eval_context.__contexts[i].active_ids;
++            active_model = active_model || v_context.__eval_context.__contexts[i].active_model;
++        }
++        for (i in v_context.__eval_context.__contexts) {
++            v_context.__eval_context.__contexts[i].active_id = active_id;
++            v_context.__eval_context.__contexts[i].active_ids = active_ids;
++            v_context.__eval_context.__contexts[i].active_model = active_model;
++        }
+         return v_context;
+     },
+     build_domain: function() {
+@@ -1591,6 +1648,10 @@
+         if (!this.value) {
+             this.do_warn(_t("Resource error"), _t("This resource is empty"));
+         } else {
++            var s = /(\w+):(.+)/.exec(this.value);
++            if (!s) {
++                this.value = "http://" + this.value;
++            }
+             window.open(this.value);
+         }
+     }
+@@ -2119,14 +2180,9 @@
+                 $.async_when().then(function() {self.$menu_btn.trigger(e);});
+             });
+         });
+-        this.$menu_btn.bind({
+-            click: function(e) { init_context_menu_def.resolve(e); e.preventDefault() },
+-            focus: function () { $self.trigger('widget-focus'); },
+-            blur: function () {
+-                if (cm_ignore_blur) { return; }
+-                $self.trigger('widget-blur');
+-            }
+-        });
++        var ctx_callback = function(e) {init_context_menu_def.resolve(e); e.preventDefault()};
++        this.$menu_btn.click(ctx_callback);
++
+         // some behavior for input
+         this.$input.keyup(function() {
+             if (self.$input.val() === "") {
+@@ -2166,6 +2222,7 @@
+                 }
+             }
+         };
++        var $self = $(self), ignore_blur = false;
+         this.$input.bind({
+             focusout: anyoneLoosesFocus,
+             focus: function () { $self.trigger('widget-focus'); },
+@@ -2216,6 +2273,7 @@
+             }
+         });
+ 
++        this.setupFocus(this.$menu_btn);
+     },
+     // autocomplete component content handling
+     get_search_result: function(request, response) {
+@@ -2835,6 +2893,11 @@
+             form_view_options: {'not_interactible_on_create':true},
+             readonly: self.o2m.is_readonly()
+         });
++        pop.dataset.call_button = function() {
++            var button_result = self.o2m.dataset.call_button.apply(self.o2m.dataset, arguments);
++            self.o2m.reload_current_view();
++            return button_result;
++        };
+         pop.on_write.add(function(id, data, options) {
+             self.o2m.dataset.write(id, data, options, function(r) {
+                 self.o2m.reload_current_view();
+@@ -3490,7 +3553,8 @@
+         // TODO: on modern browsers, we could directly read the file locally on client ready to be used on image cropper
+         // http://www.html5rocks.com/tutorials/file/dndfiles/
+         // http://deepliquid.com/projects/Jcrop/demos.php?demo=handler
+-        window[this.iframe] = this.on_file_uploaded;
++        // bugfix 2514_2513
++        window[this.iframe + '_callback'] = this.on_file_uploaded;
+         if ($(e.target).val() != '') {
+             this.$element.find('form.oe-binary-form input[name=session_id]').val(this.session.session_id);
+             this.$element.find('form.oe-binary-form').submit();
+diff -ENwbur web_classic/static/src/js/view_list_editable.js web_git/static/src/js/view_list_editable.js
+--- web_classic/static/src/js/view_list_editable.js	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/js/view_list_editable.js	2013-07-12 07:20:17.755372000 +0200
+@@ -136,9 +136,15 @@
+             }
+             cancelled.then(function () {
+                 self.view.unpad_columns();
++                if(typeof self.edition_form != 'undefined')
++                {
++                	// Bugfix 1066703: Fix for bug #1066703: self.edition_form is undefined when switching from a line to another
++                	if(self.edition_form){
+                 self.edition_form.stop();
+                 self.edition_form.$element.remove();
+                 delete self.edition_form;
++                		}
++                	}
+                 self.dataset.index = null;
+                 delete self.edition_id;
+                 delete self.edition;
+diff -ENwbur web_classic/static/src/js/view_list_editable.js~ web_git/static/src/js/view_list_editable.js~
+--- web_classic/static/src/js/view_list_editable.js~	1970-01-01 01:00:00.000000000 +0100
++++ web_git/static/src/js/view_list_editable.js~	2013-06-23 17:11:06.000000000 +0200
+@@ -0,0 +1,444 @@
++/**
++ * handles editability case for lists, because it depends on form and forms already depends on lists it had to be split out
++ * @namespace
++ */
++openerp.web.list_editable = function (openerp) {
++    var KEY_RETURN = 13,
++        KEY_ESCAPE = 27;
++    var QWeb = openerp.web.qweb;
++
++    // editability status of list rows
++    openerp.web.ListView.prototype.defaults.editable = null;
++
++    // TODO: not sure second @lends on existing item is correct, to check
++    openerp.web.ListView.include(/** @lends openerp.web.ListView# */{
++        init: function () {
++            var self = this;
++            this._super.apply(this, arguments);
++            $(this.groups).bind({
++                'edit': function (e, id, dataset) {
++                    self.do_edit(dataset.index, id, dataset);
++                },
++                'saved': function () {
++                    if (self.groups.get_selection().length) {
++                        return;
++                    }
++                    self.configure_pager(self.dataset);
++                    self.compute_aggregates();
++                }
++            })
++        },
++        /**
++         * Handles the activation of a record in editable mode (making a record
++         * editable), called *after* the record has become editable.
++         *
++         * The default behavior is to setup the listview's dataset to match
++         * whatever dataset was provided by the editing List
++         *
++         * @param {Number} index index of the record in the dataset
++         * @param {Object} id identifier of the record being edited
++         * @param {openerp.web.DataSet} dataset dataset in which the record is available
++         */
++        do_edit: function (index, id, dataset) {
++            _.extend(this.dataset, dataset);
++        },
++        /**
++         * Sets editability status for the list, based on defaults, view
++         * architecture and the provided flag, if any.
++         *
++         * @param {Boolean} [force] forces the list to editability. Sets new row edition status to "bottom".
++         */
++        set_editable: function (force) {
++            // If ``force``, set editability to bottom
++            // otherwise rely on view default
++            // view' @editable is handled separately as we have not yet
++            // fetched and processed the view at this point.
++            this.options.editable = (
++                    (force && "bottom")
++                    || this.defaults.editable);
++        },
++        /**
++         * Replace do_search to handle editability process
++         */
++        do_search: function(domain, context, group_by) {
++            this.set_editable(context['set_editable']);
++            this._super.apply(this, arguments);
++        },
++        /**
++         * Replace do_add_record to handle editability (and adding new record
++         * as an editable row at the top or bottom of the list)
++         */
++        do_add_record: function () {
++            if (this.options.editable) {
++                this.groups.new_record();
++            } else {
++                this._super();
++            }
++        },
++        on_loaded: function (data, grouped) {
++            // tree/@editable takes priority on everything else if present.
++            this.options.editable = data.arch.attrs.editable || this.options.editable;
++            return this._super(data, grouped);
++        },
++        /**
++         * Ensures the editable list is saved (saves any pending edition if
++         * needed, or tries to)
++         *
++         * Returns a deferred to the end of the saving.
++         *
++         * @returns {$.Deferred}
++         */
++        ensure_saved: function () {
++            return this.groups.ensure_saved();
++        }
++    });
++
++    openerp.web.ListView.Groups.include(/** @lends openerp.web.ListView.Groups# */{
++        passtrough_events: openerp.web.ListView.Groups.prototype.passtrough_events + " edit saved",
++        new_record: function () {
++            // TODO: handle multiple children
++            this.children[null].new_record();
++        },
++        /**
++         * Ensures descendant editable List instances are all saved if they have
++         * pending editions.
++         *
++         * @returns {$.Deferred}
++         */
++        ensure_saved: function () {
++            return $.when.apply(null,
++                _.invoke(
++                    _.values(this.children),
++                    'ensure_saved'));
++        }
++    });
++
++    openerp.web.ListView.List.include(/** @lends openerp.web.ListView.List# */{
++        row_clicked: function (event) {
++            if (!this.options.editable) {
++                return this._super.apply(this, arguments);
++            }
++            this.edit_record($(event.currentTarget).data('id'));
++        },
++        /**
++         * Checks if a record is being edited, and if so cancels it
++         */
++        cancel_pending_edition: function () {
++            var self = this, cancelled;
++            if (!this.edition) {
++                return $.when();
++            }
++
++            if (this.edition_id) {
++                cancelled = this.reload_record(this.records.get(this.edition_id));
++            } else {
++                cancelled = $.when();
++            }
++            cancelled.then(function () {
++                self.view.unpad_columns();
++                self.edition_form.stop();
++                self.edition_form.$element.remove();
++                delete self.edition_form;
++                self.dataset.index = null;
++                delete self.edition_id;
++                delete self.edition;
++            });
++            this.pad_table_to(5);
++            return cancelled;
++        },
++        /**
++         * Adapts this list's view description to be suitable to the inner form
++         * view of a row being edited.
++         *
++         * @returns {Object} fields_view_get's view section suitable for putting into form view of editable rows.
++         */
++        get_form_fields_view: function () {
++            // deep copy of view
++            var view = $.extend(true, {}, this.group.view.fields_view);
++            _(view.arch.children).each(function (widget) {
++                widget.attrs.nolabel = true;
++                if (widget.tag === 'button') {
++                    delete widget.attrs.string;
++                }
++            });
++            view.arch.attrs.col = 2 * view.arch.children.length;
++            return view;
++        },
++        on_row_keyup: function (e) {
++            var self = this;
++            switch (e.which) {
++            case KEY_RETURN:
++                $(e.target).blur();
++                e.preventDefault();
++                //e.stopImmediatePropagation();
++                setTimeout(function () {
++                    self.save_row().then(function (result) {
++                        if (result.created) {
++                            self.new_record();
++                            return;
++                        }
++
++                        var next_record_id,
++                            next_record = self.records.at(
++                                    self.records.indexOf(result.edited_record) + 1);
++                        if (next_record) {
++                            next_record_id = next_record.get('id');
++                            self.dataset.index = _(self.dataset.ids)
++                                    .indexOf(next_record_id);
++                        } else {
++                            self.dataset.index = 0;
++                            next_record_id = self.records.at(0).get('id');
++                        }
++                        self.edit_record(next_record_id);
++                    }, 0);
++                });
++                break;
++            case KEY_ESCAPE:
++                this.cancel_edition();
++                break;
++            }
++        },
++        render_row_as_form: function (row) {
++            var self = this;
++            return this.ensure_saved().pipe(function () {
++                var record_id = $(row).data('id');
++                var $new_row = $('<tr>', {
++                        id: _.uniqueId('oe-editable-row-'),
++                        'data-id': record_id,
++                        'class': (row ? $(row).attr('class') : '') + ' oe_forms',
++                        click: function (e) {e.stopPropagation();}
++                    })
++                    .delegate('button.oe-edit-row-save', 'click', function () {
++                        self.save_row();
++                    })
++                    .delegate('button', 'keyup', function (e) {
++                        e.stopImmediatePropagation();
++                    })
++                    .keyup(function () {
++                        return self.on_row_keyup.apply(self, arguments); })
++                    .keydown(function (e) { e.stopPropagation(); })
++                    .keypress(function (e) {
++                        if (e.which === KEY_RETURN) {
++                            return false;
++                        }
++                    });
++
++                if (row) {
++                    $new_row.replaceAll(row);
++                } else if (self.options.editable) {
++                    var $last_child = self.$current.children('tr:last');
++                    if (self.records.length) {
++                        if (self.options.editable === 'top') {
++                            $new_row.insertBefore(
++                                self.$current.children('[data-id]:first'));
++                        } else {
++                            $new_row.insertAfter(
++                                self.$current.children('[data-id]:last'));
++                        }
++                    } else {
++                        $new_row.prependTo(self.$current);
++                    }
++                    if ($last_child.is(':not([data-id])')) {
++                        $last_child.remove();
++                    }
++                }
++                self.edition = true;
++                self.edition_id = record_id;
++                self.dataset.index = _(self.dataset.ids).indexOf(record_id);
++                if (self.dataset.index === -1) {
++                    self.dataset.index = null;
++                }
++                self.edition_form = _.extend(new openerp.web.ListEditableFormView(self.view, self.dataset, false), {
++                    form_template: 'ListView.row.form',
++                    registry: openerp.web.list.form.widgets,
++                    $element: $new_row
++                });
++                // HA HA
++                self.edition_form.appendTo();
++                // put in $.when just in case  FormView.on_loaded becomes asynchronous
++                return $.when(self.edition_form.on_loaded(self.get_form_fields_view())).then(function () {
++                    $new_row.find('> td')
++                          .addClass('oe-field-cell')
++                          .removeAttr('width')
++                      .end()
++                      .find('td:last').removeClass('oe-field-cell').end();
++                    if (self.options.selectable) {
++                        $new_row.prepend('<th>');
++                    }
++                    if (self.options.isClarkGable) {
++                        $new_row.prepend('<th>');
++                    }
++                    // pad in case of groupby
++                    _(self.columns).each(function (column) {
++                        if (column.meta) {
++                            $new_row.prepend('<td>');
++                        }
++                    });
++                    // Add column for the save, if
++                    // there is none in the list
++                    if (!self.options.deletable) {
++                        self.view.pad_columns(
++                            1, {except: $new_row});
++                    }
++
++                    self.edition_form.do_show();
++                });
++            });
++        },
++        handle_onwrite: function (source_record_id) {
++            var self = this;
++            var on_write_callback = self.view.fields_view.arch.attrs.on_write;
++            if (!on_write_callback) { return; }
++            this.dataset.call(on_write_callback, [source_record_id], function (ids) {
++                _(ids).each(function (id) {
++                    var record = self.records.get(id);
++                    if (!record) {
++                        // insert after the source record
++                        var index = self.records.indexOf(
++                            self.records.get(source_record_id)) + 1;
++                        record = new openerp.web.list.Record({id: id});
++                        self.records.add(record, {at: index});
++                        self.dataset.ids.splice(index, 0, id);
++                    }
++                    self.reload_record(record);
++                });
++            });
++        },
++        /**
++         * Saves the current row, and returns a Deferred resolving to an object
++         * with the following properties:
++         *
++         * ``created``
++         *   Boolean flag indicating whether the record saved was being created
++         *   (``true`` or edited (``false``)
++         * ``edited_record``
++         *   The result of saving the record (either the newly created record,
++         *   or the post-edition record), after insertion in the Collection if
++         *   needs be.
++         *
++         * @returns {$.Deferred<{created: Boolean, edited_record: Record}>}
++         */
++        save_row: function () {
++            //noinspection JSPotentiallyInvalidConstructorUsage
++            var self = this;
++            return this.edition_form
++                .do_save(null, this.options.editable === 'top')
++                .pipe(function (result) {
++                    if (result.created && !self.edition_id) {
++                        self.records.add({id: result.result},
++                            {at: self.options.editable === 'top' ? 0 : null});
++                        self.edition_id = result.result;
++                    }
++                    var edited_record = self.records.get(self.edition_id);
++
++                    return $.when(
++                        self.handle_onwrite(self.edition_id),
++                        self.cancel_pending_edition().then(function () {
++                            $(self).trigger('saved', [self.dataset]);
++                        })).pipe(function () {
++                            return {
++                                created: result.created || false,
++                                edited_record: edited_record
++                            };
++                        });
++                });
++        },
++        /**
++         * If the current list is being edited, ensures it's saved
++         */
++        ensure_saved: function () {
++            if (this.edition) {
++                // kinda-hack-ish: if the user has entered data in a field,
++                // oe_form_dirty will be set on the form so save, otherwise
++                // discard the current (entirely empty) line
++                if (this.edition_form.$element.is('.oe_form_dirty')) {
++                    return this.save_row();
++                }
++                return this.cancel_pending_edition();
++            }
++            //noinspection JSPotentiallyInvalidConstructorUsage
++            return $.when();
++        },
++        /**
++         * Cancels the edition of the row for the current dataset index
++         */
++        cancel_edition: function () {
++            this.cancel_pending_edition();
++        },
++        /**
++         * Edits record currently selected via dataset
++         */
++        edit_record: function (record_id) {
++            this.render_row_as_form(
++                this.$current.find('[data-id=' + record_id + ']'));
++            $(this).trigger(
++                'edit',
++                [record_id, this.dataset]);
++        },
++        new_record: function () {
++            this.render_row_as_form();
++        },
++        render_record: function (record) {
++            var index = this.records.indexOf(record),
++                 self = this;
++            // FIXME: context dict should probably be extracted cleanly
++            return QWeb.render('ListView.row', {
++                columns: this.columns,
++                options: this.options,
++                record: record,
++                row_parity: (index % 2 === 0) ? 'even' : 'odd',
++                view: this.view,
++                render_cell: function () {
++                    return self.render_cell.apply(self, arguments); },
++                edited: !!this.edition_form
++            });
++        }
++    });
++    if (!openerp.web.list) {
++        openerp.web.list = {};
++    }
++    if (!openerp.web.list.form) {
++        openerp.web.list.form = {};
++    }
++    openerp.web.list.form.WidgetFrame = openerp.web.form.WidgetFrame.extend({
++        template: 'ListView.row.frame'
++    });
++    var form_widgets = openerp.web.form.widgets;
++    openerp.web.list.form.widgets = form_widgets.extend({
++        'frame': 'openerp.web.list.form.WidgetFrame'
++    });
++    // All form widgets inherit a problematic behavior from
++    // openerp.web.form.WidgetFrame: the cell itself is removed when invisible
++    // whether it's @invisible or @attrs[invisible]. In list view, only the
++    // former should completely remove the cell. We need to override update_dom
++    // on all widgets since we can't just hit on widget itself (I think)
++    var list_form_widgets = openerp.web.list.form.widgets;
++    _(form_widgets.map).each(function (widget_path, key) {
++        if (key === 'frame') { return; }
++        var new_path = 'openerp.web.list.form.' + key;
++
++        openerp.web.list.form[key] = (form_widgets.get_object(key)).extend({
++            update_dom: function () {
++                this.$element.children().css('visibility', '');
++                if (this.modifiers.tree_invisible) {
++                    var old_invisible = this.invisible;
++                    this.invisible = true;
++                    this._super.apply(this, arguments);
++                    this.invisible = old_invisible;
++                } else if (this.invisible) {
++                    this.$element.children().css('visibility', 'hidden');
++                } else {
++                    this._super.apply(this, arguments);
++                }
++            }
++        });
++        list_form_widgets.add(key, new_path);
++    });
++    
++    openerp.web.ListEditableFormView = openerp.web.FormView.extend({
++        init_view: function() {},
++        _render_and_insert: function () {
++            return this.start();
++        }
++    });
++};
+diff -ENwbur web_classic/static/src/js/view_list.js web_git/static/src/js/view_list.js
+--- web_classic/static/src/js/view_list.js	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/js/view_list.js	2013-06-23 17:11:06.000000000 +0200
+@@ -810,6 +810,7 @@
+         this.columns = opts.columns;
+         this.dataset = opts.dataset;
+         this.records = opts.records;
++        this.lastSelection;
+ 
+         this.record_callbacks = {
+             'remove': function (event, record) {
+@@ -849,6 +850,20 @@
+             .appendTo(document.body)
+             .delegate('th.oe-record-selector', 'click', function (e) {
+                 e.stopPropagation();
++                var $row = $(this);
++                if (e.ctrlKey) {
++                    $row.toggleClass('selected');
++                } else if (e.shiftKey && self.lastSelection){
++                    first = Math.min(self.lastSelection, $row.context.rowIndex);
++                    last = Math.max(self.lastSelection, $row.context.rowIndex);
++                    $row.siblings().andSelf().slice(first-2, last-1).each(function(index, element) {
++                        $(element).addClass('selected');
++                    });
++                } else {
++                    $row.siblings().removeClass('selected');
++                    $row.toggleClass('selected');
++                }
++                self.lastSelection = $row.context.rowIndex;
+                 var selection = self.get_selection();
+                 $(self).trigger(
+                         'selected', [selection.ids, selection.records]);
+@@ -1355,7 +1370,8 @@
+             self.records.add(records, {silent: true});
+             list.render();
+             d.resolve(list);
+-        });});
++        });
++        });
+         return d.promise();
+     },
+     setup_resequence_rows: function (list, dataset) {
+diff -ENwbur web_classic/static/src/js/view_page.js web_git/static/src/js/view_page.js
+--- web_classic/static/src/js/view_page.js	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/js/view_page.js	2013-06-23 17:11:06.000000000 +0200
+@@ -19,10 +19,10 @@
+         },
+         on_loaded: function(data) {
+             this._super(data);
+-            this.$form_header.find('button.oe_form_button_edit').click(this.on_button_edit);
+-            this.$form_header.find('button.oe_form_button_create').click(this.on_button_create);
+-            this.$form_header.find('button.oe_form_button_duplicate').click(this.on_button_duplicate);
+-            this.$form_header.find('button.oe_form_button_delete').click(this.on_button_delete);
++            this.$form_header.find('button.oe_form_button_edit').unbind("click").click(this.on_button_edit);
++            this.$form_header.find('button.oe_form_button_create').unbind("click").click(this.on_button_create);
++            this.$form_header.find('button.oe_form_button_duplicate').unbind("click").click(this.on_button_duplicate);
++            this.$form_header.find('button.oe_form_button_delete').unbind("click").click(this.on_button_delete);
+         },
+         do_show: function() {
+             if (this.dataset.index === null) {
+@@ -187,7 +187,8 @@
+                             res_id: self.value[0],
+                             context: self.build_context(),
+                             views: [[false, 'page'], [false, 'form']],
+-                            target: 'current'
++                            target: 'current',
++                            name: self.string
+                         });
+                         return false;
+                      });
+@@ -263,7 +264,7 @@
+         },
+         set_value: function(value) {
+             this._super.apply(this, arguments);
+-            this.$element.find('a').toggle(!!value);
++            this.$element.find('a').show(!!value);
+             if (value) {
+                 var show_value = _t("Download") + " " + (this.view.datarecord[this.node.attrs.filename] || '');
+                 this.$element.find('a').text(show_value);
+diff -ENwbur web_classic/static/src/js/views.js web_git/static/src/js/views.js
+--- web_classic/static/src/js/views.js	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/js/views.js	2013-06-23 17:11:06.000000000 +0200
+@@ -126,7 +126,6 @@
+     },
+     null_action: function() {
+         this.dialog_stop();
+-        this.content_stop();
+     },
+     ir_actions_act_window: function (action, on_close) {
+         var self = this;
+@@ -156,12 +155,63 @@
+                 });
+             }
+             this.dialog_stop();
+-            this.content_stop();
+             this.inner_action = action;
+             this.inner_viewmanager = new session.web.ViewManagerAction(this, action);
++            if (action.flags.without_tab) {
+             this.inner_viewmanager.appendTo(this.$element);
++            } else {
++                tab = this.new_tab(action.name);
++                this.inner_viewmanager.appendTo(tab);
++                this._rename_tab_id();
++                this._activate_tab()
++            }
++
+         }
+     },
++    new_tab: function(tab_name) {
++        this.new_tab_panel(tab_name);
++        return $('<div id="' + this.element_id + '"/>').appendTo('#oe_app').addClass("ui-tabs-panel ui-widget-content ui-corner-bottom");
++    },
++    new_tab_panel: function(tab_name) {
++        $('#tab_navigator').children().each(
++            function(){
++                $(this).removeClass("ui-tabs-selected ui-state-active");
++            }
++        );
++        $('#oe_app').children('div').each(
++            function(){
++                $(this).addClass("ui-tabs-hide");
++            }
++        );
++        $('<li><a href="#' + this.element_id + '">' + tab_name + '</a></li>').appendTo('#tab_navigator').addClass("ui-state-default ui-corner-top ui-tabs-selected ui-state-active");
++    },
++    _rename_tab_id: function() {  
++        this.element_id = _.uniqueId('tab-'); // TODO This method fix bug (or maybe feature :D ) -- all widgets have the same id -- "#widget-15"
++        $('#' + this.element_id).addClass("ui-tabs-panel ui-widget-content ui-corner-bottom");
++    },
++    _activate_tab: function () {
++        var tabs = $('#oe_app').tabs({
++            closable: true,
++            closableClick: this.check_unsaved
++            })
++        tabs.find( ".ui-tabs-nav" ).sortable({
++                axis: "x",
++                stop: function() {
++                    tabs.tabs( "refresh" );
++                }
++            });
++    },
++    check_unsaved: function(event, ui) {
++        if ($(ui.panel).find('.oe_form_dirty').length > 0) {
++            if (confirm (_t("There is unsaved data, you will lose all the changes.\nDo you really want to continue?"))) {
++                return true;
++            } else {
++                return false;
++            };
++        } else {
++            return true;
++        };
++    },
+     ir_actions_act_window_close: function (action, on_closed) {
+         if (!this.dialog && on_closed) {
+             on_closed();
+@@ -262,6 +312,9 @@
+         this.$element.find('.oe_vm_switch button').click(function() {
+             self.on_mode_switch($(this).data('view-type'));
+         });
++        this.$element.find('.oe_vm_switch_reload').click(function() {
++            self.on_mode_reload();
++        });
+         var views_ids = {};
+         _.each(this.views_src, function(view) {
+             self.views[view.view_type] = $.extend({}, view, {
+@@ -282,6 +335,9 @@
+         var default_view = this.flags.default_view || this.views_src[0].view_type;
+         return this.on_mode_switch(default_view);
+     },
++    on_mode_reload: function() {
++        this.$element.find('.oe_vm_switch button:disabled').first().trigger('click');
++    },
+     /**
+      * Asks the view manager to switch visualization mode.
+      *
+@@ -293,9 +349,11 @@
+         var self = this,
+             view = this.views[view_type],
+             view_promise;
++        if (view_type && !this.check_unsaved()) {
++            return view_promise;
++        }
+         if(!view)
+             return $.Deferred().reject();
+-
+         if (!no_store) {
+             this.views_history.push(view_type);
+         }
+@@ -354,6 +412,19 @@
+         });
+         return view_promise;
+     },
++    check_unsaved: function() {
++        dirty = this.$element.find('.oe_form_dirty')
++        if (dirty.length > 0) {
++            if (confirm (_t("There is unsaved data, you will lose all the changes.\nDo you really want to continue?"))) {
++                dirty.removeClass('oe_form_dirty');
++                return true;
++            } else {
++                return false;
++            };
++        } else {
++            return true;
++        };
++    },
+     /**
+      * Returns to the view preceding the caller view in this manager's
+      * navigation history (the navigation history is appended to via
+@@ -706,6 +777,9 @@
+         });
+     },
+     shortcut_check : function(view) {
++        if (!view) {
++            return;
++        }
+         var self = this;
+         var grandparent = this.widget_parent && this.widget_parent.widget_parent;
+         // display shortcuts if on the first view for the action
+diff -ENwbur web_classic/static/src/xml/base.xml web_git/static/src/xml/base.xml
+--- web_classic/static/src/xml/base.xml	2013-06-23 16:55:00.000000000 +0200
++++ web_git/static/src/xml/base.xml	2013-07-12 07:11:25.019009000 +0200
+@@ -32,6 +32,7 @@
+                 <td valign="top" id="oe_secondary_menu" class="secondary_menu"></td>
+                 <td valign="top" class="oe-application-container">
+                     <div id="oe_app" class="oe-application">
++                        <ul id="tab_navigator"/>
+                     </div>
+                 </td>
+             </tr>
+@@ -41,7 +42,7 @@
+     <tr>
+         <td colspan="2">
+             <div id="oe_footer" class="oe_footer">
+-                <p class="oe_footer_powered">Powered by <a href="http://www.openerp.com">OpenERP</a></p>
++                <p class="oe_footer_powered">Powered by <a href="http://www.openerp.com">OpenERP </a> and <a href="http://www.didotech.com"> Didotech</a> and <a href="http://www.enapps.co.uk/"> ENAPPS</a></p>
+             </div>
+         </td>
+     </tr>
+@@ -253,8 +254,11 @@
+     <t t-if="session.openerp_entreprise">
+         <div class="oe_error_send">
+             <div>
+-                <div class="oe_centeralign"><b>OpenERP Enterprise Contract.</b></div>
+-                <div><br/>Your report will be sent to the OpenERP Enterprise team.<br/></div><br/>
++                <div class="oe_centeralign"><b>Modulo Informazioni Didotech</b></div>
++                    <div>
++                        <br/>Il report Verrà inviato al team Didotech.<br/>
++                    </div>
++                <br/>
+                 <div>
+                     <label>Summary:</label><br/>
+                     <input id="issuename" type="text" class="oe_fielddiv"/>
+@@ -270,11 +274,11 @@
+             </div>
+         </div><br/>
+     </t>
+-    <div class="oe_error_detail">
++<!--    <div class="oe_error_detail">
+         <pre><t t-esc="error.message"/></pre>
+         <hr/>
+         <pre><t t-esc="error.data.debug"/></pre>
+-    </div>
++    </div>-->
+ </t>
+ 
+ <t t-name="Login_dblist">
+@@ -296,24 +300,29 @@
+     <div class="bottom"> </div>
+     <div class="login_error_message">Invalid username or password</div>
+     <div class="pane">
+-      <div id="logo"><img src='/web/static/src/img/logo2.png'/></div>
+-      <form action="" method="post">
+-        <div class="dbpane" >
+-          Database:
+-          <input name="db" t-att-value="widget.selected_db || ''"/>
++        <div id="left_logo" class="logo">
++            <img src='/web/static/src/img/logo1.png'/>
+         </div>
++        <div id="right_logo" class="logo">
++            <img src='/web/static/src/img/logo2.png'/>
++        </div>
++      <form action="" method="post">
+         <ul>
++          <li>Databases</li>
++          <li><input name="db" t-att-value="widget.selected_db || ''"/></li>
+           <li>Username</li>
+           <li><input type="text" name="login" t-att-value="widget.selected_login || ''" autofocus="autofocus"/></li>
+           <li>Password</li>
+           <li><input type="password" name="password" t-att-value="widget.selected_password || ''"/></li>
+           <li><button name="submit">Log in</button></li>
++          <a href="#" id="oe-db-config">Manage Databases</a>
+         </ul>
+       </form>
+       <div class="footer">
+-        <a href="#" id="oe-db-config">Manage Databases</a> |
+-        <a href="http://www.openerp.com">Powered by <span class="openerp">OpenERP</span></a>
+-      </div>
++<!--
++        Powered by<a href="http://www.openerp.com"><span class="openerp">OpenERP</span></a>and<a href="http://www.didotech.com"><span class="openerp">Didotech</span> </a> and<a href="http://www.enapps.co.uk/"><span class="openerp">ENAPPS</span> </a> 
++
++-->      </div>
+     </div>
+   </div>
+ </t>
+@@ -349,6 +358,10 @@
+     </h1>
+     <div class="header_corner">
+         <ul class="block">
++            
++            <li class="request">
++                <a href="javascript:void(0)" title="Request" class="request"><img t-att-src='_s + "/web/static/src/img/header-requests.png"' width="16" height="16" border="0"/></a>
++            </li>
+             <li>
+                 <a t-att-href="'/' + widget.qs" title="Home" class="home"><img t-att-src='_s + "/web/static/src/img/header-home.png"' width="16" height="16" border="0"/></a>
+             </li>
+@@ -377,6 +390,7 @@
+     <tr>
+         <td t-foreach="widget.data.data.children" t-as="menu">
+             <a href="#" t-att-data-menu="menu.id">
++                <img t-att-src='_s + "/web/static/src/img/icons/" + menu.icon + ".png"'/>
+                 <t t-esc="menu.name"/>
+             </a>
+         </td>
+@@ -401,6 +415,7 @@
+     <a href="#" t-att-id="menu.children.length ? 'menu_' + menu.id : undefined"
+         t-att-class="classname + (menu.children.length ? ' submenu' : ' leaf') + (menu_first and level == 1 ? ' opened' : '')"
+         t-att-data-menu="menu.children.length ? undefined : menu.id">
++        <img t-att-src='_s + "/web/static/src/img/icons/" + menu.icon + ".png"'/>
+         <span t-attf-style="padding-left: #{(level - 2) * 20}px"> <t t-esc="menu.name"/></span>
+     </a>
+     <div t-attf-class="oe_secondary_submenu" t-if="menu.children.length" t-att-style="menu_first and level == 1 ? undefined : 'display: none'">
+@@ -416,9 +431,6 @@
+     <tr>
+         <td class="view-manager-main-content">
+             <div class="oe-view-manager-header">
+-                <h2 class="oe_view_title" t-if="self.flags.display_title !== false">
+-                    <span class="oe_view_title_text"><t t-esc="self.display_title()"/></span>
+-                </h2>
+                 <div class="oe_vm_switch">
+                     <t t-if="views.length != 1" t-foreach="views" t-as="view">
+ 
+@@ -426,6 +438,9 @@
+                             <span><t t-esc="view.label || view.view_type"/></span>
+                         </button>
+                     </t>
++                    <button type="button" t-attf-class="oe_vm_switch_reload" t-att-title="Reload">
++                        <span>Reload</span>
++                    </button>
+                 </div>
+             </div>
+             <div t-attf-id="#{prefix}_search" t-opentag="true"/>
+@@ -458,11 +473,11 @@
+             </td>
+         </tr>
+     </t>
+-    <t t-jquery="h2.oe_view_title" t-operation="prepend">
++    <t t-jquery=".oe_vm_switch" t-operation="after">
+         <a t-if="self.flags.display_title !== false" class="oe-shortcut-toggle" title="Add / Remove Shortcut..."
+             href="javascript: void(0)"> </a>
+     </t>
+-    <t t-jquery="h2.oe_view_title" t-operation="after">
++    <t t-jquery=".oe_vm_switch" t-operation="after">
+         <select t-if="self.session.debug" class="oe_debug_view"/>
+     </t>
+     <t t-jquery=".oe-view-manager-header" t-operation="after">
+@@ -623,6 +638,7 @@
+             <th t-att-colspan="columns_count">
+                 <table>
+                     <tr>
++                        <t t-call="Listview.navigation.button"/>
+                         <td t-if="!no_leaf and options.action_buttons !== false" class="oe-actions">
+                             <button type="button" class="oe_button oe-list-add"
+                                     t-if="options.addable">
+@@ -633,7 +649,6 @@
+                                 Delete
+                             </button>
+                         </td>
+-                        <t t-call="Listview.navigation.button"/>
+                     </tr>
+                 </table>
+             </th>
+@@ -738,15 +753,18 @@
+ </t>
+ <t t-name="FormView">
+     <div class="oe_form_header">
+-        <div class="oe_form_buttons" t-if="widget.options.action_buttons !== false">
+-            <button type="button" class="oe_button oe_form_button_save">Save</button>
+-            <button type="button" class="oe_button oe_form_button_cancel">Cancel</button>
+-        </div>
+         <div class="oe_form_pager" t-if="widget.options.pager !== false">
+             <t t-call="ViewPager">
+                 <span class="oe_pager_index">0</span><span class="oe_pager_separator"> / </span><span class="oe_pager_count">0</span>
+             </t>
+         </div>
++        <div class="oe_form_buttons" t-if="widget.options.action_buttons !== false">
++            <button type="button" class="oe_button oe_form_button_save oe_button_small" title="Save"><img height="16" width="16" src="/web/static/src/img/icons/gtk-floppy.png"/></button>
++            <button type="button" class="oe_button oe_form_button_cancel oe_button_small" title="Cancel"><img height="16" width="16" src="/web/static/src/img/icons/gtk-cancel.png"/></button>
++            <button type="button" class="oe_button oe_form_button_create oe_button_small" title="New"><img height="16" width="16" src="/web/static/src/img/icons/gtk-new.png"/></button>
++            <button type="button" class="oe_button oe_form_button_duplicate oe_button_small" title="Duplicate"><img height="16" width="16" src="/web/static/src/img/icons/gtk-copy.png"/></button>
++            <button type="button" class="oe_button oe_form_button_delete oe_button_small" title="Delete"><img height="16" width="16" src="/web/static/src/img/recycle_bin_empty.png"/></button>
++        </div>
+     </div>
+     <t t-raw="frame.render()"/>
+ </t>
+@@ -757,10 +775,10 @@
+ </t>
+ <t t-name="PageView" t-extend="FormView">
+     <t t-jquery=".oe_form_buttons" t-operation="inner">
+-        <button type="button" class="oe_button oe_form_button_edit">Edit</button>
+-        <button type="button" class="oe_button oe_form_button_create">Create</button>
+-        <button type="button" class="oe_button oe_form_button_duplicate">Duplicate</button>
+-        <button type="button" class="oe_button oe_form_button_delete">Delete</button>
++        <button type="button" class="oe_button oe_form_button_edit oe_button_small" title="Edit"><img height="16" width="16" src="/web/static/src/img/pencil.gif"/></button>
++        <button type="button" class="oe_button oe_form_button_create oe_button_small" title="New"><img height="16" width="16" src="/web/static/src/img/icons/gtk-new.png"/></button>
++        <button type="button" class="oe_button oe_form_button_duplicate oe_button_small" title="Duplicate"><img height="16" width="16" src="/web/static/src/img/icons/gtk-copy.png"/></button>
++        <button type="button" class="oe_button oe_form_button_delete oe_button_small" title="Delete"><img height="16" width="16" src="/web/static/src/img/recycle_bin_empty.png"/></button>
+     </t>
+ </t>
+ <t t-name="FormView.sidebar.attachments">
+@@ -769,7 +787,9 @@
+             <form class="oe-binary-form" t-attf-target="#{element_id}_iframe"
+                 method="post" enctype="multipart/form-data" t-att-action='_s + "/web/binary/upload_attachment"'>
+                 <input type="hidden" name="session_id" t-att-value="session.session_id"/>
+-                <input type="hidden" name="callback" t-attf-value="#{element_id}_iframe"/>
++                <!-- Bugfix 2514_2513  -->
++                <input type="hidden" name="callback" t-attf-value="#{element_id}_iframe_callback"
++						t-attf-id="#{element_id}_iframe_callback"/>
+                 <input type="hidden" name="model" t-att-value="view.dataset.model"/>
+                 <input type="hidden" name="id" t-att-value="view.datarecord.id"/>
+                 <button class="oe_button" type="button">
+@@ -1158,7 +1178,9 @@
+                             <form class="oe-binary-form" t-att-target="widget.iframe"
+                                 method="post" enctype="multipart/form-data" t-att-action='_s + "/web/binary/upload"'>
+                                 <input type="hidden" name="session_id" value=""/>
+-                                <input type="hidden" name="callback" t-att-value="widget.iframe"/>
++                                <!-- Bugfix 2514_2513 -->
++                                <input type="hidden" name="callback" t-att-value="widget.iframe"
++										t-att-id='widget.iframe + "_callback"'/>
+                                 <button class="oe_button" type="button" title="Set Image">
+                                     <img t-att-src='_s + "/web/static/src/img/icons/STOCK_DIRECTORY.png"'/>
+                                 </button>
+@@ -1201,7 +1223,9 @@
+                         <form class="oe-binary-form" t-att-target="widget.iframe"
+                             method="post" enctype="multipart/form-data" t-att-action='_s + "/web/binary/upload"'>
+                             <input type="hidden" name="session_id" value=""/>
+-                            <input type="hidden" name="callback" t-att-value="widget.iframe"/>
++                            <!-- Bugfix 2514_2513 -->
++                            <input type="hidden" name="callback" t-att-value="widget.iframe"
++									t-att-id='widget.iframe + "_callback"'/>
+                             <button class="oe_button oe_field_button" type="button" title="Set Image">
+                                 <img t-att-src='_s + "/web/static/src/img/icons/STOCK_DIRECTORY.png"'/>
+                                 <span>Select</span>

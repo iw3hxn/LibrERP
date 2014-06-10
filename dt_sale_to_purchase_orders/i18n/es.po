@@ -1,0 +1,69 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* sale_to_purchase_order
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-20121022-232507\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-10-26 15:10+0000\n"
+"PO-Revision-Date: 2012-10-26 15:10+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_to_purchase_order
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr "¡La referencia del pedido debe ser única por compañía!"
+
+#. module: sale_to_purchase_order
+#: model:ir.model,name:sale_to_purchase_order.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea de orden de compra"
+
+#. module: sale_to_purchase_order
+#: field:sale_to_purchase_order.generate_purchase_order,pricelist_id:0
+msgid "Purchase Pricelist"
+msgstr "Lista de Precios de Compra"
+
+#. module: sale_to_purchase_order
+#: view:sale_to_purchase_order.generate_purchase_order:0
+msgid "You are on about to generate a Purchase Order from this Sale order. To do so please complete the following mandatory fields first."
+msgstr "Esta a punto de generar una Orden de Compra desde esta Orden de Venta. Para esto por favor complete los siguientes campos obligatorios."
+
+#. module: sale_to_purchase_order
+#: field:sale_to_purchase_order.generate_purchase_order,warehouse_id:0
+msgid "Warehouse"
+msgstr "Almacén"
+
+#. module: sale_to_purchase_order
+#: field:sale_to_purchase_order.generate_purchase_order,partner_id:0
+msgid "Supplier"
+msgstr "Proveedor"
+
+#. module: sale_to_purchase_order
+#: help:sale_to_purchase_order.generate_purchase_order,pricelist_id:0
+msgid "This pricelist will be used, instead of the default one, for purchases from the current partner"
+msgstr "La lista de precios que sera utlizada, en vez de la lista por defecto, para compras del actual cliente"
+
+#. module: sale_to_purchase_order
+#: model:ir.actions.act_window,name:sale_to_purchase_order.action_generate_purchase_order
+#: model:ir.model,name:sale_to_purchase_order.model_sale_to_purchase_order_generate_purchase_order
+#: view:sale_to_purchase_order.generate_purchase_order:0
+msgid "Generate Purchase Order"
+msgstr "Generar Orden de Compra"
+
+#. module: sale_to_purchase_order
+#: view:sale_to_purchase_order.generate_purchase_order:0
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: sale_to_purchase_order
+#: model:ir.model,name:sale_to_purchase_order.model_sale_order
+msgid "Sales Order"
+msgstr "Pedido de venta"
+

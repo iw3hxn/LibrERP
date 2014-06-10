@@ -1,0 +1,198 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* product_bom
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-26 10:54+0000\n"
+"PO-Revision-Date: 2014-05-26 13:03+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: sl_SI\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_create_product
+msgid "Product / Can Create"
+msgstr "Proizvod / Lahko ustvari"
+
+#. module: product_bom
+#: selection:res.company,ref_stock:0
+msgid "Real Stock"
+msgstr "Dejanska zaloga"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_supplier_product
+msgid "Product / Can View Supplier"
+msgstr "Proizvod / Lahko vidi dobavitelja"
+
+#. module: product_bom
+#: constraint:mrp.bom:0
+msgid "BoM line product should not be same as BoM product."
+msgstr "Izdelek ne more biti sestavni del samega sebe."
+
+#. module: product_bom
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Napaka! Ne morete ustvariti rekurzivnih podjetij."
+
+#. module: product_bom
+#: field:product.product,immediately_usable_qty:0
+msgid "Immediately Usable"
+msgstr "Takoj uporabljivo"
+
+#. module: product_bom
+#: field:res.company,ref_stock:0
+msgid "Reference Stock for BoM Stock"
+msgstr "Referenčna zaloga za zalogo kosovnic"
+
+#. module: product_bom
+#: view:product.product:0
+msgid "BoMs"
+msgstr "Kosovnice"
+
+#. module: product_bom
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Ime podjetja mora biti unikatno !"
+
+#. module: product_bom
+#: model:ir.model,name:product_bom.model_product_product
+msgid "Product"
+msgstr "Proizvod"
+
+#. module: product_bom
+#: view:res.company:0
+msgid "Stock - Various"
+msgstr "Zaloga - Razno"
+
+#. module: product_bom
+#: view:product.product:0 field:product.product,is_kit:0
+msgid "Kit"
+msgstr "Kit"
+
+#. module: product_bom
+#: view:res.company:0
+msgid "Configuration"
+msgstr "Nastavitve"
+
+#. module: product_bom
+#: field:product.product,bom_stock:0
+msgid "Bill of Materials Stock"
+msgstr "Kosovnice na zalogi"
+
+#. module: product_bom
+#: constraint:mrp.bom:0
+msgid "Error ! You cannot create recursive BoM."
+msgstr "Napaka ! (Rekurzivna kosovnica)"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_sell_price
+msgid "Product / Show Sell Price"
+msgstr "Proizvod / Prikaz prodajne cene"
+
+#. module: product_bom
+#: help:product.product,immediately_usable_qty:0
+msgid ""
+"Quantity of products really available for sale.Computed as: Quantity On Hand "
+"- Outgoing."
+msgstr ""
+"Količina proizvodov razpoložljivih za prodajo. Izračunano kot: Količina "
+"dejanske zaloge - Izhodni."
+
+#. module: product_bom
+#: sql_constraint:mrp.bom:0
+msgid ""
+"All product quantities must be greater than 0.\n"
+"You should install the mrp_subproduct module if you want to manage extra "
+"products on BoMs !"
+msgstr ""
+"Vse količine proizvodov morajo biti večje od 0.\n"
+"Če želite upravljati dodatne produkte na kosovnicah namestite "
+"mrp_subproduct !"
+
+#. module: product_bom
+#: help:product.product,bom_stock:0
+msgid ""
+"Quantities of products based on Bill of Materials, useful to know how much "
+"of this product you could produce. Computed as:\n"
+" Reference stock of this product + how much could I produce of this product "
+"with the BoMComponents"
+msgstr ""
+"Količine proizvodov osnovanih po kosovnicah. Koristno za ugotovitev količine "
+"proizvodov ki jo lahko proizvedemo. Izračunano kot:\n"
+" Referenčna zaloga proizvoda + količina proizvodov, ki jih lahko proizvedemo "
+"s komponentami kosovnic"
+
+#. module: product_bom
+#: view:product.product:0
+msgid "BoMs Line"
+msgstr "Postavka kosovnice"
+
+#. module: product_bom
+#: model:ir.model,name:product_bom.model_res_company
+msgid "Companies"
+msgstr "Podjetja"
+
+#. module: product_bom
+#: model:ir.model,name:product_bom.model_mrp_bom
+msgid "Bill of Material"
+msgstr "Kosovnica"
+
+#. module: product_bom
+#: selection:res.company,ref_stock:0
+msgid "Virtual Stock"
+msgstr "Navidezna zaloga"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_unlink_product
+msgid "Product / Can Unlink"
+msgstr "Proizvod / Lahko odstrani povezavo"
+
+#. module: product_bom
+#: code:addons/product_bom/product.py:281 field:product.product,cost_price:0
+#, python-format
+msgid "Cost Price (incl. BoM)"
+msgstr "Nabavna cena (vklj. kosovnice)"
+
+#. module: product_bom
+#: selection:res.company,ref_stock:0
+msgid "Immediately Usable Stock"
+msgstr "Takoj uporabljiva zaloga"
+
+#. module: product_bom
+#: model:res.groups,name:product_bom.group_cost_price
+msgid "Product / Show Cost Price"
+msgstr "Proizvod / Prikaz nabavne cene"
+
+#. module: product_bom
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Napaka: Koda EAN ni veljavna"
+
+#. module: product_bom
+#: field:product.product,bom_lines:0
+msgid "Boms"
+msgstr "Kosovnice"
+
+#. module: product_bom
+#: help:product.product,cost_price:0
+msgid ""
+"The cost price is the standard price or, if the product has a bom, the sum "
+"of all standard price of its components. it take also care of the bom "
+"costing like cost per cylce."
+msgstr ""
+"Nabavna cena je standardna cena ali, če je proizvod sestavljen, vsota vseh "
+"standardnih cen njegovih komponent. Obravnava tudi stroške kosovnic, kot "
+"npr. strošek cikla."
+
+#. module: product_bom
+#: view:product.product:0
+msgid "BOM"
+msgstr "Kosovnica"

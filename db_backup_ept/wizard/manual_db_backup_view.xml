@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_db_backup_manual" model="ir.ui.view">
+            <field name="name">view.db.backup.manual.ept</field>
+            <field name="model">db.backup.manual.ept</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+	            <form string="Database Backup">
+	                <separator string="Please select a Database." colspan="4"/>
+	                <label string="This wizard will generate the backup of database to path which is provided at selected database in below field." colspan="4"/>
+	                <newline/>
+	                <field name="db_id" />
+	                <group colspan="4" col="6">
+	                   <label string="" colspan="2"/>
+	                   <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+	                   <button icon="gtk-execute" string="Generate" name="data_save" type="object"/>
+	                </group>
+				</form>
+			</field>
+        </record>
+
+        <record id="ept_database_backup_manual_action" model="ir.actions.act_window">
+            <field name="name">Manual Database Backup</field>
+			<field name="type">ir.actions.act_window</field>
+            <field name="res_model">db.backup.manual.ept</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_db_backup_manual"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="ept_menu_db_manual_backup" 
+            name = "Manual Database Backup"
+			action="ept_database_backup_manual_action"
+			sequence="2"
+			parent="db_backup_ept_menu"
+			/>
+
+    </data>
+</openerp>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        ==========
+         Category
+        ==========
+        -->
+        <record id="asset_category_contractor0" model="product.category">
+            <field name="parent_id" ref="product.product_category_marketableproduct0"/>
+                <field name="name">Contractor</field>
+                <field name="code">CNT</field>
+                <field eval="True" name="has_date_option"/>
+        </record>
+        <record id="asset_category_tools0" model="asset.category">
+            <field name="parent_id" ref="asset_category_contractor0"/>
+                <field name="name">Tools</field>
+                <field name="code">TLS</field>
+                <field eval="True" name="has_date_option"/>
+        </record>
+        <record id="asset_category_equipment1" model="asset.category">
+            <field name="parent_id" ref="asset_category_contractor0"/>
+                <field name="name">Equipment</field>
+                <field name="code">EQP</field>
+                <field eval="True" name="has_date_option"/>
+        </record>
+        <record id="asset_category_others2" model="asset.category">
+            <field name="parent_id" ref="asset_category_contractor0"/>
+                <field name="name">Others</field>
+                <field name="code">OTR</field>
+                <field eval="False" name="has_date_option"/>
+        </record>
+        
+       <!-- 
+        ==========
+         Location
+        ==========
+      <record id="location_ce110" model="location">
+            <field name="name">Ahmendabad</field>
+            <field name="code">CE110</field>
+            <field name="user" ref="hr.employee1"/>
+            <field name="category_id" ref="asset_category_equipment1"/>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="barcode">1564 6546 4564</field>
+        </record>
+        
+        
+        ==========
+         Product
+        ==========
+       
+        <record id="asset_product_ce110" model="asset.product">
+            <field name="name">Compaction Equipment</field>
+            <field name="code">CE110</field>
+            <field name="user" ref="hr.employee1"/>
+            <field name="category_id" ref="asset_category_equipment1"/>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="barcode">1564 6546 4564</field>
+        </record>
+        <record id="asset_product_ar001" model="asset.product">
+            <field name="name">Air Compressors</field>
+            <field name="code">AR001</field>
+            <field name="user" ref="hr.employee1"/>
+            <field name="category_id" ref="asset_category_equipment1"/>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="barcode">1234 1646 5456</field>
+        </record>
+        <record id="asset_product_c123" model="asset.product">
+            <field name="name">Cranes</field>
+            <field name="code">C123</field>
+            <field name="user" ref="hr.employee1"/>
+            <field name="category_id" ref="asset_category_equipment1"/>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="barcode">3213 6544 6554</field>
+        </record>
+        
+        
+        <record id="asset_product_tc100" model="asset.product">
+            <field name="name">Chisels</field>
+            <field name="code">TC100</field>
+            <field name="user" ref="hr.employee1"/>
+            <field name="category_id" ref="asset_category_tools0"/>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="barcode">213 465 646</field>
+        </record>
+        <record id="asset_product_tcl101" model="asset.product">
+            <field name="name">Clamps</field>
+            <field name="code">TCL101</field>
+            <field name="user" ref="hr.employee1"/>
+            <field name="category_id" ref="asset_category_tools0"/>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="barcode">132 655 654</field>
+        </record>
+        <record id="asset_product_td102" model="asset.product">
+            <field name="name">Dtills</field>
+            <field name="code">TD102</field>
+            <field name="user" ref="hr.employee1"/>
+            <field name="category_id" ref="asset_category_tools0"/>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="barcode">145 466 546</field>
+        </record>
+        <record id="asset_product_th111" model="asset.product">
+            <field name="name">Hammer</field>
+            <field name="code">TH111</field>
+            <field name="user" ref="hr.employee1"/>
+            <field name="category_id" ref="asset_category_tools0"/>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="barcode">131 465 321</field>
+        </record>
+       
+       
+        <record id="asset_product_on001" model="asset.product">
+            <field name="name">Nails</field>
+            <field name="code">ON001</field>
+            <field name="user" ref="hr.employee2"/>
+            <field name="category_id" ref="asset_category_others2"/>
+            <field name="uom_id" ref="product.product_uom_kgm"/>
+            <field name="barcode">165 546 546</field>
+        </record>
+        <record id="asset_product_os112" model="asset.product">
+            <field name="name">Screw</field>
+            <field name="code">OS112</field>
+            <field name="user" ref="hr.employee2"/>
+            <field name="category_id" ref="asset_category_others2"/>
+            <field name="uom_id" ref="product.product_uom_kgm"/>
+            <field name="barcode">231 655 564</field>
+        </record>-->
+    </data>
+</openerp>

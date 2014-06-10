@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="0">
+		
+		<record model="ir.module.category" id="product.module_category_product">
+		    <field name="name">Product</field>
+		    <field name="description">Extend groups for Product</field>
+		    <field name="sequence">20</field>
+		</record>
+		
+        <record model="res.groups" id="group_cost_price">
+             <field name="name">Product / Show Cost Price</field>
+			 <field name="category_id" ref="product.module_category_product"/>
+        </record>
+        <record model="res.groups" id="group_sell_price">
+            <field name="name">Product / Show Sell Price</field>
+			<field name="category_id" ref="product.module_category_product"/>
+        </record>
+        <record model="res.groups" id="group_create_product">
+            <field name="name">Product / Can Create</field>
+			<field name="category_id" ref="product.module_category_product"/>
+        </record>
+        <record model="res.groups" id="group_unlink_product">
+            <field name="name">Product / Can Unlink</field>
+			<field name="category_id" ref="product.module_category_product"/>
+        </record>
+        <record model="res.groups" id="group_unlink_product">
+            <field name="name">Product / Can Unlink</field>
+			<field name="category_id" ref="product.module_category_product"/>
+        </record>
+        <record model="res.groups" id="group_supplier_product">
+            <field name="name">Product / Can View Supplier</field>
+			<field name="category_id" ref="product.module_category_product"/>
+        </record>
+		<record id="product.group_product_variant" model="res.groups" context="{'noadmin':True}">
+        <field name="name">Product Variant</field>
+        <field name="category_id" ref="product.module_category_product"/>
+    </record>
+	</data>
+</openerp>

@@ -1,0 +1,206 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* task_time_control
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-19 09:56+0000\n"
+"PO-Revision-Date: 2013-07-19 09:56+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "Working"
+msgstr "Trabajando"
+
+#. module: task_time_control
+#: view:task.time.control.confirm.wizard:0
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: task_time_control
+#: constraint:project.task:0
+msgid "Error ! Task end-date must be greater then task start-date"
+msgstr "¡ Error ! La fecha final de la tarea debe ser mayor que la fecha de inicio"
+
+#. module: task_time_control
+#: model:ir.model,name:task_time_control.model_project_task_work
+msgid "Project Task Work"
+msgstr "Trabajo tarea proyecto"
+
+#. module: task_time_control
+#: code:addons/task_time_control/project_task.py:101
+#: code:addons/task_time_control/project_task.py:134
+#: code:addons/task_time_control/project_task.py:136
+#, python-format
+msgid "Warning !"
+msgstr "Aviso !"
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "Start"
+msgstr "Empezar"
+
+#. module: task_time_control
+#: view:task.time.control.confirm.wizard:0
+msgid "Confirm time"
+msgstr "Confirmar tiempo"
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "Tasks in state working"
+msgstr "Tareas con un usuario trabajando"
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "working"
+msgstr "trabajando"
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "My Tasks"
+msgstr "Mis tareas"
+
+#. module: task_time_control
+#: constraint:project.task:0
+msgid "Error ! You cannot create recursive tasks."
+msgstr "¡Error! No puede crear tareas recursivas."
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "Stop"
+msgstr "Parar"
+
+#. module: task_time_control
+#: code:addons/task_time_control/project_task.py:134
+#, python-format
+msgid "Task is not init."
+msgstr "La tarea no está iniciada."
+
+#. module: task_time_control
+#: field:project.task,other_users_ids:0
+msgid "Other users"
+msgstr "Otros usuarios"
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "Unassigned Tasks"
+msgstr "Tareas no asignadas"
+
+#. module: task_time_control
+#: code:addons/task_time_control/project_task.py:81
+#, python-format
+msgid "Confirm Time"
+msgstr "Confirmar Tiempo"
+
+#. module: task_time_control
+#: field:task.time.control.confirm.wizard,task_to_start:0
+msgid "Task to init"
+msgstr "Tareas a iniciar"
+
+#. module: task_time_control
+#: model:ir.model,name:task_time_control.model_project_task
+msgid "Task"
+msgstr "Tarea"
+
+#. module: task_time_control
+#: view:task.time.control.confirm.wizard:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: task_time_control
+#: code:addons/task_time_control/project_task.py:136
+#, python-format
+msgid "Task init by another user."
+msgstr "La tarea ya está iniciada por otro usuario."
+
+#. module: task_time_control
+#: field:task.time.control.confirm.wizard,time:0
+msgid "time"
+msgstr "tiempo"
+
+#. module: task_time_control
+#: field:project.task,working_users:0
+msgid "Working users"
+msgstr "Usuarios trabajando"
+
+#. module: task_time_control
+#: code:addons/task_time_control/project_task.py:101
+#, python-format
+msgid "Task is alredy started."
+msgstr "La tarea ya esta empezada."
+
+#. module: task_time_control
+#: field:project.task.work,work_end:0
+#: field:time.control.user.task,work_end:0
+msgid "Work end"
+msgstr "trabajo finalizado"
+
+#. module: task_time_control
+#: field:time.control.user.task,user:0
+msgid "user"
+msgstr "usuario"
+
+#. module: task_time_control
+#: field:task.time.control.confirm.wizard,started_task:0
+msgid "Started Task"
+msgstr "Tarea empezada"
+
+#. module: task_time_control
+#: view:task.time.control.confirm.wizard:0
+msgid "Time"
+msgstr "Tiempo"
+
+#. module: task_time_control
+#: view:task.time.control.confirm.wizard:0
+msgid "Task is going to close"
+msgstr "Se va a cerrar la tarea"
+
+#. module: task_time_control
+#: field:task.time.control.confirm.wizard,user_task:0
+msgid "User task"
+msgstr "Tarea usuario"
+
+#. module: task_time_control
+#: field:task.time.control.confirm.wizard,name:0
+msgid "name"
+msgstr "nombre"
+
+#. module: task_time_control
+#: model:ir.model,name:task_time_control.model_task_time_control_confirm_wizard
+msgid "task.time.control.confirm.wizard"
+msgstr "task.time.control.confirm.wizard"
+
+#. module: task_time_control
+#: model:ir.model,name:task_time_control.model_time_control_user_task
+msgid "time.control.user.task"
+msgstr "time.control.user.task"
+
+#. module: task_time_control
+#: field:project.task.work,work_start:0
+#: field:time.control.user.task,work_start:0
+msgid "Work start"
+msgstr "Trabajo empezado"
+
+#. module: task_time_control
+#: field:time.control.user.task,started_task:0
+msgid "Started task"
+msgstr "Tarea empezada"
+
+#. module: task_time_control
+#: model:ir.model,name:task_time_control.model_project_task_history
+msgid "History of Tasks"
+msgstr "Historial de Tareas"
+
+#. module: task_time_control
+#: view:task.time.control.confirm.wizard:0
+msgid "Cancel"
+msgstr "Cancelar"
+

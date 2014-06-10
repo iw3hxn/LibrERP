@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <!-- Activities -->
+        <record model="workflow.activity" id="sale_waiting_validation">
+            <field name="name">wait_valid</field>
+            <field name="wkf_id" ref="sale.wkf_sale" />
+            <field name="kind">function</field>
+            <field name="action">wkf_wait_validation_order()</field>
+        </record>
+        
+        <record model="workflow.activity" id="sale_waiting_correction">
+            <field name="name">wait_correct</field>
+            <field name="wkf_id" ref="sale.wkf_sale" />
+            <field name="kind">function</field>
+            <field name="action">wkf_wait_correction()</field>
+        </record>
+        
+        <record model="workflow.activity" id="sale_reset2draft">
+            <field name="name">reset2draft</field>
+            <field name="wkf_id" ref="sale.wkf_sale" />
+            <field name="kind">function</field>
+            <field name="action">write({'state':'draft'})</field>
+        </record>
+        
+        <record model="workflow.activity" id="sale_validating">
+            <field name="name">validating</field>
+            <field name="wkf_id" ref="sale.wkf_sale" />
+            <field name="kind">function</field>
+            <field name="action">wkf_validating_user_time()</field>
+        </record>
+        
+        <!-- Transitions -->
+        <delete id="sale.trans_draft_router" model="workflow.transition" />
+        
+        <record id="trans_draft_confirmed" model="workflow.transition">
+            <field name="act_from" ref="sale.act_draft" />
+            <field name="act_to" ref="sale_validating" />
+            <field name="condition">amount_untaxed &lt; 0</field>
+            <field name="signal">order_confirm</field>
+        </record>
+        
+        <record id="trans_draft_waiting_validation" model="workflow.transition">
+            <field name="act_from" ref="sale.act_draft" />
+            <field name="act_to" ref="sale_waiting_validation" />
+            <field name="condition">amount_untaxed &gt;= 0</field>
+            <field name="signal">order_confirm</field>
+        </record>
+        
+        <record id="trans_waiting_approval_confirmed" model="workflow.transition">
+            <field name="act_from" ref="sale_waiting_validation" />
+            <field name="act_to" ref="sale_validating" />
+            <field name="group_id" ref="group_sale_validators" />
+            <field name="signal">order_validate</field>
+        </record>
+        
+        <record id="trans_waiting_validation_wait_correction" model="workflow.transition">
+            <field name="act_from" ref="sale_waiting_validation" />
+            <field name="act_to" ref="sale_waiting_correction" />
+            <field name="group_id" ref="group_sale_validators" />
+            <field name="signal">order_refuse</field>
+        </record>
+        
+        <record id="trans_waiting_correction_cancel" model="workflow.transition">
+            <field name="act_from" ref="sale_waiting_correction" />
+            <field name="act_to" ref="sale.act_cancel" />
+            <field name="signal">order_cancel</field>
+        </record>
+        
+        <record id="trans_waiting_correction_draft" model="workflow.transition">
+            <field name="act_from" ref="sale_waiting_correction" />
+            <field name="act_to" ref="sale_reset2draft" />
+            <field name="signal">order_draft</field>
+        </record>
+        
+        <record id="trans_reset2draft" model="workflow.transition">
+            <field name="act_from" ref="sale_reset2draft" />
+            <field name="act_to" ref="sale.act_draft" />
+        </record>
+        
+        <record id="trans_validating2router" model="workflow.transition">
+            <field name="act_from" ref="sale_validating" />
+            <field name="act_to" ref="sale.act_router" />
+        </record>
+        
+    </data>
+</openerp>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+        <record id="res_company_delivery_note_journal_view" model="ir.ui.view">
+            <field name="name">res_company_delivery_note_journal_view_form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="project.task_company"/>
+            <field name="arch" type="xml">
+                <field name="project_time_mode_id" position="after">
+                    <field name="delivery_note_journal_id" />
+                    <field name="expense_journal_id" />
+                </field>
+                <notebook position="inside">
+                    <page string="Work Order">
+                        <field name="hour" />
+                        <field name="work_order_default_task_ids" colspan="4" nolabel="1">
+                            <tree string="Default Work Order Tasks" editable="bottom">
+                                <field name="name"/>
+                                <field name="planned_hours" />
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    
+    </data>
+</openerp>

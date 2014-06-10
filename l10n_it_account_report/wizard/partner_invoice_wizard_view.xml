@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <!--  Wizard per la stampa del fatturato totale per cliente/fornitore -->        
+	<record id="view_partner_invoice_wizard" model="ir.ui.view">
+            <field name="name">Total Invoice</field>
+            <field name="model">partner.invoice.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Select Period">
+ 					<separator string="Periods" colspan="4"/>
+                    <field name="period_from_id" colspan="2"/>
+                    <field name="period_to_id" colspan="2"/>
+					<newline/>
+                    <separator colspan="4"/>
+                    <group col="4" colspan="4">
+                        <button icon="gtk-cancel" special="cancel" string="Cancel" colspan="2"/>
+                        <button string='Print' icon="gtk-print" name="print_report" type="object" colspan="2" default_focus="1"/>
+                   </group>
+                                  
+                </form>
+            </field>
+        </record>
+        
+        <!--  Action che apre il wizard per la stampa del fatturato totale per cliente/fornitore --> 
+	<record id="action_partner_invoice_wizard" model="ir.actions.act_window">
+            <field name="name">Total Invoice</field>
+            <field name="res_model">partner.invoice.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_partner_invoice_wizard"/>
+            <field name="target">new</field>
+        </record>        
+
+	</data>
+</openerp>	
+

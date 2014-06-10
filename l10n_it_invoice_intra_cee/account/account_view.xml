@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <!-- FISCAL POSITION FORM -->
+
+    <record id="reverse_charge_view_account_position_form" model="ir.ui.view">
+        <field name="name">reverse_charge.account_position.form</field>
+        <field name="model">account.fiscal.position</field>
+        <field name="inherit_id" ref="account.view_account_position_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/separator[@string='Mapping']" position="before">
+                <group>
+                    <separator string="Reverse charge Configuration" colspan="4" />
+                    <group col="6">
+                        <field name="active_reverse_charge" />
+                        <field name="active_extra_ue_service" />
+                    </group>
+                </group>
+                <newline />
+                <group>
+                    <group col="6">
+                        <field name="account_transient_id"
+                            attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
+                        <field name="journal_transfer_entry_id"
+                            attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
+                        <field name="journal_auto_invoice_id"
+                            attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="extra_ue_service_tax_id" colspan="4"
+                        attrs="{'required':[('active_extra_ue_service', '=', True)]}"/>
+                    <field name="extra_ue_line_detail" colspan="4"
+                        attrs="{'required':[('active_extra_ue_service', '=', True)]}"
+                        help="Text accept mako markdown. for example ${object.partner_id.name} for partner or ${object.number} for invoice number, etc..."/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- TAX FORM -->
+
+    <record id="reverse_charge_view_tax_form" model="ir.ui.view">
+        <field name="name">reverse_charge.account_tax.form</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/notebook/page[@string='Tax Definition']/group/separator[@string='Accounting Information']" position="before">
+                <separator colspan="4" string="Auto Invoice" attrs="{'invisible': [('type_tax_use','=','sale')],}"/>
+                    <field name="auto_invoice_tax_id" attrs="{'invisible': [('type_tax_use','=','sale')],}" />
+                <newline attrs="{'invisible': [('type_tax_use','=','sale')],}" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- SUPPLIER INVOICE FORM -->
+
+    <record id="reverse_charge_invoice_supplier_form" model="ir.ui.view">
+        <field name="name">reverse_charge.invoice_supplier.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <field name="move_id" position="after">
+                <field name="transfer_entry_id" groups="account.group_account_user"
+                    readonly="True"/>
+                <field name="auto_invoice_id" groups="account.group_account_user"
+                    readonly="True"/>
+            </field>
+        </field>
+    </record>
+
+
+</data>
+</openerp>

@@ -1,0 +1,456 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* hr_agent
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-10 00:28+0000\n"
+"PO-Revision-Date: 2012-11-10 00:28+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_agent
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr "Numero di Riferimento dell'Ordine, deve essere univoco per ciascuna azienda!"
+
+#. module: hr_agent
+#: field:res.partner.zone,province_ids:0
+msgid "Provinces"
+msgstr "Province"
+
+#. module: hr_agent
+#: field:hr.agent.customer.commission,state:0
+msgid "Order State"
+msgstr "Stato dell'Ordine"
+
+#. module: hr_agent
+#: field:hr.agent.commission,fixed_commission:0
+msgid "fixed commission"
+msgstr "provvigione fissa"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,zone_id:0
+#: field:hr.employee,res_partner_zone_id:0
+msgid "Zone"
+msgstr "Zona"
+
+#. module: hr_agent
+#: model:ir.actions.act_window,name:hr_agent.action_res_partner_zones
+msgid "Managing Commercial agent's Zones"
+msgstr "Gestione Zone Agenti"
+
+#. module: hr_agent
+#: field:res.province,res_partner_zone_ids:0
+msgid "Zones"
+msgstr "Zone"
+
+#. module: hr_agent
+#: field:sale.order,trimester:0
+msgid "Order's Trimester"
+msgstr "Trimestre dell'Ordine"
+
+#. module: hr_agent
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Attenzione: non puoi creare aziende ricorsive."
+
+#. module: hr_agent
+#: model:ir.model,name:hr_agent.model_hr_employee
+msgid "Employee"
+msgstr "Dipendente"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+msgid "State"
+msgstr "Stato"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,amount:0
+msgid "Commission's Receivable"
+msgstr "Provvigione da Ricevere"
+
+#. module: hr_agent
+#: field:sale.order,sale_commission_amount:0
+msgid "agent's commission"
+msgstr "Provvigione dell'Agente"
+
+#. module: hr_agent
+#: field:hr.employee,area_manager_desc:0
+msgid "Area Manager Description"
+msgstr "Denominazione Capoarea"
+
+#. module: hr_agent
+#: view:hr.agent.commission:0
+#: field:hr.employee,hr_agent_commission_ids:0
+#: model:ir.model,name:hr_agent.model_hr_agent_commission
+msgid "commission agent's"
+msgstr "Provvigione dell'Agente"
+
+#. module: hr_agent
+#: field:hr.agent.commission,commission_percent:0
+#: field:hr.area.manager.commission,commission_percent:0
+msgid "Commission (%)"
+msgstr "provvigione (%)"
+
+#. module: hr_agent
+#: field:hr.employee,is_area_manager:0
+#: field:sale.order,is_area_manager:0
+msgid "is Area Manager?"
+msgstr "è Capoarea?"
+
+#. module: hr_agent
+#: model:ir.ui.menu,name:hr_agent.manage_zones
+#: view:res.partner.zone:0
+msgid "Commercial agent's Zones"
+msgstr "Zone degli Agenti"
+
+#. module: hr_agent
+#: field:hr.employee,this_agent:0
+msgid "am i?"
+msgstr "sono io?"
+
+#. module: hr_agent
+#: model:ir.model,name:hr_agent.model_res_province
+msgid "Province"
+msgstr "Provincia"
+
+#. module: hr_agent
+#: field:hr.agent.customer.commission,date_confirm:0
+msgid "Date Confirm"
+msgstr "Data di Conferma"
+
+#. module: hr_agent
+#: field:hr.agent.commission,product_id:0
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+msgid "Group By..."
+msgstr "raggruppato per..."
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "August"
+msgstr "Agosto"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "May"
+msgstr "Maggio"
+
+#. module: hr_agent
+#: field:hr.agent.customer.commission,company_id:0
+msgid "Company"
+msgstr "Compagnia"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "June"
+msgstr "Giugno"
+
+#. module: hr_agent
+#: field:sale.order,flag_paid:0
+msgid "Paid"
+msgstr "Pagato"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,state:0
+msgid "Invoice Exception"
+msgstr "Eccezione sulla Fattura"
+
+#. module: hr_agent
+#: field:hr.area.manager.commission,to_revenues:0
+msgid "To Revenues"
+msgstr "al Fatturato"
+
+#. module: hr_agent
+#: field:hr.agent.customer.commission,sale_order_id:0
+msgid "Sale Order"
+msgstr "Ordine"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,price_total:0
+msgid "Total Price"
+msgstr "Prezzo Totale"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+msgid "My Sales"
+msgstr "Vendite mie"
+
+#. module: hr_agent
+#: field:hr.agent.customer.commission,date:0
+msgid "Date"
+msgstr "Data"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,trimester:0
+msgid "Trimester"
+msgstr "Trimestre"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "July"
+msgstr "Luglio"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+msgid "Extended Filters..."
+msgstr "Filtri Estesi..."
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,day:0
+msgid "Day"
+msgstr "Giorno"
+
+#. module: hr_agent
+#: field:hr.area.manager.commission,from_revenues:0
+msgid "From Revenues"
+msgstr "dal Fatturato"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,state:0
+msgid "Quotation"
+msgstr "Preventivo"
+
+#. module: hr_agent
+#: field:hr.agent.commission,customer_id:0
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,customer_id:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "February"
+msgstr "Febbraio"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "October"
+msgstr "Ottobre"
+
+#. module: hr_agent
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Il nome azienda deve essere unico!"
+
+#. module: hr_agent
+#: field:res.partner.zone,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,year:0
+msgid "Year"
+msgstr "Anno"
+
+#. module: hr_agent
+#: model:ir.model,name:hr_agent.model_hr_agent_customer_commission
+msgid "commission to customer's"
+msgstr "provvigione per Cliente"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "January"
+msgstr "Gennaio"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,sale_amount:0
+msgid "Commission Order's"
+msgstr "Provvigione su Ordine"
+
+#. module: hr_agent
+#: model:ir.model,name:hr_agent.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+msgid "Month-1"
+msgstr "Mese in corso -1"
+
+#. module: hr_agent
+#: field:hr.agent.customer.commission,pricelist_id:0
+msgid "Pricelist"
+msgstr "Listino Prezzi"
+
+#. module: hr_agent
+#: field:hr.agent.commission,category_id:0
+msgid "Category Product's"
+msgstr "Categoria Prodotti"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,state:0
+msgid "Manual In Progress"
+msgstr "Manual In Progress"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,month:0
+msgid "Month"
+msgstr "Mese"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,state:0
+msgid "Shipping Exception"
+msgstr "Eccezione sulla Spedizione"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,state:0
+msgid "Cancelled"
+msgstr "Cancelled"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "March"
+msgstr "Marzo"
+
+#. module: hr_agent
+#: model:ir.actions.act_window,name:hr_agent.action_agent_customer_commission
+#: model:ir.ui.menu,name:hr_agent.report_agent_customer_commission
+msgid "reporting commission's Agents"
+msgstr "Relazione provvigioni degli Agenti"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "November"
+msgstr "Novembre"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+msgid "Commissions Agent's"
+msgstr "Provvigioni dell'Agente"
+
+#. module: hr_agent
+#: view:hr.area.manager.commission:0
+#: field:hr.employee,hr_area_manager_commission_ids:0
+#: model:ir.model,name:hr_agent.model_hr_area_manager_commission
+msgid "area manager's fixed commission"
+msgstr "Provvigione fissa per Capoarea"
+
+#. module: hr_agent
+#: field:hr.employee,area_manager_id:0
+#: field:res.company,area_manager_id:0
+msgid "Area Manager"
+msgstr "Capoarea"
+
+#. module: hr_agent
+#: model:ir.model,name:hr_agent.model_res_partner_zone
+msgid "Zone of Commercial agents"
+msgstr "Zona per Agenti"
+
+#. module: hr_agent
+#: field:hr.area.manager.commission,hr_manager_id:0
+msgid "area manager's"
+msgstr "Capoarea"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "April"
+msgstr "Aprile"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "September"
+msgstr "Settembre"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,month:0
+msgid "December"
+msgstr "Dicembre"
+
+#. module: hr_agent
+#: field:hr.agent.customer.commission,amount_for_graph:0
+msgid "Commission Amount"
+msgstr "Importo Provvigione"
+
+#. module: hr_agent
+#: field:res.partner,res_partner_zone_id:0
+#: field:res.partner.zone,res_partner_ids:0
+msgid "zone's membership"
+msgstr "Zona commerciale di appartenenza"
+
+#. module: hr_agent
+#: field:hr.agent.commission,hr_employee_id:0
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,hr_employee_id:0
+#: field:hr.area.manager.commission,agent_id:0
+#: view:hr.employee:0
+#: field:res.company,agent_id:0
+#: field:sale.order,internal_user_id:0
+msgid "Agent"
+msgstr "Agente"
+
+#. module: hr_agent
+#: constraint:hr.employee:0
+msgid "Error ! You cannot create recursive Hierarchy of Employees."
+msgstr "Errore ! Non è possibile creare una gerarchia ricorsiva di dipendenti"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,analytic_account_id:0
+msgid "Analytic Account"
+msgstr "Analytic Account"
+
+#. module: hr_agent
+#: selection:hr.agent.customer.commission,state:0
+msgid "Done"
+msgstr "Done"
+
+#. module: hr_agent
+#: field:sale.order,area_manager_commission:0
+msgid "Area Manager's commission"
+msgstr "Provvigione Capoarea"
+
+#. module: hr_agent
+#: view:hr.agent.customer.commission:0
+#: field:hr.agent.customer.commission,invoice_amount:0
+msgid "Commission Received"
+msgstr "Provvigione Ricevuta"
+
+#. module: hr_agent
+#: model:ir.model,name:hr_agent.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: hr_agent
+#: model:res.groups,name:hr_agent.group_agent
+msgid "Agent / Agent"
+msgstr "Agent / Agent"
+
+#. module: hr_agent
+#: model:ir.model,name:hr_agent.model_sale_order
+msgid "Sales Order"
+msgstr "Ordine di vendita"
+
+#. module: hr_agent
+#: field:res.partner.zone,agent_employee_ids:0
+msgid "agent area's"
+msgstr "Zona dell'agente"
+
+#. module: hr_agent
+#: model:res.groups,name:hr_agent.group_agent_manager
+msgid "Agent / Manager"
+msgstr "Agent / Manager"
+
+#. module: hr_agent
+#: field:hr.employee,is_agent:0
+msgid "is Agent?"
+msgstr "Agente ?"
+

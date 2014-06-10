@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <!-- Add the partner refs to the partner tree -->
+        <record model="ir.ui.view" id="view_partner_tree_ref_inherit">
+            <field name="name">partner_tree_ref.partner.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="ref" position="after">
+                        <field name="property_customer_ref" />
+                        <field name="property_supplier_ref" />
+                    </field>
+                </data>
+            </field>
+        </record>
+        
+        <!-- Add the partner refs to the partner form -->
+        <record model="ir.ui.view" id="view_partner_ref_inherit">
+            <field name="name">partner_ref.partner.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/group/group[2]" position="attributes">
+                        <attribute name="col">4</attribute>
+                    </xpath>
+                    <xpath expr="/form/group/group[2]/field[@name='customer']" position="after">
+                        <field name="property_customer_ref" />
+                    </xpath>
+                    <xpath expr="/form/group/group[2]/field[@name='supplier']" position="after">
+                        <field name="property_supplier_ref" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
+        
+        <!-- Add the partner refs to the partner search-view -->
+        <record id="view_partner_filter_ref_inherit" model="ir.ui.view">
+            <field name="name">partner_filter_ref.partner.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="/search/group/field[@name='user_id']" position="after">
+                   <newline />
+                   <group col='10' colspan='4'>
+                       <field name="property_customer_ref" select="1"/>
+                       <field name="property_supplier_ref" select="1"/>
+                   </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

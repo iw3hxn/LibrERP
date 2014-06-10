@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="hr_document_type_certificate" model="hr.document.type">
+            <field name="name">Certificate</field>
+            <field name="code">CERT</field>
+            <field eval="True" name="has_date_option"/>
+        </record>
+        <record id="hr_document_type_drive_license" model="hr.document.type">
+            <field name="name">Driver License</field>
+            <field name="code">DLNS</field>
+            <field eval="True" name="has_date_option"/>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <!-- Managing Commercial agent's Zones -->
+        <record id="view_res_partner_zones_tree" model="ir.ui.view">
+            <field name="name">view.res.partner.zones.tree</field>
+            <field name="model">res.partner.zone</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Commercial agent's Zones">
+                    <field name="name" select="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_res_partner_zones_form" model="ir.ui.view">
+            <field name="name">view.res.partner.zones.form</field>
+            <field name="model">res.partner.zone</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+               <form string="Commercial agent's Zones">
+		    <group colspan="2" col="2">
+			<field name="name" select="1"/>
+			<newline/>
+			<separator colspan="2"/>
+		    </group>
+		    <newline/>
+		    <group colspan="2" col="2">
+			<field name="province_ids" nolabel="1"/>
+		    </group>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_res_partner_zones" model="ir.actions.act_window">
+	    <field name="name" >Managing Commercial agent's Zones</field>
+	    <field name="res_model" >res.partner.zone</field>
+	    <field name="view_type" >form</field>
+	    <field name="view_mode" >tree,form</field>
+	</record>
+
+        <!-- Menu Definitions -->
+        <menuitem id="manage_zones" name="Commercial agent's Zones" parent="hr.menu_hr_management" action="action_res_partner_zones"/>
+
+        <!-- added field to res.partner -->
+        <record id="view_res_partner_inherit" model="ir.ui.view">
+	    <field name="name">view.res.partner.inherit</field>
+	    <field name="model">res.partner</field>
+	    <field name="type">form</field>
+	    <field name="inherit_id" ref="base.view_partner_form"/>
+	    <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="res_partner_zone_id"/>
+               </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="group_agent_manager" model="res.groups">
+            <field name="name">Agent / Manager</field>
+            <field name="category_id" ref="sale.module_category_sale"/>
+        </record>
+        <record id="group_agent" model="res.groups">
+            <field name="name">Agent / Agent</field>
+            <field name="category_id" ref="sale.module_category_sale"/>
+        </record>
+    </data>
+</openerp>

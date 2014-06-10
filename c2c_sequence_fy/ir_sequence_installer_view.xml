@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+    <record id="view_sequence_configuration_installer" model="ir.ui.view">
+      <field name="name">ir.sequence.installer.form</field>
+      <field name="model">ir.sequence.installer</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="base.res_config_installer"/>
+      <field name="arch" type="xml">
+        <data>
+          <form position="attributes">
+            <attribute name="string">Sequence Configuration</attribute>
+          </form>
+          <separator string="title" position="attributes">
+            <attribute name="string">Configure Sequences</attribute>
+          </separator>
+          <xpath expr="//label[@string='description']" position="attributes">
+            <attribute name="string">You may choose to replace all '(year)' prefix and suffix occurrences by '(fy)'.</attribute>
+          </xpath>
+          <xpath expr="//button[@string='Install Modules']" position="attributes">
+              <attribute name="string">Configure Sequences</attribute>
+          </xpath>
+        </data>
+      </field>
+    </record>
+    <record id="action_sequence_configuration_installer" model="ir.actions.act_window">
+      <field name="name">Convert calendar-year to fiscal-year</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">ir.sequence.installer</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_sequence_configuration_installer"/>
+      <field name="help">For all accounting-based sequences it is better to use the fiscal year instead of the calendar year.</field>
+    </record>
+    <record id="sequence_configuration_installer_todo" model="ir.actions.todo">
+      <field name="action_id" ref="action_sequence_configuration_installer"/>
+      <field name="category_id" ref="account.category_accounting_configuration"/>
+      <field name="type">manual</field>
+    </record>
+  </data>
+</openerp>

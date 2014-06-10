@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <record id="view_task_partner_info_form1" model="ir.ui.view">
+            <field name="name">res.partner.task.info.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="project.view_task_partner_info_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='History']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('task_ids', '=', False), ('opportunity_ids', '=', False), ('meeting_ids', '=', False), ('phonecall_ids', '=', False) ]}</attribute>
+				</xpath>
+				<xpath expr="//page[@string='History']/field[@name='task_ids']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('task_ids', '=', False)]}</attribute>
+				</xpath>
+				
+            </field>
+        </record>
+    </data>
+</openerp>

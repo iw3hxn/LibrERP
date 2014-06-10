@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <record id="view_account_analytic_line_tree_inherit_l10n_it" model="ir.ui.view">
+            <field name="name">account.analytic.line.tree.l10n_it</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="account.view_account_analytic_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="general_account_id"  position="after">
+                    <field name="partner_id"/>
+                    <field name="supplier_invoice_id"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_account_analytic_line_form_inherit_l10n_it" model="ir.ui.view">
+            <field name="name">account.analytic.line.form.l10n_it</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="account.view_account_analytic_line_form"/>
+            <field name="arch" type="xml">
+                <field name="general_account_id"  position="after">
+                   <field name="partner_id"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

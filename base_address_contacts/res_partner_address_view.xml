@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+
+    <record id="base.view_partner_title_tree" model="ir.ui.view">
+        <field name="name">res.partner.title.tree</field>
+        <field name="model">res.partner.title</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Partner Titles" editable="top">
+                <field name="sequence"/>
+                <field name="name" select="1"/>
+                <field name="shortcut" select="1"/>
+                <field name="domain" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_res_contact_function_tree" model="ir.ui.view">
+        <field name="name">res.contact.function.tree</field>
+        <field name="model">res.contact.function</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Contact Function" editable="top">
+                <field name="name" select="1"/>
+            </tree>
+        </field>
+    </record>
+    
+    
+    <!-- Views for Contacts Tree View -->
+
+    <record model="ir.ui.view" id="view_partner_contact_tree">
+        <field name="name">res.partner.address.contact.tree</field>
+        <field name="model">res.partner.address.contact</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Partner Contact">
+                <field name="last_name"/>
+                <field name="first_name"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="lang_id"/>
+                <field name="partner_id"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_partner_contact_form">
+        <field name="name">res.partner.address.contact.form</field>
+        <field name="model">res.partner.address.contact</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Partner Contact">
+                <group colspan="4" col="8">
+                    <field name="address_id" required="1"/>
+                    <newline/>
+                    <field name="title" select="1" widget="selection" domain="[('domain', '=', 'contact')]" size="0"/>
+                    <field name="last_name" select="1"/>
+                    <field name="first_name" select="1"/>
+                    <field name="function_id" widget="selection" />
+                </group>
+                <notebook colspan="4" >
+                    <page string="General">                        
+                       <group colspan="4" col="4">
+                            <group colspan="2" col="4">
+                                <separator string="Communication" colspan="4"/>
+                                <field name="mobile"/>
+                                <field name="email"  widget="email"/>
+                                <field name="website"/>
+                            </group>
+                            <group colspan="2" col="1">
+                                <separator string="Photo" colspan="4"/>
+                                <field name="photo" widget='image' nolabel="1"/>
+                            </group>
+                       </group> 
+                    </page>
+                    <page string="Extra Information">                        
+                        <field name="active"/>
+                        <field name="lang_id" widget="selection"/>
+                        <field name="partner_id" invisible="1" select="1"/>                                
+                        <field name="country_id"/>
+                        <field name="birthdate"/>
+                    </page>
+                    <page string="Notes">
+                        <field name="comment" nolabel="1"/>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+<!-- Views for Contacts Search View -->
+
+    <record model="ir.ui.view" id="view_partner_contact_search">
+        <field name="name">res.partner.address.contact.search</field>
+        <field name="model">res.partner.address.contact</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Partner Contact">
+                <field name="name" select="1"/>
+                <field name="first_name" select="1"/>
+                <field name="partner_id" select="1" string="Partner"/>
+            </search>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_partner_contact_form">
+        <field name="name">Contacts</field>
+        <field name="res_model">res.partner.address.contact</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_partner_contact_tree"/>
+        <field name="search_view_id" ref="view_partner_contact_search"/>
+    </record>
+    
+    <menuitem name="Contacts" id="menu_partner_contact_form" 
+        action="action_partner_contact_form" parent = "base.menu_address_book" 
+        groups = "base.group_extended" sequence="2"/>
+
+    <menuitem id="base.menu_partner_address_form" groups = "base.group_extended" 
+        parent = "base.menu_address_book"  sequence="3"
+        />
+    
+    <record model="ir.ui.view" id="view_partner_form_inherit">
+        <field name="name">Partner form inherited</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="address" mode="form,tree" colspan="4" nolabel="1" select="1" position="replace">
+                <field name="address" mode="form,tree" colspan="4" nolabel="1" select="1">
+                    <form string="Address">
+                       <group  colspan="2" col="2">
+                           <separator string="Postal Address" colspan="2" col="2"/>
+                           <field name="type" />
+                           <field name="street"/>
+                           <field name="street2"/>
+                           <field name="zip"/>
+                           <field name="city"/>
+                           <field name="country_id" completion="1"/>
+                           <field name="state_id"/>
+                        </group>
+                        <group colspan="2" col="2">
+                           <separator string="Communication" colspan="2" col="2"/>
+                           <field name="phone"/>
+                           <field name="mobile" />
+                           <field name="fax"/>
+                           <field name="email" widget="email"/>
+                           <field name="pec" widget="email" />
+                        </group>
+                        <field name="contact_ids" mode="tree,form" nolabel="1" colspan="4">
+                            <tree string="Contacts" editable="top">
+                                <field name="title" />
+                                <field name="last_name" select="1"/>
+                                <field name="first_name" select="1"/>
+                                <field name="function_id" widget="selection"/>
+                                <field name="mobile"/>
+                                <field name="email"/>
+                                <field name="lang_id"/>
+                            </tree>
+                            <form string="Contact">
+                                <group colspan="4" col="6">
+                                    <field name="title" select="1" widget="selection" domain="[('domain', '=', 'contact')]" size="0"/>
+                                    <field name="last_name" select="1"/>
+                                    <field name="first_name" select="1"/>
+                                </group>
+                                <notebook colspan="4" >
+                                    <page string="General">                        
+                                       <group colspan="4" col="4">
+                                            <group colspan="2" col="4">
+                                                <separator string="Communication" colspan="4"/>
+                                                <field name="mobile"/>
+                                                <field name="email"  widget="email"/>
+                                                <field name="website"/>
+                                            </group>
+                                            <group colspan="2" col="1">
+                                                <separator string="Photo" colspan="4"/>
+                                                <field name="photo" widget='image' nolabel="1"/>
+                                            </group>
+                                       </group> 
+                                    </page>
+                                    <page string="Extra Information">                        
+                                        <field name="active"/>
+                                        <field name="lang_id" widget="selection"/>
+                                        <field name="partner_id" invisible="1" select="1"/>
+                                        <field name="function_id" widget="selection"/>
+                                        <field name="country_id"/>
+                                        <field name="birthdate"/>
+                                    </page>
+                                    <page string="Notes">
+                                        <field name="comment" nolabel="1"/>
+                                    </page>
+                                </notebook>
+                            </form>
+                        </field>
+                    </form>
+                    <tree string="Addresses">
+                        <field name="type"/>
+                        <field name="zip"/>
+                        <field name="city"/>
+                        <field name="country_id"/>
+                        <field name="phone"/>
+                    </tree>
+                </field>
+            </field>
+            <field name="category_id" position="replace" />
+            <separator colspan="4" string="Categories" position="replace"/>
+            <notebook position="inside">
+                <page string="Categories">
+                    <separator colspan="4" string="Categories"/>
+                    <field colspan="4" name="category_id" nolabel="1"/>
+                </page>
+            </notebook>
+        </field>
+    </record>
+    
+    
+    
+    
+    
+    
+    <record id="action_function_contact" model="ir.actions.act_window">
+            <field name="name">Contact Function</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.contact.function</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_res_contact_function_tree"/>
+    </record>
+
+        <menuitem action="action_function_contact" id="menu_partner_title_contact" name="Contact Function" parent="base.menu_config_address_book" sequence="4"/>
+
+</data>
+</openerp>

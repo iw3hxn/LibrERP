@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--
+        Product Revenue Stamp
+        -->
+        <record id="unique_revenue_product" model="unique.revenue.product">
+            <field name="name">Marca da bollo</field>
+            <field name="unique_revenue_stamp">True</field>
+        </record>
+
+        <record id="product_revenue_stamp1" model="product.product">
+            <field name="default_code">Bollo</field>
+            <field name="list_price">2.0</field>
+            <field name="standard_price">2.0</field>
+            <field name="name">Marca da Bollo</field>
+            <field name="type">consu</field>
+            <field eval="False" name="purchase_ok"/>
+            <field eval="False" name="sale_ok"/>
+            <field name="unique_revenue_stamp_id" ref="unique_revenue_product"></field>
+        </record>
+    </data>
+</openerp>

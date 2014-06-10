@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+       <report auto="False"
+               id="crm_meeting_report_by_province"
+               model="crm.meeting"
+               name="crm.meeting.province"
+               rml="crm_lead_correct/report/crm_meeting_report_by_province.rml"
+               string="Meeting Report"/>
+    </data>
+</openerp>

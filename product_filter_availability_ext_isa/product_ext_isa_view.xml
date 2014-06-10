@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+ 
+         <record id="product_search_form_view_ext_isa" model="ir.ui.view">
+            <field name="name">product.search.form_ext_isa</field>
+            <field name="model">product.product</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="product.product_search_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//search[@string='Product']//filter[@string='Services']" position="before">
+                    <filter string="Availability > 0" icon="terp-accessories-archiver" context="{'not0':True}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

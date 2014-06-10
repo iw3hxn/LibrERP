@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+    
+    <record model="ir.module.category" id="sale.module_category_sale">
+	    <field name="name">Sale Order</field>
+	    <field name="description">Extend groups for Product</field>
+	    <field name="sequence">20</field>
+	</record>
+    
+    <record id="credit_modifier" model="res.groups">
+        <field name="name">Configuratore Credito</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+    <record id="sale.verify_technical" model="res.groups">
+        <field name="name">Verify Technical</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+    
+    <record id="sale.verify_manager" model="res.groups">
+        <field name="name">Verify Manager</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+    
+    <record id="sale.view_margin" model="res.groups">
+        <field name="name">View Margin</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+    
+    <record id="sale.view_delivered_qty" model="res.groups">
+        <field name="name">View Delivered Qty</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+    
+    <record id="sale.view_qty_warehouse" model="res.groups">
+        <field name="name">View Qty on Warehouse</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+    
+    <record id="sale.view_sale_smart" model="res.groups">
+        <field name="name">View Smart Sale Order</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+
+</data>
+</openerp>

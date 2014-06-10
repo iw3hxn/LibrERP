@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--
+    ======================
+    Documents Type
+    ======================
+    -->
+        <record id="view_document_type_form" model="ir.ui.view">
+            <field name="name">res.car.document.type.form</field>
+            <field name="model">res.car.document.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Document Type">
+                    <group col="4" colspan="4">
+                        <separator colspan="4" string="Define document type"/>
+                        <field name="name" select="1"/>
+                        <field name="code"/>
+                        <field name="has_date_option"/>
+                        <field name="duration" attrs="{'invisible':[('has_date_option','!=',True)]}"/>
+                        <field name="repeatable" attrs="{'invisible':[('has_date_option','!=',True)]}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="view_document_type_tree" model="ir.ui.view">
+            <field name="name">res.car.document.type.tree</field>
+            <field name="model">res.car.document.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Document Type">
+                    <field name="name" select="1"/>
+                    <field name="code"/>
+                    <field name="has_date_option"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_document_type_filter" model="ir.ui.view">
+            <field name="name">res.car.document.type.filter</field>
+            <field name="model">res.car.document.type</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Document Type">
+                    <field name="name"/>
+                    <field name="code" />
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_tree_document_type" model="ir.actions.act_window">
+            <field name="name">Document Type</field>
+            <field name="res_model">res.car.document.type</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_document_type_filter"/>
+        </record>
+       <menuitem action="open_module_tree_document_type" id="menu_res_car_document_type_tree" parent="menu_config_res_car" sequence="6" />
+
+        <!--
+    ======================
+    Documents
+    ======================
+    -->
+ 
+ 
+       <record id="view_document_form" model="ir.ui.view">
+           <field name="name">res.car.document.form</field>
+           <field name="model">res.car.document</field>
+           <field name="type">form</field>
+           <field name="arch" type="xml">
+              <form string="Document">
+                   <notebook>
+                       <page string="Details">
+                            <group colspan="4" col="4">
+                                <field name="name"/>
+                                <field name="document_type_id" widget="selection" on_change="onchange_document_type_id(document_type_id)"/>
+                                <field name="valid_start_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="valid_end_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="has_date_option" invisible="1"/>
+                                <field name="car_id"/>
+                                <field name="active"/>
+                            </group>
+<!--                            <group colspan="4" col="4">
+                                <separator colspan="4" string="Documents" />
+                                <field name="web_gallery_doc_ids" nolabel="1" colspan="4" />
+                            </group>-->
+                       </page>
+                      <page string="Comments">
+                           <field name="comments" nolabel="1"/>
+                       </page>
+                   </notebook>
+               </form>
+          </field>
+       </record>
+       <record id="view_document_tree" model="ir.ui.view">
+           <field name="name">res.car.document.tree</field>
+           <field name="model">res.car.document</field>
+          <field name="type">tree</field>
+           <field name="arch" type="xml">
+              <tree string="Documents" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="name"/>
+                    <field name="document_type_id"/>
+                    <field name="valid_start_date"/>
+                    <field name="valid_end_date"/>
+                    <field name="car_id"/>
+                    <field name="row_color" invisible="1" />
+              </tree>
+           </field>
+       </record>
+       <record id="view_document_filter" model="ir.ui.view">
+           <field name="name">res.car.document.filter</field>
+           <field name="model">res.car.document</field>
+           <field name="type">search</field>
+           <field name="arch" type="xml">
+               <search string="Documents">
+                    <filter icon="terp-personal+" domain="[('active','=',True)]" name="active" string="Active" groups="base.group_extended"/>
+                    <field name="name"/>
+                    <field name="document_type_id" widget="selection"/>
+                    <field name="valid_start_date"/>
+                    <field name="valid_end_date"/>
+                    <field name="car_id" widget="selection" />
+                    <newline/>
+                    <group expand="0" string="Group By..." colspan="11" col="11" groups="base.group_extended">
+                        <filter string="Document Type" icon="terp-personal" domain="[]" context="{'group_by':'document_type_id'}"/>
+                        <filter string="Car" icon="terp-personal" domain="[]" context="{'group_by':'car_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+        <record id="open_module_tree_document" model="ir.actions.act_window">
+           <field name="name">Car's Documents</field>
+          <field name="res_model">res.car.document</field>
+           <field name="view_type">form</field>
+           <field name="search_view_id" ref="view_document_filter"/>
+       </record>
+       
+       <menuitem action="open_module_tree_document" id="menu_res_car_document_tree" parent="hr.menu_hr_main"/>
+       
+<!--
+    ======================
+    Employee
+    ======================
+    -->
+<!-- 
+       <record model="ir.ui.view" id="view_res_car_form_inherit">
+           <field name="name">res.car.form.inherit</field>
+           <field name="type">form</field>
+           <field name="model">res.car</field>
+           <field name="inherit_id" ref="view_res_car_form"/>
+          <field name="arch" type="xml">
+               <notebook position="inside">
+                   <page string="Documents">
+                        <field name="document_ids" nolabel="1">
+                            <form>
+                                <field name="name"/>
+                                <field name="document_type_id" widget="selection" on_change="onchange_document_type_id(document_type_id)"/>
+                                <field name="valid_start_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="valid_end_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="has_date_option" invisible="1"/>
+                                <field name="active"/>
+                            </form>
+                            <tree colors="red:valid_end_date and (valid_end_date&lt;current_date)">
+                                <field name="name"/>
+                                <field name="document_type_id"/>
+                                <field name="valid_start_date"/>
+                                <field name="valid_end_date"/>
+                            </tree> 
+                        </field>
+                  </page>
+               </notebook>
+           </field>
+       </record>-->
+       </data>
+</openerp>

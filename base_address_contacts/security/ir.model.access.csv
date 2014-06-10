@@ -1,0 +1,6 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_res_partner_address_contact_partner_manager","res_partner_address_contact group_partner_manager","model_res_partner_address_contact","base.group_partner_manager",1,1,1,1
+"access_res_partner_address_contact_user","res_partner_address_contact group_user","model_res_partner_address_contact","base.group_user",1,1,1,0
+"access_res_contact_function_partner_manager","res.contact.function group_partner_manager","model_res_contact_function","base.group_partner_manager",1,1,1,1
+"access_res_contact_function_contact_user","res.contact.function group_user","model_res_contact_function","base.group_user",1,0,0,0
+"access_res_partner_address_contact_sale","res_partner_address_contact group_user","model_res_partner_address_contact","base.group_sale_salesman",1,1,1,0

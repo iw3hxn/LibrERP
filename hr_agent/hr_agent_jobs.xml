@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+    
+    <!-- adding 'agent' and 'agent's area Manager' in hr.job -->
+    <record id="agent_agent" model="hr.job">
+      <field name="name">Agente</field>
+    </record>
+
+    <record id="agent_manager" model="hr.job">
+      <field name="name">Agente Capoarea</field>
+    </record>
+   
+  </data>
+</openerp>
+

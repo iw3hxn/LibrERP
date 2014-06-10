@@ -1,0 +1,955 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+         <menuitem name="Asset" id="menu_asset"
+                   web_icon="images/asset.png"
+                   web_icon_hover="images/asset-hover.png"
+                   sequence="6"
+                   groups="material_asset.group_assets_user"/>
+
+        <menuitem id="menu_asset_config" name="Configuration" parent="menu_asset" groups="material_asset.group_assets_manager"/>
+        <menuitem id="menu_asset_asset" name="Assets" parent="menu_asset" sequence="0" />
+        <!--
+        ==========
+         Asset Category
+        ==========
+        -->
+        <record id="view_asset_category_form" model="ir.ui.view">
+            <field name="name">asset.category.form</field>
+            <field name="model">asset.category</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Category">
+                    <field name="name"/>
+                    <field name="parent_id" />
+                    <field name="asset_sequence_id" />
+                    <field name="code"/>
+                    <field name="has_date_option" />
+                </form>
+            </field>
+        </record>
+
+        <record id="view_asset_category_filter" model="ir.ui.view">
+            <field name="name">asset.category.filter</field>
+            <field name="model">asset.category</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Category">
+                    <field name="name"/>
+                    <field name="code"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_asset_category_list" model="ir.ui.view">
+            <field name="name">asset.category.list</field>
+            <field name="model">asset.category</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Category">
+<!--                    <field name="name" />
+                    <field name="parent_id" />-->
+                    <field name="complete_name"/>
+                    <field name="code" />
+                </tree>
+            </field>
+        </record>
+        <record id="action_view_asset_category_list" model="ir.actions.act_window">
+            <field name="name">Asset Category</field>
+            <field name="res_model">asset.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_asset_category_list"
+                  name="Asset Category"
+                  parent="menu_asset_config"
+                  action="action_view_asset_category_list"
+        />
+
+        <record id="view_asset_locations_list" model="ir.ui.view">
+            <field name="name">asset.location.list</field>
+            <field name="model">asset.location.property</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Locations" editable='top'>
+                    <field name="name" readonly="True"/>
+                    <field name="model" readonly="True" />
+                    <field name="stock_location"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_view_asset_locations_list" model="ir.actions.act_window">
+            <field name="name">Asset Locations</field>
+            <field name="res_model">asset.location.property</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_asset_location_list"
+                  name="Asset Location"
+                  parent="menu_asset_config"
+                  action="action_view_asset_locations_list"
+        />
+        
+        <!--Seems that this feature changed in OpenERP 6.1 or requires different sintax-->
+<!--        <record id="view_asset_category_tree2" model="ir.ui.view">
+            <field name="name">asset.category.tree</field>
+            <field name="model">asset.category</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="field_parent">child_id</field>
+            <field name="arch" type="xml">
+                <tree toolbar="True" string="Category">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_view_asset_category_form2" model="ir.actions.act_window">
+            <field name="name">Assets Category</field>
+            <field name="res_model">asset.category</field>
+            <field name="view_type">tree</field>
+            <field name="domain">[('parent_id','=',False)]</field>
+            <field name="view_id" ref="view_asset_category_tree2"/>
+        </record>
+        <menuitem id="menu_asset_category_form"
+                  name="Asset by Category"
+                  parent="menu_asset_asset"
+                  action="action_view_asset_category_form2" />-->
+
+        <record id="asset_normal_action_tree" model="ir.actions.act_window">
+            <field name="name">Assets</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">asset.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('asset_category_id','child_of',[active_id])]</field>
+            <field name="context">{'asset_category_id':active_id}</field>
+        </record>
+        <record id="ir_product_category_open" model="ir.values">
+            <field name="key2" eval="'tree_but_open'" />
+            <field name="model" eval="'asset.category'" />
+            <field name="name">Assets by Categories</field>
+            <field name="value" eval="'ir.actions.act_window,%d'%asset_normal_action_tree" />
+            <field name="object" eval="True" />
+        </record>
+
+        <!--
+        ==========
+         Asset Product
+        ==========
+        -->
+        <!--<record id="view_asset_product_form" model="ir.ui.view">-->
+        <!--    <field name="name">asset.product.form</field>-->
+        <!--    <field name="model">asset.product</field>-->
+        <!--    <field name="type">form</field>        -->
+        <!--    <field name="arch" type="xml">-->
+        <!--        <form string="Asset Product">-->
+        <!--            <group col="6" colspan="4">-->
+        <!--                <field name="name" readonly="1" />-->
+        <!--                <field name="default_code"/>-->
+        <!--                <field name="ean13"/>-->
+        <!--                <field name="asset_category_id" widget="selection" on_change="onchange_category_id(category_id)"/>-->
+        <!--                <field name="uom_id"/>-->
+        <!--                <field name="user" />-->
+        <!--                <field name="has_date_option" invisible="1"/>-->
+        <!--            </group>-->
+        <!--            <newline/>  -->
+        <!--            <notebook colspan="4">-->
+        <!--                <page string="All Assets">-->
+        <!--                    <field name="asset_ids" colspan="4" nolabel="1"-->
+        <!--                        context="{'form_view_ref' : 'view_asset_asset_form1'}">-->
+        <!--                        <tree string="Asset" >-->
+        <!--                            <field name="complete_name"/>-->
+        <!--                            <field name="track_no"/>-->
+        <!--                            <field name="purchase_price"/>-->
+        <!--                            <field name="partner_id"/>-->
+        <!--                            <field name="ven_prod_name"/>-->
+        <!--                            <field name="ven_prod_code"/>-->
+        <!--                            <field name="location_name"/>-->
+        <!--                        </tree>-->
+        <!--                    </field>-->
+        <!--                </page>-->
+        <!--            </notebook>-->
+        <!--        </form>-->
+        <!--    </field>-->
+        <!--</record>-->
+
+        <record id="view_asset_product_tree" model="ir.ui.view">
+            <field name="name">asset.product.tree</field>
+            <field name="model">asset.product</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Asset Product" editable="top">
+                    <field name="name" readonly="1"/>
+                    <field name="code" readonly="1" />
+                    <field name="asset_category_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_asset_product_filter" model="ir.ui.view">
+            <field name="name">asset.product.filter</field>
+            <field name="model">asset.product</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Asset Product" >
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="asset_category_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_view_asset_product_form" model="ir.actions.act_window">
+            <field name="name">Asset Products</field>
+            <field name="res_model">asset.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <!--<field name="view_mode">tree</field>-->
+        </record>
+        <menuitem id="menu_asset_product_form" name="Asset Product" parent="menu_asset_config" action="action_view_asset_product_form" />
+
+
+        <!---
+        ==========
+         Asset property group
+        ==========
+        -->
+        <record id="view_asset_property_group_tree" model="ir.ui.view">
+            <field name="name">asset.property.group.tree</field>
+            <field name="model">asset.property.group</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Asset Property Group" editable="top">
+                    <field name="name" />
+                    <field name="description" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_asset_proprerty_group_form" model="ir.actions.act_window">
+            <field name="name">Asset Property Group</field>
+            <field name="res_model">asset.property.group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_asset_property_group_form" name="Asset Property Group" parent="menu_asset_config" action="action_view_asset_proprerty_group_form" />
+
+        <!--
+        ==========
+         Asset property
+        ==========
+        -->
+        <record id="asset_property_tree_view" model="ir.ui.view">
+            <field name="name">asset.property.tree</field>
+            <field name="model">asset.property</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Properties" >
+                    <field name="group_id"/>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="asset_id"/>
+                    <field name="location" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="asset_property_form_view" model="ir.ui.view">
+            <field name="name">asset.property.form</field>
+            <field name="model">asset.property</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Properties">
+                    <field colspan="4" name="name" select="1"/>
+                    <field name="group_id" select="1"/>
+                    <separator colspan="4" string="Description"/>
+                    <field colspan="4" name="description" nolabel="1"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_asset_proprerty_form" model="ir.actions.act_window">
+            <field name="name">Asset Property</field>
+            <field name="res_model">asset.property</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_asset_property_form" name="Asset Property" parent="menu_asset_config" action="action_view_asset_proprerty_form"/>
+
+<!--
+        <record id="view_asset_property_search" model="ir.ui.view">
+            <field name="name">asset.property.search</field>
+            <field name="model">asset.property</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                   <group col='15' colspan='4'>
+                       <field name="name"/>
+                       <field name="group_id"  widget="selection" />
+                   </group>
+                   <newline/>
+                   <group expand="0" string="Group By..." colspan="4" col="20">
+                        <filter string="Property Group" icon="terp-personal" domain="[]" context="{'group_by':'group_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="asset_property_action" model="ir.actions.act_window">
+            <field name="name">Properties</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">asset.property</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_asset_property_search"/>
+        </record>
+-->
+
+        <!--
+        ==========
+         Asset Use
+        ==========
+        -->
+        <record id="view_asset_use_tree" model="ir.ui.view">
+            <field name="name">asset.use.tree</field>
+            <field name="model">asset.use</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="top" string="Asset Use" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="name" select="1"/>
+                    <field name="color" />
+                    <field name="row_color" invisible="1" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_asset_use_filter" model="ir.ui.view">
+            <field name="name">asset.use.filter</field>
+            <field name="model">asset.use</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Asset Use">
+                    <field name="name"/>
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_tree_asset_use" model="ir.actions.act_window">
+            <field name="name">Asset Use</field>
+            <field name="res_model">asset.use</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_asset_use_tree"/>
+            <field name="search_view_id" ref="view_asset_use_filter"/>
+        </record>
+
+        <menuitem action="open_module_tree_asset_use" id="menu_asset_use_tree" parent="menu_asset_config" sequence="1" groups="material_asset.group_assets_manager"/>
+
+        <!--
+        ==========
+         Asset
+        ==========
+        -->
+
+        <record id="seq_type_res_partner_ref" model="ir.sequence.type">
+            <field name="name">Asset Move</field>
+            <field name="code">asset.move</field>
+        </record>
+
+        <record id="seq_res_partner" model="ir.sequence">
+            <field name="name">Asset Move</field>
+            <field name="code">asset.move</field>
+            <field name="prefix">AMO</field>
+            <field name="padding">5</field>
+        </record>
+
+        <record id="view_asset_asset_form" model="ir.ui.view">
+            <field name="name">asset.asset.form</field>
+            <field name="model">asset.asset</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Asset" >
+                    <field name="name" readonly="1"/>
+                    <field name="new_serial_number" readonly="False" attrs="{'invisible': [('serial_number', '!=', False)]}" />
+                    <field name="serial_number" readonly="True" attrs="{'invisible': [('serial_number', '=', False)]}" />
+
+                    <field name="partner_id" />
+                    <field name="date_start" attrs="{'required': [('has_date_option', '=', True)]}"/>
+                    <field name="date_end" attrs="{'required': [('has_date_option', '=', True)]}"/>
+                    <field name="location" readonly="1"/>
+                    <field name="active" on_change="onchange_active(active)"/>
+                    <field name="has_date_option" invisible="1"/>
+                    <field name="asset_use_id" widget="selection" />
+
+                    <notebook colspan="4">
+                        <page string="Asset Moves">
+                            <field name="asset_moves" colspan="4" nolabel="1" >
+                                <tree string="Asset Moves">
+                                    <field name="date" />
+                                    <field name="source_location" />
+                                    <field name="dest_location" />
+                                    <!--<field name="source_location_name" />-->
+                                    <!--<field name="dest_location_name" />-->
+                                    <field name="picking_id" />
+                                </tree>
+                                <form string="Asset Moves" col="4" >
+                                    <field name="date" colspan="4" />
+                                    <field name="source_location" colspan="2" />
+                                    <field name="dest_location" colspan="2" />
+                                    <!--<field name="source_location_name" colspan="2" />-->
+                                    <!--<field name="dest_location_name" colspan="2" />-->
+                                    <separator string="" colspan="4" />
+                                    <field name="picking_id" />
+                                    <field name="state" invisible="True" />
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Associated Assets">
+                            <field name="asset_ids" nolabel="1" readonly="1">
+                                <tree string="Assets">
+                                    <field name="name" />
+                                    <!--<field name="complete_name" />-->
+                                    <field name="asset_product_id" />
+                                    <field name="serial_number" />
+
+                                    <field name="is_kit" />
+                                    <field name="have_sim" />
+
+                                    <field name="added" />
+                                    <!--<field name="removed" />-->
+
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="All Associated Assets">
+                            <field name="asset_move_line_ids" nolabel="1" readonly="1">
+                                <tree string="Assets">
+                                    <!--<field name="name" />-->
+                                    <!--<field name="complete_name" />-->
+                                    <field name="asset_id" />
+                                    <!--<field name="serial_number" />-->
+
+                                    <!--<field name="is_kit" />-->
+                                    <!--<field name="have_sim" />-->
+
+                                    <!--<field name="added" />-->
+                                    <!--<field name="removed" />-->
+
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="SIM" groups="hr_sim.group_sim_user">
+                            <separator string="Sim" colspan="4" />
+                            <field name="sim_ids" nolabel="1" colspan="4">
+								<tree>
+									<!--<field name="sim_id" />-->
+									<field name="complete_name" />
+                                    <!--<field name="dest_location_name" />-->
+									<field name="location_name" />
+                                    <!--<field name="datetime" string="Added" />-->
+									<!--<field name="return_datetime" />-->
+									<!--<field name="user_id" />-->
+								</tree>
+							</field>
+                        </page>
+                        <page string="All SIMs" groups="hr_sim.group_sim_user">
+                            <separator string="Sim" colspan="4" />
+                            <field name="sim_move_line_ids" nolabel="1" colspan="4">
+								<tree>
+									<field name="sim_id" />
+								</tree>
+							</field>
+                        </page>
+                        <page string="Document">
+                            <field name="document_ids" colspan="4" nolabel="1">
+                                <form>
+                                    <field name="name"/>
+                                    <field name="document_type_id" widget="selection" on_change="onchange_document_type_id(document_type_id)"/>
+                                    <field name="valid_start_date" attrs="{'required': [('has_date_option1','=',True)]}" on_change="onchange_valid_start_date(document_type_id, valid_start_date)" />
+                                    <field name="valid_end_date" attrs="{'required': [('has_date_option1','=',True)]}"/>
+                                    <field name="has_date_option1" invisible="1"/>
+                                    <field name="active"/>
+                                </form>
+                                <tree string="Documents" colors="red: expired">
+                                    <field name="name"/>
+                                    <field name="document_type_id"/>
+                                    <field name="valid_start_date"/>
+                                    <field name="valid_end_date"/>
+                                    <field name="expired" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Note">
+                            <field name="note" nolabel="1" />
+                        </page>
+                        <page string="Image">
+                            <field name="image" widget="image"/>
+                        </page>
+                        <!--<page string="Gallery" groups="base.group_web_gallery" >
+                            <field name="web_gallery_image_ids" />
+                            <newline />
+                            <field name="web_gallery_video_ids" />
+                            <newline />
+							<field name="web_gallery_doc_ids" />
+                        </page>-->
+                        <page string="Other">
+                            <field name="company_id" widget="selection"/>
+                        </page>
+                        <page string="Property">
+                            <field name="property_ids" nolabel="1" >
+                             	<tree editable="top">
+                                    <field name="group_id" widget="selection"/>
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <!--<separator string="Asset Moves" colspan="4" />
+                    <field name="asset_moves" colspan="4" nolabel="1" />-->
+                </form>
+            </field>
+        </record>
+
+        <record id="view_asset_asset_tree" model="ir.ui.view">
+            <field name="name">asset.asset.tree</field>
+            <field name="model">asset.asset</field>
+            <field name="priority" eval="15"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Asset" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="name"/>
+                    <!--<field name="complete_name"/>-->
+                    <field name="asset_product_id"  />
+                    <field name="serial_number"/>
+                    <field name="parents" />
+                    <field name="location" invisible="1" />
+                    <field name="location_name"/>
+                    <field name="active" domain="[('active','=',True),]" invisible="1" />
+                    <field name="asset_use_id" />
+                    <field name="row_color" invisible="1" />
+                    <!--<field name="asset_ids" />-->
+                    <field name="is_kit" />
+                    <field name="have_sim" groups="hr_sim.group_sim_user"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_asset_asset_tree_smart" model="ir.ui.view">
+            <field name="name">asset.asset.tree.smart</field>
+            <field name="model">asset.asset</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="top" string="Asset" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="name"/>
+
+                    <field name="asset_product_id"  readonly="True" />
+                    <field name="serial_number" readonly="True" />
+                    <field name="parents" readonly="True"/>
+                    <field name="location" invisible="1" readonly="True"/>
+                    <field name="location_name" readonly="True"/>
+                    <field name="active" domain="[('active','=',True),]" invisible="1" />
+                    <field name="asset_use_id" widget="selection"/>
+                    <field name="row_color" invisible="1" />
+
+                    <field name="is_kit" />
+                    <field name="have_sim" groups="hr_sim.group_sim_user"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_asset_asset_filter" model="ir.ui.view">
+            <field name="name">asset.asset.select</field>
+            <field name="model">asset.asset</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Asset">
+                    <filter name="old" icon="terp-emblem-important" domain="[('active','=',False)]"  string="Old" groups="base.group_extended"/>
+                    <filter name="is_kit" icon="terp-stock_symbol-selection" domain="[('is_kit','=',True)]" string="Kit" groups="base.group_extended"/>
+                    <filter name="have_sim" icon="terp-call-start" domain="[('have_sim','=',True)]" string="Sim" groups="hr_sim.group_sim_user"/>
+
+                    <field name="name"/>
+                    <field name="asset_product_id"   />
+                   <!-- <field name="complete_name"/> -->
+                    <field name="serial_number"/>
+
+                    <field name="location_name"/>
+                    <field name="asset_use_id" widget="selection" />
+                    <newline/>
+                    <group expand="0" string="Group By..." colspan="11" col="11" groups="base.group_extended">
+                        <filter string="Product" icon="terp-product" domain="[]" context="{'group_by':'asset_product_id'}"/>
+                        <!--<filter string="Location" icon="terp-personal" domain="[]" context="{'group_by':'location_name'}"/>-->
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_view_asset_asset_form" model="ir.actions.act_window">
+            <field name="name">Asset</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">asset.asset</field>
+            <field name="view_type">form</field>
+            <field name="context">{'nocreate': '1'}</field>
+        </record>
+
+        <record id="action_view_asset_asset_form_view1" model="ir.actions.act_window.view">
+            <field eval="10" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_asset_asset_tree"/>
+            <field name="act_window_id" ref="action_view_asset_asset_form"/>
+        </record>
+
+        <record id="action_partner_project_view2" model="ir.actions.act_window.view">
+            <field eval="20" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_asset_asset_form"/>
+            <field name="act_window_id" ref="action_view_asset_asset_form"/>
+        </record>
+
+        <menuitem id="menu_asset_asset_form" name="Assets" parent="menu_asset_asset" action="action_view_asset_asset_form" sequence="0"/>
+
+
+        <record id="action_view_asset_asset_tree_smart" model="ir.actions.act_window">
+            <field name="name">Asset Smart</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">asset.asset</field>
+            <field name="view_type">form</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+        </record>
+
+        <record id="action_view_asset_asset_form_view3" model="ir.actions.act_window.view">
+            <field eval="10" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_asset_asset_tree_smart"/>
+            <field name="act_window_id" ref="action_view_asset_asset_tree_smart"/>
+        </record>
+
+        <menuitem id="menu_asset_asset_tree_smart" name="Assets Smart" parent="menu_asset_asset" action="action_view_asset_asset_tree_smart" sequence="0"/>
+
+        <!--
+        ==========
+         Asset Moves
+        ==========
+        -->
+        <record id="view_asset_move_form" model="ir.ui.view">
+            <field name="name">asset.move.form</field>
+            <field name="model">asset.move</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Asset Move">
+                    <field name="name" readonly="True" />
+                    <!--<field name="source_location"/>-->
+                    <field name="dest_location" readonly="True" />
+                    <!--<field name="datetime" readonly="True" />-->
+                    <field name="date_done" readonly="True" />
+                    <field name="user_id" readonly="True" />
+                    <!--<field name="description" readonly="True" />-->
+                    <field name="note" readonly="True" />
+                    <separator string="Assets" colspan="4"/>
+                    <field name="move_lines" readonly="True" mode="tree" nolabel="1" widget="one2many_list" colspan="4">
+                        <tree string="Asset Lines">
+                            <field name='asset_id' />
+                        </tree>
+                    </field>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_asset_move_tree" model="ir.ui.view">
+            <field name="name">asset.move.tree</field>
+            <field name="model">asset.move</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Asset moves">
+                    <field name="name" />
+                    <field name="move_lines" />
+                    <field name="dest_location_name"/>
+                    <field name="date_done"/>
+                    <field name="user_id" />
+                    <field name="note" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_asset_move_filter" model="ir.ui.view">
+            <field name="name">asset.move.search</field>
+            <field name="model">asset.move</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Asset moves">
+                    <field name="name" />
+                    <field name="dest_location_name"/>
+                    <field name="date_done"/>
+                    <field name="user_id" />
+                </search>
+            </field>
+        </record>
+
+        <record id="action_view_asset_move_form" model="ir.actions.act_window">
+            <field name="name">Asset Moves</field>
+            <field name="res_model">asset.move</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_asset_move_view" name="Asset Moves" parent="menu_asset_asset" action="action_view_asset_move_form" sequence="1" />
+
+        <record id="view_asset_move_line_tree" model="ir.ui.view">
+            <field name="name">asset.move.line.tree</field>
+            <field name="model">asset.move.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Assets">
+                    <field name="asset_id" />
+                    <!--<field name="datetime"/>-->
+                    <field name="date_done"/>
+                    <!--<field name="source_location_name"/>-->
+                    <!--<field name="dest_location_name"/>-->
+                    <field name="source_location"/>
+                    <field name="dest_location"/>
+                    <field name="user_id" />
+                </tree>
+            </field>
+        </record>
+
+        <!--
+        ==========
+        Resource
+        ==========
+        -->
+        <record id="view_asset_res_form" model="ir.ui.view">
+            <field name="name">resource.resource.asset.res.inherit</field>
+            <field name="model">resource.resource</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="resource.resource_resource_form"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="asset_id" attrs="{'required':[('resource_type','=','material')], 'readonly':[('resource_type','=','user')]}"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_employee_form_inherit_material_asset">
+            <field name="name">hr.employee.form.inherit.material.resource</field>
+            <field name="type">form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                   <page string="Assets" groups="material_asset.group_assets_user">
+                        <field name="asset_ids" nolabel="1" />
+                  </page>
+               </notebook>
+             </field>
+       </record>
+
+        <record model="ir.ui.view" id="view_car_form_inherit_material_asset">
+            <field name="name">res.car.form.inherit.material.resource</field>
+            <field name="type">form</field>
+            <field name="model">res.car</field>
+            <field name="inherit_id" ref="hr_auto.view_res_car_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Assets">
+                        <field name="asset_ids" nolabel="1" />
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <!--
+        ======================
+        Documents Type
+        ======================
+        -->
+        <record id="view_document_type_form" model="ir.ui.view">
+            <field name="name">asset.document.type.form</field>
+            <field name="model">asset.document.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Document Type">
+                    <group col="4" colspan="4">
+                        <separator colspan="4" string="Define document type"/>
+                        <field name="name" select="1"/>
+                        <field name="code"/>
+                        <field name="has_date_option1" invisible="True" />
+                        <field name="duration" attrs="{'visible':[('has_date_option1','=',True)]}"/>
+                        <field name="repeatable" attrs="{'visible':[('has_date_option1','=',True)]}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_document_type_tree" model="ir.ui.view">
+            <field name="name">asset.document.type.tree</field>
+            <field name="model">asset.document.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Document Type" editable="top">
+                    <field name="name" select="1"/>
+                    <field name="code"/>
+                    <field name="has_date_option1" invisible="True" />
+                    <!--<field name="has_date_option1" on_change="onchange_has_date_option1(has_date_option1)"/>-->
+<!--                    <field name="duration" attrs="{'readonly':[('has_date_option1','=',False)]}"/>
+                    <field name="repeatable" attrs="{'readonly':[('has_date_option1','=',False)]}"/>-->
+                    <field name="duration"/>
+                    <field name="repeatable" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_document_type_filter" model="ir.ui.view">
+            <field name="name">asset.document.type.filter</field>
+            <field name="model">asset.document.type</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Document Type">
+                    <field name="name"/>
+                    <field name="code" />
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_tree_document_type" model="ir.actions.act_window">
+            <field name="name">Document Type</field>
+            <field name="res_model">asset.document.type</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_document_type_filter"/>
+        </record>
+       <menuitem action="open_module_tree_document_type" id="menu_asset_document_type_tree" parent="menu_asset_config" sequence="6" />
+
+        <!--
+        ======================
+        Documents
+        ======================
+        -->
+       <record id="view_document_form" model="ir.ui.view">
+           <field name="name">asset.document.form</field>
+           <field name="model">asset.document</field>
+           <field name="type">form</field>
+           <field name="arch" type="xml">
+              <form string="Document">
+                   <notebook>
+                       <page string="Details">
+                            <field name="name"/>
+                            <field name="document_type_id" widget="selection" on_change="onchange_document_type_id(document_type_id)"/>
+                            <field name="valid_start_date" attrs="{'required':[('has_date_option1','=',True)]}" on_change="onchange_valid_start_date(document_type_id, valid_start_date)"/>
+                            <field name="valid_end_date" attrs="{'required':[('has_date_option1','=',True)]}"/>
+                            <field name="has_date_option1" invisible="1"/>
+                            <field name="asset_id"/>
+                            <field name="active"/>
+                       </page>
+                      <page string="Comments">
+                           <field name="comments" nolabel="1"/>
+                       </page>
+                   </notebook>
+               </form>
+          </field>
+       </record>
+       
+       <record id="view_document_tree" model="ir.ui.view">
+           <field name="name">asset.document.tree</field>
+           <field name="model">asset.document</field>
+          <field name="type">tree</field>
+           <field name="arch" type="xml">
+              <tree string="Documents" colors="red: expired">
+                    <field name="name"/>
+                    <field name="document_type_id"/>
+                    <field name="valid_start_date"/>
+                    <field name="valid_end_date"/>
+                    <field name="asset_id"/>
+                    <field name="expired" invisible="1"/>
+              </tree>
+           </field>
+       </record>
+
+       <record id="view_document_filter" model="ir.ui.view">
+           <field name="name">asset.document.filter</field>
+           <field name="model">asset.document</field>
+           <field name="type">search</field>
+           <field name="arch" type="xml">
+               <search string="Documents">
+                    <field name="name"/>
+                    <field name="document_type_id" widget="selection"/>
+                    <field name="valid_start_date"/>
+                    <field name="valid_end_date"/>
+               </search>
+            </field>
+        </record>
+
+        <record id="open_module_tree_document" model="ir.actions.act_window">
+            <field name="name">Asset's Documents</field>
+            <field name="res_model">asset.document</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_document_filter"/>
+       </record>
+
+       <menuitem action="open_module_tree_document" id="menu_asset_document_tree" parent="menu_asset_asset"/>
+
+       <record id="view_product_to_asset" model="ir.ui.view">
+            <field name="name">stock.product.to.asset.tree</field>
+            <field name="model">stock.move</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="6" />
+            <field name="arch" type="xml">
+                <tree string="Moves" editable="top">
+                    <field name="product_id" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)"/>
+                    <field name="product_qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)" invisible="1"/>
+                    <field name="product_uom" string="Unit Of Measure" invisible="1"/>
+                    <field name="location_id" domain="[('usage','=','internal'),]"  widget="selection"  />
+                    <field name="location_dest_id" domain="[('usage','=','assets'),]"  widget="selection"/>
+                    <field name="prodlot_id" domain="[('product_id', '=', product_id)]"/>
+                    <field name="new_prodlot_code" />
+                    <field name="date"/>
+                    <field name="state"/>
+                    <button name="action_done" states="draft,assigned,confirmed" string="Process Now" type="object" icon="gtk-jump-to"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_move_product_to_asset_search" model="ir.ui.view">
+            <field name="name">stock.product.to.asset.search</field>
+            <field name="model">stock.move</field>
+            <field name="type">search</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <search string="Stock Moves">
+                    <group col="8" colspan="4">
+                        <filter icon="terp-go-today" string="Today" domain="[('date','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59')),('date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00'))]" help="Orders planned for today"/>
+                        <separator orientation="vertical"/>
+                        <field name="product_id"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record id="action_asset_create" model="ir.actions.act_window">
+            <field name="name">From Product to Asset</field>
+            <field name="res_model">stock.move</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('location_dest_id.usage', '=', 'assets'), ('state','=','draft')]</field>
+            <field name="view_id" ref="view_product_to_asset"/>
+            <field name="search_view_id" ref="view_move_product_to_asset_search"/>
+            <field name="help">Can create asset directly from product on warehouse</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_product_to_asset_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_product_to_asset"/>
+            <field name="act_window_id" ref="action_asset_create"/>
+        </record>
+<!--        <record model="ir.actions.act_window.view" id="action_product_to_asset_form">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_move_product_to_asset_form"/>
+            <field name="act_window_id" ref="action_asset_create"/>
+        </record>-->
+
+        <menuitem action="action_asset_create" id="menu_action_asset_create" parent="stock.menu_stock_products_moves" sequence="2"/>
+
+    </data>
+</openerp>

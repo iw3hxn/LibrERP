@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_partner_credit_modifier_group_form" model="ir.ui.view">
+            <field name="name">res.partner.partner_credit_modifier_group.form</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//form[@string='Partners']//field[@name='credit_limit']" position="replace">
+                        <field name="credit_limit" on_change="onchange_credit_limit(credit_limit)" />
+                        <field name="credit_limit_copy"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,75 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#    
+#    Copyright (C) 2011 Denero Team. (<http://www.deneroteam.com>)
+#    All Rights Reserved
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published
+#    by the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
+import time
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from osv import fields, osv
+from osv.orm import browse_record, browse_null
+from tools.translate import _
+
+
+class purchase_requisition_partner(osv.osv_memory):
+    _inherit = "purchase.requisition.partner"
+    
+    def _get_requisition_suppliers(self, cr, uid, context=None):
+        res = []
+        if context is None:
+            context = {}
+        requisition_id = context.get('active_id', None)
+        prefered = context.get('prefered', False)
+        
+        if prefered:
+            product_id = context.get('product_id', 0)
+        if requisition_id:
+            sql = """
+                SELECT DISTINCT pso.name, pso.sequence
+                FROM purchase_requisition AS req
+                    INNER JOIN purchase_requisition_line AS reql ON reql.requisition_id = req.id
+                    INNER JOIN product_supplierinfo AS pso ON pso.product_id = reql.product_id
+                WHERE req.id = %d
+            """ % (requisition_id)
+            
+            if prefered:
+                sql += """AND pso.product_id={product_id}
+                ORDER BY pso.sequence""".format(product_id=product_id)
+            
+            cr.execute(sql)
+            data = cr.fetchall()
+            
+            if prefered and data:
+                res = [data[0][0]]
+            else:
+                res = [row[0] for row in data]
+        
+        if not res:
+            res = self.pool.get('res.partner').search(cr, uid, [('supplier', '=', True)])
+        
+        return res
+    
+    _columns = {
+        'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True),
+        'partner_id': fields.many2one('res.partner', 'Partner', required=True, domain="[('id', 'in', supplier_ids[0][2])]"),
+    }
+    _defaults = {
+        'supplier_ids': _get_requisition_suppliers,
+    }
+    

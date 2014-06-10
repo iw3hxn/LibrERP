@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<record model="workflow" id="wkf_res_auto_workcenter">
+			<field name="name">res.car.contract.basic</field>
+			<field name="osv">res.car.contract</field>
+            <field name="on_create">True</field>
+		</record>
+
+        # ----------------------------------------------------------- #
+        Activities #
+        -----------------------------------------------------------
+
+        <record id="res_auto_act_wc_draft" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_res_auto_workcenter"/>
+            <field name="flow_start">True</field>
+            <field name="name">draft</field>
+        </record>
+        <!--record model="workflow.activity" id="res_auto_act_wc_confirm">
+            <field name="wkf_id" ref="wkf_res_auto_workcenter" />
+            <field name="name">confirm</field>
+            <field name="kind">function</field>
+            <field name="action">action_confirm()</field>
+        </record>
+        <record model="workflow.activity" id="res_auto_act_wc_cancel">
+            <field name="wkf_id" ref="wkf_res_auto_workcenter" />
+            <field name="name">cancel</field>
+            <field name="kind">function</field>
+            <field name="action">action_cancel()</field>
+        </record-->
+        <record model="workflow.activity" id="res_auto_act_wc_assign">
+            <field name="wkf_id" ref="wkf_res_auto_workcenter" />
+            <field name="name">assign</field>
+            <field name="kind">function</field>
+            <field name="action">action_assigned()</field>
+        </record>
+        <record model="workflow.activity" id="res_auto_act_wc_release">
+            <field name="wkf_id" ref="wkf_res_auto_workcenter" />
+            <field name="name">release</field>
+            <field name="kind">function</field>
+            <field name="action">action_released()</field>
+        </record>
+
+		# ----------------------------------------------------------- #
+		Transition #
+		-----------------------------------------------------------
+
+		<!--record model="workflow.transition" id="prod_trans_wc_draft_confirm">
+			<field name="act_from" ref="res_auto_act_wc_draft" />
+			<field name="act_to" ref="res_auto_act_wc_confirm" />
+			<field name="signal">button_confirm</field>
+		</record>
+		<record model="workflow.transition" id="res_auto_trans_wc_draft_cancel">
+			<field name="act_from" ref="res_auto_act_wc_draft" />
+			<field name="act_to" ref="res_auto_act_wc_cancel" />
+			<field name="signal">button_cancel</field>
+		</record>
+		<record model="workflow.transition" id="res_auto_trans_wc_assign_cancel">
+			<field name="act_from" ref="res_auto_act_wc_assign" />
+			<field name="act_to" ref="res_auto_act_wc_cancel" />
+			<field name="signal">button_cancel</field>
+		</record>
+		<record model="workflow.transition" id="res_auto_trans_wc_confirm_cancel">
+		    <field name="act_from" ref="res_auto_act_wc_confirm" />
+		    <field name="act_to" ref="res_auto_act_wc_cancel" />
+		    <field name="signal">button_cancel</field>
+		</record-->
+		<record model="workflow.transition" id="prod_trans_wc_confirm_assign">
+			<field name="act_from" ref="res_auto_act_wc_draft" />
+			<field name="act_to" ref="res_auto_act_wc_assign" />
+			<field name="signal">button_assigned</field>
+		</record>
+		<record model="workflow.transition" id="prod_trans_wc_assign_release">
+		     <field name="act_from" ref="res_auto_act_wc_assign" />
+		     <field name="act_to" ref="res_auto_act_wc_release" />
+		     <field name="signal">button_released</field>
+		 </record>
+	</data>
+</openerp>

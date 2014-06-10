@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+        <record id="view_account_invoice_filter_by_year" model="ir.ui.view">
+            <field name="name">account.invoice.filter.by.year</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <filter name="unpaid" position="after">
+                    <separator orientation="vertical"/>
+                    <filter icon="terp-go-month"
+                        string="Last Month"
+                        name="last_month"
+                        help="Invoices of the last month"
+                        domain="[('date_invoice', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_invoice', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
+                    />                    
+                    <filter icon="terp-go-month"
+                        string="Current Month"
+                        name="current_month"
+                        help="Invoices of the current month"
+                        domain="[('date_invoice', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_invoice', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
+                    />
+                </filter>
+                <field name="period_id" position="after">
+                    <field name="year" string="Year" />
+                </field>
+            </field>
+        </record>
+    
+    </data>
+</openerp>

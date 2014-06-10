@@ -1,0 +1,187 @@
+-
+  In order to test account invoice I create a new customer invoice (the standard demo data can't be used as we must create the partner with the account, using subaccount module.
+- 
+  Creating a res.partner record
+- 
+  !record {model: res.partner, id: res_partner_miocliente0}:
+    address:
+      - city: Montecchio Maggiore
+        color: 0.0
+        #complete_name: 'extraim: Montecchio Maggiore viauj'
+        country_id: base.it
+        find_city: true
+        province: l10n_it_base.VI
+        region: l10n_it_base.ven
+        street: viauj
+        zip: '36075'
+    block_ref_customer: true
+    credit_limit: 0.0
+    debit_limit: 0.0
+    invoice_warn: no-message
+    name: CLIENTE
+    picking_warn: no-message
+    #property_customer_ref: C096
+    purchase_warn: no-message
+    sale_warn: no-message
+    customer: true
+    charge_revenue_stamp: true
+-
+  Then I verify the partner is present
+- 
+  !assert {model: res.partner, id: res_partner_miocliente0}:
+    - name == 'CLIENTE'
+-
+  In order to test tax computation I create a new customer invoice VAT excluded
+-
+  !record {model: account.invoice, id: account_invoice_customer0}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_zen
+    address_invoice_id: base.res_partner_address_zen
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    #vertical_comp: 1
+    invoice_line:
+      - account_id: account.a_sale
+        name: 'name_sale'
+        price_unit: 40.00
+        quantity: 1.0
+        invoice_line_tax_id:
+            - tax_esc
+      - account_id: account.a_sale
+        name: 'name_sale'
+        price_unit: 40.00
+        quantity: 1.0
+        invoice_line_tax_id:
+            - tax_esc
+    journal_id: account.sales_journal
+    partner_id: res_partner_miocliente0
+    
+-  
+    Compute the total tax.
+-  
+    !python {model: account.invoice}: |
+        self.button_compute(cr, uid, [ref("account_invoice_customer0")])  
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_customer0}
+-
+  Then I verify the tax amount is 0 and the untaxed amount is 80.00+2.00=82.00
+- 
+  !assert {model: account.invoice, id: account_invoice_customer0, string: "The revenue stamp is charged"}:
+    - amount_tax == 0.0
+    - amount_untaxed == 82.00
+- 
+  Creating a res.partner record without charge revenue stamp
+- 
+  !record {model: res.partner, id: res_partner_miocliente2}:
+    address:
+      - city: Montecchio Maggiore
+        color: 0.0
+        #complete_name: 'extraim: Montecchio Maggiore viauj'
+        country_id: base.it
+        find_city: true
+        province: l10n_it_base.VI
+        region: l10n_it_base.ven
+        street: viauj
+        zip: '36075'
+    block_ref_customer: true
+    credit_limit: 0.0
+    debit_limit: 0.0
+    invoice_warn: no-message
+    name: CLIENTE2
+    picking_warn: no-message
+    #property_customer_ref: C096
+    purchase_warn: no-message
+    sale_warn: no-message
+    customer: true
+    #charge_revenue_stamp: true
+-
+  Then I verify the partner is present
+- 
+  !assert {model: res.partner, id: res_partner_miocliente2}:
+    - name == 'CLIENTE2'
+-
+  In order to test tax computation I create a new customer invoice VAT excluded
+-
+  !record {model: account.invoice, id: account_invoice_customer2}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_zen
+    address_invoice_id: base.res_partner_address_zen
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    #vertical_comp: 1
+    invoice_line:
+      - account_id: account.a_sale
+        name: 'name_sale'
+        price_unit: 80.00
+        quantity: 1.0
+        invoice_line_tax_id:
+            - tax_esc
+    journal_id: account.sales_journal
+    partner_id: res_partner_miocliente2
+    
+-  
+    Compute the total tax.
+-  
+    !python {model: account.invoice}: |
+        self.button_compute(cr, uid, [ref("account_invoice_customer2")])  
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_customer2}
+-
+  Then I verify the tax amount is 0 and the untaxed amount is 80.00
+- 
+  !assert {model: account.invoice, id: account_invoice_customer2, string: "The tax are as typed"}:
+    - amount_tax == 0.0
+    - amount_untaxed == 80.00
+-
+  In order to test tax computation I create a new customer invoice VAT normal
+-
+  !record {model: account.invoice, id: account_invoice_customer1}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_zen
+    address_invoice_id: base.res_partner_address_zen
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    #vertical_comp: 1
+    invoice_line:
+      - account_id: account.a_sale
+        name: 'name_sale'
+        price_unit: 50.00
+        quantity: 1.0
+        invoice_line_tax_id:
+            - tax_22
+    journal_id: account.sales_journal
+    partner_id: res_partner_miocliente0
+
+-
+    Compute the total tax
+-
+    !python {model: account.invoice}: |
+        self.button_compute(cr, uid, [ref("account_invoice_customer1")])
+-
+    Change the tax amount manually.
+-
+    !python {model: account.invoice}: |
+        inv = self.browse(cr, uid, ref('account_invoice_customer1'))
+        inv.tax_line[0].write({'tax_amount' : '11.01', 'amount' : '11.01'})
+        inv.write({'amount_tax' : '11.01'})
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_customer1}
+-
+  Then I verify the tax amount is that I manually inserted 50x0.22=11.00 forced 11.01
+-
+  !assert {model: account.invoice, id: account_invoice_customer1, string: "The tax are as typed"}:
+    - amount_tax == 11.01
+-
+  Then I verify the base amount is 50.00
+-
+  !assert {model: account.invoice, id: account_invoice_customer1, string: "The tax are as typed"}:
+    - amount_untaxed == 50.00

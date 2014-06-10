@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Payment term -->
+	<!-- Direct payment -->
+        <record id="payment_direct" model="account.payment.term">
+            <field name="name">Rimessa Diretta</field>
+            <field name="note">Rimessa Diretta</field>
+            <field name="type">RD</field>
+        </record>
+        <record id="payment_direct_line" model="account.payment.term.line">
+            <field name="name">Rimessa Diretta</field>
+            <field name="value">balance</field>
+            <field eval="0" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_direct" name="payment_id"/>
+        </record>
+
+	<!-- Payment Same day of Month -->
+	
+		<record id="payment_term_15_net_1" model="account.payment.term">
+            <field name="name">B.B. 15 GG D.F.</field>
+            <field name="note">B.B. 15 Giorni Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_15_net_line" model="account.payment.term.line">
+            <field eval="1" name="sequence"/>
+            <field name="name">15 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="15" name="days"/>
+            <field eval="0" name="days2"/>
+            <field name="payment_id" eval="payment_term_15_net_1"/>
+        </record>
+
+		<record id="payment_term_45_net_1" model="account.payment.term">
+            <field name="name">B.B. 45 GG D.F.</field>
+            <field name="note">B.B. 45 Giorni Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_45_net_line" model="account.payment.term.line">
+            <field eval="1" name="sequence"/>
+            <field name="name">45 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="45" name="days"/>
+            <field eval="0" name="days2"/>
+            <field name="payment_id" eval="payment_term_45_net_1"/>
+        </record>
+		
+        <record id="payment_term_60_net_1" model="account.payment.term">
+            <field name="name">B.B. 60 GG D.F.</field>
+            <field name="note">B.B. 60 Giorni Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_60_net_line" model="account.payment.term.line">
+            <field eval="1" name="sequence"/>
+            <field name="name">60 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="60" name="days"/>
+            <field eval="0" name="days2"/>
+            <field name="payment_id" eval="payment_term_60_net_1"/>
+        </record>
+
+        <record id="payment_term_90_net_1" model="account.payment.term">
+            <field name="name">B.B. 90 GG D.F.</field>
+            <field name="note">B.B. 90 Giorni Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_90_net_line" model="account.payment.term.line">
+            <field name="name">90 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="90" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_90_net_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_120_net_1" model="account.payment.term">
+            <field name="name">B.B. 120 GG D.F.</field>
+            <field name="note">B.B. 120 Giorni Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_120_net_line" model="account.payment.term.line">
+            <field name="name">120 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="120" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_120_net_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_30_60_net_2" model="account.payment.term">
+            <field name="name">B.B. 30/60 GG D.F.</field>
+            <field name="note">B.B. 30/60 GG Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_30_60_net_line1" model="account.payment.term.line">
+            <field name="name">30 Giorni</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="30" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_30_60_net_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_30_60_net_line2" model="account.payment.term.line">
+            <field name="name">60 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="60" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_30_60_net_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_60_90_net_2" model="account.payment.term">
+            <field name="name">B.B. 60/90 GG D.F.</field>
+            <field name="note">B.B. 60/90 GG Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_60_90_net_line1" model="account.payment.term.line">
+            <field name="name">60 Giorni</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="60" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_60_90_net_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_60_90_net_line2" model="account.payment.term.line">
+            <field name="name">90 giorni</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="90" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_60_90_net_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_90_120_net_2" model="account.payment.term">
+            <field name="name">B.B. 90/120 GG D.F.</field>
+            <field name="note">B.B. 90/120 GG Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_90_120_net_line1" model="account.payment.term.line">
+            <field name="name">90 Giorni</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="90" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_90_120_net_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_90_120_net_line2" model="account.payment.term.line">
+            <field name="name">120 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="120" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_90_120_net_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_30_60_90_net_3" model="account.payment.term">
+            <field name="name">B.B. 30/60/90 GG D.F.</field>
+            <field name="note">B.B 30/60/90 GG Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="3_payment_term_30_60_90_net_line1" model="account.payment.term.line">
+            <field name="name">30 Giorni</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.333334" name="value_amount"/>
+            <field eval="30" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_30_60_90_net_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_30_60_90_net_line2" model="account.payment.term.line">
+            <field name="name">60 Giorni</field>
+            <field name="value">procent</field>
+            <field eval="2" name="sequence"/>
+            <field eval="0.333333" name="value_amount"/>
+            <field eval="60" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_30_60_90_net_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_30_60_90_net_line3" model="account.payment.term.line">
+            <field name="name">90 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="3" name="sequence"/>
+            <field eval="90" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_30_60_90_net_3" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_60_90_120_net_3" model="account.payment.term">
+            <field name="name">B.B. 60/90/120 GG D.F.</field>
+            <field name="note">B.B. 60/90/120 GG Data Fattura</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="3_payment_term_60_90_120_net_line1" model="account.payment.term.line">
+            <field name="name">60 Giorni</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.333334" name="value_amount"/>
+            <field eval="60" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_60_90_120_net_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_60_90_120_net_line2" model="account.payment.term.line">
+            <field name="name">90 Giorni</field>
+            <field name="value">procent</field>
+            <field eval="2" name="sequence"/>
+            <field eval="0.333333" name="value_amount"/>
+            <field eval="90" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_60_90_120_net_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_60_90_120_net_line3" model="account.payment.term.line">
+            <field name="name">120 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="3" name="sequence"/>
+            <field eval="120" name="days"/>
+            <field eval="0" name="days2"/>
+            <field eval="payment_term_60_90_120_net_3" name="payment_id"/>
+        </record>
+
+	<!-- Payment End of Month -->
+	<record id="payment_term_60_days_1" model="account.payment.term">
+            <field name="name">B.B. 60 GG D.F. F.M.</field>
+            <field name="note">B.B. 60 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_60_days_line" model="account.payment.term.line">
+            <field name="name">60 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="2" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_60_days_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_90_days_1" model="account.payment.term">
+            <field name="name">B.B. 90 GG D.F. F.M.</field>
+            <field name="note">B.B. 90 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_90_days_line" model="account.payment.term.line">
+            <field name="name">90 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="3" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_90_days_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_120_days_1" model="account.payment.term">
+            <field name="name">B.B. 120 GG D.F. F.M.</field>
+            <field name="note">B.B. 120 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_120_days_line" model="account.payment.term.line">
+            <field name="name">120 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="4" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_120_days_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_30_60_days_2" model="account.payment.term">
+            <field name="name">B.B. 30/60 GG D.F. F.M.</field>
+            <field name="note">B.B. 30/60 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_30_60_days_line1" model="account.payment.term.line">
+            <field name="name">30 Giorni Data fattura Fine Mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="1" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_30_60_days_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_30_60_days_line2" model="account.payment.term.line">
+            <field name="name">60 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="2" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_30_60_days_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_60_90_days_2" model="account.payment.term">
+            <field name="name">B.B. 60/90 GG D.F. F.M.</field>
+            <field name="note">B.B. 60/90 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_60_90_days_line1" model="account.payment.term.line">
+            <field name="name">60 Giorni Data fattura Fine Mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="2" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_60_90_days_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_60_90_days_line2" model="account.payment.term.line">
+            <field name="name">90 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="3" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_60_90_days_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_90_120_days_2" model="account.payment.term">
+            <field name="name">B.B. 90/120 GG D.F. F.M.</field>
+            <field name="note">B.B. 90/120 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_90_120_days_line1" model="account.payment.term.line">
+            <field name="name">90 Giorni Data fattura Fine Mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="3" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_90_120_days_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_90_120_days_line2" model="account.payment.term.line">
+            <field name="name">120 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="4" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_90_120_days_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_30_60_90_days_3" model="account.payment.term">
+            <field name="name">B.B. 30/60/90 GG D.F. F.M.</field>
+            <field name="note">B.B. 30/60/90 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="3_payment_term_30_60_90_days_line1" model="account.payment.term.line">
+            <field name="name">30 Giorni Data fattura Fine Mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.333334" name="value_amount"/>
+            <field eval="1" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_30_60_90_days_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_30_60_90_days_line2" model="account.payment.term.line">
+            <field name="name">60 Giorni Data fattura Fine Mese</field>
+            <field name="value">procent</field>
+            <field eval="2" name="sequence"/>
+            <field eval="0.333333" name="value_amount"/>
+            <field eval="2" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_30_60_90_days_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_30_60_90_days_line3" model="account.payment.term.line">
+            <field name="name">90 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="3" name="sequence"/>
+            <field eval="3" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_30_60_90_days_3" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_60_90_120_days_3" model="account.payment.term">
+            <field name="name">B.B. 60/90/120 GG D.F. F.M.</field>
+            <field name="note">B.B. 60/90/120 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="3_payment_term_60_90_120_days_line1" model="account.payment.term.line">
+            <field name="name">60 Giorni Data fattura Fine Mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.333334" name="value_amount"/>
+            <field eval="2" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_60_90_120_days_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_60_90_120_days_line2" model="account.payment.term.line">
+            <field name="name">90 Giorni Data fattura Fine Mese</field>
+            <field name="value">procent</field>
+            <field eval="2" name="sequence"/>
+            <field eval="0.333333" name="value_amount"/>
+            <field eval="3" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_60_90_120_days_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_60_90_120_days_line3" model="account.payment.term.line">
+            <field name="name">120 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="3" name="sequence"/>
+            <field eval="4" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field eval="payment_term_60_90_120_days_3" name="payment_id"/>
+        </record>
+
+	<!-- Payment Day 10 of Month -->
+        <record id="payment_term_30_days_10_monthly_1" model="account.payment.term">
+            <field name="name">B.B. 30 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 30 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_30_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">30 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="1" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_30_days_10_monthly_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_60_days_10_monthly_1" model="account.payment.term">
+            <field name="name">B.B. 60 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 60 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_60_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">60 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="2" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_60_days_10_monthly_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_90_days_10_monthly_1" model="account.payment.term">
+            <field name="name">B.B. 90 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 90 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_90_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">90 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="3" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_90_days_10_monthly_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_120_days_10_monthly_1" model="account.payment.term">
+            <field name="name">B.B. 120 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 120 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="1_payment_term_120_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">120 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="4" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_120_days_10_monthly_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_30_60_days_10_monthly_2" model="account.payment.term">
+            <field name="name">B.B. 30/60 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 30/60 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_30_60_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">30 Giorni - 10 del mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="1" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_30_60_days_10_monthly_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_30_60_days_10_monthly_line2" model="account.payment.term.line">
+            <field name="name">60 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="2" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_30_60_days_10_monthly_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_60_90_days_10_monthly_2" model="account.payment.term">
+            <field name="name">B.B. 60/90 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 60/90 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_60_90_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">60 Giorni - 10 del mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="2" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_60_90_days_10_monthly_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_60_90_days_10_monthly_line2" model="account.payment.term.line">
+            <field name="name">90 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="3" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_60_90_days_10_monthly_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_90_120_days_10_monthly_2" model="account.payment.term">
+            <field name="name">B.B. 90/120 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 90/120 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="2_payment_term_90_120_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">90 Giorni - 10 del mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.50" name="value_amount"/>
+            <field eval="3" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_90_120_days_10_monthly_2" name="payment_id"/>
+        </record>
+        <record id="2_payment_term_90_120_days_10_monthly_line2" model="account.payment.term.line">
+            <field name="name">120 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="2" name="sequence"/>
+            <field eval="4" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_90_120_days_10_monthly_2" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_30_60_90_days_10_monthly_3" model="account.payment.term">
+            <field name="name">B.B. 30/60/90 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 30/60/90 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="3_payment_term_30_60_90_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">30 Giorni - 10 del mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.333334" name="value_amount"/>
+            <field eval="1" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_30_60_90_days_10_monthly_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_30_60_90_days_10_monthly_line2" model="account.payment.term.line">
+            <field name="name">60 Giorni - 10 del mese</field>
+            <field name="value">procent</field>
+            <field eval="2" name="sequence"/>
+            <field eval="0.333333" name="value_amount"/>
+            <field eval="2" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_30_60_90_days_10_monthly_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_30_60_90_days_10_monthly_line3" model="account.payment.term.line">
+            <field name="name">90 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="3" name="sequence"/>
+            <field eval="3" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_30_60_90_days_10_monthly_3" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_60_90_120_days_10_monthly_3" model="account.payment.term">
+            <field name="name">B.B. 60/90/120 GG D.F. F.M. AL 10 MESE SUCC.</field>
+            <field name="note">B.B. 60/90/120 Giorni Data Fattura Fine Mese al 10 del mese successivo</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="3_payment_term_60_90_120_days_10_monthly_line1" model="account.payment.term.line">
+            <field name="name">60 Giorni - 10 del mese</field>
+            <field name="value">procent</field>
+            <field eval="1" name="sequence"/>
+            <field eval="0.333334" name="value_amount"/>
+            <field eval="2" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_60_90_120_days_10_monthly_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_60_90_120_days_10_monthly_line2" model="account.payment.term.line">
+            <field name="name">90 Giorni - 10 del mese</field>
+            <field name="value">procent</field>
+            <field eval="2" name="sequence"/>
+            <field eval="0.333333" name="value_amount"/>
+            <field eval="3" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_60_90_120_days_10_monthly_3" name="payment_id"/>
+        </record>
+        <record id="3_payment_term_60_90_120_days_10_monthly_line3" model="account.payment.term.line">
+            <field name="name">120 Giorni - 10 del mese</field>
+            <field name="value">balance</field>
+            <field eval="3" name="sequence"/>
+            <field eval="4" name="months"/>
+            <field eval="10" name="days2"/>
+            <field eval="payment_term_60_90_120_days_10_monthly_3" name="payment_id"/>
+        </record>
+
+    </data>
+</openerp>

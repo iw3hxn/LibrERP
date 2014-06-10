@@ -1,0 +1,256 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* customer_import
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-20130325-004646\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-24 19:04+0000\n"
+"PO-Revision-Date: 2013-07-24 19:04+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: customer_import
+#: view:filedata.import:0
+msgid "Chiudi"
+msgstr "Chiudi"
+
+#. module: customer_import
+#: view:filedata.import:0
+msgid "Inizia Importazione"
+msgstr "Inizia Importazione"
+
+#. module: customer_import
+#: field:filedata.import,content_base64:0
+msgid "Customers file path"
+msgstr "Clienti da importare"
+
+#. module: customer_import
+#: selection:filedata.import,state:0
+msgid "end"
+msgstr "fine"
+
+#. module: customer_import
+#: field:filedata.import,progress_indicator:0
+msgid "Progress import "
+msgstr "Progresso... "
+
+#. module: customer_import
+#: code:addons/customer_import/utils/importer.py:331
+#, python-format
+msgid "Errore importazione Customer"
+msgstr "Errore importazione Customer"
+
+#. module: customer_import
+#: code:addons/customer_import/utils/importer.py:127
+#, python-format
+msgid "Importazione Clienti completa"
+msgstr "Importazione Clienti completa"
+
+#. module: customer_import
+#: field:filedata.import,config_logo:0
+msgid "Image"
+msgstr "Immagine"
+
+#. module: customer_import
+#: model:ir.model,name:customer_import.model_filedata_import
+msgid "Import customers from file in .xls format."
+msgstr "Importazione clienti da file in formato .xls"
+
+#. module: customer_import
+#: field:filedata.import,state:0
+msgid "state"
+msgstr "stato"
+
+#. module: customer_import
+#: field:filedata.import,file_name:0
+msgid "Nome File"
+msgstr "Nome File"
+
+#. module: customer_import
+#: model:ir.ui.menu,name:customer_import.menu_customers_import_file
+msgid "Import Customers"
+msgstr "Importa Clienti"
+
+#. module: customer_import
+#: code:addons/customer_import/utils/importer.py:234
+#, python-format
+msgid "Più di un Partner '{0}' trovato\".format(vals_partner['name']))\n"
+"                    err_string = u'line {0}, {1}'.format(self.importedLines, error)\n"
+"                    _logger.debug(err_string)\n"
+"                    self.error.append(err_string)\n"
+"            else:\n"
+"                partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)\n"
+"                self.uo_new += 1\n"
+"                cr.commit()\n"
+"                self.partner_obj.write(cr, uid, partner_id, {'customer': True}, self.context)\n"
+"        except Exception, e:\n"
+"            error = _(e)\n"
+"            err_string = u'line {0}, {1}\n"
+"Dati: {2}'.format(self.importedLines, error, vals_partner)\n"
+"            _logger.debug(err_string)\n"
+"            self.error.append(err_string)\n"
+"            return False\n"
+"\n"
+"        # manage default address customer\n"
+"        vals_address = {}\n"
+"        if 'ind' in vals_input and vals_input['ind'] not in ('', False, None, 0, []):\n"
+"            vals_address['partner_id'] = partner_id\n"
+"            vals_address['type'] = 'default'\n"
+"            vals_address['street'] = vals_input['ind']\n"
+"            vals_address['active'] = True\n"
+"            vals_address['country_id'] = self.italy_id\n"
+"\n"
+"            if 'loc' in vals_input and vals_input['loc'] not in ('', False, None, 0, []):\n"
+"                vals_address['city'] = vals_input['loc'].title()\n"
+"\n"
+"            if 'e.mail' in vals_input and vals_input['e.mail'] not in ('', False, None, 0, []):\n"
+"                vals_address['email'] = vals_input['e.mail']\n"
+"\n"
+"            if 'tel' in vals_input and vals_input['tel'] not in ('', False, None, 0, []):\n"
+"                tmp_tel = vals_input['tel'].replace(' ', '')\n"
+"                if tmp_tel.isdigit():\n"
+"                    vals_address['phone'] = vals_input['tel']\n"
+"\n"
+"            if 'cell' in vals_input and vals_input['cell'] not in ('', False, None, 0, []):\n"
+"                tmp_tel = vals_input['cell'].replace(' ', '')\n"
+"                if tmp_tel.isdigit():\n"
+"                    vals_address['mobile'] = vals_input['cell']\n"
+"\n"
+"            if 'cap' in vals_input and vals_input['cap'] not in ('', False, None, 0, []):\n"
+"                vals_address['zip'] = vals_input['cap']\n"
+"            else:\n"
+"                if 'city' in vals_address:\n"
+"                    city_ids = self.city_obj.search(cr, uid, [('name', '=', vals_address['city'])])\n"
+"                    if city_ids not in ('', False, None, 0, []):\n"
+"                        city_data = self.city_obj.read(cr, uid, city_ids[0], ['zip'], None)\n"
+"                        vals_address['zip'] = city_data['zip']\n"
+"\n"
+"            if 'prov' in vals_input and vals_input['prov'] not in ('', False, None, 0, []):\n"
+"                province_ids = self.province_obj.search(cr, uid, [('code', '=', vals_input['prov'].upper())])\n"
+"                if province_ids not in ('', False, None, 0, []):\n"
+"                    vals_address['province'] = province_ids[0]\n"
+"                    province_data = self.province_obj.read(cr, uid, province_ids[0], ['region'], None)\n"
+"                    vals_address['region'] = province_data['region'][0]\n"
+"                \n"
+"            address_ids = self.address_obj.search(cr, uid, [('partner_id', '=', vals_address['partner_id']), ('type', '=', 'default')])\n"
+"            if address_ids:\n"
+"                address_id = address_ids[0]\n"
+"                self.address_obj.write(cr, uid, address_id, vals_address)\n"
+"            else:\n"
+"                address_id = self.address_obj.create(cr, uid, vals_address)\n"
+"            cr.commit()\n"
+"\n"
+"        return partner_id\n"
+"        \n"
+"    def notifySuccessfulImport(self, info):\n"
+"        EOL = '\n"
+"<br>'\n"
+"        \n"
+"        body = \"File '{0}' {1}{1}\".format(self.file_name, EOL)\n"
+"        body += _(\"Importate righe: {0}{1}Modificate righe: {2}{1}Righe non importate: {3}"
+msgstr "Più di un Partner '{0}' trovato\".format(vals_partner['name']))\n"
+"                    err_string = u'line {0}, {1}'.format(self.importedLines, error)\n"
+"                    _logger.debug(err_string)\n"
+"                    self.error.append(err_string)\n"
+"            else:\n"
+"                partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)\n"
+"                self.uo_new += 1\n"
+"                cr.commit()\n"
+"                self.partner_obj.write(cr, uid, partner_id, {'customer': True}, self.context)\n"
+"        except Exception, e:\n"
+"            error = _(e)\n"
+"            err_string = u'line {0}, {1}\n"
+"Dati: {2}'.format(self.importedLines, error, vals_partner)\n"
+"            _logger.debug(err_string)\n"
+"            self.error.append(err_string)\n"
+"            return False\n"
+"\n"
+"        # manage default address customer\n"
+"        vals_address = {}\n"
+"        if 'ind' in vals_input and vals_input['ind'] not in ('', False, None, 0, []):\n"
+"            vals_address['partner_id'] = partner_id\n"
+"            vals_address['type'] = 'default'\n"
+"            vals_address['street'] = vals_input['ind']\n"
+"            vals_address['active'] = True\n"
+"            vals_address['country_id'] = self.italy_id\n"
+"\n"
+"            if 'loc' in vals_input and vals_input['loc'] not in ('', False, None, 0, []):\n"
+"                vals_address['city'] = vals_input['loc'].title()\n"
+"\n"
+"            if 'e.mail' in vals_input and vals_input['e.mail'] not in ('', False, None, 0, []):\n"
+"                vals_address['email'] = vals_input['e.mail']\n"
+"\n"
+"            if 'tel' in vals_input and vals_input['tel'] not in ('', False, None, 0, []):\n"
+"                tmp_tel = vals_input['tel'].replace(' ', '')\n"
+"                if tmp_tel.isdigit():\n"
+"                    vals_address['phone'] = vals_input['tel']\n"
+"\n"
+"            if 'cell' in vals_input and vals_input['cell'] not in ('', False, None, 0, []):\n"
+"                tmp_tel = vals_input['cell'].replace(' ', '')\n"
+"                if tmp_tel.isdigit():\n"
+"                    vals_address['mobile'] = vals_input['cell']\n"
+"\n"
+"            if 'cap' in vals_input and vals_input['cap'] not in ('', False, None, 0, []):\n"
+"                vals_address['zip'] = vals_input['cap']\n"
+"            else:\n"
+"                if 'city' in vals_address:\n"
+"                    city_ids = self.city_obj.search(cr, uid, [('name', '=', vals_address['city'])])\n"
+"                    if city_ids not in ('', False, None, 0, []):\n"
+"                        city_data = self.city_obj.read(cr, uid, city_ids[0], ['zip'], None)\n"
+"                        vals_address['zip'] = city_data['zip']\n"
+"\n"
+"            if 'prov' in vals_input and vals_input['prov'] not in ('', False, None, 0, []):\n"
+"                province_ids = self.province_obj.search(cr, uid, [('code', '=', vals_input['prov'].upper())])\n"
+"                if province_ids not in ('', False, None, 0, []):\n"
+"                    vals_address['province'] = province_ids[0]\n"
+"                    province_data = self.province_obj.read(cr, uid, province_ids[0], ['region'], None)\n"
+"                    vals_address['region'] = province_data['region'][0]\n"
+"                \n"
+"            address_ids = self.address_obj.search(cr, uid, [('partner_id', '=', vals_address['partner_id']), ('type', '=', 'default')])\n"
+"            if address_ids:\n"
+"                address_id = address_ids[0]\n"
+"                self.address_obj.write(cr, uid, address_id, vals_address)\n"
+"            else:\n"
+"                address_id = self.address_obj.create(cr, uid, vals_address)\n"
+"            cr.commit()\n"
+"\n"
+"        return partner_id\n"
+"        \n"
+"    def notifySuccessfulImport(self, info):\n"
+"        EOL = '\n"
+"<br>'\n"
+"        \n"
+"        body = \"File '{0}' {1}{1}\".format(self.file_name, EOL)\n"
+"        body += _(\"Importate righe: {0}{1}Modificate righe: {2}{1}Righe non importate: {3}"
+
+#. module: customer_import
+#: model:ir.actions.act_window,name:customer_import.customers_file_import
+msgid "Importazione Clienti in formato Excel (xls)"
+msgstr "Importazione Clienti in formato Excel (xls)"
+
+#. module: customer_import
+#: view:filedata.import:0
+msgid "Import file. Verra segnalata la fine del'importazione, nelle 'Richieste' (Configurazione -> Personalizzazione -> Oggetti Basso Livello -> Richieste -> Richieste)."
+msgstr "Import file. Verra segnalata la fine del'importazione, nelle 'Richieste' (Configurazione -> Personalizzazione -> Oggetti Basso Livello -> Richieste -> Richieste)."
+
+#. module: customer_import
+#: selection:filedata.import,state:0
+msgid "import"
+msgstr "Importa"
+
+#. module: customer_import
+#: view:filedata.import:0
+msgid "Annulla"
+msgstr "Annulla"
+
+#. module: customer_import
+#: field:filedata.import,content_text:0
+msgid "File Customers"
+msgstr "File dei Clienti"
+

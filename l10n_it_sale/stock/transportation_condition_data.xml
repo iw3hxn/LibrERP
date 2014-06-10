@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="transportation_condition_DEST" model="stock.picking.transportation_condition">
+            <field name="name">DESTINATARIO</field>
+        </record>
+        <record id="transportation_condition_MITT" model="stock.picking.transportation_condition">
+            <field name="name">MITTENTE</field>
+        </record>
+        <record id="transportation_condition_VETT" model="stock.picking.transportation_condition">
+            <field name="name">VETTORE</field>
+        </record>
+     </data>
+</openerp>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="crm.crm_case_categ_tree-view" model="ir.ui.view">
+            <field name="name">crm.case.categ.tree</field>
+            <field name="model">crm.case.categ</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Case Category" editable="top" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="name"/>
+                    <field name="color" />
+                    <field name="row_color" invisible="1" />
+                    <field name="object_id" invisible="1"/>
+                    <field name="section_id"/>
+                    
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

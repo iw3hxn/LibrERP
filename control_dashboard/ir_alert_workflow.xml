@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="wkf_ir_alert" model="workflow">
+            <field name="name">ir.alert.basic</field>
+            <field name="osv">ir.alert</field>
+            <field name="on_create">True</field>
+        </record>
+        <!-- Activity -->
+        <record id="act_open" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_ir_alert"/>
+            <field name="flow_start">True</field>
+            <field name="name">open</field>
+        </record>
+        <record id="act_pending" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_ir_alert"/>
+            <field name="name">pending</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'pending'})</field>
+            <field name="join_mode">AND</field>
+        </record>
+        
+        <record id="act_done" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_ir_alert"/>
+            <field name="name">done</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'done'})</field>
+            <field name="join_mode">AND</field>
+        </record>
+        
+        <record id="act_cancel" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_ir_alert"/>
+            <field name="name">cancel</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">stopall</field>
+            <field name="action">action_cancel()</field>
+        </record>
+
+
+        <!-- Transition -->
+        
+        <record id="trans_open_pending" model="workflow.transition">
+            <field name="act_from" ref="act_open"/>
+            <field name="act_to" ref="act_pending"/>
+            <field name="signal">pending</field>
+        </record>
+   
+        <record id="trans_pending_done" model="workflow.transition">
+            <field name="act_from" ref="act_pending"/>
+            <field name="act_to" ref="act_done"/>
+            <field name="signal">alert_confirm</field>
+        </record>
+
+        <record id="trans_open_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_open"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_pending_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_pending"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>        
+        <record id="trans_done_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_done"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,77 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* massive_price_change
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-31 09:17+0000\n"
+"PO-Revision-Date: 2013-07-31 09:17+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: massive_price_change
+#: help:wzd.massive_price_change,value:0
+msgid "Insert a fix price or a value from 0 to 100 to markup old price"
+msgstr "Inserire un prexzzo fisso o un valore compreso tra 0 e 100 per ricaricare il vecchio prezzo"
+
+#. module: massive_price_change
+#: selection:wzd.massive_price_change,name:0
+msgid "MarkUp"
+msgstr "Ricarico"
+
+#. module: massive_price_change
+#: selection:wzd.massive_price_change,name:0
+msgid "Fix Price"
+msgstr "Prezzo Fisso"
+
+#. module: massive_price_change
+#: selection:wzd.massive_price_change,name:0
+msgid "Cost"
+msgstr "Costo"
+
+#. module: massive_price_change
+#: selection:wzd.massive_price_change,name:0
+msgid "Sale"
+msgstr "Vendita"
+
+#. module: massive_price_change
+#: field:wzd.massive_price_change,name:0
+msgid "Standard Price MarkUp Type"
+msgstr "Tipo di Ricarico Prezzo Standard"
+
+#. module: massive_price_change
+#: field:wzd.massive_price_change,value:0
+msgid "Value"
+msgstr "Valore"
+
+#. module: massive_price_change
+#: model:ir.model,name:massive_price_change.model_wzd_massive_price_change
+msgid "wzd.massive_price_change"
+msgstr "wzd.massive_price_change"
+
+#. module: massive_price_change
+#: view:wzd.massive_price_change:0
+msgid "Close"
+msgstr "Chiudi"
+
+#. module: massive_price_change
+#: view:wzd.massive_price_change:0
+msgid "Change Price"
+msgstr "Modifica Prezzo"
+
+#. module: massive_price_change
+#: model:ir.actions.act_window,name:massive_price_change.action_massive_price_change_wizard
+msgid "Massive Price Chage"
+msgstr "Modifica Massiva Prezzo"
+
+#. module: massive_price_change
+#: view:wzd.massive_price_change:0
+msgid "Change"
+msgstr "Modifica"
+

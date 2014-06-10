@@ -1,0 +1,7 @@
+2013-12-02: 0.9 Dhaval Patel <dhaval@deneroteam.com>
+=====================================================
+
+Bugfixes 
+-----------------
+    * fix the cost price bug when price list is based on cost price and product
+      is kit.

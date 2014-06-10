@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+        <record id="view_method_on_product" model="ir.ui.view">
+            <field name="name">pos.order.delivery.form</field>
+            <field name="model">mrp.bom</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <field name="date_stop" position="after" >
+                    <field name="method" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+
+
+        <act_window
+            domain="[('bom_id','=',False)]"
+            context="{'search_default_product_id': [active_id],'default_product_id':active_id}"
+            id="mrp.act_product_product_2_mrp_bom"
+            name="Bill of Materials"
+            res_model="mrp.bom"
+            src_model="product.product"
+            groups="mrp.group_mrp_user,product_bom.group_create_product"/>
+
+
+
+
+    
+  </data>
+</openerp>

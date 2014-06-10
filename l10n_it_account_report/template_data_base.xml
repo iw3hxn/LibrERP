@@ -1,0 +1,274 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="ir_property_base_partner" model="ir.property">
+            <field name="fields_id" ref="report_webkit.field_ir_act_report_xml_webkit_header"/>
+            <field eval="&quot;&quot;&quot;webkit_header_emc&quot;&quot;&quot;" name="name"/>
+            <field eval="&quot;&quot;&quot;ir.header_webkit,2&quot;&quot;&quot;" name="value"/>
+        </record>
+
+        <record id="ir_header_webkit_base_partner" model="ir.header_webkit">            
+<!-- ...................................FOOTER................................... -->
+<field name="footer_html">
+<![CDATA[<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+    </head>
+        
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table style="color:black;font-weight: bold;border-top: 1px solid black;font-size:12;font-style:italic;width: 100%">
+            <tr>
+                   <!--
+                   <td style="text-align:left;font-size:12;" width="35%">${company.website |entity}</td>
+                   <td style="text-align:center;font-size:12;" width="30%">e-mail: ${company.email |entity}</td>
+                   -->
+                   <td style="text-align:right;font-size:12;" width="95%">Page <span class="page"/></td><td style="text-align:left;font-size:12;">of&nbsp;<span class="topage"/></td>
+            </tr>
+        </table>
+    </body>    
+</html>]]>
+</field>
+<!-- ...................................HEADER................................... -->
+<field name="html">
+<![CDATA[<html>
+    <head>
+        <style type="text/css">
+            ${css}
+        </style>
+
+		<body style="border:0; margin: 0;" onload="subst()">
+		<%
+		 data = datetime.now().strftime("%d/%m/%Y")
+		%>
+	        <table style="border: 0px solid black; width: 100%; margin-top:1px">
+	            <tr><table class="header" style="border: 1px solid black; width: 100%">
+	                <td style="text-align:left;font-size:12;">
+	                  <tr>
+		        		<th style="border:none;padding:0px;">${_("Stampa Clienti/Fornitori")}</th>
+		            	<th style="border:none;padding:0px;">${_("Azienda:")}</th>
+		            	<th style="border:none;padding:0px;text-align:left;">${company.name}</th>
+		            	<th style="border:none;padding:0px;">${_("Data:")}</th>
+		            	<th style="border:none;padding:0px;text-align:left;">${data}</th>
+	        		 </tr>
+	                </td>
+	            </tr>
+	        </table>
+		</body>  		      
+    </head>   
+</html>]]>
+</field>
+<!-- ...................................ORIENTAMENTO PAGINA................................... -->
+<!-- Portrait=verticale, Landscape=orizzontale -->
+<field eval="&quot;&quot;&quot;Portrait&quot;&quot;&quot;" name="orientation"/>
+<field eval="&quot;&quot;&quot;A4&quot;&quot;&quot;" name="format"/>
+<!-- ...................................MARGINI................................... -->            
+<field eval="10.0" name="margin_top"/>
+<field eval="7.0" name="margin_bottom"/>
+<field eval="8.0" name="margin_left"/>
+<field eval="8.0" name="margin_right"/>
+<!-- ...................................CSS................................... -->
+<field name="css" ><![CDATA[
+
+.header {
+margin-left:0;
+text-align:left;
+width:300px;
+font-size:12;
+}
+
+.customer_supplier_table {
+border: thin solid #B1B2B8;
+text-align: center;
+border-collapse: collapse;
+}
+			
+.customer_supplier_table td {
+border-top: thin solid #B1B2B8;
+border-right: thin solid #B1B2B8;
+text-align: left;
+font-size: 10;
+padding: 3px;
+}
+			
+.customer_supplier_table th {
+background-color: #B1B2B8;
+border: thin solid #000000;
+text-align: left;
+font-size: 10;
+font-weight: bold;
+padding: 3px;
+}
+
+
+.general_data_table {
+border: thin solid #E3E4EA;
+text-align: center;
+border-collapse: collapse;
+}
+			
+.general_data_table td {
+border-top: thin solid #EEEEEE;
+border-right: thin solid #EEEEEE;
+text-align: left;
+font-size: 10;
+padding: 3px;
+}
+			
+.general_data_table th {
+background-color: #EEEEEE;
+border: thin solid #000000;
+text-align: left;
+font-size: 10;
+font-weight: bold;
+padding: 3px;
+}
+
+.dest_address {
+margin-left:60%;
+font-size:13;
+}
+
+.title {
+font-size:15;
+font-style:italic;
+font-weight: bold;
+}
+
+.basic_table{
+width:100%;
+text-align:center;
+border:1px solid gray;
+border-collapse: collapse;
+}
+
+.basic_table td {
+border:1px solid gray;
+font-size:12;
+}
+
+.basic_collapse{
+text-align:center;
+border-collapse: collapse;
+}
+
+.basic_top{
+text-align:center;
+font-style:italic;
+}
+
+.basic_top td{
+font-style:italic;
+font-size:11;
+border-top:1px solid black;
+border-left:1px solid black;
+border-right:1px solid black;
+}
+
+.basic_top th{
+color:darkblue;
+font-style:italic;
+font-size:11;
+border-top:1px solid black;
+border-left:1px solid black;
+border-right:1px solid black;
+}
+
+.basic_bottom{
+padding-right:0px;
+text-align:center;
+}
+
+.basic_bottom td{
+font-size:12;
+border-bottom:1px solid black;
+border-left:1px solid black;
+border-right:1px solid black;
+}
+
+.basic_bottom th{
+color:darkblue;
+font-size:15;
+font-weigh:bold;
+border-bottom:1px solid black;
+border-left:1px solid black;
+border-right:1px solid black;
+}
+
+.list_table {
+width:100%;
+border-color:black;
+text-align:center;
+border-collapse: collapse;
+}
+
+.list_table td {
+text-align:right;
+vertical-align: top;
+font-family:Helvetica, sans-serif;
+font-size:12;
+border-bottom:1px solid grey;
+width:100px;
+padding: 2px;
+}
+
+.list_table th {
+border-bottom:2px solid black;
+text-align:center;
+font-size:13;
+font-weight:bold;
+padding:2px;
+}
+
+.list_table tr {
+page-break-inside: avoid;
+}
+
+.list_table pre{
+font-family:Helvetica, sans-serif;
+font-size:12;
+text-align:justify;
+}
+
+.list_table tr:nth-child(odd) {
+background-color: #f0f0f0;
+}
+.list_table thead {
+display:table-header-group;
+}
+
+.total {
+width:100%;
+}
+.lib {
+width:10.3%;
+}
+.tot {
+text-align:right;
+width:15%;
+}
+.lefttot {
+width:74%;
+}
+
+.std_text {
+	font-size: 12;
+	}
+]]> </field>
+            <field eval="&quot;&quot;&quot;Customer Supplier Report Header&quot;&quot;&quot;" name="name"/>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,963 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <menuitem name="Sim" id="menu_res_sim" web_icon="images/sim.png" web_icon_hover="images/sim-hover.png" groups="hr_sim.group_sim_user"  sequence="2"   icon="terp-call-start"/>
+        <menuitem name="Sim" id="menu_sim" groups="hr_sim.group_sim_manager" parent="hr_sim.menu_res_sim" sequence="1" />
+        <menuitem name="Configuration" id="menu_config_res_sim" groups="hr_sim.group_sim_manager" parent="hr_sim.menu_res_sim" sequence="10" />
+
+        <!--
+        ======================
+        Subscription Type
+        ======================
+        -->
+        <record id="view_subscription_type_form" model="ir.ui.view">
+            <field name="name">res.sim.subscription.type.form</field>
+            <field name="model">res.sim.subscription.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Subscription Type">
+                    <group col="4" colspan="4">
+                        <separator colspan="4" string="Define subscription type"/>
+                        <field name="name" select="1"/>
+                        <field name="code"/>
+                        <field name="has_date_option"/>
+                        <field name="note"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="view_subscription_type_tree" model="ir.ui.view">
+            <field name="name">res.sim.subscription.type.tree</field>
+            <field name="model">res.sim.subscription.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Subscription Type">
+                    <field name="name" select="1"/>
+                    <field name="code"/>
+                    <field name="has_date_option"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_subscription_type_filter" model="ir.ui.view">
+            <field name="name">res.sim.subscription.type.filter</field>
+            <field name="model">res.sim.subscription.type</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Subscription Type">
+                    <field name="name"/>
+                    <field name="code" />
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_tree_subscription_type" model="ir.actions.act_window">
+            <field name="name">Subscription Type</field>
+            <field name="res_model">res.sim.subscription.type</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_subscription_type_filter"/>
+        </record>
+        
+        <menuitem action="open_module_tree_subscription_type" id="menu_res_subscription_type_tree" parent="hr_sim.menu_config_res_sim" sequence="1" groups="hr_sim.group_sim_manager"/>
+
+        <!--
+        ======================
+        Type
+        ======================
+        -->
+        
+<!--
+        <record id="view_type_form" model="ir.ui.view">
+            <field name="name">res.sim.type.form</field>
+            <field name="model">res.sim.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sim Type">
+                    <group col="4" colspan="4">
+                        <separator colspan="4" string="Define sim type"/>
+                        <field name="name" select="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        -->
+        <record id="view_type_tree" model="ir.ui.view">
+            <field name="name">res.sim.type.tree</field>
+            <field name="model">res.sim.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Define sim type" editable="top" >
+                    <field name="name" select="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_type_filter" model="ir.ui.view">
+            <field name="name">res.sim.type.filter</field>
+            <field name="model">res.sim.type</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Sim Type">
+                    <field name="name"/>
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_tree_type" model="ir.actions.act_window">
+            <field name="name">Sim Type</field>
+            <field name="res_model">res.sim.type</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_type_filter"/>
+        </record>
+        
+        <menuitem action="open_module_tree_type" id="menu_res_type_tree" parent="hr_sim.menu_config_res_sim" sequence="1" groups="hr_sim.group_sim_manager"/>
+
+        <!--
+        ======================
+        Use
+        ======================
+        -->
+<!--        <record id="view_use_form" model="ir.ui.view">
+            <field name="name">res.sim.use.form</field>
+            <field name="model">res.sim.use</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sim Use">
+                    <group col="4" colspan="4">
+                        <separator colspan="4" string="Define Sim Use"/>
+                        <field name="name" select="1"/>
+                        <field name="color" />
+                    </group>
+                </form>
+            </field>
+        </record>-->
+        <record id="view_use_tree" model="ir.ui.view">
+            <field name="name">res.sim.use.tree</field>
+            <field name="model">res.sim.use</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="top" string="Sim Use" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="name" select="1"/>
+                    <field name="color" />
+                    <field name="row_color" invisible="1" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_use_filter" model="ir.ui.view">
+            <field name="name">res.sim.use.filter</field>
+            <field name="model">res.sim.use</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Sim Use">
+                    <field name="name"/>
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_tree_use" model="ir.actions.act_window">
+            <field name="name">Sim Use</field>
+            <field name="res_model">res.sim.use</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_use_tree"/>
+            <field name="search_view_id" ref="view_use_filter"/>
+        </record>
+        
+        <menuitem action="open_module_tree_use" id="menu_res_use_tree" parent="hr_sim.menu_config_res_sim" sequence="1" groups="hr_sim.group_sim_manager"/>
+
+
+
+        <!--
+        ======================
+        APN Group Type
+        ======================
+        -->
+
+        <record id="view_sim_apn_group_form" model="ir.ui.view">
+            <field name="name">res.sim.apn_group.form</field>
+            <field name="model">res.sim.apn_group</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="APN Group">
+                    <group col="4" colspan="4">
+                        <separator colspan="4" string="Define subscription type"/>
+                        <field name="name" select="1"/>
+                    </group>
+                    <separator colspan="4" string="Group APN Management"/>
+                    <field colspan="2" name="management_ids" nolabel="1"> 
+                        <tree editable="top"> 				
+                            <field name="number" />
+                            <field name="name" widget="selection" />
+                            <field name="limit" />
+                            <field name="warning" />
+                            <field name="block" />
+                        </tree> 
+                    </field> 
+                </form>
+            </field>
+        </record>
+        <record id="view_sim_apn_group_tree" model="ir.ui.view">
+            <field name="name">res.sim.apn_group.tree</field>
+            <field name="model">res.sim.apn_group</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="APN Group">
+                    <field name="name" select="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_sim_apn_group_filter" model="ir.ui.view">
+            <field name="name">res.sim.apn_group.filter</field>
+            <field name="model">res.sim.apn_group</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="APN Group">
+                    <field name="name"/>
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_sim_apn_group" model="ir.actions.act_window">
+            <field name="name">APN Group</field>
+            <field name="res_model">res.sim.apn_group</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_sim_apn_group_filter"/>
+        </record>
+        <menuitem name="APN Group"  action="open_module_sim_apn_group" id="menu_config_sim_apn_group" parent="hr_sim.menu_config_res_sim" sequence="3" groups="hr_sim.group_sim_manager" />
+        
+        <!--
+        ======================
+        APN Management Type
+        ======================
+        -->
+
+        <record id="view_sim_apn_management_type_form" model="ir.ui.view">
+            <field name="name">res.sim.apn.management.type.form</field>
+            <field name="model">res.sim.apn.management.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="APN Management Type">
+                    <group col="4" colspan="4">
+                        <field name="name" select="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_sim_apn_management_type_tree" model="ir.ui.view">
+            <field name="name">res.sim.apn.management.type.tree</field>
+            <field name="model">res.sim.apn.management.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="APN Management Type">
+                    <field name="name" select="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_sim_apn_management_type_filter" model="ir.ui.view">
+            <field name="name">res.sim.apn.management.type.filter</field>
+            <field name="model">res.sim.apn.management.type</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="APN Management Type">
+                    <field name="name"/>
+                </search>
+             </field>
+         </record>
+
+        <record id="open_module_sim_apn_management_type" model="ir.actions.act_window">
+            <field name="name">APN Management Type</field>
+            <field name="res_model">res.sim.apn.management.type</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_sim_apn_management_type_filter"/>
+        </record>
+
+        <menuitem name="APN Management Types"  action="open_module_sim_apn_management_type" id="menu_config_sim_apn_management_type" parent="hr_sim.menu_config_res_sim" sequence="4" groups="hr_sim.group_sim_manager" />
+    
+        <!--
+        ======================`
+        Sim
+        ======================
+        -->
+ 
+ 
+        <record id="view_sim_form" model="ir.ui.view">
+            <field name="name">res.sim.form</field>
+            <field name="model">res.sim</field>
+            <field name="type">form</field>
+            <field name="priority" eval="10"/>
+            <field name="arch" type="xml">
+                <form string="Sim">
+                    <group col="18" colspan="4"> 
+                        <field name="sim_internal_number"/>
+                        <field name="imei" string="ICCID" colspan="2"/>
+                        <field name="subscription_type_id" on_change="onchange_subscription_type_id(subscription_type_id)" widget="selection"/>
+                        <field name="data"/>
+                        <field name="voice"/>
+                        <field name="not_available"/>
+                        <newline/>
+            
+                        <field name="pin"/>
+                        <field name="puk" colspan="2" />
+                        <field name="sim_type_id" widget="selection"/>
+                        <field name="apn_group_id" widget="selection"/>
+                        <field name="sim_use_id" widget="selection"/>
+            
+                        <separator colspan="18" />
+            
+                        <field name="prefix_number" string="Number" colspan="2" /> 
+                        <field name="number" nolabel="1" colspan="2"/>
+                        <field name="prefix_data_number" colspan="2" groups="hr_sim.group_sim_extended" /> 
+                        <field name="data_number" colspan="3" nolabel="1" string="Dati" groups="hr_sim.group_sim_extended"/>     
+                        <field name="prefix_fax_number" string="Fax Number" colspan="2" groups="hr_sim.group_sim_extended"/> 
+                        <field name="fax_number" nolabel="1" colspan="3" groups="hr_sim.group_sim_extended"/>
+                        
+                        <separator colspan="18"/>  
+                        <field attrs="{'required':[('has_date_option','=',True)]}" name="subscription_start_date"/> 
+                        <field attrs="{'required':[('has_date_option','=',True)]}" name="subscription_end_date"/> 
+                        <field invisible="1" name="has_date_option"/>
+                        
+                        <separator colspan="18"/> 
+                        <field name="location"/> 
+                        <field invisible="1" name="with_employee"/> 
+                        <button attrs="{'invisible' : [('with_employee','!=',True)]}" colspan="2" icon="terp-gtk-go-back-rtl" name="set_default_phone" string="Set Detault Work-Phone" type="object"/> 
+                    </group> 
+                    <separator/> 
+                    <notebook colspan="4"> 
+                    
+                        <page groups="hr_sim.group_sim_manager" string="Payment History"> 
+                            <group col="4" colspan="4"> 
+                                <field colspan="2" name="payment_ids" nolabel="1" context="{'default_sim_id':active_id}"  default_get="{'default_sim_id': active_id or False}" > 
+                                    <!--<tree editable="top" colors="red: have_lost">-->
+                                    <tree colors="red: ((have_lost==True) and (type=='sum')) ; blue: ((have_lost==False) and (type=='sum')) "> 
+                                        <field name="payment_date" invisible="1" /> 
+                                        <field name="type" on_change="onchange_type(type,year)" />
+                                        <field name="note"/>
+                                        <field name="contract_id" />
+                                        <field name="year" on_change="onchange_type(type,year)"/>
+                                        <field name="jan" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="feb" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="mar" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="apr" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="may" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="jun" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="jul" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="aug" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="sep" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="oct" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="nov" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="dec" attrs="{'readonly':[('type','=','sum')]}"/>
+                                        <field name="sum_of_year" readonly="1"/>
+                                        <field name="sequence" invisible="1"/>
+                                        <field name="have_lost" invisible="1" />
+                                    </tree> 
+                                </field> 
+                            </group> 
+                        </page> 
+                        <page string="Note"> 
+                            <field name="note" nolabel="1"/>
+                        </page>
+                        <page string="Moves">  
+                            <field name="sim_moves" nolabel="1"> 
+                                <tree editable="top"> 
+                                    <field name="description"/> 
+                                    <field name="datetime"/> 
+                                    <field name="source_location_name"/> 
+                                    <field name="dest_location_name"/> 
+                                </tree> 
+                            </field>  
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_sim_tree" model="ir.ui.view">
+            <field name="name">res.sim.tree</field>
+            <field name="model">res.sim</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="10"/>
+            <field name="arch" type="xml">
+                <tree string="Sim" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="sim_internal_number"/>
+                    <field name="sim_type_id"/>
+                    <field name="imei"/>    
+                    <!--<field name="prefix_number" string="Prefisso Primario"/>-->
+                    <!--<field name="number" string="Numero Primario"/>-->
+                    <field name="main_number" string="Numero Primario" />
+                    <!--<field name="prefix_data_number" string="Prefisso Dati"/>-->
+                    <!--<field name="data_number" string="Numero Dati"/>-->
+                    <field name="united_data_number" string="Numero Dati" groups="hr_sim.group_sim_extended"/>
+                    <!--<field name="prefix_fax_number" string="Prefisso Fax"/>-->
+                    <!--<field name="fax_number" string="Numero Fax"/>-->
+                    <field name="united_fax_number" string="Numero Fax" groups="hr_sim.group_sim_extended"/>
+                   
+                    <!--<field name="pin"/>-->
+                    <!--<field name="puk"/>-->
+                    <field name="parents" />
+                    <field name="location_name" />
+                    <field name="subscription_type_id"/>
+                    <!--<field name="apn_group_id" />-->
+                    <field name="sim_use_id" />
+                    <!--
+                    <field name="subscription_start_date"/>
+                    <field name="subscription_end_date"/>
+                    <field name="data"/>
+                    <field name="voice"/>
+                    -->
+                    <field name="row_color" invisible="1" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_sim_tree_smart" model="ir.ui.view">
+            <field name="name">res.sim.tree.smart</field>
+            <field eval="20" name="priority"/>
+            <field name="model">res.sim</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="top" string="Sim" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+
+                    <field name="sim_internal_number"/>
+                    <field name="sim_type_id" widget="selection" />
+                    <field name="imei"/>
+    
+                    <!--<field name="prefix_number" string="Prefisso Primario"/>-->
+                    <!--<field name="number" string="Numero Primario"/>-->
+                    <field name="main_number" string="Numero Primario" />
+                    <!--<field name="prefix_fax_number" string="Prefisso Fax"/>-->
+                    <!--<field name="fax_number" string="Numero Fax"/>-->
+                    <!--<field name="prefix_data_number" string="Prefisso Dati"/>-->
+                    <!--<field name="data_number" string="Numero Dati"/>-->
+                    <field name="united_data_number" string="Numero Dati" groups="hr_sim.group_sim_extended"/>
+                    <field name="united_fax_number" string="Numero Fax" groups="hr_sim.group_sim_extended"/>
+                    <field name="pin"/>
+                    <field name="puk"/>
+                    <field name="parents" />
+                    <field name="location_name" />
+                    <field name="subscription_type_id" widget="selection"/>
+                    <!--<field name="apn_group_id" widget="selection" />-->
+                    <field name="sim_use_id" widget="selection" />
+
+                    <field name="row_color" invisible="1" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_sim_filter" model="ir.ui.view">
+            <field name="name">res.sim.filter</field>
+            <field name="model">res.sim</field>
+            <field name="type">search</field>
+            <field name="priority" eval="10"/>
+            <field name="arch" type="xml">
+                <search string="Sim">
+                    <filter icon="terp-personal+" domain="[('not_available','=',True)]" name="not_available" string="Not Available" groups="base.group_extended"/>
+                    <field name="sim_internal_number"/>
+                    <field name="sim_type_id" widget="selection"/>
+                    <field name="imei"/>
+                    <field name="parents" />
+                    <newline />
+                    <field name="prefix_number" string="Prefisso Primario"/>
+                    <field name="number" string="Numero Primario"/>
+                    <field name="prefix_data_number" string="Prefisso Dati" groups="hr_sim.group_sim_extended"/>
+                    <field name="data_number" string="Numero Dati" groups="hr_sim.group_sim_extended"/>
+                    <field name="prefix_fax_number" string="Prefisso Fax" groups="hr_sim.group_sim_extended"/>
+                    <field name="fax_number" string="Numero Fax" groups="hr_sim.group_sim_extended"/>
+
+                    <newline />
+                    <field name="pin"/>
+                    <field name="puk"/>
+                    <field name="location_name" />
+                    <field name="subscription_type_id" widget="selection"/>
+                    <field name="apn_group_id" widget="selection"/>
+                    <field name="sim_use_id" widget="selection"/>
+                </search>
+            </field>
+        </record>
+        
+        <record id="view_sim_filter_smart" model="ir.ui.view">
+            <field name="name">res.sim.filter.smart</field>
+            <field name="model">res.sim</field>
+            <field name="type">search</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <search string="Sim">
+                    <filter icon="terp-personal+" domain="[('not_available','=',True)]" name="not_available" string="Not Available" groups="base.group_extended"/>
+                    <field name="sim_internal_number"/>
+                    <field name="sim_type_id" widget="selection"/>
+                    <field name="imei"/>
+                    <field name="parents" />
+                    <newline />
+                    <field name="prefix_number" string="Prefisso Primario"/>
+                    <field name="number" string="Numero Primario"/>
+                    
+                    <field name="prefix_data_number" string="Prefisso Dati"/>
+                    <field name="data_number" string="Numero Dati"/>
+                    
+                    <field name="prefix_fax_number" string="Prefisso Fax"/>
+                    <field name="fax_number" string="Numero Fax"/>
+                    
+                    <newline />
+                    <field name="pin"/>
+                    <field name="puk"/>
+                    <field name="location_name" />
+                    <field name="subscription_type_id" widget="selection"/>
+                    <field name="apn_group_id" widget="selection"/>
+                    <field name="sim_use_id" widget="selection"/>
+                </search>
+            </field>
+        </record>
+        
+
+
+        <record id="open_module_tree_res_sim" model="ir.actions.act_window">
+            <field name="name">My Sims</field>
+            <field name="res_model">res.sim</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('employee_id.user_id','=',uid)]</field>
+            <field name="search_view_id" ref="view_sim_filter"/>
+        </record>
+        
+       <menuitem action="open_module_tree_res_sim" id="menu_my_res_sim_tree" parent="hr.menu_hr_main" />
+        
+        <record id="open_module_tree_sim" model="ir.actions.act_window">
+            <field name="name">Sims</field>
+            <field eval="1" name="priority"/>
+            <field name="res_model">res.sim</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_sim_filter"/>
+        </record>
+        
+        <menuitem action="open_module_tree_sim" id="menu_res_sim_tree" parent="hr_sim.menu_sim" groups="hr_sim.group_sim_user" sequence="1"/>
+
+        
+        <record id="open_module_tree_sim_smart" model="ir.actions.act_window">
+            <field name="name">Sim Smart</field>
+            <field eval="2" name="priority"/>
+            <field name="res_model">res.sim</field>
+            <field name="view_type">form</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="search_view_id" ref="view_sim_filter_smart"/>
+        </record>
+        
+        <record id="open_module_tree_sim_smart_view1" model="ir.actions.act_window.view">
+            <field eval="5" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_sim_tree_smart"/>
+            <field name="act_window_id" ref="open_module_tree_sim_smart"/>
+        </record>
+        
+        <menuitem action="open_module_tree_sim_smart" id="menu_res_sim_tree_smart" parent="hr_sim.menu_sim" groups="hr_sim.group_sim_user" sequence="2"/>
+
+
+        <record id="view_res_sim_location_form" model="ir.ui.view">
+            <field name="name">res.sim.location.form</field>
+            <field name="model">res.sim.location</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sim Reference Locations">
+                    <group col="6" colspan="4">
+                        <field name="name" select="1"/>
+                        <field name="model" select="1"/>
+                        <field name="active" select="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_sim_location_tree" model="ir.ui.view">
+            <field name="name">res.sim.location.tree</field>
+            <field name="model">res.sim.location</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Sim Reference Locations">
+                    <field name="name"/>
+                    <field name="active"/>
+                    <field name="model"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_res_sim_location_filter" model="ir.ui.view">
+            <field name="name">res.sim.location.filter</field>
+            <field name="model">res.sim.location</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Sim Reference Locations">
+                    <group col="10" colspan="4">
+                        <field name="name"/>
+                        <field name="model"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_res_sim_location_form" model="ir.actions.act_window">
+            <field name="name">Sim References</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.sim.location</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="res_sim_location_tree"/>
+            <field name="search_view_id" ref="view_res_sim_location_filter" />
+        </record>
+        <menuitem action="action_res_sim_location_form" id="menu_res_sim_location_tree" parent="hr_sim.menu_config_res_sim" sequence="0" groups="hr_sim.group_sim_manager"/>
+        
+        <record id="seq_type_res_sim_move_ref" model="ir.sequence.type">
+            <field name="name">Sim Move</field>
+            <field name="code">res.sim.location</field>
+        </record>
+    
+        <record id="seq_res_sim_move" model="ir.sequence">
+            <field name="name">Sim Move</field>
+            <field name="code">res.sim.location</field>
+            <field name="padding">5</field>
+        </record>
+
+
+
+              <!--
+    ======================
+    Employee
+    ======================
+    -->
+                                    
+       <record model="ir.ui.view" id="view_employee_form_inherit_sim">
+           <field name="name">hr.employee.form.inherit.sim</field>
+           <field name="type">form</field>
+           <field name="model">hr.employee</field>
+           <field name="inherit_id" ref="hr.view_employee_form"/>
+          <field name="arch" type="xml">
+               <notebook position="inside">
+                   <page string="Sim" groups="hr_sim.group_sim_user" >
+                        <field name="sim_ids" nolabel="1">
+<!--                            <form>
+                                <field name="imei"/>
+                                <field name="main_number"/>
+                                <field name="pin"/>
+                                <field name="puk"/>
+                                <field name="subscription_type_id" widget="selection" on_change="onchange_subscription_type_id(subscription_type_id)"/>
+                                <newline />
+                                <field name="subscription_start_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="subscription_end_date" attrs="{'required':[('has_date_option','=',True)]}"/>
+                                <field name="has_date_option" invisible="1"/>
+                                <field name="data"/>
+                                <field name="voice"/>
+                                <button name="set_default_phone" string="Set Detault Work-Phone" icon="terp-gtk-go-back-rtl" type="object" colspan="1"/>
+                            </form>-->
+                            <tree > 
+                               <!-- <field name="imei"/>
+                                <field name="main_number"/>
+                             -->
+                                <field name="complete_name" />
+                                <field name="location_name" />
+                                <field name="pin"/>
+                                <field name="puk"/>
+                                <field name="sim_type_id"/>
+                                <!--<field name="subscription_type_id" on_change="onchange_subscription_type_id(subscription_type_id)"/>
+                                <field name="subscription_start_date"/>
+                                <field name="subscription_end_date"/>
+                                <field name="default" />
+                                <field name="data"/>
+                                <field name="voice"/>-->
+                            </tree> 
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+<!--
+    ================    
+    SIM PAYMENT LINE    
+    ================
+        
+     -->
+     
+     
+         <record id="view_res_sim_payment_search" model="ir.ui.view">
+            <field name="name">res.sim.payment.select</field>
+            <field name="model">res.sim.payment</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search > 
+                    <field name="sim_id" required="1" />
+                    <field name="sim_type_id" />
+                    <field name="contract_id" />
+                    <field name="type"  />               
+                    <field name="year" />  
+                    <!--<field name="have_lost" invisible="1" />-->
+                </search> 
+            </field>
+        </record>
+         
+        <record id="view_res_sim_payment_tree" model="ir.ui.view">
+            <field name="name">res.sim.payment.tree</field>
+            <field name="model">res.sim.payment</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red: have_lost"> 
+                    <field name="payment_date" invisible="1" />
+                    <field name="sim_id" required="1" />
+                    <field name="sim_type_id" />
+                    <field name="type" on_change="onchange_type(type,year,sim_id)"  />
+                    <field name="note"/>
+                    <field name="contract_id" />
+                    <field name="year" on_change="onchange_type(type,year,sim_id)"/>
+                    <field name="jan" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="feb" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="mar" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="apr" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="may" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="jun" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="jul" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="aug" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="sep" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="oct" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="nov" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="dec" attrs="{'readonly':[('type','=','sum')]}"/>
+                    <field name="sum_of_year" readonly="1"/>
+                    <field name="sequence" invisible="1"/>
+                    <field name="have_lost" invisible="1" />
+                </tree> 
+            </field>
+        </record>
+        
+        <function
+        eval="('default',False,'type', [('res.sim.payment', False)], 'customer', True, False, False, False, True)"
+        id="repair_default_type_set"
+        model="ir.values"
+        name="set"/>
+       <record id="view_res_sim_payment_form" model="ir.ui.view">
+            <field name="name">res.sim.payment.form</field>
+            <field name="model">res.sim.payment</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sim Payment">
+                    <group col="8" colspan="4">
+                        <field name="sim_id" readonly="1" />
+                        <field name="type" readonly="1" on_change="onchange_type(type,year,sim_id)" />
+                        <field name="year" on_change="onchange_type(type,year,sim_id)" />
+                        <field name="note"/>
+                        <field name="sum_of_year"/>
+                        <newline/>
+                    </group>
+                    <group col="25" colspan="12">
+                        <label/>
+                        <label string="Gen" />
+                        <label string="Feb" />
+                        <label string="Mar" />
+                        <label string="Apr" />
+                        <label string="Mag" />
+                        <label string="Giu" />
+                        <label string="Lug" />
+                        <label string="Ago" />
+                        <label string="Set" />
+                        <label string="Ott" />
+                        <label string="Nov" />
+                        <label string="Dic" />
+                        <newline />
+                        
+                        <label string="Mese" />
+                        <field name="jan" nolabel="1"/>
+                        <field name="feb" nolabel="1"/>
+                        <field name="mar" nolabel="1"/>
+                        <field name="apr" nolabel="1"/>
+                        <field name="may" nolabel="1"/>
+                        <field name="jun" nolabel="1"/>
+                        <field name="jul" nolabel="1"/>
+                        <field name="aug" nolabel="1"/>
+                        <field name="sep" nolabel="1"/>
+                        <field name="oct" nolabel="1"/>
+                        <field name="nov" nolabel="1"/>
+                        <field name="dec" nolabel="1"/>
+                        <newline />
+                        
+                        <label string="Fattura" />
+                        <field name="jan_fattura" nolabel="1"/>
+                        <field name="feb_fattura" nolabel="1"/>
+                        <field name="mar_fattura" nolabel="1"/>
+                        <field name="apr_fattura" nolabel="1"/>
+                        <field name="may_fattura" nolabel="1"/>
+                        <field name="jun_fattura" nolabel="1"/>
+                        <field name="jul_fattura" nolabel="1"/>
+                        <field name="aug_fattura" nolabel="1"/>
+                        <field name="sep_fattura" nolabel="1"/>
+                        <field name="oct_fattura" nolabel="1"/>
+                        <field name="nov_fattura" nolabel="1"/>
+                        <field name="dec_fattura" nolabel="1"/>
+                        <newline />
+                        
+                        <label string="Protocollo" />
+                        <field name="jan_protocollo" nolabel="1"/>
+                        <field name="feb_protocollo" nolabel="1"/>
+                        <field name="mar_protocollo" nolabel="1"/>
+                        <field name="apr_protocollo" nolabel="1"/>
+                        <field name="may_protocollo" nolabel="1"/>
+                        <field name="jun_protocollo" nolabel="1"/>
+                        <field name="jul_protocollo" nolabel="1"/>
+                        <field name="aug_protocollo" nolabel="1"/>
+                        <field name="sep_protocollo" nolabel="1"/>
+                        <field name="oct_protocollo" nolabel="1"/>
+                        <field name="nov_protocollo" nolabel="1"/>
+                        <field name="dec_protocollo" nolabel="1"/>
+                    </group>
+                    
+                    <group col="25" colspan="12" attrs="{'readonly':[('type','=','customer')], 'invisible':[('type','!=','customer')]}">
+                        
+                        <label/>
+                        <label string="Gen" />
+                        <label string="Feb" />
+                        <label string="Mar" />
+                        <label string="Apr" />
+                        <label string="Mag" />
+                        <label string="Giu" />
+                        <label string="Lug" />
+                        <label string="Ago" />
+                        <label string="Set" />
+                        <label string="Ott" />
+                        <label string="Nov" />
+                        <label string="Dic" />
+                        <newline />
+                        
+                        <label string="Fornitore" />
+                        <field name="jan_supplier" nolabel="1"/>
+                        <field name="feb_supplier" nolabel="1"/>
+                        <field name="mar_supplier" nolabel="1"/>
+                        <field name="apr_supplier" nolabel="1"/>
+                        <field name="may_supplier" nolabel="1"/>
+                        <field name="jun_supplier" nolabel="1"/>
+                        <field name="jul_supplier" nolabel="1"/>
+                        <field name="aug_supplier" nolabel="1"/>
+                        <field name="sep_supplier" nolabel="1"/>
+                        <field name="oct_supplier" nolabel="1"/>
+                        <field name="nov_supplier" nolabel="1"/>
+                        <field name="dec_supplier" nolabel="1"/>
+                        <newline />
+                        
+                        <label string="Somma" />
+                        <field name="jan_sum" nolabel="1"/>
+                        <field name="feb_sum" nolabel="1"/>
+                        <field name="mar_sum" nolabel="1"/>
+                        <field name="apr_sum" nolabel="1"/>
+                        <field name="may_sum" nolabel="1"/>
+                        <field name="jun_sum" nolabel="1"/>
+                        <field name="jul_sum" nolabel="1"/>
+                        <field name="aug_sum" nolabel="1"/>
+                        <field name="sep_sum" nolabel="1"/>
+                        <field name="oct_sum" nolabel="1"/>
+                        <field name="nov_sum" nolabel="1"/>
+                        <field name="dec_sum" nolabel="1"/>
+                        <newline />
+                    </group>
+                    <group col="25" colspan="8" attrs="{'invisible':[('type','!=','customer')]}">
+                        <!--<button name="reset" string="Reset" icon="gtk-ok" groups="project.group_project_manager" />-->
+                        <button colspan="8" name="reset" string="Reset" icon="gtk-ok" type="object" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+ 
+        
+        <record id="action_view_sim_payment_form" model="ir.actions.act_window">
+            <field name="name">SIM Payment</field>
+            <field name="res_model">res.sim.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,search</field>
+            <field name="search_view_id" ref="view_res_sim_payment_search"/>
+        </record>
+        
+        <menuitem id="menu_sim_payment_view" name="SIM Payment" parent="hr_sim.menu_sim" action="action_view_sim_payment_form" sequence="20" groups="hr_sim.group_sim_manager" />
+          
+        <!--
+        ==========
+         SIM Moves
+        ==========
+        -->
+        <record id="view_sim_move_form" model="ir.ui.view">
+            <field name="name">sim.move.form</field>
+            <field name="model">res.sim.allocation</field>
+            <field name="type">form</field>        
+            <field name="arch" type="xml">
+                <form string="SIM Move">
+                    <field name="name" readonly="True" />
+                    <field name="dest_location" readonly="True" />
+                    <field name="datetime" readonly="True" />
+                    <field name="user_id" readonly="True" />
+                    <field name="company_id" invisible="True" />
+                    <separator string="SIMs" colspan="4"/>
+                    <field name="sim_move_lines" readonly="True" mode="tree" nolabel="1" widget="one2many_list" colspan="4">
+                        <tree string="SIM Lines">
+                            <field name='sim_id' />
+                        </tree>
+                    </field>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_sim_move_tree" model="ir.ui.view">
+            <field name="name">sim.move.tree</field>
+            <field name="model">res.sim.allocation</field>
+            <field name="type">tree</field>        
+            <field name="arch" type="xml">
+                <tree string="SIM moves">
+                    <field name="name" />
+                    <field name="sim_move_lines" />
+                    <field name="dest_location_name"/>
+                    <field name="datetime"/>
+                    <field name="user_id" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_sim_move_filter" model="ir.ui.view">
+            <field name="name">sim.move.search</field>
+            <field name="model">res.sim.allocation</field>
+            <field name="type">search</field>        
+            <field name="arch" type="xml">
+                <search string="SIM moves">      
+                    <field name="name" />
+                    <field name="dest_location_name"/>
+                    <field name="datetime"/>
+                    <field name="user_id" />
+                </search>
+            </field>
+        </record>
+        
+        <record id="action_view_sim_move_form" model="ir.actions.act_window">
+            <field name="name">SIM Moves</field>
+            <field name="res_model">res.sim.allocation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,search</field>
+            <field name="search_view_id" ref="view_sim_move_filter"/>
+        </record>
+        
+        <menuitem id="menu_sim_move_view" name="SIM Moves" parent="hr_sim.menu_sim" action="action_view_sim_move_form" sequence="10" groups="hr_sim.group_sim_manager" />
+        
+        <record id="view_sim_move_line_tree" model="ir.ui.view">
+            <field name="name">sim.move.line.tree</field>
+            <field name="model">res.sim.move.line</field>
+            <field name="type">tree</field>        
+            <field name="arch" type="xml">
+                <tree string="SIMs">
+                    <field name="sim_id" />
+                    <field name="datetime"/>
+                    <field name="source_location_name" />
+                    <field name="dest_location_name"/>
+                    <field name="user_id" />
+                </tree>
+            </field>
+        </record>
+    
+        <record id="view_sim_move_line_form" model="ir.ui.view">
+            <field name="name">sim.move.line.form</field>
+            <field name="model">res.sim.move.line</field>
+            <field name="type">form</field>        
+            <field name="arch" type="xml">
+                <form string="SIM">
+                    <field name="sim_id" />
+                    <field name="datetime"/>
+                    <field name="source_location_name" />
+                    <field name="dest_location_name"/>
+                    <field name="user_id" />
+                </form>
+            </field>
+        </record>
+    
+    </data>
+</openerp>

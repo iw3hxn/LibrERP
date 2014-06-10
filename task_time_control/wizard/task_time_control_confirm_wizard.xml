@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="task_time_control_confirm_wizard" model="ir.ui.view">
+            <field name="name">task.time.control.wizard.form</field>
+            <field name="model">task.time.control.confirm.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Confirm time">
+                    <field name="started_task" string="Task is going to close" readonly="1"/>
+                    <newline/>
+                    <field name="name" string="Name"/>
+                    <newline/>
+                    <field name="time" string="Time" widget="float_time"/>
+                    <group colspan="4">
+                        <button string="Cancel" special="cancel" icon="gtk-cancel"/>
+                        <button string="Confirm" name="close_confirm" type="object" icon="gtk-ok"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

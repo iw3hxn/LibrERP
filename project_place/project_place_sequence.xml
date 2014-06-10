@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <!-- Sequences -->
+        <record id="seq_type_project_plant_type_name" model="ir.sequence.type">
+            <field name="name">Project Plant Type</field>
+            <field name="code">project.plant.type</field>
+        </record>
+
+        <record id="seq_project_plant_type" model="ir.sequence">
+            <field name="name">Project Plant Type</field>
+            <field name="code">project.plant.type</field>
+            <field name="padding">5</field>
+        </record>
+        
+        <record id="seq_type_project_plant_code" model="ir.sequence.type">
+            <field name="name">Project Plant</field>
+            <field name="code">project.plant</field>
+        </record>
+
+        <record id="seq_project_plant" model="ir.sequence">
+            <field name="name">Project Plant</field>
+            <field name="code">project.plant</field>
+            <field name="padding">5</field>
+        </record>
+        
+        <record id="seq_type_project_place_code" model="ir.sequence.type">
+            <field name="name">Project Place</field>
+            <field name="code">project.place</field>
+        </record>
+
+        <record id="seq_project_place" model="ir.sequence">
+            <field name="name">Project Place</field>
+            <field name="code">project.place</field>
+            <field name="padding">5</field>
+        </record>
+        
+    </data>
+</openerp>

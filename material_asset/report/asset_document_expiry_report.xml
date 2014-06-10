@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+       <report auto="False" id="asset_document_expiry_report" model="asset.asset.no" name="material.asset.document.expiry" rml="material_asset/report/asset_document_expiry_report.rml" string="Asset Documents"/>
+    </data>
+</openerp>

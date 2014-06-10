@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+       <report auto="False" id="res_car_document_expiry_report" model="res.car.employee" name="res.car.document.expiry" rml="res_auto/report/res_car_document_expiry_report.rml" string="Car Documents"/>
+    </data>
+</openerp>

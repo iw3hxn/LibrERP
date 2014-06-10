@@ -1,0 +1,137 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* revenue_stamp
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-20 22:10+0000\n"
+"PO-Revision-Date: 2014-02-20 22:10+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: revenue_stamp
+#: field:toinvoice.product,product_toinvoice_id:0
+msgid "Partner related"
+msgstr "Partner related"
+
+#. module: revenue_stamp
+#: model:ir.model,name:revenue_stamp.model_account_tax_code
+msgid "Tax Code"
+msgstr "Codice imposta"
+
+#. module: revenue_stamp
+#: view:product.product:0
+msgid "Revenue tax"
+msgstr "Marca da Bollo"
+
+#. module: revenue_stamp
+#: field:unique.revenue.product,min_for_stamp:0
+msgid "Minimal amount for stamp charged in invoice"
+msgstr "Importo Minimo per Bollo caricato in fattura"
+
+#. module: revenue_stamp
+#: sql_constraint:product.product:0
+#: sql_constraint:unique.revenue.product:0
+msgid "The revenue stamp product must be unique !"
+msgstr "Il prodotto Bollo deve essere unico !"
+
+#. module: revenue_stamp
+#: model:ir.model,name:revenue_stamp.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: revenue_stamp
+#: help:res.partner,charge_revenue_stamp:0
+msgid "In case VAT free, revenue stamp's cost will be charged in invoices."
+msgstr "In caso di esenzione IVA, una marca da bollo verrà caricata in fattura."
+
+#. module: revenue_stamp
+#: field:unique.revenue.product,name:0
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: revenue_stamp
+#: field:res.partner,charge_revenue_stamp:0
+msgid "Revenue stamp Charged in Invoice"
+msgstr "Marca da Bollo addebitata in fattura"
+
+#. module: revenue_stamp
+#: field:account.tax.code,stamp_in_invoice:0
+msgid "Stamp Charged in Invoice"
+msgstr "Marca da Bollo in Fattura"
+
+#. module: revenue_stamp
+#: view:account.tax.code:0
+msgid "Others"
+msgstr "Others"
+
+#. module: revenue_stamp
+#: help:account.tax.code,stamp_in_invoice:0
+msgid "Revenue stamp's cost charged in invoices."
+msgstr "Marca da Bollo addebitato nelle fatture."
+
+#. module: revenue_stamp
+#: help:res.partner,charge_invoice_cost:0
+msgid "Costs will be charged in invoices."
+msgstr "Costi da addebitare in fattura."
+
+#. module: revenue_stamp
+#: field:toinvoice.product,product_id:0
+msgid "Products to be charged in invoices"
+msgstr "Products to be charged in invoices"
+
+#. module: revenue_stamp
+#: field:toinvoice.product,name:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: revenue_stamp
+#: view:res.partner:0
+msgid "Prodotti da addebitare in fattura"
+msgstr "Prodotti da addebitare in fattura"
+
+#. module: revenue_stamp
+#: field:toinvoice.product,qty:0
+msgid "Quantity to be invoiced"
+msgstr "Q.tà da addebitare"
+
+#. module: revenue_stamp
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr "Nell'azienda il numero fattura dev'essere univoco!"
+
+#. module: revenue_stamp
+#: field:res.partner,product_toinvoice_ids:0
+msgid "Invoice Costs"
+msgstr "Costi Fatturazione"
+
+#. module: revenue_stamp
+#: field:product.product,unique_revenue_stamp_id:0
+msgid "Product id for revenue stamp"
+msgstr "Product id for revenue stamp"
+
+#. module: revenue_stamp
+#: model:ir.model,name:revenue_stamp.model_account_invoice
+msgid "Invoice"
+msgstr "Fattura"
+
+#. module: revenue_stamp
+#: model:ir.model,name:revenue_stamp.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: revenue_stamp
+#: field:res.partner,charge_invoice_cost:0
+msgid "Costs Charged in Invoice"
+msgstr "Costi Addebitati in fattura"
+
+#. module: revenue_stamp
+#: field:unique.revenue.product,unique_revenue_stamp:0
+msgid "Product for revenue stamp"
+msgstr "Product for revenue stamp"

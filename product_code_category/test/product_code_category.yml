@@ -1,0 +1,116 @@
+-
+    In order to test the product_code_category module, we have to create some sequences and categories
+-
+    Testing sequences
+-
+    !record {model: ir.sequence, id: test_seq_product_code_category_parent}:
+        name: Test Parent Category Sequence
+        code: product.product
+        padding: 5
+        prefix: PARENT-
+        suffix: -TEST
+        number_next: 1
+-
+    !record {model: ir.sequence, id: test_seq_product_code_category_child}:
+        name: Test Child Category Sequence
+        code: product.product
+        padding: 5
+        prefix: CHILD-
+        suffix: -TEST
+        number_next: 42
+-
+    Testing categories
+-
+    !record {model: product.category, id: test_cat_product_code_category_master}:
+        name: Test Master Category
+        type: normal
+-
+    !record {model: product.category, id: test_cat_product_code_category_master_child}:
+        name: Test Master Child Category
+        parent_id: test_cat_product_code_category_master
+        type: normal
+-
+    !record {model: product.category, id: test_cat_product_code_category_parent}:
+        name: Test Parent Category
+        parent_id: test_cat_product_code_category_master
+        product_sequence_id: test_seq_product_code_category_parent
+        type: normal
+-
+    !record {model: product.category, id: test_cat_product_code_category_child}:
+        name: Test Child Category
+        parent_id: test_cat_product_code_category_parent
+        product_sequence_id: test_seq_product_code_category_child
+        type: normal
+-
+    !record {model: product.category, id: test_cat_product_code_category_child_no}:
+        name: Test Child Category Without Sequence
+        parent_id: test_cat_product_code_category_parent
+        type: normal
+-
+    We can now create products and test the default_code value for each product
+-
+    #1: Master category.
+    No sequence defined for the direct category, and the category has no parent.
+    The product must take the default sequence.
+-
+    !record {model: product.product, id: test_product_master_category}:
+        name: Master Category Product
+        categ_id: test_cat_product_code_category_master
+-
+    !assert {model: product.product, id: test_product_master_category, string: Default sequence}:
+        - default_code == '00001'
+-
+    #2: Master child category.
+    No sequence defined for the direct category, nor for the parent category.
+    The product muse take the default sequence.
+-
+    !record {model: product.product, id: test_product_master_child_category}:
+        name: Master Child Category Product
+        categ_id: test_cat_product_code_category_master_child
+-
+    !assert {model: product.product, id: test_product_master_child_category, string: Default sequence Child}:
+        - default_code == '00002'
+-
+    #3: Parent category.
+    A sequence is defined for the direct category.
+    The product muse take his category sequence.
+-
+    !record {model: product.product, id: test_product_parent_category}:
+        name: Parent Category Product
+        categ_id: test_cat_product_code_category_parent
+-
+    !assert {model: product.product, id: test_product_parent_category, string: Parent Sequence}:
+        - default_code == 'PARENT-00001-TEST'
+-
+    #4: Child category.
+    A sequence is defined for the direct category.
+    The product muse take his category sequence.
+-
+    !record {model: product.product, id: test_product_child_category}:
+        name: Child Category Product
+        categ_id: test_cat_product_code_category_child
+-
+    !assert {model: product.product, id: test_product_child_category, string: Child Sequence}:
+        - default_code == 'CHILD-00042-TEST'
+-
+    #5: Child category without sequence.
+    No sequence defined for the direct category, but there is one defined for the parent category.
+    The product muse take his category parent sequence.
+-
+    !record {model: product.product, id: test_product_child_no_category}:
+        name: Child Category Without Sequence Product
+        categ_id: test_cat_product_code_category_child_no
+-
+    !assert {model: product.product, id: test_product_child_no_category, string: Child Without Category}:
+        - default_code == 'PARENT-00002-TEST'
+-
+    #6: Default code manually defined.
+    No sequence must be called, the default_code is already defined.
+-
+    !record {model: product.product, id: test_product_manual_code}:
+        name: Manual Code Product
+        default_code: NOSEQ-0001-TEST
+-
+    !assert {model: product.product, id: test_product_manual_code, string: Manual code}:
+        - default_code == 'NOSEQ-0001-TEST'
+

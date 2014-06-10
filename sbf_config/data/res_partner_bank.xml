@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="default_bank" model="res.bank">
+            <field name="name">Banca precaricata-da correggere</field>
+            <field name="abi">06225</field>
+            <field name="cab">12120</field>
+            <field name="active">True</field>
+            <field name="bic">IBSPIT2PXXX</field>
+        </record>
+
+        <record id="default_bank_company" model="res.partner.bank">
+            <field name="codice_sia">TESTS</field>
+            <field name="state">iban</field>
+            <field name="acc_number">IT03P0622512120100000004641</field>
+            <field name="bank_bic">IBSPIT2PXXX</field>
+            <field name="bank_name">Banca precaricata-da correggere</field>
+            <field name="bank" ref="default_bank"/>
+            <field name="partner_id" ref="base.main_partner"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="riba_sbf_model" model="riba.configurazione">
+            <field name="name">ri.ba. sbf</field>
+            <field name="tipo">sbf</field>
+            <field name="bank_id" ref="default_bank_company"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="acceptance_account_id" search="[('code','=','6410000')]" model="account.account"/>
+            <field name="accreditation_account_id" search="[('code','=','8W32100')]" model="account.account"/>
+            <field name="bank_account_id" search="[('code','=','960002')]" model="account.account"/>
+            <field name="overdue_effects_account_id" search="[('code','=','6411000')]" model="account.account"/>
+            <field name="protest_charge_account_id" search="[('code','=','JG70500')]" model="account.account"/>
+            <field name="bank_expense_account_id" search="[('code','=','JG70500')]" model="account.account"/>
+            <field name="acceptance_journal_id" search="[('code','=','BNK2')]" model="account.journal"/>
+            <field name="unsolved_journal_id" search="[('code','=','BNK2')]" model="account.journal"/>
+            <field name="accreditation_journal_id" search="[('code','=','BNK2')]" model="account.journal"/>
+        </record>
+
+        <record id="riba_sbf_journal" model="account.journal">
+            <field name="name">Banca c/riba sbf</field>
+            <field name="type">bank</field>
+            <field name="code">BRB1</field>
+            <field name="default_debit_account_id" search="[('code','=','8W32100')]" model="account.account"/>
+            <field name="default_credit_account_id" search="[('code','=','8W32100')]" model="account.account"/>
+            <field name="view_id" eval="1"/>
+            <field name="entry_posted">True</field>
+            <field name="update_posted">True</field>
+        </record>
+
+    </data>
+</openerp>

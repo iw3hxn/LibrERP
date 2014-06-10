@@ -1,0 +1,8 @@
+"id","position_id/id","tax_src_id/id","tax_dest_id/id"
+"intraacq1","intraacq","22a","22art38a"
+"intraven1","intraven","22v","00art41v"
+"estero1","estero","22v","00art8v"
+"professionisti1","professionisti","22a","22a"
+"professionisti2","professionisti","22a","20ra"
+"detrazione50iva10_1","detrazione50iva10","22v","10v"
+"detrazione65iva10_1","detrazione65iva10","22v","10v"

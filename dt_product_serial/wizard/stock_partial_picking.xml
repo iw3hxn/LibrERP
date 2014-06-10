@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="form_serial_partial_picking_tree" model="ir.ui.view">
+            <field name="name">form.serial.partial.picking.tree</field>
+            <field name="model">stock.partial.picking</field>
+            <field name="inherit_id" ref="stock.stock_partial_picking_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="hide_tracking" position="after">
+                    <field name="tracking_code"/>
+                </field>
+                <field name="product_id" position="replace">
+                    <field name="product_id" readonly="1" />
+                </field>
+                <field name="quantity" position="replace">
+                    <field name="quantity" attrs="{'readonly': [('split_type', '=', 'single')]}" />
+                </field>
+                <field name="prodlot_id" position="replace">
+                    <field name="new_prodlot_code" on_change="onchange_new_prodlot_code(new_prodlot_code, product_id, prodlot_id)" />
+                    <field name="prodlot_id" domain="[('product_id', '=', product_id)]" invisible="context.get('hide_tracking', False)" attrs="{'required': [('tracking', '=', True), ('new_prodlot_code', '=', False)]}"/>
+                    <field name="split_type" invisible="True" />
+                    <field name="tracking_id" invisible="True" />
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

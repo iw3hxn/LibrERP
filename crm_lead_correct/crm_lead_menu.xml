@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+
+    <menuitem id="base.menu_crm" name="CRM"
+        parent="base.menu_base_partner" sequence="-1"
+            groups="crm.view_lead,crm.view_opportunity"/>
+
+    <menuitem parent="base.menu_crm" name="Leads"
+        id="crm.menu_crm_case_categ0_act_leads"
+        action="crm.crm_case_category_act_leads_all" sequence="1"
+              groups="crm.view_lead" />
+    
+    <menuitem parent="base.menu_crm" name="Opportunities"
+        id="crm.menu_crm_case_opp"
+        action="crm.crm_case_category_act_oppor11" sequence="2"
+              groups="crm.view_opportunity" />
+
+</data>
+</openerp>

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    <!--
+    =============================================================
+    Alert Jobs
+    =============================================================
+    -->
+        <record id="ir_alert_view_tree" model="ir.ui.view">
+            <field name="name">ir.alert.tree</field>
+            <field name="model">ir.alert</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Scheduled Alerts">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="type"/>
+                    <field name="state"/>
+		    <button name="browse_ftp" string="Object" type="object" icon="gtk-ok" />
+                    <field name="is_child"  invisible="1"/>
+                    <field name="alert_config_id"  invisible="1"/>
+                </tree>
+            </field>
+        </record>
+	
+        <record id="ir_alert_view" model="ir.ui.view">
+            <field name="name">ir.alert.form</field>
+            <field name="model">ir.alert</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Scheduled Alerts">
+                    <field name="name"/>
+                    <field name="user_id" />
+                    <field name="alert_config_id" invisible="1"/>
+                    <field name="is_child"  invisible="1"/>
+                    <notebook colspan="4">
+                    <page string="Information">
+                        <field name="type"/>
+                        <field name="link" widget="url" invisible="1"/>
+			<button string="Send Link" colspan="2" type="object" name="browse_ftp" attrs="{'invisible':[('link','in',[False, ''])]}" icon="gtk-ok"/>
+                        <separator string="Notes" colspan="4"/>
+                        <field colspan="4" name="note" nolabel="1"/>
+                        <separator string="Email" colspan="4"/>
+                        <field name="mail_addresses"/>
+                        <field name="subject"/>
+                        <field name="email_message" colspan="4"/>
+                    	<button string="Send Mail" colspan="2" attrs="{'invisible':[('mail_addresses','in',[False, ''])]}" type="object" name="button_send_mail" context="{'mail_addresses':mail_addresses, 'subject':subject, 'email_message':email_message}"/>
+                    </page>
+                    <!-- <page string="Technical Data" groups="base.group_extended"> -->
+                    <page string="Technical Data">
+                        <separator string="Action to Trigger" colspan="4"/>
+                        <field name="model_id" groups="base.group_extended"/>
+                        <field name="create_date"/>
+                        <field name="complete_date"/>
+                        <group col="2" colspan="6">
+                            <separator string="Users" colspan="4"/>
+                            <field name="user_ids" select="1" colspan="4" nolabel="1"  height="180"/>
+                        </group> 
+                    </page>
+                    </notebook>
+                    <!-- <group colspan="5" col="5" groups="base.group_extended"> -->
+                    <group colspan="5" col="5">
+                        <separator colspan="5" string="States"/>
+                        <field name="state" widget="statusbar" statusbar_visible="open,pending,done" statusbar_colors='{"open":"blue","done":"red","cancel":"grey"}'/>
+                    </group>            
+                </form>
+            </field>
+        </record>
+
+        <record id="ir_alert_view_search" model="ir.ui.view">
+            <field name="name">ir.alert.search</field>
+            <field name="model">ir.alert</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Scheduled Alerts">
+                    <field name="name"/>
+                    <field name="user_id" widget="selection"/>
+                    <field name="type"/>
+                    <field name="state"/>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="User" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Execution" icon="terp-go-month"
+                                domain="[]" context="{'group_by':'state'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ir_alert_view_calendar">
+            <field name="name">ir.alert.view.calendar</field>
+            <field name="model">ir.alert</field>
+            <field name="type">calendar</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Scheduled Alerts" date_start="nextcall" color="user_id">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="ir_alert_act" model="ir.actions.act_window">
+            <field name="name">Alerts</field>
+            <field name="res_model">ir.alert</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="context">{'active_test': False}</field>
+            <field name="view_id" ref="ir_alert_view_tree"/>
+        </record>
+        
+        <!-- <menuitem icon="terp-account" id="menu_alert" name="Alert" sequence="0"
+            web_icon="images/tools.png"
+            web_icon_hover="images/tools-hover.png"/> -->
+
+        <menuitem id="next_id_13" name="Scheduler Alert" parent="base.menu_config" sequence="13"/>
+        <!-- <menuitem action="ir_alert_act" id="menu_ir_alert_act" parent="next_id_13" sequence="1"/> -->
+
+    <!--
+    =============================================================
+    Alert Configuration
+    =============================================================
+    -->
+        <record id="ir_alert_config_view_tree" model="ir.ui.view">
+            <field name="name">ir.alert.config.tree</field>
+            <field name="model">ir.alert.config</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Config Models Alert">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="model_id"/>
+                    <field name="is_parent"/>
+                    <field name="date_comparison_field_id"/>
+                    <field name="offset"/>
+                    <field name="flag_not_state"/>
+                    <field name="state_id"/>
+                    <field name="flag_email"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ir_alert_config_view" model="ir.ui.view">
+            <field name="name">ir.alert.config.form</field>
+            <field name="model">ir.alert.config</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Config Models Alert">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="model_id" on_change="model_id_change(model_id, context)"/>
+                    <field name="action_id" invisible="1"/>
+                    <newline/>
+	            <field name="is_parent" on_change="onchange_model_id(is_parent)"/>
+                    <field name="parent_id" attrs="{'readonly':[('is_parent','=',True)]}" domain="[('is_parent','=',True)]"/>
+                    <newline/>
+                    <field name="date_comparison_field_id" attrs="{'readonly':[('is_parent','=',True)], 'required':[('is_parent','=',False)]}"/>
+                    <field name="offset" attrs="{'readonly':[('is_parent','=',True)], 'required':[('is_parent','=',False)]}"/>
+                    <field name="flag_not_state" attrs="{'readonly':[('is_parent','=',True)]}"/>
+                    <field name="state_id" on_change="state_change(state_id, context)" domain="[('model_id', '=', model_id)]" attrs="{'readonly': ['|',('model_id','=', False),('is_parent','=',True)], 'required':[('is_parent','=',False)]}"/>
+	            <field name="state_comparison" invisible="1"/>
+                    <separator string="Manage Dashboard Message" colspan="4"/>
+                    <field name="message"/>
+                    <separator string="Manage Email Message" colspan="4"/>
+                    <field name="flag_email" attrs="{'readonly':[('is_parent','=',True)]}"/>
+                    <field name="add_user_creator" attrs="{'readonly':[('flag_email','=',False)]}"/>
+                    <field name="subject" attrs="{'readonly':[('flag_email','=',False)], 'required':[('flag_email','=',True)]}"/>
+                    <field name="email_message" attrs="{'readonly':[('flag_email','=',False)], 'required':[('flag_email','=',True)]}"/>
+                </form>
+            </field>
+	</record>
+
+        <record id="ir_alert_config_act" model="ir.actions.act_window">
+            <field name="name">Config Alerts</field>
+            <field name="res_model">ir.alert.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+	<menuitem name="Alert Config" id="menu_alert_config"  parent="next_id_13" action="ir_alert_config_act"/>
+   
+    <!--
+    =============================================================
+    Fake Alert Jobs
+    =============================================================
+    -->
+        <record id="fake_ir_alert_view_tree" model="ir.ui.view">
+            <field name="name">fake.ir.alert.tree</field>
+            <field name="model">fake.ir.alert</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Family Scheduled Alerts">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="type"/>
+                    <field name="state"/>
+		    <button name="browse_ftp" string="Object" type="object" icon="gtk-ok" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="fake_ir_alert_view" model="ir.ui.view">
+            <field name="name">fake.ir.alert.form</field>
+            <field name="model">fake.ir.alert</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Family Scheduled Alerts">
+                    <field name="name"/>
+		    <field name="user_id" />
+                    <notebook colspan="4">
+                    <page string="Information">
+                        <field name="type"/>
+                        <field name="link" widget="url" invisible="1"/>
+			<button string="Send Link" colspan="2" type="object" name="browse_ftp" attrs="{'invisible':[('link','in',[False, ''])]}" icon="gtk-ok"/>
+                        <separator string="Notes" colspan="4"/>
+                        <field colspan="4" name="note" nolabel="1"/>
+                        <separator string="Email" colspan="4"/>
+                        <field name="mail_addresses"/>
+                        <field name="subject"/>
+                        <field name="email_message" colspan="4"/>
+                    	<button string="Send Mail" colspan="2" attrs="{'invisible':[('mail_addresses','in',[False, ''])]}" type="object" name="button_send_mail" context="{'mail_addresses':mail_addresses, 'subject':subject, 'email_message':email_message}"/>
+                    </page>
+                    </notebook>
+                    <!-- <group colspan="5" col="5" groups="base.group_extended"> -->
+                    <group colspan="5" col="5">
+                        <separator colspan="5" string="States"/>
+                        <field name="state" widget="statusbar" statusbar_visible="open,pending,done" statusbar_colors='{"open":"blue","done":"red","cancel":"grey"}'/>
+                    </group>            
+                </form>
+            </field>
+        </record>
+	
+        <record id="fake_ir_alert_view_search" model="ir.ui.view">
+            <field name="name">fake.ir.alert.search</field>
+            <field name="model">fake.ir.alert</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Family Scheduled Alerts">
+                    <field name="name"/>
+                    <field name="user_id" widget="selection"/>
+                    <field name="type"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="fake_ir_alert_act" model="ir.actions.act_window">
+            <field name="name">Family Alerts</field>
+            <field name="res_model">fake.ir.alert</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+	<!--
+	<menuitem name="Family Alert" id="menu_family_alert"  parent="next_id_13" action="fake_ir_alert_act"/>
+	-->
+    <!--
+    =============================================================
+    cron for Alert
+    =============================================================
+    -->
+
+        <record id="ir_cron_manage_alerts_action" model="ir.cron">
+            <field name="name">Manage Alerts</field>
+            <field name="interval_number">2</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'ir.alert'" name="model"/>
+            <field eval="'manage_alerts'" name="function"/>
+            <field eval="'()'" name="args"/>
+        </record>
+
+    <!--
+    =============================================================
+    Appuntamenti
+    =============================================================
+    -->
+    
+        <!-- Calenadar's menu -->
+        <menuitem id="next_id_14" name="Appointment"
+            parent="base.menu_config" sequence="14"/>
+            <!-- parent="base.menu_config" sequence="14" groups="base.group_sale_manager,base.group_extended" /> -->
+	    
+        <!-- Event menu  -->
+
+        <menuitem id="menu_appointments"
+                parent="next_id_14"
+                name="Appointment"
+
+                sequence="1" action="base_calendar.action_view_event" />
+	        <!-- groups="base.group_extended,base.group_sale_manager" -->
+                
+        <!-- Invitation menu -->
+
+         <menuitem id="menu_appointment_attendee_invitations"
+            parent="next_id_14"
+
+            sequence="2" action="base_calendar.action_view_attendee_form" />
+            <!-- groups="base.group_extended,base.group_sale_manager" -->
+            
+        <!--        Menu for Alarms-->
+
+         <menuitem id="menu_appointment_crm_meeting_avail_alarm"
+
+            sequence="3" action="base_calendar.action_res_alarm_view"
+            parent="next_id_14" />
+	    <!-- groups="base.group_extended,base.group_sale_manager" -->
+
+    </data>
+</openerp>

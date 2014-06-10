@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+  		<record model="ir.ui.view" id="view_asset_assign_category">
+            <field name="name">asset.assign.category.form</field>
+            <field name="model">asset.assign.category</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Choose Category for a New Asset">
+                	<group colspan="4" >
+                		<separator string="Select category" colspan="4"/>
+              			<field name="category_id" required="True" />
+                    </group>
+                    <separator string="" colspan="4" />
+                    <group colspan="4" col="6">
+                    	<button icon="gtk-cancel" special="cancel"
+                    		string="Cancel" />
+                    	<button icon="gtk-save" string="Assign"
+                    		name="assign_category" type="object" />
+                    </group>
+                </form>
+            </field>
+  		</record>
+    </data>
+</openerp>

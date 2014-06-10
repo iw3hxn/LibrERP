@@ -1,0 +1,75 @@
+2014-03-13 3.6.9.18 Carlo Vettore
+=====================================================
+Featured
+---------------
+Add on sale.order.line product_type field that is equal to product_id.type
+
+2013-11-28: 1.12 Carlo Vettore
+=====================================================
+Featured
+---------------
+    * Add new menu for increase usability
+Quotation Technical Review
+Quotation Orders
+Quotation Manager Review
+Quotation Ready To Send
+Quotation Waiting Customer
+Quotation Waiting Customer
+
+
+2013-12-18 1.13.4 Carlo Vettore
+=====================================================
+
+Bugfixes 
+-----------------
+    * fix project_id can be modify also on other state
+
+2013-11-25: 1.11 Dhaval Patel <dhaval@deneroteam.com>
+=====================================================
+
+Bugfixes 
+-----------------
+    * fix workflow issue of Confirm by Customer does not works properly.
+      update workflow so that it execute order_confirm signal with applied validation
+    * fix Confirm by Customer issue. Need to click twice to get effect
+       function sale_order_confirmated need to write customer_validation=True
+       before triggering workflow signal for order_confirm
+
+2013-11-25: 1.10 Dhaval Patel <dhaval@deneroteam.com>
+=====================================================
+
+Bugfixes 
+-----------------
+    * fix client side error of [_.sprintf].
+      funcion _credit_limit returning [] credit limit for prepaid order policy
+
+    
+2013-11-25: 1.9 Dhaval Patel <dhaval@deneroteam.com>
+=====================================================
+
+Bugfixes 
+-----------------
+    * Sale Order, Update workflow for validation:
+        * Add Email Send to customer stage
+        * Add Rejection with reason notes
+    * Update Sale Order form view
+    
+
+2013-11-25: 1.7 Dhaval Patel <dhaval@deneroteam.com>
+=====================================================
+
+Bugfixes 
+-----------------
+    *   Sale Order, Set New workflow for validation:
+        * Add Technical Validation
+        * Add Supervisor Validation
+        * Add Customer Validation
+    *   Update Company Params and based on company params for validation will be
+        applicable.
+        * Add need_technical_validation boolean fields to enable sale order with
+            technical validation.
+        * Add need_manager_validation boolean fields to enable sale order with
+            supervisor validation
+    *   Update Sale Order workflow
+    *   Update Sale Order form view
+    *   Update Comapany Form view
