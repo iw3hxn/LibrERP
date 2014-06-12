@@ -1,0 +1,136 @@
+diff -ENwbur oldgit/web/common/http.py newgit/web/common/http.py
+--- oldgit/web/common/http.py	2013-07-02 11:02:10.000000000 +0200
++++ newgit/web/common/http.py	2013-07-29 08:41:39.000000000 +0200
+@@ -304,7 +304,7 @@
+         response = werkzeug.wrappers.Response(data, headers=headers)
+         if cookies:
+             for k, v in cookies.iteritems():
+-                response.set_cookie(k, v)
++                response.set_cookie(k, str(v))
+         return response
+ 
+     def not_found(self, description=None):
+@@ -500,7 +500,7 @@
+                     response = result
+ 
+                 if hasattr(response, 'set_cookie'):
+-                    response.set_cookie(self.session_cookie, session.sid)
++                    response.set_cookie(self.session_cookie, str(session.sid))
+ 
+         return response(environ, start_response)
+ 
+diff -ENwbur oldgit/web/controllers/main.py newgit/web/controllers/main.py
+--- oldgit/web/controllers/main.py	2013-07-02 11:02:10.000000000 +0200
++++ newgit/web/controllers/main.py	2013-07-12 07:14:42.781401000 +0200
+@@ -1478,10 +1478,11 @@
+     @openerpweb.httprequest
+     def upload(self, req, callback, ufile):
+         # TODO: might be useful to have a configuration flag for max-length file uploads
++        # Bugfix 2514_2513 in callback row
+         try:
+             out = """<script language="javascript" type="text/javascript">
+                         var win = window.top.window,
+-                            callback = win[%s];
++						callback = win[%s + '_callback'];
+                         if (typeof(callback) === 'function') {
+                             callback.apply(this, %s);
+                         } else {
+diff -ENwbur oldgit/web/__init__.py newgit/web/__init__.py
+--- oldgit/web/__init__.py	2013-07-02 11:02:10.000000000 +0200
++++ newgit/web/__init__.py	2013-07-12 07:21:42.154048000 +0200
+@@ -18,6 +18,11 @@
+     o.dbfilter = openerp.tools.config['dbfilter']
+     o.server_wide_modules = openerp.conf.server_wide_modules or ['web']
+     try:
++		# BUGFIX 2507_2506
++        import pwd
++        username = pwd.getpwuid(os.geteuid()).pw_name
++    except ImportError:
++        try:
+         username = getpass.getuser()
+     except Exception:
+         username = "unknown"
+@@ -28,4 +33,3 @@
+ 
+     app = common.http.Root(o)
+     openerp.wsgi.register_wsgi_handler(app)
+-
+Binary files oldgit/web/static/src/img/views-icons-b.png and newgit/web/static/src/img/views-icons-b.png differ
+diff -ENwbur oldgit/web/static/src/js/view_form.js newgit/web/static/src/js/view_form.js
+--- oldgit/web/static/src/js/view_form.js	2013-07-02 11:02:10.000000000 +0200
++++ newgit/web/static/src/js/view_form.js	2013-07-12 07:18:01.334333000 +0200
+@@ -873,7 +873,8 @@
+         this.$element.find('.oe-sidebar-attachment-delete').click(this.on_attachment_delete);
+     },
+     on_attachment_changed: function(e) {
+-        window[this.element_id + '_iframe'] = this.do_update;
++        //bugfix 2514_2513
++        window[this.element_id + '_iframe_callback'] = this.do_update;
+         var $e = $(e.target);
+         if ($e.val() != '') {
+             this.$element.find('form.oe-binary-form').submit();
+@@ -3552,7 +3553,8 @@
+         // TODO: on modern browsers, we could directly read the file locally on client ready to be used on image cropper
+         // http://www.html5rocks.com/tutorials/file/dndfiles/
+         // http://deepliquid.com/projects/Jcrop/demos.php?demo=handler
+-        window[this.iframe] = this.on_file_uploaded;
++        // bugfix 2514_2513
++        window[this.iframe + '_callback'] = this.on_file_uploaded;
+         if ($(e.target).val() != '') {
+             this.$element.find('form.oe-binary-form input[name=session_id]').val(this.session.session_id);
+             this.$element.find('form.oe-binary-form').submit();
+diff -ENwbur oldgit/web/static/src/js/view_list_editable.js newgit/web/static/src/js/view_list_editable.js
+--- oldgit/web/static/src/js/view_list_editable.js	2013-07-02 11:02:10.000000000 +0200
++++ newgit/web/static/src/js/view_list_editable.js	2013-07-12 07:20:17.755372000 +0200
+@@ -136,9 +136,15 @@
+             }
+             cancelled.then(function () {
+                 self.view.unpad_columns();
++                if(typeof self.edition_form != 'undefined')
++                {
++                	// Bugfix 1066703: Fix for bug #1066703: self.edition_form is undefined when switching from a line to another
++                	if(self.edition_form){
+                 self.edition_form.stop();
+                 self.edition_form.$element.remove();
+                 delete self.edition_form;
++                		}
++                	}
+                 self.dataset.index = null;
+                 delete self.edition_id;
+                 delete self.edition;
+diff -ENwbur oldgit/web/static/src/xml/base.xml newgit/web/static/src/xml/base.xml
+--- oldgit/web/static/src/xml/base.xml	2013-07-02 11:02:10.000000000 +0200
++++ newgit/web/static/src/xml/base.xml	2013-07-12 07:11:25.019009000 +0200
+@@ -787,7 +787,9 @@
+             <form class="oe-binary-form" t-attf-target="#{element_id}_iframe"
+                 method="post" enctype="multipart/form-data" t-att-action='_s + "/web/binary/upload_attachment"'>
+                 <input type="hidden" name="session_id" t-att-value="session.session_id"/>
+-                <input type="hidden" name="callback" t-attf-value="#{element_id}_iframe"/>
++                <!-- Bugfix 2514_2513  -->
++                <input type="hidden" name="callback" t-attf-value="#{element_id}_iframe_callback"
++						t-attf-id="#{element_id}_iframe_callback"/>
+                 <input type="hidden" name="model" t-att-value="view.dataset.model"/>
+                 <input type="hidden" name="id" t-att-value="view.datarecord.id"/>
+                 <button class="oe_button" type="button">
+@@ -1176,7 +1178,9 @@
+                             <form class="oe-binary-form" t-att-target="widget.iframe"
+                                 method="post" enctype="multipart/form-data" t-att-action='_s + "/web/binary/upload"'>
+                                 <input type="hidden" name="session_id" value=""/>
+-                                <input type="hidden" name="callback" t-att-value="widget.iframe"/>
++                                <!-- Bugfix 2514_2513 -->
++                                <input type="hidden" name="callback" t-att-value="widget.iframe"
++										t-att-id='widget.iframe + "_callback"'/>
+                                 <button class="oe_button" type="button" title="Set Image">
+                                     <img t-att-src='_s + "/web/static/src/img/icons/STOCK_DIRECTORY.png"'/>
+                                 </button>
+@@ -1219,7 +1223,9 @@
+                         <form class="oe-binary-form" t-att-target="widget.iframe"
+                             method="post" enctype="multipart/form-data" t-att-action='_s + "/web/binary/upload"'>
+                             <input type="hidden" name="session_id" value=""/>
+-                            <input type="hidden" name="callback" t-att-value="widget.iframe"/>
++                            <!-- Bugfix 2514_2513 -->
++                            <input type="hidden" name="callback" t-att-value="widget.iframe"
++									t-att-id='widget.iframe + "_callback"'/>
+                             <button class="oe_button oe_field_button" type="button" title="Set Image">
+                                 <img t-att-src='_s + "/web/static/src/img/icons/STOCK_DIRECTORY.png"'/>
+                                 <span>Select</span>

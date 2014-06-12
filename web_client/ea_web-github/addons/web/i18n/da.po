@@ -1,0 +1,2153 @@
+# Danish translation for openerp-web
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the openerp-web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: openerp-web\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-08-31 15:54+0200\n"
+"PO-Revision-Date: 2013-08-29 14:52+0000\n"
+"Last-Translator: Aputsiaq Niels Janussen <aj@isit.gl>\n"
+"Language-Team: Danish <da@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2013-08-30 05:21+0000\n"
+"X-Generator: Launchpad (build 16750)\n"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:277
+#: code:addons/web/static/src/js/chrome.js:286
+#: code:addons/web/static/src/js/chrome.js:466
+#: code:addons/web/static/src/js/chrome.js:847
+#: code:addons/web/static/src/js/view_form.js:575
+#: code:addons/web/static/src/js/view_form.js:1940
+#: code:addons/web/static/src/xml/base.xml:1773
+#, python-format
+msgid "Ok"
+msgstr "Ok"
+
+#. openerp-web
+#: addons/web/static/src/js/chrome.js:184
+msgid "Send OpenERP Enterprise Report"
+msgstr "Send OpenERP Enterprise-rapport"
+
+#. openerp-web
+#: addons/web/static/src/js/chrome.js:198
+msgid "Dont send"
+msgstr "Send ikke"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:341
+#, python-format
+msgid "Loading (%d)"
+msgstr "Indlæser (%d)"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:367
+#, python-format
+msgid "Invalid database name"
+msgstr "Ugyldigt navn på database"
+
+#. openerp-web
+#: addons/web/static/src/js/chrome.js:393
+msgid "Create database"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/chrome.js:395
+#, python-format
+msgid "Database \"%s\" already exist"
+msgstr "Databasen \"%s\" findes allerede"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:531
+#, python-format
+msgid "Backed"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:531
+#, python-format
+msgid "Database backed up successfully"
+msgstr "Backup af database blev afsluttet med succes"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:571
+#, python-format
+msgid "Restored"
+msgstr "Gendannet"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:571
+#, python-format
+msgid "Database restored successfully"
+msgstr "Databasen blev gendannet korrekt"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:1165
+#, python-format
+msgid "About"
+msgstr "Om"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:424
+#, python-format
+msgid "Preferences"
+msgstr "Egenskaber"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:1936
+#: code:addons/web/static/src/xml/base.xml:356
+#: code:addons/web/static/src/xml/base.xml:1405
+#: code:addons/web/static/src/xml/base.xml:1881
+#, python-format
+msgid "Cancel"
+msgstr "Annuller"
+
+#. openerp-web
+#: addons/web/static/src/js/chrome.js:763
+msgid "Change password"
+msgstr "Skift adgangskode"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:796
+#: code:addons/web/static/src/xml/base.xml:837
+#: code:addons/web/static/src/xml/base.xml:1410
+#: code:addons/web/static/src/xml/base.xml:1630
+#, python-format
+msgid "Save"
+msgstr "Gem"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/controllers/main.py:832
+#: code:addons/web/controllers/main.py:833
+#: code:addons/web/controllers/main.py:869
+#: code:addons/web/controllers/main.py:871
+#: code:addons/web/controllers/main.py:877
+#: code:addons/web/controllers/main.py:878
+#: code:addons/web/static/src/js/chrome.js:823
+#: code:addons/web/static/src/xml/base.xml:294
+#: code:addons/web/static/src/xml/base.xml:354
+#, python-format
+msgid "Change Password"
+msgstr "Skift adgangskode"
+
+#. openerp-web
+#: addons/web/static/src/js/chrome.js:1052
+msgid "OpenERP - Unsupported/Community Version"
+msgstr "OpenERP - Ikke understøttet af officiel support/Community Udgave"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:301
+#: code:addons/web/static/src/js/chrome.js:1276
+#, python-format
+msgid "Client Error"
+msgstr "Klientfejl"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/data_export.js:6
+#, python-format
+msgid "Export Data"
+msgstr "Eksporter Data"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/data_export.js:30
+#: code:addons/web/static/src/js/view_form.js:1077
+#: code:addons/web/static/src/xml/base.xml:1422
+#, python-format
+msgid "Close"
+msgstr "Luk"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/data_export.js:31
+#, python-format
+msgid "Export To File"
+msgstr "Eksporter Til Fil"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/data_export.js:127
+#, python-format
+msgid "Please enter save field list name"
+msgstr "Indtast  gem felt list navn"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/data_export.js:362
+#, python-format
+msgid "Please select fields to save export list..."
+msgstr "Vælg felter for at gemme eksport liste..."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/data_export.js:375
+#, python-format
+msgid "Please select fields to export..."
+msgstr "Vælg venligst mulighed for at eksportere"
+
+#. openerp-web
+#: addons/web/static/src/js/data_import.js:34
+msgid "Import Data"
+msgstr "Importer data"
+
+#. openerp-web
+#: addons/web/static/src/js/data_import.js:72
+msgid "Import File"
+msgstr "Importér fil"
+
+#. openerp-web
+#: addons/web/static/src/js/data_import.js:108
+msgid "External ID"
+msgstr "Eksternt ID"
+
+#. openerp-web
+#: addons/web/static/src/js/data_import.js:349
+msgid ""
+"Destination fields should only be selected once, some fields are selected "
+"more than once:"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/data_import.js:386
+msgid "*Required Fields are not selected :"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/formats.js:184
+#, python-format
+msgid "(%d records)"
+msgstr "(%d records)"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:5082
+#: code:addons/web/static/src/js/view_list.js:2204
+#, python-format
+msgid "Download"
+msgstr "Download"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:2216
+#, python-format
+msgid "Download \"%s\""
+msgstr "Download \"%s\""
+
+#. openerp-web
+#: addons/web/static/src/js/search.js:193
+msgid "Filter disabled due to invalid syntax"
+msgstr "Filtret er deaktiveret på grund af ugyldig syntaks"
+
+#. openerp-web
+#: addons/web/static/src/js/search.js:239
+msgid "Filter Entry"
+msgstr "Filtrér post"
+
+#. openerp-web
+#: addons/web/static/src/js/search.js:244
+#: addons/web/static/src/js/search.js:303
+msgid "OK"
+msgstr "OK"
+
+#. openerp-web
+#: addons/web/static/src/js/search.js:298
+#: addons/web/static/src/xml/base.xml:1299
+msgid "Add to Dashboard"
+msgstr "Tilføj til kontrolpanel"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:841
+#, python-format
+msgid "Invalid Search"
+msgstr "Ugyldig søgning"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:841
+#, python-format
+msgid "triggered from search view"
+msgstr "udløst fra søgevisning"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:884
+#, python-format
+msgid "Incorrect value for field %(fieldname)s: [%(value)s] is %(message)s"
+msgstr "Forkert værdi for feltet %(fieldname)s: [%(value)s] er %(message)s"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:1387
+#, python-format
+msgid "not a valid integer"
+msgstr "ikke et gyldigt heltal"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:1401
+#, python-format
+msgid "not a valid number"
+msgstr "ikke et gyldigt tal"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:1484
+#: code:addons/web/static/src/xml/base.xml:992
+#, python-format
+msgid "Yes"
+msgstr "Ja"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:1485
+#, python-format
+msgid "No"
+msgstr "Nej"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2042
+#, python-format
+msgid "contains"
+msgstr "indeholder"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2043
+#, python-format
+msgid "doesn't contain"
+msgstr "indeholder ikke"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2044
+#: code:addons/web/static/src/js/search.js:2056
+#: code:addons/web/static/src/js/search.js:2092
+#: code:addons/web/static/src/js/search.js:2119
+#, python-format
+msgid "is equal to"
+msgstr "er lig med"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2045
+#: code:addons/web/static/src/js/search.js:2057
+#: code:addons/web/static/src/js/search.js:2093
+#: code:addons/web/static/src/js/search.js:2120
+#, python-format
+msgid "is not equal to"
+msgstr "er ikke lig med"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2058
+#: code:addons/web/static/src/js/search.js:2094
+#: code:addons/web/static/src/js/search.js:2121
+#, python-format
+msgid "greater than"
+msgstr "større end"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2059
+#: code:addons/web/static/src/js/search.js:2095
+#: code:addons/web/static/src/js/search.js:2122
+#, python-format
+msgid "less than"
+msgstr "mindre end"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2060
+#: code:addons/web/static/src/js/search.js:2096
+#: code:addons/web/static/src/js/search.js:2123
+#, python-format
+msgid "greater or equal than"
+msgstr "større end eller lig med"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2061
+#: code:addons/web/static/src/js/search.js:2097
+#: code:addons/web/static/src/js/search.js:2124
+#, python-format
+msgid "less or equal than"
+msgstr "mindre eller lig med"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2046
+#: code:addons/web/static/src/js/search.js:2062
+#: code:addons/web/static/src/js/search.js:2098
+#: code:addons/web/static/src/js/search.js:2125
+#: code:addons/web/static/src/js/search.js:2145
+#, python-format
+msgid "is set"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2047
+#: code:addons/web/static/src/js/search.js:2063
+#: code:addons/web/static/src/js/search.js:2099
+#: code:addons/web/static/src/js/search.js:2126
+#: code:addons/web/static/src/js/search.js:2146
+#, python-format
+msgid "is not set"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2114
+#: code:addons/web/static/src/js/search.js:2143
+#, python-format
+msgid "is"
+msgstr "er"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2144
+#, python-format
+msgid "is not"
+msgstr "er ikke"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2160
+#, python-format
+msgid "is true"
+msgstr "er sandt"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:2161
+#, python-format
+msgid "is false"
+msgstr "er falsk"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:20
+#, python-format
+msgid "Manage Views (%s)"
+msgstr "Håndter Visninger (%s)"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:17
+#: code:addons/web/static/src/js/view_list.js:2258
+#: code:addons/web/static/src/xml/base.xml:324
+#: code:addons/web/static/src/xml/base.xml:834
+#: code:addons/web/static/src/xml/base.xml:1404
+#, python-format
+msgid "Create"
+msgstr "Opret"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:568
+#: code:addons/web/static/src/xml/base.xml:831
+#: code:addons/web/static/src/xml/base.xml:1206
+#, python-format
+msgid "Edit"
+msgstr "Redigér"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1727
+#, python-format
+msgid "Remove"
+msgstr "Fjern"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:71
+#, python-format
+msgid "Create a view (%s)"
+msgstr "Opret en visning (%s)"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:149
+#: addons/web/static/src/js/view_form.js:577
+msgid "The following fields are invalid :"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:168
+msgid "Do you really want to remove this view?"
+msgstr "Vil du virkelig slette denne visning"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:248
+msgid "Please select view in list :"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:364
+#, python-format
+msgid "View Editor %d - %s"
+msgstr "Vis redigeringsværktøj %d - %s"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:367
+msgid "Inherited View"
+msgstr "Nedarvet visning"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:371
+msgid "Do you really wants to create an inherited view here?"
+msgstr "Vil du virkelig oprette en nedarvet visning her?"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:375
+#: addons/web/static/src/js/view_editor.js:959
+msgid "Can't Update View"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:378
+msgid "Select an element"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:381
+msgid "Preview"
+msgstr "Forhåndsvisning"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:501
+msgid "Do you really want to remove this node?"
+msgstr "Vil du virkelig fjerne dette led?"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:815
+#: addons/web/static/src/js/view_editor.js:939
+msgid "Properties"
+msgstr "Egenskaber"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:818
+#: addons/web/static/src/js/view_editor.js:942
+msgid "Update"
+msgstr "Opdatér"
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:934
+msgid "Node Type"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:936
+msgid "Position"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/view_editor.js:974
+msgid "New Field"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:77
+#: code:addons/web/static/src/js/view_form.js:320
+#, python-format
+msgid "Form"
+msgstr "Formular"
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:131
+#: addons/web/static/src/js/views.js:808
+msgid "Customize"
+msgstr "Tilpasse"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:1071
+#, python-format
+msgid "Set Default"
+msgstr "Indstil som standard"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:320
+#, python-format
+msgid "The record could not be found in the database."
+msgstr "Posten findes ikke i databasen."
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:508
+msgid ""
+"Warning, the record has been modified, your changes will be discarded."
+msgstr ""
+"Advarsel, registreringen er blevet ændret, dine ændringer vil derfor blive "
+"kasseret."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:1078
+#, python-format
+msgid "Save default"
+msgstr "Gem som standard"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:990
+#, python-format
+msgid "Could not find id in dataset"
+msgstr "Id i dataset ikke fundet"
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:796
+msgid "Attachments"
+msgstr "Vedhæftede filer"
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:803
+#, python-format
+msgid "Delete the attachment %s"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:837
+#, python-format
+msgid "Do you really want to delete the attachment %s?"
+msgstr "Vil du virkelig slette den vedhæftede fil %r?"
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:845
+msgid "Delete an attachment"
+msgstr ""
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:846
+#, python-format
+msgid "The attachment '%s' has been deleted"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:1663
+#, python-format
+msgid "Unknown operator %s in domain %s"
+msgstr "Ukendt operator %s i domænet %s"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:1671
+#, python-format
+msgid "Unknown field %s in domain %s"
+msgstr "Ukendt felt %s i domænet %s"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:1709
+#, python-format
+msgid "Unsupported operator %s in domain %s"
+msgstr "Ikke-understøttet operator %s i domænet %s"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:1933
+#, python-format
+msgid "Confirm"
+msgstr "Bekræft"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2330
+#, python-format
+msgid "E-mail error"
+msgstr "E-mail fejl"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2349
+#, python-format
+msgid "Can't send email to invalid e-mail address"
+msgstr "Kan ikke sende email til ugyldig email adresse"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2359
+#, python-format
+msgid "Resource error"
+msgstr "Ressource fejl"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2379
+#, python-format
+msgid "This resource is empty"
+msgstr "Denne ressource er tom"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2431
+#: code:addons/web/static/src/xml/base.xml:1258
+#: code:addons/web/static/src/xml/base.xml:1260
+#, python-format
+msgid "Clear"
+msgstr "Ryd"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2432
+#, python-format
+msgid "Erase the current date"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2433
+#: code:addons/web/static/src/js/view_form.js:2463
+#, python-format
+msgid "Done"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2434
+#, python-format
+msgid "Close without change"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2435
+#, python-format
+msgid "<Prev"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2436
+#, python-format
+msgid "Show the previous month"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2437
+#, python-format
+msgid "Next>"
+msgstr "Næste>"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2438
+#, python-format
+msgid "Show the next month"
+msgstr "Vis næste måned"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2439
+#, python-format
+msgid "Today"
+msgstr "I dag"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2440
+#, python-format
+msgid "Show the current month"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2443
+#, python-format
+msgid "Show a different month"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2444
+#, python-format
+msgid "Show a different year"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2445
+#, python-format
+msgid "Wk"
+msgstr "Uge"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2446
+#, python-format
+msgid "Week of the year"
+msgstr "Ugenummer"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2450
+#, python-format
+msgid "Set DD as first week day"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2451
+#, python-format
+msgid "Select D, M d"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2453
+#, python-format
+msgid "Select a date"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2457
+#, python-format
+msgid "Choose Time"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2458
+#, python-format
+msgid "Time"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2459
+#, python-format
+msgid "Hour"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2460
+#, python-format
+msgid "Minute"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2461
+#, python-format
+msgid "Second"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2462
+#, python-format
+msgid "Now"
+msgstr "Nu"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:3139
+#: code:addons/web/static/src/js/view_form.js:3785
+#: code:addons/web/static/src/js/view_form.js:3906
+#: code:addons/web/static/src/js/view_form.js:4358
+#: code:addons/web/static/src/js/view_form.js:4482
+#, python-format
+msgid "Open: "
+msgstr "Åbn: "
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:2220
+msgid "<em>   Search More...</em>"
+msgstr "<em>   Søg efter mere....</em>"
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:2238
+#, python-format
+msgid "<em>   Create \"<strong>%s</strong>\"</em>"
+msgstr "<em>   Create \"<strong>%s</strong>\"</em>"
+
+#. openerp-web
+#: addons/web/static/src/js/view_form.js:2244
+msgid "<em>   Create and Edit...</em>"
+msgstr "<em>   Opret og rediger...</em>"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2991
+#, python-format
+msgid "Search: "
+msgstr "Søg: "
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:2991
+#: code:addons/web/static/src/js/view_form.js:3878
+#, python-format
+msgid "Create: "
+msgstr "Opret: "
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:4262
+#: code:addons/web/static/src/js/view_form.js:4423
+#: code:addons/web/static/src/xml/base.xml:1435
+#: code:addons/web/static/src/xml/base.xml:1726
+#, python-format
+msgid "Add"
+msgstr "Tilføj"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:4334
+#: code:addons/web/static/src/js/view_form.js:4464
+#, python-format
+msgid "Add: "
+msgstr "Tilføj: "
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:5002
+#, python-format
+msgid "File Upload"
+msgstr "Fil sendt"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:5002
+#, python-format
+msgid "There was a problem while uploading your file"
+msgstr "Fejl ved upload af din fil"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:8
+#, python-format
+msgid "List"
+msgstr "Liste"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:327
+#, python-format
+msgid "Unlimited"
+msgstr "Ubegrænset"
+
+#. openerp-web
+#: addons/web/static/src/js/view_list.js:317
+#, python-format
+msgid "[%(first_record)d to %(last_record)d] of %(records_count)d"
+msgstr "[%(first_record)d til %(last_record)d] af %(records_count)d"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:432
+#, python-format
+msgid "Group"
+msgstr "Gruppe"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:587
+#, python-format
+msgid "Do you really want to remove these records?"
+msgstr "Vil du virkelig fjerne disse poster?"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:1350
+#, python-format
+msgid "Undefined"
+msgstr "Ikke defineret"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:1449
+#, python-format
+msgid "%(page)d/%(page_count)d"
+msgstr "%(page)d/%(page_count)d"
+
+#. openerp-web
+#: addons/web/static/src/js/view_page.js:8
+msgid "Page"
+msgstr "Side"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:769
+#, python-format
+msgid "Do you really want to delete this record?"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_tree.js:11
+#, python-format
+msgid "Tree"
+msgstr "Træ"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/views.js:881
+#: code:addons/web/static/src/xml/base.xml:563
+#, python-format
+msgid "Fields View Get"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/views.js:897
+#, python-format
+msgid "View Log (%s)"
+msgstr "Vis log (%s)"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/views.js:939
+#, python-format
+msgid "Model %s fields"
+msgstr "Modellér %s felter"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:567
+#, python-format
+msgid "Manage Views"
+msgstr "Håndtér visninger"
+
+#. openerp-web
+#: addons/web/static/src/js/views.js:616
+msgid "Could not find current view declaration"
+msgstr "Kunne ikke finde nuværende visningsdeklaration"
+
+#. openerp-web
+#: addons/web/static/src/js/views.js:810
+msgid "Translate"
+msgstr "Oversæt"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:566
+#, python-format
+msgid "Technical translation"
+msgstr "Teknisk oversættelse"
+
+#. openerp-web
+#: addons/web/static/src/js/views.js:816
+msgid "Other Options"
+msgstr "Andre tilvalg"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1789
+#, python-format
+msgid "Import"
+msgstr "Importer"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:345
+#: code:addons/web/static/src/xml/base.xml:1683
+#, python-format
+msgid "Export"
+msgstr "Eksporter"
+
+#. openerp-web
+#: addons/web/static/src/js/views.js:830
+msgid "Reports"
+msgstr "Rapporter"
+
+#. openerp-web
+#: addons/web/static/src/js/views.js:830
+msgid "Actions"
+msgstr "Handlinger"
+
+#. openerp-web
+#: addons/web/static/src/js/views.js:830
+msgid "Links"
+msgstr "Links"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/views.js:1172
+#, python-format
+msgid "You must choose at least one record."
+msgstr "Du skal vælge mindst en post."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:699
+#: code:addons/web/static/src/js/views.js:1172
+#, python-format
+msgid "Warning"
+msgstr "Advarsel"
+
+#. openerp-web
+#: addons/web/static/src/js/views.js:962
+msgid "Translations"
+msgstr "Oversættelser"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:82
+#: code:addons/web/static/src/xml/base.xml:467
+#, python-format
+msgid "Powered by"
+msgstr "Drevet af"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:82
+#: code:addons/web/static/src/xml/base.xml:468
+#, python-format
+msgid "OpenERP"
+msgstr "OpenERP"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:672
+#: code:addons/web/static/src/js/coresetup.js:618
+#: code:addons/web/static/src/xml/base.xml:9
+#, python-format
+msgid "Loading..."
+msgstr "Indlæser..."
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:61
+msgid "CREATE DATABASE"
+msgstr "OPRET DATABASE"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:126
+#: code:addons/web/static/src/xml/base.xml:185
+#: code:addons/web/static/src/xml/base.xml:300
+#, python-format
+msgid "Master password:"
+msgstr "Primær adgangskode:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:193
+#: code:addons/web/static/src/xml/base.xml:282
+#, python-format
+msgid "New database name:"
+msgstr "Nyt database navn:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:125
+#, python-format
+msgid "Load Demonstration data:"
+msgstr "Indlæs demonstrations data:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:147
+#, python-format
+msgid "Default language:"
+msgstr "Standardsprog:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:145
+#, python-format
+msgid "Admin password:"
+msgstr "Administrators adgangskode:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:163
+#, python-format
+msgid "Confirm password:"
+msgstr "Bekræft adgangskode:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:109
+msgid "DROP DATABASE"
+msgstr "SLET DATABASE"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:68
+#: code:addons/web/static/src/xml/base.xml:211
+#: code:addons/web/static/src/xml/base.xml:243
+#, python-format
+msgid "Database:"
+msgstr "Database:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:224
+#: code:addons/web/static/src/xml/base.xml:256
+#: code:addons/web/static/src/xml/base.xml:278
+#, python-format
+msgid "Master Password:"
+msgstr "Hovedadgangskode"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:205
+#: code:addons/web/static/src/xml/base.xml:326
+#, python-format
+msgid "Drop"
+msgstr "Drop"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:143
+msgid "BACKUP DATABASE"
+msgstr "SIKKERHEDSKOPIER DATABASE"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:236
+#: code:addons/web/static/src/xml/base.xml:327
+#, python-format
+msgid "Backup"
+msgstr "Sikkerhedskopi"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:175
+msgid "RESTORE DATABASE"
+msgstr "GENDAN DATABASE"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:274
+#, python-format
+msgid "File:"
+msgstr "Fil:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:268
+#: code:addons/web/static/src/xml/base.xml:328
+#, python-format
+msgid "Restore"
+msgstr "Gendan"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:204
+msgid "CHANGE MASTER PASSWORD"
+msgstr "Skift hovedadgangskode"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:304
+#, python-format
+msgid "New master password:"
+msgstr "Ny hovedadgangskode"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:308
+#, python-format
+msgid "Confirm new master password:"
+msgstr "Bekræft ny hovedadgangskode"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:251
+msgid ""
+"Your version of OpenERP is unsupported. Support & maintenance services are "
+"available here:"
+msgstr ""
+"Din version af OpenERP understøttes ikke. Tjenester for support & "
+"vedligehold er tilgængelige her:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:251
+msgid "OpenERP Entreprise"
+msgstr "OpenERP Entreprise"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:256
+msgid "OpenERP Enterprise Contract."
+msgstr "OpenERP Enterprise-kontrakt."
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:257
+msgid "Your report will be sent to the OpenERP Enterprise team."
+msgstr "Din rapport vil blive sendt til OpenERP Enterprise-holdet."
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:259
+msgid "Summary:"
+msgstr "Resumé:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:263
+msgid "Description:"
+msgstr "Beskrivelse:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:267
+msgid "What you did:"
+msgstr "Hvad du foretog dig:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/chrome.js:732
+#, python-format
+msgid "Invalid username or password"
+msgstr "Ugyldigt brugernavn eller adgangskode"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:73
+#, python-format
+msgid "Username"
+msgstr "Brugernavn"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:75
+#: code:addons/web/static/src/xml/base.xml:329
+#, python-format
+msgid "Password"
+msgstr "Adgangskode"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:77
+#, python-format
+msgid "Log in"
+msgstr "Log ind"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:81
+#, python-format
+msgid "Manage Databases"
+msgstr "Håndtér databaser"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:318
+#, python-format
+msgid "Back to Login"
+msgstr "Tilbage til log ind"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:353
+msgid "Home"
+msgstr "Hjem"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:363
+msgid "LOGOUT"
+msgstr "LOG UD"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:388
+msgid "Fold menu"
+msgstr "Sammenfold menu"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:389
+msgid "Unfold menu"
+msgstr "Udfold menu"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:454
+msgid "Hide this tip"
+msgstr "Skjul dette tip"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:455
+msgid "Disable all tips"
+msgstr "Deaktiver alle tips"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:463
+msgid "Add / Remove Shortcut..."
+msgstr "Tilføj/fjern genvej ..."
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:471
+msgid "More…"
+msgstr "Mere ..."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:555
+#, python-format
+msgid "Debug View#"
+msgstr "Debug visning#"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:557
+#, python-format
+msgid "View Log (perm_read)"
+msgstr "Vis log (perm_read)"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:562
+#, python-format
+msgid "View Fields"
+msgstr "Vis felter"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_list.js:2258
+#: code:addons/web/static/src/xml/base.xml:568
+#, python-format
+msgid "View"
+msgstr "Vis"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:569
+#, python-format
+msgid "Edit SearchView"
+msgstr "Rediger søgevisning"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:570
+#, python-format
+msgid "Edit Action"
+msgstr "Redigér handling"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:571
+#, python-format
+msgid "Edit Workflow"
+msgstr "Redigér arbejdsgang"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:577
+#, python-format
+msgid "ID:"
+msgstr "Id:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:580
+#, python-format
+msgid "XML ID:"
+msgstr "XML ID:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:583
+#, python-format
+msgid "Creation User:"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:586
+#, python-format
+msgid "Creation Date:"
+msgstr "Oprettelse dato:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:589
+#, python-format
+msgid "Latest Modification by:"
+msgstr "Seneste ændring af:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:592
+#, python-format
+msgid "Latest Modification Date:"
+msgstr "Seneste ændringsdato:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:542
+msgid "Field"
+msgstr "Felt"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:199
+#: code:addons/web/static/src/js/view_list.js:346
+#: code:addons/web/static/src/xml/base.xml:1785
+#, python-format
+msgid "Delete"
+msgstr "Slet"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/view_form.js:200
+#: code:addons/web/static/src/xml/base.xml:179
+#: code:addons/web/static/src/xml/base.xml:325
+#, python-format
+msgid "Duplicate"
+msgstr "Duplikér"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:780
+msgid "Add attachment"
+msgstr "Tilføj vedhæftet fil"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:856
+#, python-format
+msgid "Default:"
+msgstr "Standard:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:873
+#, python-format
+msgid "Condition:"
+msgstr "Betingelse:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:892
+#, python-format
+msgid "Only you"
+msgstr "Kun dig"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:899
+#, python-format
+msgid "All users"
+msgstr "Alle brugere"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:949
+#, python-format
+msgid "Unhandled widget"
+msgstr "Ubehandlet widget"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:905
+msgid "Notebook Page \""
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:988
+#, python-format
+msgid "Modifiers:"
+msgstr ""
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:955
+#, python-format
+msgid "(nolabel)"
+msgstr "(nolabel)"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:960
+#, python-format
+msgid "Field:"
+msgstr "Felt:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:964
+#, python-format
+msgid "Object:"
+msgstr "Objekt:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:968
+#, python-format
+msgid "Type:"
+msgstr "Type:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:972
+#, python-format
+msgid "Widget:"
+msgstr "Kontrol:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:976
+#, python-format
+msgid "Size:"
+msgstr "Størrelse:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:980
+#, python-format
+msgid "Context:"
+msgstr "Kontekst:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:984
+#, python-format
+msgid "Domain:"
+msgstr "Domæne:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:992
+#, python-format
+msgid "Change default:"
+msgstr "Ret standard:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:996
+#, python-format
+msgid "On change:"
+msgstr "Ved ændring:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1000
+#, python-format
+msgid "Relation:"
+msgstr "Relation:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1004
+#, python-format
+msgid "Selection:"
+msgstr "Markering:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1026
+msgid "Send an e-mail with your default e-mail client"
+msgstr "Send en e-mail med din standard e-mail-klient"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1040
+msgid "Open this resource"
+msgstr "Åbn denne ressource"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1090
+#, python-format
+msgid "Select date"
+msgstr "Vælg dato"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1097
+msgid "Open..."
+msgstr "Åbn..."
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1098
+msgid "Create..."
+msgstr "Opret..."
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1099
+msgid "Search..."
+msgstr "Søg..."
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1102
+msgid "..."
+msgstr "..."
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1162
+#: addons/web/static/src/xml/base.xml:1205
+msgid "Set Image"
+msgstr "Angiv billede"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1211
+#: code:addons/web/static/src/xml/base.xml:1268
+#, python-format
+msgid "Uploading ..."
+msgstr "Uploader ..."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1245
+#: code:addons/web/static/src/xml/base.xml:1402
+#, python-format
+msgid "Select"
+msgstr "Markér"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1251
+#: code:addons/web/static/src/xml/base.xml:1253
+#, python-format
+msgid "Save As"
+msgstr "Gem Som"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1349
+#, python-format
+msgid "Button"
+msgstr "Knap"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1352
+#, python-format
+msgid "(no string)"
+msgstr "(ingen streng)"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1359
+#, python-format
+msgid "Special:"
+msgstr "Speciel:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1364
+#, python-format
+msgid "Button Type:"
+msgstr "Knap-type:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1368
+#, python-format
+msgid "Method:"
+msgstr "Metode:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1372
+#, python-format
+msgid "Action ID:"
+msgstr "Aktion ID:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1457
+#, python-format
+msgid "Search"
+msgstr "Søg"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/search.js:616
+#: code:addons/web/static/src/xml/base.xml:1480
+#, python-format
+msgid "Filters"
+msgstr "Filtre"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1481
+#, python-format
+msgid "-- Filters --"
+msgstr "- Filtre -"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1490
+#, python-format
+msgid "-- Actions --"
+msgstr "- Handlinger -"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1491
+#, python-format
+msgid "Add Advanced Filter"
+msgstr "Tilføj avanceret filter"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1492
+#, python-format
+msgid "Save Filter"
+msgstr "Gem filter"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:564
+#: code:addons/web/static/src/xml/base.xml:1493
+#, python-format
+msgid "Manage Filters"
+msgstr "Administrer Filtre"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1498
+#, python-format
+msgid "Filter Name:"
+msgstr "Filter Navn:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1500
+#, python-format
+msgid "(Any existing filter with the same name will be replaced)"
+msgstr "Eksisterende filtre med samme navn vil blive overskrevet"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1312
+msgid "Select Dashboard to add this filter to:"
+msgstr "Vælg instrumentbræt som skal have dette filter tilføjet:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1316
+msgid "Title of new Dashboard item:"
+msgstr "Titel på ny brik i instrumentbræt:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1423
+msgid "Advanced Filters"
+msgstr "Avancerede filtre"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1433
+msgid "Any of the following conditions must match"
+msgstr "Enhver af de følgende  betingelser skal være opfyldt"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1434
+msgid "All the following conditions must match"
+msgstr "Alle de følgende betingelser skal være opfyldt"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1435
+msgid "None of the following conditions must match"
+msgstr "Ingen af de følgende betingelser skal være opfyldt"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1442
+msgid "Add condition"
+msgstr "Tilføj betingelse"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1443
+msgid "and"
+msgstr "og"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1414
+#, python-format
+msgid "Save & New"
+msgstr "Gem & Ny"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1413
+#, python-format
+msgid "Save & Close"
+msgstr "Gem & Luk"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1688
+#, python-format
+msgid ""
+"This wizard will export all data that matches the current search criteria to "
+"a CSV file.\n"
+"            You can export all data or only the fields that can be "
+"reimported after modification."
+msgstr ""
+"Denne guide vil eksportere alle de data der passe på de nuværende "
+"søgekriterier til en CSV file.\n"
+"            Du kan eksportere alle data eller kun de felter der kan "
+"genimporteres efter ændring."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1695
+#, python-format
+msgid "Export Type:"
+msgstr "Eksport type:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1626
+msgid "Import Compatible Export"
+msgstr "Importer Kompatibel Eksport"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1698
+#, python-format
+msgid "Export all Data"
+msgstr "Eksporter alle Data"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1701
+#, python-format
+msgid "Export Formats"
+msgstr "Eksporter formater"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1710
+#, python-format
+msgid "Available fields"
+msgstr "Tilgængelige felter"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1712
+#, python-format
+msgid "Fields to export"
+msgstr "Felter der eksporteres"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1714
+#, python-format
+msgid "Save fields list"
+msgstr "Gem listen med felter"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1728
+#, python-format
+msgid "Remove All"
+msgstr "Fjern alle"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1739
+#, python-format
+msgid "Name"
+msgstr "Navn"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1771
+#, python-format
+msgid "Save as:"
+msgstr "Gem som:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1777
+#, python-format
+msgid "Saved exports:"
+msgstr "Gem eksporteringer"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:338
+#, python-format
+msgid "Old Password:"
+msgstr "Gammel adgangskode:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:343
+#, python-format
+msgid "New Password:"
+msgstr "Ny adgangskode:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:330
+#, python-format
+msgid "Confirm Password:"
+msgstr "Bekræft adgangskode:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1795
+#, python-format
+msgid "1. Import a .CSV file"
+msgstr "1. Importér en .CSV fil"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1796
+#, python-format
+msgid ""
+"Select a .CSV file to import. If you need a sample of file to import,\n"
+"       you should use the export tool with the \"Import Compatible\" option."
+msgstr ""
+"Vælg en .CSV fil som du vil importere. Hvis du har brug et udsnit af filen "
+"som du importere,\n"
+"       skal du bruge eksporteringsværktøjet med valgmuligheden \"Import "
+"kompatibilitet\"."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1800
+#, python-format
+msgid "CSV File:"
+msgstr "CSV Fil:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1803
+#, python-format
+msgid "2. Check your file format"
+msgstr "2. Kontroller dit filformat"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1806
+#, python-format
+msgid "Import Options"
+msgstr "Importindstillinger"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1810
+#, python-format
+msgid "Does your file have titles?"
+msgstr "Har din fil titler?"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1816
+#, python-format
+msgid "Separator:"
+msgstr "Adskiller:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1818
+#, python-format
+msgid "Delimiter:"
+msgstr "Begrænsning"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1822
+#, python-format
+msgid "Encoding:"
+msgstr "Kodning:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1825
+#, python-format
+msgid "UTF-8"
+msgstr "UTF-8"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1826
+#, python-format
+msgid "Latin 1"
+msgstr "Latin 1"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1829
+#, python-format
+msgid "Lines to skip"
+msgstr "Linier, der springes over"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1829
+#, python-format
+msgid ""
+"For use if CSV files have titles on multiple lines, skips more than a single "
+"line during import"
+msgstr ""
+"Bruges hvis CSV fil indeholder overskrifter i flere linier, udelader flere "
+"linier under indlæsning"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1856
+#, python-format
+msgid "The import failed due to:"
+msgstr "Importeringen fejlede som følge af:"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:1858
+#, python-format
+msgid "Here is a preview of the file we could not import:"
+msgstr "Her er et eksempel af filen som vi ikke kunne importere:"
+
+#. openerp-web
+#: addons/web/static/src/xml/base.xml:1818
+msgid "Activate the developper mode"
+msgstr "Aktivér udviklingstilstand"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:437
+#, python-format
+msgid "Version"
+msgstr "Udgave"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:440
+#, python-format
+msgid "Copyright © 2004-TODAY OpenERP SA. All Rights Reserved."
+msgstr ""
+"Ophavsret © 2004 til dags dato, OpenERP SA. Alle rettigheder forbeholdes."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:440
+#, python-format
+msgid "OpenERP is a trademark of the"
+msgstr "OpenERP er et varemærke af"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:441
+#, python-format
+msgid "OpenERP SA Company"
+msgstr "OpenERP SA firma"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:442
+#, python-format
+msgid "Licenced under the terms of"
+msgstr "Licenseret i henhold til"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:442
+#, python-format
+msgid "GNU Affero General Public License"
+msgstr "GNU Affero General Public License"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:443
+#, python-format
+msgid "For more information visit"
+msgstr "For mere information, besøg"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/xml/base.xml:443
+#, python-format
+msgid "OpenERP.com"
+msgstr "OpenERP.com"

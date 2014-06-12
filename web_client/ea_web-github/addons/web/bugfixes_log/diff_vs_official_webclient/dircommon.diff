@@ -1,0 +1,12 @@
+diff -ENwbur web_classic/common/nonliterals.py web_git/common/nonliterals.py
+--- web_classic/common/nonliterals.py	2013-06-23 16:55:00.000000000 +0200
++++ web_git/common/nonliterals.py	2013-06-23 17:11:06.000000000 +0200
+@@ -45,7 +45,7 @@
+         raise TypeError('Could not encode unknown non-literal %s' % object)
+     
+ _ALLOWED_KEYS = frozenset(['__ref', "__id", '__domains', '__debug',
+-                           '__contexts', '__eval_context', 'own_values'])
++                           '__contexts', '__eval_context', 'own_values', 'active_model', 'active_id', 'active_ids'])
+ 
+ def non_literal_decoder(dct):
+     """ Decodes JSON dicts into :class:`Domain` and :class:`Context` based on

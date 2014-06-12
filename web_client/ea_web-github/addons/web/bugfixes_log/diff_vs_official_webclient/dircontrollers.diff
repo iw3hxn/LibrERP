@@ -1,0 +1,32 @@
+diff -ENwbur web_classic/controllers/main.py web_git/controllers/main.py
+--- web_classic/controllers/main.py	2013-06-23 16:55:00.000000000 +0200
++++ web_git/controllers/main.py	2013-07-12 07:14:42.781401000 +0200
+@@ -828,13 +828,13 @@
+         context = req.session.eval_context(req.context)
+         Menus = req.session.model('ir.ui.menu')
+ 
+-        menu_roots = Menus.read(self.do_get_user_roots(req), ['name', 'sequence', 'parent_id'], context)
++        menu_roots = Menus.read(self.do_get_user_roots(req), ['name', 'sequence', 'parent_id', 'icon', ], context)
+         menu_root = {'id': False, 'name': 'root', 'parent_id': [-1, ''], 'children' : menu_roots}
+ 
+         # menus are loaded fully unlike a regular tree view, cause there are a
+         # limited number of items (752 when all 6.1 addons are installed)
+         menu_ids = Menus.search([], 0, False, False, context)
+-        menu_items = Menus.read(menu_ids, ['name', 'sequence', 'parent_id'], context)
++        menu_items = Menus.read(menu_ids, ['name', 'sequence', 'parent_id', 'icon', ], context)
+         # adds roots at the end of the sequence, so that they will overwrite
+         # equivalent menu items from full menu read when put into id:item
+         # mapping, resulting in children being correctly set on the roots.
+@@ -1478,10 +1478,11 @@
+     @openerpweb.httprequest
+     def upload(self, req, callback, ufile):
+         # TODO: might be useful to have a configuration flag for max-length file uploads
++        # Bugfix 2514_2513 in callback row
+         try:
+             out = """<script language="javascript" type="text/javascript">
+                         var win = window.top.window,
+-                            callback = win[%s];
++						callback = win[%s + '_callback'];
+                         if (typeof(callback) === 'function') {
+                             callback.apply(this, %s);
+                         } else {
