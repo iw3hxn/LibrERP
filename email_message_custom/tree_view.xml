@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <record id="ir_ui_view_mail_treex" model="ir.ui.view">
+            <field name="name">mail.message.inherit_treex</field>
+            <field name="model">mail.message</field>
+            <field name="inherit_id" ref="mail.view_email_message_tree"/>
+            <field name="type">form</field>
+
+            <field name="arch" type="xml">
+                <field name="email_from" position="after">
+                    <field name="model" string="Model"/>
+                    <field name="res_id" string="Model ID"/>
+                </field>
+            </field>
+
+        </record>
+    </data>
+</openerp>
