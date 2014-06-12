@@ -34,5 +34,12 @@ class crm_meeting(orm.Model):
     _inherit = 'crm.meeting'
     _columns = {
         # 'result': fields.selection([('+', '+'), ('-', '-'), ('=', '=')], 'Result'),
-        'province_id': fields.related('partner_address_id', 'province', relation='res.province', type='many2one', string='Provincia', store=True, readonly=True),
+        'province_id': fields.related(
+            'partner_address_id',
+            'province',
+            relation='res.province',
+            type='many2one',
+            string='Provincia',
+            store=True,
+            readonly=True),
     }

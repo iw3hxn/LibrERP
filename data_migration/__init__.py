@@ -20,5 +20,5 @@
 #
 ###############################################################################
 
-from . import wizard
-from . import settings
+import wizard
+import settings

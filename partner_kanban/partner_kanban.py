@@ -25,7 +25,7 @@ import addons
 
 
 class res_partner(osv.osv):
-    
+
     _inherit = "res.partner"
     _columns = {
         'partner_logo': fields.binary('Photo'),
@@ -39,6 +39,6 @@ class res_partner(osv.osv):
         'partner_logo': _get_photo,
     }
 
-    
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

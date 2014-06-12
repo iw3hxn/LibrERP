@@ -29,20 +29,19 @@
 
 from openerp.osv import orm, fields
 
-COLOR_SELECTION = [
-         ('aqua', (u"Aqua")),
-         ('black', (u"Black")),
-         ('blue', (u"Blue")),
-         ('brown', (u"Brown")),
-         ('cadetblue', (u"Cadet Blue")),
-         ('darkblue', (u"Dark Blue")),
-         ('fuchsia', (u"Fuchsia")),
-         ('forestgreen' , (u"Forest Green")),
-         ('green', (u"Green")),
-         ('grey', (u"Grey")),  
-         ('red', (u"Red")),
-         ('orange', (u"Orange"))
-]
+COLOR_SELECTION = [('aqua', (u"Aqua")),
+                   ('black', (u"Black")),
+                   ('blue', (u"Blue")),
+                   ('brown', (u"Brown")),
+                   ('cadetblue', (u"Cadet Blue")),
+                   ('darkblue', (u"Dark Blue")),
+                   ('fuchsia', (u"Fuchsia")),
+                   ('forestgreen', (u"Forest Green")),
+                   ('green', (u"Green")),
+                   ('grey', (u"Grey")),
+                   ('red', (u"Red")),
+                   ('orange', (u"Orange"))
+                   ]
 
 
 class crm_case_categ(orm.Model):
@@ -63,6 +62,6 @@ class crm_case_categ(orm.Model):
         'name': fields.char('Name', size=64, required=True, translate=False),
         'color': fields.selection(COLOR_SELECTION, 'Color'),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
-        
+
     }
     _order = "name"

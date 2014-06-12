@@ -50,7 +50,7 @@ COLOR_SELECTION = [
 
 class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
     _inherit = 'crm.lead'
-    
+
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
         leads = self.browse(cr, uid, ids)
@@ -61,7 +61,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
                 value[lead.id] = 'black'
 
         return value
-    
+
     _columns = {
         'province': fields.many2one('res.province', string='Province', ondelete='restrict'),
         'region': fields.many2one('res.region', string='Region', ondelete='restrict'),
@@ -73,15 +73,15 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         'partner_category_id': fields.many2one('res.partner.category', 'Partner Category'),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
     }
-    
+
     _defaults = {
         'name': '/',
     }
-    
+
     _order = "create_date desc"
-   
+
     def _lead_create_partner(self, cr, uid, lead, context=None):
-        
+
         partner_obj = self.pool['res.partner']
         partner_id = partner_obj.create(cr, uid, {
             'name': lead.partner_name or lead.contact_name or lead.name,
@@ -94,10 +94,10 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             'customer': False,
             'supplier': False,
             'category_id': lead.partner_category_id and [(6, 0, [lead.partner_category_id.id])]
-            
+
         })
         #partner_obj.write(cr, uid, partner_id, {'customer': False})
-        
+
         #import pdb
         #pdb.set_trace()
         #category_obj = self.pool['res.partner.category']
@@ -108,7 +108,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         #    category = category_obj.browse(cr, uid, category_id)
         #    category.partner_ids = [(6, 0, category_data['partner_ids'])]
         #    category_obj.write(cr, uid, category_id, category_data)
-        
+
         return partner_id
 
     def _lead_create_partner_address(self, cr, uid, lead, partner_id, context=None):
@@ -129,7 +129,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             'country_id': lead.country_id and lead.country_id.id or False,
             'state_id': lead.state_id and lead.state_id.id or False,
         })
-        
+
         if lead.contact_name:
             vals = {
                 'last_name': lead.contact_name[0:lead.contact_name.find(' ')],
@@ -147,7 +147,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
     def on_change_city(self, cr, uid, ids, city, zip_code=None):
         return self.pool['res.partner.address'].on_change_city(cr, uid, ids, city, zip_code)
-    
+
     def on_change_zip(self, cr, uid, ids, zip_code):
         return self.pool['res.partner.address'].on_change_zip(cr, uid, ids, zip_code)
 
@@ -156,22 +156,23 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
     def on_change_region(self, cr, uid, ids, region):
         return self.pool['res.partner.address'].on_change_region(cr, uid, ids, region)
-    
+
     def check_address(self, cr, uid, ids, vals):
         address_obj = self.pool['res.partner.address']
         leads = self.browse(cr, uid, ids)
-        
+
         for lead in leads:
             partner_vals = {}
             if lead.partner_id:
                 if not lead.partner_id.email and vals.get('email_from', False):
                     partner_vals['email'] = vals['email_from']
-                
+
                 if not lead.partner_id.phone and not lead.partner_id.mobile and vals.get('phone', False):
                     partner_vals['phone'] = vals['phone']
-                
+
                 if partner_vals:
-                    address_ids = address_obj.search(cr, uid, [('partner_id', '=', lead.partner_id.id), ('type', '=', 'default')])
+                    address_ids = address_obj.search(cr, uid, [
+                        ('partner_id', '=', lead.partner_id.id), ('type', '=', 'default')])
                     if address_ids:
                         address_obj.write(cr, uid, address_ids[0], partner_vals)
                     else:
@@ -179,30 +180,31 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
                         partner_vals['partner_id'] = lead.partner_id.id
                         address_obj.create(cr, uid, partner_vals)
         return True
-    
+
     def create(self, cr, uid, vals, context=None):
         vals = self.pool['res.partner.address']._set_vals_city_data(cr, uid, vals)
-        
+
         if vals.get('name', '/') == '/':
-            sequence_data_id = self.pool['ir.model.data'].get_object_reference(cr, uid, 'crm_lead_correct', 'seq_lead_item')
+            sequence_data_id = self.pool['ir.model.data'].get_object_reference(
+                cr, uid, 'crm_lead_correct', 'seq_lead_item')
             if sequence_data_id:
                 new_name = self.pool['ir.sequence'].next_by_id(cr, uid, sequence_data_id[1], context=context)
                 vals.update({'name': new_name})
-        
+
         result = super(crm_lead_correct, self).create(cr, uid, vals, context=context)
 
         if vals.get('email_from', False) or vals.get('phone', False):
             self.check_address(cr, uid, [result], vals)
-        
+
         return result
 
     def write(self, cr, uid, ids, vals, context=None):
         vals = self.pool['res.partner.address']._set_vals_city_data(cr, uid, vals)
         result = super(crm_lead_correct, self).write(cr, uid, ids, vals, context=context)
-        
+
         if vals.get('email_from', False) or vals.get('phone', False):
             self.check_address(cr, uid, ids, vals)
-        
+
         return result
 
     def copy(self, cr, uid, ids, defaults, context=None):
@@ -212,18 +214,17 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         return super(crm_lead_correct, self).copy(cr, uid, ids, defaults, context)
 
 
-
 class crm_phonecall(orm.Model):
     _inherit = 'crm.phonecall'
-    
+
     def schedule_another_phonecall(self, cr, uid, ids, schedule_time, call_summary,
                                    user_id=False, section_id=False, categ_id=False, action='schedule', context=None):
-        
-        phonecall_dict = super(crm_phonecall, self).schedule_another_phonecall(cr, uid, ids, schedule_time, call_summary,
-                                                                               user_id, section_id, categ_id, action, context)
-        
+
+        phonecall_dict = super(crm_phonecall, self).schedule_another_phonecall(
+            cr, uid, ids, schedule_time, call_summary, user_id, section_id, categ_id, action, context)
+
         for call in self.browse(cr, uid, ids, context=context):
             if call.opportunity_id:
                 self.write(cr, uid, phonecall_dict[call.id], {'opportunity_id': call.opportunity_id.id})
-        
+
         return phonecall_dict

@@ -21,7 +21,7 @@
 
 {
     "name": "Partener Directory",
-    "version": "0.1",
+    "version": "0.1.1",
     "author": "Didotech SRL",
     "category": "Partner",
     "sequence": 12,
@@ -33,7 +33,6 @@ Add kanban view on partner
     'init_xml': [],
     'update_xml': [
         'partner_view.xml',
-
     ],
     'installable': True,
     'application': True,

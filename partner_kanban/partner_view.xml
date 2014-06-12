@@ -18,25 +18,38 @@
                 <templates>
                     <t t-name="kanban-box">
                            
-                        <div class="oe_kanban_box oe_kanban_color_border">
+                    <div class="oe_kanban_box oe_kanban_color_border">
                         
-									<div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_box_show_onclick_trigger">
-      	                     <a type="edit"><img t-att-src="kanban_image('res.partner', 'partner_logo', record.id.value)" width="128" style="float: left; padding: 0 4px 4px 0"/></a>  
-   	                       	<div class="oe_kanban_clear"/>
-	                        </div>
-                            <div class="oe_kanban_box_header oe_kanban_color_bgdark oe_kanban_color_border oe_kanban_draghandle oe_kanban_title">
-                            	<div><h3><field name="name"/></h3></div>
+			<div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_box_show_onclick_trigger">
+			    <a type="edit">
+				<img t-att-src="kanban_image('res.partner', 'partner_logo', record.id.value)" width="128" style="float: left; padding: 0 4px 4px 0"/>
+			    </a>  
+			    <div class="oe_kanban_clear"/>
+	                </div>
+                        
+			<div class="oe_kanban_box_header oe_kanban_color_bgdark oe_kanban_color_border oe_kanban_draghandle oe_kanban_title">
+			    <div>
+				<h3>
+				    <field name="name"/>
+				</h3>
+			    </div>
                             			
-                            			<div><h5>T: <field name="phone"/> - M: <a t-attf-href="mailto:#{record.email.value}"><field name="email"/></a> - <field name="country"/></h5></div>
-                       	 	 </div>
+			    <div>
+				<h5>
+				    T: <field name="phone"/> - M: <a t-attf-href="mailto:#{record.email.value}">
+				    <field name="email"/></a> -
+				    <field name="country"/>
+				</h5>
+			    </div>
+                       	</div>
+                    </div>
+                    <div class="oe_kanban_buttons_set oe_kanban_color_border oe_kanban_color_bglight oe_kanban_box_show_onclick">
+                        <div class="oe_kanban_left">
+                            <a string="Edit" icon="gtk-edit" type="edit"/>
+                            <a string="Email" name="126" icon="terp-mail-message-new" type="action"/>
                         </div>
-                        <div class="oe_kanban_buttons_set oe_kanban_color_border oe_kanban_color_bglight oe_kanban_box_show_onclick">
-                            <div class="oe_kanban_left">
-                                <a string="Edit" icon="gtk-edit" type="edit"/>
-                                <a string="Email" name="126" icon="terp-mail-message-new" type="action"/>
-                            </div>
-                            <div class="oe_kanban_clear"/>
-                        </div>
+                        <div class="oe_kanban_clear"/>
+                    </div>
                     </t>
                 </templates>
             </kanban>
@@ -49,16 +62,16 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">                
                 <field name="name" position="replace">
-                	<separator string="Partner" colspan="6" col="1"/>
-                       <field name="partner_logo" widget="image" nolabel="1" />
+                <!--<separator string="Partner" colspan="6" col="1"/>-->
+		    <field name="partner_logo" widget="image" nolabel="1" />
                        
-                       <field select="1" nolabel="1" name="name"/>
+                    <field select="1" nolabel="1" name="name"/>
                        
-                       <newline/>
-                  <separator string="Proprieties" colspan="6" col="1"/>
-                  	  <newline/>
-	             </field>
-    	      </field>
+                    <newline/>
+		    <separator string="Proprieties" colspan="6" col="1"/>
+                    <newline/>
+	        </field>
+    	    </field>
     </record>
    
 <!--        <record id="open_view_employee_list_my" model="ir.actions.act_window">
