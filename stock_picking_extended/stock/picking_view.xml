@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="stock_picking_form_inherit" model="ir.ui.view">
+            <field name="name">stock.picking.form.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+            <field name="arch" type="xml">
+                <field name="address_id" position="after">
+                    <field name="address_delivery_id" context="{'contact_display':'partner'}" colspan="4" />
+                </field>
+                <field name="move_type" position="after">
+                    <field name="goods_description_id"/>
+                   <!-- <field name="transportation_reason_id"/>-->
+                    <field name="carriage_condition_id"/>
+                    <field name="transportation_condition_id"/>
+                </field>
+            </field>
+	</record>
+
+    </data>
+</openerp>

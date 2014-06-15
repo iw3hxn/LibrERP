@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_stock_journal_form_ddt_sequence">
+			<field name="name">stock.journal.form.ddt.sequence</field>
+			<!-- <field name="model">product.supplierinfo</field> -->
+			<field name="model">stock.journal</field>
+			<field name="inherit_id" ref="stock.view_stock_journal_form"/>
+			<field name="type">form</field> 
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+                			<field name="ddt_sequence" />
+            			</field>	
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="view_stock_journal_tree_ddt_sequence">
+			<field name="name">stock.journal.tree.ddt.sequence</field>
+			<field name="model">stock.journal</field>
+			<field name="inherit_id" ref="stock.view_stock_journal_tree"/>
+			<field name="type">form</field> 
+			<field name="arch" type="xml">
+            			<field name="name" position="after">
+                			<field name="ddt_sequence" />
+            			</field>	
+			</field>
+		</record>
+		
+	</data>
+</openerp>

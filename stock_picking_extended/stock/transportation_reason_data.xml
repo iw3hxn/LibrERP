@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="stock.journal_delivery" model="stock.model_stock_journal">
+            <field name="name">SALE</field>
+        </record>
+        <record id="transportation_reason_VIS" model="stock.model_stock_journal">
+            <field name="name">FOR EXAMINATION</field>
+        </record>
+        <record id="transportation_reason_RES" model="stock.model_stock_journal">
+            <field name="name">MADE</field>
+        </record>
+     </data>
+</openerp>
