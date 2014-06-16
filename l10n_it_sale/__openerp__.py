@@ -22,7 +22,7 @@
 
 {
     'name': 'Italian Localisation - Sale',
-    'version': '3.1.1.3',
+    'version': '3.3.3.5',
     'category': 'Localisation/Italy',
     'description': """OpenERP Italian Localization - Sale version
 
@@ -43,33 +43,14 @@ Functionalities:
         'sequence_restart',     # ricomincia da 0 le sequenze ogni anno
         'invoice_immediate',    # fattura accompagnatoria
     ],
-    "init_xml": [
-        "security/ir.model.access.csv",
-    ],
-    "update_xml": [
+    "data": [
         'wizard/assign_ddt.xml',
         'stock/picking_view.xml',
-        'stock/carriage_condition_view.xml',
-        'stock/transportation_condition_view.xml',
-        #'stock/transportation_reason_view.xml',
-        'stock/goods_description_view.xml',
-        #'stock/transportation_reason_data.xml',
-        'stock/goods_description_data.xml',
-        'stock/carriage_condition_data.xml',
-        'stock/transportation_condition_data.xml',
         'stock/sequence.xml',
-        'sale/sale_view.xml',
-        'sale/sale_data.xml',
-        "security/ir.model.access.csv",
-        'partner/partner_view.xml',
-        'account/invoice_view.xml',
-        'stock/stock.journal.csv',
+        'stock/stock_journal_view.xml',
     ],
-    "demo_xml" : [],
-    "test": [
-        'test/account_tax.xml',
-        'test/invoice_emission.yml',
-    ],
+    "demo" : [],
+    "test": [],
     "active": False,
     "installable": True
 }

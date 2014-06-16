@@ -31,6 +31,7 @@ class res_company(orm.Model):
         'default_credit_limit': fields.float(string='Fido di default'),
         'enable_margin_validation': fields.boolean('Enable Margin Verify'),
         'minimum_margin': fields.float(string='Minimun margin %', digits=(2,2)),
+        'default_sale_order_validity': fields.integer('Default day of validity'),
         'default_property_account_position': fields.property(
             'account.fiscal.position',
             type='many2one',
@@ -56,4 +57,5 @@ class res_company(orm.Model):
         'need_tech_validation': False,
         'need_manager_validation': False,
         'default_credit_limit' : 0,
+        'default_sale_order_validity' : 30,
     }

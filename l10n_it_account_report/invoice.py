@@ -105,7 +105,8 @@ class Parser(report_sxw.rml_parse):
                 ## Ex: Rif. Ns. DDT 2012/0335
                 description.append(u'Rif. Ns. DDT {ddt} del {ddt_date}'.format(ddt=ddt.ddt_number, ddt_date=ddt_date.strftime("%d/%m/%Y")))
         
-        if order_name:
+        if order_name and not self.pool['res.company'].browse(
+            self.cr, self.uid, self.uid).disable_sale_ref_invoice_report:
             order_ids = order_obj.search(self.cr, self.uid, [('name', '=', order_name)])
             if len(order_ids) == 1:
                 order = order_obj.browse(self.cr, self.uid, order_ids[0])

@@ -22,7 +22,7 @@
 
 {
     'name': 'Google Contact',
-    'version': '2.0.1.0',
+    'version': '2.0.2.0',
     'category': 'Generic Modules',
     'description': """
         Synchronize contacts with Google Contacts. Based on a work of Roberto Lizana (www.trey.es)
@@ -33,9 +33,7 @@
         'base',
         'base_address_contacts'
     ],
-    'init_xml': [
-    ],
-    'update_xml': [
+    'data': [
         'contact_wizard.xml',
         'contact_view.xml',
         'contact_data.xml',

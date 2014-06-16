@@ -12,6 +12,8 @@
                     <separator string="Gestione Fido" colspan="4"/>
                     <field name="check_credit_limit" />
                     <field name="default_credit_limit"/>
+					<separator string="Manage Validity on Sale Order"/>
+					<field name="default_sale_order_validity" />
 					<separator string="Margin Manager" colspan="4"/>
                     <field name="enable_margin_validation" />
                     <field name="minimum_margin"/>

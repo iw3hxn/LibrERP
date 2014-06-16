@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation - Accounting reports',
-    'version': '2.0.7.0',
+    'version': '2.1.8.1',
     'category': 'Localisation/Italy',
     'complexity': "easy",
     'description': """Accounting reports for Italian localization - Fattura
@@ -37,15 +37,14 @@
         'report_webkit',
         'core_extended'
     ],
-    "init_xml": [
-    ],
-    "update_xml": [
+    "data": [
         'reports.xml',
         'template_data_base.xml',
         'wizard/partner_invoice_wizard_view.xml',
         'customer_supplier_report.xml',
+        'company_view.xml',
     ],
-    "demo_xml": [],
+    "demo": [],
     "active": False,
     "installable": True
 }

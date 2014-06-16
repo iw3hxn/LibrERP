@@ -2,8 +2,6 @@
 # This file contains the translation of the following modules:
 #	* project_extended
 #
-msgid ""
-msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-19 14:08+0000\n"
@@ -16,17 +14,17 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: project_extended
-#: model:ir.model,name:project_extended.model_project_task
-msgid "Task"
-msgstr "Attività"
+#: field:project.project,total_invoice:0
+msgid "Invoice Amount"
+msgstr "Totale Fatturato"
 
 #. module: project_extended
-#: field:project.project,doc_count:0
-msgid "Number of documents attached"
-msgstr "Numero di documenti allegati"
+#: field:project.project,total_spent:0
+msgid "Spent Amount"
+msgstr "Totale Speso"
 
 #. module: project_extended
-#: field:project.project,task_count:0
-msgid "Open Tasks"
-msgstr "Attività Aperte"
+#: field:project.project,total_sell:0
+msgid "Sell Amount"
+msgstr "Totale Venduto"
 

@@ -37,18 +37,16 @@ class inherit_account_voucher(osv.osv):
         for voucher in self.browse(cr, uid, ids):
             result = False
             if voucher.state == 'posted' and voucher.line_ids:
-                voucher_line = voucher_line_obj.browse(cr, uid, voucher.line_ids[0])
-                invoice_ids = invoice_obj.search(cr, uid, [('number', '=', voucher_line.name)])
-                if invoice_ids:
-                    invoice = invoice_obj.browse(cr, uid, invoice_ids[0])
-                    if invoice.origin:
-                        order_ids = order_obj.search(cr, uid, [('name', '=', invoice.origin)])
-                        order = order_obj.read(cr, uid, order_ids, ['invoiced', 'state'], context=context)
-                        if order[0]['state'] in ['progress', 'done']:
-                            if order[0]['invoiced']:
-                                result = True
-                                order_obj.write(cr, uid, [order[0]['id']], {'flag_paid': result}, context=context)
-                
+                for voucher_line in voucher.line_ids:
+                    if voucher_line.move_line_id.invoice:
+                        inv_origin = voucher_line.move_line_id.invoice.origin
+                        if inv_origin:                        
+                            order_ids = order_obj.search(cr, uid, [('name', '=', inv_origin)])
+                            orders = order_obj.read(cr, uid, order_ids, ['invoiced', 'state'], context=context)
+                            for order in orders:
+                                if order['state'] in ['progress', 'done']:
+                                    if order['invoiced']:
+                                        order_obj.write(cr, uid, [order['id']], {'flag_paid': True}, context=context)
             res[voucher.id] = result
         
         return res

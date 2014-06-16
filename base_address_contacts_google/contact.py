@@ -105,7 +105,13 @@ class google_contact_account(osv.osv):
                     _logger.info(u"FEED:\nName : %s" % (feed_entry.name.full_name.text))
                 if not feed_entry.name:
                         feed_entry.name = gdata.data.Name()
-                new_name = " ".join([contact.last_name, contact.first_name])
+                if contact.last_name and contact.first_name:
+                    new_name = " ".join([contact.last_name, contact.first_name])
+                elif contact.last_name:
+                    new_name = contact.last_name
+                else:
+                    new_name = contact.first_name
+
                 feed_entry.name.full_name = gdata.data.FullName(text=new_name)
                 
                 phone = None
@@ -205,8 +211,14 @@ class google_contact_account(osv.osv):
             if feed_entry:
                 contact = cb.contact_id
                 if not feed_entry.name:
-                    feed_entry.name = gdata.data.Name()
-                new_name = " ".join([contact.last_name, contact.first_name])
+                    feed_entry.name = gdata.data.Name()                
+                if contact.last_name and contact.first_name:
+                    new_name = " ".join([contact.last_name, contact.first_name])
+                elif contact.last_name:
+                    new_name = contact.last_name
+                else:
+                    new_name = contact.first_name
+
                 feed_entry.name.full_name = gdata.data.FullName(text=new_name)
                 email = None
                 for _email in feed_entry.email:

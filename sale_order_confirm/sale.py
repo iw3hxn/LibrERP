@@ -37,34 +37,6 @@ class sale_order(orm.Model):
                 res['order_policy'] = 'picking'
         return {'value': res}
     
-    #def _visible_credit_limit(self, cr, uid, ids, field_name, arg, context):
-    #    res = {}
-    #    company_obj = self.pool['res.company')
-    #    for order_id in ids:
-    #        processed_order = self.browse(cr, uid, order_id, context=context)
-    #        company_id = processed_order.company_id.id
-    #
-    #        res[order_id] = company_obj.read(cr, uid, company_id, ['check_credit_limit'], context=context).get('check_credit_limit') and processed_order.order_policy != 'prepaid'
-    #    return res
-    #
-    #def _required_technical_validation(self, cr, uid, ids, field_name, arg, context):
-    #    res = {}
-    #    company_obj = self.pool['res.company')
-    #    for order_id in ids:
-    #        processed_order = self.browse(cr, uid, order_id, context=context)
-    #        company_id = processed_order.company_id.id
-    #        res[order_id] = company_obj.read(cr, uid, company_id, ['need_tech_validation'], context=context).get('need_tech_validation')
-    #    return res
-    #
-    #def _required_manager_validation(self, cr, uid, ids, field_name, arg, context):
-    #    res = {}
-    #    company_obj = self.pool['res.company')
-    #    for order_id in ids:
-    #        processed_order = self.browse(cr, uid, order_id, context=context)
-    #        company_id = processed_order.company_id.id
-    #        res[order_id] = company_obj.read(cr, uid, company_id, ['need_manager_validation'], context=context).get('need_manager_validation')
-    #    return res
-    
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
         res = dict.fromkeys(ids, 0.0)
         for order_id in ids:
@@ -123,7 +95,7 @@ class sale_order(orm.Model):
                 draft_invoices_amount += invoice.amount_total
             
             available_credit = partner.credit_limit - credit - approved_invoices_amount - draft_invoices_amount
-            #verifico se è abilitata la gestione del fido per l'azienda
+            # check if is anable credit check in the company
             if (processed_order.amount_total > available_credit) and processed_order.company_id and processed_order.company_id.check_credit_limit:
                 title = 'Fido Superato!'
                 msg = 'Non è possibile confermare in quanto il cliente non ha fido sufficiente.'
@@ -139,7 +111,7 @@ class sale_order(orm.Model):
     _columns = {
         'credit_limit': fields.function(_credit_limit, string="Fido Residuo", type='float', readonly=True, method=True),
         'visible_credit_limit': fields.related('company_id', 'check_credit_limit', type='boolean', string=_('Fido Residuo Visibile'), store=False, readonly=True),
-        
+        'validity': fields.date('Validity'),
         'state': fields.selection([
             ('draft', _('Quotation')),
             ('wait_technical_validation', _('Technical Validation')),
@@ -199,7 +171,6 @@ class sale_order(orm.Model):
                 self.write(cr, uid, [o.id], {'state': 'wait_customer_validation'})
             else:
                 self.write(cr, uid, [o.id], {'state': 'send_to_customer'})
-
         return True
     
     def check_validate(self, cr, uid, ids, context=None):
@@ -212,14 +183,7 @@ class sale_order(orm.Model):
                 res = False
             return res and o.email_sent_validation and o.customer_validation
         return True
-    
-    #def action_wait(self, cr, uid, ids, context=None):
-    #    if context is None:
-    #        context = {}
-    #    res = super(sale_order, self).action_wait(cr, uid, ids, context=context)
-    #    context = dict(context, active_ids=ids, active_model=self._name)
-    #    return res
-    
+       
     def copy(self, cr, uid, order_id, defaults, context=None):
         defaults['customer_validation'] = False
         defaults['email_sent_validation'] = False
@@ -307,33 +271,3 @@ class sale_order_line(orm.Model):
         'order_id': lambda self, cr, uid, context: context.get('default_sale_order', False) or False
     }
 
-    #def create(self, cr, uid, vals, context={}):
-    #    if not context:
-    #        context = {}
-    #
-    #    import pdb; pdb.set_trace()
-    #    res = super(sale_order_line, self).create(cr, uid, vals, context=context)
-    #    return res
-    #
-    #def write (self, cr, uid, ids, vals, context=None):
-    #    if context is None:
-    #        context = {}
-    #    if not ids:
-    #        return True
-    #    res = super(sale_order_line, self).write(cr, uid, ids, vals, context=context)
-    #
-    #    if isinstance(ids, list):
-    #        object_id = int(ids[0])
-    #    else:
-    #        object_id = int(ids)
-    #
-    #    order_line = self.read(cr, uid, object_id)
-    #
-    #    print order_line['price_unit']
-    #    print order_line['purchase_price']
-    #
-    #    if 'price_unit' not in vals:
-    #        vals['price_unit'] = order_line['price_unit']
-    #    if 'purchase_price' not in vals:
-    #        vals['purchase_price'] = order_line['purchase_price']
-    #    return res

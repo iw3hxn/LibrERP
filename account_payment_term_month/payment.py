@@ -70,6 +70,8 @@ class account_payment_term(orm.Model):
         '''Function overwritten for check also month values and 2 months with no payments
         allowed for the partner.'''
         result = []
+        if not date_ref:
+            date_ref = datetime.now().strftime('%Y-%m-%d')
         pt = self.browse(cr, uid, id, context=context)
         amount = value
         obj_precision = self.pool['decimal.precision']

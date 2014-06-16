@@ -83,7 +83,7 @@ class sale_order(osv.osv):
                     invoice_ratio = 1
                 else:
                     invoice_ratio = 3
-                self.pool['project.project'].write(cr, uid, project_id, {'to_invoice' : invoice_ratio,})
+                self.pool['project.project'].write(cr, uid, project_id, {'to_invoice' : invoice_ratio, 'state' : 'open'})
                 for order_line in order.order_line:
                     if order_line.product_id and order_line.product_id.is_kit:
                         main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
@@ -133,6 +133,7 @@ class sale_order(osv.osv):
                 'name': values['name'],
                 'partner_id': values.get('partner_id', False),
                 'to_invoice' : invoice_ratio,
+                'state' : 'pending',
             }, context={
                 'model': 'sale.order',
             })

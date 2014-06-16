@@ -24,7 +24,7 @@
 
 {
     "name": "Work Order management",
-    "version": "3.8.17.14",
+    "version": "3.8.18.14",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Sales Management",

@@ -25,6 +25,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 import time
 
+
 class wizard_assign_ddt(orm.TransientModel):
 
     _name = "wizard.assign.ddt"
@@ -34,14 +35,20 @@ class wizard_assign_ddt(orm.TransientModel):
         for picking in picking_obj.browse(cr, uid, context.get('active_ids', []), context=context):
             if picking.ddt_number:
                 raise osv.except_osv('Error', _('DTT number already assigned'))
-            picking.write({
-                'ddt_number': self.pool['ir.sequence'].get(cr, uid, 'stock.ddt'),
-                'ddt_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                })
+
+            # Assign ddt from journal's sequence
+            if picking.stock_journal_id.ddt_sequence:
+                picking.write({
+                    'ddt_number': self.pool['ir.sequence'].get(cr, uid, picking.stock_journal_id.ddt_sequence.code),
+                    'ddt_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                    })
+            else:
+                picking.write({
+                    'ddt_number': self.pool['ir.sequence'].get(cr, uid, 'stock.ddt'),
+                    'ddt_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                    })
         return {
             'type': 'ir.actions.act_window_close',
         }
-
-wizard_assign_ddt()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
