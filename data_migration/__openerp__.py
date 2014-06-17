@@ -36,7 +36,7 @@
     'depends': [
         'base',
         'purchase',
-        'partner_subaccount',
+        #'partner_subaccount',
         'l10n_it',
         'l10n_it_account'
     ],
