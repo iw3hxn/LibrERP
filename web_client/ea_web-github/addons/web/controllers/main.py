@@ -34,6 +34,7 @@ openerpweb = common.http
 # OpenERP Web web Controllers
 #----------------------------------------------------------
 
+
 def concat_xml(file_list):
     """Concatenate xml files
 
@@ -1872,6 +1873,24 @@ class Reports(View):
                 break
 
             time.sleep(self.POLLING_DELAY)
+            
+        # Load built-in report name
+        file_name = action['report_name']
+        # Try to get current object model and their ids from context
+        if 'context' in action:  
+            action_context = action['context']
+            if action_context.get('active_model') and action_context['active_ids']:
+                # Use built-in ORM method to get data from DB
+                m = req.session.model(action_context['active_model'])
+                r = m.name_get(action_context['active_ids'], context)
+                # Parse result to create a better filename
+                item_names = [item[1] or str(item[0]) for item in r]
+                if action.get('name'):
+                    item_names.insert(0, action['name'])
+                file_name = '-'.join(item_names)
+                # Create safe filename
+                p = re.compile('[/:(")<>|?*]|(\\\)')
+                file_name = p.sub('_', file_name)
 
         report = base64.b64decode(report_struct['result'])
         if report_struct.get('code') == 'zlib':
@@ -1880,7 +1899,7 @@ class Reports(View):
             report_struct['format'], 'octet-stream')
         return req.make_response(report,
              headers=[
-                 ('Content-Disposition', 'attachment; filename="%s.%s"' % (action['report_name'], report_struct['format'])),
+                 ('Content-Disposition', 'attachment; filename="%s.%s"' % (file_name, report_struct['format'])),
                  ('Content-Type', report_mimetype),
                  ('Content-Length', len(report))],
              cookies={'fileToken': int(token)})
