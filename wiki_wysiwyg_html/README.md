@@ -1,2 +1,2 @@
  
-![screenshot](https://cloud.matmoz.si/seafhttp/files/cd5bc3a3/wiki_html.png)
+![screenshot](https://raw.githubusercontent.com/sysadminmatmoz/screenshots/master/wiki_html.png "screenshot")
