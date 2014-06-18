@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <record id="ir_ui_view_wiki_wysiwyg" model="ir.ui.view">
+            <field name="name">wiki.inherit_wysiwyg</field>
+            <field name="model">wiki.wiki</field>
+            <field name="inherit_id" ref="wiki.view_wiki_form"/>
+            <field name="type">form</field>
+
+            <field name="arch" type="xml">
+                <field name="text_area" position="replace">
+                    <field name="text_area" widget="text_WYSIWYG" nolabel="1" colspan="4" select="1"/>
+                        <html>
+                            <a onclick="javascript:toggle_ckeditor();" class="wysiwyg_button wysiwyg_button_off oe_button">WYSIWYG on</a>
+                        </html>
+                </field>
+            </field>
+
+        </record>
+    </data>
+</openerp>
