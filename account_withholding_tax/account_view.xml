@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!-- company -->
+
+        <record model="ir.ui.view" id="view_company_inherit_form">
+            <field name="name">res.company.form.inherit</field>
+            <field name="inherit_id" ref="account.view_company_inherit_1_form"/>
+            <field name="model">res.company</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="paypal_account" position="after">
+                    <separator colspan="4"></separator>
+                    <field name="withholding_journal_id" />
+                    <separator colspan="4"></separator>
+                </field>
+            </field>
+        </record>
+        
+
+    </data>
+</openerp>
