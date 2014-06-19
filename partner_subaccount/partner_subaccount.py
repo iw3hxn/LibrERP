@@ -39,10 +39,10 @@ class res_partner(orm.Model):
         'block_ref_supplier': fields.boolean('Block Reference'),
         'selection_account_receivable': fields.many2one(
             'account.account', 'Parent account', domain="[('type','=','view'),\
-            ('user_type.code','=','view')]"),
+            ('user_type.code','=','account_type_view_assets')]"),
         'selection_account_payable': fields.many2one(
             'account.account', 'Parent account', domain="[('type','=','view'),\
-            ('user_type.code','=','view')]"),
+            ('user_type.code','=','account_type_view_liability')]"),
     }
 
     _sql_constraints = [
