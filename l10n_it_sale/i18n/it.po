@@ -93,7 +93,7 @@ msgstr "Numero DDT"
 #. module: l10n_it_sale
 #: field:account.invoice.line,advance_id:0
 msgid "Advance invoice"
-msgstr "Advance invoice"
+msgstr "Fattura Acconto"
 
 #. module: l10n_it_sale
 #: model:ir.model,name:l10n_it_sale.model_res_partner
@@ -205,7 +205,7 @@ msgstr "Aspetto dei Beni"
 #. module: l10n_it_sale
 #: model:ir.model,name:l10n_it_sale.model_account_invoice_line
 msgid "Invoice Line"
-msgstr "Righe fattura"
+msgstr "Righe Fattura"
 
 #. module: l10n_it_sale
 #: model:ir.actions.act_window,name:l10n_it_sale.action_carriage_condition_tree

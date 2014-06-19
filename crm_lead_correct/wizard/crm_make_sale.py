@@ -88,7 +88,7 @@ class crm_make_sale(orm.TransientModel):
                             ['default', 'invoice', 'delivery', 'contact'])
                     pricelist = partner.property_product_pricelist.id
                 if False in partner_addr.values():
-                    raise osv.except_osv(_('Data Insufficient!'), _('Customer has no addresses defined!'))
+                    raise orm.except_orm(_('Data Insufficient!'), _('Customer has no addresses defined!'))
 
                 vals = {
                     'origin': _('Opportunity: %s') % str(case.id),

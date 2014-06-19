@@ -150,8 +150,8 @@
             <field name="res_model">project.project</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,gantt</field>
-            <field name="domain">[]</field>
-            <field name="context">{'search_default_Current':1}</field>
+            <field name="domain">[('state','in',('draft','open','pending'))]</field>
+            <field name="context">{}</field>
             <field name="view_id" ref="project.view_project"/>
             <field name="search_view_id" ref="project.view_project_project_filter"/>
         </record>
