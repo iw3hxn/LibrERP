@@ -1,0 +1,155 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* multi_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-19 13:11+0000\n"
+"PO-Revision-Date: 2014-06-19 13:11+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: multi_payment
+#: view:account.move.line:0
+msgid "Receivable"
+msgstr "Crediti"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Confirmed"
+msgstr "Confermato"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Confirm"
+msgstr "Conferma"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Group By..."
+msgstr "Raggruppa per..."
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "State"
+msgstr "Stato"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Pagamenti cumulativi"
+msgstr "Pagamenti cumulativi"
+
+#. module: multi_payment
+#: view:account.statement.from.invoice.lines:0
+#: model:ir.actions.act_window,name:multi_payment.action_view_account_statement_multi_pay
+msgid "Import Entries"
+msgstr "Importa Registrazioni"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Journal"
+msgstr "Sezionale"
+
+#. module: multi_payment
+#: view:account.move.line:0
+msgid "Payable"
+msgstr "Debiti"
+
+#. module: multi_payment
+#: view:account.move.line:0
+msgid "Unbalanced"
+msgstr "Squadrate"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Transaction"
+msgstr "Transazione"
+
+#. module: multi_payment
+#: view:account.statement.from.invoice.lines:0
+msgid "Ok"
+msgstr "Ok"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Search Multi Payments"
+msgstr "Cerca Pagamenti Multipli"
+
+#. module: multi_payment
+#: model:ir.actions.act_window,name:multi_payment.action_bank_statement_tree_multi_pay
+#: model:ir.ui.menu,name:multi_payment.menu_bank_statement_tree_multi_pay
+msgid "Pagamenti multipli"
+msgstr "Pagamenti multipli"
+
+#. module: multi_payment
+#: view:account.move.line:0
+msgid "Payable payments"
+msgstr "Debiti"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Statement lines"
+msgstr "Voci del movimento"
+
+#. module: multi_payment
+#: view:account.move.line:0
+msgid "Receivable payments"
+msgstr "Crediti"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Period"
+msgstr "Periodo"
+
+#. module: multi_payment
+#: constraint:account.bank.statement:0
+msgid "The journal and period chosen have to belong to the same company."
+msgstr "Il sezionale ed il periodo scelti non appartengono alla stessa azienda."
+
+#. module: multi_payment
+#: model:ir.model,name:multi_payment.model_account_bank_statement
+msgid "Bank Statement"
+msgstr "Estratto Conto Bancario"
+
+#. module: multi_payment
+#: view:account.statement.from.invoice.lines:0
+msgid "Payable and Receivables"
+msgstr "Debiti/Crediti"
+
+#. module: multi_payment
+#: model:ir.actions.act_window,help:multi_payment.action_bank_statement_tree_multi_pay
+msgid "Un pagamento multiplo avviene solitamente a fine mese per il pagamento dei fornitori, può avvenire anche quando si incassa una distinta di ri.ba. di più clienti."
+msgstr "Un pagamento multiplo avviene solitamente a fine mese per il pagamento dei fornitori, può avvenire anche quando si incassa una distinta di ri.ba. di più clienti."
+
+#. module: multi_payment
+#: view:account.move.line:0
+msgid "Next Partner Entries to reconcile"
+msgstr "Registrazioni partner successivo da riconciliare"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+#: view:account.statement.from.invoice.lines:0
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: multi_payment
+#: view:account.bank.statement:0
+msgid "Import Invoices"
+msgstr "Importa fatture"
+
