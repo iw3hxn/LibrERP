@@ -56,8 +56,7 @@ Personalized version
     "license": "AGPL-3",
     "category": "Localization/Account Charts",
     'website': 'http://www.openerp-italia.org/',
-    'init_xml': [],
-    'update_xml': [
+    'data': [
         'data/account.account.template.csv',
         'data/account.tax.code.template.csv',
         'account_chart.xml',
@@ -66,7 +65,7 @@ Personalized version
         'data/account.fiscal.position.tax.template.csv',
         'l10n_chart_it_generic.xml',
     ],
-    'demo_xml': [],
+    'demo': [],
     'installable': True,
     'auto_install': False,
 #    'certificate': '00926677190009155165',
