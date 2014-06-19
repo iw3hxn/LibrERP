@@ -21,8 +21,8 @@
 
 {
     'name': 'Multi payment improvements',
-    'version': '0.1.1',
-    'category': 'Localisation/Italy',
+    'version': '3.0.0.0',
+    'category': 'Generic Modules/Payment',
     'description': """
 
 Functionalities:
@@ -36,12 +36,10 @@ Functionalities:
     "depends": [
         'account','account_voucher',
     ],
-    "init_xml": [
-    ],
-    "update_xml": [
+    "data": [
         'payment_view.xml',
     ],
-    "demo_xml": [],
+    "demo": [],
     "active": False,
     "installable": True
 }
