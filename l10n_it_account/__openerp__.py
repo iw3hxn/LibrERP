@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation - Account Didotech',
-    'version': '2.5.11.7',
+    'version': '2.5.11.6',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
@@ -53,7 +53,6 @@ Functionalities:
         'account/payment_type_view.xml',
         'wizard/select_fiscal_position_view.xml',
         'data/bank_iban_data.xml',
-        'account/account_move.xml',
     ],
     "demo": [],
     "active": False,
