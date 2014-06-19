@@ -21,9 +21,13 @@
 ##############################################################################
 {
     'name': 'Board for CEO',
-    'version': '1.7.4',
+    'version': '1.7.5',
     'category': 'Board/Projects & Services',
-    'description': """Dashboard for the CEO""",
+    'description': """
+        Dashboard for the CEO, a complete view of
+        all running tasks, issues, projects, leads,
+        helpdesk claims and opportunities on the same
+        dash""",
     'author': 'Matmoz d.o.o. (Didotech Group)',
     'website': 'http://www.matmoz.si',
     'license': 'AGPL-3',
