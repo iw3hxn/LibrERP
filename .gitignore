@@ -36,7 +36,8 @@ coverage.xml
 
 # Django stuff:
 *.log
-*.pot
+
+# *.pot is used for translations templates
 
 # Sphinx documentation
 docs/_build/
