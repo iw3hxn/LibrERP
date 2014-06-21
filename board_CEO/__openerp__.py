@@ -31,16 +31,14 @@
     'author': 'Matmoz d.o.o. (Didotech Group)',
     'website': 'http://www.matmoz.si',
     'license': 'AGPL-3',
-    "depends":
-        [
+    "depends": [
             'crm',
             'board',
             'crm_helpdesk',
             'project',
             'project_issue',
             'hr_timesheet',
-            'analytic'
-        ],
+            'analytic'],
     "init_xml": ['board_ceo_view.xml'],
     "update_xml": [],
     "demo_xml": [],
