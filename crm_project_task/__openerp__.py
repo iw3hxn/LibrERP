@@ -26,21 +26,22 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
+
 {
-        "name": "CRM tasks part of Project tasks",
-        "version": "0.4",
-        "author": "Matmoz d.o.o. (Didotech Group)",
-        "website": "http://www.matmoz.si",
-        "category": "Vertical Modules/Parametrization",
-        "description": """Crm task connected to project""",
-        "depends": ["crm_todo"],
-        "init_xml":
-                    [
-                        "crm_todo_opportunity.xml",
-                        "crm_todo_project_task_tree.xml",
-                        "project_gtd_task.xml"
-                    ],
-        "demo_xml": [],
-        "update_xml": [],
-        "installable": True
+    "name": "CRM tasks part of Project tasks",
+    "version": "0.4",
+    "author": "Matmoz d.o.o. (Didotech Group)",
+    "website": "http://www.matmoz.si",
+    "category": "Vertical Modules/Parametrization",
+    "description": """Crm task connected to project""",
+    "depends": ["crm_todo"],
+    "init_xml":
+               [
+                   "crm_todo_opportunity.xml",
+                   "crm_todo_project_task_tree.xml",
+                   "project_gtd_task.xml"
+               ],
+    "demo_xml": [],
+    "update_xml": [],
+    "installable": True
 }
