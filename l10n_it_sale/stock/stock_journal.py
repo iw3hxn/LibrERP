@@ -29,5 +29,6 @@ class stock_journal(orm.Model):
         'ddt_sequence': fields.many2one(
                         'ir.sequence',
                         'DDT sequence',
+                        domain=[('code', '=', 'stock.ddt')],
                         ),
     }
