@@ -5,7 +5,6 @@
 #    Copyright (C) 2011-2012 Domsense s.r.l. (<http://www.domsense.com>).
 #    Copyright (C) 2012-2013 Agile Business Group sagl
 #    (<http://www.agilebg.com>)
-#    Copyright (C) 2014 Didotech s.r.l. (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,26 +21,12 @@
 #
 ##############################################################################
 
+from openerp.osv import orm, fields
+from tools.translate import _
 
-{
-    "name": "VAT on payment",
-    "version": "2.0.0.1",
-    'category': 'Generic Modules/Accounting',
-    "depends": ["account_voucher_cash_basis"],
-    "author": "Didotech srl",
-    "description": """
-See 'account_voucher_cash_basis' description.
 
-To activate the VAT on payment behaviour, this module adds a checkbox on
-invoice form, on company form and on fiscal position form: 'Vat on payment'
-
-    """,
-    'website': 'http://www.didotech.com',
-    'data': [
-        'account_view.xml',
-        'fiscal_position_view.xml',
-        ],
-    'demo': [],
-    'installable': True,
-    'active': False,
-}
+class account_move_line(orm.Model):
+    _inherit = "account.move.line"
+    _columns = {
+        'vat_on_payment': fields.boolean('Vat on payment'),
+        }

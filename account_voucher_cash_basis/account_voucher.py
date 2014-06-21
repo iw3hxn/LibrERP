@@ -3,7 +3,8 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2012 Domsense s.r.l. (<http://www.domsense.com>).
-#    Copyright (C) 2012 Agile Business Group sagl (<http://www.agilebg.com>)
+#    Copyright (C) 2012-2013 Agile Business Group sagl
+#    (<http://www.agilebg.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,15 +21,25 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, orm
+from openerp.tools.translate import _
 import decimal_precision as dp
 
-class account_voucher(osv.osv):
+
+class account_voucher(orm.Model):
     _inherit = "account.voucher"
     
     _columns = {
-        'line_total': fields.float('Lines Total', digits_compute=dp.get_precision('Account'), readonly=True),
+        'line_total': fields.float(
+            'Lines Total', digits_compute=dp.get_precision('Account'),
+            readonly=True),
+        # exclude_write_off field will be used by modules like
+        # account_vat_on_payment and l10n_it_withholding_tax
+        'exclude_write_off': fields.boolean(
+            'Exclude write-off from tax on payment',
+            help="""Select this if you want, when closing the invoice, the
+            tax to be computed
+            based on the invoice's totals instead of the paid amount"""),
         }
     
     def balance_move(self, cr, uid, move_id, context=None):
@@ -40,7 +51,7 @@ class account_voucher(osv.osv):
         amount = currency_obj.round(cr, uid, move.company_id.currency_id, amount)
         # check if balance differs for more than 1 decimal according to account decimal precision
         if  abs(amount * 10 ** dp.get_precision('Account')(cr)[1]) > 1:
-            raise osv.except_osv(_('Error'), _('The generated payment entry is unbalanced for more than 1 decimal'))
+            raise orm.except_orm(_('Error'), _('The generated payment entry is unbalanced for more than 1 decimal'))
         if not currency_obj.is_zero(cr, uid, move.company_id.currency_id, amount):
             for line in move.line_id:
                 # adjust the first move line that's not receivable, payable or liquidity
@@ -60,7 +71,8 @@ class account_voucher(osv.osv):
                     break
         return amount
         
-    def voucher_move_line_create(self, cr, uid, voucher_id, line_total, move_id, company_currency, current_currency, context=None):
+    def voucher_move_line_create(self, cr, uid, voucher_id, line_total,
+        move_id, company_currency, current_currency, context=None):
         res = super(account_voucher,self).voucher_move_line_create(cr, uid, voucher_id, line_total, move_id, company_currency, current_currency, context)
         self.write(cr, uid, voucher_id, {'line_total': res[0]}, context)
         return res
@@ -69,7 +81,14 @@ class account_voucher(osv.osv):
         res = 0.0
         for inv_move_line in invoice.move_id.line_id:
             if inv_move_line.account_id.type in ('receivable','payable'):
-                res += inv_move_line.debit or inv_move_line.credit # can both be presents?
+                res += inv_move_line.debit or inv_move_line.credit
+        return res
+        
+    def get_invoice_total_currency(self, invoice):
+        res = 0.0
+        for inv_move_line in invoice.move_id.line_id:
+            if inv_move_line.account_id.type in ('receivable','payable'):
+                res += abs(inv_move_line.amount_currency)
         return res
         
     def allocated_amounts_grouped_by_invoice(self, cr, uid, voucher, context=None):
@@ -81,12 +100,20 @@ class account_voucher(osv.osv):
             first_invoice_id: {
                 'allocated': 120.0,
                 'total': 120.0,
+                'total_currency': 0.0,
                 'write-off': 20.0,
+                'allocated_currency': 0.0,
+                'foreign_currency_id': False, # int
+                'currency-write-off': 0.0,
                 }
             second_invoice_id: {
                 'allocated': 50.0,
                 'total': 100.0,
+                'total_currency': 0.0,
                 'write-off': 0.0,
+                'allocated_currency': 0.0,
+                'foreign_currency_id': False,
+                'currency-write-off': 0.0,
                 }
         }
         
@@ -97,26 +124,55 @@ class account_voucher(osv.osv):
         
         '''
         res={}
-        company_currency = super(account_voucher,self)._get_company_currency(cr, uid, voucher.id, context)
-        current_currency = super(account_voucher,self)._get_current_currency(cr, uid, voucher.id, context)
+        company_currency = super(account_voucher,self)._get_company_currency(
+            cr, uid, voucher.id, context)
+        current_currency = super(account_voucher,self)._get_current_currency(
+            cr, uid, voucher.id, context)
         for line in voucher.line_ids:
             if line.amount and line.move_line_id and line.move_line_id.invoice:
-                if not res.has_key(line.move_line_id.invoice.id):
+                if not line.move_line_id.invoice.id in res:
                     res[line.move_line_id.invoice.id] = {
                         'allocated': 0.0,
                         'total': 0.0,
-                        'write-off': 0.0,}
+                        'total_currency': 0.0,
+                        'write-off': 0.0,
+                        'allocated_currency': 0.0,
+                        'foreign_currency_id': False,
+                        'currency-write-off': 0.0,
+                        }
                 current_amount = line.amount
                 if company_currency != current_currency:
-                    current_amount = super(account_voucher,self)._convert_amount(cr, uid, line.amount, voucher.id, context)
-                res[line.move_line_id.invoice.id]['allocated'] += current_amount
-                res[line.move_line_id.invoice.id]['total'] = self.get_invoice_total(line.move_line_id.invoice)
+                    current_amount = super(account_voucher,self)._convert_amount(
+                        cr, uid, line.amount, voucher.id, context)
+                    res[line.move_line_id.invoice.id][
+                        'allocated_currency'
+                        ] += line.amount
+                    res[line.move_line_id.invoice.id][
+                        'foreign_currency_id'
+                        ] = current_currency
+                    res[line.move_line_id.invoice.id][
+                        'total_currency'
+                        ] = self.get_invoice_total_currency(line.move_line_id.invoice)
+                res[line.move_line_id.invoice.id][
+                    'allocated'
+                    ] += current_amount
+                res[line.move_line_id.invoice.id][
+                    'total'
+                    ] = self.get_invoice_total(line.move_line_id.invoice)
         if res:
-            write_off_per_invoice = voucher.line_total / len(res.keys())
-            if not voucher.company_id.allow_distributing_write_off and  len(res.keys()) > 1 and write_off_per_invoice:
-                raise osv.except_osv(_('Error'), _('You are trying to pay with write-off more than one invoice and distributing write-off is not allowed. See company settings.'))
+            # we use line_total as it can be != writeoff_amount in case of multi currency
+            write_off_per_invoice = voucher.line_total / len(res)
+            if not voucher.company_id.allow_distributing_write_off and  len(res) > 1 and write_off_per_invoice:
+                raise orm.except_orm(_('Error'), _(
+                    'You are trying to pay with write-off more than one invoice and distributing write-off is not allowed. See company settings.'))
             if voucher.type == 'payment' or voucher.type == 'purchase':
                 write_off_per_invoice = - write_off_per_invoice
             for inv_id in res:
                 res[inv_id]['write-off'] = write_off_per_invoice
+            if company_currency != current_currency:
+                curr_write_off_per_invoice = voucher.writeoff_amount / len(res)
+                if voucher.type == 'payment' or voucher.type == 'purchase':
+                    curr_write_off_per_invoice = - curr_write_off_per_invoice
+                for inv_id in res:
+                    res[inv_id]['currency-write-off'] = curr_write_off_per_invoice
         return res

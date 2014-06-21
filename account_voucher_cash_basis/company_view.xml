@@ -11,7 +11,8 @@
             <field name="inherit_id" ref="account_voucher.view_company_inherit_currency_xchange_form"/>
             <field name="arch" type="xml">
                   <field position="after" name="expense_currency_exchange_account_id">
-                      <field name="allow_distributing_write_off" />
+                      <field name="vat_on_payment"/>
+                      <field name="allow_distributing_write_off"/>
                     </field>
             </field>
         </record>
