@@ -205,8 +205,8 @@ class account_voucher(orm.Model):
 
                 #super(account_voucher, self).balance_move(
                 #    cr, uid, shadow_move_id, context)
-                super(account_voucher, self).balance_move(
-                    cr, uid, voucher.move_id.id, context)
+                #super(account_voucher, self).balance_move(
+                #    cr, uid, voucher.move_id.id, context)
 
         return res
 

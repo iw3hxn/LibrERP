@@ -49,6 +49,7 @@ class account_invoice(orm.Model):
                         cr, uid, line_tup[2]['tax_code_id'])
                     line_tup[2]['vat_on_payment'] = True
                     if not tax_code.is_base:
+                    # it is not needed, even if possible (change the account of amount)
                     #    line_tup[2]['account_id'] = (
                     #    invoice_browse.fiscal_position.account_amount_vat_on_payment_id.id)
                     #else: 

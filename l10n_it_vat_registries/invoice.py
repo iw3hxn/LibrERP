@@ -59,7 +59,7 @@ class Parser(report_sxw.rml_parse):
         result = {}
 #prima creare solo le righe con l'imponibile
         for move_line in move.line_id:
-            if move_line.tax_code_id and not move_line.tax_code_id.exclude_from_registries:
+            if move_line.tax_code_id and not move_line.invoice.vat_on_payment and not move_line.tax_code_id.exclude_from_registries:
                 if not res.get(move_line.tax_code_id.id):
                     res[move_line.tax_code_id.id] = 0.0
                     self.localcontext['used_tax_codes'][move_line.tax_code_id.id] = True
@@ -73,17 +73,23 @@ class Parser(report_sxw.rml_parse):
 #quindi aggiungere la tax se c'è
         for move_line in move.line_id:
             tax_code = False
-            if move_line.tax_code_id and not move_line.tax_code_id.exclude_from_registries:
+            if move_line.tax_code_id and not move_line.invoice.vat_on_payment and not move_line.tax_code_id.exclude_from_registries:
+                
                 if not move_line.tax_code_id.is_base:
+                    #if move_line.tax_code_id.tax_ids:
                     if move_line.tax_code_id.tax_ids[0].base_code_id:
                         tax_code = move_line.tax_code_id.tax_ids[0].base_code_id
+                    #elif move_line.tax_code_id.ref_tax_ids:
                     elif move_line.tax_code_id.ref_tax_ids[0].ref_base_code_id:
                         tax_code = move_line.tax_code_id.ref_tax_ids[0].ref_tax_code_id
                     else:
-                        if move_line.tax_code_id.tax_ids[0].parent_id.base_code_id:
-                            tax_code = move_line.tax_code_id.tax_ids[0].parent_id.base_code_id
-                        elif move_line.tax_code_id.ref_tax_ids[0].parent_id.ref_base_code_id:
-                            tax_code = move_line.tax_code_id.ref_tax_ids[0].parent_id.ref_tax_code_id
+                        #import pdb; pdb.set_trace()
+                        if move_line.tax_code_id.tax_ids:
+                            if move_line.tax_code_id.tax_ids[0].parent_id.base_code_id:
+                                tax_code = move_line.tax_code_id.tax_ids[0].parent_id.base_code_id
+                        elif move_line.tax_code_id.ref_tax_ids:
+                            if move_line.tax_code_id.ref_tax_ids[0].parent_id.ref_base_code_id:
+                                tax_code = move_line.tax_code_id.ref_tax_ids[0].parent_id.ref_tax_code_id
                         else:
                             raise Exception(_("No parent tax code found in %s move") % move.name)
                     if move_line.tax_amount != 0.0:
