@@ -2,18 +2,18 @@
 <openerp>
     <data>
 
-        <record id="account_view_move_form_simplified" model="ir.ui.view">
-            <field name="name">account.move.simplified.form</field>
-            <field name="model">account.move.line</field>
+        <record id="account_move_form" model="ir.ui.view">
+            <field name="name">account.view.move.form</field>
+            <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <data>
-                    <xpath expr="/form/notebook/tree[@string='Journal Items']/field[@name='ref']" position="replace"/>
-                    <xpath expr="/form/notebook/tree[@string='Journal Items']/field[@name='partner_id']" position="replace"/>
-                    <xpath expr="/form/notebook/tree[@string='Journal Items']/field[@name='tax_code_id']" position="replace"/>
-                    <xpath expr="/form/notebook/tree[@string='Journal Items']/field[@name='tax_amount']" position="replace"/>
-                    <xpath expr="/form/notebook/tree[@string='Journal Items']/field[@name='reconcile_id']" position="replace"/>
-                    <xpath expr="/form/notebook/tree[@string='Journal Items']/field[@name='reconcile_partial_id']" position="replace"/>
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='ref']" position="replace"/>
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='partner_id']" position="replace"/>
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='tax_code_id']" position="replace"/>
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='tax_amount']" position="replace"/>
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='reconcile_id']" position="replace"/>
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='reconcile_partial_id']" position="replace"/>
                 </data>
             </field>
         </record>
