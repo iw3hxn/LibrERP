@@ -1,0 +1,211 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* stock_picking_extended
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-08 22:05+0000\n"
+"PO-Revision-Date: 2014-06-08 22:05+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_picking_extended
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:account.invoice,goods_description_id:0
+#: field:res.partner,goods_description_id:0
+#: field:sale.order,goods_description_id:0
+#: field:stock.picking,goods_description_id:0
+msgid "Description of goods"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_stock_picking_transportation_condition
+#: field:stock.picking.transportation_condition,name:0
+msgid "transportation Condition"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:stock.picking,transportation_condition_id:0
+msgid "transportation condition"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:stock.picking.carriage_condition,note:0
+#: field:stock.picking.goods_description,note:0
+#: field:stock.picking.transportation_condition,note:0
+msgid "Note"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:res.partner.address,default_delivery_partner_address:0
+msgid "Default delivery         address"
+msgstr ""
+
+#. module: stock_picking_extended
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr ""
+
+#. module: stock_picking_extended
+#: sql_constraint:res.partner:0
+msgid "Error! Specified VAT Number already exists for any other registered partner."
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_transportation_condition_tree
+#: model:ir.ui.menu,name:stock_picking_extended.menu_action_transportation_condition_tree
+msgid "conditions for transportation"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_stock_picking
+msgid "Picking List"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:account.invoice.line,advance_id:0
+msgid "Advance invoice"
+msgstr ""
+
+#. module: stock_picking_extended
+#: help:stock.picking,address_delivery_id:0
+msgid "Delivery address of             partner"
+msgstr ""
+
+#. module: stock_picking_extended
+#: view:res.partner:0
+msgid "Shipping conditions"
+msgstr ""
+
+#. module: stock_picking_extended
+#: view:res.partner:0
+msgid "Sales & Purchases"
+msgstr ""
+
+#. module: stock_picking_extended
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:sale.order,validity:0
+msgid "Validity"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:stock.picking,address_delivery_id:0
+msgid "Address"
+msgstr ""
+
+#. module: stock_picking_extended
+#: view:stock.picking.transportation_condition:0
+msgid "Condition for transportation"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_account_invoice
+msgid "Invoice"
+msgstr ""
+
+#. module: stock_picking_extended
+#: view:account.invoice:0
+msgid "Shipping"
+msgstr ""
+
+#. module: stock_picking_extended
+#: constraint:res.partner.address:0
+msgid "\n"
+" There are just an address of type default"
+msgstr ""
+
+#. module: stock_picking_extended
+#: view:account.invoice:0
+msgid "Payments"
+msgstr ""
+
+#. module: stock_picking_extended
+#: sql_constraint:stock.picking:0
+msgid "Reference must be unique per Company!"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_stock_picking_carriage_condition
+#: view:stock.picking.carriage_condition:0
+#: field:stock.picking.carriage_condition,name:0
+msgid "Carriage Condition"
+msgstr ""
+
+#. module: stock_picking_extended
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_goods_description_tree
+#: model:ir.ui.menu,name:stock_picking_extended.menu_action_good_description_tree
+#: view:stock.picking.goods_description:0
+msgid "Descriptions of Goods"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_stock_picking_goods_description
+#: view:stock.picking.goods_description:0
+#: field:stock.picking.goods_description,name:0
+msgid "Description of Goods"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_account_invoice_line
+msgid "Invoice Line"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_carriage_condition_tree
+#: model:ir.ui.menu,name:stock_picking_extended.menu_action_carriage_condition_tree
+#: view:stock.picking.carriage_condition:0
+msgid "Carriage Conditions"
+msgstr ""
+
+#. module: stock_picking_extended
+#: view:stock.picking.transportation_condition:0
+msgid "Conditions for transportation"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:account.invoice,carriage_condition_id:0
+#: field:res.partner,carriage_condition_id:0
+#: field:sale.order,carriage_condition_id:0
+#: field:stock.picking,carriage_condition_id:0
+msgid "Carriage condition"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_res_partner
+msgid "Partner"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_res_partner_address
+msgid "Partner Addresses"
+msgstr ""
+
+#. module: stock_picking_extended
+#: view:sale.order:0
+msgid "Default shipping conditions"
+msgstr ""
+

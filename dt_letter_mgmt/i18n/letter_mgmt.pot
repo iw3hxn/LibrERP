@@ -1,0 +1,418 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* letter_mgmt
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 5.0.15\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-01-02 08:02:52+0000\n"
+"PO-Revision-Date: 2011-01-02 08:02:52+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Received Date"
+msgstr "Received Date"
+
+#. module: letter_mgmt
+#: model:ir.actions.act_window,name:letter_mgmt.action_letter_class_tree_view
+#: model:ir.ui.menu,name:letter_mgmt.letter_class_menu
+#: view:letter.class:0
+msgid "Letter Class"
+msgstr "Letter Class"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Send By"
+msgstr "Send By"
+
+#. module: letter_mgmt
+#: code:addons/letter_mgmt/letter_mgmt.py:0
+#: view:res.letter:0
+#: selection:res.letter,state:0
+#, python-format
+msgid "Received"
+msgstr "Received"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Inbound Source"
+msgstr "Inbound Source"
+
+#. module: letter_mgmt
+#: code:addons/letter_mgmt/letter_mgmt.py:0
+#: view:res.letter:0
+#: selection:res.letter,state:0
+#, python-format
+msgid "Received Damage"
+msgstr "Received Damage"
+
+#. module: letter_mgmt
+#: constraint:ir.model:0
+msgid "The Object name must start with x_ and not contain any special character !"
+msgstr "The Object name must start with x_ and not contain any special character !"
+
+#. module: letter_mgmt
+#: field:res.letter,ref_data:0
+msgid "Reference Number"
+msgstr "Reference Number"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+#: field:res.letter,note:0
+msgid "Note"
+msgstr "Note"
+
+#. module: letter_mgmt
+#: field:letter.history,name:0
+msgid "Action"
+msgstr "Action"
+
+#. module: letter_mgmt
+#: field:res.letter,state:0
+msgid "State"
+msgstr "State"
+
+#. module: letter_mgmt
+#: selection:res.letter,state:0
+msgid "Draft"
+msgstr "Draft"
+
+#. module: letter_mgmt
+#: constraint:ir.actions.act_window:0
+msgid "Invalid model name in the action definition."
+msgstr "Invalid model name in the action definition."
+
+#. module: letter_mgmt
+#: model:ir.model,name:letter_mgmt.model_letter_log
+msgid "A log class to log all movements regarding letters"
+msgstr "A log class to log all movements regarding letters"
+
+#. module: letter_mgmt
+#: field:res.letter,snd_rec_id:0
+msgid "Sender / Receiver"
+msgstr "Sender / Receiver"
+
+#. module: letter_mgmt
+#: field:letter.channel,name:0
+#: field:letter.class,name:0
+#: field:letter.type,name:0
+#: field:res.letter,type:0
+msgid "Type"
+msgstr "Type"
+
+#. module: letter_mgmt
+#: field:res.letter,date:0
+msgid "Sent / Received Date"
+msgstr "Sent / Received Date"
+
+#. module: letter_mgmt
+#: model:ir.actions.act_window,name:letter_mgmt.action_res_letter_out_tree_view
+#: model:ir.ui.menu,name:letter_mgmt.res_letter_out_menu
+#: view:res.letter:0
+msgid "Outbound Letter(s)"
+msgstr "Outbound Letter(s)"
+
+#. module: letter_mgmt
+#: model:ir.model,name:letter_mgmt.model_letter_history
+msgid "Letter Communication History"
+msgstr "Letter Communication History"
+
+#. module: letter_mgmt
+#: model:ir.actions.act_window,name:letter_mgmt.action_letter_type_tree_view
+#: model:ir.ui.menu,name:letter_mgmt.letter_type_menu
+#: view:letter.type:0
+msgid "Letter Type"
+msgstr "Letter Type"
+
+#. module: letter_mgmt
+#: model:ir.model,name:letter_mgmt.model_letter_channel
+msgid "channels using which letters can be sent/received like:post,fax"
+msgstr "channels using which letters can be sent/received like:post,fax"
+
+#. module: letter_mgmt
+#: model:ir.actions.act_window,name:letter_mgmt.action_letter_history_tree_view
+msgid "Letter History"
+msgstr "Letter History"
+
+#. module: letter_mgmt
+#: field:res.letter,company_id:0
+msgid "Company"
+msgstr "Company"
+
+#. module: letter_mgmt
+#: help:res.letter,type:0
+msgid "Type of Letter, Depeding upon size"
+msgstr "Type of Letter, Depeding upon size"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Extra Info."
+msgstr "Extra Info."
+
+#. module: letter_mgmt
+#: help:res.letter,class:0
+msgid "Classification of Document"
+msgstr "Classification of Document"
+
+#. module: letter_mgmt
+#: model:ir.module.module,shortdesc:letter_mgmt.module_meta_information
+msgid "Letter Management"
+msgstr "Letter Management"
+
+#. module: letter_mgmt
+#: code:addons/letter_mgmt/letter_mgmt.py:0
+#: view:res.letter:0
+#: selection:res.letter,state:0
+#, python-format
+msgid "Sent"
+msgstr "Sent"
+
+#. module: letter_mgmt
+#: field:letter.history,date:0
+msgid "Date"
+msgstr "Date"
+
+#. module: letter_mgmt
+#: model:ir.ui.menu,name:letter_mgmt.letter_log_config_menu
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Outbound Source"
+msgstr "Outbound Source"
+
+#. module: letter_mgmt
+#: field:res.letter,user_id:0
+msgid "Dispatcher"
+msgstr "Dispatcher"
+
+#. module: letter_mgmt
+#: selection:res.letter,move:0
+msgid "OUT"
+msgstr "OUT"
+
+#. module: letter_mgmt
+#: help:res.letter,number:0
+msgid "Autogenerated Number of letter"
+msgstr "Autogenerated Number of letter"
+
+#. module: letter_mgmt
+#: field:res.letter,class:0
+msgid "Class"
+msgstr "Class"
+
+#. module: letter_mgmt
+#: constraint:ir.ui.view:0
+msgid "Invalid XML for View Architecture!"
+msgstr "Invalid XML for View Architecture!"
+
+#. module: letter_mgmt
+#: field:res.letter,channel_id:0
+msgid "Sent / Receive Source"
+msgstr "Sent / Receive Source"
+
+#. module: letter_mgmt
+#: model:ir.model,name:letter_mgmt.model_res_letter
+msgid "A Register class to log all movements regarding letters"
+msgstr "A Register class to log all movements regarding letters"
+
+#. module: letter_mgmt
+#: code:addons/letter_mgmt/letter_mgmt.py:0
+#: selection:res.letter,state:0
+#, python-format
+msgid "Received But Returned"
+msgstr "Received But Returned"
+
+#. module: letter_mgmt
+#: field:letter.history,register_id:0
+msgid "Register"
+msgstr "Register"
+
+#. module: letter_mgmt
+#: model:ir.model,name:letter_mgmt.model_letter_class
+msgid "letter like : classified, confidential, personal, etc."
+msgstr "letter like : classified, confidential, personal, etc."
+
+#. module: letter_mgmt
+#: field:letter.history,user_id:0
+msgid "User Responsible"
+msgstr "User Responsible"
+
+#. module: letter_mgmt
+#: model:ir.actions.act_window,name:letter_mgmt.action_res_letter_in_tree_view
+#: model:ir.ui.menu,name:letter_mgmt.res_letter_in_menu
+#: view:res.letter:0
+msgid "Inbound Letter(s)"
+msgstr "Inbound Letter(s)"
+
+#. module: letter_mgmt
+#: model:ir.module.module,description:letter_mgmt.module_meta_information
+msgid "\n"
+"    Using this module you can track Incoming / Outgoing letters, parcels, registered documents\n"
+"    or any other paper documents that are important for company to keep track of.\n"
+"    "
+msgstr "\n"
+"    Using this module you can track Incoming / Outgoing letters, parcels, registered documents\n"
+"    or any other paper documents that are important for company to keep track of.\n"
+"    "
+
+#. module: letter_mgmt
+#: field:letter.channel,active:0
+#: field:letter.class,active:0
+#: field:letter.type,active:0
+#: field:res.letter,active:0
+msgid "Active"
+msgstr "Active"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Outbound Letter"
+msgstr "Outbound Letter"
+
+#. module: letter_mgmt
+#: help:res.letter,name:0
+msgid "Subject of letter"
+msgstr "Subject of letter"
+
+#. module: letter_mgmt
+#: code:addons/letter_mgmt/letter_mgmt.py:0
+#: view:res.letter:0
+#, python-format
+msgid "Set To Draft"
+msgstr "Set To Draft"
+
+#. module: letter_mgmt
+#: selection:res.letter,move:0
+msgid "IN"
+msgstr "IN"
+
+#. module: letter_mgmt
+#: selection:res.letter,state:0
+msgid "Cancelled"
+msgstr "Cancelled"
+
+#. module: letter_mgmt
+#: help:res.letter,ref_data:0
+msgid "Reference Number Provided by postal provider."
+msgstr "Reference Number Provided by postal provider."
+
+#. module: letter_mgmt
+#: help:res.letter,move:0
+msgid "Incoming or Outgoing Letter"
+msgstr "Incoming or Outgoing Letter"
+
+#. module: letter_mgmt
+#: view:letter.history:0
+#: view:res.letter:0
+#: field:res.letter,history_line:0
+msgid "History"
+msgstr "History"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Received For"
+msgstr "Received For"
+
+#. module: letter_mgmt
+#: field:letter.type,code:0
+msgid "Code"
+msgstr "Code"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Letteres"
+msgstr "Letteres"
+
+#. module: letter_mgmt
+#: field:res.letter,parent_id:0
+msgid "Parent"
+msgstr "Parent"
+
+#. module: letter_mgmt
+#: field:res.letter,int_ref:0
+msgid "Reference"
+msgstr "Reference"
+
+#. module: letter_mgmt
+#: model:ir.actions.act_window,name:letter_mgmt.action_letter_channel_tree_view
+#: model:ir.ui.menu,name:letter_mgmt.letter_channel_menu
+#: view:letter.channel:0
+msgid "Letter Channel"
+msgstr "Letter Channel"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Received but Returned"
+msgstr "Received but Returned"
+
+#. module: letter_mgmt
+#: field:res.letter,move:0
+msgid "Move"
+msgstr "Move"
+
+#. module: letter_mgmt
+#: field:res.letter,number:0
+msgid "Number"
+msgstr "Number"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Inbound Letter"
+msgstr "Inbound Letter"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Letter Line(s)"
+msgstr "Letter Line(s)"
+
+#. module: letter_mgmt
+#: model:ir.ui.menu,name:letter_mgmt.letter_log_menu
+#: model:ir.ui.menu,name:letter_mgmt.res_letter_menu
+msgid "Letter(s)"
+msgstr "Letter(s)"
+
+#. module: letter_mgmt
+#: view:res.letter:0
+msgid "Sent Date"
+msgstr "Sent Date"
+
+#. module: letter_mgmt
+#: field:res.letter,child_line:0
+msgid "Letter Lines"
+msgstr "Letter Lines"
+
+#. module: letter_mgmt
+#: code:addons/letter_mgmt/letter_mgmt.py:0
+#: view:res.letter:0
+#, python-format
+msgid "Cancel"
+msgstr "Cancel"
+
+#. module: letter_mgmt
+#: field:res.letter,partner_id:0
+msgid "Partner"
+msgstr "Partner"
+
+#. module: letter_mgmt
+#: model:ir.model,name:letter_mgmt.model_letter_type
+msgid "types for letters like : envelope,parcel, etc."
+msgstr "types for letters like : envelope,parcel, etc."
+
+#. module: letter_mgmt
+#: field:res.letter,int_ref2:0
+msgid "Reference 2"
+msgstr "Reference 2"
+
+#. module: letter_mgmt
+#: field:res.letter,name:0
+msgid "Subject"
+msgstr "Subject"
+

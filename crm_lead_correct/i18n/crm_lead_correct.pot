@@ -1,0 +1,300 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* crm_lead_correct
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-26 10:50+0000\n"
+"PO-Revision-Date: 2014-05-26 10:50+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Blue"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Cadet Blue"
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "From"
+msgstr ""
+
+#. module: crm_lead_correct
+#: code:addons/crm_lead_correct/wizard/crm_make_sale.py:115
+#, python-format
+msgid "Converted to Sales Quotation(%s)."
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.lead,name_others:0
+msgid "Cointestatari"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Fuchsia"
+msgstr ""
+
+#. module: crm_lead_correct
+#: view:crm.meeting.by.province:0
+msgid "Print"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.lead,partner_category_id:0
+msgid "Partner Category"
+msgstr ""
+
+#. module: crm_lead_correct
+#: code:addons/crm_lead_correct/wizard/crm_make_sale.py:91
+#, python-format
+msgid "Data Insufficient!"
+msgstr ""
+
+#. module: crm_lead_correct
+#: code:addons/crm_lead_correct/wizard/crm_make_sale.py:91
+#, python-format
+msgid "Customer has no addresses defined!"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Orange"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.lead,cf_others:0
+msgid "C.F. aggiuntivi"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.model,name:crm_lead_correct.model_crm_meeting
+msgid "Meeting"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.model,name:crm_lead_correct.model_crm_case_categ
+msgid "Category of Case"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Red"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.lead,function_id:0
+msgid "Function"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Brown"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.model,name:crm_lead_correct.model_crm_lead
+msgid "crm.lead"
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "Description"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.meeting,province_id:0
+msgid "Provincia"
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "Phone"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.case.categ,row_color:0
+#: field:crm.lead,row_color:0
+msgid "unknown"
+msgstr ""
+
+#. module: crm_lead_correct
+#: help:crm.lead,website:0
+msgid "Website of Partner."
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Dark Blue"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.model,name:crm_lead_correct.model_crm_phonecall
+msgid "crm.phonecall"
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "Meeting Type"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.meeting.by.province,province:0
+msgid "Province"
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "Date"
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "Meeting Details"
+msgstr ""
+
+#. module: crm_lead_correct
+#: view:crm.meeting.by.province:0
+#: model:ir.model,name:crm_lead_correct.model_crm_meeting_by_province
+msgid "Print Zone wise Report"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.meeting.by.province,date_to:0
+msgid "End Date"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.model,name:crm_lead_correct.model_crm_make_sale
+msgid "Make sales"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.actions.report.xml,name:crm_lead_correct.crm_meeting_report_by_province
+msgid "Meeting Report"
+msgstr ""
+
+#. module: crm_lead_correct
+#: code:addons/crm_lead_correct/wizard/crm_make_sale.py:94
+#, python-format
+msgid "Opportunity: %s"
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "Province:"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Aqua"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Grey"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.actions.act_window,name:crm_lead_correct.action_crm_meeting_by_province
+msgid "Meeting Report by Zone"
+msgstr ""
+
+#. module: crm_lead_correct
+#: constraint:crm.lead:0
+msgid "\n"
+" There are just an address of type default"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Forest Green"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Green"
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "Partner"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.model,name:crm_lead_correct.model_res_partner_category
+msgid "Partner Categories"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.ui.menu,name:crm_lead_correct.menu_crm_meeting_by_province_values
+msgid "Print Meetings by Zone"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.lead,website:0
+msgid "Website"
+msgstr ""
+
+#. module: crm_lead_correct
+#: code:addons/crm_lead_correct/wizard/crm_make_sale.py:113
+#, python-format
+msgid "Opportunity  '%s' is converted to Quotation."
+msgstr ""
+
+#. module: crm_lead_correct
+#: report:crm.meeting.province:0
+msgid "To"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.case.categ,color:0
+msgid "Color"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.lead,meeting_ids:0
+msgid "Meetings"
+msgstr ""
+
+#. module: crm_lead_correct
+#: constraint:res.partner.category:0
+msgid "Error ! You can not create recursive categories."
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.lead,phonecall_ids:0
+msgid "Phonecalls"
+msgstr ""
+
+#. module: crm_lead_correct
+#: view:crm.meeting.by.province:0
+msgid "Cancel"
+msgstr ""
+
+#. module: crm_lead_correct
+#: selection:crm.case.categ,color:0
+msgid "Black"
+msgstr ""
+
+#. module: crm_lead_correct
+#: field:crm.meeting.by.province,date_from:0
+msgid "Start Date"
+msgstr ""
+
+#. module: crm_lead_correct
+#: model:ir.model,name:crm_lead_correct.model_crm_case_stage
+msgid "Stage of case"
+msgstr ""
+
