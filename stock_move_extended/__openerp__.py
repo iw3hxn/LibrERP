@@ -21,7 +21,7 @@
 ##############################################################################
 {
     "name": "Stock Move Extended",
-    "version": "2.0.0.0",
+    "version": "2.0.0.1",
     "depends": ["stock"],
     "author": "Didotech SRL",
     "category": "Custom Modules",
@@ -29,10 +29,9 @@
         Custom Modules. This module displays the unit price on the input stock move line, and also +/- based on direction
 
     """,
-    "init_xml": [],
-    'update_xml': [
-                    'stock_move_view.xml',
-#                   'security/security.xml',
+    'data' : [
+            'security/security.xml',
+            'stock_move_view.xml',
                    ],
     'demo_xml': [],
     'installable': True,

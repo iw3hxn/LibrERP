@@ -2,16 +2,16 @@
 <openerp>
 <data>
     
-    <record id="module_category_warehouse" model="ir.module.category">
+    <record id="stock.module_category_warehouse" model="ir.module.category">
 	    <field name="name">Warehouse</field>
 	    <field name="description">Extend groups for Product</field>
 	    <field name="sequence">30</field>
 	</record>
     
     
-    <record id="view_price" model="res.groups">
+    <record id="stock.view_price" model="res.groups">
         <field name="name">View Price</field>
-        <field name="category_id" ref="module_category_warehouse"/>
+        <field name="category_id" ref="stock.module_category_warehouse"/>
     </record>
     
     

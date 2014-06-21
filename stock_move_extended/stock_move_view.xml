@@ -2,6 +2,7 @@
 <openerp>
 	<data>
 
+
 		<record model="ir.ui.view" id="view_picking_in_form_inh_showpriceunit">
 			<field name="name">view.picking.in.form.inh.showpriceunit</field>
 			<field name="model">stock.picking</field>
@@ -10,14 +11,12 @@
 			<field name="arch" type="xml">		
 				<xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_id']" position="after">	
 					<field name="price_unit" />
-				</xpath>
-				<xpath expr="//form//notebook//page//field[@name='move_lines']//form/group//field[@name='product_packaging']" position="before">	
+				</xpath>	
+				<xpath expr="//form//notebook//page//field[@name='move_lines']//form/group//field[@name='product_id']" position="after">	
 					<field name="price_unit" />
 				</xpath>	
 			</field>
 		</record>
-
-
 
 		<record model="ir.ui.view" id="view_move_tree_direction">
 			<field name="name">stock.view_move_tree</field>
@@ -28,10 +27,13 @@
 				<field name="product_qty" position="after">
 					<field name="direction" />
 				</field>
+				<field name="product_id" position="after" >
+					<field name="price_unit" groups="stock.view_price" />
+				</field>
 			</field>
 		</record>
 
-		<record model="ir.ui.view" id="view_picking_in_form_inh_showpriceunit">
+		<record model="ir.ui.view" id="view_picking_in_form_inh_showpriceunit_tree">
 			<field name="name">view.picking.in.form.inh.showpriceunit</field>
 			<field name="model">stock.move</field>
 			<field name="type">form</field>
@@ -39,6 +41,9 @@
 			<field name="arch" type="xml">		
 				<field name="product_qty" position="after">
 					<field name="direction" />
+				</field>
+				<field name="product_id" position="after" >
+					<field name="price_unit" groups="stock.view_price" />
 				</field>
 			</field>
 		</record>
