@@ -32,6 +32,5 @@
     "data": ["reports.xml", ],
     "installable": True,
     "auto_install": False,
-    "certificate": "",
     'images': [],
 }
