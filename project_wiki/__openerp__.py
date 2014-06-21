@@ -27,10 +27,10 @@
     'author': 'Agile Business Group',
     'website': 'http://www.agilebg.com',
     'license': 'AGPL-3',
-    "depends" : ['project', 'wiki'],
-    "init_xml" : ['project_view.xml'],
-    "update_xml" : [],
-    "demo_xml" : [],
+    "depends": ['project', 'wiki'],
+    "init_xml": ['project_view.xml'],
+    "update_xml": [],
+    "demo_xml": [],
     "active": False,
     "installable": True
 }

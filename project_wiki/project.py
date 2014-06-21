@@ -21,14 +21,16 @@
 ##############################################################################
 from osv import fields, osv
 
+
 class project(osv.osv):
     _inherit = 'project.project'
 
     _columns = {
         'wiki_ids': fields.many2many('wiki.wiki', 'project_wiki_rel', 'project_id', 'wiki_id', 'Wiki pages'),
     }
-    
+
 project()
+
 
 class project(osv.osv):
     _inherit = 'project.task'
@@ -36,5 +38,5 @@ class project(osv.osv):
     _columns = {
         'wiki_ids': fields.many2many('wiki.wiki', 'task_wiki_rel', 'task_id', 'wiki_id', 'Wiki pages'),
     }
-    
+
 project()
