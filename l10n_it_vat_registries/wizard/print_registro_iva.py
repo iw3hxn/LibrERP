@@ -44,6 +44,7 @@ class wizard_registro_iva(osv.osv_memory):
                                  help="Use -1 you have negative tax amounts and you want to print them prositive"),
         'message': fields.char('Message', size=64, readonly=True),
         'fiscal_page_base': fields.integer('Last printed page', required=True),
+        'name': fields.char('Name', size=16),
     }
     _defaults = {
         'type': 'customer',
