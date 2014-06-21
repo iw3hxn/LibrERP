@@ -27,6 +27,7 @@ class product_catalog_available(osv.osv_memory):
     _description = '#print Product Catalog Report with Qty Available'
 
     _columns = {
+        'name': fields.char('Name', size = 128, required=False, readonly=True),
         'category_id': fields.many2one('product.category', 'Category Type', required=True),
         'pricelist_id': fields.many2one('product.pricelist', 'Pricelist 1'),
         'pricelist_id2': fields.many2one('product.pricelist', 'Pricelist 2'),

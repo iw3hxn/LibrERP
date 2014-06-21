@@ -9,8 +9,7 @@
       <pageGraphics>
         <fill color="#A0A0A0"/>
         <setFont name="Times" size="6"/>
-        <drawCentredString x="4.1in" y="0.8in">[[ company.report_footer_line1 or '' ]]</drawCentredString>
-        <drawCentredString x="4.1in" y="0.68in">[[ company.report_footer_line2 or '' ]]</drawCentredString>
+        <drawCentredString x="4.1in" y="0.8in">[[ company.rml_footer1 or '' ]]</drawCentredString>
         <setFont name="Times" size="8"/>
         <drawCentredString x="4.1in" y="0.48in">[[ company.name ]]</drawCentredString>
         <setFont name="Times" size="8"/>
