@@ -783,7 +783,7 @@ label.error {
 
 .openerp .filter_label, .openerp .filter_icon {
     background: #e6e6e6;
-    border: 1px solid #ffffff;
+    border: 1px solid #c9c9c9;
     background: -moz-linear-gradient(top, #ffffff 0%, #e6e6e6 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e6e6e6));
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e6e6e6',GradientType=0 );
@@ -854,7 +854,7 @@ label.error {
     -moz-border-radius-bottomright: 7px;
     border-top-right-radius: 7px;
     border-bottom-right-radius: 7px;
-    border-right: 1px solid #e6e6e6;
+    border-right: 1px solid #c9c9c9;
 }
 .openerp .filter_label_group button.filter_icon img {
     padding: 1px 8px 0 8px;
