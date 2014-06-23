@@ -41,6 +41,10 @@ coverage.xml
 # Django stuff:
 *.log
 
+# Komodo
+*.komodoproject
+.komodotools
+
 # *.pot is used for translations templates
 
 # Sphinx documentation
