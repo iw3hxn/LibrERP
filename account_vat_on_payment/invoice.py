@@ -34,12 +34,11 @@ class account_invoice(orm.Model):
 
     def finalize_invoice_move_lines(self, cr, uid, invoice_browse, move_lines):
         """
-        Use shadow accounts for journal entry to be generated, according to
-        account and tax code related records
+        
         """
         move_lines = super(account_invoice, self).finalize_invoice_move_lines(
             cr, uid, invoice_browse, move_lines)
-        acc_pool = self.pool.get('account.account')
+        #acc_pool = self.pool.get('account.account')
         tax_code_pool = self.pool.get('account.tax.code')
         new_move_lines = []
         for line_tup in move_lines:
@@ -48,13 +47,26 @@ class account_invoice(orm.Model):
                     tax_code = tax_code_pool.browse(
                         cr, uid, line_tup[2]['tax_code_id'])
                     line_tup[2]['vat_on_payment'] = True
+                    # we save the tax_code_id for future reversal move
+                    line_tup[2]['tax_vat_on_payment_id'] = (
+                        line_tup[2]['tax_code_id'])
+                    line_tup[2]['tax_code_id'] = []
+                    line_tup[2]['account_vat_on_payment_id'] = (
+                        line_tup[2]['account_id'])
                     if not tax_code.is_base:
-                    # it is not needed, even if possible (change the account of amount)
-                    #    line_tup[2]['account_id'] = (
-                    #    invoice_browse.fiscal_position.account_amount_vat_on_payment_id.id)
-                    #else: 
-                        line_tup[2]['account_id'] = (
-                        invoice_browse.fiscal_position.account_tax_vat_on_payment_id.id)
+                        if not invoice_browse.fiscal_position:
+                            company = self.pool['res.users'].browse(
+                                cr, uid, uid).company_id
+                            if not company.fiscal_position:
+                                raise orm.except_orm(_("Missing fiscal position!"),
+                                    _("Company %s has not a default fiscal position!")
+                                    % company.name)
+                            else:
+                                line_tup[2]['account_id'] = (
+                                    company.fiscal_position.account_tax_vat_on_payment_id.id)
+                        else:
+                            line_tup[2]['account_id'] = (
+                                invoice_browse.fiscal_position.account_tax_vat_on_payment_id.id)
             new_move_lines.append(line_tup)
         return new_move_lines
 
@@ -76,7 +88,7 @@ class account_invoice(orm.Model):
 
     _columns = {
         'vat_on_payment': fields.boolean('Vat on payment'),
-        }
+    }
     _defaults = {
         'vat_on_payment': _get_vat_on_payment,
-        }
+    }

@@ -29,4 +29,19 @@ class account_move_line(orm.Model):
     _inherit = "account.move.line"
     _columns = {
         'vat_on_payment': fields.boolean('Vat on payment'),
+        'tax_vat_on_payment_id': fields.many2one(
+            'account.tax.code', 'VAT on Payment tax code for \
+            reversal moves'),
+        'account_vat_on_payment_id': fields.many2one(
+            'account.account', 'VAT on Payment account for \
+            reversal moves'),
         }
+        
+
+class account_move(orm.Model):
+    _inherit = "account.move"
+    _columns = {
+        'journal_vat_on_payment_id': fields.many2one(
+            'account.journal', 'Journal linked to vat on \
+            payment move'),
+    }
