@@ -2,6 +2,8 @@
 # This file contains the translation of the following modules:
 #	* project_extended
 #
+msgid ""
+msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-19 14:08+0000\n"
