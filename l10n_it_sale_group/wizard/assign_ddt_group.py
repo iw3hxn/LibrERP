@@ -33,7 +33,6 @@ class wizard_assign_ddt_group(orm.TransientModel):
     def assign_ddt_group(self, cr, uid, ids, context=None):
         #picking_obj = self.pool['stock.picking']
         picking_group_obj = self.pool['stock.picking.group']
-        import pdb; pdb.set_trace()
         ddt_number = []
         for picking_group in picking_group_obj.browse(
                 cr, uid, context.get('active_ids', []), context=context):
