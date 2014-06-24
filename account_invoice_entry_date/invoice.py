@@ -71,10 +71,18 @@ class account_invoice(orm.Model):
                 mov_date = reg_date or inv.date_invoice or time.strftime('%Y-%m-%d')
                 self.pool['account.move'].write(cr, uid, [inv.move_id.id], {'state': 'draft'})
                 sql = "update account_move_line set period_id = " + \
-                    str(period_id) + ", date = '" + mov_date + "' where move_id = " + str(inv.move_id.id)
+                    str(period_id) + ", date = '" + mov_date + "' , ref = '" + \
+                    inv.supplier_invoice_number + "' where move_id = " + str(inv.move_id.id)
                 cr.execute(sql)
-                self.pool['account.move'].write(
-                    cr, uid, [inv.move_id.id], {'period_id': period_id, 'date': mov_date})
+                if inv.supplier_invoice_number:
+                    self.pool['account.move'].write(
+                    cr, uid, [inv.move_id.id], {
+                        'period_id': period_id,
+                        'date': mov_date,
+                        'ref': inv.supplier_invoice_number})
+                else:
+                    self.pool['account.move'].write(
+                        cr, uid, [inv.move_id.id], {'period_id': period_id, 'date': mov_date})
                 self.pool['account.move'].write(cr, uid, [inv.move_id.id], {'state': 'posted'})
 
         self._log_event(cr, uid, ids)
