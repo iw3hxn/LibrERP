@@ -20,7 +20,7 @@
 
 {
     "name": "Unique serial number management",
-    "version": "2.0.3",
+    "version": "3.0.0.3",
     "author": "Akretion, NaN·tic, Didotech SRL",
     "website": "http://www.akretion.com",
     "depends": [
@@ -40,9 +40,8 @@
     We would also like to extend this module to split automatic production orders (from MRP engine) into several individual production orders in order
     to make it easy to encode the serial numbers in the production. Let us know if you would like that simple extension to be made.
     """,
-    "init_xml": [],
-    "demo_xml": [],
-    "update_xml": [
+    "data": [
+        "security/security.xml",
         "product_view.xml",
         "company_view.xml",
         "stock_view.xml",

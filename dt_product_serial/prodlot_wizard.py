@@ -20,8 +20,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 def is_integer(value):
     try:
@@ -30,7 +30,8 @@ def is_integer(value):
     except:
         return False
 
-class stock_picking_prodlot_selection_wizard(osv.osv_memory):
+
+class stock_picking_prodlot_selection_wizard(orm.TransientModel):
     _name = 'stock.picking.prodlot.selection'
 
     _columns = {
@@ -84,18 +85,18 @@ class stock_picking_prodlot_selection_wizard(osv.osv_memory):
 
         picking_id = context['active_id']
         current_number = first_number
-        for move in self.pool.get('stock.picking').browse(cr, uid, picking_id, context).move_lines:
+        for move in self.pool['stock.picking'].browse(cr, uid, picking_id, context).move_lines:
             if move.prodlot_id or move.product_id != record.product_id:
                 continue
 
             current_lot = '%%s%%0%dd' % number_fill % (prefix, current_number)
-            lot_ids = self.pool.get('stock.production.lot').search(cr, uid, [('name','=',current_lot)], limit=1, context=context)
+            lot_ids = self.pool['stock.production.lot'].search(cr, uid, [('name','=',current_lot)], limit=1, context=context)
             if not lot_ids:
                 raise osv.except_osv(_('Invalid lot numbers'), _('Production lot %s not found.') % current_lot)
 
             ctx = context.copy()
             ctx['location_id'] = move.location_id.id
-            prodlot = self.pool.get('stock.production.lot').browse(cr, uid, lot_ids[0], ctx)
+            prodlot = self.pool['stock.production.lot'].browse(cr, uid, lot_ids[0], ctx)
             
             if prodlot.product_id != record.product_id:
                 raise osv.except_osv(_('Invalid lot numbers'), _('Production lot %s exists but not for product %s.') % (current_lot, record.product_id.name))
@@ -103,7 +104,7 @@ class stock_picking_prodlot_selection_wizard(osv.osv_memory):
             if prodlot.stock_available < move.product_qty:
                 raise osv.except_osv(_('Invalid lot numbers'), _('Not enough stock available of production lot %s.') % current_lot)
             
-            self.pool.get('stock.move').write(cr, uid, [move.id], {
+            self.pool['stock.move'].write(cr, uid, [move.id], {
                 'prodlot_id': lot_ids[0],
             }, context)
 
@@ -112,8 +113,3 @@ class stock_picking_prodlot_selection_wizard(osv.osv_memory):
                 break
 
         return {}
-
-        
-
-stock_picking_prodlot_selection_wizard()
-

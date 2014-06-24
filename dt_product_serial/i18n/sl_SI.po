@@ -220,3 +220,13 @@ msgstr "Proizvod '%s' ima 'Tip razdeljevanja' = 'Logistična enota' , a manjkajo
 msgid "Production lot %s exists but not for product %s."
 msgstr "Proizvodni lot %s obstaja, a ni za proizvod %s."
 
+#. module: dt_product_serial
+#: field:stock.move,balance:0
+#: field:stock.partial.picking.line,balance:0
+msgid "Balance"
+msgstr ""
+
+#. module: stock
+#: model:res.groups,name:stock.view_balance
+msgid "View Balance"
+msgstr ""

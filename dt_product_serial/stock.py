@@ -23,12 +23,12 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 import hashlib
-from tools.translate import _
 
 
-class stock_move(osv.osv):
+class stock_move(orm.Model):
     _inherit = "stock.move"
     # We order by product name because otherwise, after the split,
     # the products are "mixed" and not grouped by product name any more
@@ -58,11 +58,11 @@ class stock_move(osv.osv):
             ## very dangerous!
             #existing_prodlot = move.prodlot_id
             #if existing_prodlot: #avoid creating a prodlot twice
-            #    self.pool.get('stock.production.lot').write(cr, uid, existing_prodlot.id, {'name': value})
+            #    self.pool['stock.production.lot').write(cr, uid, existing_prodlot.id, {'name': value})
             #else:
-            existing_prodlot_id = self.pool.get('stock.production.lot').search(cr, uid, [('name', '=', value), ('product_id', '=', product_id)])
+            existing_prodlot_id = self.pool['stock.production.lot'].search(cr, uid, [('name', '=', value), ('product_id', '=', product_id)])
             if not existing_prodlot_id: #avoid creating a prodlot twice
-                prodlot_id = self.pool.get('stock.production.lot').create(cr, uid, {
+                prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {
                     'name': value,
                     'product_id': product_id,
                 })
@@ -84,9 +84,9 @@ class stock_move(osv.osv):
             product_id = move.product_id.id
             existing_tracking = move.tracking_id
             if existing_tracking: #avoid creating a tracking twice
-                self.pool.get('stock.tracking').write(cr, uid, existing_tracking.id, {'name': value})
+                self.pool['stock.tracking'].write(cr, uid, existing_tracking.id, {'name': value})
             else:
-                tracking_id = self.pool.get('stock.tracking').create(cr, uid, {
+                tracking_id = self.pool['stock.tracking'].create(cr, uid, {
                     'name': value,
                 })
                 move.write({'tracking_id' : tracking_id})
@@ -100,6 +100,7 @@ class stock_move(osv.osv):
                                             method=True, type='char', size=64,
                                             string='Tracking fast input', select=1
                                            ),
+        'balance': fields.boolean('Balance'),
     }
 
     def action_done(self, cr, uid, ids, context=None):
@@ -168,7 +169,7 @@ class stock_move(osv.osv):
         # For some reason we don't receive 'name', so we should create it:
         
         if ('name' not in vals) or (vals.get('name')=='/'):
-            product = self.pool.get('product.product').read(cr, user, vals['product_id'])
+            product = self.pool['product.product'].read(cr, user, vals['product_id'])
             vals['name'] = product.get('default_code', False)
             if not vals['name']:
                 vals['name'] = product['name']
@@ -177,10 +178,8 @@ class stock_move(osv.osv):
         
         return super(stock_move, self).create(cr, user, vals, context)
 
-stock_move()
 
-
-class stock_picking(osv.osv):
+class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
     def action_assign_wkf(self, cr, uid, ids):
@@ -194,7 +193,7 @@ class stock_picking(osv.osv):
                         (move.product_id.track_production and move.location_dest_id.usage == 'production') or \
                         (move.product_id.track_incoming and move.location_id.usage == 'supplier') or \
                         (move.product_id.track_outgoing and move.location_dest_id.usage == 'customer')):
-                        self.pool.get('stock.move').split_move(cr, uid, [move.id])
+                        self.pool['stock.move'].split_move(cr, uid, [move.id])
 
         return result
 
@@ -215,7 +214,7 @@ class stock_picking(osv.osv):
                             ids, journal_id, group, type, context=context)
 
         for picking_key in invoice_dict:
-            invoice = self.pool.get('account.invoice').browse(cursor, user, invoice_dict[picking_key], context=context)
+            invoice = self.pool['account.invoice'].browse(cursor, user, invoice_dict[picking_key], context=context)
             if not invoice.company_id.is_group_invoice_line:
                 continue
 
@@ -239,7 +238,7 @@ class stock_picking(osv.osv):
 
                 # Add the sale order line part but check if the field exist because
                 # it's install by a specific module (not from addons)
-                if self.pool.get('ir.model.fields').search(cursor, user,
+                if self.pool['ir.model.fields'].search(cursor, user,
                         [('name', '=', 'sale_order_lines'), ('model', '=', 'account.invoice.line')], context=context) != []:
                     order_line_tab = []
                     for order_line in line.sale_order_lines:
@@ -266,20 +265,18 @@ class stock_picking(osv.osv):
                     new_line_list[hash_key]['quantity'] = new_line_list[hash_key]['quantity'] + line.quantity
                     new_line_list[hash_key]['price_subtotal'] = new_line_list[hash_key]['price_subtotal'] \
                                                             +  line.price_subtotal
-                    self.pool.get('account.invoice.line').unlink(cursor, user, line.id, context=context)
+                    self.pool['account.invoice.line'].unlink(cursor, user, line.id, context=context)
 
             # Write modifications made on invoice lines
             for hash_key in new_line_list:
                 line_id = new_line_list[hash_key]['id']
                 del new_line_list[hash_key]['id']
-                self.pool.get('account.invoice.line').write(cursor, user, line_id, new_line_list[hash_key], context=context)
+                self.pool['account.invoice.line'].write(cursor, user, line_id, new_line_list[hash_key], context=context)
 
         return invoice_dict
 
-stock_picking()
 
-
-class stock_production_lot(osv.osv):
+class stock_production_lot(orm.Model):
     _inherit = "stock.production.lot"
 
     def _last_location_id(self, cr, uid, ids, field_name, arg, context={}):
@@ -328,8 +325,6 @@ class stock_production_lot(osv.osv):
     _constraints = [
         (_check_name_unique, _('Duplicate serial number'), ['name', 'product_id'])
     ]
-
-stock_production_lot()
 
 
 

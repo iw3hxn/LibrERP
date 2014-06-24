@@ -20,9 +20,10 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import orm, fields
 
-class company(osv.osv):
+
+class company(orm.Model):
     _inherit = 'res.company'
 
     _columns = {
@@ -34,6 +35,4 @@ class company(osv.osv):
         'autosplit_is_active': lambda *a: True,
         'is_group_invoice_line': lambda *a: True,
     }
-
-company()
 

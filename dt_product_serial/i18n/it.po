@@ -220,3 +220,14 @@ msgstr "Prodotto '%s' ha 'Tipo di Split' = 'Unitò logistica' ma mancano le info
 msgid "Production lot %s exists but not for product %s."
 msgstr "Il lotto di produzione %s esiste ma non per il prodotto %s."
 
+#. module: dt_product_serial
+#: field:stock.move,balance:0
+#: field:stock.partial.picking.line,balance:0
+msgid "Balance"
+msgstr "Saldo"
+
+#. module: stock
+#: model:res.groups,name:stock.view_balance
+msgid "View Balance"
+msgstr "Visualizza A Saldo"
+
