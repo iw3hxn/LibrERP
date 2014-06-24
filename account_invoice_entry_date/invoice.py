@@ -70,9 +70,13 @@ class account_invoice(orm.Model):
                 self.write(cr, uid, [inv.id], {'registration_date': reg_date, 'period_id': period_id})
                 mov_date = reg_date or inv.date_invoice or time.strftime('%Y-%m-%d')
                 self.pool['account.move'].write(cr, uid, [inv.move_id.id], {'state': 'draft'})
-                sql = "update account_move_line set period_id = " + \
-                    str(period_id) + ", date = '" + mov_date + "' , ref = '" + \
-                    inv.supplier_invoice_number + "' where move_id = " + str(inv.move_id.id)
+                if inv.supplier_invoice_number:
+                    sql = "update account_move_line set period_id = " + \
+                        str(period_id) + ", date = '" + mov_date + "' , ref = '" + \
+                        inv.supplier_invoice_number + "' where move_id = " + str(inv.move_id.id)
+                else:
+                    sql = "update account_move_line set period_id = " + \
+                        str(period_id) + ", date = '" + mov_date + "' where move_id = " + str(inv.move_id.id)
                 cr.execute(sql)
                 if inv.supplier_invoice_number:
                     self.pool['account.move'].write(
