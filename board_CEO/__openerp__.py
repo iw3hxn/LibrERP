@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Board for CEO',
-    'version': '1.7.5',
+    'version': '1.7.6',
     'category': 'Board/Projects & Services',
     'description': """
         Dashboard for the CEO, a complete view of

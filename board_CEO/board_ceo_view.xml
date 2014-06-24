@@ -22,8 +22,8 @@
             <field name="res_model">crm.lead</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('state','in',['draft','open']), ('type', '=', 'opportunity')]</field>
-            <field name="context">{'default_user_id': uid, 'default_type': 'opportunity'}</field>
+            <field name="domain">['|', ('type','=','opportunity'), ('type','=',False)]</field>
+            <field name="context">{'search_default_new':1, 'default_type': 'opportunity', 'search_default_section_id': section_id, 'stage_type': 'opportunity'}</field>
         </record>
 
         <record id="ceo_oppor_tree" model="ir.actions.act_window.view">
