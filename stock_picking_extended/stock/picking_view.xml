@@ -16,6 +16,11 @@
                     <field name="carriage_condition_id"/>
                     <field name="transportation_condition_id"/>
                 </field>
+                
+                <field name="stock_journal_id" position="replace">
+                    <field name="stock_journal_id" groups="base.group_extended"
+                    on_change="onchange_stock_journal(stock_journal_id,state)" widget="selection"/>
+                </field>
             </field>
 	</record>
 

@@ -27,4 +27,9 @@ class stock_journal(orm.Model):
     
     _columns = {
         'name': fields.char('Stock Journal', size=32, required=True, translate=True),
+        'default_invoice_state': fields.selection([
+            ("invoiced", "Invoiced"),
+            ("2binvoiced", "To Be Invoiced"),
+            ("none", "Not Applicable")], "Invoice Control",
+            select=True, required=False, readonly=False),
         }
