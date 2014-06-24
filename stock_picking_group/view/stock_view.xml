@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- views -->
+		<record id="view_picking_form" model="ir.ui.view">
+			<field name="name">stock.picking.group.form</field>
+			<field name="model">stock.picking</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="stock.view_picking_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//page[@string='Additional info']" position="inside">
+					<field name="picking_group_id" />
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_picking_out_form" model="ir.ui.view">
+			<field name="name">stock.picking.group.form.out</field>
+			<field name="model">stock.picking</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="stock.view_picking_out_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//page[@string='Additional info']" position="inside">
+					<field name="picking_group_id" />
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_picking_in_form" model="ir.ui.view">
+			<field name="name">stock.picking.group.form.in</field>
+			<field name="model">stock.picking</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="stock.view_picking_in_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//page[@string='Additional Info']" position="inside">
+					<field name="picking_group_id" />
+				</xpath>
+			</field>
+		</record>
+
+		<record id="action_group_picking_server" model="ir.actions.server">
+            <field name="name">Group Pickings</field>
+            <field name="model_id" ref="model_stock_picking"/>
+            <field name="state">code</field>
+            <field name="code">action = obj.action_group(context=context)</field>
+        </record>
+        
+        <record id="ir_open_group_picking" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'stock.picking'" name="model"/>
+            <field name="name">Group Pickings</field>
+            <field eval="'ir.actions.server,%d'%action_group_picking_server" name="value"/>
+            <field eval="True" name="object"/>
+        </record>
+
+
+	</data>
+</openerp>
