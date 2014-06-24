@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="stock_picking_form_group_ddt_inherit" model="ir.ui.view">
+            <field name="name">stock.picking.group.form.ddt.inherit</field>
+            <field name="model">stock.picking.group</field>
+            <field name="inherit_id" ref="stock_picking_group.picking_group_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page[@string='Notes']" position="after">
+                    <page string="Shipping Notes">
+                        <group>
+                        <field name="ddt_date"/>
+                        <field name="ddt_number"/>
+                        <field name="ddt_in_reference"/>
+                        <field name="ddt_in_date"/>
+                        </group>
+                        <newline/>
+                        <group>
+                        <field name="carriage_condition_id"/>
+                        <field name="goods_description_id"/>
+                        <field name="transportation_condition_id"/>
+                        <field name="address_delivery_id"/>
+                        </group>
+                        <newline/>
+                        <group>
+                        <button name="%(action_wizard_assign_ddt_group)d" string="Assign DDT Group" type="action" icon="gtk-execute"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="stock_picking_tree_group_ddt_inherit" model="ir.ui.view">
+            <field name="name">stock.picking.group.tree.ddt.inherit</field>
+            <field name="model">stock.picking.group</field>
+            <field name="inherit_id" ref="stock_picking_group.picking_group_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="ddt_number"/>
+                    <field name="ddt_date"/>
+                </field>
+            </field>
+        </record>
+        
+        
+    </data>
+</openerp>
