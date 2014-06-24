@@ -32,6 +32,20 @@
             <field name="view_id" ref="crm.crm_case_my_open_oppor"/>
             <field name="act_window_id" ref="ceo_case_oppor"/>
         </record>
+        
+        <record id="referenced_oppor_view" model="ir.ui.view">
+            <field name="name">Opportunity Ref. tree</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_my_open_oppor"/>
+            <field name="type">tree</field>
+
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="ref"/>
+                    <field name="ref2"/>
+                </field>
+            </field>
+        </record>
 
         <record id="ceo_oppor_form" model="ir.actions.act_window.view">
             <field eval="2" name="sequence"/>
@@ -81,7 +95,7 @@
             <field name="search_view_id" ref="crm_helpdesk.view_crm_case_helpdesk_filter"/>
         </record>
         
-         <record id="referenced_helpdesk_view" model="ir.ui.view">
+        <record id="referenced_helpdesk_view" model="ir.ui.view">
             <field name="name">Helpdesk Ref. tree</field>
             <field name="model">crm.helpdesk</field>
             <field name="inherit_id" ref="crm_helpdesk.crm_case_tree_view_helpdesk"/>
