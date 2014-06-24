@@ -22,13 +22,12 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.2.3.4',
+    'version': '3.2.3.5',
     'category': 'Others',
     'description': """SimplERP - Stock picking extension
 
 Functionalities:
-
-
+    - different shipping address for consignement order
 
 """,
     'author': 'Didotech srl',
