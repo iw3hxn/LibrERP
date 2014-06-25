@@ -57,13 +57,13 @@ class account_invoice(orm.Model):
                         if not invoice_browse.fiscal_position:
                             company = self.pool['res.users'].browse(
                                 cr, uid, uid).company_id
-                            if not company.fiscal_position:
+                            if not company.default_property_account_position:
                                 raise orm.except_orm(_("Missing fiscal position!"),
                                     _("Company %s has not a default fiscal position!")
                                     % company.name)
                             else:
                                 line_tup[2]['account_id'] = (
-                                    company.fiscal_position.account_tax_vat_on_payment_id.id)
+                                    company.default_property_account_position.account_tax_vat_on_payment_id.id)
                         else:
                             line_tup[2]['account_id'] = (
                                 invoice_browse.fiscal_position.account_tax_vat_on_payment_id.id)

@@ -69,6 +69,16 @@ class account_voucher(orm.Model):
                     cr, uid, voucher, context)
                 for inv_id in amounts_by_invoice:
                     invoice = inv_pool.browse(cr, uid, inv_id, context)
+                    company = self.pool['res.users'].browse(
+                                cr, uid, uid).company_id
+                    fiscal_position = invoice.fiscal_position and \
+                        invoice.fiscal_position or \
+                        company.default_property_account_position and \
+                        company.default_property_account_position
+                    if not fiscal_position:
+                        raise orm.except_orm(_("Missing fiscal position!"),
+                            _("Company %s has not a default fiscal position!")
+                            % company.name)
                     for inv_move_line in invoice.move_id.line_id:
                         if (
                             inv_move_line.account_id.type != 'receivable'
@@ -148,7 +158,7 @@ class account_voucher(orm.Model):
                             #    account_amount_vat_on_payment_id.id
                             #else:
                             if inv_move_line.tax_vat_on_payment_id.is_base:
-                                vals['account_id'] = invoice.fiscal_position.\
+                                vals['account_id'] = fiscal_position.\
                                 account_amount_vat_on_payment_id.id
                             else:
                                 vals['account_id'] = inv_move_line.account_vat_on_payment_id.id
@@ -183,10 +193,10 @@ class account_voucher(orm.Model):
                                 'vat_on_payment': True,
                             }
                             if inv_move_line.tax_vat_on_payment_id.is_base:
-                                vals_rev['account_id'] = invoice.fiscal_position.\
+                                vals_rev['account_id'] = fiscal_position.\
                                 account_amount_vat_on_payment_id.id
                             else:
-                                vals_rev['account_id'] = invoice.fiscal_position.\
+                                vals_rev['account_id'] = fiscal_position.\
                                 account_tax_vat_on_payment_id.id
                             if new_line_amount_curr:
                                 vals_rev['amount_currency'] = new_line_amount_curr
