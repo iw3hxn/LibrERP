@@ -22,42 +22,6 @@
 from openerp.osv import orm, fields
 
 
-class stock_picking_group_carriage_condition(orm.Model):
-    """
-    Carriage condition
-    """
-    _name = "stock.picking.group.carriage_condition"
-    _description = "Carriage Condition"
-    _columns = {
-        'name': fields.char('Carriage Condition', size=64, required=True, readonly=False, translable=True),
-        'note': fields.text('Note'),
-    }
-
-
-class stock_picking_group_goods_description(orm.Model):
-    """
-    Description of Goods
-    """
-    _name = 'stock.picking.group.goods_description'
-    _description = "Description of Goods"
-
-    _columns = {
-        'name': fields.char('Description of Goods', size=64, required=True, readonly=False, translable=True),
-        'note': fields.text('Note'),
-    }
-
-
-class stock_picking_group_transportation_condition(orm.Model):
-    """
-    transportation condition
-    """
-    _name = "stock.picking.group.transportation_condition"
-    _description = "Transportation Condition"
-    _columns = {
-        'name': fields.char('transportation Condition', size=64, required=True, readonly=False, translable=True),
-        'note': fields.text('Note'),
-    }
-
 class stock_picking_group(orm.Model):
     _inherit = "stock.picking.group"
     _columns = {
@@ -66,11 +30,11 @@ class stock_picking_group(orm.Model):
         'ddt_in_reference':fields.char('In DDT', size=32),
         'ddt_in_date':fields.date('In DDT Date'),
         'carriage_condition_id': fields.many2one(
-            'stock.picking.group.carriage_condition', 'Carriage condition'),
+            'stock.picking.carriage_condition', 'Carriage condition'),
         'goods_description_id': fields.many2one(
-            'stock.picking.group.goods_description', 'Description of goods'),
+            'stock.picking.goods_description', 'Description of goods'),
         'transportation_condition_id': fields.many2one(
-            'stock.picking.group.transportation_condition', 'transportation condition'),
+            'stock.picking.transportation_condition', 'transportation condition'),
         'address_id': fields.many2one(
             'res.partner.address', 'Partner', help="Partner to be invoiced"),
         'address_delivery_id': fields.many2one(
