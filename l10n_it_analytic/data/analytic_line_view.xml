@@ -9,6 +9,7 @@
                 <field name="general_account_id"  position="after">
                     <field name="partner_id"/>
                     <field name="supplier_invoice_id"/>
+                    <field name="invoice_id"/>
                 </field>
             </field>
         </record>
@@ -19,6 +20,8 @@
             <field name="arch" type="xml">
                 <field name="general_account_id"  position="after">
                    <field name="partner_id"/>
+                   <field name="supplier_invoice_id"/>
+                   <field name="invoice_id"/>
                 </field>
             </field>
         </record>

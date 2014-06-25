@@ -20,9 +20,9 @@
 
 {
     'name': 'Italian Localisation - Account Didotech',
-    'version': '0.1.0',
+    'version': '2.0.0.0',
     'category': 'Localisation/Italy',
-    'description': """Fix analytic
+    'description': """Fix analytic view adding supplier and customer invoice nr
 """,
     'author': 'Didotech',
     'website': 'http://www.didotech.com',
@@ -31,12 +31,10 @@
         'account',
         'analytic',
     ],
-    "init_xml": [
-    ],
-    "update_xml": [
+    "data": [
         'data/analytic_line_view.xml',
     ],
-    "demo_xml": [],
+    "demo": [],
     "active": False,
     "installable": True
 }

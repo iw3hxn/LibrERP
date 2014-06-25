@@ -87,7 +87,8 @@ class account_analytic_line(osv.osv):
 
     _columns = {
         'partner_id': fields.related('move_id', 'partner_id', type="many2one", relation="res.partner", string="Partner"),
-        'supplier_invoice_id': fields.related('move_id', 'invoice', 'supplier_invoice_number', type="char", relation="account.invoice", string="Invoice"),
+        'supplier_invoice_id': fields.related('move_id', 'invoice', 'supplier_invoice_number', type="char", relation="account.invoice", string="Supplier Invoice"),
+        'invoice_id': fields.related('move_id', 'invoice', 'number', type="char", relation="account.invoice", string="Invoice"),
     }
 
 account_analytic_line()
