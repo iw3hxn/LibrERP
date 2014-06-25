@@ -20,7 +20,7 @@
 ##############################################################################
 {
     'name': "Account Invoice Template",
-    'version': '2.1.2.2',
+    'version': '2.2.3.3',
     'category': 'Generic Modules/Accounting',
     'description': """
 Templates for Invoices

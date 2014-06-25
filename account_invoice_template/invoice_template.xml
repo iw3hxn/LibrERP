@@ -47,7 +47,7 @@
             <field name="arch" type="xml">
                 <form string="Invoice Template">
                     <field name="name"/>
-                    <field name="type"/>
+                    <field name="type" on_change="type_change(type, partner_id)"/>
                     <field name="partner_id" on_change="partner_id_change(type, partner_id)"/>
                     <field name="account_id"/>
                     <field name="journal_id"/>

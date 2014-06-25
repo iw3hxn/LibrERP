@@ -41,6 +41,28 @@ class account_invoice_template(osv.osv):
         'journal_id': fields.many2one('account.journal', 'Journal', required=True),
         }
 
+    def type_change(self, cr, uid, ids, type, partner_id):
+        if not type:
+            return {}
+        journal_obj = self.pool['account.journal']
+        partner_obj = self.pool['res.partner']
+        if type:
+            if type in ('out_invoice', 'out_refund'):
+                journal_ids = journal_obj.search(cr, uid, [('type', 'ilike', 'sale')])
+                partner_ids = partner_obj.search(cr, uid, [('customer', '=', True)])
+            else:
+                journal_ids = journal_obj.search(cr, uid, [('type', 'ilike', 'purchase')])
+                partner_ids = partner_obj.search(cr, uid, [('supplier', '=', True)])
+        return {'domain': {
+                           'journal_id': [('id', 'in', journal_ids)],
+                           'partner_id': [('id', 'in', partner_ids)],
+                           },
+                'value': {
+                          'journal_id': journal_ids[0],
+                          'partner_id': partner_ids[0],
+                          },
+                }
+
     def partner_id_change(self, cr, uid, ids, type, partner_id):
         result = {}
 
