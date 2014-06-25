@@ -1,0 +1,88 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* project_extended
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-16 14:05+0000\n"
+"PO-Revision-Date: 2014-06-16 16:06+0100\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: sl_SI\n"
+"X-Generator: Poedit 1.6.5\n"
+
+#. module: project_extended
+#: field:project.project,total_invoice:0
+msgid "Invoice Amount"
+msgstr "Zaračunano"
+
+#. module: project_extended
+#: model:ir.model,name:project_extended.model_project_task
+msgid "Task"
+msgstr "Opravilo"
+
+#. module: project_extended
+#: field:project.project,task_count:0
+msgid "Open Tasks"
+msgstr "Odprta opravila"
+
+#. module: project_extended
+#: constraint:project.task:0
+msgid "Error ! You cannot create recursive tasks."
+msgstr "Napaka ! Ne morete kreirati rekurzivnih nalog"
+
+#. module: project_extended
+#: view:project.project:0
+msgid "Remaining Hours"
+msgstr "Preostale ure"
+
+#. module: project_extended
+#: view:project.project:0
+msgid "Tasks"
+msgstr "Opravila"
+
+#. module: project_extended
+#: constraint:project.task:0
+msgid "Error ! Task end-date must be greater then task start-date"
+msgstr "Začetni datum mora biti pred končnim."
+
+#. module: project_extended
+#: field:project.project,total_spent:0
+msgid "Spent Amount"
+msgstr "Stroški"
+
+#. module: project_extended
+#: sql_constraint:project.task:0
+msgid "Google Event Id must be unique!"
+msgstr "ID Google dogodka mora biti unikaten!"
+
+#. module: project_extended
+#: model:ir.model,name:project_extended.model_project_project
+msgid "Project"
+msgstr "Projekt"
+
+#. module: project_extended
+#: field:project.project,total_sell:0
+msgid "Sell Amount"
+msgstr "Prodano"
+
+#. module: project_extended
+#: view:project.project:0
+msgid "Spent Hours"
+msgstr "Porabljene ure"
+
+#. module: project_extended
+#: constraint:project.project:0
+msgid "Error! You cannot assign escalation to the same project!"
+msgstr "Napaka! Ne morete dodeliti stopnjevanja istemu projektu!"
+
+#. module: project_extended
+#: constraint:project.project:0
+msgid "Error! project start-date must be lower then project end-date."
+msgstr "Začetni datum mora biti pred končnim."
