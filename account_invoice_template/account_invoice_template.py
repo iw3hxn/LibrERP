@@ -38,6 +38,7 @@ class account_invoice_template(osv.osv):
             ('out_refund','Customer Refund'),
             ('in_refund','Supplier Refund'),
             ],'Type', required=True ),
+        'journal_id': fields.many2one('account.journal', 'Journal', required=True),
         }
 
     def partner_id_change(self, cr, uid, ids, type, partner_id):

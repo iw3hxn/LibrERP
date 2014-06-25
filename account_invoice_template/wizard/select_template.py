@@ -77,6 +77,7 @@ class wizard_select_template(osv.osv_memory):
         inv_values['partner_id'] = wizard.template_id.partner_id.id
         inv_values['account_id'] = wizard.template_id.account_id.id
         inv_values['type'] = wizard.template_id.type
+        inv_values['journal_id'] = wizard.template_id.journal_id.id
 
         inv_id = account_invoice_obj.create(cr, uid, inv_values)
         for line in wizard.template_id.template_line_ids:
