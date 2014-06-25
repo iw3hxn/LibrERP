@@ -13,6 +13,19 @@
                 </field>
             </field>
         </record>
+		
+		
+		<record id="view_product_ul_add_product" model="ir.ui.view">
+            <field name="name">product.ul.product_id.inherit</field>
+            <field name="model">product.ul</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_ul_form_view"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+                		<field name="product_id" />
+                </field>
+            </field>
+        </record>
         
      </data>
 </openerp>

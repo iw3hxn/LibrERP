@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+    <record id="view_pallet_move_form" model="ir.ui.view">
+        <field name="name">pallet.move.form</field>
+        <field name="model">pallet.move</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string= "Pallet Move">
+                <group col="4" colspan="4">
+                    <field name="name" select="1"/>
+                    <field name="date"/>
+                    <field name="pallet_qty" />
+                    <field name="pallet_id" />
+                    <field name="account_invoice_id" />
+                    <field name="stock_picking_id" />
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="view_pallet_move_tree" model="ir.ui.view">
+        <field name="name">pallet.move.tree</field>
+        <field name="model">pallet.move</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string= "Pallet Move" editable="top">
+                <field name="date"/>
+                <field name="move" />
+                <field name="pallet_qty" />
+                <field name="pallet_id" />
+                <field name="partner_id" />
+                <field name="account_invoice_id" />
+                <field name="stock_picking_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="view_pallet_move_filter" model="ir.ui.view">
+        <field name="name">pallet.move.filter</field>
+        <field name="model">pallet.move</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string= "Pallet Move">
+                    <field name="name" select="1"/>
+                    <field name="date"/>
+                    <field name="partner_id" />
+                    <field name="pallet_id" widget="selection"/>
+                    <field name="account_invoice_id" widget="selection" />
+                    <field name="stock_picking_id" widget="selection"/>
+            </search>
+         </field>
+     </record>
+    <record id="open_module_tree_pallet_move" model="ir.actions.act_window">
+        <field name="name">Pallet Move</field>
+        <field name="res_model">pallet.move</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_pallet_move_filter"/>
+    </record>
+    
+    <menuitem name="Pallet Move" id="menu_config_res_car" parent="stock.view_pallet" sequence="6" />
+    
+    <menuitem action="open_module_tree_pallet_move" id="menu_pallet_move_tree"
+              parent="stock.menu_traceability"
+              sequence="6"
+              groups="stock.view_pallet"
+              />
+
+   
+
+    </data>
+</openerp>

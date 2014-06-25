@@ -32,6 +32,8 @@
             </xpath>
 			<xpath expr="/form/notebook/page/field/tree/field[@name='state']" position="after">
                 <field name="balance" groups="stock.view_balance"/>
+				<field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
+                <field name="pallet_id" groups="stock.view_pallet" readonly="1" />
             </xpath>
         </field>
     </record>
@@ -69,6 +71,8 @@
 			<xpath expr="/form/notebook/page/field/tree/field[@name='state']" position="after">
                 <field name="balance" groups="stock.view_balance"/>
 				<field name="product_uos_qty" groups="stock.view_balance"/>
+				<field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
+                <field name="pallet_id" groups="stock.view_pallet" readonly="1" />
             </xpath>
         </field>
     </record>
@@ -240,6 +244,8 @@
 				<field name="product_qty" position="before">
 					<field name="product_uos_qty" groups="stock.view_balance"/>
 					<field name="balance" groups="stock.view_balance"/>
+					<field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
+                    <field name="pallet_id" groups="stock.view_pallet" readonly="1" />
 				</field>
 			</field>
 	</record>

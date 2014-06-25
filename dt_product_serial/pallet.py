@@ -20,25 +20,28 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from datetime import datetime
 
 
-class product_product(orm.Model):
-    _inherit = "product.product"
-
-    _columns = {
-        'lot_split_type': fields.selection([('none','None'),
-                                    ('single','Single'),
-                                    ('lu','Logistical Unit')], 'Lot split type', required=True, help="None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"),
-    }
-    _defaults = {
-        'lot_split_type': lambda *a: 'none',
-    }
-
-
-class product_ul(orm.Model):
-    _inherit = "product.ul"
+class pallet_move(orm.Model):
     
-    _columns = {
-        'product_id': fields.many2one('product.product', 'Product' ), 
-    }
+    _description = "Pallet Move"
+    _name = 'pallet.move'    
+    _order = 'date'
 
+    _columns = {
+        'name': fields.char("Number", size=256 , required=True),
+        'date': fields.date('Date', required=True),
+        'partner_id': fields.many2one('res.partner', 'Partner'),
+        'move': fields.selection([('in', '+'), ('out', '-')], 'Move', readonly=True ),
+        'account_invoice_id': fields.many2one('account.invoice', 'Invoice', domain=[('partner_id', '=', 'partner_id')] ),
+        'stock_picking_id': fields.many2one('stock.picking', 'Picking', domain=[('partner_id', '=', 'partner_id')]),
+        'pallet_qty': fields.integer('Number Pallet'),
+        'pallet_id':fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]),
+    }
+    
+    _defaults = {
+        'date': datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT),
+ 
+    }

@@ -77,6 +77,8 @@ class stock_partial_picking_line(orm.TransientModel):
         'split_type': fields.function(_get_split, method=True, type='char', string='Split'),
         'tracking_id': fields.many2one('stock.tracking', 'Pack/Tracking'),
         'balance': fields.boolean('Balance'),
+        'pallet_qty': fields.integer('Number Pallet'),
+        'pallet_id':fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]), 
     }
 
     def onchange_new_prodlot_code(self, cr, uid, ids, new_prodlot_code, product_id, prodlot_id, context=None):
@@ -110,12 +112,14 @@ class stock_partial_picking(orm.TransientModel):
         assert len(ids) == 1, 'Partial picking processing may only be done one at a time'
         stock_picking = self.pool['stock.picking']
         stock_move = self.pool['stock.move']
+        pallet_move_obj = self.pool['pallet.move']
         uom_obj = self.pool['product.uom']
         partial = self.browse(cr, uid, ids[0], context=context)
         partial_data = {
             'delivery_date': partial.date
         }
         picking_type = partial.picking_id.type
+        pallet = {}
         for wizard_line in partial.move_ids:
             line_uom = wizard_line.product_uom
             move_id = wizard_line.move_id.id
@@ -183,10 +187,29 @@ class stock_partial_picking(orm.TransientModel):
                 'prodlot_id': wizard_line.prodlot_id.id,
                 'balance': wizard_line.balance,
                 'tracking_id': tracking_id,
+                'pallet_qty': wizard_line.pallet_qty,
+                'pallet_id': wizard_line.pallet_id.id, 
             }
             if (picking_type == 'in') and (wizard_line.product_id.cost_method == 'average'):
                 partial_data['move%s' % (wizard_line.move_id.id)].update(product_price=wizard_line.cost,
                                                                          product_currency=wizard_line.currency.id)
+            # compose the pallet list
+            if not wizard_line.pallet_id.id in pallet:
+                pallet[wizard_line.pallet_id.id] = 0
+            pallet[wizard_line.pallet_id.id] += wizard_line.pallet_qty
+            
+        #here i want to create 2 line
+
+        for pallet_id, pallet_qty in pallet.iteritems():
+            pallet_move_obj.create(cr, uid, {
+                'name': partial.picking_id.name,
+                'date': partial.picking_id.date,
+                'partner_id': partial.picking_id.partner_id.id,
+                'move': partial.picking_id.type,
+                'stock_picking_id': partial.picking_id.id,
+                'pallet_qty': pallet_qty,
+                'pallet_id': pallet_id,
+            })
         
         stock_picking.do_partial(cr, uid, [partial.picking_id.id], partial_data, context=context)
         return {'type': 'ir.actions.act_window_close'}

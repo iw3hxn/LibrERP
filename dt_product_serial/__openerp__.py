@@ -36,6 +36,8 @@
     4) turns incoming pickings into an editable grid where you can directly type the codes
     of a new production and tracking number/code to create and associate to the move (it also checks it
     doesn't exist yet)
+    5) decide if a move inside a picking is a balance of sale/purchase order
+    6) manage pallet
 
     We would also like to extend this module to split automatic production orders (from MRP engine) into several individual production orders in order
     to make it easy to encode the serial numbers in the production. Let us know if you would like that simple extension to be made.
@@ -43,6 +45,7 @@
     "data": [
         "security/security.xml",
         "product_view.xml",
+        "pallet_view.xml",
         "company_view.xml",
         "stock_view.xml",
         "wizard/stock_partial_picking.xml"

@@ -19,9 +19,10 @@
 #
 ##############################################################################
 
-import product
-import stock
-import company
-import wizard
-import prodlot_wizard
+from . import product
+from . import pallet
+from . import stock
+from . import company
+from . import wizard
+from . import prodlot_wizard
 

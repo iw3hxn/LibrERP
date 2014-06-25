@@ -101,6 +101,8 @@ class stock_move(orm.Model):
                                             string='Tracking fast input', select=1
                                            ),
         'balance': fields.boolean('Balance'),
+        'pallet_qty': fields.integer('Number Pallet'),
+        'pallet_id':fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]), 
     }
 
     def action_done(self, cr, uid, ids, context=None):
