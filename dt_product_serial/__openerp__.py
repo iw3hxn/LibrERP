@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2008 Raphaël Valyi
-#    Copyright (C) 2012-2013 Didotech srl
+#    Copyright (C) 2012-2014 Didotech srl
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
 #    published by the Free Software Foundation, either version 3 of the
@@ -20,7 +20,7 @@
 
 {
     "name": "Unique serial number management",
-    "version": "3.0.0.3",
+    "version": "3.0.1.3",
     "author": "Akretion, NaN·tic, Didotech SRL",
     "website": "http://www.akretion.com",
     "depends": [

@@ -3,7 +3,7 @@
 #
 #    Product serial module for OpenERP
 #    Copyright (C) 2008 Raphaël Valyi
-#    2013 Didotech SRL
+#    2013-2014 Didotech SRL
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
 #    published by the Free Software Foundation, either version 3 of the
@@ -41,4 +41,3 @@ class product_ul(orm.Model):
     _columns = {
         'product_id': fields.many2one('product.product', 'Product' ), 
     }
-

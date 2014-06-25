@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2012-2013 Didotech (<http://www.didotech.com>).
+#    Copyright (C) 2012-2014 Didotech (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -198,7 +198,7 @@ class stock_partial_picking(orm.TransientModel):
                 pallet[wizard_line.pallet_id.id] = 0
             pallet[wizard_line.pallet_id.id] += wizard_line.pallet_qty
             
-        #here i want to create 2 line
+        #here i want to create 2 lines
 
         for pallet_id, pallet_qty in pallet.iteritems():
             pallet_move_obj.create(cr, uid, {
