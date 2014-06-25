@@ -20,14 +20,16 @@
 #
 ##############################################################################
 {
-    'name': 'Board for CEO',
-    'version': '1.7.6',
+    'name': 'Operations Management Board',
+    'version': '1.7.7',
     'category': 'Board/Projects & Services',
     'description': """
-        Dashboard for the CEO, a complete view of
+        Central operations dashboard with all main menus
+        collected at the same place, a complete view of
         all running tasks, issues, projects, leads,
-        helpdesk claims and opportunities on the same
-        dash""",
+        helpdesk claims and leads/opportunities on the
+        same dash. A way to see what's going on in the
+        company.""",
     'author': 'Matmoz d.o.o. (Didotech Group)',
     'website': 'http://www.matmoz.si',
     'license': 'AGPL-3',
