@@ -34,8 +34,15 @@ class Parser(report_sxw.rml_parse):
             'righe': self._righe,
             'righeddt': self._righeddt,
             'indirizzo': self._indirizzo,
+            'div': self._div,
         })
 
+    def _div(self, up, down):
+        res = 0
+        if down:
+            res=up/down
+        return res
+ 
     def _raggruppa(self, righe_fattura):
         indice_movimenti = {}
         movimenti_filtrati = []
