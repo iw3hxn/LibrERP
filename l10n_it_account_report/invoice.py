@@ -38,7 +38,8 @@ class Parser(report_sxw.rml_parse):
             'italian_number': self._get_italian_number,
             'invoice_move_lines': self._get_invoice_move_lines,
             'ddt': self._get_ddt,
-            'set_picking': self._set_picking
+            'set_picking': self._set_picking,
+            'indirizzo': self._indirizzo
         })
         
         self.cache = {}
@@ -214,3 +215,8 @@ class Parser(report_sxw.rml_parse):
             return [line for line in move_id.line_id if line.date_maturity]
         else:
             return []
+
+    def _indirizzo(self, partner):
+        address = self.pool['res.partner'].address_get(self.cr, self.uid, [partner.id],['default', 'invoice'])
+        return self.pool['res.partner.address'].browse(self.cr, self.uid, address['invoice'] or address['default'])
+
