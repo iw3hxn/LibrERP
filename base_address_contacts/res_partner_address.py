@@ -23,7 +23,7 @@ import addons
 
 
 class res_partner_title(osv.osv):
-    _inherit="res.partner.title"
+    _inherit = "res.partner.title"
     _order = "sequence"
     _columns = {
         'sequence': fields.integer('Sequence'),
@@ -31,14 +31,16 @@ class res_partner_title(osv.osv):
     _defaults = {
         'sequence': 1,
     }
-    
+
+
 class res_contact_function(osv.osv):
     _name = "res.contact.function"
     _description = "Contact Function"
     _columns = {
         'name': fields.char('Name', size=32),
     }
-    _order ="name"
+    _order = "name"
+
 
 class res_partner_address_contact(osv.osv):
     _name = "res.partner.address.contact"
@@ -58,7 +60,8 @@ class res_partner_address_contact(osv.osv):
         'title': fields.many2one('res.partner.title', 'Title', domain=[('domain', '=', 'contact')]),
         'website': fields.char('Website', size=120),
         'address_id': fields.many2one('res.partner.address', 'Address'),
-        'partner_id': fields.related('address_id', 'partner_id', type='many2one', relation='res.partner', string='Main Employer'),
+        'partner_id': fields.related(
+            'address_id', 'partner_id', type='many2one', relation='res.partner', string='Main Employer'),
         'lang_id': fields.many2one('res.lang', 'Language'),
         'country_id': fields.many2one('res.country', 'Nationality'),
         'birthdate': fields.char('Birthdate', size=64),
@@ -69,7 +72,7 @@ class res_partner_address_contact(osv.osv):
         'photo': fields.binary('Photo'),
         #'function': fields.char("Function", size=64),
         'function_id': fields.many2one('res.contact.function', 'Function'),
-        
+
 
     }
 
@@ -90,7 +93,9 @@ class res_partner_address_contact(osv.osv):
         if context is None:
             context = {}
         if name:
-            ids = self.search(cr, uid, ['|', ('name', operator, name), ('first_name', operator, name)] + args, limit=limit, context=context)
+            ids = self.search(
+                cr, uid, ['|', ('name', operator, name), ('first_name', operator, name)] + args, limit=limit,
+                context=context)
         else:
             ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context=context)
