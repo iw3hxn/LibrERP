@@ -1,2 +1,2 @@
 id,code,name,enable_province,enable_region,enable_state
-base.si,SI,Slovenia,False,False,False
+base.si,SI,Slovenia,TRUE,TRUE,TRUE

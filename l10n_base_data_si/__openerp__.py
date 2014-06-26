@@ -19,19 +19,19 @@
 #
 ##############################################################################
 {
-    'name': 'Italian Localisation - Base',
-    'version': '2.0.0.0',
-    'category': 'Localisation/Italy',
-    'description': """Italian Localization module - Base version
+    'name': 'Slovene Localisation - Base',
+    'version': '2.0.0.1',
+    'category': 'Localisation/Slovenia',
+    'description': """Slovene Localization module - Base version
 
 Funcionalities:
 
-- Comuni sloveni
+- Slovene ZIP numbers, municipalities, statistical regions
 
 
 """,
-    'author': 'Didotech',
-    'website': 'http://www.didotech.com',
+    'author': 'Matmoz d.o.o. (Didotech Group)',
+    'website': 'http://www.matmoz.si',
     'license': 'AGPL-3',
     "depends": [
         'l10n_it_base'
