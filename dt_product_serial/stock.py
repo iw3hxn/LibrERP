@@ -390,7 +390,7 @@ class stock_picking(orm.Model):
                 defaults = {
                     'product_uom': product_uoms[move.id],
                     'product_qty': move_product_qty[move.id],
-                    'balance': partial_data.get('balance'),
+                    'balance': True, #if complete then i force to close line CARLO partial_data.get('balance'),
                     'pallet_qty': partial_data.get('pallet_qty'),
                     'pallet_id': partial_data.get('pallet_id'),
                 }
