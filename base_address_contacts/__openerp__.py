@@ -26,10 +26,11 @@
 This module allows you to manage your contacts
 ==============================================
 
+!!!IMPORTANT - this module conflicts with the base_contact module.
+
 It lets you define:
-    * contacts unrelated to a partner,
-    * contacts working at several addresses (possibly for different partners),
-    * contacts with possibly different functions for each of its job's addresses
+    * several contacts related to a partner address instead of partner_id,
+
 """,
     'author': 'Denero Team',
     'website': 'http://www.deneroteam.com',
