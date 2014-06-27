@@ -23,7 +23,7 @@ msgstr "Lavorazione"
 #. module: task_time_control
 #: view:task.time.control.confirm.wizard:0
 msgid "Confirm"
-msgstr "Confirma"
+msgstr "Conferma"
 
 #. module: task_time_control
 #: constraint:project.task:0
