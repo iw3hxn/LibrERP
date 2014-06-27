@@ -29,5 +29,5 @@ class res_country(osv.osv):
     _columns = {
         'enable_province': fields.boolean('Show Province?'),
         'enable_region': fields.boolean('Show Region?'),
-        'enable_state': fields.boolean('Show State?'),   
+        'enable_state': fields.boolean('Show State?'),
     }
