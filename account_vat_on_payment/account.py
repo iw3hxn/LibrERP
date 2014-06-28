@@ -212,8 +212,6 @@ class account_voucher(orm.Model):
 
                             lines_to_create.append(vals_rev)
 
-                #import pdb; pdb.set_trace()
-
                 for line_to_create in lines_to_create:
                     line_to_create['move_id'] = voucher.move_id.id
 
