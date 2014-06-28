@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="stock.view_picking_out_form"/>
             <field name="arch" type="xml">
                 <field name="address_id" position="after">
-                    <field name="address_delivery_id" context="{'contact_display':'partner'}" colspan="4" />
+                    <field name="address_delivery_id" context="{'contact_display':'partner_address'}" colspan="4" />
                 </field>
                 <field name="move_type" position="after">
                     <field name="goods_description_id"/>
@@ -30,8 +30,7 @@
             <field name="inherit_id" ref="stock.view_picking_in_form"/>
             <field name="arch" type="xml">
                 <field name="address_id" position="after">
-                    <field name="partner_id"/>
-                    <field name="address_delivery_id" context="{'contact_display':'partner'}" colspan="4"/>
+                    <field name="address_delivery_id" context="{'contact_display':'partner_address'}" colspan="4"/>
                 </field>
             </field>
         </record>

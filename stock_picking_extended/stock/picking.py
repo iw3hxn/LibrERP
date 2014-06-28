@@ -94,41 +94,38 @@ class stock_picking(orm.Model):
             return {'value': {'invoice_state': 'none'}}
         return {'value': {}}
     
-    def onchange_partner_in(self, cr, uid, context=None, partner_address_id=None):
+    def onchange_partner_in(self, cr, uid, context=None, address_id=None):
         if context is None:
             context = {}
-        result = super(stock_picking, self).onchange_partner_in(
-            cr, uid, context, partner_address_id
-        )
         partner_address_obj = self.pool['res.partner.address']
         delivery_ids = []
         
         partner_id = None
-        if partner_address_id:
-            partner_id = partner_address_obj.browse(cr, uid, partner_address_id, context).partner_id
+        if address_id:
+            partner_id = partner_address_obj.browse(cr, uid, address_id, context).partner_id
         if partner_id:
             delivery_ids = partner_address_obj.search(
                 cr, uid, [('partner_id', '=', partner_id.id), (
                     'default_delivery_partner_address', '=', True)],
-                context
+                context=None
             )
             
             if not delivery_ids:
                 delivery_ids = partner_address_obj.search(
                     cr, uid, [('partner_id', '=', partner_id.id), (
                         'type', '=', 'delivery')],
-                    context
+                    context=None
                 )
                 if not delivery_ids:
                     delivery_ids = partner_address_obj.search(
                         cr, uid, [('partner_id', '=', partner_id.id)],
-                        context
+                        context=None
                     )
 
         if delivery_ids:
-            result['value']['address_delivery_id'] = delivery_ids[0]
-        
-        return result
+            return {'value': {'address_delivery_id': delivery_ids[0]}} 
+        else:
+            return {'value': {}}
     
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         new_args = []

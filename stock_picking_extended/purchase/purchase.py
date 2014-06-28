@@ -35,7 +35,7 @@ class purchase_order(orm.Model):
             'origin': order.name + ((order.origin and (':' + order.origin)) or ''),
             'date': order.date_order,
             'type': 'in',
-            'address_id': order.partner_id.id, # correct from SERGIO
+            'address_id': order.partner_id.id,
             'address_delivery_id': order.dest_address_id.id or order.partner_address_id.id,
             'invoice_state': '2binvoiced' if order.invoice_method == 'picking' else 'none',
             'purchase_id': order.id,
