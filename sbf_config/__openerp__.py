@@ -39,7 +39,7 @@
     ],
     "data": [
         'data/payment_data.xml',
-        #'data/res_partner_bank_pkg.xml', # TODO put in the profile_xxx and
+        #'data/res_partner_bank.xml', # TODO put in the profile_xxx and
         # adapt to the pdc of the client
     ],
     "demo": [],
