@@ -1,210 +1,210 @@
 code,name,id,region:id
-si_001,Črnomelj,l10n_it_base.si_c_001,l10n_it_base.si_r_003
-si_002,Ajdovščina,l10n_it_base.si_c_002,l10n_it_base.si_r_002
-si_003,Ankaran,l10n_it_base.si_c_003,l10n_it_base.si_r_006
-si_004,Apače,l10n_it_base.si_c_004,l10n_it_base.si_r_009
-si_005,Brežice,l10n_it_base.si_c_005,l10n_it_base.si_r_011
-si_006,Radovljica,l10n_it_base.si_c_006,l10n_it_base.si_r_001
-si_007,Cerknica,l10n_it_base.si_c_007,l10n_it_base.si_r_005
-si_008,Beltinci,l10n_it_base.si_c_008,l10n_it_base.si_r_009
-si_009,Benedikt,l10n_it_base.si_c_009,l10n_it_base.si_r_008
-si_010,Ruše,l10n_it_base.si_c_010,l10n_it_base.si_r_008
-si_011,Bistrica ob Sotli,l10n_it_base.si_c_011,l10n_it_base.si_r_010
-si_013,Lukovica,l10n_it_base.si_c_013,l10n_it_base.si_r_007
-si_014,Sevnica,l10n_it_base.si_c_014,l10n_it_base.si_r_011
-si_015,Bled,l10n_it_base.si_c_015,l10n_it_base.si_r_001
-si_016,Jesenice,l10n_it_base.si_c_016,l10n_it_base.si_r_001
-si_017,Puconci,l10n_it_base.si_c_017,l10n_it_base.si_r_009
-si_018,Moravske Toplice,l10n_it_base.si_c_018,l10n_it_base.si_r_009
-si_020,Bohinj,l10n_it_base.si_c_020,l10n_it_base.si_r_001
-si_022,Borovnica,l10n_it_base.si_c_022,l10n_it_base.si_r_007
-si_024,Bovec,l10n_it_base.si_c_024,l10n_it_base.si_r_002
-si_025,Nova Gorica,l10n_it_base.si_c_025,l10n_it_base.si_r_002
-si_026,Braslovče,l10n_it_base.si_c_026,l10n_it_base.si_r_010
-si_027,Kobarid,l10n_it_base.si_c_027,l10n_it_base.si_r_002
-si_028,Krško,l10n_it_base.si_c_028,l10n_it_base.si_r_011
-si_029,Maribor,l10n_it_base.si_c_029,l10n_it_base.si_r_008
-si_031,Brezovica,l10n_it_base.si_c_031,l10n_it_base.si_r_007
-si_033,Cerklje na Gorenjskem,l10n_it_base.si_c_033,l10n_it_base.si_r_001
-si_034,Novo mesto,l10n_it_base.si_c_034,l10n_it_base.si_r_003
-si_035,Kozje,l10n_it_base.si_c_035,l10n_it_base.si_r_010
-si_036,Škocjan,l10n_it_base.si_c_036,l10n_it_base.si_r_003
-si_037,Cankova,l10n_it_base.si_c_037,l10n_it_base.si_r_009
-si_038,Celje,l10n_it_base.si_c_038,l10n_it_base.si_r_010
-si_043,Cerkno,l10n_it_base.si_c_043,l10n_it_base.si_r_002
-si_044,Cerkvenjak,l10n_it_base.si_c_044,l10n_it_base.si_r_008
-si_045,Šentilj,l10n_it_base.si_c_045,l10n_it_base.si_r_008
-si_046,Kidričevo,l10n_it_base.si_c_046,l10n_it_base.si_r_008
-si_047,Cirkulane,l10n_it_base.si_c_047,l10n_it_base.si_r_008
-si_050,Zagorje ob Savi,l10n_it_base.si_c_050,l10n_it_base.si_r_012
-si_052,Črenšovci,l10n_it_base.si_c_052,l10n_it_base.si_r_009
-si_053,Črna na Koroškem,l10n_it_base.si_c_053,l10n_it_base.si_r_004
-si_054,Koper,l10n_it_base.si_c_054,l10n_it_base.si_r_006
-si_055,Idrija,l10n_it_base.si_c_055,l10n_it_base.si_r_002
-si_059,Kanal,l10n_it_base.si_c_059,l10n_it_base.si_r_002
-si_060,Destrnik,l10n_it_base.si_c_060,l10n_it_base.si_r_008
-si_061,Divača,l10n_it_base.si_c_061,l10n_it_base.si_r_006
-si_062,Domžale,l10n_it_base.si_c_062,l10n_it_base.si_r_007
-si_063,Dobje,l10n_it_base.si_c_063,l10n_it_base.si_r_010
-si_065,Trbovlje,l10n_it_base.si_c_065,l10n_it_base.si_r_012
-si_067,Dobrna,l10n_it_base.si_c_067,l10n_it_base.si_r_010
-si_068,Trebnje,l10n_it_base.si_c_068,l10n_it_base.si_r_003
-si_069,Dobrova - Polhov Gradec,l10n_it_base.si_c_069,l10n_it_base.si_r_007
-si_070,Dobrovnik,l10n_it_base.si_c_070,l10n_it_base.si_r_009
-si_071,Brda,l10n_it_base.si_c_071,l10n_it_base.si_r_002
-si_072,Hrastnik,l10n_it_base.si_c_072,l10n_it_base.si_r_012
-si_073,Dol pri Ljubljani,l10n_it_base.si_c_073,l10n_it_base.si_r_007
-si_074,Litija,l10n_it_base.si_c_074,l10n_it_base.si_r_007
-si_075,Ribnica,l10n_it_base.si_c_075,l10n_it_base.si_r_003
-si_076,Dolenjske Toplice,l10n_it_base.si_c_076,l10n_it_base.si_r_003
-si_078,Dornava,l10n_it_base.si_c_078,l10n_it_base.si_r_008
-si_080,Loški Potok,l10n_it_base.si_c_080,l10n_it_base.si_r_003
-si_082,Šentjur,l10n_it_base.si_c_082,l10n_it_base.si_r_010
-si_083,Dravograd,l10n_it_base.si_c_083,l10n_it_base.si_r_004
-si_084,Vipava,l10n_it_base.si_c_084,l10n_it_base.si_r_002
-si_085,Sežana,l10n_it_base.si_c_085,l10n_it_base.si_r_006
-si_086,Žužemberk,l10n_it_base.si_c_086,l10n_it_base.si_r_003
-si_089,Rače - Fram,l10n_it_base.si_c_089,l10n_it_base.si_r_008
-si_090,Vojnik,l10n_it_base.si_c_090,l10n_it_base.si_r_010
-si_094,Kranj,l10n_it_base.si_c_094,l10n_it_base.si_r_001
-si_096,Gorenja vas - Poljane,l10n_it_base.si_c_096,l10n_it_base.si_r_001
-si_098,Gorišnica,l10n_it_base.si_c_098,l10n_it_base.si_r_008
-si_099,Gornja Radgona,l10n_it_base.si_c_099,l10n_it_base.si_r_009
-si_100,Gornji Grad,l10n_it_base.si_c_100,l10n_it_base.si_r_010
-si_101,Kranjska Gora,l10n_it_base.si_c_101,l10n_it_base.si_r_001
-si_103,Grad,l10n_it_base.si_c_103,l10n_it_base.si_r_009
-si_104,Metlika,l10n_it_base.si_c_104,l10n_it_base.si_r_003
-si_106,Tolmin,l10n_it_base.si_c_106,l10n_it_base.si_r_002
-si_108,Žalec,l10n_it_base.si_c_108,l10n_it_base.si_r_010
-si_110,Grosuplje,l10n_it_base.si_c_110,l10n_it_base.si_r_007
-si_111,Hajdina,l10n_it_base.si_c_111,l10n_it_base.si_r_008
-si_113,Hoče - Slivnica,l10n_it_base.si_c_113,l10n_it_base.si_r_008
-si_114,Hodoš,l10n_it_base.si_c_114,l10n_it_base.si_r_009
-si_115,Horjul,l10n_it_base.si_c_115,l10n_it_base.si_r_007
-si_116,Logatec,l10n_it_base.si_c_116,l10n_it_base.si_r_007
-si_118,Postojna,l10n_it_base.si_c_118,l10n_it_base.si_r_005
-si_121,Ig,l10n_it_base.si_c_121,l10n_it_base.si_r_007
-si_122,Ilirska Bistrica,l10n_it_base.si_c_122,l10n_it_base.si_r_005
-si_124,Ivančna Gorica,l10n_it_base.si_c_124,l10n_it_base.si_r_007
-si_125,Ormož,l10n_it_base.si_c_125,l10n_it_base.si_r_008
-si_127,Izola,l10n_it_base.si_c_127,l10n_it_base.si_r_006
-si_128,Pesnica,l10n_it_base.si_c_128,l10n_it_base.si_r_008
-si_133,Laško,l10n_it_base.si_c_133,l10n_it_base.si_r_010
-si_134,Sveti Jurij ob Ščavnici,l10n_it_base.si_c_134,l10n_it_base.si_r_009
-si_135,Juršinci,l10n_it_base.si_c_135,l10n_it_base.si_r_008
-si_140,Kamnik,l10n_it_base.si_c_140,l10n_it_base.si_r_007
-si_143,Tabor,l10n_it_base.si_c_143,l10n_it_base.si_r_010
-si_148,Kobilje,l10n_it_base.si_c_148,l10n_it_base.si_r_009
-si_149,Kočevje,l10n_it_base.si_c_149,l10n_it_base.si_r_003
-si_153,Komen,l10n_it_base.si_c_153,l10n_it_base.si_r_006
-si_154,Komenda,l10n_it_base.si_c_154,l10n_it_base.si_r_007
-si_158,Miren - Kostanjevica,l10n_it_base.si_c_158,l10n_it_base.si_r_002
-si_159,Kostanjevica na Krki,l10n_it_base.si_c_159,l10n_it_base.si_r_011
-si_160,Kostel,l10n_it_base.si_c_160,l10n_it_base.si_r_003
-si_161,Pivka,l10n_it_base.si_c_161,l10n_it_base.si_r_005
-si_162,Ravne na Koroškem,l10n_it_base.si_c_162,l10n_it_base.si_r_004
-si_163,Hrpelje - Kozina,l10n_it_base.si_c_163,l10n_it_base.si_r_006
-si_169,Tržič,l10n_it_base.si_c_169,l10n_it_base.si_r_001
-si_170,Gornji Petrovci,l10n_it_base.si_c_170,l10n_it_base.si_r_009
-si_171,Križevci,l10n_it_base.si_c_171,l10n_it_base.si_r_009
-si_177,Kuzma,l10n_it_base.si_c_177,l10n_it_base.si_r_009
-si_178,Slovenska Bistrica,l10n_it_base.si_c_178,l10n_it_base.si_r_008
-si_181,Lenart,l10n_it_base.si_c_181,l10n_it_base.si_r_008
-si_182,Lendava,l10n_it_base.si_c_182,l10n_it_base.si_r_009
-si_190,Ljubljana,l10n_it_base.si_c_190,l10n_it_base.si_r_007
-si_197,Ljubno,l10n_it_base.si_c_197,l10n_it_base.si_r_010
-si_198,Ljutomer,l10n_it_base.si_c_198,l10n_it_base.si_r_009
-si_199,Slovenske Konjice,l10n_it_base.si_c_199,l10n_it_base.si_r_010
-si_201,Log - Dragomer,l10n_it_base.si_c_201,l10n_it_base.si_r_007
-si_209,Lovrenc na Pohorju,l10n_it_base.si_c_209,l10n_it_base.si_r_008
-si_210,Luče,l10n_it_base.si_c_210,l10n_it_base.si_r_010
-si_213,Majšperk,l10n_it_base.si_c_213,l10n_it_base.si_r_008
-si_214,Makole,l10n_it_base.si_c_214,l10n_it_base.si_r_008
-si_220,Starše,l10n_it_base.si_c_220,l10n_it_base.si_r_008
-si_221,Markovci,l10n_it_base.si_c_221,l10n_it_base.si_r_008
-si_225,Medvode,l10n_it_base.si_c_225,l10n_it_base.si_r_007
-si_226,Mengeš,l10n_it_base.si_c_226,l10n_it_base.si_r_007
-si_228,Mežica,l10n_it_base.si_c_228,l10n_it_base.si_r_004
-si_229,Miklavž na Dravskem polju,l10n_it_base.si_c_229,l10n_it_base.si_r_008
-si_232,Mirna,l10n_it_base.si_c_232,l10n_it_base.si_r_003
-si_233,Mirna Peč,l10n_it_base.si_c_233,l10n_it_base.si_r_003
-si_234,Mislinja,l10n_it_base.si_c_234,l10n_it_base.si_r_004
-si_236,Mokronog - Trebelno,l10n_it_base.si_c_236,l10n_it_base.si_r_003
-si_237,Moravče,l10n_it_base.si_c_237,l10n_it_base.si_r_007
-si_241,Mozirje,l10n_it_base.si_c_241,l10n_it_base.si_r_010
-si_242,Murska Sobota,l10n_it_base.si_c_242,l10n_it_base.si_r_009
-si_244,Muta,l10n_it_base.si_c_244,l10n_it_base.si_r_004
-si_245,Naklo,l10n_it_base.si_c_245,l10n_it_base.si_r_001
-si_246,Nazarje,l10n_it_base.si_c_246,l10n_it_base.si_r_010
-si_251,Bloke,l10n_it_base.si_c_251,l10n_it_base.si_r_005
-si_255,Odranci,l10n_it_base.si_c_255,l10n_it_base.si_r_009
-si_256,Oplotnica,l10n_it_base.si_c_256,l10n_it_base.si_r_008
-si_260,Osilnica,l10n_it_base.si_c_260,l10n_it_base.si_r_003
-si_262,Podvelka,l10n_it_base.si_c_262,l10n_it_base.si_r_004
-si_267,Piran,l10n_it_base.si_c_267,l10n_it_base.si_r_006
-si_275,Podčetrtek,l10n_it_base.si_c_275,l10n_it_base.si_r_010
-si_278,Slovenj Gradec,l10n_it_base.si_c_278,l10n_it_base.si_r_004
-si_281,Podlehnik,l10n_it_base.si_c_281,l10n_it_base.si_r_008
-si_284,Rogaška Slatina,l10n_it_base.si_c_284,l10n_it_base.si_r_010
-si_291,Poljčane,l10n_it_base.si_c_291,l10n_it_base.si_r_008
-si_293,Polzela,l10n_it_base.si_c_293,l10n_it_base.si_r_010
-si_298,Prebold,l10n_it_base.si_c_298,l10n_it_base.si_r_010
-si_299,Preddvor ,l10n_it_base.si_c_299,l10n_it_base.si_r_001
-si_303,Prevalje,l10n_it_base.si_c_303,l10n_it_base.si_r_004
-si_305,Šmartno pri Litiji,l10n_it_base.si_c_305,l10n_it_base.si_r_007
-si_309,Ptuj,l10n_it_base.si_c_309,l10n_it_base.si_r_008
-si_313,Radeče,l10n_it_base.si_c_313,l10n_it_base.si_r_010
-si_314,Radenci,l10n_it_base.si_c_314,l10n_it_base.si_r_009
-si_315,Radlje ob Dravi,l10n_it_base.si_c_315,l10n_it_base.si_r_004
-si_322,Razkrižje,l10n_it_base.si_c_322,l10n_it_base.si_r_009
-si_323,Rečica ob Savinji,l10n_it_base.si_c_323,l10n_it_base.si_r_010
-si_324,Renče - Vogrsko,l10n_it_base.si_c_324,l10n_it_base.si_r_002
-si_326,Ribnica na Pohorju,l10n_it_base.si_c_326,l10n_it_base.si_r_004
-si_328,Velike Lašče,l10n_it_base.si_c_328,l10n_it_base.si_r_007
-si_331,Rogašovci,l10n_it_base.si_c_331,l10n_it_base.si_r_009
-si_332,Rogatec,l10n_it_base.si_c_332,l10n_it_base.si_r_010
-si_337,Železniki,l10n_it_base.si_c_337,l10n_it_base.si_r_001
-si_338,Selnica ob Dravi,l10n_it_base.si_c_338,l10n_it_base.si_r_008
-si_339,Semič,l10n_it_base.si_c_339,l10n_it_base.si_r_003
-si_351,Sodražica,l10n_it_base.si_c_351,l10n_it_base.si_r_003
-si_352,Solčava,l10n_it_base.si_c_352,l10n_it_base.si_r_010
-si_357,Duplek,l10n_it_base.si_c_357,l10n_it_base.si_r_008
-si_359,Središče ob Dravi,l10n_it_base.si_c_359,l10n_it_base.si_r_008
-si_366,Loška dolina,l10n_it_base.si_c_366,l10n_it_base.si_r_005
-si_370,Zreče,l10n_it_base.si_c_370,l10n_it_base.si_r_010
-si_371,Straža,l10n_it_base.si_c_371,l10n_it_base.si_r_003
-si_372,Dobrepolje,l10n_it_base.si_c_372,l10n_it_base.si_r_007
-si_375,Sveta Ana,l10n_it_base.si_c_375,l10n_it_base.si_r_008
-si_376,Sveta Trojica v Slovenskih goricah,l10n_it_base.si_c_376,l10n_it_base.si_r_008
-si_379,Šmarje pri Jelšah,l10n_it_base.si_c_379,l10n_it_base.si_r_010
-si_380,Sveti Tomaž,l10n_it_base.si_c_380,l10n_it_base.si_r_008
-si_381,Šalovci,l10n_it_base.si_c_381,l10n_it_base.si_r_009
-si_383,Šempeter - Vrtojba,l10n_it_base.si_c_383,l10n_it_base.si_r_002
-si_385,Šenčur,l10n_it_base.si_c_385,l10n_it_base.si_r_001
-si_389,Šentjernej,l10n_it_base.si_c_389,l10n_it_base.si_r_003
-si_392,Šentrupert,l10n_it_base.si_c_392,l10n_it_base.si_r_003
-si_396,Škofja Loka,l10n_it_base.si_c_396,l10n_it_base.si_r_001
-si_398,Škofljica,l10n_it_base.si_c_398,l10n_it_base.si_r_007
-si_402,Šmarješke Toplice,l10n_it_base.si_c_402,l10n_it_base.si_r_003
-si_405,Šmartno ob Paki,l10n_it_base.si_c_405,l10n_it_base.si_r_010
-si_409,Šoštanj,l10n_it_base.si_c_409,l10n_it_base.si_r_010
-si_411,Štore,l10n_it_base.si_c_411,l10n_it_base.si_r_010
-si_414,Tišina,l10n_it_base.si_c_414,l10n_it_base.si_r_009
-si_422,Trnovska vas,l10n_it_base.si_c_422,l10n_it_base.si_r_008
-si_424,Trzin,l10n_it_base.si_c_424,l10n_it_base.si_r_007
-si_428,Turnišče,l10n_it_base.si_c_428,l10n_it_base.si_r_009
-si_431,Velenje,l10n_it_base.si_c_431,l10n_it_base.si_r_010
-si_435,Velika Polana,l10n_it_base.si_c_435,l10n_it_base.si_r_009
-si_438,Veržej,l10n_it_base.si_c_438,l10n_it_base.si_r_009
-si_440,Videm,l10n_it_base.si_c_440,l10n_it_base.si_r_008
-si_445,Vitanje,l10n_it_base.si_c_445,l10n_it_base.si_r_010
-si_447,Vodice,l10n_it_base.si_c_447,l10n_it_base.si_r_007
-si_451,Vransko,l10n_it_base.si_c_451,l10n_it_base.si_r_010
-si_453,Vrhnika,l10n_it_base.si_c_453,l10n_it_base.si_r_007
-si_455,Vuzenica,l10n_it_base.si_c_455,l10n_it_base.si_r_004
-si_459,Zavrč,l10n_it_base.si_c_459,l10n_it_base.si_r_008
-si_463,Kungota,l10n_it_base.si_c_463,l10n_it_base.si_r_008
-si_468,Jezersko,l10n_it_base.si_c_468,l10n_it_base.si_r_001
-si_475,Žetale,l10n_it_base.si_c_475,l10n_it_base.si_r_008
-si_476,Žiri,l10n_it_base.si_c_476,l10n_it_base.si_r_001
-si_477,Žirovnica,l10n_it_base.si_c_477,l10n_it_base.si_r_001
+AJ,Ajdovščina,l10n_it_base.si_c_002,l10n_it_base.si_r_002
+AN,Ankaran,l10n_it_base.si_c_003,l10n_it_base.si_r_006
+AP,Apače,l10n_it_base.si_c_004,l10n_it_base.si_r_009
+B1,Beltinci,l10n_it_base.si_c_008,l10n_it_base.si_r_009
+B2,Benedikt,l10n_it_base.si_c_009,l10n_it_base.si_r_008
+B3,Bistrica ob Sotli,l10n_it_base.si_c_011,l10n_it_base.si_r_010
+BL,Bled,l10n_it_base.si_c_015,l10n_it_base.si_r_001
+B4,Bloke,l10n_it_base.si_c_251,l10n_it_base.si_r_005
+B5,Bohinj,l10n_it_base.si_c_020,l10n_it_base.si_r_001
+B6,Borovnica,l10n_it_base.si_c_022,l10n_it_base.si_r_007
+B7,Bovec,l10n_it_base.si_c_024,l10n_it_base.si_r_002
+B8,Braslovče,l10n_it_base.si_c_026,l10n_it_base.si_r_010
+B9,Brda,l10n_it_base.si_c_071,l10n_it_base.si_r_002
+BR,Brezovica,l10n_it_base.si_c_031,l10n_it_base.si_r_007
+BZ,Brežice,l10n_it_base.si_c_005,l10n_it_base.si_r_011
+C1,Cankova,l10n_it_base.si_c_037,l10n_it_base.si_r_009
+CE,Celje,l10n_it_base.si_c_038,l10n_it_base.si_r_010
+C2,Cerklje na Gorenjskem,l10n_it_base.si_c_033,l10n_it_base.si_r_001
+C3,Cerknica,l10n_it_base.si_c_007,l10n_it_base.si_r_005
+C4,Cerkno,l10n_it_base.si_c_043,l10n_it_base.si_r_002
+C5,Cerkvenjak,l10n_it_base.si_c_044,l10n_it_base.si_r_008
+C6,Cirkulane,l10n_it_base.si_c_047,l10n_it_base.si_r_008
+C7,Črenšovci,l10n_it_base.si_c_052,l10n_it_base.si_r_009
+C8,Črna na Koroškem,l10n_it_base.si_c_053,l10n_it_base.si_r_004
+C9,Črnomelj,l10n_it_base.si_c_001,l10n_it_base.si_r_003
+D1,Destrnik,l10n_it_base.si_c_060,l10n_it_base.si_r_008
+D2,Divača,l10n_it_base.si_c_061,l10n_it_base.si_r_006
+D3,Dobje,l10n_it_base.si_c_063,l10n_it_base.si_r_010
+D4,Dobrepolje,l10n_it_base.si_c_372,l10n_it_base.si_r_007
+D5,Dobrna,l10n_it_base.si_c_067,l10n_it_base.si_r_010
+D6,Dobrova - Polhov Gradec,l10n_it_base.si_c_069,l10n_it_base.si_r_007
+D7,Dobrovnik,l10n_it_base.si_c_070,l10n_it_base.si_r_009
+D8,Dol pri Ljubljani,l10n_it_base.si_c_073,l10n_it_base.si_r_007
+D9,Dolenjske Toplice,l10n_it_base.si_c_076,l10n_it_base.si_r_003
+DO,Domžale,l10n_it_base.si_c_062,l10n_it_base.si_r_007
+DN,Dornava,l10n_it_base.si_c_078,l10n_it_base.si_r_008
+DR,Dravograd,l10n_it_base.si_c_083,l10n_it_base.si_r_004
+DU,Duplek,l10n_it_base.si_c_357,l10n_it_base.si_r_008
+G1,Gorenja vas - Poljane,l10n_it_base.si_c_096,l10n_it_base.si_r_001
+G2,Gorišnica,l10n_it_base.si_c_098,l10n_it_base.si_r_008
+G3,Gornja Radgona,l10n_it_base.si_c_099,l10n_it_base.si_r_009
+G4,Gornji Grad,l10n_it_base.si_c_100,l10n_it_base.si_r_010
+GP,Gornji Petrovci,l10n_it_base.si_c_170,l10n_it_base.si_r_009
+G5,Grad,l10n_it_base.si_c_103,l10n_it_base.si_r_009
+G6,Grosuplje,l10n_it_base.si_c_110,l10n_it_base.si_r_007
+HA,Hajdina,l10n_it_base.si_c_111,l10n_it_base.si_r_008
+HO,Hoče - Slivnica,l10n_it_base.si_c_113,l10n_it_base.si_r_008
+HD,Hodoš,l10n_it_base.si_c_114,l10n_it_base.si_r_009
+HR,Horjul,l10n_it_base.si_c_115,l10n_it_base.si_r_007
+HS,Hrastnik,l10n_it_base.si_c_072,l10n_it_base.si_r_012
+HP,Hrpelje - Kozina,l10n_it_base.si_c_163,l10n_it_base.si_r_006
+ID,Idrija,l10n_it_base.si_c_055,l10n_it_base.si_r_002
+IG,Ig,l10n_it_base.si_c_121,l10n_it_base.si_r_007
+IL,Ilirska Bistrica,l10n_it_base.si_c_122,l10n_it_base.si_r_005
+IV,Ivančna Gorica,l10n_it_base.si_c_124,l10n_it_base.si_r_007
+IZ,Izola,l10n_it_base.si_c_127,l10n_it_base.si_r_006
+JE,Jesenice,l10n_it_base.si_c_016,l10n_it_base.si_r_001
+JZ,Jezersko,l10n_it_base.si_c_468,l10n_it_base.si_r_001
+JU,Juršinci,l10n_it_base.si_c_135,l10n_it_base.si_r_008
+KA,Kamnik,l10n_it_base.si_c_140,l10n_it_base.si_r_007
+K1,Kanal,l10n_it_base.si_c_059,l10n_it_base.si_r_002
+K2,Kidričevo,l10n_it_base.si_c_046,l10n_it_base.si_r_008
+KB,Kobarid,l10n_it_base.si_c_027,l10n_it_base.si_r_002
+K3,Kobilje,l10n_it_base.si_c_148,l10n_it_base.si_r_009
+K4,Kočevje,l10n_it_base.si_c_149,l10n_it_base.si_r_003
+KM,Komen,l10n_it_base.si_c_153,l10n_it_base.si_r_006
+K5,Komenda,l10n_it_base.si_c_154,l10n_it_base.si_r_007
+KP,Koper,l10n_it_base.si_c_054,l10n_it_base.si_r_006
+K6,Kostanjevica na Krki,l10n_it_base.si_c_159,l10n_it_base.si_r_011
+K7,Kostel,l10n_it_base.si_c_160,l10n_it_base.si_r_003
+K8,Kozje,l10n_it_base.si_c_035,l10n_it_base.si_r_010
+KR,Kranj,l10n_it_base.si_c_094,l10n_it_base.si_r_001
+KG,Kranjska Gora,l10n_it_base.si_c_101,l10n_it_base.si_r_001
+K9,Križevci,l10n_it_base.si_c_171,l10n_it_base.si_r_009
+KK,Krško,l10n_it_base.si_c_028,l10n_it_base.si_r_011
+KU,Kungota,l10n_it_base.si_c_463,l10n_it_base.si_r_008
+KZ,Kuzma,l10n_it_base.si_c_177,l10n_it_base.si_r_009
+LA,Laško,l10n_it_base.si_c_133,l10n_it_base.si_r_010
+LE,Lenart,l10n_it_base.si_c_181,l10n_it_base.si_r_008
+LN,Lendava,l10n_it_base.si_c_182,l10n_it_base.si_r_009
+LI,Litija,l10n_it_base.si_c_074,l10n_it_base.si_r_007
+LJ,Ljubljana,l10n_it_base.si_c_190,l10n_it_base.si_r_007
+L1,Ljubno,l10n_it_base.si_c_197,l10n_it_base.si_r_010
+LT,Ljutomer,l10n_it_base.si_c_198,l10n_it_base.si_r_009
+L2,Log - Dragomer,l10n_it_base.si_c_201,l10n_it_base.si_r_007
+LO,Logatec,l10n_it_base.si_c_116,l10n_it_base.si_r_007
+LD,Loška dolina,l10n_it_base.si_c_366,l10n_it_base.si_r_005
+LP,Loški Potok,l10n_it_base.si_c_080,l10n_it_base.si_r_003
+L3,Lovrenc na Pohorju,l10n_it_base.si_c_209,l10n_it_base.si_r_008
+L4,Luče,l10n_it_base.si_c_210,l10n_it_base.si_r_010
+L5,Lukovica,l10n_it_base.si_c_013,l10n_it_base.si_r_007
+M1,Majšperk,l10n_it_base.si_c_213,l10n_it_base.si_r_008
+M2,Makole,l10n_it_base.si_c_214,l10n_it_base.si_r_008
+MB,Maribor,l10n_it_base.si_c_029,l10n_it_base.si_r_008
+M3,Markovci,l10n_it_base.si_c_221,l10n_it_base.si_r_008
+ME,Medvode,l10n_it_base.si_c_225,l10n_it_base.si_r_007
+M4,Mengeš,l10n_it_base.si_c_226,l10n_it_base.si_r_007
+M5,Metlika,l10n_it_base.si_c_104,l10n_it_base.si_r_003
+MZ,Mežica,l10n_it_base.si_c_228,l10n_it_base.si_r_004
+M6,Miklavž na Dravskem polju,l10n_it_base.si_c_229,l10n_it_base.si_r_008
+MK,Miren - Kostanjevica,l10n_it_base.si_c_158,l10n_it_base.si_r_002
+MI,Mirna,l10n_it_base.si_c_232,l10n_it_base.si_r_003
+MP,Mirna Peč,l10n_it_base.si_c_233,l10n_it_base.si_r_003
+ML,Mislinja,l10n_it_base.si_c_234,l10n_it_base.si_r_004
+M7,Mokronog - Trebelno,l10n_it_base.si_c_236,l10n_it_base.si_r_003
+MV,Moravče,l10n_it_base.si_c_237,l10n_it_base.si_r_007
+MT,Moravske Toplice,l10n_it_base.si_c_018,l10n_it_base.si_r_009
+M8,Mozirje,l10n_it_base.si_c_241,l10n_it_base.si_r_010
+MS,Murska Sobota,l10n_it_base.si_c_242,l10n_it_base.si_r_009
+MU,Muta,l10n_it_base.si_c_244,l10n_it_base.si_r_004
+NA,Naklo,l10n_it_base.si_c_245,l10n_it_base.si_r_001
+NZ,Nazarje,l10n_it_base.si_c_246,l10n_it_base.si_r_010
+NG,Nova Gorica,l10n_it_base.si_c_025,l10n_it_base.si_r_002
+NM,Novo mesto,l10n_it_base.si_c_034,l10n_it_base.si_r_003
+OD,Odranci,l10n_it_base.si_c_255,l10n_it_base.si_r_009
+OP,Oplotnica,l10n_it_base.si_c_256,l10n_it_base.si_r_008
+OR,Ormož,l10n_it_base.si_c_125,l10n_it_base.si_r_008
+OS,Osilnica,l10n_it_base.si_c_260,l10n_it_base.si_r_003
+PE,Pesnica,l10n_it_base.si_c_128,l10n_it_base.si_r_008
+PI,Piran,l10n_it_base.si_c_267,l10n_it_base.si_r_006
+PV,Pivka,l10n_it_base.si_c_161,l10n_it_base.si_r_005
+PC,Podčetrtek,l10n_it_base.si_c_275,l10n_it_base.si_r_010
+P1,Podlehnik,l10n_it_base.si_c_281,l10n_it_base.si_r_008
+P2,Podvelka,l10n_it_base.si_c_262,l10n_it_base.si_r_004
+P3,Poljčane,l10n_it_base.si_c_291,l10n_it_base.si_r_008
+PL,Polzela,l10n_it_base.si_c_293,l10n_it_base.si_r_010
+PO,Postojna,l10n_it_base.si_c_118,l10n_it_base.si_r_005
+PR,Prebold,l10n_it_base.si_c_298,l10n_it_base.si_r_010
+P4,Preddvor ,l10n_it_base.si_c_299,l10n_it_base.si_r_001
+P5,Prevalje,l10n_it_base.si_c_303,l10n_it_base.si_r_004
+PT,Ptuj,l10n_it_base.si_c_309,l10n_it_base.si_r_008
+PU,Puconci,l10n_it_base.si_c_017,l10n_it_base.si_r_009
+R1,Rače - Fram,l10n_it_base.si_c_089,l10n_it_base.si_r_008
+R2,Radeče,l10n_it_base.si_c_313,l10n_it_base.si_r_010
+R3,Radenci,l10n_it_base.si_c_314,l10n_it_base.si_r_009
+R4,Radlje ob Dravi,l10n_it_base.si_c_315,l10n_it_base.si_r_004
+RA,Radovljica,l10n_it_base.si_c_006,l10n_it_base.si_r_001
+R5,Ravne na Koroškem,l10n_it_base.si_c_162,l10n_it_base.si_r_004
+R6,Razkrižje,l10n_it_base.si_c_322,l10n_it_base.si_r_009
+R7,Rečica ob Savinji,l10n_it_base.si_c_323,l10n_it_base.si_r_010
+RV,Renče - Vogrsko,l10n_it_base.si_c_324,l10n_it_base.si_r_002
+RI,Ribnica,l10n_it_base.si_c_075,l10n_it_base.si_r_003
+R8,Ribnica na Pohorju,l10n_it_base.si_c_326,l10n_it_base.si_r_004
+RS,Rogaška Slatina,l10n_it_base.si_c_284,l10n_it_base.si_r_010
+RG,Rogašovci,l10n_it_base.si_c_331,l10n_it_base.si_r_009
+RO,Rogatec,l10n_it_base.si_c_332,l10n_it_base.si_r_010
+RU,Ruše,l10n_it_base.si_c_010,l10n_it_base.si_r_008
+SD,Selnica ob Dravi,l10n_it_base.si_c_338,l10n_it_base.si_r_008
+SA,Semič,l10n_it_base.si_c_339,l10n_it_base.si_r_003
+SB,Sevnica,l10n_it_base.si_c_014,l10n_it_base.si_r_011
+SC,Sežana,l10n_it_base.si_c_085,l10n_it_base.si_r_006
+SD,Slovenj Gradec,l10n_it_base.si_c_278,l10n_it_base.si_r_004
+SE,Slovenska Bistrica,l10n_it_base.si_c_178,l10n_it_base.si_r_008
+SF,Slovenske Konjice,l10n_it_base.si_c_199,l10n_it_base.si_r_010
+SG,Sodražica,l10n_it_base.si_c_351,l10n_it_base.si_r_003
+SH,Solčava,l10n_it_base.si_c_352,l10n_it_base.si_r_010
+SJ,Središče ob Dravi,l10n_it_base.si_c_359,l10n_it_base.si_r_008
+SL,Starše,l10n_it_base.si_c_220,l10n_it_base.si_r_008
+SM,Straža,l10n_it_base.si_c_371,l10n_it_base.si_r_003
+SN,Sveta Ana,l10n_it_base.si_c_375,l10n_it_base.si_r_008
+SO,Sveta Trojica v Slovenskih goricah,l10n_it_base.si_c_376,l10n_it_base.si_r_008
+SP,Sveti Jurij ob Ščavnici,l10n_it_base.si_c_134,l10n_it_base.si_r_009
+SR,Sveti Tomaž,l10n_it_base.si_c_380,l10n_it_base.si_r_008
+SS,Šalovci,l10n_it_base.si_c_381,l10n_it_base.si_r_009
+ST,Šempeter - Vrtojba,l10n_it_base.si_c_383,l10n_it_base.si_r_002
+SU,Šenčur,l10n_it_base.si_c_385,l10n_it_base.si_r_001
+SV,Šentilj,l10n_it_base.si_c_045,l10n_it_base.si_r_008
+SW,Šentjernej,l10n_it_base.si_c_389,l10n_it_base.si_r_003
+SZ,Šentjur,l10n_it_base.si_c_082,l10n_it_base.si_r_010
+SX,Šentrupert,l10n_it_base.si_c_392,l10n_it_base.si_r_003
+SY,Škocjan,l10n_it_base.si_c_036,l10n_it_base.si_r_003
+SQ,Škofja Loka,l10n_it_base.si_c_396,l10n_it_base.si_r_001
+S1,Škofljica,l10n_it_base.si_c_398,l10n_it_base.si_r_007
+S2,Šmarje pri Jelšah,l10n_it_base.si_c_379,l10n_it_base.si_r_010
+S3,Šmarješke Toplice,l10n_it_base.si_c_402,l10n_it_base.si_r_003
+S4,Šmartno ob Paki,l10n_it_base.si_c_405,l10n_it_base.si_r_010
+S5,Šmartno pri Litiji,l10n_it_base.si_c_305,l10n_it_base.si_r_007
+S6,Šoštanj,l10n_it_base.si_c_409,l10n_it_base.si_r_010
+S7,Štore,l10n_it_base.si_c_411,l10n_it_base.si_r_010
+T1,Tabor,l10n_it_base.si_c_143,l10n_it_base.si_r_010
+T2,Tišina,l10n_it_base.si_c_414,l10n_it_base.si_r_009
+T3,Tolmin,l10n_it_base.si_c_106,l10n_it_base.si_r_002
+T4,Trbovlje,l10n_it_base.si_c_065,l10n_it_base.si_r_012
+T5,Trebnje,l10n_it_base.si_c_068,l10n_it_base.si_r_003
+T6,Trnovska vas,l10n_it_base.si_c_422,l10n_it_base.si_r_008
+T7,Trzin,l10n_it_base.si_c_424,l10n_it_base.si_r_007
+T8,Tržič,l10n_it_base.si_c_169,l10n_it_base.si_r_001
+T9,Turnišče,l10n_it_base.si_c_428,l10n_it_base.si_r_009
+VE,Velenje,l10n_it_base.si_c_431,l10n_it_base.si_r_010
+VP,Velika Polana,l10n_it_base.si_c_435,l10n_it_base.si_r_009
+VL,Velike Lašče,l10n_it_base.si_c_328,l10n_it_base.si_r_007
+VZ,Veržej,l10n_it_base.si_c_438,l10n_it_base.si_r_009
+VD,Videm,l10n_it_base.si_c_440,l10n_it_base.si_r_008
+VI,Vipava,l10n_it_base.si_c_084,l10n_it_base.si_r_002
+VT,Vitanje,l10n_it_base.si_c_445,l10n_it_base.si_r_010
+VC,Vodice,l10n_it_base.si_c_447,l10n_it_base.si_r_007
+VJ,Vojnik,l10n_it_base.si_c_090,l10n_it_base.si_r_010
+VS,Vransko,l10n_it_base.si_c_451,l10n_it_base.si_r_010
+VR,Vrhnika,l10n_it_base.si_c_453,l10n_it_base.si_r_007
+VU,Vuzenica,l10n_it_base.si_c_455,l10n_it_base.si_r_004
+ZG,Zagorje ob Savi,l10n_it_base.si_c_050,l10n_it_base.si_r_012
+ZV,Zavrč,l10n_it_base.si_c_459,l10n_it_base.si_r_008
+ZR,Zreče,l10n_it_base.si_c_370,l10n_it_base.si_r_010
+ZA,Žalec,l10n_it_base.si_c_108,l10n_it_base.si_r_010
+ZE,Železniki,l10n_it_base.si_c_337,l10n_it_base.si_r_001
+ZT,Žetale,l10n_it_base.si_c_475,l10n_it_base.si_r_008
+ZI,Žiri,l10n_it_base.si_c_476,l10n_it_base.si_r_001
+ZC,Žirovnica,l10n_it_base.si_c_477,l10n_it_base.si_r_001
+ZZ,Žužemberk,l10n_it_base.si_c_086,l10n_it_base.si_r_003
