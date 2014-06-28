@@ -65,6 +65,8 @@ class stock_picking(orm.Model):
         'carriage_condition_id': fields.many2one('stock.picking.carriage_condition', 'Carriage condition'),
         'goods_description_id': fields.many2one('stock.picking.goods_description', 'Description of goods'),
         'transportation_condition_id': fields.many2one('stock.picking.transportation_condition', 'transportation condition'),
+        #address_id is overridden because it's used 2binvoiced
+        #n.b.: partner_id is only a related, so not useful for the workflow
         'address_id': fields.many2one(
             'res.partner.address', 'Partner', help="Partner to be invoiced"
         ),
