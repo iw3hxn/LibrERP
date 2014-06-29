@@ -51,7 +51,7 @@
         </record>
 
         <menuitem 
-            parent="account.menu_account_customer" 
+            parent="account.menu_finance_receivables" 
             id="menu_action_conai_declaration_tree" 
             action="action_conai_declaration_tree"/>
         
