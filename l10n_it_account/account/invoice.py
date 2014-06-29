@@ -37,12 +37,21 @@ class account_invoice(orm.Model):
                     if ':' in invoice.origin:
                         if ',' in invoice.origin:
                             origins = invoice.origin.split(',')
-                            picking_name, sale_order_name = origins[0].split(':')
+                            if len(origins) == 2:
+                                picking_name, sale_order_name = origins[0].split(':')
                         else:
-                            if invoice.origin[:3] == 'IN/':
-                                in_picking, picking_name, sale_order_name = invoice.origin.split(':')
-                            else:
-                                picking_name, sale_order_name = invoice.origin.split(':')
+                            origins = invoice.origin.split(':')
+                            if len(origins) == 2:
+                                if origins[0][:3] == 'IN/':
+                                #    in_picking = origins[0]
+                                    picking_name = origins[1]
+                                else:
+                                    picking_name = origins[0]
+                                #    sale_order_name = origins[1]
+                            elif len(origins) == 3:
+                                #in_picking = origins[0]
+                                picking_name = origins[1]
+                                #sale_order_name = origins[2]
                     elif invoice.origin[:4] == 'OUT/':
                         picking_name = invoice.origin
                     else:
