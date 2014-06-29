@@ -9,6 +9,8 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='ref']" position="replace"/>
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='invoice']" position="replace"/>
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='date_maturity']" position="replace"/>
                     <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='partner_id']" position="replace"/>
                     <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='tax_code_id']" position="replace"/>
                     <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='tax_amount']" position="replace"/>
