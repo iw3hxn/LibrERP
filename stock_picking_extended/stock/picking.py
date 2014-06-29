@@ -81,14 +81,13 @@ class stock_picking(orm.Model):
     def onchange_stock_journal(self, cr, uid, context=None, stock_journal_id=None, state=None):
         if context is None:
             context = {}
-        
         if state != 'draft':
             return {'value': {}}
         
         stock_journal_obj = self.pool['stock.journal']
         if stock_journal_id:
             default_invoice_state = stock_journal_obj.browse(
-                    cr, uid, stock_journal_id, context).default_invoice_state
+                cr, uid, stock_journal_id, context=None).default_invoice_state
         
         if default_invoice_state: 
             return {'value': {'invoice_state': default_invoice_state}}
