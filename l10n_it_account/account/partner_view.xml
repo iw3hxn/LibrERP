@@ -24,14 +24,31 @@
                             </group>
                         </page>                
                     </xpath>
+                    <field name="vat" position="replace">
+                        <field name="vat" on_change="vat_change(vat)" colspan="3"/>
+                    </field>
                     <field name="vat_subjected" position="after">
-                        <field name="cf" />
+                        <field name="cf" colspan="3"/>
                         <field name="individual"/>
                     </field>
                 </data>
             </field>
         </record>
-        
+
+        <!--record id="view_partner_form_property_payment" model="ir.ui.view">
+            <field name="name">res.partner.virtual.property.payment</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="property_account_payable" position="after">
+                        <newline/>
+                        <field name="property_payment_term_payable" widget="selection" />
+                    </field>
+                </data>
+            </field>
+        </record-->
+
         <record id="view_partner_form_virtual_fiscalcode_data" model="ir.ui.view">
             <field name="name">res.partner.virtual.fiscalcode.data</field>
             <field name="model">res.partner</field>
@@ -39,6 +56,7 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="property_account_position" position="replace">
+                        <separator string="Fiscal Position" colspan="2" col="2"/>
                         <field name="property_account_position" widget="selection" readonly="True" />
                         <button name="action_select_fiscal_position" string="Seleziona Posizione Fiscale" type="object" icon="gtk-execute"  />
                     </field>
