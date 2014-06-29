@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <record id="view_partner_form_conai" model="ir.ui.view">
+            <field name="name">res.partner.conai</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/notebook/page[@string='Notes']" position="after">
+                         <page string="Dichiarazioni CONAI">
+                            <separator colspan="4"/>
+                            <field name="conai_declaration_ids"/>
+                            <newline/>
+                         </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
