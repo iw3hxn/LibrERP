@@ -22,7 +22,7 @@
 from openerp.osv import orm, fields
 
 
-class conai_declarations(orm.Model):
+class conai_declaration(orm.Model):
     _name = "conai.declaration"
     
     _columns = {

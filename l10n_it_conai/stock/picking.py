@@ -37,9 +37,9 @@ class stock_move(orm.Model):
     
     _columns = {
         'weight_exempt_conai': fields.float(
-             string='Weight',
+             string='CONAI exempt weight of product',
              digits_compute = dp.get_precision('Stock Weight'),
-             'CONAI exempt weight of product'),
+             ),
     }
 
 

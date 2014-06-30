@@ -40,6 +40,7 @@ CONAI
         'stock/product_view.xml',
         'partner/partner_view.xml',
         'partner/declaration_view.xml',
+        'security/ir.model.access.csv',
     ],
     "demo": [],
     "active": False,
