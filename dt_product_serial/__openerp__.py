@@ -48,7 +48,9 @@
         "pallet_view.xml",
         "company_view.xml",
         "stock_view.xml",
-        "wizard/stock_partial_picking.xml"
+        "wizard/stock_splitinto_view.xml",
+        "wizard/stock_partial_picking.xml",
+        
     ],
     "active": False,
     "installable": True

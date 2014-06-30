@@ -19,5 +19,5 @@
 #
 ##############################################################################
 
-
+from . import stock_splitinto
 from . import stock_partial_picking
