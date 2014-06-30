@@ -53,4 +53,5 @@ class res_partner(orm.Model):
         'name': fields.char('Name', size=64),
         'conai_declaration_ids': fields.one2many(
             'conai.declaration', 'declaration_id', 'CONAI declarations'),
+        'conai_exempt': fields.boolean('Exempt for CONAI',),
     }

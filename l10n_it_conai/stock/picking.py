@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+import decimal_precision as dp
 
 
 class product_category(orm.Model):
@@ -31,13 +32,23 @@ class product_category(orm.Model):
     }
 
 
+class stock_move(orm.Model):
+    _inherit = "stock.move"
+    
+    _columns = {
+        'weight_exempt_conai': fields.float(
+             string='Weight',
+             digits_compute = dp.get_precision('Stock Weight'),
+             'CONAI exempt weight of product'),
+    }
+
+
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
     def _get_group_product_conai(self, picking):
         if not picking:
             return
-        
         res = []
         
         for move_line in picking.move_lines:
@@ -54,14 +65,24 @@ class stock_picking(orm.Model):
         
         return res
 
+    def _get_partner_exemption(self, partner_id):
+        if not partner_id:
+            return
+        res = []
+        
+        #TODO
+
+        return res
+
     def action_invoice_create(self, cr, uid, ids, journal_id=False,
                               group=False, type='out_invoice', context=None):
         res = super(stock_picking, self).action_invoice_create(cr, uid, ids, journal_id,
                                                                group, type, context)
         invoice_lines = []
         conai_lines = {}
+        invoice_obj = self.pool['account.invoice']
         for picking in self.browse(cr, uid, ids, context=context):
-            invoice = self.pool['account.invoice'].browse(cr, uid, res[picking.id], context=None)
+            invoice = invoice_obj.browse(cr, uid, res[picking.id], context=None)
             conai_product_ids = self._get_group_product_conai(picking)
             # create line for every conai product and assign qty to 0
             for conai_product in conai_product_ids:
@@ -77,6 +98,8 @@ class stock_picking(orm.Model):
                     }
 
             import pdb; pdb.set_trace()
+            partner_exemption = self._get_partner_exemption(invoice.partner_id)
+            
             for move_line in picking.move_lines:
                 if move_line.state == 'cancel':
                     continue
@@ -89,8 +112,9 @@ class stock_picking(orm.Model):
                         if product in conai_product_ids:
                             conai_lines[product.id]['weight_net'] += move_line.weight_net
             
-#TODO mettere le righe nelle righe fattura
-# con l'importo corretto secondo le esenzioni del cliente o meno
+#TODO mettere ll'importo corretto secondo le esenzioni del cliente o meno
+# e scrivere nella move_line dello stock-picking la quantità esente per fare poi il report
+# 'weight_exempt_conai'
             
             
             
@@ -116,11 +140,13 @@ class stock_picking(orm.Model):
             invoice_line_obj.create(cr, uid, invoice_line, context)
 
 # todo invoke wkfl button reset_taxes to recalculate taxes
-        
+        if invoice_lines: 
+            invoice_obj.button_compute(cr, uid, [invoice.id], context=context)
 
         return res
 
-    def _prepare_invoice_conai_line(self, cr, uid, group, picking, move_line, invoice_id,
+#SOLO PER COPIARE
+    def _solopercopiare(self, cr, uid, group, picking, move_line, invoice_id,
         invoice_vals, context=None):
         """ Builds the dict containing the values for the invoice line
             @param group: True or False
