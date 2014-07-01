@@ -48,8 +48,7 @@
         "pallet_view.xml",
         "company_view.xml",
         "stock_view.xml",
-        "wizard/stock_partial_picking.xml",
-        'partner_view.xml'
+        'partner_view.xml',
         "wizard/stock_splitinto_view.xml",
         "wizard/stock_partial_picking.xml",
     ],
