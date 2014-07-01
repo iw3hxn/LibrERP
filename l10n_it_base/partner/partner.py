@@ -50,7 +50,7 @@ class res_province(orm.Model):
 class res_city(orm.Model):
     _name = 'res.city'
     _description = 'City'
-    
+
     _columns = {
         'name': fields.char('City', size=64, required=True),
         'province_id': fields.many2one('res.province', 'Province', ondelete='restrict'),
@@ -59,7 +59,8 @@ class res_city(orm.Model):
         'istat_code': fields.char('ISTAT code', size=16),
         'cadaster_code': fields.char('Cadaster Code', size=16),
         'web_site': fields.char('Web Site', size=64),
-        'region': fields.related('province_id', 'region', type='many2one', relation='res.region', string='Region', readonly=True),
+        'region': fields.related(
+            'province_id', 'region', type='many2one', relation='res.region', string='Region', readonly=True),
     }
     _order = "name"
 
@@ -75,17 +76,20 @@ class res_partner_address(orm.Model):
                                                     ('partner_id', '=', address.partner_id.id),
                                                     ])
                 if len(address_ids) > 1:
-                    _logger.debug(u'####### Duplicate Default Address ########')
+                    _logger.debug(
+                        u'####### Duplicate Default Address ########')
                     return False
                 elif len(address_ids) < 1:
-                    _logger.debug(u'####### Ubnormal situation: partner with id "{0}" not found ########'.format(address.partner_id.id))
+                    _logger.debug(
+                        u'####### Ubnormal situation: partner with id "{0}" not found ########'.format(
+                            address.partner_id.id))
                     return False
         return True
 
     def check_category(self, cr, uid, ids, field_names, arg, context):
         result = {}
         country_obj = self.pool['res.country']
-        
+
         for indirizzo in self.browse(cr, uid, ids):
             country_ids = country_obj.search(cr, uid, [('name', '=', indirizzo.country_id.name)])
             if country_ids:
@@ -94,7 +98,7 @@ class res_partner_address(orm.Model):
                     for field_name in field_names:
                         if not indirizzo.id in result:
                             result[indirizzo.id] = {}
-                        
+
                         if getattr(country, field_name):
                             result[indirizzo.id][field_name] = False
                         elif not result[indirizzo.id].get(field_name, False):
@@ -104,16 +108,19 @@ class res_partner_address(orm.Model):
                     if not indirizzo.id in result:
                         result[indirizzo.id] = {}
                     result[indirizzo.id][field_name] = False
-        
+
         return result
-    
+
     _columns = {
         'province': fields.many2one('res.province', string='Province', ondelete='restrict'),
         'region': fields.many2one('res.region', string='Region', ondelete='restrict'),
         'find_city': fields.boolean('Find City'),
-        'enable_province': fields.function(check_category, string='Provincia?', type='boolean', readonly=True, method=True, multi=True),
-        'enable_region': fields.function(check_category, string='Regione?', type='boolean', readonly=True, method=True, multi=True),
-        'enable_state': fields.function(check_category, string='Stato?', type='boolean', readonly=True, method=True, multi=True, default=True),
+        'enable_province': fields.function(
+            check_category, string='Provincia?', type='boolean', readonly=True, method=True, multi=True),
+        'enable_region': fields.function(
+            check_category, string='Regione?', type='boolean', readonly=True, method=True, multi=True),
+        'enable_state': fields.function(
+            check_category, string='Stato?', type='boolean', readonly=True, method=True, multi=True, default=True),
         'cf_others': fields.char('C.F. aggiuntivi', size=128),
         'name_others': fields.char('Cointestatari', size=256),
     }
@@ -121,11 +128,11 @@ class res_partner_address(orm.Model):
     _defaults = {
         'type': 'default',
     }
-    
+
     _constraints = [
         (_check_unique_default_type, _('\n There are just an address of type default'), ['type', 'partner_id']),
     ]
-    
+
     def on_change_zip(self, cr, uid, ids, zip_code):
         res = {'value': {}}
 
@@ -157,12 +164,17 @@ class res_partner_address(orm.Model):
                     zip_code = zip_code
                 else:
                     zip_code = city_row.zip
-                    
+
                 res = {'value': {
                     'province': city_row.province_id and city_row.province_id.id or False,
                     'region': city_row.region and city_row.region.id or False,
                     'zip': zip_code,
-                    'country_id': city_row.region and city_row.region.country_id and city_row.region.country_id.id or False,
+
+                    'country_id': city_row.region and
+                    city_row.region.country_id and
+                    city_row.region.country_id.id
+                    or False,
+
                     'city': city.title(),
                     'find_city': True,
                 }}
@@ -176,7 +188,7 @@ class res_partner_address(orm.Model):
                 'region': province_obj.region and province_obj.region.id or False,
             }}
         return res
-    
+
     def on_change_region(self, cr, uid, ids, region):
         res = {'value': {}}
         if region:

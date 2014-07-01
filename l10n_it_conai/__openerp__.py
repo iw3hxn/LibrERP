@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2013-2014 Corato Sergio
-#    (<http://www.didotech.com>).
+#    Copyright (C) 2010-2013 Associazione OpenERP Italia
+#    (<http://www.openerp-italia.org>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,27 +18,29 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 {
-    'name': 'Configurazione ricevute bancarie - Account Didotech',
-    'version': '3.0.0.4',
-    'category': 'Localisation/Italy',
-    'description': """
-    Ri.ba. sbf configuration for Italy.
+    'name': 'Italian CONAI management',
+    'version': '3.0.0.0',
+    'category': 'Accounting',
+    'description': """This module customizes OpenERP for CONAI
+
+Functionalities:
+CONAI
+
 """,
-    'author': 'Corato Sergio',
+    'author': 'Didotech srl',
     'website': 'http://www.didotech.com',
     'license': 'AGPL-3',
     "depends": [
         'account',
-        'base_vat',
-        'account_chart',
-        'base_iban',
-        'l10n_it_base',
-        'l10n_it_ricevute_bancarie',
-        'account_cancel',
+        'stock',
     ],
     "data": [
-        'data/payment_data.xml',
+        'stock/product_view.xml',
+        'partner/partner_view.xml',
+        'partner/declaration_view.xml',
+        'security/ir.model.access.csv',
     ],
     "demo": [],
     "active": False,

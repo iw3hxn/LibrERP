@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-26 11:14+0000\n"
-"PO-Revision-Date: 2014-05-26 13:15+0100\n"
+"POT-Creation-Date: 2014-06-28 13:29+0000\n"
+"PO-Revision-Date: 2014-06-28 15:34+0100\n"
 "Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 "Language: it\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.6.5\n"
+
+#. module: board_CEO
+#: view:crm.helpdesk:0 view:crm.lead:0
+msgid "Reference 2"
+msgstr "Referenza 2"
 
 #. module: board_CEO
 #: view:board.board:0
@@ -35,20 +40,25 @@ msgstr "Helpdesk"
 #. module: board_CEO
 #: view:board.board:0
 msgid "Pending or unassigned tasks"
-msgstr "Attività in sospeso o non assegnate"
+msgstr "Attivita incombenti o non assegnate"
+
+#. module: board_CEO
+#: view:crm.lead:0
+msgid "State"
+msgstr "Stato"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_case_oppor
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_oppor
 msgid "Open Opportunities"
-msgstr "Opportunità aperte"
+msgstr "Opportunità correnti"
 
 #. module: board_CEO
 #: view:board.board:0
 #: model:ir.actions.act_window,name:board_CEO.ceo_pending_issues
 #: model:ir.ui.menu,name:board_CEO.menu_pending_issues
 msgid "Pending Issues"
-msgstr "Problematiche in sospeso"
+msgstr "Questioni incombenti"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_my_delegated_tasks
@@ -70,7 +80,7 @@ msgstr "CRM"
 #: model:ir.actions.act_window,name:board_CEO.ceo_other_tasks
 #: model:ir.ui.menu,name:board_CEO.menu_other_tasks
 msgid "My Pending Tasks"
-msgstr "Le mie attività in sospeso"
+msgstr "Le mie attività incombenti"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_unassigned_tasks
@@ -81,7 +91,7 @@ msgstr "Attività non assegnate"
 #: view:board.board:0 model:ir.actions.act_window,name:board_CEO.ceo_case_lead
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_leads
 msgid "Open Leads"
-msgstr "Lead aperti"
+msgstr "Traccie correnti"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_closed_tasks
@@ -105,13 +115,13 @@ msgstr "Progetti"
 #: model:ir.actions.act_window,name:board_CEO.open_board_ceo
 #: model:ir.ui.menu,name:board_CEO.menu_board_ceo
 msgid "CEO Dashboard"
-msgstr "CEO Dashboard"
+msgstr "Pannello CEO"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_closed_issues
 #: model:ir.ui.menu,name:board_CEO.menu_closed_issues
 msgid "Closed Issues"
-msgstr "Issues chiuse"
+msgstr "Questioni chiuse"
 
 #. module: board_CEO
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_taskmenu
@@ -122,14 +132,14 @@ msgstr "Attività"
 #: model:ir.actions.act_window,name:board_CEO.ceo_my_open_tasks
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_tasks
 msgid "My Open Tasks"
-msgstr "Le Mie Attività aperte"
+msgstr "Le mie attività correnti"
 
 #. module: board_CEO
 #: view:board.board:0
 #: model:ir.actions.act_window,name:board_CEO.ceo_project_issues
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_issues
 msgid "Open Issues"
-msgstr "Issues aperte"
+msgstr "Questioni correnti"
 
 #. module: board_CEO
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_pna
@@ -148,16 +158,26 @@ msgid "Analytics"
 msgstr "Analitica"
 
 #. module: board_CEO
+#: view:crm.helpdesk:0
+msgid "Deadline"
+msgstr "Scadenza"
+
+#. module: board_CEO
 #: view:board.board:0
 msgid "Open Cases/Opportunities"
-msgstr "Casi/Opportunità aperte"
+msgstr "Traccie/Opportunità aperte"
 
 #. module: board_CEO
 #: view:board.board:0
 msgid "CEO board"
-msgstr "CEO board"
+msgstr "Pannello CEO"
+
+#. module: board_CEO
+#: view:crm.helpdesk:0 view:crm.lead:0
+msgid "Reference 1"
+msgstr "Referenza 1"
 
 #. module: board_CEO
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_issmenu
 msgid "Issues"
-msgstr "Problematiche"
+msgstr "Questioni"

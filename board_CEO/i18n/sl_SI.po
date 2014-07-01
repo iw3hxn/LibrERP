@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-26 11:12+0000\n"
-"PO-Revision-Date: 2014-05-26 13:13+0100\n"
+"POT-Creation-Date: 2014-06-28 13:29+0000\n"
+"PO-Revision-Date: 2014-06-28 15:37+0100\n"
 "Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 "Language: sl_SI\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.6.5\n"
+
+#. module: board_CEO
+#: view:crm.helpdesk:0 view:crm.lead:0
+msgid "Reference 2"
+msgstr "Sklic 2"
 
 #. module: board_CEO
 #: view:board.board:0
@@ -35,20 +40,25 @@ msgstr "Vložišče/Informacije"
 #. module: board_CEO
 #: view:board.board:0
 msgid "Pending or unassigned tasks"
-msgstr "Čakajoča ali nedodeljena opravila"
+msgstr "Odložena ali nedodeljena opravila"
+
+#. module: board_CEO
+#: view:crm.lead:0
+msgid "State"
+msgstr "Stanje"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_case_oppor
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_oppor
 msgid "Open Opportunities"
-msgstr "Odprti primeri"
+msgstr "Tekoči primeri"
 
 #. module: board_CEO
 #: view:board.board:0
 #: model:ir.actions.act_window,name:board_CEO.ceo_pending_issues
 #: model:ir.ui.menu,name:board_CEO.menu_pending_issues
 msgid "Pending Issues"
-msgstr "Prihajajoče zadeve"
+msgstr "Odložene zadeve"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_my_delegated_tasks
@@ -70,7 +80,7 @@ msgstr "CRM"
 #: model:ir.actions.act_window,name:board_CEO.ceo_other_tasks
 #: model:ir.ui.menu,name:board_CEO.menu_other_tasks
 msgid "My Pending Tasks"
-msgstr "Moja čakajoča opravila"
+msgstr "Moja odložena opravila"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_unassigned_tasks
@@ -81,19 +91,19 @@ msgstr "Nedodeljena opravila"
 #: view:board.board:0 model:ir.actions.act_window,name:board_CEO.ceo_case_lead
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_leads
 msgid "Open Leads"
-msgstr "Odprte najave"
+msgstr "Tekoče priložnosti"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_closed_tasks
 #: model:ir.ui.menu,name:board_CEO.menu_closed_tasks
 msgid "Finished tasks"
-msgstr "Dokončana opravila"
+msgstr "Zaključena opravila"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_helpdesk
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_helpdesk
 msgid "Helpdesk Requests"
-msgstr "Zahtevki na vložišču"
+msgstr "Zahtevki"
 
 #. module: board_CEO
 #: model:ir.actions.act_window,name:board_CEO.ceo_projects
@@ -111,7 +121,7 @@ msgstr "CEO preglednica"
 #: model:ir.actions.act_window,name:board_CEO.ceo_closed_issues
 #: model:ir.ui.menu,name:board_CEO.menu_closed_issues
 msgid "Closed Issues"
-msgstr "Zaprte zadeve"
+msgstr "Zaključene zadeve"
 
 #. module: board_CEO
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_taskmenu
@@ -122,14 +132,14 @@ msgstr "Opravila"
 #: model:ir.actions.act_window,name:board_CEO.ceo_my_open_tasks
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_tasks
 msgid "My Open Tasks"
-msgstr "Moja odprta opravila"
+msgstr "Moja tekoča opravila"
 
 #. module: board_CEO
 #: view:board.board:0
 #: model:ir.actions.act_window,name:board_CEO.ceo_project_issues
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_issues
 msgid "Open Issues"
-msgstr "Odprte zadeve"
+msgstr "Tekoče zadeve"
 
 #. module: board_CEO
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_pna
@@ -148,14 +158,24 @@ msgid "Analytics"
 msgstr "Analitika"
 
 #. module: board_CEO
+#: view:crm.helpdesk:0
+msgid "Deadline"
+msgstr "Rok"
+
+#. module: board_CEO
 #: view:board.board:0
 msgid "Open Cases/Opportunities"
-msgstr "Odprti primeri"
+msgstr "Tekoči primeri"
 
 #. module: board_CEO
 #: view:board.board:0
 msgid "CEO board"
 msgstr "CEO preglednica"
+
+#. module: board_CEO
+#: view:crm.helpdesk:0 view:crm.lead:0
+msgid "Reference 1"
+msgstr "Sklic 1"
 
 #. module: board_CEO
 #: model:ir.ui.menu,name:board_CEO.menu_ceo_issmenu

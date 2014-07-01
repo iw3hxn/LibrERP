@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #    
-#    Copyright (C) 2010 Associazione OpenERP Italia
-#    (<http://www.openerp-italia.org>).
+#    Copyright (C) 2014 Didotech srl
+#    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published

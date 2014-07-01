@@ -3,6 +3,8 @@
 #
 #    Copyright (C) 2010-2012 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
+#    Copyright (C) 2014 Didotech srl
+#    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -65,6 +67,8 @@ class stock_picking(orm.Model):
         'carriage_condition_id': fields.many2one('stock.picking.carriage_condition', 'Carriage condition'),
         'goods_description_id': fields.many2one('stock.picking.goods_description', 'Description of goods'),
         'transportation_condition_id': fields.many2one('stock.picking.transportation_condition', 'transportation condition'),
+        #address_id is overridden because it's used 2binvoiced
+        #n.b.: partner_id is only a related, so not useful for the workflow
         'address_id': fields.many2one(
             'res.partner.address', 'Partner', help="Partner to be invoiced"
         ),
@@ -77,14 +81,13 @@ class stock_picking(orm.Model):
     def onchange_stock_journal(self, cr, uid, context=None, stock_journal_id=None, state=None):
         if context is None:
             context = {}
-        
         if state != 'draft':
             return {'value': {}}
         
         stock_journal_obj = self.pool['stock.journal']
         if stock_journal_id:
             default_invoice_state = stock_journal_obj.browse(
-                    cr, uid, stock_journal_id, context).default_invoice_state
+                cr, uid, stock_journal_id, context=None).default_invoice_state
         
         if default_invoice_state: 
             return {'value': {'invoice_state': default_invoice_state}}
@@ -92,41 +95,38 @@ class stock_picking(orm.Model):
             return {'value': {'invoice_state': 'none'}}
         return {'value': {}}
     
-    def onchange_partner_in(self, cr, uid, context=None, partner_address_id=None):
+    def onchange_partner_in(self, cr, uid, context=None, address_id=None):
         if context is None:
             context = {}
-        result = super(stock_picking, self).onchange_partner_in(
-            cr, uid, context, partner_address_id
-        )
         partner_address_obj = self.pool['res.partner.address']
         delivery_ids = []
         
         partner_id = None
-        if partner_address_id:
-            partner_id = partner_address_obj.browse(cr, uid, partner_address_id, context).partner_id
+        if address_id:
+            partner_id = partner_address_obj.browse(cr, uid, address_id, context).partner_id
         if partner_id:
             delivery_ids = partner_address_obj.search(
                 cr, uid, [('partner_id', '=', partner_id.id), (
                     'default_delivery_partner_address', '=', True)],
-                context
+                context=None
             )
             
             if not delivery_ids:
                 delivery_ids = partner_address_obj.search(
                     cr, uid, [('partner_id', '=', partner_id.id), (
                         'type', '=', 'delivery')],
-                    context
+                    context=None
                 )
                 if not delivery_ids:
                     delivery_ids = partner_address_obj.search(
                         cr, uid, [('partner_id', '=', partner_id.id)],
-                        context
+                        context=None
                     )
 
         if delivery_ids:
-            result['value']['address_delivery_id'] = delivery_ids[0]
-        
-        return result
+            return {'value': {'address_delivery_id': delivery_ids[0]}} 
+        else:
+            return {'value': {}}
     
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         new_args = []

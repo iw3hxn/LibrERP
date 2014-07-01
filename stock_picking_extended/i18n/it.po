@@ -3755,7 +3755,7 @@ msgstr "Chaining Journal"
 #. module: stock
 #: model:ir.actions.report.xml,name:stock.report_picking_list
 msgid "Packing list"
-msgstr "Documento di Trasporto (DDT)"
+msgstr "Packing list"
 
 #. module: stock
 #: code:addons/stock/stock.py:745
