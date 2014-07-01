@@ -34,6 +34,15 @@ class product_category(orm.Model):
     }
 
 
+class account_invoice_line(orm.Model):
+    _inherit = "account.invoice.line"
+    
+    _columns = {
+        'quantity': fields.float(
+            'Quantity', digits=(16, int(3)), required=True, ),
+    }
+
+
 class stock_move(orm.Model):
     _inherit = "stock.move"
     
@@ -54,16 +63,16 @@ class stock_picking(orm.Model):
         res = []
         
         for move_line in picking.move_lines:
-                if move_line.state == 'cancel':
-                    continue
-                if move_line.scrapped:
-                    # do no invoice scrapped products
-                    continue
-                if move_line.product_id:
-                    if move_line.product_id.categ_id.conai_product_id:
-                        conai_product_id = move_line.product_id.categ_id.conai_product_id
-                        if not conai_product_id in res:
-                            res.append(conai_product_id)
+            if move_line.state == 'cancel':
+                continue
+            if move_line.scrapped:
+                # do no invoice scrapped products
+                continue
+            if move_line.product_id:
+                if move_line.product_id.categ_id.conai_product_id:
+                    conai_product_id = move_line.product_id.categ_id.conai_product_id
+                    if not conai_product_id in res:
+                        res.append(conai_product_id)
         
         return res
 
@@ -75,9 +84,6 @@ class stock_picking(orm.Model):
             return res
 
         conai_declaration_obj = self.pool['conai.declaration']
-        #if len(partner_id) > 1:
-            # not possible if more than 1 partner for invoice (controllo inverosimile?)
-        #    pass
         picking_date = datetime.strptime(picking.date_done, DEFAULT_SERVER_DATETIME_FORMAT) or \
             datetime.strptime(picking.date, DEFAULT_SERVER_DATETIME_FORMAT)
         res = conai_declaration_obj.search(
@@ -101,10 +107,12 @@ class stock_picking(orm.Model):
         conai_declaration_obj = self.pool['conai.declaration']
         partner_obj = self.pool['res.partner']
         uom_obj = self.pool['product.uom']
-        
+        ref_uom_weight = uom_obj.search(
+            cr, uid, [('category_id', '=', 'Weight'),
+                      ('uom_type', '=', 'reference')])
         for picking in self.browse(cr, uid, ids, context=context):
             invoice = invoice_obj.browse(cr, uid, res[picking.id], context=None)
-            #verifica se il partner è esente dal conai
+            #verify if partner is exempt from conai
             partner = partner_obj.browse(cr, uid, invoice.partner_id, context=context)
             if partner.is_conai_exempt:
                 return res
@@ -143,46 +151,45 @@ class stock_picking(orm.Model):
                         conai_categ = move_line.product_id.categ_id
                         conai_product = move_line.product_id.categ_id.conai_product_id
                         if conai_product in conai_product_ids:
+                            conai_lines[conai_product.id]['conai_product'] = conai_product
                             if conai_declaration_ids:
-                                #todo trasformare l'unità di peso del prodotto in unità di peso
-                                #del prodotto conai
-                                import pdb; pdb.set_trace()
                                 for conai_declaration in conai_declaration_ids:
                                     if conai_categ == conai_declaration.product_categ_id:
                                         #write amount in conai lines for invoice
                                         percent_exemptation = conai_declaration.percent_exemption or 0.0
                                         amount_exemptation = move_line.weight_net * percent_exemptation
                                         amount_qty = move_line.weight_net - amount_exemptation
-                                        # qui va trasformato
-                                        ref_uom_weight = uom_obj.search(
-                                            cr, uid, [('category_id','=','Weight'),
-                                                      ('uom_type','=','reference')])
-                                        amount_qty_transformed = uom_obj._compute_qty(
-                                            cr, uid, ref_uom_weight[0], amount_qty,
-                                                conai_product.uom_id.id)
-
-                                        conai_lines[conai_product.id]['weight_net'] += amount_qty_transformed
+                                        conai_lines[conai_product.id]['weight_net'] += amount_qty
                                         #write exempt amount in stock.move
                                         move_line.write({'weight_exempt_conai': amount_exemptation})
+                                    else: # if declaration is not for the current conai product
+                                        conai_lines[conai_product.id]['weight_net'] += move_line.weight_net
                             else:
                                 conai_lines[conai_product.id]['weight_net'] += move_line.weight_net
                                 #TODO fare il calcolo in base al plafond - se viene usato
             
             for conai_line in conai_lines:
-                invoice_lines.append({
-                    'name': conai_lines[conai_line]['name'],
-                    'product_id': conai_lines[conai_line]['product_id'],
-                    'quantity': conai_lines[conai_line]['weight_net'],
-                    'uos_id': conai_lines[conai_line]['uos_id'],
-                    'price_unit': conai_lines[conai_line]['price_unit'],
-                    'price_subtotal': conai_lines[conai_line]['price_subtotal'],
-                    'partner_id': invoice.partner_id.id,
-                    'invoice_id': res[picking.id],
-                    'account_id': conai_lines[conai_line]['account_id'],
-                    'company_id': invoice.company_id.id,
-                    'invoice_line_tax_id': [(6, 0, self._get_taxes_invoice(
-                        cr, uid, move_line, type))],
-                })
+                if conai_lines[conai_line]['weight_net'] >= 1.0:
+                    #do not write if less 1 kg because it is based on tons
+                    #convert here uom from standard weight uom to product uom (not before for rounding issue)
+                    amount_qty_converted = uom_obj._compute_qty(
+                        cr, uid, ref_uom_weight[0], conai_lines[conai_line]['weight_net'],
+                        conai_lines[conai_product.id]['conai_product'].uom_id.id)
+
+                    invoice_lines.append({
+                        'name': conai_lines[conai_line]['name'],
+                        'product_id': conai_lines[conai_line]['product_id'],
+                        'quantity': amount_qty_converted,
+                        'uos_id': conai_lines[conai_line]['uos_id'],
+                        'price_unit': conai_lines[conai_line]['price_unit'],
+                        'price_subtotal': conai_lines[conai_line]['price_subtotal'],
+                        'partner_id': invoice.partner_id.id,
+                        'invoice_id': res[picking.id],
+                        'account_id': conai_lines[conai_line]['account_id'],
+                        'company_id': invoice.company_id.id,
+                        'invoice_line_tax_id': [(6, 0, self._get_taxes_invoice(
+                            cr, uid, move_line, type))],
+                    })
 
             invoice_line_obj = self.pool.get('account.invoice.line')
             for invoice_line in invoice_lines:

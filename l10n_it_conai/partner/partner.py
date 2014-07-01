@@ -28,7 +28,8 @@ class conai_declaration(orm.Model):
     _columns = {
         'name': fields.char('Name', size=64),
         'number': fields.char('Number', size=64,),
-        'percent_exemption': fields.float('Exemption %', digits=(6, int(3))),
+        'percent_exemption': fields.float(
+            'Exemption % (max 1.00 equal to 100%)', digits=(6, int(3))),
         'declaration_id': fields.integer('Declaration id', ),
         'partner_id': fields.many2one(
             'res.partner', 'Partner which declaration is linked'),
