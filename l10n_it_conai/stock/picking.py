@@ -21,6 +21,8 @@
 
 from openerp.osv import orm, fields
 import decimal_precision as dp
+from datetime import datetime
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class product_category(orm.Model):
@@ -37,9 +39,9 @@ class stock_move(orm.Model):
     
     _columns = {
         'weight_exempt_conai': fields.float(
-             string='CONAI exempt weight of product',
-             digits_compute = dp.get_precision('Stock Weight'),
-             ),
+            string='CONAI exempt weight of product',
+            digits_compute=dp.get_precision('Stock Weight'),
+        ),
     }
 
 
@@ -59,18 +61,33 @@ class stock_picking(orm.Model):
                     continue
                 if move_line.product_id:
                     if move_line.product_id.categ_id.conai_product_id:
-                        product_id = move_line.product_id.categ_id.conai_product_id
-                        if not product_id in res: 
-                            res.append(product_id)
+                        conai_product_id = move_line.product_id.categ_id.conai_product_id
+                        if not conai_product_id in res:
+                            res.append(conai_product_id)
         
         return res
 
-    def _get_partner_exemption(self, partner_id):
-        if not partner_id:
-            return
+    def _get_partner_conai_declaration(self, cr, uid, partner_id, picking):
         res = []
-        
-        #TODO
+        if not partner_id:
+            return res
+        if not picking:
+            return res
+
+        conai_declaration_obj = self.pool['conai.declaration']
+        #if len(partner_id) > 1:
+            # not possible if more than 1 partner for invoice (controllo inverosimile?)
+        #    pass
+        picking_date = datetime.strptime(picking.date_done, DEFAULT_SERVER_DATETIME_FORMAT) or \
+            datetime.strptime(picking.date, DEFAULT_SERVER_DATETIME_FORMAT)
+        res = conai_declaration_obj.search(
+            cr, uid, [
+                ('partner_id', '=', partner_id.id),
+                ('active', '=', True),
+                ('date_start_validity', '<=', picking_date),
+                ('date_end_validity', '>=', picking_date),
+            ]
+        )
 
         return res
 
@@ -81,8 +98,17 @@ class stock_picking(orm.Model):
         invoice_lines = []
         conai_lines = {}
         invoice_obj = self.pool['account.invoice']
+        conai_declaration_obj = self.pool['conai.declaration']
+        partner_obj = self.pool['res.partner']
+        uom_obj = self.pool['product.uom']
+        
         for picking in self.browse(cr, uid, ids, context=context):
             invoice = invoice_obj.browse(cr, uid, res[picking.id], context=None)
+            #verifica se il partner è esente dal conai
+            partner = partner_obj.browse(cr, uid, invoice.partner_id, context=context)
+            if partner.is_conai_exempt:
+                return res
+
             conai_product_ids = self._get_group_product_conai(picking)
             # create line for every conai product and assign qty to 0
             for conai_product in conai_product_ids:
@@ -96,9 +122,13 @@ class stock_picking(orm.Model):
                         'price_subtotal': conai_product.product_tmpl_id.list_price,
                         'account_id': conai_product.product_tmpl_id.property_account_income.id,
                     }
-
-            import pdb; pdb.set_trace()
-            partner_exemption = self._get_partner_exemption(invoice.partner_id)
+            
+            partner_conai_declaration = self._get_partner_conai_declaration(
+                cr, uid, invoice.partner_id, picking)
+            conai_declaration_ids = []
+            if partner_conai_declaration:
+                conai_declaration_ids = conai_declaration_obj.browse(
+                    cr, uid, partner_conai_declaration, context=None)
             
             for move_line in picking.move_lines:
                 if move_line.state == 'cancel':
@@ -108,17 +138,37 @@ class stock_picking(orm.Model):
                     continue
                 if move_line.product_id:
                     if move_line.product_id.categ_id.conai_product_id:
-                        product = move_line.product_id.categ_id.conai_product_id
-                        if product in conai_product_ids:
-                            conai_lines[product.id]['weight_net'] += move_line.weight_net
+                        #se il prodotto del movimento ha un prodotto conai collegato,
+                        #aggiungo la quantità alla riga del prodotto conai collegato
+                        conai_categ = move_line.product_id.categ_id
+                        conai_product = move_line.product_id.categ_id.conai_product_id
+                        if conai_product in conai_product_ids:
+                            if conai_declaration_ids:
+                                #todo trasformare l'unità di peso del prodotto in unità di peso
+                                #del prodotto conai
+                                import pdb; pdb.set_trace()
+                                for conai_declaration in conai_declaration_ids:
+                                    if conai_categ == conai_declaration.product_categ_id:
+                                        #write amount in conai lines for invoice
+                                        percent_exemptation = conai_declaration.percent_exemption or 0.0
+                                        amount_exemptation = move_line.weight_net * percent_exemptation
+                                        amount_qty = move_line.weight_net - amount_exemptation
+                                        # qui va trasformato
+                                        ref_uom_weight = uom_obj.search(
+                                            cr, uid, [('category_id','=','Weight'),
+                                                      ('uom_type','=','reference')])
+                                        amount_qty_transformed = uom_obj._compute_qty(
+                                            cr, uid, ref_uom_weight[0], amount_qty,
+                                                conai_product.uom_id.id)
+
+                                        conai_lines[conai_product.id]['weight_net'] += amount_qty_transformed
+                                        #write exempt amount in stock.move
+                                        move_line.write({'weight_exempt_conai': amount_exemptation})
+                            else:
+                                conai_lines[conai_product.id]['weight_net'] += move_line.weight_net
+                                #TODO fare il calcolo in base al plafond - se viene usato
             
-#TODO mettere ll'importo corretto secondo le esenzioni del cliente o meno
-# e scrivere nella move_line dello stock-picking la quantità esente per fare poi il report
-# 'weight_exempt_conai'
-            
-            
-            
-            for conai_line in conai_lines: 
+            for conai_line in conai_lines:
                 invoice_lines.append({
                     'name': conai_lines[conai_line]['name'],
                     'product_id': conai_lines[conai_line]['product_id'],
@@ -133,68 +183,12 @@ class stock_picking(orm.Model):
                     'invoice_line_tax_id': [(6, 0, self._get_taxes_invoice(
                         cr, uid, move_line, type))],
                 })
-            
 
-        invoice_line_obj = self.pool.get('account.invoice.line')
-        for invoice_line in invoice_lines:
-            invoice_line_obj.create(cr, uid, invoice_line, context)
-
-# todo invoke wkfl button reset_taxes to recalculate taxes
-        if invoice_lines: 
-            invoice_obj.button_compute(cr, uid, [invoice.id], context=context)
+            invoice_line_obj = self.pool.get('account.invoice.line')
+            for invoice_line in invoice_lines:
+                invoice_line_obj.create(cr, uid, invoice_line, context)
+    
+            if invoice_lines:
+                invoice_obj.button_compute(cr, uid, [invoice.id], context=context)
 
         return res
-
-#SOLO PER COPIARE
-    def _solopercopiare(self, cr, uid, group, picking, move_line, invoice_id,
-        invoice_vals, context=None):
-        """ Builds the dict containing the values for the invoice line
-            @param group: True or False
-            @param picking: picking object
-            @param: move_line: move_line object
-            @param: invoice_id: ID of the related invoice
-            @param: invoice_vals: dict used to created the invoice
-            @return: dict that will be used to create the invoice line
-        """
-        if group:
-            name = (picking.name or '') + '-' + move_line.name
-        else:
-            name = move_line.name
-        origin = move_line.picking_id.name or ''
-        if move_line.picking_id.origin:
-            origin += ':' + move_line.picking_id.origin
-
-        if invoice_vals['type'] in ('out_invoice', 'out_refund'):
-            account_id = move_line.product_id.product_tmpl_id.\
-                    property_account_income.id
-            if not account_id:
-                account_id = move_line.product_id.categ_id.\
-                        property_account_income_categ.id
-        else:
-            account_id = move_line.product_id.product_tmpl_id.\
-                    property_account_expense.id
-            if not account_id:
-                account_id = move_line.product_id.categ_id.\
-                        property_account_expense_categ.id
-        if invoice_vals['fiscal_position']:
-            fp_obj = self.pool.get('account.fiscal.position')
-            fiscal_position = fp_obj.browse(cr, uid, invoice_vals['fiscal_position'], context=context)
-            account_id = fp_obj.map_account(cr, uid, fiscal_position, account_id)
-        # set UoS if it's a sale and the picking doesn't have one
-        uos_id = move_line.product_uos and move_line.product_uos.id or False
-        if not uos_id and invoice_vals['type'] in ('out_invoice', 'out_refund'):
-            uos_id = move_line.product_uom.id
-        return {
-            'name': name,
-            'origin': origin,
-            'invoice_id': invoice_id,
-            'uos_id': uos_id,
-            'product_id': move_line.product_id.id,
-            'account_id': account_id,
-            'price_unit': self._get_price_unit_invoice(cr, uid, move_line, invoice_vals['type']),
-            'discount': self._get_discount_invoice(cr, uid, move_line),
-            'quantity': move_line.product_qty or move_line.product_uos_qty, #Carlo: i have to invoice based on delivery
-            #'quantity': move_line.product_uos_qty or move_line.product_qty,
-            'invoice_line_tax_id': [(6, 0, self._get_taxes_invoice(cr, uid, move_line, invoice_vals['type']))],
-            'account_analytic_id': self._get_account_analytic_invoice(cr, uid, picking, move_line),
-        }

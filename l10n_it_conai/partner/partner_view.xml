@@ -10,7 +10,7 @@
                 <data>
                     <xpath expr="/form/notebook/page[@string='Notes']" position="after">
                          <page string="Dichiarazioni CONAI">
-                            <field name="conai_exempt"/>
+                            <field name="is_conai_exempt"/>
                             <separator colspan="4"/>
                             <field name="conai_declaration_ids"/>
                             <newline/>

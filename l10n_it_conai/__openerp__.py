@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian CONAI management',
-    'version': '3.0.0.0',
+    'version': '3.1.1.1',
     'category': 'Accounting',
     'description': """This module customizes OpenERP for CONAI
 
