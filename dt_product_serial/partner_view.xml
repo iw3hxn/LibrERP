@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="partner_pallet_form_view" model="ir.ui.view">
+            <field name="name">partner.pallet.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page[@string='Warnings']" position="after">
+                    <page string="Pallets">
+                        <field name="pallet_ids" context="{'partner_id': id}" >
+                            <tree string="Pallets" >
+                                <field name="name" />
+                                <field name="pallet_sum" />
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
