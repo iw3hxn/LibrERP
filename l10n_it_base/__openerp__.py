@@ -46,6 +46,7 @@ Funcionalities:
     "data": [
         'partner/partner_view.xml',
         "security/ir.model.access.csv",
+        'data/res.country.csv',
     ],
     "active": False,
     "installable": True
