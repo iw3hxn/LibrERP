@@ -26,7 +26,7 @@ from tools.float_utils import float_compare
 
 class stock_partial_picking_line(orm.TransientModel):
     _inherit = "stock.partial.picking.line"
-    
+        
     def _get_prodlot_code(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for move in self.browse(cr, uid, ids):
@@ -102,6 +102,13 @@ class stock_partial_picking_line(orm.TransientModel):
 
 class stock_partial_picking(orm.TransientModel):
     _inherit = "stock.partial.picking"
+    
+    def name_get(self, cr, uid, ids, context=None):
+        result = {}
+
+        for picking_id in ids:
+            result[picking_id] = '{0} - {1}'.format('Stock parzial picking', picking_id)
+        return result
     
     _columns = {
         'tracking_code': fields.char('Pack', size=64),

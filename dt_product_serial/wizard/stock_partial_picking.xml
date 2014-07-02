@@ -15,10 +15,10 @@
                 </field>
                 <field name="quantity" position="replace">
                     <field name="quantity" attrs="{'readonly': [('split_type', '=', 'single')]}" />
-                    <button name="%(split_into)d" string="Put in a new pack" type="action"
+                    <!--<button name="%(split_into)d" string="Put in a new pack" type="action"
                                         groups="stock.view_pallet"
                                         icon="terp-stock_effects-object-colorize"
-                    />
+                    />-->
                     <field name="balance" groups="stock.view_balance"/>
                     <field name="pallet_qty" groups="stock.view_pallet" />
                     <field name="pallet_id" groups="stock.view_pallet" widget="selection" />

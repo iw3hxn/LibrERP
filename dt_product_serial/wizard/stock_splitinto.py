@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2014 Didotech SRL 
+#    Copyright (C) 2014 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,12 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 import decimal_precision as dp
 
+
 class stock_partial_picking_line_split(orm.TransientModel):
     _name = "stock.partial.picking.line.split"
     _description = "Split into"
     _columns = {
-        'quantity': fields.float('Quantity',digits_compute=dp.get_precision('Product UoM')),
+        'quantity': fields.float('Quantity', digits_compute=dp.get_precision('Product UoM')),
     }
     _defaults = {
         'quantity': 0,
@@ -39,7 +40,7 @@ class stock_partial_picking_line_split(orm.TransientModel):
 
         rec_id = context and context.get('active_ids', False)
         move_obj = self.pool['stock.partial.picking.line']
-        
+
         quantity = self.browse(cr, uid, data[0], context=context).quantity or 0.0
         for move in move_obj.browse(cr, uid, rec_id, context=context):
             quantity_rest = move.quantity - quantity
@@ -48,24 +49,25 @@ class stock_partial_picking_line_split(orm.TransientModel):
             #                        'for this product: "%s" (id: %d)') % \
             #                        (move.product_id.name, move.product_id.id,))
             if quantity > move.quantity:
-                raise osv.except_osv(_('Error!'),  _('Total quantity after split exceeds the quantity to split ' \
-                                    'for this product: "%s" (id: %d)') % \
-                                    (move.product_id.name, move.product_id.id,))
+                raise orm.except_orm(_('Error!'), _('Total quantity after split exceeds the quantity to split '
+                                                    'for this product: "%s" (id: %d)') %
+                                     (move.product_id.name, move.product_id.id,))
             if quantity > 0:
                 move_obj.write(cr, uid, [move.id], {
                     'quantity': quantity,
                     'product_uom': move.product_uom.id,
                 })
 
-            if quantity_rest>0:
+            if quantity_rest > 0:
                 quantity_rest = move.quantity - quantity
-                #import pdb; pdb.set_trace()
+
                 if quantity != 0.0:
                     default_val = {
                         'quantity': quantity_rest,
                         'product_uom': move.product_uom.id
                     }
-                    move_obj.copy(cr, uid, move.id, default_val, context=None)
-                    
 
-        return {'type': 'ir.actions.act_window_close'}
+                    move_obj.copy(cr, uid, move.id, default_val, context=None)
+
+        #return {'type': 'ir.actions.act_window_close'}
+        return True

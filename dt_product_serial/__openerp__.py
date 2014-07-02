@@ -20,7 +20,7 @@
 
 {
     "name": "Unique serial number management",
-    "version": "3.1.2.3",
+    "version": "3.2.3.3",
     "author": "Akretion, NaN·tic, Didotech SRL",
     "website": "http://www.akretion.com",
     "depends": [
@@ -49,7 +49,7 @@
         "company_view.xml",
         "stock_view.xml",
         'partner_view.xml',
-        "wizard/stock_splitinto_view.xml",
+        #"wizard/stock_splitinto_view.xml",
         "wizard/stock_partial_picking.xml",
     ],
     "active": False,
