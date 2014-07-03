@@ -100,7 +100,6 @@ class stock_picking(orm.Model):
             context = {}
         partner_address_obj = self.pool['res.partner.address']
         delivery_ids = []
-        
         partner_id = None
         if address_id:
             partner_id = partner_address_obj.browse(cr, uid, address_id, context).partner_id
