@@ -7,9 +7,9 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <xpath expr="/form/notebook/page[@string='Warnings']" position="after">
+                <xpath expr="/form/notebook/page[@string='Notes']" position="after">
                     <page string="Pallets">
-                        <field name="pallet_ids" context="{'partner_id': id}" >
+                        <field name="pallet_ids" context="{'partner_id': id}" nolabel="1">
                             <tree string="Pallets" >
                                 <field name="name" />
                                 <field name="pallet_sum" />
