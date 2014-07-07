@@ -27,6 +27,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+import decimal_precision as dp
 
 
 class res_company(orm.Model):
@@ -304,16 +305,16 @@ class repair_order(orm.Model):
         return self.pool['res.company'].search(cr, uid, [('parent_id', '=', False)])[0]
 
     _defaults = {
-        'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid, 'repair.order'),
-        'state': lambda *a: 'draft',
-        'is_analized': lambda *a: False,
-        'is_delivered': lambda *a: False,
-        'repairable': lambda *a: True,
-        'repaired': lambda *a: False,
-        'invoiced': lambda *a: False,
+        'name': lambda obj, cr, uid, context: obj.pool[.get'ir.sequence'].get(cr, uid, 'repair.order'),
+        'state': 'draft',
+        'is_analized': False,
+        'is_delivered': False,
+        'repairable': True,
+        'repaired': False,
+        'invoiced': False,
         #'invoice_method': lambda *a: 'none',
         'invoice_method': 'after_repair',
-        'paid_by': lambda *a: 'customer',
+        'paid_by': 'customer',
         'pricelist_id': lambda self, cr, uid, context: self.pool['product.pricelist'].search(cr, uid, [('type', '=', 'sale')])[0],
         'order_date': datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
         'product_id': _default_product,
@@ -936,7 +937,7 @@ class repair_order_accessory(orm.Model):
     _columns = {
         'accessory_id': fields.many2one("product.accessory", "Accessory", required=True),
         'order_id': fields.many2one("repair.order", "Repair Order"),
-        'product_uom_qty': fields.float('Quantity', digits=(16, 2)),
+        'product_uom_qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoM')),
         'serial': fields.char("Serial No.", size=64),
         "note": fields.text("Note")
     }
