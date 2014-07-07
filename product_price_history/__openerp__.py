@@ -32,10 +32,10 @@
     "depends" : [
         "account",
         "product",
+        "product_bom",
         'web_hide_buttons',
     ],
-    "init_xml" : [],
-    "update_xml" : [
+    "data" : [
         "security/ir.model.access.csv",
         "product_price_history_view.xml",
         "product_view.xml",

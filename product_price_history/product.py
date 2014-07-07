@@ -25,6 +25,7 @@ from openerp.osv import orm, fields
 import time
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
+
 class product_template(orm.Model):
     _inherit = 'product.template'
 
@@ -44,11 +45,9 @@ class product_template(orm.Model):
                ('standard_price' in values and prod_template.standard_price != values['standard_price']):
                 history_values['list_price'] = prod_template.list_price
                 history_values['standard_price'] = prod_template.standard_price
-                history_values['product_id'] =  prod_template.id
-                history_values['date_to'] =  time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                history_values['product_id'] = prod_template.id
+                history_values['date_to'] = time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
                 self.pool.get('product.price.history').create(cr, uid, history_values, context=context)
 
         return super(product_template, self).write(cr, uid, ids, values, context=context)
-
-product_template()
