@@ -17,10 +17,15 @@ msgstr ""
 
 #. module: base_address_contacts
 #: model:ir.actions.act_window,name:base_address_contacts.action_partner_contact_form
-#: model:ir.ui.menu,name:base_address_contacts.menu_partner_contact_form
 #: view:res.partner:0
 msgid "Contacts"
 msgstr "Contatti"
+
+#. module: base_address_contacts
+#: model:ir.ui.menu,name:base.menu_partner_contact_form
+#: view:res.partner:0
+msgid "Address"
+msgstr "Indirizzi"
 
 #. module: base_address_contacts
 #: field:res.partner.address.contact,first_name:0
@@ -31,11 +36,6 @@ msgstr "Nome"
 #: field:res.partner.address.contact,title:0
 msgid "Title"
 msgstr "Titolo"
-
-#. module: base_address_contacts
-#: model:ir.model,name:base_address_contacts.model_res_partner_title
-msgid "res.partner.title"
-msgstr "res.partner.title"
 
 #. module: base_address_contacts
 #: help:res.partner.address.contact,active:0
