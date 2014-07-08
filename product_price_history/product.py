@@ -30,7 +30,7 @@ class product_template(orm.Model):
     _inherit = 'product.template'
 
     _columns = {
-        'product_history': fields.one2many('product.price.history', 'product_id', 'Price History', readonly=True),
+        'product_history': fields.one2many('product.price.history', 'product_id', 'Price History', readonly=True, ondelete='cascade'),
     }
 
     def write(self, cr, uid, ids, values, context=None):
@@ -51,3 +51,17 @@ class product_template(orm.Model):
                 self.pool.get('product.price.history').create(cr, uid, history_values, context=context)
 
         return super(product_template, self).write(cr, uid, ids, values, context=context)
+
+
+class product_product(orm.Model):
+    _inherit = 'product.product'
+
+    def copy(self, cr, uid, ids, default, context=None):
+        #import pdb; pdb.set_trace()
+    
+        if not default:
+            default = {}
+        default.update({
+            'product_history': []
+        })
+        return super(product_product, self).copy(cr, uid, ids, default, context=context)
