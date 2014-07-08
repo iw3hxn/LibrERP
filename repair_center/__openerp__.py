@@ -45,6 +45,7 @@
         'wizard/repair_set_origin.xml',
         'repair_center_data.xml',
         'repair_center_view.xml',
+        'company_view.xml',
         'repair_center_workflow.xml',
         'sale_validation_workflow.xml',
     ],

@@ -336,20 +336,7 @@
         <menuitem name="Product Accessory" id="menu_repair_center_product_accessory"  parent="menu_repair_center_conf"
             sequence="4" action="action_product_accessory"/>
         
-        <record model="ir.ui.view" id="view_company_form_inherit">
-            <field name="name">res.company.form.inherit</field>
-            <field name="inherit_id" ref="base.view_company_form"/>
-            <field name="model">res.company</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <page string="Configuration" position="inside">
-                  <group col="2" colspan="2">
-                      <separator string="Repair Generic Product" colspan="2"/>
-                      <field name="property_repair_product" colspan="2"/>
-                  </group>
-                </page>
-            </field>
-        </record>        
+            
 
     </data>
 </openerp>

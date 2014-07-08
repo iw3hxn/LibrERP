@@ -41,6 +41,7 @@ class res_company(orm.Model):
             method=True,
             view_load=True,
         ),
+        'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
     }
 
 
@@ -305,7 +306,7 @@ class repair_order(orm.Model):
         return self.pool['res.company'].search(cr, uid, [('parent_id', '=', False)])[0]
 
     _defaults = {
-        'name': lambda obj, cr, uid, context: obj.pool[.get'ir.sequence'].get(cr, uid, 'repair.order'),
+        'name': lambda obj, cr, uid, context: obj.pool['ir.sequence'].get(cr, uid, 'repair.order'),
         'state': 'draft',
         'is_analized': False,
         'is_delivered': False,
@@ -821,7 +822,7 @@ class repair_order(orm.Model):
         @return: True
         """
         #print "action_invoice_end is called "
-        repair_line = self.pool['mrp.repair.line')
+        repair_line = self.pool['mrp.repair.line']
         for order in self.browse(cr, uid, ids, context=context):
             val = {}
             if (order.invoice_method == 'b4repair'):
@@ -892,13 +893,16 @@ class sale_order_line(orm.Model):
 
     def _create_so_from_ro(self, cr, uid, repair_order_id, context=None):
         so_id = None
+        company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+        if not company.shop_id:
+                raise orm.except_orm(_('Warning'), _('Please set repair shop'))
         if repair_order_id:
             rorder = self.pool['repair.order'].browse(cr, uid, repair_order_id, context=context)
             if rorder.so_id:
                 return rorder.so_id.id
-            shops = self.pool['sale.shop').search(cr, uid, [])
+            shops = self.pool['sale.shop'].search(cr, uid, [])
             sale_order_params = {
-                'shop_id': shops[0],
+                'shop_id': company.shop_id.id,
                 'partner_id': rorder.customer_id.id,
                 'pricelist_id': rorder.pricelist_id and rorder.pricelist_id.id or rorder.customer_id.property_product_pricelist.id,
                 'partner_invoice_id': rorder.dest_address_id.id or rorder.partner_address_id.id,
@@ -910,7 +914,7 @@ class sale_order_line(orm.Model):
                 'origin': rorder.name,
                 'repair_order_id': repair_order_id,
             }
-            so_id = self.pool['sale.order').create(cr, uid, sale_order_params)
+            so_id = self.pool['sale.order'].create(cr, uid, sale_order_params)
             self.pool['repair.order'].write(cr, uid, [repair_order_id], {'so_id': so_id}, context=context)
         return so_id
 
