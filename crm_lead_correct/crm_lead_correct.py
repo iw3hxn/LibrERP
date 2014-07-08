@@ -209,7 +209,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
     def copy(self, cr, uid, ids, defaults, context=None):
         defaults['name'] = '/'
-        defaults['type'] = 'lead'
+        #defaults['type'] = 'lead'
 
         return super(crm_lead_correct, self).copy(cr, uid, ids, defaults, context)
 
