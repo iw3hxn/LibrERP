@@ -31,7 +31,9 @@ class stock_picking_carriage_condition(orm.Model):
     _name = "stock.picking.carriage_condition"
     _description = "Carriage Condition"
     _columns = {
-        'name': fields.char('Carriage Condition', size=64, required=True, readonly=False, translable=True),
+        'name': fields.char(
+            'Carriage Condition', size=64, required=True, readonly=False,
+            translate=True),
         'note': fields.text('Note'),
     }
 
@@ -44,7 +46,9 @@ class stock_picking_goods_description(orm.Model):
     _description = "Description of Goods"
 
     _columns = {
-        'name': fields.char('Description of Goods', size=64, required=True, readonly=False, translable=True),
+        'name': fields.char(
+            'Description of Goods', size=64, required=True, readonly=False,
+            translate=True),
         'note': fields.text('Note'),
     }
 
@@ -56,7 +60,9 @@ class stock_picking_transportation_condition(orm.Model):
     _name = "stock.picking.transportation_condition"
     _description = "Transportation Condition"
     _columns = {
-        'name': fields.char('transportation Condition', size=64, required=True, readonly=False, translable=True),
+        'name': fields.char(
+            'transportation Condition', size=64, required=True, readonly=False,
+            translate=True),
         'note': fields.text('Note'),
     }
 

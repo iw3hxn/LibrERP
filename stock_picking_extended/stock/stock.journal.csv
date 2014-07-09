@@ -1,7 +1,7 @@
 "id","name"
 "stock.journal_delivery","Shipping Orders"
 "stock.journal_cvendita","C/Installation"
-"stock.journal_asset","Newspaper asset"
+"stock.journal_asset","Asset"
 "stock.journal_cvendita","C/Sell"
 "stock.journal_cvisione","C/Vision"
 "stock.journal_clavorazione","C/Processing"
