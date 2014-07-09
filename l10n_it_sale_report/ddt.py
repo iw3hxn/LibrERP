@@ -35,6 +35,7 @@ class Parser(report_sxw.rml_parse):
             'righeddt': self._righeddt,
             'indirizzo': self._indirizzo,
             'div': self._div,
+            'italian_number': self._get_italian_number,
         })
 
     def _div(self, up, down):
@@ -43,6 +44,37 @@ class Parser(report_sxw.rml_parse):
             res=up/down
         return res
  
+    def _get_italian_number(self, number, precision=2, no_zero=False):
+        if not number and no_zero:
+            return ''
+        elif not number:
+            return '0,00'
+        
+        if number < 0:
+            sign = '-'
+        else:
+            sign = ''
+        ## Requires Python >= 2.7:
+        #before, after = "{:.{digits}f}".format(number, digits=precision).split('.')
+        ## Works with Python 2.6:
+        before, after = "{0:10.{digits}f}".format(number, digits=precision).strip('- ').split('.')
+        
+        belist = []
+        end = len(before)
+        for i in range(3, len(before) + 3, 3):
+            start = len(before) - i
+            if start < 0:
+                start = 0
+            belist.append(before[start: end])
+            end = len(before) - i
+        before = '.'.join(reversed(belist))
+        
+        if no_zero and int(number) == float(number):
+            return sign + before
+        else:
+            return sign + before + ',' + after
+
+
     def _raggruppa(self, righe_fattura):
         indice_movimenti = {}
         movimenti_filtrati = []

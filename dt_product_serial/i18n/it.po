@@ -4,26 +4,36 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 6.0.4\n"
-"Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2012-08-18 13:33+0000\n"
-"PO-Revision-Date: 2012-08-18 15:43+0100\n"
-"Last-Translator: \n"
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-03 08:14+0000\n"
+"PO-Revision-Date: 2014-07-03 08:14+0000\n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
 #. module: dt_product_serial
-#: model:ir.model,name:dt_product_serial.model_stock_picking_prodlot_selection
-msgid "stock.picking.prodlot.selection"
-msgstr "stock.picking.prodlot.selection"
+#: field:stock.partial.picking.line,tracking_id:0
+msgid "Pack/Tracking"
+msgstr "Tracking/Pacco"
 
 #. module: dt_product_serial
 #: model:ir.model,name:dt_product_serial.model_stock_production_lot
 msgid "Production lot"
 msgstr "Lotto di Produzione"
+
+#. module: dt_product_serial
+#: sql_constraint:stock.picking:0
+msgid "Reference must be unique per Company!"
+msgstr "Il riferimento deve essere unico per ogni azienda!"
+
+#. module: dt_product_serial
+#: selection:pallet.move,move:0
+msgid "-"
+msgstr "-"
 
 #. module: dt_product_serial
 #: help:stock.production.lot,last_location_id:0
@@ -33,15 +43,15 @@ msgstr "Mostra la locazione magazzino corrento per questo lotto di produzione"
 #. module: dt_product_serial
 #: constraint:res.company:0
 msgid "Error! You can not create recursive companies."
-msgstr "Errore! Non è possibile creare aziende ricorsive."
+msgstr "Attenzione: non puoi creare aziende ricorsive"
 
 #. module: dt_product_serial
 #: selection:product.product,lot_split_type:0
 msgid "None"
-msgstr "None"
+msgstr "Nessuno"
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/prodlot_wizard.py:57
+#: code:addons/dt_product_serial/prodlot_wizard.py:58
 #, python-format
 msgid "First and last lot numbers must have the same length."
 msgstr "Il primo e l'ultimo numero devono avere la stessa lunghezza."
@@ -52,20 +62,30 @@ msgid "Last location"
 msgstr "Ultima Locazione"
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/prodlot_wizard.py:104
+#: code:addons/dt_product_serial/prodlot_wizard.py:105
 #, python-format
 msgid "Not enough stock available of production lot %s."
-msgstr "Not enough stock available of production lot %s."
+msgstr "Non c'è abbastanza disponibilità per il lotto %s."
 
 #. module: dt_product_serial
-#: field:stock.move,new_tracking_code:0
-msgid "Tracking fast input"
-msgstr "Inserimento rapido Tacking"
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr "Codice Cliente Univoco"
+
+#. module: dt_product_serial
+#: sql_constraint:res.partner:0
+msgid "Error! Specified VAT Number already exists for any other registered partner."
+msgstr "Errore! Esiste già un partner con la stessa P.IVA."
+
+#. module: dt_product_serial
+#: field:stock.partial.picking.line,split_type:0
+msgid "Split"
+msgstr "Dividi"
 
 #. module: dt_product_serial
 #: model:ir.model,name:dt_product_serial.model_stock_picking
 msgid "Picking List"
-msgstr "Picking List"
+msgstr "Bolla di prelievo"
 
 #. module: dt_product_serial
 #: sql_constraint:stock.production.lot:0
@@ -73,21 +93,48 @@ msgid "The combination of serial number and internal reference must be unique !"
 msgstr "La combinazione tra il seriale e il riferimento interno deve essere unica!"
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/prodlot_wizard.py:69
+#: code:addons/dt_product_serial/prodlot_wizard.py:70
 #, python-format
 msgid "First and last lot numbers differ in non-numeric values."
-msgstr "First and last lot numbers differ in non-numeric values."
+msgstr "Numero di lotto con valore non numrico."
+
+#. module: dt_product_serial
+#: field:stock.move,new_tracking_code:0
+msgid "Tracking fast input"
+msgstr "Inserimento rapido Tacking"
 
 #. module: dt_product_serial
 #: model:ir.model,name:dt_product_serial.model_product_product
+#: field:product.ul,product_id:0
 #: field:stock.picking.prodlot.selection,product_id:0
 msgid "Product"
 msgstr "Prodotto"
 
 #. module: dt_product_serial
+#: constraint:stock.picking:0
+msgid "Error! For a Partner must be only one DDT reference for year."
+msgstr "Errore! Per un Fornitore il numero di DDT deve essere univoco"
+
+#. module: dt_product_serial
 #: constraint:stock.move:0
-msgid "You try to assign a lot which is not from the same product"
-msgstr "Si sta cercando di assegnare un lotto non legato allo stesso prodotto"
+msgid "You can not move products from or to a location of the type view."
+msgstr "Non si possono muovere dei prodotti su una locazione di tipo Vista."
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_product_ul
+msgid "Shipping Unit"
+msgstr "Unità di Spedizione"
+
+#. module: dt_product_serial
+#: field:stock.move,pallet_qty:0
+#: field:stock.partial.picking.line,pallet_qty:0
+msgid "Number Pallet"
+msgstr "Numero Pallet"
+
+#. module: dt_product_serial
+#: selection:pallet.move,move:0
+msgid "+"
+msgstr "+"
 
 #. module: dt_product_serial
 #: selection:product.product,lot_split_type:0
@@ -95,14 +142,48 @@ msgid "Single"
 msgstr "Singolo"
 
 #. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_stock_move
+msgid "Stock Move"
+msgstr "Movimento di magazzino"
+
+#. module: dt_product_serial
 #: field:res.company,autosplit_is_active:0
 msgid "Active auto split"
 msgstr "Attiva lo split automatico"
 
 #. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:47
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:143
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:154
+#, python-format
+msgid "Warning"
+msgstr "Attenzione"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:143
+#, python-format
+msgid "The uom rounding does not allow you to ship \"%s %s\", only roundings of \"%s %s\" is accepted by the uom."
+msgstr "L'arrotondamento dell'unità di misura non permette di spedire \"%s %s\", solo l'arrotondamento di \"%s %s\" è accettato dall'unità di misura."
+
+#. module: dt_product_serial
 #: field:res.company,is_group_invoice_line:0
 msgid "Group invoice lines"
 msgstr "Raggruppa righe fatturazione"
+
+#. module: dt_product_serial
+#: field:pallet.move,date:0
+msgid "Date"
+msgstr "Data"
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_stock_partial_picking
+msgid "Partial Picking Processing Wizard"
+msgstr "Wizard Prelievo Parziale"
+
+#. module: dt_product_serial
+#: field:pallet.move,stock_picking_id:0
+msgid "Picking"
+msgstr "Picking"
 
 #. module: dt_product_serial
 #: view:res.company:0
@@ -115,10 +196,16 @@ msgid "First Lot Number"
 msgstr "Primo Numero Lotto"
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/stock.py:146
+#: code:addons/dt_product_serial/stock.py:154
 #, python-format
 msgid "Error :"
 msgstr "Errore :"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:136
+#, python-format
+msgid "Please provide Proper Quantity !"
+msgstr "Per Favore provvedere la corretta quantità !"
 
 #. module: dt_product_serial
 #: selection:product.product,lot_split_type:0
@@ -126,9 +213,25 @@ msgid "Logistical Unit"
 msgstr "Unità Logistica"
 
 #. module: dt_product_serial
-#: help:res.company,is_group_invoice_line:0
-msgid "If active, OpenERP will group the identical invoice lines. If inactive, each move line will generate one invoice line."
-msgstr "Se attivo, OpenERP raggruppera tutte le righe identiche per la fatturazione, altrimenti ogni movimento genererà una riga di fatturazione."
+#: sql_constraint:res.company:0
+msgid "The company name must be unique !"
+msgstr "Il nome azienda deve essere unico!"
+
+#. module: dt_product_serial
+#: field:pallet.move,account_invoice_id:0
+msgid "Invoice"
+msgstr "Fattura"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:95
+#, python-format
+msgid "Production lot %s not found."
+msgstr "Lotto %s non trovato."
+
+#. module: dt_product_serial
+#: field:stock.picking.prodlot.selection,last_lot:0
+msgid "Last Lot Number"
+msgstr "Ultimo numero lotto"
 
 #. module: dt_product_serial
 #: model:ir.model,name:dt_product_serial.model_res_company
@@ -141,9 +244,21 @@ msgid "Lot split type"
 msgstr "Tipo di Split"
 
 #. module: dt_product_serial
+#: field:pallet.move,pallet_qty:0
+msgid "Number of Pallets"
+msgstr "Numero di Pallets"
+
+#. module: dt_product_serial
 #: constraint:stock.move:0
 msgid "You must assign a production lot for this product"
 msgstr "È necessario assegnare un lotto di produzione per questo prodotto"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_splitinto.py:48
+#: code:addons/dt_product_serial/wizard/stock_splitinto.py:52
+#, python-format
+msgid "Error!"
+msgstr "Errore !"
 
 #. module: dt_product_serial
 #: help:product.product,lot_split_type:0
@@ -151,42 +266,103 @@ msgid "None: no split ; single: 1 line/product unit ; Logistical Unit: split usi
 msgstr "None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"
 
 #. module: dt_product_serial
-#: field:stock.move,new_prodlot_code:0
-msgid "Prodlot fast input"
-msgstr "Prodlot fast input"
+#: code:addons/dt_product_serial/wizard/stock_splitinto.py:48
+#, python-format
+msgid "The current move line is already assigned to a pack, please remove it first if you really want to change it '             #                        'for this product: \"%s\" (id: %d)"
+msgstr "Il corrente movimento è già assegnato ad un pacco, rimuovilo prima se vuoi cambiarlo '             #                        'per questo prodotto: \"%s\" (id: %d)"
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/prodlot_wizard.py:57
-#: code:addons/dt_product_serial/prodlot_wizard.py:69
-#: code:addons/dt_product_serial/prodlot_wizard.py:83
-#: code:addons/dt_product_serial/prodlot_wizard.py:94
-#: code:addons/dt_product_serial/prodlot_wizard.py:101
-#: code:addons/dt_product_serial/prodlot_wizard.py:104
+#: field:stock.move,new_prodlot_code:0
+#: field:stock.partial.picking.line,new_prodlot_code:0
+msgid "Prodlot fast input"
+msgstr "Inserimento rapido lotto"
+
+#. module: dt_product_serial
+#: field:product.ul,pallet_sum:0
+msgid "Pallet Sum"
+msgstr "Somma Pallet"
+
+#. module: dt_product_serial
+#: model:ir.actions.act_window,name:dt_product_serial.open_module_tree_pallet_move
+#: model:ir.model,name:dt_product_serial.model_pallet_move
+#: model:ir.ui.menu,name:dt_product_serial.menu_config_res_car
+#: model:ir.ui.menu,name:dt_product_serial.menu_pallet_move_tree
+#: view:pallet.move:0
+msgid "Pallet Move"
+msgstr "Movimentazione Pallet"
+
+#. module: dt_product_serial
+#: field:stock.move,balance:0
+#: field:stock.partial.picking.line,balance:0
+msgid "Balance"
+msgstr "Saldo"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/prodlot_wizard.py:58
+#: code:addons/dt_product_serial/prodlot_wizard.py:70
+#: code:addons/dt_product_serial/prodlot_wizard.py:84
+#: code:addons/dt_product_serial/prodlot_wizard.py:95
+#: code:addons/dt_product_serial/prodlot_wizard.py:102
+#: code:addons/dt_product_serial/prodlot_wizard.py:105
 #, python-format
 msgid "Invalid lot numbers"
 msgstr "Numero lotto non valido"
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/prodlot_wizard.py:94
-#, python-format
-msgid "Production lot %s not found."
-msgstr "Production lot %s not found."
+#: field:stock.partial.picking,tracking_code:0
+msgid "Pack"
+msgstr "Pacco"
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_stock_partial_picking_line
+msgid "stock.partial.picking.line"
+msgstr "stock.partial.picking.line"
+
+#. module: dt_product_serial
+#: field:pallet.move,pallet_id:0
+#: field:stock.move,pallet_id:0
+#: field:stock.partial.picking.line,pallet_id:0
+msgid "Pallet"
+msgstr "Pallet"
 
 #. module: dt_product_serial
 #: view:res.company:0
 msgid "Product serial"
-msgstr "Product serial"
+msgstr "Seriale Prodotto"
 
 #. module: dt_product_serial
-#: model:ir.model,name:dt_product_serial.model_stock_move
-msgid "Stock Move"
-msgstr "Movimento di magazzino"
+#: code:addons/dt_product_serial/stock.py:482
+#: constraint:stock.production.lot:0
+#, python-format
+msgid "Duplicate serial number"
+msgstr "Numero Seriale Duplicato"
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/prodlot_wizard.py:83
+#: code:addons/dt_product_serial/prodlot_wizard.py:84
 #, python-format
 msgid "First lot number is greater than the last one."
-msgstr "First lot number is greater than the last one."
+msgstr "Il primo numero del lotto è più grande dell'ultimo."
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:154
+#, python-format
+msgid "The rounding of the initial uom does not allow you to ship \"%s %s\", as it would let a quantity of \"%s %s\" to ship and only roundings of \"%s %s\" is accepted by the uom."
+msgstr "The rounding of the initial uom does not allow you to ship \"%s %s\", as it would let a quantity of \"%s %s\" to ship and only roundings of \"%s %s\" is accepted by the uom."
+
+#. module: dt_product_serial
+#: field:pallet.move,move:0
+msgid "Move"
+msgstr "Movimento"
+
+#. module: dt_product_serial
+#: field:pallet.move,name:0
+msgid "Number"
+msgstr "Numero"
+
+#. module: dt_product_serial
+#: constraint:stock.move:0
+msgid "You try to assign a lot which is not from the same product"
+msgstr "Si sta cercando di assegnare un lotto non derivante dallo stesso prodotto"
 
 #. module: dt_product_serial
 #: view:stock.picking:0
@@ -199,35 +375,41 @@ msgid "Error: Invalid ean code"
 msgstr "Errore: Codice EAN non valido"
 
 #. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:94
+#, python-format
+msgid "Warning!"
+msgstr "Attenzione!"
+
+#. module: dt_product_serial
 #: help:res.company,autosplit_is_active:0
 msgid "Active the automatic split of move lines on the pickings."
 msgstr "Active the automatic split of move lines on the pickings."
 
 #. module: dt_product_serial
-#: field:stock.picking.prodlot.selection,last_lot:0
-msgid "Last Lot Number"
-msgstr "Ultimo numero lotto"
+#: help:res.company,is_group_invoice_line:0
+msgid "If active, OpenERP will group the identical invoice lines. If inactive, each move line will generate one invoice line."
+msgstr "Se attivo, OpenERP raggruppera tutte le righe identiche per la fatturazione, altrimenti ogni movimento genererà una riga di fatturazione."
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/stock.py:146
+#: view:res.partner:0
+#: field:res.partner,pallet_ids:0
+msgid "Pallets"
+msgstr "Pallet"
+
+#. module: dt_product_serial
+#: model:ir.model,name:dt_product_serial.model_res_partner
+#: field:pallet.move,partner_id:0
+msgid "Partner"
+msgstr "Partner"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/stock.py:154
 #, python-format
 msgid "Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information."
 msgstr "Prodotto '%s' ha 'Tipo di Split' = 'Unitò logistica' ma mancano le informazioni sul packaging."
 
 #. module: dt_product_serial
-#: code:addons/dt_product_serial/prodlot_wizard.py:101
+#: code:addons/dt_product_serial/prodlot_wizard.py:102
 #, python-format
 msgid "Production lot %s exists but not for product %s."
 msgstr "Il lotto di produzione %s esiste ma non per il prodotto %s."
-
-#. module: dt_product_serial
-#: field:stock.move,balance:0
-#: field:stock.partial.picking.line,balance:0
-msgid "Balance"
-msgstr "Saldo"
-
-#. module: stock
-#: model:res.groups,name:stock.view_balance
-msgid "View Balance"
-msgstr "Visualizza A Saldo"
-

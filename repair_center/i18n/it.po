@@ -1,0 +1,870 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* repair_center
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.4\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2013-12-30 15:48+0000\n"
+"PO-Revision-Date: 2013-12-30 15:48+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: repair_center
+#: field:repair.order,zip:0
+msgid "Zip"
+msgstr "CAP"
+
+#. module: repair_center
+#: field:repair.order,name:0
+msgid "Title"
+msgstr "Titolo"
+
+#. module: repair_center
+#: field:repair.order,dest_address_id:0
+#: field:repair.order,partner_address_id:0
+msgid "Customer Address"
+msgstr "Indirizzo"
+
+#. module: repair_center
+#: sql_constraint:res.partner:0
+msgid "Error! Specified VAT Number already exists for any other registered partner."
+msgstr "Errore! Esiste già un partner con la stessa P.IVA."
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Recreate Invoice"
+msgstr "Ricrea Fattura"
+
+#. module: repair_center
+#: model:ir.actions.act_window,name:repair_center.action_cancel_repair
+#: view:repair.order.cancel:0
+msgid "Cancel Repair Order"
+msgstr "Annulla ordine di riparazione"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Make Invoices"
+msgstr "Crea Fattura"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_repair_set_origin
+msgid "Set origin and date of the product to repair"
+msgstr "Impostare l'origine e la data del prodotto da riparare"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Delivery and Invoice"
+msgstr "Consegne e Fatture"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid " "
+msgstr " "
+
+#. module: repair_center
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique !"
+msgstr "Il riferimento ordine deve essere unico!"
+
+#. module: repair_center
+#: field:repair.order,company_id:0
+msgid "Company"
+msgstr "Company"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Set to Draft"
+msgstr "Torna a Bozza"
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "Invoice Exception"
+msgstr "Eccezione di Fatturazione"
+
+#. module: repair_center
+#: help:repair.order,amount_total:0
+msgid "The total amount."
+msgstr "Totale"
+
+#. module: repair_center
+#: view:repair.order.norepair:0
+msgid "Product is not repairable at repair center"
+msgstr "Il Prodotto non è riparabile presso il centro"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_repair_order_make_invoice
+msgid "Make Invoice"
+msgstr "Crea Fattura"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "UoM"
+msgstr "UoM"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Received"
+msgstr "Ricevuto"
+
+#. module: repair_center
+#: view:repair.set.origin:0
+msgid "Ok"
+msgstr "Ok"
+
+#. module: repair_center
+#: field:repair.order,amount_untaxed:0
+msgid "Untaxed Amount"
+msgstr "Totale Imponibile"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Finish Examination"
+msgstr "Fine Esaminazione"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Notes"
+msgstr "Note"
+
+#. module: repair_center
+#: field:repair.order,so_id:0
+msgid "Sale Order"
+msgstr "Ordine di Vendita"
+
+#. module: repair_center
+#: view:repair.order:0
+#: field:repair.order,amount_tax:0
+msgid "Taxes"
+msgstr "Tasse"
+
+#. module: repair_center
+#: field:repair.order,po_id:0
+msgid "Purchase Order"
+msgstr "Ordine d'Acquisto"
+
+#. module: repair_center
+#: selection:repair.order,invoice_method:0
+#: field:sale.order.line,is_free:0
+msgid "No Invoice"
+msgstr "Nessuna Fattura"
+
+#. module: repair_center
+#: view:repair.order.norepair:0
+msgid "Create Delivery for Supplier"
+msgstr "Crea Consegna per il Fornitore"
+
+#. module: repair_center
+#: field:repair.order,cell_phone:0
+msgid "Mobile Phone"
+msgstr "Cellulare"
+
+#. module: repair_center
+#: code:addons/repair_center/repair_center.py:517
+#, python-format
+msgid "The Repair order '%s' is going to study by %s."
+msgstr "L'Ordine di Riparazione '%s' sta per essere preso in carico da %s."
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Confirm Repair(W)"
+msgstr "Presa in Carico della Riparazione"
+
+#. module: repair_center
+#: field:repair.order,warranty_date:0
+msgid "Warranty Date"
+msgstr "Data Garanzia"
+
+#. module: repair_center
+#: field:repair.order,phone:0
+msgid "Home Phone"
+msgstr "Telefono"
+
+#. module: repair_center
+#: field:repair.set.origin,origin:0
+msgid "Origin"
+msgstr "Origine"
+
+#. module: repair_center
+#: model:product.template,name:repair_center.product_product_repair_generic_product_template
+msgid "Prodotto generico in riparazione"
+msgstr "Prodotto generico in riparazione"
+
+#. module: repair_center
+#: field:repair.order,is_delivered:0
+msgid "Deliver Ok"
+msgstr "Consegnato"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Items need to Add/Replace"
+msgstr "Prodotti da Aggiungere/Sostituire"
+
+#. module: repair_center
+#: field:repair.order,order_move_id:0
+msgid "Move"
+msgstr "DDT Acquisto"
+
+#. module: repair_center
+#: view:repair.order:0
+#: field:repair.order,accessory_ids:0
+msgid "Accessories"
+msgstr "Accessori"
+
+#. module: repair_center
+#: model:ir.ui.menu,name:repair_center.menu_action_repair_order_tree
+#: model:ir.ui.menu,name:repair_center.menu_repair_order_order
+#: view:repair.order:0
+msgid "Repair Orders"
+msgstr "Ordini riparazione"
+
+#. module: repair_center
+#: field:repair.order.norepair,moveable:0
+msgid "able to move"
+msgstr "able to move"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Extra Info"
+msgstr "Informazioni Aggiuntive"
+
+#. module: repair_center
+#: code:addons/repair_center/wizard/cancel_repair.py:49
+#, python-format
+msgid "Warning!"
+msgstr "Attenzione!"
+
+#. module: repair_center
+#: field:repair.order,paid_by:0
+msgid "Paid By"
+msgstr "Pagato Da"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_res_partner
+#: field:repair.order.norepair,partner_id:0
+msgid "Partner"
+msgstr "Partner"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_sale_order
+msgid "Sales Order"
+msgstr "Ordine di vendita"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Linea ordine di vendita"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Make Delivery Note"
+msgstr "Ritorna al Cliente"
+
+#. module: repair_center
+#: code:addons/repair_center/wizard/cancel_repair.py:49
+#, python-format
+msgid "Repair order is not invoiced."
+msgstr "Ordine di Riparazione non è fatturato."
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "Confirmed"
+msgstr "Confermato"
+
+#. module: repair_center
+#: code:addons/repair_center/repair_center.py:686
+#, python-format
+msgid "Delivery to Supplier/Producer is not done yet."
+msgstr "La consegna al Fornitore/Produttore non è ancora stata fatta!"
+
+#. module: repair_center
+#: field:repair.order,manufacturer_pref:0
+msgid "Product Number"
+msgstr "Codice"
+
+#. module: repair_center
+#: constraint:res.company:0
+msgid "Error! You can not create recursive companies."
+msgstr "Errore! Non è possibile creare aziende ricorsive."
+
+#. module: repair_center
+#: field:repair.order,serial:0
+#: field:repair.order.accessory,serial:0
+msgid "Serial No."
+msgstr "Numero Seriale"
+
+#. module: repair_center
+#: field:repair.order,state:0
+msgid "State"
+msgstr "Stato"
+
+#. module: repair_center
+#: field:repair.order,inward_producer_ok:0
+msgid "Recived from Producer ?"
+msgstr "Ricevuto dal Produttore?"
+
+#. module: repair_center
+#: field:repair.order,warehouse_id:0
+msgid "Warehouse"
+msgstr "Magazzino"
+
+#. module: repair_center
+#: field:repair.order,so_lines:0
+msgid "Order Lines"
+msgstr "Linee Ordine"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Qty"
+msgstr "Q.tà"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Invoice Lines"
+msgstr "Linee Fatturate"
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "To be Invoiced"
+msgstr "Da Fatturare"
+
+#. module: repair_center
+#: field:repair.order,is_analized:0
+msgid "Study Ok"
+msgstr "Studio OK"
+
+#. module: repair_center
+#: code:addons/repair_center/repair_center.py:663
+#: code:addons/repair_center/repair_center.py:665
+#: code:addons/repair_center/repair_center.py:686
+#, python-format
+msgid "Error !"
+msgstr "Errore !"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "To Invoice"
+msgstr "Da Fatturare"
+
+#. module: repair_center
+#: field:repair.order.accessory,product_uom_qty:0
+msgid "Quantity"
+msgstr "Quantità"
+
+#. module: repair_center
+#: field:repair.order,manufacturer_pname:0
+msgid "Product Name"
+msgstr "Modello"
+
+#. module: repair_center
+#: view:repair.order.cancel:0
+msgid "This operation will cancel the Repair process, but will not cancel it's Invoice. Do you want to continue?"
+msgstr "Questa operazione annulletà il processo di Riparazione, ma non cancellerà la sua fattura. Vuoi continuare?"
+
+#. module: repair_center
+#: field:repair.order,pricelist_id:0
+msgid "Pricelist"
+msgstr "Listino Prezzi"
+
+#. module: repair_center
+#: model:ir.ui.menu,name:repair_center.menu_repair_center_conf
+#: view:res.company:0
+msgid "Configuration"
+msgstr "Configurazione"
+
+#. module: repair_center
+#: field:repair.order,quotation_notes:0
+msgid "Quotation Notes"
+msgstr "Note della Quotazione"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_repair_order_accessory
+msgid "Repair Order Accessory"
+msgstr "Accessori"
+
+#. module: repair_center
+#: field:repair.order,invoice_id:0
+msgid "Invoice"
+msgstr "Fattura"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Items"
+msgstr "Articoli"
+
+#. module: repair_center
+#: field:repair.order,customer_ref:0
+msgid "Customer Ref"
+msgstr "Riferimento Cliente"
+
+#. module: repair_center
+#: code:addons/repair_center/repair_center.py:524
+#: code:addons/repair_center/repair_center.py:578
+#, python-format
+msgid "The Repair order '%s' has been confirmed."
+msgstr "L'ordine di riparazione '%s' è stato confermato."
+
+#. module: repair_center
+#: field:repair.order,in_picking_id:0
+msgid "Reception"
+msgstr "Ricezione"
+
+#. module: repair_center
+#: code:addons/repair_center/repair_center.py:665
+#, python-format
+msgid "No Sale Order defined for repair Order \"%s\"."
+msgstr "Nessun Ordine di Vendita definito per la riparazione \"%s\"."
+
+#. module: repair_center
+#: field:repair.order,invoice_method:0
+msgid "Invoice Method"
+msgstr "Metodo di Fatturazione"
+
+#. module: repair_center
+#: model:ir.ui.menu,name:repair_center.menu_repair_center
+msgid "Repair Center"
+msgstr "Riparazioni"
+
+#. module: repair_center
+#: field:repair.order,repaired:0
+msgid "Repaired"
+msgstr "Riparato"
+
+#. module: repair_center
+#: help:repair.order,amount_tax:0
+msgid "The tax amount."
+msgstr "Imponibile."
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "Waiting to receive from Supplier"
+msgstr "In attesa di ricezione dal Fornitore"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Invoices"
+msgstr "Fatturati"
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "Waiting to deliver to Supplier"
+msgstr "In Attesa di consegna al Fornitore"
+
+#. module: repair_center
+#: field:repair.order,outward_producer_ok:0
+msgid "Sent to Producer ?"
+msgstr "Da spedire al Produttore ?"
+
+#. module: repair_center
+#: selection:repair.order,invoice_method:0
+msgid "Before Repair"
+msgstr "Prima della Riparazione"
+
+#. module: repair_center
+#: field:repair.order,location_id:0
+msgid "Current Location"
+msgstr "Locazione Attuale"
+
+#. module: repair_center
+#: view:repair.set.origin:0
+msgid "Set origin"
+msgstr "Documento Origine"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_repair_order_norepair
+msgid "Not repairable Repair Order"
+msgstr "Non riparabile"
+
+#. module: repair_center
+#: field:repair.order,invoiced:0
+msgid "Invoiced"
+msgstr "Fatturato"
+
+#. module: repair_center
+#: field:repair.order,product_category:0
+msgid "Category"
+msgstr "Categoria"
+
+#. module: repair_center
+#: view:repair.order.cancel:0
+msgid "No"
+msgstr "No"
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "Waiting to deliver to Customer"
+msgstr "In attesa di spedizione al cliente"
+
+#. module: repair_center
+#: view:repair.order:0
+#: field:repair.order.accessory,note:0
+msgid "Note"
+msgstr "Note"
+
+#. module: repair_center
+#: field:repair.order.norepair,address_id:0
+msgid "Deliver to "
+msgstr "Consegna a "
+
+#. module: repair_center
+#: model:ir.actions.act_window,name:repair_center.action_repair_order
+#: model:ir.model,name:repair_center.model_repair_order
+#: view:repair.order:0
+#: field:repair.order.accessory,order_id:0
+#: field:repair.order.norepair,repair_id:0
+#: field:sale.order,repair_order_id:0
+#: field:sale.order.line,repair_order_id:0
+msgid "Repair Order"
+msgstr "Ordine di Riparazione"
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "Under Repair"
+msgstr "In Riparazione"
+
+#. module: repair_center
+#: field:repair.order,out_picking2producer_id:0
+msgid "Delivery to Producer"
+msgstr "Spedizione al Produttore"
+
+#. module: repair_center
+#: field:repair.order,inward_ok:0
+msgid "Inward ok ?"
+msgstr "In Ingresso?"
+
+#. module: repair_center
+#: field:repair.order,invoice_ids:0
+#: field:repair.order,picking_ids:0
+#: field:repair.order,po_lines:0
+#: field:res.partner,is_manufacturer:0
+msgid "unknown"
+msgstr "unknown"
+
+#. module: repair_center
+#: field:repair.order,street2:0
+msgid "Street2"
+msgstr "Via 2"
+
+#. module: repair_center
+#: help:repair.order,pricelist_id:0
+msgid "The pricelist comes from the selected partner, by default."
+msgstr "Il listino è definito dal partner selezionato."
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Not Repairable"
+msgstr "Non Riparabile"
+
+#. module: repair_center
+#: field:repair.order,repair_condition:0
+msgid "Condition"
+msgstr "Condizione"
+
+#. module: repair_center
+#: field:repair.order,manufacturer:0
+#: selection:repair.order,paid_by:0
+#: field:res.partner,manufacturer:0
+msgid "Manufacturer"
+msgstr "Produttore"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Confirm Repair"
+msgstr "Conferma Riparazione"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: repair_center
+#: field:repair.order,purchased_date:0
+msgid "Purchased Date"
+msgstr "Data Acquisto"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "End Repair"
+msgstr "Termina Riparazione"
+
+#. module: repair_center
+#: help:repair.order,deliver_bool:0
+msgid "Check this box if you want to manage the delivery once the product is repaired. If cheked, it will create a picking with selected product. Note that you can select the locations in the Info tab, if you have the extended view."
+msgstr "Seleziona questa casella se si desidera gestire la consegna una volta che il prodotto è stato riparato. Se selezionata, si creerà una spedizione con il prodotto selezionato. Si noti che è possibile selezionare le locazioni nella scheda Info, se avete la vista estesa."
+
+#. module: repair_center
+#: field:repair.order,description:0
+msgid "Problem"
+msgstr "Problema"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "History"
+msgstr "Storico"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Product Information"
+msgstr "Informazioni sul Prodotto"
+
+#. module: repair_center
+#: view:res.company:0
+#: field:res.company,property_repair_product:0
+msgid "Repair Generic Product"
+msgstr "Prodotto Generico da Riparare"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Start Repair"
+msgstr "Inizia Riparazione"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Number"
+msgstr "Numero"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "General"
+msgstr "Generale"
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "Done"
+msgstr "Fatto"
+
+#. module: repair_center
+#: field:repair.order,email:0
+msgid "Personal Email"
+msgstr "Email"
+
+#. module: repair_center
+#: selection:repair.order,state:0
+#: view:repair.order.norepair:0
+#: view:repair.set.origin:0
+msgid "Cancel"
+msgstr "Cancella"
+
+#. module: repair_center
+#: view:repair.order:0
+#: selection:repair.order,state:0
+msgid "Quotation"
+msgstr "Preventivo"
+
+#. module: repair_center
+#: field:repair.order,city:0
+msgid "City"
+msgstr "Città"
+
+#. module: repair_center
+#: help:repair.order,invoice_method:0
+msgid "This field allow you to change the workflow of the repair order. If value selected is different from 'No Invoice', it also allow you to select the pricelist and invoicing address."
+msgstr "Questo campo consente di modificare il flusso di lavoro del l'ordine di riparazione. Se il valore selezionato è diverso da 'nessuna fattura', si può comunque selezionare il listino e l'indirizzo di fatturazione."
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Problem from Customer"
+msgstr "Problema del Cliente"
+
+#. module: repair_center
+#: model:product.category,name:repair_center.repair_product_category
+#: field:repair.order,repairable:0
+msgid "Repairable"
+msgstr "Riparabile"
+
+#. module: repair_center
+#: help:repair.order,amount_untaxed:0
+msgid "The amount without tax."
+msgstr "Totale imponibile"
+
+#. module: repair_center
+#: model:ir.actions.act_window,name:repair_center.action_norepair
+#: view:repair.order.norepair:0
+msgid "Not Repairable Order"
+msgstr "Ordine non riparabile"
+
+#. module: repair_center
+#: view:repair.set.origin:0
+msgid "Set origin document"
+msgstr "Numero Documento Origine"
+
+#. module: repair_center
+#: field:repair.order,product_id:0
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: repair_center
+#: model:ir.actions.act_window,name:repair_center.action_product_condition
+#: model:ir.model,name:repair_center.model_product_condition
+#: model:ir.ui.menu,name:repair_center.menu_repair_center_product_condition
+#: view:product.condition:0
+msgid "Product Condition"
+msgstr "Condizioni del Prodotto"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Invoice Corrected"
+msgstr "Fattura Corretta"
+
+#. module: repair_center
+#: field:repair.order,in_picking_producer_id:0
+msgid "Reception From Producer"
+msgstr "Ricezione dal Produttore"
+
+#. module: repair_center
+#: field:repair.order,contact_number:0
+msgid "Contact Number"
+msgstr "Numero Contatto"
+
+#. module: repair_center
+#: model:ir.actions.act_window,name:repair_center.action_product_accessory
+#: model:ir.model,name:repair_center.model_product_accessory
+#: model:ir.ui.menu,name:repair_center.menu_repair_center_product_accessory
+#: view:product.accessory:0
+msgid "Product Accessory"
+msgstr "Accessori del Prodotto"
+
+#. module: repair_center
+#: view:repair.order:0
+#: field:repair.order,deliver_bool:0
+msgid "Deliver"
+msgstr "Spedito"
+
+#. module: repair_center
+#: field:repair.order,internal_notes:0
+msgid "Internal Notes"
+msgstr "Note Interne"
+
+#. module: repair_center
+#: field:product.accessory,name:0
+#: view:repair.order:0
+#: field:repair.order.accessory,accessory_id:0
+msgid "Accessory"
+msgstr "Accessori"
+
+#. module: repair_center
+#: view:repair.order:0
+#: field:repair.order,out_picking_id:0
+msgid "Delivery"
+msgstr "Spedizione"
+
+#. module: repair_center
+#: field:repair.order,street:0
+msgid "Street"
+msgstr "Via"
+
+#. module: repair_center
+#: code:addons/repair_center/repair_center.py:663
+#, python-format
+msgid "No account defined for customer \"%s\"."
+msgstr "Nessun conto definito per il cliente \"%s\"."
+
+#. module: repair_center
+#: field:repair.order,picking_id:0
+msgid "Picking"
+msgstr "Picking"
+
+#. module: repair_center
+#: view:repair.order.norepair:0
+msgid "Dummy text for cancel order. Dummy text for cancel order. Dummy text for cancel order"
+msgstr " "
+
+#. module: repair_center
+#: field:repair.order,region:0
+msgid "Region"
+msgstr "Regione"
+
+#. module: repair_center
+#: code:addons/repair_center/wizard/cancel_repair.py:41
+#, python-format
+msgid "Active ID is not Found"
+msgstr "Active ID is not Found"
+
+#. module: repair_center
+#: field:repair.order,customer_id:0
+#: selection:repair.order,paid_by:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: repair_center
+#: field:product.condition,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: repair_center
+#: field:repair.order,country_id:0
+msgid "Country"
+msgstr "Nazione"
+
+#. module: repair_center
+#: field:repair.order,under_warranty:0
+msgid "Under Warranty"
+msgstr "In Garanzia"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Item"
+msgstr "Articoli"
+
+#. module: repair_center
+#: field:repair.order,partner_invoice_id:0
+msgid "Invoicing Address"
+msgstr "Indirizzo Fatturazione"
+
+#. module: repair_center
+#: selection:repair.order,invoice_method:0
+msgid "After Repair"
+msgstr "Dopo Riparazione"
+
+#. module: repair_center
+#: model:ir.actions.act_window,name:repair_center.act_repair_set_origin
+msgid "Set Origin Document"
+msgstr "Numero documento di Origine"
+
+#. module: repair_center
+#: field:repair.order,amount_total:0
+msgid "Total"
+msgstr "Totale"
+
+#. module: repair_center
+#: model:ir.model,name:repair_center.model_repair_order_cancel
+#: view:repair.order:0
+msgid "Cancel Repair"
+msgstr "Cancella Riparazione"
+
+#. module: repair_center
+#: view:repair.order:0
+#: selection:repair.order,state:0
+msgid "Under Examination"
+msgstr "In Esaminazione"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "States"
+msgstr "Stato"
+
+#. module: repair_center
+#: field:repair.order,order_date:0
+#: field:repair.set.origin,date:0
+msgid "Create Date"
+msgstr "Data Creazione"
+
+#. module: repair_center
+#: view:repair.order.cancel:0
+msgid "Yes"
+msgstr "Yes"
+
+#. module: repair_center
+#: view:repair.order:0
+msgid "Stock Moves"
+msgstr "Movimentazioni Magazzino"
+
+#. module: repair_center
+#: selection:repair.order,state:0
+msgid "Ready to Repair"
+msgstr "Pronto alla Riparazione"

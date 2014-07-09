@@ -52,9 +52,36 @@ class res_partner(orm.Model):
             'Codice Cliente Univoco'),
     ]
 
+    def _get_chart_template_property(self, cr, uid, property_chart=None, context=None):
+        res = []
+        chart_obj = self.pool['account.chart.template']
+        # We need Administrator rights to read account.chart.template properties
+        chart_obj_ids = chart_obj.search(cr, 1, [])
+        if len(chart_obj_ids) > 0:
+            # We need Administrator rights to read account.chart.template properties
+            chart_templates = chart_obj.browse(cr, 1, chart_obj_ids, context)
+            for chart_template in chart_templates:
+                if property_chart:
+                    property_chart_id = getattr(chart_template, property_chart).id
+                # if it's not a view type code, it's another branch without partner_subaccount
+                    if self.pool['account.account.template'].browse(cr, 1, property_chart_id).type != 'view':
+                        continue
+                    else:
+                        res = property_chart_id
+                        break
+        if not res:
+            raise orm.except_orm('Warning!', "Parent Account Type is not of type 'view'")
+
+        return res
+
     def get_create_supplier_partner_account(self, cr, uid, vals, context):
         account_obj = self.pool['account.account']
         account_type_obj = self.pool['account.account.type']
+        
+        if not vals.get('property_account_payable', False):
+            vals['property_account_payable'] = self._get_chart_template_property(
+                cr, uid, 'property_account_payable', context)
+        
         property_account_id = vals.get('property_account_payable', False)
         property_account_obj = account_obj.browse(cr, uid, property_account_id)
         type_account = 'payable'
@@ -79,6 +106,11 @@ class res_partner(orm.Model):
     def get_create_customer_partner_account(self, cr, uid, vals, context):
         account_obj = self.pool['account.account']
         account_type_obj = self.pool['account.account.type']
+        
+        if not vals.get('property_account_receivable', False):
+            vals['property_account_receivable'] = self._get_chart_template_property(
+                cr, uid, 'property_account_receivable', context)
+        
         property_account_id = vals.get('property_account_receivable', False)
         property_account_obj = account_obj.browse(cr, uid, property_account_id)
         type_account = 'receivable'
@@ -99,11 +131,6 @@ class res_partner(orm.Model):
                 cr, uid, property_account_obj.id, context).currency_mode,
         }
         return account_obj.create(cr, uid, dict_account, context)
-
-#        if property_account_obj.type != 'view':#TODO verificare come \
-#            regolarsi con db migrati con conto regolare invece di vista
-#            return account_obj.write(cr, uid, [property_account_obj.id],
-#                dict_account, context)
 
     def create(self, cr, uid, vals, context=None):
         if not context:
