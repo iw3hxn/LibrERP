@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-26 10:27+0000\n"
-"PO-Revision-Date: 2014-05-26 10:27+0000\n"
+"POT-Creation-Date: 2014-07-09 16:14+0000\n"
+"PO-Revision-Date: 2014-07-09 16:14+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,39 +16,8 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: l10n_it_sale
-#: sql_constraint:sale.order:0
-msgid "Order Reference must be unique per Company!"
-msgstr ""
-
-#. module: l10n_it_sale
-#: field:account.invoice,goods_description_id:0
-#: field:res.partner,goods_description_id:0
-#: field:sale.order,goods_description_id:0
-#: field:stock.picking,goods_description_id:0
-msgid "Description of goods"
-msgstr ""
-
-#. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_stock_picking_transportation_condition
-#: field:stock.picking.transportation_condition,name:0
-msgid "transportation Condition"
-msgstr ""
-
-#. module: l10n_it_sale
-#: field:stock.picking,transportation_condition_id:0
-msgid "transportation condition"
-msgstr ""
-
-#. module: l10n_it_sale
-#: field:stock.picking.carriage_condition,note:0
-#: field:stock.picking.goods_description,note:0
-#: field:stock.picking.transportation_condition,note:0
-msgid "Note"
-msgstr ""
-
-#. module: l10n_it_sale
-#: sql_constraint:res.partner:0
-msgid "Codice Cliente Univoco"
+#: view:res.partner:0
+msgid "Sales & Purchases"
 msgstr ""
 
 #. module: l10n_it_sale
@@ -80,13 +49,8 @@ msgid "In DDT"
 msgstr ""
 
 #. module: l10n_it_sale
-#: field:account.invoice.line,advance_id:0
-msgid "Advance invoice"
-msgstr ""
-
-#. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_res_partner
-msgid "Partner"
+#: model:ir.model,name:l10n_it_sale.model_stock_journal
+msgid "Stock Journal"
 msgstr ""
 
 #. module: l10n_it_sale
@@ -95,18 +59,23 @@ msgid "Error! For a Partner must be only one DDT reference for year."
 msgstr ""
 
 #. module: l10n_it_sale
-#: view:res.partner:0
-msgid "Sales & Purchases"
+#: field:stock.journal,ddt_sequence:0
+msgid "DDT sequence"
 msgstr ""
 
 #. module: l10n_it_sale
-#: sql_constraint:res.partner:0
-msgid "Codice Fornitore Univoco"
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PF
+msgid "FREEPORT"
 msgstr ""
 
 #. module: l10n_it_sale
-#: field:sale.order,validity:0
-msgid "Validity"
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CBA
+msgid "CARTONI-PALLETS"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CAR
+msgid "CARTONI"
 msgstr ""
 
 #. module: l10n_it_sale
@@ -115,8 +84,8 @@ msgid "Condition for transportation"
 msgstr ""
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_account_invoice
-msgid "Invoice"
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_BAN
+msgid "PALLETS"
 msgstr ""
 
 #. module: l10n_it_sale
@@ -125,13 +94,8 @@ msgid "wizard.assign.ddt"
 msgstr ""
 
 #. module: l10n_it_sale
-#: sql_constraint:account.invoice:0
-msgid "Invoice Number must be unique per Company!"
-msgstr ""
-
-#. module: l10n_it_sale
-#: view:account.invoice:0
-msgid "Shipping"
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_SFU
+msgid "SFUSI"
 msgstr ""
 
 #. module: l10n_it_sale
@@ -151,20 +115,18 @@ msgid "Shipping conditions"
 msgstr ""
 
 #. module: l10n_it_sale
-#: view:account.invoice:0
-msgid "Payments"
-msgstr ""
-
-#. module: l10n_it_sale
 #: sql_constraint:stock.picking:0
 msgid "Reference must be unique per Company!"
 msgstr ""
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_stock_picking_carriage_condition
 #: view:stock.picking.carriage_condition:0
-#: field:stock.picking.carriage_condition,name:0
 msgid "Carriage Condition"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PAF
+msgid "CHARGED ON INVOICE"
 msgstr ""
 
 #. module: l10n_it_sale
@@ -178,28 +140,30 @@ msgid "This will assign the DDT number"
 msgstr ""
 
 #. module: l10n_it_sale
-#: code:addons/l10n_it_sale/wizard/assign_ddt.py:36
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:37
 #, python-format
 msgid "DTT number already assigned"
 msgstr ""
 
 #. module: l10n_it_sale
-#: model:ir.actions.act_window,name:l10n_it_sale.action_goods_description_tree
-#: model:ir.ui.menu,name:l10n_it_sale.menu_action_good_description_tree
-#: view:stock.picking.goods_description:0
-msgid "Descriptions of Goods"
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_MITT
+msgid "SENDER"
 msgstr ""
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_stock_picking_goods_description
 #: view:stock.picking.goods_description:0
-#: field:stock.picking.goods_description,name:0
 msgid "Description of Goods"
 msgstr ""
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_account_invoice_line
-msgid "Invoice Line"
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_DEST
+msgid "RECIPIENT"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:ir.actions.act_window,name:l10n_it_sale.action_goods_description_tree
+#: view:stock.picking.goods_description:0
+msgid "Descriptions of Goods"
 msgstr ""
 
 #. module: l10n_it_sale
@@ -210,31 +174,23 @@ msgid "Carriage Conditions"
 msgstr ""
 
 #. module: l10n_it_sale
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PA
+msgid "CARRIAGE"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
+msgid "VECTOR"
+msgstr ""
+
+#. module: l10n_it_sale
 #: view:stock.picking.transportation_condition:0
 msgid "Conditions for transportation"
 msgstr ""
 
 #. module: l10n_it_sale
-#: field:account.invoice,carriage_condition_id:0
-#: field:res.partner,carriage_condition_id:0
-#: field:sale.order,carriage_condition_id:0
-#: field:stock.picking,carriage_condition_id:0
-msgid "Carriage condition"
-msgstr ""
-
-#. module: l10n_it_sale
 #: view:wizard.assign.ddt:0
 msgid "Cancel"
-msgstr ""
-
-#. module: l10n_it_sale
-#: sql_constraint:res.partner:0
-msgid "Error! Specified VAT Number already exists for any other registered partner."
-msgstr ""
-
-#. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_sale_order
-msgid "Sales Order"
 msgstr ""
 
 #. module: l10n_it_sale

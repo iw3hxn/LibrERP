@@ -11,4 +11,6 @@
 "access_unlink_mrp_bom_version","mrp_bom_revision","mrp.model_mrp_bom_revision","group_unlink_product",1,1,1,1
 "access_unlink_product","model_product_supplierinfo","product.model_product_supplierinfo","group_unlink_product",1,1,1,1
 "access_unlink_stock_warehouse_orderpoint","stock_warehouse_orderpoint","procurement.model_stock_warehouse_orderpoint","group_unlink_product",1,1,1,1
-
+"access_read_stock_warehouse_orderpoint","stock_warehouse_orderpoint","procurement.model_stock_warehouse_orderpoint","",1,0,0,0
+"full_access_product_manufacturer_attribute","product.manufacturer.attribute","product_manufacturer.model_product_manufacturer_attribute","",1,1,1,1
+"read_product_category","product.category","product.model_product_category","",1,0,0,0

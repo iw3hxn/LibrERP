@@ -8,7 +8,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="CONAI declaration">
-                            <field name="partner_id"/>
+                            <field name="partner_id" required="True" />
                             <field name="number"/>
                             <field name="percent_exemption"/>
                             <field name="date_start_validity"/>

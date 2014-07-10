@@ -18,11 +18,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import orm, fields
 import addons
 
-
-class res_partner_title(osv.osv):
+class res_partner_title(orm.Model):
     _inherit = "res.partner.title"
     _order = "sequence"
     _columns = {
@@ -33,16 +32,16 @@ class res_partner_title(osv.osv):
     }
 
 
-class res_contact_function(osv.osv):
+class res_contact_function(orm.Model):
     _name = "res.contact.function"
     _description = "Contact Function"
+    _order = "name"
     _columns = {
         'name': fields.char('Name', size=32),
     }
-    _order = "name"
 
 
-class res_partner_address_contact(osv.osv):
+class res_partner_address_contact(orm.Model):
     _name = "res.partner.address.contact"
     _description = "Address Contact"
 
@@ -82,7 +81,7 @@ class res_partner_address_contact(osv.osv):
 
     _defaults = {
         'photo': _get_photo,
-        'active': lambda *a: True,
+        'active': True,
     }
 
     _order = "name"
@@ -108,14 +107,11 @@ class res_partner_address_contact(osv.osv):
                 result[obj.id] = result[obj.id] + ', ' + obj.partner_id.name
         return result.items()
 
-res_partner_address_contact()
 
-
-class res_partner_address(osv.osv):
+class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
     _columns = {
         'contact_ids': fields.one2many('res.partner.address.contact', 'address_id', 'Functions and Contacts'),
         'mobile': fields.char('Mobile', size=64),
         'pec': fields.char('PEC', size=64),
     }
-res_partner_address()

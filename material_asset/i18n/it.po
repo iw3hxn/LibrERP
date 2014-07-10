@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-15 08:26+0000\n"
-"PO-Revision-Date: 2013-06-15 08:26+0000\n"
+"POT-Creation-Date: 2014-07-08 12:16+0000\n"
+"PO-Revision-Date: 2014-07-08 12:16+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,6 @@ msgstr ""
 #: selection:asset.use,color:0
 msgid "Blue"
 msgstr "Blu"
-
-#. module: material_asset
-#: view:stock.move:0
-msgid "Process Now"
-msgstr "Elaborazione immediata"
 
 #. module: material_asset
 #: selection:asset.use,color:0
@@ -49,22 +44,22 @@ msgstr "Movimenti"
 #. module: material_asset
 #: field:asset.asset,parents:0
 msgid "Parents"
-msgstr "Parents"
+msgstr "Collegato a"
 
 #. module: material_asset
 #: view:asset.asset:0
 #: field:asset.document,asset_id:0
-#: field:asset.move.line,asset_id:0
 #: field:asset.property,asset_id:0
 #: model:ir.actions.act_window,name:material_asset.action_view_asset_asset_form
+#: model:ir.model,name:material_asset.model_account_asset_asset
 #: model:ir.model,name:material_asset.model_asset_asset
 #: model:ir.ui.menu,name:material_asset.menu_asset
 #: field:resource.resource,asset_id:0
 msgid "Asset"
-msgstr "Mezzo/asset"
+msgstr "Asset"
 
 #. module: material_asset
-#: field:asset.asset,product_id:0
+#: field:asset.asset,asset_product_id:0
 #: view:asset.product:0
 #: model:ir.ui.menu,name:material_asset.menu_asset_product_form
 msgid "Asset Product"
@@ -89,17 +84,10 @@ msgid "Brown"
 msgstr "Marrone"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:970
+#: code:addons/material_asset/asset.py:1042
 #, python-format
 msgid "You can't create an asset without a product"
 msgstr "Non puoi creare un asset senza un prodotto"
-
-
-#. module: material_asset
-#: field:asset.asset,company_id:0
-#: field:asset.move,company_id:0
-msgid "Company"
-msgstr "Azienda"
 
 #. module: material_asset
 #: selection:asset.use,color:0
@@ -113,30 +101,15 @@ msgid "Serial Number"
 msgstr "Numero seriale"
 
 #. module: material_asset
-#: sql_constraint:project.place:0
-msgid "Code must be unique!"
-msgstr "Codice deve essere univoco!"
-
-#. module: material_asset
-#: view:asset.move:0
-msgid "Asset Move"
-msgstr "Movimenti Asset"
-
-#. module: material_asset
-#: code:addons/material_asset/asset.py:1048
+#: code:addons/material_asset/asset.py:1119
 #, python-format
 msgid "Asset deletion is not permitted."
 msgstr "Non è permessa la cancellazione dell'Asset"
 
 #. module: material_asset
-#: model:ir.model,name:material_asset.model_asset_image
-msgid "asset.image"
-msgstr "asset.image"
-
-#. module: material_asset
-#: model:res.groups,name:material_asset.group_assets_user
-msgid "Assets / User"
-msgstr "Assets / User"
+#: constraint:asset.category:0
+msgid "Error! You can not create recursive categories."
+msgstr "Errore! Non puoi creare categorie ricorsive."
 
 #. module: material_asset
 #: field:asset.document,valid_start_date:0
@@ -163,7 +136,7 @@ msgstr "Data Inizio Validità"
 #: view:res.car:0
 #: field:res.car,asset_ids:0
 msgid "Assets"
-msgstr "Asset"
+msgstr "Assets"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_res_car
@@ -171,14 +144,26 @@ msgid "Car"
 msgstr "Veicoli"
 
 #. module: material_asset
+#: code:addons/material_asset/asset.py:1200
+#, python-format
+msgid "Error!"
+msgstr "Errore!"
+
+#. module: material_asset
 #: field:asset.use,name:0
 msgid "Use Type"
 msgstr "Utilizzo"
 
 #. module: material_asset
+#: code:addons/material_asset/asset.py:1200
+#, python-format
+msgid "Strange move. Please contact support"
+msgstr "Movimento Strano. Contatta il supporto tecnico"
+
+#. module: material_asset
 #: field:asset.asset,date_end:0
 msgid "Ending Date"
-msgstr "Data Termine"
+msgstr "Data Finale"
 
 #. module: material_asset
 #: view:asset.asset:0
@@ -194,20 +179,9 @@ msgid "Stock Move"
 msgstr "Movimento di magazzino"
 
 #. module: material_asset
-#: field:asset.move.line,move_id:0
-msgid "Move"
-msgstr "Movimentazione"
-
-#. module: material_asset
 #: field:asset.asset,barcode:0
 msgid "Bar Code"
 msgstr "Codice a Barre"
-
-#. module: material_asset
-#: field:asset.move,datetime:0
-#: field:asset.move.line,datetime:0
-msgid "Datetime"
-msgstr "Data Spostamento"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_asset_category
@@ -215,7 +189,7 @@ msgid "asset.category"
 msgstr "asset.category"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:1476
+#: code:addons/material_asset/asset.py:1571
 #, python-format
 msgid "Assign Category"
 msgstr "Categoria Assegnata"
@@ -226,9 +200,12 @@ msgid "All SIMs"
 msgstr "Tutte le SIM"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:1126
-#: code:addons/material_asset/asset.py:1131
-#: code:addons/material_asset/wizard/asset_move_create.py:129
+#: code:addons/material_asset/asset.py:1189
+#: code:addons/material_asset/asset.py:1197
+#: code:addons/material_asset/asset.py:1202
+#: code:addons/material_asset/asset.py:1207
+#: code:addons/material_asset/wizard/asset_move_create.py:118
+#: code:addons/material_asset/wizard/asset_move_create.py:180
 #, python-format
 msgid "Warning!"
 msgstr "Attenzione!"
@@ -249,9 +226,9 @@ msgid "Inventory Code"
 msgstr "Codice Inventario"
 
 #. module: material_asset
-#: view:stock.location:0
-msgid "Chained Locations"
-msgstr "Punti di Stoccaggio Collegati"
+#: view:asset.move:0
+msgid "Asset Move"
+msgstr "Movimenti Asset"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_asset_move_create
@@ -265,24 +242,20 @@ msgid "Documents"
 msgstr "Documenti"
 
 #. module: material_asset
-#: model:ir.ui.menu,name:material_asset.menu_asset_category_form
-msgid "Asset by Category"
-msgstr "Sfoglia Asset per Categoria"
-
-#. module: material_asset
 #: field:asset.category,child_id:0
 msgid "Child Categories"
-msgstr "Categoriea Figlia"
+msgstr "Categorie Secondarie"
 
 #. module: material_asset
+#: view:asset.location.property:0
 #: model:ir.actions.act_window,name:material_asset.action_assets_location_tree
 #: model:ir.ui.menu,name:material_asset.asset_locations_menu
 msgid "Locations"
 msgstr "Punti di Stoccaggio"
 
 #. module: material_asset
+#: selection:asset.location.property,type:0
 #: model:ir.model,name:material_asset.model_stock_location
-#: view:stock.location:0
 msgid "Location"
 msgstr "Punto di Stoccaggio"
 
@@ -303,10 +276,15 @@ msgid "Red"
 msgstr "Rosso"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:1143
+#: code:addons/material_asset/asset.py:1223
 #, python-format
 msgid "You can only delete the last Asset Move!"
 msgstr "Puoi cancellare solo l'ultima movimentazione dell'Asset!"
+
+#. module: material_asset
+#: constraint:account.asset.asset:0
+msgid "Error ! You can not create recursive assets."
+msgstr "Errore non puoi creare Asset ricorsivi."
 
 #. module: material_asset
 #: field:asset.asset,added:0
@@ -316,12 +294,20 @@ msgstr "Aggiunto"
 #. module: material_asset
 #: view:asset.asset:0
 msgid "Search Asset"
-msgstr "Trova mezzo/asset"
+msgstr "Trova Mezzo/Asset"
 
 #. module: material_asset
 #: view:asset.document.expiry.bymonth:0
 msgid "Print"
 msgstr "Stampa"
+
+#. module: material_asset
+#: code:addons/material_asset/wizard/asset_move_create.py:127
+#: code:addons/material_asset/wizard/asset_move_create.py:132
+#: code:addons/material_asset/wizard/asset_move_create.py:146
+#, python-format
+msgid "Warning"
+msgstr "Attenzione"
 
 #. module: material_asset
 #: view:stock.move:0
@@ -336,12 +322,22 @@ msgstr "Configurazione"
 #. module: material_asset
 #: field:asset.asset,date_start:0
 msgid "Starting Date"
-msgstr "Data inizio"
+msgstr "Data di inizio"
 
 #. module: material_asset
 #: model:ir.ui.menu,name:material_asset.menu_asset_asset_tree_smart
 msgid "Assets Smart"
 msgstr "Assets Smart"
+
+#. module: material_asset
+#: field:asset.location.property,type:0
+msgid "Location Type"
+msgstr "Tipo Locazione"
+
+#. module: material_asset
+#: model:ir.ui.menu,name:material_asset.menu_asset_location_list
+msgid "Asset Location"
+msgstr "Locazione Asset"
 
 #. module: material_asset
 #: model:ir.actions.report.xml,name:material_asset.ddt_report_id
@@ -351,7 +347,7 @@ msgstr "Stampa Movimentazione"
 #. module: material_asset
 #: field:asset.category,parent_id:0
 msgid "Parent Category"
-msgstr "Categoria Padre"
+msgstr "Categoria Superiore"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_asset_assign_category
@@ -366,7 +362,7 @@ msgstr "Crea il movimento per il mezzo/asset"
 #. module: material_asset
 #: selection:asset.use,color:0
 msgid "Forest Green"
-msgstr "Verde Scuro"
+msgstr "Verde Scuretto"
 
 #. module: material_asset
 #: selection:asset.use,color:0
@@ -385,9 +381,14 @@ msgid "All Associated Assets"
 msgstr "Tutti gli asset associati"
 
 #. module: material_asset
+#: model:ir.model,name:material_asset.model_resource_resource
+msgid "Resource Detail"
+msgstr "Dettaglio risorsa"
+
+#. module: material_asset
 #: view:asset.document.type:0
 msgid "Define document type"
-msgstr "Definire tipo documento"
+msgstr "Definizione tipo documento"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_asset_document_type
@@ -404,18 +405,13 @@ msgstr "Report Scadenza Documenti"
 #: field:asset.move.create,dest_location:0
 #: field:asset.move.line,dest_location:0
 msgid "Destination Location"
-msgstr "Locazione di Destinazione"
+msgstr "Loc. di Destinazione"
 
 #. module: material_asset
 #: view:asset.asset:0
 #: field:asset.asset,image:0
 msgid "Image"
-msgstr "Immagine"
-
-#. module: material_asset
-#: model:ir.model,name:material_asset.model_project_place
-msgid "project.place"
-msgstr "project.place"
+msgstr "Imagine"
 
 #. module: material_asset
 #: sql_constraint:asset.asset:0
@@ -446,13 +442,17 @@ msgstr "Scegli la Categoria"
 #. module: material_asset
 #: view:asset.product:0
 msgid "Search Asset Product"
-msgstr "Trova mezzo/prodotto"
-
+msgstr "Trova Prodotto Asset"
 
 #. module: material_asset
-#: view:stock.location:0
-msgid "Additional Information"
-msgstr "Informazioni Aggiuntive"
+#: view:stock.move:0
+msgid "Unit Of Measure"
+msgstr "Unità di misura"
+
+#. module: material_asset
+#: view:stock.move:0
+msgid "Stock Moves"
+msgstr "Movimenti di Magazzino"
 
 #. module: material_asset
 #: view:asset.category:0
@@ -471,6 +471,11 @@ msgid "Cadet Blue"
 msgstr "Blu Cadetto"
 
 #. module: material_asset
+#: model:ir.model,name:material_asset.model_asset_location_property
+msgid "All possible locations of an asset"
+msgstr "Tutti le possibili locazioni di un Asset"
+
+#. module: material_asset
 #: field:asset.move,user_id:0
 #: field:asset.move.create,user_id:0
 #: field:asset.move.line,user_id:0
@@ -478,13 +483,19 @@ msgid "Moved By"
 msgstr "Spostato da"
 
 #. module: material_asset
+#: code:addons/material_asset/wizard/asset_move_create.py:127
+#, python-format
+msgid "Please select Location Address"
+msgstr "Selezionare la Destinazione"
+
+#. module: material_asset
 #: view:asset.asset:0
 #: field:asset.asset,note:0
 msgid "Note"
-msgstr "Note"
+msgstr "Nota"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:999
+#: code:addons/material_asset/asset.py:1071
 #: constraint:asset.asset:0
 #, python-format
 msgid "Duplicate asset serial number"
@@ -497,30 +508,38 @@ msgstr "Nero"
 
 #. module: material_asset
 #: field:asset.move,dest_location_name:0
-#: field:asset.move.line,dest_location_name:0
 msgid "Destination Loc."
 msgstr "Loc. di Destinazione"
 
 #. module: material_asset
 #: view:asset.move.create:0
 msgid "Move Information"
-msgstr "Informazione del movimento"
+msgstr "Informazioni spostamento"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:1126
+#: code:addons/material_asset/asset.py:1189
 #, python-format
 msgid "This is a wrong place for creating a move."
-msgstr "E' errato creare lo spostamento da qui."
+msgstr "Lo spostamento non può essere eseguito da qui."
 
 #. module: material_asset
-#: view:stock.location:0
-msgid "Localization"
-msgstr "Localizzazione"
+#: view:asset.category:0
+msgid "Search Category"
+msgstr "Cerca categoria"
 
 #. module: material_asset
 #: constraint:stock.move:0
 msgid "You try to assign a lot which is not from the same product"
 msgstr "Si sta cercando di assegnare un lotto non derivante dallo stesso prodotto"
+
+#. module: material_asset
+#: field:asset.asset,row_color:0
+#: field:asset.asset,stock_location_id:0
+#: field:asset.use,row_color:0
+#: field:stock.move,asset_id:0
+#: field:stock.move,asset_source_location:0
+msgid "unknown"
+msgstr "sconosciuto"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_asset_document
@@ -534,16 +553,10 @@ msgid "From Product to Asset"
 msgstr "Da Prodotto ad Asset"
 
 #. module: material_asset
-#: field:asset.document,expired:0
-msgid "Is it expired?"
-msgstr "Is it expired?"
-
-#. module: material_asset
-#: view:asset.use:0
-#: model:ir.actions.act_window,name:material_asset.open_module_tree_asset_use
-#: model:ir.ui.menu,name:material_asset.menu_asset_use_tree
-msgid "Asset Use"
-msgstr "Utilizzo"
+#: field:asset.asset,active:0
+#: field:asset.document,active:0
+msgid "Active"
+msgstr "Attivo"
 
 #. module: material_asset
 #: view:asset.document.expiry.bymonth:0
@@ -554,6 +567,11 @@ msgstr "Stampa il rapporto mensile delle scadenze dei documenti"
 #: field:asset.asset,removed:0
 msgid "Removed"
 msgstr "Rimosso"
+
+#. module: material_asset
+#: constraint:hr.employee:0
+msgid "Error ! You cannot create recursive Hierarchy of Employees."
+msgstr "Errore ! Non è possibile creare una gerarchia ricorsiva di dipendenti"
 
 #. module: material_asset
 #: field:asset.asset,partner_id:0
@@ -571,7 +589,7 @@ msgid "Move Date"
 msgstr "Data Spostamento"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:1131
+#: code:addons/material_asset/asset.py:1207
 #, python-format
 msgid "Asset Move can't be modified."
 msgstr "Lo spostamento non può esser modificato."
@@ -582,35 +600,41 @@ msgid "Aqua"
 msgstr "Acqua"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:970
-#: code:addons/material_asset/asset.py:1048
+#: code:addons/material_asset/asset.py:1042
+#: code:addons/material_asset/asset.py:1119
 #, python-format
 msgid "Invalid action!"
 msgstr "Invalid action!"
 
 #. module: material_asset
-#: field:asset.asset,active:0
-#: field:asset.document,active:0
-msgid "Active"
-msgstr "Attivo"
+#: view:asset.use:0
+#: model:ir.actions.act_window,name:material_asset.open_module_tree_asset_use
+#: model:ir.ui.menu,name:material_asset.menu_asset_use_tree
+msgid "Asset Use"
+msgstr "Utilizzo"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:1135
-#: code:addons/material_asset/asset.py:1143
+#: code:addons/material_asset/asset.py:1211
+#: code:addons/material_asset/asset.py:1223
 #, python-format
 msgid "Error"
 msgstr "Errore"
 
 #. module: material_asset
-#: field:asset.move,description:0
 #: field:asset.move.create,description:0
 msgid "Move Description"
 msgstr "Descrizione del movimento"
 
 #. module: material_asset
+#: code:addons/material_asset/asset.py:1202
+#, python-format
+msgid "You can't create empty move"
+msgstr "Non si può creare un spostamento vuoto"
+
+#. module: material_asset
 #: view:asset.assign.category:0
 msgid "Assign"
-msgstr "Assegna"
+msgstr "Assegnata"
 
 #. module: material_asset
 #: field:asset.document.type,repeatable:0
@@ -618,12 +642,17 @@ msgid "Repeatable?"
 msgstr "Ripetibile ?"
 
 #. module: material_asset
-#: constraint:asset.category:0
-msgid "Error! You can not create recursive categories."
-msgstr "Errore! Non puoi creare categorie ricorsive."
+#: model:res.groups,name:material_asset.group_assets_user
+msgid "Assets / User"
+msgstr "Assets / User"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:1135
+#: field:asset.move.create,address_id:0
+msgid "Location Address"
+msgstr "Indirizzo Locazione"
+
+#. module: material_asset
+#: code:addons/material_asset/asset.py:1211
 #, python-format
 msgid "You can only delete one Asset Move at a time!"
 msgstr "Si può cancellare solo una movimentazione alla volta!"
@@ -637,7 +666,7 @@ msgstr "Codice"
 #. module: material_asset
 #: view:asset.asset:0
 msgid "Old"
-msgstr "Dismessi"
+msgstr "Completato"
 
 #. module: material_asset
 #: field:asset.property,group_id:0
@@ -665,26 +694,22 @@ msgstr "Sequenza del mezzo/asset"
 
 #. module: material_asset
 #: view:asset.asset:0
+#: selection:asset.location.property,type:0
 msgid "Other"
 msgstr "Altro"
-
-#. module: material_asset
-#: model:ir.model,name:material_asset.model_asset_product
-msgid "asset.product"
-msgstr "asset.product"
 
 #. module: material_asset
 #: field:asset.assign.category,category_id:0
 #: model:ir.actions.act_window,name:material_asset.action_view_asset_category_list
 #: model:ir.ui.menu,name:material_asset.menu_asset_category_list
 msgid "Asset Category"
-msgstr "Categoria del mezzo/asset"
+msgstr "Categoria Immobilizzazione"
 
 #. module: material_asset
 #: field:asset.document,valid_end_date:0
 #: field:asset.document.expiry.bymonth,date_to:0
 msgid "Valid End Date"
-msgstr "Data Scadenza Validità"
+msgstr "Data Fine Validità"
 
 #. module: material_asset
 #: view:asset.assign.category:0
@@ -696,12 +721,13 @@ msgstr "Annulla"
 #. module: material_asset
 #: view:stock.move:0
 msgid "Moves"
-msgstr "Spostamenti"
+msgstr "Movimenti"
 
 #. module: material_asset
+#: field:asset.location.property,stock_location:0
 #: view:stock.location:0
 msgid "Stock Location"
-msgstr "Locazione magazzino"
+msgstr "Punto di stoccaggio"
 
 #. module: material_asset
 #: view:asset.property.group:0
@@ -732,6 +758,11 @@ msgid "Orange"
 msgstr "Arancione"
 
 #. module: material_asset
+#: view:stock.move:0
+msgid "Orders planned for today"
+msgstr "Ordini pianificati per Oggi"
+
+#. module: material_asset
 #: view:asset.document:0
 msgid "Details"
 msgstr "Dettagli"
@@ -743,30 +774,27 @@ msgid "Utilizzo"
 msgstr "Utilizzo"
 
 #. module: material_asset
-#: model:ir.actions.act_window,name:material_asset.action_view_asset_category_form2
-msgid "Assets Category"
-msgstr "Categoria Asset"
-
-#. module: material_asset
 #: field:asset.asset,ven_prod_name:0
 msgid "Vendor Product Name"
 msgstr "Nome prodotto Produttore"
 
 #. module: material_asset
-#: view:asset.asset:0
-#: field:asset.asset,have_sim:0
-#: field:asset.asset,sim_ids:0
-msgid "Sim"
-msgstr "Sim"
+#: field:asset.move.create,show_address:0
+msgid "Invisible field"
+msgstr "Invisible field"
+
+#. module: material_asset
+#: constraint:asset.category:0
+msgid "This Service Product already selected for other category"
+msgstr "Questo prodotto è già stato assegnato ad un altra categoria"
 
 #. module: material_asset
 #: view:asset.asset:0
 msgid "Product"
-msgstr "Produtto"
+msgstr "Prodotto"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:1509
-#: code:addons/material_asset/wizard/asset_assign_category.py:58
+#: code:addons/material_asset/asset.py:1037
 #, python-format
 msgid "An asset with Inventory code: {0} was created"
 msgstr "Un asset con codice inventario: {0} è stata create"
@@ -779,12 +807,12 @@ msgid "Description"
 msgstr "Descrizione"
 
 #. module: material_asset
-#: code:addons/material_asset/asset.py:998
+#: code:addons/material_asset/asset.py:1070
 #: constraint:asset.asset:0
 #: constraint:asset.document:0
 #, python-format
 msgid "Error! Documents start date must be lower then contract end date."
-msgstr "Errore! La data di inizio deve precedere la data della fine."
+msgstr "Errore! La data di inizio deve essere inferiore alla data di scadenza."
 
 #. module: material_asset
 #: model:res.groups,name:material_asset.group_assets_manager
@@ -797,11 +825,6 @@ msgid "Asset Uses"
 msgstr "Utilizzi Asset"
 
 #. module: material_asset
-#: view:stock.location:0
-msgid "Chained Location"
-msgstr "Luogo concatenato"
-
-#. module: material_asset
 #: view:asset.asset:0
 #: field:asset.asset,is_kit:0
 #: field:asset.move.line,is_kit:0
@@ -809,14 +832,38 @@ msgid "Kit"
 msgstr "Kit"
 
 #. module: material_asset
-#: field:asset.move.line,source_location_name:0
-msgid "Source Loc."
-msgstr "Loc. Sorgente"
+#: code:addons/material_asset/asset.py:1197
+#, python-format
+msgid "Product should be moved with the time superior to last move"
+msgstr "Il prodotto deve essere mosso con una data superiore all'ultimo movimento"
+
+#. module: material_asset
+#: view:asset.asset:0
+#: field:asset.asset,have_sim:0
+#: field:asset.asset,sim_ids:0
+msgid "Sim"
+msgstr "Sim"
+
+#. module: material_asset
+#: selection:asset.location.property,type:0
+msgid "Address"
+msgstr "Indirizzo"
+
+#. module: material_asset
+#: code:addons/material_asset/wizard/asset_move_create.py:118
+#, python-format
+msgid "Unknown destination."
+msgstr "Destinazione Sconosciuta."
 
 #. module: material_asset
 #: model:res.groups,name:material_asset.group_assets_manager_mover
 msgid "Assets / Manage Move"
 msgstr "Assets / Manage Move"
+
+#. module: material_asset
+#: sql_constraint:asset.location.property:0
+msgid "Model must be unique!"
+msgstr "Modello deve essere unico!"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_asset_document_expiry_bymonth
@@ -836,11 +883,13 @@ msgid "Has date options?"
 msgstr "Ha data scadenza?"
 
 #. module: material_asset
+#: code:addons/material_asset/asset.py:159
 #: field:asset.asset,complete_name:0
 #: field:asset.category,complete_name:0
 #: field:asset.category,name:0
-#: field:asset.move,name:0
+#: field:asset.location.property,name:0
 #: field:asset.property,name:0
+#, python-format
 msgid "Name"
 msgstr "Nome"
 
@@ -850,9 +899,11 @@ msgid "Grey"
 msgstr "Grigio"
 
 #. module: material_asset
-#: model:ir.model,name:material_asset.model_resource_resource
-msgid "Resource Detail"
-msgstr "Dettaglio risorsa"
+#: code:addons/material_asset/asset.py:160
+#: field:asset.location.property,model:0
+#, python-format
+msgid "Location model"
+msgstr "Location model"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_asset_move_line
@@ -865,14 +916,9 @@ msgid "Associated Assets"
 msgstr "Mezzi/Asset collegati"
 
 #. module: material_asset
-#: view:asset.category:0
-msgid "Search Category"
-msgstr "Cerca categoria"
-
-#. module: material_asset
-#: field:asset.move.line,return_datetime:0
-msgid "Returned"
-msgstr "Ritornato"
+#: model:ir.actions.act_window,name:material_asset.action_view_asset_locations_list
+msgid "Asset Locations"
+msgstr "Locazioni Asset"
 
 #. module: material_asset
 #: model:ir.actions.act_window,name:material_asset.action_view_asset_asset_tree_smart
@@ -895,15 +941,10 @@ msgid "Month Duration"
 msgstr "Durata in mesi"
 
 #. module: material_asset
-#: field:asset.move,asset_line_ids:0
-msgid "Asset lines"
-msgstr "Asset lines"
-
-#. module: material_asset
 #: field:asset.category,has_date_option:0
 #: field:asset.product,has_date_option:0
 msgid "Has date options ?"
-msgstr "Ha delle scadenze ?"
+msgstr "Ha data scadenza ?"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_asset_move
@@ -913,12 +954,7 @@ msgstr "asset.move"
 #. module: material_asset
 #: view:asset.move.create:0
 msgid "Create Move"
-msgstr "Crea il movimento"
-
-#. module: material_asset
-#: view:stock.move:0
-msgid "Stock Moves"
-msgstr "Movimenti di Magazzino"
+msgstr "Crea Movimento"
 
 #. module: material_asset
 #: field:asset.document,document_type_id:0

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-02 20:42+0000\n"
-"PO-Revision-Date: 2014-06-02 20:42+0000\n"
+"POT-Creation-Date: 2014-07-08 12:13+0000\n"
+"PO-Revision-Date: 2014-07-08 12:13+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,16 +18,6 @@ msgstr ""
 #. module: account_payment_term_month
 #: constraint:account.payment.term.line:0
 msgid "Percentages for Payment Term Line must be between 0 and 1, Example: 0.02 for 2% "
-msgstr ""
-
-#. module: account_payment_term_month
-#: help:account.payment.term,month_to_be_delayed2:0
-msgid "Second month with no payments allowed."
-msgstr ""
-
-#. module: account_payment_term_month
-#: field:account.payment.term,month_to_be_delayed1:0
-msgid "First month without payments"
 msgstr ""
 
 #. module: account_payment_term_month
@@ -56,8 +46,8 @@ msgid "Number of month to add before computation of the day of month. If Date=15
 msgstr ""
 
 #. module: account_payment_term_month
-#: help:account.payment.term,month_to_be_delayed1:0
-msgid "First month with no payments allowed."
+#: field:account.payment.term,month_to_be_delayed1:0
+msgid "First month without payments"
 msgstr ""
 
 #. module: account_payment_term_month
@@ -71,6 +61,16 @@ msgid "Number of days of delay for first month without payments."
 msgstr ""
 
 #. module: account_payment_term_month
+#: help:account.payment.term,month_to_be_delayed2:0
+msgid "Second month with no payments allowed."
+msgstr ""
+
+#. module: account_payment_term_month
+#: help:account.payment.term,month_to_be_delayed1:0
+msgid "First month with no payments allowed."
+msgstr ""
+
+#. module: account_payment_term_month
 #: model:ir.model,name:account_payment_term_month.model_account_payment_term_line
 msgid "Payment Term Line"
 msgstr ""
@@ -78,5 +78,15 @@ msgstr ""
 #. module: account_payment_term_month
 #: field:account.payment.term,days_to_be_delayed2:0
 msgid "Days of delay for second month"
+msgstr ""
+
+#. module: account_payment_term_month
+#: field:account.payment.term,min_day_to_be_delayed2:0
+msgid "Second date from which payment will be delayed"
+msgstr ""
+
+#. module: account_payment_term_month
+#: field:account.payment.term,min_day_to_be_delayed1:0
+msgid "First date from which payment will be delayed"
 msgstr ""
 

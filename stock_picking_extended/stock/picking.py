@@ -31,7 +31,9 @@ class stock_picking_carriage_condition(orm.Model):
     _name = "stock.picking.carriage_condition"
     _description = "Carriage Condition"
     _columns = {
-        'name': fields.char('Carriage Condition', size=64, required=True, readonly=False, translable=True),
+        'name': fields.char(
+            'Carriage Condition', size=64, required=True, readonly=False,
+            translate=True),
         'note': fields.text('Note'),
     }
 
@@ -44,19 +46,24 @@ class stock_picking_goods_description(orm.Model):
     _description = "Description of Goods"
 
     _columns = {
-        'name': fields.char('Description of Goods', size=64, required=True, readonly=False, translable=True),
+        'name': fields.char(
+            'Description of Goods', size=64, required=True, readonly=False,
+            translate=True),
         'note': fields.text('Note'),
     }
 
 
 class stock_picking_transportation_condition(orm.Model):
     """
-    transportation condition
+    Transportation Condition
     """
     _name = "stock.picking.transportation_condition"
     _description = "Transportation Condition"
+
     _columns = {
-        'name': fields.char('transportation Condition', size=64, required=True, readonly=False, translable=True),
+        'name': fields.char(
+            'Transportation Condition', size=64, required=True, readonly=False,
+            translate=True),
         'note': fields.text('Note'),
     }
 
@@ -64,9 +71,12 @@ class stock_picking_transportation_condition(orm.Model):
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
     _columns = {
-        'carriage_condition_id': fields.many2one('stock.picking.carriage_condition', 'Carriage condition'),
-        'goods_description_id': fields.many2one('stock.picking.goods_description', 'Description of goods'),
-        'transportation_condition_id': fields.many2one('stock.picking.transportation_condition', 'transportation condition'),
+        'carriage_condition_id': fields.many2one(
+            'stock.picking.carriage_condition', 'Carriage condition'),
+        'goods_description_id': fields.many2one(
+            'stock.picking.goods_description', 'Description of goods'),
+        'transportation_condition_id': fields.many2one(
+            'stock.picking.transportation_condition', 'Transportation condition'),
         #address_id is overridden because it's used 2binvoiced
         #n.b.: partner_id is only a related, so not useful for the workflow
         'address_id': fields.many2one(
@@ -78,7 +88,8 @@ class stock_picking(orm.Model):
         ),
     }
     
-    def onchange_stock_journal(self, cr, uid, context=None, stock_journal_id=None, state=None):
+    def onchange_stock_journal(
+            self, cr, uid, context=None, stock_journal_id=None, state=None):
         if context is None:
             context = {}
         if state != 'draft':
@@ -100,10 +111,10 @@ class stock_picking(orm.Model):
             context = {}
         partner_address_obj = self.pool['res.partner.address']
         delivery_ids = []
-        
         partner_id = None
         if address_id:
-            partner_id = partner_address_obj.browse(cr, uid, address_id, context).partner_id
+            partner_id = partner_address_obj.browse(
+                cr, uid, address_id, context).partner_id
         if partner_id:
             delivery_ids = partner_address_obj.search(
                 cr, uid, [('partner_id', '=', partner_id.id), (

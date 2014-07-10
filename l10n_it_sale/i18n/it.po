@@ -1,67 +1,29 @@
 # Translation of OpenERP Server.
 # This file contains the translation of the following modules:
-# 	* l10n_it_sale
+#	* l10n_it_sale
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 11:59+0000\n"
-"PO-Revision-Date: 2014-06-09 00:12+0100\n"
-"Last-Translator: Sergio Corato <sergiocorato@gmail.com>\n"
+"POT-Creation-Date: 2014-07-09 16:15+0000\n"
+"PO-Revision-Date: 2014-07-09 16:15+0000\n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-"X-Generator: Poedit 1.5.4\n"
 
 #. module: l10n_it_sale
-#: sql_constraint:sale.order:0
-msgid "Order Reference must be unique per Company!"
-msgstr "Il Riferimento Ordine deve essere unico per azienda!"
+#: view:res.partner:0
+msgid "Sales & Purchases"
+msgstr "Vendite e acquisti"
 
 #. module: l10n_it_sale
-#: view:stock.picking.in:0
-msgid "Ready to Process"
-msgstr "Pronto da Elaborare"
-
-#. module: l10n_it_sale
-#: field:account.invoice,goods_description_id:0
-#: field:res.partner,goods_description_id:0
-#: field:sale.order,goods_description_id:0
-#: field:stock.picking,goods_description_id:0
-msgid "Description of goods"
-msgstr "Aspetto dei Beni"
-
-#. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_stock_picking_transportation_condition
-#: field:stock.picking.transportation_condition,name:0
-msgid "transportation Condition"
-msgstr "Trasporto a cura di"
-
-#. module: l10n_it_sale
-#: field:stock.picking,transportation_condition_id:0
-msgid "transportation condition"
-msgstr "Trasporto a cura di"
-
-#. module: l10n_it_sale
-#: field:stock.picking.carriage_condition,note:0
-#: field:stock.picking.goods_description,note:0
-#: field:stock.picking.transportation_condition,note:0
-msgid "Note"
-msgstr "Nota"
-
-#. module: l10n_it_sale
-#: sql_constraint:res.partner:0
-msgid "Codice Cliente Univoco"
-msgstr "Codice Cliente Univoco"
-
-#. module: l10n_it_sale
-#: sql_constraint:res.partner:0
-msgid ""
-"Error! Specified VAT Number already exists for any other registered partner."
-msgstr "Errore! Esiste già un partner con la stessa P.IVA."
+#: field:stock.picking,ddt_in_date:0
+msgid "In DDT Date"
+msgstr "Data DDT"
 
 #. module: l10n_it_sale
 #: model:ir.actions.act_window,name:l10n_it_sale.action_transportation_condition_tree
@@ -75,13 +37,9 @@ msgid "Picking List"
 msgstr "Lista Prelievo"
 
 #. module: l10n_it_sale
-#: constraint:account.invoice:0
-msgid "Error: Invalid Bvr Number (wrong checksum)."
-msgstr "Errore: Numero BVR non valido (errato carattere di controllo)."
-
-#. module: l10n_it_sale
 #: model:ir.actions.act_window,name:l10n_it_sale.action_wizard_assign_ddt
-#: view:stock.picking:0 view:wizard.assign.ddt:0
+#: view:stock.picking:0
+#: view:wizard.assign.ddt:0
 msgid "Assign DDT"
 msgstr "Assegna DDT"
 
@@ -91,14 +49,9 @@ msgid "In DDT"
 msgstr "Numero DDT"
 
 #. module: l10n_it_sale
-#: field:account.invoice.line,advance_id:0
-msgid "Advance invoice"
-msgstr "Fattura Acconto"
-
-#. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_res_partner
-msgid "Partner"
-msgstr "Partner"
+#: model:ir.model,name:l10n_it_sale.model_stock_journal
+msgid "Stock Journal"
+msgstr "Giornale di magazzino"
 
 #. module: l10n_it_sale
 #: constraint:stock.picking:0
@@ -106,42 +59,48 @@ msgid "Error! For a Partner must be only one DDT reference for year."
 msgstr "Errore! Per un Fornitore il numero di DDT deve essere univoco"
 
 #. module: l10n_it_sale
-#: view:res.partner:0
-msgid "Sales & Purchases"
-msgstr "Vendite e Acquisti"
+#: field:stock.journal,ddt_sequence:0
+msgid "DDT sequence"
+msgstr "Sequenza DDT"
 
 #. module: l10n_it_sale
-#: sql_constraint:res.partner:0
-msgid "Codice Fornitore Univoco"
-msgstr "Codice Fornitore Univoco"
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PF
+msgid "FREEPORT"
+msgstr "PORTO FRANCO"
 
 #. module: l10n_it_sale
-#: field:sale.order,validity:0
-msgid "Validity"
-msgstr "Validità"
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CBA
+msgid "CARTONI-PALLETS"
+msgstr "CARTONI-PALLETS"
+
+#. module: l10n_it_sale
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CAR
+msgid "CARTONI"
+msgstr "CARTONI"
 
 #. module: l10n_it_sale
 #: view:stock.picking.transportation_condition:0
 msgid "Condition for transportation"
-msgstr "Condizioni di trasporto"
+msgstr "Condition for transportation"
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_account_invoice
-msgid "Invoice"
-msgstr "Fattura"
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_BAN
+msgid "PALLETS"
+msgstr "PALLETS"
 
 #. module: l10n_it_sale
-#: sql_constraint:account.invoice:0
-msgid "Invoice Number must be unique per Company!"
-msgstr "Il numero fattura deve essere unico per ogni azienda!"
+#: model:ir.model,name:l10n_it_sale.model_wizard_assign_ddt
+msgid "wizard.assign.ddt"
+msgstr "wizard.assign.ddt"
 
 #. module: l10n_it_sale
-#: view:account.invoice:0
-msgid "Shipping"
-msgstr "Trasporto"
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_SFU
+msgid "SFUSI"
+msgstr "SFUSI"
 
 #. module: l10n_it_sale
-#: view:stock.picking:0 field:stock.picking,ddt_number:0
+#: view:stock.picking:0
+#: field:stock.picking,ddt_number:0
 msgid "DDT"
 msgstr "DDT"
 
@@ -156,21 +115,19 @@ msgid "Shipping conditions"
 msgstr "Dati DDT"
 
 #. module: l10n_it_sale
-#: view:account.invoice:0
-msgid "Payments"
-msgstr "Pagamenti"
-
-#. module: l10n_it_sale
 #: sql_constraint:stock.picking:0
 msgid "Reference must be unique per Company!"
 msgstr "Il riferimento deve essere unico per ogni azienda!"
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_stock_picking_carriage_condition
 #: view:stock.picking.carriage_condition:0
-#: field:stock.picking.carriage_condition,name:0
 msgid "Carriage Condition"
 msgstr "Resa merce"
+
+#. module: l10n_it_sale
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PAF
+msgid "CHARGED ON INVOICE"
+msgstr "ADDEBITATO IN FATTURA"
 
 #. module: l10n_it_sale
 #: view:wizard.assign.ddt:0
@@ -183,29 +140,31 @@ msgid "This will assign the DDT number"
 msgstr "Questo assegnerà il numero del DDT"
 
 #. module: l10n_it_sale
-#: code:addons/l10n_it_sale/wizard/assign_ddt.py:36
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:37
 #, python-format
 msgid "DTT number already assigned"
-msgstr "Numero DDT già assegnato"
+msgstr "DTT number already assigned"
 
 #. module: l10n_it_sale
-#: model:ir.actions.act_window,name:l10n_it_sale.action_goods_description_tree
-#: model:ir.ui.menu,name:l10n_it_sale.menu_action_good_description_tree
-#: view:stock.picking.goods_description:0
-msgid "Descriptions of Goods"
-msgstr "Aspetto dei Beni"
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_MITT
+msgid "SENDER"
+msgstr "MITTENTE"
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_stock_picking_goods_description
 #: view:stock.picking.goods_description:0
-#: field:stock.picking.goods_description,name:0
 msgid "Description of Goods"
 msgstr "Aspetto dei Beni"
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_account_invoice_line
-msgid "Invoice Line"
-msgstr "Righe Fattura"
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_DEST
+msgid "RECIPIENT"
+msgstr "DESTINATARIO"
+
+#. module: l10n_it_sale
+#: model:ir.actions.act_window,name:l10n_it_sale.action_goods_description_tree
+#: view:stock.picking.goods_description:0
+msgid "Descriptions of Goods"
+msgstr "Aspetto dei Beni"
 
 #. module: l10n_it_sale
 #: model:ir.actions.act_window,name:l10n_it_sale.action_carriage_condition_tree
@@ -215,17 +174,19 @@ msgid "Carriage Conditions"
 msgstr "Resa merce"
 
 #. module: l10n_it_sale
-#: view:stock.picking.transportation_condition:0
-msgid "Conditions for transportation"
-msgstr "Condizioni del Trasporto"
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PA
+msgid "CARRIAGE"
+msgstr "PORTO ASSEGNATO"
 
 #. module: l10n_it_sale
-#: field:account.invoice,carriage_condition_id:0
-#: field:res.partner,carriage_condition_id:0
-#: field:sale.order,carriage_condition_id:0
-#: field:stock.picking,carriage_condition_id:0
-msgid "Carriage condition"
-msgstr "Resa merce"
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
+msgid "VECTOR"
+msgstr "VETTOREy"
+
+#. module: l10n_it_sale
+#: view:stock.picking.transportation_condition:0
+msgid "Conditions for transportation"
+msgstr "Conditions for transportation"
 
 #. module: l10n_it_sale
 #: view:wizard.assign.ddt:0
@@ -233,11 +194,7 @@ msgid "Cancel"
 msgstr "Annulla"
 
 #. module: l10n_it_sale
-#: field:stock.picking,ddt_in_date:0
-msgid "In DDT Date"
-msgstr "Data DDT"
-
-#. module: l10n_it_sale
 #: view:sale.order:0
 msgid "Default shipping conditions"
 msgstr "Dati DDT"
+

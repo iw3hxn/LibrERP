@@ -12,7 +12,7 @@
                          <page string="Dichiarazioni CONAI">
                             <field name="is_conai_exempt"/>
                             <separator colspan="4"/>
-                            <field name="conai_declaration_ids"/>
+                            <field name="conai_declaration_ids" nolabel="1"/>
                             <newline/>
                          </page>
                     </xpath>

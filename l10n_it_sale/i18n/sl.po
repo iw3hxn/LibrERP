@@ -31,14 +31,8 @@ msgid "Description of goods"
 msgstr "Opis blaga"
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_stock_picking_transportation_condition
-#: field:stock.picking.transportation_condition,name:0
-msgid "transportation Condition"
-msgstr "Prevozni pogoj"
-
-#. module: l10n_it_sale
 #: field:stock.picking,transportation_condition_id:0
-msgid "transportation condition"
+msgid "Transportation condition"
 msgstr "Prevozni pogoj"
 
 #. module: l10n_it_sale

@@ -216,8 +216,8 @@ class sale_order_line(orm.Model):
         res = {}
         
         for line in self.browse(cr, uid, ids, context):
-            res[line.id] = {'qty_available': line.product_id and line.product_id.qty_available,
-                            'virtual_available': line.product_id and line.product_id.virtual_available}
+            res[line.id] = {'qty_available': line.product_id and line.product_id.qty_available or 0.0,
+                            'virtual_available': line.product_id and line.product_id.virtual_available or 0.0}
         return res
 
     #overwrite of funcion insede sale_margin

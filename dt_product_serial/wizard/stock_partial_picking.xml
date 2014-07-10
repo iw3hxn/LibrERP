@@ -15,7 +15,6 @@
                 </field>
                 <field name="quantity" position="replace">
                     <field name="quantity" attrs="{'readonly': [('split_type', '=', 'single')]}" />
-                    
                     <field name="balance" groups="stock.view_balance"/>
                     <field name="pallet_qty" groups="stock.view_pallet" />
                     <field name="pallet_id" groups="stock.view_pallet" widget="selection" />

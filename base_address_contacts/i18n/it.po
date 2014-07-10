@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-13 22:00+0000\n"
-"PO-Revision-Date: 2014-04-13 22:00+0000\n"
+"POT-Creation-Date: 2014-07-08 08:25+0000\n"
+"PO-Revision-Date: 2014-07-08 08:25+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -199,7 +199,7 @@ msgstr "Foto"
 #. module: base_address_contacts
 #: view:res.partner.address.contact:0
 msgid "Partner"
-msgstr "Fornitore"
+msgstr "Partner"
 
 #. module: base_address_contacts
 #: model:ir.model,name:base_address_contacts.model_res_partner_address

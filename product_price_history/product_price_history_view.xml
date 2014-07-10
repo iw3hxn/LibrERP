@@ -9,8 +9,8 @@
                 <search string="Search">
                     <field name="product_id" />
                     <field name="date_to" />
-                    <field name="list_price" />
-                    <field name="standard_price" />
+                    <field name="list_price" groups="product_bom.group_dell_price"/>
+                    <field name="standard_price" groups="product_bom.group_cost_price"/>
                 </search>
             </field>
         </record>
@@ -23,8 +23,8 @@
                 <tree string="History">
                     <field name="product_id" />
                     <field name="date_to" />
-                    <field name="list_price" />
-                    <field name="standard_price" />
+                    <field name="list_price" groups="product_bom.group_dell_price"/>
+                    <field name="standard_price" groups="product_bom.group_cost_price"/>
                 </tree>
             </field>
         </record>
@@ -37,8 +37,8 @@
                 <form string="History">
                     <field name="date_to" />
                     <newline/>
-                    <field name="list_price" />
-                    <field name="standard_price" />
+                    <field name="list_price" groups="product_bom.group_dell_price"/>
+                    <field name="standard_price" groups="product_bom.group_cost_price"/>
                 </form>
             </field>
         </record>
@@ -51,7 +51,8 @@
             <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
         </record>
 
-        <menuitem id="product_price_history" name="Price History" parent="base.menu_product" action="product_price_history_action"/>
+        <menuitem id="product_price_history" name="Price History" parent="base.menu_product" action="product_price_history_action" 
+            groups="product_bom.group_sell_price,product_bom.group_cost_price" />
 
     </data>
 </openerp>

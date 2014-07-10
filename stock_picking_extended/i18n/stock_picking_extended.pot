@@ -1,14 +1,15 @@
 # Translation of OpenERP Server.
 # This file contains the translation of the following modules:
 #	* stock_picking_extended
+#	* l10n_it_sale
 #	* stock
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-25 05:24+0000\n"
-"PO-Revision-Date: 2014-06-25 05:24+0000\n"
+"POT-Creation-Date: 2014-07-09 16:35+0000\n"
+"PO-Revision-Date: 2014-07-09 16:35+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -48,6 +49,11 @@ msgstr ""
 #: view:stock.production.lot:0
 #, python-format
 msgid "Upstream Traceability"
+msgstr ""
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_asset
+msgid "Asset"
 msgstr ""
 
 #. module: stock
@@ -240,10 +246,9 @@ msgstr ""
 msgid "The current move line is already assigned to a pack, please remove it first if you really want to change it '             #                        'for this product: \"%s\" (id: %d)"
 msgstr ""
 
-#. modules: stock_picking_extended, stock
-#: selection:stock.picking,invoice_state:0
-#: selection:stock.journal,default_invoice_state:0
-msgid "Not Applicable"
+#. module: stock
+#: field:product.template,property_stock_inventory:0
+msgid "Inventory Location"
 msgstr ""
 
 #. module: stock
@@ -296,7 +301,9 @@ msgstr ""
 msgid "Products to Process"
 msgstr ""
 
-#. module: stock_picking_extended
+#. modules: stock_picking_extended, l10n_it_sale
+#: model:ir.actions.act_window,name:l10n_it_sale.action_goods_description_tree
+#: view:stock.picking.goods_description:0
 #: model:ir.ui.menu,name:stock_picking_extended.l10n_it_salemenu_action_good_description_tree
 msgid "Descriptions of Goods"
 msgstr ""
@@ -304,6 +311,13 @@ msgstr ""
 #. module: stock
 #: help:stock.fill.inventory,set_stock_zero:0
 msgid "If checked, all product quantities will be set to zero to help ensure a real physical inventory is done"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:ir.actions.act_window,name:l10n_it_sale.action_carriage_condition_tree
+#: model:ir.ui.menu,name:l10n_it_sale.menu_action_carriage_condition_tree
+#: view:stock.picking.carriage_condition:0
+msgid "Carriage Conditions"
 msgstr ""
 
 #. module: stock
@@ -419,6 +433,11 @@ msgstr ""
 msgid "Accounting Information"
 msgstr ""
 
+#. module: l10n_it_sale
+#: field:stock.picking,ddt_in_date:0
+msgid "In DDT Date"
+msgstr ""
+
 #. module: stock
 #: field:stock.location,stock_real_value:0
 msgid "Real Stock Value"
@@ -427,11 +446,6 @@ msgstr ""
 #. module: stock
 #: field:report.stock.move,day_diff2:0
 msgid "Lag (Days)"
-msgstr ""
-
-#. module: stock
-#: model:ir.model,name:stock.model_action_traceability
-msgid "Action traceability "
 msgstr ""
 
 #. module: stock
@@ -455,6 +469,11 @@ msgstr ""
 #: view:stock.picking:0
 #: field:stock.picking,min_date:0
 msgid "Expected Date"
+msgstr ""
+
+#. module: l10n_it_sale
+#: field:stock.journal,ddt_sequence:0
+msgid "DDT sequence"
 msgstr ""
 
 #. module: stock
@@ -497,6 +516,11 @@ msgstr ""
 #. module: stock
 #: help:product.category,property_stock_valuation_account_id:0
 msgid "When real-time inventory valuation is enabled on a product, this account will hold the current value of the products."
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_DEST
+msgid "RECIPIENT"
 msgstr ""
 
 #. module: stock
@@ -545,6 +569,11 @@ msgstr ""
 msgid "There is no stock output account defined for this product or its category: \"%s\" (id: %d)"
 msgstr ""
 
+#. module: l10n_it_sale
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_MITT
+msgid "SENDER"
+msgstr ""
+
 #. module: stock
 #: model:ir.actions.act_window,name:stock.action_picking_tree6
 #: model:ir.ui.menu,name:stock.menu_action_picking_tree6
@@ -588,6 +617,11 @@ msgstr ""
 #. module: stock
 #: model:ir.actions.act_window,help:stock.action_out_picking_move
 msgid "You will find in this list all products you have to deliver to your customers. You can process the deliveries directly from this list using the buttons on the right of each line. You can filter the products to deliver by customer, products or sale order (using the Origin field)."
+msgstr ""
+
+#. module: l10n_it_sale
+#: view:sale.order:0
+msgid "Default shipping conditions"
 msgstr ""
 
 #. module: stock
@@ -651,6 +685,11 @@ msgid "Codice Cliente Univoco"
 msgstr ""
 
 #. module: stock
+#: model:ir.actions.act_window,help:stock.action_picking_tree4
+msgid "The Incoming Shipments is the list of all orders you will receive from your suppliers. An incoming shipment contains a list of products to be received according to the original purchase order. You can validate the shipment totally or partially."
+msgstr ""
+
+#. module: stock
 #: field:stock.move.split.lines,wizard_exist_id:0
 msgid "Parent Wizard (for existing lines)"
 msgstr ""
@@ -672,7 +711,8 @@ msgstr ""
 msgid "Customers"
 msgstr ""
 
-#. modules: stock_picking_extended, stock
+#. modules: stock_picking_extended, l10n_it_sale, stock
+#: constraint:stock.picking:0
 #: constraint:stock.picking:0
 #: constraint:stock.picking:0
 msgid "Error! For a Partner must be only one DDT reference for year."
@@ -697,7 +737,8 @@ msgstr ""
 msgid "You try to assign a lot which is not from the same product"
 msgstr ""
 
-#. module: stock
+#. modules: l10n_it_sale, stock
+#: view:res.partner:0
 #: view:res.partner:0
 msgid "Sales & Purchases"
 msgstr ""
@@ -746,9 +787,8 @@ msgid "Location Structure"
 msgstr ""
 
 #. module: stock
-#: selection:report.stock.inventory,month:0
-#: selection:report.stock.move,month:0
-msgid "October"
+#: model:ir.model,name:stock.model_action_traceability
+msgid "Action traceability "
 msgstr ""
 
 #. module: stock
@@ -766,14 +806,15 @@ msgstr ""
 msgid "Process Picking"
 msgstr ""
 
-#. modules: stock_picking_extended, stock
+#. modules: stock_picking_extended, l10n_it_sale, stock
+#: sql_constraint:stock.picking:0
 #: sql_constraint:stock.picking:0
 #: sql_constraint:stock.picking:0
 msgid "Reference must be unique per Company!"
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:423
+#: code:addons/stock/product.py:426
 #, python-format
 msgid "Future Receptions"
 msgstr ""
@@ -860,12 +901,12 @@ msgid "Change Product Quantity"
 msgstr ""
 
 #. module: stock
-#: model:ir.actions.act_window,help:stock.action_picking_tree4
-msgid "The Incoming Shipments is the list of all orders you will receive from your suppliers. An incoming shipment contains a list of products to be received according to the original purchase order. You can validate the shipment totally or partially."
+#: model:ir.model,name:stock.model_stock_inventory_merge
+msgid "Merge Inventory"
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:439
+#: code:addons/stock/product.py:442
 #, python-format
 msgid "Future P&L"
 msgstr ""
@@ -894,11 +935,6 @@ msgstr ""
 #. module: stock_picking_extended
 #: model:ir.model,name:stock_picking_extended.model_account_invoice_line
 msgid "Invoice Line"
-msgstr ""
-
-#. module: stock
-#: model:stock.journal,name:stock.journal_asset
-msgid "Newspaper asset"
 msgstr ""
 
 #. module: stock
@@ -1159,9 +1195,10 @@ msgstr ""
 msgid "Split inventory lines"
 msgstr ""
 
-#. module: stock
-#: view:stock.inventory:0
-msgid "Physical Inventory"
+#. modules: stock_picking_extended, stock
+#: selection:stock.picking,invoice_state:0
+#: selection:stock.journal,default_invoice_state:0
+msgid "Not Applicable"
 msgstr ""
 
 #. module: stock
@@ -1248,6 +1285,11 @@ msgid "Pack Identification"
 msgstr ""
 
 #. module: stock
+#: view:stock.move:0
+msgid "Orders planned for today"
+msgstr ""
+
+#. module: stock
 #: report:stock.picking.list:0
 msgid "Packing List:"
 msgstr ""
@@ -1283,10 +1325,9 @@ msgstr ""
 msgid "This is the list of all your packs. When you select a Pack, you can get the upstream or downstream traceability of the products contained in the pack."
 msgstr ""
 
-#. module: stock_picking_extended
-#: model:ir.model,name:stock_picking_extended.model_stock_picking_goods_description
-#: field:stock.picking.goods_description,name:0
-msgid "Description of Goods"
+#. module: stock
+#: model:ir.model,name:stock.model_stock_move
+msgid "Stock Move"
 msgstr ""
 
 #. module: stock
@@ -1586,6 +1627,11 @@ msgstr ""
 msgid "Supplier Location"
 msgstr ""
 
+#. module: l10n_it_sale
+#: view:wizard.assign.ddt:0
+msgid "This will assign the DDT number"
+msgstr ""
+
 #. module: stock
 #: code:addons/stock/stock.py:2386
 #, python-format
@@ -1705,9 +1751,14 @@ msgid "Localization"
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:435
+#: code:addons/stock/product.py:438
 #, python-format
 msgid "Delivered Qty"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PF
+msgid "FREEPORT"
 msgstr ""
 
 #. module: stock
@@ -1817,7 +1868,8 @@ msgstr ""
 msgid "Carriage condition"
 msgstr ""
 
-#. module: stock
+#. modules: l10n_it_sale, stock
+#: view:wizard.assign.ddt:0
 #: view:stock.inventory.line.split:0
 #: view:stock.move.consume:0
 #: view:stock.move.scrap:0
@@ -1840,11 +1892,29 @@ msgid "Split in production lots"
 msgstr ""
 
 #. module: stock
-#: model:ir.model,name:stock.model_stock_inventory_merge
-msgid "Merge Inventory"
+#: model:ir.model,name:stock.model_stock_location
+#: field:product.product,location_id:0
+#: view:report.stock.inventory:0
+#: field:report.stock.inventory,location_id:0
+#: field:stock.change.product.qty,location_id:0
+#: field:stock.fill.inventory,location_id:0
+#: field:stock.inventory.line,location_id:0
+#: report:stock.inventory.move:0
+#: view:stock.location:0
+#: view:stock.move:0
+#: field:stock.move.consume,location_id:0
+#: field:stock.move.scrap,location_id:0
+#: field:stock.partial.move.line,location_id:0
+#: field:stock.partial.picking.line,location_id:0
+#: field:stock.picking,location_id:0
+#: report:stock.picking.list:0
+#: field:stock.report.prodlots,location_id:0
+#: field:stock.report.tracklots,location_id:0
+msgid "Location"
 msgstr ""
 
 #. module: stock_picking_extended
+#: sql_constraint:purchase.order:0
 #: sql_constraint:sale.order:0
 msgid "Order Reference must be unique per Company!"
 msgstr ""
@@ -1881,8 +1951,8 @@ msgid "Inventory Valuation"
 msgstr ""
 
 #. module: stock
-#: view:stock.move:0
-msgid "Orders planned for today"
+#: view:stock.picking:0
+msgid "Create Invoice"
 msgstr ""
 
 #. module: stock
@@ -1954,9 +2024,14 @@ msgid "There is no stock input account defined for this product or its category:
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:425
+#: code:addons/stock/product.py:428
 #, python-format
 msgid "Received Qty"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CAR
+msgid "CARTONI"
 msgstr ""
 
 #. module: stock
@@ -2034,8 +2109,10 @@ msgid "]"
 msgstr ""
 
 #. module: stock
-#: field:product.template,property_stock_inventory:0
-msgid "Inventory Location"
+#: field:stock.partial.move.line,wizard_id:0
+#: field:stock.partial.picking.line,wizard_id:0
+#: field:stock.return.picking.memory,wizard_id:0
+msgid "Wizard"
 msgstr ""
 
 #. module: stock
@@ -2057,6 +2134,11 @@ msgstr ""
 #. module: stock
 #: view:report.stock.inventory:0
 msgid "Analysis of current inventory (only moves that have already been processed)"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PA
+msgid "CARRIAGE"
 msgstr ""
 
 #. module: stock
@@ -2206,7 +2288,7 @@ msgid "Warehouse board"
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:445
+#: code:addons/stock/product.py:448
 #, python-format
 msgid "Future Qty"
 msgstr ""
@@ -2236,6 +2318,11 @@ msgstr ""
 msgid "Shipping Type"
 msgstr ""
 
+#. module: l10n_it_sale
+#: field:stock.picking,ddt_date:0
+msgid "DDT date"
+msgstr ""
+
 #. module: stock
 #: view:stock.move:0
 msgid "Stock moves that are Confirmed, Available or Waiting"
@@ -2253,7 +2340,8 @@ msgstr ""
 msgid "Products"
 msgstr ""
 
-#. module: stock_picking_extended
+#. modules: stock_picking_extended, l10n_it_sale
+#: view:stock.picking.carriage_condition:0
 #: model:ir.model,name:stock_picking_extended.model_stock_picking_carriage_condition
 #: field:stock.picking.carriage_condition,name:0
 msgid "Carriage Condition"
@@ -2297,14 +2385,21 @@ msgstr ""
 msgid "Here you can receive individual products, no matter what purchase order or picking order they come from. You will find the list of all products you are waiting for. Once you receive an order, you can filter based on the name of the supplier or the purchase order reference. Then you can confirm all products received using the buttons on the right of each line."
 msgstr ""
 
-#. module: stock
-#: model:ir.model,name:stock.model_stock_move
-msgid "Stock Move"
+#. modules: stock_picking_extended, l10n_it_sale
+#: view:stock.picking.goods_description:0
+#: model:ir.model,name:stock_picking_extended.model_stock_picking_goods_description
+#: field:stock.picking.goods_description,name:0
+msgid "Description of Goods"
 msgstr ""
 
 #. module: stock
 #: view:report.stock.move:0
 msgid "Delay(Days)"
+msgstr ""
+
+#. module: stock_picking_extended
+#: view:stock.picking.transportation_condition:0
+msgid "Condition for transportation"
 msgstr ""
 
 #. module: stock
@@ -2320,7 +2415,7 @@ msgid "Expected date for the picking to be processed"
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:441
+#: code:addons/stock/product.py:444
 #, python-format
 msgid "P&L Qty"
 msgstr ""
@@ -2392,7 +2487,8 @@ msgstr ""
 msgid "Inventory"
 msgstr ""
 
-#. modules: stock_picking_extended, stock
+#. modules: stock_picking_extended, l10n_it_sale, stock
+#: model:ir.model,name:l10n_it_sale.model_stock_picking
 #: model:ir.model,name:stock.model_stock_picking
 #: model:ir.model,name:stock_picking_extended.model_stock_picking
 msgid "Picking List"
@@ -2406,6 +2502,11 @@ msgstr ""
 #. module: stock
 #: view:stock.inventory:0
 msgid "Cancel Inventory"
+msgstr ""
+
+#. module: l10n_it_sale
+#: field:stock.picking,ddt_in_reference:0
+msgid "In DDT"
 msgstr ""
 
 #. module: stock
@@ -2457,7 +2558,8 @@ msgstr ""
 msgid "Stock Level Forecast"
 msgstr ""
 
-#. modules: stock_picking_extended, stock
+#. modules: stock_picking_extended, l10n_it_sale, stock
+#: model:ir.model,name:l10n_it_sale.model_stock_journal
 #: model:ir.model,name:stock.model_stock_journal
 #: field:report.stock.move,stock_journal:0
 #: view:stock.journal:0
@@ -2465,6 +2567,12 @@ msgstr ""
 #: field:stock.picking,stock_journal_id:0
 #: model:ir.model,name:stock_picking_extended.model_stock_journal
 msgid "Stock Journal"
+msgstr ""
+
+#. module: l10n_it_sale
+#: view:stock.picking:0
+#: field:stock.picking,ddt_number:0
+msgid "DDT"
 msgstr ""
 
 #. module: stock
@@ -2533,8 +2641,8 @@ msgid "Your Company"
 msgstr ""
 
 #. module: stock
-#: constraint:stock.move:0
-msgid "You can not move products from or to a location of the type view."
+#: view:stock.inventory:0
+msgid "Physical Inventory"
 msgstr ""
 
 #. module: stock
@@ -2558,19 +2666,8 @@ msgid "Todo"
 msgstr ""
 
 #. module: stock
-#: view:report.stock.inventory:0
-#: field:report.stock.inventory,company_id:0
-#: view:report.stock.move:0
-#: field:report.stock.move,company_id:0
-#: field:stock.inventory,company_id:0
-#: field:stock.inventory.line,company_id:0
-#: field:stock.location,company_id:0
-#: field:stock.move,company_id:0
-#: field:stock.picking,company_id:0
-#: field:stock.production.lot,company_id:0
-#: field:stock.production.lot.revision,company_id:0
-#: field:stock.warehouse,company_id:0
-msgid "Company"
+#: field:stock.production.lot,move_ids:0
+msgid "Moves for this production lot"
 msgstr ""
 
 #. module: stock
@@ -2711,6 +2808,11 @@ msgstr ""
 #. module: stock
 #: help:stock.incoterms,name:0
 msgid "Incoterms are series of sales terms.They are used to divide transaction costs and responsibilities between buyer and seller and reflect state-of-the-art transportation practices."
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_SFU
+msgid "SFUSI"
 msgstr ""
 
 #. module: stock
@@ -2991,13 +3093,6 @@ msgid "Supplier Locations"
 msgstr ""
 
 #. module: stock
-#: field:stock.partial.move.line,wizard_id:0
-#: field:stock.partial.picking.line,wizard_id:0
-#: field:stock.return.picking.memory,wizard_id:0
-msgid "Wizard"
-msgstr ""
-
-#. module: stock
 #: view:report.stock.move:0
 msgid "Completed Stock-Moves"
 msgstr ""
@@ -3067,6 +3162,13 @@ msgstr ""
 msgid "Manager"
 msgstr ""
 
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_transportation_condition_tree
+#: model:ir.ui.menu,name:stock_picking_extended.menu_action_transportation_condition_tree
+#: view:stock.picking.transportation_condition:0
+msgid "Conditions for transportation"
+msgstr ""
+
 #. module: stock
 #: report:stock.picking.list:0
 msgid "Total"
@@ -3112,7 +3214,7 @@ msgid "Quantities, UoMs, Products and Locations cannot be modified on stock move
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:451
+#: code:addons/stock/product.py:454
 #, python-format
 msgid "Future Productions"
 msgstr ""
@@ -3138,6 +3240,11 @@ msgstr ""
 msgid "Dates of Inventories"
 msgstr ""
 
+#. module: l10n_it_sale
+#: view:res.partner:0
+msgid "Shipping conditions"
+msgstr ""
+
 #. module: stock
 #: view:report.stock.move:0
 msgid "Total incoming quantity"
@@ -3149,8 +3256,19 @@ msgid "Out Qty"
 msgstr ""
 
 #. module: stock
-#: field:stock.production.lot,move_ids:0
-msgid "Moves for this production lot"
+#: view:report.stock.inventory:0
+#: field:report.stock.inventory,company_id:0
+#: view:report.stock.move:0
+#: field:report.stock.move,company_id:0
+#: field:stock.inventory,company_id:0
+#: field:stock.inventory.line,company_id:0
+#: field:stock.location,company_id:0
+#: field:stock.move,company_id:0
+#: field:stock.picking,company_id:0
+#: field:stock.production.lot,company_id:0
+#: field:stock.production.lot.revision,company_id:0
+#: field:stock.warehouse,company_id:0
+msgid "Company"
 msgstr ""
 
 #. module: stock
@@ -3216,6 +3334,11 @@ msgstr ""
 #. module: stock_picking_extended
 #: view:account.invoice:0
 msgid "Shipping"
+msgstr ""
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_purchase_order
+msgid "Purchase Order"
 msgstr ""
 
 #. module: stock
@@ -3396,15 +3519,20 @@ msgid "Total outgoing quantity"
 msgstr ""
 
 #. module: stock
-#: selection:stock.move,state:0
-#: selection:stock.picking,state:0
-#: report:stock.picking.list:0
-msgid "New"
+#: field:stock.picking,backorder_id:0
+msgid "Back Order of"
 msgstr ""
 
 #. module: stock
 #: model:stock.journal,name:stock.journal_omaggio
 msgid "Tribute"
+msgstr ""
+
+#. module: l10n_it_sale
+#: model:ir.actions.act_window,name:l10n_it_sale.action_wizard_assign_ddt
+#: view:stock.picking:0
+#: view:wizard.assign.ddt:0
+msgid "Assign DDT"
 msgstr ""
 
 #. module: stock
@@ -3463,6 +3591,11 @@ msgstr ""
 #: field:stock.inventory.line.split,use_exist:0
 #: field:stock.move.split,use_exist:0
 msgid "Existing Lots"
+msgstr ""
+
+#. module: stock
+#: model:res.groups,name:stock.view_pallet
+msgid "View Pallet"
 msgstr ""
 
 #. module: stock
@@ -3527,7 +3660,7 @@ msgid "Waiting "
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:433
+#: code:addons/stock/product.py:436
 #, python-format
 msgid "Future Deliveries"
 msgstr ""
@@ -3540,28 +3673,6 @@ msgstr ""
 #. module: stock
 #: model:stock.journal,name:stock.journal_clavorazione
 msgid "C/Processing"
-msgstr ""
-
-#. module: stock
-#: model:ir.model,name:stock.model_stock_location
-#: field:product.product,location_id:0
-#: view:report.stock.inventory:0
-#: field:report.stock.inventory,location_id:0
-#: field:stock.change.product.qty,location_id:0
-#: field:stock.fill.inventory,location_id:0
-#: field:stock.inventory.line,location_id:0
-#: report:stock.inventory.move:0
-#: view:stock.location:0
-#: view:stock.move:0
-#: field:stock.move.consume,location_id:0
-#: field:stock.move.scrap,location_id:0
-#: field:stock.partial.move.line,location_id:0
-#: field:stock.partial.picking.line,location_id:0
-#: field:stock.picking,location_id:0
-#: report:stock.picking.list:0
-#: field:stock.report.prodlots,location_id:0
-#: field:stock.report.tracklots,location_id:0
-msgid "Location"
 msgstr ""
 
 #. module: stock
@@ -3627,6 +3738,11 @@ msgstr ""
 msgid "Products Moves"
 msgstr ""
 
+#. module: l10n_it_sale
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_BAN
+msgid "PALLETS"
+msgstr ""
+
 #. modules: stock_picking_extended, stock
 #: selection:stock.picking,invoice_state:0
 #: selection:stock.journal,default_invoice_state:0
@@ -3635,7 +3751,7 @@ msgstr ""
 
 #. module: stock_picking_extended
 #: field:stock.picking.transportation_condition,name:0
-msgid "transportation Condition"
+msgid "Transportation Condition"
 msgstr ""
 
 #. module: stock
@@ -3683,11 +3799,6 @@ msgid "When the stock move is created it is in the 'Draft' state.\n"
 " If stock is available state is set to 'Avaiable'.\n"
 " When the picking it done the state is 'Done'.              \n"
 "The state is 'Waiting' if the move is waiting for another one."
-msgstr ""
-
-#. module: stock
-#: view:stock.picking:0
-msgid "Create Invoice"
 msgstr ""
 
 #. module: stock
@@ -3758,9 +3869,14 @@ msgid "Account Rendered Vision"
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:447
+#: code:addons/stock/product.py:450
 #, python-format
 msgid "Unplanned Qty"
+msgstr ""
+
+#. module: stock
+#: constraint:stock.move:0
+msgid "You can not move products from or to a location of the type view."
 msgstr ""
 
 #. module: stock
@@ -3785,6 +3901,11 @@ msgid "Forces to specify a Production Lot for all moves containing this product 
 msgstr ""
 
 #. module: stock
+#: model:res.groups,name:stock.view_balance
+msgid "View Balance"
+msgstr ""
+
+#. module: stock
 #: model:ir.actions.act_window,name:stock.act_product_stock_move_futur_open
 msgid "Future Stock Moves"
 msgstr ""
@@ -3795,7 +3916,7 @@ msgid "Move History (parent moves)"
 msgstr ""
 
 #. module: stock
-#: code:addons/stock/product.py:429
+#: code:addons/stock/product.py:432
 #, python-format
 msgid "Future Stock"
 msgstr ""
@@ -3808,6 +3929,11 @@ msgstr ""
 #: code:addons/stock/wizard/stock_return_picking.py:220
 #, python-format
 msgid "Error"
+msgstr ""
+
+#. module: l10n_it_sale
+#: view:wizard.assign.ddt:0
+msgid "Assign"
 msgstr ""
 
 #. module: stock
@@ -3868,6 +3994,11 @@ msgstr ""
 msgid "Prefix"
 msgstr ""
 
+#. module: l10n_it_sale
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
+msgid "VECTOR"
+msgstr ""
+
 #. module: stock
 #: code:addons/stock/wizard/stock_splitinto.py:53
 #, python-format
@@ -3913,21 +4044,15 @@ msgstr ""
 msgid "You must assign a production lot for this product"
 msgstr ""
 
-#. module: stock_picking_extended
-#: field:stock.picking,transportation_condition_id:0
-msgid "transportation condition"
-msgstr ""
-
 #. module: stock
 #: view:stock.move:0
 msgid "Expected"
 msgstr ""
 
 #. module: stock
-#: selection:report.stock.inventory,location_type:0
-#: model:stock.location,name:stock.location_production
-#: selection:stock.location,usage:0
-msgid "Production"
+#: selection:report.stock.inventory,month:0
+#: selection:report.stock.move,month:0
+msgid "October"
 msgstr ""
 
 #. module: stock
@@ -3936,8 +4061,10 @@ msgid "Split Move"
 msgstr ""
 
 #. module: stock
-#: field:stock.picking,backorder_id:0
-msgid "Back Order of"
+#: selection:stock.move,state:0
+#: selection:stock.picking,state:0
+#: report:stock.picking.list:0
+msgid "New"
 msgstr ""
 
 #. module: stock
@@ -3997,8 +4124,13 @@ msgstr ""
 msgid "Location Content"
 msgstr ""
 
+#. module: l10n_it_sale
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CBA
+msgid "CARTONI-PALLETS"
+msgstr ""
+
 #. module: stock
-#: code:addons/stock/product.py:453
+#: code:addons/stock/product.py:456
 #, python-format
 msgid "Produced Qty"
 msgstr ""
@@ -4013,6 +4145,13 @@ msgstr ""
 #. module: stock
 #: field:stock.location,chained_location_type:0
 msgid "Chained Location Type"
+msgstr ""
+
+#. module: stock
+#: selection:report.stock.inventory,location_type:0
+#: model:stock.location,name:stock.location_production
+#: selection:stock.location,usage:0
+msgid "Production"
 msgstr ""
 
 #. module: stock
@@ -4038,6 +4177,11 @@ msgstr ""
 msgid "Production Lot Identification"
 msgstr ""
 
+#. module: l10n_it_sale
+#: model:ir.model,name:l10n_it_sale.model_wizard_assign_ddt
+msgid "wizard.assign.ddt"
+msgstr ""
+
 #. module: stock_picking_extended
 #: help:stock.picking,address_delivery_id:0
 msgid "Delivery address of             partner"
@@ -4046,6 +4190,11 @@ msgstr ""
 #. module: stock
 #: model:stock.journal,name:stock.journal_cvisione
 msgid "C/Vision"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:stock.picking,transportation_condition_id:0
+msgid "Transportation Condition"
 msgstr ""
 
 #. module: stock
@@ -4087,9 +4236,20 @@ msgstr ""
 msgid "Output"
 msgstr ""
 
+#. module: l10n_it_sale
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PAF
+msgid "CHARGED ON INVOICE"
+msgstr ""
+
 #. module: stock
 #: help:stock.tracking,name:0
 msgid "By default, the pack reference is generated following the sscc standard. (Serial number + 1 check digit)"
+msgstr ""
+
+#. module: l10n_it_sale
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:37
+#, python-format
+msgid "DTT number already assigned"
 msgstr ""
 
 #. module: stock
