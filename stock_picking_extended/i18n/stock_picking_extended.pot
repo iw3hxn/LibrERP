@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-08 22:12+0000\n"
-"PO-Revision-Date: 2014-07-08 22:12+0000\n"
+"POT-Creation-Date: 2014-07-09 16:35+0000\n"
+"PO-Revision-Date: 2014-07-09 16:35+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1966,12 +1966,6 @@ msgstr ""
 msgid "free loan"
 msgstr ""
 
-#. module: l10n_it_sale
-#: model:ir.actions.act_window,name:l10n_it_sale.action_transportation_condition_tree
-#: model:ir.ui.menu,name:l10n_it_sale.menu_action_transportation_condition_tree
-msgid "conditions for transportation"
-msgstr ""
-
 #. module: stock
 #: help:res.partner,property_stock_supplier:0
 msgid "This stock location will be used, instead of the default one, as the source location for goods you receive from the current partner"
@@ -2403,7 +2397,7 @@ msgstr ""
 msgid "Delay(Days)"
 msgstr ""
 
-#. module: l10n_it_sale
+#. module: stock_picking_extended
 #: view:stock.picking.transportation_condition:0
 msgid "Condition for transportation"
 msgstr ""
@@ -3168,7 +3162,9 @@ msgstr ""
 msgid "Manager"
 msgstr ""
 
-#. module: l10n_it_sale
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_transportation_condition_tree
+#: model:ir.ui.menu,name:stock_picking_extended.menu_action_transportation_condition_tree
 #: view:stock.picking.transportation_condition:0
 msgid "Conditions for transportation"
 msgstr ""
@@ -3755,7 +3751,7 @@ msgstr ""
 
 #. module: stock_picking_extended
 #: field:stock.picking.transportation_condition,name:0
-msgid "transportation Condition"
+msgid "Transportation Condition"
 msgstr ""
 
 #. module: stock
@@ -4048,11 +4044,6 @@ msgstr ""
 msgid "You must assign a production lot for this product"
 msgstr ""
 
-#. module: stock_picking_extended
-#: field:stock.picking,transportation_condition_id:0
-msgid "transportation condition"
-msgstr ""
-
 #. module: stock
 #: view:stock.move:0
 msgid "Expected"
@@ -4199,6 +4190,11 @@ msgstr ""
 #. module: stock
 #: model:stock.journal,name:stock.journal_cvisione
 msgid "C/Vision"
+msgstr ""
+
+#. module: stock_picking_extended
+#: field:stock.picking,transportation_condition_id:0
+msgid "Transportation Condition"
 msgstr ""
 
 #. module: stock
