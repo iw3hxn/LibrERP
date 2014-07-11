@@ -19,13 +19,10 @@
 #
 ##############################################################################
 
-import time
-from osv import osv, fields
-import decimal_precision as dp
-import netsvc
-from tools.translate import _
+from openerp.osv import orm, fields
 
-class custom_account_bank_statement(osv.osv):
+
+class custom_account_bank_statement(orm.Model):
     _name = 'account.bank.statement'
     _inherit = 'account.bank.statement'
 
@@ -34,5 +31,3 @@ class custom_account_bank_statement(osv.osv):
         if st.balance_end_real != 0.0:
             super(custom_account_bank_statement, self).balance_check(cr, uid, st_id, journal_type='bank', context=context)
         return True
-
-custom_account_bank_statement()
