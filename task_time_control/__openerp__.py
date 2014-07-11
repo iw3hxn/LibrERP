@@ -5,7 +5,7 @@
 #    Copyright (C) 2004-TODAY
 #    Pexego Sistemas Informáticos (http://www.pexego.es) All Rights Reserved
 #    $Jesús Ventosinos Mayor$
-#    Didotech srl (c) 2014
+#    Copyright (c) 2014 Didotech srl (info at didotech.com)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@
 
 {
     'name': 'Project task time control',
-    'version': '2.0.4.1',
+    'version': '2.1.5.2',
     'category': 'Project Management',
     "sequence": 30,
     'complexity': "easy",

@@ -9,10 +9,11 @@
             <field name="inherit_id" ref="project.view_task_form2" />
             <field name="arch" type="xml">
                 <field name="state" position="after">
-                    <button name="work_start_btn" states="draft,open,working" type="object" string="Start" icon="gtk-apply"/>
+                    <button name="work_start_btn" type="object" string="Start" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'open', 'working']), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', True)]}" icon="gtk-apply"/>
                     <button name="work_end_btn" states="working" type="object" string="Stop" icon="gtk-cancel" context="{'default_task_id': active_id}" />
                 </field>
                 <field name="notes" position="before">
+                    <field name="user_is_working" invisible="True" />
                     <field name="other_users_ids" />
                 </field>
             </field>
@@ -25,10 +26,11 @@
             <field name="inherit_id" ref="project.view_task_tree2" />
             <field name="arch" type="xml">
                 <field name="name" position="before">
-                    <button name="work_start_btn" states="draft,open,working" type="object" string="Start" icon="gtk-apply"/>
+                    <button name="work_start_btn" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'open', 'working']), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', True)]}" type="object" string="Start" icon="gtk-apply"/>
                     <button name="work_end_btn" states="working" type="object" string="Stop" icon="gtk-cancel" />
                 </field>
                 <field name="project_id" position="before">
+                    <field name="user_is_working" invisible="True" />
                     <field name="working_users"/>
                 </field>
                 <xpath expr="//tree[@string='Tasks']" position="attributes">
@@ -37,7 +39,6 @@
             </field>
         </record>
         
-
         <record model="ir.ui.view" id="project_task_time_control_tree_task_view_pannel">
             <field name="name">project.task.time.control.tree.task.panel</field>
             <field name="model">project.task</field>
