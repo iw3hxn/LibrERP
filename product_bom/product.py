@@ -205,7 +205,10 @@ class product_product(osv.osv):
                                                     bom.product_qty,
                                                     bom.product_id.uom_id,
                                                     context=context)
-            product_qty += min(prod_min_quantities) * produced_qty
+            if prod_min_quantities:
+                product_qty += min(prod_min_quantities) * produced_qty
+            else:
+                product_qty += produced_qty
         return product_qty
 
     def _product_available(self, cr, uid, ids, field_names=None,
