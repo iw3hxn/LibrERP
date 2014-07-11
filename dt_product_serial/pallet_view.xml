@@ -26,8 +26,8 @@
         <field name="arch" type="xml">
             <tree string= "Pallet Move" editable="top">
                 <field name="date"/>
-                <field name="move" />
                 <field name="pallet_qty" />
+                <field name="move" />
                 <field name="pallet_id" />
                 <field name="partner_id" />
                 <field name="account_invoice_id" />

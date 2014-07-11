@@ -62,7 +62,7 @@ class product_ul(orm.Model):
                     if pallet_move_ids:
                         pallet_sum = 0
                         for pallet_move in pallet_move_obj.browse(cr, uid, pallet_move_ids):
-                            if pallet_move.move == 'out':
+                            if pallet_move.move == 'in':
                                 pallet_sum -= pallet_move.pallet_qty
                             else:
                                 pallet_sum += pallet_move.pallet_qty
