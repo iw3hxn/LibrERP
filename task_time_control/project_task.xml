@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <field name="state" position="after">
                     <button name="work_start_btn" type="object" string="Start" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'open', 'working']), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', True)]}" icon="gtk-apply"/>
-                    <button name="work_end_btn" states="working" type="object" string="Stop" icon="gtk-cancel" context="{'default_task_id': active_id}" />
+                    <button name="work_end_btn" attrs="{'invisible': ['|', ('state', 'not in', ['working', ]), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', False)]}" type="object" string="Stop" icon="gtk-cancel" context="{'default_task_id': active_id}" />
                 </field>
                 <field name="notes" position="before">
                     <field name="user_is_working" invisible="True" />
@@ -27,7 +27,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="before">
                     <button name="work_start_btn" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'open', 'working']), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', True)]}" type="object" string="Start" icon="gtk-apply"/>
-                    <button name="work_end_btn" states="working" type="object" string="Stop" icon="gtk-cancel" />
+                    <button name="work_end_btn" attrs="{'invisible': ['|', ('state', 'not in', ['working', ]), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', False)]}" type="object" string="Stop" icon="gtk-cancel" />
                 </field>
                 <field name="project_id" position="before">
                     <field name="user_is_working" invisible="True" />
@@ -46,12 +46,13 @@
             <field name="inherit_id" ref="project.view_task_tree" />
             <field name="arch" type="xml">
                 <field name="name" position="before">
-                    <button name="work_start_btn" states="draft,open,working" type="object" string="Start" icon="gtk-apply"/>
-                    <button name="work_end_btn" states="working" type="object" string="Stop" icon="gtk-cancel" />
+                    <button name="work_start_btn" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'open', 'working']), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', True)]}" type="object" string="Start" icon="gtk-apply"/>
+                    <button name="work_end_btn" attrs="{'invisible': ['|', ('state', 'not in', ['working', ]), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', False)]}" type="object" string="Stop" icon="gtk-cancel" />
                 </field>
                 <field name="project_id" position="before">
+                    <field name="user_is_working" invisible="True" />
                     <field name="working_users"/>
-                    </field>
+                </field>
                 <xpath expr="//tree[@string='My Tasks']" position="attributes">
                     <attribute name="colors">red:date_deadline&lt;current_date;blue:date_deadline==current_date;black:date_deadline&gt;current_date;blue:state == ('working')</attribute>
                 </xpath>
