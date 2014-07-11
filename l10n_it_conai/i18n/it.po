@@ -1,0 +1,113 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* l10n_it_conai
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-03 13:00+0000\n"
+"PO-Revision-Date: 2014-07-03 13:00+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,percent_exemption:0
+msgid "Exemption % (max 1.00 equal to 100%)"
+msgstr "Esenzione in % (massimo 1.00 = 100%)"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,partner_id:0
+msgid "Partner which declaration is linked"
+msgstr "Partner della Dichiarazione"
+
+#. module: l10n_it_conai
+#: model:ir.model,name:l10n_it_conai.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Riga Fattura"
+
+#. module: l10n_it_conai
+#: model:ir.actions.act_window,name:l10n_it_conai.action_conai_declaration_tree
+#: model:ir.ui.menu,name:l10n_it_conai.menu_action_conai_declaration_tree
+#: field:res.partner,conai_declaration_ids:0
+msgid "CONAI declarations"
+msgstr "Dichiarazioni CONAI"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,product_categ_id:0
+msgid "Product category for which the declaration is valid"
+msgstr "Categoria del Prodotto per cui è valida la dichirazione"
+
+#. module: l10n_it_conai
+#: model:ir.model,name:l10n_it_conai.model_product_category
+msgid "Product Category"
+msgstr "Categoria Prodotto"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,active:0
+msgid "Active"
+msgstr "Attiva"
+
+#. module: l10n_it_conai
+#: field:res.partner,is_conai_exempt:0
+msgid "Exempt for CONAI"
+msgstr "Esente CONAI"
+
+#. module: l10n_it_conai
+#: view:conai.declaration:0
+msgid "CONAI declaration"
+msgstr "Dichiarazione CONAI"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,uom_id:0
+msgid "UOM of plafond amount"
+msgstr "Unità di Misura plafond"
+
+#. module: l10n_it_conai
+#: field:product.category,conai_product_id:0
+msgid "CONAI product to be charged in invoices"
+msgstr "Prodotto CONAI che verrà addebitato in fattura"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,plafond_amount:0
+msgid "Amount of plafond"
+msgstr "Ammontare del plafond"
+
+#. module: l10n_it_conai
+#: field:stock.move,weight_exempt_conai:0
+msgid "CONAI exempt weight of product"
+msgstr "Esenzione CONAI per peso"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,declaration_id:0
+msgid "Declaration id"
+msgstr "Dichiarazione"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,date_end_validity:0
+msgid "Date end validity"
+msgstr "Data fine"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,date_start_validity:0
+msgid "Date start validity"
+msgstr "Data inizio"
+
+#. module: l10n_it_conai
+#: field:conai.declaration,number:0
+msgid "Number"
+msgstr "Numero"
+
+#. module: l10n_it_conai
+#: model:ir.model,name:l10n_it_conai.model_res_partner
+msgid "Partner"
+msgstr ""
