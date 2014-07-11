@@ -32,6 +32,12 @@ class stock_picking(orm.Model):
 
     }
     
+    def name_get(self, cr, uid, ids, context=None):
+        res = []
+        for picking in self.browse(cr, uid, ids):
+            res.append((picking.id, picking.ddt_number or picking.ddt_in_reference or picking.name))
+        return res
+        
     def _check_ddt_in_reference_unique(self, cr, uid, ids, context=None):
         #qui và cercato da gli stock.picking quelli che hanno ddt_in_reference e partner_id uguali
         return True
