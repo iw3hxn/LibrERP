@@ -44,6 +44,7 @@
     """,
     "data": [
         "security/security.xml",
+        "security/ir.model.access.csv",
         "product_view.xml",
         "pallet_view.xml",
         "company_view.xml",
