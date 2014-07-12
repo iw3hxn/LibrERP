@@ -21,6 +21,7 @@
 
 import time
 from osv import fields, osv
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class account_invoice(osv.Model):
@@ -39,9 +40,6 @@ class account_invoice(osv.Model):
             states={'draft': [('readonly', False)]},
             select=True, help="Keep empty to use the current date",
             ),
-#        'subject': fields.text(
-#            'Subject', help="Main subject, topic of the activity.",
-#            ),
     }
 
     def action_proforma(self, cr, uid, ids, context=None):
@@ -51,28 +49,25 @@ class account_invoice(osv.Model):
             return True
         if isinstance(ids, (int, long)):
             ids = [ids]
-        ait_obj = self.pool.get('account.invoice.tax')
+        ait_obj = self.pool['account.invoice.tax']
         
         for inv in self.browse(cr, uid, ids, context=context):
-            #import pdb; pdb.set_trace()
+                        
             vals = {
                 'state': 'proforma2',
-                'proforma_number': self.pool.get('ir.sequence').get(
+                'proforma_number': self.pool['ir.sequence'].get(
                     cr, uid, 'account.invoice.proforma',
                     ),
-                'date_proforma': inv.date_proforma,
+                'date_proforma': inv.date_proforma or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                'number': False,
+                'date_invoice': False,
+                'internal_number': False
             }
-
-            if not inv.date_proforma:
-                vals['date_proforma'] = time.strftime('%Y-%m-%d')
             compute_taxes = ait_obj.compute(cr, uid, inv.id, context=context)
             self.check_tax_lines(cr, uid, inv, compute_taxes, ait_obj)
             self.write(cr, uid, inv.id, vals, context=context)
 
         return True
-        #return self.write(
-        #    cr, uid, ids, {'state': 'proforma2'}, context=context)
-
 
     def copy(self, cr, uid, id, default=None, context=None):
         default = default or {}
