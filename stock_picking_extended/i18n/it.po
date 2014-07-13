@@ -1213,7 +1213,7 @@ msgstr "Dividi riche inventario"
 #: selection:stock.picking,invoice_state:0
 #: selection:stock.journal,default_invoice_state:0
 msgid "Not Applicable"
-msgstr "Non Applicabile"
+msgstr "Non Fatturabile"
 
 #. module: stock
 #: model:stock.journal,name:stock.journal_reso6
@@ -3467,7 +3467,7 @@ msgstr "Attenzione"
 #: code:addons/stock/stock.py:1358
 #, python-format
 msgid "is done."
-msgstr "is done."
+msgstr "è completato."
 
 #. module: stock_picking_extended
 #: model:ir.model,name:stock_picking_extended.model_sale_order
