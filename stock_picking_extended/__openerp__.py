@@ -22,13 +22,13 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.5.8.9',
+    'version': '3.6.8.9',
     'category': 'Others',
     'description': """SimplERP - Stock picking extension
 
 Functionalities:
     - different shipping address for consignement order
-
+    - correct wkfl in stock, sale, invoice
 """,
     'author': 'Didotech srl',
     'website': 'http://www.didotech.com',

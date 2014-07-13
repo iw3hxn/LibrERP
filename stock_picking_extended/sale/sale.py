@@ -41,6 +41,13 @@ class sale_order(orm.Model):
     _columns = {
         'carriage_condition_id': fields.many2one('stock.picking.carriage_condition', 'Carriage condition'),
         'goods_description_id': fields.many2one('stock.picking.goods_description', 'Description of goods'),
+        'order_policy': fields.selection([
+            ('prepaid', 'Pay before delivery'),
+            ('manual', 'Deliver & invoice on demand'),
+            ('picking', 'Invoice based on deliveries'),
+            #('postpaid', 'Invoice on order after delivery'),# SERGIO removed for various problem of usability
+            # read https://bugs.launchpad.net/openobject-addons/+bug/1160835/comments/18
+        ]),
     }
 
     def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
