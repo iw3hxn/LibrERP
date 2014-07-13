@@ -105,7 +105,6 @@ class stock_picking(orm.Model):
         conai_lines = {}
         invoice_obj = self.pool['account.invoice']
         conai_declaration_obj = self.pool['conai.declaration']
-        partner_obj = self.pool['res.partner']
         uom_obj = self.pool['product.uom']
         ref_uom_weight = uom_obj.search(
             cr, uid, [('category_id', '=', 'Weight'),
@@ -113,7 +112,7 @@ class stock_picking(orm.Model):
         for picking in self.browse(cr, uid, ids, context=context):
             invoice = invoice_obj.browse(cr, uid, res[picking.id], context=None)
             #verify if partner is exempt from conai
-            partner = partner_obj.browse(cr, uid, invoice.partner_id, context=context)
+            partner = invoice.partner_id
             if partner.is_conai_exempt:
                 return res
 
