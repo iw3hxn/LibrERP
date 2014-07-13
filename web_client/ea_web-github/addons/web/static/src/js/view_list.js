@@ -274,7 +274,11 @@ openerp.web.ListView = openerp.web.View.extend( /** @lends openerp.web.ListView#
                                 '<option value="100">100</option>' +
                                 '<option value="200">200</option>' +
                                 '<option value="500">500</option>' +
-                                '<option value="NaN">' + _t("Unlimited") + '</option>')
+                                '<option value="1000">1000</option>' +
+                                '<option value="2500">2500</option>' /**+
+                                //'<option value="NaN">' + _t("Unlimited") + '</option>'
+                                */
+                                )
                         .change(function () {
                             var val = parseInt($select.val(), 10);
                             self._limit = (isNaN(val) ? null : val);
