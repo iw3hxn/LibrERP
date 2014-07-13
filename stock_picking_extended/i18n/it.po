@@ -3481,12 +3481,12 @@ msgstr "Ordine di vendita"
 #: model:ir.ui.menu,name:stock.menu_action_picking_tree
 #: view:stock.picking:0
 msgid "Delivery Orders"
-msgstr "Ordini di Consegna"
+msgstr "Ordini di Consegna / DDT"
 
 #. module: stock
 #: view:stock.picking:0
 msgid "Delivery orders already processed"
-msgstr "Delivery orders already processed"
+msgstr "Ordine di Consegna già Processato"
 
 #. module: stock
 #: help:res.partner,property_stock_customer:0
@@ -3525,12 +3525,12 @@ msgstr "Questa quantità è espressa nell'U.M. di default del prodotto."
 #. module: stock
 #: report:stock.picking.list:0
 msgid "Reception:"
-msgstr "Reception:"
+msgstr "Ricezione:"
 
 #. module: stock
 #: help:stock.location,scrap_location:0
 msgid "Check this box to allow using this location to put scrapped/damaged goods."
-msgstr "Check this box to allow using this location to put scrapped/damaged goods."
+msgstr "Configurare questo parametro per permettere di usare questa locazione per prodotti rottamati/danneggiati."
 
 #. module: stock
 #: model:ir.actions.act_window,name:stock.act_relate_picking
@@ -3588,7 +3588,7 @@ msgstr "Reportistica"
 #: code:addons/stock/stock.py:1353
 #, python-format
 msgid " for the "
-msgstr " for the "
+msgstr " per il "
 
 #. module: stock
 #: view:stock.split.into:0
@@ -3598,7 +3598,7 @@ msgstr "Quantità da lasciare nel pacco attuale"
 #. module: stock
 #: view:stock.move:0
 msgid "Stock available to be delivered"
-msgstr "Stock available to be delivered"
+msgstr "Stock disponibile per essere consegnato"
 
 #. module: stock
 #: model:ir.actions.act_window,name:stock.action_stock_invoice_onshipping
@@ -3609,7 +3609,7 @@ msgstr "Crea Fattura"
 #. module: stock
 #: view:stock.picking:0
 msgid "Confirmed Internal Moves"
-msgstr "Confirmed Internal Moves"
+msgstr "Conferma Movimenti Interni"
 
 #. module: stock
 #: model:ir.ui.menu,name:stock.menu_stock_configuration
@@ -3625,7 +3625,7 @@ msgstr "Lotti esistenti"
 #. module: stock
 #: model:res.groups,name:stock.view_pallet
 msgid "View Pallet"
-msgstr "View Pallet"
+msgstr "Vedi Pallet"
 
 #. module: stock
 #: view:stock.location:0
@@ -3647,7 +3647,7 @@ msgstr "If cost price is increased, stock variation account will be debited and 
 #. module: stock
 #: field:stock.location,chained_journal_id:0
 msgid "Chaining Journal"
-msgstr "Chaining Journal"
+msgstr "Sezionale Concatenato"
 
 #. module: stock
 #: model:ir.actions.report.xml,name:stock.report_picking_list
@@ -3658,7 +3658,7 @@ msgstr "Packing List"
 #: code:addons/stock/stock.py:745
 #, python-format
 msgid "Not enough stock, unable to reserve the products."
-msgstr "Not enough stock, unable to reserve the products."
+msgstr "Non c'è abbastanza stock, impossibile riservare il prodotto"
 
 #. module: stock
 #: view:report.stock.move:0
@@ -3682,12 +3682,12 @@ msgstr "è annullato."
 #: field:stock.location,scrap_location:0
 #: view:stock.move.scrap:0
 msgid "Scrap Location"
-msgstr "Scrap Location"
+msgstr "Locazione Scarti"
 
 #. module: stock
 #: view:stock.move:0
 msgid "Waiting "
-msgstr "Waiting "
+msgstr "Attendi "
 
 #. module: stock
 #: code:addons/stock/product.py:436
@@ -3709,7 +3709,7 @@ msgstr "C/Lavorazione"
 #: view:stock.move:0
 #: view:stock.picking:0
 msgid "Date Expected"
-msgstr "Date Expected"
+msgstr "Data Attesa"
 
 #. module: stock
 #: field:stock.move,auto_validate:0
@@ -3761,7 +3761,7 @@ msgstr "Technical field used to record the currency chosen by the user during a 
 #: code:addons/stock/wizard/stock_fill_inventory.py:53
 #, python-format
 msgid "Stock Inventory is already Validated."
-msgstr "Stock Inventory is already Validated."
+msgstr "L'inventario è già Validato."
 
 #. module: stock
 #: model:ir.ui.menu,name:stock.menu_stock_products_moves
@@ -3782,7 +3782,7 @@ msgstr "Fatturato"
 #. module: stock
 #: field:stock.picking,max_date:0
 msgid "Max. Expected Date"
-msgstr "Max. Expected Date"
+msgstr "Data Prevista Max."
 
 #. module: stock
 #: field:stock.picking,auto_picking:0
@@ -3911,7 +3911,7 @@ msgstr "You can not move products from or to a location of the type view."
 #. module: stock
 #: field:stock.location,chained_company_id:0
 msgid "Chained Company"
-msgstr "Chained Company"
+msgstr "Azienda Collegata"
 
 #. module: stock
 #: help:stock.location,icon:0
@@ -4100,12 +4100,12 @@ msgstr "Nuovo"
 #: code:addons/stock/wizard/stock_return_picking.py:107
 #, python-format
 msgid "There are no products to return (only lines in Done state and not fully returned yet can be returned)!"
-msgstr "There are no products to return (only lines in Done state and not fully returned yet can be returned)!"
+msgstr "Non ci sono prodotti da ritornare (solo le linee Consegnate e non interamente ritornate possono essere ritornate)!"
 
 #. module: stock
 #: view:report.stock.move:0
 msgid "Future Stock-Moves"
-msgstr "Future Stock-Moves"
+msgstr "Movimenti Futuri"
 
 #. module: stock
 #: model:ir.model,name:stock.model_stock_move_split
@@ -4116,7 +4116,7 @@ msgstr "Dividi in lotti di produzione"
 #: code:addons/stock/wizard/stock_move.py:213
 #, python-format
 msgid "Processing Error"
-msgstr "Processing Error"
+msgstr "Errore di Processo"
 
 #. module: stock
 #: view:report.stock.inventory:0
@@ -4139,19 +4139,19 @@ msgstr "Maggio"
 #. module: stock
 #: help:stock.picking,address_id:0
 msgid "Partner to be invoiced"
-msgstr "Partner to be invoiced"
+msgstr "Partner da fatturare"
 
 #. module: stock
 #: model:ir.actions.act_window,name:stock.action5
 #: view:stock.tracking:0
 msgid "Upstream traceability"
-msgstr "Upstream traceability"
+msgstr "Tracciabilkità Upstream"
 
 #. module: stock
 #: model:ir.actions.report.xml,name:stock.report_location_overview_all
 #: report:lot.stock.overview_all:0
 msgid "Location Content"
-msgstr "Location Content"
+msgstr "Contenuto Locazione"
 
 #. module: l10n_it_sale
 #: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CBA
@@ -4279,7 +4279,7 @@ msgstr "By default, the pack reference is generated following the sscc standard.
 #: code:addons/l10n_it_sale/wizard/assign_ddt.py:37
 #, python-format
 msgid "DTT number already assigned"
-msgstr "DTT number already assigned"
+msgstr "Numero DTT già assegnato"
 
 #. module: stock
 #: code:addons/stock/wizard/stock_partial_picking.py:160
@@ -4291,7 +4291,7 @@ msgstr "The rounding of the initial uom does not allow you to ship \"%s %s\", as
 #: code:addons/stock/wizard/stock_move.py:213
 #, python-format
 msgid "Production lot quantity %d of %s is larger than available quantity (%d) !"
-msgstr "Production lot quantity %d of %s is larger than available quantity (%d) !"
+msgstr "La quantità del lotto di produzione %d di %s è maggiore della quantità disponibile (%d) !"
 
 #. module: stock
 #: constraint:product.category:0
@@ -4301,7 +4301,7 @@ msgstr "Errore! Non è possibile creare categorie ricorsive."
 #. module: stock
 #: help:stock.move,move_dest_id:0
 msgid "Optional: next stock move when chaining them"
-msgstr "Optional: next stock move when chaining them"
+msgstr "Opzionale: prossima azione di spostaento quando sono concatenati"
 
 #. module: stock
 #: view:report.stock.inventory:0
@@ -4327,5 +4327,5 @@ msgstr "Pronto da Preparare"
 #: help:stock.location,posy:0
 #: help:stock.location,posz:0
 msgid "Optional localization details, for information purpose only"
-msgstr "Optional localization details, for information purpose only"
+msgstr "Dettagli Opzionali localizzazione, a puro scopo informativo"
 
