@@ -48,7 +48,7 @@ class pallet_move(orm.Model):
 class product_ul(orm.Model):
     _inherit = 'product.ul'
     
-    def _get_pallet_sum(self, cr, uid, ids, field_name, args, context):
+    def get_pallet_sum(self, cr, uid, ids, field_name, args, context):
         pallet_move_obj = self.pool['pallet.move']
         result = {}
         
@@ -76,5 +76,5 @@ class product_ul(orm.Model):
             return dict(zip(ids, [0] * len(ids)))
         
     _columns = {
-        'pallet_sum': fields.function(_get_pallet_sum, string='Pallet Sum', type='integer', method=True),
+        'pallet_sum': fields.function(get_pallet_sum, string='Pallet Sum', type='integer', method=True),
     }
