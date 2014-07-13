@@ -65,7 +65,6 @@
             <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
             <field name="parser_loc"></field>
             <field name="report_rml">l10n_it_sale_report/templates/report_label.odt</field>
-            <field name="parser_state">loc</field>
         </record>
                 
     </data>
