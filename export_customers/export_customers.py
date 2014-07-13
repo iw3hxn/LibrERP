@@ -113,6 +113,7 @@ class export_customers(osv.osv_memory):
             fax = ''
             email = ''
             province_id = False
+            country_id = False
             address_datas = address_obj.read(cr, uid, partner_data['address'], ['type', 'street', 'street2', 'zip', 'city', 'province', 'phone', 'fax', 'email', 'country_id'], context=context)
             for address_data in address_datas:
                 if address_data['type'] == 'invoice':

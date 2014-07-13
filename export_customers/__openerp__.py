@@ -28,7 +28,7 @@
 ##############################################################################
 {
     "name": "Export Customers - Exporting customer's data in .csv file for italian fiscal program.",
-    'version': '2.0.0.0',
+    'version': '2.0.1.0',
     'category': 'Generic Modules/Sales customers',
     "description": """Exporting customer's data in .csv file """,
     "author": "Didotech SRL",
