@@ -82,7 +82,7 @@ msgstr "Stop"
 #: code:addons/task_time_control/project_task.py:136
 #, python-format
 msgid "Task is not init."
-msgstr "Task is not init."
+msgstr "L'attività non è iniziata."
 
 #. module: task_time_control
 #: field:project.task,other_users_ids:0
@@ -113,7 +113,7 @@ msgstr "Attività"
 #. module: task_time_control
 #: view:task.time.control.confirm.wizard:0
 msgid "Name"
-msgstr "Name"
+msgstr "Nome"
 
 #. module: task_time_control
 #: code:addons/task_time_control/project_task.py:140
@@ -129,7 +129,7 @@ msgstr "time"
 #. module: task_time_control
 #: field:project.task,working_users:0
 msgid "Working users"
-msgstr ""
+msgstr "Utenti al lavoro"
 
 #. module: task_time_control
 #: code:addons/task_time_control/project_task.py:103
@@ -166,11 +166,11 @@ msgstr "Attività da chiudere"
 #. module: task_time_control
 #: field:task.time.control.confirm.wizard,user_task:0
 msgid "User task"
-msgstr "User task"
+msgstr "Utenti Task"
 
 #. module: task_time_control
 #: field:task.time.control.confirm.wizard,name:0
 msgid "name"
-msgstr "name"
+msgstr "nome"
 
 

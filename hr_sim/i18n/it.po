@@ -18,13 +18,13 @@ msgstr ""
 #. module: hr_sim
 #: selection:res.sim.use,color:0
 msgid "Blue"
-msgstr "Blue"
+msgstr "Blu"
 
 #. module: hr_sim
 #: model:ir.model,name:hr_sim.model_res_sim_location
 #: view:res.sim.location:0
 msgid "Sim Reference Locations"
-msgstr "Sim Reference Locations"
+msgstr "Locazioni SIM"
 
 #. module: hr_sim
 #: view:res.sim:0
@@ -45,7 +45,7 @@ msgstr "Fuchsia"
 #. module: hr_sim
 #: field:wizard.print.traffic.detail,name:0
 msgid "Filename"
-msgstr "Filename"
+msgstr "File"
 
 #. module: hr_sim
 #: field:res.sim.payment,jan:0
@@ -238,14 +238,14 @@ msgstr "Data Ora"
 #: field:res.sim.apn.management,warning:0
 #, python-format
 msgid "Warning"
-msgstr "Warning"
+msgstr "Attenzione"
 
 #. module: hr_sim
 #: code:addons/hr_sim/res_sim.py:744
 #: code:addons/hr_sim/res_sim.py:749
 #, python-format
 msgid "Warning!"
-msgstr "Warning!"
+msgstr "Attenzione!"
 
 #. module: hr_sim
 #: model:ir.actions.act_window,name:hr_sim.open_module_sim_apn_management_type
@@ -310,7 +310,7 @@ msgstr "Tipo"
 #. module: hr_sim
 #: selection:res.sim.use,color:0
 msgid "Red"
-msgstr "Red"
+msgstr "Rosso"
 
 #. module: hr_sim
 #: code:addons/hr_sim/res_sim.py:106
@@ -347,18 +347,18 @@ msgstr "Gruppo APN"
 #. module: hr_sim
 #: field:res.sim.payment,reinvoice_1:0
 msgid "Amount 1"
-msgstr "Amount 1"
+msgstr "Totale 1"
 
 #. module: hr_sim
 #: field:res.sim.payment,reinvoice_2:0
 msgid "Amount 2"
-msgstr "Amount 2"
+msgstr "Totale 2"
 
 #. module: hr_sim
 #: model:ir.actions.act_window,name:hr_sim.action_res_sim_location_form
 #: model:ir.ui.menu,name:hr_sim.menu_res_sim_location_tree
 msgid "Sim References"
-msgstr "Sim References"
+msgstr "Referenza SIM"
 
 #. module: hr_sim
 #: constraint:res.sim:0
@@ -393,7 +393,7 @@ msgstr "Numero Primario"
 #. module: hr_sim
 #: selection:res.sim.use,color:0
 msgid "Forest Green"
-msgstr "Forest Green"
+msgstr "Verde Scuro"
 
 #. module: hr_sim
 #: view:res.sim:0
@@ -465,7 +465,7 @@ msgstr "Data Inizio"
 #. module: hr_sim
 #: selection:res.sim.use,color:0
 msgid "Cadet Blue"
-msgstr "Cadet Blue"
+msgstr "Blu Cadetto"
 
 #. module: hr_sim
 #: field:res.sim.payment,feb:0
@@ -475,7 +475,7 @@ msgstr "Feb"
 #. module: hr_sim
 #: field:res.sim.payment,aug:0
 msgid "Aug"
-msgstr "Aug"
+msgstr "Ago"
 
 #. module: hr_sim
 #: model:ir.model,name:hr_sim.model_wizard_print_traffic_detail
@@ -523,7 +523,7 @@ msgstr "Note"
 #. module: hr_sim
 #: selection:res.sim.use,color:0
 msgid "Black"
-msgstr "Black"
+msgstr "Nero"
 
 #. module: hr_sim
 #: field:res.sim.move.line,dest_location_name:0
@@ -559,13 +559,6 @@ msgid "August"
 msgstr "Agosto"
 
 #. module: hr_sim
-#: field:res.sim,row_color:0
-#: field:res.sim.use,row_color:0
-#: field:wizard.print.traffic.detail,state:0
-msgid "unknown"
-msgstr "unknown"
-
-#. module: hr_sim
 #: selection:res.sim.payment,month:0
 msgid "June"
 msgstr "Giugno"
@@ -583,7 +576,7 @@ msgstr "Dati"
 #. module: hr_sim
 #: field:res.sim.payment,payment_date:0
 msgid "Date"
-msgstr "Date"
+msgstr "Data"
 
 #. module: hr_sim
 #: view:res.sim:0
@@ -739,7 +732,7 @@ msgstr "Locazione Sorgente"
 #. module: hr_sim
 #: selection:res.sim.use,color:0
 msgid "Orange"
-msgstr "Orange"
+msgstr "Arancione"
 
 #. module: hr_sim
 #: view:res.sim:0
@@ -799,11 +792,6 @@ msgstr "Mag"
 #: field:res.sim.traffic,dest_number:0
 msgid "Phone number"
 msgstr "Numero Telefono"
-
-#. module: hr_sim
-#: model:ir.model,name:hr_sim.model_res_sim_allocation
-msgid "res.sim.allocation"
-msgstr "res.sim.allocation"
 
 #. module: hr_sim
 #: field:sim.move.create,move_date:0
@@ -954,5 +942,5 @@ msgstr "Il codice ICCID deve essere univoco !"
 #: code:addons/hr_sim/res_sim.py:621
 #, python-format
 msgid "You have not defined the sim for given payment line"
-msgstr "You have not defined the sim for given payment line"
+msgstr "Non hai definito la sim per le linee pagamenti"
 
