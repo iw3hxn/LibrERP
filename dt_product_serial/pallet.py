@@ -44,6 +44,8 @@ class pallet_move(orm.Model):
         'date': datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT),
     }
     
+    _order ="date desc"
+    
     
 class product_ul(orm.Model):
     _inherit = 'product.ul'
