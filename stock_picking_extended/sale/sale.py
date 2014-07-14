@@ -25,6 +25,7 @@
 import time
 from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATE_FORMAT
+import decimal_precision as dp
 
 
 class account_invoice_line(orm.Model):
@@ -34,6 +35,13 @@ class account_invoice_line(orm.Model):
     }
 
 account_invoice_line()
+
+
+class sale_order_line(orm.Model):
+    _inherit = "sale.order.line"
+    _columns = {
+        'purchase_price': fields.float('Cost Price', digits_compute= dp.get_precision('Sale Price')),
+    }
 
 
 class sale_order(orm.Model):
