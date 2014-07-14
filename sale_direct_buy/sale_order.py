@@ -26,6 +26,8 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import time
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
 
 class sale_order(orm.Model):
@@ -33,10 +35,11 @@ class sale_order(orm.Model):
     
     def action_wait(self, cr, uid, ids, context=None):
         bom_obj = self.pool['mrp.bom']
-        
         for order in self.browse(cr, uid, ids, context=context):
             suppliers = {}
             for order_line in order.order_line:
+                date_planned = datetime.strptime(order.commitment_date, '%Y-%m-%d') + \
+                    relativedelta(days=order_line.product_id.seller_delay or 0.0)
                 if order_line.product_id.is_kit:
                     bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
                     if bom_ids:
@@ -58,7 +61,9 @@ class sale_order(orm.Model):
                                             'partner_id': supplierinfo.name.id,  # Supplier
                                             #'invoiced'
                                             'name': child_bom.product_id.name or '',
-                                            'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
+                                            #'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
+                                            'date_planned': date_planned.strftime(
+                                                DEFAULT_SERVER_DATE_FORMAT),
                                             #'notes'
                                             'company_id': order_line.company_id.id,
                                             #'state'
@@ -73,7 +78,7 @@ class sale_order(orm.Model):
                                             suppliers[supplierinfo.name.id] = [line_values]
                                 
                                     break
-                    
+                
                 elif order_line.product_id and order_line.type == 'make_to_order' and order_line.supplier_id:
                     taxes_ids = order_line.product_id.product_tmpl_id.supplier_taxes_id
                     taxes = self.pool['account.fiscal.position'].map_tax(cr, uid, order_line.supplier_id.property_account_position, taxes_ids)
@@ -87,7 +92,9 @@ class sale_order(orm.Model):
                         'partner_id': order_line.supplier_id.id,  # Supplier
                         #'invoiced'
                         'name': order_line.name or '',
-                        'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
+                        #'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
+                        'date_planned': date_planned.strftime(
+                            DEFAULT_SERVER_DATE_FORMAT),
                         #'notes'
                         'company_id': order_line.company_id.id,
                         #'state'
