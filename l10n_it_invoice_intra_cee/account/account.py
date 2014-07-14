@@ -216,13 +216,26 @@ class account_invoice(orm.Model):
         invoice = self.browse(cr, uid, invoice_id, context)
         company = self.pool['res.users'].browse(
             cr, uid, uid, context).company_id
-
         if company.auto_invoice_partner_id:
             partner_id = company.auto_invoice_partner_id.id
-            prop_ar_id = company.auto_invoice_partner_id.property_account_receivable.id
+            if company.auto_invoice_partner_id.property_account_receivable.type != 'view':
+                prop_ar_id = company.auto_invoice_partner_id.property_account_receivable.id
+            else:
+                raise orm.except_orm(
+                    _('Error!'),
+                    _('Property_account_receivable of partner "%s" can\'t be of type \'view\'. \
+                    Verify if the partner is set properly as \'customer\'.')
+                    %(company.auto_invoice_partner_id.name))
         else:
             partner_id = company.partner_id.id
-            prop_ar_id = company.partner_id.property_account_receivable.id
+            if company.partner_id.property_account_receivable.type != 'view':
+                prop_ar_id = company.partner_id.property_account_receivable.id
+            else:
+                raise orm.except_orm(
+                    _('Error!'),
+                    _('Property_account_receivable of partner "%s" can\'t be of type \'view\'. \
+                    Verify if the partner is set properly as \'customer\'.')
+                    %(company.partner_id.name))
 
         fp_id = fiscal_position_id or invoice.fiscal_position.id
         fiscal_position = self.pool['account.fiscal.position'].browse(

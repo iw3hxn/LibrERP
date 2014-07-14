@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-14 15:26+0000\n"
-"PO-Revision-Date: 2014-07-14 15:26+0000\n"
+"POT-Creation-Date: 2014-07-14 15:25+0000\n"
+"PO-Revision-Date: 2014-07-14 15:25+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,105 +18,104 @@ msgstr ""
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,extra_ue_line_detail:0
 msgid "Extra UE Line Detail"
-msgstr "Dettagli Extra UE"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: view:account.fiscal.position:0
 msgid "Text accept mako markdown. for example ${object.partner_id.name} for partner or ${object.number} for invoice number, etc..."
-msgstr "Il testo accetta segnaposto mako. Per esempio ${object.partner_id.name} per ottenere il nome del partner o ${object.number} per il numero fattura, etc..."
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.invoice,auto_invoice_id:0
 #: view:account.tax:0
 msgid "Auto Invoice"
-msgstr "Auto Fattura"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: constraint:res.company:0
 msgid "Error! You can not create recursive companies."
-msgstr "Attenzione: non puoi creare aziende ricorsive"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: view:account.fiscal.position:0
 msgid "Reverse charge Configuration"
-msgstr "Configurazione Reverse Charge"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:444
 #, python-format
 msgid "You cannot cancel an invoice which is partially                         paid. You need to unreconcile related payment entries                         first."
-msgstr "Non è possibile eliminare una fattura che è parzialmente                         pagata. E' necessario prima eliminare la riconciliazione delle voci di                         pagamento."
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: help:account.fiscal.position,extra_ue_line_detail:0
 msgid "Text used as description line in Extra UE Auto Invoice"
-msgstr "Testo utilizzato come descrizione della riga dell'auto fattura extra UE"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:113
 #, python-format
 msgid "The %s tax is configured as reverse charge, so its childs must be too."
-msgstr "L'imposta %s è configurata come reverse charge, perciò anche le imposte figlie devono esserlo."
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,journal_auto_invoice_id:0
 msgid "Journal Auto Invoice CEE"
-msgstr "Sezionale Auto Fattura"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:res.company,auto_invoice_partner_id:0
 msgid "Auto Invoice Partner"
-msgstr "Cliente Auto Fattura"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.invoice,auto_invoice_amount_total:0
 msgid "Auto Invoice Total"
-msgstr "Totale Auto Fattura"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:106
 #, python-format
 msgid "The %s tax is configured as reverse charge, so the row must have only reverse charge taxes."
-msgstr "L'imposta %s è configurata come reverse charge, perciò la riga deve avere solo imposte di tipo reverse charge."
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: sql_constraint:account.tax:0
 msgid "Tax Name must be unique per company!"
-msgstr "Il nome dell'imposta deve essere unico per azienda!"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.invoice,auto_invoice_amount_tax:0
 msgid "Auto Invoice Tax"
-msgstr "Aliquota Auto Fattura"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,account_transient_id:0
 msgid "Account CEE"
-msgstr "Conto Transitorio"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: sql_constraint:res.company:0
 msgid "The company name must be unique !"
-msgstr "Il nome azienda deve essere unico!"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:105
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:112
 #, python-format
 msgid "Tax configuration Error!"
-msgstr "Configurazione Imposte Errata!"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: model:ir.model,name:l10n_it_invoice_intra_cee.model_res_company
 msgid "Companies"
-msgstr "Aziende"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: constraint:account.fiscal.position:0
 msgid "Error!\n"
 "You cannot create select two or more flag for time"
-msgstr "Errore!\n"
-"Non puoi seleziona due o più spunte alla volta"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:225
@@ -124,72 +123,72 @@ msgstr "Errore!\n"
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:443
 #, python-format
 msgid "Error!"
-msgstr "Errore!"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,extra_ue_service_tax_id:0
 msgid "Extra UE Service Tax"
-msgstr "Tassa Servizio Extra UE"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.invoice,auto_invoice_amount_untaxed:0
 msgid "Auto Invoice Subtotal"
-msgstr "Subtotale Auto Fattura"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: sql_constraint:account.invoice:0
 msgid "Invoice Number must be unique per Company!"
-msgstr "Nell'azienda il numero fattura dev'essere univoco!"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:226
 #: code:addons/l10n_it_invoice_intra_cee/account/account.py:236
 #, python-format
 msgid "Property_account_receivable of partner \"%s\" can't be of type 'view'.                     Verify if the partner is set properly as 'customer'."
-msgstr "Il Conto di Credito del partner \"%s\" non può essere di tipo 'vista'.                     Verificare se il partner è correttamente configurato come 'cliente'."
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: model:ir.model,name:l10n_it_invoice_intra_cee.model_account_voucher
 msgid "Accounting Voucher"
-msgstr "Voucher contabile"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: help:res.company,auto_invoice_partner_id:0
 msgid "If not set, partner for auto invoice will be your company"
-msgstr "Se non impostato, il partner per l'auto fattura sarà l'azienda"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,active_extra_ue_service:0
 msgid "Active Extra UE Service Management"
-msgstr "Attiva Gestione Servizi Extra UE"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.invoice,transfer_entry_id:0
 msgid "Transfer Entry"
-msgstr "Giroconto"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: model:ir.model,name:l10n_it_invoice_intra_cee.model_account_fiscal_position
 msgid "Fiscal Position"
-msgstr "Posizione fiscale"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,active_reverse_charge:0
 msgid "Active Reverse Charge Management"
-msgstr "Attiva Gestione Reverse Charge"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: model:ir.model,name:l10n_it_invoice_intra_cee.model_account_invoice
 msgid "Invoice"
-msgstr "Fattura"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: model:ir.model,name:l10n_it_invoice_intra_cee.model_account_tax
 msgid "account.tax"
-msgstr "account.tax"
+msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,journal_transfer_entry_id:0
 msgid "Transfer Entry Journal"
-msgstr "Sezionale Giroconto"
+msgstr ""
 

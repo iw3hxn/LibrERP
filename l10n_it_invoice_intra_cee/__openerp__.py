@@ -22,11 +22,11 @@
 
 {
     'name': "Invoice Intra CEE",
-    'version': '3.0.0.0',
+    'version': '3.0.1.0',
     'category': 'Account',
     'description': """Manage Invoice for Intra CEE supplier""",
-    'author': 'CoOpenERP <info@coopenerp.it>',
-    'website': 'http://www.coopenerp.it',
+    'author': 'CoOpenERP <info@coopenerp.it>, Didotech srl <info@didotech.com>',
+    'website': 'http://www.coopenerp.it, http://www.didotech.com',
     'license': 'AGPL-3',
     "depends": ['base', 'account', 'account_voucher'],
     "data": [
