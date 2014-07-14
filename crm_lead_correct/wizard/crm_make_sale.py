@@ -102,10 +102,10 @@ class crm_make_sale(orm.TransientModel):
                     'partner_shipping_id': partner_addr['delivery'],
                     'date_order': fields.date.context_today(self,cr,uid,context=context),
                     'fiscal_position': fpos,
-                    'payment_term':payment_term,
+                    'payment_term': payment_term,
+                    'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id
                 }
-                if partner.id:
-                    vals['user_id'] = partner.user_id and partner.user_id.id or uid
+                
                 new_id = sale_obj.create(cr, uid, vals, context=context)
                 sale_order = sale_obj.browse(cr, uid, new_id, context=context)
                 case_obj.write(cr, uid, [case.id], {'ref': 'sale.order,%s' % new_id})
