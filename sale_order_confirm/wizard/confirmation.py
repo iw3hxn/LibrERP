@@ -244,7 +244,7 @@ class sale_order_confirm(orm.TransientModel):
                 new_sale_order[key] = old_sale_order_data[key][0]
             for key in ('picking_policy', 'order_policy', 'invoice_quantity'):
                 new_sale_order[key] = old_sale_order_data[key]
-
+            
             if not old_sale_order_data['sale_version_id']:
                 old_sale_order_name = old_sale_order_data['name'] + u" V.2"
                 old_sale_order_data['version'] = 2
@@ -257,8 +257,8 @@ class sale_order_confirm(orm.TransientModel):
                 'version': old_sale_order_data['version'] + 1,
                 'name': old_sale_order_name,
             })
-
             #qui creo il nuovo sale.order
+            context['versioning'] = True
             order_id = sale_order_obj.create(cr, uid, new_sale_order, context=context)
 
             sequence = 10
