@@ -38,7 +38,7 @@ class sale_order(orm.Model):
         for order in self.browse(cr, uid, ids, context=context):
             suppliers = {}
             for order_line in order.order_line:
-                date_planned = datetime.strptime(order.commitment_date, '%Y-%m-%d') + \
+                date_planned = datetime.strptime(order.commitment_date, DEFAULT_SERVER_DATE_FORMAT) + \
                     relativedelta(days=order_line.product_id.seller_delay or 0.0)
                 if order_line.product_id.is_kit:
                     bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
