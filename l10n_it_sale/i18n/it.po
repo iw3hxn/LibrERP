@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-09 16:15+0000\n"
-"PO-Revision-Date: 2014-07-09 16:15+0000\n"
+"POT-Creation-Date: 2014-07-14 16:26+0000\n"
+"PO-Revision-Date: 2014-07-14 16:26+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,25 +16,40 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: l10n_it_sale
-#: view:res.partner:0
-msgid "Sales & Purchases"
-msgstr "Vendite e acquisti"
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:37
+#, python-format
+msgid "DTT number already assigned"
+msgstr "Numero DDT già assegnato"
 
 #. module: l10n_it_sale
-#: field:stock.picking,ddt_in_date:0
-msgid "In DDT Date"
-msgstr "Data DDT"
+#: constraint:stock.picking:0
+msgid "Error! For a Partner must be only one DDT reference for year."
+msgstr "Errore! Per un Fornitore il numero di DDT deve essere univoco"
 
 #. module: l10n_it_sale
-#: model:ir.actions.act_window,name:l10n_it_sale.action_transportation_condition_tree
-#: model:ir.ui.menu,name:l10n_it_sale.menu_action_transportation_condition_tree
-msgid "conditions for transportation"
-msgstr "Condizioni di trasporto"
+#: sql_constraint:stock.picking:0
+msgid "Reference must be unique per Company!"
+msgstr "Il riferimento deve essere unico per ogni azienda!"
+
+#. module: l10n_it_sale
+#: field:stock.journal,ddt_sequence:0
+msgid "DDT sequence"
+msgstr "Sequenza DDT"
+
+#. module: l10n_it_sale
+#: model:ir.model,name:l10n_it_sale.model_wizard_assign_ddt
+msgid "wizard.assign.ddt"
+msgstr "wizard.assign.ddt"
 
 #. module: l10n_it_sale
 #: model:ir.model,name:l10n_it_sale.model_stock_picking
 msgid "Picking List"
 msgstr "Lista Prelievo"
+
+#. module: l10n_it_sale
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_SFU
+msgid "SFUSI"
+msgstr "SFUSI"
 
 #. module: l10n_it_sale
 #: model:ir.actions.act_window,name:l10n_it_sale.action_wizard_assign_ddt
@@ -44,9 +59,9 @@ msgid "Assign DDT"
 msgstr "Assegna DDT"
 
 #. module: l10n_it_sale
-#: field:stock.picking,ddt_in_reference:0
-msgid "In DDT"
-msgstr "Numero DDT"
+#: field:stock.picking,ddt_date:0
+msgid "DDT date"
+msgstr "Data DDT"
 
 #. module: l10n_it_sale
 #: model:ir.model,name:l10n_it_sale.model_stock_journal
@@ -54,34 +69,14 @@ msgid "Stock Journal"
 msgstr "Giornale di magazzino"
 
 #. module: l10n_it_sale
-#: constraint:stock.picking:0
-msgid "Error! For a Partner must be only one DDT reference for year."
-msgstr "Errore! Per un Fornitore il numero di DDT deve essere univoco"
+#: field:stock.picking,ddt_in_date:0
+msgid "In DDT Date"
+msgstr "Data DDT"
 
 #. module: l10n_it_sale
-#: field:stock.journal,ddt_sequence:0
-msgid "DDT sequence"
-msgstr "Sequenza DDT"
-
-#. module: l10n_it_sale
-#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PF
-msgid "FREEPORT"
-msgstr "PORTO FRANCO"
-
-#. module: l10n_it_sale
-#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CBA
-msgid "CARTONI-PALLETS"
-msgstr "CARTONI-PALLETS"
-
-#. module: l10n_it_sale
-#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CAR
-msgid "CARTONI"
-msgstr "CARTONI"
-
-#. module: l10n_it_sale
-#: view:stock.picking.transportation_condition:0
-msgid "Condition for transportation"
-msgstr "Condition for transportation"
+#: view:wizard.assign.ddt:0
+msgid "This will assign the DDT number"
+msgstr "Questo assegnerà il numero del DDT"
 
 #. module: l10n_it_sale
 #: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_BAN
@@ -89,14 +84,19 @@ msgid "PALLETS"
 msgstr "PALLETS"
 
 #. module: l10n_it_sale
-#: model:ir.model,name:l10n_it_sale.model_wizard_assign_ddt
-msgid "wizard.assign.ddt"
-msgstr "wizard.assign.ddt"
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CBA
+msgid "CARTONI-PALLETS"
+msgstr "CARTONI-PALLETS"
 
 #. module: l10n_it_sale
-#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_SFU
-msgid "SFUSI"
-msgstr "SFUSI"
+#: view:wizard.assign.ddt:0
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: l10n_it_sale
+#: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CAR
+msgid "CARTONI"
+msgstr "CARTONI"
 
 #. module: l10n_it_sale
 #: view:stock.picking:0
@@ -105,96 +105,17 @@ msgid "DDT"
 msgstr "DDT"
 
 #. module: l10n_it_sale
-#: field:stock.picking,ddt_date:0
-msgid "DDT date"
-msgstr "Data DDT"
-
-#. module: l10n_it_sale
-#: view:res.partner:0
-msgid "Shipping conditions"
-msgstr "Dati DDT"
-
-#. module: l10n_it_sale
-#: sql_constraint:stock.picking:0
-msgid "Reference must be unique per Company!"
-msgstr "Il riferimento deve essere unico per ogni azienda!"
-
-#. module: l10n_it_sale
-#: view:stock.picking.carriage_condition:0
-msgid "Carriage Condition"
-msgstr "Resa merce"
-
-#. module: l10n_it_sale
-#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PAF
-msgid "CHARGED ON INVOICE"
-msgstr "ADDEBITATO IN FATTURA"
-
-#. module: l10n_it_sale
 #: view:wizard.assign.ddt:0
 msgid "Assign"
 msgstr "Assegnata"
 
 #. module: l10n_it_sale
-#: view:wizard.assign.ddt:0
-msgid "This will assign the DDT number"
-msgstr "Questo assegnerà il numero del DDT"
+#: view:stock.picking:0
+msgid "Additional info"
+msgstr "Informazioni aggiuntive"
 
 #. module: l10n_it_sale
-#: code:addons/l10n_it_sale/wizard/assign_ddt.py:37
-#, python-format
-msgid "DTT number already assigned"
-msgstr "DTT number already assigned"
-
-#. module: l10n_it_sale
-#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_MITT
-msgid "SENDER"
-msgstr "MITTENTE"
-
-#. module: l10n_it_sale
-#: view:stock.picking.goods_description:0
-msgid "Description of Goods"
-msgstr "Aspetto dei Beni"
-
-#. module: l10n_it_sale
-#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_DEST
-msgid "RECIPIENT"
-msgstr "DESTINATARIO"
-
-#. module: l10n_it_sale
-#: model:ir.actions.act_window,name:l10n_it_sale.action_goods_description_tree
-#: view:stock.picking.goods_description:0
-msgid "Descriptions of Goods"
-msgstr "Aspetto dei Beni"
-
-#. module: l10n_it_sale
-#: model:ir.actions.act_window,name:l10n_it_sale.action_carriage_condition_tree
-#: model:ir.ui.menu,name:l10n_it_sale.menu_action_carriage_condition_tree
-#: view:stock.picking.carriage_condition:0
-msgid "Carriage Conditions"
-msgstr "Resa merce"
-
-#. module: l10n_it_sale
-#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PA
-msgid "CARRIAGE"
-msgstr "PORTO ASSEGNATO"
-
-#. module: l10n_it_sale
-#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
-msgid "VECTOR"
-msgstr "VETTOREy"
-
-#. module: l10n_it_sale
-#: view:stock.picking.transportation_condition:0
-msgid "Conditions for transportation"
-msgstr "Conditions for transportation"
-
-#. module: l10n_it_sale
-#: view:wizard.assign.ddt:0
-msgid "Cancel"
-msgstr "Annulla"
-
-#. module: l10n_it_sale
-#: view:sale.order:0
-msgid "Default shipping conditions"
-msgstr "Dati DDT"
+#: field:stock.picking,ddt_in_reference:0
+msgid "In DDT"
+msgstr "Numero DDT"
 

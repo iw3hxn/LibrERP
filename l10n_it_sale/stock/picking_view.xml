@@ -7,11 +7,32 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_out_form"/>
             <field name="arch" type="xml">
-                <field name="move_type" position="after">
+                <page string="Additional info" position="attributes">
+                    <attribute name="groups"></attribute>
+                </page>
+                <field name="type" position="attributes">
+                    <attribute name="groups"></attribute>
+                </field>
+                <field name="min_date" position="replace">
                     <field name="ddt_date"/>
+                    <field name="ddt_number" readonly="1"/>
+                </field>
+                
+            </field>
+    </record>
+
+        <record model="ir.ui.view" id="sale_journal_picking_order_out_inh">
+            <field name="name">stock.picking.journal.view.form.inh</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="sale_journal.sale_journal_picking_order_out"/>
+            <field name="arch" type="xml">
+                <field name="invoice_type_id" position="replace"/>
+                <field name="move_type" position="after">
+                    <field name="invoice_type_id" select="1"/>
                 </field>
             </field>
-	</record>
+        </record>
+
 
 	<record id="stock_picking_tree_ddt_inherit" model="ir.ui.view">
             <field name="name">stock.picking.tree.ddt.inherit</field>
@@ -36,8 +57,6 @@
                 </field>
             </field>
         </record>
-
-
 
 	<record id="stock_picking_search_ddt_inherit" model="ir.ui.view">
             <field name="name">stock.picking.search.ddt.inherit</field>
@@ -66,18 +85,6 @@
                 </field>
             </field>
         </record>
-
-        <record id="stock_view_picking_form_ddt" model="ir.ui.view">
-            <field name="name">stock.view.picking.form.ddt</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.view_picking_out_form"/>
-            <field name="arch" type="xml">
-                <field name="backorder_id" position="after">
-                    <field name="ddt_number" readonly="1"/>
-                </field>
-            </field>
-	</record>
-
 
         <record id="stock_view_picking_form_in_ddt" model="ir.ui.view">
             <field name="name">stock.view.picking.form.ddt</field>
