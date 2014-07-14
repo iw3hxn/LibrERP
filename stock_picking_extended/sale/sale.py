@@ -40,7 +40,11 @@ account_invoice_line()
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
     _columns = {
-        'purchase_price': fields.float('Cost Price', digits_compute= dp.get_precision('Sale Price')),
+        'purchase_price': fields.float(
+            'Cost Price', digits_compute= dp.get_precision('Purchase Price')),
+        'th_weight': fields.float(
+            'Weight', readonly=True, states={'draft': [('readonly', False)]},
+            digits_compute= dp.get_precision('Stock Weight')),
     }
 
 
