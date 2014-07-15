@@ -362,7 +362,7 @@ msgstr "Gruppo per Partner"
 #: field:stock.picking,partner_id:0
 #: model:ir.model,name:stock_picking_extended.model_res_partner
 msgid "Partner"
-msgstr "Fornitore"
+msgstr "Partner"
 
 #. module: stock
 #: code:addons/stock/stock.py:2144
@@ -645,7 +645,7 @@ msgstr "Ubicazione / Prodotto"
 #. module: stock
 #: field:stock.move,address_id:0
 msgid "Destination Address "
-msgstr "Destination Address "
+msgstr "Destinazione "
 
 #. module: stock
 #: code:addons/stock/stock.py:1343
@@ -1177,7 +1177,7 @@ msgstr "Per annullare questo inventario, è necessario prima annullare le regist
 #. module: stock
 #: field:stock.picking,date_done:0
 msgid "Date Done"
-msgstr "Data Fine"
+msgstr "Data Spedizione"
 
 #. module: stock
 #: code:addons/stock/wizard/stock_partial_picking.py:149
