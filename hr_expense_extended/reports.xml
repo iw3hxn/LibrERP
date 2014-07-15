@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+           
+        <record id="hr_expense.hr_expenses" model="ir.actions.report.xml">
+            <field name="name">Rimborso</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">hr.expense.expense</field>
+            <field name="report_name">expense</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
+            <field name="parser_loc">l10n_it_sale_report/ddt.py</field>
+            <field name="report_rml">hr_expense_extended/template/rimborso.odt</field>
+            <field name="parser_state">loc</field>
+        </record>
+
+        <!--<ir_set>
+            <field eval="'action'" name="key"/>
+            <field eval="'client_print_multi'" name="key2"/>
+            <field eval="['stock.picking']" name="models"/>
+            <field name="name">Rimborso</field>
+            <field eval="'ir.actions.report.xml,'+str(rimborso)" name="value"/>
+            <field eval="True" name="isobject"/>
+            <field eval="True" name="replace"/>
+        </ir_set>-->
+
+    
+    </data>
+</openerp>
+

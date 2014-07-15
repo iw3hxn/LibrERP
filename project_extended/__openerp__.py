@@ -33,7 +33,8 @@
     "data" : [
         'project/project_view.xml',
         'project/project_task_view.xml',
-        'res_partner/res_partner_view.xml'
+        'project/project_view_menu.xml',
+        'res_partner/res_partner_view.xml',
     ],
     "active": False,
     "installable": True
