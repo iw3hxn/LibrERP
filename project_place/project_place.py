@@ -120,6 +120,8 @@ class res_partner_address(osv.osv):
         reads = self.read(cr, uid, ids, ['name', 'complete_name'], context=context)
         for record in reads:
             name = record['complete_name'] or record['name'] or ''
+            if len(name) > 45:
+                name = name[:45] + '...'
             res.append((record['id'], name))
         return res
     
