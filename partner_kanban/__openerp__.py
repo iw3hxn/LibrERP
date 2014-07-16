@@ -20,22 +20,22 @@
 ##############################################################################
 
 {
-    "name": "Partener Directory",
-    "version": "0.1.1",
+    "name": "Partner Directory",
+    "version": "0.2.1",
     "author": "Didotech SRL",
     "category": "Partner",
     "sequence": 12,
     'complexity': "easy",
     "website": "http://www.didotech.com",
+    'depends': ['web'],
     "description": """
 Add kanban view on partner
     """,
     'init_xml': [],
-    'update_xml': [
-        'partner_view.xml',
-    ],
+    'update_xml': ['partner_view.xml'],
     'installable': True,
     'application': True,
     'auto_install': False,
+    "css": ['static/src/css/partner.css'],
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

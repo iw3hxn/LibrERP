@@ -11,46 +11,27 @@
         <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban>
-            	<field name="name"/>
-            	<field name="phone"/>
-            	<field name="email"/>
-            	<field name="country"/>
                 <templates>
                     <t t-name="kanban-box">
-                           
-                    <div class="oe_kanban_box oe_kanban_color_border">
-                        
-			<div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_box_show_onclick_trigger">
-			    <a type="edit">
-				<img t-att-src="kanban_image('res.partner', 'partner_logo', record.id.value)" width="128" style="float: left; padding: 0 4px 4px 0"/>
-			    </a>  
-			    <div class="oe_kanban_clear"/>
-	                </div>
-                        
-			<div class="oe_kanban_box_header oe_kanban_color_bgdark oe_kanban_color_border oe_kanban_draghandle oe_kanban_title">
-			    <div>
-				<h3>
-				    <field name="name"/>
-				</h3>
-			    </div>
-                            			
-			    <div>
-				<h5>
-				    T: <field name="phone"/> - M: <a t-attf-href="mailto:#{record.email.value}">
-				    <field name="email"/></a> -
-				    <field name="country"/>
-				</h5>
-			    </div>
-                       	</div>
-                    </div>
-                    <div class="oe_kanban_buttons_set oe_kanban_color_border oe_kanban_color_bglight oe_kanban_box_show_onclick">
-                        <div class="oe_kanban_left">
-                            <a string="Edit" icon="gtk-edit" type="edit"/>
-                            <a string="Email" name="126" icon="terp-mail-message-new" type="action"/>
+                        <div class="oe_partner_vignette">
+                            <div class="oe_partner_image">
+                                <a type="edit"><img t-att-src="kanban_image('res.partner', 'partner_logo', record.id.value)" class="oe_partner_picture"/></a>
+                            </div>
+                            <div class="oe_partner_details">
+                                <h4><a type="edit"><field name="name"/></a></h4>
+                                <ul>
+                                    <li t-if="record.city.raw_value"><field name="city"/></li>
+                                    <li t-if="record.country.raw_value"><field name="country"/></li>
+                                    <li t-if="record.phone.raw_value">Tel: <field name="phone"/></li>
+                                    <li t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></li>
+                                    <li t-if="record.email.raw_value"><a t-attf-href="mailto:#{record.email.value}"><field name="email"/></a></li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="oe_kanban_clear"/>
-                    </div>
-                    </t>
+                        <script>
+                            $('.oe_partner_picture').load(function() { if($(this).width() > $(this).height()) { $(this).addClass('oe_partner_picture_wide') } });
+                        </script>
+                    </t>	
                 </templates>
             </kanban>
         </field>
@@ -73,52 +54,6 @@
 	        </field>
     	    </field>
     </record>
-   
-<!--        <record id="open_view_employee_list_my" model="ir.actions.act_window">
-            <field name="name">Employees</field>
-            <field name="res_model">hr.employee</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="domain">[]</field>
-            <field name="context">{"search_default_department_id": department_id}</field>
-            <field name="view_id" eval="False"/>
-            <field name="search_view_id" ref="view_employee_filter"/>
-            <field name="help">Here you can manage your work force by creating employees and assigning them specific properties in the system. Maintain all employee related information and keep track of anything that needs to be recorded for them. The personal information tab will help you maintain their identity data. The Categories tab gives you the opportunity to assign them related employee categories depending on their position and activities within the company. A category can be a seniority level within the company or a department. The Timesheets tab allows to assign them a specific timesheet and analytic journal where they will be able to enter time through the system. In the note tab, you can enter text data that should be recorded for a specific employee.</field>
-        </record>
-
-        <record id="open_view_employee_list_my_kanban" model="ir.actions.act_window.view">
-            <field name="sequence" eval="0"/>
-            <field name="view_mode">kanban</field>
-            <field name="act_window_id" ref="open_view_employee_list_my"/>
-        </record>
-        <record id="open_view_employee_list_my_tree2" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_employee_tree"/>
-            <field name="act_window_id" ref="open_view_employee_list_my"/>
-        </record>
-
-        <record id="open_view_employee_list_my_form2" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_employee_form"/>
-            <field name="act_window_id" ref="open_view_employee_list_my"/>
-        </record> 
-
-        <menuitem action="open_view_employee_list_my" id="menu_open_view_employee_list_my" sequence="3" parent="menu_hr_main"/>
-
-        <record id="ir_ui_view_sc_employee" model="ir.ui.view_sc">
-            <field name="name">Employees</field>
-            <field name="resource">ir.ui.menu</field>
-            <field name="user_id" ref="base.user_root"/>
-            <field name="res_id" ref="hr.menu_open_view_employee_list_my"/>
-        </record>-->
-
-        <!--
-        =======================
-        Employee architecture
-        =======================
-        -->
 
     </data>
 </openerp>
