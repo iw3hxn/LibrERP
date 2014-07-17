@@ -41,5 +41,6 @@
         "email_wysiwyg_data.xml",
         "tree_view.xml"
     ],
+    "active": False,
     "installable": True
 }
