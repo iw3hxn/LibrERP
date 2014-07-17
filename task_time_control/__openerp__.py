@@ -24,7 +24,7 @@
 
 {
     'name': 'Project task time control',
-    'version': '2.1.5.4',
+    'version': '3.1.5.5',
     'category': 'Project Management',
     "sequence": 30,
     'complexity': "easy",

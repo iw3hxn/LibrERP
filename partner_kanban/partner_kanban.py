@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2013 Didotech SRL 
+#    Copyright (C) 2013 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,7 @@ class res_partner(osv.osv):
     }
 
     def _get_photo(self, cr, uid, context=None):
-        photo_path = addons.get_module_resource('partner_kanban','images','photo.png')
+        photo_path = addons.get_module_resource('partner_kanban', 'images', 'photo.png')
         return open(photo_path, 'rb').read().encode('base64')
 
     _defaults = {

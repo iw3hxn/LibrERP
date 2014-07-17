@@ -75,10 +75,24 @@ class project_task(orm.Model):
                 res[project_id.id]['total_sell'] += sale.amount_untaxed
         return res
     
+    def name_get(self, cr, uid, ids, context=None):
+        if not len(ids):
+            return []
+        res = []
+        reads = self.read(cr, uid, ids, ['name', 'partner_id'], context=context)
+        for record in reads:
+            if record['partner_id']:
+                name = record['name'] + ' : ' + record['partner_id'][1]
+            else:
+                name = record['name']
+            if len(name) > 45:
+                name = name[:45] + '...'
+            res.append((record['id'], name))
+        return res
+    
     _columns = {
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks"),
         'total_sell': fields.function(_total_account,  type='float', digits_compute= dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
         'total_spent': fields.function(_total_account, type='float', digits_compute= dp.get_precision('Sale Price'), multi='sums', string="Spent Amount"),
         'total_invoice': fields.function(_total_account, type='float', digits_compute= dp.get_precision('Sale Price'), multi='sums', string="Invoice Amount"),
-        
     }

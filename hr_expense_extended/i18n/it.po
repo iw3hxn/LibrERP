@@ -74,7 +74,7 @@ msgstr "Aziendale"
 #. module: hr_expense_extended
 #: field:task.time.control.confirm.wizard,user_id:0
 msgid "User"
-msgstr "User"
+msgstr "Utente"
 
 #. module: hr_expense_extended
 #: field:wizard.expense.line,date_value:0

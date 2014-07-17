@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.0.4.0",
+    "version": "2.0.5.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
@@ -42,7 +42,9 @@
         
         wkf_service - add function
             trg_last_action(uid, model, obj_id, cr) - this function is useful when debugging a workflow related problems 
-            
+        
+        orm - Monkey Patched function name_get(). Now it will throw an error if 'name' or name_get() are not defined, but will not break a code execution.
+            Code will break only if 'debug_mode' defined in config file.
     """,
     "depends": [
         'base',

@@ -33,7 +33,7 @@ purchase_order()
 
 class sale_order(osv.osv):
     _inherit = "sale.order"
-    _order = 'create_date desc, name desc, id desc'
+    _order = 'name desc, id desc'
 
 sale_order()
 
