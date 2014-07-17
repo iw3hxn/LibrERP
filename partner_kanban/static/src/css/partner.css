@@ -9,10 +9,8 @@
 }
 
 .oe_partner_image {
-  width: auto;
-  height: auto;
-  max-width:128px;
-  max-height:128px;
+  width: 128px;
+  height: 128px;
   text-align: center;
   overflow: hidden;
   -moz-border-radius: 3px;
@@ -32,7 +30,7 @@
   height: auto;
   max-width:128px;
   max-height:128px;
-  clip: rect(10px, 100px, 110px, 0px);
+  clip: rect(10px, 128px, 138px, 0px);
 }
 
 .oe_partner_picture_wide {
@@ -40,7 +38,7 @@
   width: auto;
   max-width:128px;
   max-height:128px;
-  clip: rect(0px, 115px, 100px, 15px);
+  clip: rect(0px, 143px, 128px, 15px);
 }
 
 .oe_partner_details {
