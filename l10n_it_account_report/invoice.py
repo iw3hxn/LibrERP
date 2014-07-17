@@ -97,12 +97,11 @@ class Parser(report_sxw.rml_parse):
         ddt_obj = self.pool.get('stock.picking')
         order_obj = self.pool.get('sale.order')
         description = []
-        
         if ddt_name:
             ddt_ids = ddt_obj.search(self.cr, self.uid, [('name', '=', ddt_name)])
             if len(ddt_ids) == 1:
                 ddt = ddt_obj.browse(self.cr, self.uid, ddt_ids[0])
-                ddt_date = datetime.strptime(ddt.date, DEFAULT_SERVER_DATETIME_FORMAT)
+                ddt_date = datetime.strptime(ddt.ddt_date, DEFAULT_SERVER_DATE_FORMAT)
                 ## Ex: Rif. Ns. DDT 2012/0335
                 description.append(u'Rif. Ns. DDT {ddt} del {ddt_date}'.format(ddt=ddt.ddt_number, ddt_date=ddt_date.strftime("%d/%m/%Y")))
         
@@ -158,7 +157,6 @@ class Parser(report_sxw.rml_parse):
         invoice = {}
         keys = {}
         picking_obj = self.pool['stock.picking']
-        
         for line in invoice_lines:
             if line.origin:
                 if ':' in line.origin:
