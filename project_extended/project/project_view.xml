@@ -42,9 +42,9 @@
                     <field name = "date" />
                  </field>
                  <field name="progress_rate" position="replace">
-                    <field name="total_sell" />
-                    <field name="total_spent" />
-                    <field name="total_invoice" />
+                    <field name="total_sell" groups="project.group_project_manager"/>
+                    <field name="total_spent" groups="project.group_project_manager" />
+                    <field name="total_invoice" groups="project.group_project_manager"/>
                     
                  </field>
                  <field name="state" position="after">
