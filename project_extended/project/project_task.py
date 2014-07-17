@@ -25,3 +25,20 @@ from osv import fields, osv
 class project_task(osv.osv):
     _inherit = 'project.task'
     _order = 'date_deadline asc, priority asc, partner_id'
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if not len(ids):
+            return []
+        res = []
+        reads = self.read(cr, uid, ids, ['name', 'project_id'], context=context)
+        for record in reads:
+            if record['project_id']:
+                
+                name = record['project_id'][1][:30] + ' : ' + record['name']
+                
+            else:
+                name = record['name']
+            if len(name) > 65:
+                name = name[:65] + '...'
+            res.append((record['id'], name))
+        return res

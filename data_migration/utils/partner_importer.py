@@ -192,7 +192,7 @@ class ImportFile(threading.Thread, Utils):
     #                return False
     #    return False
 
-    def _find_partner(self, cr, uid, vals_partner):
+    def _find_partner(self, cr, uid, vals_partner, context=None):
         partner_clone = set()
         for field in self.PARTNER_SEARCH:
             if vals_partner.get(field, False):
@@ -208,8 +208,21 @@ class ImportFile(threading.Thread, Utils):
                     _logger.debug(error)
                     self.error.append(error)
                     return -1
+        
         if len(partner_clone) == 1:
-            return partner_clone.pop()
+            partner_id = partner_clone.pop()
+            partner = self.partner_obj.browse(cr, uid, partner_id, context)
+            for field in self.PARTNER_SEARCH:
+                if vals_partner.get(field, False) and not vals_partner[field] == getattr(partner, field):
+                    error = u'Riga {line}: Trovati più cloni del cliente {name}'.format(line=self.processed_lines, name=partner.name)
+                    _logger.debug(error)
+                    self.error.append(error)
+                    
+                    error = u'Riga {line}: ----------------------------- {name} {vat}'.format(line=self.processed_lines, name=vals_partner['name'], vat=vals_partner.get('vat', ''))
+                    _logger.debug(error)
+                    self.error.append(error)
+                    return -1
+            return partner_id
         elif len(partner_clone) > 1:
             error = u'Riga {line}: Trovati più cloni del cliente {name}'.format(line=self.processed_lines, name=vals_partner['name'])
             _logger.debug(error)

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-07 20:29+0000\n"
-"PO-Revision-Date: 2013-11-07 20:29+0000\n"
+"POT-Creation-Date: 2014-07-17 14:08+0000\n"
+"PO-Revision-Date: 2014-07-17 14:08+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -36,17 +36,26 @@ msgid "Project Task Work"
 msgstr "Lavoro attività progetto"
 
 #. module: task_time_control
-#: code:addons/task_time_control/project_task.py:103
-#: code:addons/task_time_control/project_task.py:136
-#: code:addons/task_time_control/project_task.py:138
+#: code:addons/task_time_control/project_task.py:133
 #, python-format
 msgid "Warning !"
 msgstr "Attenzione !"
 
 #. module: task_time_control
-#: view:project.task:0
-msgid "Start"
-msgstr "Inizia"
+#: view:project.task.work:0
+msgid "Group By..."
+msgstr "Raggruppa per..."
+
+#. module: task_time_control
+#: field:project.task.work,work_start:0
+#: field:time.control.user.task,work_start:0
+msgid "Work start"
+msgstr "Work start"
+
+#. module: task_time_control
+#: view:project.task.work:0
+msgid "Today"
+msgstr "Oggi"
 
 #. module: task_time_control
 #: view:task.time.control.confirm.wizard:0
@@ -59,9 +68,19 @@ msgid "Tasks in state working"
 msgstr "Attività in esecuzione"
 
 #. module: task_time_control
+#: view:project.task.work:0
+msgid "Users"
+msgstr "Utenti"
+
+#. module: task_time_control
 #: view:project.task:0
 msgid "working"
 msgstr "esecuzione"
+
+#. module: task_time_control
+#: view:project.task.work:0
+msgid "Task Work"
+msgstr "Esecuzione Attività"
 
 #. module: task_time_control
 #: view:project.task:0
@@ -74,12 +93,18 @@ msgid "Error ! You cannot create recursive tasks."
 msgstr "Errore ! Non è possibile creare attività ricorsive."
 
 #. module: task_time_control
+#: code:addons/task_time_control/project_task.py:170
+#, python-format
+msgid "User has no opened tasks."
+msgstr "L'Utente non ha attività aperte."
+
+#. module: task_time_control
 #: view:project.task:0
 msgid "Stop"
 msgstr "Stop"
 
 #. module: task_time_control
-#: code:addons/task_time_control/project_task.py:136
+#: code:addons/task_time_control/project_task.py:166
 #, python-format
 msgid "Task is not init."
 msgstr "L'attività non è iniziata."
@@ -95,7 +120,12 @@ msgid "Unassigned Tasks"
 msgstr "Attività Non Assegnate"
 
 #. module: task_time_control
-#: code:addons/task_time_control/project_task.py:83
+#: view:project.task.work:0
+msgid "Date"
+msgstr "Data"
+
+#. module: task_time_control
+#: code:addons/task_time_control/project_task.py:109
 #, python-format
 msgid "Confirm Time"
 msgstr "Conferma il Tempo"
@@ -107,19 +137,14 @@ msgstr "Attività da Iniziare"
 
 #. module: task_time_control
 #: model:ir.model,name:task_time_control.model_project_task
+#: view:project.task.work:0
 msgid "Task"
 msgstr "Attività"
 
 #. module: task_time_control
 #: view:task.time.control.confirm.wizard:0
 msgid "Name"
-msgstr "Nome"
-
-#. module: task_time_control
-#: code:addons/task_time_control/project_task.py:140
-#, python-format
-msgid "Task started by another user."
-msgstr "Attività iniziata da un altro utente."
+msgstr "Note"
 
 #. module: task_time_control
 #: field:task.time.control.confirm.wizard,time:0
@@ -132,16 +157,15 @@ msgid "Working users"
 msgstr "Utenti al lavoro"
 
 #. module: task_time_control
-#: code:addons/task_time_control/project_task.py:103
+#: code:addons/task_time_control/project_task.py:133
 #, python-format
 msgid "Task is alredy started."
 msgstr "L'attività è già iniziata."
 
 #. module: task_time_control
-#: field:project.task.work,work_end:0
-#: field:time.control.user.task,work_end:0
-msgid "Work end"
-msgstr "Finisci "
+#: field:project.task,user_is_working:0
+msgid "I am working"
+msgstr "Sto Lavorando"
 
 #. module: task_time_control
 #: field:time.control.user.task,user:0
@@ -173,4 +197,49 @@ msgstr "Utenti Task"
 msgid "name"
 msgstr "nome"
 
+#. module: task_time_control
+#: view:project.task:0
+msgid "Start"
+msgstr "Inizia"
 
+#. module: task_time_control
+#: code:addons/task_time_control/project_task.py:168
+#, python-format
+msgid "Task started by another user."
+msgstr "Attività iniziata da un altro utente."
+
+#. module: task_time_control
+#: model:ir.actions.act_window,name:task_time_control.action_view_project_task_work_list
+#: model:ir.ui.menu,name:task_time_control.menu_project_task_work_list
+#: view:project.task.work:0
+msgid "Hours on Task"
+msgstr "Ore su Attività"
+
+#. module: task_time_control
+#: code:addons/task_time_control/project_task.py:166
+#: code:addons/task_time_control/project_task.py:168
+#: code:addons/task_time_control/project_task.py:170
+#, python-format
+msgid "Warning!"
+msgstr "Attenzione!"
+
+#. module: task_time_control
+#: field:time.control.user.task,started_task:0
+msgid "Started task"
+msgstr "Attività Iniziate"
+
+#. module: task_time_control
+#: model:ir.model,name:task_time_control.model_project_task_history
+msgid "History of Tasks"
+msgstr "Storico delle Attività"
+
+#. module: task_time_control
+#: view:task.time.control.confirm.wizard:0
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: task_time_control
+#: field:project.task.work,work_end:0
+#: field:time.control.user.task,work_end:0
+msgid "Work end"
+msgstr "Conclusi"

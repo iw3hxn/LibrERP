@@ -23,19 +23,20 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import orm, fields
 import time
 from datetime import datetime
 
 
-class task_time_control_confirm_wizard(osv.osv_memory):
+class task_time_control_confirm_wizard(orm.TransientModel):
     _name = 'task.time.control.confirm.wizard'
 
     def get_time(self, cr, uid, context=None):
         if context.get('user_task_id', False):
-            user_task = self.pool.get('time.control.user.task').browse(cr, uid, context['user_task_id'], context)
+            user_task = self.pool['time.control.user.task'].browse(cr, uid, context['user_task_id'], context)
             if user_task.work_start:
                 start_datetime = datetime.strptime(user_task.work_start, '%Y-%m-%d %H:%M:%S.%f')
+                # not possible to convert in DEFAULT_SERVER_DATETIME_FORMAT because there are also millisecond
             else:
                 start_datetime = datetime.now()
 

@@ -24,10 +24,10 @@
 
 from datetime import datetime
 from tools.translate import _
-from osv import fields, osv
+from openerp.osv import orm, fields
 
 
-class project_task_history(osv.osv):
+class project_task_history(orm.Model):
     _inherit = "project.task.history"
     _columns = {
         'state': fields.selection([
@@ -41,7 +41,7 @@ class project_task_history(osv.osv):
     }
 
 
-class time_control_user_task(osv.osv):
+class time_control_user_task(orm.Model):
     _name = 'time.control.user.task'
     _columns = {
         'user': fields.many2one('res.users', 'user'),
@@ -51,7 +51,7 @@ class time_control_user_task(osv.osv):
     }
 
 
-class project_task(osv.osv):
+class project_task(orm.Model):
     _inherit = "project.task"
 
     def _get_users_working(self, cr, uid, ids, field_name, args, context=None):
@@ -171,7 +171,7 @@ class project_task(osv.osv):
         return True
 
 
-class project_task_work(osv.osv):
+class project_task_work(orm.Model):
     _inherit = "project.task.work"
     
     _columns = {
