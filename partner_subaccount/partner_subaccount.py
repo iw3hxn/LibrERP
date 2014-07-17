@@ -75,62 +75,54 @@ class res_partner(orm.Model):
         return res
 
     def get_create_supplier_partner_account(self, cr, uid, vals, context):
-        account_obj = self.pool['account.account']
-        account_type_obj = self.pool['account.account.type']
-        
-        if not vals.get('property_account_payable', False):
-            vals['property_account_payable'] = self._get_chart_template_property(
-                cr, uid, 'property_account_payable', context)
-        
-        property_account_id = vals.get('property_account_payable', False)
-        property_account_obj = account_obj.browse(cr, uid, property_account_id)
-        type_account = 'payable'
-        account_type_id = account_type_obj.search(
-            cr, uid, [('code', '=', type_account)], context=context)[0]
-        dict_account = {
-            'name': vals.get('name', ''),
-            'code': '%s%s' % (account_obj.browse(
-                cr, uid, property_account_obj.id, context).code,
-                vals['property_supplier_ref']),
-            'user_type': account_type_id,
-            'type': type_account,
-            'parent_id': account_obj.browse(
-                cr, uid, property_account_obj.id, context).id,
-            'active': True,
-            'reconcile': True,
-            'currency_mode': account_obj.browse(
-                cr, uid, property_account_obj.id, context).currency_mode,
-        }
-        return account_obj.create(cr, uid, dict_account, context)
-
+        return self.get_create_partner_account(cr, uid, vals, 'supplier', context)
+    
     def get_create_customer_partner_account(self, cr, uid, vals, context):
+        return self.get_create_partner_account(cr, uid, vals, 'customer', context)
+    
+    def get_create_partner_account(self, cr, uid, vals, account_type, context):
         account_obj = self.pool['account.account']
         account_type_obj = self.pool['account.account.type']
         
-        if not vals.get('property_account_receivable', False):
-            vals['property_account_receivable'] = self._get_chart_template_property(
-                cr, uid, 'property_account_receivable', context)
-        
-        property_account_id = vals.get('property_account_receivable', False)
-        property_account_obj = account_obj.browse(cr, uid, property_account_id)
-        type_account = 'receivable'
-        account_type_id = account_type_obj.search(
-            cr, uid, [('code', '=', type_account)], context=context)[0]
-        dict_account = {
-            'name': vals.get('name', ''),
-            'code': '%s%s' % (account_obj.browse(
-                cr, uid, property_account_obj.id, context).code,
-                vals['property_customer_ref']),
-            'user_type': account_type_id,
-            'type': type_account,
-            'parent_id': account_obj.browse(
-                cr, uid, property_account_obj.id, context).id,
-            'active': True,
-            'reconcile': True,
-            'currency_mode': account_obj.browse(
-                cr, uid, property_account_obj.id, context).currency_mode,
-        }
-        return account_obj.create(cr, uid, dict_account, context)
+        if account_type == 'customer':
+            property_account = 'property_account_receivable'
+            type_account = 'receivable'
+            property_ref = 'property_customer_ref'
+        elif account_type == 'supplier':
+            property_account = 'property_account_payable'
+            type_account = 'payable'
+            property_ref = 'property_supplier_ref'
+        else:
+            # Unknown account type
+            return False
+            
+        if not vals.get(property_account, False):
+            vals[property_account] = self._get_chart_template_property(
+                cr, uid, property_account, context)
+            
+        property_account_id = vals.get(property_account, False)
+        if property_account_id:
+            property_account = account_obj.browse(cr, uid, property_account_id, context)
+            
+            account_ids = account_obj.search(cr, uid, [('code', '=', '{0}{1}'.format(property_account.code, vals[property_ref]))])
+            if account_ids:
+                return account_ids[0]
+            else:
+                account_type_id = account_type_obj.search(
+                    cr, uid, [('code', '=', type_account)], context=context)[0]
+                
+                return account_obj.create(cr, uid, {
+                    'name': vals.get('name', ''),
+                    'code': '{0}{1}'.format(property_account.code, vals[property_ref]),
+                    'user_type': account_type_id,
+                    'type': type_account,
+                    'parent_id': property_account_id,
+                    'active': True,
+                    'reconcile': True,
+                    'currency_mode': property_account.currency_mode,
+                }, context)
+        else:
+            return False
 
     def create(self, cr, uid, vals, context=None):
         if not context:
@@ -210,11 +202,12 @@ class res_partner(orm.Model):
             # if there isn't the name of partner - then it is not modified
             # so assign it
                 vals['name'] = partner.name
+            
             if partner.property_account_receivable.type != 'view':
             # there is already an account created for the partner
                 if partner.property_account_receivable.name != vals['name']:
-                # the account name if different from the partner name,
-                #so we must update the account name
+                    # the account name if different from the partner name,
+                    #so we must update the account name
                     account_obj.write(
                         cr, uid, partner.property_account_receivable.id,
                         {'name': vals['name']})
