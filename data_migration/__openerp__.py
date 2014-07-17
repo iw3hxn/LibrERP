@@ -22,13 +22,14 @@
 
 {
     'name': 'Data migration import',
-    'version': '2.1.13.2',
+    'version': '2.1.14.2',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import data needed for migration
         from excel formatted files
         
-        When option 'strict' is selected, partner will be searched on every field in PARTNER_SEARCH
+        When option 'strict' is selected, partner will be searched on every field in PARTNER_SEARCH and if in doubt
+        nothing will be changed or updated. It is usefull to use this mode to be shure that nothing will be overwritten.
     
     """,
     "author": "Didotech SRL",

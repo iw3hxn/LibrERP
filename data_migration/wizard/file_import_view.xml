@@ -24,7 +24,7 @@
                    
                     <!-- Items per lo stato end -->
                     <group colspan="8" col="8" states="end">
-                        <label string="Import file. Verra segnalata la fine del'importazione, nelle 'Messaggi' (Configurazione -> Email -> Messaggi)."/>
+                        <label string="Import file. Verra segnalata la fine del'importazione, nelle 'Messaggi' (Vendite -> Configurazione -> Email -> Messaggi)."/>
                     </group>
                    
                    <!-- Separatore --> 
