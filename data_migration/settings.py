@@ -148,7 +148,7 @@ class FormatThree():
 
 
 class FormatFour():
-    # TP Extended
+    # TP Extended (differs only for product import)
     HEADER_CUSTOMER = (u'Codice', u'Denominazione / Cognome', u'Nome', u'Sede legale: indirizzo', u'SL: CAP', u'SL: località', u'SL: Prov.', u'Telefono', u'Fax', u'e-mail', u'Sede amministrativa: indirizzo 1', u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località', u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category')
     COLUMNS = "code, name, person_name, street_default, zip_default, city_default, province_default, phone_default, fax_default, email_default, street_invoice, street2_invoice, zip_invoice, city_invoice, province_invoice, country_code, vat, fiscalcode, category"
     #COLUMNS = "code, name, person_name, street_invoice, zip_invoice, city_invoice, province_invoice, phone_invoice, fax_invoice, email_invoice, street_delivery, street2_delivery, zip_delivery, city_delivery, province_delivery, country_code, vat, fiscalcode, email2, category"
