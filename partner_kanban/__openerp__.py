@@ -21,7 +21,7 @@
 
 {
     "name": "Partner Directory",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "author": "Didotech SRL",
     "category": "Partner",
     "sequence": 12,
