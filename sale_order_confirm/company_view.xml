@@ -2,32 +2,32 @@
 <openerp>
     <data>
         
-        <record model="ir.ui.view" id="view_fido_company_form">
-            <field name="name">res.company.rfido.inherit</field>
-            <field name="model">res.company</field>
-            <field name="type">form</field>
-            <field name="inherit_id" ref="base.view_company_form"/>
-            <field name="arch" type="xml">
-                <page string="Configuration" position="inside">
-                    <separator string="Gestione Fido" colspan="4"/>
-                    <field name="check_credit_limit" />
-                    <field name="default_credit_limit"/>
-					<separator string="Manage Validity on Sale Order"/>
-					<field name="default_sale_order_validity" />
+		<record model="ir.ui.view" id="view_fido_company_form">
+			<field name="name">res.company.rfido.inherit</field>
+			<field name="model">res.company</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="base.view_company_form"/>
+			<field name="arch" type="xml">
+				<page string="Configuration" position="inside">
+					<separator string="Gestione Fido" colspan="4"/>
+						<field name="check_credit_limit"/>
+						<field name="default_credit_limit"/>
+					<separator string="Manage Validity on Sale Order" colspan="4"/>
+						<field name="default_sale_order_validity"/>
 					<separator string="Margin Manager" colspan="4"/>
-                    <field name="enable_margin_validation" />
-                    <field name="minimum_margin"/>
-                    <separator string="Parametri Default" colspan="4"/>
-                    <field name="default_property_account_position" />
-                    <field name="default_property_payment_term"/>
-                    <separator string="Sale Order Validation Params" colspan="4"/>
-                    <field name="need_tech_validation" />
-                    <field name="need_manager_validation" />
-<!--					<separator name="Sale Order View" colspan="4"/>
-					<field name="readonly_price_unit" />-->
-                </page>
-            </field>
-        </record>
+						<field name="enable_margin_validation"/>
+						<field name="minimum_margin"/>
+					<separator string="Parametri Default" colspan="4"/>
+						<field name="default_property_account_position"/>
+						<field name="default_property_payment_term"/>
+					<separator string="Sale Order Validation Params" colspan="4"/>
+						<field name="need_tech_validation" />
+						<field name="need_manager_validation" />
+<!--			<separator name="Sale Order View" colspan="4"/>
+		    <field name="readonly_price_unit" />-->
+				</page>
+			</field>
+		</record>
 
-    </data>
+	</data>
 </openerp>
