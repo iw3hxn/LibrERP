@@ -21,7 +21,7 @@
 
 {
     "name": "Partner Directory",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "author": "Didotech SRL",
     "category": "Partner",
     "sequence": 12,
@@ -38,4 +38,3 @@ Add kanban view on partner
     'auto_install': False,
     "css": ['static/src/css/partner.css'],
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

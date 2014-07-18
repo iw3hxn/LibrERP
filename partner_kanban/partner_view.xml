@@ -44,15 +44,15 @@
             <field name="arch" type="xml">                
                 <field name="name" position="replace">
                 <!--<separator string="Partner" colspan="6" col="1"/>-->
-		    <field name="partner_logo" widget="image" nolabel="1" />
-                       
+					<field name="partner_logo" widget="image" nolabel="1" />
+
                     <field select="1" nolabel="1" name="name"/>
-                       
+
                     <newline/>
-		    <separator string="Proprieties" colspan="6" col="1"/>
+				<separator string="Proprieties" colspan="6" col="1"/>
                     <newline/>
-	        </field>
-    	    </field>
+			</field>
+    	</field>
     </record>
 
     </data>
