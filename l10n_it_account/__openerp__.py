@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation - Account Didotech',
-    'version': '2.5.12.7',
+    'version': '2.6.12.8',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
@@ -29,6 +29,7 @@ Functionalities:
 
 - Fiscal code computation for partner
 - Check invoice date consistency
+- CIG on invoice
 
 """,
     'author': 'OpenERP Italian Community',

@@ -23,6 +23,9 @@
                     <field name="date_invoice" position="replace">
                         <field name="date_invoice" on_change="onchange_check_fiscal_position(date_invoice, partner_id)" />
                     </field>
+                    <field name="payment_term" position="after">
+                        <field name="cig" />
+                    </field>
 <!--insert in the customer invoice the new line invoice created with 'form_view_ref' tag-->
                     <xpath expr="/form/notebook/page[@string='Invoice']/field[@name='invoice_line']" position="attributes">
                         <attribute name="context">{'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_customer'}</attribute>
