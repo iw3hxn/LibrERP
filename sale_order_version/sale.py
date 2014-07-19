@@ -30,7 +30,18 @@ class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
     _columns = {
         'active': fields.related('order_id', 'active', type='boolean', string='Active', store=False),
+        'sale_line_copy_id': fields.many2one('sale.order.line', 'Orig version', required=False, readonly=False),
     }
+    
+    def copy_data(self, cr, uid, line_id, defaults=None, context=None):
+        defaults = defaults or {}
+        defaults['sale_line_copy_id'] = line_id
+        return super(sale_order_line, self).copy_data(cr, uid, line_id, defaults, context)
+        
+    def copy(self, cr, uid, line_id, defaults, context=None):
+        defaults = defaults or {}
+        defaults['sale_line_copy_id'] = line_id
+        return super(sale_order_line, self).copy(cr, uid, line_id, defaults, context)
 
 
 class sale_order(orm.Model):
