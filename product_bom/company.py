@@ -18,11 +18,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp.osv import orm, fields
 
-from osv import fields, osv
 
-
-class res_company(osv.osv):
+class res_company(orm.Model):
 
     _inherit = 'res.company'
 
@@ -35,5 +34,5 @@ class res_company(osv.osv):
     }
 
     _defaults = {
-        'ref_stock': lambda *a: 'real'
+        'ref_stock': 'real'
     }

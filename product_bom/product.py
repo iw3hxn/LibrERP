@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, osv
+from openerp.osv import orm, fields
 import decimal_precision as dp
 from openerp.tools.translate import _
 
@@ -28,7 +28,7 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-class product_product(osv.osv):
+class product_product(orm.Model):
     """
     Inherit Product in order to add an "Bom Stock" field
     """
@@ -42,12 +42,11 @@ class product_product(osv.osv):
         Compute the purchase price, taking into account sub products and routing
         '''
         
-        if context is None:
-            context = {}
-        if bom_properties is None:
-            bom_properties = []
-        bom_obj = self.pool.get('mrp.bom')
-        uom_obj = self.pool.get('product.uom')
+        context = context or {}
+        bom_properties = bom_properties or []
+        
+        bom_obj = self.pool['mrp.bom']
+        uom_obj = self.pool['product.uom']
 
         res = {}
         ids = ids or []
@@ -102,8 +101,7 @@ class product_product(osv.osv):
         return self._cost_price(cr, uid, ids, '', [], context)
 
     def _cost_price(self, cr, uid, ids, field_name, arg, context=None):
-        if context is None:
-            context = {}
+        context = context or {}
         product_uom = context.get('product_uom')
         bom_properties = context.get('properties')
         res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties)
@@ -112,7 +110,7 @@ class product_product(osv.osv):
     def _kit_filter(self, cr, uid, obj, name, args, context):
         if not args:
             return []
-        bom_obj = self.pool.get('mrp.bom')
+        bom_obj = self.pool['mrp.bom']
         for search in args:
             if search[0] == 'is_kit':
                 if search[2]:
@@ -131,12 +129,10 @@ class product_product(osv.osv):
         '''
         Show if have or not a bom
         '''
-        
-        if context is None:
-            context = {}
-        if bom_properties is None:
-            bom_properties = []
-        bom_obj = self.pool.get('mrp.bom')
+        context = context or {}
+        bom_properties = bom_properties or []
+
+        bom_obj = self.pool['mrp.bom']
 
         res = {}
         ids = ids or []
@@ -161,8 +157,8 @@ class product_product(osv.osv):
 
     def _compute_bom_stock(self, cr, uid, product,
                            quantities, company, context=None):
-        bom_obj = self.pool.get('mrp.bom')
-        uom_obj = self.pool.get('product.uom')
+        bom_obj = self.pool['mrp.bom']
+        uom_obj = self.pool['product.uom']
         mapping = self._bom_stock_mapping(cr, uid, context=context)
         stock_field = mapping[company.ref_stock]
 
@@ -216,8 +212,8 @@ class product_product(osv.osv):
         # We need available, virtual or immediately usable
         # quantity which is selected from company to compute Bom stock Value
         # so we add them in the calculation.
-        user_obj = self.pool.get('res.users')
-        comp_obj = self.pool.get('res.company')
+        user_obj = self.pool['res.users']
+        comp_obj = self.pool['res.company']
         if 'bom_stock' in field_names:
             field_names.append('qty_available')
             field_names.append('immediately_usable_qty')
@@ -243,21 +239,19 @@ class product_product(osv.osv):
         result = {}
         
         for product_id in ids:
-            result[product_id] = self.pool.get('mrp.bom').search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)])
+            result[product_id] = self.pool['mrp.bom'].search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)])
         
         return result
     
     def price_get(self, cr, uid, ids, ptype='list_price', context=None):
-        if context is None:
-            context = {}
-
+        context = context or {}
         if 'currency_id' in context:
-            pricetype_obj = self.pool.get('product.price.type')
+            pricetype_obj = self.pool['product.price.type']
             price_type_id = pricetype_obj.search(cr, uid, [('field', '=', ptype)])[0]
             price_type_currency_id = pricetype_obj.browse(cr, uid, price_type_id).currency_id.id
 
         res = {}
-        product_uom_obj = self.pool.get('product.uom')
+        product_uom_obj = self.pool['product.uom']
         for product in self.browse(cr, uid, ids, context=context):
             res[product.id] = product[ptype] or 0.0
 
@@ -274,7 +268,7 @@ class product_product(osv.osv):
             if 'currency_id' in context:
                 # Take the price_type currency from the product field
                 # This is right cause a field cannot be in more than one currency
-                res[product.id] = self.pool.get('res.currency').compute(cr, uid, price_type_currency_id,
+                res[product.id] = self.pool['res.currency'].compute(cr, uid, price_type_currency_id,
                                                                         context['currency_id'], res[product.id], context=context)
         return res
         
@@ -384,12 +378,10 @@ class product_product(osv.osv):
 
     def copy(self, cr, uid, product_id, default=None, context=None):
         """Copies the product and the BoM of the product"""
-        if not context:
-            context = {}
-        
+        context = context or {}
         copy_id = super(product_product, self).copy(cr, uid, product_id, default=default, context=context)
 
-        bom_obj = self.pool.get('mrp.bom')
+        bom_obj = self.pool['mrp.bom']
         bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
         
         for bom_id in bom_ids:
