@@ -19,19 +19,19 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
+from openerp.osv import orm, fields
 
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-class mrp_bom(osv.osv):
+class mrp_bom(orm.Model):
     _inherit = 'mrp.bom'
     
     def create(self, cr, uid, vals, context={}):
         if not vals.get('bom_id', False):
-            self.pool.get('product.product').write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False})
+            self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False})
         return super(mrp_bom, self).create(cr, uid, vals, context=context)
     
     def unlink(self, cr, uid, ids, context={}):
