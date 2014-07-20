@@ -239,25 +239,24 @@ class sale_order_line(orm.Model):
                             'virtual_available': line.product_id and line.product_id.virtual_available or 0.0}
         return res
 
-    #overwrite of funcion insede sale_margin
-    def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
+    #overwrite of funcion inside sale_margin
+    def product_id_change(self, cr, uid, ids, pricelist, product_id, qty=0,
                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
                           lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False, context=None):
-        res = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty=qty,
+        res = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty=qty,
                                                              uom=uom, qty_uos=qty_uos, uos=uos, name=name, partner_id=partner_id,
                                                              lang=lang, update_tax=update_tax, date_order=date_order, packaging=packaging, fiscal_position=fiscal_position, flag=flag, context=context)
         if not pricelist:
             return res
         frm_cur = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id.id
         to_cur = self.pool['product.pricelist'].browse(cr, uid, [pricelist], context)[0].currency_id.id
-        if product:
-            product_id = self.pool['product.product'].browse(cr, uid, product, context)
-            purchase_price = product_id.cost_price
-            product_type = product_id.type
-            
-            price = self.pool['res.currency'].compute(cr, uid, frm_cur, to_cur, purchase_price, round=False)
-            res['value'].update({'purchase_price': price,
-                                 'product_type': product_type})
+        if product_id:
+            product = self.pool['product.product'].browse(cr, uid, product_id, context)
+            price = self.pool['res.currency'].compute(cr, uid, frm_cur, to_cur, product.cost_price, round=False)
+            res['value'].update({
+                'purchase_price': price,
+                'product_type': product.type
+            })
             
         return res
    
