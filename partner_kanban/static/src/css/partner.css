@@ -13,11 +13,11 @@
   height: 128px;
   text-align: center;
   overflow: hidden;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  border-radius: 3px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -o-border-radius: 10px;
+  -ms-border-radius: 10px;
+  border-radius: 10px;
   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   -o-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
@@ -50,11 +50,12 @@
 
 .openerp .oe_partner_details h4 {
   margin: 0;
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .openerp .oe_partner_details h4 a {
-  color: #fd5f60;
+  color: #CC5146;
 }
 
 .openerp .oe_partner_details h4 a:hover {
