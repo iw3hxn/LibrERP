@@ -23,7 +23,7 @@
 ##############################################################################
 {
     'name': "Management of withholding tax",
-    'version': '3.0.0.0',
+    'version': '3.0.1.0',
     'category': 'Accounting & Finance',
     'description': """
 Ritenute d'acconto sulle fatture fornitore

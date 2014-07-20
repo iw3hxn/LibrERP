@@ -72,21 +72,21 @@ class account_voucher(orm.Model):
                         for tax_line in inv_tax_line.invoice_line_tax_id:
                             if tax_line.tax_code_id.withholding_type:
                                 if voucher.type != 'payment':
-                                    raise osv.except_osv(_('Error'), _('Can\'t handle withholding tax with voucher of type other than payment'))
+                                    raise orm.except_orm(_('Error'), _('Can\'t handle withholding tax with voucher of type other than payment'))
                                 if not tax_line.tax_code_id.withholding_payment_term_id:
-                                    raise osv.except_osv(_('Error'), _('The tax does not have an associated Withholding Payment Term'))
+                                    raise orm.except_orm(_('Error'), _('The tax does not have an associated Withholding Payment Term'))
                                 if not invoice.company_id.withholding_journal_id:
-                                    raise osv.except_osv(_('Error'), _('The company does not have an associated Withholding journal'))
+                                    raise orm.except_orm(_('Error'), _('The company does not have an associated Withholding journal'))
                                 due_list = term_pool.compute(
                                     cr, uid, tax_line.tax_code_id.withholding_payment_term_id.id, line.amount,
                                     date_ref=voucher.date or invoice.date_invoice, context=context)
                                 if len(due_list) > 1:
-                                    raise osv.except_osv(
+                                    raise orm.except_orm(
                                         _('Error'),
                                         _('The payment term %s has too many due dates')
                                         % tax_line.tax_code_id.withholding_payment_term_id.name)
                                 if len(due_list) == 0:
-                                    raise osv.except_osv(
+                                    raise orm.except_orm(
                                         _('Error'),
                                         _('The payment term %s does not have due dates')
                                         % tax_line.tax_code_id.withholding_payment_term_id.name)
