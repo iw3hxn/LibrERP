@@ -183,6 +183,25 @@ class sale_order(orm.Model):
                 res = False
             return res and o.email_sent_validation and o.customer_validation
         return True
+    
+    def check_direct_confirm(self, cr, uid, ids, context=None):
+        if self.check_limit(cr, uid, ids, context):
+            for order in self.browse(cr, uid, ids):
+                values = {
+                    'state': 'wait_customer_validation',
+                    'customer_validation': True
+                }
+                if order.need_tech_validation:
+                    values['tech_validation'] = True
+                
+                if (order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) < order.company_id.minimum_margin) or order.need_manager_validation:
+                    values['manager_validation'] = True
+                
+                self.write(cr, uid, [order.id], values)
+            
+            return self.action_validate(cr, uid, ids, context)
+        else:
+            return False
        
     def copy(self, cr, uid, order_id, defaults, context=None):
         defaults['customer_validation'] = False
@@ -270,4 +289,3 @@ class sale_order_line(orm.Model):
         #'shop_id': lambda self, cr, uid, c: c.get('shop_id', False),
         'order_id': lambda self, cr, uid, context: context.get('default_sale_order', False) or False
     }
-
