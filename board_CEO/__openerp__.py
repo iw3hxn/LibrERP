@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Operations Management Board',
-    'version': '1.7.7',
+    'version': '1.7.8',
     'category': 'Board/Projects & Services',
     'description': """
         Central operations dashboard with all main menus

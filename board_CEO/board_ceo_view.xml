@@ -2,9 +2,7 @@
 <openerp>
     <data>
 
-        <!--
-        Board for CEO and Senior management
-        -->
+        <!-- Board for CEO and Senior management -->
 
         <record id="ceo_case_lead" model="ir.actions.act_window">
             <field name="name">Open Leads</field>
@@ -12,33 +10,18 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">['|', ('type','=','lead'), ('type','=',False)]</field>
-            <field name="context">{'search_default_new':1, 'default_type': 'lead', 'search_default_section_id': section_id, 'stage_type': 'lead'}</field>
+            <field name="context">{'search_default_new':1, 'default_type': 'lead'}</field>
             <field name="view_id" ref="crm.crm_case_tree_view_leads"/>
             <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
         </record>
         
-        <record id="referenced_lead_view" model="ir.ui.view">
-            <field name="name">Lead Ref. tree</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
-            <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
-            <field name="type">tree</field>
-
-            <field name="arch" type="xml">
-                <field name="state" position="after">
-                    <field name="ref"/>
-                    <field name="ref2"/>
-                </field>
-            </field>
-        </record>
-
         <record id="ceo_case_oppor" model="ir.actions.act_window">
             <field name="name">Open Opportunities</field>
             <field name="res_model">crm.lead</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">['|', ('type','=','opportunity'), ('type','=',False)]</field>
-            <field name="context">{'search_default_new':1, 'default_type': 'opportunity', 'search_default_section_id': section_id, 'stage_type': 'opportunity'}</field>
+            <field name="domain">[('state','in',['draft','open']), ('type', '=', 'opportunity')]</field>
+            <field name="context">{'default_user_id': uid, 'default_type': 'opportunity'}</field>
         </record>
 
         <record id="ceo_oppor_tree" model="ir.actions.act_window.view">
@@ -46,59 +29,6 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="crm.crm_case_tree_view_oppor"/>
             <field name="act_window_id" ref="ceo_case_oppor"/>
-        </record>
-        
-        <record id="referenced_oppor_view" model="ir.ui.view">
-            <field name="name">Opportunity Ref. tree</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
-            <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
-            <field name="type">tree</field>
-
-            <field name="arch" type="xml">
-                <field name="state" position="after">
-                    <field name="ref"/>
-                    <field name="ref2"/>
-                </field>
-            </field>
-        </record>
-        
-        <record id="referenced_leads_search" model="ir.ui.view">
-            <field name="name">Leads Ref. search</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
-            <field name="type">search</field>
-
-            <field name="arch" type="xml">
-                <filter string="State" position="after">
-                    <separator orientation="vertical"/>
-                    <filter string="Reference 1" icon="terp-project"
-                            domain="[]" help="Reference 1"
-                            context="{'group_by':'ref'}" />
-                    <filter string="Reference 2" icon="terp-report"
-                            domain="[]" help="Reference 2"
-                            context="{'group_by':'ref2'}" />
-                </filter>
-            </field>
-        </record>
-        
-        <record id="referenced_oppor_search" model="ir.ui.view">
-            <field name="name">Opportunity Ref. search</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
-            <field name="type">search</field>
-
-            <field name="arch" type="xml">
-                <filter string="State" position="after">
-                    <separator orientation="vertical"/>
-                    <filter string="Reference 1" icon="terp-project"
-                            domain="[]" help="Reference 1"
-                            context="{'group_by':'ref'}" />
-                    <filter string="Reference 2" icon="terp-report"
-                            domain="[]" help="Reference 2"
-                            context="{'group_by':'ref2'}" />
-                </filter>
-            </field>
         </record>
 
         <record id="ceo_oppor_form" model="ir.actions.act_window.view">
@@ -149,39 +79,6 @@
             <field name="search_view_id" ref="crm_helpdesk.view_crm_case_helpdesk_filter"/>
         </record>
         
-        <record id="ceo_referenced_helpdesk_view" model="ir.ui.view">
-            <field name="name">Helpdesk Ref. tree</field>
-            <field name="model">crm.helpdesk</field>
-            <field name="inherit_id" ref="crm_helpdesk.crm_case_tree_view_helpdesk"/>
-            <field name="type">tree</field>
-
-            <field name="arch" type="xml">
-                <field name="state" position="after">
-                    <field name="ref"/>
-                    <field name="ref2"/>
-                </field>
-            </field>
-        </record>
-        
-         <record id="referenced_helpdesk_search" model="ir.ui.view">
-            <field name="name">Helpdesk Ref. search</field>
-            <field name="model">crm.helpdesk</field>
-            <field name="inherit_id" ref="crm_helpdesk.view_crm_case_helpdesk_filter"/>
-            <field name="type">search</field>
-
-            <field name="arch" type="xml">
-                <filter string="Deadline" position="after">
-                    <separator orientation="vertical"/>
-                    <filter string="Reference 1" icon="terp-project"
-                            domain="[]" help="Reference 1"
-                            context="{'group_by':'ref'}" />
-                    <filter string="Reference 2" icon="terp-report"
-                            domain="[]" help="Reference 2"
-                            context="{'group_by':'ref2'}" />
-                </filter>
-            </field>
-        </record>
-
         <record id="ceo_my_open_tasks" model="ir.actions.act_window">
             <field name="name">My Open Tasks</field>
             <field name="res_model">project.task</field>
@@ -190,6 +87,7 @@
             <field name="domain">[('user_id','=',uid),('state','=','open')]</field>
             <field name="context">{}</field>
             <field name="view_id" ref="project.view_task_search_form"/>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
         </record>
 
         <record id="ceo_my_delegated_tasks" model="ir.actions.act_window">
@@ -199,7 +97,8 @@
             <field name="view_mode">tree,form</field>
             <field name="domain">[('parent_ids.user_id','=',uid),('state', 'in', ('draft','open','pending'))]</field>
             <field name="context">{}</field>
-            <field name="view_id" ref="project.view_delegated_task_tree"/>
+            <field name="view_id" ref="project.view_task_tree2"/>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
         </record>
 
         <record id="ceo_other_tasks" model="ir.actions.act_window">
@@ -210,16 +109,18 @@
             <field name="domain">[('user_id','in',(uid,False)),('state','in',('draft','pending'))]</field>
             <field name="context">{}</field>
             <field name="view_id" ref="project.view_task_tree2"/>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
         </record>
 
         <record id="ceo_closed_tasks" model="ir.actions.act_window">
-            <field name="name">Finished tasks</field>
+            <field name="name">All Finished tasks</field>
             <field name="res_model">project.task</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('state','=',('done'))]</field>
             <field name="context">{}</field>
             <field name="view_id" ref="project.view_task_tree2"/>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
         </record>
 
         <record id="ceo_unassigned_tasks" model="ir.actions.act_window">
@@ -230,6 +131,17 @@
             <field name="domain">[('user_id','=',False)]</field>
             <field name="context">{}</field>
             <field name="view_id" ref="project.view_task_search_form"/>
+        </record>
+
+        <record id="ceo_tasks" model="ir.actions.act_window">
+            <field name="name">All unfinished tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,gantt,kanban,calendar</field>
+            <field name="domain">[('state', 'in', ('draft','open','pending'))]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="project.view_task_tree2"/>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
         </record>
 
         <record id="ceo_projects" model="ir.actions.act_window">
@@ -287,6 +199,8 @@
             </field>
         </record>
 
+        <!--Menus-->
+
         <record id="open_board_ceo" model="ir.actions.act_window">
             <field name="name">CEO Dashboard</field>
             <field name="res_model">board.board</field>
@@ -303,19 +217,19 @@
                 <menuitem action="ceo_case_oppor" id="menu_ceo_oppor" parent="menu_ceo_crm" sequence="2"/>
                 <menuitem action="ceo_helpdesk" id="menu_ceo_helpdesk" parent="menu_ceo_crm" sequence="3"/>
 
-            <menuitem name="Project Management Office" id="menu_ceo_pmo" sequence="2" parent="menu_board_ceo"/>
-                <menuitem name="Projects and Analytic" id="menu_ceo_pna" sequence="1" parent="menu_ceo_pmo"/>
+            <menuitem name="Projects and Analytic" id="menu_ceo_pna" sequence="3" parent="menu_board_ceo"/>
                 <menuitem action="ceo_projects" id="menu_ceo_project" parent="menu_ceo_pna" sequence="1"/>
                 <menuitem action="ceo_analytic" id="menu_ceo_analytic" parent="menu_ceo_pna" sequence="2"/>
-            <menuitem name="Issues" id="menu_ceo_issmenu" sequence="2" parent="menu_ceo_pmo"/>
+            <menuitem name="Issues" id="menu_ceo_issmenu" sequence="4" parent="menu_board_ceo"/>
                 <menuitem action="ceo_project_issues" id="menu_ceo_issues" parent="menu_ceo_issmenu" sequence="1"/>
                 <menuitem action="ceo_pending_issues" id="menu_pending_issues" parent="menu_ceo_issmenu" sequence="2"/>
                 <menuitem action="ceo_closed_issues" id="menu_closed_issues" parent="menu_ceo_issmenu" sequence="3"/>
-            <menuitem name="Tasks" id="menu_ceo_taskmenu" sequence="3" parent="menu_ceo_pmo"/>
+            <menuitem name="Tasks" id="menu_ceo_taskmenu" sequence="5" parent="menu_board_ceo"/>
                 <menuitem action="ceo_my_open_tasks" id="menu_ceo_tasks" parent="menu_ceo_taskmenu" sequence="1"/>
                 <menuitem action="ceo_my_delegated_tasks" id="menu_delegated_tasks" parent="menu_ceo_taskmenu" sequence="2"/>
                 <menuitem action="ceo_other_tasks" id="menu_other_tasks" parent="menu_ceo_taskmenu" sequence="3"/>
                 <menuitem action="ceo_closed_tasks" id="menu_closed_tasks" parent="menu_ceo_taskmenu" sequence="4"/>
+                <menuitem action="ceo_tasks" id="menu_all_tasks" parent="menu_ceo_taskmenu" sequence="5"/>
 
     </data>
 </openerp>
