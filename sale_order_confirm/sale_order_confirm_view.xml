@@ -5,6 +5,7 @@
         <record id="view_order_form_smart" model="ir.ui.view">
             <field name="name">sale.order.form.smart</field>
             <field name="model">sale.order</field>
+            <field name="priority">160</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Sales Order">
