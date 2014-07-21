@@ -375,7 +375,7 @@
                     <field name="partner_id" />
                     <field name="date_start" attrs="{'required': [('has_date_option', '=', True)]}"/>
                     <field name="date_end" attrs="{'required': [('has_date_option', '=', True)]}"/>
-                    <field name="location" readonly="1"/>
+                    <field name="location_name" readonly="1"/>
                     <field name="active" on_change="onchange_active(active)"/>
                     <field name="has_date_option" invisible="1"/>
                     <field name="asset_use_id" widget="selection" />
@@ -438,26 +438,26 @@
                             </field>
                         </page>
                         <page string="SIM" groups="hr_sim.group_sim_user">
-                            <separator string="Sim" colspan="4" />
+                            <!--<separator string="Sim" colspan="4" />-->
                             <field name="sim_ids" nolabel="1" colspan="4">
-								<tree>
-									<!--<field name="sim_id" />-->
-									<field name="complete_name" />
+				<tree>
+				<!--<field name="sim_id" />-->
+				<field name="complete_name" />
                                     <!--<field name="dest_location_name" />-->
-									<field name="location_name" />
+				<field name="location_name" />
                                     <!--<field name="datetime" string="Added" />-->
-									<!--<field name="return_datetime" />-->
-									<!--<field name="user_id" />-->
-								</tree>
-							</field>
+				    <!--<field name="return_datetime" />-->
+				    <!--<field name="user_id" />-->
+				</tree>
+			    </field>
                         </page>
                         <page string="All SIMs" groups="hr_sim.group_sim_user">
-                            <separator string="Sim" colspan="4" />
+                            <!--<separator string="Sim" colspan="4" />-->
                             <field name="sim_move_line_ids" nolabel="1" colspan="4">
-								<tree>
-									<field name="sim_id" />
-								</tree>
-							</field>
+				<tree>
+                                    <field name="sim_id" />
+				</tree>
+			    </field>
                         </page>
                         <page string="Document">
                             <field name="document_ids" colspan="4" nolabel="1">
