@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+        <record id="public_holidays_view_tree" model="ir.ui.view">
+            <field name="name">public.holidays.view.tree</field>
+            <field name="model">public.holidays</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="holiday_date"/>
+                <field name="description"/>
+                <field name="country" />
+            </field>
+        </record>
+        
+        <record id="show_public_holidays" model="ir.actions.act_window">
+            <field name="name">Define Public Holidays</field>
+            <field name="res_model">public.holidays</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="public_holidays_view_tree"/>
+            <field name="target">current</field>
+        </record>
+        
+        <menuitem id="public_holidays_menu" name="Public Holidays" parent="base.menu_config" />
+        <menuitem id="menu_public_holidays_calendar" action="show_public_holidays" name="Public Holidays Calendar" parent="public_holidays_menu"/>
+    
+    </data>
+</openerp>
