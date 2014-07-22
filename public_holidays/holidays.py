@@ -33,11 +33,11 @@ class PublicHolidays(orm.Model):
     _columns = {
         'holiday_date': fields.date('Date', required=True),
         'description': fields.text('Description', required=True),
-        'country': fields.many2one('res.country', 'Country', required=True)
+        'country_id': fields.many2one('res.country', 'Country', required=True)
     }
 
     _order = 'holiday_date ASC'
     
     _sql_constraints = [
-        ('date_country_uniq', 'unique(holiday_date, country)', _('The date of the holiday must be unique (for the country)!'))
+        ('date_country_uniq', 'unique(holiday_date, country_id)', _('The date of the holiday must be unique (for the country)!'))
     ]

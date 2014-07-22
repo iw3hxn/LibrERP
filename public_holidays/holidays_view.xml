@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <field name="holiday_date"/>
                 <field name="description"/>
-                <field name="country" />
+                <field name="country_id" />
             </field>
         </record>
         
