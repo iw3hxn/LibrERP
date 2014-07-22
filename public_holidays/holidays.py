@@ -31,9 +31,9 @@ class PublicHolidays(orm.Model):
     _description = 'The list of public holidays'
     
     _columns = {
-        'holiday_date': fields.date('Date'),
-        'description': fields.text('Description'),
-        'country': fields.many2one('res.country', 'Country')
+        'holiday_date': fields.date('Date', required=True),
+        'description': fields.text('Description', required=True),
+        'country': fields.many2one('res.country', 'Country', required=True)
     }
 
     _order = 'holiday_date ASC'

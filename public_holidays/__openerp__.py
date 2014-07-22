@@ -24,7 +24,7 @@
 
 {
     "name": "Public Holidays",
-    "version": "3.0.1.0",
+    "version": "3.0.2.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules",
