@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.0.5.0",
+    "version": "2.0.6.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
@@ -45,6 +45,11 @@
         
         orm - Monkey Patched function name_get(). Now it will throw an error if 'name' or name_get() are not defined, but will not break a code execution.
             Code will break only if 'debug_mode' defined in config file.
+            
+        bizdatetime - simple library for performing business day arithmetic:
+            policy = Policy(weekends=(SAT, SUN), holidays=(date(2011,7,1),))
+            policy.biz_day_delta(date(2011, 6, 30), date(2011, 7, 4)) # one holiday, one weekend between
+            
     """,
     "depends": [
         'base',
