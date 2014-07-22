@@ -133,5 +133,7 @@ class Parser(report_sxw.rml_parse):
         return self.pool['res.partner.address'].browse(self.cr, self.uid, address['invoice'] or address['default'])
 
     def _get_pallet_sum(self, product_ul_id, partner_id):
-        pallet_sum = self.pool['product.ul'].get_pallet_sum(self.cr, self.uid, [product_ul_id], 'pallet_sum', None, context={'partner_id': partner_id})
+        pallet_sum = self.pool['product.ul'].get_pallet_sum(
+            self.cr, self.uid, [product_ul_id], 'pallet_sum', None, context={'partner_id': partner_id}
+        )
         return pallet_sum[product_ul_id]

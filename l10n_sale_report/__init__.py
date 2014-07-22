@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    Copyright (C) 2011 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>). 
 #    All Rights Reserved
@@ -19,29 +19,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'Italian Localisation - Sale reports',
-    'version': '2.0.2.3',
-    'category': 'Localisation/Italy',
-    'description': """
-Sale reports for Italian localization - DDT & Fattura accompagnatoria
-=====================================================================
+from . import account_invoice
 
-Install report_aero_ooo to be able to have output in a format
-different from the one of the template.
-    """,
-    'author': 'OpenERP Italian Community',
-    'website': 'http://www.openerp-italia.org',
-    'license': 'AGPL-3',
-    "depends": [
-        'l10n_sale_report',
-    ],
-    "init_xml": [
-    ],
-    "update_xml": [
-        'reports.xml',
-    ],
-    "demo_xml": [],
-    "active": False,
-    "installable": True
-}

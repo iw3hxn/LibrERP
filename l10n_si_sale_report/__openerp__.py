@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    Copyright (C) 2011 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>). 
 #    All Rights Reserved
@@ -19,14 +19,29 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+{
+    'name': 'Slovenian Localisation - Sale reports',
+    'version': '2.0.2.3',
+    'category': 'Localisation/Slovenia',
+    'description': """
+Sale reports for Slovenian localization - Prevoznica & Spremni račun
+=====================================================================
 
-from osv import fields, osv
-
-class account_invoice(osv.osv):
-    
-    _inherit = 'account.invoice'
-        
-    _columns = {
-        'sale_order_ids': fields.many2many('sale.order', 'sale_order_invoice_rel', 'invoice_id', 'order_id', 'Sale orders')
-        }
-account_invoice()
+Install report_aero_ooo to be able to have output in a format
+different from the one of the template.
+    """,
+    'author': 'Matmoz d.o.o.',
+    'website': 'http://www.matmoz.si',
+    'license': 'AGPL-3',
+    "depends": [
+        'l10n_sale_report',
+    ],
+    "init_xml": [
+    ],
+    "update_xml": [
+        'reports.xml',
+    ],
+    "demo_xml": [],
+    "active": False,
+    "installable": True
+}
