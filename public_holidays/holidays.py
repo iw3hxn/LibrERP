@@ -23,6 +23,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from tools.translate import _
 
 
 class PublicHolidays(orm.Model):
@@ -36,3 +37,7 @@ class PublicHolidays(orm.Model):
     }
 
     _order = 'holiday_date ASC'
+    
+    _sql_constraints = [
+        ('date_country_uniq', 'unique(holiday_date, country)', _('The date of the holiday must be unique (for the country)!'))
+    ]
