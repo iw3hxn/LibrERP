@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    Copyright (C) 2011 Associazione OpenERP Italia (<http://www.openerp-italia.org>).
 #    Copyright (C) 2014 Didotech Inc. (<http://www.didotech.com>)
 #    All Rights Reserved
@@ -25,7 +25,7 @@ from osv import fields, osv
 
 class wizard_fattura_accompagnatoria(osv.osv_memory):
     _name = "wizard.fattura.accompagnatoria"
-    
+
     def _get_picking_ids(self, cr, uid, context=None):
         invoice_obj = self.pool.get('account.invoice')
         res = []

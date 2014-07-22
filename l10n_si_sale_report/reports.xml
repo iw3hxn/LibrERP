@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+           
+        <record id="delivery.report_shipping" model="ir.actions.report.xml">
+            <field name="name">Print DDT</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">stock.picking</field>
+            <field name="report_name">ddt</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
+            <field name="parser_loc">l10n_si_sale_report/ddt.py</field>
+            <field name="report_rml">l10n_si_sale_report/templates/ddt.odt</field>
+            <field name="parser_state">loc</field>
+        </record>
+
+<!--        <ir_set>
+            <field eval="'action'" name="key"/>
+            <field eval="'client_print_multi'" name="key2"/>
+            <field eval="['stock.picking']" name="models"/>
+            <field name="name">Print DDT</field>
+            <field eval="'ir.actions.report.xml,'+str(delivery.report_shipping)" name="value"/>
+            <field eval="True" name="isobject"/>
+            <field eval="True" name="replace"/>
+        </ir_set>
+
+        <record id="invoice_report_id" model="ir.actions.report.xml">
+            <field name="name">Fattura Accompagnatoria</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">account.invoice</field>
+            <field name="report_name">fattura_accompagnatoria</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
+            <field name="parser_loc">l10n_it_account_report/invoice.py</field>
+            <field name="report_rml">l10n_it_sale_report/templates/fattura_accompagnatoria.odt</field>
+            <field name="parser_state">loc</field>
+        </record>
+-->
+        <record id="sale.report_sale_order" model="ir.actions.report.xml">
+            <field name="name">Quotation / Order</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">sale.order</field>
+            <field name="report_name">sale.order</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
+            <field name="parser_loc">l10n_it_account_report/invoice.py</field>
+            <field name="report_rml">l10n_si_sale_report/templates/sale_order.odt</field>
+            <field name="parser_state">loc</field>
+        </record>
+
+        <record id="stock.report_move_labels" model="ir.actions.report.xml">
+            <field name="name">Bindelli Arrivo</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">stock.move</field>
+            <field name="report_name">stock_move_label</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
+            <field name="parser_loc"></field>
+            <field name="report_rml">l10n_si_sale_report/templates/report_label.odt</field>
+        </record>
+                
+    </data>
+</openerp>
+

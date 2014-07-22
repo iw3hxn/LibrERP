@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    Copyright (C) 2011 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>). 
 #    All Rights Reserved
@@ -20,26 +20,30 @@
 #
 ##############################################################################
 {
-    'name': 'Italian Localisation - Sale reports',
+    'name': 'Localized Aeroo Sale reports',
     'version': '2.0.2.3',
-    'category': 'Localisation/Italy',
+    'category': 'Localisation/Reporting',
     'description': """
-Sale reports for Italian localization - DDT & Fattura accompagnatoria
+This module sets the environment for the localized aeroo templates,
+which are installed with a separated module.
 =====================================================================
 
 Install report_aero_ooo to be able to have output in a format
-different from the one of the template.
+different from the one of the template and don't forget to install the localized
+reports for your country - l10n_(country code)_sale_reports
     """,
     'author': 'OpenERP Italian Community',
     'website': 'http://www.openerp-italia.org',
     'license': 'AGPL-3',
     "depends": [
-        'l10n_sale_report',
+        'l10n_it_sale',
+        'report_aeroo',
+        'stock',
+        'l10n_it_account_report'
     ],
     "init_xml": [
     ],
     "update_xml": [
-        'reports.xml',
     ],
     "demo_xml": [],
     "active": False,
