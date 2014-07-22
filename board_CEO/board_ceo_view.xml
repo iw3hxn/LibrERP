@@ -182,6 +182,7 @@
                             <action string="Open Issues" name="%(ceo_project_issues)d" creatable="true"/>
                             <action string="Pending Issues" name="%(ceo_pending_issues)d"/>
                             <action string="Helpdesk" name="%(ceo_helpdesk)d" creatable="true"/>
+                            <action string="Analytics" name="%(ceo_analytic)d" context="{'group_by':['state']}"/>
                         </column>
 
                         <column>
@@ -192,7 +193,6 @@
                             <action string="Delegated tasks" name="%(ceo_my_delegated_tasks)d"/>
                             <action string="Pending or unassigned tasks" name="%(ceo_other_tasks)d"/>
                             <action string="PROJECTS" name="%(ceo_projects)d" creatable="true"/>
-                            <action string="Analytics" name="%(ceo_analytic)d"/>
                         </column>
                     </board>
                 </form>
