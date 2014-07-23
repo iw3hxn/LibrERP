@@ -244,12 +244,20 @@ class asset_category(orm.Model):
         'code': fields.char('Code', size=16, required=True),
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Name'),
         'has_date_option': fields.boolean('Has date options ?'),
-        'parent_id': fields.many2one('asset.category', 'Parent Category', select=True),
+        'parent_id': fields.many2one('asset.category', 'Parent Category', select=True, ondelete='cascade'),
         'child_id': fields.one2many('asset.category', 'parent_id', string='Child Categories'),
         'asset_sequence_id': fields.many2one('ir.sequence', 'Asset sequence', domain=[('code', '=', 'asset.asset')]),
+        'parent_left': fields.integer('Left Parent', select=1),
+        'parent_right': fields.integer('Right Parent', select=1),
+        'sequence': fields.integer('Sequence', select=True, help="Gives the sequence order when displaying a list of product categories."),
+        
     }
-    _order = 'name'
 
+    _parent_name = "parent_id"
+    _parent_store = True
+    _parent_order = 'sequence, name'
+    _order = 'parent_left'
+    
     def _check_recursion(self, cr, uid, ids, context=None):
         level = 100
 
@@ -991,9 +999,9 @@ class asset_asset(orm.Model):
         return super(asset_asset, self).write(cr, uid, ids, vals, context)
 
     def _get_sequence(self, cr, uid, category_id, context=None):
-        asset_category_obj = self.pool.get('asset.category')
-        ir_sequence_obj = self.pool.get('ir.sequence')
-        ir_model_data_obj = self.pool.get('ir.model.data')
+        asset_category_obj = self.pool['asset.category']
+        ir_sequence_obj = self.pool['ir.sequence']
+        ir_model_data_obj = self.pool['ir.model.data']
         category = {}
 
         # Recursive search for a sequence on the category
