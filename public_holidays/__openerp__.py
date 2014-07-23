@@ -24,7 +24,7 @@
 
 {
     "name": "Public Holidays",
-    "version": "3.0.3.0",
+    "version": "3.0.4.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules",
@@ -35,7 +35,8 @@
         'base',
     ],
     "data": [
-        'holidays_view.xml'
+        'holidays_view.xml',
+        'security/ir.model.access.csv'
     ],
     "demo": [],
     "active": False,

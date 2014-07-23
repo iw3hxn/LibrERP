@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+full_access_public_holidays,public.holidays,model_public_holidays,base.group_sale_salesman,1,1,1,1
+read_access_public_holidays,public.holidays,model_public_holidays,,1,0,0,0

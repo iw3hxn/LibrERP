@@ -7,9 +7,11 @@
             <field name="model">public.holidays</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <field name="holiday_date"/>
-                <field name="description"/>
-                <field name="country_id" />
+                <tree string="Holiday" editable="top" >
+                    <field name="holiday_date"/>
+                    <field name="description"/>
+                    <field name="country_id" />
+                </tree>
             </field>
         </record>
         
@@ -17,7 +19,7 @@
             <field name="name">Define Public Holidays</field>
             <field name="res_model">public.holidays</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree</field>
             <field name="view_id" ref="public_holidays_view_tree"/>
             <field name="target">current</field>
         </record>

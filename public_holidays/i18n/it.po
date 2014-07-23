@@ -1,0 +1,64 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* public_holidays
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-23 07:55+0000\n"
+"PO-Revision-Date: 2014-07-23 07:55+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: public_holidays
+#: model:ir.model,name:public_holidays.model_public_holidays
+msgid "The list of public holidays"
+msgstr "Lista delle Chiusure al Pubblico"
+
+#. module: public_holidays
+#: model:ir.ui.menu,name:public_holidays.public_holidays_menu
+msgid "Public Holidays"
+msgstr "Chiusure al Pubblico"
+
+#. module: public_holidays
+#: code:addons/public_holidays/holidays.py:46
+#: sql_constraint:public.holidays:0
+#, python-format
+msgid "The date of the holiday must be unique (for the country)!"
+msgstr "La data di chiusura deve essere univoca (per il paese)"
+
+#. module: public_holidays
+#: field:public.holidays,country_id:0
+msgid "Country"
+msgstr "Paese"
+
+#. module: public_holidays
+#: model:ir.ui.menu,name:public_holidays.menu_public_holidays_calendar
+msgid "Public Holidays Calendar"
+msgstr "Calendario Chiusure al Pubblico"
+
+#. module: public_holidays
+#: field:public.holidays,holiday_date:0
+msgid "Date"
+msgstr "Data"
+
+#. module: public_holidays
+#: view:public.holidays:0
+msgid "Holiday"
+msgstr "Chiusura"
+
+#. module: public_holidays
+#: model:ir.actions.act_window,name:public_holidays.show_public_holidays
+msgid "Define Public Holidays"
+msgstr "Definire i giorni di Chiusura al Pubblico"
+
+#. module: public_holidays
+#: field:public.holidays,description:0
+msgid "Description"
+msgstr "Descrizione"
+

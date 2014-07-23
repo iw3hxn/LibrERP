@@ -36,8 +36,12 @@ class PublicHolidays(orm.Model):
         'country_id': fields.many2one('res.country', 'Country', required=True)
     }
 
-    _order = 'holiday_date ASC'
+    _order = 'holiday_date DESC'
     
+    _defaults = {
+        'country_id': lambda self,cr,uid,c: self.pool['res.company'].browse(cr, uid, 1).country_id.id and self.pool['res.company'].browse(cr, uid, 1).country_id.id,
+    }
+
     _sql_constraints = [
         ('date_country_uniq', 'unique(holiday_date, country_id)', _('The date of the holiday must be unique (for the country)!'))
     ]
