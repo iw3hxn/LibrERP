@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013 Didotech SRL (info at didotech.com)
+# Copyright (c) 2013-2014 Didotech SRL (info at didotech.com)
 #                          All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -28,19 +28,20 @@
 ##############################################################################
 from openerp.osv import orm, fields
 
+
 class sale_order_revision_note(orm.TransientModel):
     _name = "sale.order.revision.note"
     _columns = {
         'name': fields.char('Reason', size=256, select=True),
     }
+    
     def create_revision(self, cr, uid, ids, context=None):
         if not ids:
             return False
-        obj_so = self.pool['sale.order']
+        sale_order_obj = self.pool['sale.order']
         active_ids = context.get('active_ids', [])
         if not active_ids:
             return False
         reason_note = self.browse(cr, uid, ids[0], context=context).name
-        obj_so.write(cr,uid, active_ids, {'revision_note' : reason_note})
-        return obj_so.action_previous_version(cr, uid, active_ids,context=context)
-        
+        sale_order_obj.write(cr,uid, active_ids, {'revision_note': reason_note})
+        return sale_order_obj.action_previous_version(cr, uid, active_ids,context=context)
