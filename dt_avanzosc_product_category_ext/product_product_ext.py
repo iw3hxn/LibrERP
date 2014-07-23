@@ -21,14 +21,14 @@
 #
 ##############################################################################
 
-from osv import osv
-from tools.translate import _
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 #
 ### HEREDO LA CLASE PRODUCTO PARA RELACIONARLA CON PROYECTOS
 #
-class product_product(osv.osv):
+class product_product(orm.Model):
     _name = 'product.product'
     _inherit = 'product.product'
     
@@ -40,7 +40,7 @@ class product_product(osv.osv):
         When category changes, we search for taxes, UOM and product type
         """
         if context is None:
-            context = self.pool.get('res.users').context_get(cr, uid, context=context)
+            context = self.pool['res.users'].context_get(cr, uid, context=context)
 
         res = {}
         warn = False
@@ -55,7 +55,7 @@ class product_product(osv.osv):
             }
         else:
             # Search for the default value on this category
-            category_data = self.pool.get('product.category').read(cr, uid, categ_id, [], context=context)
+            category_data = self.pool['product.category'].read(cr, uid, categ_id, [], context=context)
            
             if category_data['provision_type']:
                 res['type'] = category_data['provision_type']
@@ -101,34 +101,3 @@ class product_product(osv.osv):
                 }
 
         return {'value': res, 'warning': warn}
-    
-    #def onchange_categ_id(self, cr, uid, ids, categ_id, purchase_ok=None, type=None, is_kit=None):
-    #    res={}
-    #
-    #    if categ_id:
-    #        categ_obj = self.pool.get('product.category')
-    #        categ = categ_obj.browse(cr, uid, categ_id)
-    #
-    #        if categ.provision_type:
-    #            res['type'] = categ.provision_type
-    #        else:
-    #            res['type'] = type
-    #        if categ.procure_method:
-    #            res['procure_method'] = categ.procure_method
-    #        if categ.supply_method:
-    #            res['supply_method'] = categ.supply_method
-    #
-    #        if res['type'] == 'service':
-    #            if purchase_ok == True:
-    #                res['supply_method'] = 'buy'
-    #            else:
-    #                res['supply_method'] = 'produce'
-    #        else:
-    #            if is_kit:
-    #                res['supply_method'] = 'produce'
-    #                res['purchase_ok'] = False
-    #            else:
-    #                res['supply_method'] = 'buy'
-    #                res['purchase_ok'] = True
-    #
-    #    return {'value': res}
