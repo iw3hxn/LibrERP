@@ -39,7 +39,7 @@
     "depends": [
         "base",
         "res_users_helper_functions",
-        "product",
+        "product_bom",
         "l10n_it_base",
         "sale_margin",
         "sale_journal",
