@@ -22,11 +22,9 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
+from openerp.osv import orm, fields
 
-
-class product_category(osv.osv):
+class product_category(orm.Model):
     """
     Add a ir.sequence fields on category
     """
@@ -39,7 +37,7 @@ class product_category(osv.osv):
     _order = 'name, parent_id'
 
 
-class product_product(osv.osv):
+class product_product(orm.Model):
     """
     Add sequence on product on create with sequence
     assign by category
@@ -61,9 +59,9 @@ class product_product(osv.osv):
         return True
     
     def _get_sequence(self, cr, uid, category_id, context=None):
-        product_category_obj = self.pool.get('product.category')
-        ir_sequence_obj = self.pool.get('ir.sequence')
-        ir_model_data_obj = self.pool.get('ir.model.data')
+        product_category_obj = self.pool['product.category']
+        ir_sequence_obj = self.pool['ir.sequence']
+        ir_model_data_obj = self.pool['ir.model.data']
         
         category = False
         

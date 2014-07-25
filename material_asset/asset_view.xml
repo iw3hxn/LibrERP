@@ -46,11 +46,10 @@
             <field name="model">asset.category</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Category">
-<!--                    <field name="name" />
-                    <field name="parent_id" />-->
+                <tree string="Category" colors="blue: parent_id == False;">
                     <field name="complete_name"/>
                     <field name="code" />
+                    <field name="parent_id" invisible="1" />
                 </tree>
             </field>
         </record>

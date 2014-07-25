@@ -20,23 +20,19 @@
 #    along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from osv import osv
-from osv import fields
-
-
+from openerp.osv import orm, fields
 #
 ### HEREDO LA PRODUCTOS PARA AÑADIRLE CAMPOS NUEVOS
 #
-class product_category(osv.osv):
+class product_category(orm.Model):
     
     _name = 'product.category'
     _inherit = 'product.category'
     
     def _manage_tax_on_category(self, cr, uid, ids, field_name, arg, context):
         res = {}
-        
-        company_id = self.pool.get('res.users').browse(cr, uid, uid).company_id.id
-        company_obj = self.pool.get('res.company')
+        company_id = self.pool['res.users'].browse(cr, uid, uid).company_id.id
+        company_obj = self.pool['res.company']
         company = company_obj.browse(cr, uid, company_id)
         
         for product_id in ids:
