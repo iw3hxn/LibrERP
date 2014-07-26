@@ -764,7 +764,7 @@ msgstr "Percentuale"
 #. module: account
 #: model:ir.ui.menu,name:account.menu_finance_charts
 msgid "Charts"
-msgstr "Bilancino"
+msgstr "Navigazione Piani dei Conti"
 
 #. module: account
 #: code:addons/account/project/wizard/project_account_analytic_line.py:47
