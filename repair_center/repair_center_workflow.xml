@@ -207,10 +207,9 @@
 
         <record id="act_done" model="workflow.activity">
             <field name="wkf_id" ref="wkf_repair"/>
-            <field name="name">done</field>
-            <field name="flow_stop">True</field>
+            <field name="name">wait_delivery</field>
             <field name="kind">function</field>
-            <field name="action">wkf_repair_done()</field>
+            <field name="action">wkf_customer_delivery()</field>
             <field name="join_mode">XOR</field>
         </record>
         <record id="trans_reapir_end_done" model="workflow.transition">
@@ -242,7 +241,19 @@
             <field name="act_to" ref="act_cancel3"/>
             <field name="signal">cancel</field>
         </record>
-        
+        <record id="act_finish" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_repair"/>
+            <field name="name">done</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_repair_done()</field>
+            <field name="join_mode">XOR</field>
+        </record>
+        <record id="trans_repair_delivery_done" model="workflow.transition">
+            <field name="act_from" ref="act_done"/>
+            <field name="act_to" ref="act_finish"/>
+            <field name="condition">check_piking_done()</field>
+            <field name="signal">action_repair_done</field>
+        </record>
         
     </data>
 </openerp>

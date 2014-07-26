@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Repair Center',
-    'version': '3.0.0.0',
+    'version': '4.0.0.0',
     'category': 'Generic Modules/Service',
     'description': """
         This module is a service management module for repair shops or repair depots
@@ -36,6 +36,7 @@
         'stock',
         'account',
         'product_manufacturer',
+        'l10n_it_base'
     ],
     'data': [
         'security/repair_security.xml',

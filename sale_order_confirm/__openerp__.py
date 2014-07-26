@@ -45,6 +45,7 @@
         "sale_journal",
         "sale_order_version",
         "web_hide_buttons",
+        "product_bom",
     ],
     "init_xml": [],
     "update_xml": [

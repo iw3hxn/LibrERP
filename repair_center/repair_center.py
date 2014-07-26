@@ -103,7 +103,16 @@ class repair_order(orm.Model):
                 if picking and picking['state'] == 'done':
                     res[order['id']] = True
         return res
-
+    def _check_out_picking_done(self, cr, uid, ids, prop, unknow_none, context=None):
+        res = {}.fromkeys(ids, False)
+        if not len(ids):
+            return res
+        for order in self.read(cr, uid, ids, ['out_picking_id', 'state']):
+            if order.get('out_picking_id', False):
+                picking = self.pool['stock.picking'].read(cr, uid, order['out_picking_id'][0], ['state'], context=context)
+                if picking and picking['state'] == 'done':
+                    res[order['id']] = True
+        return res
     def _check_out_picking2producer_done(self, cr, uid, ids, prop, unknow_none, context=None):
         res = {}.fromkeys(ids, False)
         if not len(ids):
@@ -132,7 +141,7 @@ class repair_order(orm.Model):
         stock = self.pool['stock.picking']
         for s in stock.read(cr, uid, ids, ['state'], context=context):
             if s['state'] and s['state'] == 'done':
-                stock_order_ids = self.pool['repair.order'].search(cr, uid, ['|', ('in_picking_id', '=', s['id']), '|', ('out_picking2producer_id', '=', s['id']), ('in_picking_producer_id', '=', s['id'])])
+                stock_order_ids = self.pool['repair.order'].search(cr, uid, ['|', ('in_picking_id', '=', s['id']), '|', ('out_picking_id', '=', s['id']), '|', ('out_picking2producer_id', '=', s['id']), ('in_picking_producer_id', '=', s['id'])])
                 order_ids += stock_order_ids
         return order_ids
 
@@ -269,7 +278,11 @@ class repair_order(orm.Model):
                                               },
                                               ),
         'is_analized': fields.boolean("Study Ok", readonly=True),
-        'is_delivered': fields.boolean("Deliver Ok", readonly=True),
+        'is_delivered': fields.function(_check_out_picking_done, method=True, type="boolean", string="Delivered to Customer",
+                                     store={
+                                         'stock.picking': (_check_picking_state, ['state'], 10),
+                                     },
+                                     ),
         'amount_untaxed': fields.function(_amount_all, method=True, digits_compute=dp.get_precision('Sale Price'), string='Untaxed Amount',
                                           store={
                                               'sale.order': (_get_order, ['order_line', 'amount_untaxed', 'amount_tax', 'amount_total'], 11),
@@ -529,7 +542,13 @@ class repair_order(orm.Model):
                     self.write(cr, uid, ids, {'in_picking_id': picking_id})
                     return self.pool['stock.picking'].action_process(cr, uid, [picking_id], context=context)
         return True
-
+    def check_piking_done(self, cr, uid, ids, context=None):
+        """ Checks if move is done or not.
+        @return: True or False.
+        """
+        return all((order.out_picking_id and order.out_picking_id.state == 'done') \
+                    for order in self.browse(cr, uid, ids, context=context))
+                
     #-FIXED
     def action_cancel_draft(self, cr, uid, ids, *args):
         """ Cancels repair order when it is in 'Draft' state.
@@ -609,7 +628,6 @@ class repair_order(orm.Model):
 
     def action_send2supplier(self, cr, uid, ids, group=False, context=None):
         #print "action_send2supplier is called "
-        #pdb.set_trace()
         res = {}
         for repair in self.browse(cr, uid, ids, context=context):
             if repair.out_picking2producer_id and repair.out_picking2producer_id.state != 'done':
@@ -621,7 +639,6 @@ class repair_order(orm.Model):
 
     def action_reception(self, cr, uid, ids, group=False, context=None):
         #print "action_send2supplier is called "
-        #pdb.set_trace()
         res = {}
         for repair in self.browse(cr, uid, ids, context=context):
             if repair.in_picking_producer_id and repair.in_picking_producer_id.state != 'done':
@@ -854,23 +871,119 @@ class repair_order(orm.Model):
         #print "wkf_repair_done is called "
         self.action_repair_done(cr, uid, ids)
         return True
+    def wkf_customer_delivery(self, cr, uid, ids, *args):
+        #print "wkf_repair_done is called "
+        for order in self.browse(cr, uid, ids):
+            if order.in_picking_id and order.inward_ok:
+                if not order.out_picking_id:
+                    #--Create Out Picking
+                    istate = 'none'
+                    pick_name = self.pool['ir.sequence'].get(cr, uid, 'stock.picking.out')
+                    picking_id = self.pool['stock.picking'].create(cr, uid, {
+                        'name': pick_name,
+                        'origin': order.name,
+                        'type': 'out',
+                        'address_id': (order.dest_address_id and order.dest_address_id.id) or (order.partner_address_id and order.partner_address_id.id ) or order.customer_id.id,
+                        'invoice_state': istate,
+                        'company_id': order.company_id.id,
+                        'move_lines': [],
+                    })
+                    repair_order_reception = order.in_picking_id
+                    #-- add every incomming product to delivery
+                    move_lines = []
+                    for mv in repair_order_reception.move_lines:
+                        move_vals = {
+                            'name': mv.name,
+                            'product_id': mv.product_id.id,
+                            'product_qty': mv.product_qty,
+                            'product_uos_qty': mv.product_uos_qty,
+                            'product_uom': mv.product_uom.id,
+                            'product_uos': mv.product_uos.id,
+                            'date': datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
+                            'date_expected': datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
+                            'location_id': mv.location_dest_id.id,
+                            'location_dest_id': mv.location_id.id,
+                            'picking_id': picking_id,
+                            'state': 'draft',
+                            'company_id': order.company_id.id,
+                            'prodlot_id': mv.prodlot_id.id,
+                        }
+                        move_id = self.pool['stock.move'].create(cr, uid, move_vals)
+                        self.pool['stock.move'].action_confirm(cr, uid, [move_id])
+                    wf_service = netsvc.LocalService("workflow")
+                    wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
+                    self.pool.get('stock.picking').force_assign(cr, uid, [picking_id])
+                    self.write(cr, uid, [order.id], {'out_picking_id': picking_id})
+                self.write(cr, uid, [order.id],{'state' : 'wait_delivery'})
+        return True
 
     def action_repair_done(self, cr, uid, ids, context=None):
         """ Creates stock move and picking for repair order.
         @return: Picking ids.
         """
         res = {}
-
         self.write(cr, uid, ids, {'state': 'done'})
         return res
 
-
+    def action_customer_delivery(self, cr, uid, ids, context=None):
+        if context is None: context = {}
+        out_picking_ids = []
+        for order in self.browse(cr, uid, ids, context=context):
+            if order.out_picking_id:
+                out_picking_ids.append(order.out_picking_id.id)
+        ctx = dict(context, active_ids=out_picking_ids, active_model='stock.picking')
+        partial_id = self.pool.get("stock.partial.picking").create(cr, uid, {}, context=ctx)
+        return {
+            'name':_("Products to Deliver"),
+            'view_mode': 'form',
+            'view_id': False,
+            'view_type': 'form',
+            'res_model': 'stock.partial.picking',
+            'res_id': partial_id,
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'new',
+            'domain': '[]',
+            'context': ctx,
+        }
 class sale_order(orm.Model):
     _inherit = 'sale.order'
     _columns = {
         'repair_order_id': fields.many2one("repair.order", "Repair Order"),
     }
-
+    def _create_pickings_and_procurements(self, cr, uid, order, order_lines, picking_id=False, context=None):
+        move_obj = self.pool.get('stock.move')
+        picking_obj = self.pool.get('stock.picking')
+        res = super(sale_order,self)._create_pickings_and_procurements(cr, uid, order, order_lines, picking_id=picking_id, context=context)
+        if res and order.repair_order_id:
+            if not picking_id:
+                picking_ids = picking_obj.search(cr, uid, [('sale_id','=',order.id),('state','in',['draft','auto','confirmed'])])
+                picking_id = picking_ids[0]
+            if picking_id:
+                repair_order_reception = order.repair_order_id.in_picking_id
+                #-- add every incomming product to delivery
+                move_lines = []
+                for mv in repair_order_reception.move_lines:
+                    move_vals = {
+                        'name': mv.name,
+                        'product_id': mv.product_id.id,
+                        'product_qty': mv.product_qty,
+                        'product_uos_qty': mv.product_uos_qty,
+                        'product_uom': mv.product_uom.id,
+                        'product_uos': mv.product_uos.id,
+                        'date': datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
+                        'date_expected': datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
+                        'location_id': mv.location_dest_id.id,
+                        'location_dest_id': mv.location_id.id,
+                        'picking_id': picking_id,
+                        'state': 'draft',
+                        'company_id': order.company_id.id,
+                        'prodlot_id': mv.prodlot_id.id,
+                    }
+                    move_id = move_obj.create(cr, uid, move_vals, context=context)
+                    self.pool['stock.move'].action_confirm(cr, uid, [move_id])
+                self.pool.get('repair.order').write(cr, uid, [order.repair_order_id.id], {'out_picking_id' : picking_id})    
+        return res
 
 class sale_order_line(orm.Model):
     _inherit = 'sale.order.line'
@@ -878,7 +991,6 @@ class sale_order_line(orm.Model):
         'is_free': fields.boolean("No Invoice"),
         'repair_order_id': fields.many2one("repair.order", "Repair Order"),
     }
-
     def on_change_is_free(self, cr, uid, ids, is_free):
         res = {'value': {}}
         if is_free:
@@ -923,7 +1035,15 @@ class sale_order_line(orm.Model):
             so_id = self._create_so_from_ro(cr, uid, vals.get('repair_order_id'), context=context)
             vals.update({'order_id': so_id})
         return super(sale_order_line, self).create(cr, uid, vals, context=context)
-
+class stock_picking(orm.Model):
+    _inherit = 'stock.picking'
+    def action_done(self, cr, uid, ids, context=None):
+        res = super(stock_picking,self).action_done(cr, uid, ids, context=context)
+        repair_order_ids = self.pool.get('repair.order').search(cr, uid, [('out_picking_id', 'in', ids)], context=context)
+        wf_service = netsvc.LocalService("workflow")
+        for rid in repair_order_ids:
+            wf_service.trg_validate(uid, 'repair.order', rid, 'action_repair_done', cr)
+        return res
 
 class product_accessory(orm.Model):
     _name = 'product.accessory'
