@@ -22,19 +22,26 @@
 
 {
     'name': "Invoice Intra CEE",
-    'version': '3.0.1.0',
+    'version': '3.1.2.1',
     'category': 'Account',
     'description': """Manage Invoice for Intra CEE supplier""",
     'author': 'CoOpenERP <info@coopenerp.it>, Didotech srl <info@didotech.com>',
     'website': 'http://www.coopenerp.it, http://www.didotech.com',
     'license': 'AGPL-3',
-    "depends": ['base', 'account', 'account_voucher'],
+    "depends": [
+        'base',
+        'account',
+        'account_voucher',
+        'l10n_it_account',
+    ],
     "data": [
-        'company/company_view.xml',
         'account/account_view.xml',
         'account/account_data.xml',
-        ],
+    ],
     "demo": [],
+    "test": [
+        'test/invoice_reverse_charge.yml',
+    ],
     "active": False,
     "installable": True
 }

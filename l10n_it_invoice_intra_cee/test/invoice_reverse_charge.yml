@@ -1,0 +1,298 @@
+-
+  In order to test intra-cee invoice I create a new customer invoice (the standard demo data can't be used as we must create the partner with the account, using subaccount module.
+- 
+  Creating a res.partner record client and supplier for intra-cee
+- 
+  !record {model: res.partner, id: res_partner_fornitorecee0}:
+    address:
+      - city: Montecchio Maggiore
+        color: 0.0
+        country_id: base.it
+        find_city: true
+        province: l10n_it_base.VI
+        region: l10n_it_base.ven
+        street: via
+        zip: '36075'
+    block_ref_customer: true
+    block_ref_supplier: true
+    credit_limit: 0.0
+    debit_limit: 0.0
+    name: FORNITORE COMUNITARIO
+    property_customer_ref: C111
+    customer: true
+    supplier: true
+-
+  Then I verify the partner is present
+- 
+  !assert {model: res.partner, id: res_partner_fornitorecee0}:
+    - name == 'FORNITORE COMUNITARIO'
+- 
+  I create tax code for reverse charge
+- 
+  Creating a account.tax.code record root
+- 
+  !record {model: account.tax.code, id: account_tax_code_root}:
+    code: root
+    company_id: base.main_company
+    #is_base: true
+    name: root
+    #parent_id: 'False'
+    sequence: 0.0
+    sign: 1.0
+    vat_statement_sign: 0.0
+- 
+  Creating a account.tax.code record BCE22V
+- 
+  !record {model: account.tax.code, id: account_tax_code_bce22v0}:
+    code: BCE22V
+    company_id: base.main_company
+    is_base: true
+    name: BCE22V
+    parent_id: account_tax_code_root
+    sequence: 0.0
+    sign: 1.0
+    vat_statement_sign: 0.0
+- 
+  Creating a account.tax.code record ICE22V
+- 
+  !record {model: account.tax.code, id: account_tax_code_ice22v0}:
+    code: ICE22V
+    company_id: base.main_company
+    name: ICE22V
+    parent_id: account_tax_code_root
+    sequence: 0.0
+    sign: 1.0
+    vat_statement_sign: 0.0
+- 
+  Creating a account.tax record
+- 
+  !record {model: account.tax, id: account_tax_cev0}:
+    amount: 0.22
+    applicable_type: 'true'
+    base_code_id: account_tax_code_bce22v0
+    company_id: base.main_company
+    description: CE22V
+    name: CE22V
+    ref_base_code_id: account_tax_code_bce22v0
+    ref_base_sign: -1.0
+    ref_tax_code_id: account_tax_code_ice22v0
+    ref_tax_sign: -1.0
+    sequence: 1
+    tax_code_id: account_tax_code_ice22v0
+    type: percent
+    type_tax_use: sale
+- 
+  Creating a account.tax.code record
+- 
+  !record {model: account.tax.code, id: account_tax_code_bce22a0}:
+    code: BCE22A
+    company_id: base.main_company
+    is_base: true
+    name: BCE22A
+    parent_id: account_tax_code_root
+    sequence: 0.0
+    sign: 1.0
+    vat_statement_sign: 0.0
+- 
+  Creating a account.tax.code record
+- 
+  !record {model: account.tax.code, id: account_tax_code_ice22a0}:
+    code: ICE22A
+    company_id: base.main_company
+    name: ICE22A
+    parent_id: account_tax_code_root
+    sequence: 0.0
+    sign: 1.0
+    vat_statement_sign: 0.0
+- 
+  Creating a account.tax record
+- 
+  !record {model: account.tax, id: account_tax_cea0}:
+    amount: 0.22
+    applicable_type: 'true'
+    auto_invoice_tax_id: account_tax_cev0
+    base_code_id: account_tax_code_bce22a0
+    company_id: base.main_company
+    description: CE22A
+    name: CE22A
+    ref_base_code_id: account_tax_code_bce22a0
+    base_sign: -1.0
+    ref_tax_code_id: account_tax_code_ice22a0
+    tax_sign: -1.0
+    sequence: 1
+    tax_code_id: account_tax_code_ice22a0
+    type: percent
+    type_tax_use: purchase
+-
+  Creating a account.account record
+- 
+  !record {model: account.account, id: account_account_contotransitorio0}:
+    code: '980010'
+    company_id: base.main_company
+    currency_mode: current
+    level: 2
+    name: Conto transitorio
+    #parent_id: 'False'
+    #parent_left: 1082
+    #parent_right: 1083
+    type: other
+    user_type: account.data_account_type_liability
+-
+  Creating a account.fiscal.position record with "use_same_partner" flag
+- 
+  !record {model: account.fiscal.position, id: account_fiscal_position_intraceeacq0}:
+    account_transient_id: account_account_contotransitorio0
+    active_reverse_charge: true
+    company_id: base.main_company
+    journal_auto_invoice_id: l10n_it_invoice_intra_cee.auto_invoice_journal
+    journal_transfer_entry_id: l10n_it_invoice_intra_cee.transfert_entry_invoice_journal
+    name: Intra CEE Acquisti
+    use_same_partner: true
+-
+  Then I verify the fiscal position is present
+- 
+  !assert {model: account.fiscal.position, id: account_fiscal_position_intraceeacq0}:
+    - name == 'Intra CEE Acquisti'
+- 
+  Creating a account.invoice record
+- 
+  !record {model: account.invoice, id: account_invoice_supplier0}:
+    #account_id: 'False'
+    amount_tax: 0.22
+    amount_total: 1.22
+    amount_untaxed: 1.0
+    partner_id: res_partner_fornitorecee0
+    company_id: base.main_company
+    currency_id: base.EUR
+    fiscal_position: account_fiscal_position_intraceeacq0
+    invoice_line:
+      - account_id: account.a_expense
+        company_id: base.main_company
+        invoice_line_tax_id:
+          - account_tax_cea0
+        name: '[00001] d'
+        partner_id: res_partner_fornitorecee0
+        price_subtotal: 1.0
+        price_unit: 1.0
+        product_id: product.product_product_pc1
+        quantity: 1.0
+        uos_id: product.product_uom_unit
+    journal_id: account.expenses_journal
+    supplier_invoice_number: 100
+    reference_type: none
+    type: in_invoice 
+-
+  I check that Initially supplier invoice state is "Draft"
+-
+  !assert {model: account.invoice, id: account_invoice_supplier0}:
+    - state == 'draft'
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier0}
+-
+  I check that the invoice state is now "Open"
+-
+  !assert {model: account.invoice, id: account_invoice_supplier0}:
+    - state == 'open'
+-
+  I check that exist auto_invoice_id
+-
+  !python {model: account.invoice}: |
+     inv=self.browse(cr, uid, [ref("account_invoice_supplier0")])[0]
+     if not inv.auto_invoice_id.partner_id == inv.partner_id:
+       raise AssertionError("Partner is different from auto-invoice partner")
+     if not inv.auto_invoice_id:
+       raise AssertionError("Auto invoice not created")
+     else:
+       print ' '.join([inv.auto_invoice_id.number, '("Auto invoice nr")'])
+       print ' '.join([inv.auto_invoice_id.partner_id.name, '("Auto invoice partner")'])
+       for tl in inv.auto_invoice_id.tax_line:
+         print ' '.join([tl.tax_code_id.name, '("Sale invoice tax")'])
+       print ' '.join([inv.number, '("Purchase invoice nr")'])
+       print ' '.join([inv.partner_id.name, '("Purchase invoice partner")'])
+       for tl in inv.tax_line:
+         print ' '.join([tl.tax_code_id.name, '("Purchase invoice tax")'])
+       print ' '.join([inv.supplier_invoice_number, '("Invoice Supplier nr")'])
+-
+  I modify account.fiscal.position record deleting "use_same_partner" flag
+- 
+  !record {model: account.fiscal.position, id: account_fiscal_position_intraceeacq0}:
+    use_same_partner: false
+    auto_invoice_partner_id: base.main_company
+-
+  I check that account.fiscal.position has main company as auto invoice partner
+-
+  !python {model: account.fiscal.position}: |
+     fp=self.browse(cr, uid, [ref("account_fiscal_position_intraceeacq0")])[0]
+     if fp.auto_invoice_partner_id != self.pool['res.users'].browse(cr, uid, uid).company_id.partner_id:
+       raise AssertionError("Auto invoice partner is not main company")
+- 
+  Then I set the main company as a customer
+- 
+  !python {model: res.partner}: |
+      partner = self.pool['res.users'].browse(cr, uid, uid).company_id.partner_id
+      context.update({'customer': True, 'block_ref_customer': True})
+      partner.write(context)
+      print self.pool['res.users'].browse(cr, uid, uid).company_id.partner_id.customer
+-
+  Creating another account.invoice record without "use_same_partner" flag
+- 
+  !record {model: account.invoice, id: account_invoice_supplier1}:
+    #account_id: 'False'
+    amount_tax: 0.22
+    amount_total: 1.22
+    amount_untaxed: 1.0
+    partner_id: res_partner_fornitorecee0
+    company_id: base.main_company
+    currency_id: base.EUR
+    fiscal_position: account_fiscal_position_intraceeacq0
+    invoice_line:
+      - account_id: account.a_expense
+        company_id: base.main_company
+        invoice_line_tax_id:
+          - account_tax_cea0
+        name: '[00001] d'
+        partner_id: res_partner_fornitorecee0
+        price_subtotal: 1.0
+        price_unit: 1.0
+        product_id: product.product_product_pc1
+        quantity: 1.0
+        uos_id: product.product_uom_unit
+    journal_id: account.expenses_journal
+    supplier_invoice_number: 101
+    reference_type: none
+    type: in_invoice 
+-
+  I check that Initially supplier invoice state is "Draft"
+-
+  !assert {model: account.invoice, id: account_invoice_supplier1}:
+    - state == 'draft'
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier1}
+-
+  I check that the invoice state is now "Open"
+-
+  !assert {model: account.invoice, id: account_invoice_supplier1}:
+    - state == 'open'
+-
+  I check that exist auto_invoice_id
+-
+  !python {model: account.invoice}: |
+     inv=self.browse(cr, uid, [ref("account_invoice_supplier1")])[0]
+     if inv.auto_invoice_id.partner_id == inv.partner_id:
+       raise AssertionError("Partner is equal to auto-invoice partner")
+     if not inv.auto_invoice_id:
+       raise AssertionError("Auto invoice not created")
+     else:
+       print ' '.join([inv.auto_invoice_id.number, '("Auto invoice nr")'])
+       print ' '.join([inv.auto_invoice_id.partner_id.name, '("Auto invoice partner")'])
+       for tl in inv.auto_invoice_id.tax_line:
+         print ' '.join([tl.tax_code_id.name, '("Sale invoice tax")'])
+       print ' '.join([inv.number, '("Purchase invoice nr")'])
+       print ' '.join([inv.partner_id.name, '("Purchase invoice partner")'])
+       for tl in inv.tax_line:
+         print ' '.join([tl.tax_code_id.name, '("Purchase invoice tax")'])
+       print ' '.join([inv.supplier_invoice_number, '("Invoice Supplier nr")'])

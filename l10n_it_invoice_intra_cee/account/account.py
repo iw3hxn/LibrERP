@@ -49,6 +49,11 @@ class account_fiscal_position(orm.Model):
         'extra_ue_service_tax_id': fields.many2one(
             'account.tax',
             'Extra UE Service Tax'),
+        'auto_invoice_partner_id': fields.many2one(
+            'res.partner', 'Auto Invoice Partner',
+            help="Partner used for auto invoice, if use_same_partner is not set as True"),
+        'use_same_partner': fields.boolean('Use the same partner of purchase invoice \
+            for auto invoice'),
     }
 
     def _check_active_type_value(self, cr, uid, ids, context=None):
@@ -166,6 +171,7 @@ class account_invoice(orm.Model):
             'journal_id': journal_id,
             'account_id': invoice.account_id.id,
             'type': voucher_type,
+            'date': invoice.registration_date,
         })
         move_line_ids = []
         # ----- Extract all the move lines from new invoice
@@ -210,38 +216,47 @@ class account_invoice(orm.Model):
                     {tax.id: tax.auto_invoice_tax_id.id})
         return tax_relation
 
+    def _get_partner(self, cr, uid, fiscal_position, invoice, context=None):
+        
+        if fiscal_position.use_same_partner:
+            partner_id = invoice.partner_id.id
+            if invoice.partner_id.property_account_receivable.type != 'view':
+                prop_ar_id = invoice.partner_id.property_account_receivable.id
+            else:
+                raise orm.except_orm(
+                    _('Error!'),
+                    _('Property_account_receivable of partner "%s" can\'t be of type \'view\'. \
+                    Verify if the partner is set properly as \'customer\'.')
+                    %(invoice.partner_id.name))
+        else:
+            if fiscal_position.auto_invoice_partner_id:
+                partner_id = fiscal_position.auto_invoice_partner_id.id
+                if fiscal_position.auto_invoice_partner_id.property_account_receivable.type != 'view':
+                    prop_ar_id = fiscal_position.auto_invoice_partner_id.property_account_receivable.id
+                else:
+                    raise orm.except_orm(
+                        _('Error!'),
+                        _('Property_account_receivable of partner "%s" can\'t be of type \'view\'. \
+                        Verify if the partner is set properly as \'customer\'.')
+                        %(fiscal_position.auto_invoice_partner_id.name))
+            else:
+                raise orm.except_orm(
+                    _('Error!'),
+                    _('Missing partner in {fp} fiscal position.').format(fp=fiscal_position.name)
+                )
+        
+        return partner_id, prop_ar_id
+
     def auto_invoice_vals(self, cr, uid, invoice_id, fiscal_position_id,
                           context=None):
         context = context or {}
         invoice = self.browse(cr, uid, invoice_id, context)
-        company = self.pool['res.users'].browse(
-            cr, uid, uid, context).company_id
-        if company.auto_invoice_partner_id:
-            partner_id = company.auto_invoice_partner_id.id
-            if company.auto_invoice_partner_id.property_account_receivable.type != 'view':
-                prop_ar_id = company.auto_invoice_partner_id.property_account_receivable.id
-            else:
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('Property_account_receivable of partner "%s" can\'t be of type \'view\'. \
-                    Verify if the partner is set properly as \'customer\'.')
-                    %(company.auto_invoice_partner_id.name))
-        else:
-            partner_id = company.partner_id.id
-            if company.partner_id.property_account_receivable.type != 'view':
-                prop_ar_id = company.partner_id.property_account_receivable.id
-            else:
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('Property_account_receivable of partner "%s" can\'t be of type \'view\'. \
-                    Verify if the partner is set properly as \'customer\'.')
-                    %(company.partner_id.name))
-
         fp_id = fiscal_position_id or invoice.fiscal_position.id
         fiscal_position = self.pool['account.fiscal.position'].browse(
             cr, uid, fp_id, context)
-        # ----- Get actual invoice copy
 
+        partner_id, prop_ar_id = self._get_partner(cr, uid, fiscal_position, invoice, context)
+        # ----- Get actual invoice copy
         copy_inv = self.copy_data(cr, uid, invoice_id, {}, context)
         if not copy_inv:
             return {}
@@ -277,19 +292,18 @@ class account_invoice(orm.Model):
         return new_inv
 
     def extra_ue_auto_invoice_vals(self, cr, uid, invoice_id,
-                                   fiscal_position_id, context=None):
+                                   fp_id, context=None):
         # ----- Get complete invoice copy
         res = self.auto_invoice_vals(cr, uid, invoice_id,
-                                     fiscal_position_id, context)
-        # ----- Get partner from company for auto invoice
-        company = self.pool['res.users'].browse(
-            cr, uid, uid, context).company_id
-        res['partner_id'] = company.auto_invoice_partner_id and \
-            company.auto_invoice_partner_id.id \
-            or company.partner_id and company.partner_id.id
+                                     fp_id, context)
+        fiscal_position = self.pool['account.fiscal.position'].browse(
+            cr, uid, fp_id, context)
+        invoice = self.browse(cr, uid, invoice_id, context)
+        res['partner_id'], prop_ar_id = self._get_partner(cr, uid, fiscal_position, invoice, context)
+        
         # ----- Get right lines
         invoice = self.browse(cr, uid, invoice_id, context)
-        fp_id = fiscal_position_id or invoice.fiscal_position.id
+        fp_id = fp_id or invoice.fiscal_position.id
         fiscal_position = self.pool['account.fiscal.position'].browse(
             cr, uid, fp_id, context)
         product_obj = self.pool['product.product']
@@ -307,7 +321,7 @@ class account_invoice(orm.Model):
             'name': fiscal_position.extra_ue_line_detail,
             'price_unit': total,
             'quantity': 1,
-            'account_id': fiscal_position.account_transient_id.id,
+            'account_id': prop_ar_id,
             'invoice_line_tax_id': [(6, 0, [fiscal_position.extra_ue_service_tax_id.id])]
         })]
         return res
@@ -399,7 +413,10 @@ class account_invoice(orm.Model):
                 'state': 'draft',
                 'journal_id': fiscal_position.journal_transfer_entry_id.id,
                 'line_id': account_move_line_vals,
+                'date': inv.registration_date,
             }
+            context.update({'date' : inv.registration_date})
+            
             transfer_entry_id = move_obj.create(
                 cr, uid, account_move_vals, context)
             move_obj.post(cr, uid, [transfer_entry_id], context)
@@ -409,8 +426,6 @@ class account_invoice(orm.Model):
                        {'auto_invoice_id': auto_invoice_id,
                         'transfer_entry_id': transfer_entry_id})
             # ----- Pay Autoinvoice
-            #TODO da sistemare perchè non vanno: creano registrazioni senza chiudere il pagamento
-
             self.voucher_from_invoice(
                 cr, uid, new_invoice.id, new_invoice.amount_total,
                 fiscal_position.journal_transfer_entry_id.id, 'receipt',
