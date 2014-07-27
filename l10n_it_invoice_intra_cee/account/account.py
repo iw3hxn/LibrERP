@@ -389,7 +389,8 @@ class account_invoice(orm.Model):
                 'debit': debit_1,
                 'credit': credit_1,
                 'partner_id': inv.partner_id.id,
-                'account_id': inv.partner_id.property_account_payable.id,
+                'account_id': inv.account_id.id, # use actual account_id configured in invoice
+                #if set, instead of generic partner_id.property_account_payable.id,
             }))
             # ----- Products values
             account_move_line_vals.append((0, 0, {
