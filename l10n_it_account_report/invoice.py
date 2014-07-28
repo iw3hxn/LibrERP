@@ -160,7 +160,8 @@ class Parser(report_sxw.rml_parse):
         for line in invoice_lines:
             if line.origin:
                 if ':' in line.origin:
-                    ddt, sale_order = line.origin.split(':')
+                    split_list = line.origin.split(':')
+                    ddt, sale_order = split_list[0], split_list[1]
                     if line.invoice_id.direct_invoice:
                         self.picking_name = ddt
                         ddt = False
