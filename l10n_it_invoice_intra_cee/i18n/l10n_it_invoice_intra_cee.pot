@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-14 15:25+0000\n"
-"PO-Revision-Date: 2014-07-14 15:25+0000\n"
+"POT-Creation-Date: 2014-07-27 13:20+0000\n"
+"PO-Revision-Date: 2014-07-27 13:20+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -32,17 +32,12 @@ msgid "Auto Invoice"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: constraint:res.company:0
-msgid "Error! You can not create recursive companies."
-msgstr ""
-
-#. module: l10n_it_invoice_intra_cee
 #: view:account.fiscal.position:0
 msgid "Reverse charge Configuration"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:444
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:459
 #, python-format
 msgid "You cannot cancel an invoice which is partially                         paid. You need to unreconcile related payment entries                         first."
 msgstr ""
@@ -53,7 +48,7 @@ msgid "Text used as description line in Extra UE Auto Invoice"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:113
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:118
 #, python-format
 msgid "The %s tax is configured as reverse charge, so its childs must be too."
 msgstr ""
@@ -64,7 +59,7 @@ msgid "Journal Auto Invoice CEE"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: field:res.company,auto_invoice_partner_id:0
+#: field:account.fiscal.position,auto_invoice_partner_id:0
 msgid "Auto Invoice Partner"
 msgstr ""
 
@@ -74,9 +69,20 @@ msgid "Auto Invoice Total"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:106
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:111
 #, python-format
 msgid "The %s tax is configured as reverse charge, so the row must have only reverse charge taxes."
+msgstr ""
+
+#. module: l10n_it_invoice_intra_cee
+#: help:account.fiscal.position,auto_invoice_partner_id:0
+msgid "Partner used for auto invoice, if use_same_partner is not set as True"
+msgstr ""
+
+#. module: l10n_it_invoice_intra_cee
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:245
+#, python-format
+msgid "Missing partner in {fp} fiscal position."
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
@@ -90,25 +96,20 @@ msgid "Auto Invoice Tax"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
+#: field:account.fiscal.position,use_same_partner:0
+msgid "Use the same partner of purchase invoice             for auto invoice"
+msgstr ""
+
+#. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,account_transient_id:0
 msgid "Account CEE"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: sql_constraint:res.company:0
-msgid "The company name must be unique !"
-msgstr ""
-
-#. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:105
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:112
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:110
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:117
 #, python-format
 msgid "Tax configuration Error!"
-msgstr ""
-
-#. module: l10n_it_invoice_intra_cee
-#: model:ir.model,name:l10n_it_invoice_intra_cee.model_res_company
-msgid "Companies"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
@@ -118,9 +119,10 @@ msgid "Error!\n"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:225
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:235
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:443
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:227
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:238
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:244
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:458
 #, python-format
 msgid "Error!"
 msgstr ""
@@ -141,20 +143,20 @@ msgid "Invoice Number must be unique per Company!"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:226
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:236
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:228
 #, python-format
 msgid "Property_account_receivable of partner \"%s\" can't be of type 'view'.                     Verify if the partner is set properly as 'customer'."
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: model:ir.model,name:l10n_it_invoice_intra_cee.model_account_voucher
-msgid "Accounting Voucher"
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:239
+#, python-format
+msgid "Property_account_receivable of partner \"%s\" can't be of type 'view'.                         Verify if the partner is set properly as 'customer'."
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee
-#: help:res.company,auto_invoice_partner_id:0
-msgid "If not set, partner for auto invoice will be your company"
+#: model:ir.model,name:l10n_it_invoice_intra_cee.model_account_voucher
+msgid "Accounting Voucher"
 msgstr ""
 
 #. module: l10n_it_invoice_intra_cee

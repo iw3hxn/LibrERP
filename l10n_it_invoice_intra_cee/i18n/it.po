@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-14 15:26+0000\n"
-"PO-Revision-Date: 2014-07-14 15:26+0000\n"
+"POT-Creation-Date: 2014-07-27 13:14+0000\n"
+"PO-Revision-Date: 2014-07-27 13:14+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,12 +29,7 @@ msgstr "Il testo accetta segnaposto mako. Per esempio ${object.partner_id.name} 
 #: field:account.invoice,auto_invoice_id:0
 #: view:account.tax:0
 msgid "Auto Invoice"
-msgstr "Auto Fattura"
-
-#. module: l10n_it_invoice_intra_cee
-#: constraint:res.company:0
-msgid "Error! You can not create recursive companies."
-msgstr "Attenzione: non puoi creare aziende ricorsive"
+msgstr "Autofattura"
 
 #. module: l10n_it_invoice_intra_cee
 #: view:account.fiscal.position:0
@@ -42,7 +37,7 @@ msgid "Reverse charge Configuration"
 msgstr "Configurazione Reverse Charge"
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:444
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:459
 #, python-format
 msgid "You cannot cancel an invoice which is partially                         paid. You need to unreconcile related payment entries                         first."
 msgstr "Non è possibile eliminare una fattura che è parzialmente                         pagata. E' necessario prima eliminare la riconciliazione delle voci di                         pagamento."
@@ -53,7 +48,7 @@ msgid "Text used as description line in Extra UE Auto Invoice"
 msgstr "Testo utilizzato come descrizione della riga dell'auto fattura extra UE"
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:113
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:118
 #, python-format
 msgid "The %s tax is configured as reverse charge, so its childs must be too."
 msgstr "L'imposta %s è configurata come reverse charge, perciò anche le imposte figlie devono esserlo."
@@ -61,23 +56,34 @@ msgstr "L'imposta %s è configurata come reverse charge, perciò anche le impost
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,journal_auto_invoice_id:0
 msgid "Journal Auto Invoice CEE"
-msgstr "Sezionale Auto Fattura"
+msgstr "Sezionale Autofattura"
 
 #. module: l10n_it_invoice_intra_cee
-#: field:res.company,auto_invoice_partner_id:0
+#: field:account.fiscal.position,auto_invoice_partner_id:0
 msgid "Auto Invoice Partner"
-msgstr "Cliente Auto Fattura"
+msgstr "Partner per l'Autofattura"
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.invoice,auto_invoice_amount_total:0
 msgid "Auto Invoice Total"
-msgstr "Totale Auto Fattura"
+msgstr "Totale Autofattura"
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:106
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:111
 #, python-format
 msgid "The %s tax is configured as reverse charge, so the row must have only reverse charge taxes."
 msgstr "L'imposta %s è configurata come reverse charge, perciò la riga deve avere solo imposte di tipo reverse charge."
+
+#. module: l10n_it_invoice_intra_cee
+#: help:account.fiscal.position,auto_invoice_partner_id:0
+msgid "Partner used for auto invoice, if use_same_partner is not set as True"
+msgstr "Partner usato per l'autofattura, se use_same_partner non è impostato"
+
+#. module: l10n_it_invoice_intra_cee
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:245
+#, python-format
+msgid "Missing partner in {fp} fiscal position."
+msgstr "Partner mancante nella posizione fiscale {fp}."
 
 #. module: l10n_it_invoice_intra_cee
 #: sql_constraint:account.tax:0
@@ -90,26 +96,21 @@ msgid "Auto Invoice Tax"
 msgstr "Aliquota Auto Fattura"
 
 #. module: l10n_it_invoice_intra_cee
+#: field:account.fiscal.position,use_same_partner:0
+msgid "Use the same partner of purchase invoice             for auto invoice"
+msgstr "Usa lo stesso partner della fattura di acquisto             per l'autofattura"
+
+#. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,account_transient_id:0
 msgid "Account CEE"
 msgstr "Conto Transitorio"
 
 #. module: l10n_it_invoice_intra_cee
-#: sql_constraint:res.company:0
-msgid "The company name must be unique !"
-msgstr "Il nome azienda deve essere unico!"
-
-#. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:105
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:112
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:110
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:117
 #, python-format
 msgid "Tax configuration Error!"
 msgstr "Configurazione Imposte Errata!"
-
-#. module: l10n_it_invoice_intra_cee
-#: model:ir.model,name:l10n_it_invoice_intra_cee.model_res_company
-msgid "Companies"
-msgstr "Aziende"
 
 #. module: l10n_it_invoice_intra_cee
 #: constraint:account.fiscal.position:0
@@ -119,9 +120,10 @@ msgstr "Errore!\n"
 "Non puoi seleziona due o più spunte alla volta"
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:225
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:235
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:443
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:227
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:238
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:244
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:458
 #, python-format
 msgid "Error!"
 msgstr "Errore!"
@@ -139,24 +141,24 @@ msgstr "Subtotale Auto Fattura"
 #. module: l10n_it_invoice_intra_cee
 #: sql_constraint:account.invoice:0
 msgid "Invoice Number must be unique per Company!"
-msgstr "Nell'azienda il numero fattura dev'essere univoco!"
+msgstr "Il numero fattura deve essere unico per ogni azienda!"
 
 #. module: l10n_it_invoice_intra_cee
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:226
-#: code:addons/l10n_it_invoice_intra_cee/account/account.py:236
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:228
 #, python-format
 msgid "Property_account_receivable of partner \"%s\" can't be of type 'view'.                     Verify if the partner is set properly as 'customer'."
 msgstr "Il Conto di Credito del partner \"%s\" non può essere di tipo 'vista'.                     Verificare se il partner è correttamente configurato come 'cliente'."
 
 #. module: l10n_it_invoice_intra_cee
-#: model:ir.model,name:l10n_it_invoice_intra_cee.model_account_voucher
-msgid "Accounting Voucher"
-msgstr "Voucher contabile"
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:239
+#, python-format
+msgid "Property_account_receivable of partner \"%s\" can't be of type 'view'.                         Verify if the partner is set properly as 'customer'."
+msgstr "Il Conto di Credito del partner \"%s\" non può esser di tipo 'vista'.                         Verificare se il partner è correttamente impostato come 'cliente'."
 
 #. module: l10n_it_invoice_intra_cee
-#: help:res.company,auto_invoice_partner_id:0
-msgid "If not set, partner for auto invoice will be your company"
-msgstr "Se non impostato, il partner per l'auto fattura sarà l'azienda"
+#: model:ir.model,name:l10n_it_invoice_intra_cee.model_account_voucher
+msgid "Accounting Voucher"
+msgstr "Ricevuta contabile"
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,active_extra_ue_service:0
