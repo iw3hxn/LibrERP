@@ -29,7 +29,7 @@
 
 {
     "name": "CRM cases part of Projects",
-    "version": "0.5.0",
+    "version": "0.5.0.1",
     "author": "Matmoz d.o.o. (Didotech Group)",
     "website": "http://www.matmoz.si",
     "category": "Vertical Modules/Parametrization",
@@ -37,7 +37,7 @@
     CRM tasks and CRM leads connected to project,
     crm cases tab on project view.
     """,
-    "depends": ["crm_todo"],
+    "depends": ["crm_todo", "project_issue"],
     "init_xml": [
         "crm_todo_opportunity.xml",
         "crm_todo_project_task_tree.xml",

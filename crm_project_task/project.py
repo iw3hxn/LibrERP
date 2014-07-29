@@ -35,3 +35,10 @@ class project_lead(osv.osv):
     _columns = {
         'lead_id': fields.one2many('crm.lead', 'project_id', 'Lead / Opportunity'),
     }
+
+
+class issue_project(osv.osv):
+    _inherit = 'project.project'
+    _columns = {
+        'issue_ids': fields.one2many('project.issue', 'project_id', 'Project Issue'),
+    }
