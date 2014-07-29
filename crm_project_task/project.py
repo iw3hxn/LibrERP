@@ -19,4 +19,26 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import project
+
+from osv import fields, osv
+
+
+class lead_project(osv.osv):
+    _inherit = 'crm.lead'
+    _columns = {
+        'project_id': fields.many2one('project.project', 'Project')
+    }
+
+
+class project_lead(osv.osv):
+    _inherit = 'project.project'
+    _columns = {
+        'lead_id': fields.one2many('crm.lead', 'project_id', 'Lead / Opportunity'),
+    }
+
+
+class issue_project(osv.osv):
+    _inherit = 'project.project'
+    _columns = {
+        'issue_ids': fields.one2many('project.issue', 'project_id', 'Project Issue'),
+    }

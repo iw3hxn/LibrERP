@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_project_leads" model="ir.ui.view">
+            <field name="name">project.project.leads</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                 <page string="Notes" position="after">
+                    <page string="Cases and Issues">
+                        <field name="lead_id" nolabel="1" colspan="4"/>
+                        <field name="issue_ids" nolabel="1" colspan="4"/>
+                    </page>
+                 </page>
+            </field>
+        </record>
+        
+    </data>
+</openerp>
