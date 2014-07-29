@@ -1110,17 +1110,6 @@ openerp.web.form.Widget = openerp.web.OldWidget.extend(/** @lends openerp.web.fo
             var fields_values = this._build_eval_context(blacklist);
             v_context = new openerp.web.CompoundContext(v_context).set_eval_context(fields_values);
         }
-        var active_id, active_ids, active_model;
-        for (i in v_context.__eval_context.__contexts) { //TODO: remove this and fix CompoundContext
-            active_id = active_id || v_context.__eval_context.__contexts[i].active_id;
-            active_ids = active_ids || v_context.__eval_context.__contexts[i].active_ids;
-            active_model = active_model || v_context.__eval_context.__contexts[i].active_model;
-        }
-        for (i in v_context.__eval_context.__contexts) {
-            v_context.__eval_context.__contexts[i].active_id = active_id;
-            v_context.__eval_context.__contexts[i].active_ids = active_ids;
-            v_context.__eval_context.__contexts[i].active_model = active_model;
-        }
         return v_context;
     },
     build_domain: function() {
