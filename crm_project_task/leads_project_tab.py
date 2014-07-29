@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2013 Matmoz d.o.o. (<http://www.matmoz.si>)
@@ -19,4 +19,14 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import project
+
+from osv import fields, osv
+
+
+class leads(osv.osv):
+    _inherit = "crm.lead"
+    _columns = {
+        'lead_ids': fields.one2many('crm.lead', 'project_id', 'Leads/Opportunities', readonly=False),
+    }
+
+leads()

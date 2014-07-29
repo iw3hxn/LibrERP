@@ -28,19 +28,24 @@
 ##############################################################################
 
 {
-    "name": "CRM tasks part of Project tasks",
-    "version": "0.4",
+    "name": "CRM cases part of Projects",
+    "version": "0.5.0",
     "author": "Matmoz d.o.o. (Didotech Group)",
     "website": "http://www.matmoz.si",
     "category": "Vertical Modules/Parametrization",
-    "description": """Crm task connected to project""",
+    "description": """
+    CRM tasks and CRM leads connected to project,
+    crm cases tab on project view.
+    """,
     "depends": ["crm_todo"],
-    "init_xml":
-               [
-                   "crm_todo_opportunity.xml",
-                   "crm_todo_project_task_tree.xml",
-                   "project_gtd_task.xml"
-               ],
+    "init_xml": [
+        "crm_todo_opportunity.xml",
+        "crm_todo_project_task_tree.xml",
+        "project_gtd_task.xml",
+        "project_lead.xml",
+        "project_opportunity.xml",
+        "leads_project_view.xml"
+    ],
     "demo_xml": [],
     "update_xml": [],
     "installable": True
