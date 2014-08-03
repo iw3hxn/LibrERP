@@ -28,7 +28,8 @@
     'license': 'AGPL-3',
     "depends" : [
         'project',
-        'project_gtd'
+        'project_gtd',
+        'project_long_term',
     ],
     "data" : [
         'project/project_view.xml',
