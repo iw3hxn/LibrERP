@@ -26,7 +26,7 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 import hashlib
-import netsvc
+from openerp import netsvc
 
 
 class stock_move(orm.Model):
@@ -82,7 +82,7 @@ class stock_move(orm.Model):
             ids = [ids]
 
         for move in self.browse(cr, uid, ids, context=context):
-            product_id = move.product_id.id
+            #product_id = move.product_id.id
             existing_tracking = move.tracking_id
             if existing_tracking: #avoid creating a tracking twice
                 self.pool['stock.tracking'].write(cr, uid, existing_tracking.id, {'name': value})
@@ -151,7 +151,7 @@ class stock_move(orm.Model):
             lu_qty = False
             if move.product_id.lot_split_type == 'lu':
                 if not move.product_id.packaging:
-                    raise osv.except_osv(_('Error :'), _("Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information.") % (move.product_id.name))
+                    raise orm.except_orm(_('Error :'), _("Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information.") % (move.product_id.name))
                 lu_qty = move.product_id.packaging[0].qty
             elif move.product_id.lot_split_type == 'single':
                 lu_qty = 1
@@ -212,59 +212,6 @@ class stock_picking(orm.Model):
     # we merge invoice line together and do the sum of quantity and
     # subtotal.
     
-
-    def _prepare_invoice_line(self, cr, uid, group, picking, move_line, invoice_id,
-        invoice_vals, context=None):
-        """ Builds the dict containing the values for the invoice line
-            @param group: True or False
-            @param picking: picking object
-            @param: move_line: move_line object
-            @param: invoice_id: ID of the related invoice
-            @param: invoice_vals: dict used to created the invoice
-            @return: dict that will be used to create the invoice line
-        """
-        if group:
-            name = (picking.name or '') + '-' + move_line.name
-        else:
-            name = move_line.name
-        origin = move_line.picking_id.name or ''
-        if move_line.picking_id.origin:
-            origin += ':' + move_line.picking_id.origin
-
-        if invoice_vals['type'] in ('out_invoice', 'out_refund'):
-            account_id = move_line.product_id.product_tmpl_id.\
-                    property_account_income.id
-            if not account_id:
-                account_id = move_line.product_id.categ_id.\
-                        property_account_income_categ.id
-        else:
-            account_id = move_line.product_id.product_tmpl_id.\
-                    property_account_expense.id
-            if not account_id:
-                account_id = move_line.product_id.categ_id.\
-                        property_account_expense_categ.id
-        if invoice_vals['fiscal_position']:
-            fp_obj = self.pool.get('account.fiscal.position')
-            fiscal_position = fp_obj.browse(cr, uid, invoice_vals['fiscal_position'], context=context)
-            account_id = fp_obj.map_account(cr, uid, fiscal_position, account_id)
-        # set UoS if it's a sale and the picking doesn't have one
-        uos_id = move_line.product_uos and move_line.product_uos.id or False
-        if not uos_id and invoice_vals['type'] in ('out_invoice', 'out_refund'):
-            uos_id = move_line.product_uom.id
-        return {
-            'name': name,
-            'origin': origin,
-            'invoice_id': invoice_id,
-            'uos_id': uos_id,
-            'product_id': move_line.product_id.id,
-            'account_id': account_id,
-            'price_unit': self._get_price_unit_invoice(cr, uid, move_line, invoice_vals['type']),
-            'discount': self._get_discount_invoice(cr, uid, move_line),
-            'quantity': move_line.product_qty or move_line.product_uos_qty, #Carlo: i have to invoice based on delivery
-            #'quantity': move_line.product_uos_qty or move_line.product_qty,
-            'invoice_line_tax_id': [(6, 0, self._get_taxes_invoice(cr, uid, move_line, invoice_vals['type']))],
-            'account_analytic_id': self._get_account_analytic_invoice(cr, uid, picking, move_line),
-        }
 
     def action_invoice_create(self, cursor, user, ids, journal_id=False,
                             group=False, type='out_invoice', context=None):

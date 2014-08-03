@@ -20,7 +20,7 @@
 
 {
     "name": "Unique serial number management",
-    "version": "3.3.6.5",
+    "version": "3.3.7.5",
     "author": "Akretion, NaN·tic, Didotech SRL",
     "website": "http://www.akretion.com",
     "depends": [
