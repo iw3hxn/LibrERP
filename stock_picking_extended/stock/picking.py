@@ -164,6 +164,15 @@ class stock_picking(orm.Model):
 
         return super(stock_picking, self).create(cr, user, vals, context)
 
+    def _prepare_invoice_line(self, cr, uid, group, picking, move_line, invoice_id,
+        invoice_vals, context=None):
+        res = super(stock_picking, self)._prepare_invoice_line(cr, uid, group, picking, move_line, invoice_id,
+            invoice_vals, context=None)
+        """ Update dict with correct shipped qty
+        """
+        res['quantity'] = move_line.product_qty or move_line.product_uos_qty
+        return res
+
     def action_invoice_create(self, cursor, user, ids, journal_id=False,
                               group=False, type='out_invoice', context=None):
         res = super(stock_picking, self).action_invoice_create(cursor, user, ids, journal_id,
