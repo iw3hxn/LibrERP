@@ -19,10 +19,7 @@
 #
 ##############################################################################
 
-import netsvc
-import pooler, tools
 from openerp.osv import orm, fields
-
 
 
 class account_invoice(orm.Model):
