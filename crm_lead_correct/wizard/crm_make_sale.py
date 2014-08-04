@@ -103,7 +103,8 @@ class crm_make_sale(orm.TransientModel):
                     'date_order': fields.date.context_today(self,cr,uid,context=context),
                     'fiscal_position': fpos,
                     'payment_term': payment_term,
-                    'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id
+                    'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
+                    'note': case.description or ''
                 }
                 
                 new_id = sale_obj.create(cr, uid, vals, context=context)
