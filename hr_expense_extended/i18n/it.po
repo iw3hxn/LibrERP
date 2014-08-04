@@ -57,7 +57,7 @@ msgstr "Prodotto"
 #: field:wizard.expense.line,payer:0
 #, python-format
 msgid "Payer"
-msgstr "Pagamata come"
+msgstr "Pagata come"
 
 #. module: hr_expense_extended
 #: constraint:project.task:0
