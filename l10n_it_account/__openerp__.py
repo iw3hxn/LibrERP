@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation - Account Didotech',
-    'version': '2.6.12.10',
+    'version': '2.6.12.11',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
@@ -43,7 +43,7 @@ Functionalities:
         'l10n_it_base',
         'account_voucher',
         'sale_order_confirm',
-        'account_invoice_entry_date'
+        #'account_invoice_entry_date', not possible for use of a field defined here invoice_supplier_number
     ],
     "data": [
         'account/partner_view.xml',
