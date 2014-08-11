@@ -30,9 +30,9 @@
             <xpath expr="/form/notebook/page/field/tree/field[@name='location_dest_id']" position="attributes">
                 <attribute name="domain">[('usage','=','internal')]</attribute>
             </xpath>
-			<xpath expr="/form/notebook/page/field/tree/field[@name='state']" position="after">
+            <xpath expr="/form/notebook/page/field/tree/field[@name='state']" position="after">
                 <field name="balance" groups="stock.view_balance"/>
-				<field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
+                <field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
                 <field name="pallet_id" groups="stock.view_pallet" readonly="1" />
             </xpath>
         </field>
@@ -68,10 +68,10 @@
             <xpath expr="/form/notebook/page/field/tree/field[@name='location_id']" position="attributes">
                 <attribute name="domain">[('usage','=','internal')]</attribute>
             </xpath>
-			<xpath expr="/form/notebook/page/field/tree/field[@name='state']" position="after">
+            <xpath expr="/form/notebook/page/field/tree/field[@name='state']" position="after">
                 <field name="balance" groups="stock.view_balance"/>
-				<field name="product_uos_qty" groups="stock.view_balance"/>
-				<field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
+                <field name="product_uos_qty" groups="stock.view_balance"/>
+                <field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
                 <field name="pallet_id" groups="stock.view_pallet" readonly="1" />
             </xpath>
         </field>
@@ -89,7 +89,7 @@
                 <field name="new_prodlot_code" />
             </xpath>
 -->
-	    <xpath expr="/form/notebook/page/field/tree/field[@name='prodlot_id']" position="replace">
+            <xpath expr="/form/notebook/page/field/tree/field[@name='prodlot_id']" position="replace">
                 <field name="prodlot_id" readonly="1" />
             </xpath>
 
@@ -235,20 +235,20 @@
         </field>
     </record>
 	
-	<record model="ir.ui.view" id="view_move_tree_balance">
-			<field name="name">stock.view_move_tree</field>
-			<field name="model">stock.move</field>
-			<field name="type">form</field>
-			<field name="inherit_id" ref="stock.view_move_tree" />
-			<field name="arch" type="xml">		
-				<field name="product_qty" position="before">
-					<field name="product_uos_qty" groups="stock.view_balance"/>
-					<field name="balance" groups="stock.view_balance"/>
-					<field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
-                    <field name="pallet_id" groups="stock.view_pallet" readonly="1" />
-				</field>
-			</field>
-	</record>
+    <record model="ir.ui.view" id="view_move_tree_balance">
+        <field name="name">stock.view_move_tree</field>
+        <field name="model">stock.move</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="stock.view_move_tree" />
+        <field name="arch" type="xml">
+            <field name="product_qty" position="before">
+                <field name="product_uos_qty" groups="stock.view_balance"/>
+                <field name="balance" groups="stock.view_balance"/>
+                <field name="pallet_qty" groups="stock.view_pallet" readonly="1"/>
+                <field name="pallet_id" groups="stock.view_pallet" readonly="1" />
+            </field>
+        </field>
+    </record>
     
     <!-- Wizard to help users input production lots in batch -->
 <!-- TODO Nan-TIc : port to v6

@@ -39,7 +39,8 @@ class Parser(report_sxw.rml_parse):
             'invoice_move_lines': self._get_invoice_move_lines,
             'ddt': self._get_ddt,
             'set_picking': self._set_picking,
-            'indirizzo': self._indirizzo
+            'indirizzo': self._indirizzo,
+            'div': self._div,
         })
         
         self.cache = {}
@@ -47,6 +48,13 @@ class Parser(report_sxw.rml_parse):
     #def _get_ddt(self):
     #    return self.pool.get('stock.picking').browse(self.cr, self.uid,
     #                                                 self.localcontext['data']['form']['picking_id'])
+    
+    def _div(self, up, down):
+        res = 0
+        #import pdb; pdb.set_trace()
+        if down:
+            res = up / down
+        return res
     
     def _set_picking(self, invoice):
         self._get_invoice_tree(invoice.invoice_line)

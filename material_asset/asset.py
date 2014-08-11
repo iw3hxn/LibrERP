@@ -156,7 +156,7 @@ class AssetLocationProperty(orm.Model):
     _description = 'All possible locations of an asset'
 
     _columns = {
-        'name': fields.char(_('Name'), size=256, required=True),
+        'name': fields.char(_('Name'), size=256, required=True, translable=True),
         'model': fields.char(_("Location model"), size=32, required=True),
         'location_field': fields.char(_("Fields"), size=32, required=False),
         'type': fields.selection(

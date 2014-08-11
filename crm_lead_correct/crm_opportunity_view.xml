@@ -40,7 +40,7 @@
                     </group>
                     <field name="user_id"/>
 
-					<button string="Convert to Quote" icon="gtk-go-forward" name="%(sale_crm.action_crm_make_sale)d" type="action"/>
+		<button string="Convert to Quote" icon="gtk-go-forward" name="%(sale_crm.action_crm_make_sale)d" type="action"/>
                     <field name="planned_revenue"/>
                     <field name="probability"/>
                     <field name="date_deadline"/>
@@ -230,14 +230,28 @@
         <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
         <field name="type">search</field>
         <field name="arch" type="xml">
-            <field name="user_id" position="before">
-				<newline/>
-				<field name="city" />
-				<field name="province" widget="selection"/>
-                <field name="region" widget="selection"/>
-				<field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
+		<field name="name" position="after">
+			<filter name="today" icon="terp-go-today" domain="[('date_action', '=', time.strftime('%%Y-%%m-%%d'))]" string="Today"/>
+                        <!--<filter icon="terp-go-month"
+                        string="Current Week"
+                        name="current_week"
+                        help="Action of Current Week"
+                        domain="[('date_action', '&lt;', (datetime.date.today() + relativedelta(weeks=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_action', '&gt;=', (datetime.date.today() + relativedelta(weeks=-1) ).strftime('%%Y-%%m-01 00:00:00'))]"
+			/>
+			<filter icon="terp-go-month"
+                        string="Next Week"
+                        name="next_week"
+                        help="Action of Next Week"
+                        domain="[('date_action', '&lt;', (datetime.date.today() + relativedelta(weeks=2)).strftime('%%Y-%%m-01 00:00:00')), ('date_action', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
+			/>-->
+		</field>
+		<field name="user_id" position="before">
+			<newline/>
+			<field name="city" />
+			<field name="province" widget="selection"/>
+		        <field name="region" widget="selection"/>
+			<field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
 			</field>
-        
 		</field>
        </record>
 

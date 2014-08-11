@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        
+        <record id="stock.stock_location_asset" model="stock.location">
+            <field name="name">Asset</field>
+            <field name="location_id" ref="stock.stock_location_company"/>
+            <field name="usage">assets</field>
+            <field name="company_id"></field>
+        </record>
+        
         <record id="asset_location_asset" model="asset.location.property">
             <field name="name">Asset</field>
             <field name="model">asset.asset</field>
             <field name="type">other</field>
+            <field name="stock_location" ref="stock.stock_location_asset" />
         </record>
         
         <!--base/res/res_partner.py-->
@@ -13,14 +22,24 @@
             <field name="model">res.partner</field>
             <field name="location_field">address_id</field>
             <field name="type">address</field>
+            <field name="stock_location" ref="stock.stock_location_customers" />
         </record>
         
+<!--        <record id="asset_location_supplier" model="asset.location.property">
+            <field name="name">Supplier</field>
+            <field name="model">res.partner</field>
+            <field name="location_field">address_id</field>
+            <field name="type">address</field>
+            <field name="stock_location" ref="stock.stock_location_suppliers" />
+        </record>-->
+                
         <record id="asset_location_partner_address" model="asset.location.property">
             <field name="name">Partner Address</field>
             <field name="model">res.partner.address</field>
             <!--It's Ok to leave 'selectable' empty. It's the only way to set it' value to False-->
             <field name="selectable"></field>
             <field name="type">address</field>
+            <field name="stock_location" ref="stock.stock_location_customers" />
         </record>
         
         <!--base_contact/base_contact.py requires module base_contact-->
@@ -35,24 +54,32 @@
             <field name="name">Employee</field>
             <field name="model">hr.employee</field>
             <field name="type">other</field>
+            <!--It's Ok to leave 'selectable' empty. It's the only way to set it' value to False-->
+            <field name="selectable"></field>
         </record>
         
         <record id="asset_location_project" model="asset.location.property">
             <field name="name">Project</field>
             <field name="model">project.project</field>
             <field name="type">other</field>
+            <!--It's Ok to leave 'selectable' empty. It's the only way to set it' value to False-->
+            <field name="selectable"></field>
         </record>
         
         <record id="asset_location_stock" model="asset.location.property">
             <field name="name">Warehouse</field>
             <field name="model">stock.location</field>
             <field name="type">location</field>
+            <!--It's Ok to leave 'selectable' empty. It's the only way to set it' value to False-->
+            <field name="selectable"></field>
         </record>
         
         <record id="asset_location_car" model="asset.location.property">
             <field name="name">Car</field>
             <field name="model">res.car</field>
             <field name="type">other</field>
+            <!--It's Ok to leave 'selectable' empty. It's the only way to set it' value to False-->
+            <field name="selectable"></field>
         </record>
         
         <record id="asset_location_place" model="asset.location.property">
@@ -67,6 +94,8 @@
             <field name="model">project.plant</field>
             <field name="location_field">stock_location_id</field>
             <field name="type">location</field>
+            <!--It's Ok to leave 'selectable' empty. It's the only way to set it' value to False-->
+            <field name="selectable"></field>
         </record>
         
         

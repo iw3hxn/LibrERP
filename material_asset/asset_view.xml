@@ -71,18 +71,22 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Locations" editable='top'>
-                    <field name="name" readonly="True"/>
-                    <field name="model" readonly="True" />
+                    <field name="name" />
+                    <field name="model" />
+                    <field name="type" />
                     <field name="stock_location"/>
+                    <field name="selectable" />
                 </tree>
             </field>
         </record>
+        
         <record id="action_view_asset_locations_list" model="ir.actions.act_window">
             <field name="name">Asset Locations</field>
             <field name="res_model">asset.location.property</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+        
         <menuitem id="menu_asset_location_list"
                   name="Asset Location"
                   parent="menu_asset_config"
