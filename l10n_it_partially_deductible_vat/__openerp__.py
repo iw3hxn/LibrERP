@@ -24,8 +24,8 @@
 
 {
     "name" : "Italy - Partially Deductible VAT",
-    "version" : "0.1.1",
-    "depends" : ['account'],
+    "version" : "0.1.2",
+    "depends" : ['account', 'l10n_it_account',],
     "author" : "OpenERP Italian Community",
     "description": """
     Calcoli aggiuntivi per la gestione dell'IVA parzialmente detraibile. Senza questo modulo non è possibile calcolare correttamente imponibili, imposte e conti imposte relativi all'IVA parzialmente detraibile.
@@ -34,15 +34,9 @@
     "license": "AGPL-3",
     "category" : "Localisation/Italy",
     'website': 'http://www.openerp-italia.org/',
-    'init_xml': [
+    'data': [
         ],
-    'update_xml': [
-        ],
-    'demo_xml': [
-        ],
-    'test': [
-        'test/account_tax.xml',
-        'test/tax_computation.yml',
+    'demo': [
         ],
     'installable': True,
     'active': False,

@@ -35,10 +35,11 @@ class account_tax(osv.osv):
     def _have_same_rate(self, account_taxes):
         rate = None
         for account_tax in account_taxes:
-            if rate is None:
-                rate = account_tax.amount
-            elif rate != account_tax.amount:
-                return False
+            if account_tax.type != 'balance':
+                if rate is None:
+                    rate = account_tax.amount
+                elif rate != account_tax.amount:
+                    return False
         return True
 
     def get_main_tax(self, tax):
@@ -78,19 +79,20 @@ class account_tax(osv.osv):
     def compute_all(self, cr, uid, taxes, price_unit, quantity, address_id=None, product=None, partner=None, force_excluded=False, context=None):
         res = super(account_tax, self).compute_all(cr, uid, taxes, price_unit, quantity, address_id, product, partner, force_excluded)
 
-        precision = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
+        precision = 2 #è sempre 2 per quanto viene addebitato, anche se impostato diversamente in 'Account', per legge
         tax_list = res['taxes']
         totalex = res['total']
         if len(tax_list) == 2:
             for tax in tax_list:
                 if tax.get('balance',False): # Calcolo di imponibili per l'IVA parzialmente detraibile
-                    deductible_base = totalex
                     ind_tax = tax_list[abs(tax_list.index(tax)-1)]
                     ind_tax_obj = self.browse(cr, uid, ind_tax['id'])
-                    ded_tax_obj = self.browse(cr, uid, tax['id'])
                     base_ind = float(Decimal(str(totalex * ind_tax_obj.amount)).quantize(Decimal('1.'+precision*'0'), rounding=ROUND_HALF_UP))
                     base_ded = float(Decimal(str(totalex - base_ind)).quantize(Decimal('1.'+precision*'0'), rounding=ROUND_HALF_UP))
                     tax_total = float(Decimal(str(tax['balance'])).quantize(Decimal('1.'+precision*'0'), rounding=ROUND_HALF_UP))
+                    if tax_total > tax['amount']+ind_tax['amount']:
+                        rounding_amount = tax_total - (tax['amount']+ind_tax['amount'])
+                        ind_tax['amount'] += rounding_amount
                     ind_tax['price_unit']  = round(base_ind/quantity, self.pool.get('decimal.precision').precision_get(cr, uid, 'Product Price'))
                     tax['price_unit'] = round(base_ded/quantity, self.pool.get('decimal.precision').precision_get(cr, uid, 'Product Price'))
         return res
