@@ -21,14 +21,15 @@
 ##############################################################################
 {
     'name': 'Account Invoice entry Date',
-    'version': '3.0.1.1',
+    'version': '3.0.1.2',
     'category': 'Generic Modules/Accounting',
     'description': """This module allows to specify the date to be used by the move created while confirming (supplier) invoice""",
     'author': 'OpenERP Italian Community',
     'website': 'http://www.openerp-italia.org',
     'license': 'AGPL-3',
     "depends" : [
-        'account'
+        'account',
+        'l10n_it_account', #for supplier_invoice_number field
     ],
     "data" : [
         'invoice_view.xml'
