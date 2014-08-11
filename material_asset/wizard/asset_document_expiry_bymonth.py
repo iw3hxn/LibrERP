@@ -27,16 +27,34 @@
 #
 ##############################################################################
 import time
+from openerp.osv import orm, fields
 
-from osv import osv, fields
 
-class asset_document_expiry_bymonth(osv.osv_memory):
+class asset_document_expiry_bymonth(orm.TransientModel):
     _name = 'asset.document.expiry.bymonth'
     _description = 'Print Monthly Document Expiry Report'
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if not len(ids):
+            return []
+        reads = self.read(cr, uid, ids, ['category_id', 'date_from', 'date_to'], context=context)
+        res = []
+        for record in reads:
+            name = 'ALL'
+            if record:
+                name = "{0} - {1} - {2}".format(record['category_id'] or 'All', record['date_to'], record['date_from'])
+            res.append((record['id'], name))
+        return res
+
+    def _get_name(self, cr, uid, ids, prop, unknow_none, context=None):
+        res = self.name_get(cr, uid, ids, context=context)
+        return dict(res)
+    
     _columns = {
+        'name': fields.function(_get_name, string='Name', method=True, type="char"),
         'date_from': fields.date("Valid Start Date"),
         'date_to': fields.date("Valid End Date"),
-        "category_id" : fields.many2one("asset.document.type","Document Type"),
+        'category_id' : fields.many2one("asset.document.type","Document Type"),
     }
 
     _defaults = {
@@ -57,6 +75,4 @@ class asset_document_expiry_bymonth(osv.osv_memory):
             'report_name': 'asset.document.expiry',
             'datas': datas,
        }
-
-asset_document_expiry_bymonth()
 
