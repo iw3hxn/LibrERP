@@ -710,8 +710,11 @@ class asset_asset(orm.Model):
         res = []
         reads = self.read(cr, uid, ids, ['id', 'asset_product_id'], context=context)
         for record in reads:
-            product = self.pool['asset.product'].browse(cr, uid, record['asset_product_id'][0], context)
-            res.append((record['id'], product.manufacturer.name))
+            if record['asset_product_id']:
+                product = self.pool['asset.product'].browse(cr, uid, record['asset_product_id'][0], context)
+                res.append((record['id'], product.manufacturer.name))
+            else:
+                res.append((record['id'], ''))
 
         return dict(res)
 
