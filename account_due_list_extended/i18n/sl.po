@@ -1,0 +1,129 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* account_due_list_extended
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-11 17:04+0000\n"
+"PO-Revision-Date: 2014-08-12 10:10+0100\n"
+"Last-Translator: Matjaz Mozetic <m.mozetic@matmoz.si>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: sl\n"
+"X-Generator: Poedit 1.6.5\n"
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid ""
+"The selected account of your Journal Entry forces to provide a secondary "
+"currency. You should remove the secondary currency on the account or select "
+"a multi-currency view on the journal."
+msgstr ""
+"Izbrani konto dnevniških vnosov vsili uporabo sekundarne valute. Odstranite "
+"sekundarno valuto iz konta ali izberite več-valutni pogled na dnevniku."
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid "You can not create journal items on closed account."
+msgstr "Ne morete ustvariti dnevniških postavk na zaprtem kontu."
+
+#. module: account_due_list_extended
+#: field:account.move.line,payment_term_type:0
+#: field:account.payment.term,payment_term_type:0
+msgid "Tipo di pagamento"
+msgstr "Tip plačila"
+
+#. module: account_due_list_extended
+#: field:account.payment.term.type,name:0
+msgid "Codice"
+msgstr "Koda"
+
+#. module: account_due_list_extended
+#: model:ir.model,name:account_due_list_extended.model_account_payment_term_type
+msgid "Payment term type list"
+msgstr "Seznam tipov plačilnih pogojev"
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid "Company must be the same for its related account and period."
+msgstr "Podjetje mora biti enako za povezan konto in obdobje."
+
+#. module: account_due_list_extended
+#: model:ir.actions.act_window,name:account_due_list_extended.action_view_payments_type
+#: model:ir.ui.menu,name:account_due_list_extended.menu_payments_type
+msgid "Tipi di pagamento"
+msgstr "Tip plačila"
+
+#. module: account_due_list_extended
+#: view:account.move.line:0
+msgid "Reconciled"
+msgstr "Usklajeno"
+
+#. module: account_due_list_extended
+#: view:account.move.line:0
+msgid "Unreconciled payments"
+msgstr "Neusklajena plačila"
+
+#. module: account_due_list_extended
+#: model:ir.model,name:account_due_list_extended.model_account_payment_term
+msgid "Payment Term"
+msgstr "Plačilni pogoj"
+
+#. module: account_due_list_extended
+#: view:account.move.line:0
+msgid "Unreconciled"
+msgstr "Neusklajeno"
+
+#. module: account_due_list_extended
+#: field:account.payment.term.type,description:0
+msgid "Descrizione"
+msgstr "Opis"
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid ""
+"The date of your Journal Entry is not in the defined period! You should "
+"change the date or remove this constraint from the journal."
+msgstr ""
+"Datuma dnevniškega vnosa ni v določenem obdobju! Spremenite datum ali "
+"odstranite omejitev iz dnevnika."
+
+#. module: account_due_list_extended
+#: sql_constraint:account.move.line:0
+msgid "Wrong credit or debit value in accounting entry !"
+msgstr "Napačna vrednost računovodskega vnosa za dobro ali breme!"
+
+#. module: account_due_list_extended
+#: field:account.move.line,importo:0
+msgid "Importo"
+msgstr "Znesek"
+
+#. module: account_due_list_extended
+#: model:ir.actions.report.xml,name:account_due_list_extended.report_stampa_scadenzario
+msgid "Stampa Scadenzario"
+msgstr "Natisni register zapadlosti"
+
+#. module: account_due_list_extended
+#: model:ir.model,name:account_due_list_extended.model_account_move_line
+msgid "Journal Items"
+msgstr "Dnevniške postavke"
+
+#. module: account_due_list_extended
+#: constraint:account.move.line:0
+msgid "You can not create journal items on an account of type view."
+msgstr "Ne morete ustvariti dnevniške postavke na kontu tipa pogled."
+
+#. module: account_due_list_extended
+#: view:account.payment.term.type:0
+msgid "Payment"
+msgstr "Plačilo"
+
+#. module: account_due_list_extended
+#: view:account.move.line:0
+msgid "Reconciled payments"
+msgstr "Usklajena plačila"
