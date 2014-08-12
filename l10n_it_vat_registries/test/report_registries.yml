@@ -1,0 +1,35 @@
+- 
+  Creating a wizard.registro.iva record
+- 
+  !record {model: wizard.registro.iva, id: wizard_registro_iva_0}:
+    fiscal_page_base: 0.0
+    journal_ids:
+      - account.expenses_journal
+    type: supplier
+-
+  In order to test the PDF reports defined on a partner, we will print the Overdue Report 
+-
+  !python {model: res.partner}: |
+    from tools.test_reports import try_report
+    try_report(cr, uid, 'report.account.overdue', [ref('base.res_partner_asus'),ref('base.res_partner_agrolait'),ref('base.res_partner_c2c')],  context={'model': 'ir.ui.menu', 'active_ids': [1234567,] })
+-
+  Print the Aged Partner Balance Report
+-
+  !python {model: account.account}: |
+    ctx={}
+    ctx.update({'model': 'account.account','active_ids':[ref('account.chart0')],'active_id':ref('account.chart0')})
+    data_dict = {'chart_account_id':ref('account.chart0')}
+    from tools import test_reports
+    test_reports.try_report_action(cr, uid, 'action_account_aged_balance_view',wiz_data=data_dict, context=ctx, our_module='account')
+-
+  In order to test the PDF VAT Registries Report webkit wizard I will print report with filters
+-
+  !python {model: account.move}: |
+    ctx={}
+    #ctx.update({'model': 'account.move','active_ids':[ref('wizard_registro_iva_0')],'active_id':ref('wizard_registro_iva_0')})
+    data_dict = {'journal_ids':[ref('account.sales_journal')],'period_ids':[ref('account.period_8')],
+                 'tax_sign': 1.0, 'type': u'supplier', 'fiscal_page_base': 0 }
+    print ctx
+    print data_dict
+    from tools import test_reports
+    test_reports.try_report_action(cr, uid, action_id='action_registro_iva', wiz_data=data_dict, wiz_buttons="print_registro",context=ctx, our_module='l10n_it_vat_registries')

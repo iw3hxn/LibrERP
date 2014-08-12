@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="tax_root" model="account.tax.code">
+            <field name="name">tax_root</field>
+            <field name="sign">1.0</field>
+            <field name="code">tax_root</field>
+        </record>
+
+        <record id="22AI" model="account.tax.code">
+            <field name="name">22AI</field>
+            <field name="sign">1.0</field>
+            <field name="is_base">true</field>
+            <field name="code">22AI</field>
+            <field name="parent_id" ref="tax_root"/>
+        </record>
+
+        <record id="22A" model="account.tax.code">
+            <field name="name">22A</field>
+            <field name="sign">1.0</field>
+            <field name="is_base">false</field>
+            <field name="code">22A</field>
+            <field name="parent_id" ref="tax_root"/>
+        </record>
+
+        <record id="22Aind" model="account.tax.code">
+            <field name="name">22Aind</field>
+            <field name="sign">1.0</field>
+            <field name="is_base">false</field>
+            <field name="code">22Aind</field>
+            <field name="parent_id" ref="tax_root"/>
+        </record>
+
+        <record id="tax_20I5" model="account.tax">
+            <field name="name">IVA al 20% detraibile al 50%</field>
+            <field name="amount">0.2</field>
+            <field name="child_depend">1</field>
+            <field name="ref_base_code_id" ref="22AI"/>
+            <field name="base_code_id" ref="22AI"/>
+            <field name="base_sign">-1.0</field>
+        </record>
+
+        <record id="tax_20I5b" model="account.tax">
+            <field name="name">IVA al 20% detraibile al 50% (I)</field>
+            <field name="amount">0.5</field>
+            <field name="parent_id" ref="tax_20I5"></field>
+            <field name="ref_tax_code_id" ref="22Aind"/>
+            <field name="tax_code_id" ref="22Aind"/>
+            <field name="tax_sign">-1.0</field>
+        </record>
+
+        <record id="tax_20I5a" model="account.tax">
+            <field name="name">IVA al 20% detraibile al 50% (D)</field>
+            <field name="amount">0</field>
+            <field name="type">balance</field>
+            <field name="parent_id" ref="tax_20I5"></field>
+            <field name="ref_tax_code_id" ref="22A"/>
+            <field name="tax_code_id" ref="22A"/>
+            <field name="tax_sign">-1.0</field>
+        </record>
+
+        <record id="tax_20" model="account.tax">
+            <field name="name">20 %</field>
+            <field name="amount">0.2</field>
+            <field name="ref_base_code_id" ref="22AI"/>
+            <field name="base_code_id" ref="22AI"/>
+            <field name="base_sign">-1.0</field>
+            <field name="ref_tax_code_id" ref="22A"/>
+            <field name="tax_code_id" ref="22A"/>
+            <field name="tax_sign">-1.0</field>
+        </record>
+
+    </data>
+</openerp>
