@@ -24,6 +24,7 @@
     #purchase_warn: no-message
     #sale_warn: no-message
     customer: true
+    selection_account_receivable: account.a_recview
 -
   Then I verify the partner is present
 - 
@@ -88,6 +89,8 @@
     #sale_warn: no-message
     customer: true
     supplier: true
+    selection_account_receivable: account.a_recview
+    selection_account_payable: account.a_payview
 -
   Then I verify the partner is present
 - 
