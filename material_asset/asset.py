@@ -1565,6 +1565,8 @@ class create_asset_onmove(orm.Model):
             return self.create_asset(cr, uid, ids, context)
 
     def create_asset(self, cr, uid, ids, context):
+        if context is None:
+            context = {}
         move = self.browse(cr, uid, ids[0], context=context)
         if not move.prodlot_id.id and move.location_dest_id.usage == 'assets':
             prodlot_id = False
