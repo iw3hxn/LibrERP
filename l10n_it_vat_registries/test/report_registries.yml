@@ -6,6 +6,7 @@
     journal_ids:
       - account.expenses_journal
     type: supplier
+    #period_ids: account.period_8
 -
   In order to test the PDF reports defined on a partner, we will print the Overdue Report 
 -
@@ -25,8 +26,16 @@
   In order to test the PDF VAT Registries Report webkit wizard I will print report with filters
 -
   !python {model: account.move}: |
+    wizard = self.pool.get('wizard.registro.iva').browse(cr, uid, ref('wizard_registro_iva_0'))
+    move_obj = self.pool.get('account.move')
+    obj_model_data = self.pool.get('ir.model.data')
+    move_ids = move_obj.search(cr, uid, [
+        ('journal_id', 'in', [j.id for j in wizard.journal_ids]),
+        #('period_id', 'in', [p.id for p in wizard.period_ids]),
+        ('state', '=', 'posted'),
+    ], order='date, name')
     ctx={}
-    #ctx.update({'model': 'account.move','active_ids':[ref('wizard_registro_iva_0')],'active_id':ref('wizard_registro_iva_0')})
+    ctx.update({'model': 'account.move','active_ids':move_ids})
     data_dict = {'journal_ids':[ref('account.sales_journal')],'period_ids':[ref('account.period_8')],
                  'tax_sign': 1.0, 'type': u'supplier', 'fiscal_page_base': 0 }
     print ctx

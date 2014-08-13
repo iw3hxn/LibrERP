@@ -30,6 +30,15 @@
 -  
     !python {model: account.invoice}: |
         self.button_compute(cr, uid, [ref("account_invoice_supplier0")])  
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier0}
+-
+  I check that the invoice state is now "Open"
+-
+  !assert {model: account.invoice, id: account_invoice_supplier0}:
+    - state == 'open'
 -  
     Then I verify the amount.
     123.57 * 0.2 = 24.714 = 24.71
@@ -37,6 +46,15 @@
     !python {model: account.invoice}: |
         invoice = self.browse(cr, uid, ref("account_invoice_supplier0"))
         assert invoice.amount_tax == 24.71, 'Invoice tax amount should be 24.71, not {0}.'.format(invoice.amount_tax)
+-
+  Print the Invoice layout report in Normal Mode
+-
+  !python {model: account.invoice}: |
+    import netsvc, tools, os
+    (data, format) = netsvc.LocalService('report.account.invoice').create(cr, uid, [ref('account_invoice_supplier0')], {}, {})
+    if tools.config['test_report_directory']:
+        file(os.path.join(tools.config['test_report_directory'], 'account_invoice_layout.'+format), 'wb+').write(data)
+
 -
   In order to test tax computation I create a new supplier invoice
 -
@@ -70,6 +88,15 @@
 -  
     !python {model: account.invoice}: |
         self.button_compute(cr, uid, [ref("account_invoice_supplier1")])  
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier1}
+-
+  I check that the invoice state is now "Open"
+-
+  !assert {model: account.invoice, id: account_invoice_supplier1}:
+    - state == 'open'
 -  
     Then I verify the amount.
     123.57 + 123.57 = 247.14
@@ -110,6 +137,15 @@
 -  
     !python {model: account.invoice}: |
         self.button_compute(cr, uid, [ref("account_invoice_supplier3")])  
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier3}
+-
+  I check that the invoice state is now "Open"
+-
+  !assert {model: account.invoice, id: account_invoice_supplier3}:
+    - state == 'open'
 -  
     Then I verify the amount.
     123.57 + 123.57 = 247.14
@@ -144,6 +180,15 @@
 -  
     !python {model: account.invoice}: |
         self.button_compute(cr, uid, [ref("account_invoice_supplier2")])  
+-
+  I change the state of invoice to open by clicking Validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_supplier2}
+-
+  I check that the invoice state is now "Open"
+-
+  !assert {model: account.invoice, id: account_invoice_supplier2}:
+    - state == 'open'
 -  
     Then I verify the amount.
     100.03 × 0.2 = 20.006 = 20.01
