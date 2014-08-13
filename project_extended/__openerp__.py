@@ -19,7 +19,7 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.1.4.5',
+    'version': '3.1.4.6',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,
@@ -30,6 +30,7 @@
         'project',
         'project_gtd',
         'project_long_term',
+        'project_timesheet',
     ],
     "data" : [
         'project/project_view.xml',
