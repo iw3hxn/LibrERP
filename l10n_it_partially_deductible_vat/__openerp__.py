@@ -24,7 +24,7 @@
 
 {
     "name" : "Italy - Partially Deductible VAT",
-    "version" : "0.1.2",
+    "version" : "2.0.0.0",
     "depends" : ['account', 'l10n_it_account',],
     "author" : "OpenERP Italian Community",
     "description": """

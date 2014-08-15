@@ -22,13 +22,13 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-import decimal_precision as dp
-from decimal import *
+from openerp.osv import fields, orm
+import openerp.addons.decimal_precision as dp
+from decimal import Decimal, ROUND_HALF_UP
 import time
-from tools.translate import _
+from openerp.tools.translate import _
 
-class account_tax(osv.osv):
+class account_tax(orm.Model):
 
     _inherit = 'account.tax'
 
@@ -51,34 +51,33 @@ class account_tax(osv.osv):
     def get_account_tax_by_tax_code(self, tax_code):
         if tax_code.tax_ids:
             if not self._have_same_rate(tax_code.tax_ids):
-                raise osv.except_osv(_('Error'),
+                raise orm.except_orm(_('Error'),
                     _('The taxes %s have different rates') % str(tax_code.tax_ids))
             return tax_code.tax_ids[0]
         if tax_code.ref_tax_ids:
             if not self._have_same_rate(tax_code.ref_tax_ids):
-                raise osv.except_osv(_('Error'),
+                raise orm.except_orm(_('Error'),
                     _('The taxes %s have different rates') % str(tax_code.ref_tax_ids))
             return tax_code.ref_tax_ids[0]
-        raise osv.except_osv(_('Error'),
+        raise orm.except_orm(_('Error'),
             _('No taxes associated to tax code %s') % str(tax_code.name))
 
     def get_account_tax_by_base_code(self, tax_code):
         if tax_code.base_tax_ids:
             if not self._have_same_rate(tax_code.base_tax_ids):
-                raise osv.except_osv(_('Error'),
+                raise orm.except_orm(_('Error'),
                     _('The taxes %s have different rates') % str(tax_code.base_tax_ids))
             return tax_code.base_tax_ids[0]
         if tax_code.ref_base_tax_ids:
             if not self._have_same_rate(tax_code.ref_base_tax_ids):
-                raise osv.except_osv(_('Error'),
+                raise orm.except_orm(_('Error'),
                     _('The taxes %s have different rates') % str(tax_code.ref_base_tax_ids))
             return tax_code.ref_base_tax_ids[0]
-        raise osv.except_osv(_('Error'),
+        raise orm.except_orm(_('Error'),
             _('No taxes associated to tax code %s') % str(tax_code.name))
 
     def compute_all(self, cr, uid, taxes, price_unit, quantity, address_id=None, product=None, partner=None, force_excluded=False, context=None):
         res = super(account_tax, self).compute_all(cr, uid, taxes, price_unit, quantity, address_id, product, partner, force_excluded)
-
         precision = 2 #è sempre 2 per quanto viene addebitato, anche se impostato diversamente in 'Account', per legge
         tax_list = res['taxes']
         totalex = res['total']
@@ -99,7 +98,7 @@ class account_tax(osv.osv):
 
 account_tax()
 
-class account_invoice_tax(osv.osv):
+class account_invoice_tax(orm.Model):
 
     _inherit = "account.invoice.tax"
 
@@ -156,7 +155,7 @@ class account_invoice_tax(osv.osv):
                 main_tax = tax_obj.get_main_tax(tax_obj.get_account_tax_by_base_code(
                     tax_code_obj.browse(cr, uid, inv_tax['base_code_id'])))
             else:
-                raise osv.except_osv(_('Error'),
+                raise orm.except_orm(_('Error'),
                     _('No tax codes for invoice tax %s') % inv_tax['name'])
             if not grouped_base.get(main_tax.amount, False):
                 grouped_base[main_tax.amount] = 0
@@ -218,7 +217,7 @@ class account_invoice_tax(osv.osv):
         return tax_grouped
 
 
-class account_tax_code(osv.osv):
+class account_tax_code(orm.Model):
 
     _inherit = 'account.tax.code'
 
