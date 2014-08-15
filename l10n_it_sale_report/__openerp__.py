@@ -36,12 +36,10 @@ different from the one of the template.
     "depends": [
         'l10n_sale_report',
     ],
-    "init_xml": [
-    ],
-    "update_xml": [
+    "data": [
         'reports.xml',
     ],
-    "demo_xml": [],
+    "demo": [],
     "active": False,
     "installable": True
 }
