@@ -58,7 +58,7 @@
             <field name="name">Bindelli Arrivo</field>
             <field name="type">ir.actions.report.xml</field>
             <field name="model">stock.move</field>
-            <field name="report_name">stock.stock_move_label</field>
+            <field name="report_name">stock_move_label</field>
             <field name="report_type">aeroo</field>
             <field name="tml_source">file</field>
             <field name="in_format">oo-odt</field>
