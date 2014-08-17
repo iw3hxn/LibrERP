@@ -10,8 +10,10 @@
             <field name="account_asset_id" ref="account.xfa"/>
             <field name="account_depreciation_id" ref="account.xfa"/>
             <field name="journal_id" ref="account.expenses_journal"/>
-            <field name="name">Hardware - 3 Years</field>
-            <field name="method_number">3</field>
+            <field name="name">Hardware - 25%</field>
+            <field name="method_number">25</field>
+            <field name="method_time">percent</field>
+            <field name="method_period">year</field>
         </record>
 
         <record id="account_asset_category_sale" model="account.asset.category">
@@ -19,8 +21,10 @@
             <field name="account_asset_id" ref="account.xfa"/>
             <field name="account_depreciation_id" ref="account.xfa"/>
             <field name="journal_id" ref="account.expenses_journal"/>
-            <field name="name">Cars - 5 Years</field>
-            <field name="method_number">5</field>
+            <field name="name">Cars - 2 Years</field>
+            <field name="method_number">2</field>
+            <field name="method_time">year</field>
+            <field name="method_period">year</field>
         </record>
 
 
@@ -31,6 +35,8 @@
             <field name="journal_id" ref="account.expenses_journal"/>
             <field name="name">Revenue Recognition Maintenance Contract - 3 Years</field>
             <field name="method_number">3</field>
+            <field name="method_time">year</field>
+            <field name="method_period">year</field>
         </record>
 
         <!-- 
@@ -40,8 +46,6 @@
         <record id="account_asset_asset_vehicles0" model="account.asset.asset">
             <field eval="2000.0" name="salvage_value"/>
             <field name="state">open</field>
-            <field eval="12" name="method_period"/>
-            <field eval="10" name="method_number"/>
             <field name="name">CEO's Car</field>
             <field eval="12000.0" name="purchase_value"/>
             <field name="category_id" ref="account_asset_category_fixedassets0"/>
@@ -61,7 +65,6 @@
             <field eval="1" name="prorata"/>
             <field eval="100000.0" name="salvage_value"/>
             <field name="state">open</field>
-            <field eval="12" name="method_period"/>
             <field eval="20" name="method_number"/>
             <field name="date_start" eval="time.strftime('%Y-01-01')"/>
             <field name="name">Office</field>

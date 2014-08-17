@@ -26,7 +26,7 @@
             <newline />
             <group string="Depreciation Dates">
               <field name="method_time" on_change="onchange_method_time(method_time)"/>
-              <field name="method_number" attrs="{'invisible':[('method_time','=','end')], 'required':[('method_time','in',['number','year'])]}"/>
+              <field name="method_number" attrs="{'invisible':[('method_time','=','end')], 'required':[('method_time','in',['number','year','percent'])]}"/>
               <field name="method_period"/>
             </group>
             <newline />
@@ -90,9 +90,9 @@
               <field name="company_currency_id" groups="base.group_multi_currency" invisible="1"/>
               <field name="move_line_check" invisible="1"/>
               <newline/>
-              <field name="asset_value" widget="monetary" options="{'currency_field': 'company_currency_id'}" attrs="{'invisible':[('type','=','view')]}"/>
-              <field name="value_depreciated" widget="monetary" options="{'currency_field': 'company_currency_id'}" attrs="{'invisible':[('type','=','view')]}"/>
-              <field name="value_residual" widget="monetary" options="{'currency_field': 'company_currency_id'}" attrs="{'invisible':[('type','=','view')]}"/>
+              <field name="asset_value"  attrs="{'invisible':[('type','=','view')]}"/>
+              <field name="value_depreciated" attrs="{'invisible':[('type','=','view')]}"/>
+              <field name="value_residual" attrs="{'invisible':[('type','=','view')]}"/>
             </group>
             <group>
             <button name="validate" states="draft" string="Confirm Asset" type="object" />
@@ -108,7 +108,7 @@
               <page string="General">
                 <group colspan="4" col="4">
                   <group>
-                    <field name="purchase_value" widget="monetary" options="{'currency_field': 'currency_id'}"
+                    <field name="purchase_value" 
                            attrs="{'readonly':['|',('move_line_check','=',True),('state','!=','draft')]}"
                            on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, date_start)"/>
                     <field name="date_start"
@@ -116,7 +116,7 @@
                            on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, date_start)"/>
                   </group>
                   <group>
-                    <field name="salvage_value" widget="monetary" options="{'currency_field': 'company_currency_id'}"
+                    <field name="salvage_value" 
                            attrs="{'readonly':['|',('move_line_check','=',True),('state','!=','draft')]}"
                            on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, date_start)"/>
                     <field name="date_remove"/>
@@ -133,9 +133,9 @@
                   <separator string="Depreciation Dates" colspan="2"/>
                     <field name="method_time" on_change="onchange_method_time(method_time)" />
                     <button name="%(action_asset_modify)d" states="open" string="Change Duration" type="action" icon="terp-stock_effects-object-colorize"  colspan="1"/>
-                    <field name="method_number" attrs="{'invisible':[('method_time','=','end')], 'required':[('method_time','in',['number','year'])]}"/>
+                    <field name="method_number" attrs="{'invisible':[('method_time','=','end')], 'required':[('method_time','in',['number','year','percent'])]}"/>
                     <field name="method_period"/>
-                    <field name="method_end" attrs="{'required': [('method_time','=','end')], 'invisible':[('method_time','in',['number','year'])]}"/>
+                    <field name="method_end" attrs="{'required': [('method_time','=','end')], 'invisible':[('method_time','in',['number','year','percent'])]}"/>
                   </group>
                   <group colspan="2" col="2">
                   <separator string="Depreciation Method" colspan="2"/>
@@ -316,7 +316,7 @@
               <field name="method_time"/>
               <field name="method_number" attrs="{'invisible':[('method_time','=','end')]}"/>
               <field name="method_period"/>
-              <field name="method_end" attrs="{'invisible':[('method_time','in',['number','year'])]}"/>
+              <field name="method_end" attrs="{'invisible':[('method_time','in',['number','year','percent'])]}"/>
             </group>
           </group>
           <separator string="Notes"/>

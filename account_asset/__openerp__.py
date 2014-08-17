@@ -21,7 +21,7 @@
 
 {
     'name': 'Assets Management',
-    'version': '2.0.0.0',
+    'version': '2.1.1.1',
     'depends': [
         'l10n_it_account',
         'l10n_it_partially_deductible_vat',
@@ -31,8 +31,8 @@
 Financial asset management.
 ===========================
 
-This Module manages the assets owned by a company. It will keep 
-track of depreciation's occurred on those assets. And it allows to create 
+This Module manages the assets owned by a company. It will keep
+track of depreciation's occurred on those assets. And it allows to create
 accounting entries from the depreciation lines.
 
 The depreciation table can be calculated based upon different Time Methods\n
@@ -41,7 +41,7 @@ The depreciation table can be calculated based upon different Time Methods\n
 - Ending Date
 
 This Module can be used for Financial Assets Management (via Time Method 'Number of Years')
-as well as for Deferred Cost/Income and Cost/Income Spreading purposes (via Time Methods 
+as well as for Deferred Cost/Income and Cost/Income Spreading purposes (via Time Methods
 'Number of Depreciations' and 'Ending Date'.
 
 The full asset life-cycle is managed (from asset creation  up to asset removal).
@@ -54,7 +54,7 @@ Excel based reporting is available via the 'account_asset_report_xls' module (cf
     'website': 'http://www.odoo.com',
     'category': 'Accounting & Finance',
     'sequence': 32,
-    'demo': [ 'account_asset_demo.xml'],
+    'demo': ['account_asset_demo.xml'],
     'test': [
         'test/account_asset_demo.yml',
         'test/account_asset.yml',
@@ -76,4 +76,3 @@ Excel based reporting is available via the 'account_asset_report_xls' module (cf
     'application': False,
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-

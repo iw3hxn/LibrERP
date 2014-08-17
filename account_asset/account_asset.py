@@ -713,15 +713,24 @@ class account_asset_asset(orm.Model):
                     continue
         return res
 
-    def onchange_purchase_salvage_value(self, cr, uid, ids, purchase_value, salvage_value, date_start, context=None):
+    def onchange_purchase_salvage_value(
+            self, cr, uid, ids, purchase_value, salvage_value, date_start, context=None):
         if not context:
             context = {}
-        val = {}
-        purchase_value = purchase_value or 0.0
-        salvage_value = salvage_value or 0.0
-        if purchase_value or salvage_value:
-            val['asset_value'] = purchase_value - salvage_value
-        return {'value': val}
+        res = {}
+        if purchase_value != 0.0 or salvage_value != 0.0:
+            purchase_value = purchase_value or 0.0
+            salvage_value = salvage_value or 0.0
+            vals = {'asset_value': purchase_value - salvage_value}
+            #if vals['asset_value'] < 0.0: # TODO verify if add this check (not in v.2)
+            #    raise orm.except_orm(_('Error!'), 
+            #         _('It cannot result a negative value in the asset.'
+            #         'Purchase or salvage value are incorrect.'))
+            if 'value' not in res:
+                res['value'] = vals
+            else:
+                res['value'].update(vals)
+        return res
 
     def _get_assets(self, cr, uid, ids, context=None):
         asset_ids = []
@@ -759,7 +768,7 @@ class account_asset_asset(orm.Model):
         'move_line_check': fields.function(_move_line_check, method=True, type='boolean', string='Has accounting entries'),
         'name': fields.char('Asset Name', size=64, required=True, readonly=True, states={'draft': [('readonly', False)]}),
         'code': fields.char('Reference', size=32, readonly=True, states={'draft': [('readonly', False)]}),
-        'purchase_value': fields.float('Purchase Value',
+        'purchase_value': fields.float('Purchase Value', digits_compute=dp.get_precision('Account'),
             required=True, readonly=True, states={'draft': [('readonly', False)]},
             help="\nThe Asset Value is calculated as follows:"
                   "\nPurchase Value - Salvage Value."),
@@ -812,7 +821,7 @@ class account_asset_asset(orm.Model):
                 "  * Degressive: Calculated on basis of: Residual Value * Degressive Factor"
                 "  * Degressive-Linear (only for Time Method = Year): Degressive becomes linear "
                 "when the annual linear depreciation exceeds the annual degressive depreciation"),
-        'method_number': fields.integer('Number of Depreciations/Years', readonly=True, states={'draft': [('readonly', False)]}, help="The number of depreciations/years needed to depreciate your asset"),
+        'method_number': fields.integer('Number of Depreciations/Years - method Number or Year. \n Percentage Depreciation - method Percent.', readonly=True, states={'draft': [('readonly', False)]}, help="The number of depreciations/years needed to depreciate your asset in method Number or Year. Percentage depreciation in method Percent."),
         'method_period': fields.selection([
             ('month', 'Month'),
             ('quarter', 'Quarter'),
@@ -1309,7 +1318,7 @@ class account_asset_history(orm.Model):
                  "  * Number of Depreciations: Fix the number of depreciation lines and the time between 2 depreciations.\n" \
                  "  * Ending Date: Choose the time between 2 depreciations and the date the depreciations won't go beyond."\
                  "  * Percent: Percentage depreciation per period (e.g. 25 = 25%)."),
-        'method_number': fields.integer('Number of Depreciations/Years', help="The number of depreciations/years needed to depreciate your asset"),
+        'method_number': fields.integer('Number of Depreciations/Years - method Number or Year. \n Percentage Depreciation - method Percent.', help="The number of depreciations/years needed to depreciate your asset in method Number or Year. Percentage depreciation in method Percent."),
         'method_period': fields.selection([
             ('month','Month'),
             ('quarter', 'Quarter'),

@@ -15,7 +15,8 @@
     self.compute_depreciation_board(cr, uid, [ref("account_asset_asset_vehicles0")])
     # pressing computation button can be remove if creation of depreciation lines while asset is created
     value = self.browse(cr, uid, [ref("account_asset_asset_vehicles0")])[0]
-    assert value.method_number == len(value.depreciation_line_ids), 'Depreciation lines not created correctly'
+    assert value.prorata == False, 'Prorata flag should be false'
+    assert value.method_number +1 == len(value.depreciation_line_ids), 'Depreciation lines not created correctly'
 -
   I create account move for all depreciation lines.
 -
