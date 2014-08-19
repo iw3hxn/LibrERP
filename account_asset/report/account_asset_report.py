@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #
@@ -15,7 +15,7 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
@@ -33,9 +33,9 @@ class asset_asset_report(orm.Model):
         'date_remove': fields.date('Asset Removal Date', readonly=True),
         'depreciation_date': fields.date('Depreciation Date', readonly=True),
         'asset_id': fields.many2one('account.asset.asset', string='Asset', readonly=True),
-        'asset_category_id': fields.many2one('account.asset.category',string='Asset category'),
+        'asset_category_id': fields.many2one('account.asset.category', string='Asset category'),
         'partner_id': fields.many2one('res.partner', 'Partner', readonly=True),
-        'state': fields.selection([('draft','Draft'),('open','Running'),('close','Close')], 'Status', readonly=True),
+        'state': fields.selection([('draft', 'Draft'), ('open', 'Running'), ('close', 'Close')], 'Status', readonly=True),
         'depreciation_value': fields.float('Amount of Depreciation Lines', readonly=True),
         'move_check': fields.boolean('Posted', readonly=True),
         'nbr': fields.integer('# of Depreciation Lines', readonly=True),
@@ -49,14 +49,14 @@ class asset_asset_report(orm.Model):
         tools.drop_view_if_exists(cr, 'asset_asset_report')
         cr.execute("""
             create or replace view asset_asset_report as (
-                select 
+                select
                     min(dl.id) as id,
                     dl.name as name,
                     dl.line_date as depreciation_date,
                     a.date_start as date_start,
                     a.date_remove as date_remove,
                     a.asset_value as asset_value,
-                    dl.amount as depreciation_value, 
+                    dl.amount as depreciation_value,
                     (CASE WHEN dl.move_check
                       THEN dl.amount
                       ELSE 0
@@ -74,7 +74,7 @@ class asset_asset_report(orm.Model):
                     a.company_id as company_id
                 from account_asset_depreciation_line dl
                     left join account_asset_asset a on (dl.asset_id=a.id)
-                group by 
+                group by
                     dl.amount, dl.asset_id, dl.line_date, dl.name,
                     a.date_start, dl.move_check, a.state, a.category_id, a.partner_id, a.company_id,
                     a.purchase_value, a.id, a.salvage_value

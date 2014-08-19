@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #    Copyright (C) 2014 Noviat nv/sa (www.noviat.com).
+#    Copyright (C) 2014 Didotech srl (www.didotech.com).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -26,7 +27,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from openerp.osv import fields, orm
-import openerp.addons.decimal_precision as dp
+import decimal_precision as dp
 from openerp import tools
 from openerp.tools.translate import _
 from openerp import SUPERUSER_ID
@@ -287,7 +288,7 @@ class account_asset_asset(orm.Model):
         return depreciation_stop_date
 
     def _compute_year_amount(self, cr, uid, asset, amount_to_depr, residual_amount, context=None):
-        """ 
+        """
         Localization: override this method to change the degressive-linear calculation logic according to local legislation.
         """
         if asset.method_time == 'year':
@@ -723,7 +724,7 @@ class account_asset_asset(orm.Model):
             salvage_value = salvage_value or 0.0
             vals = {'asset_value': purchase_value - salvage_value}
             #if vals['asset_value'] < 0.0: # TODO verify if add this check (not in v.2)
-            #    raise orm.except_orm(_('Error!'), 
+            #    raise orm.except_orm(_('Error!'),
             #         _('It cannot result a negative value in the asset.'
             #         'Purchase or salvage value are incorrect.'))
             if 'value' not in res:
@@ -860,7 +861,8 @@ class account_asset_asset(orm.Model):
         'method_period': 'year',
         'method_progress_factor': 0.3,
         'type': 'normal',
-        'company_id': lambda self, cr, uid, context: self.pool.get('res.company')._company_default_get(cr, uid, 'account.asset.asset', context=context),
+        'company_id': lambda self, cr, uid, context: self.pool.get(
+            'res.company')._company_default_get(cr, uid, 'account.asset.asset', context=context),
     }
 
     def _check_recursion(self, cr, uid, ids, context=None, parent=None):
@@ -889,7 +891,8 @@ class account_asset_asset(orm.Model):
             }
         for asset in self.browse(cr, uid, ids, context):
             if asset.depreciation_line_ids:
-                self.pool.get('account.asset.depreciation.line').unlink(cr, uid, [x.id for x in asset.depreciation_line_ids], context)
+                self.pool.get('account.asset.depreciation.line').unlink(
+                    cr, uid, [x.id for x in asset.depreciation_line_ids], context)
         return res
 
     def onchange_category_id(self, cr, uid, ids, category_id, context=None):
@@ -952,8 +955,8 @@ class account_asset_asset(orm.Model):
                 for line in depreciation_obj.browse(cr, uid, depreciation_ids):
                     asset_ref = asset.code and '%s (ref: %s)' % (asset.name, asset.code) or asset.name
                     raise orm.except_orm(_('Error!'),
-                        _("Asset '%s' contains unposted lines prior to the selected period." 
-                        "\nPlease post these entries first !") % asset_ref)
+                        _("Asset {asset} contains unposted {line}lines prior to the selected period."
+                        "\nPlease post these entries first !").format(asset=asset_ref, line=line.name))
             if check_triggers and recompute_ids:
                 triggers = filter(lambda x: x['company_id'][0] == asset.company_id.id, recompute_triggers)
                 if triggers:
@@ -964,7 +967,7 @@ class account_asset_asset(orm.Model):
                 ('init_entry', '=', False),
                 ('line_date', '<=', period.date_stop),
                 ('line_date', '>=', period.date_start),
-                ('move_check', '=', False)], context=context)               
+                ('move_check', '=', False)], context=context)
         for depreciation in depreciation_obj.browse(cr, uid, depreciation_ids, context=context):
             context.update({'depreciation_date': depreciation.line_date})
             result += depreciation_obj.create_move(cr, uid, [depreciation.id], context=context)
@@ -986,7 +989,8 @@ class account_asset_asset(orm.Model):
         if not context:
             context = {}
         if 'method_time' in vals:
-            if vals.get('method_time') != 'year' and vals.get('method_time') != 'percent' and not vals.get('prorata'):
+            if vals.get('method_time') != 'year' and vals.get(
+                    'method_time') != 'percent' and not vals.get('prorata'):
                 vals['prorata'] = True
         asset_id = super(account_asset_asset, self).create(cr, uid, vals, context=context)
         if context.get('create_asset_from_move_line'):
@@ -1013,7 +1017,8 @@ class account_asset_asset(orm.Model):
         if not context:
             context = {}
         if 'method_time' in vals:
-            if vals.get('method_time') != 'year' and vals.get('method_time') != 'percent' and not vals.get('prorata'):
+            if vals.get('method_time') != 'year' and vals.get(
+                    'method_time') != 'percent' and not vals.get('prorata'):
                 vals['prorata'] = True
         #asset_line_obj = self.pool.get('account.asset.depreciation.line')
         for asset in self.browse(cr, uid, ids, context):
@@ -1024,7 +1029,8 @@ class account_asset_asset(orm.Model):
                 continue
             if asset.category_id.open_asset and context.get('create_asset_from_move_line'):
                 self.compute_depreciation_board(cr, uid, [asset.id], context=context)
-                self.validate(cr, uid, [asset.id], context=dict(context, asset_validate_from_write=True))  # extra context to avoid recursion
+                self.validate(cr, uid, [asset.id], context=dict(context, asset_validate_from_write=True))
+                # extra context to avoid recursion
         return True
 
     def open_entries(self, cr, uid, ids, context=None):
@@ -1107,9 +1113,12 @@ class account_asset_depreciation_line(orm.Model):
     _order = 'type, line_date'
     _columns = {
         'name': fields.char('Depreciation Name', size=64, readonly=True),
-        'asset_id': fields.many2one('account.asset.asset', 'Asset', required=True, ondelete='cascade'),
-        'previous_id': fields.many2one('account.asset.depreciation.line', 'Previous Depreciation Line', readonly=True),
-        'parent_state': fields.related('asset_id', 'state', type='char', string='State of Asset'),
+        'asset_id': fields.many2one(
+            'account.asset.asset', 'Asset', required=True, ondelete='cascade'),
+        'previous_id': fields.many2one(
+            'account.asset.depreciation.line', 'Previous Depreciation Line', readonly=True),
+        'parent_state': fields.related(
+            'asset_id', 'state', type='char', string='State of Asset'),
         'asset_value': fields.related('asset_id', 'asset_value', type='float', string='Asset Value'),
         'amount': fields.float('Amount', digits_compute=dp.get_precision('Account'), required=True),
         'remaining_value': fields.function(_compute, method=True, digits_compute=dp.get_precision('Account'),
@@ -1251,7 +1260,7 @@ class account_asset_depreciation_line(orm.Model):
             if currency_obj.is_zero(cr, uid, asset.company_id.currency_id, asset.value_residual):
                 asset.write({'state': 'close'})
             if len(ids) == 1 and context.get('create_move_from_button'):
-                return self.reload_page(cr, uid, asset.id, context)
+                self.reload_page(cr, uid, asset.id, context)
         return created_move_ids
 
     def open_move(self, cr, uid, ids, context=None):
@@ -1282,13 +1291,13 @@ class account_asset_depreciation_line(orm.Model):
             if line.parent_state == 'close':
                 line.asset_id.write({'state': 'open'})
                 if len(ids) == 1:
-                    return self.reload_page(cr, uid, line.asset_id.id, context)
+                    self.reload_page(cr, uid, line.asset_id.id, context)
             elif line.parent_state == 'removed' and line.type == 'remove':
                 line.asset_id.write({'state': 'close'})
                 line.asset_id.write({'state': 'close'})
                 self.unlink(cr, uid, [line.id])
             if len(ids) == 1:
-                return self.reload_page(cr, uid, line.asset_id.id, context)
+                self.reload_page(cr, uid, line.asset_id.id, context)
         return True
 
 
@@ -1315,14 +1324,19 @@ class account_asset_history(orm.Model):
             ], 'Time Method', required=True,
             help="Choose the method to use to compute the dates and number of depreciation lines.\n"\
                  "  * Number of Years: Specify the number of years for the depreciation.\n" \
-                 "  * Number of Depreciations: Fix the number of depreciation lines and the time between 2 depreciations.\n" \
-                 "  * Ending Date: Choose the time between 2 depreciations and the date the depreciations won't go beyond."\
+                 "  * Number of Depreciations: Fix the number of depreciation lines and the"
+                 " time between 2 depreciations.\n" \
+                 "  * Ending Date: Choose the time between 2 depreciations and the date the "
+                 "depreciations won't go beyond."\
                  "  * Percent: Percentage depreciation per period (e.g. 25 = 25%)."),
-        'method_number': fields.integer('Number of Depreciations/Years - method Number or Year. \n Percentage Depreciation - method Percent.', help="The number of depreciations/years needed to depreciate your asset in method Number or Year. Percentage depreciation in method Percent."),
+        'method_number': fields.integer('Number of Depreciations/Years - method Number or Year.'\
+            '\n Percentage Depreciation - method Percent.',
+            help='The number of depreciations/years needed to depreciate your asset in method ' \
+            'Number or Year. Percentage depreciation in method Percent.'),
         'method_period': fields.selection([
-            ('month','Month'),
+            ('month', 'Month'),
             ('quarter', 'Quarter'),
-            ('year','Year'),
+            ('year', 'Year'),
             ], 'Period Length',
             help="Period length for the depreciation accounting entries"),
         'method_end': fields.date('Ending date'),

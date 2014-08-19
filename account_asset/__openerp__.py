@@ -21,7 +21,7 @@
 
 {
     'name': 'Assets Management',
-    'version': '2.1.1.1',
+    'version': '2.1.2.2',
     'depends': [
         'l10n_it_account',
         'l10n_it_partially_deductible_vat',

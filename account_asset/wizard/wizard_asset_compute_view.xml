@@ -8,12 +8,8 @@
                 <form string="Compute Asset" >
                     <group>
                         <field name="period_id"/>
-                    
-                    
                         <button string="Compute" name="asset_compute" type="object" />
-                    
                         <button string="Cancel" />
-                    
                     </group>
                 </form>
              </field>

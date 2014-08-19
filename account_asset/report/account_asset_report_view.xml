@@ -5,13 +5,14 @@
     <record model="ir.ui.view" id="action_account_asset_report_graph">
       <field name="name">asset.asset.report.graph</field>
       <field name="model">asset.asset.report</field>
+      <field name="type">graph</field>
       <field name="arch" type="xml">
-        <graph string="Assets Analysis" type="pivot">
-          <field name="asset_id" type="row"/>
-          <field name="nbr" type="measure"/>
-          <field name="asset_value" type="measure"/>
-          <field name="depreciation_value" type="measure"/>
-          <field name="posted_value" type="measure"/>
+        <graph string="Assets Analysis">
+          <field name="asset_id"/>
+          <field name="nbr"/>
+          <field name="asset_value"/>
+          <field name="depreciation_value"/>
+          <field name="posted_value"/>
         </graph>
       </field>
     </record>
@@ -19,11 +20,13 @@
     <record id="view_asset_asset_report_search" model="ir.ui.view">
       <field name="name">asset.asset.report.search</field>
       <field name="model">asset.asset.report</field>
+      <field name="type">search</field>
       <field name="arch" type="xml">
         <search string="Assets Analysis">
-          <field name="date_start"/>
-          <field name="date_remove"/>
-          <field name="depreciation_date"/>
+          <field name="date_start" />
+          <field name="date_remove" />
+          <field name="depreciation_date" />
+          <separator/>
           <filter string="Draft" icon="terp-document-new" domain="[('state','=','draft')]" help="Draft Assets"/>
           <filter string="Running" icon="terp-check" domain="[('state','=','open')]" help="Assets in Running state"/>
           <filter icon="terp-check" string="Close" domain="[('state','=', 'close')]" help="Assets in Close State"/>
@@ -32,7 +35,8 @@
           <filter string="Posted" name="posted" icon="terp-camera_test" domain="[('move_check','=',True)]" help="Posted depreciation lines" context="{'unposted_value_visible': 0}"/>
           <field name="asset_id"/>
           <field name="asset_category_id"/>
-          <group expand="0" string="Extended Filters...">
+          <newline />
+          <group expand="1" string="Extended Filters...">
             <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
             <field name="company_id" groups="base.group_multi_company"/>
           </group>

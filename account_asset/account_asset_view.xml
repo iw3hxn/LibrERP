@@ -160,9 +160,9 @@
                     <button name="create_move" icon="gtk-execute" string="Create Move" type="object"
                             context="{'create_move_from_button':True}"
                             attrs="{'invisible':['|','|',('init_entry','=',True),('move_check','!=',False),('parent_state','!=','open')]}"/>
-                    <button name="open_move" icon="terp-gtk-jump-to-ltr" string="View Move" type="object"
+                    <button name="open_move" icon="terp-gtk-jump-to-ltr" string="View Account Move" type="object"
                             attrs="{'invisible':[('move_check','!=',True)]}"/>
-                    <button name="unlink_move" icon="gtk-cancel" string="Delete Move" type="object" confirm="Are you sure ?" groups="account.group_account_manager"
+                    <button name="unlink_move" icon="gtk-cancel" string="Delete Account Move" type="object" confirm="Are you sure ?" groups="account.group_account_manager"
                             attrs="{'invisible':[('move_check','!=',True)]}"/>
                   </tree>
                   <form string="Asset Line">
@@ -205,7 +205,7 @@
                     <field name="move_id" options='{"no_open":True}'/>
                     <newline/>
                     <field name="name"/>
-                    <field name="ref"/>                   
+                    <field name="ref"/>
                     <newline/>
                     <field name="date"/>
                     <field name="period_id" options='{"no_open":True}'/>
