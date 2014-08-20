@@ -208,15 +208,16 @@ class stock_partial_picking(orm.TransientModel):
         #here i want to create 2 lines
 
         for pallet_id, pallet_qty in pallet.iteritems():
-            pallet_move_obj.create(cr, uid, {
-                'name': partial.picking_id.name,
-                'date': partial.picking_id.date,
-                'partner_id': partial.picking_id.partner_id.id,
-                'move': partial.picking_id.type,
-                'stock_picking_id': partial.picking_id.id,
-                'pallet_qty': pallet_qty,
-                'pallet_id': pallet_id,
-            })
+            if pallet_qty:
+                pallet_move_obj.create(cr, uid, {
+                    'name': partial.picking_id.name,
+                    'date': partial.picking_id.date,
+                    'partner_id': partial.picking_id.partner_id.id,
+                    'move': partial.picking_id.type,
+                    'stock_picking_id': partial.picking_id.id,
+                    'pallet_qty': pallet_qty,
+                    'pallet_id': pallet_id,
+                })
         
         stock_picking.do_partial(cr, uid, [partial.picking_id.id], partial_data, context=context)
         return {'type': 'ir.actions.act_window_close'}
