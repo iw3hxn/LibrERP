@@ -76,7 +76,12 @@ class account_asset_category(orm.Model):
                 "  * Degressive: Calculated on basis of: Residual Value * Degressive Factor"
                 "  * Degressive-Linear (only for Time Method = Year): Degressive becomes linear "
                 "when the annual linear depreciation exceeds the annual degressive depreciation"),
-        'method_number': fields.integer('Number of Depreciations/Years', help="The number of depreciations/years needed to depreciate your asset"),
+        'method_number': fields.integer(
+            'Number of Depreciations/Years',
+            help="The number of depreciations/years needed to depreciate your asset"),
+        'method_number_percent': fields.float(
+            ' Percentage Depreciation - method Percent.',
+            help="Percentage depreciation in method Percent."),
         'method_period': fields.selection([
             ('month', 'Month'),
             ('quarter', 'Quarter'),
@@ -101,8 +106,8 @@ class account_asset_category(orm.Model):
         'active': 1,
         'company_id': lambda self, cr, uid, context: self.pool.get('res.company')._company_default_get(cr, uid, 'account.asset.category', context=context),
         'method': 'linear',
-        'method_number': 5,
-        'method_time': 'year',
+        'method_number_percent': 20,
+        'method_time': 'percent',
         'method_period': 'year',
         'method_progress_factor': 0.3,
     }
@@ -270,20 +275,23 @@ class account_asset_asset(orm.Model):
             depreciation_stop_date = depreciation_start_date + relativedelta(years=asset.method_number, days=-1)
         elif asset.method_time == 'number':
             if asset.method_period == 'month':
-                depreciation_stop_date = depreciation_start_date + relativedelta(years=100 / asset.method_number * 12, days=-1)
-            elif asset.method_period == 'quarter':
-                depreciation_stop_date = depreciation_start_date + relativedelta(years=100 / asset.method_number * 3, days=-1)
-            elif asset.method_period == 'year':
-                depreciation_stop_date = depreciation_start_date + relativedelta(years=100 / asset.method_number, days=-1)
-        elif asset.method_time == 'end':
-            depreciation_stop_date = datetime.strptime(asset.method_end, '%Y-%m-%d')
-        elif asset.method_time == 'percent':
-            if asset.method_period == 'month':
                 depreciation_stop_date = depreciation_start_date + relativedelta(months=asset.method_number, days=-1)
             elif asset.method_period == 'quarter':
                 depreciation_stop_date = depreciation_start_date + relativedelta(months=asset.method_number * 3, days=-1)
             elif asset.method_period == 'year':
                 depreciation_stop_date = depreciation_start_date + relativedelta(years=asset.method_number, days=-1)
+        elif asset.method_time == 'end':
+            depreciation_stop_date = datetime.strptime(asset.method_end, '%Y-%m-%d')
+        elif asset.method_time == 'percent':
+            if asset.method_period == 'month':
+                depreciation_stop_date = depreciation_start_date + relativedelta(
+                    months=100 / asset.method_number_percent, days=-1)
+            elif asset.method_period == 'quarter':
+                depreciation_stop_date = depreciation_start_date + relativedelta(
+                    months=100 / asset.method_number_percent * 3, days=-1)
+            elif asset.method_period == 'year':
+                depreciation_stop_date = depreciation_start_date + relativedelta(
+                    years=100 / asset.method_number_percent, days=-1)
 
         return depreciation_stop_date
 
@@ -306,11 +314,11 @@ class account_asset_asset(orm.Model):
         elif asset.method_time == 'percent':
             divisor = False
             if asset.method_period == 'month':
-                percent = asset.method_number / 12.0 / 100.0
+                percent = asset.method_number_percent * 12.0 / 100.0
             elif asset.method_period == 'quarter':
-                percent = asset.method_number * 3 / 12.0 / 100.0
+                percent = asset.method_number_percent / 3 * 12 / 100.0
             elif asset.method_period == 'year':
-                percent = asset.method_number / 100.0
+                percent = asset.method_number_percent / 100.0
         if divisor:
             year_amount_linear = amount_to_depr / divisor
         else:
@@ -822,7 +830,17 @@ class account_asset_asset(orm.Model):
                 "  * Degressive: Calculated on basis of: Residual Value * Degressive Factor"
                 "  * Degressive-Linear (only for Time Method = Year): Degressive becomes linear "
                 "when the annual linear depreciation exceeds the annual degressive depreciation"),
-        'method_number': fields.integer('Number of Depreciations/Years - method Number or Year. \n Percentage Depreciation - method Percent.', readonly=True, states={'draft': [('readonly', False)]}, help="The number of depreciations/years needed to depreciate your asset in method Number or Year. Percentage depreciation in method Percent."),
+        'method_number': fields.integer(
+            'Number of Depreciations/Years - method Number or Year. \n'
+            ' Percentage Depreciation - method Percent.', readonly=True,
+            states={'draft': [('readonly', False)]},
+            help="The number of depreciations/years needed to depreciate"
+            "your asset in method Number or Year."),
+        'method_number_percent': fields.float(
+            'Number of Depreciations/Years - method Number or Year. \n'
+            ' Percentage Depreciation - method Percent.',
+            readonly=True, states={'draft': [('readonly', False)]},
+            help="Percentage depreciation in method Percent."),
         'method_period': fields.selection([
             ('month', 'Month'),
             ('quarter', 'Quarter'),
@@ -856,7 +874,7 @@ class account_asset_asset(orm.Model):
         'active': True,
         'state': 'draft',
         'method': 'linear',
-        'method_number': 20,
+        'method_number_percent': 20,
         'method_time': 'percent',
         'method_period': 'year',
         'method_progress_factor': 0.3,
@@ -908,7 +926,8 @@ class account_asset_asset(orm.Model):
             res['value'] = {
                 'parent_id': category_obj.parent_id.id,
                 'method': category_obj.method,
-                'method_number': category_obj.method_number,
+                'method_number': category_obj.method_number or '',
+                'method_number_percent': category_obj.method_number_percent or '',
                 'method_time': category_obj.method_time,
                 'method_period': category_obj.method_period,
                 'method_progress_factor': category_obj.method_progress_factor,
@@ -1119,6 +1138,8 @@ class account_asset_depreciation_line(orm.Model):
             'account.asset.depreciation.line', 'Previous Depreciation Line', readonly=True),
         'parent_state': fields.related(
             'asset_id', 'state', type='char', string='State of Asset'),
+        'parent_category_id': fields.related(
+            'asset_id', 'category_id', type='many2one', string="Category of Asset"),
         'asset_value': fields.related('asset_id', 'asset_value', type='float', string='Asset Value'),
         'amount': fields.float('Amount', digits_compute=dp.get_precision('Account'), required=True),
         'remaining_value': fields.function(_compute, method=True, digits_compute=dp.get_precision('Account'),
@@ -1329,10 +1350,11 @@ class account_asset_history(orm.Model):
                  "  * Ending Date: Choose the time between 2 depreciations and the date the "
                  "depreciations won't go beyond."\
                  "  * Percent: Percentage depreciation per period (e.g. 25 = 25%)."),
-        'method_number': fields.integer('Number of Depreciations/Years - method Number or Year.'\
-            '\n Percentage Depreciation - method Percent.',
+        'method_number': fields.integer('Number of Depreciations/Years - method Number or Year.',
             help='The number of depreciations/years needed to depreciate your asset in method ' \
-            'Number or Year. Percentage depreciation in method Percent.'),
+            'Number or Year.'),
+        'method_number_percent': fields.float(' Percentage Depreciation - method Percent.',
+            help='Percentage depreciation in method Percent.'),
         'method_period': fields.selection([
             ('month', 'Month'),
             ('quarter', 'Quarter'),

@@ -21,8 +21,9 @@
 
 {
     'name': 'Assets Management',
-    'version': '2.1.2.2',
+    'version': '2.2.3.3',
     'depends': [
+        'report_webkit',
         'l10n_it_account',
         'l10n_it_partially_deductible_vat',
     ],
@@ -69,7 +70,9 @@ Excel based reporting is available via the 'account_asset_report_xls' module (cf
         'account_asset_view.xml',
         'account_view.xml',
         'account_asset_invoice_view.xml',
+        'reports.xml',
         'report/account_asset_report_view.xml',
+        'report/print_asset_report.xml',
     ],
     'auto_install': False,
     'installable': True,

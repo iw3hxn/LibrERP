@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="wizard_print_asset_report" model="ir.ui.view">
+            <field name="name">Asset Report</field>
+            <field name="model">wizard.print.asset.report</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Asset Report">
+                    <field name="type" />
+                    <field name="fiscal_page_base"/>
+                    <field name="date_start"/>
+                    <field name="state"/>
+                    <separator string="Categories" colspan="4"/>
+                    <field name="category_ids"/>
+                    <!--separator string="Journals" colspan="4"/-->
+                    <!--field name="journal_ids" colspan="4" nolabel="1" height="250" domain="[('type', 'in', ('asset'))]"/-->
+                    <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                    <button icon="gtk-ok" name="print_report" string="Print" type="object"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_print_asset_report" model="ir.actions.act_window">
+            <field name="name">Account Asset Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.print.asset.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+            name="Asset Report"
+            parent="menu_finance_assets"
+            action="action_print_asset_report"
+            id="menu_print_asset_report"
+            icon="STOCK_PRINT"/>
+
+    </data>
+</openerp>
