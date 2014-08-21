@@ -68,6 +68,7 @@ class crm_make_sale(orm.TransientModel):
         case_obj = self.pool['crm.lead']
         sale_obj = self.pool['sale.order']
         partner_obj = self.pool['res.partner']
+        attachment_obj = self.pool['ir.attachment']
         data = context and context.get('active_ids', []) or []
 
         for make in self.browse(cr, uid, ids, context=context):
@@ -115,8 +116,14 @@ class crm_make_sale(orm.TransientModel):
                 self.log(cr, uid, case.id, message)
                 case_obj.message_append(cr, uid, [case], _("Converted to Sales Quotation(%s).") % (sale_order.name), context=context)
 
+                if make.move_attachment:
+                    attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'crm.lead'), ('res_id', '=', case.id)]) 
+                    for attachment_id in attachment_ids:
+                        attachment_obj.write(cr, uid, attachment_id, {'res_model': 'sale.order', 'res_id': new_id } )   
+                    
             if make.close:
                 case_obj.case_close(cr, uid, data)
+             
             if not new_ids:
                 return {'type': 'ir.actions.act_window_close'}
             if len(new_ids)<=1:
@@ -150,10 +157,12 @@ class crm_make_sale(orm.TransientModel):
         'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
         'partner_id': fields.many2one('res.partner', 'Customer', required=True, domain=[('customer','=',True)]),
         'close': fields.boolean('Close Opportunity', help='Check this to close the opportunity after having created the sale order.'),
+        'move_attachment': fields.boolean('Move Attachment to Quotation')
     }
     _defaults = {
          'shop_id': _get_shop_id,
          'close': False,
+         'move_attachment': True,
          'partner_id': _selectPartner,
     }
 
