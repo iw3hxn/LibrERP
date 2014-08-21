@@ -48,7 +48,7 @@ def name_get(self, cr, user, ids, context=None):
 
     result = []
     for r in self.read(cr, user, ids, [self._rec_name], context, load='_classic_write'):
-        if not r.get(self._rec_name, False):
+        if not self._rec_name in self._columns and not r.get(self._rec_name, False):
             _logger.error(u"Column '{column}' or function name_get() are not defined for table '{table}'".format(column=self._rec_name, table=self._name))
         
         if config['debug_mode']:
