@@ -49,7 +49,7 @@ class wizard_print_asset_report(orm.TransientModel):
         'fy_id': fields.many2one('account.fiscalyear', 'Fiscal Year', required=True),
     }
     _defaults = {
-        'type': 'simulated',
+        'type': 'posted',
         'state': 'open',
         'fiscal_page_base': 0,
         'fy_id': lambda self, cr, uid, context: self.pool[
@@ -67,7 +67,7 @@ class wizard_print_asset_report(orm.TransientModel):
             ('state', '=', wizard.state),
             #('date_start
             #TODO other conditions
-        ], order='line_date, name')
+        ], order='category_id, name')
         if not aaa_ids:
             self.write(cr, uid, ids, {'message':
                 _('No documents found in the current selection')})

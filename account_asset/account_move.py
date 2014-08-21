@@ -48,9 +48,10 @@ class account_move(orm.Model):
             ids = [ids]
         depr_obj = self.pool.get('account.asset.depreciation.line')
         for move_id in ids:
-            depr_ids = depr_obj.search(cr, uid, [('move_id', '=', move_id), ('type', '=', 'depreciate')])
+            depr_ids = depr_obj.search(
+                cr, uid, [('move_id', '=', move_id), ('type', '=', 'depreciate')])
             if depr_ids:
-                raise orm.except_orm(_('Error!'), 
+                raise orm.except_orm(_('Error!'),
                     _("You cannot change an accounting entry linked to an asset depreciation line."))
         return super(account_move, self).write(cr, uid, ids, vals, context)
 
@@ -65,8 +66,8 @@ class account_move_line(orm.Model):
     def onchange_account_id(self, cr, uid, ids, account_id=False, partner_id=False):
         res = super(account_move_line, self).onchange_account_id(cr, uid, ids, account_id)
         account_obj = self.pool.get('account.account')
-        asset_obj = self.pool.get('account.asset.asset')
-        asset_line_obj = self.pool.get('account.asset.depreciation.line')
+        #asset_obj = self.pool.get('account.asset.asset')
+        #asset_line_obj = self.pool.get('account.asset.depreciation.line')
         if account_id:
             account = account_obj.browse(cr, uid, account_id)
             asset_category = account.asset_category_id
@@ -76,27 +77,32 @@ class account_move_line(orm.Model):
 
     def create(self, cr, uid, vals, context=None, check=True):
         if not context:
-            context= {}
+            context = {}
         if vals.get('asset_id') and not context.get('allow_asset'):
-            raise orm.except_orm(_('Error!'), 
+            raise orm.except_orm(_('Error!'),
                 _("You are not allowed to link an accounting entry to an asset."
                   "\nYou should generate such entries from the asset."))
         if vals.get('asset_category_id'):
             asset_obj = self.pool.get('account.asset.asset')
-            asset_line_obj = self.pool.get('account.asset.depreciation.line')
+            #asset_line_obj = self.pool.get('account.asset.depreciation.line')
             # create asset
             move = self.pool.get('account.move').browse(cr, uid, vals['move_id'])
-            # TODO add not deductible VAT if present, make it depending from l10n_it_partially_deductible_vat
+            # add not deductible VAT if present, make it depending from
+            # l10n_it_partially_deductible_vat
             account_tax_obj = self.pool['account.tax']
-            tax_code = self.pool['account.tax.code'].browse(cr, uid, [vals.get('tax_code_id')])[0]
+            tax_code = self.pool['account.tax.code'].browse(
+                cr, uid, [vals.get('tax_code_id')])[0]
             tax = tax_code.base_tax_ids
-            res = account_tax_obj.compute_all(cr, uid, taxes=tax, price_unit=abs(vals.get('tax_amount')/vals.get('quantity')), quantity=vals.get('quantity'))
+            res = account_tax_obj.compute_all(
+                cr, uid, taxes=tax,
+                price_unit=abs(vals.get('tax_amount') / vals.get('quantity')),
+                quantity=vals.get('quantity'))
             tax_list = res['taxes']
             ind_amount = 0.0
             if len(tax_list) == 2:
                 for tax in tax_list:
-                    if tax.get('balance',False):
-                        ind_tax = tax_list[abs(tax_list.index(tax)-1)]
+                    if tax.get('balance', False):
+                        ind_tax = tax_list[abs(tax_list.index(tax) - 1)]
                         ind_amount = float(Decimal(str(ind_tax['amount'])).quantize(Decimal('1.00'), rounding=ROUND_HALF_UP))
             asset_value = vals['debit'] + ind_amount or -vals['credit'] - ind_amount
             asset_vals = {
@@ -104,7 +110,7 @@ class account_move_line(orm.Model):
                 'category_id': vals['asset_category_id'],
                 'purchase_value': asset_value,
                 'partner_id': vals['partner_id'],
-                'date_start' : move.date,
+                'date_start': move.date,
             }
             if context.get('company_id'):
                 asset_vals['company_id'] = context['company_id']
@@ -118,7 +124,7 @@ class account_move_line(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None, check=True, update_check=True):
         if vals.get('asset_id'):
-            raise orm.except_orm(_('Error!'), 
+            raise orm.except_orm(_('Error!'),
                 _("You are not allowed to link an accounting entry to an asset."
                   "\nYou should generate such entries from the asset."))
         if vals.get('asset_category_id'):
@@ -127,7 +133,7 @@ class account_move_line(orm.Model):
                 if vals['asset_category_id'] == aml.asset_category_id.id:
                     continue
                 asset_obj = self.pool.get('account.asset.asset')
-                asset_line_obj = self.pool.get('account.asset.depreciation.line')
+                #asset_line_obj = self.pool.get('account.asset.depreciation.line')
 
                 # create asset
                 debit = 'debit' in vals and vals.get('debit', 0.0) or aml.debit
@@ -135,7 +141,7 @@ class account_move_line(orm.Model):
                 asset_value = debit - credit
                 partner_id = 'partner' in vals and vals.get('partner', False) or aml.partner_id.id
                 date_start = 'date' in vals and vals.get('date', False) or aml.date
-                asset_name = 'ref' in vals and vals.get('ref') or aml.ref or aml.name
+                #asset_name = 'ref' in vals and vals.get('ref') or aml.ref or aml.name
                 asset_vals = {
                     'name': vals.get('name') or aml.name,
                     'category_id': vals['asset_category_id'],

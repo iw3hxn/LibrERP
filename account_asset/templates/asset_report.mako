@@ -26,8 +26,7 @@
             <th class="left_without_line">Descrizione</th>
             <th class="left_without_line">Anno acquisizione</th>
             <th class="left_without_line">Data acquisizione</th>
-            <th class="left_without_line">Numero fattura</th>
-            <th class="left_without_line">Data fattura</th>
+            <th class="left_without_line">Supplier Invoice</th>
             <th class="right_without_line">Costo storico di acquisto</th>
             <th class="right_without_line">Rivalutazioni o svalutazioni</th>
             <th class="right_without_line">Eliminazione</th>
@@ -47,22 +46,25 @@
             ${object.name or ''| entity}
             </td>
             <td class="left_with_line">
-            ${object.name or ''| entity}
+            ${asset_start_year(object) or ''| entity}
             </td>
             <td class="left_with_line">
-            ${object.name or ''| entity}
+            ${formatLang(object.date_start, date=True) or ''| entity}
             </td>
             <td class="left_with_line">
-            ${object.name or ''| entity}
-            </td>
-            <td class="left_with_line">
-            ${object.name or ''| entity}
+                %for invoiced_line in invoiced_asset_lines(object):
+                    %if invoiced_line:
+                        N. ${invoiced_line['supplier_invoice_number'] or ''| entity} - Date: ${invoiced_line['invoice_date'] or ''| entity}
+                        <br/>
+                        Partner: ${invoiced_line['partner_name'] or ''| entity}
+                    %endif
+                %endfor
             </td>
             <td class="right_with_line">
             ${object.purchase_value or ''| entity}
             </td>
             <td class="right_with_line">
-            ${object.name or ''| entity}
+            variazione?
             </td>
             <td class="right_with_line">
             ${object.date_remove or ''| entity}
@@ -74,7 +76,7 @@
             ${object.method_number_percent or object.method_number or ''| entity}
             </td>
             <td class="right_with_line">
-            ${object.name or ''| entity}
+            ammto
             </td>
             <td class="right_with_line">
             ${object.value_residual or ''| entity}

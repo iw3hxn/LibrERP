@@ -25,6 +25,7 @@ import time
 import calendar
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from decimal import Decimal, ROUND_UP
 
 from openerp.osv import fields, orm
 import decimal_precision as dp
@@ -285,14 +286,13 @@ class account_asset_asset(orm.Model):
         elif asset.method_time == 'percent':
             if asset.method_period == 'month':
                 depreciation_stop_date = depreciation_start_date + relativedelta(
-                    months=100 / asset.method_number_percent, days=-1)
+                    months=int(Decimal(str(100 / asset.method_number_percent)).quantize(Decimal('1'), rounding=ROUND_UP)), days=-1)
             elif asset.method_period == 'quarter':
                 depreciation_stop_date = depreciation_start_date + relativedelta(
-                    months=100 / asset.method_number_percent * 3, days=-1)
+                    months=int(Decimal(str(100 / asset.method_number_percent * 3)).quantize(Decimal('1'), rounding=ROUND_UP)), days=-1)
             elif asset.method_period == 'year':
                 depreciation_stop_date = depreciation_start_date + relativedelta(
-                    years=100 / asset.method_number_percent, days=-1)
-
+                    years=int(Decimal(str(100 / asset.method_number_percent)).quantize(Decimal('1'), rounding=ROUND_UP)), days=-1)
         return depreciation_stop_date
 
     def _compute_year_amount(self, cr, uid, asset, amount_to_depr, residual_amount, context=None):
@@ -773,11 +773,16 @@ class account_asset_asset(orm.Model):
         return self.pool.get('account.asset.category')._get_method_time(cr, uid, context)
 
     _columns = {
-        'account_move_line_ids': fields.one2many('account.move.line', 'asset_id', 'Entries', readonly=True),
-        'move_line_check': fields.function(_move_line_check, method=True, type='boolean', string='Has accounting entries'),
-        'name': fields.char('Asset Name', size=64, required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'code': fields.char('Reference', size=32, readonly=True, states={'draft': [('readonly', False)]}),
-        'purchase_value': fields.float('Purchase Value', digits_compute=dp.get_precision('Account'),
+        'account_move_line_ids': fields.one2many(
+            'account.move.line', 'asset_id', 'Entries', readonly=True),
+        'move_line_check': fields.function(_move_line_check, method=True,
+            type='boolean', string='Has accounting entries'),
+        'name': fields.char('Asset Name', size=64, required=True, readonly=True,
+            states={'draft': [('readonly', False)]}),
+        'code': fields.char('Reference', size=32, readonly=True,
+                            states={'draft': [('readonly', False)]}),
+        'purchase_value': fields.float('Purchase Value',
+                                       digits_compute=dp.get_precision('Account'),
             required=True, readonly=True, states={'draft': [('readonly', False)]},
             help="\nThe Asset Value is calculated as follows:"
                   "\nPurchase Value - Salvage Value."),
@@ -800,16 +805,27 @@ class account_asset_asset(orm.Model):
             help="The estimated value that an asset will realize upon its sale at the end of its useful life."
                  "\nThis value is used to determine the depreciation amounts.",
             readonly=True, states={'draft': [('readonly', False)]}),
-        'company_currency_id': fields.related('company_id', 'currency_id', string='Company Currency', type='many2one', relation='res.currency', store=True, readonly=True,),
-        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True),
+        'company_currency_id': fields.related(
+            'company_id', 'currency_id', string='Company Currency',
+            type='many2one', relation='res.currency', store=True, readonly=True,),
+        'company_id': fields.many2one(
+            'res.company', 'Company', required=True, readonly=True),
         'note': fields.text('Note'),
-        'category_id': fields.many2one('account.asset.category', 'Asset Category', change_default=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'parent_id': fields.many2one('account.asset.asset', 'Parent Asset', readonly=True,
+        'category_id': fields.many2one(
+            'account.asset.category', 'Asset Category',
+            change_default=True, readonly=True,
+            states={'draft': [('readonly', False)]}),
+        'parent_id': fields.many2one(
+            'account.asset.asset', 'Parent Asset', readonly=True,
             states={'draft': [('readonly', False)]}, domain=[('type', '=', 'view')]),
-        'child_ids': fields.one2many('account.asset.asset', 'parent_id', 'Child Assets'),
-        'date_start': fields.date('Asset Start Date', readonly=True, states={'draft': [('readonly', False)]},
-            help="You should manually add depreciation lines with the depreciations of previous fiscal years "\
-                 "if the Depreciation Start Date is different from the date for which OpenERP needs to generate accounting entries."),
+        'child_ids': fields.one2many(
+            'account.asset.asset', 'parent_id', 'Child Assets'),
+        'date_start': fields.date(
+            'Asset Start Date', readonly=True, states={'draft': [('readonly', False)]},
+            help="You should manually add depreciation lines with the depreciations\
+            of previous fiscal years if the Depreciation Start Date is \
+            different from the date for which OpenERP needs to generate \
+            accounting entries."),
         'date_remove': fields.date('Asset Removal Date', readonly=True),
         'state': fields.selection([
             ('draft', 'Draft'),
@@ -1227,12 +1243,16 @@ class account_asset_depreciation_line(orm.Model):
         created_move_ids = []
         asset_ids = []
         for line in self.browse(cr, uid, ids, context=context):
-            if line.asset_id.method_time == 'year':
-                depreciation_date = context.get('depreciation_date') or line.line_date
+            if line.asset_id.method_time == 'year' \
+                    or line.asset_id.method_time == 'percent':
+                depreciation_date = context.get('depreciation_date') \
+                                    or line.line_date
             else:
-                depreciation_date = context.get('depreciation_date') or time.strftime('%Y-%m-%d')
+                depreciation_date = context.get('depreciation_date') \
+                                    or time.strftime('%Y-%m-%d')
             ctx = dict(context, account_period_prefer_normal=True)
-            period_ids = period_obj.find(cr, uid, depreciation_date, context=ctx)
+            period_ids = period_obj.find(
+                cr, uid, depreciation_date, context=ctx)
             #sign = (line.asset_id.category_id.journal_id.type == 'purchase' and 1) or -1
             asset_name = line.asset_id.name
             reference = line.name
@@ -1255,7 +1275,7 @@ class account_asset_depreciation_line(orm.Model):
                 'credit': line.amount > 0 and line.amount or 0.0,
                 'period_id': period_ids and period_ids[0] or False,
                 'journal_id': journal_id,
-                'partner_id': partner_id,
+                #'partner_id': partner_id,  # fuorviante
                 'date': depreciation_date,
                 'asset_id': line.asset_id.id
             }, context={'allow_asset': True})
@@ -1268,7 +1288,7 @@ class account_asset_depreciation_line(orm.Model):
                 'debit': line.amount > 0 and line.amount or 0.0,
                 'period_id': period_ids and period_ids[0] or False,
                 'journal_id': journal_id,
-                'partner_id': partner_id,
+                #'partner_id': partner_id,  # fuorviante
                 'analytic_account_id': line.asset_id.category_id.account_analytic_id.id,
                 'date': depreciation_date,
                 'asset_id': line.asset_id.id
@@ -1329,7 +1349,7 @@ class account_move_line(orm.Model):
     }
 
 
-class account_asset_history(orm.Model):
+class account_asset_history(orm.Model):  # unused???
     _name = 'account.asset.history'
     _description = 'Asset history'
     _columns = {

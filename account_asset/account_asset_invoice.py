@@ -36,7 +36,8 @@ class account_invoice(orm.Model):
             assets = [aml.asset_id for aml in filter(lambda x: x.asset_id, move.line_id)]
             ctx = {'create_asset_from_move_line': True}
             for asset in assets:
-                asset_obj.write(cr, uid, [asset.id], {'code': inv.internal_number}, context=ctx)
+                asset_obj.write(cr, uid, [asset.id], {'code': '',}, context=ctx)
+                # TODO progressive number?
                 asset_line_name = asset_obj._get_depreciation_entry_name(cr, uid, asset, 0)
                 asset_line_obj.write(cr, uid, [asset.depreciation_line_ids[0].id],
                     {'name': asset_line_name}, context={'allow_asset_line_update': True})
