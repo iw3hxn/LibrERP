@@ -664,10 +664,11 @@ class account_asset_asset(orm.Model):
         if asset.type == 'view':
             asset_value = 0.0
         else:
-            asset_value = asset.purchase_value - asset.salvage_value
+            asset_value = asset.purchase_value + asset.increase_value \
+                          - asset.salvage_value - asset.decrease_value
         return asset_value
 
-    def _asset_value(self, cr, uid, ids, name, args, context=None):
+    def _asset_value(self, cr, uid, ids, name=None, args=None, context=None):  # what does name and args do?
         res = {}
         for asset in self.browse(cr, uid, ids, context):
             if asset.type == 'normal':
@@ -723,14 +724,16 @@ class account_asset_asset(orm.Model):
         return res
 
     def onchange_purchase_salvage_value(
-            self, cr, uid, ids, purchase_value, salvage_value, date_start, context=None):
+            self, cr, uid, ids, purchase_value, salvage_value, increase_value, decrease_value, date_start, context=None):
         if not context:
             context = {}
         res = {}
-        if purchase_value != 0.0 or salvage_value != 0.0:
+        if purchase_value != 0.0 or salvage_value != 0.0 or increase_value != 0.0 or decrease_value != 0.0:
             purchase_value = purchase_value or 0.0
             salvage_value = salvage_value or 0.0
-            vals = {'asset_value': purchase_value - salvage_value}
+            increase_value = increase_value or 0.0
+            decrease_value = decrease_value or 0.0
+            vals = {'asset_value': purchase_value + increase_value - salvage_value - decrease_value}
             #if vals['asset_value'] < 0.0: # TODO verify if add this check (not in v.2)
             #    raise orm.except_orm(_('Error!'),
             #         _('It cannot result a negative value in the asset.'
@@ -781,16 +784,18 @@ class account_asset_asset(orm.Model):
             states={'draft': [('readonly', False)]}),
         'code': fields.char('Reference', size=32, readonly=True,
                             states={'draft': [('readonly', False)]}),
-        'purchase_value': fields.float('Purchase Value',
-                                       digits_compute=dp.get_precision('Account'),
+        'purchase_value': fields.float('Purchase Value', digits_compute=dp.get_precision('Account'),
             required=True, readonly=True, states={'draft': [('readonly', False)]},
-            help="\nThe Asset Value is calculated as follows:"
-                  "\nPurchase Value - Salvage Value."),
+            help="This amount represent the initial value of the asset."),
+        'increase_value': fields.float('Increase Value', digits_compute=dp.get_precision('Account'),
+            required=False, readonly=True, states={'draft': [('readonly', False)]},),
+        'decrease_value': fields.float('Decrease Value', digits_compute=dp.get_precision('Account'),
+            required=False, readonly=True, states={'draft': [('readonly', False)]},),
         'asset_value': fields.function(_asset_value, method=True, digits_compute=dp.get_precision('Account'), string='Asset Value',
             store={
-                'account.asset.asset': (_get_assets, ['purchase_value', 'salvage_value', 'parent_id'], 10),
+                'account.asset.asset': (_get_assets, ['purchase_value', 'salvage_value', 'increase_value', 'decrease_value', 'parent_id'], 10),
             },
-            help="This amount represent the initial value of the asset."),
+            help="The Asset Value is calculated as follows:\nPurchase Value - Salvage Value."),
         'value_residual': fields.function(_residual, method=True, digits_compute=dp.get_precision('Account'), string='Residual Value',
             store={
                 'account.asset.asset': (_get_assets, ['purchase_value', 'salvage_value', 'parent_id', 'depreciation_line_ids'], 20),
@@ -1346,7 +1351,7 @@ class account_move_line(orm.Model):
     _inherit = 'account.move.line'
     _columns = {
         'asset_id': fields.many2one('account.asset.asset', 'Asset', ondelete="restrict"),
-    }
+    }  # already inherit and added fields in account_move.py: why this one here?
 
 
 class account_asset_history(orm.Model):  # unused???

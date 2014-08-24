@@ -49,6 +49,7 @@ class account_account(orm.Model):
         (_check_asset_categ, "The Asset Account defined in the Asset Category must be equal to the account.", ['asset_categ_id']),
     ]
 
+
 class account_fiscalyear(orm.Model):
     _inherit = 'account.fiscalyear'
 

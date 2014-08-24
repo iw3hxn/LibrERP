@@ -3,6 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2014 Didotech srl (www.didotech.com).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,7 +22,7 @@
 
 {
     'name': 'Assets Management',
-    'version': '2.2.3.3',
+    'version': '2.3.4.4',
     'depends': [
         'report_webkit',
         'l10n_it_account',
@@ -40,6 +41,7 @@ The depreciation table can be calculated based upon different Time Methods\n
 - Number of Years
 - Number of Depreciations
 - Ending Date
+- Percent
 
 This Module can be used for Financial Assets Management (via Time Method 'Number of Years')
 as well as for Deferred Cost/Income and Cost/Income Spreading purposes (via Time Methods
@@ -48,8 +50,10 @@ as well as for Deferred Cost/Income and Cost/Income Spreading purposes (via Time
 The full asset life-cycle is managed (from asset creation  up to asset removal).
 
 Assets can be created manually as well as automatically (via the creation of an accounting entry on the asset account).
+Assets values can be increased/decreased from purchase/sale invoices taking the specific asset to be changed.
 
 Excel based reporting is available via the 'account_asset_report_xls' module (cf. http://odoo.apps.com).
+Legal report for Italy is available.
 
     """,
     'website': 'http://www.odoo.com',

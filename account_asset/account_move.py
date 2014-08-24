@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #
 #    Copyright (c) 2014 Noviat nv/sa (www.noviat.com). All rights reserved.
+#    Copyright (C) 2014 Didotech srl (www.didotech.com).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -61,19 +62,34 @@ class account_move_line(orm.Model):
 
     _columns = {
         'asset_category_id': fields.many2one('account.asset.category', 'Asset Category'),
+        'subsequent_asset_id': fields.many2one('account.asset.asset', 'Subsequent Purchase of Asset'),
     }
 
     def onchange_account_id(self, cr, uid, ids, account_id=False, partner_id=False):
         res = super(account_move_line, self).onchange_account_id(cr, uid, ids, account_id)
         account_obj = self.pool.get('account.account')
-        #asset_obj = self.pool.get('account.asset.asset')
-        #asset_line_obj = self.pool.get('account.asset.depreciation.line')
         if account_id:
             account = account_obj.browse(cr, uid, account_id)
             asset_category = account.asset_category_id
             if asset_category:
                 res['value'].update({'asset_category_id': asset_category.id})
         return res
+
+    def get_asset_value_with_ind_tax(self, cr, uid, vals, context):
+        account_tax_obj = self.pool['account.tax']
+        tax_code = self.pool['account.tax.code'].browse(cr, uid, [vals.get('tax_code_id')])[0]
+        tax = tax_code.base_tax_ids
+        res = account_tax_obj.compute_all(cr, uid, taxes=tax, price_unit=abs(vals.get('tax_amount') / vals.get('quantity')),
+            quantity=vals.get('quantity'))
+        tax_list = res['taxes']
+        ind_amount = 0.0
+        if len(tax_list) == 2:
+            for tax in tax_list:
+                if tax.get('balance', False):
+                    ind_tax = tax_list[abs(tax_list.index(tax) - 1)]
+                    ind_amount = float(Decimal(str(ind_tax['amount'])).quantize(Decimal('1.00'), rounding=ROUND_HALF_UP))
+        asset_value = vals['debit'] + ind_amount or - vals['credit'] - ind_amount
+        return asset_value
 
     def create(self, cr, uid, vals, context=None, check=True):
         if not context:
@@ -82,29 +98,12 @@ class account_move_line(orm.Model):
             raise orm.except_orm(_('Error!'),
                 _("You are not allowed to link an accounting entry to an asset."
                   "\nYou should generate such entries from the asset."))
-        if vals.get('asset_category_id'):
-            asset_obj = self.pool.get('account.asset.asset')
-            #asset_line_obj = self.pool.get('account.asset.depreciation.line')
+        asset_obj = self.pool.get('account.asset.asset')
+        if vals.get('asset_category_id') and not vals.get('subsequent_asset_id'):
             # create asset
             move = self.pool.get('account.move').browse(cr, uid, vals['move_id'])
-            # add not deductible VAT if present, make it depending from
-            # l10n_it_partially_deductible_vat
-            account_tax_obj = self.pool['account.tax']
-            tax_code = self.pool['account.tax.code'].browse(
-                cr, uid, [vals.get('tax_code_id')])[0]
-            tax = tax_code.base_tax_ids
-            res = account_tax_obj.compute_all(
-                cr, uid, taxes=tax,
-                price_unit=abs(vals.get('tax_amount') / vals.get('quantity')),
-                quantity=vals.get('quantity'))
-            tax_list = res['taxes']
-            ind_amount = 0.0
-            if len(tax_list) == 2:
-                for tax in tax_list:
-                    if tax.get('balance', False):
-                        ind_tax = tax_list[abs(tax_list.index(tax) - 1)]
-                        ind_amount = float(Decimal(str(ind_tax['amount'])).quantize(Decimal('1.00'), rounding=ROUND_HALF_UP))
-            asset_value = vals['debit'] + ind_amount or -vals['credit'] - ind_amount
+            # add not deductible VAT if present, make it depending from l10n_it_partially_deductible_vat
+            asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
             asset_vals = {
                 'name': vals['name'],
                 'category_id': vals['asset_category_id'],
@@ -119,6 +118,17 @@ class account_move_line(orm.Model):
             ctx = dict(context, create_asset_from_move_line=True, move_id=vals['move_id'])
             asset_id = asset_obj.create(cr, uid, asset_vals, context=ctx)
             vals['asset_id'] = asset_id
+        elif vals.get('subsequent_asset_id'):
+            vals['asset_id'] = vals['subsequent_asset_id']
+            #  get variation to put in asset value
+            ctx = dict(context, update_asset_value_from_move_line=True, move_id=vals['move_id'])
+            asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
+            if asset_value > 0.0:
+                increase_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].increase_value + asset_value
+                asset_obj.write(cr, uid, [vals['asset_id']], {'increase_value': increase_value}, context=ctx)
+            elif asset_value < 0.0:
+                decrease_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].decrease_value - asset_value
+                asset_obj.write(cr, uid, [vals['asset_id']], {'decrease_value': decrease_value}, context=ctx)
 
         return super(account_move_line, self).create(cr, uid, vals, context, check)
 
@@ -127,12 +137,12 @@ class account_move_line(orm.Model):
             raise orm.except_orm(_('Error!'),
                 _("You are not allowed to link an accounting entry to an asset."
                   "\nYou should generate such entries from the asset."))
-        if vals.get('asset_category_id'):
+        asset_obj = self.pool.get('account.asset.asset')
+        if vals.get('asset_category_id') and not vals.get('subsequent_asset_id'):
             assert len(ids) == 1, 'This option should only be used for a single id at a time.'
             for aml in self.browse(cr, uid, ids, context):
                 if vals['asset_category_id'] == aml.asset_category_id.id:
                     continue
-                asset_obj = self.pool.get('account.asset.asset')
                 #asset_line_obj = self.pool.get('account.asset.depreciation.line')
 
                 # create asset
@@ -155,5 +165,16 @@ class account_move_line(orm.Model):
                 ctx = dict(context, create_asset_from_move_line=True, move_id=aml.move_id.id)
                 asset_id = asset_obj.create(cr, uid, asset_vals, context=ctx)
                 vals['asset_id'] = asset_id
+        elif vals.get('subsequent_asset_id'):
+            vals['asset_id'] = vals['subsequent_asset_id']
+            #  get variation to put in asset value
+            ctx = dict(context, update_asset_value_from_move_line=True, move_id=vals['move_id'])
+            asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
+            if asset_value > 0.0:
+                increase_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].increase_value + asset_value
+                asset_obj.write(cr, uid, [vals['asset_id']], {'increase_value': increase_value}, context=ctx)
+            elif asset_value < 0.0:
+                decrease_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].decrease_value - asset_value
+                asset_obj.write(cr, uid, [vals['asset_id']], {'decrease_value': decrease_value}, context=ctx)
 
         return super(account_move_line, self).write(cr, uid, ids, vals, context, check, update_check)
