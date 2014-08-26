@@ -22,6 +22,9 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
 
 
@@ -155,7 +158,29 @@ class sale_order(orm.Model):
         'need_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
         'required_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
         'required_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
+        'validity': lambda self, cr, uid, context: (datetime.today() + relativedelta(days=self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_sale_order_validity or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
     }
+
+
+
+    #def default_get(self, cr, uid, fields, context=None):
+    #    """ To get default values for the object.
+    #    @param self: The object pointer.
+    #    @param cr: A database cursor
+    #    @param uid: ID of the user currently logged in
+    #    @param fields: List of fields for which we want default values 
+    #    @param context: A standard dictionary 
+    #    @return: A dictionary which of fields with values. 
+    #    """        
+    #    if context is None:
+    #        context = {}
+    #    res = super(sale_order, self).default_get(cr, uid, fields, context=context)        
+    #    compant = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+    #    import pdb; pdb.set_trace()
+    #    if 'validity' in fields:
+    #        res.update({'validity': datetime.today() + relativedelta(days=company.default_sale_order_validity)})  
+    #    return res
+
     
     def action_validate(self, cr, uid, ids, context=None):
         for o in self.browse(cr, uid, ids):
