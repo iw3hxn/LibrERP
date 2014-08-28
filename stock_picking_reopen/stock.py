@@ -22,23 +22,25 @@
 
 # FIXME remove logger lines or change to debug
  
-from osv import fields, osv
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 import netsvc
-from tools.translate import _
 import time
 import logging
 
-class stock_journal(osv.osv):
+class stock_journal(orm.Model):
     _inherit = 'stock.journal'
 
     _columns = {
        'reopen_posted':  fields.boolean('Allow Update of Posted Pickings',
             help="Allows to reopen posted pickings, as long no invoice is created or no other moves for the products of this picking are posted"),
         }
+    
+    _defaults = {
+        'reopen_posted': True
+    }
 
-stock_journal()
-
-class stock_picking(osv.osv):
+class stock_picking(orm.Model):
     _inherit = 'stock.picking'
 
 #    def _auto_init(self, cr, context=None):
@@ -50,13 +52,13 @@ class stock_picking(osv.osv):
 
     def allow_reopen(self, cr, uid, ids, context=None):
         _logger = logging.getLogger(__name__)
-        move_line_obj = self.pool.get('stock.move')
-        account_invoice_obj = self.pool.get('account.invoice')
+        move_line_obj = self.pool['stock.move']
+        account_invoice_obj = self.pool['account.invoice']
         _logger.debug('FGF picking allow open ids %s ' %(ids)   )
         for pick in self.browse(cr, uid, ids, context):
             _logger.debug('FGF picking allow open  %s %s' %(pick.stock_journal_id,pick.stock_journal_id.reopen_posted)   )
             if pick.stock_journal_id and not pick.stock_journal_id.reopen_posted:
-                raise osv.except_osv(_('Error'), _('You cannot reset to draft pickings of this journal ! Please check "Allow Update of Posted Pickings" in Warehous Configuration / Stock Journals %s') % pick.stock_journal_id.name )
+                raise orm.except_orm(_('Error'), _('You cannot reset to draft pickings of this journal ! Please check "Allow Update of Posted Pickings" in Warehous Configuration / Stock Journals %s') % pick.stock_journal_id.name )
             if pick._columns.get('invoice_ids'):
                 _logger.debug('FGF picking allow open inv_ids '   )
                 ids2 = []
@@ -67,7 +69,7 @@ class stock_picking(osv.osv):
                     elif inv.state in ['draft']:
                        ids2.append(inv.id) 
                     else:
-                       raise osv.except_osv(_('Error'), _('You cannot reset a picking with an open invoice [%s] to draft ! You must reopen the invoice first (install modul account_invoice_reopen' % inv.number))
+                       raise orm.except_orm(_('Error'), _('You cannot reset a picking with an open invoice [%s] to draft ! You must reopen the invoice first (install modul account_invoice_reopen' % inv.number))
                   #account_invoice_obj.unlink(cr, uid, ids2) 
                   #account_invoice_obj.write(cr, uid, ids2, {'state':'cancel'})
                   account_invoice_obj.action_cancel(cr, uid, ids2 )
@@ -75,7 +77,7 @@ class stock_picking(osv.osv):
                     self.write(cr, uid, [pick.id], {'invoice_state':'2binvoiced'})
             elif pick.invoice_state == 'invoiced':
                 _logger.debug('FGF picking invoiced '   )
-                raise osv.except_osv(_('Error'), _('You cannot reset an invoiced picking to draft !'))
+                raise orm.except_orm(_('Error'), _('You cannot reset an invoiced picking to draft !'))
             if pick.move_lines:
                 for move in pick.move_lines:
                     # FIXME - not sure if date or id has to be checked or both if average price is used
@@ -86,7 +88,7 @@ class stock_picking(osv.osv):
                         later_prices = []
                         for later_move in move_line_obj.browse(cr, uid, later_ids):
                             later_prices.append(later_move.price_unit)
-                            raise osv.except_osv(_('Error'), _('You cannot reopen this picking, because product "%s" of this picking has already later posted moves with different cost price(s) %s  then the current [%s] to be reopened! Recalculation of avarage price is not supported') % (move.product_id.name, later_prices, move.price_unit))
+                            raise orm.except_orm(_('Error'), _('You cannot reopen this picking, because product "%s" of this picking has already later posted moves with different cost price(s) %s  then the current [%s] to be reopened! Recalculation of avarage price is not supported') % (move.product_id.name, later_prices, move.price_unit))
         return True
     
 
@@ -96,12 +98,12 @@ class stock_picking(osv.osv):
         """
         _logger = logging.getLogger(__name__)
         self.allow_reopen(cr, uid, ids, context=None)
-        move_line_obj = self.pool.get('stock.move')
-        account_move_line_obj = self.pool.get('account.move.line')
-        account_move_obj = self.pool.get('account.move')
-        account_invoice_obj = self.pool.get('account.invoice')
-        report_xml_obj = self.pool.get('ir.actions.report.xml')
-        attachment_obj = self.pool.get('ir.attachment')
+        move_line_obj = self.pool['stock.move']
+        account_move_line_obj = self.pool['account.move.line']
+        account_move_obj = self.pool['account.move']
+        account_invoice_obj = self.pool['account.invoice']
+        report_xml_obj = self.pool['ir.actions.report.xml']
+        attachment_obj = self.pool['ir.attachment']
 
         now = ' ' + _('Invalid') + time.strftime(' [%Y%m%d %H%M%S]')
         for pick in self.browse(cr, uid, ids):
@@ -173,19 +175,5 @@ class stock_picking(osv.osv):
             
         return True
 
-
-#    def button_reopen(self, cr, uid, ids, context=None):
-#        _logger = logging.getLogger(__name__)   
-#        self.allow_reopen(cr, uid, ids, context)
-#        _logger.debug('FGF picking allow open  '   )
-#        self.write(cr, uid, ids, {'state':'draft'})
-#        _logger.debug('FGF picking draft  '   )
-#        self.log_picking(cr, uid, ids, context=context)
-#        _logger.debug('FGF picking log'   )
-
-        
-    
-stock_picking()
-    
 
 
