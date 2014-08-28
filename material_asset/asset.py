@@ -76,8 +76,6 @@ def get_relational_value(self, cr, uid, ids, field_name, arg, context=None):
                         obj_name = ('', 'Unknown record type')
 
                     if obj_name and len(obj_name) > 1:
-                        #print (record['id'], "[ " + model_name + " ] " + obj_name[1])
-                        #res.append((record['id'], "[ " + model_name + " ] " + obj_name[1]))
                         res.append((record['id'], obj_name[1]))
                     else:
                         res.append((record['id'], ''))
@@ -275,6 +273,44 @@ class asset_category(orm.Model):
 
     def child_get(self, cr, uid, ids):
         return [ids]
+    
+    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+        result = super(asset_category, self).name_search(cr, uid, name, args, operator, context, limit)
+        print "Name: ", name
+        if operator == 'ilike' and name:
+            category_ids = self.search(cr, uid, [('name', 'ilike', name)])
+            for category in self.browse(cr, uid, category_ids, context):
+                result.append(category.name_get()[0])
+        return list(set(result))
+
+    def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
+        new_args = []
+        
+        for arg in args:
+            if arg and len(arg) == 3 and arg[0] in ('parent_id', 'child_id') and arg[1] == '=':
+                category_ids = super(asset_category, self).search(cr, uid, [arg], offset=offset, limit=limit, order=order, context=context, count=count)
+                if category_ids:
+                    new_category_ids = []
+                    for category_id in category_ids:
+                        new_category_ids += self.search(cr, uid, [(arg[0], '=', category_id)])
+                    
+                    new_args.append(('id', 'in', category_ids + new_category_ids))
+                else:
+                    new_args.append(arg)
+            elif len(arg) == 3 and arg[0] == 'name' and arg[1] == 'ilike':
+                category_ids = super(asset_category, self).search(cr, uid, [arg], offset=offset, limit=limit, order=order, context=context, count=count)
+                if category_ids:
+                    new_category_ids = []
+                    for category_id in category_ids:
+                        new_category_ids += self.search(cr, uid, [('parent_id', '=', category_id)])
+                    
+                    new_args.append(('id', 'in', category_ids + new_category_ids))
+                else:
+                    new_args.append(arg)
+            else:
+                new_args.append(arg)
+    
+        return super(asset_category, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order, context=context, count=count)
 
 
 class asset_image(orm.Model):
@@ -299,7 +335,6 @@ class asset_product(orm.Model):
         return res
 
     _columns = {
-        #"user" : fields.many2one("hr.employee","Manager"),
         "user": fields.many2one("hr.employee", "Employee"),
         'inventory_code': fields.char("Numero di inventario", size=16),
         "asset_category_id": fields.many2one("asset.category", "Category", required=True),
@@ -319,7 +354,7 @@ class asset_product(orm.Model):
     def _search_code(self, cr, uid, obj, name, args, context):
         code_ids = []
 
-        ## 'code': supinfo.product_code or product.default_code
+        # 'code': supinfo.product_code or product.default_code
         supplier_ids = self.pool.get('product.supplierinfo').search(cr, uid, [('product_code', 'ilike', args[2])])
         if supplier_ids:
             suppliers = self.pool.get('product.supplierinfo').browse(cr, uid, supplier_ids)
@@ -362,7 +397,6 @@ class account_asset_asset(orm.Model):
 class asset_asset(orm.Model):
     _name = "asset.asset"
     _description = 'Asset'
-    #_inherits = {'account.asset.asset': "asset_asset_id"}
 
     def name_get(self, cr, uid, ids, context=None):
         if not len(ids):
@@ -458,10 +492,8 @@ class asset_asset(orm.Model):
                 if return_line.datetime < end_date:
                     res[move_line.id]['returned'] = return_line.datetime
                 else:
-                    #res[move_line.id]['returned'] = end_date
                     res[move_line.id]['returned'] = ''
             else:
-                #res[move_line.id]['returned'] = end_date
                 res[move_line.id]['returned'] = ''
 
         arg = {
@@ -494,13 +526,13 @@ class asset_asset(orm.Model):
             if sim_move_line_ids:
                 sim_move_lines = move_line_obj.browse(cr, uid, sim_move_line_ids)
                 for move_line in sim_move_lines:
-                    ## move_line.datetime - date when sim was added to an asset
+                    # move_line.datetime - date when sim was added to an asset
                     if move_line.datetime < start_date:
                         start = start_date
                     else:
                         start = move_line.datetime
 
-                    ## asset_move_line['added'] - date when asset was added.
+                    # asset_move_line['added'] - date when asset was added.
                     if asset_move_line['added'] > start:
                         start = asset_move_line['added']
 
@@ -512,7 +544,6 @@ class asset_asset(orm.Model):
 
                     search_conditions = [
                         ('sim_id', '=', move_line.sim_id.id),
-                        #('source_location', '=', model_name + ',' + str(parent_id)),
                         ('source_location', '=', model_name + ',' + str(asset_move_line['asset_id'])),
                         ('datetime', '>', move_line.datetime),
                     ]
@@ -532,7 +563,6 @@ class asset_asset(orm.Model):
                             if end_date < datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT):
                                 res[move_line.id]['returned'] = end_date
                             else:
-                                #res[move_line.id]['returned'] = asset_move_line['returned']
                                 res[move_line.id]['returned'] = ''
                     else:
                         if asset_move_line['returned']:
@@ -542,7 +572,7 @@ class asset_asset(orm.Model):
                         else:
                             res[move_line.id]['returned'] = ''
 
-        ## Ex. res = {103: [342, 343, 344]}
+        # Ex. res = {103: [342, 343, 344]}
         return res
 
     def get_all_assigned_assets(self, cr, uid, ids, field_name, arg, context=None):
@@ -565,13 +595,13 @@ class asset_asset(orm.Model):
             return res
 
     def get_asset_movements(self, cr, uid, model_name, parent_id, start_date, end_date, context=None):
-        #"""
-        #    Returns 'asset.move.line' objects for 'ids' locations
-        #    @asset_id
-        #    @location
-        #    @start_date
-        #    @end_date
-        #"""
+        """
+            Returns 'asset.move.line' objects for 'ids' locations
+            @asset_id
+            @location
+            @start_date
+            @end_date
+        """
 
         move_line_obj = self.pool.get('asset.move.line')
 
@@ -621,8 +651,7 @@ class asset_asset(orm.Model):
                     res[line.id]['location_id'] = return_line.dest_location.id
                     res[line.id]['model_name'] = return_line.dest_location._name
                 else:
-                    ## Asset was removed before start_date
-                    #print line.asset_id.complete_name, 'Added:', line.datetime, 'Returned:', return_date_date, 'Start date: ', start_date_date
+                    # Asset was removed before start_date
                     del res[line.id]
                     continue
             else:
@@ -631,8 +660,6 @@ class asset_asset(orm.Model):
                 else:
                     res[line.id]['returned'] = ''
                 new_end = end_date
-
-            #print res[line.id]['name'], new_end, res[line.id]['returned']
 
             # Check that asset is not inside itself
             if not line.asset_id.id == parent_id:
@@ -653,7 +680,6 @@ class asset_asset(orm.Model):
 
         for parent_id in ids:
             asset_ids = self.search(cr, uid, [('location', '=', model_name + ',' + str(parent_id))])
-            #res[protocol_id] = self.get_tree1(cr, uid, asset_ids)
             tree = self.get_tree(cr, uid, asset_ids)
             res[parent_id] = [leave['ids'] for leave in tree]
 
@@ -693,7 +719,6 @@ class asset_asset(orm.Model):
         parents = self.get_asset_parents(cr, uid, ids, field_name, model_name, context)
         for child_id in ids:
             if parents[child_id]:
-                #parents[child_id]
                 parents[child_id].pop(-1)
 
             if parents[child_id]:
@@ -791,8 +816,7 @@ class asset_asset(orm.Model):
                     asset_line = self.pool.get('asset.move.line').read(cr, uid, asset_source_line_ids[0], ['datetime'])
                     if asset_line['datetime'] > res[asset['id']]['added']:
                         res[asset['id']]['removed'] = asset_line['datetime']
-                    #else:
-                    #    res[asset['id']]['removed'] = False
+
             else:
                 res[asset['id']] = {}
 
@@ -861,8 +885,6 @@ class asset_asset(orm.Model):
         return result
 
     _columns = {
-        #'asset_asset_id': fields.many2one('account.asset.asset', 'Account Asset', ondelete="cascade", required=True),
-        #'product_id': fields.many2one("asset.product", "Asset Product", required=True),
         'asset_product_id': fields.many2one("asset.product", "Asset Product", required=True),
 
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Name'),
@@ -919,12 +941,6 @@ class asset_asset(orm.Model):
         'date_start': datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
     }
 
-    #_order = 'asset_product_id.name'
-
-    #def on_change_serial_number():
-    #    # TODO: control if product split type is single, serial number should be unique
-    #    pass
-
     def copy(self, cr, uid, id, default=None, context={}):
         inventory_code = self._get_sequence(cr, uid, False, context)
 
@@ -954,7 +970,6 @@ class asset_asset(orm.Model):
         new_args = []
 
         for arg in args:
-            #if arg and len(arg)==3 and arg[0] in field_to_sql.keys() and arg[1]=='ilike':
             if arg and len(arg) == 3 and arg[1] == 'ilike':
                 values = arg[2].split(',')
                 if values > 1:
@@ -985,7 +1000,6 @@ class asset_asset(orm.Model):
                             'valid_start_date': document.valid_end_date,
                             'valid_end_date': end_date.strftime(DEFAULT_SERVER_DATE_FORMAT),
                             'comments': document.comments,
-                            #'has_date_option1': True, # field substituted with function
                             'active': True,
                         }
                         self.pool.get('asset.document').create(cr, uid, new_document)
@@ -997,7 +1011,7 @@ class asset_asset(orm.Model):
             })
             vals['serial_number'] = prodlot_id
 
-        if 'location' in vals and vals['location'] and not ',' in vals['location']:
+        if 'location' in vals and vals['location'] and ',' not in vals['location']:
             del vals['location']
         return super(asset_asset, self).write(cr, uid, ids, vals, context)
 
@@ -1090,7 +1104,7 @@ class asset_asset(orm.Model):
         for location_id in asset_location_ids:
             stock_move_ids = stock_move_obj.search(cr, uid, [('location_dest_id', '=', location_id)])
 
-            ### TODO: order_by and only take serials that are still in location
+            # TODO: order_by and only take serials that are still in location
             stock_move = stock_move_obj.browse(cr, uid, stock_move_ids)
             [serials.append(row.prodlot_id.name) for row in stock_move if not str(row.prodlot_id.name) == 'None']
 
@@ -1187,8 +1201,8 @@ class asset_move(orm.Model):
         'user_id': lambda self, cr, uid, context: uid,
     }
 
-    ## Seems it's impossible to order on inherited field...
-    #_order = 'date_done desc'
+    # Seems it's impossible to order on inherited field...
+    # _order = 'date_done desc'
 
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         # OpenERP don't like ordering on inherited field, so
@@ -1296,7 +1310,7 @@ class asset_move_line(orm.Model):
     _inherits = {'stock.move': 'stock_move_id'}
     _description = 'Assets moved together'
 
-    #def _get_return_datetime(self, cr, uid, ids, field_name, arg, context=None):
+    # def _get_return_datetime(self, cr, uid, ids, field_name, arg, context=None):
     #    '''
     #        This works only for 2 moves for the same location
     #    '''
@@ -1332,7 +1346,6 @@ class asset_move_line(orm.Model):
         if ids:
             asset_obj = self.pool['asset.asset']
             for asset_move_line in self.browse(cr, uid, ids, context):
-#                asset_obj = self.pool[self.fields_get(cr, uid, 'asset_id')['asset_id']['relation']]
                 asset = asset_obj.browse(cr, uid, asset_move_line.asset_id.id, context)
                 res[asset_move_line.id] = asset.is_kit
 
@@ -1341,14 +1354,11 @@ class asset_move_line(orm.Model):
     _columns = {
         "source_location": fields.reference("Source Location", _get_locations, size=128),
         "dest_location": fields.reference("Destination Location", _get_locations, size=128),
-        
         "user_id": fields.many2one("res.users", "Moved By", readonly=True),
-        #'source_location_name': fields.function(get_relational_value, arg={'field_name': 'source_location'}, method=True, type="char", string="Source Loc."),
-        #'dest_location_name': fields.function(get_relational_value, arg={'field_name': 'dest_location'}, method=True, type="char", string="Destination Loc."),
+        # 'source_location_name': fields.function(get_relational_value, arg={'field_name': 'source_location'}, method=True, type="char", string="Source Loc."),
+        # 'dest_location_name': fields.function(get_relational_value, arg={'field_name': 'dest_location'}, method=True, type="char", string="Destination Loc."),
         'is_kit': fields.function(_getKit, method=True, type="boolean", string="Kit"),
-        
-        
-        #'return_datetime': fields.function(_get_return_datetime, method=True, type="datetime", string="Returned"),
+        # 'return_datetime': fields.function(_get_return_datetime, method=True, type="datetime", string="Returned"),
     }
 
 
@@ -1512,9 +1522,9 @@ class asset_document(orm.Model):
         return {'value': {'valid_end_date': valid_end_date}}
 
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Asset Location
-#----------------------------------------------------------
+# ----------------------------------------------------------
 class asset_location(orm.Model):
     '''
         Add "assets" type to standard location type
@@ -1572,14 +1582,12 @@ class create_asset_onmove(orm.Model):
             prodlot_id = False
         else:
             prodlot_id = move.prodlot_id.id
-            #serial = move.prodlot_id.name
 
         # verify that product is not yet an asset:
         asset_product_ids = self.pool.get('asset.product').search(cr, uid, [('product_product_id', '=', move.product_id.id), ])
         if move.location_dest_id.usage == 'assets' and not asset_product_ids:
             # Launch a form and ask about category:
             assign_category_id = self.pool["asset.assign.category"].create(cr, uid, {}, context=dict(context, active_ids=ids))
-            #print "wizard object created with id : ", assign_category_id
             return {
                 'name': _("Assign Category"),
                 'view_mode': 'form',
@@ -1604,7 +1612,7 @@ class create_asset_onmove(orm.Model):
             # control if product is an asset:
             asset_ids = self.pool['asset.asset'].search(cr, uid, [('asset_product_id', '=', asset_product_ids[0]), ('serial_number', '=', prodlot_id), ('serial_number', '!=', False)])
             if not asset_ids:
-                ## create asset.asset
+                # create asset.asset
                 self.pool['asset.asset'].create(cr, uid, {
                     'asset_product_id': asset_product_ids[0],
                     'serial_number': prodlot_id,
