@@ -32,6 +32,9 @@ class stock_picking(orm.Model):
         if values.get('date', False):
             move_lines = []
             processed_line_ids = []
+            if isinstance(ids, (int, long)):
+                ids = [ids]
+            
             for picking in self.browse(cr, uid, ids, context):
                 if values.get('move_lines', False):
                     for line in values['move_lines']:
