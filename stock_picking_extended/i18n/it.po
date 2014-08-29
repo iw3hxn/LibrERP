@@ -3481,7 +3481,7 @@ msgstr "Ordine di vendita"
 #: model:ir.ui.menu,name:stock.menu_action_picking_tree
 #: view:stock.picking:0
 msgid "Delivery Orders"
-msgstr "Ordini di Consegna / DDT"
+msgstr "Consegna Prodotti / DDT"
 
 #. module: stock
 #: view:stock.picking:0
