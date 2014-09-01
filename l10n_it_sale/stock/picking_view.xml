@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
-    
+   
         <record id="action_picking_tree" model="ir.actions.act_window">
             <field name="name">DDT Consegnati</field>
             <field name="res_model">stock.picking</field>
@@ -13,6 +12,20 @@
             <field name="context">{'default_type': 'out', 'contact_display': 'partner_address', 'search_default_done': 1, 'search_default_have_ddt': 1}</field>
             <field name="search_view_id" ref="stock.view_picking_out_search"/>
             <field name="help">Visualizza solo i DDT consegnati.</field>
+        </record>
+
+        <record id="action_picking_tree_out_view10_waiting" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="stock.view_picking_out_tree"/>
+            <field name="act_window_id" ref="action_picking_tree"/>
+        </record>
+
+        <record id="action_picking_tree_out_view20_waiting" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="stock.view_picking_out_form"/>
+            <field name="act_window_id" ref="action_picking_tree"/>
         </record>
     
         <menuitem action="action_picking_tree" id="menu_action_picking_tree" parent="stock.menu_stock_warehouse_mgmt" sequence="4"/>
