@@ -35,9 +35,8 @@ class mrp_bom(orm.Model):
         return super(mrp_bom, self).create(cr, uid, vals, context=context)
     
     def unlink(self, cr, uid, ids, context={}):
-        product_obj = self.pool.get('product.product')
+        product_obj = self.pool['product.product']
         boms = self.browse(cr, uid, ids)
-        
         for product_id in [bom.product_id.id for bom in boms]:
             bom_ids_count = self.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], count=True)
             
@@ -46,28 +45,19 @@ class mrp_bom(orm.Model):
         
         return super(mrp_bom, self).unlink(cr, uid, ids, context=context)
     
-    #def _compute_type(self, cr, uid, ids, field_name, arg, context=None):
-    #    """ Sets particular method for the selected bom type.
-    #    @param field_name: Name of the field
-    #    @param arg: User defined argument
-    #    @return:  Dictionary of values
-    #    """
-    #    res = dict.fromkeys(ids, False)
-    #    for line in self.browse(cr, uid, ids, context=context):
-    #        if line.type == 'phantom' and not line.bom_id:
-    #            res[line.id] = 'set'
-    #            continue
-    #        if line.bom_lines or line.type == 'phantom':
-    #            continue
-    #        if line.product_id.supply_method == 'produce':
-    #            if line.product_id.procure_method == 'make_to_stock':
-    #                res[line.id] = 'stock'
-    #            else:
-    #                res[line.id] = 'order'
-    #        if line.product_id and line.product_id.type == 'service':
-    #            res[line.id] = 'service'
-    #    return res
-    #
-    #_columns = {
-    #    'method': fields.function(_compute_type, string='Method', type='selection', selection=[('',''),('stock','On Stock'),('order','On Order'),('set','Set / Pack'),('service','Service')]),
-    #}
+    def write(self, cr, uid, ids, vals, context={}): 
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+        boms = self.browse(cr, uid, ids)
+        for product_old_id in [bom.product_id.id for bom in boms]:
+            
+            if vals.get('product_id', False) and not product_old_id == vals['product_id']:
+                # on new product set that have bom
+                self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False})
+                
+                bom_ids_count = self.search(cr, uid, [('product_id', '=', product_old_id), ('bom_id', '=', False)], count=True)
+            
+                if bom_ids_count == 1:
+                    self.pool['product.product'].write(cr, uid, product_old_id, {'supply_method': 'buy', 'purchase_ok': True})
+        return super(mrp_bom, self).write(cr, uid, ids, vals, context=context)
+    
