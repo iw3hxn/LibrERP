@@ -23,7 +23,9 @@
 
 import time
 from openerp.report import report_sxw
-
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from datetime import datetime
 
 class Parser(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
@@ -38,7 +40,22 @@ class Parser(report_sxw.rml_parse):
             'div': self._div,
             'italian_number': self._get_italian_number,
             'pallet_sum': self._get_pallet_sum,
+            'get_description': self._get_description,
         })
+        
+    def _get_description(self, order_name):
+        order_obj = self.pool['sale.order']
+        description = []
+
+        if order_name and not self.pool['res.users'].browse(
+                self.cr, self.uid, self.uid).company_id.disable_sale_ref_invoice_report:
+            order_ids = order_obj.search(self.cr, self.uid, [('name', '=', order_name)])
+            if len(order_ids) == 1:
+                order = order_obj.browse(self.cr, self.uid, order_ids[0])
+                order_date = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT)
+                description.append(u'Rif. Ns. Ordine {order} del {order_date}'.format(order=order.name, order_date=order_date.strftime("%d/%m/%Y")))
+
+        return ' / '.join(description)
 
     def _div(self, up, down):
         res = 0
