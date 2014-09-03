@@ -281,13 +281,6 @@ msgid "Non Inv"
 msgstr "Non fatt."
 
 #. module: stock
-#: code:addons/stock/wizard/stock_traceability.py:54
-#: view:stock.production.lot:0
-#, python-format
-msgid "Downstream Traceability"
-msgstr "Tracciabilità a valle"
-
-#. module: stock
 #: view:stock.move:0
 #: field:stock.move,picking_id:0
 #: field:stock.picking,name:0
@@ -1544,12 +1537,6 @@ msgstr "Informazioni Generali"
 #: view:report.stock.inventory:0
 msgid "Analysis including future moves (similar to virtual stock)"
 msgstr "Analisi che include i movimenti futuri (simile alla giacenza virtuale)"
-
-#. module: stock
-#: model:ir.actions.act_window,name:stock.action3
-#: view:stock.tracking:0
-msgid "Downstream traceability"
-msgstr "Downstream traceability"
 
 #. module: stock
 #: code:addons/stock/wizard/stock_invoice_onshipping.py:112
@@ -3148,20 +3135,10 @@ msgstr "Internal Moves display all inventory operations you have to perform in y
 msgid "Order"
 msgstr "Ordine"
 
-#. module: stock
-#: view:product.product:0
-msgid "Cost Price :"
-msgstr "Cost Price :"
-
 #. module: stock_picking_extended
 #: model:ir.model,name:stock_picking_extended.model_res_partner_address
 msgid "Partner Addresses"
 msgstr "Indirizzi Partner"
-
-#. module: stock
-#: field:stock.tracking,name:0
-msgid "Pack Reference"
-msgstr "Pack Reference"
 
 #. module: stock
 #: view:report.stock.move:0
