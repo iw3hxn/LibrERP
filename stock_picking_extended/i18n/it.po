@@ -45,13 +45,6 @@ msgid "Put in a new pack"
 msgstr "Mettere in un nuovo imballaggio"
 
 #. module: stock
-#: code:addons/stock/wizard/stock_traceability.py:54
-#: view:stock.production.lot:0
-#, python-format
-msgid "Upstream Traceability"
-msgstr "Tracciabilità a monte"
-
-#. module: stock
 #: model:stock.journal,name:stock.journal_asset
 msgid "Asset"
 msgstr "Asset"
@@ -4112,12 +4105,6 @@ msgstr "Maggio"
 #: help:stock.picking,address_id:0
 msgid "Partner to be invoiced"
 msgstr "Partner da fatturare"
-
-#. module: stock
-#: model:ir.actions.act_window,name:stock.action5
-#: view:stock.tracking:0
-msgid "Upstream traceability"
-msgstr "Tracciabilkità Upstream"
 
 #. module: stock
 #: model:ir.actions.report.xml,name:stock.report_location_overview_all

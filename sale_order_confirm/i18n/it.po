@@ -61,7 +61,7 @@ msgstr "Da Fatturare"
 #. module: sale_order_confirm
 #: field:sale.order.confirm.line,product_uom:0
 msgid "Unit of Measure"
-msgstr "Unita di Misura"
+msgstr "Unità di Misura"
 
 #. module: sale_order_confirm
 #: field:sale.order.line,qty_available:0
