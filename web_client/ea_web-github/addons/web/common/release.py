@@ -1,5 +1,5 @@
 name = 'openerp-web'
-version = '2014'
+version = '6.1'
 description = "Web Client of SimplERP, the Simple Open Source ERPe"
 long_description = "SimplERP Web is the web client of the Open Source ERP, a free enterprise management software"
 author = "Didotech SRL"
