@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 6.0.3\n"
-"Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2011-11-24 14:32+0000\n"
-"PO-Revision-Date: 2011-11-24 14:32+0000\n"
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-09-03 15:25+0000\n"
+"PO-Revision-Date: 2014-09-03 15:25+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,9 +16,24 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: base_partner_ref
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr "Codice Fornitore Univoco"
+
+#. module: base_partner_ref
 #: field:res.partner,property_supplier_ref:0
 msgid "Supplier Ref."
 msgstr "Codice Fornitore"
+
+#. module: base_partner_ref
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr "Codice Cliente Univoco"
+
+#. module: base_partner_ref
+#: sql_constraint:res.partner:0
+msgid "Error! Specified VAT Number already exists for any other registered partner."
+msgstr "Errore! Esiste già un partner con la stessa P.IVA."
 
 #. module: base_partner_ref
 #: field:res.partner,property_customer_ref:0
@@ -26,29 +41,16 @@ msgid "Customer Ref."
 msgstr "Codice Cliente"
 
 #. module: base_partner_ref
-#: help:res.partner,property_customer_ref:0
-msgid "The reference attributed by the partner to the current company as a customer of theirs."
-msgstr "Il codice attribuito al partner come cliente"
-
-#. module: base_partner_ref
 #: model:ir.model,name:base_partner_ref.model_res_partner
 msgid "Partner"
 msgstr "Partner"
 
 #. module: base_partner_ref
-#: model:ir.module.module,shortdesc:base_partner_ref.module_meta_information
-msgid "Manage references at the partner's"
-msgstr "Gestisce i codice dei partner"
+#: help:res.partner,property_customer_ref:0
+msgid "The reference attributed by the partner to the current company as a customer of theirs."
+msgstr "Il codice attribuito al partner come cliente"
 
 #. module: base_partner_ref
 #: help:res.partner,property_supplier_ref:0
 msgid "The reference attributed by the partner to the current company as a supplier of theirs."
 msgstr "Il codice attribuito al partner come fornitore"
-
-#. module: base_partner_ref
-#: model:ir.module.module,description:base_partner_ref.module_meta_information
-msgid "This module Lets you enter the customer and supplier references attributed by the partners in their information systems.\n"
-"These references may be different for each company managed in the OpenERP database."
-msgstr "Ce module permet de saisir les références client et fournisseur attribuées par les partenaires dans leurs systèmes d'information.\n"
-"Ces références peuvent être différentes pour chaque société gérée dans la base de données OpenERP."
-

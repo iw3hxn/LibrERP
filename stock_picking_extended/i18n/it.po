@@ -3743,11 +3743,6 @@ msgid "This menu gives you the full traceability of inventory operations on a sp
 msgstr "This menu gives you the full traceability of inventory operations on a specific product. You can filter on the product to see all the past or future movements for the product."
 
 #. module: stock
-#: view:stock.picking:0
-msgid "Return Products"
-msgstr "Prodotti ritornati"
-
-#. module: stock
 #: view:stock.inventory:0
 msgid "Validate Inventory"
 msgstr "Convalida inventario"

@@ -81,6 +81,11 @@ msgstr "Arancione"
 msgid "Print Meetings by Zone"
 msgstr "Stampa Appuntamenti"
 
+#. module: crm
+#: model:ir.ui.menu,name:crm.menu_meeting_sale
+msgid "Meetings / Phone Calls"
+msgstr "Meeting / Chiamate Telefoniche"
+
 #. module: crm_lead_correct
 #: model:ir.model,name:crm_lead_correct.model_crm_meeting
 msgid "Meeting"

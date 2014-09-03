@@ -648,3 +648,13 @@ msgstr "Spedire al Cliente"
 #: field:res.company,readonly_price_unit:0
 msgid "Read Only Price Unit on Sale Order"
 msgstr "Prezzo di Vendita solo da listino"
+
+#. module: sale_order_confirm
+#: field:res.company,default_sale_order_validity:0
+msgid "Default day of validity"
+msgstr "Giorni prestabiliti validità preventivo"
+
+#. module: sale_order_confirm
+#: field:sale.order,validity:0
+msgid "Validity"
+msgstr "Validità"

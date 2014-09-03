@@ -9814,12 +9814,6 @@ msgid "Title 2 (bold)"
 msgstr "Titolo 2 (Grassetto)"
 
 #. module: account
-#: model:ir.actions.act_window,name:account.action_invoice_tree2
-#: model:ir.ui.menu,name:account.menu_action_invoice_tree2
-msgid "Supplier Invoices"
-msgstr "Fatture fornitori"
-
-#. module: account
 #: view:account.analytic.line:0
 #: field:account.analytic.line,product_id:0
 #: view:account.entries.report:0
