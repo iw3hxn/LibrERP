@@ -174,6 +174,7 @@ class account_invoice(orm.Model):
     _columns = {
         'supplier_invoice_number': fields.char('Supplier invoice nr', size=16),
         'direct_invoice': fields.function(_is_direct_invoice, string='Direct Invoice', type='boolean', method=True),
-        'cig': fields.char('CIG', size=64),
+        'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
+        'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
 #        'reference': fields.related('supplier_invoice_number', type='char' ),
     }

@@ -25,6 +25,7 @@
                     </field>
                     <field name="payment_term" position="after">
                         <field name="cig" />
+                        <field name="cup" />
                     </field>
                     <field name="fiscal_position" position="attributes">
                         <attribute name="groups"></attribute>
