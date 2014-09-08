@@ -29,6 +29,13 @@
 from openerp.osv import orm, fields
 
 
+class crm_phonecall(orm.Model):
+    _inherit = 'crm.phonecall'
+
+    _defaults = {
+        'partner_id': lambda self, cr, uid, context: context.get('partner_id', False),
+    }
+
 class crm_meeting(orm.Model):
     _description = "Meeting"
     _inherit = 'crm.meeting'
@@ -42,4 +49,14 @@ class crm_meeting(orm.Model):
             string='Provincia',
             store=True,
             readonly=True),
+    }
+
+    _defaults = {
+        'state': 'draft',
+        'active': 1,
+        'user_id': lambda self, cr, uid, ctx: uid,
+        'partner_id': lambda self, cr, uid, context: context.get('partner_id', False),
+        'partner_address_id': lambda self, cr, uid, context: context.get('partner_address_id', False),
+        'email_from': lambda self, cr, uid, context: context.get('email_from', False),
+        'categ_id': lambda self, cr, uid, context: context.get('categ_id', False)
     }

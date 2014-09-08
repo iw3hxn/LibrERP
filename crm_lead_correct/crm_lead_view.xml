@@ -258,8 +258,8 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="description" position="after">
-                    <field name="phonecall_ids" nolabel="1" colspan="4"/>
-                    <field name="meeting_ids" nolabel="1" colspan="4"/>
+                    <field name="phonecall_ids" context="{'partner_id' : partner_id}" nolabel="1" colspan="4"/>
+                    <field name="meeting_ids" context="{'partner_id':partner_id, 'partner_address_id' : partner_address_id, 'email_from': email_from, 'categ_id' : '1'}"  nolabel="1" colspan="4"/>
                 </field>
             </field>
         </record>
