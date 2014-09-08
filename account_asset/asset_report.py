@@ -38,8 +38,8 @@ class Parser(report_sxw.rml_parse):
         for move_line in asset.account_move_line_ids:
             if move_line.asset_category_id:
                 if move_line.invoice:
-                    if invoice and invoice.id != move_line.invoice.id:
-                        raise Exception(_("Move %s contains different invoices") % asset.name)
+                    #if invoice and invoice.id != move_line.invoice.id:
+                    #    raise Exception(_("Move %s contains different invoices") % asset.name)
                     invoice = move_line.invoice
                 account_item = {
                     'amount': move_line.tax_amount,

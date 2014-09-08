@@ -665,7 +665,7 @@ class account_asset_asset(orm.Model):
             asset_value = 0.0
         else:
             asset_value = asset.purchase_value + asset.increase_value \
-                          - asset.salvage_value - asset.decrease_value
+                          - asset.salvage_value + asset.decrease_value + asset.remove_value
         return asset_value
 
     def _asset_value(self, cr, uid, ids, name=None, args=None, context=None):  # what does name and args do?
@@ -724,16 +724,17 @@ class account_asset_asset(orm.Model):
         return res
 
     def onchange_purchase_salvage_value(
-            self, cr, uid, ids, purchase_value, salvage_value, increase_value, decrease_value, date_start, context=None):
+            self, cr, uid, ids, purchase_value, salvage_value, increase_value, decrease_value, remove_value, date_start, context=None):
         if not context:
             context = {}
         res = {}
-        if purchase_value != 0.0 or salvage_value != 0.0 or increase_value != 0.0 or decrease_value != 0.0:
+        if purchase_value != 0.0 or salvage_value != 0.0 or increase_value != 0.0 or decrease_value != 0.0 or remove_value != 0.0:
             purchase_value = purchase_value or 0.0
             salvage_value = salvage_value or 0.0
             increase_value = increase_value or 0.0
             decrease_value = decrease_value or 0.0
-            vals = {'asset_value': purchase_value + increase_value - salvage_value - decrease_value}
+            remove_value = remove_value or 0.0
+            vals = {'asset_value': purchase_value + increase_value - salvage_value + decrease_value + remove_value}
             #if vals['asset_value'] < 0.0: # TODO verify if add this check (not in v.2)
             #    raise orm.except_orm(_('Error!'),
             #         _('It cannot result a negative value in the asset.'
@@ -791,9 +792,11 @@ class account_asset_asset(orm.Model):
             required=False, readonly=True, states={'draft': [('readonly', False)]},),
         'decrease_value': fields.float('Decrease Value', digits_compute=dp.get_precision('Account'),
             required=False, readonly=True, states={'draft': [('readonly', False)]},),
+        'remove_value': fields.float('Remove Value', digits_compute=dp.get_precision('Account'),
+            required=False, readonly=True, states={'draft': [('readonly', False)]},),
         'asset_value': fields.function(_asset_value, method=True, digits_compute=dp.get_precision('Account'), string='Asset Value',
             store={
-                'account.asset.asset': (_get_assets, ['purchase_value', 'salvage_value', 'increase_value', 'decrease_value', 'parent_id'], 10),
+                'account.asset.asset': (_get_assets, ['purchase_value', 'salvage_value', 'increase_value', 'decrease_value', 'remove_value', 'parent_id'], 10),
             },
             help="The Asset Value is calculated as follows:\nPurchase Value - Salvage Value."),
         'value_residual': fields.function(_residual, method=True, digits_compute=dp.get_precision('Account'), string='Residual Value',
@@ -1041,7 +1044,7 @@ class account_asset_asset(orm.Model):
             asset_line_obj = self.pool.get('account.asset.depreciation.line')
             line_name = self._get_depreciation_entry_name(cr, uid, asset, 0, context=context)
             asset_line_vals = {
-                'amount': asset.asset_value,
+                'amount': asset.asset_value,  # and asset.asset_value or context.get('update_asset_value_from_move_line') and context.get('asset_value'),
                 'asset_id': asset_id,
                 'name': line_name,
                 'line_date': asset.date_start,
@@ -1071,6 +1074,23 @@ class account_asset_asset(orm.Model):
                 self.compute_depreciation_board(cr, uid, [asset.id], context=context)
                 self.validate(cr, uid, [asset.id], context=dict(context, asset_validate_from_write=True))
                 # extra context to avoid recursion
+
+            if asset.type == 'normal' and context.get('update_asset_value_from_move_line'):
+                # create asset variation line
+                asset_line_obj = self.pool.get('account.asset.depreciation.line')
+                line_name = self._get_depreciation_entry_name(cr, uid, asset, 0, context=context)
+                asset_line_vals = {
+                    'amount': context.get('asset_value'),
+                    'asset_id': asset.id,
+                    'name': line_name,
+                    'line_date': asset.date_start,
+                    'init_entry': True,
+                    'type': 'create',
+                }
+                asset_line_id = asset_line_obj.create(cr, uid, asset_line_vals, context=context)
+                #if context.get('update_asset_value_from_move_line'):
+                asset_line_obj.write(cr, uid, [asset_line_id], {'move_id': context['move_id']})
+
         return True
 
     def open_entries(self, cr, uid, ids, context=None):
@@ -1200,7 +1220,7 @@ class account_asset_depreciation_line(orm.Model):
 
     def unlink(self, cr, uid, ids, context=None):
         for dl in self.browse(cr, uid, ids, context):
-            if dl.type == 'create':
+            if dl.type == 'create' and not context.get('remove_asset_dl_from_invoice', False):
                 raise orm.except_orm(_('Error!'),
                     _("You cannot remove an asset line of type 'Asset Value'."))
             elif dl.move_id:

@@ -9,7 +9,7 @@
       <field name="arch" type="xml">
         <field name="account_id" position="after">
           <field name="asset_category_id" on_change="onchange_asset_ctg_id(asset_category_id)"/>
-          <field name="subsequent_asset_id" on_change="onchange_subsequent_asset_id(subsequent_asset_id)"/>
+          <field name="asset_id" on_change="onchange_asset_id(asset_id)"/>
         </field>
       </field>
     </record>
@@ -21,7 +21,7 @@
       <field name="arch" type="xml">
         <field name="account_id" position="before">
           <field name="asset_category_id" on_change="onchange_asset_ctg_id(asset_category_id)"/>
-          <field name="subsequent_asset_id" on_change="onchange_subsequent_asset_id(subsequent_asset_id)"/>
+          <field name="asset_id" on_change="onchange_asset_id(asset_id)"/>
         </field>
       </field>
     </record>
