@@ -26,31 +26,7 @@ from openerp.tools.translate import _
 class crm_make_sale(orm.TransientModel):
     """ Make sale  order for crm """
 
-    _name = "crm.make.sale"
-    _description = "Make sales"
-
-    def _selectPartner(self, cr, uid, context=None):
-        """
-        This function gets default value for partner_id field.
-        @param self: The object pointer
-        @param cr: the current row, from the database cursor,
-        @param uid: the current user’s ID for security checks,
-        @param context: A standard dictionary for contextual values
-        @return: default value of partner_id field.
-        """
-        if context is None:
-            context = {}
-
-        lead_obj = self.pool['crm.lead']
-        active_id = context and context.get('active_id', False) or False
-        if not active_id:
-            return False
-
-        lead = lead_obj.read(cr, uid, active_id, ['partner_id'])
-        return lead['partner_id']
-
-    def view_init(self, cr, uid, fields_list, context=None):
-        return super(crm_make_sale, self).view_init(cr, uid, fields_list, context=context)
+    _inherit = "crm.make.sale"
     
     def makeOrder(self, cr, uid, ids, context=None):
         """
@@ -104,7 +80,8 @@ class crm_make_sale(orm.TransientModel):
                     'date_order': fields.date.context_today(self,cr,uid,context=context),
                     'fiscal_position': fpos,
                     'payment_term': payment_term,
-                    'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
+                    'user_id' : make.user_id.id,
+#                    'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
                     'note': case.description or ''
                 }
                 
@@ -147,23 +124,12 @@ class crm_make_sale(orm.TransientModel):
                     'res_id': new_ids
                 }
             return value
-        
-    def _get_shop_id(self, cr, uid, ids, context=None):
-        cmpny_id = self.pool['res.users']._get_company(cr, uid, context=context)
-        shop = self.pool['sale.shop'].search(cr, uid, [('company_id', '=', cmpny_id)])
-        return shop and shop[0] or False
 
     _columns = {
-        'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
-        'partner_id': fields.many2one('res.partner', 'Customer', required=True, domain=[('customer','=',True)]),
-        'close': fields.boolean('Close Opportunity', help='Check this to close the opportunity after having created the sale order.'),
         'move_attachment': fields.boolean('Move Attachment to Quotation')
     }
     _defaults = {
-         'shop_id': _get_shop_id,
-         'close': False,
-         'move_attachment': True,
-         'partner_id': _selectPartner,
+        'move_attachment': True,
     }
 
 
