@@ -62,7 +62,7 @@ class account_move_line(orm.Model):
 
     _columns = {
         'asset_category_id': fields.many2one('account.asset.category', 'Asset Category'),
-        'subsequent_asset_id': fields.many2one('account.asset.asset', 'Subsequent Purchase of Asset'),
+        'subsequent_asset': fields.boolean('Subsequent Purchase of Asset'),
     }
 
     def onchange_account_id(self, cr, uid, ids, account_id=False, partner_id=False):
@@ -94,16 +94,22 @@ class account_move_line(orm.Model):
     def create(self, cr, uid, vals, context=None, check=True):
         if not context:
             context = {}
-        if vals.get('asset_id') and not context.get('allow_asset'):
-            raise orm.except_orm(_('Error!'),
-                _("You are not allowed to link an accounting entry to an asset."
-                  "\nYou should generate such entries from the asset."))
+        #if vals.get('asset_id') and not context.get('allow_asset'):
+        #    raise orm.except_orm(_('Error!'),
+        #        _("You are not allowed to link an accounting entry to an asset."
+        #          "\nYou should generate such entries from the asset."))
         asset_obj = self.pool.get('account.asset.asset')
-        if vals.get('asset_category_id') and not vals.get('subsequent_asset_id'):
-            # create asset
-            move = self.pool.get('account.move').browse(cr, uid, vals['move_id'])
+        move = self.pool.get('account.move').browse(cr, uid, vals['move_id'])
+        journal_obj = self.pool['account.journal']
+        if journal_obj.browse(cr, uid, [move.journal_id.id], context=context)[0].type in ('sale', 'sale_refund', 'purchase', 'purchase_refund'):
             # add not deductible VAT if present, make it depending from l10n_it_partially_deductible_vat
             asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
+        else:
+            asset_value = vals['debit'] or - vals['credit']
+        
+        if vals.get('asset_category_id') and not vals.get('asset_id'):
+            
+            # create asset
             asset_vals = {
                 'name': vals['name'],
                 'category_id': vals['asset_category_id'],
@@ -118,40 +124,63 @@ class account_move_line(orm.Model):
             ctx = dict(context, create_asset_from_move_line=True, move_id=vals['move_id'])
             asset_id = asset_obj.create(cr, uid, asset_vals, context=ctx)
             vals['asset_id'] = asset_id
-        elif vals.get('subsequent_asset_id'):
-            vals['asset_id'] = vals['subsequent_asset_id']
+        elif vals.get('asset_id'):
+            #vals['asset_id'] = vals['subsequent_asset_id']
             #  get variation to put in asset value
-            ctx = dict(context, update_asset_value_from_move_line=True, move_id=vals['move_id'])
-            asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
-            if asset_value > 0.0:
-                increase_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].increase_value + asset_value
-                asset_obj.write(cr, uid, [vals['asset_id']], {'increase_value': increase_value}, context=ctx)
-            elif asset_value < 0.0:
-                decrease_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].decrease_value - asset_value
-                asset_obj.write(cr, uid, [vals['asset_id']], {'decrease_value': decrease_value}, context=ctx)
+            vals.update({'subsequent_asset': True})
+            ctx = dict(context, update_asset_value_from_move_line=True, move_id=vals['move_id'], asset_value=asset_value)
+            
+            if journal_obj.browse(cr, uid, [move.journal_id.id], context=context)[0].type in ('sale', 'sale_refund', 'purchase', 'purchase_refund'):
+                if asset_value > 0.0:
+                    purchase_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].purchase_value
+                    asset_obj.write(cr, uid, [vals['asset_id']], {'purchase_value': purchase_value + asset_value}, context=ctx)
+                elif asset_value < 0.0:
+                    remove_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].remove_value
+                    asset_obj.write(cr, uid, [vals['asset_id']], {'remove_value': remove_value + asset_value, 'date_remove': move.date}, context=ctx)
+            else:
+                if asset_value > 0.0:
+                    increase_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].increase_value
+                    asset_obj.write(cr, uid, [vals['asset_id']], {'increase_value': increase_value + asset_value}, context=ctx)
+                elif asset_value < 0.0:
+                    decrease_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].decrease_value
+                    asset_obj.write(cr, uid, [vals['asset_id']], {'decrease_value': decrease_value + asset_value}, context=ctx)
 
         return super(account_move_line, self).create(cr, uid, vals, context, check)
 
     def write(self, cr, uid, ids, vals, context=None, check=True, update_check=True):
-        if vals.get('asset_id'):
-            raise orm.except_orm(_('Error!'),
-                _("You are not allowed to link an accounting entry to an asset."
-                  "\nYou should generate such entries from the asset."))
+        #if vals.get('asset_id'):
+        #    raise orm.except_orm(_('Error!'),
+        #        _("You are not allowed to link an accounting entry to an asset."
+        #          "\nYou should generate such entries from the asset."))
         asset_obj = self.pool.get('account.asset.asset')
-        if vals.get('asset_category_id') and not vals.get('subsequent_asset_id'):
+        journal_obj = self.pool['account.journal']
+
+        if vals.get('asset_category_id') and not vals.get('asset_id'):
             assert len(ids) == 1, 'This option should only be used for a single id at a time.'
             for aml in self.browse(cr, uid, ids, context):
                 if vals['asset_category_id'] == aml.asset_category_id.id:
                     continue
-                #asset_line_obj = self.pool.get('account.asset.depreciation.line')
 
-                # create asset
-                debit = 'debit' in vals and vals.get('debit', 0.0) or aml.debit
-                credit = 'credit' in vals and vals.get('credit', 0.0) or aml.credit
-                asset_value = debit - credit
+                if journal_obj.browse(cr, uid, [aml.move_id.journal_id.id], context=context)[0].type in ('sale', 'sale_refund', 'purchase', 'purchase_refund'):
+                    # add not deductible VAT if present, make it depending from l10n_it_partially_deductible_vat
+                    vals = {}
+                    vals['tax_code_id'] = aml.tax_code_id.id
+                    vals['tax_amount'] = aml.tax_amount
+                    vals['quantity'] = aml.quantity
+                    vals['debit'] = aml.debit
+                    vals['credit'] = aml.credit
+                    asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
+                else:
+                    #asset_value = vals['debit'] or - vals['credit']
+                    #??? why debit-credit? not debit or -credit?
+                    debit = 'debit' in vals and vals.get('debit', 0.0) or aml.debit
+                    credit = 'credit' in vals and vals.get('credit', 0.0) or aml.credit
+                    asset_value = debit - credit
+
                 partner_id = 'partner' in vals and vals.get('partner', False) or aml.partner_id.id
                 date_start = 'date' in vals and vals.get('date', False) or aml.date
                 #asset_name = 'ref' in vals and vals.get('ref') or aml.ref or aml.name
+                # create asset
                 asset_vals = {
                     'name': vals.get('name') or aml.name,
                     'category_id': vals['asset_category_id'],
@@ -165,16 +194,41 @@ class account_move_line(orm.Model):
                 ctx = dict(context, create_asset_from_move_line=True, move_id=aml.move_id.id)
                 asset_id = asset_obj.create(cr, uid, asset_vals, context=ctx)
                 vals['asset_id'] = asset_id
-        elif vals.get('subsequent_asset_id'):
-            vals['asset_id'] = vals['subsequent_asset_id']
+
+        elif vals.get('asset_id'):
+            #vals['asset_id'] = vals['subsequent_asset_id']
             #  get variation to put in asset value
             ctx = dict(context, update_asset_value_from_move_line=True, move_id=vals['move_id'])
-            asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
-            if asset_value > 0.0:
-                increase_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].increase_value + asset_value
-                asset_obj.write(cr, uid, [vals['asset_id']], {'increase_value': increase_value}, context=ctx)
-            elif asset_value < 0.0:
-                decrease_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].decrease_value - asset_value
-                asset_obj.write(cr, uid, [vals['asset_id']], {'decrease_value': decrease_value}, context=ctx)
+            for aml in self.browse(cr, uid, ids, context):
+                if vals['asset_id'] == aml.asset_id.id:
+                    continue
+                
+                if journal_obj.browse(cr, uid, [aml.move_id.journal_id.id], context=context)[0].type in ('sale', 'sale_refund', 'purchase', 'purchase_refund'):
+                    # add not deductible VAT if present, make it depending from l10n_it_partially_deductible_vat
+                    vals = {}
+                    vals['tax_code_id'] = aml.tax_code_id.id
+                    vals['tax_amount'] = aml.tax_amount
+                    vals['quantity'] = aml.quantity
+                    vals['debit'] = aml.debit
+                    vals['credit'] = aml.credit
+                    asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
+                else:
+                    asset_value = vals['debit'] or - vals['credit']
+                ctx.update({'asset_value': asset_value})
+
+                if journal_obj.browse(cr, uid, [aml.move_id.journal_id.id], context=context)[0].type in ('sale', 'sale_refund', 'purchase', 'purchase_refund'):
+                    if asset_value > 0.0:
+                        purchase_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].purchase_value + asset_value
+                        asset_obj.write(cr, uid, [vals['asset_id']], {'purchase_value': purchase_value}, context=ctx)
+                    elif asset_value < 0.0:
+                        remove_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].remove_value + asset_value
+                        asset_obj.write(cr, uid, [vals['asset_id']], {'remove_value': remove_value, 'date_remove': aml.move_id.date}, context=ctx)
+                else:
+                    if asset_value > 0.0:
+                        increase_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].increase_value + asset_value
+                        asset_obj.write(cr, uid, [vals['asset_id']], {'increase_value': increase_value}, context=ctx)
+                    elif asset_value < 0.0:
+                        decrease_value = asset_obj.browse(cr, uid, [vals['asset_id']])[0].decrease_value + asset_value
+                        asset_obj.write(cr, uid, [vals['asset_id']], {'decrease_value': decrease_value}, context=ctx)
 
         return super(account_move_line, self).write(cr, uid, ids, vals, context, check, update_check)

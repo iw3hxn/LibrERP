@@ -22,7 +22,7 @@
 
 {
     'name': 'Assets Management',
-    'version': '2.3.4.4',
+    'version': '2.4.5.6',
     'depends': [
         'report_webkit',
         'l10n_it_account',
@@ -50,7 +50,8 @@ as well as for Deferred Cost/Income and Cost/Income Spreading purposes (via Time
 The full asset life-cycle is managed (from asset creation  up to asset removal).
 
 Assets can be created manually as well as automatically (via the creation of an accounting entry on the asset account).
-Assets values can be increased/decreased from purchase/sale invoices taking the specific asset to be changed.
+Assets values can be purchased/sold from purchase/sale invoices taking the specific asset to be changed.
+Assets values can be increased/decreased from account moves taking the specific asset to be changed.
 
 Excel based reporting is available via the 'account_asset_report_xls' module (cf. http://odoo.apps.com).
 Legal report for Italy is available.

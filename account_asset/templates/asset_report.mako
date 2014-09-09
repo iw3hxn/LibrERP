@@ -64,9 +64,11 @@
             ${object.purchase_value or ''| entity}
             </td>
             <td class="right_with_line">
-            variazione?
+            ${object.increase_value or ''| entity} <br/>
+            ${- object.decrease_value or ''| entity}
             </td>
             <td class="right_with_line">
+            ${object.remove_value or ''| entity}
             ${object.date_remove or ''| entity}
             </td>
             <td class="right_with_line">

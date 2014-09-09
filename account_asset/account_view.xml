@@ -21,6 +21,7 @@
         <field name="statement_id" position="after">
           <field name="asset_category_id"/>
           <field name="asset_id"/>
+          <field name="subsequent_asset"/>
         </field>
       </field>
     </record>
@@ -32,6 +33,7 @@
       <field name="arch" type="xml">
         <field name="account_id" position="after">
           <field name="asset_id"/>
+          <field name="subsequent_asset"/>
         </field>
       </field>
     </record>
@@ -50,6 +52,7 @@
             <separator colspan="2" string="Asset"/>
             <field name="asset_category_id"/>
             <field name="asset_id"/>
+            <field name="subsequent_asset"/>
           </group>
         </xpath>
         <xpath expr="//notebook/page[@string='Journal Items']/field[@name='line_id']/tree/field[@name='account_id']"  position="attributes">
@@ -58,6 +61,7 @@
         <xpath expr="//notebook/page[@string='Journal Items']/field[@name='line_id']/tree/field[@name='state']"  position="before">
           <field name="asset_category_id"/>
           <field name="asset_id"/>
+          <field name="subsequent_asset"/>
         </xpath>
       </field>
     </record>

@@ -130,11 +130,8 @@
     	<tr class="line">
         	<td style="border:none;"><strong>${_("Aspetto beni")}:</strong>&nbsp;${partner.goods_description_id.name or ''}&nbsp;</td>   	
         </tr>        
-    	<tr class="line">
-        	<td style="border:none;"><strong>${_("Mezzo trasp.")}:</strong>&nbsp;${partner.transportation_reason_id.name or ''}&nbsp;</td>   	
-        </tr>    
         <tr class="line">
-        	<td style="border:none;"><strong>${_("Porto")}:</strong>&nbsp;${partner.carriage_condition_id.name or ''}&nbsp;</td>   	
+        	<td style="border:none;"><strong>${_("Resa merce")}:</strong>&nbsp;${partner.carriage_condition_id.name or ''}&nbsp;</td>   	
         </tr>                
     </table>  	
     

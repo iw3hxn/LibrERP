@@ -112,22 +112,25 @@
                   <group>
                     <field name="purchase_value" 
                            attrs="{'readonly':['|',('move_line_check','=',True),('state','!=','draft')]}"
-                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, date_start)"/>
+                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, remove_value, date_start)"/>
                     <field name="date_start"
                            attrs="{'readonly':[('state','!=','draft')],'required':[('type','=','normal')]}"
-                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, date_start)"/>
+                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, remove_value, date_start)"/>
                     <field name="increase_value" 
                            attrs="{'readonly':['|',('move_line_check','=',True),('state','!=','draft')]}"
-                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, date_start)"/>
+                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, remove_value, date_start)"/>
                   </group>
                   <group>
                     <field name="salvage_value" 
                            attrs="{'readonly':['|',('move_line_check','=',True),('state','!=','draft')]}"
-                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, date_start)"/>
+                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, remove_value, date_start)"/>
                     <field name="date_remove"/>
+                    <field name="remove_value" 
+                           attrs="{'readonly':['|',('move_line_check','=',True),('state','!=','draft')]}"
+                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, remove_value, date_start)"/>
                     <field name="decrease_value" 
                            attrs="{'readonly':['|',('move_line_check','=',True),('state','!=','draft')]}"
-                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, date_start)"/>
+                           on_change="onchange_purchase_salvage_value(purchase_value, salvage_value, increase_value, decrease_value, remove_value, date_start)"/>
                   </group>
                 </group>
                 <separator string="Other Information" colspan="4"/>

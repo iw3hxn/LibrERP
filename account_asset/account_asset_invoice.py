@@ -34,7 +34,7 @@ class account_invoice(orm.Model):
         asset_line_obj = self.pool.get('account.asset.depreciation.line')
         for inv in self.browse(cr, uid, ids):
             for aml in inv.move_id.line_id:
-                if aml.asset_id and not aml.subsequent_asset_id:
+                if aml.asset_id and not aml.subsequent_asset:
                     asset = aml.asset_id
                     ctx = {'create_asset_from_move_line': True}
                     asset_obj.write(cr, uid, [asset.id], {'code': '', }, context=ctx)
@@ -42,41 +42,26 @@ class account_invoice(orm.Model):
                     asset_line_name = asset_obj._get_depreciation_entry_name(cr, uid, asset, 0)
                     asset_line_obj.write(cr, uid, [asset.depreciation_line_ids[0].id],
                         {'name': asset_line_name}, context={'allow_asset_line_update': True})
-                elif aml.subsequent_asset_id:
-                    asset = aml.subsequent_asset_id
-                    ctx = {'update_asset_value_from_move_line': True}
-                    if asset.type == 'normal':
-                        # create subsequent asset line
-                        line_name = asset_obj._get_depreciation_entry_name(cr, uid, asset, 0, context=ctx)
-                        vals = {}
-                        vals['tax_code_id'] = aml.tax_code_id.id
-                        vals['tax_amount'] = aml.tax_amount
-                        vals['quantity'] = aml.quantity
-                        vals['debit'] = aml.debit
-                        vals['credit'] = aml.credit
-                        
-                        asset_value = self.pool['account.move.line'].get_asset_value_with_ind_tax(cr, uid, vals, context={})
-                        asset_line_vals = {
-                            'amount': aml.debit and asset_value or aml.credit and - asset_value,
-                            'asset_id': asset.id,
-                            'name': line_name,
-                            'line_date': aml.date,
-                            'init_entry': True,
-                            'type': 'create',
-                        }
-                        asset_line_id = asset_line_obj.create(cr, uid, asset_line_vals, context=ctx)
-                        asset_line_obj.write(cr, uid, [asset_line_id], {'move_id': aml.move_id.id})
+
         return True
 
     def action_cancel(self, cr, uid, ids, *args):
         assets = []
         for inv in self.browse(cr, uid, ids):
             move = inv.move_id
-            assets = move and [aml.asset_id for aml in filter(lambda x: x.asset_id, move.line_id)]
+            #assets = move and [aml.asset_id for aml in filter(lambda x: x.asset_id, move.line_id)]
+            assets = move and [aml.asset_id for aml in [i for i in move.line_id if i.asset_id]]
+            adl_obj = self.pool['account.asset.depreciation.line']
+            adl_ids = adl_obj.search(cr, uid, [('move_id', '=', move.id)])
+
         super(account_invoice, self).action_cancel(cr, uid, ids, *args)
         if assets:
             asset_obj = self.pool.get('account.asset.asset')
-            asset_obj.unlink(cr, uid, [x.id for x in assets])
+            for asset in asset_obj.browse(cr, uid, [x.id for x in assets]):
+                if not asset.account_move_line_ids:  # solo se non ci sono più righe di fatture collegate serve cancellare l'asset
+                    asset_obj.unlink(cr, uid, [x.id for x in assets])
+                elif adl_ids:  # if there is moves linked to the asset we have to delete the linked depreciation lines for not leave orphans
+                    adl_obj.unlink(cr, uid, adl_ids, context={'remove_asset_dl_from_invoice': True})
         return True
 
     def line_get_convert(self, cr, uid, x, part, date, context=None):
@@ -84,9 +69,9 @@ class account_invoice(orm.Model):
         if x.get('asset_category_id'):
             if res.get('debit') or res.get('credit'):  # skip empty debit/credit
                 res['asset_category_id'] = x['asset_category_id']
-        if x.get('subsequent_asset_id'):
+        if x.get('asset_id'):
             if res.get('debit') or res.get('credit'):  # skip empty debit/credit
-                res['subsequent_asset_id'] = x['subsequent_asset_id']
+                res['asset_id'] = x['asset_id']
         return res
 
     def inv_line_characteristic_hashcode(self, invoice, invoice_line):
@@ -100,7 +85,7 @@ class account_invoice_line(orm.Model):
 
     _columns = {
         'asset_category_id': fields.many2one('account.asset.category', 'Asset Category'),
-        'subsequent_asset_id': fields.many2one('account.asset.asset', 'Subsequent Purchase of Asset'),
+        'asset_id': fields.many2one('account.asset.asset', 'Linked Asset'),
     }
 
     def onchange_account_id(self, cr, uid, ids, product_id, partner_id, inv_type, fposition_id, account_id):
@@ -115,10 +100,10 @@ class account_invoice_line(orm.Model):
                     res['value'].update(vals)
         return res
 
-    def onchange_subsequent_asset_id(self, cr, uid, ids, subsequent_asset_id):
+    def onchange_asset_id(self, cr, uid, ids, asset_id):
         res = {}
-        if subsequent_asset_id:
-            asset_id = self.pool['account.asset.asset'].browse(cr, uid, subsequent_asset_id)
+        if asset_id:
+            asset_id = self.pool['account.asset.asset'].browse(cr, uid, asset_id)
             res['value'] = {'asset_category_id': asset_id.category_id.id}
         return res
 
@@ -133,8 +118,8 @@ class account_invoice_line(orm.Model):
         res = super(account_invoice_line, self).move_line_get_item(cr, uid, line, context)
         if line.asset_category_id:
             res['asset_category_id'] = line.asset_category_id.id
-        if line.subsequent_asset_id:
-            res['subsequent_asset_id'] = line.subsequent_asset_id.id
+        if line.asset_id:
+            res['asset_id'] = line.asset_id.id
         return res
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
