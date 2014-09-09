@@ -37,7 +37,9 @@
     'author': 'NetAndCo',
     'website': 'http://ww.netandco.net',
     'depends': ['product',
-                'product_manufacturer'],
+                'product_manufacturer',
+                'product_bom' # only for have group "product_bom.group_create_product"
+               ],
     'init_xml': [],
     'update_xml': [
         'product_brand_view.xml',
