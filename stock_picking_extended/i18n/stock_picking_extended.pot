@@ -3123,11 +3123,6 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#. module: stock
-#: view:product.product:0
-msgid "Cost Price :"
-msgstr ""
-
 #. module: stock_picking_extended
 #: model:ir.model,name:stock_picking_extended.model_res_partner_address
 msgid "Partner Addresses"
