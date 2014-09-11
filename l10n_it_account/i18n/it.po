@@ -8750,13 +8750,6 @@ msgstr "Fatture e Pagamenti"
 msgid "You can check this box to mark this journal item as a litigation with the associated partner"
 msgstr "Spuntare la casella se la registrazione e' in contestazione con il partner"
 
-#. module: l10n_it_account
-#: constraint:res.partner.address:0
-msgid "\n"
-" There are just an address of type default"
-msgstr "\n"
-" Esiste già un indirizzo di Tipo Predefinito"
-
 #. module: account
 #: constraint:account.bank.statement.line:0
 msgid "The amount of the voucher must be the same amount as the one on the statement line"

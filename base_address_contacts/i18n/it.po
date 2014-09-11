@@ -128,13 +128,6 @@ msgid "Birthdate"
 msgstr "Data di Nascita"
 
 #. module: base_address_contacts
-#: constraint:res.partner.address:0
-msgid "\n"
-" There are just an address of type default"
-msgstr "\n"
-" Esiste già un indirizzo di Tipo Predefinito"
-
-#. module: base_address_contacts
 #: view:res.partner:0
 msgid "Contact"
 msgstr "Contatto"

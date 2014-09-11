@@ -236,7 +236,7 @@ msgstr "S.r.l."
 msgid "\n"
 " There are just an address of type default"
 msgstr "\n"
-" Esiste già un indirizzo di Tipo Predefinito"
+" Esiste già una sede legale"
 
 #. module: l10n_it_base
 #: model:res.partner.title,name:l10n_it_base.avv
