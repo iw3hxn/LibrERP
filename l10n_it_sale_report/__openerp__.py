@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Italian Localisation - Sale reports',
-    'version': '2.0.2.3',
+    'version': '2.0.2.4',
     'category': 'Localisation/Italy',
     'description': """
 Sale reports for Italian localization - DDT & Fattura accompagnatoria

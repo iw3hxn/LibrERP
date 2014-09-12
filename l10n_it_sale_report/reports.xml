@@ -11,7 +11,7 @@
             <field name="tml_source">file</field>
             <field name="in_format">oo-odt</field>
             <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>
-            <field name="parser_loc">l10n_it_sale_report/ddt.py</field>
+            <field name="parser_loc">l10n_sale_report/ddt.py</field>
             <field name="report_rml">l10n_it_sale_report/templates/ddt.odt</field>
             <field name="parser_state">loc</field>
         </record>
