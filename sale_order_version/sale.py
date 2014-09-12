@@ -29,7 +29,7 @@ from tools import ustr
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
     _columns = {
-        'active': fields.related('order_id', 'active', type='boolean', string='Active', store=False),
+        #'active': fields.related('order_id', 'active', type='boolean', string='Active', store=False),
         'sale_line_copy_id': fields.many2one('sale.order.line', 'Orig version', required=False, readonly=False),
     }
     
