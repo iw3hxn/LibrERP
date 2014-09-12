@@ -31,7 +31,7 @@
         
         El filtro por pedido de venta activo, no funciona en la web.
         """,
-    "version": "3.3.9.1",
+    "version": "3.3.10.1",
     "author": "Pexego, Didotech SRL",
     "website": "http://www.pexego.es",
     "category": "Sales/Version",
