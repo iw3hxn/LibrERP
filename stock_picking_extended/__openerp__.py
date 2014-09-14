@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.8.9.10',
+    'version': '3.9.10.11',
     'category': 'Others',
     'description': """SimplERP - Stock picking extension
 
@@ -61,8 +61,9 @@ Functionalities:
         'account/invoice_view.xml',
         'stock/stock.journal.csv',
         'stock/stock_journal_view.xml',
+        'purchase/purchase_view.xml',
     ],
-    "demo" : [],
+    "demo": [],
     "test": [
     ],
     "active": False,
