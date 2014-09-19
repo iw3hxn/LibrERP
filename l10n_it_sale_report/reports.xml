@@ -51,12 +51,12 @@
             <field name="report_rml">l10n_it_sale_report/templates/sale_order.odt</field>
             <field name="parser_state">loc</field>
         </record>
-
+<!--
         <record id="stock.report_move_labels" model="ir.actions.report.xml">
             <field name="name">Bindelli Arrivo</field>
             <field name="type">ir.actions.report.xml</field>
             <field name="model">stock.move</field>
-<!--            <field name="report_name">stock_move_label</field> -->
+            <field name="report_name">stock_move_label</field> 
             <field name="report_type">aeroo</field>
             <field name="tml_source">file</field>
             <field name="in_format">oo-odt</field>
@@ -64,7 +64,7 @@
             <field name="parser_loc"></field>
             <field name="report_rml">l10n_it_sale_report/templates/report_label.odt</field>
         </record>
-                
+-->                
     </data>
 </openerp>
 
