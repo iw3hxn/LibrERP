@@ -3,10 +3,8 @@
     <data>
            
         <record id="delivery.report_shipping" model="ir.actions.report.xml">
-            <field name="name">Print DDT</field>
             <field name="type">ir.actions.report.xml</field>
             <field name="model">stock.picking</field>
-            <field name="report_name">ddt</field>
             <field name="report_type">aeroo</field>
             <field name="tml_source">file</field>
             <field name="in_format">oo-odt</field>
@@ -58,7 +56,7 @@
             <field name="name">Bindelli Arrivo</field>
             <field name="type">ir.actions.report.xml</field>
             <field name="model">stock.move</field>
-            <field name="report_name">stock_move_label</field>
+<!--            <field name="report_name">stock_move_label</field> -->
             <field name="report_type">aeroo</field>
             <field name="tml_source">file</field>
             <field name="in_format">oo-odt</field>
