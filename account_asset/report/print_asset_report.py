@@ -60,15 +60,15 @@ class wizard_print_asset_report(orm.TransientModel):
         if context is None:
             context = {}
         wizard = self.browse(cr, uid, ids)[0]
-        aaa_obj = self.pool.get('account.asset.asset')
+        asset_obj = self.pool.get('account.asset.asset')
         obj_model_data = self.pool.get('ir.model.data')
-        aaa_ids = aaa_obj.search(cr, uid, [
+        asset_ids = asset_obj.search(cr, uid, [
             ('category_id', 'in', [j.id for j in wizard.category_ids]),
             ('state', '=', wizard.state),
             #('date_start
             #TODO other conditions
         ], order='category_id, name')
-        if not aaa_ids:
+        if not asset_ids:
             self.write(cr, uid, ids, {'message':
                 _('No documents found in the current selection')})
             model_data_ids = obj_model_data.search(
@@ -87,13 +87,14 @@ class wizard_print_asset_report(orm.TransientModel):
                 'type': 'ir.actions.act_window',
                 'target': 'new',
             }
-        datas = {'ids': aaa_ids}
+        datas = {'ids': asset_ids}
         datas['model'] = 'account.asset.asset'
         datas['date_start'] = wizard.date_start
         datas['fiscal_page_base'] = wizard.fiscal_page_base
         datas['category_ids'] = [p.id for p in wizard.category_ids]
         datas['type'] = wizard.type
         datas['fy_name'] = wizard.fy_id.name
+        datas['fy_id'] = [wizard.fy_id.id]
         res = {
             'type': 'ir.actions.report.xml',
             'datas': datas,

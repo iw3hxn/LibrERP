@@ -52,6 +52,14 @@ class Parser(report_sxw.rml_parse):
                 res.append(account_item)
         return res
 
+    def _get_asset_fy_depreciation_sum(self, asset):
+        asset_fy_depreciation_amount = 0.0
+        fy = self.pool['account.fiscalyear'].browse(self.cr, self.uid, self.localcontext['fy_id'])[0]
+        for asset_dl in asset.depreciation_line_ids:
+            if asset_dl.line_date <= fy.date_stop and asset_dl.line_date >= fy.date_start and asset_dl.type == 'depreciate':
+                asset_fy_depreciation_amount += asset_dl.amount
+        return asset_fy_depreciation_amount
+
     def _get_asset_start_year(self, asset):
         res = False
         if asset.date_start:
@@ -64,8 +72,7 @@ class Parser(report_sxw.rml_parse):
         self.localcontext.update({
             'invoiced_asset_lines': self._get_invoiced_account_move_lines,
             'asset_start_year': self._get_asset_start_year,
-#             #'used_tax_codes': {},
-#            #'start_date': self._get_start_date,
+            'asset_fy_depreciation_amount': self._get_asset_fy_depreciation_sum,
         })
 
     def set_context(self, objects, data, ids, report_type=None):
@@ -74,6 +81,7 @@ class Parser(report_sxw.rml_parse):
             'start_date': data.get('date_start'),
             'fy_name': data.get('fy_name'),
             'type': data.get('type'),
+            'fy_id': data.get('fy_id'),
         })
         return super(Parser, self).set_context(objects, data, ids, report_type=report_type)
 

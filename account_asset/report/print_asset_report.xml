@@ -10,6 +10,7 @@
                 <form string="Asset Report">
                     <field name="type" />
                     <field name="fiscal_page_base"/>
+                    <field name="fy_id"/>
                     <field name="date_start"/>
                     <field name="state"/>
                     <separator string="Categories" colspan="4"/>

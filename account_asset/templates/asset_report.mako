@@ -18,7 +18,7 @@
 </head>
 <body>
     <% setLang(objects[0].company_id.partner_id.lang or "en_US") %>
-    Registro Cespiti ${type} dal <strong></strong> al <strong></strong>
+    <strong> Registro Cespiti ${type} anno ${fy_name}</strong>
     <table style="width:100%; font-size: xx-small;" cellspacing="0">
         <thead>
         <tr>
@@ -78,7 +78,7 @@
             ${object.method_number_percent or object.method_number or ''| entity}
             </td>
             <td class="right_with_line">
-            ammto
+            ${asset_fy_depreciation_amount(object) or ''| entity}
             </td>
             <td class="right_with_line">
             ${object.value_residual or ''| entity}

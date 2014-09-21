@@ -1290,7 +1290,9 @@ class account_asset_depreciation_line(orm.Model):
                 'journal_id': journal_id,
                 }
             move_id = move_obj.create(cr, uid, move_vals, context=context)
-            partner_id = line.asset_id.partner_id.id
+            #partner_id = line.asset_id.partner_id.id
+            if context.get('create_move_from_button', False):
+                ctx = {'allow_asset': True, 'create_move_from_button': True}
             move_line_obj.create(cr, uid, {
                 'name': asset_name,
                 'ref': reference,
@@ -1303,7 +1305,7 @@ class account_asset_depreciation_line(orm.Model):
                 #'partner_id': partner_id,  # fuorviante
                 'date': depreciation_date,
                 'asset_id': line.asset_id.id
-            }, context={'allow_asset': True})
+            }, context=ctx)
             move_line_obj.create(cr, uid, {
                 'name': asset_name,
                 'ref': reference,
@@ -1317,7 +1319,7 @@ class account_asset_depreciation_line(orm.Model):
                 'analytic_account_id': line.asset_id.category_id.account_analytic_id.id,
                 'date': depreciation_date,
                 'asset_id': line.asset_id.id
-            }, context={'allow_asset': True})
+            }, context=ctx)
             self.write(cr, uid, line.id, {'move_id': move_id}, context={'allow_asset_line_update': True})
             created_move_ids.append(move_id)
             asset_ids.append(line.asset_id.id)

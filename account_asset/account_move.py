@@ -124,7 +124,7 @@ class account_move_line(orm.Model):
             ctx = dict(context, create_asset_from_move_line=True, move_id=vals['move_id'])
             asset_id = asset_obj.create(cr, uid, asset_vals, context=ctx)
             vals['asset_id'] = asset_id
-        elif vals.get('asset_id'):
+        elif vals.get('asset_id') and not context.get('create_move_from_button'):
             #vals['asset_id'] = vals['subsequent_asset_id']
             #  get variation to put in asset value
             vals.update({'subsequent_asset': True})
@@ -195,7 +195,7 @@ class account_move_line(orm.Model):
                 asset_id = asset_obj.create(cr, uid, asset_vals, context=ctx)
                 vals['asset_id'] = asset_id
 
-        elif vals.get('asset_id'):
+        elif vals.get('asset_id') and not context.get('create_move_from_button'):
             #vals['asset_id'] = vals['subsequent_asset_id']
             #  get variation to put in asset value
             ctx = dict(context, update_asset_value_from_move_line=True, move_id=vals['move_id'])
