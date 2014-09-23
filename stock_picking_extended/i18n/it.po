@@ -217,11 +217,6 @@ msgid "Extend groups for Product"
 msgstr "Extend groups for Product"
 
 #. module: stock
-#: model:ir.actions.act_window,help:stock.action_tracking_form
-msgid "This is the list of all your packs. When you select a Pack, you can get the upstream or downstream traceability of the products contained in the pack."
-msgstr "This is the list of all your packs. When you select a Pack, you can get the upstream or downstream traceability of the products contained in the pack."
-
-#. module: stock
 #: model:ir.model,name:stock.model_stock_move
 msgid "Stock Move"
 msgstr "Movimento di magazzino"
