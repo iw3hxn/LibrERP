@@ -448,7 +448,7 @@ label.error {
     -webkit-border-radius: 4px;
 
     color: #6e6e6e;
-    text-shadow: #FAFAFA 0 1px 0;
+//    text-shadow: #FAFAFA 0 1px 0;
     text-decoration: none;
     text-transform: uppercase;
     line-height: 20px;
@@ -486,8 +486,8 @@ label.error {
     height: 21px;
     z-index: 10;
     background: transparent;
-    color: #8e8e8e;
-    text-shadow: 0 1px 0 #FAFAFA;
+    color: #1e1e1e;
+//    text-shadow: 0 1px 0 #FAFAFA;
     text-align: center;
     font-size: 18px;
     line-height: 18px;
@@ -517,7 +517,7 @@ label.error {
     height: 100%;
     display: block;
     position: relative;
-    font-size:100%;
+    font-size: 100%;
 }
 
 .openerp .secondary_menu img,
@@ -549,8 +549,8 @@ label.error {
     line-height: 20px;
     text-decoration: none;
     white-space: nowrap;
-    color: #8e8e8e;
-    text-shadow: 0 1px 0 #FAFAFA;
+    color: #1e1e1e;
+//    text-shadow: 0 1px 0 #FAFAFA;
 }
 .openerp .oe_secondary_submenu {
     background: #FAFAFA;
@@ -567,8 +567,8 @@ label.error {
     /* for ie9 */
 //    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#949292', endColorstr='#5B5A5A',GradientType=0 ); /* IE6-9 */
 //    white-space: nowrap;
-    color: #6e6e6e;
-    text-shadow: 0 1px 0 #FAFAFA;
+    color: #0e0e0e;
+//    text-shadow: 0 1px 0 #FAFAFA;
 
 }
 .openerp a.oe_secondary_submenu_item {
@@ -615,7 +615,7 @@ label.error {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FAFAFA', endColorstr='#e6e6e6',GradientType=0 );
     color: #6e6e6e;
     letter-spacing: 0.5px;
-    text-shadow: 0 1px 0 #FAFAFA;
+//    text-shadow: 0 1px 0 #FAFAFA;
 }
 .openerp .company_logo_link {
     display: block;
@@ -881,7 +881,7 @@ label.error {
     font-weight: normal;
     padding: 1px 0 1px 10px;
     text-decoration: none;
-    text-shadow: #FAFAFA 0 1px 0;
+//    text-shadow: #FAFAFA 0 1px 0;
     
 }
 .openerp .searchview_group_string:hover {
@@ -1233,7 +1233,7 @@ label.error {
     line-height: 20px;
     font-size: 95%;
     color: #8e8e8e;
-    text-shadow: white 0 1px 0;
+//    text-shadow: white 0 1px 0;
     font-weight: normal;
 }
 .openerp .oe_form_notebook ul.ui-tabs-nav li {
@@ -1781,7 +1781,7 @@ label.error {
 
 .openerp .oe_view_manager_menu_tips blockquote {
     display: none;
-    font-size: 85%;
+    font-size: 100%;
     margin: 0;
     background: #FAFAFA;
     border-bottom: 1px solid #CECBCB;
@@ -1876,7 +1876,7 @@ label.error {
 
 .openerp .sidebar-main-div a {
     color: #8e8e8e;
-    text-shadow: white 0 1px 0;
+//    text-shadow: white 0 1px 0;
     text-decoration: none;
 }
 
@@ -1924,7 +1924,7 @@ label.error {
     margin:0;
     font-size: 1.15em;
     color: #8E8E8E;
-    text-shadow: white 0 1px 0;
+//    text-shadow: white 0 1px 0;
     padding-left: 10px;
     padding-right: 21px;
     height: 21px;
@@ -2120,7 +2120,7 @@ label.error {
 .oe-shortcut-toggle {
     height: 20px;
     margin-top: 0px;
-    padding: 0;
+    padding: 6px;
     width: 20px;
     cursor: pointer;
     display: block;
@@ -2410,7 +2410,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     display: inline-block;
     border: 1px solid #8e8e8e;
     color: #8e8e8e;
-    text-shadow: #FAFAFA 0 1px 0;
+//    text-shadow: #FAFAFA 0 1px 0;
     font-size: 12px;
     padding: 3px 10px;
     text-align: center;
@@ -2435,7 +2435,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(255, 255, 255, 0.8) inset;
     -o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(255, 255, 255, 0.8) inset;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(255, 255, 255, 0.8) inset;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+//    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
     -webkit-font-smoothing: antialiased;
     outline: none;
 }
@@ -2502,7 +2502,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     box-shadow: none !important, 0 0 0 transparent;
     color: #aaaaaa !important;
     cursor: default;
-    text-shadow: 0 1px 1px white !important;
+//    text-shadow: 0 1px 1px white !important;
 }
 
 .openerp .oe_button.oe_button_small {
