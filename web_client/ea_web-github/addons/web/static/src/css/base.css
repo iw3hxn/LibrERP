@@ -510,14 +510,15 @@ label.error {
 .openerp .secondary_menu {
     width: 200px;
     min-width: 200px;
-    border-right: 0px solid #e6e6e6;
-    border-bottom: 0px solid #e6e6e6;
+//    border-right: 1px solid #000000;
+//    border-bottom: 1px solid #000000;
     background: #e6e6e6;
     vertical-align: top;
     height: 100%;
     display: block;
     position: relative;
     font-size: 100%;
+
 }
 
 .openerp .secondary_menu img,
@@ -550,6 +551,7 @@ label.error {
     text-decoration: none;
     white-space: nowrap;
     color: #1e1e1e;
+
 //    text-shadow: 0 1px 0 #FAFAFA;
 }
 .openerp .oe_secondary_submenu {
@@ -569,6 +571,8 @@ label.error {
 //    white-space: nowrap;
     color: #0e0e0e;
 //    text-shadow: 0 1px 0 #FAFAFA;
+    border: 1px solid #8E8E8E;
+    border-radius: 4px;
 
 }
 .openerp a.oe_secondary_submenu_item {
@@ -1053,6 +1057,7 @@ label.error {
     padding-left: 3px;
     color: #333;
 #    text-align: center;
+    border-left: 1px solid #FAFAFA;
 }
 .openerp .oe-listview th.oe-sortable .ui-icon {
     margin: -4px 0 0;
