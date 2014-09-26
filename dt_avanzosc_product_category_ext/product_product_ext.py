@@ -57,6 +57,11 @@ class product_product(orm.Model):
             # Search for the default value on this category
             category_data = self.pool['product.category'].read(cr, uid, categ_id, [], context=context)
            
+            if category_data['property_account_expense_categ']:
+                res['property_account_expense'] = category_data['property_account_expense_categ']
+            if category_data['property_account_income_categ']:
+                res['property_account_income'] = category_data['property_account_income_categ']
+
             if category_data['provision_type']:
                 res['type'] = category_data['provision_type']
             else:
