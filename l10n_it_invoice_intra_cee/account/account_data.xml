@@ -6,7 +6,7 @@
            <field name="name">Auto Invoice Journal Sequence</field>
            <field eval="3" name="padding"/>
            <field name="implementation">no_gap</field>
-           <field name="prefix">AIJ/%(year)s/</field>
+           <field name="prefix">TAI/%(year)s/</field>
        </record>
         <record id="transfert_entry_journal_sequence" model="ir.sequence">
            <field name="name">Transfert Entry Journal Sequence</field>
@@ -16,7 +16,7 @@
        </record>
        <record forcecreate="1" id="auto_invoice_journal" model="account.journal">
            <field name="name">Auto Invoice Journal</field>
-           <field name="code">AIJ</field>
+           <field name="code">TAI</field>
            <field name="type">sale</field>
            <field name="view_id" eval="3"/>
            <field name="sequence_id" ref="auto_invoice_journal_sequence"/>
