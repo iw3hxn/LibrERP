@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="closing_journal_ce" model="account.journal">
+            <field name="name">Chiusura conti economici</field>
+            <field name="type">situation</field>
+            <field name="code">CHCE</field>
+            <field name="default_debit_account_id" search="[('code','=','990601')]" model="account.account"/>
+            <field name="default_credit_account_id" search="[('code','=','990601')]" model="account.account"/>
+            <field name="view_id" eval="3"/>
+            <field name="centralisation" eval="1"/>
+            <field name="update_posted">True</field>
+        </record>
+
+        <record id="closing_journal_sp" model="account.journal">
+            <field name="name">Chiusura conti patrimoniali</field>
+            <field name="type">situation</field>
+            <field name="code">CHPA</field>
+            <field name="default_debit_account_id" search="[('code','=','941001')]" model="account.account"/>
+            <field name="default_credit_account_id" search="[('code','=','941001')]" model="account.account"/>
+            <field name="view_id" eval="3"/>
+            <field name="centralisation" eval="1"/>
+            <field name="update_posted">True</field>
+        </record>
+
+        <record id="closing_journal_up" model="account.journal">
+            <field name="name">Utile/perdita d'esercizio</field>
+            <field name="type">situation</field>
+            <field name="code">CHUP</field>
+            <field name="default_debit_account_id" search="[('code','=','430303')]" model="account.account"/>
+            <field name="default_credit_account_id" search="[('code','=','430301')]" model="account.account"/>
+            <field name="view_id" eval="3"/>
+            <field name="centralisation" eval="1"/>
+            <field name="update_posted">True</field>
+        </record>
+
+        <record id="first_opening_journal" model="account.journal">
+            <field name="name">Prima apertura azienda</field>
+            <field name="type">situation</field>
+            <field name="code">FOPJ</field>
+            <field name="view_id" eval="3"/>
+            <field name="centralisation" eval="0"/>
+            <field name="update_posted">True</field>
+        </record>
+
+    </data>
+</openerp>

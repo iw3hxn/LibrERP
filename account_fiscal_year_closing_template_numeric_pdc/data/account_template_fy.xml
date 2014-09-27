@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+<!-- Create preceding fy for facility-->
+
+        <record id="preceding_fiscal_year" model="account.fiscalyear">
+            <field name="name" eval="'Template' + str(time.localtime()[0] - 1)"/>
+            <field name="code" eval="str(time.localtime()[0] - 1)"/>
+            <field name="date_start" eval="str(time.localtime()[0] - 1) + '-01-01'"/>
+            <field name="date_stop" eval="str(time.localtime()[0] - 1) + '-12-31'"/>
+        </record>
+
+        <function model="account.fiscalyear" name="create_period" 
+                eval="[[(preceding_fiscal_year)]]"/>
+
+        <record id="closing_period_preceding_fiscal_year" model="account.period">
+            <field name="name" eval="'Periodo di chiusura ' + str(time.localtime()[0] - 1)"/>
+            <field name="code" eval="'13/' + str(time.localtime()[0] - 1)"/>
+            <field name="date_start" eval="str(time.localtime()[0] - 1) + '-12-31'"/>
+            <field name="date_stop" eval="str(time.localtime()[0] - 1) + '-12-31'"/>
+            <field name="fiscalyear_id" ref="preceding_fiscal_year"/>
+            <field name="special" eval="True"/>
+        </record>
+
+<!-- Create fyc -->
+
+        <record id="closing_year_default" model="account_fiscal_year_closing.fyc">
+        </record>
+
+        <function model="account_fiscal_year_closing.fyc" name="action_draft" 
+                eval="[[(closing_year_default)]]"/>
+
+        <record id="closing_year_default" model="account_fiscal_year_closing.fyc">
+            <field name="create_net_loss_and_profit" eval="1"/>
+            <field name="lp_journal_id" ref="closing_journal_ce"/>
+            <field name="nlp_journal_id" ref="closing_journal_up"/>
+            <field name="c_journal_id" ref="closing_journal_sp"/>
+            <field name="o_journal_id" search="[('code','=','OPEJ')]" model="account.journal"/>
+        </record>
+
+        <record id="lp_account_map" model="account_fiscal_year_closing.fyc_lp_account_map">
+            <field name="source_account_id" search="[('code','=','C')]" model="account.account"/>
+            <field name="dest_account_id" search="[('code','=','990601')]" model="account.account"/>
+            <field name="fyc_id" ref="closing_year_default"/>
+        </record>
+
+        <record id="lp_account_map1" model="account_fiscal_year_closing.fyc_lp_account_map">
+            <field name="source_account_id" search="[('code','=','R')]" model="account.account"/>
+            <field name="dest_account_id" search="[('code','=','990601')]" model="account.account"/>
+            <field name="fyc_id" ref="closing_year_default"/>
+        </record>
+
+        <record id="lp_account_map2" model="account_fiscal_year_closing.fyc_nlp_account_map">
+            <field name="source_account_id" search="[('code','=','990601')]" model="account.account"/>
+            <field name="fyc_id" ref="closing_year_default"/>
+        </record>
+
+        <record id="lp_account_map3" model="account_fiscal_year_closing.fyc_c_account_map">
+            <field name="source_account_id" search="[('code','=','A')]" model="account.account"/>
+            <field name="fyc_id" ref="closing_year_default"/>
+        </record>
+
+        <record id="lp_account_map4" model="account_fiscal_year_closing.fyc_c_account_map">
+            <field name="source_account_id" search="[('code','=','P')]" model="account.account"/>
+            <field name="fyc_id" ref="closing_year_default"/>
+        </record>
+
+    </data>
+</openerp>
