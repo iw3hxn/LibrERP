@@ -20,4 +20,4 @@
 #
 ##############################################################################
 
-import invoice_immediate
+from . import invoice_immediate

@@ -29,12 +29,13 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from osv import fields, osv
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools.translate import _
 import netsvc
 
 
-class account_invoice(osv.osv):
+class account_invoice(osv.Model):
     _inherit = 'account.invoice'
     _columns = {
         #'discharge_products_in_invoice': fields.boolean('Discharge products in invoice', help="In case of 'immediate invoice', this flag active system of discharge products from stock."),
@@ -46,8 +47,8 @@ class account_invoice(osv.osv):
         if not part:
             return {'value': {'partner_shipping_id': False}}
 
-        addr = self.pool.get('res.partner').address_get(cr, uid, [part], ['delivery', 'invoice', 'contact'])
-        part = self.pool.get('res.partner').browse(cr, uid, part)
+        addr = self.pool['res.partner'].address_get(cr, uid, [part], ['delivery', 'invoice', 'contact'])
+        part = self.pool['res.partner'].browse(cr, uid, part)
         val = {
             'partner_shipping_id': addr['delivery'],
         }
@@ -56,11 +57,11 @@ class account_invoice(osv.osv):
     
     def create_picking(self, cr, uid, ids, state, context=None):
         """Create a picking for each order and validate it."""
-        picking_obj = self.pool.get('stock.picking')
-        partner_obj = self.pool.get('res.partner')
-        move_obj = self.pool.get('stock.move')
-        stock_location_obj = self.pool.get('stock.location')
-        invoice_line_obj = self.pool.get('account.invoice.line')
+        picking_obj = self.pool['stock.picking']
+        partner_obj = self.pool['res.partner']
+        move_obj = self.pool['stock.move']
+        stock_location_obj = self.pool['stock.location']
+        invoice_line_obj = self.pool['account.invoice.line']
 
         for invoice in self.browse(cr, uid, ids, context=context):
             if invoice.partner_shipping_id:
