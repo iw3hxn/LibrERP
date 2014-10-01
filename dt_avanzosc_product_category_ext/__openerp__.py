@@ -35,13 +35,11 @@
         Avanzosc Custom Modules. Defined in Categories the Provision type, Procure Method and the Supply method
 
     """,
-    "init_xml": [],
-    'update_xml': [
+    'data': [
         'product_category_ext_view.xml',
         'product_product_ext_view.xml',
         'company_view.xml'
     ],
-    'demo_xml': [],
     'installable': True,
     'active': False,
 #    'certificate': 'certificate',

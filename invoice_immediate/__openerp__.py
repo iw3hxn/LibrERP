@@ -29,7 +29,7 @@
 
 {
     "name": "Invoice immediate - In case invoice is immediate (product on hand), product quantity is updated.",
-    "version": "1.7.1",
+    "version": "3.1.7.1",
     "category": "Accounting",
     "description": "This Module, updates product quantity for immediate invoice.",
     "author": "Bortolatto Ivan, Didotech.com",
@@ -42,11 +42,9 @@
         "account",
         "stock"
     ],
-    "init_xml": [],
-    "update_xml": [
+    "data": [
         "invoice_immediate.xml",
     ],
-    "demo_xml": [],
     "installable": True,
     "active": False,
 }
