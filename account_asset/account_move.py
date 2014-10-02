@@ -79,8 +79,14 @@ class account_move_line(orm.Model):
         account_tax_obj = self.pool['account.tax']
         tax_code = self.pool['account.tax.code'].browse(cr, uid, [vals.get('tax_code_id')])[0]
         tax = tax_code.base_tax_ids
-        res = account_tax_obj.compute_all(cr, uid, taxes=tax, price_unit=abs(vals.get('tax_amount') / vals.get('quantity')),
-            quantity=vals.get('quantity'))
+        if vals.get('quantity') == 0.0:
+            quantity = 1.0
+        else:
+            quantity = vals.get('quantity')
+            
+        res = account_tax_obj.compute_all(cr, uid, taxes=tax,
+            price_unit=abs(vals.get('tax_amount') / quantity),
+            quantity=quantity)
         tax_list = res['taxes']
         ind_amount = 0.0
         if len(tax_list) == 2:
