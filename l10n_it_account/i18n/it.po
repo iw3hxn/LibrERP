@@ -1526,7 +1526,7 @@ msgstr "B.B. 15 Giorni Data Fattura"
 #: view:account.invoice.report:0
 #: field:account.invoice.report,price_total:0
 msgid "Total Without Tax"
-msgstr "Totale senza impste"
+msgstr "Totale senza imposte"
 
 #. module: account
 #: model:ir.actions.act_window,help:account.action_move_journal_line
@@ -5494,13 +5494,6 @@ msgid "Include Initial Balances"
 msgstr "Includi i saldi iniziali"
 
 #. module: account
-#: selection:account.invoice,type:0
-#: selection:account.invoice.report,type:0
-#: selection:report.invoice.created,type:0
-msgid "Customer Refund"
-msgstr "Resi da clienti"
-
-#. module: account
 #: constraint:account.move:0
 msgid "You can not create more than one move per period on centralized journal"
 msgstr "Non è possibile creare più di un movimento per periodo su un sezionale centralizzato"
@@ -6074,12 +6067,6 @@ msgstr "Nessuno"
 #: view:analytic.entries.report:0
 msgid "  365 Days  "
 msgstr "  365 giorni  "
-
-#. module: account
-#: model:ir.actions.act_window,name:account.action_invoice_tree3
-#: model:ir.ui.menu,name:account.menu_action_invoice_tree3
-msgid "Customer Refunds"
-msgstr "Resi da clienti"
 
 #. module: account
 #: field:account.account,foreign_balance:0
