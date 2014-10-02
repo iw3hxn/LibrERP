@@ -433,7 +433,9 @@
     <tr>
         <td t-foreach="widget.data.data.children" t-as="menu">
             <a href="#" t-att-data-menu="menu.id">
+<!--
                 <img t-att-src='_s + "/web/static/src/img/icons/" + menu.icon + ".png"'/>
+-->
                 <t t-esc="menu.name"/>
             </a>
         </td>
@@ -458,7 +460,9 @@
     <a href="#" t-att-id="menu.children.length ? 'menu_' + menu.id : undefined"
         t-att-class="classname + (menu.children.length ? ' submenu' : ' leaf') + (menu_first and level == 1 ? ' opened' : '')"
         t-att-data-menu="menu.children.length ? undefined : menu.id">
+<!--
         <img t-att-src='_s + "/web/static/src/img/icons/" + menu.icon + ".png"'/>
+-->
         <span t-attf-style="padding-left: #{(level - 2) * 20}px"> <t t-esc="menu.name"/></span>
     </a>
     <div t-attf-class="oe_secondary_submenu" t-if="menu.children.length" t-att-style="menu_first and level == 1 ? undefined : 'display: none'">
@@ -605,7 +609,7 @@
     </tr>
     <tr t-foreach="widget.view.translatable_fields" t-as="field" t-att-data-field="field.name">
         <td class="oe_form_frame_cell" width="1%" nowrap="nowrap">
-            <label class="oe_label"><t t-esc="field.string"/>:</label>
+            <label class="oe_label"><t t-esc="field.string"/> </label>
         </td>
         <td t-foreach="widget.languages" t-as="lg" class="oe_form_frame_cell">
             <input t-if="field.type == 'char' || field.type == 'url'" type="text" t-attf-name="#{lg.code}-#{field.name}" value="" data-value="" class="oe_trad_field" style="width: 100%"/>
@@ -991,7 +995,7 @@
            t-attf-class="oe_label#{widget.help ? '_help' : ''} oe_align_#{widget.align}">
         <t t-esc="widget.string"/>
         <span t-if="widget.help">?</span>
-        <t t-if="widget.string and widget.node.tag != 'label'">:</t>
+        <t t-if="widget.string and widget.node.tag != 'label'"> </t>
     </label>
 </t>
 <t t-name="WidgetLabel.tooltip">

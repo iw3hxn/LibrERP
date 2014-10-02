@@ -1295,6 +1295,12 @@ label.error {
     padding: 3px 0 3px 2px;
     margin: 3px 0 3px 2px;
 }
+
+.openerp .placeholder {
+  color: #afafb6 !important;
+  font-style: italic !important;
+}
+
 .openerp .oe_form_frame_cell input[type="checkbox"] {
     margin-top: 3px;
     vertical-align: middle;
@@ -1317,7 +1323,7 @@ label.error {
     color: #4c4c4c;
 }
 .openerp fieldset.oe_group_box {
-    border: 1px solid #AAAAAA;
+//carlo    border: 1px solid #AAAAAA;
     moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
@@ -1357,7 +1363,7 @@ label.error {
 }
 
 .openerp .oe_form_pager {
-    margin-right: 3px;
+//carlo    margin-right: 3px;
 }
 
 
