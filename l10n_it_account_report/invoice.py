@@ -76,7 +76,7 @@ class Parser(report_sxw.rml_parse):
             return ''
         elif not number:
             return '0,00'
-        
+
         if number < 0:
             sign = '-'
         else:
@@ -84,8 +84,11 @@ class Parser(report_sxw.rml_parse):
         ## Requires Python >= 2.7:
         #before, after = "{:.{digits}f}".format(number, digits=precision).split('.')
         ## Works with Python 2.6:
-        before, after = "{0:10.{digits}f}".format(number, digits=precision).strip('- ').split('.')
-        
+        if precision:
+            before, after = "{0:10.{digits}f}".format(number, digits=precision).strip('- ').split('.')
+        else:
+            before = "{0:10.{digits}f}".format(number, digits=precision).strip('- ').split('.')[0]
+            after = ''
         belist = []
         end = len(before)
         for i in range(3, len(before) + 3, 3):
@@ -96,7 +99,7 @@ class Parser(report_sxw.rml_parse):
             end = len(before) - i
         before = '.'.join(reversed(belist))
         
-        if no_zero and int(number) == float(number):
+        if no_zero and int(number) == float(number) or precision == 0: 
             return sign + before
         else:
             return sign + before + ',' + after
@@ -225,6 +228,6 @@ class Parser(report_sxw.rml_parse):
             return []
 
     def _indirizzo(self, partner):
-        address = self.pool['res.partner'].address_get(self.cr, self.uid, [partner.id],['default', 'invoice'])
+        address = self.pool['res.partner'].address_get(self.cr, self.uid, [partner.id], ['default', 'invoice'])
         return self.pool['res.partner.address'].browse(self.cr, self.uid, address['invoice'] or address['default'])
 
