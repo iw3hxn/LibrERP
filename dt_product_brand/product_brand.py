@@ -36,7 +36,9 @@ class product_brand(Model):
     }
     
     _order = 'name'
-
+    _sql_constraints = [
+        ('name_uniq', 'unique (name)', 'The name of the Brand must be unique !')
+    ]
 
 class product_template(Model):
     _name = 'product.template'
