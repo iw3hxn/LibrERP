@@ -24,21 +24,25 @@
 from openerp.osv.orm import Model
 from openerp.osv import fields
 
+
 class product_brand(Model):
     _name = 'product.brand'
+    
     _columns = {
         'name': fields.char('Brand Name', size=32),
         'description': fields.text('Description', translate=True),
-        'partner_id' : fields.many2one('res.partner', 'partner', help='Select a partner for this brand if it exist'),
+        'partner_id': fields.many2one('res.partner', 'partner', help='Select a partner for this brand if it exist'),
         'logo': fields.binary('Logo File')
     }
+    
+    _order = 'name'
 
 
 class product_template(Model):
     _name = 'product.template'
     _inherit = 'product.template'
     _columns = {
-        'product_brand_id' : fields.many2one('product.brand', 'Brand', help='Select a brand for this product'),
+        'product_brand_id': fields.many2one('product.brand', 'Brand', help='Select a brand for this product'),
     }
     
 
@@ -51,18 +55,26 @@ class product_product(Model):
         When category changes, we search for taxes, UOM and product type
         """
         if context is None:
-            context = self.pool.get('res.users').context_get(cr, uid, context=context)
+            context = self.pool['res.users'].context_get(cr, uid, context=context)
 
         res = {}
         
-
         if not product_brand_id:
             res = {
                 'manufacturer': False,
             }
         else:
-            brand_data = self.pool.get('product.brand').read(cr, uid, product_brand_id, [], context=context)   
+            brand_data = self.pool['product.brand'].read(cr, uid, product_brand_id, [], context=context)
             if brand_data['partner_id']:
                 res['manufacturer'] = brand_data['partner_id']
         return {'value': res, }
 
+    def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
+        if context and context.get('product_brand_id', False):
+            product_ids = self.pool['product.product'].search(cr, uid, [('product_brand_id', '=', context['product_brand_id'])])
+
+            if product_ids:
+                product_ids = list(set(product_ids))
+                args.append(['id', 'in', product_ids])
+        
+        return super(product_product, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
