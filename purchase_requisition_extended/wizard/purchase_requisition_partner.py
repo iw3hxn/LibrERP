@@ -19,15 +19,13 @@
 #
 ##############################################################################
 
-import time
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from osv import fields, osv
-from osv.orm import browse_record, browse_null
-from tools.translate import _
+#import time
+#from datetime import datetime
+#from dateutil.relativedelta import relativedelta
+from openerp.osv import orm, fields
+#from openerp.tools.translate import _
 
-
-class purchase_requisition_partner(osv.osv_memory):
+class purchase_requisition_partner(orm.TransientModel):
     _inherit = "purchase.requisition.partner"
     
     def _get_requisition_suppliers(self, cr, uid, context=None):
@@ -61,8 +59,7 @@ class purchase_requisition_partner(osv.osv_memory):
                 res = [row[0] for row in data]
         
         if not res:
-            res = self.pool.get('res.partner').search(cr, uid, [('supplier', '=', True)])
-        
+            res = self.pool['res.partner'].search(cr, uid, [('supplier', '=', True)])
         return res
     
     _columns = {

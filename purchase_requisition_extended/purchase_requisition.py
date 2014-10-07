@@ -21,7 +21,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from openerp.tools.translate import _
+#from openerp.tools.translate import _
 
 
 class virtual_purchase_requisition_partner(orm.TransientModel):
@@ -81,7 +81,7 @@ class purchase_requisition_line(orm.Model):
     
     def _get_prefered_supplier(self, cr, uid, ids, field_name, args, context):
         res = {}
-        virtual_partner_obj = self.pool.get('virtual.purchase.requisition.partner')
+        virtual_partner_obj = self.pool['virtual.purchase.requisition.partner']
         
         requisition_lines = self.browse(cr, uid, ids)
         for line in requisition_lines:
@@ -92,7 +92,7 @@ class purchase_requisition_line(orm.Model):
                     'product_id': line.product_id.id,
                 })
                 if supplier_ids:
-                    supplier = self.pool.get('res.partner').browse(cr, uid, supplier_ids[0])
+                    supplier = self.pool['res.partner'].browse(cr, uid, supplier_ids[0])
                     res[line.id] = supplier.name
                 else:
                     res[line.id] = ''
