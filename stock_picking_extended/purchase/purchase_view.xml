@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <field name="origin" position="after">
                         <field name="payment_term" widget="selection"/>
+                        <field name="incoterm_id" widget="selection"/> 
                 </field>
             </field>
         </record>

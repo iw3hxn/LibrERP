@@ -23,6 +23,16 @@ from openerp.osv import fields, orm
 
 
 class purchase_order(orm.Model):
+
+
+##############################################################################
+#    
+#    ONLY 6.1
+#
+##############################################################################
+
+
+
     _inherit = "purchase.order"
     '''
     address_id is overridden with partner_id because it's used 2binvoiced
@@ -30,6 +40,7 @@ class purchase_order(orm.Model):
     '''
     _columns = {
         'payment_term': fields.many2one('account.payment.term', 'Payment Term'),
+        'incoterm_id': fields.many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions."),
     }
 
     def onchange_partner_id(self, cr, uid, ids, partner_id):
