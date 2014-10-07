@@ -24,7 +24,7 @@
 
 {
     "name": "Set Supplier inside Sale Order",
-    "version": "3.2.10.6",
+    "version": "3.3.11.7",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Sale',
@@ -39,6 +39,7 @@
         'sale_order_confirm',
         'product_bom',
         'sale_bom',
+        'dt_product_brand'
     ],
     "data": [
         'sale_order_view.xml'

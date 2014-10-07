@@ -178,7 +178,8 @@ class sale_order_line(orm.Model):
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]"),
         'extra_purchase_discount': fields.float('Ex. Purchase Discount', digits=(16, 2)),
-        'bom_ids': fields.one2many('sale.order.line.mrp.bom', 'order_id', 'BoM')
+        'bom_ids': fields.one2many('sale.order.line.mrp.bom', 'order_id', 'BoM'),
+        'product_brand_id': fields.related('product_id', 'product_tmpl_id', 'product_brand_id', type='many2one', relation='product.brand', string=_('Brand'), store=False)
     }
     
     def create(self, cr, uid, vals, context=None):
