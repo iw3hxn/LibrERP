@@ -48,6 +48,9 @@ openerp.web_export_view = function(openerp) {
                 {
                     label: _t("Import"),
                     callback: view.on_sidebar_import
+                }, {
+                    label: _t("Export"),
+                    callback: view.on_sidebar_export
                 },
                 {
                     label: _t("Export Excel"),
@@ -63,10 +66,12 @@ openerp.web_export_view = function(openerp) {
             view = this.widget_parent; // valid for list view
             if (view.widget_children) {
                 view.widget_children.every(function(child) {
-                    if (child.field && (
-                        child.field.type == 'many2many'
-                            || child.field.type == 'one2many')) {
+                    if (child.field && child.field.type == 'one2many') {
                         view = child.viewmanager.views.list.controller;
+                        return false; // break out of the loop
+                    }
+                    if (child.field && child.field.type == 'many2many') {
+                        view = child.list_view;
                         return false; // break out of the loop
                     }
                     return true;
@@ -84,15 +89,31 @@ openerp.web_export_view = function(openerp) {
             });
             rows = view.$element.find('.ui-widget-content tr');
             export_rows = [];
-            $.each(rows,function(){
+            $.each(rows,function(){         
                 $row = $(this);
-                // find only rows with data
+                // find only rows with data     
                 if($row.attr('data-id')){
                     export_row = [];
                     $.each(export_columns_keys,function(){
                         cell = $row.find('td[data-field="'+this+'"]').get(0);
-                        text = cell.text || cell.textContent || cell.innerHTML || "";
-                        export_row.push(text.trim());
+                        var data_id = $( '<div>' + cell.innerHTML + '</div>');
+                        if(data_id.find('input').get(0) != undefined) {
+                                if(data_id.find('input').get(0).type == 'checkbox'){
+                                        if(data_id.find('input').get(0).checked){
+                                                text = _t("True");
+                                        }
+                                        else {
+                                                text = _t("False");
+                                        }
+                                }
+                                else {
+                                         text = cell.text || cell.textContent || cell.innerHTML || "";
+                                }
+                        }
+                        else{  
+                                text = cell.text || cell.textContent || cell.innerHTML || "";
+                        }      
+                        export_row.push(text.trim());   
                     });
                     export_rows.push(export_row);
                 }

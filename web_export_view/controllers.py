@@ -37,33 +37,34 @@ from web.controllers.main import ExcelExport
 class ExcelExportView(ExcelExport):
     _cp_path = '/web/export/xls_view'
 
-    def from_data(self, fields, rows, context):
+    def from_data(self, fields, rows, separators):
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('Sheet 1')
 
         for i, fieldname in enumerate(fields):
             worksheet.write(0, i, fieldname)
-            worksheet.col(i).width = 8000 # around 220 pixels
+            worksheet.col(i).width = 8000  # around 220 pixels
 
         style = xlwt.easyxf('align: wrap yes')
-
-        en_lang = context.get('lang', '').startswith('en')
-        latin_lang = not en_lang and context.get('lang', '').startswith('es')
+        m = "^[\d%s]+(\%s\d+)?$" % (
+            separators['thousands_sep'],
+            separators['decimal_point']
+        )
         for row_index, row in enumerate(rows):
             for cell_index, cell_value in enumerate(row):
                 if isinstance(cell_value, basestring):
                     cell_value = re.sub("\r", " ", cell_value)
-                if cell_value is False: cell_value = None
-                try:
-                    if en_lang:
-                        # Number format with "." decimal separator, ex. "4567.40"
-                        cell_value = float(cell_value)
-                    elif latin_lang:
-                        # Number format with "," decimal separator, ex. "4567,40"
-                        cell_value = float(cell_value.replace(",", "."))
-                except:
-                    # If the cell is not a number raise a ValueError
-                    pass
+                    if re.match(m, cell_value):
+                        cell_value = float(
+                            cell_value.replace(
+                                separators['thousands_sep'], ''
+                            ).replace(
+                                separators['decimal_point'], '.'
+                            )
+                        )
+                        style = xlwt.easyxf(num_format_str='#,##0.00')
+                if cell_value is False:
+                    cell_value = None
                 worksheet.write(row_index + 1, cell_index, cell_value, style)
 
         fp = StringIO()
@@ -81,8 +82,16 @@ class ExcelExportView(ExcelExport):
         rows = data.get('rows',[])
 
         context = req.session.eval_context(req.context)
+        lang = context.get('lang', 'en_US')
+        Model = req.session.model('res.lang')
+        ids = Model.search([['code', '=', lang]])
+        record = Model.read(ids, ['decimal_point', 'thousands_sep'])
 
-        return req.make_response(self.from_data(columns_headers, rows, context),
-            headers=[('Content-Disposition', 'attachment; filename="%s"' % self.filename(model)),
-                     ('Content-Type', self.content_type)],
+        return req.make_response(
+            self.from_data(columns_headers, rows, record[0]),
+            headers=[
+                ('Content-Disposition', 'attachment; filename="%s"'
+                    % self.filename(model)),
+                ('Content-Type', self.content_type)
+            ],
             cookies={'fileToken': int(token)})
