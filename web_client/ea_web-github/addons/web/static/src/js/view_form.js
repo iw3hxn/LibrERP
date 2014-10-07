@@ -3066,6 +3066,157 @@ openerp.web.form.FieldMany2Many = openerp.web.form.Field.extend({
     }
 });
 
+openerp.web.form.FieldMany2ManyTags = openerp.web.form.Field.extend({
+    template: "FieldMany2ManyTags",
+    init: function() {
+        
+        this._super(view, node);
+        this.list_id = _.uniqueId("many2many");
+        this.is_loaded = $.Deferred();
+        this.initial_is_loaded = this.is_loaded;
+        this.is_setted = $.Deferred();
+        
+    },
+    start: function() {
+        if (this.get("effective_readonly"))
+            return;
+        var self = this;
+        var ignore_blur = false;
+        self.$text = this.$("textarea");
+        self.$text.textext({
+            plugins : 'tags arrow autocomplete',
+            autocomplete: {
+                render: function(suggestion) {
+                    return $('<span class="text-label"/>').
+                             data('index', suggestion['index']).html(suggestion['label']);
+                }
+            },
+            ext: {
+                autocomplete: {
+                    selectFromDropdown: function() {
+                        this.trigger('hideDropdown');
+                        var index = Number(this.selectedSuggestionElement().children().children().data('index'));
+                        var data = self.search_result[index];
+                        if (data.id) {
+                            self.add_id(data.id);
+                        } else {
+                            ignore_blur = true;
+                            data.action();
+                        }
+                        this.trigger('setSuggestions', {result : []});
+                    },
+                },
+                tags: {
+                    isTagAllowed: function(tag) {
+                        return !!tag.name;
+
+                    },
+                    removeTag: function(tag) {
+                        var id = tag.data("id");
+                        self.set({"value": _.without(self.get("value"), id)});
+                    },
+                    renderTag: function(stuff) {
+                        return $.fn.textext.TextExtTags.prototype.renderTag.
+                            call(this, stuff).data("id", stuff.id);
+                    },
+                },
+                itemManager: {
+                    itemToString: function(item) {
+                        return item.name;
+                    },
+                },
+                core: {
+                    onSetInputData: function(e, data) {
+                        if (data == '') {
+                            this._plugins.autocomplete._suggestions = null;
+                        }
+                        this.input().val(data);
+                    },
+                },
+            },
+        }).bind('getSuggestions', function(e, data) {
+            var _this = this;
+            var str = !!data ? data.query || '' : '';
+            self.get_search_result(str).done(function(result) {
+                self.search_result = result;
+                $(_this).trigger('setSuggestions', {result : _.map(result, function(el, i) {
+                    return _.extend(el, {index:i});
+                })});
+            });
+        }).bind('hideDropdown', function() {
+            self._drop_shown = false;
+        }).bind('showDropdown', function() {
+            self._drop_shown = true;
+        });
+        self.tags = self.$text.textext()[0].tags();
+        self.$text
+            .focusin(function () {
+                self.trigger('focused');
+                ignore_blur = false;
+            })
+            .focusout(function() {
+                self.$text.trigger("setInputData", "");
+                if (!ignore_blur) {
+                    self.trigger('blurred');
+                }
+            }).keydown(function(e) {
+                if (e.which === $.ui.keyCode.TAB && self._drop_shown) {
+                    self.$text.textext()[0].autocomplete().selectFromDropdown();
+                }
+            });
+    },
+    set_value: function(value_) {
+        value_ = value_ || [];
+        if (value_.length >= 1 && value_[0] instanceof Array) {
+            value_ = value_[0][2];
+        }
+        this._super(value_);
+    },
+    is_false: function() {
+        return _(this.get("value")).isEmpty();
+    },
+    get_value: function() {
+        var tmp = [commands.replace_with(this.get("value"))];
+        return tmp;
+    },
+    get_search_blacklist: function() {
+        return this.get("value");
+    },
+    render_value: function() {
+        var self = this;
+        var dataset = new openerp.web.DataSetStatic(this, this.field.relation, self.build_context());
+        var values = self.get("value");
+        var handle_names = function(data) {
+            if (self.isDestroyed())
+                return;
+            var indexed = {};
+            _.each(data, function(el) {
+                indexed[el[0]] = el;
+            });
+            data = _.map(values, function(el) { return indexed[el]; });
+            if (! self.get("effective_readonly")) {
+                self.tags.containerElement().children().remove();
+                self.$('textarea').css("padding-left", "3px");
+                self.tags.addTags(_.map(data, function(el) {return {name: el[1], id:el[0]};}));
+            } else {
+                self.$el.html(QWeb.render("FieldMany2ManyTag", {elements: data}));
+            }
+        };
+        if (! values || values.length > 0) {
+            this._display_orderer.add(dataset.name_get(values)).done(handle_names);
+        } else {
+            handle_names([]);
+        }
+    },
+    add_id: function(id) {
+        this.set({'value': _.uniq(this.get('value').concat([id]))});
+    },
+    focus: function () {
+        var input = this.$text && this.$text[0];
+        return input ? input.focus() : false;
+    },
+});
+
 openerp.web.form.Many2ManyDataSet = openerp.web.DataSetStatic.extend({
     get_context: function() {
         this.context = this.m2m.build_context();
@@ -3781,6 +3932,7 @@ openerp.web.form.widgets = new openerp.web.Registry({
     'selection' : 'openerp.web.form.FieldSelection',
     'many2one' : 'openerp.web.form.FieldMany2One',
     'many2many' : 'openerp.web.form.FieldMany2Many',
+    'many2many_tags' : 'openerp.web.form.FieldMany2ManyTags',
     'one2many' : 'openerp.web.form.FieldOne2Many',
     'one2many_list' : 'openerp.web.form.FieldOne2Many',
     'reference' : 'openerp.web.form.FieldReference',
@@ -3797,5 +3949,29 @@ openerp.web.form.widgets = new openerp.web.Registry({
 
 
 };
+
+openerp.web_field_style = function(openerp) {
+
+    openerp.web.form.Field.include({
+
+        init: function(view, node) {
+            this._super(view, node);
+            this.setup_styles(view, node);
+        },
+
+        setup_styles : function(view, node){
+            // style
+            // this is done for allowing ppl to set up different colors per field
+            // without having to deal with css
+            var style = 'width: 100%';
+            if(node.attrs.style){
+                style = node.attrs.style;
+            }
+            
+            this.input_style = style;
+        }
+    });
+}
+
 
 // vim:et fdc=0 fdl=0 foldnestmax=3 fdm=syntax:
