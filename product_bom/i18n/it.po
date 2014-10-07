@@ -171,7 +171,7 @@ msgstr "Prodotto / Può Cancellarli"
 #: field:product.product,cost_price:0
 #, python-format
 msgid "Cost Price (incl. BoM)"
-msgstr "Prezzo di Costo"
+msgstr "Prezzo d'Acquisto"
 
 #. module: product_bom
 #: selection:res.company,ref_stock:0
@@ -196,9 +196,14 @@ msgstr "Boms"
 #. module: product_bom
 #: help:product.product,cost_price:0
 msgid "The cost price is the standard price or, if the product has a bom, the sum of all standard price of its components. it take also care of the bom costing like cost per cylce."
-msgstr "Il prezzo di costo è il prezzo standard o se è definita una distinta base il suo costo."
+msgstr "Il prezzo di Acquisto è il prezzo calcolato con il listino basato sul fornitore principale o se il prodotto ha una distinta base è il prezzo per la sua creazione."
 
 #. module: product_bom
 #: view:product.product:0
 msgid "BOM"
 msgstr "Distinta Base"
+
+#. module: product_bom
+#: field:product.product,prefered_supplier:0
+msgid "Prefered Supplier"
+msgstr "Fornitore Preferenziale"

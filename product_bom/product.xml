@@ -70,6 +70,7 @@
         <field name="inherit_id" ref="product.product_product_tree_view" />
             <field name="arch" type="xml">
             <field name="lst_price" position="replace">
+                <field name="prefered_supplier" groups="product_bom.group_supplier_product" />
                 <field name="lst_price" groups="product_bom.group_sell_price"/>
             </field>    
             <field name="standard_price" position="replace">
@@ -83,7 +84,7 @@
     </record>
     
     <record id="product_get_cost_field_search" model="ir.ui.view">
-        <field name="name">product.get_cost_field.view.tree</field>
+        <field name="name">product.get_cost_field.view.search</field>
         <field name="model">product.product</field>
         <field name="type">search</field>
         <field name="inherit_id" ref="product.product_search_form_view" />

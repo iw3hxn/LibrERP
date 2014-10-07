@@ -23,6 +23,9 @@ from openerp.osv import orm, fields
 import decimal_precision as dp
 from openerp.tools.translate import _
 
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+import time
+
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -33,6 +36,17 @@ class product_product(orm.Model):
     Inherit Product in order to add an "Bom Stock" field
     """
     _inherit = 'product.product'
+    
+    def _get_prefered_supplier(self, cr, uid, ids, field_name, args, context):
+        res = {}
+        products_lines = self.browse(cr, uid, ids)
+        for line in products_lines:
+            if line.seller_ids:
+                supplier = line.seller_ids[0].name
+                res[line.id] = supplier.id
+            else:
+                res[line.id] = ''
+        return res
 
     def _compute_purchase_price(self, cr, uid, ids,
                                 product_uom=None,
@@ -51,7 +65,7 @@ class product_product(orm.Model):
         res = {}
         ids = ids or []
         
-        for product in self.browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids, context):
             #print(u'{product.id}: {product.name}'.format(product=product))
             bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
             if bom_id:
@@ -92,7 +106,17 @@ class product_product(orm.Model):
                 res[product.id] = price
             else:
                 # no BoM: use standard_price
-                res[product.id] = product.standard_price
+                # use standard_price if no supplier insert
+                #import pdb; pdb.set_trace()
+                if product.prefered_supplier:
+                    pricelist = product.prefered_supplier.property_product_pricelist_purchase and product.prefered_supplier.property_product_pricelist_purchase.id or False
+                    ctx = {
+                        time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    }
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist], product.id, 1, context=ctx)[pricelist] or 0
+                    res[product.id] = price
+                else:
+                    res[product.id] = product.standard_price
                 continue
         
         return res
@@ -116,8 +140,7 @@ class product_product(orm.Model):
                 if search[2]:
                     bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', False)])
                     if bom_ids:
-                        boms = bom_obj.browse(cr, uid, bom_ids)
-                        res = [bom.product_id.id for bom in boms]
+                        res = [bom.product_id.id for bom in bom_obj.browse(cr, uid, bom_ids, context)]
                         return [('id', 'in', res)]
                     else:
                         return [('id', 'in', [])]
@@ -137,7 +160,7 @@ class product_product(orm.Model):
         res = {}
         ids = ids or []
 
-        for record in self.browse(cursor, user, ids):
+        for record in self.browse(cursor, user, ids, context):
             bom_id = bom_obj._bom_find(cursor, user, record.id, product_uom=None, properties=bom_properties)
             
             if not bom_id:
@@ -280,6 +303,7 @@ class product_product(orm.Model):
                                       help="The cost price is the standard price or, if the product has a bom, "
                                       "the sum of all standard price of its components. it take also care of the "
                                       "bom costing like cost per cylce."),
+        'prefered_supplier': fields.function(_get_prefered_supplier, string='Prefered Supplier', method=True, obj='res.partner', type='many2one'),
         'is_kit': fields.function(_is_kit, fnct_search=_kit_filter, method=True, type="boolean", string="Kit"),
         'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
         'qty_available': fields.function(
