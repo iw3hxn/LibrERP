@@ -51,6 +51,24 @@ class res_city(orm.Model):
     _name = 'res.city'
     _description = 'City'
 
+    _index_name = 'res_city_name_index'
+    _index_zip = 'res_city_zip_index'
+
+    def _auto_init(self, cr, context={}):
+        super(res_city, self)._auto_init(cr, context)
+
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
+                   (self._index_name,))
+        
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON res_city (name)'.format(name=self._index_name))
+        
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
+                   (self._index_zip,))
+
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON res_city (zip)'.format(name=self._index_zip))
+
     _columns = {
         'name': fields.char('City', size=64, required=True),
         'province_id': fields.many2one('res.province', 'Province', ondelete='restrict'),
