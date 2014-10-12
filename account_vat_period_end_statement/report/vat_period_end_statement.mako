@@ -189,9 +189,19 @@ tr {
             <td>${ generic_line.amount > 0 and formatLang(generic_line.amount) or ''|entity }</td>
         </tr>
     %endfor
+    %if statement.interest_amount > 0.0 :
+    <tr >
+        <td><strong>${_("Amount")}</strong></td>
+        <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.authority_vat_amount)|entity }</strong></td>
+    </tr>
+    <tr >
+        <td><strong>${_("Interest amount")}</strong></td>
+        <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.interest_amount)|entity }</strong></td>
+    </tr>
+    %endif
     <tr >
         <td><strong>${_("Amount to pay")}</strong></td>
-        <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.authority_vat_amount)|entity }</strong></td>
+        <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.authority_vat_amount + statement.interest_amount)|entity }</strong></td>
     </tr>
 </table>
 %endfor

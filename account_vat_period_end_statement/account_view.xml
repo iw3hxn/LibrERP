@@ -76,12 +76,14 @@
                         <page string="Tax Authority">
                             <field name="authority_partner_id"  select="1" on_change="on_change_partner_id(authority_partner_id)"/>
                             <field name="authority_vat_amount" />
+                            <field name="interest_amount"/>
                             <field name="authority_vat_account_id"  select="1" />
                             <field name="residual" />
                             <separator string="Payments" colspan="4"/>
                             <field name="payment_ids" nolabel="1" colspan="4"/>
                         </page>
                     </notebook>
+                    <field name="interest_rate"/>
                     <field name="state"  select="1"/>
                     <field name="reconciled"/>
                     <button name="create_move" states="draft" string="Create Move" colspan="2"/>
@@ -127,6 +129,33 @@
                         <field name="vat_statement_sign"/>
                     </group>
                 </separator>
+            </field>
+        </record>
+
+<!--    fy      -->
+        <record id="view_account_fiscalyear_form_quarter_vat_period" model="ir.ui.view">
+            <field name="name">account.fiscalyear.form</field>
+            <field name="model">account.fiscalyear</field>
+            <field name="inherit_id" ref="account.view_account_fiscalyear_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="end_journal_period_id" position="after">
+                    <field name="quarter_vat_period"/>
+                </field>
+            </field>
+        </record>
+
+<!--    company     -->
+
+        <record model="ir.ui.view" id="view_company_form_quarter_vat">
+            <field name="name">res.company.form.inherit.quarter.vat</field>
+            <field name="inherit_id" ref="account.view_company_inherit_1_form"/>
+            <field name="model">res.company</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="paypal_account" position="after">
+                    <field name="interest_quarter_vat_account_id" />
+                </field>
             </field>
         </record>
 

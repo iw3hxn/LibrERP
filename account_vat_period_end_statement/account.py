@@ -26,9 +26,21 @@ from openerp.osv import orm, fields
 from tools.translate import _
 import math
 import decimal_precision as dp
+from datetime import datetime
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class account_vat_period_end_statement(orm.Model):
+
+    def _compute_interest_vat_amount(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        interest_vat_amount = 0.0
+        for i in ids:
+            statement = self.browse(cr, uid, i)
+            if statement.authority_vat_amount > 0.0 and statement.period_ids[0].fiscalyear_id.quarter_vat_period:
+                interest_vat_amount = statement.authority_vat_amount * statement.interest_rate
+            res[i] = interest_vat_amount
+        return res
 
     def _compute_authority_vat_amount(self, cr, uid, ids, field_name, arg, context):
         res = {}
@@ -248,10 +260,13 @@ class account_vat_period_end_statement(orm.Model):
                                     help="Remaining amount due."),
         'payment_ids': fields.function(_compute_lines, relation='account.move.line', type="many2many", string='Payments'),
         'period_ids': fields.one2many('account.period', 'vat_statement_id', 'Periods'),
+        'interest_rate': fields.float('Interest rate for quarter', digits_compute=dp.get_precision('Account')),
+        'interest_amount': fields.function(_compute_interest_vat_amount, method=True, string='Authority VAT Interest Amount'),
     }
 
     _defaults = {
         'date': fields.date.context_today,
+        'interest_rate': 0.01,
     }
 
     def _get_tax_code_amount(self, cr, uid, tax_code_id, period_id, context):
@@ -374,6 +389,21 @@ class account_vat_period_end_statement(orm.Model):
                     generic_vat_data['credit'] = math.fabs(generic_line.amount)
                 line_obj.create(cr, uid, generic_vat_data)
 
+            if statement.interest_amount > 0.0:
+                company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+                if not company.interest_quarter_vat_account_id:
+                    raise orm.except_orm(_('Error'),
+                                             _('In the company is not configured the account for interest amount'))
+                interest_amount_data = {'name': _('Interest Amount for Quarter VAT'),
+                                    'account_id': company.interest_quarter_vat_account_id.id,
+                                    'move_id': move_id,
+                                    'journal_id': statement.journal_id.id,
+                                    'debit': math.fabs(statement.interest_amount),
+                                    'credit': 0.0,
+                                    'date': statement.date,
+                                    'period_id': period_ids[0], }
+                line_obj.create(cr, uid, interest_amount_data)
+
             end_debit_vat_data = {'name': _('Tax Authority VAT'),
                                   'account_id': statement.authority_vat_account_id.id,
                                   'partner_id': statement.authority_partner_id.id,
@@ -383,7 +413,7 @@ class account_vat_period_end_statement(orm.Model):
                                   'period_id': period_ids[0], }
             if statement.authority_vat_amount > 0:
                 end_debit_vat_data['debit'] = 0.0
-                end_debit_vat_data['credit'] = math.fabs(statement.authority_vat_amount)
+                end_debit_vat_data['credit'] = math.fabs(statement.authority_vat_amount) + math.fabs(statement.interest_amount)
                 if statement.payment_term_id:
                     due_list = term_pool.compute(
                         cr, uid, statement.payment_term_id.id, math.fabs(statement.authority_vat_amount),
@@ -538,4 +568,21 @@ class account_tax_code(orm.Model):
 
 class account_period(orm.Model):
     _inherit = "account.period"
-    _columns = {'vat_statement_id': fields.many2one('account.vat.period.end.statement', "VAT statement"), }
+    _columns = {
+        'vat_statement_id': fields.many2one('account.vat.period.end.statement', "VAT statement"),
+    }
+
+
+class account_fiscalyear(orm.Model):
+    _inherit = "account.fiscalyear"
+    _columns = {
+        'quarter_vat_period': fields.boolean('Quarter fiscal VAT period',),
+    }
+
+
+class res_company(orm.Model):
+    _inherit = 'res.company'
+    _columns = {
+        'interest_quarter_vat_account_id': fields.many2one('account.account', 'Interest account for quarter VAT'),
+    }
+

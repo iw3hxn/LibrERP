@@ -25,10 +25,10 @@
 
 {
     "name": "Period End VAT Statement",
-    "version": "0.4.1",
+    "version": "2.0.0.0",
     'category': 'Generic Modules/Accounting',
     "depends": ["account_voucher", "report_webkit"],
-    "author": ["Agile Business Group", "OpenERP Italian Community"],
+    "author": ["Agile Business Group", "OpenERP Italian Community", "Didotech srl"],
     "description": """
     
 This module helps to register the VAT statement of period end.
@@ -43,10 +43,12 @@ Confirming the statement, the 'account.move' is created. If you select a payment
 The 'tax authority' tab contains information about payment(s). You can see statement's result ('authority VAT amount') and residual amount to pay ('Balance').
 The statement can be paid like every other debit: by voucher or 'move.line' reconciliation.
 
+In case of VAT statement for quarter period, it can be configured the interest rate.
+
 Specification: http://wiki.openerp-italia.org/doku.php/moduli/vat_period_end_statement
 
 """,
-    'website': 'http://www.agilebg.com',
+    'website': 'http://www.didotech.com',
     'data': ['wizard/add_period.xml',
              'wizard/remove_period.xml',
              'account_view.xml',
