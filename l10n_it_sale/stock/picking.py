@@ -29,7 +29,8 @@ class stock_picking(orm.Model):
         'ddt_date': fields.date('DDT date'),
         'ddt_in_reference':fields.char('In DDT', size=32),
         'ddt_in_date':fields.date('In DDT Date'),
-
+        'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
+        'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
     }
     
     def name_get(self, cr, uid, ids, context=None):
@@ -52,6 +53,8 @@ class stock_picking(orm.Model):
         default.update({
             'ddt_number': '',
             'ddt_in_reference': '',
+            'cig': '',
+            'cup': '',
         })
         if 'ddt_date' not in default:
             default.update({
@@ -60,6 +63,14 @@ class stock_picking(orm.Model):
         if 'ddt_in_date' not in default:
             default.update({
                 'ddt_in_date':False
+            })
+        if 'cig' not in default:
+            default.update({
+                'cig':False
+            })
+        if 'cup' not in default:
+            default.update({
+                'cup':False
             })
 
         return super(stock_picking, self).copy(cr, uid, id, default, context)
