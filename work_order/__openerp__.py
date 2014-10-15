@@ -23,7 +23,7 @@
 ##############################################################################
 
 {
-    "name": "Work Order management",
+    "name": "Job Order management",
     "version": "3.8.18.14",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
