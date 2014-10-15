@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2013 Didotech srl (info@didotech.com)
+#    Copyright (C) 2013-2014 Didotech srl (info@didotech.com)
 #    All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@
 from openerp.osv import orm, fields
 import decimal_precision as dp
 from openerp.tools.translate import _
-
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+
 import time
 
 import logging
@@ -95,7 +95,6 @@ class product_product(orm.Model):
                     bom = bom_obj.browse(cr, uid, bom_id)
                 
                 if bom.routing_id:
-                    #import pdb; pdb.set_trace()
                     for wline in bom.routing_id.workcenter_lines:
                         wc = wline.workcenter_id
                         cycle = wline.cycle_nbr
@@ -106,12 +105,11 @@ class product_product(orm.Model):
                 res[product.id] = price
             else:
                 # no BoM: use standard_price
-                # use standard_price if no supplier insert
-                #import pdb; pdb.set_trace()
+                # use standard_price if no supplier indicated
                 if product.prefered_supplier:
                     pricelist = product.prefered_supplier.property_product_pricelist_purchase and product.prefered_supplier.property_product_pricelist_purchase.id or False
                     ctx = {
-                        time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                        'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                     }
                     price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist], product.id, 1, context=ctx)[pricelist] or 0
                     res[product.id] = price
