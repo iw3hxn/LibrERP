@@ -1,0 +1,165 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* stock_product_zero
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-16 16:16+0000\n"
+"PO-Revision-Date: 2014-10-16 16:16+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_stock_inventory
+msgid "Inventory"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:53
+msgid "Lot"
+msgstr ""
+
+#. module: stock_product_zero
+#: model:ir.actions.report.xml,name:stock_product_zero.stock_inventory_webkit
+msgid "WebKit Inventory"
+msgstr ""
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_product_product
+msgid "Product"
+msgstr ""
+
+#. module: stock_product_zero
+#: constraint:product.product:0
+msgid "Error msg in raise"
+msgstr ""
+
+#. module: stock_product_zero
+#: field:stock.fill.inventory,display_with_zero_qty:0
+#: field:stock.location.product,display_with_zero_qty:0
+msgid "Display lines with zero"
+msgstr ""
+
+#. module: stock_product_zero
+#: field:stock.inventory.line,product_qty_calc:0
+msgid "Quantity Calculated"
+msgstr ""
+
+#. module: stock_product_zero
+#: code:addons/stock_product_zero/stock.py:36
+#, python-format
+msgid "We check location_products:"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:35
+msgid "Date"
+msgstr ""
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Products "
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:59
+msgid "Total Value"
+msgstr ""
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_stock_fill_inventory
+msgid "Import Inventory"
+msgstr ""
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_stock_inventory_line
+msgid "Inventory Line"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:52
+msgid "Name"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:55
+msgid "Quantity computed"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:58
+msgid "Value"
+msgstr ""
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_stock_location_product
+msgid "Products by Location"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:8
+msgid "Inventory List"
+msgstr ""
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Order by Location, Product"
+msgstr ""
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Products"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:54
+msgid "Quantity counted"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:51
+msgid "Code"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:34
+msgid "Number"
+msgstr ""
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Split inventory lines"
+msgstr ""
+
+#. module: stock_product_zero
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr ""
+
+#. module: stock_product_zero
+#: code:addons/stock_product_zero/stock.py:36
+#, python-format
+msgid "FGF Warning !"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:56
+msgid "Diff"
+msgstr ""
+
+#. module: stock_product_zero
+#: field:stock.inventory,inventory_line_loc_id:0
+msgid "Inventories"
+msgstr ""
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:57
+msgid "Unit"
+msgstr ""
+

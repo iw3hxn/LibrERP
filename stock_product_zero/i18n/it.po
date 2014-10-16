@@ -1,0 +1,165 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* stock_product_zero
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-16 16:17+0000\n"
+"PO-Revision-Date: 2014-10-16 16:17+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_stock_inventory
+msgid "Inventory"
+msgstr "Inventario"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:53
+msgid "Lot"
+msgstr "Lotto"
+
+#. module: stock_product_zero
+#: model:ir.actions.report.xml,name:stock_product_zero.stock_inventory_webkit
+msgid "WebKit Inventory"
+msgstr "Inventario Valorizzato"
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: stock_product_zero
+#: constraint:product.product:0
+msgid "Error msg in raise"
+msgstr "Errore"
+
+#. module: stock_product_zero
+#: field:stock.fill.inventory,display_with_zero_qty:0
+#: field:stock.location.product,display_with_zero_qty:0
+msgid "Display lines with zero"
+msgstr "Mostra righe a zero"
+
+#. module: stock_product_zero
+#: field:stock.inventory.line,product_qty_calc:0
+msgid "Quantity Calculated"
+msgstr "Quantità Calcolata"
+
+#. module: stock_product_zero
+#: code:addons/stock_product_zero/stock.py:36
+#, python-format
+msgid "We check location_products:"
+msgstr "Controllo magazzino prodotti:"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:35
+msgid "Date"
+msgstr "Data"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Products "
+msgstr "Prodotti "
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:59
+msgid "Total Value"
+msgstr "Valore Totale"
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_stock_fill_inventory
+msgid "Import Inventory"
+msgstr "Importa inventario"
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_stock_inventory_line
+msgid "Inventory Line"
+msgstr "Riga inventario"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:52
+msgid "Name"
+msgstr "Descrizione"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:55
+msgid "Quantity computed"
+msgstr "Quantità calcolata"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:58
+msgid "Value"
+msgstr "Valore"
+
+#. module: stock_product_zero
+#: model:ir.model,name:stock_product_zero.model_stock_location_product
+msgid "Products by Location"
+msgstr "Prodotti per punto di stoccaggio"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:8
+msgid "Inventory List"
+msgstr "Lista Inventario"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Order by Location, Product"
+msgstr "Ordina per Deposito, Prodotto"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Products"
+msgstr "Prodotti"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:54
+msgid "Quantity counted"
+msgstr "Quantità reale"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:51
+msgid "Code"
+msgstr "Codice"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:34
+msgid "Number"
+msgstr "Numero"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Split inventory lines"
+msgstr "Dividi righe inventario"
+
+#. module: stock_product_zero
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Errore: codice EAN non valido"
+
+#. module: stock_product_zero
+#: code:addons/stock_product_zero/stock.py:36
+#, python-format
+msgid "FGF Warning !"
+msgstr "Errore FGF !"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:56
+msgid "Diff"
+msgstr "Differenza"
+
+#. module: stock_product_zero
+#: field:stock.inventory,inventory_line_loc_id:0
+msgid "Inventories"
+msgstr "Inventari"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:57
+msgid "Unit"
+msgstr "Unità"
+

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+    <!-- location -->
+    <record model="ir.ui.view" id="view_stock_fill_inventory_zero">
+      <field name="name">view_stock_fill_inventory_zero.view</field>
+      <field name="model">stock.fill.inventory</field>
+      <field name="inherit_id" ref="stock.view_stock_fill_inventory"/>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <field name="set_stock_zero" position="after">
+          <newline/>
+          <field name="display_with_zero_qty" colspan="4"/>
+        </field>
+      </field>
+    </record>
+    <record id="view_inventory_sorted_form" model="ir.ui.view">
+        <field name="name">stock.inventory.sorted.form</field>
+        <field name="model">stock.inventory</field>
+        <field name="inherit_id" ref="stock.view_inventory_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+        <xpath expr="/form/notebook/page[@string='General Informations']" position="after">
+            <page string="Order by Location, Product" position="after">
+              <field colspan="4" name="inventory_line_loc_id" nolabel="1" widget="one2many_list" readonly="1">
+               <tree string="Products" editable="top" colors="red:product_qty_calc&lt;0 ">
+                <field domain="[('usage','=','internal')]" name="location_id"/>
+                <field context="{'location':location_id, 'uom':product_uom, 'to_date':parent.date}" name="product_id" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
+                <field name="product_qty"/>
+                <field name="product_qty_calc"/>
+                <field name="product_uom"/>
+                <field name="prod_lot_id" groups="base.group_extended"/>
+                <button name="%(stock.action_view_stock_inventory_line_split)d"
+                string="Split inventory lines" groups="base.group_extended"
+                    type="action" icon="terp-stock_effects-object-colorize" states="draft,confirm"/>
+                        <field name="state" invisible="True"/>
+                    </tree>
+                    <form string="Products ">
+                        <field domain="[('usage','=','internal')]" name="location_id"/>
+                        <newline/>
+                        <field context="{'location':location_id, 'uom':product_uom, 'to_date':parent.date}" name="product_id" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
+                        <field name="product_qty"/>
+                        <field name="product_uom"/>
+                        <group colspan="2" col="4">
+                            <field name="prod_lot_id" groups="base.group_extended"/>
+                            <button name="%(stock.action_view_stock_inventory_line_split)d"
+                            string="Split inventory lines" groups="base.group_extended"
+                                type="action" icon="terp-stock_effects-object-colorize"/>
+                            </group>
+                        </form>
+                    </field>
+                    
+            </page>
+        </xpath>
+    </field>
+</record>
+    </data>
+</openerp>
