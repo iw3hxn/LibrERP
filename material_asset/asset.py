@@ -927,7 +927,8 @@ class asset_asset(orm.Model):
         'parents': fields.function(get_parents, method=True, string='Parents', type='char'),
         'active': fields.boolean('Active'),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True),
-        "document_ids": fields.one2many("asset.document", 'asset_id', "Document"),
+        'document_ids': fields.one2many("asset.document", 'asset_id', "Document"),
+        'account_id': fields.many2one('account.analytic.account', 'Analytic Account', domain="[('type','!=','view'), ('parent_id', '!=', False)]"),
     }
 
     _sql_constraints = [

@@ -372,6 +372,7 @@
             <field name="arch" type="xml">
                 <form string="Asset" >
                     <field name="name" readonly="1"/>
+                    <field name="complete_name" />
                     <field name="new_serial_number" readonly="False" attrs="{'invisible': [('serial_number', '!=', False)]}" />
                     <field name="serial_number" readonly="True" attrs="{'invisible': [('serial_number', '=', False)]}" />
 
@@ -382,7 +383,7 @@
                     <field name="active" on_change="onchange_active(active)"/>
                     <field name="has_date_option" invisible="1"/>
                     <field name="asset_use_id" widget="selection" />
-
+    
                     <notebook colspan="4">
                         <page string="Asset Moves">
                             <field name="asset_moves" colspan="4" nolabel="1" >
@@ -494,8 +495,9 @@
                             <newline />
 							<field name="web_gallery_doc_ids" />
                         </page>-->
-                        <page string="Other">
-                            <field name="company_id" widget="selection"/>
+                        <page string="Other" groups="base.group_multi_company, analytic.group_analytic_accounting">
+                            <field name="account_id" groups="analytic.group_analytic_accounting" context="{'partner_id': company_id, 'default_name': complete_name}"/>
+                            <field name="company_id" widget="selection" groups="base.group_multi_company"/>
                         </page>
                         <page string="Property">
                             <field name="property_ids" nolabel="1" >
