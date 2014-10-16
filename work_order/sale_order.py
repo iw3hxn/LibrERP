@@ -128,7 +128,7 @@ class sale_order(osv.osv):
             invoice_ratio = 1
         else:
             invoice_ratio = 3
-        if not values.get('project_project', False) and shop and shop.project_required and (not order.project_project or not context.get('versioning', False)):
+        if (not values.get('project_project', False)) and (not values.get('project_id', False)) and shop and shop.project_required and (not order.project_project or not context.get('versioning', False)):
             project_id = self.pool['project.project'].create(cr, uid, {
                 'name': values['name'],
                 'partner_id': values.get('partner_id', False),

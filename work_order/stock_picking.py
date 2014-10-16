@@ -31,6 +31,7 @@ class stock_picking(orm.Model):
 
     _columns = {
         'project_id': fields.many2one('project.project', _('Project'), required=False),
+        'account_id': fields.related('sale_id', 'project_id', type='many2one', relation='account.analytic.account', string=_('Analytic Account'), store=False),
         'sale_project': fields.related('sale_id', 'project_project', type='many2one', relation='project.project', string=_('Project'), store=False),
     }
     
@@ -39,19 +40,19 @@ class stock_picking(orm.Model):
             ids = [ids]
 
         for picking in self.browse(cr, uid, ids):
-            if picking.project_id or picking.sale_project:
+            if picking.project_id or picking.sale_project or picking.account_id:
                 for move in picking.move_lines:
                     values = {
                         'name': move.name,
                         'product': move.product_id,
                         'product_qty': move.product_qty,
                         'product_uom_id': move.product_uom,
-                        'account_id': picking.project_id and picking.project_id.analytic_account_id.id or picking.sale_project.analytic_account_id.id,
+                        'account_id': picking.account_id and picking.account_id.id or picking.project_id and picking.project_id.analytic_account_id.id or picking.sale_project.analytic_account_id.id,
                         'date': move.date,
                         'ref': picking.name,
                         'origin_document': move
                     }
-                    self.pool.get('account.analytic.line').update_or_create_line(cr, uid, values)
+                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, values)
         return super(stock_picking, self).do_partial(cr, uid, ids, partial_data, context=context)
 
     def action_reopen(self, cr, uid, ids, context=None):
