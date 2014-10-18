@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.10.10.12',
+    'version': '3.11.11.13',
     'category': 'Others',
     'description': """SimplERP - Stock picking extension
 

@@ -8,11 +8,16 @@
 		    <field name="arch" type="xml">
                <page string="Payments" position="after">
                     <page string="Shipping">
-                       <field name="carriage_condition_id"/>
+                        <field name="carriage_condition_id"/>
+                        <field name="goods_description_id"/>
+                        <field name="address_delivery_id" context="{'contact_display':'partner_address'}" colspan="4" />
                         <newline/>
-                       <field name="goods_description_id"/>
-<!--                        <newline/>
-                      <field name="transportation_reason_id"/>-->
+                        <field name="transportation_condition_id"/>
+                        <field name="carrier_id"/>
+                        <field name="date_done"/>
+                        <field name="weight"/>
+                        <field name="weight_net"/>
+                        <field name="number_of_packages"/>
                     </page>
 		        </page>
 		    </field>

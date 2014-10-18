@@ -29,7 +29,17 @@ class account_invoice(orm.Model):
     _columns = {
         'carriage_condition_id': fields.many2one('stock.picking.carriage_condition', 'Carriage condition'),
         'goods_description_id': fields.many2one('stock.picking.goods_description', 'Description of goods'),
-        }
+        'transportation_condition_id': fields.many2one(
+            'stock.picking.transportation_condition', 'Transportation condition'),
+        'address_delivery_id': fields.many2one(
+            'res.partner.address', 'Address', help='Delivery address of \
+            partner'),
+        'date_done': fields.datetime('Date Done', help="Date of Completion"),
+        'number_of_packages': fields.integer('Number of Packages'),
+        'weight': fields.float('Weight'),
+        'weight_net': fields.float('Net Weight'),
+        'carrier_id': fields.many2one('delivery.carrier', 'Carrier'),
+    }
 
     def onchange_partner_id(self, cr, uid, ids, type, partner_id,
             date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
