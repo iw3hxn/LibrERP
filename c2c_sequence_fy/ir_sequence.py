@@ -232,7 +232,7 @@ class ir_sequence(osv.osv):
     # end def _next_seq
     
     def _format(self, cr, uid, seq, context):
-        d = self._interpolation_dict()
+        d = self._interpolation_dict(context)
         d['fy'] = self._fy_code(cr, uid, context)
         d['pe'] = self._month_code(cr, uid, context)
         if self._seq_type(cr, uid, seq):
