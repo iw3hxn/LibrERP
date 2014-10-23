@@ -21,20 +21,19 @@
 ##############################################################################
 
 
-from osv import fields, osv
+from openerp.osv import orm
 
-class purchase_order(osv.osv):
+
+class purchase_order(orm.Model):
     _inherit = "purchase.order"
 
     _defaults = {
-          'name' : '/',
-        }
+        'name': '/',
+    }
 
     def create(self, cr, uid, vals, context=None):
+        if vals.get('date_order', False):
+            context.update({'date': vals.get('date_order')})
         if vals.get('name', '/') == '/':
-            vals.update({'name':  self.pool.get('ir.sequence').get(cr, uid, 'purchase.order')})
+            vals.update({'name': self.pool['ir.sequence'].get(cr, uid, 'purchase.order', context=context)})
         return super(purchase_order, self).create(cr, uid, vals, context=context)
-
-purchase_order()
-
-    
