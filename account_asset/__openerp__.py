@@ -22,7 +22,7 @@
 
 {
     'name': 'Assets Management',
-    'version': '2.4.7.7',
+    'version': '2.5.8.8',
     'depends': [
         'report_webkit',
         'l10n_it_account',

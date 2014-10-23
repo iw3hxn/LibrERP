@@ -891,6 +891,7 @@ class account_asset_asset(orm.Model):
             ('view', 'View'),
             ('normal', 'Normal'),
         ], 'Type', required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'account_analytic_id': fields.many2one('account.analytic.account', 'Analytic account'),
     }
 
     _defaults = {
@@ -1316,7 +1317,7 @@ class account_asset_depreciation_line(orm.Model):
                 'period_id': period_ids and period_ids[0] or False,
                 'journal_id': journal_id,
                 #'partner_id': partner_id,  # fuorviante
-                'analytic_account_id': line.asset_id.category_id.account_analytic_id.id,
+                'analytic_account_id': line.asset_id.account_analytic_id.id or line.asset_id.category_id.account_analytic_id.id,
                 'date': depreciation_date,
                 'asset_id': line.asset_id.id
             }, context=ctx)

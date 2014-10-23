@@ -138,6 +138,7 @@
                   <field name="category_id" on_change="onchange_category_id(category_id)" attrs="{'required':[('type','=','normal')]}" colspan="4"/>
                   <field name="partner_id"/>
                   <field name="code"/>
+                  <field name="account_analytic_id"/>
                 </group>
                 
                   <group colspan="2" col="2">
