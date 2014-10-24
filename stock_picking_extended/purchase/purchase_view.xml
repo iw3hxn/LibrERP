@@ -35,8 +35,6 @@
                         <field name="invoice_state" groups="base.group_extended"/>
                         <field name="stock_journal_id" groups="base.group_extended" widget="selection"/>
                         <field name="state"/>
-                        <button name="action_process" states="assigned" string="Process" type="object" icon="gtk-go-forward"/>
-                        <button name="button_cancel" states="assigned,confirmed,draft" string="Cancel" icon="gtk-cancel" confirm="This operation will cancel the shipment. Do you want to continue?" />
                         </tree>
                     </field>
                 </field>
