@@ -65,7 +65,7 @@ class wizard_download_attachments(orm.TransientModel):
             attachment_ids = attachment_ids.union(attachment_obj.search(cr, uid, [('res_model', '=', 'product.product'),
                                                                                   ('res_id', '=', order_line.product_id.id),
                                                                                   
-                                                                                  ]))
+                                                                                  ], context=context))
             
             if order_line.product_id.is_kit:
                 main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
