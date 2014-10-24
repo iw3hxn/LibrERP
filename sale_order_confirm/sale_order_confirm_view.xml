@@ -296,6 +296,7 @@
                     <field name="user_id">
                         <filter domain="[('user_id','=',uid)]" help="My Sale Orders" icon="terp-personal"/>
                     </field>
+                    <field name="shop_id" widget="selection" />
                </search>
             </field>
         </record>
@@ -312,6 +313,7 @@
                     <field name="user_id">
                         <filter domain="[('user_id','=',uid)]" help="My Sale Orders" icon="terp-personal"/>
                     </field>
+                    <field name="shop_id" widget="selection" />
                </search>
             </field>
         </record>
