@@ -12,5 +12,36 @@
                 </field>
             </field>
         </record>
+
+        <record id="show_pickings_purchase_order_form" model="ir.ui.view">
+            <field name="name">show_pickings.purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form" />
+            <field name="arch" type="xml">
+                <field name="invoice_ids" position="after">
+                    <separator string="Pickings" colspan="4"/>
+                    <newline/>
+                    <field name="picking_ids" nolabel="1" colspan="4">
+                        <tree colors="blue:state == 'draft';grey:state == 'done';red:state not in ('cancel', 'done') and date &lt; current_date" string="Picking list">
+                        <field name="ddt_in_date"/>
+                        <field name="ddt_in_reference"/>
+                        <field name="name"/>
+                        <field name="partner_id" />
+                        <field name="backorder_id" groups="base.group_extended"/>
+                        <field name="origin"/>
+                        <field name="date"/>
+                        <field name="min_date"/>
+                        <field name="invoice_state" groups="base.group_extended"/>
+                        <field name="stock_journal_id" groups="base.group_extended" widget="selection"/>
+                        <field name="state"/>
+                        <button name="action_process" states="assigned" string="Process" type="object" icon="gtk-go-forward"/>
+                        <button name="button_cancel" states="assigned,confirmed,draft" string="Cancel" icon="gtk-cancel" confirm="This operation will cancel the shipment. Do you want to continue?" />
+                        </tree>
+                    </field>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>
