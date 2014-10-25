@@ -33,7 +33,9 @@ class account_invoice(orm.Model):
         if ids:
             invoices = self.browse(cr, uid, ids, context)
             for invoice in invoices:
-                if invoice.origin:
+                if invoice.move_products:
+                    result[invoice.id] = True
+                elif invoice.origin:
                     if ':' in invoice.origin:
                         if ',' in invoice.origin:
                             origins = invoice.origin.split(',')
