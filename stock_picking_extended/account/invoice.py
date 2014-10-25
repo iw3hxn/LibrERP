@@ -32,7 +32,7 @@ class account_invoice(orm.Model):
         'transportation_condition_id': fields.many2one(
             'stock.picking.transportation_condition', 'Transportation condition'),
         'address_delivery_id': fields.many2one(
-            'res.partner.address', 'Address', help='Delivery address of \
+            'res.partner.address', 'Address', states={'draft': [('readonly', False)]}, help='Delivery address of \
             partner'),
         'date_done': fields.datetime('Date Done', help="Date of Completion"),
         'number_of_packages': fields.integer('Number of Packages'),

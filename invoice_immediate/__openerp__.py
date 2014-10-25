@@ -38,7 +38,7 @@
         "base",
         "product",
         "l10n_it_base",
-        #"l10n_it",
+        "stock_picking_extended",
         "account",
         "stock"
     ],

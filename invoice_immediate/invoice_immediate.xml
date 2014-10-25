@@ -11,7 +11,7 @@
                 <data>
                     <field name="name" position="after">
                         <field name="move_products" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}" on_change="onchange_move_products(partner_id)" />
-                        <field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />
+                        <!--<field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />-->
                     </field>
                 </data>
             </field>
@@ -25,7 +25,8 @@
                 <data>
                     <xpath expr="/form/group/group" position="after">
                         <field name="move_products" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}" on_change="onchange_move_products(partner_id)" />
-                        <field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />
+                        <field name="address_delivery_id" attrs="{'invisible': [('move_products', '==', False)]}" context="{'contact_display':'partner_address'}" colspan="4" />
+                        <!--<field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />-->
                     </xpath>
                 </data>
             </field>

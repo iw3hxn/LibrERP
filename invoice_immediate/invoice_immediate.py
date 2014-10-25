@@ -30,7 +30,6 @@
 ##############################################################################
 
 from osv import fields, osv
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
 import netsvc
 
@@ -39,20 +38,20 @@ class account_invoice(osv.Model):
     _inherit = 'account.invoice'
     _columns = {
         #'discharge_products_in_invoice': fields.boolean('Discharge products in invoice', help="In case of 'immediate invoice', this flag active system of discharge products from stock."),
-        'partner_shipping_id': fields.many2one('res.partner.address', 'Shipping Address', states={'draft': [('readonly', False)]}, help="Shipping address for current invoice.", domain=[('parent_id', '=', 'parent_id')]),
+        #'partner_shipping_id': fields.many2one('res.partner.address', 'Shipping Address', states={'draft': [('readonly', False)]}, help="Shipping address for current invoice.", domain=[('parent_id', '=', 'parent_id')]),
         'move_products': fields.boolean('Load/unload products in stock', help="In case of 'immediate invoice', this flag activate system of loading/unloading products from/to stock."),
     }
     
     def onchange_move_products(self, cr, uid, ids, part):
         if not part:
-            return {'value': {'partner_shipping_id': False}}
+            return {'value': {'address_delivery_id': False}}
 
         addr = self.pool['res.partner'].address_get(cr, uid, [part], ['delivery', 'invoice', 'contact'])
         part = self.pool['res.partner'].browse(cr, uid, part)
         val = {
-            'partner_shipping_id': addr['delivery'],
+            'address_delivery_id': addr['delivery'] or addr['invoice'],
         }
-        
+
         return {'value': val}
     
     def create_picking(self, cr, uid, ids, state, context=None):
@@ -64,8 +63,8 @@ class account_invoice(osv.Model):
         invoice_line_obj = self.pool['account.invoice.line']
 
         for invoice in self.browse(cr, uid, ids, context=context):
-            if invoice.partner_shipping_id:
-                address_id = invoice.partner_shipping_id.id
+            if invoice.address_delivery_id:
+                address_id = invoice.address_delivery_id.id
             else:
                 addr = invoice.partner_id and partner_obj.address_get(cr, uid, [invoice.partner_id.id], ['delivery']) or {}
                 address_id = addr.get('delivery', False)
@@ -86,6 +85,12 @@ class account_invoice(osv.Model):
                 'note': invoice.comment or "",
                 'invoice_state': 'none',
                 'auto_picking': True,
+                'carriage_condition_id': invoice.carriage_condition_id and invoice.carriage_condition_id.id or False,
+                'goods_description_id': invoice.goods_description_id and invoice.goods_description_id.id or False,
+                'transportation_condition_id': invoice.transportation_condition_id and invoice.transportation_condition_id.id or False,
+                'carrier_id': invoice.carrier_id and invoice.carrier_id.id or False,
+                'date_done': invoice.date_done,
+                'number_of_packages': invoice.number_of_packages,
             }, context=context)
             
             self.write(cr, uid, [invoice.id], {'picking_id': picking_id}, context=context)
@@ -121,10 +126,10 @@ class account_invoice(osv.Model):
                     if state == 'cancel':
                         product_qty_new = line.product_id.qty_available + line.quantity
                         location_id, dest_id = dest_id, location_id
-                        note = 'Invoice cancellation'
+                        note = _('Invoice cancellation')
                     else:
                         product_qty_new = line.product_id.qty_available - line.quantity
-                        note = 'Immediate invoice'
+                        note = _('Immediate invoice')
                         
                     if product_qty_new < 0:
                         raise osv.except_osv(_('Warning!'), _('Insufficent quantity of {product}s in stock.'.format(product=line.product_id.name)))
@@ -134,7 +139,7 @@ class account_invoice(osv.Model):
                 if line.quantity < 0:
                     location_id, dest_id = dest_id, location_id
 
-                move_obj.create(cr, uid, {
+                vals = {
                     'name': line.name,
                     'product_uom': line.product_id.uom_id.id,
                     'product_uos': line.product_id.uom_id.id,
@@ -147,7 +152,9 @@ class account_invoice(osv.Model):
                     'location_id': location_id,
                     'location_dest_id': dest_id,
                     'note': note
-                }, context=context)
+                }
+                
+                move_obj.create(cr, uid, vals, context=context)
                 if line.quantity < 0:
                     location_id, dest_id = dest_id, location_id
 
