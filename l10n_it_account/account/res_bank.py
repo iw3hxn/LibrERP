@@ -22,12 +22,13 @@
 from openerp.osv import orm
 
 
-class res_partner_bank(orm.Model):
-    _inherit = "res.partner.bank"
+class res_bank(orm.Model):
+    _inherit = "res.bank"
 
-    def _check_bank(self, cr, uid, ids, context=None):
-        return True
+    def on_change_city(self, cr, uid, ids, city, zip_code=None):
+        res = self.pool['res.partner.address'].on_change_city(cr, uid, ids, city, zip_code=zip_code)
+        return res
 
-    _constraints = [
-        (_check_bank, '\nPlease define BIC/Swift code on bank for bank type IBAN Account to make valid payments', ['bic'])
-    ]
+    def on_change_zip(self, cr, uid, ids, zip_code):
+        res = self.pool['res.partner.address'].on_change_zip(cr, uid, ids, zip_code=zip_code)
+        return res
