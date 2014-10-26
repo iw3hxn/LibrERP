@@ -209,7 +209,7 @@ msgstr "IVA Erario"
 #: view:add.period.to.vat.statement:0
 #: model:ir.actions.act_window,name:account_vat_period_end_statement.action_add_period
 msgid "Add period"
-msgstr "Aggiunti un periodo"
+msgstr "Aggiungi un periodo"
 
 #. module: account_vat_period_end_statement
 #: field:account.tax.code,vat_statement_type:0
