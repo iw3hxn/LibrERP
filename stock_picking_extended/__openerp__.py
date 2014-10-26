@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.11.11.14',
+    'version': '3.11.12.14',
     'category': 'Others',
     'description': """SimplERP - Stock picking extension
 
@@ -41,6 +41,7 @@ Functionalities:
         'delivery',
         'sequence_restart',     # ricomincia da 0 le sequenze ogni anno
         'sale_margin',
+        'l10n_it_sale'
     ],
     "data": [
         'security/ir.model.access.csv',

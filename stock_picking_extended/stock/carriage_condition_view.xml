@@ -15,6 +15,7 @@
                 </tree>
             </field>
         </record>
+		
         <record id="l10n_it_sale.view_carriage_condition_form" model="ir.ui.view">
             <field name="name">stock.picking.carriage_condition.form</field>
             <field name="model">stock.picking.carriage_condition</field>
