@@ -19,12 +19,11 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-import datetime
+from openerp.osv import fields, orm
 import decimal_precision as dp
 
 
-class account_fiscal_position(osv.osv):
+class account_fiscal_position(orm.Model):
     _inherit = 'account.fiscal.position'
     
     def get_color(self, cr, uid, ids, field_name, arg, context):
