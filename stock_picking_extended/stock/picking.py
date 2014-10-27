@@ -86,6 +86,11 @@ class stock_picking(orm.Model):
             'res.partner.address', 'Address', help='Delivery address of \
             partner'
         ),
+        'invoice_state': fields.selection([
+            ("invoiced", "Invoiced"),
+            ("2binvoiced", "To Be Invoiced"),
+            ("none", "Not Applicable")], "Invoice Control",
+            select=True, required=True, readonly=False),
     }
     
     def onchange_stock_journal(
