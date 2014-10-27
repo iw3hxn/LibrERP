@@ -40,13 +40,11 @@ class asset_move_create(orm.TransientModel):
         'description': fields.text('Move Description'),
         "move_date": fields.datetime("Move Date", required=True),
         'asset_use_id': fields.many2one('asset.use', 'Utilizzo'),
-        ## This line generates a strange error. We need many2many relation
-        #'asset_ids': fields.one2many('asset.asset', 'Assets')
+        # - This line generates a strange error. We need many2many relation
+        # 'asset_ids': fields.one2many('asset.asset', 'Assets')
         'asset_ids': fields.many2many('asset.asset', 'asset_move_asset_asset_rel', 'move_id', 'asset_id', 'Assets'),
         'address_id': fields.many2one('res.partner.address', 'Location Address'),
         'show_address': fields.boolean('Invisible field'),
-        #'location_id': fields.many2one('stock.location', 'Location'),
-        #'show_location': fields.boolean('Invisible field')
     }
     
     _defaults = {
@@ -80,7 +78,7 @@ class asset_move_create(orm.TransientModel):
             if len(asset_ids) == 1:
                 asset = self.pool.get('asset.asset').browse(cr, uid, asset_ids[0])
                 asset_stocks = self.pool['stock.location'].search(cr, uid, [('usage', '=', 'assets')])
-                if (asset.location._name == 'stock.location' and not asset.location.id in asset_stocks) or not asset.location._name == 'stock.location':
+                if (asset.location._name == 'stock.location' and asset.location.id not in asset_stocks) or not asset.location._name == 'stock.location':
                     dest_location = 'stock.location,' + str(asset_stocks[0])
                 else:
                     dest_location = False
@@ -105,7 +103,6 @@ class asset_move_create(orm.TransientModel):
         for data in self.browse(cr, uid, ids, context):
             asset_line_ids = []
             asset_ids = []
-            
             
             asset_use_id = data.asset_use_id
             if data.asset_ids:
@@ -148,9 +145,9 @@ class asset_move_create(orm.TransientModel):
                             user = self.pool['res.users'].browse(cr, uid, uid, context)
                             partner_id = user.company_id.partner_id.id
                         
-                        if dest_location.usage in ('customer', 'supplier'):
+                        if hasattr(dest_location, 'usage') and dest_location.usage in ('customer', 'supplier'):
                             move_type = 'out'
-                        elif dest_location.usage in ('procurement', ):
+                        elif hasattr(dest_location, 'usage') and dest_location.usage in ('procurement', ):
                             move_type = 'in'
                         else:
                             move_type = 'internal'
@@ -162,7 +159,7 @@ class asset_move_create(orm.TransientModel):
                                 'dest_location': '{location._name},{location.id}'.format(location=dest_location),
                                 'date': data.move_date,
                                 'user_id': data.user_id.id,
-                                #'origin': select_rent_asset.order_id.name,
+                                # 'origin': select_rent_asset.order_id.name,
                                 'address_id': address_id,
                                 'product_id': asset.asset_product_id.product_product_id.id,
                                 'product_uom': asset.asset_product_id.uom_id.id,
