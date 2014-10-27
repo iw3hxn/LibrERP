@@ -24,3 +24,4 @@ from . import invoice
 from . import account_fiscal_position
 from . import res_partner_bank
 from . import partner
+from . import res_bank

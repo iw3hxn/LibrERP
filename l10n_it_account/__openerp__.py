@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation - Account Didotech',
-    'version': '2.7.13.12',
+    'version': '2.8.14.14',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
@@ -32,8 +32,8 @@ Functionalities:
 - CIG on invoice
 
 """,
-    'author': 'OpenERP Italian Community',
-    'website': 'http://www.openerp-italia.org',
+    'author': 'OpenERP Italian Community, Didotech srl',
+    'website': 'http://www.openerp-italia.org, http://www.didotech.com',
     'license': 'AGPL-3',
     "depends": [
         'account',
@@ -55,6 +55,7 @@ Functionalities:
         'wizard/select_fiscal_position_view.xml',
         'data/bank_iban_data.xml',
         'account/account_move.xml',
+        'account/res_bank_view.xml',
     ],
     "demo": [],
     "active": False,
