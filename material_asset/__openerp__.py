@@ -39,7 +39,7 @@
         'stock',
         "project_long_term",
         'hr_auto',
-        'project_place',
+#        'project_place',
         'product_manufacturer',
         'product_code_category',
         'dt_product_serial',

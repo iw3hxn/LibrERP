@@ -1404,24 +1404,24 @@ class res_car(orm.Model):
     }
 
 
-class project_place(orm.Model):
-    _inherit = 'project.place'
-
-    def _get_assigned_assets(self, cr, uid, ids, prop, unknow_none, context=None):
-        if not len(ids):
-            return {}
-        model_name = super(project_place, self)._name
-        res = []
-        try:
-            for id in ids:
-                res.append((id, self.pool.get('asset.asset').search(cr, uid, [('location', '=', model_name + ',' + str(id))])))
-        except:
-            print repr(traceback.extract_tb(sys.exc_traceback))
-        return dict(res)
-
-    _columns = {
-        'asset_ids': fields.function(_get_assigned_assets, method=True, string='Assets', type='one2many', relation="asset.asset"),
-    }
+#class project_place(orm.Model):
+#    _inherit = 'project.place'
+#
+#    def _get_assigned_assets(self, cr, uid, ids, prop, unknow_none, context=None):
+#        if not len(ids):
+#            return {}
+#        model_name = super(project_place, self)._name
+#        res = []
+#        try:
+#            for id in ids:
+#                res.append((id, self.pool.get('asset.asset').search(cr, uid, [('location', '=', model_name + ',' + str(id))])))
+#        except:
+#            print repr(traceback.extract_tb(sys.exc_traceback))
+#        return dict(res)
+#
+#    _columns = {
+#        'asset_ids': fields.function(_get_assigned_assets, method=True, string='Assets', type='one2many', relation="asset.asset"),
+#    }
 
 
 class asset_document_type(orm.Model):
