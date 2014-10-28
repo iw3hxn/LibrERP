@@ -61,6 +61,33 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
                 value[lead.id] = 'black'
 
         return value
+   
+    def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        crm_lead_obj = self.pool['crm.lead']
+        sale_order_obj = self.pool['sale.order']
+        
+        for crm_lead in crm_lead_obj.browse(cr, uid, ids, context):
+            partner_id = crm_lead.partner_id.id
+            contact_id = crm_lead.partner_address_id.id
+            if contact_id:
+                result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_order_id', '=', contact_id)])
+            else:
+                result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)])
+        return result
+    
+    def _get_crm_lead(self, cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        crm_lead_obj = self.pool['crm.lead']
+        for crm_lead in crm_lead_obj.browse(cr, uid, ids, context):
+            name = crm_lead.name
+            partner_id = crm_lead.partner_id.id
+            contact_id = crm_lead.partner_address_id.id
+            if contact_id:
+                result[crm_lead.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_address_id', '=', contact_id), ('name', '!=', name)])
+            else:
+                result[crm_lead.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('name', '!=', name)])
+        return result
 
     _columns = {
         'province': fields.many2one('res.province', string='Province', ondelete='restrict'),
@@ -71,7 +98,9 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         'phonecall_ids': fields.one2many('crm.phonecall', 'opportunity_id', 'Phonecalls'),
         'meeting_ids': fields.one2many('crm.meeting', 'opportunity_id', 'Meetings'),
         'partner_category_id': fields.many2one('res.partner.category', 'Partner Category'),
-        'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
+        'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True),
+        'sale_order': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
+        'crm_lead': fields.function(_get_crm_lead, 'Opportunity', type='one2many', relation="crm.lead", readonly=True, method=True)
     }
 
     _defaults = {

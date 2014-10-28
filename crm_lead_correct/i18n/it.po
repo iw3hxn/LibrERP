@@ -302,3 +302,13 @@ msgstr "Data di inizio"
 #: model:ir.model,name:crm_lead_correct.model_crm_case_stage
 msgid "Stage of case"
 msgstr "Fasi del caso"
+
+#. module: crm
+#: view:crm.lead:0
+msgid "Street..."
+msgstr "Via..."
+
+#. module: crm
+#: view:crm.lead:0
+msgid "ZIP"
+msgstr "CAP"

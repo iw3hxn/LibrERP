@@ -119,16 +119,15 @@
                         <field name="partner_name" string="Customer Name" colspan="4"/>
                         <newline/>
                         <field domain="[('domain', '=', 'contact')]" name="title" widget="selection"/>
-                        <field name="function" />
-                        <field name="street" colspan="4"/>
+                        <field name="function_id" widget="selection" />
+                        <field name="street" colspan="4" placeholder="Street..."/>
                         <field name="street2" colspan="4"/>
-						<field name="zip"  on_change="on_change_zip(zip)"/>
-						<field name="city" on_change="on_change_city(city,zip)"/>
+						<field name="zip"  on_change="on_change_zip(zip)" placeholder="ZIP" nolabel="1"/>
+						<field name="city" on_change="on_change_city(city,zip)" placeholder="City" nolabel="1"/>
 						<field name="find_city" invisible="1" />              
-						<field name="province" on_change="on_change_province(province)" attrs="{'readonly':[('find_city','!=',False)]}"/>
-						<field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}"/>						
-                        <field name="country_id" completion="1" attrs="{'readonly':[('region','!=',False)]}"/>
-                    </group>
+						<field name="province" on_change="on_change_province(province)" attrs="{'readonly':[('find_city','!=',False)]}" placeholder="Province" invisible="1"/>
+						<field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}"/>
+                        <field name="country_id" completion="1" attrs="{'readonly':[('region','!=',False)]}"/>                    </group>
                     <group colspan="2" col="2">
                         <separator string="Communication" colspan="2"/>
                         <field name="fax"/>
@@ -183,6 +182,51 @@
                     <field name="ref"/>
                     <field name="ref2"/>
                 </page>
+				<page string="Sale Order" >
+					<field name="sale_order" mode="tree" nolabel="1">
+                        <tree string="History">
+						    <field name="name"/>
+							<field name="date_order"/>
+							<field name="user_id"/>
+<!--                    <field name="picked_rate" widget="progressbar"/>
+                    <field name="invoiced_rate" widget="progressbar"/>-->
+							<field name="amount_untaxed" sum="Total Tax Excluded"/>
+							<field name="amount_total" sum="Total Tax Included"/>
+							<field name="state"/>
+					    </tree>
+					</field>
+					
+				</page>
+				<page string="Opportunity">
+					<field name="crm_lead" nolabel="1" >
+						<tree string="Opportunities" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+							<field name="row_color" invisible="1"/>
+							<field name="date_deadline" invisible="1"/>
+							<field name="create_date"/>
+							<field name="name" string="Opportunity"/>
+							<field name="date_action"/>
+							<field name="title_action"/>
+<!--							<field name="channel_id" invisible="1"/>
+							<field name="type_id" invisible="1"/>-->
+							<field name="stage_id"/>
+							<!--<button name="stage_previous" string="Previous Stage" states="open,pending" type="object" icon="gtk-go-back"/>
+							<button name="stage_next" string="Next Stage" states="open,pending" type="object" icon="gtk-go-forward"/>
+							-->
+							<field name="planned_revenue" sum="Expected Revenues"/>
+							<field name="probability" widget="progressbar" />
+							<field name="section_id" />
+							<field name="user_id"/>
+							<!--<field name="priority" invisible="1"/>-->
+							<field name="categ_id"/>
+							<field name="state"/>
+							<!--<button name="case_open" string="Open" states="draft,pending" type="object" icon="gtk-go-forward"/>
+							<button name="case_pending" string="Pending" states="open,draft" type="object" icon="gtk-media-pause"/>
+							<button name="case_mark_lost" string="Lost" states="open,pending" type="object" icon="gtk-cancel"/>
+							<button name="case_mark_won" string="Won" states="open,pending" type="object" icon="gtk-apply"/>-->
+							<field name="ref" />
+						</tree>	
+					</field>
+				</page>
                 </notebook>
             </form>
         </field>
