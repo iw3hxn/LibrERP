@@ -73,6 +73,7 @@ class sale_order(osv.osv):
         result = super(sale_order, self).action_wait(cr, uid, ids, context)
         
         bom_obj = self.pool['mrp.bom']
+        sale_line_bom_obj = self.pool.get('sale.order.line.mrp.bom') or False
         user = self.pool['res.users'].browse(cr, uid, uid)
         
         orders = self.browse(cr, uid, ids)
@@ -86,27 +87,42 @@ class sale_order(osv.osv):
                 self.pool['project.project'].write(cr, uid, project_id, {'to_invoice' : invoice_ratio, 'state' : 'open'})
                 for order_line in order.order_line:
                     if order_line.product_id and order_line.product_id.is_kit:
-                        main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
-                        if main_bom_ids:
-                            if len(main_bom_ids) > 1:
-                                _logger.warning(_(u"More than one BoM defined for the '{0}' product!").format(order_line.product_id.name))
-                            
-                            bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', main_bom_ids[0])])
-                            boms = bom_obj.browse(cr, uid, bom_ids)
-                            service_boms = [bom for bom in boms if bom.product_id.type == 'service']
+                        #test id module sale_bom is installad
+                        if sale_line_bom_obj:
+                            service_boms = [sale_line_bom for sale_line_bom in order_line.mrp_bom if (sale_line_bom.product_id.type == 'service' and sale_line_bom.product_id.purchase_ok == False)]
                             for bom in service_boms:
                                 if bom.product_id.uom_id.id == user.company_id.hour.id:
-                                    planned_hours = bom.product_qty
+                                    planned_hours = bom.product_uom_qty
                                 else:
                                     planned_hours = 0
                                 self.pool['project.task'].create(cr, uid, {
-                                    'name': u"{0}: {1}".format(order.name, bom.product_id.name),
+                                    'name': u"{0}: {1} - {2}".format(order.name, order_line.product_id.name, bom.product_id.name),
                                     'project_id': project_id,
                                     'planned_hours': planned_hours,
                                     'remaining_hours': planned_hours
                                 })
+                        else:
+                            main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
+                            if main_bom_ids:
+                                if len(main_bom_ids) > 1:
+                                    _logger.warning(_(u"More than one BoM defined for the '{0}' product!").format(order_line.product_id.name))
+                                
+                                bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', main_bom_ids[0])])
+                                boms = bom_obj.browse(cr, uid, bom_ids)
+                                service_boms = [bom for bom in boms if (bom.product_id.type == 'service' and sale_line_bom.product_id.purchase_ok == False)]
+                                for bom in service_boms:
+                                    if bom.product_id.uom_id.id == user.company_id.hour.id:
+                                        planned_hours = bom.product_qty
+                                    else:
+                                        planned_hours = 0
+                                    self.pool['project.task'].create(cr, uid, {
+                                        'name': u"{0}: {1}".format(order.name, bom.product_id.name),
+                                        'project_id': project_id,
+                                        'planned_hours': planned_hours,
+                                        'remaining_hours': planned_hours
+                                    })
                             
-                    elif order_line.product_id and order_line.product_id.type == 'service':
+                    elif order_line.product_id and order_line.product_id.type == 'service' and order_line.product_id.purchase_ok == False:
                         if order_line.product_id.uom_id.id == user.company_id.hour.id:
                             planned_hours = order_line.product_uom_qty
                         else:
