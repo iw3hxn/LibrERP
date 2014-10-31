@@ -21,7 +21,7 @@
                         states="draft"
                     />
                 </xpath>
-                <xpath expr="//form/group[1]/group[2]/field[@name='shipped']" position="after">
+                <xpath expr="//form/group[1]/group[2]/field[@name='name']" position="after">
                     <field name="active" invisible="1"/>
                 </xpath>
                 <page string="Other Information" position="after">
