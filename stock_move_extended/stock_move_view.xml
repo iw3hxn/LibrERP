@@ -1,52 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
-	<data>
+    <data>
+    
+    
+        <record model="ir.ui.view" id="view_picking_in_form_inh_showpriceunit">
+            <field name="name">view.picking.in.form.inh.showpriceunit</field>
+            <field name="model">stock.picking</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_picking_in_form" />
+            <field name="arch" type="xml">
+<!--                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_id']" position="replace">
+                    <field name="product_id" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)" />
+                </xpath>-->
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_uom']" position="after">
+                    <field name="price_unit" groups="stock.view_price" />
+                </xpath>
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//form/group//field[@name='product_uom']" position="after">
+                    <field name="price_unit" groups="stock.view_price" />
+                </xpath>
+<!--                <xpath expr="//form//notebook//page//field[@name='move_lines']//form/group//field[@name='product_id']" position="replace">
+                    <field name="product_id" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)" />
+                </xpath>-->
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_picking_out_form_inh_showpriceunit">
+            <field name="name">view.picking.out.form.inh.showpriceunit</field>
+            <field name="model">stock.picking</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_uom']" position="after">
+                    <field name="price_unit" groups="stock.view_price" />
+                </xpath>
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//form/group//field[@name='product_uom']" position="after">
+                        <field name="price_unit" groups="stock.view_price" />
+                </xpath>
+            </field>
+        </record>
 
 
-		<record model="ir.ui.view" id="view_picking_in_form_inh_showpriceunit">
-			<field name="name">view.picking.in.form.inh.showpriceunit</field>
-			<field name="model">stock.picking</field>
-			<field name="type">form</field>
-			<field name="inherit_id" ref="stock.view_picking_in_form" />
-			<field name="arch" type="xml">		
-				<xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_id']" position="after">	
-					<field name="price_unit" />
-				</xpath>	
-				<xpath expr="//form//notebook//page//field[@name='move_lines']//form/group//field[@name='product_id']" position="after">	
-					<field name="price_unit" />
-				</xpath>	
-			</field>
-		</record>
-
-		<record model="ir.ui.view" id="view_move_tree_direction">
-			<field name="name">stock.view_move_tree</field>
-			<field name="model">stock.move</field>
-			<field name="type">form</field>
-			<field name="inherit_id" ref="stock.view_move_tree" />
-			<field name="arch" type="xml">		
-				<field name="product_qty" position="after">
-					<field name="direction" />
-				</field>
-				<field name="product_id" position="after" >
-					<field name="price_unit" groups="stock.view_price" />
-				</field>
-			</field>
-		</record>
-
-		<record model="ir.ui.view" id="view_picking_in_form_inh_showpriceunit_tree">
-			<field name="name">view.picking.in.form.inh.showpriceunit</field>
-			<field name="model">stock.move</field>
-			<field name="type">form</field>
-			<field name="inherit_id" ref="stock.view_move_tree_reception_picking" />
-			<field name="arch" type="xml">		
-				<field name="product_qty" position="after">
-					<field name="direction" />
-				</field>
-				<field name="product_id" position="after" >
-					<field name="price_unit" groups="stock.view_price" />
-				</field>
-			</field>
-		</record>
-		
-	</data>
+        <record model="ir.ui.view" id="view_move_tree_direction">
+            <field name="name">stock.view_move_tree</field>
+            <field name="model">stock.move</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_move_tree" />
+            <field name="arch" type="xml">
+                <field name="product_qty" position="after">
+                    <field name="direction" />
+                </field>
+                <field name="product_id" position="after" >
+                    <field name="price_unit" groups="stock.view_price" />
+                </field>
+            </field>
+        </record>
+    
+        <record model="ir.ui.view" id="view_picking_in_form_inh_showpriceunit_tree">
+            <field name="name">view.picking.in.form.inh.showpriceunit</field>
+            <field name="model">stock.move</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_move_tree_reception_picking" />
+            <field name="arch" type="xml">
+                <field name="product_qty" position="after">
+                    <field name="direction" />
+                </field>
+                <field name="product_uom" position="after" >
+                    <field name="price_unit" groups="stock.view_price" />
+                </field>
+            </field>
+        </record>
+        
+    </data>
 </openerp>
