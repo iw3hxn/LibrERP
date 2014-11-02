@@ -18,5 +18,15 @@
         <menuitem id="project_long_term.menu_project_phase_list" parent="project.menu_project_management"
                   groups="base.group_extended" />
         
+        
+        <act_window
+            context="{'search_default_account_id': [active_id], 'search_default_user_id': False, 'default_account_id': active_id}"
+            id="act_project_project_2_account_analytic_line"
+            groups="project.group_project_manager"
+            name="All Analytic Entries"
+            res_model="account.analytic.line"
+            src_model="project.project"/>
+
+        
     </data>
 </openerp>
