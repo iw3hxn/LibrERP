@@ -6,7 +6,6 @@
             <field name="name">select.fiscal.position.form</field>
             <field name="model">select.fiscal.position</field>
             <field name="type">form</field>
-            <field name="mode">form</field>
             <field name="arch" type="xml">
                 <form>
                     <field name="property_account_position" required="True" colspan="3" />
