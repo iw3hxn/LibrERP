@@ -17,8 +17,74 @@
             <field name="payment_id" ref="l10n_it_account.payment_direct"/>
         </record>
 
+        <record id="l10n_it_account.payment_consignment" model="account.payment.term">
+            <field name="name">Alla consegna</field>
+            <field name="note">Alla consegna</field>
+            <field name="type">RD</field>
+        </record>
+        <record id="l10n_it_account.payment_consignment_line" model="account.payment.term.line">
+            <field name="name">Alla consegna</field>
+            <field name="value">balance</field>
+            <field eval="0" name="days"/>
+            <field eval="0" name="days2"/>
+            <field name="payment_id" ref="l10n_it_account.payment_consignment"/>
+        </record>
+
+        <record id="l10n_it_account.payment_delivery" model="account.payment.term">
+            <field name="name">Contrassegno</field>
+            <field name="note">Contrassegno</field>
+            <field name="type">RD</field>
+        </record>
+        <record id="l10n_it_account.payment_delivery_line" model="account.payment.term.line">
+            <field name="name">Contrassegno</field>
+            <field name="value">balance</field>
+            <field eval="0" name="days"/>
+            <field eval="0" name="days2"/>
+            <field name="payment_id" ref="l10n_it_account.payment_delivery"/>
+        </record>
+
+        <record id="l10n_it_account.payment_direct_60" model="account.payment.term">
+            <field name="name">Rimessa Diretta 60 GG D.F.</field>
+            <field name="note">Rimessa Diretta 60 Giorni Data Fattura</field>
+            <field name="type">RD</field>
+        </record>
+        <record id="l10n_it_account.payment_direct_line_60" model="account.payment.term.line">
+            <field name="name">60 Giorni</field>
+            <field name="value">balance</field>
+            <field eval="60" name="days"/>
+            <field eval="0" name="days2"/>
+            <field name="payment_id" ref="l10n_it_account.payment_direct_60"/>
+        </record>
+
 	<!-- Payment Same day of Month -->
-	
+		<record id="l10n_it_account.payment_term_advance" model="account.payment.term">
+            <field name="name">B.B. Anticipato</field>
+            <field name="note">B.B. Anticipato all'ordine</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="l10n_it_account.payment_term_advance_line" model="account.payment.term.line">
+            <field eval="1" name="sequence"/>
+            <field name="name">Anticipato</field>
+            <field name="value">balance</field>
+            <field eval="0" name="days"/>
+            <field eval="0" name="days2"/>
+            <field name="payment_id" ref="l10n_it_account.payment_term_advance"/>
+        </record>
+
+		<record id="l10n_it_account.payment_term_sight" model="account.payment.term">
+            <field name="name">B.B. A Vista</field>
+            <field name="note">B.B. A Vista</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="l10n_it_account.payment_term_sight_line" model="account.payment.term.line">
+            <field eval="1" name="sequence"/>
+            <field name="name">A Vista</field>
+            <field name="value">balance</field>
+            <field eval="0" name="days"/>
+            <field eval="0" name="days2"/>
+            <field name="payment_id" ref="l10n_it_account.payment_term_sight"/>
+        </record>
+
 		<record id="l10n_it_account.payment_term_15_net_1" model="account.payment.term">
             <field name="name">B.B. 15 GG D.F.</field>
             <field name="note">B.B. 15 Giorni Data Fattura</field>
@@ -221,6 +287,19 @@
         </record>
 
 	<!-- Payment End of Month -->
+	<record id="l10n_it_account.payment_term_30_days_1" model="account.payment.term">
+            <field name="name">B.B. 30 GG D.F. F.M.</field>
+            <field name="note">B.B. 30 Giorni Data fattura Fine Mese</field>
+            <field name="type">BB</field>
+        </record>
+        <record id="l10n_it_account.1_payment_term_30_days_line" model="account.payment.term.line">
+            <field name="name">30 Giorni Data fattura Fine Mese</field>
+            <field name="value">balance</field>
+            <field eval="1" name="months"/>
+            <field eval="-1" name="days2"/>
+            <field ref="l10n_it_account.payment_term_30_days_1" name="payment_id"/>
+        </record>
+
 	<record id="l10n_it_account.payment_term_60_days_1" model="account.payment.term">
             <field name="name">B.B. 60 GG D.F. F.M.</field>
             <field name="note">B.B. 60 Giorni Data fattura Fine Mese</field>
