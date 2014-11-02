@@ -7,7 +7,6 @@
             <field name="model">partner.import</field>
             <!-- Tipo di vista, ovvero architettura principale della vista, in questo caso è un form -->
             <field name="type">form</field>
-            <field name="mode">form</field>
             <!-- Specifica della struttura della vista usando XML -->
             <field name="arch" type="xml">
                 <form>
