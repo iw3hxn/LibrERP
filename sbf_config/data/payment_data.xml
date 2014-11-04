@@ -591,5 +591,49 @@
             <field eval="payment_term_60_90_120_days_10_monthly_riba_3" name="payment_id"/>
         </record>
 
+	<!-- Payment other day of Month -->
+        <record id="payment_term_60_days_15_monthly_riba_1" model="account.payment.term">
+            <field name="name">Ri.ba. 60 Days - Day 15 of Month</field>
+            <field name="note">Ri.ba. 60 Days - Day 15 of Month</field>
+            <field name="riba">True</field>
+            <field name="type">RB</field>
+        </record>
+        <record id="1_payment_term_60_days_15_monthly_riba_line1" model="account.payment.term.line">
+            <field name="name">Ri.ba. 60 Days - Day 15 of Month</field>
+            <field name="value">balance</field>
+            <field eval="60" name="days"/>
+            <field eval="15" name="days2"/>
+            <field eval="payment_term_60_days_15_monthly_riba_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_60_days_5_monthly_riba_1" model="account.payment.term">
+            <field name="name">Ri.ba. 60 Days - Day 5 of Month</field>
+            <field name="note">Ri.ba. 60 Days - Day 5 of Month</field>
+            <field name="riba">True</field>
+            <field name="type">RB</field>
+        </record>
+        <record id="1_payment_term_60_days_5_monthly_riba_line1" model="account.payment.term.line">
+            <field name="name">Ri.ba. 60 Days - Day 5 of Month</field>
+            <field name="value">balance</field>
+            <field eval="60" name="days"/>
+            <field eval="5" name="days2"/>
+            <field eval="payment_term_60_days_5_monthly_riba_1" name="payment_id"/>
+        </record>
+
+        <record id="payment_term_90_days_5_monthly_riba_1" model="account.payment.term">
+            <field name="name">Ri.ba. 90 Days - Day 5 of Month</field>
+            <field name="note">Ri.ba. 90 Days - Day 5 of Month</field>
+            <field name="riba">True</field>
+            <field name="type">RB</field>
+        </record>
+        <record id="1_payment_term_90_days_5_monthly_riba_line1" model="account.payment.term.line">
+            <field name="name">Ri.ba. 90 Days - Day 5 of Month</field>
+            <field name="value">balance</field>
+            <field eval="90" name="days"/>
+            <field eval="5" name="days2"/>
+            <field eval="payment_term_90_days_5_monthly_riba_1" name="payment_id"/>
+        </record>
+
+
     </data>
 </openerp>
