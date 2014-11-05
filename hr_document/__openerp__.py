@@ -35,8 +35,8 @@
     'depends': [
 		'hr' ,
 	],
-    'init_xml': [],
-    'update_xml': [
+
+    'data': [
             'hr_document_view.xml',
             'wizard/hr_document_expiry_bymonth_view.xml',
             'security/ir.model.access.csv',
