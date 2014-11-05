@@ -130,7 +130,7 @@ class project_task(orm.Model):
             user_task = user_task_obj.browse(cr, uid, user_task_ids)[0]
             if user_task.started_task:
                 if user_task.started_task.id == task_ids[0]:
-                    raise osv.except_osv(_("Warning !"), _("Task is alredy started."))
+                    raise orm.except_orm(_("Warning !"), _("Task is alredy started."))
                 return self.stop_task(cr, uid, task_ids[0], start, user_task, context)
             else:
                 task = project_task_obj.browse(cr, uid, task_ids)[0]
