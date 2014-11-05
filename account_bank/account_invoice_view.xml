@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="invoice_form_bank_riba">
+            <field name="name">invoice.form.bank.riba</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_bank_id" position="after">
+                    <field name="bank_riba_id" groups="account.view_payment_term"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="invoice_tree_reg_date" model="ir.ui.view">
+            <field name="name">account.invoice.tree.bank</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="date_invoice" position="after">
+                    <field name="payment_term" invisible="context.get('type') == 'in_invoice'" groups="account.view_payment_term"/>
+                </field>
+                <field name="date_due" position="after">
+                    <field name="bank_riba_id" invisible="context.get('type') == 'in_invoice'" groups="account.view_payment_term"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="invoice_filter_reg_date" model="ir.ui.view">
+            <field name="name">account.invoice.filter.by.year</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="period_id" position="after">
+                    <field name="bank_riba_id" invisible="context.get('type') == 'in_invoice'" groups="account.view_payment_term"/>
+                    <field name="payment_term" widget="selection" invisible="context.get('type') == 'in_invoice'" groups="account.view_payment_term"/>
+                </field>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

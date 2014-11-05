@@ -1,0 +1,52 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_partner_bank
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-30 19:11+0000\n"
+"PO-Revision-Date: 2014-04-30 19:11+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_partner_bank
+#: field:wzd.invoice.massive.bank.change,also_not_draft:0
+msgid "Change also for not draft invoice"
+msgstr "Change also for not draft invoice"
+
+#. module: account_partner_bank
+#: view:wzd.invoice.massive.bank.change:0
+msgid "Change Bank"
+msgstr "Cambio Banca Appoggio"
+
+#. module: account_partner_bank
+#: view:wzd.invoice.massive.bank.change:0
+msgid "Bank"
+msgstr "Banca"
+
+#. module: account_partner_bank
+#: model:ir.actions.act_window,name:account_partner_bank.action_wizard_massive_bank_change
+msgid "Massive Bank Change"
+msgstr "Cambio Banca Appoggio"
+
+#. module: account_partner_bank
+#: view:wzd.invoice.massive.bank.change:0
+msgid "Close"
+msgstr "Chiudi"
+
+#. module: account_partner_bank
+#: field:res.partner,partner_bank_id:0
+#: field:wzd.invoice.massive.bank.change,partner_bank_id:0
+msgid "Default Bank Account"
+msgstr "Banca d'Appoggio"
+
+#. module: account_partner_bank
+#: view:wzd.invoice.massive.bank.change:0
+msgid "Change"
+msgstr "Cambia"

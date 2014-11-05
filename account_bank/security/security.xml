@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+    
+    <record model="ir.module.category" id="account.module_category_account">
+	    <field name="name">Invoice</field>
+	    <field name="description">Extend groups for Invoice</field>
+	    <field name="sequence">30</field>
+	</record>
+
+    <record id="account.view_payment_term" model="res.groups">
+        <field name="name">View Bank and Payment Term </field>
+        <field name="category_id" ref="account.module_category_account"/>
+    </record>
+
+</data>
+</openerp>
