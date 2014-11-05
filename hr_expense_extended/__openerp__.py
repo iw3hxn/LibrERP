@@ -48,7 +48,8 @@
         'project_view.xml',
         'hr_employe_menu.xml',
         'task_time_control_wizard_view.xml',
-        'reports.xml'
+        'reports.xml',
+        'security/ir.model.access.csv'
     ],
     "active": False,
     "installable": True,
