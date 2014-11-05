@@ -29,7 +29,7 @@
 
 {
     "name": "Hr Agent - Extended management of human resources for Managing Commercial's Agents.",
-    'version': '2.0.2.0',
+    'version': '2.0.3.0',
     'category': 'Generic Modules/Human Resources',
     "description": """This Module, extended management of human resources for Managing Commercial's Agents.""",
     "author": "Bortolatto Ivan, Didotech.com",

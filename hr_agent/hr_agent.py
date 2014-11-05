@@ -291,7 +291,7 @@ class hr_employee(osv.osv):
                 area_manager_user_id = False
                 if user_data['area_manager_id']:
                     area_manager_user_id = self.read(cr, uid, user_data['area_manager_id'][0], ['user_id'], context=context)
-                if user_data['user_id'][0] == uid:
+                if user_data['user_id'] and user_data['user_id'][0] == uid:
                     result = True
                 elif user_data['area_manager_id'] and area_manager_user_id['user_id'][0] == uid:
                     #if user_data['area_manager_id'][0] == uid:
