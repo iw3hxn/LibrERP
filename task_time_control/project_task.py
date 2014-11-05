@@ -23,7 +23,7 @@
 ##############################################################################
 
 from datetime import datetime
-from tools.translate import _
+from openerp.tools.translate import _
 from openerp.osv import orm, fields
 
 
@@ -163,11 +163,11 @@ class project_task(orm.Model):
                 if finished:
                     return finished
                 else:
-                    raise osv.except_osv(_("Warning!"), _('Task is not init.'))
+                    raise orm.except_orm(_("Warning!"), _('Task is not init.'))
             else:
-                raise osv.except_osv(_("Warning!"), _('Task started by another user.'))
+                raise orm.except_orm(_("Warning!"), _('Task started by another user.'))
         else:
-            raise osv.except_osv(_("Warning!"), _('User has no opened tasks.'))
+            raise orm.except_orm(_("Warning!"), _('User has no opened tasks.'))
         return True
 
 
