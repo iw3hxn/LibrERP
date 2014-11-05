@@ -90,7 +90,7 @@
         <field name="inherit_id" ref="product.product_search_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//search[@string='Product']//filter[@string='Services']" position="before">
-                    <filter name="is_kit" icon="terp-stock_symbol-selection" domain="[('is_kit','=',True)]" string="Kit" groups="base.group_extended"/>
+                    <filter name="is_kit" icon="terp-stock_symbol-selection" domain="[('is_kit','=',True)]" string="Kit" />
             </xpath>
         </field>
     </record>
