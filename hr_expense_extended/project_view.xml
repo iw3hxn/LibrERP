@@ -9,7 +9,7 @@
             <!--<field name="type">form</field>-->
             <field name="arch" type="xml">
                 <page string="Extra Info" position="after">
-                    <page string="Expenses" groups="base.group_extended" >
+                    <page string="Expenses" groups="project.group_project_manager" >
                         <field name="expense_line_ids" nolabel="1" context="{}">
                             <form string="Expense">
                                 <group colspan="4" col="6">
@@ -36,6 +36,13 @@
                 </page>
             </field>
         </record>
+        
+        <menuitem action="hr_timesheet.action_hr_timesheet_employee"
+                id="menu_hr_timesheet_employee"
+                parent="project.menu_project_management"
+                sequence="20" icon="STOCK_PRINT"/>
+        
+        <menuitem action="hr_expense.expense_all" id="menu_expense_all" name="Expenses" parent="project.menu_project_management"/>
         
     </data>
 </openerp>

@@ -55,5 +55,15 @@
             </field>
         </record>
         
+        <record id="view_employee_id" model="ir.ui.view">
+            <field name="name">hr.timesheet.employee</field>
+            <field name="model">hr.analytical.timesheet.employee</field>
+            <field name="inherit_id" ref="hr_timesheet.view_hr_timesheet_employee"/>
+            <field name="arch" type="xml">
+                <field name="employee_id" position="replace">
+                    <field name="employee_id" colspan="3" groups="base.group_hr_manager"/>
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>
