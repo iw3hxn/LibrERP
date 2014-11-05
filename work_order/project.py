@@ -47,5 +47,6 @@ class project_project(orm.Model):
                         'planned_hours': task.planned_hours,
                         'remaining_hours': task.planned_hours
                     })
+                self.pool['project.project'].write(cr, uid, project_id, {'state' : 'open'})
         
         return project_id
