@@ -43,7 +43,7 @@ class emissione_riba(osv.osv_memory):
         if context is None:
             context = {}
 
-        def create_rdl(conta, bank_id, rd_id, date_maturity, partner_id, acceptance_account_id):
+        def create_rdl(conta, rd_id, date_maturity, partner_id, acceptance_account_id, bank_id=None, bank_riba_id=None):
             rdl = {
                 'sequence': conta,
                 'bank_id': bank_id,
@@ -52,6 +52,7 @@ class emissione_riba(osv.osv_memory):
                 'partner_id': partner_id,
                 'state': 'draft',
                 'acceptance_account_id': acceptance_account_id,
+                'bank_riba_id': bank_riba_id,
             }
             return riba_distinta_line.create(cr, uid, rdl, context=context)
 
@@ -89,14 +90,21 @@ class emissione_riba(osv.osv_memory):
         conta = 1
 
         for move_line in move_line_obj.browse(cr, uid, move_line_ids, context=context):
-            if move_line.partner_id.bank_ids:
+            if move_line.partner_id.bank_riba_id:
+                bank_riba_id = move_line.partner_id.bank_riba_id
+            elif move_line.partner_id.bank_ids:
                 bank_id = move_line.partner_id.bank_ids[0]
             else:
                 raise osv.except_osv('Attenzione!', 'Il cliente %s non ha la banca!!!' % move_line.partner_id.name)
             if move_line.partner_id.group_riba:
                 for key in grouped_lines:
                     if key[0] == move_line.partner_id.id and key[1] == move_line.date_maturity:
-                        rdl_id = create_rdl(conta, bank_id.id, rd_id, move_line.date_maturity, move_line.partner_id.id, wizard_obj.configurazione.acceptance_account_id.id)
+                        if bank_riba_id:
+                            rdl_id = create_rdl(conta, rd_id, move_line.date_maturity, move_line.partner_id.id,
+                                            wizard_obj.configurazione.acceptance_account_id.id, None, bank_riba_id.id)
+                        else:
+                            rdl_id = create_rdl(conta, rd_id, move_line.date_maturity, move_line.partner_id.id,
+                                            wizard_obj.configurazione.acceptance_account_id.id, bank_id.id, None)
 #                        total = 0.0
 #                        invoice_date_group = ''
                         for grouped_line in grouped_lines[key]:
@@ -108,7 +116,12 @@ class emissione_riba(osv.osv_memory):
                         del grouped_lines[key]
                         break
             else:
-                rdl_id = create_rdl(conta, bank_id.id, rd_id, move_line.date_maturity, move_line.partner_id.id, wizard_obj.configurazione.acceptance_account_id.id)
+                if bank_riba_id:
+                    rdl_id = create_rdl(conta, rd_id, move_line.date_maturity, move_line.partner_id.id,
+                                    wizard_obj.configurazione.acceptance_account_id.id, None, bank_riba_id.id)
+                else:
+                    rdl_id = create_rdl(conta, rd_id, move_line.date_maturity, move_line.partner_id.id,
+                                    wizard_obj.configurazione.acceptance_account_id.id, bank_id.id, None)
                 riba_distinta_move_line.create(cr, uid, {
                     'riba_line_id': rdl_id,
                     'amount': move_line.amount_residual,

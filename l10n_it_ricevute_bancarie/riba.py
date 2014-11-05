@@ -318,14 +318,15 @@ class riba_distinta_line(osv.osv):
         'acceptance_move_id': fields.many2one('account.move', 'Acceptance Entry', readonly=True),
         'unsolved_move_id': fields.many2one('account.move', 'Unsolved Entry', readonly=True),
         'acceptance_account_id': fields.many2one('account.account', 'Acceptance Account'),
-        'amount' : fields.function(_get_line_values, method=True, string="Amount", multi="line"),
+        'amount': fields.function(_get_line_values, method=True, string="Amount", multi="line"),
         'bank_id': fields.many2one('res.partner.bank', 'Debitor Bank'),
+        'bank_riba_id': fields.many2one('res.bank', 'Debitor Bank for ri.ba.'),
         'iban': fields.related('bank_id', 'iban', type='char', string='IBAN', store=False, readonly=True),
         'distinta_id': fields.many2one('riba.distinta', 'Distinta', required=True, ondelete='cascade'),
-        'partner_id' : fields.many2one('res.partner', "Cliente", readonly=True),
-        'invoice_date' : fields.function(_get_line_values, string="Invoice Date", type='char', size=256, method=True, multi="line"),
-        'invoice_number' : fields.function(_get_line_values, string="Invoice Number", type='char', size=256, method=True, multi="line"),
-        'due_date' : fields.date("Due date", readonly=True),
+        'partner_id': fields.many2one('res.partner', "Cliente", readonly=True),
+        'invoice_date': fields.function(_get_line_values, string="Invoice Date", type='char', size=256, method=True, multi="line"),
+        'invoice_number': fields.function(_get_line_values, string="Invoice Number", type='char', size=256, method=True, multi="line"),
+        'due_date': fields.date("Due date", readonly=True),
         'state': fields.selection([
             ('draft', 'Draft'),
             ('confirmed', 'Confirmed'),
@@ -350,7 +351,7 @@ class riba_distinta_line(osv.osv):
         for line in self.browse(cr, uid, ids, context=context):
             journal = line.distinta_id.config.acceptance_journal_id
             total_credit = 0.0
-            move_id= move_pool.create(cr, uid, {
+            move_id = move_pool.create(cr, uid, {
                 'ref': 'Ri.Ba. %s - line %s' % (line.distinta_id.name, line.sequence),
                 'journal_id': journal.id,
                 }, context=context)

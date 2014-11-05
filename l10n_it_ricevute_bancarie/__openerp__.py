@@ -27,7 +27,7 @@
 
 {
     "name": "Ricevute Bancarie",
-    "version": "2.1.5.1",
+    "version": "2.1.6.2",
     "author": "OpenERP Italian Community",
     "category": "Accounting & Finance",
     "website": "http://www.openerp-italia.org",
@@ -50,9 +50,14 @@ Ad ogni passaggio di stato sarà possibile generare le relative registrazioni co
 Qui https://docs.google.com/document/d/1xCqeTcY6CF-Dgk_Avthhy7iwg_aG86WzNv3E_HHQkt4/edit# abbiamo un esempio delle tipiche registrazioni generate da un flusso 'salvo buon fine'.
     """,
     'images': [],
-    'depends': ['account','account_voucher', 'l10n_it_account', 'account_due_list'],
-    'init_xml': [],
-    'update_xml': [
+    'depends': [
+        'account',
+        'account_voucher',
+        'l10n_it_account',
+        'account_due_list',
+        'account_bank',
+    ],
+    'data': [
         "bank/res_bank_view.xml",
         "partner/partner_view.xml",
         "configurazione_view.xml",
@@ -66,7 +71,7 @@ Qui https://docs.google.com/document/d/1xCqeTcY6CF-Dgk_Avthhy7iwg_aG86WzNv3E_HHQ
         "riba_workflow.xml",
         "security/ir.model.access.csv",
     ],
-    'demo_xml': [],
+    'demo': [],
     'test': [],
     'installable': True,
     'active': False,

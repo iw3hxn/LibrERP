@@ -177,23 +177,35 @@ class riba_file_export(osv.osv_memory):
                ]
         arrayRiba = []
         for line in order_obj.line_ids:
-            debit_bank = line.bank_id
+
+            if line.bank_riba_id:
+                debit_riba_bank = line.bank_riba_id
+                if (debit_riba_bank.abi and debit_riba_bank.cab):
+                    debit_abi = debit_riba_bank.abi
+                    debit_cab = debit_riba_bank.cab
+                debit_bank_name = debit_riba_bank.name
+            elif line.bank_id:
+                debit_bank = line.bank_id
+                if debit_bank.iban:
+                    debit_iban = debit_bank.iban.replace(" ", "")
+                    debit_abi = debit_iban[5:10]
+                    debit_cab = debit_iban[10:15]
+                debit_bank_name = debit_bank.bank.name or debit_bank.bank_name
+            else:
+                raise osv.except_osv('Error', _('No bank or IBAN specified for ') + line.partner_id.name)
+
             if not line.partner_id.address:
                 raise osv.except_osv('Error', _('No address specified for ') + line.partner_id.name)
             debitor_address = line.partner_id.address
             if debitor_address[0].street:
-               debitor_street = debitor_address[0].street
+                debitor_street = debitor_address[0].street
             else:
                 raise osv.except_osv('Error', _('No Street specified for ') + line.partner_id.name)
             if debitor_address[0].zip:
-               debitor_zip = debitor_address[0].zip
+                debitor_zip = debitor_address[0].zip
             else:
                 raise osv.except_osv('Error', _('No CAP specified for ') + line.partner_id.name)
-            if not debit_bank.iban:
-               raise osv.except_osv('Error', _('No IBAN specified for ') + line.partner_id.name)
-            debit_iban = debit_bank.iban.replace(" ","")
-            debit_abi = debit_iban[5:10]
-            debit_cab = debit_iban[10:15]
+            #TODO search for bank_riba_id: if exists, use its abi cab
             debitor_city = ''
             if debitor_address[0].city:
                 debitor_city = debitor_address[0].city.ljust(23)[0:23] or ''
@@ -209,7 +221,7 @@ class riba_file_export(osv.osv_memory):
 
             if not line.partner_id.vat and not line.partner_id.fiscalcode:
                 raise osv.except_osv('Error', _('No VAT or Fiscal code specified for ') + line.partner_id.name)
-            if not (debit_bank.bank and debit_bank.bank.name or debit_bank.bank_name):
+            if not debit_bank_name: #.bank and debit_bank.bank.name or debit_bank.bank_name):
                 raise osv.except_osv('Error', _('No debit_bank specified for ') + line.partner_id.name)
             Riba = [
                         line.sequence,
@@ -223,7 +235,7 @@ class riba_file_export(osv.osv_memory):
                         debitor_province,
                         debit_abi,
                         debit_cab,
-                        debit_bank.bank and debit_bank.bank.name or debit_bank.bank_name,
+                        debit_bank_name, #.bank and debit_bank.bank.name or debit_bank.bank_name,
                         line.partner_id.ref or '',
                         #line.move_line_id.name,
                         line.invoice_number,
