@@ -48,9 +48,9 @@ tr {
         <th  colspan="3">${ _('Sales') }</th>
     </tr>
     <tr >
-        <th >${ _('Tax Code') }</th>
-        <th >${ _('Base') }</th>
-        <th >${ _('VAT') }</th>
+        <th width="60%">${ _('Tax Code') }</th>
+        <th width="20%">${ _('Base') }</th>
+        <th width="20%">${ _('VAT') }</th>
     </tr>
     <% debit_total_base = 0.0 %>
     <% debit_total_vat = 0.0 %>
@@ -95,9 +95,9 @@ tr {
         <th  colspan="3">${ _('Purchases') }</th>
     </tr>
     <tr >
-        <th >${ _('Tax Code') }</th>
-        <th >${ _('Base') }</th>
-        <th >${ _('VAT') }</th>
+        <th width="60%">${ _('Tax Code') }</th>
+        <th width="20%">${ _('Base') }</th>
+        <th width="20%" >${ _('VAT') }</th>
     </tr>
     <% credit_total_base = 0.0 %>
     <% credit_total_vat = 0.0 %>
@@ -142,9 +142,9 @@ tr {
         <th  colspan="3">${_("Summary")}</th>
     </tr>
     <tr>
-        <th></th>
-        <th> ${ _('Debit') }</th>
-        <th> ${ _('Credit') }</th>
+        <th width="60%"></th>
+        <th width="20%"> ${ _('Debit') }</th>
+        <th width="20%"> ${ _('Credit') }</th>
     </tr>
     %for debit_line in statement.debit_vat_account_line_ids :
         <tr >
