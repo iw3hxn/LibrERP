@@ -50,3 +50,9 @@ msgstr "Banca d'Appoggio"
 #: view:wzd.invoice.massive.bank.change:0
 msgid "Change"
 msgstr "Cambia"
+
+#. module: account_bank
+#: field:account.invoice,bank_riba_id:0
+#: field:res.partner,bank_riba_id:0
+msgid "Bank for ri.ba."
+msgstr "Banca Appoggio Ri.Ba."
