@@ -96,7 +96,8 @@
                                 <field name="amount_tax"/>
                                 <field name="amount_total"/>
                                 <button name="button_dummy" states="draft,wait_technical_validation,wait_manager_validation,wait_customer_validation" string="Compute" type="object" icon="gtk-execute"/>
-                                <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Advance Invoice" type="action" icon="gtk-execute" states="draft,wait_technical_validation,wait_manager_validation,wait_customer_validation,manual" groups="base.group_extended"/>
+                                <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Advance Invoice" type="action" icon="gtk-execute" states="draft,wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,waiting_date,progress" />
+
                             </group>
                             <group col="17" colspan="4">
                                 <field name="state" widget="statusbar" statusbar_visible="draft,wait_technical_validation,wait_manager_validation,wait_customer_validation,progress,done" statusbar_colors='{"shipping_except":"red","invoice_except":"red","waiting_date":"blue"}'/>
@@ -230,7 +231,7 @@
                         <attribute name="states">draft,wait_technical_validation,wait_manager_validation,wait_customer_validation</attribute>
                    </button>
                    <button string="Advance Invoice" position="attributes">
-                        <attribute name="states">draft,wait_technical_validation,wait_manager_validation,wait_customer_validation,manual</attribute>
+                        <attribute name="states">draft,wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,waiting_date,progress</attribute>
                    </button>
                    <xpath expr="/form/notebook/page[@string='Sales Order']/field[@name='order_line']/tree/field[@name='discount']" position="before">
         		    <field name="delivered_qty" groups="sale.view_delivered_qty"/>
