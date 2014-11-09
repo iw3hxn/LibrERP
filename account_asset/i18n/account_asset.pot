@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 7.0alpha\n"
+"Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-21 17:04+0000\n"
-"PO-Revision-Date: 2012-12-21 17:04+0000\n"
+"POT-Creation-Date: 2014-11-09 19:13+0000\n"
+"PO-Revision-Date: 2014-11-09 19:13+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,15 +16,18 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: account_asset
-#: view:account.asset.asset:0
-msgid "Assets in draft and open states"
-msgstr ""
-
-#. module: account_asset
-#: field:account.asset.category,method_end:0
 #: field:account.asset.history,method_end:0
 #: field:asset.modify,method_end:0
 msgid "Ending date"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,state:0
+#: help:wizard.print.asset.report,state:0
+msgid "When an asset is created, the status is 'Draft'.\n"
+"If the asset is confirmed, the status goes in 'Running' and the depreciation lines can be posted to the accounting.\n"
+"If the last depreciation line is posted, the asset goes into the 'Close' status.\n"
+"When the removal entries are generated, the asset goes into the 'Removed' status."
 msgstr ""
 
 #. module: account_asset
@@ -38,19 +41,34 @@ msgid "Depr. Expense Account"
 msgstr ""
 
 #. module: account_asset
-#: view:asset.asset.report:0
-msgid "Group By..."
+#: view:account.asset.asset:0
+msgid "Generate the removal entries for a fully depreciated asset."
 msgstr ""
 
 #. module: account_asset
-#: field:asset.asset.report,gross_value:0
-msgid "Gross Amount"
+#: view:account.asset.asset:0
+msgid "Asset Lines"
+msgstr ""
+
+#. module: account_asset
+#: selection:account.asset.history,method_time:0
+#: code:addons/account_asset/account_asset.py:58
+#, python-format
+msgid "Number of Years"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,method_number_percent:0
+#: help:account.asset.category,method_number_percent:0
+#: help:account.asset.history,method_number_percent:0
+msgid "Percentage depreciation in method Percent."
 msgstr ""
 
 #. module: account_asset
 #: view:account.asset.asset:0
 #: field:account.asset.depreciation.line,asset_id:0
 #: field:account.asset.history,asset_id:0
+#: view:account.move:0
 #: field:account.move.line,asset_id:0
 #: view:asset.asset.report:0
 #: field:asset.asset.report,asset_id:0
@@ -59,20 +77,55 @@ msgid "Asset"
 msgstr ""
 
 #. module: account_asset
-#: help:account.asset.asset,prorata:0
-#: help:account.asset.category,prorata:0
-msgid "Indicates that the first depreciation entry for this asset have to be done from the purchase date instead of the first January"
+#: field:account.asset.depreciation.line,name:0
+msgid "Depreciation Name"
 msgstr ""
 
 #. module: account_asset
-#: selection:account.asset.asset,method:0
-#: selection:account.asset.category,method:0
-msgid "Linear"
+#: selection:account.asset.asset,type:0
+msgid "View"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/asset_report.py:42
+#, python-format
+msgid "Move %s contains different invoices"
+msgstr ""
+
+#. module: account_asset
+#: help:account.account,asset_category_id:0
+msgid "Default Asset Category when creating invoice lines with this account."
+msgstr ""
+
+#. module: account_asset
+#: model:ir.model,name:account_asset.model_wizard_print_asset_report
+msgid "wizard.print.asset.report"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+#: selection:account.asset.asset,state:0
+#: view:asset.asset.report:0
+#: selection:asset.asset.report,state:0
+#: selection:wizard.print.asset.report,state:0
+msgid "Running"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.move.line:0
+msgid "The selected account of your Journal Entry forces to provide a secondary currency. You should remove the secondary currency on the account or select a multi-currency view on the journal."
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.history:0
+#: model:ir.model,name:account_asset.model_account_asset_history
+msgid "Asset history"
 msgstr ""
 
 #. module: account_asset
 #: field:account.asset.asset,company_id:0
 #: field:account.asset.category,company_id:0
+#: field:account.asset.recompute.trigger,company_id:0
 #: view:asset.asset.report:0
 #: field:asset.asset.report,company_id:0
 msgid "Company"
@@ -84,15 +137,19 @@ msgid "Modify"
 msgstr ""
 
 #. module: account_asset
-#: selection:account.asset.asset,state:0
-#: view:asset.asset.report:0
-#: selection:asset.asset.report,state:0
-msgid "Running"
+#: field:account.asset.depreciation.line,depreciated_value:0
+msgid "Amount Already Depreciated"
 msgstr ""
 
 #. module: account_asset
-#: view:account.asset.asset:0
-msgid "Set to Draft"
+#: field:account.asset.depreciation.line,parent_category_id:0
+msgid "Category of Asset"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:340
+#, python-format
+msgid "Illegal value %s in asset.method."
 msgstr ""
 
 #. module: account_asset
@@ -104,8 +161,16 @@ msgid "Assets Analysis"
 msgstr ""
 
 #. module: account_asset
-#: field:asset.modify,name:0
-msgid "Reason"
+#: code:addons/account_asset/account_asset.py:666
+#, python-format
+msgid "You cannot remove an asset which has not been fully depreciated.\n"
+"Please create the remaining depreciation entry via the Depreciation Board."
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.category,method_number_percent:0
+#: field:account.asset.history,method_number_percent:0
+msgid " Percentage Depreciation - method Percent."
 msgstr ""
 
 #. module: account_asset
@@ -121,49 +186,43 @@ msgid "Asset Categories"
 msgstr ""
 
 #. module: account_asset
-#: view:account.asset.asset:0
 #: field:account.asset.asset,account_move_line_ids:0
-#: field:account.move.line,entry_ids:0
-#: model:ir.actions.act_window,name:account_asset.act_entries_open
 msgid "Entries"
 msgstr ""
 
 #. module: account_asset
-#: view:account.asset.asset:0
 #: field:account.asset.asset,depreciation_line_ids:0
 msgid "Depreciation Lines"
 msgstr ""
 
 #. module: account_asset
-#: help:account.asset.asset,salvage_value:0
-msgid "It is the amount you plan to have that you cannot depreciate."
-msgstr ""
-
-#. module: account_asset
-#: help:account.asset.asset,method_period:0
-msgid "The amount of time between two depreciations, in months"
-msgstr ""
-
-#. module: account_asset
-#: field:account.asset.depreciation.line,depreciation_date:0
-#: view:asset.asset.report:0
-#: field:asset.asset.report,depreciation_date:0
-msgid "Depreciation Date"
-msgstr ""
-
-#. module: account_asset
-#: constraint:account.asset.asset:0
-msgid "Error ! You cannot create recursive assets."
-msgstr ""
-
-#. module: account_asset
-#: field:asset.asset.report,posted_value:0
-msgid "Posted Amount"
+#: help:account.asset.asset,date_start:0
+msgid "You should manually add depreciation lines with the depreciations            of previous fiscal years if the Depreciation Start Date is             different from the date for which OpenERP needs to generate             accounting entries."
 msgstr ""
 
 #. module: account_asset
 #: view:account.asset.asset:0
-#: view:asset.asset.report:0
+msgid "Delete Account Move"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+msgid "Total Credit"
+msgstr ""
+
+#. module: account_asset
+#: model:ir.ui.menu,name:account_asset.menu_print_asset_report
+#: view:wizard.print.asset.report:0
+msgid "Asset Report"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+msgid "Asset Line"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
 #: model:ir.actions.act_window,name:account_asset.action_account_asset_asset_form
 #: model:ir.ui.menu,name:account_asset.menu_action_account_asset_asset_form
 #: model:ir.ui.menu,name:account_asset.menu_finance_assets
@@ -178,11 +237,26 @@ msgstr ""
 
 #. module: account_asset
 #: view:account.asset.asset:0
+#: view:asset.asset.report:0
+msgid "Draft Assets"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
 #: view:account.asset.category:0
 #: view:account.asset.history:0
+#: view:account.asset.remove:0
+#: field:account.asset.remove,note:0
 #: view:asset.modify:0
 #: field:asset.modify,note:0
 msgid "Notes"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:657
+#: code:addons/account_asset/account_asset.py:665
+#, python-format
+msgid "Operation not allowed!"
 msgstr ""
 
 #. module: account_asset
@@ -191,27 +265,85 @@ msgid "Depreciation Entry"
 msgstr ""
 
 #. module: account_asset
+#: view:account.asset.asset:0
+msgid "Journal Item"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+msgid "Total Debit"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:184
+#: code:addons/account_asset/account_asset.py:537
+#: code:addons/account_asset/account_asset.py:758
+#: code:addons/account_asset/account_asset.py:967
+#: code:addons/account_asset/account_asset.py:1024
+#: code:addons/account_asset/account_asset.py:1248
+#: code:addons/account_asset/account_asset.py:1251
+#: code:addons/account_asset/account_asset.py:1270
+#: code:addons/account_asset/account_asset.py:1274
+#: code:addons/account_asset/account_move.py:41
+#: code:addons/account_asset/account_move.py:56
+#: code:addons/account_asset/account_move.py:105
+#: code:addons/account_asset/account_move.py:159
+#: code:addons/account_asset/wizard/account_asset_remove.py:60
+#, python-format
+msgid "Error!"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.depreciation.line,amount:0
+msgid "Amount"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.recompute.trigger,state:0
+msgid "State"
+msgstr ""
+
+#. module: account_asset
+#: sql_constraint:account.move.line:0
+msgid "Wrong credit or debit value in accounting entry !"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
 #: view:asset.asset.report:0
+msgid "Assets which have been removed"
+msgstr ""
+
+#. module: account_asset
+#: selection:account.asset.asset,method_period:0
+#: selection:account.asset.category,method_period:0
+#: selection:account.asset.history,method_period:0
+#: selection:asset.modify,method_period:0
+msgid "Quarter"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:53
+#, python-format
+msgid "Degressive-Linear"
+msgstr ""
+
+#. module: account_asset
 #: field:asset.asset.report,nbr:0
 msgid "# of Depreciation Lines"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.asset,method_period:0
-msgid "Number of Months in a Period"
-msgstr ""
-
-#. module: account_asset
-#: view:asset.asset.report:0
-msgid "Assets in draft state"
-msgstr ""
-
-#. module: account_asset
 #: field:account.asset.asset,method_end:0
-#: selection:account.asset.asset,method_time:0
-#: selection:account.asset.category,method_time:0
 #: selection:account.asset.history,method_time:0
+#: code:addons/account_asset/account_asset.py:60
+#, python-format
 msgid "Ending Date"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.account:0
+msgid "Error ! You can not create recursive accounts."
 msgstr ""
 
 #. module: account_asset
@@ -221,7 +353,26 @@ msgstr ""
 
 #. module: account_asset
 #: view:account.asset.asset:0
+#: view:asset.asset.report:0
+msgid "Group By..."
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
 msgid "Account Asset"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,method:0
+#: help:account.asset.category,method:0
+msgid "Choose the method to use to compute the amount of depreciation lines.\n"
+"  * Linear: Calculated on basis of: Gross Value / Number of Depreciations\n"
+"  * Degressive: Calculated on basis of: Residual Value * Degressive Factor  * Degressive-Linear (only for Time Method = Year): Degressive becomes linear when the annual linear depreciation exceeds the annual degressive depreciation"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+msgid "Set to Removed"
 msgstr ""
 
 #. module: account_asset
@@ -231,6 +382,7 @@ msgid "Compute Assets"
 msgstr ""
 
 #. module: account_asset
+#: field:account.asset.asset,method_period:0
 #: field:account.asset.category,method_period:0
 #: field:account.asset.history,method_period:0
 #: field:asset.modify,method_period:0
@@ -238,15 +390,31 @@ msgid "Period Length"
 msgstr ""
 
 #. module: account_asset
-#: selection:account.asset.asset,state:0
-#: view:asset.asset.report:0
-#: selection:asset.asset.report,state:0
-msgid "Draft"
+#: field:account.asset.asset,partner_id:0
+#: field:asset.asset.report,partner_id:0
+msgid "Partner"
 msgstr ""
 
 #. module: account_asset
-#: view:asset.asset.report:0
-msgid "Date of asset purchase"
+#: code:addons/account_asset/account_asset.py:968
+#, python-format
+msgid "You cannot change the category of an asset with accounting entries."
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:1361
+#, python-format
+msgid "Journal Entry"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.asset,increase_value:0
+msgid "Increase Value"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,method_number:0
+msgid "The number of depreciations/years needed to depreciateyour asset in method Number or Year."
 msgstr ""
 
 #. module: account_asset
@@ -255,20 +423,41 @@ msgid "Change Duration"
 msgstr ""
 
 #. module: account_asset
-#: help:account.asset.asset,method_number:0
-#: help:account.asset.category,method_number:0
-#: help:account.asset.history,method_number:0
-msgid "The number of depreciations needed to depreciate your asset"
+#: field:account.asset.asset,remove_value:0
+msgid "Remove Value"
 msgstr ""
 
 #. module: account_asset
-#: view:account.asset.category:0
-msgid "Analytic Information"
+#: field:account.asset.remove,period_id:0
+msgid "Force Period"
 msgstr ""
 
 #. module: account_asset
+#: sql_constraint:account.account:0
+msgid "The code of the account must be unique per company !"
+msgstr ""
+
+#. module: account_asset
+#: selection:account.asset.history,method_time:0
+#: code:addons/account_asset/account_asset.py:61
+#, python-format
+msgid "Percent"
+msgstr ""
+
+#. module: account_asset
+#: view:asset.asset.report:0
+msgid "Depreciation Month"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.asset,account_analytic_id:0
 #: field:account.asset.category,account_analytic_id:0
 msgid "Analytic account"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.remove:0
+msgid "Generate Removal entries"
 msgstr ""
 
 #. module: account_asset
@@ -278,8 +467,38 @@ msgid "Computation Method"
 msgstr ""
 
 #. module: account_asset
-#: constraint:account.asset.asset:0
-msgid "Prorata temporis can be applied only for time method \"number of depreciations\"."
+#: help:account.asset.depreciation.line,init_entry:0
+msgid "Set this flag for entries of previous fiscal years for which OpenERP has not generated accounting entries."
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+msgid "Assets in Running State"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.asset,method_number:0
+#: field:account.asset.asset,method_number_percent:0
+msgid "Number of Depreciations/Years - method Number or Year. \n"
+" Percentage Depreciation - method Percent."
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,prorata:0
+msgid "Indicates that the first depreciation entry for this asset have to be done from the depreciation start date instead of the first day of the fiscal year."
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.asset,purchase_value:0
+msgid "Purchase Value"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+#: field:account.asset.asset,type:0
+#: field:account.asset.depreciation.line,type:0
+#: field:wizard.print.asset.report,type:0
+msgid "Type"
 msgstr ""
 
 #. module: account_asset
@@ -288,15 +507,41 @@ msgid "Next Period Depreciation"
 msgstr ""
 
 #. module: account_asset
-#: help:account.asset.history,method_period:0
-msgid "Time in month between two depreciations"
+#: view:asset.asset.report:0
+msgid "Asset Start Month"
 msgstr ""
 
 #. module: account_asset
-#: view:asset.modify:0
-#: model:ir.actions.act_window,name:account_asset.action_asset_modify
-#: model:ir.model,name:account_asset.model_asset_modify
-msgid "Modify Asset"
+#: field:account.asset.asset,prorata:0
+#: field:account.asset.category,prorata:0
+msgid "Prorata Temporis"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.asset.asset:0
+msgid "Error ! You can not create recursive assets."
+msgstr ""
+
+#. module: account_asset
+#: model:ir.model,name:account_asset.model_account_asset_recompute_trigger
+msgid "Asset table recompute triggers"
+msgstr ""
+
+#. module: account_asset
+#: view:asset.asset.report:0
+msgid "Assets in Running state"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.asset,date_remove:0
+#: field:account.asset.remove,date_remove:0
+#: field:asset.asset.report,date_remove:0
+msgid "Asset Removal Date"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+msgid "Other Information"
 msgstr ""
 
 #. module: account_asset
@@ -305,27 +550,52 @@ msgid "Salvage Value"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.asset,category_id:0
-#: view:account.asset.category:0
-#: field:account.invoice.line,asset_category_id:0
-#: view:asset.asset.report:0
-msgid "Asset Category"
+#: view:wizard.print.asset.report:0
+#: field:wizard.print.asset.report,category_ids:0
+msgid "Categories"
 msgstr ""
 
 #. module: account_asset
-#: view:account.asset.asset:0
-msgid "Assets in closed state"
+#: field:account.move.line,subsequent_asset:0
+msgid "Subsequent Purchase of Asset"
+msgstr ""
+
+#. module: account_asset
+#: model:ir.model,name:account_asset.model_account_invoice
+msgid "Invoice"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.depreciation.line,previous_id:0
+msgid "Previous Depreciation Line"
+msgstr ""
+
+#. module: account_asset
+#: field:wizard.print.asset.report,fiscal_page_base:0
+msgid "Last printed page"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.recompute.trigger,reason:0
+#: field:asset.modify,name:0
+msgid "Reason"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.asset,first_year_half_rata:0
+#: field:account.asset.category,first_year_half_rata:0
+msgid "First Year Half Rata"
 msgstr ""
 
 #. module: account_asset
 #: field:account.asset.asset,parent_id:0
+#: field:account.asset.category,parent_id:0
 msgid "Parent Asset"
 msgstr ""
 
 #. module: account_asset
-#: view:account.asset.history:0
-#: model:ir.model,name:account_asset.model_account_asset_history
-msgid "Asset history"
+#: view:account.asset.category:0
+msgid "Analytic Information"
 msgstr ""
 
 #. module: account_asset
@@ -334,8 +604,29 @@ msgid "Search Asset Category"
 msgstr ""
 
 #. module: account_asset
-#: view:asset.modify:0
-msgid "months"
+#: view:account.asset.asset:0
+msgid "View Account Move"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,method_period:0
+#: help:account.asset.category,method_period:0
+#: help:account.asset.history,method_period:0
+#: help:asset.modify,method_period:0
+msgid "Period length for the depreciation accounting entries"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:339
+#: code:addons/account_asset/account_asset.py:471
+#, python-format
+msgid "Programming Error!"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.category,method_number:0
+#: field:asset.modify,method_number:0
+msgid "Number of Depreciations/Years"
 msgstr ""
 
 #. module: account_asset
@@ -345,12 +636,47 @@ msgstr ""
 
 #. module: account_asset
 #: view:account.asset.asset:0
+#: code:addons/account_asset/account_asset.py:1128
+#, python-format
+msgid "Journal Entries"
+msgstr ""
+
+#. module: account_asset
+#: selection:account.asset.asset,method_period:0
+#: selection:account.asset.category,method_period:0
+#: selection:account.asset.history,method_period:0
+#: selection:asset.modify,method_period:0
+msgid "Month"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
 msgid "Depreciation Board"
 msgstr ""
 
 #. module: account_asset
-#: field:asset.asset.report,unposted_value:0
-msgid "Unposted Amount"
+#: field:account.asset.history,method_number:0
+msgid "Number of Depreciations/Years - method Number or Year."
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,method_time:0
+msgid "Choose the method to use to compute the dates and number of depreciation lines.\n"
+"  * Number of Years: Specify the number of years for the depreciation.\n"
+"  * Number of Depreciations: Fix the number of depreciation lines and the time between 2 depreciations.\n"
+"  * Ending Date: Choose the time between 2 depreciations and the date the depreciations won't go beyond.  * Percent: Percentage depreciation per period (e.g. 25 = 25%).\n"
+"The 'Number of Years' method is for Financial Assets whereas  you should use the 'Number of Depreciations' and 'Ending Date' for Deferred Expenses or Deferred Income purposes."
+msgstr ""
+
+#. module: account_asset
+#: selection:account.asset.depreciation.line,type:0
+msgid "Asset Removal"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.account:0
+msgid "Configuration Error! \n"
+"You can not define children to an account with internal type different of \"View\"! "
 msgstr ""
 
 #. module: account_asset
@@ -361,9 +687,52 @@ msgid "Time Method"
 msgstr ""
 
 #. module: account_asset
-#: view:asset.depreciation.confirmation.wizard:0
-#: view:asset.modify:0
-msgid "or"
+#: view:account.asset.asset:0
+#: selection:account.asset.asset,state:0
+#: view:asset.asset.report:0
+#: selection:wizard.print.asset.report,state:0
+msgid "Removed"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,purchase_value:0
+msgid "This amount represent the initial value of the asset."
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_move.py:106
+#: code:addons/account_asset/account_move.py:160
+#, python-format
+msgid "You are not allowed to link an accounting entry to an asset.\"\n"
+"        #          \"\n"
+"You should generate such entries from the asset."
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+msgid "Category"
+msgstr ""
+
+#. module: account_asset
+#: field:account.invoice.line,asset_id:0
+msgid "Linked Asset"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.asset,asset_value:0
+msgid "The Asset Value is calculated as follows:\n"
+"Purchase Value - Salvage Value."
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/report/print_asset_report.py:73
+#, python-format
+msgid "No documents found in the current selection"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.move.line:0
+msgid "The date of your Journal Entry is not in the defined period! You should change the date or remove this constraint from the journal."
 msgstr ""
 
 #. module: account_asset
@@ -374,47 +743,56 @@ msgid "Note"
 msgstr ""
 
 #. module: account_asset
-#: help:account.asset.history,method_time:0
-msgid "The method to use to compute the dates and number of depreciation lines.\n"
-"Number of Depreciations: Fix the number of depreciation lines and the time between 2 depreciations.\n"
-"Ending Date: Choose the time between 2 depreciations and the date the depreciations won't go beyond."
-msgstr ""
-
-#. module: account_asset
-#: help:account.asset.asset,method_time:0
-#: help:account.asset.category,method_time:0
-msgid "Choose the method to use to compute the dates and number of depreciation lines.\n"
-"  * Number of Depreciations: Fix the number of depreciation lines and the time between 2 depreciations.\n"
-"  * Ending Date: Choose the time between 2 depreciations and the date the depreciations won't go beyond."
-msgstr ""
-
-#. module: account_asset
+#: view:account.asset.asset:0
+#: selection:account.asset.asset,state:0
 #: view:asset.asset.report:0
-msgid "Assets in running state"
+#: selection:asset.asset.report,state:0
+#: selection:wizard.print.asset.report,state:0
+msgid "Draft"
 msgstr ""
 
 #. module: account_asset
 #: view:account.asset.asset:0
-msgid "Closed"
+msgid "Set to Draft"
 msgstr ""
 
 #. module: account_asset
-#: help:account.asset.asset,state:0
-msgid "When an asset is created, the status is 'Draft'.\n"
-"If the asset is confirmed, the status goes in 'Running' and the depreciation lines can be posted in the accounting.\n"
-"You can manually close an asset when the depreciation is over. If the last line of depreciation is posted, the asset automatically goes in that status."
+#: code:addons/account_asset/account_asset.py:759
+#, python-format
+msgid "It cannot result a negative value in the asset.'\n"
+"            #         'Purchase or salvage value are incorrect."
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+msgid "Are you sure ?"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:1025
+#, python-format
+msgid "Asset {asset} contains unposted {line}lines prior to the selected period.\n"
+"Please post these entries first !"
 msgstr ""
 
 #. module: account_asset
 #: field:account.asset.asset,state:0
 #: field:asset.asset.report,state:0
+#: field:wizard.print.asset.report,state:0
 msgid "Status"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.asset,partner_id:0
-#: field:asset.asset.report,partner_id:0
-msgid "Partner"
+#: field:account.asset.asset,asset_value:0
+#: field:account.asset.depreciation.line,asset_value:0
+#: selection:account.asset.depreciation.line,type:0
+#: field:asset.asset.report,asset_value:0
+msgid "Asset Value"
+msgstr ""
+
+#. module: account_asset
+#: model:ir.model,name:account_asset.model_asset_depreciation_confirmation_wizard
+msgid "asset.depreciation.confirmation.wizard"
 msgstr ""
 
 #. module: account_asset
@@ -423,13 +801,41 @@ msgid "Posted depreciation lines"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.asset,child_ids:0
-msgid "Children Assets"
+#: selection:account.asset.asset,type:0
+msgid "Normal"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.fiscalyear:0
+msgid "Error! The start date of the fiscal year must be before his end date."
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.move.line:0
+msgid "Company must be the same for its related account and period."
+msgstr ""
+
+#. module: account_asset
+#: selection:wizard.print.asset.report,type:0
+msgid "Posted Asset Report"
 msgstr ""
 
 #. module: account_asset
 #: view:asset.asset.report:0
 msgid "Date of depreciation"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.history,method_time:0
+msgid "Choose the method to use to compute the dates and number of depreciation lines.\n"
+"  * Number of Years: Specify the number of years for the depreciation.\n"
+"  * Number of Depreciations: Fix the number of depreciation lines and the time between 2 depreciations.\n"
+"  * Ending Date: Choose the time between 2 depreciations and the date the depreciations won't go beyond.  * Percent: Percentage depreciation per period (e.g. 25 = 25%)."
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.category,prorata:0
+msgid "Indicates that the first depreciation entry for this asset has to be done from the depreciation start date instead of the first day of the fiscal year."
 msgstr ""
 
 #. module: account_asset
@@ -443,8 +849,24 @@ msgid "Asset Account"
 msgstr ""
 
 #. module: account_asset
+#: field:account.asset.asset,child_ids:0
+msgid "Child Assets"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.move.line:0
+msgid "You can not create journal items on an account of type view."
+msgstr ""
+
+#. module: account_asset
 #: view:asset.asset.report:0
 msgid "Extended Filters..."
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.asset.asset:0
+#: constraint:account.asset.category:0
+msgid "Degressive-Linear is only supported for Time Method = Year."
 msgstr ""
 
 #. module: account_asset
@@ -459,13 +881,41 @@ msgid "Asset History"
 msgstr ""
 
 #. module: account_asset
-#: model:ir.model,name:account_asset.model_asset_depreciation_confirmation_wizard
-msgid "asset.depreciation.confirmation.wizard"
+#: code:addons/account_asset/account_asset.py:538
+#, python-format
+msgid "The duration change of the asset conflicts with the generated accounting entry dates."
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.depreciation.line,init_entry:0
+msgid "Initial Balance Entry"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.history,method_number:0
+msgid "The number of depreciations/years needed to depreciate your asset in method Number or Year."
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:1252
+#, python-format
+msgid "You cannot delete a depreciation line with an associated accounting entry."
+msgstr ""
+
+#. module: account_asset
+#: help:asset.depreciation.confirmation.wizard,period_id:0
+msgid "Choose the period for which you want to automatically post the depreciation lines of running assets"
 msgstr ""
 
 #. module: account_asset
 #: field:account.asset.asset,active:0
+#: field:account.asset.category,active:0
 msgid "Active"
+msgstr ""
+
+#. module: account_asset
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
 msgstr ""
 
 #. module: account_asset
@@ -474,8 +924,16 @@ msgid "State of Asset"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.depreciation.line,name:0
-msgid "Depreciation Name"
+#: field:account.asset.asset,decrease_value:0
+msgid "Decrease Value"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:1271
+#: code:addons/account_asset/account_move.py:42
+#, python-format
+msgid "You are not allowed to remove an accounting entry linked to an asset.\n"
+"You should remove such entries from the asset."
 msgstr ""
 
 #. module: account_asset
@@ -490,6 +948,34 @@ msgid "Compute Asset"
 msgstr ""
 
 #. module: account_asset
+#: code:addons/account_asset/account_asset.py:669
+#, python-format
+msgid "Generate Asset Removal entries"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.account:0
+msgid "The Asset Account defined in the Asset Category must be equal to the account."
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.remove:0
+#: model:ir.model,name:account_asset.model_account_asset_remove
+msgid "Remove Asset"
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.account:0
+msgid "Configuration Error! \n"
+"You can not select an account type with a deferral method different of \"Unreconciled\" for accounts with internal type \"Payable/Receivable\"! "
+msgstr ""
+
+#. module: account_asset
+#: field:asset.asset.report,depreciation_date:0
+msgid "Depreciation Date"
+msgstr ""
+
+#. module: account_asset
 #: field:asset.depreciation.confirmation.wizard,period_id:0
 msgid "Period"
 msgstr ""
@@ -500,34 +986,65 @@ msgid "General"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.asset,prorata:0
-#: field:account.asset.category,prorata:0
-msgid "Prorata Temporis"
+#: field:account.asset.asset,date_start:0
+#: field:asset.asset.report,date_start:0
+msgid "Asset Start Date"
 msgstr ""
 
 #. module: account_asset
-#: model:ir.model,name:account_asset.model_account_invoice
-msgid "Invoice"
+#: selection:account.asset.recompute.trigger,state:0
+msgid "Done"
 msgstr ""
 
 #. module: account_asset
-#: view:account.asset.asset:0
-msgid "Set to Close"
+#: field:account.account,asset_category_id:0
+#: field:account.asset.asset,category_id:0
+#: view:account.asset.category:0
+#: field:account.invoice.line,asset_category_id:0
+#: field:account.move.line,asset_category_id:0
+#: view:asset.asset.report:0
+msgid "Asset Category"
 msgstr ""
 
 #. module: account_asset
+#: selection:account.asset.asset,method_period:0
+#: selection:account.asset.category,method_period:0
+#: selection:account.asset.history,method_period:0
+#: field:asset.asset.report,name:0
+#: selection:asset.modify,method_period:0
+msgid "Year"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.remove:0
 #: view:asset.depreciation.confirmation.wizard:0
 #: view:asset.modify:0
+#: view:wizard.print.asset.report:0
 msgid "Cancel"
 msgstr ""
 
 #. module: account_asset
+#: view:account.asset.asset:0
 #: selection:account.asset.asset,state:0
+#: view:asset.asset.report:0
 #: selection:asset.asset.report,state:0
+#: selection:wizard.print.asset.report,state:0
 msgid "Close"
 msgstr ""
 
 #. module: account_asset
+#: selection:account.asset.recompute.trigger,state:0
+msgid "Open"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.asset,move_line_check:0
+msgid "Has accounting entries"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+#: model:ir.actions.act_window,name:account_asset.act_entries_open
 #: model:ir.model,name:account_asset.model_account_move_line
 msgid "Journal Items"
 msgstr ""
@@ -538,36 +1055,67 @@ msgid "Asset Durations to Modify"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.asset,purchase_date:0
-#: view:asset.asset.report:0
-#: field:asset.asset.report,purchase_date:0
-msgid "Purchase Date"
+#: field:account.asset.recompute.trigger,date_completed:0
+msgid "Completion Date"
 msgstr ""
 
 #. module: account_asset
-#: selection:account.asset.asset,method:0
-#: selection:account.asset.category,method:0
+#: help:account.asset.remove,period_id:0
+msgid "Keep empty to use the period of the removal ate."
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:52
+#, python-format
 msgid "Degressive"
 msgstr ""
 
 #. module: account_asset
-#: help:asset.depreciation.confirmation.wizard,period_id:0
-msgid "Choose the period for which you want to automatically post the depreciation lines of running assets"
+#: model:ir.model,name:account_asset.model_account_account
+msgid "Account"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:472
+#, python-format
+msgid "Illegal value %s in asset.method_period."
+msgstr ""
+
+#. module: account_asset
+#: field:wizard.print.asset.report,date_start:0
+msgid "Date start asset"
+msgstr ""
+
+#. module: account_asset
+#: view:wizard.print.asset.report:0
+msgid "Print"
 msgstr ""
 
 #. module: account_asset
 #: view:account.asset.asset:0
-msgid "Current"
+msgid "Init"
 msgstr ""
 
 #. module: account_asset
+#: code:addons/account_asset/report/print_asset_report.py:80
+#, python-format
+msgid "No documents"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
 #: view:account.asset.category:0
 msgid "Depreciation Method"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.depreciation.line,amount:0
-msgid "Current Depreciation"
+#: help:wizard.print.asset.report,category_ids:0
+msgid "Select categories of assets"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.remove:0
+msgid "Specify the asset removal date"
 msgstr ""
 
 #. module: account_asset
@@ -576,18 +1124,36 @@ msgid "Asset Name"
 msgstr ""
 
 #. module: account_asset
+#: help:account.asset.asset,first_year_half_rata:0
+#: help:account.asset.category,first_year_half_rata:0
+msgid "Indicates that the first depreciation entry for this asset has to be done half value."
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.asset,value_depreciated:0
+msgid "Depreciated Value"
+msgstr ""
+
+#. module: account_asset
 #: field:account.asset.category,open_asset:0
 msgid "Skip Draft State"
 msgstr ""
 
 #. module: account_asset
+#: field:asset.asset.report,posted_value:0
+msgid "Posted Amount"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
 #: view:account.asset.category:0
 msgid "Depreciation Dates"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.asset,currency_id:0
-msgid "Currency"
+#: code:addons/account_asset/account_asset.py:1249
+#, python-format
+msgid "You cannot remove an asset line of type 'Asset Value'."
 msgstr ""
 
 #. module: account_asset
@@ -601,16 +1167,31 @@ msgid "History name"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.depreciation.line,depreciated_value:0
-msgid "Amount Already Depreciated"
+#: help:account.asset.asset,salvage_value:0
+msgid "The estimated value that an asset will realize upon its sale at the end of its useful life.\n"
+"This value is used to determine the depreciation amounts."
 msgstr ""
 
 #. module: account_asset
-#: help:account.asset.asset,method:0
-#: help:account.asset.category,method:0
-msgid "Choose the method to use to compute the amount of depreciation lines.\n"
-"  * Linear: Calculated on basis of: Gross Value / Number of Depreciations\n"
-"  * Degressive: Calculated on basis of: Residual Value * Degressive Factor"
+#: field:account.asset.asset,company_currency_id:0
+msgid "Company Currency"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.recompute.trigger,date_trigger:0
+msgid "Date of the event triggering the need to recompute the Asset Tables."
+msgstr ""
+
+#. module: account_asset
+#: model:ir.actions.act_window,name:account_asset.action_print_asset_report
+#: model:ir.actions.report.xml,name:account_asset.account_asset_report_id
+msgid "Account Asset Report"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_move.py:57
+#, python-format
+msgid "You cannot change an accounting entry linked to an asset depreciation line."
 msgstr ""
 
 #. module: account_asset
@@ -621,23 +1202,25 @@ msgid "Posted"
 msgstr ""
 
 #. module: account_asset
-#: model:ir.actions.act_window,help:account_asset.action_asset_asset_report
-msgid "<p>\n"
-"            From this report, you can have an overview on all depreciation. The\n"
-"            tool search can also be used to personalise your Assets reports and\n"
-"            so, match this analysis to your needs;\n"
-"          </p>\n"
-"        "
-msgstr ""
-
-#. module: account_asset
-#: field:account.asset.asset,purchase_value:0
-msgid "Gross Value"
+#: help:account.asset.category,method_time:0
+msgid "Choose the method to use to compute the dates and number of depreciation lines.\n"
+"  * Number of Years: Specify the number of years for the depreciation.\n"
+"  * Number of Depreciations: Fix the number of depreciation lines and the time between 2 depreciations.\n"
+"  * Ending Date: Choose the time between 2 depreciations and the date the depreciations won't go beyond.\n"
+"  * Percent: Percentage depreciation per period (e.g. 25 = 25%).\n"
+"The 'Number of Years' method is for Financial Assets whereas  you should use the 'Number of Depreciations' and 'Ending Date' for Deferred Expenses or Deferred Income purposes."
 msgstr ""
 
 #. module: account_asset
 #: field:account.asset.category,name:0
+#: field:wizard.print.asset.report,name:0
 msgid "Name"
+msgstr ""
+
+#. module: account_asset
+#: view:account.asset.asset:0
+#: view:asset.asset.report:0
+msgid "Assets in Close State"
 msgstr ""
 
 #. module: account_asset
@@ -646,8 +1229,20 @@ msgid "Check this if you want to automatically confirm the assets of this catego
 msgstr ""
 
 #. module: account_asset
-#: field:asset.asset.report,name:0
-msgid "Year"
+#: field:asset.asset.report,unposted_value:0
+msgid "Unposted Amount"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:51
+#, python-format
+msgid "Linear"
+msgstr ""
+
+#. module: account_asset
+#: model:ir.model,name:account_asset.model_account_fiscalyear
+#: field:wizard.print.asset.report,fy_id:0
+msgid "Fiscal Year"
 msgstr ""
 
 #. module: account_asset
@@ -663,46 +1258,100 @@ msgid "Asset category"
 msgstr ""
 
 #. module: account_asset
-#: view:asset.asset.report:0
+#: selection:account.asset.depreciation.line,type:0
+msgid "Depreciation"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:1275
+#, python-format
+msgid "You cannot change a depreciation line with an associated accounting entry."
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/wizard/account_asset_remove.py:61
+#, python-format
+msgid "The removal date must be after the last depreciation date."
+msgstr ""
+
+#. module: account_asset
 #: field:asset.asset.report,depreciation_value:0
 msgid "Amount of Depreciation Lines"
 msgstr ""
 
 #. module: account_asset
 #: code:addons/account_asset/wizard/wizard_asset_compute.py:49
+#: code:addons/account_asset/wizard/wizard_asset_compute.py:51
 #, python-format
 msgid "Created Asset Moves"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.depreciation.line,sequence:0
-msgid "Sequence"
+#: view:asset.modify:0
+#: model:ir.actions.act_window,name:account_asset.action_asset_modify
+#: model:ir.model,name:account_asset.model_asset_modify
+msgid "Modify Asset"
 msgstr ""
 
 #. module: account_asset
-#: help:account.asset.category,method_period:0
-msgid "State here the time between 2 depreciations, in months"
+#: constraint:account.move.line:0
+msgid "You can not create journal items on closed account."
 msgstr ""
 
 #. module: account_asset
+#: model:ir.model,name:account_asset.model_account_move
+msgid "Account Entry"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:658
+#, python-format
+msgid "You cannot close an asset which has not been fully depreciated.\n"
+"Please create the remaining depreciation entry via the Depreciation Board."
+msgstr ""
+
+#. module: account_asset
+#: constraint:account.move:0
+msgid "You can not create more than one move per period on centralized journal"
+msgstr ""
+
+#. module: account_asset
+#: help:account.asset.category,method_number:0
+msgid "The number of depreciations/years needed to depreciate your asset"
+msgstr ""
+
+#. module: account_asset
+#: selection:wizard.print.asset.report,type:0
+msgid "Simulated Asset Report"
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.depreciation.line,line_date:0
 #: field:account.asset.history,date:0
 msgid "Date"
 msgstr ""
 
 #. module: account_asset
-#: field:account.asset.asset,method_number:0
-#: selection:account.asset.asset,method_time:0
-#: field:account.asset.category,method_number:0
-#: selection:account.asset.category,method_time:0
-#: field:account.asset.history,method_number:0
 #: selection:account.asset.history,method_time:0
-#: field:asset.modify,method_number:0
+#: code:addons/account_asset/account_asset.py:59
+#, python-format
 msgid "Number of Depreciations"
 msgstr ""
 
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Create Move"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/account_asset.py:185
+#, python-format
+msgid "You cannot delete an asset that contains posted depreciation lines."
+msgstr ""
+
+#. module: account_asset
+#: field:account.asset.recompute.trigger,date_trigger:0
+msgid "Trigger Date"
 msgstr ""
 
 #. module: account_asset

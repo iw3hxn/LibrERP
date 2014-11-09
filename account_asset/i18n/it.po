@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-05 10:37+0000\n"
-"PO-Revision-Date: 2014-11-05 10:37+0000\n"
+"POT-Creation-Date: 2014-11-09 19:16+0000\n"
+"PO-Revision-Date: 2014-11-09 19:16+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "Conto Ammortamento"
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Generate the removal entries for a fully depreciated asset."
-msgstr "Generate the removal entries for a fully depreciated asset."
+msgstr "Genera la registrazione di rimozione per un'immobilizzazione completamente ammortizzata."
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -98,7 +98,12 @@ msgstr "Riga contabile %s contiene più fatture"
 #. module: account_asset
 #: help:account.account,asset_category_id:0
 msgid "Default Asset Category when creating invoice lines with this account."
-msgstr "Default Asset Category when creating invoice lines with this account."
+msgstr "Categoria Immobilizzazione di Default per la creazione di righe fattura con questo conto."
+
+#. module: account_asset
+#: model:ir.model,name:account_asset.model_wizard_print_asset_report
+msgid "wizard.print.asset.report"
+msgstr "wizard.print.asset.report"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -145,10 +150,10 @@ msgid "Category of Asset"
 msgstr "Categoria dell'Immobilizzazione"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:339
+#: code:addons/account_asset/account_asset.py:340
 #, python-format
 msgid "Illegal value %s in asset.method."
-msgstr "Valore illegare %s in asset.method."
+msgstr "Valore %s illegale in asset.method."
 
 #. module: account_asset
 #: view:asset.asset.report:0
@@ -159,12 +164,12 @@ msgid "Assets Analysis"
 msgstr "Analisi Immobilizzazioni"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:647
+#: code:addons/account_asset/account_asset.py:666
 #, python-format
 msgid "You cannot remove an asset which has not been fully depreciated.\n"
 "Please create the remaining depreciation entry via the Depreciation Board."
-msgstr "Non puoi eliminare un Immobilizzaizione che non è stata totalmente ammortizzata\n"
-"Please create the remaining depreciation entry via the Depreciation Board."
+msgstr "Non puoi eliminare un Immobilizzazione che non è stata totalmente ammortizzata\n"
+"Creare le rimanente righe di ammortamento dalla Scheda Ammortamento."
 
 #. module: account_asset
 #: field:account.asset.category,method_number_percent:0
@@ -207,18 +212,18 @@ msgstr "Cancella movimento contabile"
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Total Credit"
-msgstr "Total Credit"
+msgstr "Totale Avere"
 
 #. module: account_asset
 #: model:ir.ui.menu,name:account_asset.menu_print_asset_report
 #: view:wizard.print.asset.report:0
 msgid "Asset Report"
-msgstr "Asset Report"
+msgstr "Report Immobilizzazioni"
 
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Asset Line"
-msgstr "Asset Line"
+msgstr "Riga Immobilizzazioni"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -238,7 +243,7 @@ msgstr "F.do Ammortamento"
 #: view:account.asset.asset:0
 #: view:asset.asset.report:0
 msgid "Draft Assets"
-msgstr "Draft Assets"
+msgstr "Immobilizzazioni in Bozza"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -252,11 +257,11 @@ msgid "Notes"
 msgstr "Note"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:638
-#: code:addons/account_asset/account_asset.py:646
+#: code:addons/account_asset/account_asset.py:657
+#: code:addons/account_asset/account_asset.py:665
 #, python-format
 msgid "Operation not allowed!"
-msgstr "Operation not allowed!"
+msgstr "Operazione non permessa!"
 
 #. module: account_asset
 #: field:account.asset.depreciation.line,move_id:0
@@ -266,41 +271,41 @@ msgstr "Riga Ammortamento"
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Journal Item"
-msgstr "Journal Item"
+msgstr "Voce di Giornale"
 
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Total Debit"
-msgstr "Total Debit"
+msgstr "Totale Dare"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:183
-#: code:addons/account_asset/account_asset.py:525
-#: code:addons/account_asset/account_asset.py:739
-#: code:addons/account_asset/account_asset.py:945
-#: code:addons/account_asset/account_asset.py:1001
-#: code:addons/account_asset/account_asset.py:1225
-#: code:addons/account_asset/account_asset.py:1228
-#: code:addons/account_asset/account_asset.py:1247
+#: code:addons/account_asset/account_asset.py:184
+#: code:addons/account_asset/account_asset.py:537
+#: code:addons/account_asset/account_asset.py:758
+#: code:addons/account_asset/account_asset.py:967
+#: code:addons/account_asset/account_asset.py:1024
+#: code:addons/account_asset/account_asset.py:1248
 #: code:addons/account_asset/account_asset.py:1251
+#: code:addons/account_asset/account_asset.py:1270
+#: code:addons/account_asset/account_asset.py:1274
 #: code:addons/account_asset/account_move.py:41
-#: code:addons/account_asset/account_move.py:55
-#: code:addons/account_asset/account_move.py:104
-#: code:addons/account_asset/account_move.py:158
+#: code:addons/account_asset/account_move.py:56
+#: code:addons/account_asset/account_move.py:105
+#: code:addons/account_asset/account_move.py:159
 #: code:addons/account_asset/wizard/account_asset_remove.py:60
 #, python-format
 msgid "Error!"
-msgstr "Error!"
+msgstr "Errore!"
 
 #. module: account_asset
 #: field:account.asset.depreciation.line,amount:0
 msgid "Amount"
-msgstr "Amount"
+msgstr "Importo"
 
 #. module: account_asset
 #: field:account.asset.recompute.trigger,state:0
 msgid "State"
-msgstr "State"
+msgstr "Stato"
 
 #. module: account_asset
 #: sql_constraint:account.move.line:0
@@ -311,7 +316,7 @@ msgstr "Valore di credito o debito errato nella registrazione contabile !"
 #: view:account.asset.asset:0
 #: view:asset.asset.report:0
 msgid "Assets which have been removed"
-msgstr "Assets which have been removed"
+msgstr "Immobilizzazioni che saranno eliminate"
 
 #. module: account_asset
 #: selection:account.asset.asset,method_period:0
@@ -319,7 +324,7 @@ msgstr "Assets which have been removed"
 #: selection:account.asset.history,method_period:0
 #: selection:asset.modify,method_period:0
 msgid "Quarter"
-msgstr "Quarter"
+msgstr "Trimestre"
 
 #. module: account_asset
 #: code:addons/account_asset/account_asset.py:53
@@ -374,7 +379,7 @@ msgstr "Choose the method to use to compute the amount of depreciation lines.\n"
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Set to Removed"
-msgstr "Set to Removed"
+msgstr "Imposta a Eliminato"
 
 #. module: account_asset
 #: model:ir.actions.act_window,name:account_asset.action_asset_depreciation_confirmation_wizard
@@ -397,21 +402,21 @@ msgid "Partner"
 msgstr "Partner"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:946
+#: code:addons/account_asset/account_asset.py:968
 #, python-format
 msgid "You cannot change the category of an asset with accounting entries."
 msgstr "You cannot change the category of an asset with accounting entries."
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1338
+#: code:addons/account_asset/account_asset.py:1361
 #, python-format
 msgid "Journal Entry"
-msgstr "Journal Entry"
+msgstr "Registrazione Giornale"
 
 #. module: account_asset
 #: field:account.asset.asset,increase_value:0
 msgid "Increase Value"
-msgstr "Increase Value"
+msgstr "Incrementi di Valore"
 
 #. module: account_asset
 #: help:account.asset.asset,method_number:0
@@ -459,7 +464,7 @@ msgstr "Conto analitico"
 #. module: account_asset
 #: view:account.asset.remove:0
 msgid "Generate Removal entries"
-msgstr "Generate Removal entries"
+msgstr "Genera Registrazioni di Eliminazione"
 
 #. module: account_asset
 #: field:account.asset.asset,method:0
@@ -470,7 +475,7 @@ msgstr "Metodo di calcolo"
 #. module: account_asset
 #: help:account.asset.depreciation.line,init_entry:0
 msgid "Set this flag for entries of previous fiscal years for which OpenERP has not generated accounting entries."
-msgstr "Set this flag for entries of previous fiscal years for which OpenERP has not generated accounting entries."
+msgstr "Selezionare per registrazioni di anni precedenti non presenti nel sistema."
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -488,7 +493,7 @@ msgstr "Numero di Ammortamenti/Anno - metodo Number or Year. \n"
 #. module: account_asset
 #: help:account.asset.asset,prorata:0
 msgid "Indicates that the first depreciation entry for this asset have to be done from the depreciation start date instead of the first day of the fiscal year."
-msgstr "Indicates that the first depreciation entry for this asset have to be done from the depreciation start date instead of the first day of the fiscal year."
+msgstr "Indica che la prima riga di ammortamento per questa immobilizzazione verrà calcolata dalla data di acquisizione invece che dal primo giorno dell'anno fiscale."
 
 #. module: account_asset
 #: field:account.asset.asset,purchase_value:0
@@ -532,14 +537,14 @@ msgstr "Asset table recompute triggers"
 #. module: account_asset
 #: view:asset.asset.report:0
 msgid "Assets in Running state"
-msgstr "Assets in Running state"
+msgstr "Immobilizzazioni in stato Attivo"
 
 #. module: account_asset
 #: field:account.asset.asset,date_remove:0
 #: field:account.asset.remove,date_remove:0
 #: field:asset.asset.report,date_remove:0
 msgid "Asset Removal Date"
-msgstr "Asset Removal Date"
+msgstr "Data di Eliminazione Immobilizzazione"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -555,7 +560,7 @@ msgstr "Valore di Realizzo"
 #: view:wizard.print.asset.report:0
 #: field:wizard.print.asset.report,category_ids:0
 msgid "Categories"
-msgstr "Categories"
+msgstr "Categorie"
 
 #. module: account_asset
 #: field:account.move.line,subsequent_asset:0
@@ -582,6 +587,12 @@ msgstr "Last printed page"
 #: field:asset.modify,name:0
 msgid "Reason"
 msgstr "Causale"
+
+#. module: account_asset
+#: field:account.asset.asset,first_year_half_rata:0
+#: field:account.asset.category,first_year_half_rata:0
+msgid "First Year Half Rata"
+msgstr "Primo anno 50%"
 
 #. module: account_asset
 #: field:account.asset.asset,parent_id:0
@@ -613,8 +624,8 @@ msgid "Period length for the depreciation accounting entries"
 msgstr "Period length for the depreciation accounting entries"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:338
-#: code:addons/account_asset/account_asset.py:459
+#: code:addons/account_asset/account_asset.py:339
+#: code:addons/account_asset/account_asset.py:471
 #, python-format
 msgid "Programming Error!"
 msgstr "Programming Error!"
@@ -632,7 +643,7 @@ msgstr "Riga fattura"
 
 #. module: account_asset
 #: view:account.asset.asset:0
-#: code:addons/account_asset/account_asset.py:1105
+#: code:addons/account_asset/account_asset.py:1128
 #, python-format
 msgid "Journal Entries"
 msgstr "Journal Entries"
@@ -643,7 +654,7 @@ msgstr "Journal Entries"
 #: selection:account.asset.history,method_period:0
 #: selection:asset.modify,method_period:0
 msgid "Month"
-msgstr "Month"
+msgstr "Mese"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -693,7 +704,7 @@ msgstr "Metodo Temporale"
 #: view:asset.asset.report:0
 #: selection:wizard.print.asset.report,state:0
 msgid "Removed"
-msgstr "Removed"
+msgstr "Eliminato"
 
 #. module: account_asset
 #: help:account.asset.asset,purchase_value:0
@@ -701,8 +712,8 @@ msgid "This amount represent the initial value of the asset."
 msgstr "This amount represent the initial value of the asset."
 
 #. module: account_asset
-#: code:addons/account_asset/account_move.py:105
-#: code:addons/account_asset/account_move.py:159
+#: code:addons/account_asset/account_move.py:106
+#: code:addons/account_asset/account_move.py:160
 #, python-format
 msgid "You are not allowed to link an accounting entry to an asset.\"\n"
 "        #          \"\n"
@@ -761,7 +772,7 @@ msgid "Set to Draft"
 msgstr "Imposta come Bozza"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:740
+#: code:addons/account_asset/account_asset.py:759
 #, python-format
 msgid "It cannot result a negative value in the asset.'\n"
 "            #         'Purchase or salvage value are incorrect."
@@ -774,7 +785,7 @@ msgid "Are you sure ?"
 msgstr "Are you sure ?"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1002
+#: code:addons/account_asset/account_asset.py:1025
 #, python-format
 msgid "Asset {asset} contains unposted {line}lines prior to the selected period.\n"
 "Please post these entries first !"
@@ -890,7 +901,7 @@ msgid "Asset History"
 msgstr "Storico Immobilizzazione"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:526
+#: code:addons/account_asset/account_asset.py:538
 #, python-format
 msgid "The duration change of the asset conflicts with the generated accounting entry dates."
 msgstr "The duration change of the asset conflicts with the generated accounting entry dates."
@@ -906,7 +917,7 @@ msgid "The number of depreciations/years needed to depreciate your asset in meth
 msgstr "Il numero di ammortamenti/anno necessari per l'ammortamento dell'immobilizzazione con il metodo 'Numero o Anni'"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1229
+#: code:addons/account_asset/account_asset.py:1252
 #, python-format
 msgid "You cannot delete a depreciation line with an associated accounting entry."
 msgstr "You cannot delete a depreciation line with an associated accounting entry."
@@ -923,6 +934,11 @@ msgid "Active"
 msgstr "Attivo"
 
 #. module: account_asset
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr "Il numero fattura deve essere unico per ogni azienda!"
+
+#. module: account_asset
 #: field:account.asset.depreciation.line,parent_state:0
 msgid "State of Asset"
 msgstr "Stato dell'Immobilizzazione"
@@ -933,7 +949,7 @@ msgid "Decrease Value"
 msgstr "Valore Ammortamento"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1248
+#: code:addons/account_asset/account_asset.py:1271
 #: code:addons/account_asset/account_move.py:42
 #, python-format
 msgid "You are not allowed to remove an accounting entry linked to an asset.\n"
@@ -953,7 +969,7 @@ msgid "Compute Asset"
 msgstr "Calcola Ammortamenti"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:650
+#: code:addons/account_asset/account_asset.py:669
 #, python-format
 msgid "Generate Asset Removal entries"
 msgstr "Generate Asset Removal entries"
@@ -1004,6 +1020,7 @@ msgstr "Completato"
 
 #. module: account_asset
 #: field:account.account,asset_category_id:0
+#: field:account.asset.asset,category_id:0
 #: view:account.asset.category:0
 #: field:account.invoice.line,asset_category_id:0
 #: field:account.move.line,asset_category_id:0
@@ -1078,10 +1095,10 @@ msgstr "Degressive"
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_account
 msgid "Account"
-msgstr "Contabilità"
+msgstr "Conto"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:460
+#: code:addons/account_asset/account_asset.py:472
 #, python-format
 msgid "Illegal value %s in asset.method_period."
 msgstr "Illegal value %s in asset.method_period."
@@ -1129,6 +1146,12 @@ msgid "Asset Name"
 msgstr "Nome Immobilizzazione"
 
 #. module: account_asset
+#: help:account.asset.asset,first_year_half_rata:0
+#: help:account.asset.category,first_year_half_rata:0
+msgid "Indicates that the first depreciation entry for this asset has to be done half value."
+msgstr "Indica che il primo ammortamento verrà fatto al 50%."
+
+#. module: account_asset
 #: field:account.asset.asset,value_depreciated:0
 msgid "Depreciated Value"
 msgstr "Depreciated Value"
@@ -1150,7 +1173,7 @@ msgid "Depreciation Dates"
 msgstr "Date Ammortamento"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1226
+#: code:addons/account_asset/account_asset.py:1249
 #, python-format
 msgid "You cannot remove an asset line of type 'Asset Value'."
 msgstr "Non si può eliminare una riga d'Ammortamentodi tipo 'Valore Immobilizzazione'."
@@ -1189,7 +1212,7 @@ msgid "Account Asset Report"
 msgstr "Account Asset Report"
 
 #. module: account_asset
-#: code:addons/account_asset/account_move.py:56
+#: code:addons/account_asset/account_move.py:57
 #, python-format
 msgid "You cannot change an accounting entry linked to an asset depreciation line."
 msgstr "You cannot change an accounting entry linked to an asset depreciation line."
@@ -1256,7 +1279,6 @@ msgid "Asset depreciation line"
 msgstr "Riga ammortamento immobilizzazione"
 
 #. module: account_asset
-#: field:account.asset.asset,category_id:0
 #: view:account.asset.category:0
 #: field:asset.asset.report,asset_category_id:0
 #: model:ir.model,name:account_asset.model_account_asset_category
@@ -1269,7 +1291,7 @@ msgid "Depreciation"
 msgstr "Depreciation"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1252
+#: code:addons/account_asset/account_asset.py:1275
 #, python-format
 msgid "You cannot change a depreciation line with an associated accounting entry."
 msgstr "You cannot change a depreciation line with an associated accounting entry."
@@ -1310,7 +1332,7 @@ msgid "Account Entry"
 msgstr "Registrazione Contabile"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:639
+#: code:addons/account_asset/account_asset.py:658
 #, python-format
 msgid "You cannot close an asset which has not been fully depreciated.\n"
 "Please create the remaining depreciation entry via the Depreciation Board."
@@ -1330,7 +1352,7 @@ msgstr "Il numero degli ammortameti/anni necessari per l'ammortamneto dell'Immob
 #. module: account_asset
 #: selection:wizard.print.asset.report,type:0
 msgid "Simulated Asset Report"
-msgstr "Simulated Asset Report"
+msgstr "Report simulato Immobilizzazioni"
 
 #. module: account_asset
 #: field:account.asset.depreciation.line,line_date:0
@@ -1351,7 +1373,7 @@ msgid "Create Move"
 msgstr "Crea Movimento"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:184
+#: code:addons/account_asset/account_asset.py:185
 #, python-format
 msgid "You cannot delete an asset that contains posted depreciation lines."
 msgstr "You cannot delete an asset that contains posted depreciation lines."
@@ -1371,3 +1393,4 @@ msgstr "Conferma Immobilizzazione"
 #: model:ir.ui.menu,name:account_asset.menu_action_account_asset_asset_tree
 msgid "Asset Hierarchy"
 msgstr "Gerarchia Immobilizzazioni"
+

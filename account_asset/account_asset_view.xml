@@ -35,6 +35,7 @@
               <field name="method"/>
               <field name="method_progress_factor" attrs="{'invisible':[('method','=','linear')], 'required':[('method','in',['degressive','degr-linear'])]}"/>
               <field name="prorata" attrs="{'readonly':[('method_time','not in',('year', 'percent'))]}"/>
+              <field name="first_year_half_rata" />
               <field name="open_asset"/>
             </group>
             <newline />
@@ -144,7 +145,7 @@
                   <group colspan="2" col="2">
                   <separator string="Depreciation Dates" colspan="2"/>
                     <field name="method_time" on_change="onchange_method_time(method_time)" />
-                    <button name="%(action_asset_modify)d" states="open" string="Change Duration" type="action" icon="terp-stock_effects-object-colorize"  colspan="1"/>
+                    <!--button name="%(action_asset_modify)d" states="open" string="Change Duration" type="action" icon="terp-stock_effects-object-colorize"  colspan="1"/-->
                     <field name="method_number" attrs="{'invisible':[('method_time','in',['end','percent'])], 'required':[('method_time','in',['number','year'])]}"/>
                     <field name="method_number_percent" attrs="{'invisible':[('method_time','in',['end','number','year'])], 'required':[('method_time','=','percent')]}"/>
                     <field name="method_period"/>
@@ -155,6 +156,7 @@
                     <field name="method"/>
                     <field name="method_progress_factor" attrs="{'invisible':[('method','=','linear')], 'required':[('method','in',['degressive','degr-linear'])]}"/>
                     <field name="prorata" attrs="{'readonly':[('method_time','not in',('year', 'percent'))]}"/>
+                    <field name="first_year_half_rata" />
                   </group>
                
               </page>

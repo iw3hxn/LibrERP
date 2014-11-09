@@ -22,7 +22,7 @@
 
 {
     'name': 'Assets Management',
-    'version': '2.5.8.8',
+    'version': '2.5.9.9',
     'depends': [
         'report_webkit',
         'l10n_it_account',
@@ -69,7 +69,7 @@ Legal report for Italy is available.
     'data': [
         'security/account_asset_security.xml',
         'security/ir.model.access.csv',
-        'wizard/account_asset_change_duration_view.xml',
+        #'wizard/account_asset_change_duration_view.xml', #TODO test functionality before activate
         'wizard/wizard_asset_compute_view.xml',
         'wizard/account_asset_remove_view.xml',
         'account_asset_view.xml',

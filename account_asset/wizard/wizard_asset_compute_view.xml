@@ -8,7 +8,7 @@
                 <form string="Compute Asset" >
                     <group>
                         <field name="period_id"/>
-                        <button string="Compute" name="asset_compute" type="object" />
+                        <button string="Compute" name="asset_compute" type="object" context="{'create_move_from_button':True}"/>
                         <button string="Cancel" />
                     </group>
                 </form>

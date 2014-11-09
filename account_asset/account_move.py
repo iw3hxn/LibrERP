@@ -44,17 +44,18 @@ class account_move(orm.Model):
             depr_obj.write(cr, uid, depr_ids, {'move_id': False}, context)  # trigger store function
         return super(account_move, self).unlink(cr, uid, ids, context=context, check=check)
 
-    def write(self, cr, uid, ids, vals, context=None):
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        depr_obj = self.pool.get('account.asset.depreciation.line')
-        for move_id in ids:
-            depr_ids = depr_obj.search(
-                cr, uid, [('move_id', '=', move_id), ('type', '=', 'depreciate')])
-            if depr_ids:
-                raise orm.except_orm(_('Error!'),
-                    _("You cannot change an accounting entry linked to an asset depreciation line."))
-        return super(account_move, self).write(cr, uid, ids, vals, context)
+# REMOVED because block "post" and "cancel" action, not "unlink" action
+#    def write(self, cr, uid, ids, vals, context=None):
+#        if isinstance(ids, (int, long)):
+#            ids = [ids]
+#        depr_obj = self.pool.get('account.asset.depreciation.line')
+#        for move_id in ids:
+#            depr_ids = depr_obj.search(
+#                cr, uid, [('move_id', '=', move_id), ('type', '=', 'depreciate')])
+#            if depr_ids:
+#                raise orm.except_orm(_('Error!'),
+#                    _("You cannot change an accounting entry linked to an asset depreciation line."))
+#        return super(account_move, self).write(cr, uid, ids, vals, context)
 
 
 class account_move_line(orm.Model):
