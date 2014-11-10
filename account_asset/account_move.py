@@ -78,6 +78,8 @@ class account_move_line(orm.Model):
 
     def get_asset_value_with_ind_tax(self, cr, uid, vals, context):
         account_tax_obj = self.pool['account.tax']
+        if not vals.get('tax_code_id', False):
+            return vals['debit'] or - vals['credit']
         tax_code = self.pool['account.tax.code'].browse(cr, uid, [vals.get('tax_code_id')])[0]
         tax = tax_code.base_tax_ids
         if vals.get('quantity') == 0.0:

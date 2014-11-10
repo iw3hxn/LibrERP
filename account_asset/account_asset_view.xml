@@ -145,7 +145,7 @@
                   <group colspan="2" col="2">
                   <separator string="Depreciation Dates" colspan="2"/>
                     <field name="method_time" on_change="onchange_method_time(method_time)" />
-                    <!--button name="%(action_asset_modify)d" states="open" string="Change Duration" type="action" icon="terp-stock_effects-object-colorize"  colspan="1"/-->
+                    
                     <field name="method_number" attrs="{'invisible':[('method_time','in',['end','percent'])], 'required':[('method_time','in',['number','year'])]}"/>
                     <field name="method_number_percent" attrs="{'invisible':[('method_time','in',['end','number','year'])], 'required':[('method_time','=','percent')]}"/>
                     <field name="method_period"/>
