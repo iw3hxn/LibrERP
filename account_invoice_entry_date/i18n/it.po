@@ -57,4 +57,9 @@ msgstr "Data di registrazione"
 msgid "Error date !"
 msgstr "Data errata !"
 
+#. module: account_invoice_entry_date
+#: field:account.move.line,maturity_currency:0
+msgid "Currency"
+msgstr "Valuta"
+
 

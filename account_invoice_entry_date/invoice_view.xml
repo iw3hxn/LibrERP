@@ -13,7 +13,9 @@
                     <field name="maturity_ids" nolabel="1">
                         <tree string="Maturities">
                             <field name="date_maturity"/>
-                            <field name="debit" string="Amount"/>
+                            <field name="maturity_debit" string="Amount"/>
+                            <field name="maturity_currency" />
+                            <field name="amount_residual_currency" />
                         </tree>
                     </field>
                 </field>
@@ -47,7 +49,9 @@
                     <field name="maturity_ids" nolabel="1">
                         <tree string="Maturities">
                             <field name="date_maturity"/>
-                            <field name="credit" string="Amount"/>
+                            <field name="maturity_debit" string="Amount"/>
+                            <field name="maturity_currency" />
+                            <field name="amount_residual_currency" />
                         </tree>
                     </field>
                 </field>

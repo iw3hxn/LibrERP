@@ -29,7 +29,7 @@ class account_invoice(orm.Model):
 
     _inherit = 'account.invoice'
 
-    def _maturity(self, cr, uid, ids, filed_name, arg, context=None):
+    def _maturity(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for o in self.browse(cr, uid, ids, context):
             if not o.id in res:

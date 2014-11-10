@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Account Invoice entry Date',
-    'version': '3.0.1.2',
+    'version': '3.1.2.3',
     'category': 'Generic Modules/Accounting',
     'description': """This module allows to specify the date to be used by the move created while confirming (supplier) invoice""",
     'author': 'OpenERP Italian Community',
