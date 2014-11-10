@@ -685,7 +685,6 @@
             <th t-att-colspan="columns_count">
                 <table>
                     <tr>
-                        <t t-call="Listview.navigation.button"/>
                         <td t-if="!no_leaf and options.action_buttons !== false" class="oe-actions">
                             <button type="button" class="oe_button oe-list-add"
                                     t-if="options.addable">
@@ -696,6 +695,7 @@
                                 Delete
                             </button>
                         </td>
+                        <t t-call="Listview.navigation.button"/>
                     </tr>
                 </table>
             </th>

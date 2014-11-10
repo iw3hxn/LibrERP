@@ -959,7 +959,6 @@ label.error {
 }
 
 .openerp .oe-record-delete button,
-.openerp .oe-record-edit-link button,
 .openerp button.oe-edit-row-save {
     border: none;
     height: 12px;
@@ -967,12 +966,9 @@ label.error {
     background: url("/web/static/src/img/iconset-b-remove.png") no-repeat scroll center center transparent;
     cursor: pointer;
 }
+
 .openerp .oe-record-edit-link button {
     background: url("/web/static/src/img/pencil.gif") no-repeat scroll center center transparent;
-}
-.openerp .oe-record-delete button:hover,
-.openerp button.oe-edit-row-save:hover {
-    background: url("/web/static/src/img/recycle_bin_full.png") no-repeat scroll center center transparent;
 }
 
 .openerp button.oe-edit-row-save {
@@ -1400,10 +1396,6 @@ label.error {
 .openerp .oe_form_field_one2many .oe-listview .oe-edit-row-save,
 .openerp .oe_form_field_one2many_list .oe-listview .oe-edit-row-save {
     background-image: url("/web/static/src/img/iconset-b-remove.png");
-}
-.openerp .oe_form_field_one2many .oe-listview .oe-edit-row-save:hover,
-.openerp .oe_form_field_one2many_list .oe-listview .oe-edit-row-save:hover {
-    background-image: url("/web/static/src/img/recycle_bin_full.png");
 }
 
 .openerp .oe_forms .oe-listview th.oe-sortable .ui-icon,
