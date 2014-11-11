@@ -63,7 +63,7 @@ msgstr "Crea database"
 #: addons/web/static/src/js/chrome.js:395
 #, python-format
 msgid "Database \"%s\" already exist"
-msgstr ""
+msgstr "Il Database \"%s\" già esiste"
 
 #. module: web
 #. openerp-web
@@ -229,7 +229,7 @@ msgstr ""
 #. openerp-web
 #: addons/web/static/src/js/data_import.js:386
 msgid "*Required Fields are not selected :"
-msgstr ""
+msgstr "*Dei campi richiesti non sono compilati :"
 
 #. module: web
 #. openerp-web
@@ -490,7 +490,7 @@ msgstr "Crea una vista (%s)"
 #: addons/web/static/src/js/view_editor.js:149
 #: addons/web/static/src/js/view_form.js:577
 msgid "The following fields are invalid :"
-msgstr ""
+msgstr "I seguenti campi non sono validi :"
 
 #. openerp-web
 #: addons/web/static/src/js/view_editor.js:168
@@ -527,7 +527,7 @@ msgstr ""
 #. openerp-web
 #: addons/web/static/src/js/view_editor.js:378
 msgid "Select an element"
-msgstr ""
+msgstr "Seleziona un elemento"
 
 #. openerp-web
 #: addons/web/static/src/js/view_editor.js:381
@@ -636,13 +636,13 @@ msgstr "Vuoi veramente cancellare l'allegato %s?"
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:845
 msgid "Delete an attachment"
-msgstr ""
+msgstr "Cancella un allegato"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:846
 #, python-format
 msgid "The attachment '%s' has been deleted"
-msgstr ""
+msgstr "L'allegato '%s' è stato cancellato"
 
 #. module: web
 #. openerp-web
@@ -711,7 +711,7 @@ msgstr "Pulisci"
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1624
 msgid "Erase the current date"
-msgstr ""
+msgstr "Cancella il dato corrente"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1625
@@ -727,7 +727,7 @@ msgstr ""
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1627
 msgid "<Prev"
-msgstr ""
+msgstr "<Prec"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1628
@@ -742,7 +742,7 @@ msgstr ""
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1630
 msgid "Show the next month"
-msgstr ""
+msgstr "Mese prossimo"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1631
@@ -752,27 +752,27 @@ msgstr "Oggi"
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1632
 msgid "Show the current month"
-msgstr ""
+msgstr "Mese Corrente"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1635
 msgid "Show a different month"
-msgstr ""
+msgstr "Mese Differente"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1636
 msgid "Show a different year"
-msgstr ""
+msgstr "Anno Differente"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1637
 msgid "Wk"
-msgstr ""
+msgstr "Sett"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1638
 msgid "Week of the year"
-msgstr ""
+msgstr "Settimana dell'anno"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1642
@@ -1225,7 +1225,7 @@ msgid ""
 "Your version of OpenERP is unsupported. Support & maintenance services are "
 "available here:"
 msgstr ""
-"La tua versione di OpenERP non è supportata. Servizi di supporto & "
+"La tua versione di SimplERP non è supportata. Servizi di supporto & "
 "manutenzione sono disponibili qui:"
 
 #. openerp-web
@@ -2104,4 +2104,4 @@ msgstr "Per maggiori informazioni visita"
 #: code:addons/web/static/src/xml/base.xml:424
 #, python-format
 msgid "OpenERP.com"
-msgstr "OpenERP.com"
+msgstr "SimplERP.si"
