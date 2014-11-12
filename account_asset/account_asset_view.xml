@@ -34,8 +34,8 @@
             <group string="Depreciation Method">
               <field name="method"/>
               <field name="method_progress_factor" attrs="{'invisible':[('method','=','linear')], 'required':[('method','in',['degressive','degr-linear'])]}"/>
-              <field name="prorata" attrs="{'readonly':[('method_time','not in',('year', 'percent'))]}"/>
-              <field name="first_year_half_rata" />
+              <field name="prorata" attrs="{'readonly':['|',('method_time','not in',('year', 'percent')), ('first_year_half_rata','&lt;&gt;',False)]}"/>
+              <field name="first_year_half_rata" attrs="{'readonly':[('prorata','&lt;&gt;',False)]}"/>
               <field name="open_asset"/>
             </group>
             <newline />
@@ -155,8 +155,8 @@
                   <separator string="Depreciation Method" colspan="2"/>
                     <field name="method"/>
                     <field name="method_progress_factor" attrs="{'invisible':[('method','=','linear')], 'required':[('method','in',['degressive','degr-linear'])]}"/>
-                    <field name="prorata" attrs="{'readonly':[('method_time','not in',('year', 'percent'))]}"/>
-                    <field name="first_year_half_rata" />
+                    <field name="prorata" attrs="{'readonly':['|',('method_time','not in',('year', 'percent')), ('first_year_half_rata','&lt;&gt;',False)]}"/>
+                    <field name="first_year_half_rata" attrs="{'readonly':[('prorata','&lt;&gt;',False)]}"/>
                   </group>
                
               </page>

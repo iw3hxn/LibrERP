@@ -126,13 +126,13 @@ class account_asset_category(orm.Model):
 
     def onchange_method_time(self, cr, uid, ids, method_time='number', context=None):
         res = {'value': {}}
-        if method_time != 'year' and method_time != 'percent':
-            res['value'] = {'prorata': True}
+        #if method_time != 'year' and method_time != 'percent':
+        #    res['value'] = {'prorata': True}
         return res
 
     def create(self, cr, uid, vals, context=None):
-        if vals.get('method_time') != 'year' and vals.get('method_time') != 'percent' and not vals.get('prorata'):
-            vals['prorata'] = True
+        #if vals.get('method_time') != 'year' and vals.get('method_time') != 'percent' and not vals.get('prorata'):
+        #    vals['prorata'] = True
         categ_id = super(account_asset_category, self).create(cr, uid, vals, context=context)
         acc_obj = self.pool.get('account.account')
         acc_id = vals.get('account_asset_id')
@@ -145,8 +145,8 @@ class account_asset_category(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         if isinstance(ids, (int, long)):
             ids = [ids]
-        if vals.get('method_time') != 'year' and vals.get('method_time') != 'percent' and not vals.get('prorata'):
-            vals['prorata'] = True
+        #if vals.get('method_time') != 'year' and vals.get('method_time') != 'percent' and not vals.get('prorata'):
+        #    vals['prorata'] = True
         super(account_asset_category, self).write(cr, uid, ids, vals, context)
         acc_obj = self.pool.get('account.account')
         for categ in self.browse(cr, uid, ids, context):
