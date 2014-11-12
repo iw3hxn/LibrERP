@@ -2,4 +2,4 @@
 "access_template_task","template.task","model_template_task",,1,1,1,1
 "create_project","project.project","project.model_project_project","base.group_sale_salesman",1,1,1,0
 "create_task","project.task","project.model_project_task","base.group_sale_salesman",1,1,1,0
-
+"create_task_type","project.task.type","project.model_project_task_type","base.group_sale_salesman",1,1,1,0

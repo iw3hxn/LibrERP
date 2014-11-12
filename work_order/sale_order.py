@@ -96,7 +96,7 @@ class sale_order(osv.osv):
                                 else:
                                     planned_hours = 0
                                 self.pool['project.task'].create(cr, uid, {
-                                    'name': u"{0}: {1} - {2}".format(order.name, order_line.product_id.name, bom.product_id.name),
+                                    'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
                                     'project_id': project_id,
                                     'planned_hours': planned_hours,
                                     'remaining_hours': planned_hours
@@ -116,7 +116,7 @@ class sale_order(osv.osv):
                                     else:
                                         planned_hours = 0
                                     self.pool['project.task'].create(cr, uid, {
-                                        'name': u"{0}: {1}".format(order.name, bom.product_id.name),
+                                        'name': u"{0}: {1}".format(order.project_project.name, bom.product_id.name),
                                         'project_id': project_id,
                                         'planned_hours': planned_hours,
                                         'remaining_hours': planned_hours
