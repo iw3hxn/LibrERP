@@ -43,30 +43,12 @@
             </field>
         </record>
 
-        <record id="view_order_tree_add_version_field" model="ir.ui.view">
-            <field name="name">sale.order.tree.add_version.field</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_tree"/>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <field name="state" position="after">
-                    
-                </field>
-            </field>
-        </record>
-        
         <record id="view_sales_order_filter_edit" model="ir.ui.view">
             <field name="name">sale.order.list.select_edit</field>
             <field name="model">sale.order</field>
             <field name="type">search</field>
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
-                <field name="user_id" position="after" >
-                    <newline/>
-                    <group expand="0" string="More options" colspan="11" col="11" groups="base.group_extended">
-                        <field name="active" />
-                    </group>
-                </field>
                 <filter string="Order Date" position="after">
                     <filter string="Orig. Version" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'sale_version_id'}"/>
                 </filter>
