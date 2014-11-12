@@ -7,10 +7,11 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="stock.view_normal_stock_property_form" />
             <field name="arch" type="xml">
+<!--
             <field name="supply_method" position="replace">
                 <field name="supply_method" readonly="1"/>
             </field>
-                
+-->                
             <field name="list_price" position="replace">
                 <field name="list_price" groups="product_bom.group_sell_price"/>
                 <field name="cost_price" groups="product_bom.group_cost_price"/>
