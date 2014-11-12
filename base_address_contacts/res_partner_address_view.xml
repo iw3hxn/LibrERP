@@ -130,6 +130,13 @@
             <field name="address" mode="form,tree" colspan="4" nolabel="1" select="1" position="replace">
                 <field name="address" mode="form,tree" colspan="4" nolabel="1" select="1">
                     <form string="Address">
+                                                      
+                       <group colspan="4" col="6">
+                           <field name="name"/>
+                       </group>
+                       
+                       <newline/>
+
                        <group  colspan="2" col="2">
                            <separator string="Postal Address" colspan="2" col="2"/>
                            <field name="type" />
