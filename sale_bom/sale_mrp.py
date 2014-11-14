@@ -134,7 +134,7 @@ class sale_order_line_mrp_bom(osv.osv):
         return res
     
     _columns = {
-        'name': fields.char('Attribute', size=256, select=True),
+        'name': fields.char('Note', size=256, select=True),
         'order_id': fields.many2one('sale.order.line', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True),
         'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True), ('type', 'not in', ['service'])], change_default=True),
         'product_uom_qty': fields.float('Quantity (UoM)', digits_compute=dp.get_precision('Product UoS'), required=True),
@@ -161,7 +161,8 @@ class sale_order_line_mrp_bom(osv.osv):
             
             return {'value': {
                 'price_unit': product.cost_price,
+                'product_uom': product.uom_id.id,
                 #'price_subtotal': product.cost_price * qty
             }}
         else:
-            return {}
+            return {'value': {}}
