@@ -80,6 +80,7 @@ class ImportFile(threading.Thread, Utils):
         self.filedata_obj = self.pool.get('product.import')
         self.productImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.productImportID, context=self.context)
         self.file_name = self.productImportRecord.file_name.split('\\')[-1]
+        self.update_product_name = self.productImportRecord.update_product_name
         
         #===================================================
         Config = getattr(settings, self.productImportRecord.format)
@@ -339,6 +340,7 @@ class ImportFile(threading.Thread, Utils):
                 return False
         
         vals_product = self.PRODUCT_DEFAULTS.copy()
+        
         vals_product['name'] = record.name
         
         for field in self.PRODUCT_SEARCH:
@@ -438,11 +440,13 @@ class ImportFile(threading.Thread, Utils):
         
         if hasattr(record, 'weight_net') and record.weight_net:
             vals_product['weight_net'] = record.weight_net
-        
+
         product_ids = self.product_obj.search(cr, uid, [(field, '=ilike', vals_product[field].replace('\\', '\\\\'))])
         if product_ids:
             _logger.info(u'Row {row}: Updating product {product}...'.format(row=self.processed_lines, product=vals_product[field]))
             product_id = product_ids[0]
+            if self.update_product_name:
+                vals_product['name'] = self.product_obj.browse(cr, uid, product_id, context=None).name
             self.product_obj.write(cr, uid, product_id, vals_product)
             self.updated += 1
         else:

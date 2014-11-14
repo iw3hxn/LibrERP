@@ -22,7 +22,7 @@
 
 {
     'name': 'Data migration import',
-    'version': '2.1.14.2',
+    'version': '2.2.15.3',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import data needed for migration

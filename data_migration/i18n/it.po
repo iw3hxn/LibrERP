@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-08 16:27+0000\n"
-"PO-Revision-Date: 2014-02-08 16:27+0000\n"
+"POT-Creation-Date: 2014-11-14 11:24+0000\n"
+"PO-Revision-Date: 2014-11-14 11:24+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,14 +21,14 @@ msgid "Chiudi"
 msgstr "Chiudi"
 
 #. module: data_migration
-#: field:product.import,file_name:0
-msgid "File Name"
-msgstr "Nome File"
-
-#. module: data_migration
 #: field:partner.import,content_base64:0
 msgid "Partner file path"
 msgstr "File"
+
+#. module: data_migration
+#: field:product.import,update_product_name:0
+msgid "Update Product Name"
+msgstr "Aggiorna nome Prodotto"
 
 #. module: data_migration
 #: model:ir.model,name:data_migration.model_partner_import
@@ -41,9 +41,19 @@ msgid "Inizia Importazione"
 msgstr "Inizia Importazione"
 
 #. module: data_migration
+#: field:partner.import,strict:0
+msgid "Strict"
+msgstr "Stringente"
+
+#. module: data_migration
 #: view:product.import:0
 msgid "Products import"
 msgstr "Importa Prodotti"
+
+#. module: data_migration
+#: help:partner.import,strict:0
+msgid "Use more strict (and more slow) data check"
+msgstr "Utilizza un controllo dei dati più stringente (più lento)"
 
 #. module: data_migration
 #: model:ir.ui.menu,name:data_migration.menu_partner_file_import
@@ -56,9 +66,25 @@ msgid "Supplier"
 msgstr "Fornitori"
 
 #. module: data_migration
+#: code:addons/data_migration/utils/partner_importer.py:118
+#: code:addons/data_migration/utils/product_importer.py:129
+#, python-format
+msgid "Unknown encoding"
+msgstr "encoding sconosciuto"
+
+#. module: data_migration
 #: model:ir.actions.act_window,name:data_migration.product_file_import
 msgid "Import Products in .xls format"
 msgstr "Importa i Prodotti da un file in formato Excel .xls"
+
+#. module: data_migration
+#: code:addons/data_migration/wizard/file_import.py:83
+#: code:addons/data_migration/wizard/file_import.py:116
+#: selection:partner.import,format:0
+#: selection:product.import,format:0
+#, python-format
+msgid "Format One"
+msgstr "Formato UNO"
 
 #. module: data_migration
 #: field:product.import,preview_text_original:0
@@ -87,6 +113,20 @@ msgid "Annulla"
 msgstr "Annulla"
 
 #. module: data_migration
+#: view:partner.import:0
+msgid "Import file. Verra segnalata la fine del'importazione, nelle 'Messaggi' (Vendite -> Configurazione -> Email -> Messaggi)."
+msgstr "Import file. Verra segnalata la fine del'importazione, nelle 'Messaggi' (Vendite -> Configurazione -> Email -> Messaggi)."
+
+#. module: data_migration
+#: code:addons/data_migration/wizard/file_import.py:85
+#: code:addons/data_migration/wizard/file_import.py:118
+#: selection:partner.import,format:0
+#: selection:product.import,format:0
+#, python-format
+msgid "Format Three"
+msgstr "TRE"
+
+#. module: data_migration
 #: field:partner.import,state:0
 #: field:product.import,state:0
 msgid "state"
@@ -96,6 +136,12 @@ msgstr "state"
 #: view:product.import:0
 msgid "Importing Products. You will be notified with a message when the import process is finished"
 msgstr "Importazione in corso. Verrai avvisato con un messaggio di testo quando il processo sarà terminato"
+
+#. module: data_migration
+#: field:partner.import,format:0
+#: field:product.import,format:0
+msgid "Formato Dati"
+msgstr "Formato Dati"
 
 #. module: data_migration
 #: selection:partner.import,state:0
@@ -114,15 +160,25 @@ msgid "Customer"
 msgstr "Clienti"
 
 #. module: data_migration
+#: code:addons/data_migration/wizard/file_import.py:119
+#: selection:product.import,format:0
+#, python-format
+msgid "Format Four"
+msgstr "QUATTRO / 3P"
+
+#. module: data_migration
+#: code:addons/data_migration/wizard/file_import.py:84
+#: code:addons/data_migration/wizard/file_import.py:117
+#: selection:partner.import,format:0
+#, python-format
+msgid "Format Two"
+msgstr "DUE"
+
+#. module: data_migration
 #: field:partner.import,content_text:0
 #: field:product.import,content_text:0
 msgid "File Partner"
 msgstr "File Partner"
-
-#. module: data_migration
-#: view:partner.import:0
-msgid "Import file. Verra segnalata la fine del'importazione, nelle 'Messaggi' (Configurazione -> Email -> Messaggi)."
-msgstr "Import file. Verra segnalata la fine del'importazione, nelle 'Messaggi' (Configurazione -> Email -> Messaggi)."
 
 #. module: data_migration
 #: field:partner.import,file_name:0
@@ -130,12 +186,17 @@ msgid "Nome File"
 msgstr "Nome File"
 
 #. module: data_migration
+#: help:product.import,update_product_name:0
+msgid "If set, overwrite product name"
+msgstr "Se settato sovrascrive il nome del prodotto"
+
+#. module: data_migration
 #: field:partner.import,partner_type:0
 msgid "Partner Type"
 msgstr "Tipo Partner"
 
 #. module: data_migration
-#: code:addons/data_migration/utils/product_importer.py:141
+#: code:addons/data_migration/utils/product_importer.py:172
 #, python-format
 msgid "Importazione prodotti"
 msgstr "Importazione prodotti"
@@ -156,11 +217,9 @@ msgid "Importazione Partner (clienti/fornitori) in formato Excel (xls)"
 msgstr "Importazione Partner (clienti/fornitori) in formato Excel (xls)"
 
 #. module: data_migration
-#: field:filedata.import,config_logo:0
-#: field:partner.import,config_logo:0
-#: field:product.import,config_logo:0
-msgid "Image"
-msgstr "Immagine"
+#: field:product.import,file_name:0
+msgid "File Name"
+msgstr "Nome File"
 
 #. module: data_migration
 #: field:partner.import,progress_indicator:0
@@ -171,12 +230,17 @@ msgstr "Progress import "
 #. module: data_migration
 #: model:ir.model,name:data_migration.model_product_import
 msgid "Import products from file in .csv format."
-msgstr "Import products from file in .csv format."
+msgstr "Importa prodotti da un file in formato .csv"
 
 #. module: data_migration
 #: field:product.import,preview_text_decoded:0
 msgid "Preview text decoded"
 msgstr "Preview text decoded"
+
+#. module: data_migration
+#: model:ir.ui.menu,name:data_migration.data_migration_menu
+msgid "Migrazione Dati"
+msgstr "Migrazione Dati"
 
 #. module: data_migration
 #: view:product.import:0
@@ -189,6 +253,8 @@ msgid "Close"
 msgstr "Chiudi"
 
 #. module: data_migration
-#: model:ir.ui.menu,name:data_migration.data_migration_menu
-msgid "Data Migration"
-msgstr "Importazione Dati"
+#: field:filedata.import,config_logo:0
+#: field:partner.import,config_logo:0
+#: field:product.import,config_logo:0
+msgid "Image"
+msgstr "Immagine"

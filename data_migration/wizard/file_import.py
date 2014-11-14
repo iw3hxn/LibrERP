@@ -92,7 +92,7 @@ class partner_import(filedata_import):
         'content_text': fields.binary('File Partner', translate=False),
         'progress_indicator': fields.integer('Progress import ', size=3, translate=False, readonly=True),
         'partner_type': fields.selection((('customer', 'Customer'), ('supplier', 'Supplier')), 'Partner Type', required=True),
-        'strict': fields.boolean('Strict', help="Use more strict (and more slow) data check")
+        'strict': fields.boolean('Strict', help="Use more strict (and more slow) data check"),
     }
     # default value for data fields of object
     _defaults = {
@@ -134,6 +134,8 @@ class product_import(filedata_import):
         #'supplier': fields.many2one('res.partner', 'Seller', required=True, translate=False),
         'progress_indicator': fields.integer('Progress import ', size=3, translate=False, readonly=True),
         #'file_path': fields.char('Percorso file', size=256)
+        'update_product_name': fields.boolean('Update Product Name', help="If set, overwrite product name")
+
     }
     # default value for data fields of object
     _defaults = {
