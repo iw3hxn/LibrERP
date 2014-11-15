@@ -23,8 +23,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, orm, osv
+from openerp.tools.translate import _
 
 PAYMENT_TERM_TYPE_SELECTION = [
     ('BB', 'Bonifico Bancario'),
@@ -39,15 +39,27 @@ PAYMENT_TERM_TYPE_SELECTION = [
 ]
 
 
-class account_move_line(osv.osv):
+class account_move_line(orm.Model):
+
+    def _residual(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.reconcile_partial_id:
+                total_line = 0.0
+                for line_reconcile in line.reconcile_partial_id.line_partial_ids:
+                    total_line += line_reconcile.debit - line_reconcile.credit
+                res[line.id] = total_line
+            else:
+                res[line.id] = line.debit - line.credit
+        return res
 
     def _get_invoice(self, cr, uid, ids, field_name, arg, context=None):
-        invoice_pool = self.pool.get('account.invoice')
+        invoice_pool = self.pool['account.invoice']
         res = {}
         for line in self.browse(cr, uid, ids):
             inv_ids = invoice_pool.search(cr, uid, [('move_id', '=', line.move_id.id)])
             if len(inv_ids) > 1:
-                raise osv.except_osv(_('Error'), _('Incongruent data: move %s has more than one invoice') % line.move_id.name)
+                raise orm.except_orm(_('Error'), _('Incongruent data: move %s has more than one invoice') % line.move_id.name)
             if inv_ids:
                 res[line.id] = inv_ids[0]
             else:
@@ -64,7 +76,7 @@ class account_move_line(osv.osv):
         return res
         
     def _get_move_lines(self, cr, uid, ids, context=None):
-        invoice_pool = self.pool.get('account.invoice')
+        invoice_pool = self.pool['account.invoice']
         res = []
         for invoice in invoice_pool.browse(cr, uid, ids):
             if invoice.move_id:
@@ -90,6 +102,7 @@ class account_move_line(osv.osv):
                                store={
                                    'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['date_maturity'], 10),
                                }),
+        'residual': fields.function(_residual, method=True, string='Residual', type='float', store=False),
     }
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):

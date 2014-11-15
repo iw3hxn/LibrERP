@@ -6,221 +6,233 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-20 21:44+0000\n"
-"PO-Revision-Date: 2014-03-20 22:47+0100\n"
-"Last-Translator: Sergio Corato <sergiocorato@gmail.com>\n"
+"POT-Creation-Date: 2014-11-15 22:10+0000\n"
+"PO-Revision-Date: 2014-11-15 22:10+0000\n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Receivable"
-msgstr "Crediti"
+msgstr ""
 
 #. module: account_due_list
 #: field:account.move.line,payment_term_type:0
 msgid "Payment Type"
-msgstr "Tipo di Pagamento"
+msgstr ""
+
+#. module: account_due_list
+#: selection:account.move.line,payment_term_type:0
+msgid "Paypal"
+msgstr ""
+
+#. module: account_due_list
+#: constraint:account.move.line:0
+msgid "Company must be the same for its related account and period."
+msgstr ""
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Payable payments"
+msgstr ""
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Unreconciled"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 #: field:account.move.line,residual:0
 msgid "Residual"
-msgstr "Saldo"
-
-#. module: account_due_list
-#: selection:account.move.line,payment_term_type:0
-msgid "Paypal"
-msgstr "Paypal"
-
-#. module: account_due_list
-#: constraint:account.move.line:0
-msgid "Company must be the same for its related account and period."
-msgstr "L'azienda deve essere la stessa per il conto ed il relativo periodo"
-
-#. module: account_due_list
-#: view:account.move.line:0
-msgid "Unreconciled"
-msgstr "Non riconciliate"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Group By..."
-msgstr "Raggruppa per..."
+msgstr ""
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
 msgid "Bonifico Bancario"
-msgstr "Bonifico Bancario"
+msgstr ""
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
 msgid "F24"
-msgstr "F24"
+msgstr ""
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
 msgid "Ricevuta Bancaria"
-msgstr "Ricevuta Bancaria"
+msgstr ""
 
 #. module: account_due_list
 #: field:account.move.line,invoice_origin:0
 msgid "Source Doc"
-msgstr "Documento di origine"
+msgstr ""
 
 #. module: account_due_list
 #: model:ir.ui.menu,name:account_due_list.menu_action_invoice_payments
 #: model:ir.ui.menu,name:account_due_list.schedule
 msgid "Schedule"
-msgstr "Scadenzario"
+msgstr ""
 
 #. module: account_due_list
 #: field:account.move.line,invoice_date:0
 msgid "Invoice Date"
-msgstr "Data Fattura"
+msgstr ""
 
 #. module: account_due_list
-#: view:account.move.line:0
-msgid "Total Credit"
-msgstr "Credito Totale"
+#: code:addons/account_due_list/account_move_line.py:62
+#, python-format
+msgid "Incongruent data: move %s has more than one invoice"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Payable"
-msgstr "Debiti"
+msgstr ""
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
 msgid "Rimessa Diretta"
-msgstr "Rimessa Diretta"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Search Payments"
-msgstr "Ricerca pagamenti"
+msgstr ""
 
 #. module: account_due_list
 #: model:ir.model,name:account_due_list.model_account_move_line
 msgid "Journal Items"
-msgstr "Voci sezionale"
+msgstr ""
 
 #. module: account_due_list
 #: constraint:account.move.line:0
 msgid "You can not create journal items on an account of type view."
-msgstr "Non è possibile effettuare registrazioni su un conto di tipo vista."
+msgstr ""
 
 #. module: account_due_list
 #: field:account.move.line,day:0
 msgid "Day"
-msgstr "Giorno"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Receivable payments"
-msgstr "Crediti"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Overdue payments"
-msgstr "Pagamenti scaduti"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Unreconciled payments"
-msgstr "Partite aperte"
+msgstr ""
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
 msgid "Carta di Credito"
-msgstr "Carta di Credito"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Total Debit"
-msgstr "Debito Totale"
+msgstr ""
 
 #. module: account_due_list
 #: sql_constraint:account.move.line:0
 msgid "Wrong credit or debit value in accounting entry !"
-msgstr "Valore di credito o debito errato nella registrazione contabile !"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 #: model:ir.actions.act_window,name:account_due_list.action_invoice_payments
 msgid "Payments"
-msgstr "Pagamenti"
+msgstr ""
 
 #. module: account_due_list
-#: view:account.move.line:0
-msgid "Payable payments"
-msgstr "Debiti"
+#: code:addons/account_due_list/account_move_line.py:62
+#, python-format
+msgid "Error"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Overdue"
-msgstr "Scaduti"
+msgstr ""
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
 msgid "Contrassegno"
-msgstr "Contrassegno"
+msgstr ""
 
 #. module: account_due_list
 #: constraint:account.move.line:0
 msgid "You can not create journal items on closed account."
-msgstr "Non è possibile creare registrazioni contabili su di un conto chiuso."
+msgstr ""
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
 msgid "Bonifico Postale"
-msgstr "Bonifico Postale"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Due date"
-msgstr "Data scadenza"
+msgstr ""
 
 #. module: account_due_list
 #: field:account.move.line,payment_term_id:0
 msgid "Payment Term"
-msgstr "Termine di pagamento"
+msgstr ""
 
 #. module: account_due_list
 #: constraint:account.move.line:0
 msgid "The selected account of your Journal Entry forces to provide a secondary currency. You should remove the secondary currency on the account or select a multi-currency view on the journal."
-msgstr "Il conto selezionato nella registrazione contabile necessita di una valuta secondaria. Occorre rimuovere la valuta secondaria dal conto oppure selezionare una vista multivaluta nel sezionale."
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Month"
-msgstr "Mese"
+msgstr ""
 
 #. module: account_due_list
 #: constraint:account.move.line:0
 msgid "The date of your Journal Entry is not in the defined period! You should change the date or remove this constraint from the journal."
-msgstr "La data della registrazione contabile non è presente nel periodo definito! Occorre cambiare la data o rimuovere questo vincolo dal sezionale."
+msgstr ""
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Total Credit"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 #: field:account.move.line,stored_invoice_id:0
 msgid "Invoice"
-msgstr "Fattura"
+msgstr ""
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
 msgid "Contanti"
-msgstr "Contanti"
+msgstr ""
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Partner"
-msgstr "Partner"
+msgstr ""
 
 #. module: account_due_list
 #: field:account.move.line,partner_ref:0
 msgid "Partner Ref"
-msgstr "Rif Partner"
+msgstr ""
 
