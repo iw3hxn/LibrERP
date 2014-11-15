@@ -41,6 +41,7 @@ class purchase_order(orm.Model):
     _columns = {
         'payment_term': fields.many2one('account.payment.term', 'Payment Term'),
         'incoterm_id': fields.many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions."),
+        'delivery_address': fields.text('Delivery Address')
     }
 
     def onchange_partner_id(self, cr, uid, ids, partner_id):
