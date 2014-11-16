@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <field name="bank_ids" position="before">
                     <field name="bank_riba_id" />
+                    <field name="company_bank_id" domain="[('company_id', '=', company_id)]" />
                 </field>
             </field>
         </record>

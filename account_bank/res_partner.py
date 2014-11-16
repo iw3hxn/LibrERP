@@ -28,4 +28,5 @@ class res_partner(orm.Model):
     
     _columns = {
         'bank_riba_id': fields.many2one('res.bank', 'Bank for ri.ba.'),
+        'company_bank_id': fields.many2one('res.partner.bank', string='Company bank for Bank Transfer'),
     }
