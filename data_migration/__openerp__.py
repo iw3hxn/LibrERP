@@ -22,7 +22,7 @@
 
 {
     'name': 'Data migration import',
-    'version': '2.2.15.3',
+    'version': '2.2.15.4',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import data needed for migration
@@ -38,7 +38,7 @@
         'base',
         'purchase',
         #'partner_subaccount',
-        'l10n_it',
+        #'l10n_it', not needed, pdc is installed by default and can differ from this one
         'l10n_it_account'
     ],
     'init_xml': [],
