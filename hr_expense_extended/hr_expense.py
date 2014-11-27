@@ -39,7 +39,7 @@ class hr_expense_expense(orm.Model):
         res = []
         for expense in expenses:
             month = datetime.strptime(expense.date, DEFAULT_SERVER_DATE_FORMAT).month
-            name = "{month:0>2d} - {name}".format(month=month, name=expense.employee_id.name)
+            name = u"{month:0>2d} - {name}".format(month=month, name=expense.employee_id.name)
             res.append((expense.id, name))
         return res
 
@@ -73,7 +73,7 @@ class hr_expense_expense(orm.Model):
         hr_expense_id = self.get_hr_expense(cr, uid, employee.id, expense_date)
         
         if not hr_expense_id:
-            values['name'] = "{month:0>2d} - {name}".format(month=expense_date.month, name=employee.name)
+            values['name'] = u"{month:0>2d} - {name}".format(month=expense_date.month, name=employee.name)
             if not values.get('currency_id', False):
                 user = self.pool['res.users'].browse(cr, uid, uid)
                 values['currency_id'] = user.company_id.currency_id.id
