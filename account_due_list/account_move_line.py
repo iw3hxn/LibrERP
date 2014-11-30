@@ -52,6 +52,17 @@ class account_move_line(orm.Model):
             else:
                 res[line.id] = line.debit - line.credit
         return res
+    
+    def _direction(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.debit:
+                res[line.id] = '+'
+            elif line.credit:
+                res[line.id] = '-'
+            else:
+                res[line.id] = '='
+        return res
 
     def _get_invoice(self, cr, uid, ids, field_name, arg, context=None):
         invoice_pool = self.pool['account.invoice']
@@ -103,6 +114,7 @@ class account_move_line(orm.Model):
                                    'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['date_maturity'], 10),
                                }),
         'residual': fields.function(_residual, method=True, string='Residual', type='float', store=False),
+        'direction': fields.function(_direction, method=True, string='Direction', type='char', store=False)
     }
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):

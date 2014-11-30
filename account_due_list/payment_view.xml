@@ -14,7 +14,7 @@
                 <field name="stored_invoice_id" readonly="1"/>
                 <field name="invoice_date" readonly="1"/>
                 <field name="invoice_origin" readonly="1"/>
-                <field name="partner_id" readonly="1"/>
+                <field name="partner_id" string="Partner" readonly="1"/>
                 <field name="partner_ref" readonly="1"/>
                 <field name="payment_term_id" readonly="1"/>
                 <field name="payment_term_type" readonly="1"/>
@@ -30,6 +30,22 @@
             </tree>
         </field>
     </record>
+    
+    
+    <record id="view_payments_calendar" model="ir.ui.view">
+        <field name="name">Payments Calendar</field>
+        <field name="model">account.move.line</field>
+        <field name="type">calendar</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <calendar string="Sales Orders" color="direction" date_start="date_maturity">
+                <field name="partner_id"/>
+                <field name="invoice_date"/>
+                <field name="residual"/>
+            </calendar>
+        </field>
+    </record>
+
 
     <record id="view_payments_filter" model="ir.ui.view">
         <field name="name">Payments Select</field>
@@ -69,7 +85,7 @@
         <field name="name">Payments</field>
         <field name="res_model">account.move.line</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,calendar</field>
         <field name="view_id" ref="view_payments_tree"/>
         <field name="search_view_id" ref="view_payments_filter"/>
         <field name="domain">['|','&amp;',('account_id.type','=','payable'),('debit','=',0),'&amp;',('account_id.type','=','receivable'),('credit','=',0)]</field>
@@ -80,5 +96,33 @@
     <menuitem name="Schedule" parent="account.menu_finance" id="schedule" sequence="5" groups="account.group_account_user,account.group_account_manager"/>
     <menuitem name="Schedule" parent="schedule" action="action_invoice_payments" id="menu_action_invoice_payments" sequence="5"/>
 
+    
+    <!--
+    THIS NEED FOR CREATE FIELD ON VIEW
+    -->
+    
+         <record id="journal_col13" model="account.journal.column">
+            <field name="view_id" ref="account.account_journal_view"/>
+            <field name="name">Residual</field>
+            <field name="field">residual</field>
+            <field eval="12" name="sequence"/>
+        </record>
+    
+    
+        <record id="sp_journal_col13" model="account.journal.column">
+            <field name="view_id" ref="account.account_sp_journal_view"/>
+            <field name="name">Residual</field>
+            <field name="field">residual</field>
+            <field eval="12" name="sequence"/>
+        </record>
+    
+        <record id="sp_refund_journal_col13" model="account.journal.column">
+            <field name="view_id" ref="account.account_sp_refund_journal_view"/>
+            <field name="name">Residual</field>
+            <field name="field">residual</field>
+            <field eval="12" name="sequence"/>
+        </record>
+    
+    
 </data>
 </openerp>
