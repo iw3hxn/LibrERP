@@ -378,7 +378,7 @@
                                         <a name="action_validation" string="Confirm" states="draft" icon="gtk-ok"  />   
                                     </div>
                                     <div class="oe_kanban_right">
-                                        <a name="540" string="Print" type="action" icon="gtk-print"/>  
+                                        <button name="%(sale.report_sale_order)d" string="Print Order" />
                                     </div>
                                     <br class="oe_kanban_clear"/>
                                 </div>
