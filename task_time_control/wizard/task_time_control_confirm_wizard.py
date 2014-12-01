@@ -53,6 +53,7 @@ class task_time_control_confirm_wizard(orm.TransientModel):
             return 0.00
 
     _columns = {
+        'date_force': fields.date('Date', required=True),
         'task_to_start': fields.many2one('project.task', 'Task to init'),
         'user_task': fields.many2one('time.control.user.task', 'User task'),
         'started_task': fields.many2one('project.task', 'Started Task'),
