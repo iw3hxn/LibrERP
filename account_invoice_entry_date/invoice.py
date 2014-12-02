@@ -23,6 +23,8 @@
 import time
 from openerp.osv import fields, orm
 from tools.translate import _
+from datetime import datetime
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class account_invoice(orm.Model):
@@ -39,12 +41,51 @@ class account_invoice(orm.Model):
                     if line.date_maturity:
                         res[o.id].append(line.id)
         return res
+
+    def _format_time(self, date):
+        return datetime.strptime(date, DEFAULT_SERVER_DATE_FORMAT).strftime('%d/%m/%Y')
+
+    def _get_preview_line(self, invoice, line):
+        currency_name = invoice.currency_id.name
+        amount_total_line = line[1]
+        t_pterm = {
+                   'date':self._format_time(line[0]),
+                   'amount':amount_total_line,
+                   'currency_name':currency_name}
+        return t_pterm
+
+    def _get_preview_lines(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or {}
+        result = {}
+        if not len(ids):
+            return []
+        for invoice in self.browse(cr, uid, ids, context):
+            if not invoice.id in result:
+                result[invoice.id] = []
+            if invoice.state == 'draft':
+                t_amount_total = invoice.amount_total
+                if invoice.payment_term:
+                    for line in self.pool['account.payment.term'].compute(cr, uid, invoice.payment_term.id, t_amount_total, date_ref=invoice.date_invoice):
+                        result[invoice.id].append(self._get_preview_line(invoice, line))
+
+        return result
+
+
     
     _columns = {
         'registration_date': fields.date('Registration Date', states={'paid': [('readonly', True)], 'open': [('readonly', True)], 'close': [('readonly', True)]}, select=True, help="Keep empty to use the current date"),
         'maturity_ids': fields.function(
             _maturity, type="one2many", store=False,
-            relation="account.move.line", method=True)
+            relation="account.move.line", method=True),
+        'payments_preview':   fields.function(_get_preview_lines,
+                                    type="one2many",
+                                    relation='account.invoice.maturity.preview.lines',
+                                    string="Maturities preview (calculated at invoice validation time)",
+                                    readonly=True),
+#        'payments_overview':  fields.function(_get_payments_overview,
+#                                    type="one2many",
+#                                    relation='account.invoice.maturity.preview.lines',
+#                                    string="Payments overview", readonly=True),
     }
     
     def action_move_create(self, cr, uid, ids, context=None):
@@ -96,6 +137,6 @@ class account_invoice(orm.Model):
         default = default or {}
         if 'registration_date' not in default:
             default.update({
-                'registration_date': False
+                'registration_date': False,
             })
         return super(account_invoice, self).copy(cr, uid, id, default, context)

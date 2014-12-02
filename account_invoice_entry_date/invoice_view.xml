@@ -9,8 +9,17 @@
                 <field name="date_invoice" position="after">
                     <field name="registration_date"></field>
                 </field>
+                <field name="payment_ids" position="attributes">
+                    <attribute name="attrs">{'invisible':[('state','not in',['open', 'paid'])]}</attribute>
+                </field>
                 <field name="payment_ids" position="before">
-                    <field name="maturity_ids" nolabel="1">
+                    <field name="payments_preview" nolabel="1" attrs="{'invisible':[('state','not in',['draft'])]}">
+                        <tree string=" Virtual Maturities" > 
+                             <field name="date" />
+                             <field name="amount" string="Amount"/>
+                        </tree>
+                    </field>                    
+                    <field name="maturity_ids" nolabel="1" attrs="{'invisible':[('state','not in',['open', 'paid'])]}">
                         <tree string="Maturities">
                             <field name="date_maturity"/>
                             <field name="maturity_debit" string="Amount"/>
@@ -19,10 +28,13 @@
                         </tree>
                     </field>
                 </field>
+                
+
+<!--
                 <xpath expr="//page[@string='Payments']" position="attributes">
                     <attribute name="attrs">{'invisible':[('state','not in',['open', 'paid'])]}</attribute>
                 </xpath>
-
+-->
             </field>
         </record>
         
