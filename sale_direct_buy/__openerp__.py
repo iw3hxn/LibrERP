@@ -39,7 +39,8 @@
         'sale_order_confirm',
         'product_bom',
         'sale_bom',
-        'dt_product_brand'
+        'dt_product_brand',
+        'stock_picking_extended'
     ],
     "data": [
         'sale_order_view.xml'
