@@ -62,4 +62,9 @@ msgstr "Data errata !"
 msgid "Currency"
 msgstr "Valuta"
 
+#. module: account_invoice_entry_date
+#: view:account.invoice:0
+msgid " Virtual Maturities"
+msgstr "Scadenze Previste"
+
 
