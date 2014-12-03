@@ -1154,7 +1154,7 @@ msgstr "Indica che il primo ammortamento verrà fatto al 50%."
 #. module: account_asset
 #: field:account.asset.asset,value_depreciated:0
 msgid "Depreciated Value"
-msgstr "Depreciated Value"
+msgstr "Valore Ammortizzato"
 
 #. module: account_asset
 #: field:account.asset.category,open_asset:0
