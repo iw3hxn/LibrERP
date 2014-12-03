@@ -24,9 +24,10 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-import time
+from datetime import datetime
 import decimal_precision as dp
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class wizard_expense_line(orm.TransientModel):
@@ -44,7 +45,7 @@ class wizard_expense_line(orm.TransientModel):
     #    wizards = self.browse(cr, uid, ids)
     #    for wizard in wizards:
     #        result['wizard.id'] = wizard.unit_amount * wizard.unit_quantity
-    #    pdb.set_trace()
+    #   
     #    return result
     
     _columns = {
@@ -61,7 +62,7 @@ class wizard_expense_line(orm.TransientModel):
     
     _defaults = {
         'unit_quantity': 1,
-        'date_value': lambda *a: time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+        'date_value': lambda *a: datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT),
     }
     
     def onchange_product_id(self, cr, uid, ids, product_id, context=None):
@@ -98,14 +99,20 @@ class task_time_control_confirm_wizard(orm.TransientModel):
             'department_id': False
         }
         
+        if confirm_wizard.task_date:
+            force_date = datetime.strptime(confirm_wizard.task_date, DEFAULT_SERVER_DATETIME_FORMAT)
+            force_date = force_date.date().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        else:
+            force_date = False
+        
         for expense_line in confirm_wizard.expense_line_ids:
-            expense_values['date'] = expense_line.date_value
+            expense_values['date'] = force_date or expense_line.date_value
             hr_expense_id = self.pool['hr.expense.expense'].create(cr, uid, expense_values)
             
             values = {
                 'task_id': confirm_wizard.started_task.id,
                 'name': expense_line.name,
-                'date_value': expense_line.date_value,
+                'date_value': force_date or expense_line.date_value,
                 'unit_amount': expense_line.unit_amount,
                 'unit_quantity': expense_line.unit_quantity,
                 'product_id': expense_line.product_id.id,
