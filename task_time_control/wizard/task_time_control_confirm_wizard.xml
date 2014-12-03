@@ -11,6 +11,8 @@
                     <newline/>
                     <field name="name" string="Name"/>
                     <newline/>
+                    <field name="task_date" />
+                    <newline/>
                     <field name="time" string="Time" widget="float_time"/>
                     <group colspan="4">
                         <button string="Cancel" special="cancel" icon="gtk-cancel"/>

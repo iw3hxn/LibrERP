@@ -53,7 +53,7 @@ class task_time_control_confirm_wizard(orm.TransientModel):
             return 0.00
 
     _columns = {
-        'date_force': fields.date('Date', required=False),
+        'task_date': fields.datetime('Date', required=False),
         'task_to_start': fields.many2one('project.task', 'Task to init'),
         'user_task': fields.many2one('time.control.user.task', 'User task'),
         'started_task': fields.many2one('project.task', 'Started Task'),
@@ -85,7 +85,7 @@ class task_time_control_confirm_wizard(orm.TransientModel):
 
             self.pool["project.task.work"].create(cr, uid, {
                 'name': wizard.name,
-                'date': end_datetime.strftime('%d-%m-%Y %H:%M:%S'),
+                'date': wizard.task_date or end_datetime.strftime('%d-%m-%Y %H:%M:%S'),
                 'task_id': started_task.id,
                 'hours': wizard.time,
                 'user_id': uid,
