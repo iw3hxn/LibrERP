@@ -1,0 +1,74 @@
+<openerp>
+  <data>
+
+    <record id="view_aeroo_printer_installer" model="ir.ui.view">
+      <field name="name">aeroo_printer.installer.view</field>
+      <field name="model">aeroo_printer.installer</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="base.res_config_installer"/>
+      <field name="arch" type="xml">
+          <data>
+              <form position="attributes">
+                  <attribute name="string">Aeroo direct printing Configuration</attribute>
+              </form>
+              <separator string="title" position="attributes">
+                   <attribute name="string">Available Printers</attribute>
+              </separator>
+              <xpath expr="//label[@string='description']" position="attributes">
+                  <attribute name="string">Here you can connect printers for Aeroo direct print to printer.</attribute>
+              </xpath>
+	          <xpath expr="//button[@string='Install Modules']" position="replace">
+                <button colspan="1" icon="gtk-close" special="cancel" string="_Close" invisible="not context.get('menu',False)"/>
+                <button name="action_next" icon="gtk-go-forward"
+                        type="object" string="Next" colspan="1" invisible="context.get('menu',False)" states="done"/>
+                <button name="process" icon="gtk-go-forward" type="object" string="Process" colspan="1" states="init"/>
+              </xpath>
+              <xpath expr="//button[@name='action_skip']" position="attributes">
+                <attribute name="invisible">context.get('menu',False)</attribute>
+              </xpath>
+              <xpath expr='//separator[@string="vsep"]' position='attributes'>
+		  		<attribute name='string'></attribute>
+		  		<attribute name='rowspan'>25</attribute>
+		  	  </xpath>
+              <xpath expr='//group[field/@name="config_logo"]' position="attributes">
+                <attribute name="height">500</attribute>
+              </xpath>
+              <field name="config_logo" position="attributes">
+                <attribute name="height">440</attribute>
+                <attribute name="img_height">440</attribute>
+              </field>
+		  	  <group colspan="8" position="replace">
+              <group colspan="8" height="100" width="400" expand="1">
+                  <group colspan="4" expand="1">
+                      <field name="printer_ids" colspan="4" nolabel="1" readonly="1"/>
+                  </group>
+                  <group colspan="4" states="done">
+                      <label string="New printers has been connected for Aeroo printing." colspan="4"/>
+                  </group>
+                  <newline/>
+                  <field name="state" invisible="1"/>
+              </group>
+              </group>
+          </data>
+      </field>
+    </record>
+
+    <record id="action_aeroo_printer_installer" model="ir.actions.act_window">
+      <field name="name">Aeroo direct printing Configuration</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">aeroo_printer.installer</field>
+      <field name="view_id" ref="view_aeroo_printer_installer"/>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+    <record id="aeroo_printer_installer_todo" model="ir.actions.todo">
+        <field name="action_id" ref="action_aeroo_printer_installer"/>
+        <field name="restart">always</field>
+        <field name="sequence">3</field>
+        <field name="type">automatic</field>
+    </record>
+
+  </data>
+</openerp>
