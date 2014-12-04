@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-03 21:33+0000\n"
-"PO-Revision-Date: 2014-12-03 21:33+0000\n"
+"POT-Creation-Date: 2014-12-03 21:34+0000\n"
+"PO-Revision-Date: 2014-12-03 21:34+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,41 +18,41 @@ msgstr ""
 #. module: account_bank
 #: sql_constraint:account.invoice:0
 msgid "Invoice Number must be unique per Company!"
-msgstr "Nell'azienda il numero fattura dev'essere univoco!"
+msgstr ""
 
 #. module: account_bank
 #: field:res.partner,company_bank_id:0
 msgid "Company bank for Bank Transfer"
-msgstr "Banca aziendale per i bonifici"
+msgstr ""
 
 #. module: account_bank
 #: field:account.invoice,bank_riba_id:0
 #: field:res.partner,bank_riba_id:0
 msgid "Bank for ri.ba."
-msgstr "Banca Appoggio Ri.Ba."
+msgstr ""
 
 #. module: account_bank
 #: sql_constraint:res.partner:0
 msgid "Codice Fornitore Univoco"
-msgstr "Codice Fornitore Univoco"
+msgstr ""
 
 #. module: account_bank
 #: sql_constraint:res.partner:0
 msgid "Codice Cliente Univoco"
-msgstr "Codice Cliente Univoco"
+msgstr ""
 
 #. module: account_bank
 #: sql_constraint:res.partner:0
 msgid "Error! Specified VAT Number already exists for any other registered partner."
-msgstr "Errore! Esiste già un partner con la stessa P.IVA."
+msgstr ""
 
 #. module: account_bank
 #: model:ir.model,name:account_bank.model_account_invoice
 msgid "Invoice"
-msgstr "Fattura"
+msgstr ""
 
 #. module: account_bank
 #: model:ir.model,name:account_bank.model_res_partner
 msgid "Partner"
-msgstr "Partner"
+msgstr ""
 

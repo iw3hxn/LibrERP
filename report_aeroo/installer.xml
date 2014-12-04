@@ -1,0 +1,68 @@
+<openerp>
+  <data>
+
+    <record id="view_report_aeroo_installer" model="ir.ui.view">
+      <field name="name">report.aeroo.installer.view</field>
+      <field name="model">report.aeroo.installer</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="base.res_config_installer"/>
+      <field name="arch" type="xml">
+          <data>
+              <form position="attributes">
+                  <attribute name="string">Aeroo Reports Installation</attribute>
+              </form>
+              <separator string="title" position="attributes">
+                   <attribute name="string">Aeroo Reports</attribute>
+              </separator>
+              <xpath expr="//label[@string='description']" position="attributes">
+                  <attribute name="string">Aeroo Reports for OpenERP is a comprehensive reporting engine based on Aeroo Library.</attribute>
+              </xpath>
+	          <xpath expr="//button[@string='Install Modules']" position="replace">
+                <button colspan="1" icon="gtk-close" special="cancel" string="_Close" invisible="not context.get('menu',False)"/>
+                <button name="action_next" icon="gtk-go-forward"
+                        type="object" string="Next" colspan="1" invisible="context.get('menu',False)"/>
+              </xpath>
+              <xpath expr="//button[@name='action_skip']" position="attributes">
+                <attribute name="invisible">context.get('menu',False)</attribute>
+              </xpath>
+              <xpath expr='//separator[@string="vsep"]' position='attributes'>
+		  		<attribute name='string'></attribute>
+		  		<attribute name='rowspan'>25</attribute>
+		  	  </xpath>
+              <xpath expr='//group[field/@name="config_logo"]' position="attributes">
+                <attribute name="height">300</attribute>
+              </xpath>
+              <field name="config_logo" position="attributes">
+                <attribute name="height">440</attribute>
+                <attribute name="img_height">440</attribute>
+              </field>
+		  	  <group colspan="8" position="replace">
+              <group colspan="8" height="100" width="400">
+                  <group colspan="4">
+                      <field name="link" widget="url"/>
+                  </group>
+              </group>
+              </group>
+          </data>
+      </field>
+    </record>
+
+    <record id="action_report_aeroo_installer" model="ir.actions.act_window">
+      <field name="name">Aeroo Reports Installation</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">report.aeroo.installer</field>
+      <field name="view_id" ref="view_report_aeroo_installer"/>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+    <record id="report_aeroo_installer_todo" model="ir.actions.todo">
+        <field name="action_id" ref="action_report_aeroo_installer"/>
+        <field name="restart">always</field>
+        <field name="sequence">3</field>
+        <field name="type">automatic</field>
+    </record>
+
+  </data>
+</openerp>
