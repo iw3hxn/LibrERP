@@ -145,12 +145,17 @@ class sale_order(osv.osv):
         else:
             invoice_ratio = 3
         if (not values.get('project_project', False)) and (not values.get('project_id', False)) and shop and shop.project_required and (not order.project_project or not context.get('versioning', False)):
-            project_id = self.pool['project.project'].create(cr, uid, {
+            value = {
                 'name': values['name'],
                 'partner_id': values.get('partner_id', False),
                 'to_invoice' : invoice_ratio,
                 'state' : 'pending',
-            }, context={
+            }
+            # i use this mode because if there are no project_id on shop use default value
+            if shop.project_id:
+                value['parent_id'] = shop.project_id.id
+            
+            project_id = self.pool['project.project'].create(cr, uid, value, context={
                 'model': 'sale.order',
             })
             
