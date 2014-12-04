@@ -22,10 +22,11 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+from openerp.osv import orm
 from openerp.tools.translate import _
 from product._common import rounding
 import datetime
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class account_analytic_line(orm.Model):
@@ -97,7 +98,7 @@ class account_analytic_line(orm.Model):
             else:
                 general_account_id = False
             
-            line_date = datetime.datetime.strptime(values['date'], "%Y-%m-%d %H:%M:%S")
+            line_date = datetime.datetime.strptime(values['date'], DEFAULT_SERVER_DATETIME_FORMAT)
             line_date = datetime.date(year=line_date.year, month=line_date.month, day=line_date.day)
             
             analytic_line_ids = self.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id))])
