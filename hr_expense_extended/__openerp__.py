@@ -27,7 +27,7 @@
     "version": "2.6.10",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
-    'category': 'Human Resources'
+    "category": 'Human Resources',
     "description": """
         Module extends functionality of the hr_expense module:
             - expense line will also create account_analytic_line
