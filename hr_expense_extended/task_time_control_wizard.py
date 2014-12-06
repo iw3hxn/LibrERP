@@ -48,6 +48,18 @@ class wizard_expense_line(orm.TransientModel):
     #   
     #    return result
     
+    def _get_date_value(self, cr, uid, context):
+        
+        date_value = context.get('date_value', False)
+
+        if date_value:
+            date = datetime.strptime(date_value, DEFAULT_SERVER_DATETIME_FORMAT)
+            date = date.date().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        else:
+            date = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)        
+
+        return date
+    
     _columns = {
         'name': fields.char('Expense Note', size=128, required=True),
         'date_value': fields.date('Date', required=True),
@@ -62,7 +74,7 @@ class wizard_expense_line(orm.TransientModel):
     
     _defaults = {
         'unit_quantity': 1,
-        'date_value': lambda *a: datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT),
+        'date_value': _get_date_value,
     }
     
     def onchange_product_id(self, cr, uid, ids, product_id, context=None):
@@ -99,20 +111,20 @@ class task_time_control_confirm_wizard(orm.TransientModel):
             'department_id': False
         }
         
-        if confirm_wizard.task_date:
-            force_date = datetime.strptime(confirm_wizard.task_date, DEFAULT_SERVER_DATETIME_FORMAT)
-            force_date = force_date.date().strftime(DEFAULT_SERVER_DATE_FORMAT)
-        else:
-            force_date = False
+        #if confirm_wizard.task_date:
+        #    force_date = datetime.strptime(confirm_wizard.task_date, DEFAULT_SERVER_DATETIME_FORMAT)
+        #    force_date = force_date.date().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        #else:
+        #    force_date = False
         
         for expense_line in confirm_wizard.expense_line_ids:
-            expense_values['date'] = force_date or expense_line.date_value
+            expense_values['date'] = expense_line.date_value
             hr_expense_id = self.pool['hr.expense.expense'].create(cr, uid, expense_values)
             
             values = {
                 'task_id': confirm_wizard.started_task.id,
                 'name': expense_line.name,
-                'date_value': force_date or expense_line.date_value,
+                'date_value': expense_line.date_value,
                 'unit_amount': expense_line.unit_amount,
                 'unit_quantity': expense_line.unit_quantity,
                 'product_id': expense_line.product_id.id,
