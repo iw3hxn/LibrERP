@@ -108,7 +108,7 @@
 
 
         <menuitem name="Issue Ri.Ba." parent="menu_riba" 
-            id="menu_riba_da_emettere" action="action_riba_da_emettere" />
+            id="menu_riba_da_emettere" action="action_riba_da_emettere" sequence="1"/>
 
     <!-- Invoice -->
 
@@ -150,6 +150,6 @@
             <field name="act_window_id" ref="action_invoice_tree1"/>
         </record>
         <menuitem name="Unsolved Invoices" parent="menu_riba" 
-            id="menu_invoices" action="action_invoice_tree1" />
+            id="menu_invoices" action="action_invoice_tree1" sequence="3"/>
     </data>
 </openerp>

@@ -177,7 +177,7 @@
         <!--                     DISTINTA RIBA - MENU                -->
         <!-- ====================================================== -->
         <menuitem name="Distinte" parent="menu_riba" 
-            id="menu_riba_distinte" action="distinta_riba_action" />
+            id="menu_riba_distinte" action="distinta_riba_action" sequence="2" />
 
     </data>
 </openerp>
