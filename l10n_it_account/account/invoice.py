@@ -33,7 +33,7 @@ class account_invoice(orm.Model):
         if ids:
             invoices = self.browse(cr, uid, ids, context)
             for invoice in invoices:
-                if invoice.move_products:
+                if hasattr(invoice, 'move_products') and invoice.move_products:
                     result[invoice.id] = True
                 elif invoice.origin:
                     if ':' in invoice.origin:

@@ -65,7 +65,8 @@ class Parser(report_sxw.rml_parse):
             picking_ids = self.pool['stock.picking'].search(self.cr, self.uid, [('name', '=', picking_name)])
             if picking_ids:
                 return self.pool['stock.picking'].browse(self.cr, self.uid, picking_ids[0])
-        if self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0]).move_products:
+        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
+        if hasattr(invoice, 'move_products') and invoice.move_products:
             return self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
         if hasattr(self, 'picking_name'):
             return self.cache.get(self.picking_name, False) or self.cache.setdefault(self.picking_name, get_picking(self.picking_name))
