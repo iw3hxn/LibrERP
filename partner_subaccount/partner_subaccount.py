@@ -180,6 +180,24 @@ class res_partner(orm.Model):
 
         return super(res_partner, self).create(cr, uid, vals, context=context)
 
+    def unlink(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
+        ids_account = []
+        
+        for partner in self.pool['res.partner'].browse(cr, uid, ids, context):
+            
+            if partner.property_account_payable and partner.property_account_payable.type != 'view':
+                if partner.property_account_payable.balance == 0.0:
+                    ids_account.append(partner.property_account_payable.id)
+                else:
+                    ids.remove(partner.id)
+                    
+        res = super(res_partner, self).unlink(cr, uid, ids, context)
+        if res and ids_account:
+            self.pool['account.account'].unlink(cr, 1, ids_account, context) #for unlink force superuser
+        return res
+
     def write(self, cr, uid, ids, vals, context=None):
         if not context:  # write is called from create, then skip
             context = {}
