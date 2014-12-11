@@ -200,8 +200,13 @@ tr {
     </tr>
     %endif
     <tr >
+        %if statement.authority_vat_amount > 0.0 :
         <td><strong>${_("Amount to pay")}</strong></td>
         <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.authority_vat_amount + statement.interest_amount)|entity }</strong></td>
+        %else :
+        <td><strong>${_("Amount of credit")}</strong></td>
+        <td colspan="2" style="text-align:center"><strong>${ formatLang(- statement.authority_vat_amount)|entity }</strong></td>
+        %endif
     </tr>
 </table>
 %endfor
