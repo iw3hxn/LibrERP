@@ -20,7 +20,7 @@
 ##############################################################################
 {
     'name': 'Base Address Contact',
-    'version': '3.0.0.1',
+    'version': '3.1.0.2',
     'category': 'Base',
     'description': """
 This module allows you to manage your contacts

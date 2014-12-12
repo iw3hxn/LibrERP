@@ -128,24 +128,24 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <field name="address" mode="form,tree" colspan="4" nolabel="1" select="1" position="replace">
-                <field name="address" mode="form,tree" colspan="4" nolabel="1" select="1">
+                <field name="address" mode="tree,form" colspan="4" nolabel="1" select="1">
                     <form string="Address">
-                                                      
-                       <group colspan="4" col="6">
-                           <field name="name"/>
-                       </group>
+                        
+                        <group colspan="4" col="6">
+                            <field name="name"/>
+                        </group>
                        
-                       <newline/>
+                        <newline/>
 
-                       <group  colspan="2" col="2">
-                           <separator string="Postal Address" colspan="2" col="2"/>
-                           <field name="type" />
-                           <field name="street"/>
-                           <field name="street2"/>
-                           <field name="zip"/>
-                           <field name="city"/>
-                           <field name="country_id" completion="1"/>
-                           <field name="state_id"/>
+                        <group  colspan="2" col="2">
+                            <separator string="Postal Address" colspan="2" col="2"/>
+                            <field name="type" />
+                            <field name="street"/>
+                            <field name="street2"/>
+                            <field name="zip"/>
+                            <field name="city"/>
+                            <field name="country_id" completion="1"/>
+                            <field name="state_id"/>
                         </group>
                         <group colspan="2" col="2">
                            <separator string="Communication" colspan="2" col="2"/>
@@ -155,6 +155,18 @@
                            <field name="email" widget="email"/>
                            <field name="pec" widget="email" />
                         </group>
+
+                    </form>
+                    <tree string="Addresses">
+                        <field name="type"/>
+                        <field name="zip"/>
+                        <field name="city"/>
+                        <field name="country_id"/>
+                        <field name="phone"/>
+                    </tree>
+                </field>
+
+
                         <field name="contact_ids" mode="tree,form" nolabel="1" colspan="4">
                             <tree string="Contacts" editable="top">
                                 <field name="title" />
@@ -200,15 +212,8 @@
                                 </notebook>
                             </form>
                         </field>
-                    </form>
-                    <tree string="Addresses">
-                        <field name="type"/>
-                        <field name="zip"/>
-                        <field name="city"/>
-                        <field name="country_id"/>
-                        <field name="phone"/>
-                    </tree>
-                </field>
+
+
             </field>
             <field name="category_id" position="replace" />
             <separator colspan="4" string="Categories" position="replace"/>

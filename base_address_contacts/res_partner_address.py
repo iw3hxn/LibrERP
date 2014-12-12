@@ -69,10 +69,8 @@ class res_partner_address_contact(orm.Model):
         'email': fields.char('E-Mail', size=240),
         'comment': fields.text('Notes', translate=True),
         'photo': fields.binary('Photo'),
-        #'function': fields.char("Function", size=64),
+        'function': fields.char("Function", size=64),
         'function_id': fields.many2one('res.contact.function', 'Function'),
-
-
     }
 
     def _get_photo(self, cr, uid, context=None):
@@ -115,3 +113,12 @@ class res_partner_address(orm.Model):
         'mobile': fields.char('Mobile', size=64),
         'pec': fields.char('PEC', size=64),
     }
+
+
+class res_partner(orm.Model):
+    _inherit = 'res.partner'
+    _columns = {
+        'contact_ids': fields.one2many('res.partner.address.contact', 'partner_id', 'Functions and Contacts'),
+    }
+
+
