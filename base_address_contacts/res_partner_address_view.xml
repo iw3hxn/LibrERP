@@ -155,18 +155,6 @@
                            <field name="email" widget="email"/>
                            <field name="pec" widget="email" />
                         </group>
-
-                    </form>
-                    <tree string="Addresses">
-                        <field name="type"/>
-                        <field name="zip"/>
-                        <field name="city"/>
-                        <field name="country_id"/>
-                        <field name="phone"/>
-                    </tree>
-                </field>
-
-
                         <field name="contact_ids" mode="tree,form" nolabel="1" colspan="4">
                             <tree string="Contacts" editable="top">
                                 <field name="title" />
@@ -212,6 +200,67 @@
                                 </notebook>
                             </form>
                         </field>
+
+                    </form>
+                    <tree string="Addresses">
+                        <field name="type"/>
+                        <field name="name" />
+                        <field name="street"/>
+                        <field name="zip"/>
+                        <field name="city"/>
+                        <field name="country_id"/>
+                        <field name="phone"/>
+                        <field name="fax" />
+                        <field name="email" />
+                    </tree>
+                </field>
+
+
+                <field name="contact_ids" mode="tree,form" nolabel="1" colspan="4">
+                    <tree string="Contacts" editable="top">
+                        <field name="title" />
+                        <field name="last_name" select="1"/>
+                        <field name="first_name" select="1"/>
+                        <field name="function_id" widget="selection"/>
+                        <field name="mobile"/>
+                        <field name="email"/>
+                        <field name="lang_id"/>
+                    </tree>
+                    <form string="Contact">
+                        <group colspan="4" col="6">
+                            <field name="title" select="1" widget="selection" domain="[('domain', '=', 'contact')]" size="0"/>
+                            <field name="last_name" select="1"/>
+                            <field name="first_name" select="1"/>
+                        </group>
+                        <notebook colspan="4" >
+                            <page string="General">                        
+                               <group colspan="4" col="4">
+                                    <group colspan="2" col="4">
+                                        <separator string="Communication" colspan="4"/>
+                                        <field name="mobile"/>
+                                        <field name="email"  widget="email"/>
+                                        <field name="website"/>
+                                    </group>
+                                    <group colspan="2" col="1">
+                                        <separator string="Photo" colspan="4"/>
+                                        <field name="photo" widget='image' nolabel="1"/>
+                                    </group>
+                               </group> 
+                            </page>
+                            <page string="Extra Information">                        
+                                <field name="active"/>
+                                <field name="lang_id" widget="selection"/>
+                                <field name="partner_id" invisible="1" select="1"/>
+                                <field name="function_id" widget="selection"/>
+                                <field name="country_id"/>
+                                <field name="birthdate"/>
+                            </page>
+                            <page string="Notes">
+                                <field name="comment" nolabel="1"/>
+                            </page>
+                        </notebook>
+                    </form>
+                </field>
 
 
             </field>
