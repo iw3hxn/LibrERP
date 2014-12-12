@@ -327,7 +327,8 @@ class account_vat_period_end_statement(orm.Model):
                     debit_vat_data['debit'] = math.fabs(debit_line.amount)
                 else:
                     debit_vat_data['credit'] = math.fabs(debit_line.amount)
-                line_obj.create(cr, uid, debit_vat_data)
+                if debit_line.amount <> 0:
+                    line_obj.create(cr, uid, debit_vat_data)
 
             for credit_line in statement.credit_vat_account_line_ids:
                 credit_vat_data = {'name': _('Credit VAT'),
@@ -342,7 +343,8 @@ class account_vat_period_end_statement(orm.Model):
                     credit_vat_data['debit'] = math.fabs(credit_line.amount)
                 else:
                     credit_vat_data['credit'] = math.fabs(credit_line.amount)
-                line_obj.create(cr, uid, credit_vat_data)
+                if credit_line.amount <> 0:
+                    line_obj.create(cr, uid, credit_vat_data)
 
             if statement.previous_credit_vat_amount:
                 previous_credit_vat_data = {'name': _('Previous Credits VAT'),

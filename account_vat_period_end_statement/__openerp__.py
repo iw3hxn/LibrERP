@@ -25,7 +25,7 @@
 
 {
     "name": "Period End VAT Statement",
-    "version": "2.0.0.1",
+    "version": "2.0.0.2",
     'category': 'Generic Modules/Accounting',
     "depends": ["account_voucher", "report_webkit"],
     "author": ["Agile Business Group", "OpenERP Italian Community", "Didotech srl"],

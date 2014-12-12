@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-12 21:27+0000\n"
-"PO-Revision-Date: 2014-10-12 21:27+0000\n"
+"POT-Creation-Date: 2014-12-11 22:19+0000\n"
+"PO-Revision-Date: 2014-12-11 22:19+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: account_vat_period_end_statement
-#: code:addons/account_vat_period_end_statement/account.py:451
+#: code:addons/account_vat_period_end_statement/account.py:453
 #: code:addons/account_vat_period_end_statement/report/vat_period_end_statement.py:78
 #, python-format
 msgid "Too many periods for date %s"
@@ -155,7 +155,7 @@ msgid "VAT"
 msgstr "IVA"
 
 #. module: account_vat_period_end_statement
-#: code:addons/account_vat_period_end_statement/account.py:396
+#: code:addons/account_vat_period_end_statement/account.py:398
 #, python-format
 msgid "In the company is not configured the account for interest amount"
 msgstr "Nell'azienda non è stato configurato il conto per gli interessi per l'IVA trimestrale"
@@ -199,7 +199,7 @@ msgid "Debit"
 msgstr "Debito"
 
 #. module: account_vat_period_end_statement
-#: code:addons/account_vat_period_end_statement/account.py:407
+#: code:addons/account_vat_period_end_statement/account.py:409
 #, python-format
 msgid "Tax Authority VAT"
 msgstr "IVA Erario"
@@ -223,10 +223,15 @@ msgstr "Importo IVA debiti precedenti"
 
 #. module: account_vat_period_end_statement
 #: field:account.vat.period.end.statement,credit_vat_account_line_ids:0
-#: code:addons/account_vat_period_end_statement/account.py:333
+#: code:addons/account_vat_period_end_statement/account.py:334
 #, python-format
 msgid "Credit VAT"
 msgstr "IVA a credito"
+
+#. module: account_vat_period_end_statement
+#: report:addons/account_vat_period_end_statement/report/vat_period_end_statement.mako:207
+msgid "Amount of credit"
+msgstr "Totale a credito"
 
 #. module: account_vat_period_end_statement
 #: field:account.vat.period.end.statement,reconciled:0
@@ -281,7 +286,7 @@ msgstr "Importo IVA Erario"
 #. module: account_vat_period_end_statement
 #: view:account.vat.period.end.statement:0
 #: field:account.vat.period.end.statement,previous_debit_vat_account_id:0
-#: code:addons/account_vat_period_end_statement/account.py:363
+#: code:addons/account_vat_period_end_statement/account.py:365
 #: report:addons/account_vat_period_end_statement/report/vat_period_end_statement.mako:181
 #: report:addons/account_vat_period_end_statement/report/vat_period_end_statement5.mako:181
 #, python-format
@@ -307,7 +312,7 @@ msgid "Draft"
 msgstr "Bozza"
 
 #. module: account_vat_period_end_statement
-#: code:addons/account_vat_period_end_statement/account.py:423
+#: code:addons/account_vat_period_end_statement/account.py:425
 #, python-format
 msgid "The payment term %s does not have due dates"
 msgstr "Il termine di pagamento %s non ha date di scadenza"
@@ -352,7 +357,7 @@ msgid "Date"
 msgstr "Date"
 
 #. module: account_vat_period_end_statement
-#: code:addons/account_vat_period_end_statement/account.py:378
+#: code:addons/account_vat_period_end_statement/account.py:380
 #, python-format
 msgid "Other VAT Credits / Debits"
 msgstr "Altri Crediti / Debiti per IVA"
@@ -404,9 +409,9 @@ msgid "Credit"
 msgstr "Credito"
 
 #. module: account_vat_period_end_statement
-#: code:addons/account_vat_period_end_statement/account.py:395
-#: code:addons/account_vat_period_end_statement/account.py:422
-#: code:addons/account_vat_period_end_statement/account.py:451
+#: code:addons/account_vat_period_end_statement/account.py:397
+#: code:addons/account_vat_period_end_statement/account.py:424
+#: code:addons/account_vat_period_end_statement/account.py:453
 #: code:addons/account_vat_period_end_statement/report/vat_period_end_statement.py:40
 #: code:addons/account_vat_period_end_statement/report/vat_period_end_statement.py:48
 #: code:addons/account_vat_period_end_statement/report/vat_period_end_statement.py:53
@@ -419,7 +424,7 @@ msgid "Error"
 msgstr "Errore"
 
 #. module: account_vat_period_end_statement
-#: report:addons/account_vat_period_end_statement/report/vat_period_end_statement.mako:203
+#: report:addons/account_vat_period_end_statement/report/vat_period_end_statement.mako:204
 #: report:addons/account_vat_period_end_statement/report/vat_period_end_statement5.mako:193
 msgid "Amount to pay"
 msgstr "Totale da pagare"
@@ -434,11 +439,6 @@ msgstr "Saldo"
 #: report:addons/account_vat_period_end_statement/report/vat_period_end_statement5.mako:95
 msgid "Purchases"
 msgstr "Acquisti"
-
-#. module: account_vat_period_end_statement
-#: constraint:res.company:0
-msgid "Invalid SEPA Creditor Identifier."
-msgstr "Invalid SEPA Creditor Identifier."
 
 #. module: account_vat_period_end_statement
 #: field:res.company,interest_quarter_vat_account_id:0
@@ -563,7 +563,7 @@ msgstr "Il nome azienda deve essere unico!"
 #. module: account_vat_period_end_statement
 #: view:account.vat.period.end.statement:0
 #: field:account.vat.period.end.statement,previous_credit_vat_account_id:0
-#: code:addons/account_vat_period_end_statement/account.py:348
+#: code:addons/account_vat_period_end_statement/account.py:350
 #: report:addons/account_vat_period_end_statement/report/vat_period_end_statement.mako:176
 #: report:addons/account_vat_period_end_statement/report/vat_period_end_statement5.mako:176
 #, python-format
@@ -576,7 +576,7 @@ msgid "Previous Credits VAT Amount"
 msgstr "Importo IVA crediti precedenti"
 
 #. module: account_vat_period_end_statement
-#: code:addons/account_vat_period_end_statement/account.py:397
+#: code:addons/account_vat_period_end_statement/account.py:399
 #, python-format
 msgid "Interest Amount for Quarter VAT"
 msgstr "Importo interessi per la liquidazione IVA trimestrale"
