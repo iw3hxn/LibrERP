@@ -215,7 +215,6 @@
                     </tree>
                 </field>
 
-
                 <field name="contact_ids" mode="tree,form" nolabel="1" colspan="4">
                     <tree string="Contacts" editable="top">
                         <field name="title" />
@@ -262,7 +261,6 @@
                     </form>
                 </field>
 
-
             </field>
             <field name="category_id" position="replace" />
             <separator colspan="4" string="Categories" position="replace"/>
@@ -274,11 +272,6 @@
             </notebook>
         </field>
     </record>
-    
-    
-    
-    
-    
     
     <record id="action_function_contact" model="ir.actions.act_window">
             <field name="name">Contact Function</field>

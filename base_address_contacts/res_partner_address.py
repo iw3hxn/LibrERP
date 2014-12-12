@@ -20,6 +20,9 @@
 ##############################################################################
 from openerp.osv import orm, fields
 import addons
+from openerp.tools.translate import _
+
+import pdb
 
 class res_partner_title(orm.Model):
     _inherit = "res.partner.title"
@@ -117,8 +120,17 @@ class res_partner_address(orm.Model):
 
 class res_partner(orm.Model):
     _inherit = 'res.partner'
+    
+    def _get_contacts(self, cr, uid, ids, field_name, arg, context=None):
+        result = {}
+        
+        for partner in self.browse(cr, uid, ids, context):
+            result[partner.id] = []
+            for address in partner.address:
+                result[partner.id] += [contact.id for contact in address.contact_ids]
+            
+        return result
+
     _columns = {
-        'contact_ids': fields.one2many('res.partner.address.contact', 'partner_id', 'Functions and Contacts'),
+        'contact_ids': fields.function(_get_contacts, string=_("Functions and Contacts"), type='one2many', method=True, obj='res.partner.address.contact')
     }
-
-
