@@ -32,9 +32,21 @@ msgid "Pickings"
 msgstr "Pickings"
 
 #. module: stock_picking_extended
+#: code:addons/stock_picking_extended/sale/sale.py:45
+#, python-format
+msgid " ref. order n. "
+msgstr " rif. ordine n. "
+
+#. module: stock_picking_extended
+#: code:addons/stock_picking_extended/sale/sale.py:45
+#, python-format
+msgid " of "
+msgstr " del "
+
+#. module: stock_picking_extended
 #: model:ir.model,name:stock_picking_extended.model_stock_picking_transportation_condition
 msgid "transportation Condition"
-msgstr "transportation Condition"
+msgstr "Condizioni di trasporto"
 
 #. module: stock_picking_extended
 #: field:account.invoice,weight_net:0
