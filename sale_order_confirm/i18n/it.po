@@ -21,6 +21,11 @@ msgid "New Sale Order"
 msgstr "Nuovo Ordine"
 
 #. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Direct Confirm"
+msgstr "Conferma Diretta"
+
+#. module: sale_order_confirm
 #: field:res.company,need_tech_validation:0
 msgid "Need Technical Verification"
 msgstr "Richiesta Validazione Tecnica"
@@ -145,7 +150,7 @@ msgstr "Riferimento Ordine"
 #. module: sale_order_confirm
 #: field:sale.order,manager_validation:0
 msgid "Manager Validated ?"
-msgstr "Manager Validated ?"
+msgstr "Validazione Manager ?"
 
 #. module: sale_order_confirm
 #: view:sale.order.confirm:0
