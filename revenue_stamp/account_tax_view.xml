@@ -11,8 +11,7 @@
                     <xpath expr="/form/notebook/page[@string='Accounting']/group[1]" position="before">
                         <group colspan="4">
                             <separator string="Revenue tax" colspan="4"/>
-                            <field name="unique_revenue_stamp_id">
-                                <field name="unique_revenue_stamp"/>
+                                <field name="unique_revenue_stamp_id">
                                 <field name="min_for_stamp" attrs="{'invisible':[('unique_revenue_stamp_id','=','')], }"/>
                             </field>
                         </group>

@@ -29,7 +29,7 @@
 
 {
     "name": "Revenue Stamp - Manage creation of Italian's Revenue Stamp for VAT free transition.",
-    "version": "2.0.1.1",
+    "version": "2.0.1.2",
     "category": "Accounting",
     "description": """This Module, add revenue stamp's cost for VAT free transition (example: exporting products).""",
     "author": "Didotech SRL",
