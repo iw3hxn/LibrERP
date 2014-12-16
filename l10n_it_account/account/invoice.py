@@ -20,7 +20,7 @@
 ##############################################################################
 
 from openerp.osv import fields, orm
-from tools.translate import _
+from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import datetime
 
@@ -83,6 +83,15 @@ class account_invoice(orm.Model):
             journal = obj_inv.journal_id.id
             fy = obj_inv.period_id.fiscalyear_id
             fy_id = obj_inv.period_id.fiscalyear_id.id
+
+            period = obj_inv.period_id
+            vat_statement = self.pool['account.vat.period.end.statement'].search(cr, uid, [('period_ids', 'in', period.id)])
+            if vat_statement and self.pool['account.vat.period.end.statement'].browse(cr, uid, vat_statement)[0].state != 'draft':
+                raise orm.except_orm(
+                    _('Period Mismatch Error!'),
+                    _('Period %s have already a closed vat statement.')
+                    % (period.name)
+                )
 
             #check correct typing of number - for module account_invoice_force_number (#TODO move code in that module?)
             for as_fy in obj_inv.journal_id.sequence_id.fiscal_ids:
