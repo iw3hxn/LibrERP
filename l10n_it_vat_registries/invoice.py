@@ -19,8 +19,8 @@
 #
 ##############################################################################
 
-from report import report_sxw
-from tools.translate import _
+from openerp.report import report_sxw
+from openerp.tools.translate import _
 import logging
 from datetime import datetime
 from openerp.osv import fields, orm

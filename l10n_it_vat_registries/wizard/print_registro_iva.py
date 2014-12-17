@@ -19,8 +19,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 
 
 class wizard_registro_iva(osv.osv_memory):
@@ -37,7 +37,7 @@ class wizard_registro_iva(osv.osv_memory):
             ('customer', 'Customer Invoices'),
             ('supplier', 'Supplier Invoices'),
             ('corrispettivi', 'Corrispettivi'),
-            ('generale', 'Registro generale'),
+        #    ('generale', 'Registro generale'),
         ], 'Layout', required=True),
         'journal_ids': fields.many2many('account.journal', 'registro_iva_journals_rel', 'journal_id', 'registro_id', 'Journals', help='Select journals you want retrieve documents from', required=True),
         'tax_sign': fields.float('Tax amount sign',
@@ -95,8 +95,21 @@ class wizard_registro_iva(osv.osv_memory):
             res['report_name'] = 'registro_iva_acquisti'
         elif wizard['type'] == 'corrispettivi':
             res['report_name'] = 'registro_iva_corrispettivi'
-        elif wizard['type'] == 'generale':
-            res['report_name'] = 'registro_generale'
+        #elif wizard['type'] == 'generale':
+        #    res['report_name'] = 'registro_generale'
+        return res
+
+    def _get_journal(self, cr, uid, j_type, context=None):
+        if context is None:
+            context = {}
+        journal_obj = self.pool['account.journal']
+        res = []
+        if j_type == 'supplier':
+            res = journal_obj.search(cr, uid, [('type', 'in', ['purchase', 'purchase_refund'])])
+        elif j_type == 'customer' or j_type == 'corrispettivi':
+            res = journal_obj.search(cr, uid, [('type', 'in', ['sale', 'sale_refund'])])
+        else:
+            res = journal_obj.search(cr, uid, [('type', 'in', ['sale', 'sale_refund', 'purchase', 'purchase_refund'])])
         return res
 
     def on_type_changed(self, cr, uid, ids, j_type, context=None):
@@ -106,4 +119,7 @@ class wizard_registro_iva(osv.osv_memory):
                 res['value'] = {'tax_sign': -1}
             else:
                 res['value'] = {'tax_sign': 1}
+            res['value'].update({'journal_ids': self._get_journal(cr, uid, j_type, context=context)})
         return res
+
+
