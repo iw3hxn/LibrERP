@@ -20,8 +20,6 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-from datetime import datetime
 
 
 class pallet_move(orm.Model):
@@ -41,7 +39,7 @@ class pallet_move(orm.Model):
     }
     
     _defaults = {
-        'date': datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT),
+        'date': fields.date.context_today,
     }
     
     _order ="date desc"
