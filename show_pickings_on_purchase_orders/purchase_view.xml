@@ -9,9 +9,9 @@
             <field name="inherit_id" ref="purchase.purchase_order_form" />
             <field name="arch" type="xml">
                 <field name="invoice_ids" position="after">
-                    <separator string="Pickings" colspan="4"/>
-                    <newline/>
-                    <field name="picking_ids" nolabel="1" colspan="4"/>
+<!--                    <separator string="Pickings" colspan="4"/>
+                    <newline/>-->
+                    <field name="picking_ids" nolabel="1" colspan="4" context="{'form_view_ref':'stock.view_picking_in_form', 'tree_view_ref':'stock.view_picking_in_tree' }"/>
                 </field>
             </field>
         </record>

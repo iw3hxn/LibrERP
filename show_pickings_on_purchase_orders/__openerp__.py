@@ -21,7 +21,7 @@
 
 {
     'name' : 'Show Pickings on Purchase Orders',
-    'version': '1.0',
+    'version': '1.1',
     'author': 'Sistemas ADHOC',
     'website': 'http://www.sistemasadhoc.com.ar/',
     'depends' : ['purchase'],
