@@ -767,7 +767,7 @@ class res_sim_payment(osv.osv):
         'year': lambda * a: datetime.now().year,
         'sim_id' : lambda self, cr, uid, context: context.get('default_sim_id',False) or False,
         #'month': lambda * a: datetime.now().month,
-        'payment_date': lambda * a: datetime.now().strftime('%Y-%m-%d'),
+        'payment_date': fields.date.context_today,
     }
     _order = 'year desc, sequence, id'
     
