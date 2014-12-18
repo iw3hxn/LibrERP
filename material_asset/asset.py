@@ -939,7 +939,7 @@ class asset_asset(orm.Model):
         'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
         'name': lambda self, cr, uid, context: self._get_sequence(cr, uid, False, context),
         'active': True,
-        'date_start': datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        'date_start': lambda *a: datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
     }
 
     def copy(self, cr, uid, id, default=None, context={}):
