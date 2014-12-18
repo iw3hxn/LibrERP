@@ -33,8 +33,9 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 class wizard_expense_line(orm.TransientModel):
     _name = 'wizard.expense.line'
     
-    def _get_payer(self, cr, uid, context=None):
-        return self.pool['hr.expense.line']._columns['payer'].selection
+    # Function is disabled, because values arrives not translated
+    #def _get_payer(self, cr, uid, context=None):
+        #return self.pool['hr.expense.line']._columns['payer'].selection
     
     #def _amount(self, cr, uid, ids, field_name, arg, context=None):
     #    if ids:
@@ -49,9 +50,7 @@ class wizard_expense_line(orm.TransientModel):
     #    return result
     
     def _get_date_value(self, cr, uid, context):
-        
         date_value = context.get('date_value', False)
-
         if date_value:
             date = datetime.strptime(date_value, DEFAULT_SERVER_DATETIME_FORMAT)
             date = date.date().strftime(DEFAULT_SERVER_DATE_FORMAT)
@@ -68,7 +67,14 @@ class wizard_expense_line(orm.TransientModel):
         'unit_quantity': fields.float('Quantities'),
         'product_id': fields.many2one('product.product', 'Product', domain=[('hr_expense_ok', '=', True)]),
         'ref': fields.char('Reference', size=32),
-        'payer': fields.selection(_get_payer, _('Payer'), required=True),
+        # Function is disabled, because values arrives not translated
+        #'payer': fields.selection(_get_payer, _('Payer'), translate=True, required=True),
+        'payer': fields.selection((
+            ('company', _('Company')),
+            ('employee', _('Employee')),
+            ('other', _('Other')),
+        ), _('Payer'), required=True),
+        
         'wizard_id': fields.many2one('task.time.control.confirm.wizard', 'Wizard')
     }
     

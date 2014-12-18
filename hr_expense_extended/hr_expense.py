@@ -35,7 +35,7 @@ class hr_expense_expense(orm.Model):
     def name_get(self, cr, uid, ids, context=None):
         if not len(ids):
             return []
-        expenses = self.browse(cr, uid, ids)
+        expenses = self.browse(cr, uid, ids, context)
         res = []
         for expense in expenses:
             month = datetime.strptime(expense.date, DEFAULT_SERVER_DATE_FORMAT).month
@@ -86,7 +86,7 @@ class hr_expense_expense(orm.Model):
                 line_values['expense_id'] = hr_expense_id
                 self.pool['hr.expense.line'].create(cr, uid, line_values)
 
-        hr_expense = self.browse(cr, uid, hr_expense_id)
+        hr_expense = self.browse(cr, uid, hr_expense_id, context)
         
         for expense_line in hr_expense.line_ids:
             if expense_line.task_id:
@@ -106,7 +106,7 @@ class hr_expense_expense(orm.Model):
     def write(self, cr, uid, ids, values, context=None):
         result = super(hr_expense_expense, self).write(cr, uid, ids, values, context)
         
-        for hr_expense in self.browse(cr, uid, ids):
+        for hr_expense in self.browse(cr, uid, ids, context):
             for expense_line in hr_expense.line_ids:
                 if expense_line.task_id:
                     analytic_values = {
@@ -137,7 +137,7 @@ class hr_expense_line(orm.Model):
     
     def write(self, cr, uid, ids, values, context=None):
         if values.get('task_id', False):
-            task = self.pool['project.task'].browse(cr, uid, values['task_id'])
+            task = self.pool['project.task'].browse(cr, uid, values['task_id'], context)
             if task.project_id:
                 values['analytic_account'] = task.project_id.analytic_account_id.id
         
@@ -149,12 +149,12 @@ class hr_expense_line(orm.Model):
 
     def create(self, cr, uid, values, context=None):
         if values.get('task_id', False):
-            task = self.pool['project.task'].browse(cr, uid, values['task_id'])
+            task = self.pool['project.task'].browse(cr, uid, values['task_id'], context)
             if task.project_id:
                 values['analytic_account'] = task.project_id.analytic_account_id.id
 
         if values.get('product_id', False) and not values.get('uom_id', False):
-            product = self.pool['product.product'].browse(cr, uid, values['product_id'])
+            product = self.pool['product.product'].browse(cr, uid, values['product_id'], context)
             values['uom_id'] = product.uom_id and product.uom_id.id or 1
         
         return super(hr_expense_line, self).create(cr, uid, values, context)
