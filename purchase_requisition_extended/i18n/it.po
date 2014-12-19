@@ -58,7 +58,7 @@ msgstr "Richiesta a tutti i Fornitori"
 #. module: purchase_requisition_extended
 #: field:virtual.purchase.requisition.partner,partner_id:0
 msgid "Partner"
-msgstr "Fornitore"
+msgstr "Partner"
 
 #. module: purchase_requisition_extended
 #: field:purchase.requisition.line,prefered_supplier:0
