@@ -24,6 +24,7 @@
 
 from openerp.osv import orm, fields
 from openerp.addons import base
+from openerp.tools.translate import _
 
 
 class project_project(orm.Model):
@@ -54,7 +55,7 @@ class project_project(orm.Model):
 
 class project_task(orm.Model):
     _inherit = 'project.task'
-    
-    columns = {
-        'ref': fields.reference('Reference', selection=base.res.res_request._links_get, size=None),
+
+    _columns = {
+        'origin': fields.reference(_('Reference'), selection=base.res.res_request._links_get, size=None),
     }
