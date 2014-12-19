@@ -23,6 +23,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp.addons import base
 
 
 class project_project(orm.Model):
@@ -53,14 +54,7 @@ class project_project(orm.Model):
 
 class project_task(orm.Model):
     _inherit = 'project.task'
-
-    def _links_get(self, cr, uid, context=None):
-        """Gets links value for reference field"""
-        obj = self.pool.get('res.request.link')
-        ids = obj.search(cr, uid, [])
-        res = obj.read(cr, uid, ids, ['object', 'name'], context)
-        return [(r['object'], r['name']) for r in res]
     
     columns = {
-        'ref': fields.reference('Reference', selection=_links_get, size=128),
+        'ref': fields.reference('Reference', selection=base.res.res_request._links_get, size=None),
     }

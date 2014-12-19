@@ -94,13 +94,13 @@ class sale_order(osv.osv):
                                 if bom.product_id.uom_id.id == user.company_id.hour.id:
                                     planned_hours = bom.product_uom_qty
                                 else:
-                                    import pdb; pdb.set_trace()
                                     planned_hours = 0
                                 self.pool['project.task'].create(cr, uid, {
                                     'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
                                     'project_id': project_id,
                                     'planned_hours': planned_hours,
-                                    'remaining_hours': planned_hours
+                                    'remaining_hours': planned_hours,
+                                    'ref': 'sale.order.line, {0}'.format(order_line.id)
                                 })
                         else:
                             main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
@@ -113,6 +113,7 @@ class sale_order(osv.osv):
                                 service_boms = [bom for bom in boms if (bom.product_id.type == 'service' and sale_line_bom.product_id.purchase_ok == False)]
                                 for bom in service_boms:
                                     if bom.product_id.uom_id.id == user.company_id.hour.id:
+                                        # May be product_uom_qty??
                                         planned_hours = bom.product_qty
                                     else:
                                         planned_hours = 0
@@ -120,7 +121,8 @@ class sale_order(osv.osv):
                                         'name': u"{0}: {1}".format(order.project_project.name, bom.product_id.name),
                                         'project_id': project_id,
                                         'planned_hours': planned_hours,
-                                        'remaining_hours': planned_hours
+                                        'remaining_hours': planned_hours,
+                                        'ref': 'sale.order.line, {0}'.format(order_line.id)
                                     })
                             
                     elif order_line.product_id and order_line.product_id.type == 'service' and order_line.product_id.purchase_ok == False:
@@ -132,7 +134,8 @@ class sale_order(osv.osv):
                             'name': u"{0}: {1}".format(order.name, order_line.product_id.name),
                             'project_id': project_id,
                             'planned_hours': planned_hours,
-                            'remaining_hours': planned_hours
+                            'remaining_hours': planned_hours,
+                            'ref': 'sale.order.line, {0}'.format(order_line.id)
                         })
  
         return result
