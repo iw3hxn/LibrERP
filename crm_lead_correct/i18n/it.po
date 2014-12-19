@@ -239,7 +239,7 @@ msgstr "Verde"
 #. module: crm_lead_correct
 #: report:crm.meeting.province:0
 msgid "Partner"
-msgstr "Fornitore"
+msgstr "Partner"
 
 #. module: crm_lead_correct
 #: model:ir.model,name:crm_lead_correct.model_res_partner_category
