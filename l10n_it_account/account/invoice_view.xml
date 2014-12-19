@@ -34,6 +34,9 @@
                     <xpath expr="/form/notebook/page[@string='Invoice']/field[@name='invoice_line']" position="attributes">
                         <attribute name="context">{'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_customer'}</attribute>
                     </xpath>
+                    <xpath expr="/form/notebook/page[@string='Invoice']/group/group/button[@string='Print Invoice']" position="replace">
+                        <button name="%(account.account_invoices)d" string="Print Invoice" type="action" icon="gtk-print"/>
+                    </xpath>
                 </data>
             </field>
         </record>
