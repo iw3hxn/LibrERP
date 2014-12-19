@@ -7997,7 +7997,7 @@ msgstr "Numero Dichiarante"
 #: field:account.fiscal.position,partner_id:0
 #: model:ir.model,name:l10n_it_account.model_res_partner
 msgid "Partner"
-msgstr "Fornitore"
+msgstr "Partner"
 
 #. module: account
 #: help:account.change.currency,currency_id:0
