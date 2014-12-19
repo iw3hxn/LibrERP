@@ -27,7 +27,7 @@ from openerp.osv import orm, fields
 
 class project_project(orm.Model):
     _inherit = 'project.project'
-    
+
     def create(self, cr, uid, vals, context=None):
         project_id = super(project_project, self).create(cr, uid, vals, context)
         project = self.pool['project.project'].browse(cr, uid, project_id)
@@ -48,5 +48,19 @@ class project_project(orm.Model):
                         'remaining_hours': task.planned_hours
                     })
                 self.pool['project.project'].write(cr, uid, project_id, {'state' : 'open'})
-        
         return project_id
+
+
+class project_task(orm.Model):
+    _inherit = 'project.task'
+
+    def _links_get(self, cr, uid, context=None):
+        """Gets links value for reference field"""
+        obj = self.pool.get('res.request.link')
+        ids = obj.search(cr, uid, [])
+        res = obj.read(cr, uid, ids, ['object', 'name'], context)
+        return [(r['object'], r['name']) for r in res]
+    
+    columns = {
+        'ref': fields.reference('Reference', selection=_links_get, size=128),
+    }

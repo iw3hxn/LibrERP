@@ -94,6 +94,7 @@ class sale_order(osv.osv):
                                 if bom.product_id.uom_id.id == user.company_id.hour.id:
                                     planned_hours = bom.product_uom_qty
                                 else:
+                                    import pdb; pdb.set_trace()
                                     planned_hours = 0
                                 self.pool['project.task'].create(cr, uid, {
                                     'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
