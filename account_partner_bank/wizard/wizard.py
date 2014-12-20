@@ -32,8 +32,8 @@ class wzd_invoice_massive_bank_change(orm.TransientModel):
 	def change(self, cr, uid, ids, context={}):
 		wzd = self.browse(cr, uid, ids[0], context)
 		res={}
-		import pdb
-		pdb.set_trace()
+		#import pdb
+		#pdb.set_trace()
 		bank_id = wzd.partner_bank_id
 		res['partner_bank_id'] = bank_id.id
 		
