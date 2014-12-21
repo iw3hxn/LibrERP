@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2013 Associazione OpenERP Italia
-#    (<http://www.openerp-italia.org>).
+#    Copyright (C) 2014 Didotech srl
+#    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -19,10 +19,18 @@
 #
 ##############################################################################
 
-from . import account
-from . import invoice
-from . import account_fiscal_position
-from . import res_partner_bank
-from . import partner
-from . import res_bank
-from . import account_tax
+from openerp.osv import fields, orm
+from openerp.tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+import datetime
+
+
+class account_tax(orm.Model):
+    _inherit = 'account.tax'
+
+    def onchange_tax_sign(self, cr, uid, ids, type_tax_use, context=None):
+        if type_tax_use:
+            if type_tax_use == "sale":
+                return {'value': {'base_sign': 1, 'tax_sign': 1, 'ref_base_sign': -1, 'ref_tax_sign': -1}}
+            elif type_tax_use == "purchase":
+                return {'value': {'base_sign': -1, 'tax_sign': -1, 'ref_base_sign': 1, 'ref_tax_sign': 1}}
