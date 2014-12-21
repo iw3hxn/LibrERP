@@ -23,10 +23,10 @@
 
 {
 	'name': 'Partner Blacklist',
-	'version': '1.1',
+	'version': '1.2',
 	'category': 'Generic Modules/Others',
 	'description': """
-	Aggiunge la blacklist nei partner
+	Aggiunge un campo per indicare i partner bloccati
 		""",
 	'author': 'Didotech SRL',
 	'website': 'www.didotech.com/',

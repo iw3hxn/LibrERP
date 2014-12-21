@@ -42,7 +42,7 @@ class res_partner(osv.osv):
         return {'value': res}
     
     _columns = {
-        'blacklist': fields.boolean('Blacklist', help="Ricorda di selezionale il messaggio da mostrare sui preventivi"),
+        'blacklist': fields.boolean('Cliente bloccato', help="Ricorda di selezionare il messaggio da mostrare sui preventivi"),
         'row_color': fields.function(get_color, string = 'Row color', type='char', readonly=True, method=True,)
     }
 
