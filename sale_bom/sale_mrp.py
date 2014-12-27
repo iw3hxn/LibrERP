@@ -151,18 +151,16 @@ class sale_order_line_mrp_bom(osv.osv):
         'price_unit': 0.0,
     }
 
-    def bom_product_id_change(self, cr, uid, ids, product_id, uom_id, product_qty, context=None):
+    def bom_product_id_change(self, cr, uid, ids, product_id, uom_id, product_qty, price_unit, context=None):
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id)
             #qty = self.pool['product.uom']._compute_qty(cr, uid,
             #                           from_uom_id=uom_id,
             #                           qty=product_qty,
             #                           to_uom_id=uom_id)
-            
             return {'value': {
-                'price_unit': product.cost_price,
+                'price_unit': price_unit or product.cost_price,
                 'product_uom': product.uom_id.id,
-                #'price_subtotal': product.cost_price * qty
             }}
         else:
             return {'value': {}}
