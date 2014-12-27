@@ -45,7 +45,7 @@ class product_product(orm.Model):
                 supplier = line.seller_ids[0].name
                 res[line.id] = supplier.id
             else:
-                res[line.id] = ''
+                res[line.id] = None
         return res
 
     def _compute_purchase_price(self, cr, uid, ids,
@@ -301,7 +301,11 @@ class product_product(orm.Model):
                                       help="The cost price is the standard price or, if the product has a bom, "
                                       "the sum of all standard price of its components. it take also care of the "
                                       "bom costing like cost per cylce."),
-        'prefered_supplier': fields.function(_get_prefered_supplier, string='Prefered Supplier', method=True, obj='res.partner', type='many2one'),
+        'prefered_supplier': fields.function(_get_prefered_supplier, string='Prefered Supplier', method=True, obj='res.partner', type='many2one', 
+                             store = {
+                                 'product.product': (lambda self, cr, uid, ids, c={}: ids, ['seller_ids'], 10),
+                             }
+         ),
         'is_kit': fields.function(_is_kit, fnct_search=_kit_filter, method=True, type="boolean", string="Kit"),
         'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
         'qty_available': fields.function(
