@@ -20,7 +20,7 @@
         
         
         <act_window
-            context="{'search_default_account_id': [active_id], 'search_default_user_id': False, 'default_account_id': active_id}"
+            context="{'search_default_account_id': [analytic_account_id], 'search_default_user_id': False, 'default_account_id': analytic_account_id}"
             id="act_project_project_2_account_analytic_line"
             groups="project.group_project_manager"
             name="All Analytic Entries"
