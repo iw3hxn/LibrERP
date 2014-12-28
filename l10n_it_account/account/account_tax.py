@@ -176,8 +176,8 @@ class account_tax(orm.Model):
                 return {'value': {'base_sign': 1, 'tax_sign': 1, 'ref_base_sign': 1, 'ref_tax_sign': 1}}
 
     _columns = {
-        'account_tax_code_id': fields.many2one('account.tax.code', 'Tax Code Parent', required=True,),
-        'account_base_tax_code_id': fields.many2one('account.tax.code', 'Base Tax Code Parent', required=True,),
+        'account_tax_code_id': fields.many2one('account.tax.code', 'Tax Code Parent', required=False,),
+        'account_base_tax_code_id': fields.many2one('account.tax.code', 'Base Tax Code Parent', required=False,),
         'account_collected_id':fields.related('account_tax_code_id', 'vat_statement_account_id', type='many2one',
                                                relation='account.account', string='Invoice Tax Account', store=True, readonly=True),
         'account_paid_id':fields.related('account_tax_code_id', 'vat_statement_account_id', type='many2one', 
