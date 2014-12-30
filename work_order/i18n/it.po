@@ -39,6 +39,11 @@ msgstr "Non c'è un conto spesa definito\n"
 "                                            per questo prodotto: \"{0}\" (id:{1})"
 
 #. module: work_order
+#: field:res.company,create_task:0
+msgid "Create Task from Sale Order?"
+msgstr "Crea Attività confermando un Ordine di Vendita"
+
+#. module: work_order
 #: code:addons/work_order/account.py:65
 #: field:res.company,expense_journal_id:0
 #, python-format

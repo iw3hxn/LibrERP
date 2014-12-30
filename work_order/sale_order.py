@@ -78,7 +78,7 @@ class sale_order(osv.osv):
         
         orders = self.browse(cr, uid, ids)
         for order in orders:
-            if order.project_project:
+            if order.project_project and order.company_id.create_task:
                 project_id = order.project_project.id
                 if order.order_policy == 'picking':
                     invoice_ratio = 1

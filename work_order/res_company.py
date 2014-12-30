@@ -32,7 +32,12 @@ class res_company(orm.Model):
         'delivery_note_journal_id': fields.many2one('account.analytic.journal', 'Delivery Note Journal'),
         'expense_journal_id': fields.many2one('account.analytic.journal', 'Expense Journal'),
         'work_order_default_task_ids': fields.one2many('template.task', 'company_id', string='Default Work Order Tasks'),
-        'hour': fields.many2one('product.uom', 'Hour UoM', required=True)
+        'hour': fields.many2one('product.uom', 'Hour UoM', required=True),
+        'create_task': fields.boolean('Create Task from Sale Order?'),
+    }
+    
+    _defaults = {
+        'create_task': True
     }
 
 
