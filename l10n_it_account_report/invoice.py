@@ -21,7 +21,6 @@
 
 import time
 from report import report_sxw
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from datetime import datetime
 from core_extended.ordereddict import OrderedDict
@@ -165,11 +164,12 @@ class Parser(report_sxw.rml_parse):
                 return False
         else:
             return False
-    
+        
     def _get_invoice_tree(self, invoice_lines):
         invoice = {}
         keys = {}
         picking_obj = self.pool['stock.picking']
+        sale_order_obj = self.pool['sale.order']
         for line in invoice_lines:
             if line.origin:
                 if ':' in line.origin:
@@ -200,17 +200,27 @@ class Parser(report_sxw.rml_parse):
             else:
                 ddt = False
                 sale_order = False
-            
             # Order lines by date and by ddt, so first create date_ddt key:
-            if ddt and ddt in keys:
-                key = keys[ddt]
-            elif ddt:
-                picking_ids = picking_obj.search(self.cr, self.uid, [('name', '=', ddt)])
-                if picking_ids:
-                    picking = picking_obj.browse(self.cr, self.uid, picking_ids[0])
-                    key = "{0}_{1}".format(picking.ddt_date, ddt)
+            if ddt:
+                if ddt in keys:
+                    key = keys[ddt]
                 else:
-                    key = ddt
+                    picking_ids = picking_obj.search(self.cr, self.uid, [('name', '=', ddt)])
+                    if picking_ids:
+                        picking = picking_obj.browse(self.cr, self.uid, picking_ids[0])
+                        key = "{0}_{1}".format(picking.ddt_date, ddt)
+                    else:
+                        key = ddt
+            elif sale_order:
+                if sale_order in keys:
+                    key = keys[sale_order]
+                else:
+                    sale_order_ids = sale_order_obj.search(self.cr, self.uid, [('name', '=', sale_order)])
+                    if sale_order_ids:
+                        sale = sale_order_obj.browse(self.cr, self.uid, sale_order_ids[0])
+                        key = "{0}_{1}".format(sale.date_order, sale)
+                    else:
+                        key = sale_order
             else:
                 key = False
             
@@ -221,7 +231,7 @@ class Parser(report_sxw.rml_parse):
                 invoice[key] = {'description': description, 'lines': [line]}
         
         return OrderedDict(sorted(invoice.items(), key=lambda t: t[0])).values()
-
+    
     def _get_invoice_move_lines(self, move_id):
         if move_id.line_id:
             return [line for line in move_id.line_id if line.date_maturity]

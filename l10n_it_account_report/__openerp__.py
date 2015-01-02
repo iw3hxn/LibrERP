@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation - Accounting reports',
-    'version': '2.1.12.3',
+    'version': '2.1.13.3',
     'category': 'Localisation/Italy',
     'complexity': "easy",
     'description': """Accounting reports for Italian localization - Fattura
