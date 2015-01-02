@@ -1882,15 +1882,36 @@ class Reports(View):
             if action_context.get('active_model') and action_context['active_ids']:
                 # Use built-in ORM method to get data from DB
                 m = req.session.model(action_context['active_model'])
-                r = m.name_get(action_context['active_ids'], context)
+                #r = m.name_get(action_context['active_ids'], context)
+                res = []
+                try:
+                    res = m.name_get(action_context['active_ids'], context)
+                except xmlrpclib.Fault:
+                    #we assume this went wrong because of incorrect/missing
+                    #_rec_name. We don't have access to _columns here to do
+                    # a proper check
+                    pass
+                    
                 # Parse result to create a better filename
-                item_names = [item[1] or str(item[0]) for item in r]
+                try:
+                    item_names = [item[1] or str(item[0]) for item in res]
+                except:
+                    item_names = [u'']
                 if action.get('name'):
                     item_names.insert(0, action['name'])
-                file_name = '-'.join(item_names)
-                # Create safe filename
-                p = re.compile('[/:(")<>|?*]|(\\\)')
-                file_name = p.sub('_', file_name)
+                
+                #file_name = '-'.join(item_names)
+                ## Create safe filename
+                #p = re.compile('[/:(")<>|?*]|(\\\)')
+                #file_name = p.sub('_', file_name)
+                #only change filename if we have something better
+                if item_names:
+                    file_name = '-'.join(item_names)
+                    # Create safe filename
+                    p = re.compile('[/:(")<>|?*]|(\\\)')
+                    file_name = p.sub('_', file_name)
+
+
 
         report = base64.b64decode(report_struct['result'])
         if report_struct.get('code') == 'zlib':
