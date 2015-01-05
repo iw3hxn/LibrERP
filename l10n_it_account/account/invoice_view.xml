@@ -59,6 +59,8 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Invoice Line">
+                  <notebook colspan="4">
+                   <page string="Invoice Line">
                     <field name="product_id" on_change="product_id_change(product_id, uos_id, quantity, name, parent.type, parent.partner_id, parent.fiscal_position, price_unit, parent.address_invoice_id, parent.currency_id, context, parent.company_id)"/>
                     <field colspan="2" name="name"/>
                     <label string="Quantity :" align="1.0"/>
@@ -75,6 +77,8 @@
                     <field colspan="4" name="note" nolabel="1"/>
                     <separator colspan="4" string="Taxes"/>
                     <field colspan="4" name="invoice_line_tax_id" context="{'type':parent.type}" domain="[('parent_id','=',False),('company_id', '=', parent.company_id)]" nolabel="1"/>
+                    </page>
+                  </notebook>
                 </form>
             </field>
         </record>
