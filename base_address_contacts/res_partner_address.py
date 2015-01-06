@@ -135,15 +135,27 @@ class res_partner(orm.Model):
         if not vals.get('address', False):
             raise orm.except_orm(_('Error!'),
                                  _('At least one address of type "Default" is needed!'))
-        elif not vals.get('address')[0][2].get('type') == 'default':
+        is_default = False
+        for address in vals['address']:
+            if address[2].get('type') == 'default':
+                is_default = True
+        if not is_default:
             raise orm.except_orm(_('Error!'),
                                  _('At least one address of type "Default" is needed!'))
-#         partner = self.browse(cr, uid, ids, context=context)[0]
-#         res = super(res_partner, self).write(cr, uid, ids, vals, context)
-#         address_ids = self.pool['res.partner.address'].search(cr, uid, [('partner_id', '=', partner.id)], context=context)
-#         if not address_ids:
 
         return super(res_partner, self).create(cr, uid, vals, context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if context is None:
+            context = {}
+        if vals.get('address', False):
+            for address in vals['address']:
+                if address[0] == 2: # 2 means 'delete'
+                    if self.pool['res.partner.address'].browse(cr, uid, address[1], context).type == 'default':
+                        raise orm.except_orm(_('Error!'),
+                                             _('At least one address of type "Default" is needed!'))
+
+        return super(res_partner, self).write(cr, uid, ids, vals, context)
 
     _columns = {
         'contact_ids': fields.function(_get_contacts, string=_("Functions and Contacts"), type='one2many', method=True, obj='res.partner.address.contact')
