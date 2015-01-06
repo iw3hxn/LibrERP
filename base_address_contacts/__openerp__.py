@@ -20,7 +20,7 @@
 ##############################################################################
 {
     'name': 'Base Address Contact',
-    'version': '3.2.1.3',
+    'version': '3.2.2.4',
     'category': 'Base',
     'description': """
 This module allows you to manage your contacts
@@ -38,6 +38,9 @@ It lets you define:
     'update_xml': [
         'res_partner_address_view.xml',
         'security/ir.model.access.csv'
+    ],
+    'conflicts': [
+        'base_contact',
     ],
     'installable': True,
     'active': False,

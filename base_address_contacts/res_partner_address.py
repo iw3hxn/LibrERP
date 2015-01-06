@@ -19,10 +19,8 @@
 #
 ##############################################################################
 from openerp.osv import orm, fields
-import addons
+from openerp import addons
 from openerp.tools.translate import _
-
-import pdb
 
 class res_partner_title(orm.Model):
     _inherit = "res.partner.title"
@@ -130,6 +128,22 @@ class res_partner(orm.Model):
                 result[partner.id] += [contact.id for contact in address.contact_ids]
             
         return result
+
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
+        if not vals.get('address', False):
+            raise orm.except_orm(_('Error!'),
+                                 _('At least one address of type "Default" is needed!'))
+        elif not vals.get('address')[0][2].get('type') == 'default':
+            raise orm.except_orm(_('Error!'),
+                                 _('At least one address of type "Default" is needed!'))
+#         partner = self.browse(cr, uid, ids, context=context)[0]
+#         res = super(res_partner, self).write(cr, uid, ids, vals, context)
+#         address_ids = self.pool['res.partner.address'].search(cr, uid, [('partner_id', '=', partner.id)], context=context)
+#         if not address_ids:
+
+        return super(res_partner, self).create(cr, uid, vals, context)
 
     _columns = {
         'contact_ids': fields.function(_get_contacts, string=_("Functions and Contacts"), type='one2many', method=True, obj='res.partner.address.contact')
