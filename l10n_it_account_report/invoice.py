@@ -20,6 +20,7 @@
 ##############################################################################
 
 import time
+import re
 from report import report_sxw
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from datetime import datetime
@@ -40,6 +41,7 @@ class Parser(report_sxw.rml_parse):
             'set_picking': self._set_picking,
             'indirizzo': self._indirizzo,
             'div': self._div,
+            'desc_nocode': self._desc_nocode,
         })
         
         self.cache = {}
@@ -47,7 +49,10 @@ class Parser(report_sxw.rml_parse):
     #def _get_ddt(self):
     #    return self.pool.get('stock.picking').browse(self.cr, self.uid,
     #                                                 self.localcontext['data']['form']['picking_id'])
-    
+     
+    def _desc_nocode(self, string):
+        return re.compile('\[.*\]\ ').sub('', string)
+
     def _div(self, up, down):
         res = 0
         #import pdb; pdb.set_trace()
