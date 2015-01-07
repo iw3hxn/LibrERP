@@ -12,6 +12,9 @@
 <!--                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_id']" position="replace">
                     <field name="product_id" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)" />
                 </xpath>-->
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_id']" position="after">
+                    <field name="note" />
+                </xpath>
                 <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_uom']" position="after">
                     <field name="price_unit" groups="stock.view_price" />
                 </xpath>
@@ -30,6 +33,10 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="stock.view_picking_out_form" />
             <field name="arch" type="xml">
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_id']" position="after">
+                    <field name="note"  />
+                </xpath>
+
                 <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_uom']" position="after">
                     <field name="price_unit" groups="stock.view_price" />
                 </xpath>
@@ -46,6 +53,9 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="stock.view_move_tree" />
             <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="note" />
+                </field>
                 <field name="product_qty" position="after">
                     <field name="direction" />
                 </field>
@@ -61,6 +71,9 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="stock.view_move_tree_reception_picking" />
             <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="note" />
+                </field>
                 <field name="product_qty" position="after">
                     <field name="direction" />
                 </field>
