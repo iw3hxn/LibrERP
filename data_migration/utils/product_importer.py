@@ -317,17 +317,28 @@ class ImportFile(threading.Thread, Utils):
                     _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
                     return True
             self.first_row = False
-         
+        
         if not len(row_list) == len(self.HEADER):
+            row_str_list = [self.toStr(value) for value in row_list]
+            if DEBUG:
+                if len(row_list) > len(self.HEADER):
+                    pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
+                else:
+                    pprint(zip(self.HEADER[:len(row_list)], row_str_list))
+            
             error = u"""Row {row}: Row_list is {row_len} long. We expect it to be {expected} long, with this columns:
                 {keys}
                 Instead of this we got this:
                 {header}
-                """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER), keys=self.COLUMNS_PRODUCT, header=', '.join(row_list))
+                """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER), keys=self.HEADER, header=', '.join(row_str_list))
+
             _logger.error(str(row_list))
             _logger.error(error)
             self.error.append(error)
             return False
+        elif DEBUG:
+            row_str_list = [self.toStr(value) for value in row_list]
+            pprint(zip(self.HEADER, row_str_list))
         
         # Sometime value is only numeric and we don't want string to be treated as Float
         record = self.RecordProduct._make([self.toStr(value) for value in row_list])
