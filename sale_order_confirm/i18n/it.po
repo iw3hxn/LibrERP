@@ -302,7 +302,7 @@ msgstr "Gestione Margine"
 #. module: sale_order_confirm
 #: view:sale.order:0
 msgid "Print Order"
-msgstr "Stampa Ordine"
+msgstr "Stampa"
 
 #. module: sale_order_confirm
 #: field:sale.order.confirm.line,sequence:0
