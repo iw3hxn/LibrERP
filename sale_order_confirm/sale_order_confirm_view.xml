@@ -114,13 +114,13 @@
                                 <button name="invoice_cancel" states="invoice_except" string="Cancel Order" icon="gtk-cancel"/>
                                 <button name="%(sale.report_sale_order)d" string="Print Quotation" type="action" icon="gtk-print" states="draft"/>
                                 <button name="%(sale_order_confirm_action)d" string="Confirm by Customer" type="action" icon="gtk-ok" states="wait_customer_validation"/>
-                                <group colspan="5" col="5" >
-                                    <button name="action_validation" string="Confirm" states="draft" icon="gtk-ok"  />
-                                    <button name="action_tech_validation" string="Confirm" icon="gtk-ok" states="wait_technical_validation" groups="sale.verify_technical"/>
-                                    <button name="action_manager_validation" string="Confirm" icon="gtk-ok" states="wait_manager_validation" groups="sale.verify_manager"/>
+                                <!--<group colspan="5" col="5" >-->
+                                    <button name="action_validation" string="Confirm Quotation" states="draft" icon="gtk-ok"  />
+                                    <button name="action_tech_validation" string="Confirm Technical Review" icon="gtk-ok" states="wait_technical_validation" groups="sale.verify_technical"/>
+                                    <button name="action_manager_validation" string="Confirm Manager Review" icon="gtk-ok" states="wait_manager_validation" groups="sale.verify_manager"/>
                                     <button name="action_email_sending" string="Send to Customer" icon="gtk-ok" states="send_to_customer" />
                                     <button name="%(sale_order_revision_note_action)d" string="Reject" type="action" icon="gtk-no" states="wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation"/>
-                                </group>
+                                <!--</group>-->
                             </group>
                         </page>
                         <page string="Other Information">
@@ -193,13 +193,19 @@
            <field name="arch" type="xml">
                <data>
                    <button name="order_confirm" position="after">
+                        <button name="action_validation" string="Confirm Quotation" states="draft" icon="gtk-ok"  />
+                        <button name="action_tech_validation" string="Confirm Technical Review" icon="gtk-ok" states="wait_technical_validation" groups="sale.verify_technical"/>
+                        <button name="action_manager_validation" string="Confirm Manager Review" icon="gtk-ok" states="wait_manager_validation" groups="sale.verify_manager"/>
+                        <button name="action_email_sending" string="Send to Customer" icon="gtk-ok" states="send_to_customer" />
+                        <button name="%(sale_order_revision_note_action)d" string="Reject" type="action" icon="gtk-no" states="wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation"/>
+                                    <!--
                         <group colspan="5" col="5" >
                         <button name="action_validation" string="Confirm" states="draft" icon="gtk-ok"  />
                         <button name="action_tech_validation" string="Confirm" icon="gtk-ok" states="wait_technical_validation" groups="sale.verify_technical"/>
                         <button name="action_manager_validation" string="Confirm" icon="gtk-ok" states="wait_manager_validation" groups="sale.verify_manager"/>
                         <button name="action_email_sending" string="Send to Customer" icon="gtk-ok" states="send_to_customer" />
                         <button name="%(sale_order_revision_note_action)d" string="Reject" type="action" icon="gtk-no" states="wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation"/>
-                        </group>
+                        </group>-->
                    </button>
                    <button name="order_confirm" position="replace">
                         <button name="%(sale_order_confirm_action)d" string="Confirm by Customer" type="action" icon="gtk-ok" states="wait_customer_validation"/>

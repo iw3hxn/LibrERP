@@ -182,7 +182,7 @@ msgstr "Revisione Manager"
 #: view:sale.order.confirm:0
 #: view:sale.order.revision.note:0
 msgid "_Cancel"
-msgstr "_Annulla"
+msgstr "Esci"
 
 #. module: sale_order_confirm
 #: model:ir.model,name:sale_order_confirm.model_res_partner
@@ -204,11 +204,6 @@ msgstr "Linea d'ordine di vendita"
 #: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_quotation_smart
 msgid "Quotation Orders Smart"
 msgstr "Preventivo Smart"
-
-#. module: sale_order_confirm
-#: view:sale.order:0
-msgid "Confirm"
-msgstr "Conferma"
 
 #. module: sale_order_confirm
 #: constraint:res.company:0
@@ -663,3 +658,24 @@ msgstr "Giorni prestabiliti validità preventivo"
 #: field:sale.order,validity:0
 msgid "Validity"
 msgstr "Validità"
+
+#. modules: sale_order_confirm, sale
+#: model:process.transition,name:sale.process_transition_confirmquotation0
+#: view:sale.order:0
+msgid "Confirm Quotation"
+msgstr "Conferma Offerta"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Confirm Technical Review"
+msgstr "Conferma Revisione Tecnica"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Confirm Manager Review"
+msgstr "Conferma Revisione Manager"
+
+#. module: sale_order_confirm
+#: view:sale.order.revision.note:0
+msgid "Reject and Close"
+msgstr "Respingi e Chiudi"
