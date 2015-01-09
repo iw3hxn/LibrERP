@@ -10,7 +10,12 @@
     
     
     <record id="stock.view_price" model="res.groups">
-        <field name="name">View Price</field>
+        <field name="name">View Warehouse Price</field>
+        <field name="category_id" ref="stock.module_category_warehouse"/>
+    </record>
+
+    <record id="stock.view_price_sell" model="res.groups">
+        <field name="name">View Sell Order Price</field>
         <field name="category_id" ref="stock.module_category_warehouse"/>
     </record>
     

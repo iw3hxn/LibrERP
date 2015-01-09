@@ -42,8 +42,8 @@ msgstr ""
 
 #. module: stock
 #: model:res.groups,name:stock.view_price
-msgid "View Price"
-msgstr "Visualizza Prezzo"
+msgid "View Warehouse Price"
+msgstr "Vedere Prezzo di Magazzino"
 
 #. module: stock
 #: model:ir.module.category,name:stock.module_category_warehouse
@@ -51,3 +51,13 @@ msgstr "Visualizza Prezzo"
 #: view:stock.warehouse:0
 msgid "Warehouse"
 msgstr "Magazzino"
+
+#. module: stock
+#: model:res.groups,name:stock.view_price_sell
+msgid "View Sell Order Price"
+msgstr "Vedere Prezzo di Vendita"
+
+#. module: stock_move_extended
+#: field:stock.move,sell_price:0
+msgid "Sell Price Unit"
+msgstr "Prezzo di Ordine Vendita"

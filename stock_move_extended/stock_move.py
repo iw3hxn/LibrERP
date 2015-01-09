@@ -44,7 +44,8 @@ class stock_move(osv.osv):
         return res
     
     _columns = {
-        'direction': fields.function(_get_direction, method=True, type="char", string='Dir', readonly=True)
+        'direction': fields.function(_get_direction, method=True, type="char", string='Dir', readonly=True),
+        'sell_price': fields.related('sale_line_id', 'price_unit', type='float', relation='sale.order.line', string='Sell Price Unit', readonly=True)
     }
     
 
