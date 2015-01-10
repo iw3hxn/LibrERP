@@ -663,7 +663,7 @@ msgstr "Validità"
 #: model:process.transition,name:sale.process_transition_confirmquotation0
 #: view:sale.order:0
 msgid "Confirm Quotation"
-msgstr "Conferma Offerta"
+msgstr "Conferma Preventivo"
 
 #. module: sale_order_confirm
 #: view:sale.order:0
