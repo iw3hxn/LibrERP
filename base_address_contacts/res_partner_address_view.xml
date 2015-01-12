@@ -115,7 +115,7 @@
     
     <menuitem name="Contacts" id="menu_partner_contact_form" 
         action="action_partner_contact_form" parent = "base.menu_address_book" 
-        groups = "base.group_extended" sequence="2"/>
+        groups = "base.group_extended" sequence="5"/>
 
     <menuitem name="Address" id="base.menu_partner_address_form" groups = "base.group_extended" 
         parent = "base.menu_address_book"  sequence="3"

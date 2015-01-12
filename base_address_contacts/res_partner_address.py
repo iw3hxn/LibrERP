@@ -81,6 +81,7 @@ class res_partner_address_contact(orm.Model):
     _defaults = {
         'photo': _get_photo,
         'active': True,
+        'address_id': lambda self, cr, uid, context: context.get('address_id', False),
     }
 
     _order = "name"
@@ -98,13 +99,13 @@ class res_partner_address_contact(orm.Model):
             ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context=context)
 
-    def name_get(self, cr, uid, ids, context=None):
-        result = {}
-        for obj in self.browse(cr, uid, ids, context=context):
-            result[obj.id] = obj.name or '/'
-            if obj.partner_id:
-                result[obj.id] = result[obj.id] + ', ' + obj.partner_id.name
-        return result.items()
+    #def name_get(self, cr, uid, ids, context=None):
+    #    result = {}
+    #    for obj in self.browse(cr, uid, ids, context=context):
+    #        result[obj.id] = obj.name or '/'
+    #        if obj.partner_id:
+    #            result[obj.id] = result[obj.id] + ', ' + obj.partner_id.name
+    #    return result.items()
 
 
 class res_partner_address(orm.Model):
