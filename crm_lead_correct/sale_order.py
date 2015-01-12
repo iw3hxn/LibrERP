@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013 Didotech SRL (info at didotech.com)
+# Copyright (c) 2013-2014 Didotech SRL (info at didotech.com)
 #                          All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -26,11 +26,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from . import crm_case_categ
-from . import crm_lead_correct
-from . import crm_meeting
-from . import crm_case_stage
-from . import res_partner_category
-from . import sale_order
-from . import report
-from . import wizard
+
+from openerp.osv import orm, fields
+
+
+class sale_order(orm.Model):
+    _inherit = 'sale.order'
+
+    _columns = {
+        'contact_id': fields.many2one('res.partner.address.contact', 'Contact'), 
+    }
+

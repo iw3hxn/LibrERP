@@ -55,6 +55,7 @@
         'res_partner.xml',
         'crm_lead_sequence.xml',
         'crm_lead_data.xml',
+        'sale_order_view.xml',
         'report/crm_meeting_report_by_province.xml',
         'wizard/crm_meeting_by_province_view.xml',
     ],

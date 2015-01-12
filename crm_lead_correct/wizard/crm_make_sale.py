@@ -82,7 +82,8 @@ class crm_make_sale(orm.TransientModel):
                     'payment_term': payment_term,
                     'user_id' : make.user_id.id,
 #                    'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
-                    'note': case.description or ''
+                    'note': case.description or '',
+                    'contact_id': case.contact_id and case.contact_id.id or False
                 }
                 
                 new_id = sale_obj.create(cr, uid, vals, context=context)
