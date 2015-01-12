@@ -12,6 +12,9 @@
                 </xpath>
                 <xpath expr="//form/group[1]/group[1]/field[@name='client_order_ref']" position="after">
                     <field name="sale_version_id" readonly="1" />
+                    <field name="active" invisible="1"/>
+                </xpath>
+<!--
                     <button 
                         name="action_previous_version"
                         string="Create version"
@@ -19,11 +22,9 @@
                         icon="gtk-go-forward"
                         colspan="2"
                         states="draft"
-                    />
-                </xpath>
-                <field name="name" position="after">
-                    <field name="active" invisible="1"/>
-                </field>
+                    /> -->
+                
+
                 <page string="Other Information" position="after">
                     <page string="Versions" attrs="{'invisible':[('sale_version_id','=',False)]}" >
                         <field name="version_ids" colspan="4" nolabel="1">
