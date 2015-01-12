@@ -31,7 +31,7 @@
                         <field name="stage_id" nolabel="1"
                             on_change="onchange_stage_id(stage_id)"
                             domain="section_id and [('section_ids', '=', section_id)] or []"
-							readonly="1"/>
+                            readonly="1"/>
                         <button name="stage_previous"
                             states="draft,open,pending" type="object"
                             icon="gtk-go-back" string="" context="{'stage_type': 'opportunity'}"/>
@@ -40,7 +40,7 @@
                     </group>
                     <field name="user_id"/>
 
-		<button string="Convert to Quote" icon="gtk-go-forward" name="%(sale_crm.action_crm_make_sale)d" type="action"/>
+                    <button string="Convert to Quote" icon="gtk-go-forward" name="%(sale_crm.action_crm_make_sale)d" type="action"/>
                     <field name="planned_revenue"/>
                     <field name="probability"/>
                     <field name="date_deadline"/>
@@ -54,13 +54,13 @@
                     <newline/>
                     <field name="type" invisible="1"/>
                 </group>
-				<group colspan="4" col="7">
+                <group colspan="4" col="7">
                         <separator string="Categorization" colspan="7" col="7"/>
                         <field name="company_id" groups="base.group_multi_company" widget="selection" colspan="2"/>
                         <field name="type_id" select="1" widget="selection"/>
                         <field name="channel_id" select="1" widget="selection"/>
                         <field name="referred"/>
-				</group>
+                </group>
                 <notebook colspan="4">
                 <page string="Opportunity">
                     <group col="4" colspan="2">
@@ -68,21 +68,27 @@
                         <group colspan="2" >
                             <field name="partner_id" select="1"
                                 on_change="onchange_partner_id(partner_id, email_from)" string="Customer"
-                                colspan="2" />
+                                colspan="2" required="1"/>
                             <button name="%(crm.action_crm_lead2partner)d"
                                 icon="terp-partner" type="action"
                                 string="Create"
                                 attrs="{'invisible':[('partner_id','!=',False)]}"
-								groups="crm.view_lead"
-								/>
+                                groups="crm.view_lead"
+                            />
                         </group>
                         <field name="partner_address_id"
-                            string="Contact"
+                            string="Partner Contact"
                             on_change="onchange_partner_address_id(partner_address_id, email_from)"
                             options='{"quick_create": false}' 
                             context="{'default_partner_id':partner_id}"
-                            colspan="1"
-							groups="crm.extended_view"/>
+                            colspan="1" required="1"
+                            groups="crm.extended_view"/>
+                        <field name="contact_id"
+                               context="{'address_id': partner_address_id}"
+                               domain="[('address_id', '=', partner_address_id)]"
+                               required="1"
+                        />
+
                         <group col="3" colspan="2">
                             <field name="email_from" string="Email" />
                             <button string="Mail"
@@ -122,11 +128,11 @@
                         <field name="function_id" widget="selection" />
                         <field name="street" colspan="4" placeholder="Street..."/>
                         <field name="street2" colspan="4"/>
-						<field name="zip"  on_change="on_change_zip(zip)" placeholder="ZIP" nolabel="1"/>
-						<field name="city" on_change="on_change_city(city,zip)" placeholder="City" nolabel="1"/>
-						<field name="find_city" invisible="1" />              
-						<field name="province" on_change="on_change_province(province)" attrs="{'readonly':[('find_city','!=',False)]}" placeholder="Province" invisible="1"/>
-						<field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}"/>
+                        <field name="zip"  on_change="on_change_zip(zip)" placeholder="ZIP" nolabel="1"/>
+                        <field name="city" on_change="on_change_city(city,zip)" placeholder="City" nolabel="1"/>
+                        <field name="find_city" invisible="1" />              
+                        <field name="province" on_change="on_change_province(province)" attrs="{'readonly':[('find_city','!=',False)]}" placeholder="Province" invisible="1"/>
+                        <field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}"/>
                         <field name="country_id" completion="1" attrs="{'readonly':[('region','!=',False)]}"/>                    </group>
                     <group colspan="2" col="2">
                         <separator string="Communication" colspan="2"/>
@@ -182,51 +188,51 @@
                     <field name="ref"/>
                     <field name="ref2"/>
                 </page>
-				<page string="Sale Order" >
-					<field name="sale_order" mode="tree" nolabel="1">
+                <page string="Sale Order" >
+                    <field name="sale_order" mode="tree" nolabel="1">
                         <tree string="History">
-						    <field name="name"/>
-							<field name="date_order"/>
-							<field name="user_id"/>
-<!--                    <field name="picked_rate" widget="progressbar"/>
+                            <field name="name"/>
+                            <field name="date_order"/>
+                            <field name="user_id"/>
+    <!--                    <field name="picked_rate" widget="progressbar"/>
                     <field name="invoiced_rate" widget="progressbar"/>-->
-							<field name="amount_untaxed" sum="Total Tax Excluded"/>
-							<field name="amount_total" sum="Total Tax Included"/>
-							<field name="state"/>
-					    </tree>
-					</field>
-					
-				</page>
-				<page string="Opportunity">
-					<field name="crm_lead" nolabel="1" >
-						<tree string="Opportunities" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
-							<field name="row_color" invisible="1"/>
-							<field name="date_deadline" invisible="1"/>
-							<field name="create_date"/>
-							<field name="name" string="Opportunity"/>
-							<field name="date_action"/>
-							<field name="title_action"/>
-<!--							<field name="channel_id" invisible="1"/>
-							<field name="type_id" invisible="1"/>-->
-							<field name="stage_id"/>
-							<!--<button name="stage_previous" string="Previous Stage" states="open,pending" type="object" icon="gtk-go-back"/>
-							<button name="stage_next" string="Next Stage" states="open,pending" type="object" icon="gtk-go-forward"/>
-							-->
-							<field name="planned_revenue" sum="Expected Revenues"/>
-							<field name="probability" widget="progressbar" />
-							<field name="section_id" />
-							<field name="user_id"/>
-							<!--<field name="priority" invisible="1"/>-->
-							<field name="categ_id"/>
-							<field name="state"/>
-							<!--<button name="case_open" string="Open" states="draft,pending" type="object" icon="gtk-go-forward"/>
-							<button name="case_pending" string="Pending" states="open,draft" type="object" icon="gtk-media-pause"/>
-							<button name="case_mark_lost" string="Lost" states="open,pending" type="object" icon="gtk-cancel"/>
-							<button name="case_mark_won" string="Won" states="open,pending" type="object" icon="gtk-apply"/>-->
-							<field name="ref" />
-						</tree>	
-					</field>
-				</page>
+                            <field name="amount_untaxed" sum="Total Tax Excluded"/>
+                            <field name="amount_total" sum="Total Tax Included"/>
+                            <field name="state"/>
+                        </tree>
+                    </field>
+                    
+                </page>
+                <page string="Opportunity">
+                    <field name="crm_lead" nolabel="1" >
+                        <tree string="Opportunities" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                            <field name="row_color" invisible="1"/>
+                            <field name="date_deadline" invisible="1"/>
+                            <field name="create_date"/>
+                            <field name="name" string="Opportunity"/>
+                            <field name="date_action"/>
+                            <field name="title_action"/>
+    <!--							<field name="channel_id" invisible="1"/>
+                            <field name="type_id" invisible="1"/>-->
+                            <field name="stage_id"/>
+                            <!--<button name="stage_previous" string="Previous Stage" states="open,pending" type="object" icon="gtk-go-back"/>
+                            <button name="stage_next" string="Next Stage" states="open,pending" type="object" icon="gtk-go-forward"/>
+                            -->
+                            <field name="planned_revenue" sum="Expected Revenues"/>
+                            <field name="probability" widget="progressbar" />
+                            <field name="section_id" />
+                            <field name="user_id"/>
+                            <!--<field name="priority" invisible="1"/>-->
+                            <field name="categ_id"/>
+                            <field name="state"/>
+                            <!--<button name="case_open" string="Open" states="draft,pending" type="object" icon="gtk-go-forward"/>
+                            <button name="case_pending" string="Pending" states="open,draft" type="object" icon="gtk-media-pause"/>
+                            <button name="case_mark_lost" string="Lost" states="open,pending" type="object" icon="gtk-cancel"/>
+                            <button name="case_mark_won" string="Won" states="open,pending" type="object" icon="gtk-apply"/>-->
+                            <field name="ref" />
+                        </tree>	
+                    </field>
+                </page>
                 </notebook>
             </form>
         </field>
@@ -267,47 +273,47 @@
             </tree>
         </field>
     </record>
-	
-	<record model="ir.ui.view" id="view_opportunity_tree_inherit_city_search">
+    
+    <record model="ir.ui.view" id="view_opportunity_tree_inherit_city_search">
         <field name="name">crm.oppportunity.city.search</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
         <field name="type">search</field>
         <field name="arch" type="xml">
-		<field name="name" position="after">
-			<filter name="today" icon="terp-go-today" domain="[('date_action', '=', time.strftime('%%Y-%%m-%%d'))]" string="Today"/>
+        <field name="name" position="after">
+            <filter name="today" icon="terp-go-today" domain="[('date_action', '=', time.strftime('%%Y-%%m-%%d'))]" string="Today"/>
                         <!--<filter icon="terp-go-month"
                         string="Current Week"
                         name="current_week"
                         help="Action of Current Week"
                         domain="[('date_action', '&lt;', (datetime.date.today() + relativedelta(weeks=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_action', '&gt;=', (datetime.date.today() + relativedelta(weeks=-1) ).strftime('%%Y-%%m-01 00:00:00'))]"
-			/>
-			<filter icon="terp-go-month"
+            />
+            <filter icon="terp-go-month"
                         string="Next Week"
                         name="next_week"
                         help="Action of Next Week"
                         domain="[('date_action', '&lt;', (datetime.date.today() + relativedelta(weeks=2)).strftime('%%Y-%%m-01 00:00:00')), ('date_action', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
-			/>-->
-		</field>
-		<field name="user_id" position="before">
-			<newline/>
-			<field name="city" />
-			<field name="province" widget="selection"/>
-		        <field name="region" widget="selection"/>
-			<field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
-			</field>
-		</field>
+            />-->
+        </field>
+        <field name="user_id" position="before">
+            <newline/>
+            <field name="city" />
+            <field name="province" widget="selection"/>
+                <field name="region" widget="selection"/>
+            <field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
+            </field>
+        </field>
        </record>
-
+    
      <record model="ir.actions.act_window.view" id="crm.action_crm_tag_kanban_view_oppor11">
           <field name="sequence" eval="10"/>
           <field name="view_mode">kanban</field>
           <field name="view_id" ref="crm.crm_case_kanban_view_leads"/>
           <field name="act_window_id" ref="crm.crm_case_category_act_oppor11"/>
      </record>
-	
-	
-	
-	
-	</data>
+    
+    
+    
+    
+    </data>
 </openerp>

@@ -97,6 +97,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         'function_id': fields.many2one('res.contact.function', 'Function'),
         'phonecall_ids': fields.one2many('crm.phonecall', 'opportunity_id', 'Phonecalls'),
         'meeting_ids': fields.one2many('crm.meeting', 'opportunity_id', 'Meetings'),
+        'contact_id': fields.many2one('res.partner.address.contact', 'Contact'), 
         'partner_category_id': fields.many2one('res.partner.category', 'Partner Category'),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True),
         'sale_order': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
