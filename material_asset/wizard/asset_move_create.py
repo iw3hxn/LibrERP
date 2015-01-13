@@ -202,11 +202,10 @@ class asset_move_create(orm.TransientModel):
                     
                     if move_id:
                         asset_update = {'location': '{location._name},{location.id}'.format(location=dest_location)}
-                        if asset_use_id:
-                            asset_update['asset_use_id'] = asset_use_id[0]
-                            assets = asset_obj.browse(cr, uid, asset_ids, context)
-                            for asset in assets:
-                                asset_obj.write(cr, uid, [a.id for a in asset.asset_ids], {'asset_use_id': asset_use_id[0]})
+                        asset_update['asset_use_id'] = asset_use_id and asset_use_id.id or False
+                        assets = asset_obj.browse(cr, uid, asset_ids, context)
+                        for asset in assets:
+                            asset_obj.write(cr, uid, [a.id for a in asset.asset_ids], {'asset_use_id': asset_use_id and asset_use_id.id or False })
                         asset_obj.write(cr, uid, asset_ids, asset_update)
                         
         return {'type': 'ir.actions.act_window_close'}
