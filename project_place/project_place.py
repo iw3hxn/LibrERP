@@ -97,27 +97,29 @@ class res_partner_address(osv.osv):
     
     def get_full_name(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        for r in self.read(cr, uid, ids, ['name', 'type', 'zip', 'country_id', 'city', 'partner_id', 'street'], context=context):
+        for re in self.read(cr, uid, ids, ['name', 'type', 'zip', 'country_id', 'city', 'partner_id', 'street'], context=context):
             addr = ''
-            if r['type'] in ['plant', 'place']:
-                addr = "[%s] %s" % (r['type'], r['name'])
+            if re['type'] in ['plant', 'place']:
+                addr = "[%s] %s " % (re['type'], re['name'])
             else:
-                addr = r['name'] or ''
-            if r['name'] and (r['city'] or r['country_id']):
-                addr += ', '
-            addr += ' ' + (r['city'] or '') + ' ' + (r['street'] or '')
-            if (r['partner_id']):
-                addr = "%s: %s" % (r['partner_id'][1], addr.strip())
-            else:
-                addr = addr.strip()
-            res[r['id']] = addr or ''
+                if re['partner_id']:
+                    if re['partner_id'][1] != re['name']:
+                        addr = re['name'] or ''
+                        if re['name'] and (re['city'] or re['country_id']):
+                            addr += ', '
+            addr += (re['city'] or '') + ', ' + (re['street'] or '')
+            #if (re['partner_id']):
+            #    addr = "%s: %s" % (re['partner_id'][1], addr.strip())
+            #else:
+            addr = addr.strip()
+            res[re['id']] = addr or ''
         return res
     
     def name_get(self, cr, uid, ids, context=None):
         if not len(ids):
             return []
         res = []
-        reads = self.read(cr, uid, ids, ['name', 'complete_name'], context=context)
+        reads = self.read(cr, uid, ids, ['name', 'complete_name', 'id'], context=context)
         for record in reads:
             name = record['complete_name'] or record['name'] or ''
             if len(name) > 45:
@@ -152,7 +154,7 @@ class res_partner_address(osv.osv):
                 ('other', (u'Other')),
             ], 'Address Type', help="Used to select automatically the right address according to the context in sales and purchases documents."),
 
-        'complete_name': fields.function(get_full_name, method=True, type='char', size=1024, readonly=True, store=True),
+        'complete_name': fields.function(get_full_name, method=True, type='char', size=1024, readonly=True, store=False),
     }
 
 

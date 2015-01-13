@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Generic Module/Project Place and Plants',
-    'version': '2.0.1.2',
+    'version': '2.0.2.2',
     'category': 'Generic Modules',
     'description': """
         A generic module to manage project place and plants on Project.
