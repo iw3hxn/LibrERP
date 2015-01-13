@@ -114,6 +114,7 @@ class res_partner_address_contact(orm.Model):
 class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
     _columns = {
+        'partner_id': fields.many2one('res.partner', 'Partner Name', ondelete='set null', select=True, help="Keep empty for a private address, not related to partner.", required=True),
         'contact_ids': fields.one2many('res.partner.address.contact', 'address_id', 'Functions and Contacts'),
         'mobile': fields.char('Mobile', size=64),
         'pec': fields.char('PEC', size=64),
