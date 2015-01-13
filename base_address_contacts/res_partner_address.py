@@ -49,7 +49,10 @@ class res_partner_address_contact(orm.Model):
     def _name_get_full(self, cr, uid, ids, prop, unknow_none, context=None):
         result = {}
         for rec in self.browse(cr, uid, ids, context=context):
-            result[rec.id] = rec.last_name + ' ' + (rec.first_name or '')
+            if rec.title:
+                result[rec.id] = rec.title.name + '  ' + rec.last_name + ' ' + (rec.first_name or '')
+            else:
+                result[rec.id] = rec.last_name + ' ' + (rec.first_name or '')
         return result
 
     _columns = {
