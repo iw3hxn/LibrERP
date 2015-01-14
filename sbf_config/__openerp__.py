@@ -20,7 +20,7 @@
 ##############################################################################
 {
     'name': 'Configurazione ricevute bancarie - Account Didotech',
-    'version': '3.0.0.5',
+    'version': '3.0.0.6',
     'category': 'Localisation/Italy',
     'description': """
     Ri.ba. sbf configuration for Italy.
