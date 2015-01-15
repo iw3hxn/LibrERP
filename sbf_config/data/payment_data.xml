@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <!-- Payment term -->
 
@@ -212,6 +212,7 @@
             <field name="name">Ri.ba. 30 Days - End of Month</field>
             <field name="value">balance</field>
             <field eval="1" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_30_days_riba_1" name="payment_id"/>
         </record>
@@ -226,6 +227,7 @@
             <field name="name">Ri.ba. 60 Days - End of Month</field>
             <field name="value">balance</field>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_60_days_riba_1" name="payment_id"/>
         </record>
@@ -240,6 +242,7 @@
             <field name="name">Ri.ba. 90 Days - End of Month</field>
             <field name="value">balance</field>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_90_days_riba_1" name="payment_id"/>
         </record>
@@ -254,6 +257,7 @@
             <field name="name">Ri.ba. 120 Days - End of Month</field>
             <field name="value">balance</field>
             <field eval="4" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_120_days_riba_1" name="payment_id"/>
         </record>
@@ -270,6 +274,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
             <field eval="1" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_30_60_days_riba_2" name="payment_id"/>
         </record>
@@ -278,6 +283,7 @@
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_30_60_days_riba_2" name="payment_id"/>
         </record>
@@ -294,6 +300,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_60_90_days_riba_2" name="payment_id"/>
         </record>
@@ -302,6 +309,7 @@
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_60_90_days_riba_2" name="payment_id"/>
         </record>
@@ -318,6 +326,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_90_120_days_riba_2" name="payment_id"/>
         </record>
@@ -326,6 +335,7 @@
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
             <field eval="4" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_90_120_days_riba_2" name="payment_id"/>
         </record>
@@ -342,6 +352,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.333334" name="value_amount"/>
             <field eval="1" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_30_60_90_days_riba_3" name="payment_id"/>
         </record>
@@ -351,6 +362,7 @@
             <field eval="2" name="sequence"/>
             <field eval="0.333333" name="value_amount"/>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_30_60_90_days_riba_3" name="payment_id"/>
         </record>
@@ -359,6 +371,7 @@
             <field name="value">balance</field>
             <field eval="3" name="sequence"/>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_30_60_90_days_riba_3" name="payment_id"/>
         </record>
@@ -375,6 +388,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.333334" name="value_amount"/>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_60_90_120_days_riba_3" name="payment_id"/>
         </record>
@@ -384,6 +398,7 @@
             <field eval="2" name="sequence"/>
             <field eval="0.333333" name="value_amount"/>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_60_90_120_days_riba_3" name="payment_id"/>
         </record>
@@ -392,6 +407,7 @@
             <field name="value">balance</field>
             <field eval="3" name="sequence"/>
             <field eval="4" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="-1" name="days2"/>
             <field eval="payment_term_60_90_120_days_riba_3" name="payment_id"/>
         </record>
@@ -407,6 +423,7 @@
             <field name="name">Ri.ba. 30 Days End Month - Day 10 of Month</field>
             <field name="value">balance</field>
             <field eval="1" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_30_days_10_monthly_riba_1" name="payment_id"/>
         </record>
@@ -421,6 +438,7 @@
             <field name="name">Ri.ba. 60 Days End Month - Day 10 of Month</field>
             <field name="value">balance</field>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_60_days_10_monthly_riba_1" name="payment_id"/>
         </record>
@@ -435,6 +453,7 @@
             <field name="name">Ri.ba. 90 Days End Month - Day 10 of Month</field>
             <field name="value">balance</field>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_90_days_10_monthly_riba_1" name="payment_id"/>
         </record>
@@ -449,6 +468,7 @@
             <field name="name">Ri.ba. 120 Days End Month - Day 10 of Month</field>
             <field name="value">balance</field>
             <field eval="4" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_120_days_10_monthly_riba_1" name="payment_id"/>
         </record>
@@ -465,6 +485,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
             <field eval="1" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_30_60_days_10_monthly_riba_2" name="payment_id"/>
         </record>
@@ -473,6 +494,7 @@
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_30_60_days_10_monthly_riba_2" name="payment_id"/>
         </record>
@@ -489,6 +511,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_60_90_days_10_monthly_riba_2" name="payment_id"/>
         </record>
@@ -497,6 +520,7 @@
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_60_90_days_10_monthly_riba_2" name="payment_id"/>
         </record>
@@ -513,6 +537,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_90_120_days_10_monthly_riba_2" name="payment_id"/>
         </record>
@@ -521,6 +546,7 @@
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
             <field eval="4" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_90_120_days_10_monthly_riba_2" name="payment_id"/>
         </record>
@@ -537,6 +563,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.333334" name="value_amount"/>
             <field eval="1" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_30_60_90_days_10_monthly_riba_3" name="payment_id"/>
         </record>
@@ -546,6 +573,7 @@
             <field eval="2" name="sequence"/>
             <field eval="0.333333" name="value_amount"/>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_30_60_90_days_10_monthly_riba_3" name="payment_id"/>
         </record>
@@ -554,6 +582,7 @@
             <field name="value">balance</field>
             <field eval="3" name="sequence"/>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_30_60_90_days_10_monthly_riba_3" name="payment_id"/>
         </record>
@@ -570,6 +599,7 @@
             <field eval="1" name="sequence"/>
             <field eval="0.333334" name="value_amount"/>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_60_90_120_days_10_monthly_riba_3" name="payment_id"/>
         </record>
@@ -579,6 +609,7 @@
             <field eval="2" name="sequence"/>
             <field eval="0.333333" name="value_amount"/>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_60_90_120_days_10_monthly_riba_3" name="payment_id"/>
         </record>
@@ -587,6 +618,7 @@
             <field name="value">balance</field>
             <field eval="3" name="sequence"/>
             <field eval="4" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="10" name="days2"/>
             <field eval="payment_term_60_90_120_days_10_monthly_riba_3" name="payment_id"/>
         </record>
@@ -602,6 +634,7 @@
             <field name="name">Ri.ba. 60 Days End Month - Day 15 of Month</field>
             <field name="value">balance</field>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="15" name="days2"/>
             <field eval="payment_term_60_days_15_monthly_riba_1" name="payment_id"/>
         </record>
@@ -616,6 +649,7 @@
             <field name="name">Ri.ba. 60 Days End Month - Day 5 of Month</field>
             <field name="value">balance</field>
             <field eval="2" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="5" name="days2"/>
             <field eval="payment_term_60_days_5_monthly_riba_1" name="payment_id"/>
         </record>
@@ -630,6 +664,7 @@
             <field name="name">Ri.ba. 90 Days End Month - Day 5 of Month</field>
             <field name="value">balance</field>
             <field eval="3" name="months"/>
+            <field eval="0" name="days"/>
             <field eval="5" name="days2"/>
             <field eval="payment_term_90_days_5_monthly_riba_1" name="payment_id"/>
         </record>
