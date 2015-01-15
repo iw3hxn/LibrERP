@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation Payment Data - Account Didotech',
-    'version': '3.0.0.3',
+    'version': '3.0.0.5',
     'category': 'Localisation/Italy',
     'description': """This module adds standard payment terms.
 
@@ -31,6 +31,7 @@
     'website': 'http://www.didotech.com',
     'license': 'AGPL-3',
     "depends": [
+        'account',
         'l10n_it_account',
         'account_payment_term_month',
     ],
