@@ -27,16 +27,14 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
-from datetime import *
-import calendar
-import sys, traceback
-import netsvc
-import time
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
+import time, datetime
 import re
+import netsvc
+LOGGER = netsvc.Logger()
 
-import logging
+import logging, traceback, sys
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
@@ -166,7 +164,7 @@ def search_location(self, cr, uid, obj, name, args, context):
     return [('id', 'in', res)]
 
 
-class res_sim_location(osv.osv):
+class res_sim_location(orm.Model):
     _name = "res.sim.location"
     _description = "Sim Reference Locations"
     _columns = {
@@ -180,17 +178,15 @@ class res_sim_location(osv.osv):
     
     def write(self, cr, uid, ids, vals, context=None):
         if 'model' in vals:
-            raise osv.except_osv(_('Error !'),_('You cannot modify the Object linked to the Document Type!\nCreate another Document instead !'))
+            raise orm.except_orm(_('Error !'),_('You cannot modify the Object linked to the Document Type!\nCreate another Document instead !'))
         return super(res_sim_location, self).write(cr, uid, ids, vals, context=context)
-res_sim_location()
-
 
 def _get_location(self, cr, uid, context=None):
     cr.execute('SELECT m.model, s.name FROM res_sim_location s, ir_model m WHERE s.model = m.id ORDER BY s.name')
     return cr.fetchall()
 
 
-class res_sim_subscription_type(osv.osv):
+class res_sim_subscription_type(orm.Model):
     _description = "Subscription Types"
     _name = 'res.sim.subscription.type'
     _columns = {
@@ -201,20 +197,17 @@ class res_sim_subscription_type(osv.osv):
     }
     _order = "name"
 
-res_sim_subscription_type()
 
-
-class res_sim_type(osv.osv):
+class res_sim_type(orm.Model):
     _description = "Sim Types"
     _name = 'res.sim.type'
     _columns = {
         'name': fields.char("Subscription Type", size=256, required=True),
     }
     _order = "name"
-res_sim_type()
 
 
-class res_sim_use(osv.osv):
+class res_sim_use(orm.Model):
     _description = "Sim Uses"
     _name = 'res.sim.use'
 
@@ -226,7 +219,6 @@ class res_sim_use(osv.osv):
                 value[use.id] = use.color
             else:
                 value[use.id] = 'black'
-
         return value
 
     _columns = {
@@ -235,30 +227,28 @@ class res_sim_use(osv.osv):
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
     }
     _order = "name"
-res_sim_use()
 
 
-class res_sim_apn_management_type(osv.osv):
+class res_sim_apn_management_type(orm.Model):
     _description = "APN Management Type"
     _name = 'res.sim.apn.management.type'
     _columns = {
         'name': fields.char("APN Management Type", size=256, required=True),
     }
     _order = "name"
-res_sim_apn_management_type()
 
 
-class res_sim_apn_group(osv.osv):
+class res_sim_apn_group(orm.Model):
     _description = "APN Group"
     _name = 'res.sim.apn_group'
     _columns = {
         'name': fields.char("APN Group", size=256, required=True),
+        'management_ids': fields.one2many('res.sim.apn.management', 'sim_apn_group_id', 'Group APN Management'),
     }
     _order = "name"
-res_sim_apn_group()
 
 
-class res_sim_apn_management(osv.osv):
+class res_sim_apn_management(orm.Model):
     _description = "Management Services APN"
     _name = 'res.sim.apn.management'
     _columns = {
@@ -270,25 +260,15 @@ class res_sim_apn_management(osv.osv):
         'sim_apn_group_id' : fields.many2one("res.sim.apn_group", "Group", required=True),
     }
     _order = "number"
-res_sim_apn_management()
 
 
-class res_sim_apn_group1(osv.osv):
-    _inherit = 'res.sim.apn_group'
-    _columns = {
-        'management_ids': fields.one2many('res.sim.apn.management', 'sim_apn_group_id', 'Group APN Management'),
-    }
-res_sim_apn_group1()
-
-
-class res_sim(osv.osv):
+class res_sim(orm.Model):
     _description = "Sim"
     _name = 'res.sim'
-#    _rec_name = 'imei'
 
-    def get_color(self, cr, uid, ids, field_name, arg, context):
+    def get_color(self, cr, uid, ids, field_name, arg, context=None):
         value = {}
-        sims = self.browse(cr, uid, ids)
+        sims = self.browse(cr, uid, ids, context=context)
         for sim in sims:
             if sim.sim_use_id:
                 value[sim.id] = sim.sim_use_id.color
@@ -300,7 +280,7 @@ class res_sim(osv.osv):
     def _get_number(self, cr, uid, context):
         if context is None:
             context = {}
-        res = self.pool.get('ir.sequence').get(cr, uid, 'sim.card')
+        res = self.pool['ir.sequence'].get(cr, uid, 'sim.card')
         return res
 
     def _check_with_employee(self, cr, uid, ids, prop, unknow_none, context=None):
@@ -321,7 +301,6 @@ class res_sim(osv.osv):
     
     def name_get(self, cr, uid, ids, context=None):
         res = []
-        
         for sim in self.browse(cr, uid, ids):
             res.append((sim.id, '[' + sim.sim_internal_number + '] ' + sim.prefix_number + ' ' + sim.number))
         return res
@@ -348,8 +327,13 @@ class res_sim(osv.osv):
     def _get_parents(self, cr, uid, ids, field_name, model_name, context=None):
         if not len(ids):
             return {}
-         
-        return self.pool.get('asset.asset').get_parents(cr, uid, ids, field_name, self._name, context)
+        return self.pool['asset.asset'].get_parents(cr, uid, ids, field_name, self._name, context)
+
+    def _get_employee(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for sim in self.browse(cr, uid, ids, context=context):
+            res[sim.id] = sim.with_employee and sim.location.id or False
+        return res
     
     def _search_by_parent(self, cr, uid, obj, field_name, args, context=None):
         if not len(args) == 1:
@@ -360,7 +344,7 @@ class res_sim(osv.osv):
         sim_ids = {}
         all_sim_ids = self.search(cr, uid, [])
         
-        parents = self.pool.get('asset.asset').get_asset_parents(cr, uid, all_sim_ids, field_name, 'res.sim', context)
+        parents = self.pool['asset.asset'].get_asset_parents(cr, uid, all_sim_ids, field_name, 'res.sim', context)
         for child_id in all_sim_ids:
             if parents[child_id]:
                 # remove direct matching:
@@ -395,6 +379,7 @@ class res_sim(osv.osv):
         'sim_use_id' : fields.many2one('res.sim.use', 'Utilizzo'),
         'apn_group_id': fields.many2one('res.sim.apn_group', 'APN Group'), 
         'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
+        'employee_id': fields.function(_get_employee, method=True, string="Employee", type="many2one", relation="hr.employee",),
         'subscription_start_date': fields.date("Start Date"),
         'subscription_end_date': fields.date("End Date"),
         'note': fields.text('Note'),
@@ -425,17 +410,16 @@ class res_sim(osv.osv):
 
     _order = "prefix_number asc, number asc, prefix_fax_number asc, fax_number asc, prefix_data_number asc, data_number asc" 
 
-
     def set_default_phone(self, cr, uid, ids, context=None):
         for sim in self.read(cr, uid, ids):
             if sim['employee_id']:
                 sim_ids = self.search(cr, uid, [('employee_id', '=', sim['employee_id'][0])])
-                self.pool.get('hr.employee').write(cr, uid, [sim['employee_id'][0]], {'work_phone': sim['prefix_number'] + sim['number']})
-                self.write(cr, uid, sim_ids, {'default':False})
-                self.write(cr, uid, [sim['id']], {'default':True})
-        return True
                 
-        
+                self.pool['hr.employee'].write(cr, uid, [sim['employee_id'][0]], {'work_phone': sim['prefix_number'] + sim['number']}, context=context)
+                self.write(cr, uid, sim_ids, {'default':False}, context=context)
+                self.write(cr, uid, [sim['id']], {'default':True}, context=context)
+        return True
+
     def _check_dates(self, cr, uid, ids, context=None):
         for i in self.read(cr, uid, ids, ['has_date_option','subscription_start_date', 'subscription_end_date'], context=context):
             if i['has_date_option'] and i['subscription_start_date'] >= i['subscription_end_date']:
@@ -447,7 +431,7 @@ class res_sim(osv.osv):
     def onchange_subscription_type_id(self, cr, uid, ids, subscription_type_id, context=None):
         has_date_option = False
         if subscription_type_id:
-            subscription_type_obj = self.pool.get('res.sim.subscription.type')
+            subscription_type_obj = self.pool['res.sim.subscription.type']
             subscription_type = subscription_type_obj.browse(cr, uid, [subscription_type_id], context)
             if subscription_type and subscription_type[0].has_date_option == True: has_date_option = True
         return {'value': {'has_date_option': has_date_option}}
@@ -505,11 +489,9 @@ class res_sim(osv.osv):
         if vals.has_key('location') and vals['location'] and not ',' in vals['location']:
             del vals['location']
         return super(res_sim, self).write(cr, uid, ids, vals, context)
-    
-res_sim()
 
 
-class res_sim_traffic(osv.osv):
+class res_sim_traffic(orm.Model):
     _description = "Traffic information"
     _name = 'res.sim.traffic'
     
@@ -524,11 +506,9 @@ class res_sim_traffic(osv.osv):
         'amount': fields.float('Amount'),
         'contract': fields.char("Internet Contract", size=256), 
     }
-    
-res_sim_traffic()
 
 
-class res_sim_payment(osv.osv):
+class res_sim_payment(orm.Model):
     _description = "Sim payment line"
     _name = 'res.sim.payment'
     _year = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
@@ -776,7 +756,7 @@ class res_sim_payment(osv.osv):
             is_year_changed = vals.has_key('year') and vals.get('year',payment.year) != payment.year or False
             if payment.type == 'sum':
                 if (vals.has_key('type') and vals.get('type','sum') != 'sum') or is_year_changed:
-                    raise osv.except_osv(
+                    raise orm.except_orm(
                         _('Operation forbidden'),
                         _('You are not allowed to change type or year for type once it defined as sum.')
                     )
@@ -883,7 +863,7 @@ class res_sim_payment(osv.osv):
         return new_id
         
     def unlink(self, cr, uid, ids, context=None):
-        raise osv.except_osv(_('Error'), _('You can not remove a payment line !'))
+        raise orm.except_orm(_('Error'), _('You can not remove a payment line !'))
  
     def onchange_year(self,cr, uid, ids, type, year, context):
         pass
@@ -978,7 +958,7 @@ class res_sim_payment(osv.osv):
         if len(supplier_payment_ids) == 1:
             supplier_payment = self.read(cr, uid, supplier_payment_ids[0])
         else:
-            raise osv.except_osv(_('Warning!'), _("Too many rows with supplier payment"))
+            raise orm.except_orm(_('Warning!'), _("Too many rows with supplier payment"))
             
         for month in self._year:
             #print month
@@ -993,11 +973,9 @@ class res_sim_payment(osv.osv):
             self.write(cr, uid, ids, values)
         
         return True
-        
-res_sim_payment()
 
 
-class hr_employee(osv.osv):
+class hr_employee(orm.Model):
     _description = "Employee"
     _inherit = 'hr.employee'
     
@@ -1007,11 +985,9 @@ class hr_employee(osv.osv):
     _columns = {
         'sim_ids': fields.function(_get_assigned_sims, method=True, string='Sims', type='one2many', relation="res.sim"),
     }
-    
-hr_employee()
 
 
-class res_sim_allocation(osv.osv):
+class res_sim_allocation(orm.Model):
     _name = "res.sim.allocation"
 
     _columns = {
@@ -1033,24 +1009,24 @@ class res_sim_allocation(osv.osv):
     
     def create(self, cr, uid, vals, context=None):
         if len(vals) < 2:
-            raise osv.except_osv(_('Warning!'), _("This is a wrong place for creating a move."))
+            raise orm.except_orm(_('Warning!'), _("This is a wrong place for creating a move."))
         else:
             return super(res_sim_allocation, self).create(cr, uid, vals, context)
         
     def write(self, cr, uid, ids, vals, context=None):
-        raise osv.except_osv(_('Warning!'), _("SIM Allocation can't be modified."))
+        raise orm.except_orm(_('Warning!'), _("SIM Allocation can't be modified."))
     
     def unlink(self, cr, uid, ids, context=None):
         if len(ids) > 1:
-            raise osv.except_osv(_('Error'), _('You can only delete one SIM Allocation at a time!'))
+            raise orm.except_orm(_('Error'), _('You can only delete one SIM Allocation at a time!'))
         else:
-            move_line_obj = self.pool.get('res.sim.move.line')
+            move_line_obj = self.pool['res.sim.move.line']
             move_line_ids = move_line_obj.search(cr, uid, [('move_id', '=', ids[0])])
-            move_lines = move_line_obj.browse(cr, uid, move_line_ids)
+            move_lines = move_line_obj.browse(cr, uid, move_line_ids, context=context)
             for line in move_lines:
                 sim_move_lines = move_line_obj.search(cr, uid, [('sim_id', '=', line.sim_id.id)], order='datetime desc')
                 if not sim_move_lines[0] == line.id:
-                    raise osv.except_osv(_('Error'), _('You can only delete the last SIM movement!'))
+                    raise orm.except_orm(_('Error'), _('You can only delete the last SIM movement!'))
                 
         move_line_ids = move_line_obj.search(cr, uid, [('move_id', '=', ids[0])])
         for move_line_id in move_line_ids:
@@ -1059,11 +1035,9 @@ class res_sim_allocation(osv.osv):
             
         move_line_obj.unlink(cr, uid, move_line_ids)
         return super(res_sim_allocation, self).unlink(cr, uid, ids, context)
-      
-res_sim_allocation()
 
 
-class res_sim_move_line(osv.osv):
+class res_sim_move_line(orm.Model):
     _name = 'res.sim.move.line'
     _description = "SIMs movement"
     
@@ -1071,7 +1045,6 @@ class res_sim_move_line(osv.osv):
         '''
             This works only for 2 moves for the same location
         '''
-        
         if not len(ids):
             return {}
         res = []
@@ -1113,7 +1086,6 @@ class res_sim_move_line(osv.osv):
         'user_id': lambda self, cr, uid, context: uid,
     }
     _order ="datetime"
-    
-res_sim_move_line()
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
