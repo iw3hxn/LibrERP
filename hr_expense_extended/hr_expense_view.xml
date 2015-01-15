@@ -28,12 +28,12 @@
                     <field colspan="4" name="line_ids" nolabel="1" context="{'currency_id': currency_id}" >
                         <tree editable="top" string="Expense Lines">
                             <field name="sequence" invisible="1"/>
-                            <field name="task_id"/>
                             <field name="date_value"/>
+                            <field name="task_id"/>
+                            <field name="name" />
                             <field name="ref"/>
                             <field name="product_id" on_change="onchange_product_id(product_id, uom_id, parent.employee_id, context)" required="1"/>
                             <field name="payer" />
-                            <field name="name" invisible="1"/>
                             <field name="unit_quantity"/>
                             <field name="uom_id" on_change="onchange_product_id(product_id, uom_id, parent.employee_id, context)"/>
                             <field name="unit_amount"/>
