@@ -16,11 +16,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: sale_order_version
-#: sql_constraint:sale.order:0
-msgid "Order Reference must be unique per Company!"
-msgstr "Il riferimento dell'ordine deve essere unico per ogni azienda!"
-
-#. module: sale_order_version
 #: view:sale.order:0
 msgid "More options"
 msgstr "Maggiori Opzioni"

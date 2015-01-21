@@ -21,11 +21,6 @@ msgid "Advance Invoice"
 msgstr "Fattura di acconto"
 
 #. module: tko_sale_validation
-#: sql_constraint:sale.order:0
-msgid "Order Reference must be unique per Company!"
-msgstr "Il riferimento dell'ordine deve essere unico per ogni azienda!"
-
-#. module: tko_sale_validation
 #: view:cancel.sale.order:0
 msgid "Don't Refuse"
 msgstr "Non Rifiutare"

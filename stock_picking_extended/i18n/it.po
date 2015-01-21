@@ -16,12 +16,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_picking_extended
-#: sql_constraint:purchase.order:0
-#: sql_constraint:sale.order:0
-msgid "Order Reference must be unique per Company!"
-msgstr "Il riferimento dell'ordine deve essere unico per ogni azienda!"
-
-#. module: stock_picking_extended
 #: field:stock.journal,default_invoice_state:0
 msgid "Invoice Control"
 msgstr "Controllo fatture"
