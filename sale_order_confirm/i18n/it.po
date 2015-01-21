@@ -87,7 +87,7 @@ msgstr "Preventivi"
 #. module: sale_order_confirm
 #: view:sale.order:0
 msgid "Set to Draft"
-msgstr "Imposta come Bozza"
+msgstr "Rimetti a Preventivo"
 
 #. module: sale_order_confirm
 #: code:addons/sale_order_confirm/sale.py:154
