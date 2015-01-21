@@ -55,11 +55,11 @@ class sale_order(osv.osv):
                     #    raise osv.except_osv(_('Error'), _('You cannot reset this Sale Order to draft, because picking [ %s %s ] is not in state draft or cancel ')% (pick.name, pick.state))
 
             if order.invoice_ids:
-                for inv in order.invoice_ids:
-                    account_invoice_obj.action_reopen(cr, uid, [inv.id])
-                #for inv in order.picking_ids:
-                #    if inv.state not in ['draft','cancel']: # very restrictive
-                #        raise osv.except_osv(_('Error'), _('You cannot reset this Sale Order to draft, because invoice %s %s is not in state draft or cancel ')% (inv.name, inv.state))
+                #for inv in order.invoice_ids:
+                #    account_invoice_obj.action_reopen(cr, uid, [inv.id])
+                for inv in order.picking_ids:
+                    if inv.state not in ['draft','cancel']: # very restrictive
+                        raise osv.except_osv(_('Error'), _('You cannot reset this Sale Order to draft, because invoice %s %s is not in state draft or cancel ')% (inv.name, inv.state))
 
         return True
 
