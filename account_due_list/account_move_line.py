@@ -44,13 +44,14 @@ class account_move_line(orm.Model):
     def _residual(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            if line.reconcile_partial_id:
-                total_line = 0.0
-                for line_reconcile in line.reconcile_partial_id.line_partial_ids:
-                    total_line += line_reconcile.debit - line_reconcile.credit
-                res[line.id] = total_line
-            else:
-                res[line.id] = line.debit - line.credit
+            res[line.id] = line.debit - line.credit
+#             if line.reconcile_partial_id:
+#                 total_line = 0.0
+#                 for line_reconcile in line.reconcile_partial_id.line_partial_ids:
+#                     total_line += line_reconcile.debit - line_reconcile.credit
+#                 res[line.id] = total_line
+#             else:
+
         return res
     
     def _direction(self, cr, uid, ids, name, arg, context=None):

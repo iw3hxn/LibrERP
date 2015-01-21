@@ -105,7 +105,7 @@
             <field name="view_id" ref="account.account_journal_view"/>
             <field name="name">Residual</field>
             <field name="field">residual</field>
-            <field eval="12" name="sequence"/>
+            <field eval="13" name="sequence"/>
         </record>
     
     
@@ -113,14 +113,14 @@
             <field name="view_id" ref="account.account_sp_journal_view"/>
             <field name="name">Residual</field>
             <field name="field">residual</field>
-            <field eval="12" name="sequence"/>
+            <field eval="13" name="sequence"/>
         </record>
     
         <record id="sp_refund_journal_col13" model="account.journal.column">
             <field name="view_id" ref="account.account_sp_refund_journal_view"/>
             <field name="name">Residual</field>
             <field name="field">residual</field>
-            <field eval="12" name="sequence"/>
+            <field eval="13" name="sequence"/>
         </record>
     
     
