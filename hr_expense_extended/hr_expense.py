@@ -144,7 +144,6 @@ class hr_expense_line(orm.Model):
         if values.get('product_id', False) and not values.get('uom_id', False):
             product = self.pool['product.product'].browse(cr, uid, values['product_id'])
             values['uom_id'] = product.uom_id.id
-            
         return super(hr_expense_line, self).write(cr, uid, ids, values, context)
 
     def create(self, cr, uid, values, context=None):
@@ -158,3 +157,11 @@ class hr_expense_line(orm.Model):
             values['uom_id'] = product.uom_id and product.uom_id.id or 1
         
         return super(hr_expense_line, self).create(cr, uid, values, context)
+    
+    def unlink(self, cr, uid, ids, context=None):
+        analytic_line_obj = self.pool['account.analytic.line']
+        for line in self.browse(cr, uid, ids, context):
+            analytic_line_ids = analytic_line_obj.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=line._name, document_id=line.id))])
+            if analytic_line_ids:
+               analytic_line_obj.unlink(cr, uid, analytic_line_ids, context)
+        return super(hr_expense_line, self).unlink(cr, uid, ids, context)
