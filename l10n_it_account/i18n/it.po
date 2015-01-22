@@ -190,7 +190,7 @@ msgstr "Conto sorgente"
 #. module: account
 #: model:ir.actions.act_window,name:account.act_acc_analytic_acc_5_report_hr_timesheet_invoice_journal
 msgid "All Analytic Entries"
-msgstr "Tutte le voci analitiche"
+msgstr "Dettaglio Costi Analitica"
 
 #. module: account
 #: model:ir.actions.act_window,name:account.action_view_created_invoice_dashboard
