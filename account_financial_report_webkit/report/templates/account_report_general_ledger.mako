@@ -178,7 +178,7 @@
                           ## move
                           <div class="act_as_cell">${line.get('move_name') or ''}</div>
                           ## journal
-                          <div class="act_as_cell">${line.get('jcode') or ''}</div>
+                          <div class="act_as_cell">${line.get('jname') or ''}</div>
                           ## account code
                           <div class="act_as_cell">${account.code}</div>
                           ## partner

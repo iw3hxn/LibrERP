@@ -439,6 +439,7 @@ class CommonReportHeaderWebkit(common_report_header):
 SELECT l.id AS id,
             l.date AS ldate,
             j.code AS jcode ,
+            j.name AS jname ,
             l.currency_id,
             l.account_id,
             l.amount_currency,

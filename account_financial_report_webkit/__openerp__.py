@@ -96,7 +96,7 @@ header and footer are created as text with arguments passed to
 wkhtmltopdf. The texts are defined inside the report classes.
 
 """,
-    'version': '1.0',
+    'version': '2.0.1.0',
     'author': 'Camptocamp',
     'category': 'Finance',
     'website': 'http://www.camptocamp.com',
