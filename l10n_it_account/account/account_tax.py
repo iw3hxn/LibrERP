@@ -130,38 +130,34 @@ class account_tax(orm.Model):
             return super(account_tax, self).write(cr, uid, ids, vals, context)
 
         if not tax.base_code_id:
-            if not vals.get('account_base_tax_code_id', False) and not tax.account_base_tax_code_id:
-                raise orm.except_orm(_('Error!'), 
-                        _("Base Tax Code parent must be set."))
-            elif not vals.get('base_code_id', False):
-                parent_base_tax_code = tax.account_base_tax_code_id or tax_code_obj.browse(cr, uid, vals['account_base_tax_code_id'])
-                base_tax_code_vals = {
-                    'name': tax.name or vals.get('name') + ' (imp)',
-                    'code': parent_base_tax_code.code + tax.description or vals.get('description'),
-                    'parent_id': tax.account_base_tax_code_id.id or vals.get('account_base_tax_code_id'),
-                    'is_base': True,
-                    'vat_statement_type': (tax.type_tax_use or vals.get('type_tax_use')) == 'sale' and 'debit' or (tax.type_tax_use or vals.get('type_tax_use')) == 'purchase' and 'credit',
-                    'vat_statement_sign': (tax.type_tax_use or vals.get('type_tax_use')) == 'sale' and 1 or (tax.type_tax_use or vals.get('type_tax_use')) == 'purchase' and -1,
-                }
-                base_code_id = tax_code_obj.create(cr, uid, base_tax_code_vals, context=context)
-                vals.update({'base_code_id': base_code_id})
+            if vals.get('account_base_tax_code_id', False) or tax.account_base_tax_code_id \
+                and not vals.get('base_code_id', False):
+                    parent_base_tax_code = tax.account_base_tax_code_id or tax_code_obj.browse(cr, uid, vals['account_base_tax_code_id'])
+                    base_tax_code_vals = {
+                        'name': tax.name or vals.get('name') + ' (imp)',
+                        'code': parent_base_tax_code.code + tax.description or vals.get('description'),
+                        'parent_id': tax.account_base_tax_code_id.id or vals.get('account_base_tax_code_id'),
+                        'is_base': True,
+                        'vat_statement_type': (tax.type_tax_use or vals.get('type_tax_use')) == 'sale' and 'debit' or (tax.type_tax_use or vals.get('type_tax_use')) == 'purchase' and 'credit',
+                        'vat_statement_sign': (tax.type_tax_use or vals.get('type_tax_use')) == 'sale' and 1 or (tax.type_tax_use or vals.get('type_tax_use')) == 'purchase' and -1,
+                    }
+                    base_code_id = tax_code_obj.create(cr, uid, base_tax_code_vals, context=context)
+                    vals.update({'base_code_id': base_code_id})
 
         if not tax.tax_code_id:
-            if not vals.get('account_tax_code_id', False) and not tax.account_tax_code_id:
-                raise orm.except_orm(_('Error!'), 
-                    _("Tax Code parent must be set."))
-            elif not vals.get('tax_code_id', False):
-                parent_tax_code = tax.account_tax_code_id or tax_code_obj.browse(cr, uid, vals['account_tax_code_id'])
-                tax_code_vals = {
-                    'name': tax.name or vals.get('name'),
-                    'code': parent_tax_code.code + tax.description or vals.get('description'),
-                    'parent_id': tax.account_tax_code_id.id or vals.get('account_tax_code_id'),
-                    'is_base': False,
-                    'vat_statement_type': (tax.type_tax_use or vals.get('type_tax_use')) == 'sale' and 'debit' or (tax.type_tax_use or vals.get('type_tax_use')) == 'purchase' and 'credit',
-                    'vat_statement_sign': (tax.type_tax_use or vals.get('type_tax_use')) == 'sale' and 1 or (tax.type_tax_use or vals.get('type_tax_use')) == 'purchase' and -1,
-                }
-                tax_code_id = tax_code_obj.create(cr, uid, tax_code_vals, context=context)
-                vals.update({'tax_code_id': tax_code_id})
+            if vals.get('account_tax_code_id', False) or tax.account_tax_code_id \
+                and not vals.get('tax_code_id', False):
+                    parent_tax_code = tax.account_tax_code_id or tax_code_obj.browse(cr, uid, vals['account_tax_code_id'])
+                    tax_code_vals = {
+                        'name': tax.name or vals.get('name'),
+                        'code': parent_tax_code.code + tax.description or vals.get('description'),
+                        'parent_id': tax.account_tax_code_id.id or vals.get('account_tax_code_id'),
+                        'is_base': False,
+                        'vat_statement_type': (tax.type_tax_use or vals.get('type_tax_use')) == 'sale' and 'debit' or (tax.type_tax_use or vals.get('type_tax_use')) == 'purchase' and 'credit',
+                        'vat_statement_sign': (tax.type_tax_use or vals.get('type_tax_use')) == 'sale' and 1 or (tax.type_tax_use or vals.get('type_tax_use')) == 'purchase' and -1,
+                    }
+                    tax_code_id = tax_code_obj.create(cr, uid, tax_code_vals, context=context)
+                    vals.update({'tax_code_id': tax_code_id})
 
         return super(account_tax, self).write(cr, uid, ids, vals, context)
 
