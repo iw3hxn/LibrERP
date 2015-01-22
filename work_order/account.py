@@ -22,7 +22,7 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from product._common import rounding
 import datetime
@@ -32,7 +32,18 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 class account_analytic_line(orm.Model):
     _inherit = 'account.analytic.line'
     
-    def get_cost_amount(self, cr, uid, product, product_qty):
+    def _get_selection_list(self, cr, uid, context=None):
+        #@return a list of tuples. tuples containing model name and name of the record
+        model_obj = self.pool['ir.model']
+        ids = model_obj.search(cr, uid, [('name', 'not ilike', '.')])
+        res = model_obj.read(cr, uid, ids, ['model', 'name'])
+        return [(r['model'], r['name']) for r in res] + [('', '')]
+    
+    _columns = {
+        'origin_document': fields.reference("Origin Document", selection=_get_selection_list, size=None)
+    }
+    
+    def get_cost_amount(self, cr, uid, product, product_qty, context=None):
         price_unit_precision = self.pool['decimal.precision'].precision_get(cr, uid, 'Sale Price')
         if product.is_kit:
             bom_obj = self.pool['mrp.bom']
@@ -68,7 +79,7 @@ class account_analytic_line(orm.Model):
         }
         
         if values.get('account_id', False):
-            user = self.pool['res.users'].browse(cr, uid, uid)
+            user = self.pool['res.users'].browse(cr, uid, uid, context)
             
             journal = getattr(user.company_id, journals[values['origin_document']._name]['journal'])
             if journal:
@@ -82,7 +93,7 @@ class account_analytic_line(orm.Model):
             if values.get('unit_amount', False):
                 amount = rounding(values['unit_amount'] * product_qty, 10 ** - price_unit_precision)
             elif values.get('product', False):
-                amount = self.get_cost_amount(cr, uid, values['product'], product_qty)
+                amount = self.get_cost_amount(cr, uid, values['product'], product_qty, context)
             else:
                 return False
             
@@ -101,7 +112,7 @@ class account_analytic_line(orm.Model):
             line_date = datetime.datetime.strptime(values['date'], DEFAULT_SERVER_DATETIME_FORMAT)
             line_date = datetime.date(year=line_date.year, month=line_date.month, day=line_date.day)
             
-            analytic_line_ids = self.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id))])
+            analytic_line_ids = self.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id))], context)
 
             if analytic_line_ids:
                 return self.write(cr, uid, analytic_line_ids, {
@@ -119,7 +130,7 @@ class account_analytic_line(orm.Model):
                     'amount_currency': 0.0,
                     'ref': values.get('ref', False),
                     'origin_document': '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id)
-                })
+                }, context)
             else:
                 return self.create(cr, uid, {
                     'amount': -amount,
@@ -136,6 +147,6 @@ class account_analytic_line(orm.Model):
                     'amount_currency': 0.0,
                     'ref': values.get('ref', False),
                     'origin_document': '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id)
-                })
+                }, context)
         else:
             return False

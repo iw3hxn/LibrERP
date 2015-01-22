@@ -58,25 +58,11 @@ class stock_picking(orm.Model):
     def action_reopen(self, cr, uid, ids, context=None):
         analytic_line_obj = self.pool['account.analytic.line']
 
-        for picking in self.browse(cr, uid, ids):
+        for picking in self.browse(cr, uid, ids, context):
             for move in picking.move_lines:
-                analytic_line_ids = analytic_line_obj.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=move._name, document_id=move.id))])
+                analytic_line_ids = analytic_line_obj.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=move._name, document_id=move.id))], context)
                 if analytic_line_ids:
-                    analytic_line_obj.unlink(cr, uid, analytic_line_ids)
-            
+                    analytic_line_obj.unlink(cr, uid, analytic_line_ids, context)
+
         return super(stock_picking, self).action_reopen(cr, uid, ids, context)
 
-
-class account_analytic_line(orm.Model):
-    _inherit = 'account.analytic.line'
-    
-    def _get_selection_list(self, cr, uid, context=None):
-        #@return a list of tuples. tuples containing model name and name of the record
-        model_obj = self.pool.get('ir.model')
-        ids = model_obj.search(cr, uid, [('name', 'not ilike', '.')])
-        res = model_obj.read(cr, uid, ids, ['model', 'name'])
-        return [(r['model'], r['name']) for r in res] + [('', '')]
-    
-    _columns = {
-        'origin_document': fields.reference("Origin Document", selection=_get_selection_list, size=None)
-    }

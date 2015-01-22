@@ -24,7 +24,7 @@
 
 {
     "name": "Job Order management",
-    "version": "3.12.27.18",
+    "version": "3.12.27.19",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Sales Management",
@@ -49,7 +49,8 @@
         'res_company_view.xml',
         'stock_picking_view.xml',
         'sale_order_view.xml',
-        'res_request_link.xml'
+        'res_request_link.xml',
+        'account_analytic_line_view.xml'
     ],
     "active": False,
     "installable": True,
