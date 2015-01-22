@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation - Account Didotech',
-    'version': '2.10.19.19',
+    'version': '2.11.20.19',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 

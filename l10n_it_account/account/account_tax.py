@@ -21,10 +21,17 @@
 
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
+from openerp import pooler
 
 
 class account_tax(orm.Model):
     _inherit = 'account.tax'
+
+    def get_precision_tax():
+        def change_digit_tax(cr):
+            res = pooler.get_pool(cr.dbname).get('decimal.precision').precision_get(cr, 1, 'Account')
+            return (17, res+3)
+        return change_digit_tax
 
     def copy(self, cr, uid, tax_id, defaults, context=None):
         raise orm.except_orm(_('Warning'), _("Tax can't be duplicated"))
@@ -182,4 +189,6 @@ class account_tax(orm.Model):
                                          relation='account.tax.code', string='Refund Base Code', store=True, readonly=True),
         'ref_tax_code_id':fields.related('tax_code_id', type='many2one', 
                                          relation='account.tax.code', string='Refund Tax Code', store=True, readonly=True),
+        'amount': fields.float('Amount', required=True, digits_compute=get_precision_tax(), 
+                               help="For taxes of type percentage, enter % ratio between 0-1."),
     }
