@@ -59,7 +59,7 @@ class project_task(orm.Model):
         projects = self.browse(cr, uid, ids)
         for project_id in projects:
             account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id)], context=context)
-            sale_ids = self.pool['sale.order'].search(cr, uid, [('project_id', '=', project_id.analytic_account_id.id)], context=context)
+            sale_ids = self.pool['sale.order'].search(cr, uid, [('project_id', '=', project_id.analytic_account_id.id), ('state', 'not in', ['draft'])], context=context)
             
             res[project_id.id] = {
                 'total_spent': 0.0,
