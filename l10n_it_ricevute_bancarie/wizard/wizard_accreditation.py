@@ -48,7 +48,8 @@ class riba_accreditation(osv.osv_memory):
         distinta = distinta_pool.browse(cr, uid, context['active_id'], context=context)
         amount = 0.0
         for line in distinta.line_ids:
-            amount += line.amount
+            if line.tobeaccredited and line.state == 'confirmed':
+                amount += line.amount
         return amount
 
     _name = "riba.accreditation"
@@ -98,6 +99,7 @@ class riba_accreditation(osv.osv_memory):
         wizard = self.browse(cr, uid, ids)[0]
         if not wizard.accreditation_journal_id or not wizard.accreditation_account_id or not wizard.bank_account_id or not wizard.bank_expense_account_id:
             raise osv.except_osv(_('Error'), _('Every account is mandatory'))
+
         move_vals = {
             'ref': _('Accreditation Ri.Ba. %s') % distinta.name,
             'journal_id': wizard.accreditation_journal_id.id,
@@ -123,9 +125,16 @@ class riba_accreditation(osv.osv_memory):
                 ]
             }
         move_id = move_pool.create(cr, uid, move_vals, context=context)
-        distinta.write({'accreditation_move_id': move_id})
-        wf_service.trg_validate(
-            uid, 'riba.distinta', active_id, 'accredited', cr)
+        accredited = True
+        for line in distinta.line_ids:
+            if line.tobeaccredited and not line.state == "accredited":
+                line.write({'accreditation_move_id': move_id,
+                            'state': 'accredited'})
+            if not line.tobeaccredited:
+                    accredited = False
+        if accredited:
+            wf_service.trg_validate(
+                uid, 'riba.distinta', active_id, 'accredited', cr)
         return {
             'name': _('Accreditation Entry'),
             'view_type': 'form',
@@ -135,6 +144,3 @@ class riba_accreditation(osv.osv_memory):
             'target': 'current',
             'res_id': move_id or False,
         }
-
-
-riba_accreditation()

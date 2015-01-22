@@ -57,7 +57,8 @@
                     <notebook colspan="4">
                         <page string="General">
                             <field name="line_ids" nolabel="1" colspan="4">
-                                <tree string="Detail">
+                                <tree string="Detail" editable="top">
+                                    <field name="tobeaccredited"/>
                                     <field name="sequence"/>
                                     <field name="invoice_number"/>
                                     <field name="invoice_date"/>
@@ -137,7 +138,7 @@
                             <separator colspan="4" string="Acceptance Entries"/>
                             <field name='acceptance_move_ids' colspan="4" nolabel="1"/>
                             <separator colspan="4" string="Accreditation Entry"/>
-                            <field name='accreditation_move_id' colspan="4" nolabel="1"/>
+                            <field name='accreditation_move_ids' colspan="4" nolabel="1"/>
                             <separator colspan="4" string="Payments"/>
                             <field name='payment_ids' colspan="4" nolabel="1">
                                 <tree string="Payments">

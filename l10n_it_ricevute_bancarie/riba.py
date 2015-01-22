@@ -25,12 +25,21 @@
 ##############################################################################
 
 from osv import fields, osv
-import time
 import decimal_precision as dp
 import netsvc
 from tools.translate import _
 
 class riba_distinta(osv.osv):
+    
+    def _get_accreditation_move_ids(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        for distinta in self.browse(cr, uid, ids, context=context):
+            move_ids = []
+            for line in distinta.line_ids:
+                if line.accreditation_move_id and line.accreditation_move_id.id not in move_ids:
+                    move_ids.append(line.accreditation_move_id.id)
+            res[distinta.id] = move_ids
+        return res
     
     def _get_acceptance_move_ids(self, cr, uid, ids, field_name, arg, context):
         res = {}
@@ -79,7 +88,7 @@ class riba_distinta(osv.osv):
             ('unsolved', 'Unsolved'),
             ('cancel', 'Canceled')], 'State', select=True, readonly=True),
         'line_ids': fields.one2many('riba.distinta.line', 'distinta_id',
-            'Riba deadlines', readonly=True, states={'draft': [('readonly', False)]}),
+            'Riba deadlines', readonly=False,),# states={'draft': [('readonly', False)]}),
         'user_id': fields.many2one('res.users', 'User', required=True, readonly=True, states={'draft': [('readonly', False)]}),
         'date_created': fields.date('Creation date', readonly=True),
         'date_accepted': fields.date('Acceptance date', readonly=True),
@@ -88,7 +97,9 @@ class riba_distinta(osv.osv):
         'date_unsolved': fields.date('Unsolved date', readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
         'acceptance_move_ids': fields.function(_get_acceptance_move_ids, type='many2many', relation='account.move', method=True, string="Acceptance Entries"),
-        'accreditation_move_id': fields.many2one('account.move', 'Accreditation Entry', readonly=True),
+        #sc: modify accreditation from id to ids
+        'accreditation_move_ids': fields.function(_get_accreditation_move_ids, type='many2many', relation='account.move', method=True, string="Accreditation Entries"),
+        #'accreditation_move_id': fields.many2one('account.move', 'Accreditation Entry', readonly=True),
         'payment_ids': fields.function(_get_payment_ids, relation='account.move.line', type="many2many", string='Payments'),
         'unsolved_move_ids': fields.function(_get_unsolved_move_ids, type='many2many', relation='account.move', method=True, string="Unsolved Entries"),
         'type': fields.related('config', 'tipo', type='char', size=32, string='Type', readonly=True),
@@ -128,8 +139,8 @@ class riba_distinta(osv.osv):
                     line.acceptance_move_id.unlink()
                 if line.unsolved_move_id:
                     line.unsolved_move_id.unlink()
-            if distinta.accreditation_move_id:
-                distinta.accreditation_move_id.unlink()
+                if line.accreditation_move_id:
+                    line.accreditation_move_id.unlink()
         self.write(cr, uid, ids, {
             'state': 'cancel',
             }, context=context)
@@ -147,9 +158,6 @@ class riba_distinta(osv.osv):
             'state': 'accredited',
             'date_accreditation': fields.date.context_today(cr,uid,context),
             }, context=context)
-        for distinta in self.browse(cr, uid, ids, context=context):
-            for line in distinta.line_ids:
-                line.write({'state': 'accredited'})
         return True
     
     def riba_paid(self, cr, uid, ids, context=None):
@@ -317,6 +325,7 @@ class riba_distinta_line(osv.osv):
         'move_line_ids': fields.one2many('riba.distinta.move.line', 'riba_line_id', 'Credit move lines'),
         'acceptance_move_id': fields.many2one('account.move', 'Acceptance Entry', readonly=True),
         'unsolved_move_id': fields.many2one('account.move', 'Unsolved Entry', readonly=True),
+        'accreditation_move_id': fields.many2one('account.move', 'Accreditation Entry', readonly=True),
         'acceptance_account_id': fields.many2one('account.account', 'Acceptance Account'),
         'amount': fields.function(_get_line_values, method=True, string="Amount", multi="line"),
         'bank_id': fields.many2one('res.partner.bank', 'Debitor Bank'),
@@ -342,6 +351,7 @@ class riba_distinta_line(osv.osv):
             }, help="It indicates that the line has been paid and the journal entry of the line has been reconciled with one or several journal entries of payment."),
         'payment_ids': fields.function(_compute_lines, relation='account.move.line', type="many2many", string='Payments'),
         'type': fields.related('distinta_id', 'type', type='char', size=32, string='Type', readonly=True),
+        'tobeaccredited': fields.boolean('To be accredited'),
     }
     
     def confirm(self, cr, uid, ids, context=None):
