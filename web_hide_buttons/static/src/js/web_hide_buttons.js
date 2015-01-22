@@ -42,6 +42,8 @@ openerp.web_hide_buttons = function (openerp) {
                 if (context.nocreate) {
                     this.$element.find('.oe_form_button_create')
                         .attr('disabled', true).hide();
+                }
+                if (context.noduplicate) {
                     this.$element.find('.oe_form_button_duplicate')
                         .attr('disabled', true).hide();
                 }
