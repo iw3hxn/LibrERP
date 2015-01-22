@@ -40,12 +40,10 @@ class account_invoice(orm.Model):
                         if ',' in invoice.origin:
                             origins = invoice.origin.split(',')
                             if len(origins) == 2:
-                                #import pdb;pdb.set_trace()
                                 if ':' in  origins[0]:
                                     picking_name, sale_order_name = origins[0].split(':')
                                 else:
                                     picking_name = origins[0]
-                                     
                         else:
                             origins = invoice.origin.split(':')
                             if len(origins) == 2:

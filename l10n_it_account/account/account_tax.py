@@ -51,7 +51,7 @@ class account_tax(orm.Model):
         if vals.get('base_code_id', False) and vals.get('tax_code_id', False):
             return super(account_tax, self).create(cr, uid, vals, context)
 
-        if not vals.get('base_code_id', False):
+        if not vals.get('base_code_id', False) and vals.get('account_base_tax_code_id', False):
             parent_base_tax_code = tax_code_obj.browse(cr, uid, vals['account_base_tax_code_id'])
             base_tax_code_vals = {
                 'name': vals['name'] + ' (imp)',
@@ -74,7 +74,7 @@ class account_tax(orm.Model):
             base_code_id = tax_code_obj.create(cr, uid, base_tax_code_vals, context=context)
             vals.update({'base_code_id': base_code_id})
 
-        if not vals.get('tax_code_id', False):
+        if not vals.get('tax_code_id', False) and vals.get('account_tax_code_id', False):
             parent_tax_code = tax_code_obj.browse(cr, uid, vals['account_tax_code_id'])
             tax_code_vals = {
                 'name': vals['name'],
