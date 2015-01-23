@@ -1,0 +1,92 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_invoice_merge
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-18 18:16+0000\n"
+"PO-Revision-Date: 2012-08-18 18:16+0000\n"
+"Last-Translator: Mikel Martin <mikel@zhenit.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_invoice_merge
+#: view:invoice.merge:0
+msgid "_Merge invoces"
+msgstr ""
+
+#. module: account_invoice_merge
+#: code:addons/account_invoice_merge/invoice.py:44
+#, python-format
+msgid "You can merge only invoices in draft state."
+msgstr ""
+
+#. module: account_invoice_merge
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr ""
+
+#. module: account_invoice_merge
+#: view:invoice.merge:0
+msgid "Facturas"
+msgstr ""
+
+#. module: account_invoice_merge
+#: view:invoice.merge:0
+msgid "_Cancel"
+msgstr ""
+
+#. module: account_invoice_merge
+#: field:invoice.merge,invoices:0
+msgid "Invoices"
+msgstr ""
+
+#. module: account_invoice_merge
+#: model:ir.model,name:account_invoice_merge.model_account_invoice_line
+msgid "Invoice Line"
+msgstr ""
+
+#. module: account_invoice_merge
+#: model:ir.model,name:account_invoice_merge.model_invoice_merge
+msgid "Use this wizard to merge draft invoices from the same partner"
+msgstr ""
+
+#. module: account_invoice_merge
+#: code:addons/account_invoice_merge/invoice.py:41
+#, python-format
+msgid "Can not merge invoice(s) on different partners or states !."
+msgstr ""
+
+#. module: account_invoice_merge
+#: code:addons/account_invoice_merge/invoice.py:41
+#, python-format
+msgid "Partners don't match!"
+msgstr ""
+
+#. module: account_invoice_merge
+#: model:ir.actions.act_window,name:account_invoice_merge.action_invoice_merge
+#: model:ir.actions.act_window,name:account_invoice_merge.product_margin_act_window
+msgid "Merge invoices"
+msgstr ""
+
+#. module: account_invoice_merge
+#: view:invoice.merge:0
+msgid "Search Invoices"
+msgstr ""
+
+#. module: account_invoice_merge
+#: model:ir.model,name:account_invoice_merge.model_account_invoice
+msgid "Invoice"
+msgstr ""
+
+#. module: account_invoice_merge
+#: code:addons/account_invoice_merge/invoice.py:44
+#, python-format
+msgid "Invalid action !"
+msgstr ""
+
