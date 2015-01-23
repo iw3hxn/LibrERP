@@ -277,7 +277,7 @@ class ImportFile(threading.Thread, Utils):
         
         for name in names:
             name = name.strip()
-            partner_ids = self.pool.get('res.partner').search(cr, uid, [('name', '=ilike', name)])
+            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)])
             
             if len(partner_ids) == 1:
                 supplier_ids += partner_ids
@@ -337,6 +337,7 @@ class ImportFile(threading.Thread, Utils):
             self.error.append(error)
             return False
         elif DEBUG:
+            #pprint(row_list)
             row_str_list = [self.toStr(value) for value in row_list]
             pprint(zip(self.HEADER, row_str_list))
         

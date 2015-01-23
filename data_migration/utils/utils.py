@@ -40,7 +40,10 @@ class Utils():
             return value.strip()
         else:
             try:
-                value = int(value)
+                if '.' in value:
+                    value = float(value)
+                else:
+                    value = int(value)
             except:
                 pass
             return unicode(value)
