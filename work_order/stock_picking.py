@@ -58,11 +58,11 @@ class stock_picking(orm.Model):
     def action_reopen(self, cr, uid, ids, context=None):
         analytic_line_obj = self.pool['account.analytic.line']
 
-        for picking in self.browse(cr, uid, ids, context):
+        for picking in self.browse(cr, uid, ids, context=context):
             for move in picking.move_lines:
-                analytic_line_ids = analytic_line_obj.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=move._name, document_id=move.id))], context)
+                analytic_line_ids = analytic_line_obj.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=move._name, document_id=move.id))], context=context)
                 if analytic_line_ids:
-                    analytic_line_obj.unlink(cr, uid, analytic_line_ids, context)
+                    analytic_line_obj.unlink(cr, uid, analytic_line_ids, context=context)
 
-        return super(stock_picking, self).action_reopen(cr, uid, ids, context)
+        return super(stock_picking, self).action_reopen(cr, uid, ids, context=context)
 
