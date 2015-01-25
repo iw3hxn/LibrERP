@@ -6,6 +6,7 @@
         <record id="view_invoice_line_form_customer" model="ir.ui.view">
             <field name="name">account.invoice.line.form</field>
             <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref=""/> <!-- set to null for erase old value -->
             <field name="arch" type="xml">
                 <form string="Invoice Line">
                   <notebook colspan="4">
