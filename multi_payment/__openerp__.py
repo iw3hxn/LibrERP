@@ -21,13 +21,13 @@
 
 {
     'name': 'Multi payment improvements',
-    'version': '3.0.0.0',
+    'version': '3.1.1.1',
     'category': 'Generic Modules/Payment',
     'description': """
 
 Functionalities:
 
-- Add multi payment to bank statement
+- Add grouped multi payment to bank statement
 
 """,
     'author': 'Sergio Corato',
