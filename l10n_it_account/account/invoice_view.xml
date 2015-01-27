@@ -28,6 +28,9 @@
                     <separator colspan="4" string="Taxes"/>
                     <field colspan="4" name="invoice_line_tax_id" context="{'type':parent.type}" domain="[('parent_id','=',False),('company_id', '=', parent.company_id)]" nolabel="1" required="1"/>
                    </page>
+                   <page string="Altro" groups="account.group_account_manager">
+                        <field name="origin" />
+                   </page>
                  </notebook>
                 </form>
             </field>
