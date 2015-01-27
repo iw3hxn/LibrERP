@@ -31,6 +31,7 @@ class account_invoice(orm.Model):
     def _is_direct_invoice(self, cr, uid, ids, filed_name, args, context=None):
         result = {}
         if ids:
+            picking_name = False
             invoices = self.browse(cr, uid, ids, context)
             for invoice in invoices:
                 if hasattr(invoice, 'move_products') and invoice.move_products:
