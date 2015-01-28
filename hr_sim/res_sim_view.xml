@@ -507,7 +507,7 @@
         
 
 
-        <record id="open_module_tree_res_sim" model="ir.actions.act_window">
+<!--        <record id="open_module_tree_res_sim" model="ir.actions.act_window">
             <field name="name">My Sims</field>
             <field name="res_model">res.sim</field>
             <field name="view_type">form</field>
@@ -516,7 +516,7 @@
         </record>
         
        <menuitem action="open_module_tree_res_sim" id="menu_my_res_sim_tree" parent="hr.menu_hr_main" />
-        
+        -->
         <record id="open_module_tree_sim" model="ir.actions.act_window">
             <field name="name">Sims</field>
             <field name="res_model">res.sim</field>

@@ -378,8 +378,9 @@ class res_sim(orm.Model):
         'sim_type_id': fields.many2one('res.sim.type', 'Sim Type'), 
         'sim_use_id' : fields.many2one('res.sim.use', 'Utilizzo'),
         'apn_group_id': fields.many2one('res.sim.apn_group', 'APN Group'), 
-        'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
-        'employee_id': fields.function(_get_employee, method=True, string="Employee", type="many2one", relation="hr.employee",),
+        #'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
+        'employee_id': fields.function(_get_employee, method=True, string="Employee", type="many2one", relation="hr.employee",
+                                    ),
         'subscription_start_date': fields.date("Start Date"),
         'subscription_end_date': fields.date("End Date"),
         'note': fields.text('Note'),
@@ -411,10 +412,9 @@ class res_sim(orm.Model):
     _order = "prefix_number asc, number asc, prefix_fax_number asc, fax_number asc, prefix_data_number asc, data_number asc" 
 
     def set_default_phone(self, cr, uid, ids, context=None):
-        for sim in self.read(cr, uid, ids):
+        for sim in self.read(cr, uid, ids, context=context):
             if sim['employee_id']:
-                sim_ids = self.search(cr, uid, [('employee_id', '=', sim['employee_id'][0])])
-                
+                sim_ids = self.search(cr, uid, [('employee_id', '=', sim['employee_id'][0])], context=context)
                 self.pool['hr.employee'].write(cr, uid, [sim['employee_id'][0]], {'work_phone': sim['prefix_number'] + sim['number']}, context=context)
                 self.write(cr, uid, sim_ids, {'default':False}, context=context)
                 self.write(cr, uid, [sim['id']], {'default':True}, context=context)
