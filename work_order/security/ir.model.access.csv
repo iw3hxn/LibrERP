@@ -3,4 +3,4 @@
 "create_project","project.project","project.model_project_project","base.group_sale_salesman",1,1,1,0
 "create_task","project.task","project.model_project_task","base.group_sale_salesman",1,1,1,0
 "create_task_type","project.task.type","project.model_project_task_type","base.group_sale_salesman",1,1,1,0
-"access_account_analytic_line","warehous_user","account.account_analytic_line","stock.group_stock_user",1,1,1,1
+"access_account_analytic_line","warehous_user","account.model_account_analytic_line","stock.group_stock_user",1,1,1,1
