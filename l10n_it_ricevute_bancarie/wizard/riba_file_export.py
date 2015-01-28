@@ -141,8 +141,8 @@ class riba_file_export(osv.osv_memory):
         if not credit_bank.iban:
             raise osv.except_osv('Error', _('No IBAN specified'))
         iban = credit_bank.iban.replace(" ", "")
-        credit_abi = iban[5:10]
-        credit_cab = iban[10:15]
+        credit_abi = credit_bank.bank.abi or iban[-22:-17]
+        credit_cab = credit_bank.bank.cab or iban[-17:-12]
         credit_conto = iban[-12:]
         if not credit_bank.codice_sia:
             raise osv.except_osv('Error', _('No SIA Code specified for: ') + name_company)
