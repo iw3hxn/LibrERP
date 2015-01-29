@@ -59,6 +59,8 @@
                     <field name="last_name" select="1"/>
                     <field name="first_name" select="1"/>
                     <field name="function_id" widget="selection" />
+                    <field name="fuction" />
+
                 </group>
                 <notebook colspan="4" >
                     <page string="General">                        
