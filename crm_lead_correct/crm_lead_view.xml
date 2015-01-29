@@ -59,10 +59,12 @@
                         <field domain="[('domain', '=', 'contact')]" name="title" widget="selection" nolabel="1" placeholder="Title" colspan="1" />
                         <field name="contact_name" colspan="2" nolabel="1" placeholder="Name"/>
 						<field name="function_id" widget="selection" nolabel="1" placeholder="Function" colspan="1"/>
+			<newline/>
+                        <field name="function" nolabel="1" colspan="2" placeholder="Function on business card" />
+                        <newline/>			
+			<label for="street" string="Address"/>
 						
-						<label for="street" string="Address"/>
-						
-						<field name="street" colspan="4" placeholder="Street..." string=" "/>
+			<field name="street" colspan="4" placeholder="Street..." string=" "/>
                         <field name="street2" colspan="4" string=" "/>
 						<field name="zip"  on_change="on_change_zip(zip)" placeholder="ZIP" string=" "/>
 						<field name="city" on_change="on_change_city(city,zip)" placeholder="City" nolabel="1"/>
@@ -89,7 +91,7 @@
                         <field name="mobile"/>
                         <newline/>
                         <separator string="Links" colspan="4" col="3"/>
-                        <field name="partner_id" string="Customer" on_change="on_change_partner_id(partner_id)" options="{&quot;create_name_field&quot;: &quot;name&quot;}" context="{'default_name': contact_name, 'default_street': street, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_function': function, 'default_phone': phone, 'default_mobile': mobile, 'default_fax': fax, 'default_email': email_from, 'default_user_id': user_id, 'default_section_id': section_id}"/>
+                        <field name="partner_id" string="Customer" options="{&quot;create_name_field&quot;: &quot;name&quot;}" context="{'default_name': contact_name, 'default_street': street, 'default_city': city, 'default_zip': zip, 'default_country_id': country_id, 'default_function': function, 'default_phone': phone, 'default_mobile': mobile, 'default_fax': fax, 'default_email': email_from, 'default_user_id': user_id, 'default_section_id': section_id}"/>
                         <button
                             name="%(crm.action_crm_lead2partner)d"
                             icon="terp-partner" type="action"
