@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2014 Andrei Levin (andrei.levin at didotech.com)
+# Copyright (c) 2013-2015 Andrei Levin (andrei.levin at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -40,7 +40,7 @@ class Utils():
             return value.strip()
         else:
             try:
-                if '.' in value:
+                if '.' in value or ',' in value:
                     value = float(value)
                 else:
                     value = int(value)
