@@ -24,10 +24,11 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import fields, osv
 import decimal_precision as dp
-import netsvc
-from tools.translate import _
+from openerp import netsvc
+from openerp.tools.translate import _
+from datetime import datetime
 
 class riba_distinta(osv.osv):
     
@@ -213,16 +214,28 @@ class riba_distinta_line(osv.osv):
             res[line.id]['amount'] = 0.0
             res[line.id]['invoice_date'] = ''
             res[line.id]['invoice_number'] = ''
+            res[line.id]['cup'] = ''
+            res[line.id]['cig'] = ''
             for move_line in line.move_line_ids:
                 res[line.id]['amount'] += move_line.amount
                 if not res[line.id]['invoice_date']:
-                    res[line.id]['invoice_date'] = str(move_line.move_line_id.invoice.date_invoice)
+                    res[line.id]['invoice_date'] = str(datetime.strptime(move_line.move_line_id.invoice.date_invoice, '%Y-%m-%d').strftime('%d/%m/%Y'))
                 else:
-                    res[line.id]['invoice_date'] += ', '+str(move_line.move_line_id.invoice.date_invoice)
+                    res[line.id]['invoice_date'] += ', ' + str(datetime.strptime(move_line.move_line_id.invoice.date_invoice, '%Y-%m-%d').strftime('%d/%m/%Y'))
                 if not res[line.id]['invoice_number']:
                     res[line.id]['invoice_number'] = str(move_line.move_line_id.invoice.internal_number)
                 else:
                     res[line.id]['invoice_number'] += ', '+str(move_line.move_line_id.invoice.internal_number)
+                if move_line.move_line_id.invoice.cup:
+                    if not res[line.id]['cup']:
+                        res[line.id]['cup'] = str(move_line.move_line_id.invoice.cup)
+                    else:
+                        res[line.id]['cup'] += ', '+str(move_line.move_line_id.invoice.cup)
+                if move_line.move_line_id.invoice.cig:
+                    if not res[line.id]['cig']:
+                        res[line.id]['cig'] = str(move_line.move_line_id.invoice.cig)
+                    else:
+                        res[line.id]['cig'] += ', '+str(move_line.move_line_id.invoice.cig)
         return res
 
     def _reconciled(self, cr, uid, ids, name, args, context=None):
@@ -352,6 +365,8 @@ class riba_distinta_line(osv.osv):
         'payment_ids': fields.function(_compute_lines, relation='account.move.line', type="many2many", string='Payments'),
         'type': fields.related('distinta_id', 'type', type='char', size=32, string='Type', readonly=True),
         'tobeaccredited': fields.boolean('To be accredited'),
+        'cig': fields.function(_get_line_values, string="Cig", type='char', size=64, method=True, multi="line"),
+        'cup': fields.function(_get_line_values, string="Cup", type='char', size=64, method=True, multi="line"),
     }
     
     def confirm(self, cr, uid, ids, context=None):

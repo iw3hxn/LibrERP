@@ -57,13 +57,14 @@ $ricevute_bancarie = array bidimensionale con i seguenti index:
                    [12] = codice cliente attribuito dal creditore lunghezza 16 numerico
                    [13] = numero fattura lunghezza 40 alfanumerico
                    [14] = data effettiva della fattura
-
+                   [15] = CUP
+                   [16] = CIG
 '''
 
 import base64
-from osv import fields, osv
-from tools.translate import _
-import datetime
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+from datetime import datetime
 
 
 class riba_file_export(osv.osv_memory):
@@ -103,8 +104,8 @@ class riba_file_export(osv.osv_memory):
         self._comune_provincia_debitor = comune_debitore + provincia_debitore.rjust(25-len(comune_debitore),' ')
         return " 40" + str(self._progressivo).rjust(7,'0') + indirizzo_debitore.ljust(30)[0:30] + str(cap_debitore).rjust(5,'0') + self._comune_provincia_debitor + descrizione_domiciliataria.ljust(50)[0:50] + "\r\n"
 
-    def _Record50(self, importo_debito, invoice_ref, data_invoice, partita_iva_creditore):
-        self._descrizione = 'PER LA FATTURA N. ' + invoice_ref + ' DEL '+ data_invoice + ' IMP '+ str(importo_debito)
+    def _Record50(self, importo_debito, invoice_ref, data_invoice, partita_iva_creditore, cup, cig):
+        self._descrizione = cup + cig +'FT N. ' + invoice_ref + ' DEL '+ data_invoice #+ ' IMP '+ str(importo_debito)
         return " 50" + str(self._progressivo).rjust(7,'0') + self._descrizione.ljust(80)[0:80] + " " * 10 + partita_iva_creditore.ljust(16,' ') + " " * 4 + "\r\n"
 
     def _Record51(self, numero_ricevuta_creditore):
@@ -125,7 +126,7 @@ class riba_file_export(osv.osv_memory):
             accumulatore = accumulatore + self._Record20(intestazione[7], intestazione[8], intestazione[9], intestazione[10])
             accumulatore = accumulatore + self._Record30(value[3], value[4])
             accumulatore = accumulatore + self._Record40(value[5], value[6], value[7], value[8], value[11])
-            accumulatore = accumulatore + self._Record50(value[2], value[13], value[14], intestazione[11])
+            accumulatore = accumulatore + self._Record50(value[2], value[13], value[14], intestazione[11], value[15], value[16])
             accumulatore = accumulatore + self._Record51(value[0])
             accumulatore = accumulatore + self._Record70()
         accumulatore = accumulatore + self._RecordEF()
@@ -148,8 +149,8 @@ class riba_file_export(osv.osv_memory):
             raise osv.except_osv('Error', _('No SIA Code specified for: ') + name_company)
         credit_sia = credit_bank.codice_sia
         credit_account = iban[15:27]
-        dataemissione = datetime.datetime.now().strftime("%d%m%y")
-        nome_supporto = datetime.datetime.now().strftime("%d%m%y%H%M%S") + credit_sia
+        dataemissione = datetime.now().strftime("%d%m%y")
+        nome_supporto = datetime.now().strftime("%d%m%y%H%M%S") + credit_sia
         creditor_address = order_obj.config.company_id.partner_id.address
         if not creditor_address[0].street:
             raise osv.except_osv('Error', _('No address specified for: ') + name_company)
@@ -217,12 +218,18 @@ class riba_file_export(osv.osv_memory):
             if not line.due_date:  # ??? VERIFICARE
                 due_date = '000000'
             else:
-                due_date = datetime.datetime.strptime(line.due_date[:10], '%Y-%m-%d').strftime("%d%m%y")
+                due_date = datetime.strptime(line.due_date[:10], '%Y-%m-%d').strftime("%d%m%y")
 
             if not line.partner_id.vat and not line.partner_id.fiscalcode:
                 raise osv.except_osv('Error', _('No VAT or Fiscal code specified for ') + line.partner_id.name)
             if not debit_bank_name: #.bank and debit_bank.bank.name or debit_bank.bank_name):
                 raise osv.except_osv('Error', _('No debit_bank specified for ') + line.partner_id.name)
+            cup = ''
+            cig = ''
+            if line.cup:
+                cup = 'CUP: ' + str(line.cup)
+            if line.cig:
+                cig = ' CIG: ' + str(line.cig) + ' '
             Riba = [
                         line.sequence,
                         due_date,
@@ -239,8 +246,10 @@ class riba_file_export(osv.osv_memory):
                         line.partner_id.ref or '',
                         #line.move_line_id.name,
                         line.invoice_number,
-                        #datetime.datetime.strptime(line.distinta_id.date_created, '%Y-%m-%d').strftime("%d/%m/%Y"),
+                        #datetime.strptime(line.distinta_id.date_created, '%Y-%m-%d').strftime("%d/%m/%Y"),
                         line.invoice_date,
+                        cup,
+                        cig,
                         ]
             arrayRiba.append(Riba)
 
