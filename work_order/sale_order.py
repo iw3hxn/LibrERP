@@ -74,9 +74,9 @@ class sale_order(osv.osv):
         
         bom_obj = self.pool['mrp.bom']
         sale_line_bom_obj = self.pool.get('sale.order.line.mrp.bom') or False
-        user = self.pool['res.users'].browse(cr, uid, uid)
+        user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         
-        orders = self.browse(cr, uid, ids)
+        orders = self.browse(cr, uid, ids, context=context)
         for order in orders:
             if order.project_project and order.company_id.create_task:
                 project_id = order.project_project.id
@@ -103,17 +103,17 @@ class sale_order(osv.osv):
                                     'origin': 'sale.order.line, {0}'.format(order_line.id)
                                 })
                         else:
-                            main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
+                            main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)], context=context)
                             if main_bom_ids:
                                 if len(main_bom_ids) > 1:
                                     _logger.warning(_(u"More than one BoM defined for the '{0}' product!").format(order_line.product_id.name))
                                 
-                                bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', main_bom_ids[0])])
-                                boms = bom_obj.browse(cr, uid, bom_ids)
-                                service_boms = [bom for bom in boms if (bom.product_id.type == 'service' and sale_line_bom.product_id.purchase_ok == False)]
+                                bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', main_bom_ids[0])], context=context)
+                                boms = bom_obj.browse(cr, uid, bom_ids, context=context)
+                                service_boms = [bom for bom in boms if (bom.product_id.type == 'service' and order_line.product_id.purchase_ok == False)]
                                 for bom in service_boms:
-                                    if bom.product_id.uom_id.id == user.company_id.hour.id:
-                                        planned_hours = bom.product_uom_qty
+                                    if bom.product_uom.id == user.company_id.hour.id:
+                                        planned_hours = bom.product_qty
                                     else:
                                         planned_hours = 0
                                     self.pool['project.task'].create(cr, uid, {
@@ -122,7 +122,7 @@ class sale_order(osv.osv):
                                         'planned_hours': planned_hours,
                                         'remaining_hours': planned_hours,
                                         'origin': 'sale.order.line, {0}'.format(order_line.id)
-                                    })
+                                    }, context=context)
                             
                     elif order_line.product_id and order_line.product_id.type == 'service' and order_line.product_id.purchase_ok == False:
                         if order_line.product_id.uom_id.id == user.company_id.hour.id:
@@ -135,14 +135,22 @@ class sale_order(osv.osv):
                             'planned_hours': planned_hours,
                             'remaining_hours': planned_hours,
                             'origin': 'sale.order.line, {0}'.format(order_line.id)
-                        })
+                        }, context=context)
  
         return result
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        if default is None:
+            default = {}
+        import pdb; pdb.set_trace()
+        default.update({'project_project': False,
+                        'project_id': False, })
+        return super(sale_order, self).copy(cr, uid, id, default, context)
+
     def create(self, cr, uid, values, context=None):
         order_id = super(sale_order, self).create(cr, uid, values, context)
-        order = self.browse(cr, uid, order_id)
-        shop = self.pool['sale.shop'].browse(cr, uid, values['shop_id'])
+        order = self.browse(cr, uid, order_id, context=context)
+        shop = self.pool['sale.shop'].browse(cr, uid, values['shop_id'], context=context)
         if order.order_policy == 'picking':
             invoice_ratio = 1
         else:
@@ -162,7 +170,7 @@ class sale_order(osv.osv):
                 'model': 'sale.order',
             })
             
-            self.write(cr, uid, order_id, {'project_project': project_id})
+            self.write(cr, uid, order_id, {'project_project': project_id}, context=context)
         
         return order_id
 
