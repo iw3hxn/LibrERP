@@ -33,6 +33,27 @@
         </record>
 
 <!-- New view to do multipayment-->
+
+        <record id="view_bank_statement_tree_multi_pay" model="ir.ui.view">
+            <field name="name">account.bank.statement.tree.multi.pay</field>
+            <field name="model">account.bank.statement</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:balance_end_real!=balance_end and state=='draft';blue:state=='draft' and (balance_end_real==balance_end);black:state=='confirm'" string="Statement">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="period_id"/>
+                    <field name="journal_id"/>
+                    <field name="balance_start"/>
+                    <field name="balance_end_real"/>
+                    <field name="balance_end" invisible="1"/>
+                    <field name="state"/>
+                    <button type="object" string="Cancel" name="button_cancel" states="confirm" icon="gtk-cancel"/>
+                    <button type="object" string="Confirm" name="button_confirm_bank" states="draft" icon="terp-camera_test"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="view_bank_statement_form_multi_pay" model="ir.ui.view">
             <field name="name">account.bank.statement.form.multi.pay</field>
             <field name="model">account.bank.statement</field>
@@ -120,10 +141,10 @@
             </field>
         </record>
 
-        <record id="action_bank_statement_tree_multi_pay" model="ir.actions.act_window">
-            <field name="name">Pagamenti multipli</field>
+        <record id="action_bank_statement_tree_multi_pays" model="ir.actions.act_window">
+            <field name="name">Pagamenti/incassi multipli</field>
             <field name="res_model">account.bank.statement</field>
-            <field name="view_type">tree</field>
+            <field name="view_type">form</field>
             <field name="view_mode">tree,form,graph</field>
             <field name="domain">[('journal_id.type', '=', 'bank')]</field>
             <field name="context">{'journal_type':'bank'}</field>
@@ -131,14 +152,21 @@
             <field name="help">Un pagamento multiplo avviene solitamente a fine mese per il pagamento dei fornitori, può avvenire anche quando si incassa una distinta di ri.ba. di più clienti.</field>
         </record>
 
-        <record model="ir.actions.act_window.view" id="action_bank_statement_form_bank_multi_pay">
+        <record model="ir.actions.act_window.view" id="action_bank_statement_tree_multi_pay_bank">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_bank_statement_tree_multi_pay"/>
+            <field name="act_window_id" ref="action_bank_statement_tree_multi_pays"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_bank_statement_form_multi_pay_bank">
             <field name="sequence" eval="1"/>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_bank_statement_form_multi_pay"/>
-            <field name="act_window_id" ref="action_bank_statement_tree_multi_pay"/>
+            <field name="act_window_id" ref="action_bank_statement_tree_multi_pays"/>
         </record>
 
-        <menuitem string="Multi Payments" action="action_bank_statement_tree_multi_pay" id="menu_bank_statement_tree_multi_pay" parent="account.menu_finance_bank_and_cash" sequence="7"/>
+        
+        <menuitem string="Multi Payments" action="action_bank_statement_tree_multi_pays" id="menu_bank_statement_tree_multi_pay" parent="account.menu_finance_bank_and_cash" sequence="7"/>
 
 <!-- ELIMINATO
 ('journal_id.type','not in',['bank','cash']),
