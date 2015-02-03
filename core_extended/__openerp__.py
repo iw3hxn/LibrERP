@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.0.8.0",
+    "version": "2.0.9.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
@@ -49,7 +49,11 @@
         bizdatetime - simple library for performing business day arithmetic:
             policy = Policy(weekends=(SAT, SUN), holidays=(date(2011,7,1),))
             policy.biz_day_delta(date(2011, 6, 30), date(2011, 7, 4)) # one holiday, one weekend between
-            
+
+        odf_to_array - class that permits reading of Open Document spreadsheet
+
+        file_manipulation - contains function that recognise Excel, Open Document and CSV documents
+            and return them as list of rows
     """,
     "depends": [
         'base',

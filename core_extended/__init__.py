@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2014 Didotech srl (http://www.didotech.com)
+# Copyright (c) 2014-2015 Didotech srl (http://www.didotech.com)
 #
 # This program is Free Software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,3 +23,5 @@ from . import ir_sequence
 from . import ir_attachment
 from . import wkf_service
 from . import orm
+from . import odf_to_array
+from . import file_manipulation
