@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2014 Andrei Levin (andrei.levin at didotech.com)
+# Copyright (c) 2013-2015 Andrei Levin (andrei.levin at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -23,14 +23,14 @@
 import pooler
 import threading
 from tools.translate import _
-from osv import osv
+from openerp.osv import orm
 import math
 from product.product import check_ean
 import data_migration.settings as settings
 from collections import namedtuple
 from pprint import pprint
 from utils import Utils
-import xlrd
+from openerp.addons.core_extended.file_manipulation import import_sheet
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -52,8 +52,8 @@ class ImportFile(threading.Thread, Utils):
         
         self.dbname = cr.dbname
         self.pool = pooler.get_pool(cr.dbname)
-        self.product_obj = self.pool.get('product.product')
-        self.supplierinfo_obj = self.pool.get('product.supplierinfo')
+        self.product_obj = self.pool['product.product']
+        self.supplierinfo_obj = self.pool['product.supplierinfo']
         
         # Necessario creare un nuovo cursor per il thread,
         # quello fornito dal metodo chiamante viene chiuso
@@ -80,6 +80,7 @@ class ImportFile(threading.Thread, Utils):
         self.filedata_obj = self.pool.get('product.import')
         self.productImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.productImportID, context=self.context)
         self.file_name = self.productImportRecord.file_name.split('\\')[-1]
+
         self.update_product_name = self.productImportRecord.update_product_name
         
         #===================================================
@@ -96,52 +97,20 @@ class ImportFile(threading.Thread, Utils):
         
         if not len(self.HEADER) == len(Config.COLUMNS_PRODUCT.split(',')):
             pprint(zip(self.HEADER, Config.COLUMNS_PRODUCT.split(',')))
-            raise osv.except_osv('Error: wrong configuration!', 'The length of columns and headers must be the same')
+            raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
         
         self.RecordProduct = namedtuple('RecordProduct', Config.COLUMNS_PRODUCT)
         #===================================================
         
         ###if self.productImportRecord.pricelist_format == 'csv':
-        ##import csv
-        ##import StringIO
-        ##
-        #### Create virtual File:
-        ##virtualFile = StringIO.StringIO(self.productImportRecord.content_text)
-        ##
-        #### Process CSV file:
-        ##sample = virtualFile.read(512)
-        ##virtualFile.seek(0)
-        ##
-        ##dialect = csv.Sniffer().sniff(sample)
-        ##self.table = csv.reader(virtualFile, dialect)
-        ##
-        ### self.table is an object of type '_csv.reader' and has no len() method
-        ##self.numberOfLines = sum(1 for row in self.table)
-        ##virtualFile.seek(0)
-        
-        for encoding in ('utf-8', 'latin-1', 'cp1252'):
-            try:
-                book = xlrd.open_workbook(file_contents=self.productImportRecord.content_text, encoding_override=encoding)
-                break
-            except UnicodeDecodeError:
-                pass
-        else:
-            raise osv.except_osv('Error', _('Unknown encoding'))
-        
-        sheet = []
-        sh = book.sheet_by_index(0)
-        
-        for rx in range(sh.nrows):
-            row = []
-            for cx in range(sh.ncols):
-                row.append(sh.cell_value(rowx=rx, colx=cx))
-            sheet.append(row)
-        
-        self.numberOfLines = sh.nrows
+
+
+        table, self.numberOfLines = import_sheet(self.file_name, self.productImportRecord.content_text)
+
         
         if DEBUG:
             # Importa il listino
-            self.process(self.cr, self.uid, sheet, book.datemode)
+            self.process(self.cr, self.uid, table)
             
             # Genera il report sull'importazione
             self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
@@ -149,7 +118,7 @@ class ImportFile(threading.Thread, Utils):
             # Elaborazione del listino prezzi
             try:
                 # Importa il listino
-                self.process(self.cr, self.uid, sheet, book.datemode)
+                self.process(self.cr, self.uid, table)
                 
                 # Genera il report sull'importazione
                 self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
@@ -168,7 +137,7 @@ class ImportFile(threading.Thread, Utils):
                 
                 self.notify_import_result(self.cr, self.uid, title, message, error=True)
 
-    def process(self, cr, uid, table, book_datemode):
+    def process(self, cr, uid, table):
         self.message_title = _("Importazione prodotti")
         self.progressIndicator = 0
         
@@ -178,7 +147,7 @@ class ImportFile(threading.Thread, Utils):
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
         for self.processed_lines, row_list in enumerate(table, start=1):
-            if not self.import_row(cr, uid, row_list, book_datemode):
+            if not self.import_row(cr, uid, row_list):
                 self.problems += 1
                 
             if (self.processed_lines % notifyProgressStep) == 0:
@@ -308,7 +277,7 @@ class ImportFile(threading.Thread, Utils):
         else:
             return brand_obj.create(cr, uid, {'name': name})
     
-    def import_row(self, cr, uid, row_list, book_datemode):
+    def import_row(self, cr, uid, row_list):
         if self.first_row:
             row_str_list = [self.toStr(value) for value in row_list]
             for column in row_str_list:

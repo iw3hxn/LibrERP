@@ -22,7 +22,7 @@
 
 {
     'name': 'Data migration import',
-    'version': '2.2.18.4',
+    'version': '2.2.19.4',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import products and partners
@@ -38,7 +38,8 @@
         'purchase',
         #'partner_subaccount',
         #'l10n_it', not needed, pdc is installed by default and can differ from this one
-        'l10n_it_account'
+        'l10n_it_account',
+        'core_extended'
     ],
     'init_xml': [],
     'update_xml': [

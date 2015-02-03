@@ -22,6 +22,7 @@
 
 from tools.translate import _
 from datetime import datetime
+import re
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -36,17 +37,22 @@ class Utils():
         _logger.info('Import status: %d %s (%d lines processed)' % (self.progressIndicator, '%', self.processed_lines))
         
     def toStr(self, value):
+        number = re.compile(r'^[0-9.,]+$')
         if type(value) == type(u'a') or type(value) == type('a'):
-            return value.strip()
-        else:
-            try:
-                if '.' in value or ',' in value:
+            if number.match(value):
+                if ',' in value or '.' in value:
+                    value = value.replace(',', '.')
                     value = float(value)
                 else:
                     value = int(value)
-            except:
-                pass
-            return unicode(value)
+                return unicode(value)
+            else:
+                return value.strip()
+        else:
+            if value:
+                return unicode(value)
+            else:
+                return False
     
     def notify_import_result(self, cr, uid, title, body='', error=False):
         EOL = '\n'
