@@ -45,6 +45,9 @@ coverage.xml
 *.komodoproject
 .komodotools
 
+# pyCharm
+.idea
+
 # *.pot is used for translations templates
 
 # Sphinx documentation
