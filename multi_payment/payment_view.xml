@@ -103,6 +103,9 @@
                                 </form>
                             </field>
                         </page>
+                        <page string="Journal Entries" name="move_live_ids">
+                            <field colspan="4" name="move_line_ids" nolabel="1"/>
+                        </page>
                     </notebook>
                     <group col="8" colspan="4">
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
