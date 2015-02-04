@@ -142,7 +142,6 @@ class sale_order(osv.osv):
     def copy(self, cr, uid, id, default=None, context=None):
         if default is None:
             default = {}
-        import pdb; pdb.set_trace()
         default.update({'project_project': False,
                         'project_id': False, })
         return super(sale_order, self).copy(cr, uid, id, default, context)
