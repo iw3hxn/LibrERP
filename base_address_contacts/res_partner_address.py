@@ -134,13 +134,15 @@ class res_partner(orm.Model):
             
         return result
 
-    def create(self, cr, uid, vals, context=None):
+    def create(self, cr, uid, vals, context):
         if context is None:
             context = {}
-        if not vals.get('address', False):
+        if not vals.get('address', False) and context.get('default_type', '') != 'lead':
             raise orm.except_orm(_('Error!'),
                                  _('At least one address of type "Default" is needed!'))
         is_default = False
+        if  context.get('default_type', '') == 'lead':
+            return super(res_partner, self).create(cr, uid, vals, context)
         for address in vals['address']:
             if address[2].get('type') == 'default':
                 is_default = True

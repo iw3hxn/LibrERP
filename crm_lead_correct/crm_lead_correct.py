@@ -125,7 +125,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             'supplier': False,
             'category_id': lead.partner_category_id and [(6, 0, [lead.partner_category_id.id])]
 
-        })
+        }, context=context)
         #partner_obj.write(cr, uid, partner_id, {'customer': False})
 
         #import pdb
