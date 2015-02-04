@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 simple_access_crm_case_categ,crm.case.categ,model_crm_case_categ,base.group_sale_salesman,1,0,0,0
+simple_access_crm_case_stage,crm.case.categ,model_crm_case_stage,base.group_sale_salesman,1,0,0,0
