@@ -60,9 +60,9 @@ class account_bank_statement(orm.Model):
                 company_currency_id, st_line.amount, context=context)
 
         val = {
-            'name': st_line.ref,
+            'name': st_line.ref or '/',
             'date': st_line.date,
-            'ref': st_line_number,
+            'ref': st_line_number or '/',
             'move_id': move_id,
             'partner_id': ((st_line.partner_id) and st_line.partner_id.id) or False,
             'account_id': (st_line.account_id) and st_line.account_id.id,
@@ -129,8 +129,8 @@ class account_bank_statement(orm.Model):
                 'journal_id': st.journal_id.id,
                 'period_id': st.period_id.id,
                 'date': st.date,
-                'name': st_number,
-                'ref': st_number,
+                'name': st_number or '/',
+                'ref': st_number or '/',
             }, context=context)
             account_bank_statement_line_obj.write(cr, uid, [st.id], {
                 'move_ids': [(4, move_id, False)]
@@ -162,9 +162,9 @@ class account_bank_statement(orm.Model):
                 amount_currency = st_line_sum
                 currency_id = st.currency.id
             move_line_id = account_move_line_obj.create(cr, uid, {
-                'name': st.name,
+                'name': st.name or '/',
                 'date': st.date,
-                'ref': st_number,
+                'ref': st_number or '/',
                 'move_id': move_id,
                 'account_id': account_id,
                 'credit': ((st_line_sum < 0) and -st_line_sum) or 0.0,
