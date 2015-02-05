@@ -117,7 +117,7 @@
         <blockTable colWidths="540.0" style="Header">
           <tr>
             <td>
-              <para style="terp_tblheader_General_Centre">[[ company.logo and setTag('para','image',{'width':'50.0','height':'50.0'}) ]][[ company.logo ]]</para>
+              <para style="terp_tblheader_General_Centre">[[ company.logo and setTag('para','image',{'height':'60.0'} ) ]][[ company.logo ]]</para>
             </td>
           </tr>
           <tr>
