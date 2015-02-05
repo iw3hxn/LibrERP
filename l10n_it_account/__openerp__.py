@@ -57,6 +57,7 @@ Functionalities:
         'account/account_move.xml',
         'account/res_bank_view.xml',
         'account/account_tax_view.xml',
+        'account/res_company_view.xml',
     ],
     "demo": [],
     "active": False,
