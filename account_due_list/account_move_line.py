@@ -45,15 +45,8 @@ class account_move_line(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             res[line.id] = line.debit - line.credit
-#             if line.reconcile_partial_id:
-#                 total_line = 0.0
-#                 for line_reconcile in line.reconcile_partial_id.line_partial_ids:
-#                     total_line += line_reconcile.debit - line_reconcile.credit
-#                 res[line.id] = total_line
-#             else:
-
         return res
-    
+
     def _direction(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
@@ -97,6 +90,16 @@ class account_move_line(orm.Model):
                         res.append(line.id)
         return res
 
+    def _balance(self, cr, uid, ids, name, arg, context=None):
+        res={}
+        # TODO group the foreach in sql
+        for id in ids:
+            cr.execute('SELECT date,account_id FROM account_move_line WHERE id=%s', (id,))
+            dt, acc = cr.fetchone()
+            cr.execute('SELECT SUM(debit-credit) FROM account_move_line WHERE account_id = %s AND (date<%s OR (date=%s AND id<=%s))', (acc,dt,dt,id))
+            res[id] = cr.fetchone()[0]
+        return res
+
     _inherit = 'account.move.line'
 
     _columns = {
@@ -115,16 +118,22 @@ class account_move_line(orm.Model):
                                    'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['date_maturity'], 10),
                                }),
         'residual': fields.function(_residual, method=True, string='Residual', type='float', store=False),
-        'direction': fields.function(_direction, method=True, string='Direction', type='char', store=False)
+        'direction': fields.function(_direction, method=True, string='Direction', type='char', store=False),
+        'balance': fields.function(_balance, method=True, string='Balance', type='float', store=False),
     }
+
+    _order = "date asc, id asc"
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
         view_payments_tree_id = self.pool.get('ir.model.data').get_object_reference(
             cr, uid, 'account_due_list', 'view_payments_tree')
-        if view_id == view_payments_tree_id[1]:
+        view_account_ordered_tree_id = self.pool.get('ir.model.data').get_object_reference(
+            cr, uid, 'account_due_list', 'view_account_ordered_tree')
+        if view_id == view_payments_tree_id[1] or view_id == view_account_ordered_tree_id[1]:
             # Use due list
             result = super(osv.osv, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
         else:
             # Use special views for account.move.line object (for ex. tree view contains user defined fields)
             result = super(account_move_line, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
         return result
+
