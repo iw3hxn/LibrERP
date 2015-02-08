@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    Daniel Reis
+# Daniel Reis
 #
 #    OpenERP, Open Source Management Solution
 #
@@ -23,8 +23,11 @@ import time
 import pooler
 from tools.safe_eval import safe_eval
 from osv import fields, osv
+from datetime import datetime
+from datetime import timedelta
 
 import logging
+
 _logger = logging.getLogger(__name__)
 
 # TODO: implement this as an object, so it can be safely be accessed by
@@ -38,6 +41,16 @@ DEFAULT_EVALDICT = {
     'writing': False,
     'updating': False,
 }
+
+
+def get_datetime(date_field):
+    '''Return a datetime from a date string or a datetime string'''
+    #complete date time if date_field contains only a date
+    date_split = date_field.split(' ')
+    if len(date_split) == 1:
+        date_field = date_split[0] + " 00:00:00"
+
+    return datetime.strptime(date_field[:19], '%Y-%m-%d %H:%M:%S')
 
 
 ###############################################################################
@@ -56,17 +69,69 @@ class base_action_rule(osv.osv):
     _inherit = 'base.action.rule'
     _columns = {
         'trg_evalexpr': fields.text('Evaluated expression',
-            help='Python expression, able to use a "new" and "old" '
-                 'dictionaries, with the changed columns.'),
+                                    help='Python expression, able to use a "new" and "old" '
+                                         'dictionaries, with the changed columns.'),
         'trg_evalexpr_dbg': fields.boolean('Debug Evaluated expression',
-            help='Write detailed information to log, to help debugging '
-                 'trigger expressions.'),
+                                           help='Write detailed information to log, to help debugging '
+                                                'trigger expressions.'),
         'email_template_id': fields.many2one('email.template',
-            'E-mail template', domain="[('model_id','=',model_id)]"),
+                                             'E-mail template', domain="[('model_id','=',model_id)]"),
         'email_template_force': fields.boolean('Send immediately',
-            help='If not checked, it will be sent the next time the e-mail '
-                 'scheduler runs.'),
+                                               help='If not checked, it will be sent the next time the e-mail '
+                                                    'scheduler runs.'),
+        'trg_date_type': fields.many2one('ir.model.fields', 'Comparison Date field',
+                                         domain="['&',('ttype', 'in', ('date','datetime')),('model_id', '=', model_id)]"),
     }
+
+    _defaults = {
+        'trg_date_type': lambda *a: False,
+    }
+
+    #overwrite of function
+    def _check(self, cr, uid, automatic=False, use_new_cursor=False, context=None):
+        """
+        This Function is call by scheduler.
+        """
+        rule_pool = self.pool.get('base.action.rule')
+        rule_ids = rule_pool.search(cr, uid, [], context=context)
+        self._register_hook(cr, uid, rule_ids, context=context)
+
+        rules = self.browse(cr, uid, rule_ids, context=context)
+        for rule in rules:
+            model = rule.model_id.model
+            model_pool = self.pool.get(model)
+            last_run = False
+            if rule.last_run:
+                last_run = get_datetime(rule.last_run)
+            now = datetime.now()
+            for obj_id in model_pool.search(cr, uid, [], context=context):
+                obj = model_pool.browse(cr, uid, obj_id, context=context)
+                # Calculate when this action should next occur for this object
+                base = False
+                if rule.trg_date_type:
+                    #import pdb; pdb.set_trace()
+                    # data_trigger = hasattr(obj, 'create_date')
+                    base = self.pool[obj._name].read(cr, uid, obj.id, [rule.trg_date_type.name], context=context)[
+                        rule.trg_date_type.name]
+
+                if base:
+                    fnct = {
+                        'minutes': lambda interval: timedelta(minutes=interval),
+                        'day': lambda interval: timedelta(days=interval),
+                        'hour': lambda interval: timedelta(hours=interval),
+                        'month': lambda interval: timedelta(months=interval),
+                    }
+                    base = get_datetime(base)
+                    delay = fnct[rule.trg_date_range_type](rule.trg_date_range)
+                    action_date = base + delay
+
+                    if not last_run or (last_run <= action_date < now):
+                        print last_run
+                        print action_date
+                        print now
+                        self._action(cr, uid, [rule.id], [obj], context=context)
+            rule_pool.write(cr, uid, [rule.id], {'last_run': now},
+                            context=context)
 
     def _check_evalexpr(self, cr, uid, ids, context=None):
         action = self.browse(cr, uid, ids[0], context=context)
@@ -79,8 +144,8 @@ class base_action_rule(osv.osv):
 
     _constraints = [
         (_check_evalexpr,
-            'Error: Your evaluated expression is not valid!',
-            ['trg_evalexpr'])
+         'Error: Your evaluated expression is not valid!',
+         ['trg_evalexpr'])
     ]
 
     def _create(self, old_create, model, context=None):
@@ -88,6 +153,7 @@ class base_action_rule(osv.osv):
         Return a wrapper around `old_create` calling both `old_create` and
         `post_action`, in that order.
         """
+
         def wrapper(cr, uid, vals, context=context):
             if context is None:
                 context = {}
@@ -97,11 +163,12 @@ class base_action_rule(osv.osv):
                 '_action_old': {},
                 '_action_new': vals,
                 '_action_trigger': 'create',
-                })
+            })
             new_id = old_create(cr, uid, vals, context=context)
             if not context.get('action'):
                 self.post_action(cr, uid, [new_id], model, context=context)
             return new_id
+
         return wrapper
 
     def _write(self, old_write, model, context=None):
@@ -109,6 +176,7 @@ class base_action_rule(osv.osv):
         Return a wrapper around `old_write` calling both `old_write` and
         `post_action`, in that order.
         """
+
         def wrapper(cr, uid, ids, vals, context=context):
             if context is None:
                 context = {}
@@ -119,13 +187,14 @@ class base_action_rule(osv.osv):
             context.update({
                 '_action_old': olds,
                 '_action_new': vals,
-                })
+            })
             old_write(cr, uid, ids, vals, context=context)
             if (not context.get('action') and
-                not context.get('_action_trigger')):
+                    not context.get('_action_trigger')):
                 context.update({'_action_trigger': 'write'})  # trg.activated
                 self.post_action(cr, uid, ids, model, context=context)
             return True
+
         return wrapper
 
     # Actions can be triggered from evaluated expression,
@@ -137,7 +206,7 @@ class base_action_rule(osv.osv):
     # Example: to check if responsible changed:
     #         not old and old['user_id']!=new['user_id']
     def do_check(self, cr, uid, action, obj, context={}):
-        ok = super(base_action_rule, self)\
+        ok = super(base_action_rule, self) \
             .do_check(cr, uid, action, obj, context=context)
         if ok and action.trg_evalexpr:
             ok = False
@@ -179,11 +248,11 @@ class base_action_rule(osv.osv):
                     'new': new,
                     'inserting': is_ins, 'creating': is_ins,
                     'updating': not is_ins, 'writing': not is_ins,
-                    })
+                })
                 if action.trg_evalexpr_dbg:
                     _logger.setLevel(logging.DEBUG)
                     _logger.debug('Rule CHECK: %s on record id %d.'
-                        % (action.name, obj.id))
+                                  % (action.name, obj.id))
                     _logger.debug('CHG: %s' % str(changed))
                     _logger.debug('NEW: %s' % str(new))
                     _logger.debug('OLD: %s' % str(old))
@@ -192,34 +261,35 @@ class base_action_rule(osv.osv):
                     {}, eval_dict)
                 if ok:
                     _logger.debug('RULE ACTIVATED: %s on record id %d.'
-                        % (action.name, obj.id))
+                                  % (action.name, obj.id))
                 else:
                     if action.trg_evalexpr_dbg:
                         _logger.debug('Rule not activated: %s on record id %d.'
-                            % (action.name, obj.id))
+                                      % (action.name, obj.id))
         return ok
 
     #Action able to send e-mails using email_template;
     #Bonus: messages sent are recorded in the communication history.
     def do_action(self, cr, uid, action, model_obj, obj, context=None):
         _logger.debug('Rule do_action: %s on record id %d.'
-            % (action.name, obj.id))
+                      % (action.name, obj.id))
         super(base_action_rule, self).do_action(
             cr, uid, action, model_obj, obj, context=context)
         if action.email_template_id:
             _logger.debug('Rule sending mail: using template %s.'
-                % (action.email_template_id.name))
+                          % (action.email_template_id.name))
             mail_template = self.pool.get('email.template')
             mail_message = self.pool.get('mail.message')
             msg_id = mail_template.send_mail(
                 cr, uid, action.email_template_id, obj.id, context=context)
             #mail_template does not set the e-mail date by itself!
             mail_message.write(cr, uid, [msg_id],
-                {'date': time.strftime('%Y-%m-%d %H:%M:%S')}, context=context)
+                               {'date': time.strftime('%Y-%m-%d %H:%M:%S')}, context=context)
             #send immediatly, if the option is checked
             if action.email_template_force:
                 mail_message.send(cr, uid, [msg_id], context=context)
         return True
+
 
 base_action_rule()
 
@@ -241,4 +311,6 @@ class users(osv.osv):
         cr.close()
         #End
         return user_id
+
+
 users()

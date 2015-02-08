@@ -22,7 +22,7 @@
 
 {
     'name': 'Automated Action Rules Trigger Extensions',
-    'version': '6.1.1',
+    'version': '6.1.2',
     'category': 'Sales Management',
     'description': """Extensions to the Automated Actions module base_action_rule.
 
