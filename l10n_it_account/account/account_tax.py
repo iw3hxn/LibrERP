@@ -128,10 +128,10 @@ class account_tax(orm.Model):
                 raise orm.except_orm(_('Error!'), 
                     _("Tax Type cannot be changed - create a different tax."))
 
-        if (vals.get('type_tax_use', False) or tax.type_tax_use) == 'sale':
-            vals.update({'base_sign': 1, 'tax_sign': 1, 'ref_base_sign': -1, 'ref_tax_sign': -1})
-        elif (vals.get('type_tax_use', False) or tax.type_tax_use) == 'purchase':
-            vals.update({'base_sign': -1, 'tax_sign': -1, 'ref_base_sign': 1, 'ref_tax_sign': 1})
+#         if (vals.get('type_tax_use', False) or tax.type_tax_use) == 'sale':
+#             vals.update({'base_sign': 1, 'tax_sign': 1, 'ref_base_sign': -1, 'ref_tax_sign': -1})
+#         elif (vals.get('type_tax_use', False) or tax.type_tax_use) == 'purchase':
+#             vals.update({'base_sign': -1, 'tax_sign': -1, 'ref_base_sign': 1, 'ref_tax_sign': 1})
 
         if tax.base_code_id and tax.tax_code_id:
             return super(account_tax, self).write(cr, uid, ids, vals, context)
@@ -175,8 +175,6 @@ class account_tax(orm.Model):
                 return {'value': {'base_sign': 1, 'tax_sign': 1, 'ref_base_sign': -1, 'ref_tax_sign': -1}}
             elif type_tax_use == "purchase":
                 return {'value': {'base_sign': -1, 'tax_sign': -1, 'ref_base_sign': 1, 'ref_tax_sign': 1}}
-            elif type_tax_use == "all":
-                return {'value': {'base_sign': 1, 'tax_sign': 1, 'ref_base_sign': 1, 'ref_tax_sign': 1}}
 
     _columns = {
         'account_tax_code_id': fields.many2one('account.tax.code', 'Tax Code Parent', required=False,),
