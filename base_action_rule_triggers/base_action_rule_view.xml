@@ -21,6 +21,14 @@
                        <field name="email_template_id"/>
                        <field name="email_template_force"/>
                 </field>
+                <field name="trg_date_type" position="replace" >
+                    <field name="trg_date_type" invisible="1" />
+                    <field name="trg_date_field" />
+                </field>
+                <group name="trg_date_type" position="attributes" >
+                    <attribute name="invisible">False</attribute>
+                </group>
+
             </field>
        </record>
 
