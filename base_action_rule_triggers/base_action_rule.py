@@ -87,7 +87,6 @@ class base_action_rule(osv.osv):
         """
         This Function is call by scheduler.
         """
-        print "extended function"
         rule_pool = self.pool['base.action.rule']
         rule_ids = rule_pool.search(cr, uid, [], context=context)
         self._register_hook(cr, uid, rule_ids, context=context)
