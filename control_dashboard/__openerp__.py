@@ -31,7 +31,7 @@
 
 {
     "name": "Virtual Desk for Alert",
-    "version": "1.3.6",
+    "version": "1.3.7",
     "depends": ["base", "mail", "base_calendar", "email_template"],
     'complexity': "easy",
     'description': """

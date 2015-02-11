@@ -733,18 +733,19 @@ class inherit_ir_alert(osv.osv):
 
     # control model's message (change state) and relative change state messages
     def control_state_message(self, cr, uid, ids=False, context=None):
-        obj_alert = self.pool.get('ir.alert')
-        obj_alert_config = self.pool.get('ir.alert.config')
-        obj_model = self.pool.get('ir.model')
+        obj_alert = self.pool['ir.alert']
+        obj_alert_config = self.pool['ir.alert.config']
+        obj_model = self.pool['ir.model']
 
         #alert's data
-        obj_alert_ids = obj_alert.search(cr, uid, [('state', '=', 'open')])
+        obj_alert_ids = obj_alert.search(cr, uid, [('state', '=', 'open')], context=context)
         obj_alert_datas = obj_alert.read(cr, uid, obj_alert_ids, context=context)
 
         for obj_alert_data in obj_alert_datas:
             obj_config_alert_datas = obj_alert_config.read(cr, uid, obj_alert_data['alert_config_id'][0], context=context)
-
-            if not obj_config_alert_datas['is_parent']:
+            
+            
+            if obj_config_alert_datas and (not obj_config_alert_datas['is_parent']):
                 # search object from object model
                 obj_model_data = obj_model.read(cr, uid, obj_config_alert_datas['model_id'][0], context=context)
                 examine_obj = self.pool.get(obj_model_data['model'])
@@ -765,8 +766,7 @@ class inherit_ir_alert(osv.osv):
                         if obj_examine_data['state'] == obj_config_alert_datas['state_comparison']:
                             update_state_done = True
                     else:
-                        
-                        if obj_examine_data['state'] != obj_config_alert_datas['state_comparison']:
+                        if (obj_examine_data and obj_config_alert_datas) and (obj_examine_data['state'] != obj_config_alert_datas['state_comparison']):
                             update_state_done = True
 
                     # change state message
