@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="account.action_account_moves_all_a" model="ir.actions.act_window">
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+        </record>
+
+    </data>
+</openerp>

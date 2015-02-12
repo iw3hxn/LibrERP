@@ -24,21 +24,24 @@
 
 {
     "name": "Account Invoice extended",
-    "version": "3.0.0.0",
+    "version": "3.0.0.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules/Accounting",
     "description": """
         Module extendes and fixes Account Invoice functionality:
-        
+        Set nocreate also on account.move.line
         Fix: don't copy the owner of the invoice
 
     """,
     "depends": [
         'base',
-        'account'
+        'account',
+        'web_hide_buttons',
     ],
-    "data": [],
+    "data": [
+        'account_view.xml'
+    ],
     "active": False,
     "installable": True,
 }
