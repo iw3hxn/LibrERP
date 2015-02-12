@@ -22,8 +22,8 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
-
+from openerp.osv import orm, fields
+from openerp import pooler
 
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
@@ -31,3 +31,17 @@ class account_invoice(orm.Model):
     def copy(self, cr, uid, order_id, defaults, context=None):
         defaults['user_id'] = uid
         return super(account_invoice, self).copy(cr, uid, order_id, defaults, context)
+
+
+class account_invoice_line(orm.Model):
+    _inherit = "account.invoice.line"
+
+    def get_precision_tax():
+        def change_digit_tax(cr):
+            res = pooler.get_pool(cr.dbname).get('decimal.precision').precision_get(cr, 1, 'Account')
+            return (17, res+3)
+        return change_digit_tax
+
+    _columns = {
+        'price_unit': fields.float('Unit Price', required=True, digits_compute=get_precision_tax()),
+    }
