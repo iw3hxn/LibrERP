@@ -20,8 +20,8 @@
 ##############################################################################
 
 
-DEBUG = True
-#DEBUG = False
+# DEBUG = True
+DEBUG = False
 
     #HEADER_PRODUCT = (
     #    "name",

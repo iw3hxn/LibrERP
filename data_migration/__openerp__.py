@@ -22,11 +22,11 @@
 
 {
     'name': 'Data migration import',
-    'version': '2.2.19.4',
+    'version': '2.2.20.4',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import products and partners
-        from excel formatted files.
+        from CSV/Excel/OpenOffice formatted files.
         
         When option 'strict' is selected, partner will be searched on every field in PARTNER_SEARCH and if in doubt
         nothing will be changed or updated. It is usefull to use this mode to be shure that nothing will be overwritten.

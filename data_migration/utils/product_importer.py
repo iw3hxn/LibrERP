@@ -83,7 +83,7 @@ class ImportFile(threading.Thread, Utils):
 
         self.update_product_name = self.productImportRecord.update_product_name
         
-        #===================================================
+        # ===================================================
         Config = getattr(settings, self.productImportRecord.format)
 
         self.HEADER = Config.HEADER_PRODUCT
@@ -100,14 +100,11 @@ class ImportFile(threading.Thread, Utils):
             raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
         
         self.RecordProduct = namedtuple('RecordProduct', Config.COLUMNS_PRODUCT)
-        #===================================================
-        
-        ###if self.productImportRecord.pricelist_format == 'csv':
 
+        # ===================================================
 
         table, self.numberOfLines = import_sheet(self.file_name, self.productImportRecord.content_text)
 
-        
         if DEBUG:
             # Importa il listino
             self.process(self.cr, self.uid, table)
@@ -163,14 +160,18 @@ class ImportFile(threading.Thread, Utils):
         return True
         
     def get_category(self, cr, uid, categories, parent_id=False):
-        category_obj = self.pool.get('product.category')
-        
         if categories:
+            if DEBUG:
+                print(categories)
+            category_obj = self.pool['product.category']
             name = categories.pop(0)
             category_ids = category_obj.search(cr, uid, [('name', '=', name), ('parent_id', '=', parent_id)])
-            
+
             if len(category_ids) == 1:
-                return category_ids[0]
+                if categories:
+                    return self.get_category(cr, uid, categories, parent_id=category_ids[0])
+                else:
+                    return category_ids[0]
             elif len(category_ids) > 1:
                 error = "Row {0}: Abnormal situation. More than one category '{1}' found".format(self.processed_lines, name)
                 _logger.error(error)
@@ -181,6 +182,7 @@ class ImportFile(threading.Thread, Utils):
                 #_logger.error(error)
                 #self.error.append(error)
                 #return False
+
                 category_id = category_obj.create(cr, uid, {'name': name, 'parent_id': parent_id})
                 
                 if categories:
@@ -286,7 +288,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
                     return True
             self.first_row = False
-        
+
         if not len(row_list) == len(self.HEADER):
             row_str_list = [self.toStr(value) for value in row_list]
             if DEBUG:
@@ -336,9 +338,8 @@ class ImportFile(threading.Thread, Utils):
         
         if hasattr(record, 'category') and record.category:
             categories = record.category.split('\\')
-            
             vals_product['categ_id'] = self.get_category(cr, uid, categories)
-            
+
         if hasattr(record, 'brand') and record.brand:
             vals_product['product_brand_id'] = self.get_brand(cr, uid, record.brand)
         
