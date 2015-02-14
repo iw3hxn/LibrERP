@@ -84,6 +84,7 @@
                         </page>
                     </notebook>
                     <field name="interest_rate"/>
+                    <field name="fiscal_page_base"/>
                     <field name="state"  select="1"/>
                     <field name="reconciled"/>
                     <button name="create_move" states="draft" string="Create Move" colspan="2"/>

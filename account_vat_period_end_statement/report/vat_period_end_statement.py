@@ -23,9 +23,9 @@
 ##############################################################################
 
 import time
-from report import report_sxw
-from tools.translate import _
-from osv import orm
+from openerp.report import report_sxw
+from openerp.tools.translate import _
+from openerp.osv import orm
 
 
 class print_vat_period_end_statement(report_sxw.rml_parse):
@@ -77,7 +77,7 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
         if len(period_ids) > 1:
             raise orm.except_orm(_('Error'), _('Too many periods for date %s') % str(date))
         return period_ids[0]
-        
+
     def __init__(self, cr, uid, name, context=None):
         if context is None:
             context = {}
@@ -93,6 +93,3 @@ report_sxw.report_sxw('report.account.print.vat.period.end.statement',
                       'account.vat.period.end.statement',
                       'addons/account_vat_period_end_statement/report/vat_period_end_statement.mako',
                       parser=print_vat_period_end_statement)
-
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -262,6 +262,7 @@ class account_vat_period_end_statement(orm.Model):
         'period_ids': fields.one2many('account.period', 'vat_statement_id', 'Periods'),
         'interest_rate': fields.float('Interest rate for quarter', digits_compute=dp.get_precision('Account')),
         'interest_amount': fields.function(_compute_interest_vat_amount, method=True, string='Authority VAT Interest Amount'),
+        'fiscal_page_base': fields.integer('Last printed page n.'),
     }
 
     _defaults = {
