@@ -118,6 +118,8 @@
                             <group col="2" colspan="2">
                                 <field name="state" readonly="1" nolabel="1" colspan="2" />
                                 <field name="type" invisible="1" />
+                                <field name="date_accepted" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="date_accreditation" attrs="{'readonly':[('state','not in',['draft','accepted'])]}"/>
                             </group>
                             <group col="2" colspan="2">
                                 <button name="confirm" type='object' string="Accepted" icon="gtk-apply" attrs="{'invisible':['|',('state','!=','draft'),('type','=','incasso')]}"/>
@@ -130,8 +132,6 @@
                             <field name="user_id" />
                             <newline/>
                             <field name="date_created" />
-                            <field name="date_accepted" />
-                            <field name="date_accreditation" />
                             <field name="date_paid" />
                         </page>
                         <page string="Accounting">
