@@ -139,6 +139,7 @@
                 <field name="invoice_origin" readonly="1"/>
                 <field name="payment_term_id" readonly="1"/>
                 <field name="payment_term_type" readonly="1"/>
+                <field name="date"/>
                 <field name="debit" readonly="1" sum="Total Debit"/>
                 <field name="credit" readonly="1" sum="Total Credit"/>
                 <field name="balance"/>
@@ -161,9 +162,9 @@
                 <group>
                     <field name="account_id"/>
                     <separator orientation="vertical"/>
-                    <filter icon="terp-go-today" string="From Start Current Year" domain="[('date','&gt;=',time.strftime('%%Y-01-01'))]" help="Start Date" name="start_date"/>
+                    <filter icon="terp-go-today" string="From Start Current Year" domain="[('date','&gt;=',time.strftime('%%Y-01-01'))]" help="Start Date" name="start_year"/>
                     <separator orientation="vertical"/>
-                    <filter icon="terp-go-today" string="To End Current Year" domain="[('date','&lt;=',time.strftime('%%Y-12-31'))]" help="End Date" name="end_date"/>
+                    <filter icon="terp-go-today" string="From Start Current Month" domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date" name="start_month"/>
                 </group>
            </search>
         </field>
@@ -177,7 +178,7 @@
         <field name="view_mode">tree</field>
         <field name="view_id" ref="view_account_ordered_tree"/>
         <field name="search_view_id" ref="view_account_ordered_filter"/>
-        <field name="context">{'search_default_start_date': 1,'search_default_end_date': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+        <field name="context">{'search_default_start_year': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
     </record>
     
     <menuitem name="Schede Contabili" parent="account.menu_finance_entries" action="action_account_ordered" id="menu_action_account_ledger" sequence="5"/>
