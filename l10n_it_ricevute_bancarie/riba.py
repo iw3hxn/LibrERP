@@ -92,8 +92,8 @@ class riba_distinta(osv.osv):
             'Riba deadlines', readonly=False,),# states={'draft': [('readonly', False)]}),
         'user_id': fields.many2one('res.users', 'User', required=True, readonly=True, states={'draft': [('readonly', False)]}),
         'date_created': fields.date('Creation date', readonly=True),
-        'date_accepted': fields.date('Acceptance date', readonly=True),
-        'date_accreditation': fields.date('Accreditation date', readonly=True),
+        'date_accepted': fields.date('Acceptance date', readonly=False),
+        'date_accreditation': fields.date('Accreditation date', readonly=False),
         'date_paid': fields.date('Paid date', readonly=True),
         'date_unsolved': fields.date('Unsolved date', readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
@@ -105,6 +105,8 @@ class riba_distinta(osv.osv):
         'unsolved_move_ids': fields.function(_get_unsolved_move_ids, type='many2many', relation='account.move', method=True, string="Unsolved Entries"),
         'type': fields.related('config', 'tipo', type='char', size=32, string='Type', readonly=True),
     }
+
+    _order = 'name desc'
 
     _defaults = {
         'user_id': lambda self,cr,uid,context: uid,
@@ -148,17 +150,19 @@ class riba_distinta(osv.osv):
         return True
     
     def riba_accepted(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {
-            'state': 'accepted',
-            'date_accepted': fields.date.context_today(cr,uid,context),
-            }, context=context)
+        for distinta in self.browse(cr, uid, ids):
+            self.write(cr, uid, ids, {
+                'state': 'accepted',
+                'date_accepted': distinta.date_accepted or fields.date.context_today(cr,uid,context),
+                }, context=context)
         return True
     
     def riba_accredited(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {
-            'state': 'accredited',
-            'date_accreditation': fields.date.context_today(cr,uid,context),
-            }, context=context)
+        for distinta in self.browse(cr, uid, ids):
+            self.write(cr, uid, ids, {
+                'state': 'accredited',
+                'date_accreditation': distinta.date_accreditation or fields.date.context_today(cr,uid,context),
+                }, context=context)
         return True
     
     def riba_paid(self, cr, uid, ids, context=None):
@@ -376,9 +380,11 @@ class riba_distinta_line(osv.osv):
         for line in self.browse(cr, uid, ids, context=context):
             journal = line.distinta_id.config.acceptance_journal_id
             total_credit = 0.0
+            date_accepted = line.distinta_id.date_accepted
             move_id = move_pool.create(cr, uid, {
                 'ref': 'Ri.Ba. %s - line %s' % (line.distinta_id.name, line.sequence),
                 'journal_id': journal.id,
+                'date': date_accepted,
                 }, context=context)
             to_be_reconciled = []
             for riba_move_line in line.move_line_ids:
@@ -390,6 +396,7 @@ class riba_distinta_line(osv.osv):
                     'credit': riba_move_line.amount,
                     'debit': 0.0,
                     'move_id': move_id,
+                    'date': date_accepted,
                     }, context=context)
                 to_be_reconciled.append([move_line_id, riba_move_line.move_line_id.id])
             move_line_pool.create(cr, uid, {
@@ -400,6 +407,7 @@ class riba_distinta_line(osv.osv):
                 'credit': 0.0,
                 'debit': total_credit,
                 'move_id': move_id,
+                'date': date_accepted,
                 }, context=context)
             move_pool.post(cr, uid, [move_id], context=context)
             for reconcile_ids in to_be_reconciled:
