@@ -32,6 +32,41 @@ class account_invoice(orm.Model):
         defaults['user_id'] = uid
         return super(account_invoice, self).copy(cr, uid, order_id, defaults, context)
 
+    #override to group product_id too
+    def inv_line_characteristic_hashcode(self, invoice, invoice_line):
+        """Overridable hashcode generation for invoice lines. Lines having the same hashcode
+        will be grouped together if the journal has the 'group line' option. Of course a module
+        can add fields to invoice lines that would need to be tested too before merging lines
+        or not."""
+        return "%s-%s-%s-%s"%(
+            invoice_line['account_id'],
+            invoice_line.get('tax_code_id',"False"),#invoice_line.get('product_id',"False"),
+            invoice_line.get('analytic_account_id',"False"),
+            invoice_line.get('date_maturity',"False"))
+
+    #override to merge description (after will be trunked to x character everyway)
+    def group_lines(self, cr, uid, iml, line, inv):
+        """Merge account move lines (and hence analytic lines) if invoice line hashcodes are equals"""
+        if inv.journal_id.group_invoice_lines:
+            line2 = {}
+            for x, y, l in line:
+                tmp = self.inv_line_characteristic_hashcode(inv, l)
+
+                if tmp in line2:
+                    am = line2[tmp]['debit'] - line2[tmp]['credit'] + (l['debit'] - l['credit'])
+                    line2[tmp]['debit'] = (am > 0) and am or 0.0
+                    line2[tmp]['credit'] = (am < 0) and -am or 0.0
+                    line2[tmp]['tax_amount'] += l['tax_amount']
+                    line2[tmp]['analytic_lines'] += l['analytic_lines']
+                    line2[tmp]['amount_currency'] += l['amount_currency']
+                    line2[tmp]['quantity'] += l['quantity']
+                    line2[tmp]['name'] += l['name']
+                else:
+                    line2[tmp] = l
+            line = []
+            for key, val in line2.items():
+                line.append((0,0,val))
+        return line
 
 class account_invoice_line(orm.Model):
     _inherit = "account.invoice.line"
