@@ -21,7 +21,7 @@
 
 {
     'name': 'Multi payment improvements',
-    'version': '3.1.1.5',
+    'version': '3.1.1.6',
     'category': 'Generic Modules/Payment',
     'description': """
 
