@@ -53,6 +53,7 @@
             <field name="arch" type="xml">
                 <form string="Ri.Ba. - Distinta">
                     <field name="name" />
+                    <field name="date_created" />
                     <field name="config" widget="selection"/>
                     <notebook colspan="4">
                         <page string="General">
@@ -131,7 +132,6 @@
                         <page string="Other Info">
                             <field name="user_id" />
                             <newline/>
-                            <field name="date_created" />
                             <field name="date_paid" />
                         </page>
                         <page string="Accounting">
