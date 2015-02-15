@@ -132,10 +132,7 @@ class account_bank_statement(orm.Model):
                 'name': st_number or '/',
                 'ref': st_number or '/',
             }, context=context)
-            account_bank_statement_line_obj.write(cr, uid, [st.id], {
-                'move_ids': [(4, move_id, False)]
-            })
-            
+
             to_be_reconciled = []
             st_line_sum = 0.0
             for st_line in st.line_ids:
@@ -149,6 +146,7 @@ class account_bank_statement(orm.Model):
                 if move_line_id:
                     to_be_reconciled.append([move_line_id, st_line.move_line_id.id])
                 st_line_sum += st_line.amount
+                account_bank_statement_line_obj.write(cr, uid, [st_line.id], {'move_ids': [(4, move_id, False)]})
 
             if st_line_sum >= 0:
                 account_id = st.journal_id.default_credit_account_id.id
