@@ -50,3 +50,10 @@ class account_invoice(orm.Model):
             result['value']['carriage_condition_id'] = partner.carriage_condition_id.id
             result['value']['goods_description_id'] = partner.goods_description_id.id
         return result
+
+
+class account_invoice_line(orm.Model):
+    _inherit = "account.invoice.line"
+    _columns = {
+        'advance_id': fields.many2one('account.invoice','Advance invoice'),
+    }

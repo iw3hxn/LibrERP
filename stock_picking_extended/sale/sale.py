@@ -51,13 +51,6 @@ class sale_advance_payment_inv(orm.TransientModel):
         return res
 
 
-class account_invoice_line(orm.Model):
-    _inherit = "account.invoice.line"
-    _columns = {
-        'advance_id': fields.many2one('account.invoice','Advance invoice'),
-    }
-
-
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
     _columns = {
