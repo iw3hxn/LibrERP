@@ -24,6 +24,7 @@
     "author" : "Tiny,Pexego",
     "version" : "1.0",
     "category" : "Generic Modules/Sales & Purchases",
+    'description': """ """,
     "depends" : [
                 "stock",
                 "purchase",
