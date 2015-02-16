@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        
+        <record id="hr_employee_extended_tree" model="ir.ui.view">
+            <field name="name">hr.employee.tree</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <field name="coach_id" position="after">
+                    <field name="state" />
+                </field>
+            </field>
+        </record>
+
+        <record id="hr.open_view_employee_list_my_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">kanban</field>
+        </record>
+
+    </data>
+</openerp>
