@@ -21,7 +21,7 @@
 
 {
     'name': 'Product Filter Availability',
-    'version': '1.0',
+    'version': '1.0.1',
     'category': 'Manufacturing',
     'description': """
         This filter shows only records that have qty_available> 0

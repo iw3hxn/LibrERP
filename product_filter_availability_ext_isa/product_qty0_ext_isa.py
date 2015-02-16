@@ -110,8 +110,9 @@ class product_qty0_ext_isa(osv.osv):
         locations=''
         sep=''
         for loc in location_ids:
-            locations=sep+str(loc)
-            sep=','
+            locations\
+                = locations + sep + str(loc)
+            sep = ','
         order_by = self._generate_order_by(order, query)
         from_clause, where_clause, where_clause_params = query.get_sql()
         limit_str = limit and ' limit %d' % limit or ''
