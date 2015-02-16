@@ -68,6 +68,33 @@ class account_invoice(orm.Model):
                 line.append((0,0,val))
         return line
 
+
+    def unlink(self, cr, uid, ids, context=None):
+        #account_invoice_line_obj = self.pool['account.invoice.line']
+        stock_picking_obj = self.pool['stock.picking']
+        origins = {}
+        for invoice in self.browse(cr, uid, ids, context):
+            for line in invoice.invoice_line:
+                line_origin = line.origin or False
+                if line_origin not in origins:
+                    origins[line_origin] = invoice.id
+
+        # now on origins i have all the origin and invoice.id
+        for origin in origins:
+            if origin and len(origin.split(':')) == 2:
+                # OUTxxx:SOyy
+                pickings_name = origin.split(':')[0]
+                picking_id = stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
+                if super(account_invoice, self).unlink(cr, uid, [origins[origin]], context=context):
+                    if picking_id:
+                        stock_picking_obj.write(cr, uid, [picking_id[0]], {'invoice_state': '2binvoiced'}, context=context)
+                # now i need to eliminate other ids
+                if origins[origin] in ids:
+                    del ids[ids.index(origins[origin])]
+
+        return super(account_invoice, self).unlink(cr, uid, ids, context=context)
+
+
 class account_invoice_line(orm.Model):
     _inherit = "account.invoice.line"
 
