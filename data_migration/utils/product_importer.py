@@ -165,7 +165,7 @@ class ImportFile(threading.Thread, Utils):
                 print(categories)
             category_obj = self.pool['product.category']
             name = categories.pop(0)
-            category_ids = category_obj.search(cr, uid, [('name', '=', name), ('parent_id', '=', parent_id)])
+            category_ids = category_obj.search(cr, uid, [('name', '=', name.strip()), ('parent_id', '=', parent_id)])
 
             if len(category_ids) == 1:
                 if categories:
