@@ -222,24 +222,25 @@ class riba_distinta_line(osv.osv):
             res[line.id]['cig'] = ''
             for move_line in line.move_line_ids:
                 res[line.id]['amount'] += move_line.amount
-                if not res[line.id]['invoice_date']:
-                    res[line.id]['invoice_date'] = str(datetime.strptime(move_line.move_line_id.invoice.date_invoice, '%Y-%m-%d').strftime('%d/%m/%Y'))
-                else:
-                    res[line.id]['invoice_date'] += ', ' + str(datetime.strptime(move_line.move_line_id.invoice.date_invoice, '%Y-%m-%d').strftime('%d/%m/%Y'))
-                if not res[line.id]['invoice_number']:
-                    res[line.id]['invoice_number'] = str(move_line.move_line_id.invoice.internal_number)
-                else:
-                    res[line.id]['invoice_number'] += ', '+str(move_line.move_line_id.invoice.internal_number)
-                if move_line.move_line_id.invoice.cup:
-                    if not res[line.id]['cup']:
-                        res[line.id]['cup'] = str(move_line.move_line_id.invoice.cup)
+                if move_line.move_line_id.invoice:
+                    if not res[line.id]['invoice_date']:
+                        res[line.id]['invoice_date'] = str(datetime.strptime(move_line.move_line_id.invoice.date_invoice, '%Y-%m-%d').strftime('%d/%m/%Y'))
                     else:
-                        res[line.id]['cup'] += ', '+str(move_line.move_line_id.invoice.cup)
-                if move_line.move_line_id.invoice.cig:
-                    if not res[line.id]['cig']:
-                        res[line.id]['cig'] = str(move_line.move_line_id.invoice.cig)
+                        res[line.id]['invoice_date'] += ', ' + str(datetime.strptime(move_line.move_line_id.invoice.date_invoice, '%Y-%m-%d').strftime('%d/%m/%Y'))
+                    if not res[line.id]['invoice_number']:
+                        res[line.id]['invoice_number'] = str(move_line.move_line_id.invoice.internal_number)
                     else:
-                        res[line.id]['cig'] += ', '+str(move_line.move_line_id.invoice.cig)
+                        res[line.id]['invoice_number'] += ', '+str(move_line.move_line_id.invoice.internal_number)
+                    if move_line.move_line_id.invoice.cup:
+                        if not res[line.id]['cup']:
+                            res[line.id]['cup'] = str(move_line.move_line_id.invoice.cup)
+                        else:
+                            res[line.id]['cup'] += ', '+str(move_line.move_line_id.invoice.cup)
+                    if move_line.move_line_id.invoice.cig:
+                        if not res[line.id]['cig']:
+                            res[line.id]['cig'] = str(move_line.move_line_id.invoice.cig)
+                        else:
+                            res[line.id]['cig'] += ', '+str(move_line.move_line_id.invoice.cig)
         return res
 
     def _reconciled(self, cr, uid, ids, name, args, context=None):
