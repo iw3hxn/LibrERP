@@ -23,11 +23,11 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from tools.translate import _
+from openerp.tools.translate import _
 import math
 import decimal_precision as dp
-from datetime import datetime
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+#from datetime import datetime
+#from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class account_vat_period_end_statement(orm.Model):
@@ -485,6 +485,7 @@ class account_vat_period_end_statement(orm.Model):
             debit_line_ids = []
             tax_code_pool = self.pool.get('account.tax.code')
             debit_tax_code_ids = tax_code_pool.search(cr, uid, [('vat_statement_account_id', '!=', False),
+                                                                ('exclude_from_registries', '!=', True),
                                                                 ('vat_statement_type', '=', 'debit'), ], context=context)
             for debit_tax_code_id in debit_tax_code_ids:
                 debit_tax_code = tax_code_pool.browse(cr, uid, debit_tax_code_id, context)
@@ -499,7 +500,9 @@ class account_vat_period_end_statement(orm.Model):
                 )
 
             credit_tax_code_ids = tax_code_pool.search(cr, uid,
-                                                       [('vat_statement_account_id', '!=', False), ('vat_statement_type', '=', 'credit'), ],
+                                                       [('vat_statement_account_id', '!=', False),
+                                                        ('exclude_from_registries', '!=', True),
+                                                        ('vat_statement_type', '=', 'credit'), ],
                                                        context=context)
             
             for credit_tax_code_id in credit_tax_code_ids:
