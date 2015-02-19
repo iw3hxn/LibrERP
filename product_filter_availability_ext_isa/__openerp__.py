@@ -21,14 +21,19 @@
 
 {
     'name': 'Product Filter Availability',
-    'version': '1.0.1',
+    'version': '3.1.1.1',
     'category': 'Manufacturing',
     'description': """
-        This filter shows only records that have qty_available> 0
+        This filter adds buttons, that shows records that have qty_available > 0
+         and records that have qty_available < 0
        """,
     'author': 'ISA srl',
-    'depends': ['stock'],
-    'update_xml': ['product_ext_isa_view.xml'],
+    'depends': [
+        'stock'
+    ],
+    'update_xml': [
+        'product_ext_isa_view.xml'
+    ],
     'demo_xml': [],
     'test': [],
     'installable': True,

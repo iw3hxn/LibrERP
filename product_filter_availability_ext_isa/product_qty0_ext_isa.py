@@ -19,44 +19,42 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import orm
 
 
-class product_qty0_ext_isa(osv.osv):
+class product_qty0_ext_isa(orm.Model):
     
     _description = "Product extension for filter qty=0"
     _inherit = 'product.product'
     
     def search(self, cr, uid, args, offset=0, limit=None,
-                order=None, context=None, count=False):
-        #~ import pdb; pdb.set_trace()
-        res = []
+               order=None, context=None, count=False):
+
         if context is None:
             context = {}
-        if not context.has_key('not0'):
-            res = super(product_qty0_ext_isa, self).search(cr, uid, args, offset, limit,
-                order, context=context, count=count)
-                
+        if 'gt0' in context:
+            return self._search_available(cr, uid, args, offset, limit,
+                                          order, context, count, sign='gt')
+        elif 'lt0' in context:
+            return self._search_available(cr, uid, args, offset, limit,
+                                          order, context, count, sign='lt')
         else:
-            #~ import pdb; pdb.set_trace()
-            res=self._search_available(cr, uid, args, offset, limit,
-                order, context, count)
-        return res
+            return super(product_qty0_ext_isa, self).search(cr, uid, args, offset, limit,
+                                                            order, context=context, count=count)
         
-    def _search_available(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False, access_rights_uid=None):
-        
+    def _search_available(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False, access_rights_uid=None, sign='>'):
         if context is None:
             context = {}
+
         #TODO: verificare se queste condizioni sono tutte necessarie
         if context.get('shop', False):
-            cr.execute('select warehouse_id from sale_shop where id=%s', (int(context['shop']),))
+            cr.execute('SELECT warehouse_id FROM sale_shop WHERE id=%s', (int(context['shop']),))
             res2 = cr.fetchone()
             if res2:
                 context['warehouse'] = res2[0]
 
         if context.get('warehouse', False):
-            cr.execute('select lot_stock_id from stock_warehouse where id=%s', (int(context['warehouse']),))
+            cr.execute('SELECT lot_stock_id FROM stock_warehouse WHERE id=%s', (int(context['warehouse']),))
             res2 = cr.fetchone()
             if res2:
                 context['location'] = res2[0]
@@ -65,72 +63,84 @@ class product_qty0_ext_isa(osv.osv):
             if type(context['location']) == type(1):
                 location_ids = [context['location']]
             elif type(context['location']) in (type(''), type(u'')):
-                location_ids = self.pool.get('stock.location').search(cr, user, [('name','ilike',context['location'])], context=context)
+                location_ids = self.pool['stock.location'].search(cr, user, [('name', 'ilike', context['location'])], context=context)
             else:
                 location_ids = context['location']
         else:
-            location_ids = []
-            wids = self.pool.get('stock.warehouse').search(cr, user, [], context=context)
-            for w in self.pool.get('stock.warehouse').browse(cr, user, wids, context=context):
-                location_ids.append(w.lot_stock_id.id)
+            w_ids = self.pool['stock.warehouse'].search(cr, user, [], context=context)
+            location_ids = [w.lot_stock_id.id for w in self.pool['stock.warehouse'].browse(cr, user, w_ids, context=context)]
 
         # build the list of ids of children of the location given by id
-        if context.get('compute_child',True):
-            child_location_ids = self.pool.get('stock.location').search(cr, user, [('location_id', 'child_of', location_ids)])
+        if context.get('compute_child', True):
+            child_location_ids = self.pool['stock.location'].search(cr, user, [('location_id', 'child_of', location_ids)])
             location_ids = child_location_ids or location_ids
-        else:
-            location_ids = location_ids
-        #~ import pdb; pdb.set_trace()
+
         #self.pool.get('ir.model.access').check(cr, access_rights_uid or user, self._name, 'read', context=context)
-        select="""
-                    select stock_move.product_id
-                    from %s
-                    ,stock_move
-              """   
-        where="""
-                    where stock_move.product_id=product_product.id and stock_move.location_id NOT IN (%s) and stock_move.location_dest_id IN (%s)
-                    and stock_move.state IN ('confirmed', 'done') 
-              """
-        group="""        
-                    group by stock_move.product_id,stock_move.product_uom
-              """
-        having="""      
-                    HAVING (sum(stock_move.product_qty)-(
-                        select coalesce(sum(stock_move_b.product_qty),0)
-                        from stock_move stock_move_b
-                        where stock_move_b.location_id IN (%s) and stock_move_b.location_dest_id NOT IN (%s)
-                        and stock_move_b.product_id=stock_move.product_id
-                        and stock_move_b.state in ('confirmed', 'done'))
+        select = """
+                    SELECT stock_move.product_id
+                    FROM %s, stock_move
+                 """
+        if sign == 'gt':
+            where = """
+                        WHERE stock_move.product_id=product_product.id
+                        AND stock_move.location_id NOT IN ({locations})
+                        AND stock_move.location_dest_id IN ({locations})
+                        AND stock_move.state IN ('confirmed', 'done')
+                    """
+            having = """
+                    HAVING (SUM(stock_move.product_qty) - (
+                        SELECT coalesce(SUM(stock_move_b.product_qty), 0)
+                        FROM stock_move stock_move_b
+                        WHERE stock_move_b.location_id IN ({locations})
+                        AND stock_move_b.location_dest_id NOT IN ({locations})
+                        AND stock_move_b.product_id=stock_move.product_id
+                        AND stock_move_b.state IN ('confirmed', 'done'))
                     ) > 0
-               """ 
+                 """
+        else:
+            where = """
+                        WHERE stock_move.product_id=product_product.id
+                        AND stock_move.location_id IN ({locations})
+                        AND stock_move.location_dest_id NOT IN ({locations})
+                        AND stock_move.state IN ('confirmed', 'done')
+                    """
+            having = """
+                    HAVING (SUM(stock_move.product_qty) - (
+                        SELECT coalesce(SUM(stock_move_b.product_qty), 0)
+                        FROM stock_move stock_move_b
+                        WHERE stock_move_b.location_id NOT IN ({locations})
+                        AND stock_move_b.location_dest_id IN ({locations})
+                        AND stock_move_b.product_id=stock_move.product_id
+                        AND stock_move_b.state IN ('confirmed', 'done'))
+                    ) > 0
+                 """
+
+        group = """
+                    GROUP BY stock_move.product_id, stock_move.product_uom
+                """
+
         query = self._where_calc(cr, user, args, context=context)
         #TODO: verificare
         self._apply_ir_rules(cr, user, query, 'read', context=context)
         #il _generate_order_by va prima del get_sql altrimenti non aggiorna la from_clause
-        locations=''
-        sep=''
-        for loc in location_ids:
-            locations\
-                = locations + sep + str(loc)
-            sep = ','
+        if location_ids:
+            locations = reduce(lambda x, y: x + ', ' + str(y), location_ids[1:], str(location_ids[0]))
+        else:
+            locations = ''
+
         order_by = self._generate_order_by(order, query)
         from_clause, where_clause, where_clause_params = query.get_sql()
-        limit_str = limit and ' limit %d' % limit or ''
-        offset_str = offset and ' offset %d' % offset or ''             
-        add_where_str = where_clause and " and %s" % where_clause or ''
-        where=where % (locations,locations)
-        where+=add_where_str
-        having=having % (locations,locations)
+        limit_str = limit and ' LIMIT %d' % limit or ''
+        offset_str = offset and ' OFFSET %d' % offset or ''
+        add_where_str = where_clause and " AND %s" % where_clause or ''
+        where = where.format(locations=locations)
+        where += add_where_str
+        having = having.format(locations=locations, sign=sign)
         #FIXME: servono i campi con i quali si fa l'ordinamento da mettere nel group by... per ora li prendo dall'order
-        add_group_by=order_by.replace("ORDER BY","").replace("asc","").replace("desc","")
-        group+= add_group_by and ','+add_group_by
-        query_str=(select % from_clause)+where+group+having+order_by+limit_str+offset_str
-        #~ import pdb; pdb.set_trace()
-        cr.execute(query_str,where_clause_params)
+        add_group_by = order_by.replace("ORDER BY", "").replace("asc", "").replace("desc", "")
+        group += add_group_by and ',' + add_group_by
+        query_str = (select % from_clause) + where + group + having + order_by + limit_str + offset_str
+
+        cr.execute(query_str, where_clause_params)
         res = cr.fetchall()
         return [x[0] for x in res]
-            
-        
-product_qty0_ext_isa()
-    
-    
