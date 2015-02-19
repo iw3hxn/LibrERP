@@ -38,9 +38,15 @@ class Utils():
         
     def toStr(self, value):
         number = re.compile(r'^[0-9.,]+$')
+        number_vith_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
+        number_vith_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
         if type(value) == type(u'a') or type(value) == type('a'):
             if number.match(value):
                 if ',' in value or '.' in value:
+                    if number_vith_thousands_separator_italian.match(value):
+                        value = value.replace('.', '')
+                    elif number_vith_thousands_separator.match(value):
+                        value = value.replace(',', '')
                     value = value.replace(',', '.')
                     value = float(value)
                 else:
