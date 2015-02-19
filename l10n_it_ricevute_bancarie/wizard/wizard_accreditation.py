@@ -96,6 +96,8 @@ class riba_accreditation(osv.osv_memory):
 #        move_line_pool = self.pool.get('account.move.line')
         distinta_pool = self.pool.get('riba.distinta')
         distinta = distinta_pool.browse(cr, uid, active_id, context=context)
+        if not distinta.date_accreditation:
+            raise osv.except_osv(_('Warning'), _('Missing Accreditation Date'))
         date_accreditation = distinta.date_accreditation
         wizard = self.browse(cr, uid, ids)[0]
         if not wizard.accreditation_journal_id or not wizard.accreditation_account_id or not wizard.bank_account_id or not wizard.bank_expense_account_id:
