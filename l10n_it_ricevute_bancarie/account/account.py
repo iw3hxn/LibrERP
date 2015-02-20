@@ -24,10 +24,10 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import fields, orm
 
 
-class account_payment_term(osv.osv):
+class account_payment_term(orm.Model):
     # flag riba utile a distinguere la modalità di pagamento
     _inherit = 'account.payment.term'
 
@@ -39,14 +39,14 @@ class account_payment_term(osv.osv):
     }
 
 
-class res_bank_add_field(osv.osv):
+class res_bank_add_field(orm.Model):
     _inherit = 'res.bank'
     _columns = {
         'banca_estera': fields.boolean('Banca Estera'),
     }
 
 
-class res_partner_bank_add(osv.osv):
+class res_partner_bank_add(orm.Model):
     _inherit = 'res.partner.bank'
     _columns = {
         'codice_sia': fields.char('Codice SIA', size=5, help="Identification Code of the Company in the System Interbank")
@@ -55,7 +55,7 @@ res_partner_bank_add()
 
 
 # se distinta_line_ids == None allora non è stata emessa
-class account_move_line(osv.osv):
+class account_move_line(orm.Model):
     _inherit = "account.move.line"
 
     _columns = {
@@ -76,14 +76,29 @@ class account_move_line(osv.osv):
             cr, uid, 'l10n_it_ricevute_bancarie', 'view_riba_da_emettere_tree')
         if view_id == view_payments_tree_id[1]:
             # Use RiBa list - grazie a eLBati @ account_due_list
-            result = super(osv.osv, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
+            result = super(orm.Model, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
         else:
             # Use special views for account.move.line object (for ex. tree view contains user defined fields)
             result = super(account_move_line, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
         return result
 
+    def unlink(self, cr, uid, ids, context=None, check=True):
+        if not context:
+            context = {}
+        riba_distinta_line_obj = self.pool['riba.distinta.line']
+        riba_distinta_move_line_obj = self.pool['riba.distinta.move.line']
+        riba_distinta_move_line_ids = riba_distinta_move_line_obj.search(cr, uid, [('move_line_id', 'in', ids)])
+        if riba_distinta_move_line_ids:
+            riba_line_ids = riba_distinta_line_obj.search(cr, uid, [('move_line_ids', 'in', riba_distinta_move_line_ids)])
+            if riba_line_ids:
+                for riba_line in riba_distinta_line_obj.browse(cr, uid, riba_line_ids, context=context):
+                    if riba_line.state in ['draft', 'cancel']:
+                        riba_distinta_line_obj.unlink(cr, uid, riba_line_ids, context=context)
+                        #TODO: unlink in 'accepted' state too?
+        return super(account_move_line, self).unlink(cr, uid, ids, context=context, check=check)
 
-class account_invoice(osv.osv):
+
+class account_invoice(orm.Model):
     _inherit = "account.invoice"
     _columns = {
         'unsolved_move_line_ids': fields.many2many('account.move.line', 'invoice_unsolved_line_rel', 'invoice_id', 'line_id', 'Unsolved journal items'),
