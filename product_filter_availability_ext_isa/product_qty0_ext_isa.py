@@ -60,7 +60,7 @@ class product_qty0_ext_isa(orm.Model):
                 context['location'] = res2[0]
 
         if context.get('location', False):
-            if type(context['location']) == type(1):
+            if isinstance(context['location'], int):
                 location_ids = [context['location']]
             elif type(context['location']) in (type(''), type(u'')):
                 location_ids = self.pool['stock.location'].search(cr, user, [('name', 'ilike', context['location'])], context=context)
@@ -75,7 +75,14 @@ class product_qty0_ext_isa(orm.Model):
             child_location_ids = self.pool['stock.location'].search(cr, user, [('location_id', 'child_of', location_ids)])
             location_ids = child_location_ids or location_ids
 
-        #self.pool.get('ir.model.access').check(cr, access_rights_uid or user, self._name, 'read', context=context)
+        # self.pool.get('ir.model.access').check(cr, access_rights_uid or user, self._name, 'read', context=context)
+
+        # Virtually available
+        states = "'confirmed', 'waiting', 'assigned', 'done'"
+
+        # Quantity available
+        # states = "'done'"
+
         select = """
                     SELECT stock_move.product_id
                     FROM %s, stock_move
@@ -85,7 +92,7 @@ class product_qty0_ext_isa(orm.Model):
                         WHERE stock_move.product_id=product_product.id
                         AND stock_move.location_id NOT IN ({locations})
                         AND stock_move.location_dest_id IN ({locations})
-                        AND stock_move.state IN ('confirmed', 'done')
+                        AND stock_move.state IN ({states})
                     """
             having = """
                     HAVING (SUM(stock_move.product_qty) - (
@@ -94,7 +101,7 @@ class product_qty0_ext_isa(orm.Model):
                         WHERE stock_move_b.location_id IN ({locations})
                         AND stock_move_b.location_dest_id NOT IN ({locations})
                         AND stock_move_b.product_id=stock_move.product_id
-                        AND stock_move_b.state IN ('confirmed', 'done'))
+                        AND stock_move_b.state IN ({states}))
                     ) > 0
                  """
         else:
@@ -102,7 +109,7 @@ class product_qty0_ext_isa(orm.Model):
                         WHERE stock_move.product_id=product_product.id
                         AND stock_move.location_id IN ({locations})
                         AND stock_move.location_dest_id NOT IN ({locations})
-                        AND stock_move.state IN ('confirmed', 'done')
+                        AND stock_move.state IN ({states})
                     """
             having = """
                     HAVING (SUM(stock_move.product_qty) - (
@@ -111,7 +118,7 @@ class product_qty0_ext_isa(orm.Model):
                         WHERE stock_move_b.location_id NOT IN ({locations})
                         AND stock_move_b.location_dest_id IN ({locations})
                         AND stock_move_b.product_id=stock_move.product_id
-                        AND stock_move_b.state IN ('confirmed', 'done'))
+                        AND stock_move_b.state IN ({states}))
                     ) > 0
                  """
 
@@ -120,9 +127,9 @@ class product_qty0_ext_isa(orm.Model):
                 """
 
         query = self._where_calc(cr, user, args, context=context)
-        #TODO: verificare
+        # TODO: verificare
         self._apply_ir_rules(cr, user, query, 'read', context=context)
-        #il _generate_order_by va prima del get_sql altrimenti non aggiorna la from_clause
+        # il _generate_order_by va prima del get_sql altrimenti non aggiorna la from_clause
         if location_ids:
             locations = reduce(lambda x, y: x + ', ' + str(y), location_ids[1:], str(location_ids[0]))
         else:
@@ -133,10 +140,10 @@ class product_qty0_ext_isa(orm.Model):
         limit_str = limit and ' LIMIT %d' % limit or ''
         offset_str = offset and ' OFFSET %d' % offset or ''
         add_where_str = where_clause and " AND %s" % where_clause or ''
-        where = where.format(locations=locations)
+        where = where.format(locations=locations, states=states)
         where += add_where_str
-        having = having.format(locations=locations, sign=sign)
-        #FIXME: servono i campi con i quali si fa l'ordinamento da mettere nel group by... per ora li prendo dall'order
+        having = having.format(locations=locations, sign=sign, states=states)
+        # FIXME: servono i campi con i quali si fa l'ordinamento da mettere nel group by... per ora li prendo dall'order
         add_group_by = order_by.replace("ORDER BY", "").replace("asc", "").replace("desc", "")
         group += add_group_by and ',' + add_group_by
         query_str = (select % from_clause) + where + group + having + order_by + limit_str + offset_str
