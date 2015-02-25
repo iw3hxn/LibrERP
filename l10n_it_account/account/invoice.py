@@ -42,8 +42,11 @@ class account_invoice(orm.Model):
                 # if hasattr(invoice, 'move_products') and invoice.move_products:
                 #     result[invoice.id] = True
                 if invoice.origin:
-                    for origin in  invoice.origin.split(','):
-                        picking_name, sale_order_name = origin.split(':')
+                    for origin in invoice.origin.split(','):
+                        if ':' in origin:
+                            picking_name, sale_order_id = origin.split(':')
+                        else:
+                            picking_name = origin
                         picking_out_ids = self.pool['stock.picking'].search(cr, uid, [('type', '=', 'out'), ('name', '=', picking_name)])
                         if picking_out_ids:
                             picking = self.pool['stock.picking'].browse(cr, uid, picking_out_ids[0])
