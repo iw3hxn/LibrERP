@@ -29,52 +29,27 @@ class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
     def _is_direct_invoice(self, cr, uid, ids, filed_name, args, context=None):
+        """
+        u'IN/00429-OUT/00366-return:CNL/2015/000374, IN/00367-OUT/00217-return:CNL/2015/000350'
+        u'OUT/00441:1224/15 Consuntivo'
+
+        """
         result = {}
         if ids:
-            picking_name = False
             invoices = self.browse(cr, uid, ids, context)
             for invoice in invoices:
-                if hasattr(invoice, 'move_products') and invoice.move_products:
-                    result[invoice.id] = True
-                elif invoice.origin:
-                    if ':' in invoice.origin:
-                        if ',' in invoice.origin:
-                            origins = invoice.origin.split(',')
-                            if len(origins) == 2:
-                                if ':' in  origins[0]:
-                                    picking_name, sale_order_name = origins[0].split(':')
-                                else:
-                                    picking_name = origins[0]
-                        else:
-                            origins = invoice.origin.split(':')
-                            if len(origins) == 2:
-                                if origins[0][:3] == 'IN/':
-                                #    in_picking = origins[0]
-                                    picking_name = origins[1]
-                                else:
-                                    picking_name = origins[0]
-                                #    sale_order_name = origins[1]
-                            elif len(origins) == 3:
-                                #in_picking = origins[0]
-                                picking_name = origins[1]
-                                #sale_order_name = origins[2]
-                    elif invoice.origin[:4] == 'OUT/':
-                        picking_name = invoice.origin
-                    else:
-                        picking_name = False
-
-                    if picking_name:
-                        picking_ids = self.pool['stock.picking'].search(cr, uid, [('name', '=', picking_name)])
-                        if picking_ids:
-                            picking = self.pool['stock.picking'].browse(cr, uid, picking_ids[0])
-                            if picking.ddt_number:
-                                result[invoice.id] = False
-                            else:
+                result[invoice.id] = False
+                # if hasattr(invoice, 'move_products') and invoice.move_products:
+                #     result[invoice.id] = True
+                if invoice.origin:
+                    for origin in  invoice.origin.split(','):
+                        picking_name, sale_order_name = origin.split(':')
+                        picking_out_ids = self.pool['stock.picking'].search(cr, uid, [('type', '=', 'out'), ('name', '=', picking_name)])
+                        if picking_out_ids:
+                            picking = self.pool['stock.picking'].browse(cr, uid, picking_out_ids[0])
+                            if not picking.ddt_number:
                                 result[invoice.id] = True
-                        else:
-                            result[invoice.id] = False
-                    else:
-                        result[invoice.id] = False
+                                break
         return result
 
     def action_number(self, cr, uid, ids, context=None):
