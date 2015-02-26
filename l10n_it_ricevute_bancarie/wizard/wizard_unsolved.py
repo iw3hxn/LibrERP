@@ -69,6 +69,7 @@ class riba_unsolved(osv.osv_memory):
         'bank_amount': fields.float('Taken amount'),
         'bank_expense_account_id': fields.many2one('account.account', "Bank Expenses account"),
         'expense_amount': fields.float('Expenses amount'),
+        'new_due_date': fields.date('New due date'),
         }
 
     _defaults = {
@@ -81,6 +82,7 @@ class riba_unsolved(osv.osv_memory):
         'overdue_effects_amount': _get_effects_amount,
         'bank_account_id': _get_bank_account_id,
         'bank_expense_account_id': _get_bank_expense_account_id,
+        'new_due_date': fields.date.context_today,
         }
 
     def skip(self, cr, uid, ids, context=None):
@@ -116,6 +118,14 @@ class riba_unsolved(osv.osv_memory):
             'journal_id': wizard.unsolved_journal_id.id,
             'line_id': [
                 (0, 0, {
+                    'name': _('Overdue Effects'),
+                    'account_id': distinta_line.partner_id.property_account_receivable.id,#wizard.overdue_effects_account_id.id,
+                    'debit': wizard.overdue_effects_amount,
+                    'credit': 0.0,
+                    'partner_id': distinta_line.partner_id.id,
+                    'date_maturity': wizard.new_due_date,#distinta_line.due_date,
+                    }),
+                (0, 0, {
                     'name': _('Effects'),
                     'account_id': wizard.effects_account_id.id,
                     'credit': wizard.effects_amount,
@@ -126,14 +136,6 @@ class riba_unsolved(osv.osv_memory):
                     'account_id': wizard.riba_bank_account_id.id,
                     'debit': wizard.riba_bank_amount,
                     'credit': 0.0,
-                    }),
-                (0, 0, {
-                    'name': _('Overdue Effects'),
-                    'account_id': wizard.overdue_effects_account_id.id,
-                    'debit': wizard.overdue_effects_amount,
-                    'credit': 0.0,
-                    'partner_id': distinta_line.partner_id.id,
-                    'date_maturity': distinta_line.due_date,
                     }),
                 (0, 0, {
                     'name': _('Bank'),
@@ -152,7 +154,7 @@ class riba_unsolved(osv.osv_memory):
         move_id = move_pool.create(cr, uid, move_vals, context=context)
 
         for move_line in move_pool.browse(cr, uid, move_id, context=context).line_id:
-            if move_line.account_id.id == wizard.overdue_effects_account_id.id:
+            if move_line.account_id.id == distinta_line.partner_id.property_account_receivable.id: #wizard.overdue_effects_account_id.id:
                 for riba_move_line in distinta_line.move_line_ids:
                     invoice_pool.write(cr, uid, riba_move_line.move_line_id.invoice.id, {
                         'unsolved_move_line_ids': [(4, move_line.id)],

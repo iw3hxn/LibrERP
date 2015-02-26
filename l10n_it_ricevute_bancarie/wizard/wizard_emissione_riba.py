@@ -24,14 +24,14 @@
 #
 ##############################################################################
 
-from osv import fields,osv
+from openerp.osv import fields, orm
 
 # -------------------------------------------------------
 #        EMISSIONE RIBA
 # -------------------------------------------------------
 
 
-class emissione_riba(osv.osv_memory):
+class emissione_riba(orm.TransientModel):
     _name = "riba.emissione"
     _description = "Emissione Ricevute Bancarie"
     _columns = {
@@ -95,7 +95,7 @@ class emissione_riba(osv.osv_memory):
             elif move_line.partner_id.bank_ids:
                 bank_id = move_line.partner_id.bank_ids[0]
             else:
-                raise osv.except_osv('Attenzione!', 'Il cliente %s non ha la banca!!!' % move_line.partner_id.name)
+                raise orm.except_orm('Attenzione!', 'Il cliente %s non ha la banca!!!' % move_line.partner_id.name)
             if move_line.partner_id.group_riba:
                 for key in grouped_lines:
                     if key[0] == move_line.partner_id.id and key[1] == move_line.date_maturity:
@@ -145,5 +145,3 @@ class emissione_riba(osv.osv_memory):
             'target': 'current',
             'res_id': rd_id or False,
         }
-
-emissione_riba()

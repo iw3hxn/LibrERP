@@ -392,6 +392,7 @@ class riba_distinta_line(osv.osv):
                 'date': date_accepted,
                 }, context=context)
             to_be_reconciled = []
+            riba_move_line_name = ''
             for riba_move_line in line.move_line_ids:
                 total_credit += riba_move_line.amount
                 move_line_id = move_line_pool.create(cr, uid, {
@@ -404,10 +405,11 @@ class riba_distinta_line(osv.osv):
                     'date': date_accepted,
                     }, context=context)
                 to_be_reconciled.append([move_line_id, riba_move_line.move_line_id.id])
+                riba_move_line_name += riba_move_line.move_line_id.invoice.number
             move_line_pool.create(cr, uid, {
-                'name': 'Ri.Ba. %s - line %s' % (line.distinta_id.name, line.sequence),
+                'name': 'Ri.Ba. %s-%s Rif. %s - %s' % (line.distinta_id.name, line.sequence, riba_move_line_name, line.partner_id.name),
                 'account_id': line.acceptance_account_id.id,
-                'partner_id': line.partner_id.id,
+                #'partner_id': line.partner_id.id,
                 'date_maturity': line.due_date,
                 'credit': 0.0,
                 'debit': total_credit,
