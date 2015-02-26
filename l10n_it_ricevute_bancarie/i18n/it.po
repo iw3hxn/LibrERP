@@ -63,7 +63,7 @@ msgstr "Sezionale utilizzato quando la Ri.Ba. viene accettata dalla banca"
 #: field:riba.configurazione,accreditation_account_id:0
 #: field:riba.unsolved,riba_bank_account_id:0
 msgid "Ri.Ba. bank account"
-msgstr "Banca conto Ri.Ba."
+msgstr "Conto Ri.Ba. SBF"
 
 #. module: l10n_it_ricevute_bancarie
 #: field:riba.distinta.line,bank_id:0
@@ -607,7 +607,7 @@ msgstr "Data accettazione"
 #. module: l10n_it_ricevute_bancarie
 #: field:riba.configurazione,acceptance_account_id:0
 msgid "Acceptance account"
-msgstr "Importo accettazione"
+msgstr "Conto effetti SBF"
 
 #. module: l10n_it_ricevute_bancarie
 #: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:187
@@ -691,7 +691,7 @@ msgstr "Raggruppa per fattura"
 #. module: l10n_it_ricevute_bancarie
 #: field:riba.distinta.line,acceptance_account_id:0
 msgid "Acceptance Account"
-msgstr "Conto accettazione"
+msgstr "Conto effetti SBF"
 
 #. module: l10n_it_ricevute_bancarie
 #: selection:riba.distinta,state:0
@@ -778,7 +778,7 @@ msgstr "Raggruppa Ri.Ba."
 #: field:riba.configurazione,bank_account_id:0
 #: field:riba.unsolved,bank_account_id:0
 msgid "Bank account"
-msgstr "Conto banca"
+msgstr "Conto corrente"
 
 #. module: l10n_it_ricevute_bancarie
 #: field:riba.unsolved,bank_amount:0
