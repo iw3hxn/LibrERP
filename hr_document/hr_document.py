@@ -26,20 +26,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import orm, fields
 
-#class gallery_docs(osv.osv):
-#
-#    _name = "web.gallery.docs"
-#    _inherit = "web.gallery.docs"
-#
-#    _columns = {
-#        'document_ids': fields.many2one('hr.employee', "Employee"),
-#
-#    }
-
-
-class hr_document_type(osv.osv):
+class hr_document_type(orm.Model):
     _description = "Documents Types"
     _name = 'hr.document.type'
     _columns = {
@@ -50,13 +39,13 @@ class hr_document_type(osv.osv):
     _order = "name"
 
 
-class hr_document(osv.osv):
+class hr_document(orm.Model):
     _description = "HR Employee Document"
     _name = 'hr.document'
     _columns = {
         'name': fields.char("Document", size=256, required=True),
         'document_type_id':fields.many2one('hr.document.type','Document Type'),
-        'employee_id':fields.many2one('hr.employee','Employee',ondelete='cascade', required=True),
+        'employee_id':fields.many2one('hr.employee','Employee', ondelete='cascade', required=True),
         'valid_start_date': fields.date("Valid Start Date"),
         'valid_end_date': fields.date("Valid End Date"),
         'comments': fields.text('Comments'),
@@ -70,8 +59,8 @@ class hr_document(osv.osv):
     _order = "document_type_id desc"
 
     def _check_dates(self, cr, uid, ids, context=None):
-        for i in self.read(cr, uid, ids, ['has_date_option','valid_start_date', 'valid_end_date'], context=context):
-            if i['has_date_option'] and i['valid_start_date'] >= i['valid_end_date']:
+        for i in self.browse(cr, uid, ids, context=context):
+            if i.has_date_option and i.valid_start_date >= i.valid_end_date:
                 return False
         return True
 
@@ -80,18 +69,17 @@ class hr_document(osv.osv):
     def onchange_document_type_id(self, cr, uid, ids, document_type_id, context=None):
         has_date_option = False
         if document_type_id:
-            document_type_obj = self.pool.get('hr.document.type')
+            document_type_obj = self.pool['hr.document.type']
             document_type = document_type_obj.browse(cr,uid,[document_type_id],context)
             if document_type and document_type[0].has_date_option == True:has_date_option = True
         return {'value': {'has_date_option': has_date_option}}
 
 
-class hr_employee(osv.osv):
+class hr_employee(orm.Model):
     _description = "Employee"
     _inherit = 'hr.employee'
     _columns = {
         'document_ids': fields.one2many('hr.document', 'employee_id', 'Documents'),
     }
-hr_employee()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

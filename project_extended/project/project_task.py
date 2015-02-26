@@ -30,15 +30,12 @@ class project_task(osv.osv):
         if not len(ids):
             return []
         res = []
-        reads = self.read(cr, uid, ids, ['name', 'project_id'], context=context)
-        for record in reads:
-            if record['project_id']:
-                
-                name = record['project_id'][1][:30] + ' : ' + record['name']
-                
+        for record in self.browse(cr, uid, ids, context=context):
+            if record.project_id:
+                name = record.project_id.name[:30] + ' : ' + record.name
             else:
-                name = record['name']
+                name = record.name
             if len(name) > 65:
                 name = name[:65] + '...'
-            res.append((record['id'], name))
+            res.append((record.id, name))
         return res
