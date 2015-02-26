@@ -27,10 +27,10 @@
 #
 ##############################################################################
 import time
+from openerp.osv import orm, fields
 
-from osv import osv, fields
 
-class hr_document_expiry_bymonth(osv.osv_memory):
+class hr_document_expiry_bymonth(orm.TransientModel):
     _name = 'hr.document.expiry.bymonth'
     _description = 'Print Monthly Document Expiry Report'
     _columns = {
@@ -57,5 +57,4 @@ class hr_document_expiry_bymonth(osv.osv_memory):
             'datas': datas,
        }
 
-hr_document_expiry_bymonth()
 

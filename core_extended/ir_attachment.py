@@ -35,7 +35,9 @@ class ir_attachment(osv.osv):
     
     def get_as_zip(self, cr, uid, ids, log=False, encode=True, compress=True):
         in_memory_zip = StringIO()
-        
+
+        context = self.pool['res.users'].context_get(cr, uid)
+
         if compress:
             zf = zipfile.ZipFile(in_memory_zip, "w", zipfile.ZIP_DEFLATED, False)
         else:
@@ -43,11 +45,10 @@ class ir_attachment(osv.osv):
         
         zf.debug = 3
         
-        for attachment_id in ids:
-            attachment = self.read(cr, uid, attachment_id)
-            if attachment['name'] and attachment['datas']:
+        for attachment in self.browse(cr, uid, ids, context=context):
+            if attachment.name and attachment.datas:
                 # for the name can also be used attachment['datas_fname']
-                zf.writestr(attachment['name'], attachment['datas'].decode("base64"))
+                zf.writestr(attachment.name, attachment.datas.decode("base64"))
         
         # Mark the files as having been created on Windows so that
         # Unix permissions are not inferred as 0000

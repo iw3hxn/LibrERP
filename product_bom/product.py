@@ -41,11 +41,7 @@ class product_product(orm.Model):
         res = {}
         products_lines = self.browse(cr, uid, ids)
         for line in products_lines:
-            if line.seller_ids:
-                supplier = line.seller_ids[0].name
-                res[line.id] = supplier.id
-            else:
-                res[line.id] = None
+            res[line.id] = line.seller_ids and line.seller_ids[0].name.id or False
         return res
 
     def _compute_purchase_price(self, cr, uid, ids,

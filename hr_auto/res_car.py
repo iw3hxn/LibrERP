@@ -139,8 +139,8 @@ class res_car_service(osv.osv):
 
   
     def _check_next_service_km(self, cr, uid, ids, context=None):
-        for i in self.read(cr, uid, ids, ['required_next_service','next_service_km'], context=context):
-            if i['required_next_service'] and not i['next_service_km']:
+        for i in self.browse(cr, uid, ids, context=context):
+            if i.required_next_service and not i.next_service_km:
                 return False
         return True
 
@@ -149,8 +149,8 @@ class res_car_service(osv.osv):
     def onchange_service_type_id(self, cr, uid, ids, service_type_id, context=None):
         required_next_service = False
         if service_type_id:
-            service_type_obj = self.pool.get('res.car.service.type')
-            service_type = service_type_obj.browse(cr,uid,[service_type_id],context)
+            service_type_obj = self.pool['res.car.service.type']
+            service_type = service_type_obj.browse(cr, uid, [service_type_id], context)
             if service_type and service_type[0].required_next_service == True:required_next_service = True
         return {'value': {'required_next_service': required_next_service}}
 res_car_service()

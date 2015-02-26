@@ -20,7 +20,7 @@
 #
 ##############################################################################.
 
-from osv import fields, osv
+from openerp.osv import orm, fields
 import sys
 import traceback
 from tools.translate import _
@@ -46,7 +46,7 @@ COLOR_SELECTION = [
 ]
 
 
-class project_plant_type(osv.osv):
+class project_plant_type(orm.Model):
     _name = "project.plant.type"
     
     def get_color(self, cr, uid, ids, field_name, arg, context):
@@ -72,7 +72,7 @@ class project_plant_type(osv.osv):
     _sql_constraints = [('name_uniq', 'unique(name)', 'Name must be unique!')]
 
 
-class project_place_type(osv.osv):
+class project_place_type(orm.Model):
     _name = "project.place.type"
     
     _columns = {
@@ -83,7 +83,7 @@ class project_place_type(osv.osv):
     _sql_constraints = [('name_uniq', 'unique(name)', 'Name must be unique!')]
 
 
-class project_agreement_type(osv.osv):
+class project_agreement_type(orm.Model):
     _name = "project.agreement.type"
     _columns = {
         'name': fields.char('Name', size=64, required=True, translate=True),
@@ -91,40 +91,39 @@ class project_agreement_type(osv.osv):
     _sql_constraints = [('name_uniq', 'unique(name)', 'Name must be unique!')]
 
 
-class res_partner_address(osv.osv):
+class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
     _rec_name = 'complete_name'
     
     def get_full_name(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        for re in self.read(cr, uid, ids, ['name', 'type', 'zip', 'country_id', 'city', 'partner_id', 'street'], context=context):
+        for re in self.browse(cr, uid, ids, context=context):
             addr = ''
-            if re['type'] in ['plant', 'place']:
-                addr = "[%s] %s " % (re['type'], re['name'])
+            if re.type in ['plant', 'place']:
+                addr = "[%s] %s " % (re.type, re.name)
             else:
-                if re['partner_id']:
-                    if re['partner_id'][1] != re['name']:
-                        addr = re['name'] or ''
-                        if re['name'] and (re['city'] or re['country_id']):
+                if re.partner_id:
+                    if re.partner_id.name != re.name:
+                        addr = re.name or ''
+                        if re.name and (re.city or re.country_id):
                             addr += ', '
-            addr += (re['city'] or '') + ', ' + (re['street'] or '')
-            if (re['partner_id'] and context.get('contact_display', False) == 'partner_address'):
-                addr = "%s: %s" % (re['partner_id'][1], addr.strip())
+            addr += (re.city or '') + ', ' + (re.street or '')
+            if re.partner_id and context.get('contact_display', False) == 'partner_address':
+                addr = "%s: %s" % (re.partner_id.name, addr.strip())
             else:
                 addr = addr.strip()
-            res[re['id']] = addr or ''
+            res[re.id] = addr or ''
         return res
     
     def name_get(self, cr, uid, ids, context=None):
         if not len(ids):
             return []
         res = []
-        reads = self.read(cr, uid, ids, ['name', 'complete_name', 'id'], context=context)
-        for record in reads:
-            name = record['complete_name'] or record['name'] or ''
+        for record in self.browse(cr, uid, ids, context=context):
+            name = record.complete_name or record.name or ''
             if len(name) > 45:
                 name = name[:45] + '...'
-            res.append((record['id'], name))
+            res.append((record.id, name))
         return res
     
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
@@ -158,7 +157,7 @@ class res_partner_address(osv.osv):
     }
 
 
-class plant_property_group(osv.osv):
+class plant_property_group(orm.Model):
     _name = 'plant.property.group'
     _description = 'Property Group'
     _columns = {
@@ -167,14 +166,14 @@ class plant_property_group(osv.osv):
     }
 
 
-class project_plant(osv.osv):
+class project_plant(orm.Model):
     _name = "project.plant"
     _inherits = {'res.partner.address': 'address_id'}
     _rec_name = 'code'
     
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
-        plants = self.browse(cr, uid, ids)
+        plants = self.browse(cr, uid, ids, context)
         for plant in plants:
             if plant.plant_type_id:
                 value[plant.id] = plant.plant_type_id.color
@@ -188,16 +187,16 @@ class project_plant(osv.osv):
             return {}
         res = []
         try:
-            for plant in self.read(cr, uid, ids, ['plant_type_id'], context=context):
+            for plant in self.browse(cr, uid, ids, context=context):
                 employee_ids = []
-                plant_type_id = plant['plant_type_id']
+                plant_type_id = plant.plant_type_id.id
                 if not plant_type_id:
                     continue
-                ptype = self.pool.get('project.plant.type').browse(cr, uid, plant_type_id[0], context=context)
+                ptype = self.pool['project.plant.type'].browse(cr, uid, plant_type_id, context=context)
                 for department in ptype.department_ids:
                     #employee_ids += [department.manager_id.id]
                     employee_ids += map(lambda e: e.id, department.member_ids)
-                res.append((plant['id'], employee_ids))
+                res.append((plant.id, employee_ids))
         except:
             _logger.error('%s' % (repr(traceback.extract_tb(sys.exc_traceback))))
         return dict(res)
@@ -207,15 +206,15 @@ class project_plant(osv.osv):
             return {}
         res = []
         try:
-            for plant in self.read(cr, uid, ids, ['plant_type_id'], context=context):
+            for plant in self.browse(cr, uid, ids, context=context):
                 department_ids = []
-                plant_type_id = plant['plant_type_id']
+                plant_type_id = plant.plant_type_id.id
                 if not plant_type_id:
                     continue
-                ptype = self.pool.get('project.plant.type').browse(cr, uid, plant_type_id[0], context=context)
+                ptype = self.pool['project.plant.type'].browse(cr, uid, plant_type_id, context=context)
                 for department in ptype.department_ids:
                     department_ids.append(department.id)
-                res.append((plant['id'], department_ids))
+                res.append((plant.id, department_ids))
         except:
             _logger.error('%s' % (repr(traceback.extract_tb(sys.exc_traceback))))
         return dict(res)
@@ -225,9 +224,8 @@ class project_plant(osv.osv):
             return {}
         res = []
         try:
-            for plant in self.read(cr, uid, ids, ['stock_location_id']):
-                if plant['stock_location_id']:
-                    res.append((plant['id'], self.pool.get('stock.move').search(cr, uid, [('location_dest_id', '=', plant['stock_location_id'][0])])))
+            for plant in self.browse(cr, uid, ids, context):
+                res.append((plant.id, self.pool['stock.move'].search(cr, uid, [('location_dest_id', '=', plant.stock_location_id and plant.stock_location_id.id or '')])))
         except:
             _logger.error('%s' % (repr(traceback.extract_tb(sys.exc_traceback))))
         return dict(res)
@@ -237,7 +235,7 @@ class project_plant(osv.osv):
             return {}
         res = []
         try:
-            for plant in self.read(cr, uid, ids, ['stock_location_id']):
+            for plant in self.read(cr, uid, ids, ['stock_location_id'], context):
                 if plant['stock_location_id']:
                     res.append((plant['id'], self.pool.get('stock.move').search(cr, uid, [('location_id', '=', plant['stock_location_id'][0])])))
         except:
@@ -249,7 +247,7 @@ class project_plant(osv.osv):
     
     def _get_default_address(self, cr, uid, field, context=None):
         if context.get('default_place_id', False):
-            places = self.pool.get('project.place').read(cr, uid, context['default_place_id'], [field])
+            places = self.pool['project.place'].read(cr, uid, context['default_place_id'], [field])
             if places:
                 return places[field]
         
@@ -328,7 +326,7 @@ class project_plant(osv.osv):
         return res
 
 
-class project_place(osv.osv):
+class project_place(orm.Model):
     _name = "project.place"
     _inherits = {'res.partner.address': 'address_id'}
     
@@ -337,13 +335,13 @@ class project_place(osv.osv):
             return {}
         res = []
         try:
-            for place in self.read(cr, uid, ids, ['plant_ids'], context=context):
+            for place in self.browse(cr, uid, ids, context=context):
                 employee_ids = []
-                plant_ids = place['plant_ids']
-                for plant in self.pool.get('project.plant').browse(cr, uid, plant_ids, context=context):
+                plant_ids = place.plant_ids
+                for plant in self.pool[project.plant].browse(cr, uid, plant_ids, context=context):
                     for department in plant.plant_type_id.department_ids:
                         employee_ids += map(lambda e: e.id, department.member_ids)
-                res.append((place['id'], employee_ids))
+                res.append((place.id, employee_ids))
         except:
             _logger.error('%s' % (repr(traceback.extract_tb(sys.exc_traceback))))
         return dict(res)
@@ -488,7 +486,7 @@ class project_place(osv.osv):
 #gallery_docs()
 
 
-class plant_property(osv.osv):
+class plant_property(orm.Model):
     _name = 'plant.property'
     _description = 'Property'
       
@@ -498,38 +496,16 @@ class plant_property(osv.osv):
         'description': fields.text('Description'),
         'plant_id': fields.many2one('project.plant', 'Plant'),
     }
-    
-
-#class project_plant1(osv.osv):
-#    _inherit = "project.plant"
-#    _columns = {
-#        'property_ids': fields.one2many('plant.property', 'plant_id', 'Properties'),
-#        'place_id': fields.many2one("project.place", "Place"),
-##        'web_gallery_image_ids': fields.one2many('web.gallery.images', 'plant_id', 'Images'),
-##        'web_gallery_doc_ids': fields.one2many('web.gallery.docs', 'plant_id', 'Documents'),
-#    }
 
 
-#class project_place1(osv.osv):
-#    _inherit = "project.place"
-#    _columns = {
-#        'plant_ids': fields.one2many('project.plant', 'place_id', 'Plants'),
-##        'web_gallery_image_ids': fields.one2many('web.gallery.images', 'place_id', 'Images'),
-##        'web_gallery_doc_ids': fields.one2many('web.gallery.docs', 'place_id', 'Documents'),
-#    }
-#project_place1()
-
-
-class project_project(osv.osv):
+class project_project(orm.Model):
     _inherit = 'project.project'
     _columns = {
-        #'code': fields.char('Code ID', size=16),
-        #'name2': fields.char('Project Name', size=128),
         'location_ids': fields.many2many("project.place", "project_project_project_place_rel", "project_id", "place_id", "Locations", domain="[('partner_id', '=', partner_id)]"),
     }
 
 
-class stock_move(osv.osv):
+class stock_move(orm.Model):
     _inherit = "stock.move"
     
     def _default_location_destination(self, cr, uid, context=None):
@@ -542,20 +518,20 @@ class stock_move(osv.osv):
             return super(stock_move, self)._default_location_destination(cr, uid, context=context)
         if context.get('address_out_id', False):
             address_id = context.get('address_out_id')
-            address = self.pool.get('res.partner.address').browse(cr, uid, context['address_out_id'], context)
+            address = self.pool[res.partner.address].browse(cr, uid, context['address_out_id'], context=context)
             if address.type == 'plant':
-                plant_ids = self.pool.get('project.plant').search(cr, uid, [('address_id', '=', address_id)])
+                plant_ids = self.pool['project.plant'].search(cr, uid, [('address_id', '=', address_id)], context=context)
                 if plant_ids:
-                    plant = self.pool.get('project.plant').read(cr, uid, plant_ids, ['stock_location_id'], context=context)[0]
-                    property_out = plant['stock_location_id'] and plant['stock_location_id'][0] or False
+                    plant = self.pool['project.plant'].browse(cr, uid, plant_ids, context=context)[0]
+                    property_out = plant.stock_location_id and plantstock_location_id.id or False
                     return property_out
             if address.type == 'place':
-                place_ids = self.pool.get('project.place').search(cr, uid, [('address_id', '=', address_id)])
+                place_ids = self.pool['project.place'].search(cr, uid, [('address_id', '=', address_id)], context=context)
                 if place_ids:
-                    place = self.pool.get('project.place').read(cr, uid, place_ids, ['stock_location_id'], context=context)[0]
-                    property_out = place['stock_location_id'] and place['stock_location_id'][0] or False
+                    place = self.pool['project.place'].browse(cr, uid, place_ids, context=context)[0]
+                    property_out = place.stock_location_id and place.stock_location_id.id or False
                     return property_out
-            property_out = self.pool.get('res.partner.address').browse(cr, uid, context['address_out_id'], context).partner_id.property_stock_customer
+            property_out = self.pool['res.partner.address'].browse(cr, uid, context['address_out_id'], context).partner_id.property_stock_customer
             return property_out and property_out.id or False
         return False
     

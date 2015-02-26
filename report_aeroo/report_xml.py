@@ -305,8 +305,8 @@ class report_xml(osv.osv):
         obj = self.pool.get('report.mimetypes')
         domain = context.get('allformats') and [] or [('filter_name','=',False)]
         ids = obj.search(cr, uid, domain, context=context)
-        res = obj.read(cr, uid, ids, ['code', 'name'], context)
-        return [(r['code'], r['name']) for r in res]
+        res = obj.browse(cr, uid, ids, context)
+        return [(r.code, r.name) for r in res]
 
     def _get_xml_id(self, cr, uid, ids, *args, **kwargs):
         model_data_obj = self.pool.get('ir.model.data')
@@ -430,20 +430,20 @@ class report_xml(osv.osv):
         trans_obj.unlink(cr, uid, trans_ids)
         self.unlink_inherit_report(cr, uid, ids, context=context)
         ####################################
-        reports = self.read(cr, uid, ids, ['report_name','model','report_wizard','replace_report_id'])
+        reports = self.browse(cr, uid, ids, context=context)
         for r in reports:
-            if r['report_wizard']:
+            if r.report_wizard:
                 act_win_ids = act_win_obj.search(cr, uid, [('res_model','=','aeroo.print_actions')], context=context)
                 for act_win in act_win_obj.browse(cr, uid, act_win_ids, context=context):
                     act_win_context = eval(act_win.context, {})
                     if act_win_context.get('report_action_id')==r['id']:
                         act_win.unlink(context)
             else:
-                ir_value_ids = self.pool.get('ir.values').search(cr, uid, [('value','=','ir.actions.report.xml,%s' % r['id'])])
+                ir_value_ids = self.pool.get('ir.values').search(cr, uid, [('value','=','ir.actions.report.xml,%s' % r.id)])
                 if ir_value_ids:
-                    if not r['replace_report_id']:
+                    if not r.replace_report_id:
                         self.pool.get('ir.values').unlink(cr, uid, ir_value_ids)
-                    self.unregister_report(cr, r['report_name'])
+                    self.unregister_report(cr, r.report_name)
         self.pool.get('ir.model.data').unlink(cr, uid, ids, context=context)
         ####################################
         res = super(report_xml, self).unlink(cr, uid, ids, context)

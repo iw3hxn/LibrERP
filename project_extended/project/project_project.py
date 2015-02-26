@@ -79,15 +79,14 @@ class project_task(orm.Model):
         if not len(ids):
             return []
         res = []
-        reads = self.read(cr, uid, ids, ['name', 'partner_id'], context=context)
-        for record in reads:
-            if record['partner_id']:
-                name = record['name'] + ' : ' + record['partner_id'][1]
+        for record in self.browse(cr, uid, ids, context=context):
+            if record.partner_id:
+                name = record.name + ' : ' + record.partner_id.name
             else:
-                name = record['name']
+                name = record.name
             if len(name) > 45:
                 name = name[:45] + '...'
-            res.append((record['id'], name))
+            res.append((record.id, name))
         return res
     
     _columns = {

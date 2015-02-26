@@ -177,7 +177,7 @@ class account_invoice(osv.Model):
         else:
             object_id = int(ids)
             
-        invoice_data = self.read(cr, uid, object_id)
+        invoice_data = self.read(cr, uid, object_id, context=context)
             
         if 'origin' in vals:
             origin = vals['origin']
