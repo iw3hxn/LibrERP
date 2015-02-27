@@ -518,7 +518,7 @@ class stock_move(orm.Model):
             return super(stock_move, self)._default_location_destination(cr, uid, context=context)
         if context.get('address_out_id', False):
             address_id = context.get('address_out_id')
-            address = self.pool[res.partner.address].browse(cr, uid, context['address_out_id'], context=context)
+            address = self.pool['res.partner.address'].browse(cr, uid, context['address_out_id'], context=context)
             if address.type == 'plant':
                 plant_ids = self.pool['project.plant'].search(cr, uid, [('address_id', '=', address_id)], context=context)
                 if plant_ids:
