@@ -22,10 +22,8 @@
 ##############################################################################
 
 import time
-from report import report_sxw
+from openerp.report import report_sxw
 from datetime import datetime
-from osv import osv
-from osv import fields
 
 
 class report_riba_webkit(report_sxw.rml_parse):
@@ -38,12 +36,9 @@ class report_riba_webkit(report_sxw.rml_parse):
                     res.update({line.due_date: [line]})
                 else:
                     res[line.due_date] = res[line.due_date] + [line]
-        if res:
-            res_ordered = {}
-            for k in sorted(res.keys()):
-                res_ordered.update({k: res[k]})
-            return res_ordered
         return res
+
+        
 
     def __init__(self, cr, uid, name, context):
         super(report_riba_webkit, self).__init__(cr, uid, name,

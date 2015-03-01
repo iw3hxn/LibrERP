@@ -24,10 +24,10 @@
 {
     "name": "Reports Ricevute Bancarie",
     "description": 'Reports Ricevute Bancarie',
-    "version": "0.1",
+    "version": "2.0.1.0",
     "depends": ["report_webkit", "l10n_it_ricevute_bancarie"],
     "category": "Reporting",
-    "author": "OpenERP Italian Community",
+    "author": "OpenERP Italian Community, Didotech srl",
     "url": "http://www.openerp-italia.org",
     "data": ["reports.xml", ],
     "installable": True,
