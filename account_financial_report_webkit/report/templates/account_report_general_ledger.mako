@@ -98,11 +98,11 @@
                         ## account code
                         <div class="act_as_cell" style="width: 65px;">${_('Account')}</div>
                         ## partner
-                        <div class="act_as_cell" style="width: 120px;">${_('Partner')}</div>
+                        <div class="act_as_cell" style="width: 120px;">${'Partner'}</div>
                         ## label
                         <div class="act_as_cell" style="width: 200px;">${_('Label')}</div>
                         ## counterpart
-                        <div class="act_as_cell" style="width: 100px;">${_('Counter part')}</div>
+                        <div class="act_as_cell" style="width: 100px;">${_('Due date')}</div>
                         ## debit
                         <div class="act_as_cell amount" style="width: 75px;">${_('Debit')}</div>
                         ## credit
@@ -141,7 +141,7 @@
                           <div class="act_as_cell"></div>
                           ## label
                           <div class="act_as_cell">${_('Initial Balance')}</div>
-                          ## counterpart
+                          ## due date
                           <div class="act_as_cell"></div>
                           ## debit
                           <div class="act_as_cell amount">${formatLang(account.init_balance.get('debit')) | amount}</div>
@@ -185,8 +185,8 @@
                           <div class="act_as_cell overflow_ellipsis">${line.get('partner_name') or ''}</div>
                           ## label
                           <div class="act_as_cell">${label}</div>
-                          ## counterpart
-                          <div class="act_as_cell">${line.get('counterparts') or ''}</div>
+                          ## due date
+                          <div class="act_as_cell">${formatLang(line.get('date_maturity') or '', date=True)}</div>
                           ## debit
                           <div class="act_as_cell amount">${ formatLang(line.get('debit', 0.0)) | amount }</div>
                           ## credit
