@@ -221,7 +221,10 @@
                     <filter icon="terp-dolar_ok!" string="Unsolved" domain="[('state','=','unsolved')]" help="Unsolved"/>
                     <separator orientation="vertical"/>
                     <field name="due_date" />
+                    <separator orientation="vertical"/>
                     <field name="acceptance_account_id" attrs="{'required':[('tipo','=','sbf')]}"/>
+                    <separator orientation="vertical"/>
+                    <field name="partner_id" domain="[('customer', '=', True)]"/>
                </search>
             </field>
         </record>
