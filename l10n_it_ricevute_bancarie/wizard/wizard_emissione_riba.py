@@ -110,7 +110,7 @@ class emissione_riba(orm.TransientModel):
                         for grouped_line in grouped_lines[key]:
                             riba_distinta_move_line.create(cr, uid, {
                                 'riba_line_id': rdl_id,
-                                'amount': grouped_line.amount_residual,
+                                'amount': grouped_line.credit and grouped_line.amount_residual * -1 or grouped_line.debit and grouped_line.amount_residual,
                                 'move_line_id': grouped_line.id,
                                 }, context=context)
                         del grouped_lines[key]
