@@ -45,11 +45,12 @@ class ir_attachment(osv.osv):
         
         zf.debug = 3
         
-        for attachment in self.browse(cr, uid, ids, context=context):
-            if attachment.name and attachment.datas:
+        for attachment_id in ids:
+            attachment = self.read(cr, uid, attachment_id, context=context)
+            if attachment['name'] and attachment['datas']:
                 # for the name can also be used attachment['datas_fname']
-                zf.writestr(attachment.name, attachment.datas.decode("base64"))
-        
+                zf.writestr(attachment['name'], attachment['datas'].decode("base64"))
+
         # Mark the files as having been created on Windows so that
         # Unix permissions are not inferred as 0000
         for zfile in zf.filelist:
