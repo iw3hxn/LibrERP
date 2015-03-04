@@ -50,7 +50,7 @@ class hr_attendance(osv.osv):
         mins = abs(float_val) - hours
         mins = round(mins * 60)
         if mins >= 60.0:
-            hours = hours + 1
+            hours += 1
             mins = 0.0
         float_time = '%02d:%02d' % (hours,mins)
         return float_time
@@ -62,7 +62,7 @@ class hr_attendance(osv.osv):
         days = 1
         if hours / 24 > 0:
             days += hours / 24
-            hours = hours % 24
+            hours %= 24
         return datetime(1900, 1, days, hours, minutes)
 
     def float_to_timedelta(self, float_val):
@@ -72,16 +72,16 @@ class hr_attendance(osv.osv):
     def time_difference(self, float_start_time, float_end_time):
         if float_end_time < float_start_time:
             raise osv.except_osv(_('Error'), _('End time %s < start time %s')
-                % (str(float_end_time),str(float_start_time)))
+                % (str(float_end_time), str(float_start_time)))
         delta = self.float_to_datetime(float_end_time) - self.float_to_datetime(float_start_time)
         return delta.total_seconds() / 60.0 / 60.0
 
     def time_sum(self, float_first_time, float_second_time):
         str_first_time = self.float_time_convert(float_first_time)
-        first_timedelta = timedelta(0, int(str_first_time.split(':')[0]) * 60.0*60.0 +
+        first_timedelta = timedelta(0, int(str_first_time.split(':')[0]) * 60.0 * 60.0 +
             int(str_first_time.split(':')[1]) * 60.0)
         str_second_time = self.float_time_convert(float_second_time)
-        second_timedelta = timedelta(0, int(str_second_time.split(':')[0]) * 60.0*60.0 +
+        second_timedelta = timedelta(0, int(str_second_time.split(':')[0]) * 60.0 * 60.0 +
             int(str_second_time.split(':')[1]) * 60.0)
         return (first_timedelta + second_timedelta).total_seconds() / 60.0 / 60.0
 
@@ -100,7 +100,7 @@ class hr_attendance(osv.osv):
         # start_datetime: datetime, duration: hours, precision: hours
         # returns [(datetime, hours)]
         res = []
-        while (duration > precision):
+        while duration > precision:
             res.append((start_datetime, precision))
             start_datetime += timedelta(0,0,0,0,0,precision)
             duration -= precision
@@ -155,16 +155,17 @@ class hr_attendance(osv.osv):
     def _get_attendance_duration(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         contract_pool = self.pool.get('hr.contract')
-        resource_pool = self.pool.get('resource.resource')
         attendance_pool = self.pool.get('resource.calendar.attendance')
         precision = self.pool.get('res.users').browse(cr, uid, uid).company_id.working_time_precision
         # 2012.10.16 LF FIX : Get timezone from context
-        active_tz = pytz.timezone(context.get("tz","UTC") if context else "UTC")
+        if context.get("tz", "UTC"):
+            active_tz = pytz.timezone(context.get("tz", "UTC"))
+        else:
+            active_tz = pytz.timezone("UTC")
+        # CARLO FIX active_tz = pytz.timezone(context.get("tz", "UTC") if context else "UTC")
         str_now = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
         for attendance_id in ids:
             duration = 0.0
-            outside_calendar_duration = 0.0
-            inside_calendar_duration = 0.0
             attendance = self.browse(cr, uid, attendance_id)
             res[attendance.id] = {}
             # 2012.10.16 LF FIX : Attendance in context timezone
@@ -240,13 +241,13 @@ class hr_attendance(osv.osv):
                             '&',
                             '|',
                             ('date_from', '=', False),
-                            ('date_from','<=',centered_attendance.date()),
+                            ('date_from', '<=', centered_attendance.date()),
                             '|',
                             ('dayofweek', '=', False),
-                            ('dayofweek','=',weekday_char),
-                            ('calendar_id','=',calendar_id),
-                            ('hour_to','>=',centered_attendance_hour),
-                            ('hour_from','<=',centered_attendance_hour),
+                            ('dayofweek', '=', weekday_char),
+                            ('calendar_id', '=', calendar_id),
+                            ('hour_to', '>=', centered_attendance_hour),
+                            ('hour_from', '<=', centered_attendance_hour),
                             ])
                         if len(matched_schedule_ids) > 1:
                             raise osv.except_osv(_('Error'),
