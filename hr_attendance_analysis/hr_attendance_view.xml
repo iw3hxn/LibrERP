@@ -74,6 +74,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar</field>
             <field name="domain">[('action', '=', 'sign_in')]</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
             <field name="view_id" ref="view_attendance_analysis"/>
             <field name="search_view_id" ref="view_hr_attendance_filter" />
         </record>

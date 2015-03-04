@@ -32,6 +32,7 @@ class account_invoice(orm.Model):
         """
         u'IN/00429-OUT/00366-return:CNL/2015/000374, IN/00367-OUT/00217-return:CNL/2015/000350'
         u'OUT/00441:1224/15 Consuntivo'
+        u'IN/00266:PO00350:SO154'
 
         """
         result = {}
@@ -44,12 +45,12 @@ class account_invoice(orm.Model):
                 if invoice.origin:
                     for origin in invoice.origin.split(','):
                         if ':' in origin:
-                            picking_name, sale_order_id = origin.split(':')
+                            picking_name = origin.split(':')[0] # picking is first element
                         else:
                             picking_name = origin
-                        picking_out_ids = self.pool['stock.picking'].search(cr, uid, [('type', '=', 'out'), ('name', '=', picking_name)])
+                        picking_out_ids = self.pool['stock.picking'].search(cr, uid, [('type', '=', 'out'), ('name', '=', picking_name)], context=context)
                         if picking_out_ids:
-                            picking = self.pool['stock.picking'].browse(cr, uid, picking_out_ids[0])
+                            picking = self.pool['stock.picking'].browse(cr, uid, picking_out_ids[0], context=context)
                             if not picking.ddt_number:
                                 result[invoice.id] = True
                                 break

@@ -170,14 +170,12 @@ class stock_move(orm.Model):
     
     def create(self, cr, user, vals, context=None):
         # For some reason we don't receive 'name', so we should create it:
-        
         if ('name' not in vals) or (vals.get('name')=='/'):
-            product = self.pool['product.product'].read(cr, user, vals['product_id'])
-            vals['name'] = product.get('default_code', False)
-            if not vals['name']:
-                vals['name'] = product['name']
+            product = self.pool['product.product'].browse(cr, user, vals['product_id'], context=context)
+            if product.default_code:
+                vals['name'] = '[%s] %s' % (product.default_code, product.name)
             else:
-                vals['name'] = '[%s] %s' % (vals['name'], product['name'])
+                vals['name'] = product.name
         
         return super(stock_move, self).create(cr, user, vals, context)
 

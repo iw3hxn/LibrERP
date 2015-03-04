@@ -43,7 +43,7 @@ class sale_order_revision_note(orm.TransientModel):
         if not active_ids:
             return False
         reason_note = self.browse(cr, uid, ids[0], context=context).name
-        sale_order_obj.write(cr,uid, active_ids, {'revision_note': reason_note})
+        sale_order_obj.write(cr,uid, active_ids, {'revision_note': reason_note}, context=context)
         return sale_order_obj.action_previous_version(cr, uid, active_ids,context=context)
     
     def reject_revision(self, cr, uid, ids, context=None):
@@ -54,6 +54,6 @@ class sale_order_revision_note(orm.TransientModel):
         if not active_ids:
             return False
         reason_note = self.browse(cr, uid, ids[0], context=context).name
-        sale_order_obj.write(cr,uid, active_ids, {'revision_note': reason_note})
-        sale_order_obj.action_cancel(cr, uid, active_ids,context=context)
+        sale_order_obj.write(cr,uid, active_ids, {'revision_note': reason_note}, context=context)
+        sale_order_obj.action_cancel(cr, uid, active_ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
