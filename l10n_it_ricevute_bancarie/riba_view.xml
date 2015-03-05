@@ -191,6 +191,7 @@
                 <tree string="Detail" editable="top">
                     <field name="acceptance_account_id" />
                     <!--field name="tobeaccredited"/-->
+                    <field name="distinta_id"/>
                     <field name="sequence"/>
                     <field name="invoice_number"/>
                     <field name="invoice_date"/>
@@ -217,6 +218,7 @@
                     <filter icon="terp-check" string="Draft" domain="[('state','=','draft')]" help="Draft"/>
                     <filter icon="terp-dolar" string="Confirmed" domain="[('state','=','confirmed')]" help="Confirmed"/>
                     <filter icon="terp-dolar" string="Accredited" domain="[('state','=','accredited')]" help="Accredited"/>
+                    <filter icon="terp-dolar" string="Not Accredited" domain="[('state','!=','accredited')]" help="Not Accredited" name="not_accredited"/>
                     <filter icon="terp-dolar_ok!" string="Paid" domain="[('state','=','paid')]" help="Paid"/>
                     <filter icon="terp-dolar_ok!" string="Unsolved" domain="[('state','=','unsolved')]" help="Unsolved"/>
                     <separator orientation="vertical"/>
@@ -240,6 +242,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_distinta_riba_line_filtri"/>
+            <field name="context">{'search_default_not_accredited':1}</field>
         </record>
         
         <!-- ====================================================== -->

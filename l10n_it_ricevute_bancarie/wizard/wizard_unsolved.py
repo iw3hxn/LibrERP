@@ -127,13 +127,13 @@ class riba_unsolved(osv.osv_memory):
                     }),
                 (0, 0, {
                     'name': _('Effects'),
-                    'account_id': wizard.effects_account_id.id,
+                    'account_id': wizard.overdue_effects_account_id.id,
                     'credit': wizard.effects_amount,
                     'debit': 0.0,
                     }),
                 (0, 0, {
                     'name': _('Ri.Ba. Bank'),
-                    'account_id': wizard.riba_bank_account_id.id,
+                    'account_id': wizard.overdue_effects_account_id.id,
                     'debit': wizard.riba_bank_amount,
                     'credit': 0.0,
                     }),

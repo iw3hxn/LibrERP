@@ -33,11 +33,11 @@ class riba_accreditation(osv.osv_memory):
         if context.get('active_model', False) == 'riba.distinta':
             return self.pool.get('riba.configurazione').get_default_value_by_distinta(cr, uid, 'accreditation_journal_id', context=context)
 
-    def _get_accreditation_account_id(self, cr, uid, context=None):
+    def _get_accreditation_account_id(self, cr, uid, context=None):  #SC use acceptance account
         if context.get('active_model', False) == 'riba.distinta.line':
-            return self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'accreditation_account_id', context=context)
+            return self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'acceptance_account_id', context=context)
         if context.get('active_model', False) == 'riba.distinta':
-            return self.pool.get('riba.configurazione').get_default_value_by_distinta(cr, uid, 'accreditation_account_id', context=context)
+            return self.pool.get('riba.configurazione').get_default_value_by_distinta(cr, uid, 'acceptance_account_id', context=context)
 
     def _get_bank_account_id(self, cr, uid, context=None):
         if context.get('active_model', False) == 'riba.distinta.line':
@@ -57,10 +57,15 @@ class riba_accreditation(osv.osv_memory):
         if not context.get('active_id', False):
             return False
         amount = 0.0
+        config = False
         if context.get('active_model', False) == 'riba.distinta.line':
             distinta_line_pool = self.pool.get('riba.distinta.line')
             distinta_lines = distinta_line_pool.browse(cr, uid, context['active_ids'], context=context)
             for line in distinta_lines:
+                if not config:
+                    config = line.distinta_id.config
+                if line.distinta_id.config != config:
+                    raise osv.except_osv(_('Error'), _('Accredit only one bank configuration is possible'))
                 if line.state == 'confirmed':
                     amount += line.amount
         elif context.get('active_model', False) == 'riba.distinta':
@@ -84,6 +89,7 @@ class riba_accreditation(osv.osv_memory):
         'bank_expense_account_id': fields.many2one('account.account', "Bank Expenses account"),
         'expense_amount': fields.float('Expenses amount'),
         'date_accreditation': fields.date('Accreditation date'),
+        'date_value': fields.date('Value date'),
         }
 
     _defaults = {
@@ -141,7 +147,8 @@ class riba_accreditation(osv.osv_memory):
                 last_id = line.distinta_id.id
         
         wizard = self.browse(cr, uid, ids)[0]
-        if not wizard.accreditation_journal_id or not wizard.date_accreditation or not wizard.accreditation_account_id or not wizard.bank_account_id or not wizard.bank_expense_account_id:
+        if not wizard.accreditation_journal_id or not wizard.date_accreditation or not wizard.accreditation_account_id or not wizard.bank_account_id:
+            # or not wizard.bank_expense_account_id:
             raise osv.except_osv(_('Error'), _('Every account is mandatory'))
         date_accreditation = wizard.date_accreditation
         
@@ -163,14 +170,15 @@ class riba_accreditation(osv.osv_memory):
                     'debit': wizard.bank_amount,
                     'credit': 0.0,
                     'date': date_accreditation,
+                    'date_maturity': wizard.date_value,
                     }),
-                (0, 0, {
-                    'name': _('Bank'),
-                    'account_id': wizard.bank_expense_account_id.id,
-                    'debit': wizard.expense_amount,
-                    'credit': 0.0,
-                    'date': date_accreditation,
-                    }),
+#                 (0, 0, {
+#                     'name': _('Bank'),
+#                     'account_id': wizard.bank_expense_account_id.id,
+#                     'debit': wizard.expense_amount,
+#                     'credit': 0.0,
+#                     'date': date_accreditation,
+#                     }),
                 ]
             }
         move_id = move_pool.create(cr, uid, move_vals, context=context)
