@@ -64,8 +64,9 @@ class account_invoice(orm.Model):
                 result[invoice.id] = []
             if invoice.state == 'draft':
                 t_amount_total = invoice.amount_total
+                t_amount_tax = invoice.amount_tax
                 if invoice.payment_term:
-                    for line in self.pool['account.payment.term'].compute(cr, uid, invoice.payment_term.id, t_amount_total, date_ref=invoice.date_invoice):
+                    for line in self.pool['account.payment.term'].compute(cr, uid, invoice.payment_term.id, t_amount_total, t_amount_tax, date_ref=invoice.date_invoice):
                         result[invoice.id].append(self._get_preview_line(invoice, line))
 
         return result
