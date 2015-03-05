@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-21 10:13+0000\n"
-"PO-Revision-Date: 2012-05-21 10:13+0000\n"
+"POT-Creation-Date: 2015-03-05 10:54+0000\n"
+"PO-Revision-Date: 2015-03-05 10:54+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -22,15 +22,22 @@ msgid "Account used when Ri.Ba. is accepted by the bank"
 msgstr "Il conto utilizzato quando la Ri.Ba. viene accettata dalla banca"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:143
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:68
 #, python-format
-msgid "No IBAN specified"
-msgstr "Nessun IBAN specificato"
+msgid "Accredit only one bank configuration is possible"
+msgstr "E' possibile accreditare solo una configurazione bancaria alla volta"
 
 #. module: l10n_it_ricevute_bancarie
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.action_riba_configurazione
 msgid "Ri.Ba. - Configuration"
 msgstr "Ri.Ba. - Configurazione"
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:115
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:140
+#, python-format
+msgid "No active IDS found"
+msgstr "No active IDS found"
 
 #. module: l10n_it_ricevute_bancarie
 #: help:res.partner.bank,codice_sia:0
@@ -48,10 +55,30 @@ msgid "Modalità Emissione"
 msgstr "Modalità Emissione"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:103
+#: sql_constraint:res.partner:0
+msgid "Error! Specified VAT Number already exists for any other registered partner."
+msgstr "Errore! Esiste già un partner con la stessa P.IVA."
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:156
 #, python-format
 msgid "Accreditation Ri.Ba. %s"
 msgstr "Accredito Ri.Ba. %s"
+
+#. module: l10n_it_ricevute_bancarie
+#: field:res.bank,province:0
+msgid "Provincia"
+msgstr "Provincia"
+
+#. module: l10n_it_ricevute_bancarie
+#: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.action_riba_line_accreditation
+msgid "Accreditation Ri.Ba. from line view"
+msgstr "Accredito Linee Ri.Ba."
+
+#. module: l10n_it_ricevute_bancarie
+#: field:riba.distinta.line,cig:0
+msgid "Cig"
+msgstr "Cig"
 
 #. module: l10n_it_ricevute_bancarie
 #: help:riba.configurazione,acceptance_journal_id:0
@@ -76,10 +103,15 @@ msgid "Group Ri.Ba. by customer while issuing"
 msgstr "Raggruppa le Ri.Ba. per cliente durante l'emissione"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:133
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:121
 #, python-format
 msgid "Overdue Effects"
 msgstr "Effetti insoluti"
+
+#. module: l10n_it_ricevute_bancarie
+#: field:riba.unsolved,new_due_date:0
+msgid "New due date"
+msgstr "Nuova data di scadenza"
 
 #. module: l10n_it_ricevute_bancarie
 #: field:riba.configurazione,company_id:0
@@ -98,10 +130,10 @@ msgid "Move line"
 msgstr "Riga contabile"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:163
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:164
 #, python-format
 msgid "No VAT or Fiscalcode specified for: "
-msgstr "P IVA o codice fiscale non specificato per:"
+msgstr "P.IVA o codice fiscale non specificato per:"
 
 #. module: l10n_it_ricevute_bancarie
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.action_wizard_riba_file_export
@@ -109,10 +141,15 @@ msgid "Export Ri.Ba."
 msgstr "Esporta Ri.Ba."
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:121
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:129
 #, python-format
 msgid "Effects"
 msgstr "Effetti"
+
+#. module: l10n_it_ricevute_bancarie
+#: view:account.move.line:0
+msgid "Total Credit"
+msgstr "Credito Totale"
 
 #. module: l10n_it_ricevute_bancarie
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.riba_accreditation_action
@@ -121,13 +158,7 @@ msgid "Ri.Ba. Accreditation"
 msgstr "Accredito Ri.Ba."
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:193
-#, python-format
-msgid "No IBAN specified for "
-msgstr "Nessun IBAN specificato per"
-
-#. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:182
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:199
 #, python-format
 msgid "No address specified for "
 msgstr "Nessun indirizzo specificato per"
@@ -138,7 +169,18 @@ msgid "Credit amount"
 msgstr "Importo credito"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:148
+#: field:riba.distinta.line,bank_riba_id:0
+msgid "Debitor Bank for ri.ba."
+msgstr "Banca c/ri.ba."
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:143
+#, python-format
+msgid "No IBAN specified"
+msgstr "Nessun IBAN specificato"
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:149
 #, python-format
 msgid "No SIA Code specified for: "
 msgstr "Nessun codice SIA specificato per:"
@@ -160,6 +202,7 @@ msgstr "Debito totale"
 
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
+#: view:riba.distinta.line:0
 #: field:riba.distinta.line,amount:0
 #: field:riba.distinta.move.line,amount:0
 msgid "Amount"
@@ -176,10 +219,10 @@ msgid "Codice SIA"
 msgstr "Codice SIA"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:210
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:224
 #, python-format
 msgid "No VAT or Fiscal code specified for "
-msgstr "P IVA o codice fiscale non specificato per"
+msgstr "P.IVA o codice fiscale non specificato per"
 
 #. module: l10n_it_ricevute_bancarie
 #: model:ir.model,name:l10n_it_ricevute_bancarie.model_riba_unsolved
@@ -200,6 +243,7 @@ msgstr "riba.file.export"
 #: view:riba.configurazione:0
 #: view:riba.distinta:0
 #: selection:riba.distinta,state:0
+#: view:riba.distinta.line:0
 #: selection:riba.distinta.line,state:0
 msgid "Unsolved"
 msgstr "Insoluto"
@@ -215,6 +259,12 @@ msgid "Reference"
 msgstr "Riferimento"
 
 #. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:226
+#, python-format
+msgid "No debit_bank specified for "
+msgstr "Nessuna banca specificata per "
+
+#. module: l10n_it_ricevute_bancarie
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:170
 #: field:riba.distinta.line,unsolved_move_id:0
 #, python-format
@@ -227,6 +277,11 @@ msgid "Riba configuration to be used"
 msgstr "Configurazione Ri.Ba. da usare"
 
 #. module: l10n_it_ricevute_bancarie
+#: model:ir.ui.menu,name:l10n_it_ricevute_bancarie.menu_riba_distinte_line
+msgid "Ri.ba. Linee"
+msgstr "Ri.ba. Linee"
+
+#. module: l10n_it_ricevute_bancarie
 #: constraint:account.move.line:0
 msgid "The date of your Journal Entry is not in the defined period! You should change the date or remove this constraint from the journal."
 msgstr "The date of your Journal Entry is not in the defined period! You should change the date or remove this constraint from the journal."
@@ -235,6 +290,11 @@ msgstr "The date of your Journal Entry is not in the defined period! You should 
 #: view:riba.distinta:0
 msgid "Reset to Draft"
 msgstr "Reimposta a bozza"
+
+#. module: l10n_it_ricevute_bancarie
+#: field:riba.accreditation,date_value:0
+msgid "Value date"
+msgstr "Data Valuta"
 
 #. module: l10n_it_ricevute_bancarie
 #: model:ir.model,name:l10n_it_ricevute_bancarie.model_res_partner
@@ -252,7 +312,14 @@ msgid "Banca Estera"
 msgstr "Banca Estera"
 
 #. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:208
+#, python-format
+msgid "No CAP specified for "
+msgstr "Nessun CAP specificato per"
+
+#. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
+#: view:riba.distinta.line:0
 #: selection:riba.distinta.line,state:0
 msgid "Confirmed"
 msgstr "Confermata"
@@ -288,6 +355,11 @@ msgid "State"
 msgstr "Stato"
 
 #. module: l10n_it_ricevute_bancarie
+#: field:riba.distinta,accreditation_move_ids:0
+msgid "Accreditation Entries"
+msgstr "Voci Accredito"
+
+#. module: l10n_it_ricevute_bancarie
 #: view:account.move.line:0
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.action_riba_da_emettere
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.emissione_riba_action
@@ -306,6 +378,12 @@ msgstr "Ri.Ba. insolute"
 #: field:riba.distinta.line,type:0
 msgid "Type"
 msgstr "Tipo"
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/riba.py:387
+#, python-format
+msgid "Missing Accepted Date"
+msgstr "Data Accettazione Mancante"
 
 #. module: l10n_it_ricevute_bancarie
 #: help:riba.configurazione,unsolved_journal_id:0
@@ -360,6 +438,12 @@ msgid "Distinta Ri.Ba."
 msgstr "Distinta Ri.Ba."
 
 #. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/riba.py:410
+#, python-format
+msgid "Total of riba cannot be negative"
+msgstr "Il totale della riba non può essere negativo"
+
+#. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
 #: field:riba.distinta,acceptance_move_ids:0
 msgid "Acceptance Entries"
@@ -381,9 +465,9 @@ msgid "Distinta line"
 msgstr "Riga distinta"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:131
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:203
 #: view:riba.distinta:0
-#: field:riba.distinta,accreditation_move_id:0
+#: field:riba.distinta.line,accreditation_move_id:0
 #, python-format
 msgid "Accreditation Entry"
 msgstr "Registrazione accredito"
@@ -426,20 +510,26 @@ msgid "Group by..."
 msgstr "Raggruppa per..."
 
 #. module: l10n_it_ricevute_bancarie
+#: field:riba.accreditation,date_accreditation:0
 #: field:riba.distinta,date_accreditation:0
 msgid "Accreditation date"
 msgstr "Data accredito"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:155
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:156
 #, python-format
 msgid "No address specified for: "
 msgstr "Nessun indirizzo specificato per:"
 
 #. module: l10n_it_ricevute_bancarie
-#: view:account.move.line:0
-msgid "Search Journal Items"
-msgstr "Cerca scritture"
+#: view:res.bank:0
+msgid "Ricerca Banca"
+msgstr "Ricerca Banca"
+
+#. module: l10n_it_ricevute_bancarie
+#: view:riba.accreditation:0
+msgid "Ri.Ba. Line Accreditation"
+msgstr "Ri.Ba. Righe Accredito"
 
 #. module: l10n_it_ricevute_bancarie
 #: field:riba.configurazione,overdue_effects_account_id:0
@@ -458,10 +548,9 @@ msgid "You can also skip this step and set the distinta status to 'accredited' a
 msgstr "E' anche possibile saltare questo passo e impostare comunque la distinta dello stato di 'accreditata'"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:191
-#, python-format
-msgid "No CAP specified for "
-msgstr "Nessun CAP specificato per"
+#: field:riba.distinta.line,cup:0
+msgid "Cup"
+msgstr "Cup"
 
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.unsolved:0
@@ -470,6 +559,7 @@ msgstr "E' anche possibile saltare questo passo e impostare comunque lo stato de
 
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
+#: view:riba.distinta.line:0
 msgid "Detail"
 msgstr "Dettaglio"
 
@@ -479,11 +569,24 @@ msgid "Emissione Ricevute Bancarie"
 msgstr "Emissione Ricevute Bancarie"
 
 #. module: l10n_it_ricevute_bancarie
+#: sql_constraint:res.partner:0
+msgid "Codice Cliente Univoco"
+msgstr "Codice Cliente Univoco"
+
+#. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
 #: selection:riba.distinta,state:0
+#: view:riba.distinta.line:0
 #: selection:riba.distinta.line,state:0
 msgid "Draft"
 msgstr "Bozza"
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/riba.py:387
+#: code:addons/l10n_it_ricevute_bancarie/riba.py:410
+#, python-format
+msgid "Warning"
+msgstr "Errore"
 
 #. module: l10n_it_ricevute_bancarie
 #: field:riba.file.export,state:0
@@ -491,8 +594,19 @@ msgid "unknown"
 msgstr "sconosciuto"
 
 #. module: l10n_it_ricevute_bancarie
+#: view:account.move.line:0
+msgid "Total Amount"
+msgstr "Importo totale"
+
+#. module: l10n_it_ricevute_bancarie
+#: sql_constraint:res.partner:0
+msgid "Codice Fornitore Univoco"
+msgstr "Codice Fornitore Univoco"
+
+#. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
 #: selection:riba.distinta,state:0
+#: view:riba.distinta.line:0
 #: selection:riba.distinta.line,state:0
 msgid "Paid"
 msgstr "Pagata"
@@ -546,7 +660,7 @@ msgstr "\n"
 "Please define BIC/Swift code on bank for bank type IBAN Account to make valid payments"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:127
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:135
 #, python-format
 msgid "Ri.Ba. Bank"
 msgstr "Banca Ri.Ba."
@@ -582,16 +696,25 @@ msgid "Ri.Ba. bank amount"
 msgstr "Importo banca Ri.Ba."
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:107
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:161
 #, python-format
 msgid "Credit"
 msgstr "Credito"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/riba.py:108
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:83
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:94
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:101
+#: field:account.move.line,iban:0
+#: field:riba.distinta.line,iban:0
+msgid "IBAN"
+msgstr "IBAN"
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/riba.py:123
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:68
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:109
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:115
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:130
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:140
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:152
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:94
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:108
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:115
@@ -610,7 +733,7 @@ msgid "Acceptance account"
 msgstr "Conto effetti SBF"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:187
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:204
 #, python-format
 msgid "No Street specified for "
 msgstr "Nessun indirizzo specificato per"
@@ -628,12 +751,17 @@ msgstr "Raggruppa per cliente"
 #. module: l10n_it_ricevute_bancarie
 #: sql_constraint:account.invoice:0
 msgid "Invoice Number must be unique per Company!"
-msgstr "Invoice Number must be unique per Company!"
+msgstr "Il numero fattura deve essere unico per ogni azienda!"
 
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
 msgid "Distinte Ri.Ba."
 msgstr "Distinte Ri.Ba."
+
+#. module: l10n_it_ricevute_bancarie
+#: view:account.move.line:0
+msgid "Issued"
+msgstr "Emesso"
 
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.accreditation:0
@@ -651,8 +779,8 @@ msgid "Number"
 msgstr "Numero"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:83
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:94
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:109
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:130
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:94
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:108
 #, python-format
@@ -663,6 +791,11 @@ msgstr "Nessun ID trovato"
 #: view:riba.distinta:0
 msgid "General"
 msgstr "Generale"
+
+#. module: l10n_it_ricevute_bancarie
+#: field:riba.distinta.line,tobeaccredited:0
+msgid "To be accredited"
+msgstr "Da accreditare"
 
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.emissione:0
@@ -705,6 +838,11 @@ msgid "Ri.Ba. Unsolved"
 msgstr "Ri.Ba. Insoluta"
 
 #. module: l10n_it_ricevute_bancarie
+#: view:riba.distinta.line:0
+msgid "Linee Distinte Ri.Ba."
+msgstr "Linee Distinte Ri.Ba."
+
+#. module: l10n_it_ricevute_bancarie
 #: field:account.invoice,unsolved_move_line_ids:0
 msgid "Unsolved journal items"
 msgstr "Registrazioni insoluti"
@@ -732,6 +870,7 @@ msgstr "Accettazione"
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
 #: selection:riba.distinta,state:0
+#: view:riba.distinta.line:0
 #: selection:riba.distinta.line,state:0
 msgid "Accredited"
 msgstr "Accreditata"
@@ -752,11 +891,18 @@ msgid "Ri.Ba. - Distinta"
 msgstr "Ri.Ba. - Distinta"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:101
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:152
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:115
 #, python-format
 msgid "Every account is mandatory"
 msgstr "Ogni conto è obbligatorio"
+
+#. module: l10n_it_ricevute_bancarie
+#: field:account.move.line,cab:0
+#: field:res.bank,cab:0
+#: field:res.partner.bank,bank_cab:0
+msgid "CAB"
+msgstr "CAB"
 
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.configurazione:0
@@ -806,13 +952,20 @@ msgid "Ri.Ba. properties"
 msgstr "Proprietà Banca"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:113
-#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:119
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:168
+#: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:176
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:141
 #: model:ir.model,name:l10n_it_ricevute_bancarie.model_res_bank
 #, python-format
 msgid "Bank"
 msgstr "Banca"
+
+#. module: l10n_it_ricevute_bancarie
+#: field:account.move.line,abi:0
+#: field:res.bank,abi:0
+#: field:res.partner.bank,bank_abi:0
+msgid "ABI"
+msgstr "ABI"
 
 #. module: l10n_it_ricevute_bancarie
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_unsolved.py:117
@@ -849,6 +1002,11 @@ msgid "Versed amount"
 msgstr "Importo versato"
 
 #. module: l10n_it_ricevute_bancarie
+#: view:riba.distinta.line:0
+msgid "Not Accredited"
+msgstr "Non Accreditato"
+
+#. module: l10n_it_ricevute_bancarie
 #: field:account.move.line,unsolved_invoice_ids:0
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.action_invoice_tree1
 #: model:ir.ui.menu,name:l10n_it_ricevute_bancarie.menu_invoices
@@ -856,12 +1014,22 @@ msgid "Unsolved Invoices"
 msgstr "Fatture insolute"
 
 #. module: l10n_it_ricevute_bancarie
+#: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.distinta_riba_line_action
+msgid "Linee Distinta Ri.Ba."
+msgstr "Linee Distinta Ri.Ba."
+
+#. module: l10n_it_ricevute_bancarie
 #: constraint:account.move.line:0
 msgid "You can not create journal items on closed account."
 msgstr "You can not create journal items on closed account."
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:200
+#: view:res.bank:0
+msgid "Bank Details"
+msgstr "Dettagli anagrafiche bancarie"
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:214
 #, python-format
 msgid "No City specified for "
 msgstr "Nessuna città specificata per"
@@ -898,7 +1066,7 @@ msgid "Expenses"
 msgstr "Spese"
 
 #. module: l10n_it_ricevute_bancarie
-#: code:addons/l10n_it_ricevute_bancarie/riba.py:108
+#: code:addons/l10n_it_ricevute_bancarie/riba.py:123
 #, python-format
 msgid "Distinta %s is in state %s. You can only delete documents in state draft or canceled"
 msgstr "La distinta %s è nello stato %s. E' possibile eliminare solamente i documenti in stato bozza o annullato."
@@ -911,7 +1079,7 @@ msgstr "Banca"
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.file.export:0
 msgid "Export"
-msgstr "Export"
+msgstr "Esporta"
 
 #. module: l10n_it_ricevute_bancarie
 #: field:riba.file.export,riba_.txt:0
@@ -924,7 +1092,18 @@ msgid "Accounting"
 msgstr "Contabilità"
 
 #. module: l10n_it_ricevute_bancarie
+#: view:account.move.line:0
+msgid "Search Journal Items"
+msgstr "Cerca scritture"
+
+#. module: l10n_it_ricevute_bancarie
 #: field:account.move.line,distinta_line_ids:0
 msgid "Dettaglio riba"
 msgstr "Dettaglio riba"
+
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:196
+#, python-format
+msgid "No bank or IBAN specified for "
+msgstr "Nessuna banca o IBAN specificati per "
 
