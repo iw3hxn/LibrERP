@@ -33,7 +33,21 @@ class riba_accreditation(osv.osv_memory):
         if context.get('active_model', False) == 'riba.distinta':
             return self.pool.get('riba.configurazione').get_default_value_by_distinta(cr, uid, 'accreditation_journal_id', context=context)
 
-    def _get_accreditation_account_id(self, cr, uid, context=None):  #SC use acceptance account
+    def _get_accreditation_account_id(self, cr, uid, context=None):
+        res = False
+        if context.get('active_model', False) == 'riba.distinta.line':
+            res = self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'accreditation_account_id', context=context)
+            if not res:
+                res = self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'acceptance_account_id', context=context)
+            return res
+        if context.get('active_model', False) == 'riba.distinta':
+            res = self.pool.get('riba.configurazione').get_default_value_by_distinta(cr, uid, 'accreditation_account_id', context=context)
+            if not res:
+                res = self.pool.get('riba.configurazione').get_default_value_by_distinta(cr, uid, 'acceptance_account_id', context=context)
+            return res
+
+    def _get_acceptance_account_id(self, cr, uid, context=None):
+        res = False
         if context.get('active_model', False) == 'riba.distinta.line':
             return self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'acceptance_account_id', context=context)
         if context.get('active_model', False) == 'riba.distinta':
@@ -66,13 +80,13 @@ class riba_accreditation(osv.osv_memory):
                     config = line.distinta_id.config
                 if line.distinta_id.config != config:
                     raise osv.except_osv(_('Error'), _('Accredit only one bank configuration is possible'))
-                if line.state == 'confirmed':
+                if line.state in ['confirmed', 'accredited']:
                     amount += line.amount
         elif context.get('active_model', False) == 'riba.distinta':
             distinta_pool = self.pool.get('riba.distinta')
             distinta = distinta_pool.browse(cr, uid, context['active_id'], context=context)
             for line in distinta.line_ids:
-                if line.tobeaccredited and line.state == 'confirmed':
+                if line.tobeaccredited and line.state in ['confirmed', 'accredited']:
                     amount += line.amount
         return amount
 
@@ -82,6 +96,7 @@ class riba_accreditation(osv.osv_memory):
         'accreditation_journal_id': fields.many2one('account.journal', "Accreditation journal",
             domain=[('type', '=', 'bank')]),
         'accreditation_account_id': fields.many2one('account.account', "Ri.Ba. bank account"),
+        'acceptance_account_id': fields.many2one('account.account', "Ri.Ba. acceptance account"),
         'accreditation_amount': fields.float('Credit amount'),
         'bank_account_id': fields.many2one('account.account', "Bank account",
             domain=[('type', '=', 'liquidity')]),
@@ -89,12 +104,12 @@ class riba_accreditation(osv.osv_memory):
         'bank_expense_account_id': fields.many2one('account.account', "Bank Expenses account"),
         'expense_amount': fields.float('Expenses amount'),
         'date_accreditation': fields.date('Accreditation date'),
-        'date_value': fields.date('Value date'),
         }
 
     _defaults = {
         'accreditation_journal_id': _get_accreditation_journal_id,
         'accreditation_account_id': _get_accreditation_account_id,
+        'acceptance_account_id': _get_acceptance_account_id,
         'bank_account_id': _get_bank_account_id,
         'bank_expense_account_id': _get_bank_expense_account_id,
         'accreditation_amount': _get_accreditation_amount,
@@ -124,12 +139,16 @@ class riba_accreditation(osv.osv_memory):
         if context is None:
             context = {}
         wf_service = netsvc.LocalService("workflow")
+        ref = ''
         if context.get('active_model', False) == 'riba.distinta':
             active_id = context and context.get('active_id', False) or False
             if not active_id:
                 raise osv.except_osv(_('Error'), _('No active ID found'))
             distinta_pool = self.pool.get('riba.distinta')
             distinta = distinta_pool.browse(cr, uid, active_id, context=context)
+            if not context.get('accruement', False) and not distinta.config.accreditation_account_id:
+                context.update({'accruement': True})
+            ref = distinta.name
         move_pool = self.pool.get('account.move')
 #        move_line_pool = self.pool.get('account.move.line')
         
@@ -139,17 +158,23 @@ class riba_accreditation(osv.osv_memory):
             if not active_ids:
                 raise osv.except_osv(_('Error'), _('No active IDS found'))
             distinta_lines = distinta_line_pool.browse(cr, uid, active_ids, context=context)
-            ref = ''
             last_id = ''
             for line in distinta_lines:
                 if line.distinta_id.id != last_id:
                     ref += line.distinta_id.name + ' '
                 last_id = line.distinta_id.id
+            if not context.get('accruement', False) and not line.distinta_id.config.accreditation_account_id:
+                context.update({'accruement': True})
         
         wizard = self.browse(cr, uid, ids)[0]
-        if not wizard.accreditation_journal_id or not wizard.date_accreditation or not wizard.accreditation_account_id or not wizard.bank_account_id:
-            # or not wizard.bank_expense_account_id:
+        if not wizard.accreditation_journal_id or not wizard.date_accreditation:
             raise osv.except_osv(_('Error'), _('Every account is mandatory'))
+        if not context.get('accruement', False):
+            if not wizard.bank_account_id or not wizard.accreditation_account_id:
+                raise osv.except_osv(_('Error'), _('Bank account is mandatory for accreditation move'))
+        if context.get('accruement', False):
+            if not wizard.acceptance_account_id and not wizard.accreditation_account_id:
+                raise osv.except_osv(_('Error'), _('Acceptance or accredit account is mandatory for accrue move'))
         date_accreditation = wizard.date_accreditation
         
         move_vals = {
@@ -159,18 +184,17 @@ class riba_accreditation(osv.osv_memory):
             'line_id': [
                 (0, 0, {
                     'name': _('Credit'),
-                    'account_id': wizard.accreditation_account_id.id,
+                    'account_id': context.get('accruement', False) and wizard.acceptance_account_id.id or wizard.accreditation_account_id.id,
                     'credit': wizard.accreditation_amount,
                     'debit': 0.0,
                     'date': date_accreditation,
                     }),
                 (0, 0, {
                     'name': _('Bank'),
-                    'account_id': wizard.bank_account_id.id,
+                    'account_id': wizard.bank_account_id.id or context.get('accruement', False) and wizard.accreditation_account_id.id,
                     'debit': wizard.bank_amount,
                     'credit': 0.0,
                     'date': date_accreditation,
-                    'date_maturity': wizard.date_value,
                     }),
 #                 (0, 0, {
 #                     'name': _('Bank'),
@@ -183,21 +207,39 @@ class riba_accreditation(osv.osv_memory):
             }
         move_id = move_pool.create(cr, uid, move_vals, context=context)
         accredited = True
+        accrued = True
         if context.get('active_model', False) == 'riba.distinta':
-            for line in distinta.line_ids:
-                if line.tobeaccredited and not line.state == "accredited":
-                    line.write({'accreditation_move_id': move_id,
-                                'state': 'accredited'})
-                if not line.tobeaccredited:
-                        accredited = False
-            if accredited:
-                wf_service.trg_validate(
-                    uid, 'riba.distinta', active_id, 'accredited', cr)
+            if context.get('accruement', False):
+                for line in distinta.line_ids:
+                    if line.tobeaccredited and not line.state == "accrued":
+                        line.write({'accruement_move_id': move_id,
+                                    'state': 'accrued'})
+                    if not line.tobeaccredited:
+                            accrued = False
+                if accrued:
+                    wf_service.trg_validate(
+                        uid, 'riba.distinta', active_id, 'accrued', cr)
+            else:
+                for line in distinta.line_ids:
+                    if line.tobeaccredited and not line.state == "accredited":
+                        line.write({'accreditation_move_id': move_id,
+                                    'state': 'accredited'})
+                    if not line.tobeaccredited:
+                            accredited = False
+                if accredited:
+                    wf_service.trg_validate(
+                        uid, 'riba.distinta', active_id, 'accredited', cr)
         if context.get('active_model', False) == 'riba.distinta.line':
-            for line in distinta_lines:
-                if not line.state == "accredited":
-                    line.write({'accreditation_move_id': move_id,
-                                'state': 'accredited'})
+            if context.get('accruement', False):
+                for line in distinta_lines:
+                    if not line.state == "accrued":
+                        line.write({'accruement_move_id': move_id,
+                                    'state': 'accrued'})
+            else:
+                for line in distinta_lines:
+                    if not line.state == "accredited":
+                        line.write({'accreditation_move_id': move_id,
+                                    'state': 'accredited'})
             #TODO: if all lines of a distinta are accredited, set distinta accredited
         return {
             'name': _('Accreditation Entry'),

@@ -59,7 +59,7 @@
                         <page string="General">
                             <field name="line_ids" nolabel="1" colspan="4">
                                 <tree string="Detail" editable="top">
-                                    <!--field name="tobeaccredited"/-->
+                                    <field name="tobeaccredited"/>
                                     <field name="sequence"/>
                                     <field name="invoice_number"/>
                                     <field name="invoice_date"/>
@@ -68,7 +68,7 @@
                                     <field name="amount" sum="Amount"/>
                                     <field name="due_date"/>
                                     <field name="state"/>
-                                    <button name="%(riba_unsolved_action)d" type='action' attrs="{'invisible':['|',('type','=','incasso'),('state','!=','accredited')]}" string="Unsolved" icon="terp-dolar_ok!"/>
+                                    <button name="%(riba_unsolved_action)d" type='action' attrs="{'invisible':['|',('type','=','incasso'),('state','not in',['accredited','accrued'])]}" string="Unsolved" icon="terp-dolar_ok!"/>
                                     <field name="type" invisible="1" />
                                 </tree>
                                 <form string="Detail">
@@ -200,7 +200,7 @@
                     <field name="amount" sum="Amount"/>
                     <field name="due_date"/>
                     <field name="state"/>
-                    <button name="%(riba_unsolved_action)d" type='action' attrs="{'invisible':['|',('type','=','incasso'),('state','!=','accredited')]}" string="Unsolved" icon="terp-dolar_ok!"/>
+                    <button name="%(riba_unsolved_action)d" type='action' attrs="{'invisible':['|',('type','=','incasso'),('state','not in',['accredited','accrued'])]}" string="Unsolved" icon="terp-dolar_ok!"/>
                     <field name="type" invisible="1" />
                 </tree>
             </field>
@@ -227,6 +227,8 @@
                     <field name="acceptance_account_id" attrs="{'required':[('tipo','=','sbf')]}"/>
                     <separator orientation="vertical"/>
                     <field name="partner_id" domain="[('customer', '=', True)]"/>
+                    <separator orientation="vertical"/>
+                    <field name="distinta_id" />
                </search>
             </field>
         </record>
