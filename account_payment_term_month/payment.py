@@ -36,8 +36,16 @@ class account_payment_term_line(orm.Model):
             'Number of month', required=False,
             help="Number of month to add before computation of the day of "
                  "month. If Date=15-01, Number of month=1, Day of Month=-1, "
-                 "then the due date is 28-02. If compilated, there is no "
+                 "then the due date is 28-02. If compiled, there is no "
                  "need to compile the field Days."),
+        'value': fields.selection([('procent', 'Percent'),
+                           ('balance', 'Balance'),
+                           ('fixed', 'Fixed Amount'),
+                           ('tax', 'Tax Amount'),
+                           ], 'Valuation',
+                           required=True, help="""Select here the kind of valuation related to this payment term line. 
+                           Note that you should have your last line with the type 'Balance' to ensure that the whole 
+                           amount will be threated."""),
     }
     _defaults = {
         'days': 0,
@@ -70,7 +78,7 @@ class account_payment_term(orm.Model):
             ' delayed.'),
     }
     
-    def compute(self, cr, uid, id, value, date_ref=False, context=None):
+    def compute(self, cr, uid, id, value, value_tax=False, date_ref=False, context=None):
         '''Function overwritten for check also month values and 2 months with no payments
         allowed for the partner.'''
         result = []
@@ -81,12 +89,16 @@ class account_payment_term(orm.Model):
         obj_precision = self.pool['decimal.precision']
         prec = obj_precision.precision_get(cr, uid, 'Account')
         for line in pt.line_ids:
-            if line.value == 'fixed':
+            if line.value == 'tax':
+                amt = round(line.value_amount * value_tax, prec)
+                value -= amt
+            elif line.value == 'fixed':
                 amt = round(line.value_amount, prec)
             elif line.value == 'procent':
                 amt = round(value * line.value_amount, prec)
             elif line.value == 'balance':
                 amt = round(amount, prec)
+
             if amt:
                 if line.months != 0:  # commercial months
                     next_date = (
