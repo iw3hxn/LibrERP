@@ -139,6 +139,8 @@
                             <field name='acceptance_move_ids' colspan="4" nolabel="1"/>
                             <separator colspan="4" string="Accreditation Entry"/>
                             <field name='accreditation_move_ids' colspan="4" nolabel="1"/>
+                            <separator colspan="4" string="Accruement Entry"/>
+                            <field name='accruement_move_ids' colspan="4" nolabel="1"/>
                             <separator colspan="4" string="Payments"/>
                             <field name='payment_ids' colspan="4" nolabel="1">
                                 <tree string="Payments">

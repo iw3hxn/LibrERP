@@ -147,7 +147,7 @@ class riba_accreditation(osv.osv_memory):
             distinta_pool = self.pool.get('riba.distinta')
             distinta = distinta_pool.browse(cr, uid, active_id, context=context)
             if not context.get('accruement', False) and not distinta.config.accreditation_account_id:
-                context.update({'accruement': True})
+                context.update({'accruement': True, 'accreditation_accruement': True})
             ref = distinta.name
         move_pool = self.pool.get('account.move')
 #        move_line_pool = self.pool.get('account.move.line')
@@ -164,7 +164,7 @@ class riba_accreditation(osv.osv_memory):
                     ref += line.distinta_id.name + ' '
                 last_id = line.distinta_id.id
             if not context.get('accruement', False) and not line.distinta_id.config.accreditation_account_id:
-                context.update({'accruement': True})
+                context.update({'accruement': True, 'accreditation_accruement': True})
         
         wizard = self.browse(cr, uid, ids)[0]
         if not wizard.accreditation_journal_id or not wizard.date_accreditation:
@@ -183,17 +183,17 @@ class riba_accreditation(osv.osv_memory):
             'date': date_accreditation,
             'line_id': [
                 (0, 0, {
+                    'name': _('Bank'),
+                    'account_id': context.get('accruement', False) and not context.get('accreditation_accruement', False) and wizard.accreditation_account_id.id or wizard.bank_account_id.id,
+                    'debit': wizard.bank_amount,
+                    'credit': 0.0,
+                    'date': date_accreditation,
+                    }),
+                (0, 0, {
                     'name': _('Credit'),
                     'account_id': context.get('accruement', False) and wizard.acceptance_account_id.id or wizard.accreditation_account_id.id,
                     'credit': wizard.accreditation_amount,
                     'debit': 0.0,
-                    'date': date_accreditation,
-                    }),
-                (0, 0, {
-                    'name': _('Bank'),
-                    'account_id': wizard.bank_account_id.id or context.get('accruement', False) and wizard.accreditation_account_id.id,
-                    'debit': wizard.bank_amount,
-                    'credit': 0.0,
                     'date': date_accreditation,
                     }),
 #                 (0, 0, {
