@@ -253,6 +253,8 @@ class ImportFile(threading.Thread, Utils):
             if hasattr(record, field + '_' + address_type) and getattr(record, field + '_' + address_type):
                 vals_address[field] = getattr(record, field + '_' + address_type)
 
+        vals_address['zip'] = vals_address['zip'].split('.')[0]
+
         if len(record.fiscalcode) == 16 and not record.person_name:
             vals_address['name'] = ''
 

@@ -280,6 +280,7 @@ class ImportFile(threading.Thread, Utils):
             return brand_obj.create(cr, uid, {'name': name})
     
     def import_row(self, cr, uid, row_list):
+        #import pdb; pdb.set_trace()
         if self.first_row:
             row_str_list = [self.toStr(value) for value in row_list]
             for column in row_str_list:
@@ -324,7 +325,7 @@ class ImportFile(threading.Thread, Utils):
         
         vals_product = self.PRODUCT_DEFAULTS.copy()
         
-        vals_product['name'] = record.name
+        vals_product['name'] = str(record.name)
         
         for field in self.PRODUCT_SEARCH:
             if hasattr(record, field) and getattr(record, field):

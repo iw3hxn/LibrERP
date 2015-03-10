@@ -46,9 +46,10 @@ def import_sheet(filename, content):
         for rx in range(sh.nrows):
             row = []
             for cx in range(sh.ncols):
-                row.append(sh.cell_value(rowx=rx, colx=cx))
+                row.append(sh.cell(rowx=rx, colx=cx).value)
             table.append(row)
-
+#            print rx
+#            print table
         number_of_lines = sh.nrows
     elif file_type in ('ods', ):
         # "OpenOffice"
