@@ -32,6 +32,16 @@ from datetime import datetime
 
 class riba_distinta(osv.osv):
     
+    def _get_accruement_move_ids(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        for distinta in self.browse(cr, uid, ids, context=context):
+            move_ids = []
+            for line in distinta.line_ids:
+                if line.accruement_move_id and line.accruement_move_id.id not in move_ids:
+                    move_ids.append(line.accruement_move_id.id)
+            res[distinta.id] = move_ids
+        return res
+
     def _get_accreditation_move_ids(self, cr, uid, ids, field_name, arg, context):
         res = {}
         for distinta in self.browse(cr, uid, ids, context=context):
@@ -85,6 +95,7 @@ class riba_distinta(osv.osv):
             ('draft', 'Draft'),
             ('accepted', 'Accepted'),
             ('accredited', 'Accredited'),
+            ('accrued', 'Accrued'),
             ('paid', 'Paid'),
             ('unsolved', 'Unsolved'),
             ('cancel', 'Canceled')], 'State', select=True, readonly=True),
@@ -100,6 +111,7 @@ class riba_distinta(osv.osv):
         'acceptance_move_ids': fields.function(_get_acceptance_move_ids, type='many2many', relation='account.move', method=True, string="Acceptance Entries"),
         #sc: modify accreditation from id to ids
         'accreditation_move_ids': fields.function(_get_accreditation_move_ids, type='many2many', relation='account.move', method=True, string="Accreditation Entries"),
+        'accruement_move_ids': fields.function(_get_accruement_move_ids, type='many2many', relation='account.move', method=True, string="Accruement Entries"),
         #'accreditation_move_id': fields.many2one('account.move', 'Accreditation Entry', readonly=True),
         'payment_ids': fields.function(_get_payment_ids, relation='account.move.line', type="many2many", string='Payments'),
         'unsolved_move_ids': fields.function(_get_unsolved_move_ids, type='many2many', relation='account.move', method=True, string="Unsolved Entries"),
@@ -346,6 +358,7 @@ class riba_distinta_line(osv.osv):
         'acceptance_move_id': fields.many2one('account.move', 'Acceptance Entry', readonly=True),
         'unsolved_move_id': fields.many2one('account.move', 'Unsolved Entry', readonly=True),
         'accreditation_move_id': fields.many2one('account.move', 'Accreditation Entry', readonly=True),
+        'accruement_move_id': fields.many2one('account.move', 'Accruement Entry', readonly=True),
         'acceptance_account_id': fields.many2one('account.account', 'Acceptance Account'),
         'amount': fields.function(_get_line_values, method=True, string="Amount", multi="line"),
         'bank_id': fields.many2one('res.partner.bank', 'Debitor Bank'),
@@ -360,6 +373,7 @@ class riba_distinta_line(osv.osv):
             ('draft', 'Draft'),
             ('confirmed', 'Confirmed'),
             ('accredited', 'Accredited'),
+            ('accrued', 'Accrued'),
             ('paid', 'Paid'),
             ('unsolved', 'Unsolved'),
             ], 'State', select=True, readonly=True),

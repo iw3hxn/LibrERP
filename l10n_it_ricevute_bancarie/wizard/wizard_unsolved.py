@@ -41,7 +41,12 @@ class riba_unsolved(osv.osv_memory):
         return self.pool.get('riba.distinta.line').browse(cr, uid, context['active_id'], context=context).amount
 
     def _get_riba_bank_account_id(self, cr, uid, context=None):
-        return self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'accreditation_account_id', context=context)
+        res = False
+        res = self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'accreditation_account_id', context=context)
+        if not res:
+            res = self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'acceptance_account_id', context=context)
+        return res
+
 
     def _get_overdue_effects_account_id(self, cr, uid, context=None):
         return self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'overdue_effects_account_id', context=context)
@@ -175,6 +180,3 @@ class riba_unsolved(osv.osv_memory):
             'target': 'current',
             'res_id': move_id or False,
         }
-
-
-riba_unsolved()

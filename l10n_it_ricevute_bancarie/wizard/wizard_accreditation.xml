@@ -11,12 +11,12 @@
                 <form string="Ri.Ba. Accreditation">
                     <separator string="This wizard generates the journal entry related to accreditation received from the bank" colspan="4"/>
                     <field name="accreditation_journal_id" />
+                    <field name="date_accreditation" />
                     <newline/>
                     <field name="accreditation_account_id" />
                     <field name="accreditation_amount" />
                     <field name="bank_account_id" />
                     <field name="bank_amount" />
-                    <field name="date_value" />
                     <!--field name="bank_expense_account_id" /-->
                     <!--field name="expense_amount" /-->
                     <button string="Cancel" special="cancel" icon="gtk-cancel" colspan="2"/>
@@ -54,7 +54,6 @@
                     <field name="accreditation_amount" />
                     <field name="bank_account_id" />
                     <field name="bank_amount" />
-                    <field name="date_value" />
                     <!--field name="bank_expense_account_id" /-->
                     <!--field name="expense_amount" /-->
                     <button string="Cancel" special="cancel" icon="gtk-cancel" colspan="2"/>
@@ -76,5 +75,37 @@
             id="action_riba_line_accreditation"
             view_id="riba_line_accreditation"/>
 
+<!-- accruement from distinta line view -->
+
+        <record id="riba_line_accruement" model="ir.ui.view">
+            <field name="name">riba.accruement.line.wizard</field>
+            <field name="model">riba.accreditation</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Ri.Ba. Line Accruement">
+                    <separator string="This wizard generates the journal entry related to accruement received from the bank" colspan="4"/>
+                    <field name="accreditation_journal_id" />
+                    <field name="date_accreditation" />
+                    <newline/>
+                    <field name="accreditation_account_id" />
+                    <field name="accreditation_amount" />
+                    <field name="acceptance_account_id" />
+                    <field name="bank_amount" />
+                    <button string="Cancel" special="cancel" icon="gtk-cancel" colspan="2"/>
+                    <button string="Create" name="create_move" type="object" icon="gtk-ok" colspan="2" context="{'accruement':True}"/>
+                </form>
+            </field>
+        </record>
+
+       <act_window name="Accruement Ri.Ba. from line view"
+            res_model="riba.accreditation"
+            src_model="riba.distinta.line"
+            key2="client_action_multi"
+            view_mode="form"
+            view_type="form"
+            target="new"
+            multi="True"
+            id="action_riba_line_accruement"
+            view_id="riba_line_accruement"/>
     </data>
 </openerp>
