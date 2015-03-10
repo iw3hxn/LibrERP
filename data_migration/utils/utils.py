@@ -40,8 +40,9 @@ class Utils():
         number = re.compile(r'^[0-9.,]+$')
         number_vith_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
         number_vith_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
-        if type(value) == type(u'a') or type(value) == type('a'):
-            if number.match(value):
+
+        if isinstance(value, (str, unicode)):
+            if number.match(value) and not value[0] == '0':
                 if ',' in value or '.' in value:
                     if number_vith_thousands_separator_italian.match(value):
                         value = value.replace('.', '')
@@ -54,6 +55,15 @@ class Utils():
                 return unicode(value)
             else:
                 return value.strip()
+        else:
+            if value:
+                return unicode(value)
+            else:
+                return False
+
+    def simple_string(self, value):
+        if isinstance(value, (str, unicode)):
+            return value.strip()
         else:
             if value:
                 return unicode(value)
