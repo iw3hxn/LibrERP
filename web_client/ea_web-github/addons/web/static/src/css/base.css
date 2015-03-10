@@ -1472,6 +1472,9 @@ label.error {
     min-width: 90px;
     color: #1f1f1f;
 }
+.openerp .oe_forms input[name="account_id"]{
+    min-width: 300px;
+}
 
 .openerp .oe_forms input.field_many2one,
 .openerp .oe_forms input.field_binary,
