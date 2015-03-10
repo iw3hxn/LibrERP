@@ -137,6 +137,8 @@ class res_partner(orm.Model):
     def create(self, cr, uid, vals, context):
         if context is None:
             context = {}
+        if context.get('import', False):
+            return super(res_partner, self).create(cr, uid, vals, context)
         if not vals.get('address', False) and context.get('default_type', '') != 'lead':
             raise orm.except_orm(_('Error!'),
                                  _('At least one address of type "Default" is needed!'))

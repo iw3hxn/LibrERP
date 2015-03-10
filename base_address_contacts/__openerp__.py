@@ -20,7 +20,7 @@
 ##############################################################################
 {
     'name': 'Base Address Contact',
-    'version': '3.2.6.6',
+    'version': '3.2.7.6',
     'category': 'Base',
     'description': """
 This module allows you to manage your contacts
@@ -30,6 +30,9 @@ This module allows you to manage your contacts
 
 It lets you define:
     * several contacts related to a partner address instead of partner_id,
+
+    use context['import'] = True 
+
 
 """,
     'author': 'Denero Team',

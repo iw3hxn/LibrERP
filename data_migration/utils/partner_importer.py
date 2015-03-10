@@ -352,7 +352,7 @@ class ImportFile(threading.Thread, Utils):
                 vals_partner['vat'] = record.vat
 
             if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
-                error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: {record.vat}.".format(line=self.processed_lines, record=record)
+                error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: {record.vat}".format(line=self.processed_lines, record=record)
                 _logger.debug(error)
                 self.error.append(error)
                 if DONT_STOP_ON_WRONG_VAT:
@@ -428,6 +428,7 @@ class ImportFile(threading.Thread, Utils):
         elif partner_id and partner_id < 0:
             return False
         else:
+            self.context['import'] = True
             partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)
             self.uo_new += 1
 
