@@ -29,6 +29,7 @@ from collections import namedtuple
 from pprint import pprint
 from utils import Utils
 from osv import osv
+import vatnumber
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -276,7 +277,7 @@ class ImportFile(threading.Thread, Utils):
                 address_id = address_ids[0]
                 self.address_obj.write(cr, uid, address_id, vals_address)
             else:
-                address_id = self.address_obj.create(cr, uid, vals_address)
+                self.address_obj.create(cr, uid, vals_address)
 
         return True
 
@@ -351,7 +352,8 @@ class ImportFile(threading.Thread, Utils):
             else:
                 vals_partner['vat'] = record.vat
 
-            if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
+            #if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
+            if not vatnumber.check_vat(vals_partner['vat']):
                 error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: {record.vat}".format(line=self.processed_lines, record=record)
                 _logger.debug(error)
                 self.error.append(error)
