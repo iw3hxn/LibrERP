@@ -33,7 +33,7 @@
       <field name="arch" type="xml">
         <field name="account_id" position="after">
           <field name="asset_id"/>
-          <field name="subsequent_asset"/>
+          <!--field name="subsequent_asset"/-->
         </field>
       </field>
     </record>
