@@ -23,8 +23,8 @@ from osv import fields,osv
 from tools.translate import _
 import decimal_precision as dp
 import time
-from product._common import rounding
-
+#from product._common import rounding
+from openerp.addons.product._common import rounding
 
 class product_pricelist_item(osv.osv):
 
