@@ -209,7 +209,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.debug(error)
                     self.error.append(error)
                     return -1
-        
+
         if len(partner_clone) == 1:
             partner_id = partner_clone.pop()
             partner = self.partner_obj.browse(cr, uid, partner_id, context)
@@ -253,27 +253,46 @@ class ImportFile(threading.Thread, Utils):
             if hasattr(record, field + '_' + address_type) and getattr(record, field + '_' + address_type):
                 vals_address[field] = getattr(record, field + '_' + address_type)
 
-        vals_address['zip'] = vals_address['zip'].split('.')[0]
-
         if len(record.fiscalcode) == 16 and not record.person_name:
             vals_address['name'] = ''
 
-        if not hasattr(record, 'zip' + '_' + address_type) and 'city' in vals_address:
-            city_ids = self.city_obj.search(cr, uid, [('name', '=', vals_address['city'])])
+        # Excel treats all numbers as floats
+        vals_address['zip'] = vals_address.get('zip') and self.simple_string(vals_address['zip'], as_integer=True) or ''
+
+        if vals_address.get('zip') or vals_address.get('city'):
+            if vals_address.get('zip'):
+                city_ids = self.city_obj.search(cr, uid, [('zip', '=', vals_address['zip'])])
+            else:
+                city_ids = False
+
+            # Not always we can get a city by zip code. A city can have more than one.
+            if vals_address.get('city') and not city_ids:
+                city_ids = self.city_obj.search(cr, uid, [('name', '=ilike', vals_address['city'])])
+
             if city_ids:
                 city_data = self.city_obj.browse(cr, uid, city_ids[0])
+                vals_address['city'] = city_data.name
                 vals_address['zip'] = city_data.zip
+                vals_address['province'] = city_data.province_id.id
+                vals_address['region'] = city_data.province_id.region.id
+                vals_address['country_id'] = city_data.province_id.region.country_id.id
 
-        if hasattr(record, 'province ' + address_type):
-            province_ids = self.province_obj.search(cr, uid, [('code', '=', getattr(record, 'province ' + address_type))])
-            if province_ids:
-                vals_address['province'] = province_ids[0]
-                province_data = self.province_obj.browse(cr, uid, province_ids[0])
-                vals_address['region'] = province_data.region.id
+        if not vals_address.get('province'):
+            if hasattr(record, 'province ' + address_type):
+                province_ids = self.province_obj.search(cr, uid, [('code', '=', getattr(record, 'province ' + address_type))])
+                if province_ids:
+                    vals_address['province'] = province_ids[0]
+                    province_data = self.province_obj.browse(cr, uid, province_ids[0])
+                    vals_address['region'] = province_data.region.id
+                    vals_address['country_id'] = province_data.region.country_id.id
 
-        if record.country_code:
+        if record.country_code and not vals_address.get('country_id'):
             vals_address['country_id'] = self._contry_by_code(cr, uid, country_code)
 
+        if DEBUG:
+            pprint(vals_address)
+
+        if vals_address.get('country_id'):
             address_ids = self.address_obj.search(cr, uid, [('partner_id', '=', vals_address['partner_id']), ('type', '=', vals_address['type'])])
             if address_ids:
                 address_id = address_ids[0]
@@ -289,6 +308,11 @@ class ImportFile(threading.Thread, Utils):
             _logger.debug(error)
             self.error.append(error)
             return False
+
+        if DEBUG:
+            # pprint(row_list)
+            row_str_list = [self.simple_string(value) for value in row_list]
+            pprint(zip(self.HEADER, row_str_list))
 
         record = self.Record._make([self.toStr(value) for value in row_list])
 
@@ -391,26 +415,27 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'comment') and record.comment:
             vals_partner['comment'] = record.comment
 
-        code_partner_ids = self.partner_obj.search(cr, uid, [(PROPERTY_REF_MAP[self.partner_type], '=', record.code)])
+        record_code = self.simple_string(record.code, as_integer=True)
+        code_partner_ids = self.partner_obj.search(cr, uid, [(PROPERTY_REF_MAP[self.partner_type], '=', record_code)])
 
         if code_partner_ids and not UPDATE_ON_CODE:
             code_partner_data = self.partner_obj.browse(cr, uid, code_partner_ids[0])
             if vals_partner.get('vat', False) and not code_partner_data.vat == vals_partner['vat']:
-                error = u"Riga {0}: Partner '{1} {2}'; codice gia utilizzato per partner {3}. La riga viene ignorata.".format(self.processed_lines, record.code, vals_partner['name'], code_partner_data['name'])
+                error = u"Riga {0}: Partner '{1} {2}'; codice gia utilizzato per partner {3}. La riga viene ignorata.".format(self.processed_lines, record_code, vals_partner['name'], code_partner_data['name'])
                 _logger.debug(error)
                 self.error.append(error)
                 return False
             elif vals_partner.get('fiscalcode', False) and not code_partner_data.fiscalcode == vals_partner['fiscalcode']:
-                error = u"Riga {0}: Partner '{1} {2}'; codice gia utilizzato per partner {3}. La riga viene ignorata.".format(self.processed_lines, record.code, vals_partner['name'], code_partner_data['name'])
+                error = u"Riga {0}: Partner '{1} {2}'; codice gia utilizzato per partner {3}. La riga viene ignorata.".format(self.processed_lines, record_code, vals_partner['name'], code_partner_data['name'])
                 _logger.debug(error)
                 self.error.append(error)
                 return False
         elif code_partner_ids and UPDATE_ON_CODE:
-            vals_partner[PROPERTY_REF_MAP[self.partner_type]] = record.code
+            vals_partner[PROPERTY_REF_MAP[self.partner_type]] = record_code
             if PROPERTY_REF_MAP[self.partner_type] not in self.PARTNER_SEARCH:
                 self.PARTNER_SEARCH.insert(0, PROPERTY_REF_MAP[self.partner_type])
         else:
-            vals_partner[PROPERTY_REF_MAP[self.partner_type]] = record.code
+            vals_partner[PROPERTY_REF_MAP[self.partner_type]] = record_code
 
         if hasattr(record, 'category') and record.category:
             category_ids = self.category_obj.search(cr, uid, [('name', 'ilike', record.category)])

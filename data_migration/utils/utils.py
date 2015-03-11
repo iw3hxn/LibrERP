@@ -61,8 +61,11 @@ class Utils():
             else:
                 return False
 
-    def simple_string(self, value):
+    def simple_string(self, value, as_integer=False):
         if isinstance(value, (str, unicode)):
+            number = re.compile(r'^[0-9.,]+$')
+            if as_integer and number.match(value):
+                return unicode(int(float(value)))
             return value.strip()
         else:
             if value:
