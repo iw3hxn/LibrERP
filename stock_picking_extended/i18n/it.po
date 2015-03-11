@@ -20,6 +20,102 @@ msgstr ""
 msgid "Invoice Control"
 msgstr "Controllo fatture"
 
+#. module: stock
+#: model:stock.journal,name:stock.journal_delivery
+msgid "Shipping Orders"
+msgstr "Spedizione Ordini"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_cvendita
+msgid "C/Sell"
+msgstr "C/Vendita"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_cvisione
+msgid "C/Vision"
+msgstr "C/Visione"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_clavorazione
+msgid "C/Processing"
+msgstr "C/Lavorazione"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_cnoleggio
+msgid "C/Rent"
+msgstr "C/Noleggio"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_criparazione
+msgid "C/Repair"
+msgstr "C/Riparazione"
+
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso5
+msgid "Made for Accreditation"
+msgstr "Reso per Accredito"
+
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_cug
+msgid "free loan"
+msgstr "Comodato d'uso Gratuito"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso
+#: view:stock.return.picking:0
+msgid "Return"
+msgstr "Reso"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso1
+msgid "Return to Vendor"
+msgstr "Reso a Fornitore"
+
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_omaggio
+msgid "Tribute"
+msgstr "Omaggio"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso2
+msgid "Made Rental Income"
+msgstr "Reso Conto Noleggio"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso3
+msgid "Account Rendered Vision"
+msgstr "Reso Conto Visione"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso4
+msgid "Return to Repair"
+msgstr "Reso da Riparazione"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso5
+msgid "Made for Accreditation"
+msgstr "Reso per Accredito"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso6
+msgid "Made for Replacement"
+msgstr "Reso per Sostituzione"
+
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_reso7
+msgid "Made in Fixed Guarantee"
+msgstr "Reso Riparato in Garanzia"
+
+#. module: stock
+#: model:stock.journal,name:stock.journal_cg
+msgid "C/repair under warranty"
+msgstr "C/riparazione in garanzia"
+
+
 #. module: stock_picking_extended
 #: view:purchase.order:0
 msgid "Pickings"
