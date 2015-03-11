@@ -461,7 +461,6 @@ class ImportFile(threading.Thread, Utils):
             return False
         else:
             self.context['import'] = True
-            pdb.set_trace()
             partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)
             self.uo_new += 1
 
