@@ -347,6 +347,9 @@ class ImportFile(threading.Thread, Utils):
             self.partner_type: True
         }
 
+        if 'supplier' in vals_partner:
+            vals_partner['customer'] = False
+
         if hasattr(record, 'person_name') and record.person_name:
             vals_partner['name'] += ' {0}'.format(record.person_name)
 
@@ -458,6 +461,7 @@ class ImportFile(threading.Thread, Utils):
             return False
         else:
             self.context['import'] = True
+            pdb.set_trace()
             partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)
             self.uo_new += 1
 
