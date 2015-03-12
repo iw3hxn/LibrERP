@@ -50,13 +50,13 @@ class res_partner_address_contact(orm.Model):
         result = {}
         for rec in self.browse(cr, uid, ids, context=context):
             if rec.title:
-                result[rec.id] = rec.title.name + '  ' + rec.last_name + ' ' + (rec.first_name or '')
+                result[rec.id] = rec.title.name + ' ' + rec.last_name + ' ' + (rec.first_name or '')
             else:
                 result[rec.id] = rec.last_name + ' ' + (rec.first_name or '')
         return result
 
     _columns = {
-        'name': fields.function(_name_get_full, string='Name', size=64, type="char", store=True, select=True),
+        'name': fields.function(_name_get_full, string='Name', size=64, type="char", store=False, select=True),
         'last_name': fields.char('Last Name', size=64, required=True),
         'first_name': fields.char('First Name', size=64),
         'mobile': fields.char('Mobile', size=64),
