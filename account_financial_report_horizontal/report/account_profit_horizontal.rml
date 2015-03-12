@@ -148,13 +148,13 @@
       <font color="white"> </font>
     </para>
 	 	<para style="P2">[[ get_data(data) or removeParentNode('para')]]</para>
-      <blockTable colWidths="250.0,100.0,150.0,120.0,150.0" style="Table2_header">
+      <blockTable colWidths="250.0,100.0,150.0,0.0,0.0" style="Table2_header">
       <tr>
       	<td><para style="terp_tblheader_General_Centre">Chart of Account </para></td>
         <td><para style="terp_tblheader_General_Centre">Fiscal Year</para></td>
         <td><para style="terp_tblheader_General_Centre">Filter By [[ get_filter(data)!='No Filter' and get_filter(data) ]]</para></td>
-		<td><para style="terp_tblheader_General_Centre">Display Account</para></td>
-        <td><para style="terp_tblheader_General_Centre">Target Moves</para></td>
+		<td></td>
+        <td></td>
       </tr>
 	<tr>
 	   <td><para style="terp_default_Centre_8">[[ get_account(data) or removeParentNode('para') ]]</para></td>
@@ -181,8 +181,8 @@
 	        	</tr>
         	 </blockTable>
         	</td>
-		<td><para style="terp_default_Centre_8">[[ (data['form']['display_account']=='bal_all' and 'All') or  (data['form']['display_account']=='bal_movement' and 'With movements') or 'With balance is not equal to 0']]</para></td>
-		<td><para style="terp_default_Centre_8">[[ get_target_move(data) ]]</para></td>
+		<td></td>
+		<td></td>
 	</tr>
 	</blockTable>
         <para style="Standard">
