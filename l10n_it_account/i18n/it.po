@@ -59,6 +59,12 @@ msgstr "Errore nel Periodo!"
 msgid "Period %s have already a closed vat statement."
 msgstr "Il periodo %s ha già una liquidazione IVA chiusa."
 
+#. module: l10n_it_account
+#: model:ir.actions.act_window,name:l10n_it_account.action_account_fiscal_position_exemption_form
+#: model:ir.ui.menu,name:l10n_it_account.menu_action_account_fiscal_position_exemption_form
+msgid "Letters of Intents"
+msgstr "Lettera d'Intento"
+
 #. module: account
 #: view:account.account:0
 #: view:account.bank.statement:0
@@ -2851,6 +2857,11 @@ msgid "Automatic Reconciliation"
 msgstr "Riconciliazione automatica"
 
 #. module: l10n_it_account
+#: field:account.tax,account_base_tax_code_id:0
+msgid "Base Tax Code Parent"
+msgstr "Codice Imponibile padre"
+
+#. module: l10n_it_account
 #: model:account.payment.term,name:l10n_it_account.payment_term_60_net_1
 msgid "B.B. 60 GG D.F."
 msgstr "B.B. 60 GG D.F."
@@ -3019,6 +3030,11 @@ msgstr "Agosto"
 #: model:process.transition,note:account.process_transition_paymentreconcile0
 msgid "Payment entries are the second input of the reconciliation."
 msgstr "Le registrazioni di pagamento sono il secondo input nella riconciliazione."
+
+#. module: l10n_it_account
+#: field:account.tax,account_tax_code_id:0
+msgid "Tax Code Parent"
+msgstr "Codice Imposta padre"
 
 #. module: l10n_it_account
 #: model:account.payment.term,name:l10n_it_account.payment_term_90_120_days_2
