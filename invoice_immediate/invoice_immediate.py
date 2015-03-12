@@ -69,9 +69,9 @@ class account_invoice(osv.Model):
                 addr = invoice.partner_id and partner_obj.address_get(cr, uid, [invoice.partner_id.id], ['delivery']) or {}
                 address_id = addr.get('delivery', False)
             
-            if invoice.type == 'in_invoice':
+            if invoice.type == 'in_invoice' or invoice.type == 'out_refund':
                 picking_type = 'in'
-            elif invoice.type == 'out_invoice':
+            elif invoice.type == 'out_invoice' or invoice.type == 'in_refund':
                 picking_type = 'out'
             else:
                 picking_type = 'out'
