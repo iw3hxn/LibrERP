@@ -24,6 +24,7 @@ import time
 from osv import fields, osv
 from tools.translate import _
 import logging
+from openerp import SUPERUSER_ID
 
 
 class ir_sequence_period(osv.osv):
@@ -62,22 +63,21 @@ class ir_sequence(osv.osv):
         """ Draw an interpolated string using the specified sequence."""
         self._logger.debug('next_by_id `%s` `%s`', sequence_id, context)
         self.check_read(cr, uid)
-        #company_ids = self.pool.get('res.company').search(cr, uid, [], order='company_id', context=context) + [False]
+        # company_ids = self.pool.get('res.company').search(cr, uid, [], order='company_id', context=context) + [False]
         seq_id = sequence_id
-        
-        #create_sequence = ''
+        # create_sequence = ''
         if context.get('journal_id') and context['journal_id']:
-            journal_obj = self.pool.get('account.journal')
-            for journal in journal_obj.browse(cr, uid, [context['journal_id']]):
-                #create_sequence = journal.create_sequence
+            journal_obj = self.pool['account.journal']
+            for journal in journal_obj.browse(cr, uid, [context['journal_id']], context=context):
+                # create_sequence = journal.create_sequence
                 if journal.create_sequence == 'create_period' and context.get('period_id') and context['period_id']:
-                    per_seq_obj = self.pool.get('account.sequence.period')
-                    per_seq_ids = per_seq_obj.search(cr, uid, [('sequence_main_id', '=', sequence_id), ('period_id', '=', context['period_id'])])
+                    per_seq_obj = self.pool['account.sequence.period']
+                    per_seq_ids = per_seq_obj.search(cr, uid, [('sequence_main_id', '=', sequence_id), ('period_id', '=', context['period_id'])], context=context)
                     if per_seq_ids:
-                        for per_seq in per_seq_obj.browse(cr, uid, per_seq_ids):
+                        for per_seq in per_seq_obj.browse(cr, uid, per_seq_ids, context=context):
                             seq_id = per_seq.sequence_id.id
                     else:
-                        period_obj = self.pool.get('account.period')
+                        period_obj = self.pool['account.period']
                         for period in period_obj.browse(cr, uid, [context['period_id']]):
                             period_code = period.code
                             prefix = journal.sequence_id.prefix + period.fiscalyear_id.code  # +'-'+ period_code[2:6] +'-'
@@ -89,26 +89,26 @@ class ir_sequence(osv.osv):
                             'padding': journal.sequence_id.padding,
                             'implementation': journal.sequence_id.implementation
                         }
-                        seq_id = self.create(cr, uid, vals)
+                        seq_id = self.create(cr, uid, vals, context=context)
                         vals2 = {
                             'sequence_id': seq_id,
                             'sequence_main_id': sequence_id,
                             'period_id': context['period_id']
                         }
-                        per_seq_obj.create(cr, uid, vals2)
+                        per_seq_obj.create(cr, uid, vals2, context=context)
                         
         if context.get('fiscalyear_id') and context['fiscalyear_id']:
             fy = context['fiscalyear_id']
             self._logger.debug('fy `%s`', fy)
             if fy:
-                fy_seq_obj = self.pool.get('account.sequence.fiscalyear')
+                fy_seq_obj = self.pool['account.sequence.fiscalyear']
                 fy_seq_ids = fy_seq_obj.search(cr, uid, [('sequence_main_id', '=', sequence_id), ('fiscalyear_id', '=', fy)])
                 if fy_seq_ids:
-                    for fy_s in fy_seq_obj.browse(cr, uid, fy_seq_ids):
+                    for fy_s in fy_seq_obj.browse(cr, uid, fy_seq_ids, context=context):
                         seq_id = fy_s.sequence_id.id
                 else:
                     fy_obj = self.pool.get('account.fiscalyear')
-                    for fy in fy_obj.browse(cr, uid, [fy]):
+                    for fy in fy_obj.browse(cr, uid, [fy], context=context):
                         #fy_code = fy.code
                         fy_name = fy.name
                         #prefix = journal.sequence_id.prefix + fy.code +'-' # removed (result as a duplication) but it make a bug for old installation #
@@ -123,13 +123,13 @@ class ir_sequence(osv.osv):
                         'padding': journal.sequence_id.padding,
                         'implementation': journal.sequence_id.implementation
                     }
-                    seq_id = self.create(cr, uid, vals)
+                    seq_id = self.create(cr, SUPERUSER_ID, vals, context=context)
                     vals2 = {
                         'sequence_id': seq_id,
                         'sequence_main_id': sequence_id,
                         'fiscalyear_id': context['fiscalyear_id']
                     }
-                    fy_seq_obj.create(cr, uid, vals2)
+                    fy_seq_obj.create(cr, SUPERUSER_ID, vals2, context=context)
                     
         self._logger.debug('next_by_id seq_id `%s`', seq_id)
              
@@ -295,7 +295,7 @@ class ir_sequence(osv.osv):
                 'implementation': 'no_gap'
             }
             # we have to set uid = 1, because creating a sequence is granted to the module not to a user group
-            new_id = self.create(cr, 1, values)
+            new_id = self.create(cr, SUPERUSER_ID, values, context=context)
             seq = self._next_seq(cr, uid, new_id)
             return self._format(cr, uid, seq, context)
         else:
