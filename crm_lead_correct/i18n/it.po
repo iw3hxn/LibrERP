@@ -312,3 +312,16 @@ msgstr "Via..."
 #: view:crm.lead:0
 msgid "ZIP"
 msgstr "CAP"
+
+#. module: crm
+#: view:crm.lead:0
+#: field:crm.lead,partner_address_id:0
+#: field:crm.meeting,partner_address_id:0
+#: field:crm.phonecall,partner_address_id:0
+msgid "Partner Contact"
+msgstr "Contatto Partner"
+
+#. module: crm
+#: view:crm.lead:0
+msgid "Sale Order"
+msgstr "Offerte / Ordini"
