@@ -46,7 +46,8 @@ class res_partner_address_contact(orm.Model):
     _name = "res.partner.address.contact"
     _description = "Address Contact"
 
-    def _name_get_full(self, cr, uid, ids, prop, unknow_none, context=None):
+    def name_get(self, cr, uid, ids, context=None):
+    # def _name_get_full(self, cr, uid, ids, prop, unknow_none, context=None):
         result = {}
         for rec in self.browse(cr, uid, ids, context=context):
             if rec.title:
@@ -56,7 +57,8 @@ class res_partner_address_contact(orm.Model):
         return result
 
     _columns = {
-        'name': fields.function(_name_get_full, string='Name', size=64, type="char", store=False, select=True),
+# 'name': fields.function(_name_get_full, string='Name', size=64, type="char", store=False, select=True),
+        'name': fields.char('Name', size=64, ),
         'last_name': fields.char('Last Name', size=64, required=True),
         'first_name': fields.char('First Name', size=64),
         'mobile': fields.char('Mobile', size=64),
@@ -96,11 +98,20 @@ class res_partner_address_contact(orm.Model):
             context = {}
         if name:
             ids = self.search(
-                cr, uid, ['|', ('name', operator, name), ('first_name', operator, name)] + args, limit=limit,
+                cr, uid, ['|', ('last_name', operator, name), ('first_name', operator, name)] + args, limit=limit,
                 context=context)
         else:
             ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context=context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if context is None:
+            context = {}
+
+        vals['name'] = vals['last_name']
+
+        res = super(res_partner_address_contact, self).write(cr, uid, ids, vals, context)
+        return res
 
     #def name_get(self, cr, uid, ids, context=None):
     #    result = {}
