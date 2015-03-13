@@ -28,7 +28,7 @@
 ##############################################################################
 {
     'name': 'Human Resources/Sim Card Asset',
-    'version': '3.0.7.0',
+    'version': '3.0.7.1',
     'category': 'Generic Modules/Human Resources',
     'description': """A generic module to manage the employee and mobile asset""",
     "author": "Denero Team @ Didotech.com",

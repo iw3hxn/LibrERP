@@ -422,6 +422,12 @@ msgid "Sim Payment"
 msgstr "Pagamenti Sim"
 
 #. module: hr_sim
+#: model:ir.actions.act_window,name:hr_sim.action_view_sim_payment_form
+#: model:ir.ui.menu,name:hr_sim.menu_sim_payment_view
+msgid "SIM Payment"
+msgstr "Pagamenti Sim"
+
+#. module: hr_sim
 #: sql_constraint:res.sim:0
 msgid "SIM Internal Code must be unique !"
 msgstr "Il CODICE INTERNO deve essere univoco !"
