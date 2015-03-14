@@ -321,6 +321,12 @@ msgstr "CAP"
 msgid "Partner Contact"
 msgstr "Contatto Partner"
 
+#. module: crm_lead_correct
+#: field:crm.lead,contact_id:0
+#: field:sale.order,contact_id:0
+msgid "Contact"
+msgstr "Contatto"
+
 #. module: crm
 #: view:crm.lead:0
 msgid "Sale Order"
