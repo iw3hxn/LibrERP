@@ -108,10 +108,21 @@ class res_partner_address_contact(orm.Model):
         if context is None:
             context = {}
 
-        vals['name'] = vals['last_name']
+        name = ''
+        update = False
 
-        res = super(res_partner_address_contact, self).write(cr, uid, ids, vals, context)
-        return res
+        if vals.get('last_name', False):
+            name += vals['last_name']
+            update = True
+            
+        if vals.get('first_name', False):
+            name += ' ' + vals['first_name']
+            update = True
+
+        if update:
+            vals['name'] = name
+                    
+        return super(res_partner_address_contact, self).write(cr, uid, ids, vals, context)
 
     #def name_get(self, cr, uid, ids, context=None):
     #    result = {}
