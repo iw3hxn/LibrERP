@@ -18,29 +18,43 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools import ustr
-from tools.translate import _
+from openerp.osv import orm, fields
 
 
-class stock_move(osv.osv):
+class stock_move(orm.Model):
     _inherit = "stock.move"
            
     def _get_direction(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
             context = {}
         res = {}
-        for move in self.browse(cr, uid, ids):
-            #import pdb; pdb.set_trace()
-            if move.picking_id:
-                if move.picking_id.type == 'in':
-                    res[move.id] = '+'
-                elif move.picking_id.type == 'out':
-                    res[move.id] = '-'
-                else:
-                    res[move.id] = '='
+        for move in self.browse(cr, uid, ids, context=context):
+            # import pdb; pdb.set_trace()
+
+# ('supplier', 'Supplier Location'), ('view', 'View'), ('internal', 'Internal Location'), ('customer', 'Customer Location'),
+# ('inventory', 'Inventory'), ('procurement', 'Procurement'), ('production', 'Production'),
+# ('transit', 'Transit Location for Inter-Companies Transfers')
+
+            if move.location_id.usage == 'internal' and move.location_dest_id.usage == 'customer':
+                res[move.id] = '-'
+            elif move.location_id.usage in ['supplier', 'customer'] and move.location_dest_id.usage == 'internal':
+                res[move.id] = '+'
+            elif move.location_id.usage in ['internal', 'transit'] and move.location_dest_id.usage in ['internal', 'transit']:
+                res[move.id] = '='
+            elif move.location_id.usage in ['inventory', 'procurement', 'production'] and move.location_dest_id.usage == 'internal':
+                res[move.id] = '<>'
             else:
                 res[move.id] = []
+
+            # if move.picking_id:
+            #     if move.picking_id.type == 'in':
+            #         res[move.id] = '+'
+            #     elif move.picking_id.type == 'out':
+            #         res[move.id] = '-'
+            #     else:
+            #         res[move.id] = '='
+            # else:
+            #     res[move.id] = []
         return res
     
     _columns = {
