@@ -438,8 +438,10 @@ openerp.web_calendar.CalendarView = openerp.web.View.extend({
     get_range_domain: function() {
         var format = openerp.web.date_to_str,
             domain = this.last_search[0].slice(0);
-        domain.unshift([this.date_start, '>=', format(this.range_start.clone().addDays(-6))]);
         domain.unshift([this.date_start, '<=', format(this.range_stop.clone().addDays(6))]);
+        if (this.date_stop) {
+            domain.unshift([this.date_stop, '>=', format(this.range_start.clone().addDays(-6))]);
+        }
         return domain;
     },
     do_show: function () {

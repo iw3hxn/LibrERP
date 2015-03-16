@@ -173,13 +173,15 @@ GanttProjectInfo.prototype.getTaskByIdInTree = function(parentTask, id)
  * @type:  public
  * @topic: 0
  */
-function GanttTaskInfo(id, name, est, duration, percentCompleted, predecessorTaskId)
+function GanttTaskInfo(id, name, est, duration, percentCompleted, assignedTo, predecessorTaskId)
+
 {
     this.Id = id;
     this.Name = name;
     this.EST = est;
     this.Duration = duration;
     this.PercentCompleted = percentCompleted;
+    this.AssignedTo = assignedTo;
     this.PredecessorTaskId = predecessorTaskId;
     this.ChildTasks = [];
     this.ChildPredTasks = [];
@@ -1204,8 +1206,7 @@ GanttProject.prototype.insertTask = function(id, name, EST, Duration, PercentCom
             return false;
         }
 
-        task = new GanttTaskInfo(id, name, EST, Duration, PercentCompleted, predecessorTaskId);
-
+        task = new GanttTaskInfo(id, name, EST, Duration, PercentCompleted, "None", predecessorTaskId);	
         if (!this.Chart.checkPosParentTask(parentTask, task)) {
             this.Chart.Error.throwError("DATA_INSERT_ERROR", 19, [parentTaskId,id]);
             return false;
@@ -1299,7 +1300,7 @@ GanttProject.prototype.insertTask = function(id, name, EST, Duration, PercentCom
 
         EST = EST || this.Project.StartDate;
 
-        task = new GanttTaskInfo(id, name, EST, Duration, PercentCompleted, predecessorTaskId);
+        task = new GanttTaskInfo(id, name, EST, Duration, PercentCompleted, "None", predecessorTaskId);
 
         if (task.EST <= this.Chart.startDate) {
             this.Chart.Error.throwError("DATA_INSERT_ERROR", 18, [task.Id]);
@@ -2228,7 +2229,7 @@ GanttChart.prototype.doLoadDetails = function(isLocal)
             percentCompleted = (this.xmlLoader.doXPath("./percentcompleted", taskArr[i])[0].firstChild == null) ? "" : this.xmlLoader.doXPath("./percentcompleted", taskArr[i])[0].firstChild.nodeValue;
             predecessorTaskId = (this.xmlLoader.doXPath("./predecessortasks", taskArr[i])[0].firstChild == null) ? "" : this.xmlLoader.doXPath("./predecessortasks", taskArr[i])[0].firstChild.nodeValue;
 
-            var task = new GanttTaskInfo(id, name, new Date(est[0], (parseInt(est[1]) - 1), est[2]), duration, percentCompleted, predecessorTaskId);
+            var task = new GanttTaskInfo(id, name, new Date(est[0], (parseInt(est[1]) - 1), est[2]), duration, percentCompleted, "none", predecessorTaskId);            
             var childTasksNode = this.xmlLoader.doXPath("./childtasks", taskArr[i]);
             var childTasksArr = this.xmlLoader.doXPath("./task", childTasksNode[0]);
 
@@ -2267,7 +2268,7 @@ GanttChart.prototype.readChildTasksXML = function(parentTask, childTasksArrXML)
         duration = (this.xmlLoader.doXPath("./duration", childTasksArrXML[i])[0].firstChild == null) ? "" : this.xmlLoader.doXPath("./duration", childTasksArrXML[i])[0].firstChild.nodeValue;
         percentCompleted = (this.xmlLoader.doXPath("./percentcompleted", childTasksArrXML[i])[0].firstChild == null) ? "" : this.xmlLoader.doXPath("./percentcompleted", childTasksArrXML[i])[0].firstChild.nodeValue;
         predecessorTaskId = (this.xmlLoader.doXPath("./predecessortasks", childTasksArrXML[i])[0].firstChild == null) ? "" : this.xmlLoader.doXPath("./predecessortasks", childTasksArrXML[i])[0].firstChild.nodeValue;
-        var task = new GanttTaskInfo(id, name, new Date(est[0], (parseInt(est[1]) - 1), est[2]), duration, percentCompleted, predecessorTaskId);
+        var task = new GanttTaskInfo(id, name, new Date(est[0], (parseInt(est[1]) - 1), est[2]), duration, percentCompleted, "none", predecessorTaskId);
         task.ParentTask = parentTask;
 
         parentTask.addChildTask(task);
@@ -3143,7 +3144,8 @@ GanttTask.prototype.getPopUpInfo = function(object, event)
     // Hidden because currently misleading or unavailable:
     //  tblInfo.rows[0].cells[0].innerHTML += "<span class='st'>Duration:&nbsp;</span><span class='ut'>" + this.TaskInfo.Duration + " hours </span><br/>";
     //  tblInfo.rows[0].cells[0].innerHTML += "<span class='st'>Percent Complete:&nbsp;</span><span class='ut'>" + this.TaskInfo.PercentCompleted + "% </span><br/>";
-
+    tblInfo.rows[0].cells[0].innerHTML += "<span class='st'>Percent Complete:&nbsp;</span><span class='ut'>" + this.TaskInfo.PercentCompleted + "% </span><br/>";
+    tblInfo.rows[0].cells[0].innerHTML += "<span class='st'>Assigned To:&nbsp;</span><span class='ut'>" + this.TaskInfo.AssignedTo + " </span><br/>";
     //show predecessor task
     if (this.predTask)
     {

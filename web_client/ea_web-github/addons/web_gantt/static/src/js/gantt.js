@@ -39,7 +39,7 @@ openerp.web_gantt.GanttView = openerp.web.View.extend({
             n_group_bys = group_bys;
         }
         // gather the fields to get
-        var fields = _.compact(_.map(["date_start", "date_delay", "date_stop"], function(key) {
+        var fields = _.compact(_.map(["date_start", "date_delay", "date_stop", "progress", "assigned_to"], function(key) {
             return self.fields_view.arch.attrs[key] || '';
         }));
         fields = _.uniq(fields.concat(n_group_bys));
@@ -109,7 +109,18 @@ openerp.web_gantt.GanttView = openerp.web.View.extend({
         var task_ids = {};
         // creation of the chart
         var generate_task_info = function(task, plevel) {
+            if (_.isNumber(task[self.fields_view.arch.attrs.progress])) {
+                var percent = task[self.fields_view.arch.attrs.progress] || 0;
+            } else {
+                var percent = 100;
+            } 
             var level = plevel || 0;
+
+            var assigned_to_input = task[self.fields_view.arch.attrs.assigned_to] || "0,None";
+            //alert(assigned_to);
+            var assigned_to = String(assigned_to_input);
+            assigned_to = assigned_to.split(",")[1];
+
             if (task.__is_group) {
                 var task_infos = _.compact(_.map(task.tasks, function(sub_task) {
                     return generate_task_info(sub_task, level + 1);
@@ -131,7 +142,7 @@ openerp.web_gantt.GanttView = openerp.web.View.extend({
                     });
                     return group;
                 } else {
-                    var group = new GanttTaskInfo(_.uniqueId("gantt_project_task_"), group_name, task_start, duration, 100);
+                    var group = new GanttTaskInfo(_.uniqueId("gantt_project_task_"), group_name, task_start, duration || 1, percent, assigned_to)
                     _.each(task_infos, function(el) {
                         group.addChildTask(el.task_info);
                     });
@@ -156,7 +167,7 @@ openerp.web_gantt.GanttView = openerp.web.View.extend({
                 }
                 var duration = (task_stop.getTime() - task_start.getTime()) / (1000 * 60 * 60);
                 var id = _.uniqueId("gantt_task_");
-                var task_info = new GanttTaskInfo(id, task_name, task_start, ((duration / 24) * 8), 100);
+                var task_info = new GanttTaskInfo(id, task_name, task_start, ((duration / 24) * 8) || 1, percent, assigned_to);
                 task_info.internal_task = task;
                 task_ids[id] = task_info;
                 return {task_info: task_info, task_start: task_start, task_stop: task_stop};

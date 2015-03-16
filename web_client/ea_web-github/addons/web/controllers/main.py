@@ -1462,14 +1462,19 @@ class Binary(openerpweb.Controller):
         id = jdata.get('id', None)
         filename_field = jdata.get('filename_field', None)
         context = jdata.get('context', dict())
+        content_type = 'application/octet-stream'
 
-        context = req.session.eval_context(context)
         Model = req.session.model(model)
+        context = req.session.eval_context(context)
         fields = [field]
+        content_type = 'application/octet-stream'
         if filename_field:
             fields.append(filename_field)
         if id:
+            fields.append('file_type')
             res = Model.read([int(id)], fields, context)[0]
+            if res.get('file_type'):
+                content_type = res['file_type']
         else:
             res = Model.default_get(fields, context)
         filecontent = base64.b64decode(res.get(field, ''))
@@ -1481,7 +1486,7 @@ class Binary(openerpweb.Controller):
             if filename_field:
                 filename = res.get(filename_field, '') or filename
             return req.make_response(filecontent,
-                headers=[('Content-Type', 'application/octet-stream'),
+                headers=[('Content-Type', content_type),
                         ('Content-Disposition', self.content_disposition(filename, req))],
                 cookies={'fileToken': int(token)})
 
