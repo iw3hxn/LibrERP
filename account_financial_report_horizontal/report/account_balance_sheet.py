@@ -46,10 +46,14 @@ class report_balancesheet_horizontal(
         self.result = {}
         self.res_bl = {}
         self.result_temp = []
+        self.result_loss = []
+        self.result_profit = []
         self.localcontext.update({
             'time': time,
             'get_lines': self.get_lines,
             'get_lines_another': self.get_lines_another,
+            'get_profit': self.get_profit,
+            'get_loss': self.get_loss,
             'sum_dr': self.sum_dr,
             'sum_cr': self.sum_cr,
             'sum_partial_dr': self.sum_partial_dr,
@@ -273,9 +277,11 @@ class report_balancesheet_horizontal(
         cal_list['liability'] = self.result['liability'] = accounts_l_temp
 
         if pl_dict['code'] == _('Net Loss'):
-            self.result['asset'].append(pl_dict)
+            self.result_loss.append(pl_dict)
+            #self.result['asset'].append(pl_dict)
         else:
-            self.result['liability'].append(pl_dict)
+            self.result_profit.append(pl_dict)
+            #self.result['liability'].append(pl_dict)
 
         if cal_list:
             temp = {}
@@ -334,6 +340,12 @@ class report_balancesheet_horizontal(
 
     def get_lines_another(self, group):
         return self.result.get(group, [])
+
+    def get_profit(self):
+        return self.result_profit
+
+    def get_loss(self):
+        return self.result_loss
 
 report_sxw.report_sxw(
     'report.account.balancesheet.horizontal', 'account.account',

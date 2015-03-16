@@ -25,24 +25,12 @@
     <blockTableStyle id="Table_Account_Line_Title">
       <blockAlignment value="LEFT"/>
       <blockValign value="TOP"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="-1,0"/>
-      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="0,-1" stop="0,-1"/>
       <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,1" stop="-1,-1"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="-1,0"/>
-      <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="-1,0"/>
       <lineStyle kind="LINEAFTER" colorName="#000000" start="2,0" stop="2,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="3,-1" stop="3,-1"/>
     </blockTableStyle>
     <blockTableStyle id="Table_Main_Content">
       <blockAlignment value="LEFT"/>
       <blockValign value="TOP"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="-1,0"/>
-      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="0,-1" stop="0,-1"/>
-      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,1" stop="-1,-1"/>
-      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="1,1" stop="-2,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="1,-1" stop="1,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#000000" start="2,-1" stop="2,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="3,-1" stop="3,-1"/>
     </blockTableStyle>
     <blockTableStyle id="Table_Liability_side">
       <blockAlignment value="LEFT"/>
@@ -51,13 +39,6 @@
     <blockTableStyle id="Table_Asset_Side_Content">
       <blockAlignment value="LEFT"/>
       <blockValign value="TOP"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="-1,0"/>
-      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="0,-1" stop="0,-1"/>
-      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,1" stop="-1,-1"/>
-      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="1,1" stop="-2,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="1,-1" stop="1,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#000000" start="2,-1" stop="2,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="3,-1" stop="3,-1"/>
     </blockTableStyle>
     <blockTableStyle id="Table_Net_Profit_Loss">
       <blockAlignment value="LEFT"/>
@@ -245,27 +226,43 @@
      <blockTable colWidths="290.16,100.32,290.16,100.32" style="Table_Net_Profit_Loss">
       <tr>
         <td>
-          <para style="terp_default_Bold_9">Balance:</para>
+          <para style="terp_default_Bold_9">Total Asset</para>
         </td>
         <td>
           <para style="terp_default_Right_9_Bold"><u>[[ formatLang(sum_partial_cr()) ]] [[ company.currency_id.symbol ]]</u></para>
         </td>
         <td>
-          <para style="terp_default_Bold_9">Balance:</para>
+          <para style="terp_default_Bold_9">Total Liability</para>
         </td>
         <td>
           <para style="terp_default_Right_9_Bold"><u>[[ formatLang(sum_partial_dr()) ]] [[ company.currency_id.symbol ]]</u></para>
         </td>
       </tr>
+
       <tr>
         <td>
-          <para style="terp_default_Bold_9">Balance:</para>
+          <para style="terp_default_Bold_9">[[ get_loss() and get_loss()[0]['code'] or removeParentNode('para') ]] </para>
+        </td>
+        <td>
+          <para style="terp_default_Right_9_Bold"><u>[[ get_loss() and formatLang(get_loss()[0]['balance']) or removeParentNode('para') ]] [[ company.currency_id.symbol ]]</u></para>
+        </td>
+        <td>
+          <para style="terp_default_Bold_9">[[ get_profit() and get_profit()[0]['code'] or removeParentNode('para') ]]</para>
+        </td>
+        <td>
+          <para style="terp_default_Right_9_Bold"><u>[[ get_profit() and formatLang(get_profit()[0]['balance']) or removeParentNode('para') ]] [[ company.currency_id.symbol ]]</u></para>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <para style="terp_default_Bold_9">Total</para>
         </td>
         <td>
           <para style="terp_default_Right_9_Bold"><u>[[ formatLang(sum_cr()) ]] [[ company.currency_id.symbol ]]</u></para>
         </td>
         <td>
-          <para style="terp_default_Bold_9">Balance:</para>
+          <para style="terp_default_Bold_9">Total</para>
         </td>
         <td>
           <para style="terp_default_Right_9_Bold"><u>[[ formatLang(sum_dr()) ]] [[ company.currency_id.symbol ]]</u></para>
