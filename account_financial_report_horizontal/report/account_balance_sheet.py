@@ -52,6 +52,8 @@ class report_balancesheet_horizontal(
             'get_lines_another': self.get_lines_another,
             'sum_dr': self.sum_dr,
             'sum_cr': self.sum_cr,
+            'sum_partial_dr': self.sum_partial_dr,
+            'sum_partial_cr': self.sum_partial_cr,
             'get_data': self.get_data,
             'get_pl_balance': self.get_pl_balance,
             'get_fiscalyear': self._get_fiscalyear,
@@ -80,6 +82,12 @@ class report_balancesheet_horizontal(
         return super(
             report_balancesheet_horizontal, self
         ).set_context(objects, data, new_ids, report_type=report_type)
+
+    def sum_partial_dr(self):
+        return self.result_sum_dr
+
+    def sum_partial_cr(self):
+        return self.result_sum_cr
 
     def sum_dr(self):
         if self.res_bl['type'] == _('Net Profit'):
@@ -145,8 +153,11 @@ class report_balancesheet_horizontal(
             'balance': self.res_bl['balance'],
             'type': self.res_bl['type'],
         }
+        accounts_temp = []
+        accounts_l_temp = []
+        accounts_a_temp = []
         for typ in types:
-            accounts_temp = []
+            
             for account in accounts:
                 if (account.user_type.report_type) and (account.user_type.report_type == typ) and (
                     account.parent_id.code != chart.property_account_receivable.code) and (
@@ -162,10 +173,27 @@ class report_balancesheet_horizontal(
                         'type': account.type,
                     }
                     currency = (account.currency_id and account.currency_id or account.company_id.currency_id)
-                    if typ == 'liability' and account.type != 'view' and (account.debit != account.credit):
-                        self.result_sum_dr += account_dict['balance']
-                    if typ == 'asset' and account.type != 'view' and (account.debit != account.credit):
-                        self.result_sum_cr += account_dict['balance']
+#                     if typ == 'liability' and account.type != 'view' and (account.debit != account.credit):
+#                         self.result_sum_dr += account_dict['balance']
+#                     if typ == 'asset' and account.type != 'view' and (account.debit != account.credit):
+#                         self.result_sum_cr += account_dict['balance']
+
+#sum negative asset as positive in liability and viceversa
+                    if (typ == 'liability' and account_dict['balance'] >= 0.0 or
+                        typ == 'asset' and account_dict['balance'] < 0.0
+                        ) and account.type != 'view' and (account.debit != account.credit):
+                            self.result_sum_dr += (typ == 'liability' and 1 or -1) * account_dict['balance']
+                    if (typ == 'asset' and account_dict['balance'] >= 0.0 or
+                        typ == 'liability' and account_dict['balance'] < 0.0
+                        ) and account.type != 'view' and (account.debit != account.credit):
+                        self.result_sum_cr += (typ == 'asset' and 1 or -1) * account_dict['balance']
+
+#                     #put in asset negative liability and change sign to positive, and viceversa for liability
+#                     if account_dict['type'] == 'asset' and account_dict['balance'] < 0.0:
+#                         account_dict.update({'type': 'liability', 'balance': account_dict['balance'] * -1})
+#                     if account_dict['type'] == 'liability' and account_dict['balance'] < 0.0:
+#                         account_dict.update({'type': 'asset', 'balance': account_dict['balance'] * -1})
+
                     if data['form']['display_account'] == 'bal_movement':
                         if (
                             not currency_pool.is_zero(
@@ -180,15 +208,44 @@ class report_balancesheet_horizontal(
                                     account.balance
                                 )
                         ):
-                            accounts_temp.append(account_dict)
+                            if typ == 'liability' and account_dict['balance'] >= 0.0:
+                                accounts_l_temp.append(account_dict)
+                            if typ == 'asset' and account_dict['balance'] < 0.0:
+                                account_dict.update({'balance': account_dict['balance'] * -1})
+                                accounts_l_temp.append(account_dict)
+                            if typ == 'asset' and account_dict['balance'] >= 0.0:
+                                accounts_a_temp.append(account_dict)
+                            if typ == 'liability' and account_dict['balance'] < 0.0:
+                                account_dict.update({'balance': account_dict['balance'] * -1})
+                                accounts_a_temp.append(account_dict)
                     elif data['form']['display_account'] == 'bal_solde':
                         if not currency_pool.is_zero(
                             self.cr, self.uid, currency, account.balance
-                        ):
-                            accounts_temp.append(account_dict)
+                            ):
+                            #append positive liability or negative asset in liability column
+                            if typ == 'liability' and account_dict['balance'] >= 0.0:
+                                accounts_l_temp.append(account_dict)
+                            if typ == 'asset' and account_dict['balance'] < 0.0:
+                                account_dict.update({'balance': account_dict['balance'] * -1})
+                                accounts_l_temp.append(account_dict)
+                            if typ == 'asset' and account_dict['balance'] >= 0.0:
+                                accounts_a_temp.append(account_dict)
+                            if typ == 'liability' and account_dict['balance'] < 0.0:
+                                account_dict.update({'balance': account_dict['balance'] * -1})
+                                accounts_a_temp.append(account_dict)
                     else:
-                        accounts_temp.append(account_dict)
+                        if typ == 'liability' and account_dict['balance'] >= 0.0:
+                            accounts_l_temp.append(account_dict)
+                        if typ == 'asset' and account_dict['balance'] < 0.0:
+                            account_dict.update({'balance': account_dict['balance'] * -1})
+                            accounts_l_temp.append(account_dict)
+                        if typ == 'asset' and account_dict['balance'] >= 0.0:
+                            accounts_a_temp.append(account_dict)
+                        if typ == 'liability' and account_dict['balance'] < 0.0:
+                            account_dict.update({'balance': account_dict['balance'] * -1})
+                            accounts_a_temp.append(account_dict)
 
+            
             #add supplier and customer total
             if typ == 'liability':
                 account_view_id = account_pool.search(cr, uid, [('code', '=', chart.property_account_payable.code)])
@@ -207,12 +264,13 @@ class report_balancesheet_horizontal(
                 }
             if typ == 'liability':
                 self.result_sum_dr += account_dict['balance']
+                accounts_l_temp.append(account_dict)
             if typ == 'asset':
                 self.result_sum_cr += account_dict['balance']
-            accounts_temp.append(account_dict)
+                accounts_a_temp.append(account_dict)
 
-            self.result[typ] = accounts_temp
-            cal_list[typ] = self.result[typ]
+        cal_list['asset'] = self.result['asset'] = accounts_a_temp
+        cal_list['liability'] = self.result['liability'] = accounts_l_temp
 
         if pl_dict['code'] == _('Net Loss'):
             self.result['asset'].append(pl_dict)
