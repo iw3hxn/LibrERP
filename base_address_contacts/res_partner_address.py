@@ -47,14 +47,13 @@ class res_partner_address_contact(orm.Model):
     _description = "Address Contact"
 
     def name_get(self, cr, uid, ids, context=None):
-    # def _name_get_full(self, cr, uid, ids, prop, unknow_none, context=None):
-        result = {}
+        res = []
         for rec in self.browse(cr, uid, ids, context=context):
             if rec.title:
-                result[rec.id] = rec.title.name + ' ' + rec.last_name + ' ' + (rec.first_name or '')
+                res.append((rec.id, rec.title.name + ' ' + rec.last_name + ' ' + (rec.first_name or '')))
             else:
-                result[rec.id] = rec.last_name + ' ' + (rec.first_name or '')
-        return result
+                res.append((rec.id, rec.last_name + ' ' + (rec.first_name or '')))
+        return res
 
     _columns = {
 # 'name': fields.function(_name_get_full, string='Name', size=64, type="char", store=False, select=True),
@@ -84,12 +83,13 @@ class res_partner_address_contact(orm.Model):
         return open(photo_path, 'rb').read().encode('base64')
 
     _defaults = {
+        'name': '/',
         'photo': _get_photo,
         'active': True,
         'address_id': lambda self, cr, uid, context: context.get('address_id', False),
     }
 
-    _order = "name"
+    _order = "last_name"
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=None):
         if not args:
@@ -103,6 +103,28 @@ class res_partner_address_contact(orm.Model):
         else:
             ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context=context)
+
+
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
+        #import pdb; pdb.set_trace()
+        name = ''
+        update = False
+
+        if vals.get('last_name', False):
+            name += vals['last_name']
+            update = True
+
+        if vals.get('first_name', False):
+            name += ' ' + vals['first_name']
+            update = True
+
+        if update:
+            vals['name'] = name
+
+        return super(res_partner_address_contact, self).create(cr, uid, vals, context=context)
+
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
@@ -124,7 +146,7 @@ class res_partner_address_contact(orm.Model):
                     
         return super(res_partner_address_contact, self).write(cr, uid, ids, vals, context)
 
-    #def name_get(self, cr, uid, ids, context=None):
+    # def name_get(self, cr, uid, ids, context=None):
     #    result = {}
     #    for obj in self.browse(cr, uid, ids, context=context):
     #        result[obj.id] = obj.name or '/'
