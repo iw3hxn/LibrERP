@@ -895,7 +895,7 @@
             <field name="name">stock.product.to.asset.tree</field>
             <field name="model">stock.move</field>
             <field name="type">tree</field>
-            <field name="priority" eval="6" />
+            <field name="priority" eval="60" />
             <field name="arch" type="xml">
                 <tree string="Moves" editable="top">
                     <field name="product_id" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)"/>
