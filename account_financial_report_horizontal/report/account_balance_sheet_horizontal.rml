@@ -25,6 +25,7 @@
     <blockTableStyle id="Table_Account_Line_Title">
       <blockAlignment value="LEFT"/>
       <blockValign value="TOP"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,0" stop="-1,0"/>
       <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,1" stop="-1,-1"/>
       <lineStyle kind="LINEAFTER" colorName="#000000" start="2,0" stop="2,-1"/>
     </blockTableStyle>

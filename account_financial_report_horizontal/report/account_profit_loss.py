@@ -44,6 +44,8 @@ class report_pl_account_horizontal(report_sxw.rml_parse, common_report_header):
             'get_data': self.get_data,
             'sum_dr': self.sum_dr,
             'sum_cr': self.sum_cr,
+            'sum_partial_dr': self.sum_partial_dr,
+            'sum_partial_cr': self.sum_partial_cr,
             'final_result': self.final_result,
             'get_fiscalyear': self._get_fiscalyear,
             'get_account': self._get_account,
@@ -74,6 +76,12 @@ class report_pl_account_horizontal(report_sxw.rml_parse, common_report_header):
 
     def final_result(self):
         return self.res_pl
+
+    def sum_partial_dr(self):
+        return self.result_sum_dr
+
+    def sum_partial_cr(self):
+        return self.result_sum_cr
 
     def sum_dr(self):
         if self.res_pl['type'] == _('Net Profit'):

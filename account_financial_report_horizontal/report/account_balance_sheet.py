@@ -161,7 +161,6 @@ class report_balancesheet_horizontal(
         accounts_l_temp = []
         accounts_a_temp = []
         for typ in types:
-            
             for account in accounts:
                 if (account.user_type.report_type) and (account.user_type.report_type == typ) and (
                     account.parent_id.code != chart.property_account_receivable.code) and (
@@ -177,12 +176,8 @@ class report_balancesheet_horizontal(
                         'type': account.type,
                     }
                     currency = (account.currency_id and account.currency_id or account.company_id.currency_id)
-#                     if typ == 'liability' and account.type != 'view' and (account.debit != account.credit):
-#                         self.result_sum_dr += account_dict['balance']
-#                     if typ == 'asset' and account.type != 'view' and (account.debit != account.credit):
-#                         self.result_sum_cr += account_dict['balance']
 
-#sum negative asset as positive in liability and viceversa
+                    #sum negative asset as positive in liability and viceversa
                     if (typ == 'liability' and account_dict['balance'] >= 0.0 or
                         typ == 'asset' and account_dict['balance'] < 0.0
                         ) and account.type != 'view' and (account.debit != account.credit):
@@ -191,12 +186,6 @@ class report_balancesheet_horizontal(
                         typ == 'liability' and account_dict['balance'] < 0.0
                         ) and account.type != 'view' and (account.debit != account.credit):
                         self.result_sum_cr += (typ == 'asset' and 1 or -1) * account_dict['balance']
-
-#                     #put in asset negative liability and change sign to positive, and viceversa for liability
-#                     if account_dict['type'] == 'asset' and account_dict['balance'] < 0.0:
-#                         account_dict.update({'type': 'liability', 'balance': account_dict['balance'] * -1})
-#                     if account_dict['type'] == 'liability' and account_dict['balance'] < 0.0:
-#                         account_dict.update({'type': 'asset', 'balance': account_dict['balance'] * -1})
 
                     if data['form']['display_account'] == 'bal_movement':
                         if (
@@ -277,10 +266,8 @@ class report_balancesheet_horizontal(
 
         if pl_dict['code'] == _('Net Loss'):
             self.result_loss.append(pl_dict)
-            #self.result['asset'].append(pl_dict)
         else:
             self.result_profit.append(pl_dict)
-            #self.result['liability'].append(pl_dict)
 
         if cal_list:
             temp = {}

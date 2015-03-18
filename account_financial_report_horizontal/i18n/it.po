@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-18 00:05+0000\n"
-"PO-Revision-Date: 2015-03-18 00:05+0000\n"
+"POT-Creation-Date: 2015-03-18 22:52+0000\n"
+"PO-Revision-Date: 2015-03-18 22:52+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -100,7 +100,7 @@ msgstr "Stato Patrimoniale"
 #. module: account_financial_report_horizontal
 #: model:ir.actions.act_window,name:account_financial_report_horizontal.action_account_common_menu
 msgid "Common Report"
-msgstr "Common Report"
+msgstr "Report Comuni"
 
 #. module: account_financial_report_horizontal
 #: code:addons/account_financial_report_horizontal/report/common_report_header.py:76
@@ -200,6 +200,11 @@ msgid "Total:"
 msgstr "Totale:"
 
 #. module: account_financial_report_horizontal
+#: report:account.profit_horizontal:0
+msgid "Total Revenue"
+msgstr "Totale Ricavi"
+
+#. module: account_financial_report_horizontal
 #: selection:account.bs.report,target_move:0
 #: selection:account.pl.report,target_move:0
 #: selection:account_financial_report_horizontal.common.account.report,target_move:0
@@ -251,8 +256,8 @@ msgstr "Anno Fiscale"
 #: code:addons/account_financial_report_horizontal/report/account_balance_sheet.py:146
 #: code:addons/account_financial_report_horizontal/report/account_balance_sheet.py:149
 #: code:addons/account_financial_report_horizontal/report/account_balance_sheet.py:150
-#: code:addons/account_financial_report_horizontal/report/account_profit_loss.py:79
-#: code:addons/account_financial_report_horizontal/report/account_profit_loss.py:174
+#: code:addons/account_financial_report_horizontal/report/account_profit_loss.py:89
+#: code:addons/account_financial_report_horizontal/report/account_profit_loss.py:184
 #, python-format
 msgid "Net Profit"
 msgstr "Utile"
@@ -268,7 +273,7 @@ msgstr "Nessun Filtro"
 #. module: account_financial_report_horizontal
 #: model:ir.model,name:account_financial_report_horizontal.model_account_financial_report_horizontal_common_report
 msgid "Account Common Report"
-msgstr "Account Common Report"
+msgstr "Report Comuni Contabili"
 
 #. module: account_financial_report_horizontal
 #: code:addons/account_financial_report_horizontal/wizard/account_report_common.py:180
@@ -328,12 +333,17 @@ msgstr "Codice"
 #. module: account_financial_report_horizontal
 #: model:ir.model,name:account_financial_report_horizontal.model_account_financial_report_horizontal_common_account_report
 msgid "Account Common Account Report"
-msgstr "Account Common Account Report"
+msgstr "Report Comuni Contabilità "
 
 #. module: account_financial_report_horizontal
 #: report:account.balancesheet.horizontal:0
 msgid "Total Liability"
 msgstr "Totale Passività"
+
+#. module: account_financial_report_horizontal
+#: report:account.profit_horizontal:0
+msgid "Total Expense"
+msgstr "Totale Costi"
 
 #. module: account_financial_report_horizontal
 #: model:ir.model,name:account_financial_report_horizontal.model_account_bs_report
@@ -382,9 +392,9 @@ msgstr "Annulla"
 #. module: account_financial_report_horizontal
 #: code:addons/account_financial_report_horizontal/report/account_balance_sheet.py:102
 #: code:addons/account_financial_report_horizontal/report/account_balance_sheet.py:152
-#: code:addons/account_financial_report_horizontal/report/account_balance_sheet.py:278
-#: code:addons/account_financial_report_horizontal/report/account_profit_loss.py:84
-#: code:addons/account_financial_report_horizontal/report/account_profit_loss.py:170
+#: code:addons/account_financial_report_horizontal/report/account_balance_sheet.py:267
+#: code:addons/account_financial_report_horizontal/report/account_profit_loss.py:94
+#: code:addons/account_financial_report_horizontal/report/account_profit_loss.py:180
 #, python-format
 msgid "Net Loss"
 msgstr "Perdita"
