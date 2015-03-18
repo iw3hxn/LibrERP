@@ -1,6 +1,9 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "access_template_task","template.task","model_template_task",,1,1,1,1
 "create_project","project.project","project.model_project_project","base.group_sale_salesman",1,1,1,0
+"unlink_project","project.project","project.model_project_project","base.group_sale_salesman",1,1,1,1
 "create_task","project.task","project.model_project_task","base.group_sale_salesman",1,1,1,0
+"unlink_task","project.task","project.model_project_task","base.group_sale_salesman",1,1,1,1
 "create_task_type","project.task.type","project.model_project_task_type","base.group_sale_salesman",1,1,1,0
 "access_account_analytic_line","warehous_user","account.model_account_analytic_line","stock.group_stock_user",1,1,1,1
+"access_account_analytic_line","sale_user","account.model_account_analytic_line","base.group_sale_salesman",1,1,1,1

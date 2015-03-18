@@ -87,8 +87,8 @@ class sale_order(orm.Model):
                         unlink_project = False
 
                 analytic_account_line_ids = analytic_account_line_obj.search(cr, uid, [('account_id', '=', order.project_project.analytic_account_id.id)])
-
-                if unlink_project and not analytic_account_line_ids:
+                sale_order_ids = self.search(cr, uid, [('project_project', '=', order.project_project.id)])
+                if unlink_project and not analytic_account_line_ids and len(sale_order_ids) > 1:
                     analytic_account_id = order.project_project.analytic_account_id.id
                     project_obj.unlink(cr, uid, [order.project_project.id], context=context)
                     analytic_account_obj.unlink(cr, uid, [analytic_account_id], context=context)
@@ -101,9 +101,7 @@ class sale_order(orm.Model):
         result = super(sale_order, self).action_cancel_draft(cr, uid, ids, context)
         orders = self.browse(cr, uid, ids, context=context)
         for order in orders:
-
             shop = self.pool['sale.shop'].browse(cr, uid, [order.shop_id.id], context=context)[0]
-
             if (not order.project_project) and (not order.project_id) and shop and shop.project_required and (not order.project_project or not context.get('versioning', False)):
                 if order.order_policy == 'picking':
                     invoice_ratio = 1
