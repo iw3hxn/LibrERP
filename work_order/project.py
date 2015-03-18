@@ -38,18 +38,20 @@ class project_project(orm.Model):
             self.pool['project.project'].write(cr, uid, project_id, {'partner_id': context['partner_id']})
 
         if context.get('model', False) == 'sale.order':
-            user = self.pool['res.users'].browse(cr, uid, uid)
+            user = self.pool['res.users'].browse(cr, uid, uid, context=context)
             name_prefix = context.get('name', vals.get('name', ''))
             if user.company_id.work_order_default_task_ids:
                 task_obj = self.pool['project.task']
                 for task in user.company_id.work_order_default_task_ids:
-                    task_obj.create(cr, uid, {
+                    vals = {
                         'name': u"{0}: {1}".format(name_prefix, task.name),
                         'project_id': project_id,
                         'planned_hours': task.planned_hours,
-                        'remaining_hours': task.planned_hours
-                    })
-                self.pool['project.project'].write(cr, uid, project_id, {'state' : 'open'})
+                        'remaining_hours': task.planned_hours,
+                        'user_id': task.user_id and task.user_id.id or False,
+                    }
+                    task_obj.create(cr, uid, vals, context=context)
+                self.pool['project.project'].write(cr, uid, project_id, {'state': 'open'}, context=context)
         return project_id
 
 

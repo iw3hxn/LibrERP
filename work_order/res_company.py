@@ -34,10 +34,12 @@ class res_company(orm.Model):
         'work_order_default_task_ids': fields.one2many('template.task', 'company_id', string='Default Work Order Tasks'),
         'hour': fields.many2one('product.uom', 'Hour UoM', required=True),
         'create_task': fields.boolean('Create Task from Sale Order?'),
+        'task_no_user': fields.boolean('Task without default user', help='If set the task will not have a user, so will be visible to all')
     }
     
     _defaults = {
-        'create_task': True
+        'create_task': True,
+        'task_no_user': True,
     }
 
 
@@ -47,5 +49,6 @@ class template_task(orm.Model):
     _columns = {
         'name': fields.char('Task Summary', size=128, required=True, select=True),
         'planned_hours': fields.float('Planned Hours', help='Estimated time to do the task, usually set by the project manager when the task is in draft state.'),
-        'company_id': fields.many2one('res.company', 'Company', required=True)
+        'company_id': fields.many2one('res.company', 'Company', required=True),
+        'user_id': fields.many2one('res.users', 'Task owner User')
     }

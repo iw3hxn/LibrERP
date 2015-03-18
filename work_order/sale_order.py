@@ -22,14 +22,14 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import orm, fields
 from tools.translate import _
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-class sale_order(osv.osv):
+class sale_order(orm.Model):
     _inherit = 'sale.order'
     
     def _read_project(self, cr, uid, ids, field_name, args, context):
@@ -69,6 +69,62 @@ class sale_order(osv.osv):
         'project_project': fields.function(_read_project, obj='project.project', fnct_inv=_write_project, string=_('Project'), method=True, type='many2one'),
     }
 
+    def action_cancel(self, cr, uid, ids, context=None):
+        result = super(sale_order, self).action_cancel(cr, uid, ids, context)
+        orders = self.browse(cr, uid, ids, context=context)
+        for order in orders:
+            if order.project_project:
+                project_obj = self.pool['project.project']
+                task_obj = self.pool['project.task']
+                analytic_account_obj = self.pool['account.analytic.account']
+                analytic_account_line_obj = self.pool['account.analytic.line']
+                unlink_project = True
+                for task in order.project_project.tasks:
+                    if not task.work_ids:
+                        task_obj.unlink(cr, uid, [task.id], context=context)
+                    else:
+                        task_obj.action_close(cr, uid, [task.id], context=context)
+                        unlink_project = False
+
+                analytic_account_line_ids = analytic_account_line_obj.search(cr, uid, [('account_id', '=', order.project_project.analytic_account_id.id)])
+
+                if unlink_project and not analytic_account_line_ids:
+                    analytic_account_id = order.project_project.analytic_account_id.id
+                    project_obj.unlink(cr, uid, [order.project_project.id], context=context)
+                    analytic_account_obj.unlink(cr, uid, [analytic_account_id], context=context)
+                else:
+                    project_obj.set_done(cr, uid, [order.project_project.id], context=context)
+
+        return result
+
+    def action_cancel_draft(self, cr, uid, ids, context=None):
+        result = super(sale_order, self).action_cancel_draft(cr, uid, ids, context)
+        orders = self.browse(cr, uid, ids, context=context)
+        for order in orders:
+
+            shop = self.pool['sale.shop'].browse(cr, uid, [order.shop_id.id], context=context)[0]
+
+            if (not order.project_project) and (not order.project_id) and shop and shop.project_required and (not order.project_project or not context.get('versioning', False)):
+                if order.order_policy == 'picking':
+                    invoice_ratio = 1
+                else:
+                    invoice_ratio = 3
+                value = {
+                    'name': order.name,
+                    'partner_id': order.partner_id and order.partner_id.id or False,
+                    'to_invoice': invoice_ratio,
+                    'state': 'pending',
+                }
+                # i use this mode because if there are no project_id on shop use default value
+                if shop.project_id:
+                    value['parent_id'] = shop.project_id.id
+
+                project_id = self.pool['project.project'].create(cr, uid, value, context={
+                    'model': 'sale.order',
+                })
+                self.write(cr, uid, [order.id], {'project_project': project_id}, context=context)
+        return result
+
     def action_wait(self, cr, uid, ids, context=None):
         result = super(sale_order, self).action_wait(cr, uid, ids, context)
         
@@ -86,8 +142,9 @@ class sale_order(osv.osv):
                     invoice_ratio = 3
                 self.pool['project.project'].write(cr, uid, project_id, {'to_invoice' : invoice_ratio, 'state' : 'open'})
                 for order_line in order.order_line:
+                    task_vals = False
                     if order_line.product_id and order_line.product_id.is_kit:
-                        #test id module sale_bom is installad
+                        # test id module sale_bom is installad
                         if sale_line_bom_obj:
                             service_boms = [sale_line_bom for sale_line_bom in order_line.mrp_bom if (sale_line_bom.product_id.type == 'service' and sale_line_bom.product_id.purchase_ok == False)]
                             for bom in service_boms:
@@ -95,13 +152,13 @@ class sale_order(osv.osv):
                                     planned_hours = bom.product_uom_qty
                                 else:
                                     planned_hours = 0
-                                self.pool['project.task'].create(cr, uid, {
+                                task_vals = {
                                     'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
                                     'project_id': project_id,
                                     'planned_hours': planned_hours,
                                     'remaining_hours': planned_hours,
                                     'origin': 'sale.order.line, {0}'.format(order_line.id)
-                                })
+                                }
                         else:
                             main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)], context=context)
                             if main_bom_ids:
@@ -116,27 +173,30 @@ class sale_order(osv.osv):
                                         planned_hours = bom.product_qty
                                     else:
                                         planned_hours = 0
-                                    self.pool['project.task'].create(cr, uid, {
+                                    task_vals = {
                                         'name': u"{0}: {1}".format(order.project_project.name, bom.product_id.name),
                                         'project_id': project_id,
                                         'planned_hours': planned_hours,
                                         'remaining_hours': planned_hours,
                                         'origin': 'sale.order.line, {0}'.format(order_line.id)
-                                    }, context=context)
+                                    }
                             
                     elif order_line.product_id and order_line.product_id.type == 'service' and order_line.product_id.purchase_ok == False:
                         if order_line.product_id.uom_id.id == user.company_id.hour.id:
                             planned_hours = order_line.product_uom_qty
                         else:
                             planned_hours = 0
-                        self.pool['project.task'].create(cr, uid, {
+                        task_vals = {
                             'name': u"{0}: {1}".format(order.name, order_line.product_id.name),
                             'project_id': project_id,
                             'planned_hours': planned_hours,
                             'remaining_hours': planned_hours,
                             'origin': 'sale.order.line, {0}'.format(order_line.id)
-                        }, context=context)
- 
+                        }
+                    if task_vals:
+                        if order.company_id.task_no_user:
+                            task_vals['user_id'] = False
+                        self.pool['project.task'].create(cr, uid, task_vals, context=context)
         return result
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -174,7 +234,7 @@ class sale_order(osv.osv):
         return order_id
 
 
-class sale_shop(osv.osv):
+class sale_shop(orm.Model):
     _inherit = 'sale.shop'
     
     _columns = {
