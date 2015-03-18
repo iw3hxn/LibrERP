@@ -214,12 +214,12 @@ class report_balancesheet_horizontal(
                         ):
                             if typ == 'liability' and account_dict['balance'] >= 0.0:
                                 accounts_l_temp.append(account_dict)
-                            if typ == 'asset' and account_dict['balance'] < 0.0:
+                            elif typ == 'asset' and account_dict['balance'] >= 0.0:
+                                accounts_a_temp.append(account_dict)
+                            elif typ == 'asset' and account_dict['balance'] < 0.0:
                                 account_dict.update({'balance': account_dict['balance'] * -1})
                                 accounts_l_temp.append(account_dict)
-                            if typ == 'asset' and account_dict['balance'] >= 0.0:
-                                accounts_a_temp.append(account_dict)
-                            if typ == 'liability' and account_dict['balance'] < 0.0:
+                            elif typ == 'liability' and account_dict['balance'] < 0.0:
                                 account_dict.update({'balance': account_dict['balance'] * -1})
                                 accounts_a_temp.append(account_dict)
                     elif data['form']['display_account'] == 'bal_solde':
@@ -229,26 +229,25 @@ class report_balancesheet_horizontal(
                             #append positive liability or negative asset in liability column
                             if typ == 'liability' and account_dict['balance'] >= 0.0:
                                 accounts_l_temp.append(account_dict)
-                            if typ == 'asset' and account_dict['balance'] < 0.0:
+                            elif typ == 'asset' and account_dict['balance'] >= 0.0:
+                                accounts_a_temp.append(account_dict)
+                            elif typ == 'asset' and account_dict['balance'] < 0.0:
                                 account_dict.update({'balance': account_dict['balance'] * -1})
                                 accounts_l_temp.append(account_dict)
-                            if typ == 'asset' and account_dict['balance'] >= 0.0:
-                                accounts_a_temp.append(account_dict)
-                            if typ == 'liability' and account_dict['balance'] < 0.0:
+                            elif typ == 'liability' and account_dict['balance'] < 0.0:
                                 account_dict.update({'balance': account_dict['balance'] * -1})
                                 accounts_a_temp.append(account_dict)
                     else:
-                        if typ == 'liability' and account_dict['balance'] >= 0.0:
-                            accounts_l_temp.append(account_dict)
-                        if typ == 'asset' and account_dict['balance'] < 0.0:
-                            account_dict.update({'balance': account_dict['balance'] * -1})
-                            accounts_l_temp.append(account_dict)
-                        if typ == 'asset' and account_dict['balance'] >= 0.0:
-                            accounts_a_temp.append(account_dict)
-                        if typ == 'liability' and account_dict['balance'] < 0.0:
-                            account_dict.update({'balance': account_dict['balance'] * -1})
-                            accounts_a_temp.append(account_dict)
-
+                            if typ == 'liability' and account_dict['balance'] >= 0.0:
+                                accounts_l_temp.append(account_dict)
+                            elif typ == 'asset' and account_dict['balance'] >= 0.0:
+                                accounts_a_temp.append(account_dict)
+                            elif typ == 'asset' and account_dict['balance'] < 0.0:
+                                account_dict.update({'balance': account_dict['balance'] * -1})
+                                accounts_l_temp.append(account_dict)
+                            elif typ == 'liability' and account_dict['balance'] < 0.0:
+                                account_dict.update({'balance': account_dict['balance'] * -1})
+                                accounts_a_temp.append(account_dict)
             
             #add supplier and customer total
             if typ == 'liability':
