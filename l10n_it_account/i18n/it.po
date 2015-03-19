@@ -22,6 +22,11 @@ msgstr ""
 msgid "last month"
 msgstr "mese scorso"
 
+#. module: l10n_it_account
+#: field:res.company,disable_voucher_onchange_amount:0
+msgid "Disable Automatic Reconciliation in Voucher"
+msgstr "Disabilita la Riconcigliazione automativa nei Voucher"
+
 #. module: account
 #: model:process.transition,name:account.process_transition_supplierreconcilepaid0
 msgid "System payment"

@@ -46,3 +46,8 @@ msgstr "Duplicazione del partner non è permessa"
 #: model:ir.model,name:partner_subaccount.model_res_partner
 msgid "Partner"
 msgstr "Partner"
+
+#. module: partner_subaccount
+#: field:res.company,enable_partner_subaccount:0
+msgid "Enable Partner Subaccount"
+msgstr "Abilita i sottoconti per ogni cliente"
