@@ -45,7 +45,8 @@ class res_company(orm.Model):
 
 class template_task(orm.Model):
     _name = 'template.task'
-    
+    _description = "Task Template"
+
     _columns = {
         'name': fields.char('Task Summary', size=128, required=True, select=True),
         'planned_hours': fields.float('Planned Hours', help='Estimated time to do the task, usually set by the project manager when the task is in draft state.'),
