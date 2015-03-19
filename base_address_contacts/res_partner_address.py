@@ -55,8 +55,17 @@ class res_partner_address_contact(orm.Model):
                 res.append((rec.id, rec.last_name + ' ' + (rec.first_name or '')))
         return res
 
+    def _name_get_full(self, cr, uid, ids, prop, unknow_none, context=None):
+        result = {}
+        for rec in self.browse(cr, uid, ids, context=context):
+            if rec.title:
+                result[rec.id] = rec.title.name + '  ' + rec.last_name + ' ' + (rec.first_name or '')
+            else:
+                result[rec.id] = rec.last_name + ' ' + (rec.first_name or '')
+        return result
+
     _columns = {
-# 'name': fields.function(_name_get_full, string='Name', size=64, type="char", store=False, select=True),
+        'complete_name': fields.function(_name_get_full, string='Name', size=64, type="char", store=False, select=True),
         'name': fields.char('Name', size=64, ),
         'last_name': fields.char('Last Name', size=64, required=True),
         'first_name': fields.char('First Name', size=64),
@@ -108,7 +117,6 @@ class res_partner_address_contact(orm.Model):
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = {}
-        #import pdb; pdb.set_trace()
         name = ''
         update = False
 
@@ -124,7 +132,6 @@ class res_partner_address_contact(orm.Model):
             vals['name'] = name
 
         return super(res_partner_address_contact, self).create(cr, uid, vals, context=context)
-
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
@@ -145,14 +152,6 @@ class res_partner_address_contact(orm.Model):
             vals['name'] = name
                     
         return super(res_partner_address_contact, self).write(cr, uid, ids, vals, context)
-
-    # def name_get(self, cr, uid, ids, context=None):
-    #    result = {}
-    #    for obj in self.browse(cr, uid, ids, context=context):
-    #        result[obj.id] = obj.name or '/'
-    #        if obj.partner_id:
-    #            result[obj.id] = result[obj.id] + ', ' + obj.partner_id.name
-    #    return result.items()
 
 
 class res_partner_address(orm.Model):
