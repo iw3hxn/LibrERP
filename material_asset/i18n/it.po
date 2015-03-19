@@ -839,7 +839,7 @@ msgstr "Prodotto"
 #: code:addons/material_asset/asset.py:1045
 #, python-format
 msgid "An asset with Inventory code: {0} was created"
-msgstr "Un asset con codice inventario: {0} è stata create"
+msgstr "Un asset con codice inventario: {0} è stata creato"
 
 #. module: material_asset
 #: view:asset.property:0
