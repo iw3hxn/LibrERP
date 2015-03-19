@@ -138,7 +138,10 @@ class sale_order(orm.Model):
                     invoice_ratio = 1
                 else:
                     invoice_ratio = 3
-                self.pool['project.project'].write(cr, uid, project_id, {'to_invoice' : invoice_ratio, 'state' : 'open'})
+                project_name = order.project_project.name
+                if order.client_order_ref:
+                    project_name = project_name + ' - ' + order.client_order_ref
+                self.pool['project.project'].write(cr, uid, project_id, {'to_invoice': invoice_ratio, 'state': 'open', 'name': project_name}, context=context)
                 for order_line in order.order_line:
                     task_vals = False
                     if order_line.product_id and order_line.product_id.is_kit:
