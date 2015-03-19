@@ -21,7 +21,7 @@
 
 {
     'name': 'Product Filter Availability',
-    'version': '3.1.2.1',
+    'version': '3.1.2.2',
     'category': 'Manufacturing',
     'description': """
         This filter adds buttons, that shows records that have Virtually Available Quantity > 0
