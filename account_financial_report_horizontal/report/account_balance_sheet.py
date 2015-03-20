@@ -243,7 +243,7 @@ class report_balancesheet_horizontal(
                 account_view_id = account_pool.search(cr, uid, [('code', '=', chart.property_account_payable.code)])
             if typ == 'asset':
                 account_view_id = account_pool.search(cr, uid, [('code', '=', chart.property_account_receivable.code)])
-            account_view = account_pool.browse(cr, uid, account_view_id[0])
+            account_view = account_pool.browse(cr, uid, account_view_id[0], context=ctx)
             account_dict = {
                     'id': account_view.id,
                     'code': account_view.code,
