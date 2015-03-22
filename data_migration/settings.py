@@ -82,7 +82,6 @@ class FormatOne():
     PARTNER_SEARCH = ('name', 'vat')
 
     REQUIRED_PRODUCT = ['ean13', 'name']
-
     HEADER_PRODUCT = ('Codice', 'Descrizione', 'UMC', 'UMT', 'PesoN', 'CostoStd', 'CostoUltimo')
     COLUMNS_PRODUCT = "default_code, name, uom0, uom2, weight_net, standard_price, last_standard_price"
     PRODUCT_SEARCH = ['default_code', 'name']
@@ -99,6 +98,11 @@ class FormatOne():
         'procure_method': 'make_to_stock',
         'cost_method': 'standard',
     }
+
+    HEADER_PICKING = ('RtbTipdoc', 'RtbNumbol', 'RtbDatbol', 'RboCodart', 'RboUnimis', 'RboQuanti')
+    COLUMNS_PICKING = "doc, origin, date, product, product_uom, qty"
+    REQUIRED_PICKING = ['doc', 'origin', 'date', 'product', 'product_uom', 'qty']
+
 
 class FormatTwo():
     # IB.
@@ -170,7 +174,7 @@ class FormatFour():
         'uom': 'PCE',
         #'type': 'consu',
         'type': 'product',
-        'procure_method': 'make_to_stock',
+        'procure_method': 'make_to_order',
         'cost_method': 'standard',
         'sale_ok': True
     }
