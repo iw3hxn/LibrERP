@@ -78,19 +78,21 @@ class account_payment_term(orm.Model):
             ' delayed.'),
     }
     
-    def compute(self, cr, uid, id, value, value_tax=False, date_ref=False, context=None):
+    def compute(self, cr, uid, id, value, date_ref=False, context=None):
         '''Function overwritten for check also month values and 2 months with no payments
         allowed for the partner.'''
         result = []
+        context = context or {}
         if not date_ref:
             date_ref = datetime.now().strftime('%Y-%m-%d')
         pt = self.browse(cr, uid, id, context=context)
         amount = value
+        amount_tax = context.get('amount_tax', 0.0)
         obj_precision = self.pool['decimal.precision']
         prec = obj_precision.precision_get(cr, uid, 'Account')
         for line in pt.line_ids:
             if line.value == 'tax':
-                amt = round(line.value_amount * value_tax, prec)
+                amt = round(line.value_amount * amount_tax, prec)
                 value -= amt
             elif line.value == 'fixed':
                 amt = round(line.value_amount, prec)
