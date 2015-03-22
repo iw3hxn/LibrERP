@@ -1,0 +1,98 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# * base_action_rule_triggers
+# Marius Marolla <marius.marolla@didotech.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-26 12:40+0000\n"
+"PO-Revision-Date: 2014-08-22 15:23+0200\n"
+"Last-Translator: Marius Marolla <marius.marolla@didotech.com>\n"
+"Language-Team: Didotech Srl\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#. module: base_action_rule_triggers
+#: help:base.action.rule,email_template_force:0
+msgid ""
+"If not checked, it will be sent the next time the e-mail scheduler runs."
+msgstr ""
+"Se non confermato, verrà inviato con la prossima esecuzione dell'utilità di "
+"pianificazione dell'e-mail."
+
+#. module: base_action_rule_triggers
+#: sql_constraint:res.users:0
+msgid "You can not have two users with the same login !"
+msgstr "Non si possono avere due utenti con lo stesso login!"
+
+#. module: base_action_rule_triggers
+#: model:ir.model,name:base_action_rule_triggers.model_base_action_rule
+msgid "Action Rules"
+msgstr "Regole azioni"
+
+#. module: base_action_rule_triggers
+#: constraint:base.action.rule:0
+msgid "Error: The mail is not well formated"
+msgstr "Errore: La mail non è formattata correttamente"
+
+#. module: base_action_rule_triggers
+#: field:base.action.rule,email_template_force:0
+msgid "Send immediately"
+msgstr "Invio immediato"
+
+#. module: base_action_rule_triggers
+#: field:base.action.rule,trg_evalexpr_dbg:0
+msgid "Debug Evaluated expression"
+msgstr "Debug espressione"
+
+#. module: base_action_rule_triggers
+#: field:base.action.rule,email_template_id:0
+msgid "E-mail template"
+msgstr "Modello di email"
+
+#. module: base_action_rule_triggers
+#: help:base.action.rule,trg_evalexpr:0
+msgid ""
+"Python expression, able to use a \"new\" and \"old\" dictionaries, with the "
+"changed columns."
+msgstr ""
+"Espressione di Python, in grado di utilizzare un dizionario \"nuovo\" o "
+"\"vecchio\", con le colonne modificate."
+
+#. module: base_action_rule_triggers
+#: constraint:base.action.rule:0
+msgid "Error: Your evaluated expression is not valid!"
+msgstr "Errore: L'espressione non è valida!"
+
+#. module: base_action_rule_triggers
+#: help:base.action.rule,trg_evalexpr_dbg:0
+msgid ""
+"Write detailed information to log, to help debugging trigger expressions."
+msgstr ""
+"Scrive informazioni dettagliate nel log per agevolare il debug delle "
+"espressioni."
+
+#. module: base_action_rule_triggers
+#: model:ir.model,name:base_action_rule_triggers.model_res_users
+msgid "res.users"
+msgstr "res.Users"
+
+#. module: base_action_rule_triggers
+#: constraint:res.users:0
+msgid "The chosen company is not in the allowed companies for this user"
+msgstr "L'azienda selezionata non è tra quelle consentite per questo utente"
+
+#. module: base_action_rule_triggers
+#: view:base.action.rule:0 field:base.action.rule,trg_evalexpr:0
+msgid "Evaluated expression"
+msgstr "Espressione"
+
+#. module: base_action_rule_triggers
+#: view:base.action.rule:0
+msgid "E-mail template for message to send"
+msgstr "Modello di email per il messaggio da inviare"
