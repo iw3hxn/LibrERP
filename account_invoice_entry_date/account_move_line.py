@@ -35,8 +35,6 @@ class account_move_line(orm.Model):
                 res[line.id] = line.currency_id and line.currency_id.symbol or line.company_id and line.company_id.currency_id.symbol
             if 'maturity_debit' in field_names:
                 res[line.id] = line.amount_currency or line.debit or ''
-            #import pdb; pdb.set_trace()
-            
         return res
     
     _columns = {

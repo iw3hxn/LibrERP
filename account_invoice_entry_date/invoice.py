@@ -64,15 +64,15 @@ class account_invoice(orm.Model):
                 result[invoice.id] = []
             if invoice.state == 'draft':
                 t_amount_total = invoice.amount_total
-                t_amount_tax = invoice.amount_tax
+                amount_tax = invoice.amount_tax
+                if invoice.type in ('in_invoice', 'out_refund'):
+                    amount_tax = amount_tax * -1
+                context.update({'amount_tax': amount_tax})
                 if invoice.payment_term:
-                    for line in self.pool['account.payment.term'].compute(cr, uid, invoice.payment_term.id, t_amount_total, t_amount_tax, date_ref=invoice.date_invoice):
+                    for line in self.pool['account.payment.term'].compute(cr, uid, invoice.payment_term.id, t_amount_total, date_ref=invoice.date_invoice, context=context):
                         result[invoice.id].append(self._get_preview_line(invoice, line))
-
         return result
 
-
-    
     _columns = {
         'registration_date': fields.date('Registration Date', states={'paid': [('readonly', True)], 'open': [('readonly', True)], 'close': [('readonly', True)]}, select=True, help="Keep empty to use the current date"),
         'maturity_ids': fields.function(
