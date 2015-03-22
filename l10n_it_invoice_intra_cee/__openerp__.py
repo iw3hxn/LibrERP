@@ -22,7 +22,7 @@
 
 {
     'name': "Invoice Intra CEE",
-    'version': '3.1.4.2',
+    'version': '3.2.5.2',
     'category': 'Account',
     'description': """Manage Invoice for Intra CEE supplier""",
     'author': 'CoOpenERP <info@coopenerp.it>, Didotech srl <info@didotech.com>',
@@ -33,6 +33,7 @@
         'account',
         'account_voucher',
         'l10n_it_account',
+        'account_payment_term_month',
     ],
     "data": [
         'account/account_view.xml',

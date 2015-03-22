@@ -23,7 +23,9 @@
 from openerp.osv import fields, orm
 from openerp import netsvc
 import decimal_precision as dp
-from tools.translate import _
+from openerp.tools.translate import _
+from datetime import datetime
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -156,55 +158,6 @@ class account_invoice(orm.Model):
             string='Auto Invoice Total', store=False, multi='auto_invoice_all'),
     }
 
-    def voucher_from_invoice(self, cr, uid, invoice_id, amount,
-                             journal_id, voucher_type='payment',
-                             context=None):
-
-        context = context or {}
-        voucher_obj = self.pool['account.voucher']
-        invoice = self.browse(cr, uid, invoice_id, context)
-        # ----- Voucher Header
-        voucher_id = voucher_obj.create(cr, uid, {
-            'name': invoice.name,
-            'partner_id': invoice.partner_id.id,
-            'amount': amount,
-            'journal_id': journal_id,
-            'account_id': invoice.account_id.id,
-            'type': voucher_type,
-            'date': invoice.registration_date,
-        })
-        move_line_ids = []
-        # ----- Extract all the move lines from new invoice
-        for l in invoice.move_id.line_id:
-            if l.date_maturity:
-                move_line_ids.append(l.id)
-        context.update({
-            'move_line_ids': move_line_ids,
-            'invoice_id': invoice.id,
-        })
-        # ----- Voucher Lines
-        voucher_lines = voucher_obj.recompute_voucher_lines(
-            cr, uid, [voucher_id], invoice.partner_id.id,
-            invoice.journal_id.id, amount,
-            invoice.currency_id.id, voucher_type,
-            invoice.date_invoice, context)
-        voucher_lines_cr = []
-        voucher_lines_dr = []
-        for voucher_line in voucher_lines['value']['line_dr_ids']:
-            voucher_lines_dr.append((0, 0, voucher_line))
-        for voucher_line in voucher_lines['value']['line_cr_ids']:
-            voucher_lines_cr.append((0, 0, voucher_line))
-        voucher_obj.write(cr, uid, [voucher_id, ], {
-            'line_dr_ids': voucher_lines_dr,
-            'line_cr_ids': voucher_lines_cr,
-            'pre_line': voucher_lines['value']['pre_line'],
-            'writeoff_amount': 0.0,
-        }, context)
-        # ----- Post Voucher
-        voucher_obj.proforma_voucher(cr, uid, [voucher_id, ],
-                                     context)
-        return voucher_id
-
     def _get_tax_relation(self, cr, uid, invoice_id, context=None):
         # ----- keep relation between tax and relative intra cee tax
         tax_relation = {}
@@ -333,6 +286,8 @@ class account_invoice(orm.Model):
         move_obj = self.pool['account.move']
         wf_service = netsvc.LocalService("workflow")
         for inv in self.browse(cr, uid, ids, context):
+            auto_invoice_to_be_reconciled = []
+            invoice_to_be_reconciled = []
             # ----- Apply Auto Invoice only on supplier invoice/refund
             if not (inv.type == 'in_invoice' or inv.type == 'in_refund'):
                 continue
@@ -362,16 +317,20 @@ class account_invoice(orm.Model):
             # ----- Create Auto Invoice...Yeah!!!!!
             auto_invoice_id = self.create(cr, uid, new_inv, context)
             new_invoice_ids.append(auto_invoice_id)
-            # ----- Recompute taxes in new invoice
             self.button_reset_taxes(cr, uid, [auto_invoice_id], context)
-            # ----- Validate invoice
             wf_service.trg_validate(uid, 'account.invoice',
                                     auto_invoice_id, 'invoice_open', cr)
-            # ----- Get new values from auto invoice
             new_invoice = self.browse(cr, uid, auto_invoice_id, context)
-            # -----
-            # Create tranfer entry movements
-            # -----
+            #get move_line_ids of auto invoice with partner-account_id partner for reconciliation
+            for move_line in new_invoice.move_id.line_id:
+                if move_line.account_id == move_line.partner_id.property_account_receivable:
+                    auto_invoice_to_be_reconciled.append(move_line.id)
+            #the same for supplier invoice
+            for move_line in inv.move_id.line_id:
+                if move_line.account_id == move_line.partner_id.property_account_payable and \
+                        move_line.amount_residual == inv.amount_tax:
+                    invoice_to_be_reconciled.append(move_line.id)
+            # Create transfer entry movements
             account_move_line_vals = []
             # ----- Tax for supplier
             debit_1 = credit_1 = 0.0
@@ -422,21 +381,21 @@ class account_invoice(orm.Model):
             transfer_entry_id = move_obj.create(
                 cr, uid, account_move_vals, context)
             move_obj.post(cr, uid, [transfer_entry_id], context)
-            # ----- Link the tranfer entry move and auto invoice
-            #       to supplier invoice
+            # Link the transfer entry move and auto invoice to supplier invoice
             self.write(cr, uid, [inv.id],
                        {'auto_invoice_id': auto_invoice_id,
                         'transfer_entry_id': transfer_entry_id})
-            # ----- Pay Autoinvoice
-            self.voucher_from_invoice(
-                cr, uid, new_invoice.id, new_invoice.amount_total,
-                fiscal_position.journal_transfer_entry_id.id, 'receipt',
-                context)
-            # ---- Create a payment for vat of supplier invoice
-            self.voucher_from_invoice(
-                cr, uid, inv.id, inv.auto_invoice_amount_tax,
-                fiscal_position.journal_transfer_entry_id.id,
-                'payment', context)
+            #get move_line_ids of auto invoice with partner-account_id partner for reconciliation
+            move = move_obj.browse(cr, uid, [transfer_entry_id], context)[0]
+            for move_line in move.line_id:
+                if move_line.account_id == move_line.partner_id.property_account_receivable:
+                    auto_invoice_to_be_reconciled.append(move_line.id)
+                if move_line.account_id == move_line.partner_id.property_account_payable:
+                    invoice_to_be_reconciled.append(move_line.id)
+            account_move_line_obj = self.pool['account.move.line']
+            account_move_line_obj.reconcile_partial(cr, uid, auto_invoice_to_be_reconciled, context=context)
+            account_move_line_obj.reconcile_partial(cr, uid, invoice_to_be_reconciled, context=context)
+
         return new_invoice_ids
 
     def action_number(self, cr, uid, ids, context=None):
@@ -495,3 +454,12 @@ class account_invoice(orm.Model):
             account_move.unlink(cr, uid, move_ids, context)
         return super(account_invoice, self).action_cancel(
             cr, uid, ids, context)
+
+    def action_move_create(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        for inv in self.browse(cr, uid, ids, context=context):
+            if inv.fiscal_position.active_reverse_charge:
+                context.update({'reverse_charge': True})
+        super(account_invoice, self).action_move_create(cr, uid, ids, context)
+        return True
