@@ -40,11 +40,11 @@ class account_payment_term(orm.Model):
         amount = value
         obj_precision = self.pool['decimal.precision']
         prec = obj_precision.precision_get(cr, uid, 'Account')
-        amount_tax = context.get('amount_tax', 0.0)
+        amount_tax = context.get('amount_tax', False)
         # create a lonely line for tax value
         if context.get('reverse_charge', False) and amount_tax != 0.0:
-            value -= amount_tax
-            amount = value
+            value -= round(amount_tax, prec)
+            amount = round(value, prec)
             result.append((date_ref, amount_tax))
 
         for line in pt.line_ids:
@@ -53,7 +53,7 @@ class account_payment_term(orm.Model):
                     continue
                 else:
                     amt = round(line.value_amount * amount_tax, prec)
-                    amount -= amt
+                    value -= amt
             elif line.value == 'fixed':
                 amt = round(line.value_amount, prec)
             elif line.value == 'procent':
