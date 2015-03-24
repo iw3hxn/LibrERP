@@ -27,7 +27,7 @@
 
                 <page string="Other Information" position="after">
                     <page string="Versions" attrs="{'invisible':[('sale_version_id','=',False)]}" >
-                        <field name="version_ids" colspan="4" nolabel="1">
+                        <field name="version_ids" colspan="4" nolabel="1" readonly="1">
                             <tree string="" >
                                 <field name="name"/>
                                 <field name="date_order"/>
@@ -36,7 +36,7 @@
                                 <field name="amount_total" sum="Total Tax Included"/>
                                 <field name="state"/>
                                 <field name="sale_version_id"/>
-                                <field name="name" readonly="1" />
+                                <field name="last_revision_note"  />
                             </tree>                     
                         </field>
                     </page>
