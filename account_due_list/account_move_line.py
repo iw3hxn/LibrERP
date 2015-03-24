@@ -61,7 +61,7 @@ class account_move_line(orm.Model):
     def _get_invoice(self, cr, uid, ids, field_name, arg, context=None):
         invoice_pool = self.pool['account.invoice']
         res = {}
-        for line in self.browse(cr, uid, ids):
+        for line in self.browse(cr, uid, ids, context=context):
             inv_ids = invoice_pool.search(cr, uid, [('move_id', '=', line.move_id.id)])
             if len(inv_ids) > 1:
                 raise orm.except_orm(_('Error'), _('Incongruent data: move %s has more than one invoice') % line.move_id.name)
@@ -73,7 +73,7 @@ class account_move_line(orm.Model):
 
     def _get_day(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        for line in self.browse(cr, uid, ids):
+        for line in self.browse(cr, uid, ids, context=context):
             if line.date_maturity:
                 res[line.id] = line.date_maturity
             else:
@@ -83,7 +83,7 @@ class account_move_line(orm.Model):
     def _get_move_lines(self, cr, uid, ids, context=None):
         invoice_pool = self.pool['account.invoice']
         res = []
-        for invoice in invoice_pool.browse(cr, uid, ids):
+        for invoice in invoice_pool.browse(cr, uid, ids, context=contex):
             if invoice.move_id:
                 for line in invoice.move_id.line_id:
                     if line.id not in res:
@@ -122,10 +122,10 @@ class account_move_line(orm.Model):
         'balance': fields.function(_balance, method=True, string='Balance', type='float', store=False),
     }
 
-    _order = "date asc, id asc"
+    _order = "date_maturity desc, date asc, id asc"
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
-        view_payments_tree_id = self.pool.get('ir.model.data').get_object_reference(
+        view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(
             cr, uid, 'account_due_list', 'view_payments_tree')
         view_account_ordered_tree_id = self.pool.get('ir.model.data').get_object_reference(
             cr, uid, 'account_due_list', 'view_account_ordered_tree')

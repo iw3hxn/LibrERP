@@ -46,7 +46,6 @@
         </field>
     </record>
 
-
     <record id="view_payments_filter" model="ir.ui.view">
         <field name="name">Payments Select</field>
         <field name="model">account.move.line</field>
@@ -59,23 +58,42 @@
                     <filter icon="terp-purchase" string="Payable" domain="[('account_id.type','=','payable')]" help="Payable payments"/>
                     <separator orientation="vertical"/>
                     <filter icon="terp-dolar_ok!" string="Unreconciled" name="unreconciled" domain="[('reconcile_id','=',False)]" help="Unreconciled payments"/>
-                    <separator orientation="vertical"/>
+                   <!--
+                   <filter icon="terp-dolar_ok!" string="Maturity Date" name="maturitydate" domain="[('date_maturity', '!=', False)]" help="Payment without Maturity Date"/>
+                   # caution, this filter not work!!!!
+                   -->
+                   <separator orientation="vertical"/>
                     <filter icon="terp-go-today" string="Overdue" domain="[('date_maturity','&lt;',time.strftime('%%Y-%%m-%%d'))]" help="Overdue payments" name="overdue"/>
                     <separator orientation="vertical"/>
                </group>
-               <group expand="0" string="Group By...">
+               <filter icon="terp-go-month" string="Last Month" name="last_month"
+                        domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
+               />
+               <filter icon="terp-go-month" string="Month" name="month"
+                            domain="[('date_maturity', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
+               />
+               <filter icon="terp-go-month" string="Next Month" name="next_month"
+                        domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
+               />
+               <newline/>
+
+               <field name="account_id"/>
+               <field name="partner_id"/>
+               <field name="payment_term_type"/>
+               <field name="invoice"/>
+               <field name="invoice_origin"/>
+               <field name="date_maturity"/>
+
+               <newline/>
+               <separator orientation="vertical"/>
+
+                <group expand="0" string="Group By...">
                     <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter string="Invoice" icon="terp-folder-orange" domain="[]" context="{'group_by':'stored_invoice_id'}"/>
                     <filter string="Due date" icon="terp-go-today" domain="[]" context="{'group_by':'day'}"/>
                     <filter string="Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_maturity'}"/>
                </group>
-                <newline/>
-                    <field name="account_id"/>
-                    <field name="partner_id"/>
-                    <field name="payment_term_type"/>
-                    <field name="invoice"/>
-                    <field name="invoice_origin"/>
-                    <field name="date_maturity"/>
+
            </search>
         </field>
     </record>
@@ -89,7 +107,7 @@
         <field name="view_id" ref="view_payments_tree"/>
         <field name="search_view_id" ref="view_payments_filter"/>
         <field name="domain">['|','&amp;',('account_id.type','=','payable'),('debit','=',0),'&amp;',('account_id.type','=','receivable'),('credit','=',0)]</field>
-        <field name="context">{'search_default_unreconciled':1}</field>
+        <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
     </record>
     
     <!--<menuitem name="Payments" parent="account.menu_finance_entries" action="action_invoice_payments" id="menu_action_invoice_payments" sequence="5"/>-->

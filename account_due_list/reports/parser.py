@@ -12,8 +12,7 @@ import time
 from report import report_sxw
 import inspect, os
 from datetime import datetime
-from osv import osv
-from osv import fields
+
 
 class account_due_list_webkit(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):

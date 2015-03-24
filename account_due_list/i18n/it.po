@@ -21,6 +21,16 @@ msgid "Receivable"
 msgstr "Crediti"
 
 #. module: account_due_list
+#: view:account.move.line:0
+msgid "Last Month"
+msgstr "Mese Scorso"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Next Month"
+msgstr "Mese Prossimo"
+
+#. module: account_due_list
 #: field:account.move.line,payment_term_type:0
 msgid "Payment Type"
 msgstr "Tipo di Pagamento"
