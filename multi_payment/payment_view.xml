@@ -185,6 +185,9 @@
                     <filter string="Unbalanced" position="after">
                         <filter icon="terp-sale" string="Receivable" domain="[('account_id.type','=','receivable')]" help="Receivable payments"/>
                         <filter icon="terp-purchase" string="Payable" domain="[('account_id.type','=','payable')]" help="Payable payments"/>
+                        <!--filter string="Other" domain="[('account_id.type','=','other')]" help="Other"/-->
+                        <filter string="Income" domain="[('account_id.user_type.code','=','income')]" help="Income"/>
+                        <filter string="Expense" domain="[('account_id.user_type.code','=','expense')]" help="Expense"/>
                     <separator orientation="vertical"/>
                     </filter>
                     <field name="date" position="after">

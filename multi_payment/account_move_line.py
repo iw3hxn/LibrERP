@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #    
-#    Copyright (C) 2013 Didotech srl
-#    (<http://www.didotech.com>). 
+#    Copyright (C) 2015 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -14,11 +13,17 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU Affero General Public License
+#    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-from . import account_bank_statement
-from . import account_statement_from_invoice_lines
-from . import account_move_line
+from openerp.osv import orm, fields
+
+
+class account_move_line(orm.Model):
+    _inherit = 'account.move.line'
+
+    _columns = {
+        'user_type': fields.related('account_id', 'account.account', 'Account user type'),
+    }
