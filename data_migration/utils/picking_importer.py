@@ -56,6 +56,7 @@ class ImportFile(threading.Thread, Utils):
         self.product_obj = self.pool['product.product']
         self.picking_obj = self.pool['stock.picking']
         self.move_obj = self.pool['stock.move']
+        self.location_obj = self.pool['stock.location']
 
         # Necessario creare un nuovo cursor per il thread,
         # quello fornito dal metodo chiamante viene chiuso
@@ -229,11 +230,13 @@ class ImportFile(threading.Thread, Utils):
         else:
             # i need to create stock.picking
             # so need to create one
+            picking_type = self.location_obj.picking_type_get(cr, uid, self.location_id, self.location_dest_id)
+
             vals_picking = {
                 'address_id': self.address_id.id,
                 'origin': origin,
-                'type': 'internal',
-                'move_type': 'one', # TODO must be parametric by location
+                'type': picking_type,
+                'move_type': 'one',
                 'invoice_state': 'none',
                 'auto_picking': True,
                 'stock_journal_id': self.stock_journal_id.id,
