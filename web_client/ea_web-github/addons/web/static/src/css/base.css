@@ -7,14 +7,14 @@ body.openerp {
     padding: 0;
     margin: 0;
     height: 100%;
-    font-size: 80%;
+    font-size: 85%;
     font-family: Roboto, "Lucida Grande", Droid, Helvetica, Verdana, Arial, sans-serif;
 }
 
 .openerp, .openerp textarea, .openerp input, .openerp select, .openerp option,
 .openerp button, .openerp .ui-widget {
     font-family: Roboto, "Lucida Grande", Droid, Helvetica, Verdana, Arial, sans-serif;
-    font-size:85%;
+    font-size:90%;
 }
 
 .openerp .view-manager-main-content {
@@ -438,7 +438,7 @@ label.error {
     text-transform: uppercase;
     line-height: 20px;
     font-weight: bold;
-    font-size: 80%;
+    font-size: 85%;
 
     white-space: nowrap;
 }
@@ -597,7 +597,7 @@ label.error {
 /* Company name header */
 .openerp .header_title {
     float: left;
-    font-size: 80%;
+    font-size: 85%;
     margin: 0;
     padding: 0px 0px;
     text-shadow: 0 1px 0 #FAFAFA;
@@ -607,7 +607,7 @@ label.error {
 /* User name header */
 .openerp .header_title small {
     color: #6e6e6e;
-    font-size: 80%;
+    font-size: 85%;
     font-weight: normal;
 }
 .openerp .header_corner {
@@ -858,7 +858,7 @@ label.error {
 
 .openerp .oe-searchview-render-line .oe_label, .openerp .oe-searchview-render-line .oe_label_help {
     font-weight: bold;
-    font-size: 80%;
+    font-size: 85%;
     white-space: nowrap;
 }
 
@@ -1035,7 +1035,7 @@ label.error {
     margin-bottom: 0;
     padding-top: 3px;
     padding-bottom: 3px;
-    font-size: 80%;
+    font-size: 85%;
 }
 .openerp .oe-listview .oe-field-cell progress {
     width: 100%;
@@ -1076,7 +1076,7 @@ label.error {
 }
 .openerp .oe-list-pager .oe-pager-state {
     cursor: pointer;
-    font-size: 80%;
+    font-size: 85%;
     color: #555;
 }
 
@@ -1201,7 +1201,7 @@ label.error {
 .openerp a.oe_form_uri {
     vertical-align: middle;
     padding-top: 3px;
-    font-size: 90%;
+/*    font-size: 90%; */
     color: #000000;
 }
 .openerp a.oe_form_uri {
@@ -1297,7 +1297,7 @@ label.error {
 }
 .openerp .oe_form_pager, .openerp .oe_list_pager {
     float: left;
-    font-size: 80%;
+    font-size: 85%;
     color: gray;
     font-weight: bold;
 }
@@ -1315,7 +1315,7 @@ label.error {
 .openerp .oe_forms select,
 .openerp .oe_forms .oe_button,
 .openerp .oe_forms textarea {
-    font-size: 90%;
+/*    font-size: 90%; */
     font-weight: normal;
 }
 
@@ -1362,7 +1362,7 @@ label.error {
 }
 
 .openerp label.oe_label_help span {
-    font-size: 80%;
+    font-size: 85%;
     color: darkgreen;
     vertical-align:top;
     position: relative;
@@ -2026,7 +2026,7 @@ label.error {
    text-align: right !important;
 }
 .treeview-tr span, .treeview-td span {
-    font-size: 90%;
+/*    font-size: 90%; */
     font-weight: normal;
     white-space: nowrap;
     display: block;
@@ -2091,7 +2091,7 @@ label.error {
     text-align: center;
     border-left: 1px solid #8e8e8e;
     padding: 0 3px;
-    font-size: 80%;
+    font-size: 85%;
     font-weight: normal;
     vertical-align: top;
 }
@@ -2172,7 +2172,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     border: 1px solid #D8D8D8;
     
     cursor: pointer;
-    font-size: 90%;
+/*    font-size: 90%; */
 }
 .openerp .oe_view_editor_field td{
     border: 0px !important;
