@@ -185,6 +185,9 @@
                     <filter icon="terp-go-today" string="From Start Current Year" domain="[('date','&gt;=',time.strftime('%%Y-01-01'))]" help="Start Date" name="start_year"/>
                     <separator orientation="vertical"/>
                     <filter icon="terp-go-today" string="From Start Current Month" domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date" name="start_month"/>
+                    <separator orientation="vertical"/>
+                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
                 </group>
            </search>
         </field>

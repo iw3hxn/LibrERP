@@ -234,3 +234,54 @@ msgstr "Partner"
 msgid "Partner Ref"
 msgstr "Rif Partner"
 
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "From Start Current Month"
+msgstr "Dall'inizio dell'Anno Corrente"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "From Start Current Year"
+msgstr "Dall'inizio del Mese Corrente"
+
+#. module: account_due_list
+#: view:account.move.line:0
+#: model:ir.actions.act_window,name:account_due_list.action_account_ordered
+msgid "Account Ledger"
+msgstr "Schede Contabili"
+
+#. module: account_due_list
+#: code:addons/account_due_list/account_move_line.py:67
+#, python-format
+msgid "Incongruent data: move %s has more than one invoice"
+msgstr "Data incongruente: il movimento %s ha più di una fattura"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Sales Orders"
+msgstr "Ordini di Vendita"
+
+#. module: account_due_list
+#: field:account.move.line,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: account_due_list
+#: field:account.move.line,date_to:0
+msgid "Date to"
+msgstr "Al"
+
+#. module: account_due_list
+#: field:account.move.line,direction:0
+msgid "Direction"
+msgstr "Direzione"
+
+#. module: account_due_list
+#: code:addons/account_due_list/account_move_line.py:67
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+
+
+
