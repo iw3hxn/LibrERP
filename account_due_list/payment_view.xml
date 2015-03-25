@@ -76,6 +76,8 @@
                         domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
                />
                <newline/>
+               <field name="date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
+               <field name="date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
 
                <field name="account_id"/>
                <field name="partner_id"/>

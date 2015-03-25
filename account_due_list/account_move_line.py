@@ -83,7 +83,7 @@ class account_move_line(orm.Model):
     def _get_move_lines(self, cr, uid, ids, context=None):
         invoice_pool = self.pool['account.invoice']
         res = []
-        for invoice in invoice_pool.browse(cr, uid, ids, context=contex):
+        for invoice in invoice_pool.browse(cr, uid, ids, context=context):
             if invoice.move_id:
                 for line in invoice.move_id.line_id:
                     if line.id not in res:
@@ -91,7 +91,7 @@ class account_move_line(orm.Model):
         return res
 
     def _balance(self, cr, uid, ids, name, arg, context=None):
-        res={}
+        res = {}
         # TODO group the foreach in sql
         for id in ids:
             cr.execute('SELECT date,account_id FROM account_move_line WHERE id=%s', (id,))
@@ -120,6 +120,8 @@ class account_move_line(orm.Model):
         'residual': fields.function(_residual, method=True, string='Residual', type='float', store=False),
         'direction': fields.function(_direction, method=True, string='Direction', type='char', store=False),
         'balance': fields.function(_balance, method=True, string='Balance', type='float', store=False),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
     }
 
     _order = "date_maturity desc, date asc, id asc"
