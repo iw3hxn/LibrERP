@@ -26,4 +26,6 @@ class account_move_line(orm.Model):
 
     _columns = {
         'user_type': fields.related('account_id', 'account.account', 'Account user type'),
+        'date_from':fields.function(lambda *a,**k:{}, method=True, type='date',string="Date from"),
+        'date_to':fields.function(lambda *a,**k:{}, method=True, type='date',string="Date to"),
     }

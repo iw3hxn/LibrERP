@@ -192,6 +192,8 @@
                     </filter>
                     <field name="date" position="after">
                         <field name="date_maturity"/>
+                        <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                        <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
                     </field>
                     <field name="partner_id" position="replace"/>
                     <field name="account_id" position="replace"/>
