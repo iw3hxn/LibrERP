@@ -375,8 +375,9 @@ class account_invoice(orm.Model):
                 'journal_id': fiscal_position.journal_transfer_entry_id.id,
                 'line_id': account_move_line_vals,
                 'date': inv.registration_date,
+                'period_id': inv.period_id.id,
             }
-            context.update({'date' : inv.registration_date})
+            context.update({'date': inv.registration_date})
             
             transfer_entry_id = move_obj.create(
                 cr, uid, account_move_vals, context)
