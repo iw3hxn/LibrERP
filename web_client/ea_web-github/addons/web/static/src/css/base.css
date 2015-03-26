@@ -1536,10 +1536,11 @@ label.error {
     min-width: 11em;
 }
 .openerp .oe_forms .oe_form_button .oe_button {
-    color: #4c4c4c;
+    /* color: #4c4c4c; */
     white-space: nowrap;
     min-width: 100%;
     width: 100%;
+    /* border-color: #E30000; */
 }
 @-moz-document url-prefix() {
     /* Strange firefox behaviour on width: 100% + white-space: nowrap */
