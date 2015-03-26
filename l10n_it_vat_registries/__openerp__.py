@@ -22,7 +22,7 @@
 ##############################################################################
 {
     'name': 'Italian Localisation - VAT Registries',
-    'version': '2.0.2.3',
+    'version': '2.0.2.4',
     'category': 'Localisation/Italy',
     'description': """Accounting reports for Italian localization - VAT Registries\nhttp://wiki.openerp-italia.org/doku.php/moduli/l10n_it_tax_journal""",
     'author': 'OpenERP Italian Community',

@@ -192,3 +192,18 @@ msgstr "account.tax"
 #: field:account.invoice,supplier_invoice_number:0
 msgid "Supplier invoice nr"
 msgstr "Fattura Fornitore nr"
+
+#. modules: l10n_it_vat_registries
+#: field:wizard.registro.iva,fiscal_page_base:0
+msgid "Last printed page"
+msgstr "Stampa da Pagina"
+
+#. module: l10n_it_vat_registries
+#: field:wizard.registro.iva,tax_sign:0
+msgid "Tax amount sign"
+msgstr "Segno Ammontare Tassa"
+
+#. module: l10n_it_vat_registries
+#: help:wizard.registro.iva,tax_sign:0
+msgid "Use -1 you have negative tax amounts and you want to print them prositive"
+msgstr "Usando -1 se hai una tessa negativa e vuoi invece stamparla positiva"
