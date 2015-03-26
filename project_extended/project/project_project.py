@@ -56,7 +56,7 @@ class project_task(orm.Model):
         if context is None:
             context = {}
         res = {}
-        projects = self.browse(cr, uid, ids)
+        projects = self.browse(cr, uid, ids, context=context)
         for project_id in projects:
             account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id)], context=context)
             sale_ids = self.pool['sale.order'].search(cr, uid, [('project_id', '=', project_id.analytic_account_id.id), ('state', 'not in', ['draft'])], context=context)
@@ -65,14 +65,18 @@ class project_task(orm.Model):
                 'total_spent': 0.0,
                 'total_invoice': 0.0,
                 'total_sell': 0.0,
+                'total_sell_service': 0.0,
             }
             for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
                 if account.amount > 0:
                     res[project_id.id]['total_invoice'] += account.amount
                 else:
-                    res[project_id.id]['total_spent'] += account.amount
+                    res[project_id.id]['total_spent'] += abs(account.amount)
             for sale in self.pool['sale.order'].browse(cr, uid, sale_ids, context):
                 res[project_id.id]['total_sell'] += sale.amount_untaxed
+                for sale_line in sale.order_line:
+                    if sale_line.product_id and sale_line.product_id.type == 'service':
+                        res[project_id.id]['total_sell_service'] += sale_line.price_subtotal
         return res
     
     def name_get(self, cr, uid, ids, context=None):
@@ -91,7 +95,8 @@ class project_task(orm.Model):
     
     _columns = {
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks"),
-        'total_sell': fields.function(_total_account,  type='float', digits_compute= dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
-        'total_spent': fields.function(_total_account, type='float', digits_compute= dp.get_precision('Sale Price'), multi='sums', string="Spent Amount"),
-        'total_invoice': fields.function(_total_account, type='float', digits_compute= dp.get_precision('Sale Price'), multi='sums', string="Invoice Amount"),
+        'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
+        'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),
+        'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Spent Amount"),
+        'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Invoice Amount"),
     }
