@@ -487,7 +487,7 @@ msgstr "Immobilizzazioni in corso"
 #: field:account.asset.asset,method_number_percent:0
 msgid "Number of Depreciations/Years - method Number or Year. \n"
 " Percentage Depreciation - method Percent."
-msgstr "Numero di Ammortamenti/Anno - metodo Number or Year. \n"
+msgstr "Numero di Ammortamenti/Anno - metodo Numero o Anni. \n"
 " Percentuale Ammortamento - metodo Percentuale"
 
 #. module: account_asset
@@ -664,7 +664,7 @@ msgstr "Piano d'Ammortamento"
 #. module: account_asset
 #: field:account.asset.history,method_number:0
 msgid "Number of Depreciations/Years - method Number or Year."
-msgstr "Numero di Ammortamenti/Anno - method Numbero per Anno."
+msgstr "Numero di Ammortamenti/Anno - metodo Numbero o Anni."
 
 #. module: account_asset
 #: help:account.asset.asset,method_time:0
@@ -1288,7 +1288,7 @@ msgstr "Categoria immobilizzazione"
 #. module: account_asset
 #: selection:account.asset.depreciation.line,type:0
 msgid "Depreciation"
-msgstr "Depreciation"
+msgstr "Ammortamento"
 
 #. module: account_asset
 #: code:addons/account_asset/account_asset.py:1275

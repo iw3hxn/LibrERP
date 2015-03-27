@@ -162,7 +162,7 @@
               </page>
               <page string="Depreciation Board">
                   <button type="object" name="compute_depreciation_board" string="Compute" icon="terp-stock_format-scientific" colspan="2" attrs="{'invisible':[('state','in',['close','removed'])]}"/>
-                <field name="depreciation_line_ids" >
+                <field name="depreciation_line_ids" nolabel="1">
                   <tree string="Asset Lines" colors="blue:(move_check == False) and (init_entry == False)" >
                     <field name="type"/>
                     <field name="line_date"/>
@@ -203,7 +203,7 @@
                 </field>
               </page>
               <page string="History">
-                <field name="account_move_line_ids" readonly="1">
+                <field name="account_move_line_ids" readonly="1" nolabel="1">
                   <tree colors="red:state == 'draft';black:state == 'valid'" string="Journal Items">
                     <field name="journal_id"/>
                     <field name="period_id"/>
@@ -234,7 +234,7 @@
                     <field name="credit" sum="Total Credit"/>
                   </form>
                 </field>
-                <field name="history_ids" readonly="1"/>
+                <field name="history_ids" readonly="1" nolabel="1"/>
               </page>
               <page string="Notes">
                 <field name="note" />
