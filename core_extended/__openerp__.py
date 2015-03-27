@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.0.10.0",
+    "version": "2.0.11.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
@@ -53,7 +53,12 @@
         odf_to_array - class that permits reading of Open Document spreadsheet
 
         file_manipulation - contains function that recognise Excel, Open Document and CSV documents
-            and return them as list of rows
+            and return them as list of rows. Additional python modules are required:
+            'xls', 'xlsb' - requires module xlrd
+            'xlsx', 'xlsm', 'xltx', 'xltm' - requires openpyxl
+            'ods' - requires odf
+            'csv' - uses module csv included in standard Python distribution
+
     """,
     "depends": [
         'base',

@@ -27,7 +27,7 @@ from tools.translate import _
 def import_sheet(filename, content):
     name, file_type = filename.rsplit('.', 1)
 
-    if file_type in ('xls', 'xlsx', 'xlsm', 'xlsb'):
+    if file_type in ('xls', 'xlsb'):
         # "Excel"
         import xlrd
 
@@ -51,6 +51,29 @@ def import_sheet(filename, content):
 #            print rx
 #            print table
         number_of_lines = sh.nrows
+    elif file_type in ('xlsx', 'xlsm', 'xltx', 'xltm'):
+        import openpyxl
+        import StringIO
+
+        ## Create virtual File:
+        virtual_file = StringIO.StringIO(content)
+        book = openpyxl.load_workbook(virtual_file)
+
+        table = []
+        sh = book.worksheets[0]
+        max_column = sh.max_column
+
+        for rx in range(1, sh.max_row):
+            row = []
+            for cx in range(1, max_column):
+                if rx == 1 and not sh.cell(row=rx, column=cx).value:
+                    max_column = cx
+                    row.append(sh.cell(row=rx, column=cx).value)
+                    break
+
+                row.append(sh.cell(row=rx, column=cx).value)
+            table.append(row)
+        number_of_lines = sh.max_row
     elif file_type in ('ods', ):
         # "OpenOffice"
         from openerp.addons.core_extended.odf_to_array import ODSReader
