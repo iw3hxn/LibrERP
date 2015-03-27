@@ -65,12 +65,12 @@ msgstr "Ottieni i libri"
 #. openerp-web
 #: addons/web_process/static/src/xml/web_process.xml:37
 msgid "OpenERP Enterprise"
-msgstr "OpenERP Enterprise"
+msgstr "SimplERP Enterprise"
 
 #. openerp-web
 #: addons/web_process/static/src/xml/web_process.xml:37
 msgid "Purchase OpenERP Enterprise"
-msgstr "Acquista OpenERP Enterprise"
+msgstr "Acquista SimplERP Enterprise"
 
 #. openerp-web
 #: addons/web_process/static/src/xml/web_process.xml:52

@@ -33,7 +33,7 @@ msgstr "Ok"
 #. openerp-web
 #: addons/web/static/src/js/chrome.js:184
 msgid "Send OpenERP Enterprise Report"
-msgstr "Invia OpenERP Enterprise Report"
+msgstr "Invia SimplERP Enterprise Report"
 
 #. openerp-web
 #: addons/web/static/src/js/chrome.js:198
@@ -150,7 +150,7 @@ msgstr "Cambia Password"
 #. openerp-web
 #: addons/web/static/src/js/chrome.js:1052
 msgid "OpenERP - Unsupported/Community Version"
-msgstr "OpenERP - Unsupported/Community Version"
+msgstr "SimplERP - Unsupported/Community Version"
 
 #. module: web
 #. openerp-web
@@ -1075,7 +1075,7 @@ msgstr "Powered by"
 #: code:addons/web/static/src/xml/base.xml:449
 #, python-format
 msgid "OpenERP"
-msgstr "OpenERP"
+msgstr "SimplERP"
 
 #. module: web
 #. openerp-web
@@ -1231,17 +1231,17 @@ msgstr ""
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:251
 msgid "OpenERP Entreprise"
-msgstr "OpenERP Entreprise"
+msgstr "SimplERP Entreprise"
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:256
 msgid "OpenERP Enterprise Contract."
-msgstr "Contratto OpenERP Enterprise."
+msgstr "Contratto SimplERP Enterprise."
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:257
 msgid "Your report will be sent to the OpenERP Enterprise team."
-msgstr "Il tuo report verrà inviato all'OpenERP Enterprise team."
+msgstr "Il tuo report verrà inviato all'SimplERP Enterprise team."
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:259

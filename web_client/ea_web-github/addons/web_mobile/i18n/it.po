@@ -20,7 +20,7 @@ msgstr ""
 #. openerp-web
 #: addons/web_mobile/static/src/xml/web_mobile.xml:17
 msgid "OpenERP"
-msgstr "OpenERP"
+msgstr "SimplERP"
 
 #. openerp-web
 #: addons/web_mobile/static/src/xml/web_mobile.xml:22
