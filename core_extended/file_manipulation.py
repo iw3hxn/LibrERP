@@ -63,7 +63,7 @@ def import_sheet(filename, content):
         sh = book.worksheets[0]
         max_column = sh.max_column
 
-        for rx in range(1, sh.max_row):
+        for rx in range(1, sh.max_row + 1):
             row = []
             for cx in range(1, max_column):
                 if rx == 1 and not sh.cell(row=rx, column=cx).value:
