@@ -195,12 +195,13 @@ class ImportFile(threading.Thread, Utils):
             
     def get_uom(self, cr, uid, name):
         translate = {
+            'm': 'm',
             'kgm': 'kg',
             'unit': 'Unit(s)',
             'litre': 'Liter(s)',
             'PCE': 'PCE'
         }
-        
+
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':
             uom_name = name[20:]
         elif name:
@@ -210,8 +211,8 @@ class ImportFile(threading.Thread, Utils):
             _logger.error(error)
             self.error.append(error)
             return False
-        
-        uom_ids = self.pool.get('product.uom').search(cr, uid, [('name', '=ilike', translate[uom_name])])
+
+        uom_ids = self.pool['product.uom'].search(cr, uid, [('name', '=ilike', translate[uom_name])])
         if len(uom_ids) == 1:
             return uom_ids[0]
         elif len(uom_ids) > 1:
@@ -226,7 +227,7 @@ class ImportFile(threading.Thread, Utils):
             return False
         
     def get_taxes(self, cr, uid, description):
-        tax_obj = self.pool.get('account.tax')
+        tax_obj = self.pool['account.tax']
         
         tax_ids = tax_obj.search(cr, uid, [('description', '=', description)])
         
@@ -328,7 +329,7 @@ class ImportFile(threading.Thread, Utils):
                 self.error.append(error)
                 return False
         
-        vals_product = self.PRODUCT_DEFAULTS.copy()
+        vals_product = {}
 
         # print '>>>>>>>', record.name
         vals_product['name'] = record.name
@@ -356,10 +357,6 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'uom') and record.uom:
             vals_product['uom_id'] = self.get_uom(cr, uid, record.uom)
             vals_product['uom_po_id'] = vals_product['uom_id']
-        elif vals_product.get('uom', False):
-            vals_product['uom_id'] = self.get_uom(cr, uid, vals_product['uom'])
-            vals_product['uom_po_id'] = vals_product['uom_id']
-            del vals_product['uom']
 
         if hasattr(record, 'tax_out') and record.tax_out:
             taxes_ids = self.get_taxes(cr, uid, record.tax_out)
@@ -440,9 +437,18 @@ class ImportFile(threading.Thread, Utils):
             self.updated += 1
         else:
             _logger.info(u'Row {row}: Adding product {product}...'.format(row=self.processed_lines, product=vals_product[field]))
-            # pprint(vals_product)
-            # Create new product
-            product_id = self.product_obj.create(cr, uid, vals_product)
+            default_vals_product = self.PRODUCT_DEFAULTS.copy()
+            if not vals_product.get('uom_id') and default_vals_product.get('uom'):
+                vals_product['uom_id'] = self.get_uom(cr, uid, default_vals_product['uom'])
+                vals_product['uom_po_id'] = vals_product['uom_id']
+                del default_vals_product['uom']
+            elif not vals_product.get('uom_id'):
+                vals_product['uom_id'] = self.get_uom(cr, uid, 'PCE')
+                vals_product['uom_po_id'] = vals_product['uom_id']
+
+            default_vals_product.update(vals_product)
+
+            product_id = self.product_obj.create(cr, uid, default_vals_product)
             self.uo_new += 1
         
         if partner_ids and product_id:

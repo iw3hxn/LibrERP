@@ -83,7 +83,7 @@ class FormatOne():
 
     REQUIRED_PRODUCT = ['ean13', 'name']
     HEADER_PRODUCT = ('Codice', 'Descrizione', 'UMC', 'UMT', 'PesoN', 'CostoStd', 'CostoUltimo')
-    COLUMNS_PRODUCT = "default_code, name, uom0, uom2, weight_net, standard_price, last_standard_price"
+    COLUMNS_PRODUCT = "default_code, name, uom, uom2, weight_net, standard_price, last_standard_price"
     PRODUCT_SEARCH = ['default_code', 'name']
     REQUIRED_PRODUCT = ['default_code', 'name']
     PRODUCT_WARNINGS = ['standard_price']
@@ -133,7 +133,7 @@ class FormatThree():
     PARTNER_SEARCH = ['name', 'vat']
 
     HEADER_PRODUCT = ('codice', 'nome', 'categoria', 'uom_i', 'codiva_acq', 'codiva_cen', 'list_price', 'ean13', 'fornitore', 'cod__prod__forn_', 'prezzo_forn_', 'active', 'available_in_pos', 'sale_ok', 'assupply_method', 'type', 'procure_method', 'cost_method')
-    COLUMNS_PRODUCT = "default_code, name, category, uom0, tax_in, tax_out, list_price, ean13, supplier, supplier_product_code, standard_price, active, null, sale_ok, supply_method, type, procure_method, cost_method"
+    COLUMNS_PRODUCT = "default_code, name, category, uom, tax_in, tax_out, list_price, ean13, supplier, supplier_product_code, standard_price, active, null, sale_ok, supply_method, type, procure_method, cost_method"
     PRODUCT_SEARCH = ('default_code', 'name')
     REQUIRED_PRODUCT = ['default_code', 'name']
     PRODUCT_WARNINGS = []
@@ -162,7 +162,7 @@ class FormatFour():
     PARTNER_SEARCH = ['name', 'vat']
 
     HEADER_PRODUCT = ('codice', 'nome', 'categoria', 'brand', 'descrizione vendita', 'uom_i', 'codiva_acq', 'codiva_cen', 'list_price', 'ean13', 'fornitore', 'cod__prod__forn_', 'prezzo_forn_', 'active', 'available_in_pos', 'sale_ok', 'assupply_method', 'type', 'procure_method', 'cost_method')
-    COLUMNS_PRODUCT = "default_code, name, category, brand, description_sale, uom0, tax_in, tax_out, list_price, ean13, supplier, supplier_product_code, standard_price, active, null, sale_ok, supply_method, type, procure_method, cost_method"
+    COLUMNS_PRODUCT = "default_code, name, category, brand, description_sale, uom, tax_in, tax_out, list_price, ean13, supplier, supplier_product_code, standard_price, active, null, sale_ok, supply_method, type, procure_method, cost_method"
     PRODUCT_SEARCH = ('default_code', 'name')
     REQUIRED_PRODUCT = ['default_code', 'name']
     PRODUCT_WARNINGS = []
