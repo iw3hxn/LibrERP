@@ -41,7 +41,7 @@ class wizard_spesometro_default(osv.osv_memory):
         'partner_spesometro_escludi': fields.boolean('Da Escludere'),
         'partner_spesometro_operazione': fields.selection((('FA','Operazioni documentate da fattura'), 
                                   ('SA','Operazioni senza fattura'),
-                                  ('BL1','Operazioni con paesi con fiscalit� privilegiata'),
+                                  ('BL1','Operazioni con paesi con fiscalità privilegiata'),
                                   ('BL2','Operazioni con soggetti non residenti'),
                                   ('BL3','Acquisti di servizi da soggetti non residenti')),
                    'Operazione' ),
