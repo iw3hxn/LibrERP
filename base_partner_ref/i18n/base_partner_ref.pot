@@ -16,16 +16,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: base_partner_ref
-#: field:res.partner,property_supplier_ref:0
-msgid "Our Supplier Ref."
-msgstr ""
-
-#. module: base_partner_ref
-#: field:res.partner,property_customer_ref:0
-msgid "Our Customer Ref."
-msgstr ""
-
-#. module: base_partner_ref
 #: help:res.partner,property_customer_ref:0
 msgid "The reference attributed by the partner to the current company as a customer of theirs."
 msgstr ""
