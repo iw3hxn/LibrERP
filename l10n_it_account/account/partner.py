@@ -46,7 +46,7 @@ class res_partner(orm.Model):
 
         result = {}
 
-        partners = self.browse(cr, uid, ids)
+        partners = self.browse(cr, uid, ids, context=context)
         for partner in partners:
             result[partner.id] = partner.fiscalcode
 
