@@ -10,37 +10,37 @@
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
             <xpath expr="/form/separator[@string='Mapping']" position="before">
-                <group colspan="6" col="4">
+                <group >
+                    <field name="active_reverse_charge" />
+                    <field name="active_extra_ue_service" />
+                </group>
+                <group colspan="6" col="4" attrs="{'invisible': [('active_reverse_charge', '=', False), ('active_extra_ue_service', '=', False)]}">
                     <separator string="Reverse charge Configuration" colspan="4"/>
-                    <group >
-                        <field name="active_reverse_charge" />
-                        <field name="active_extra_ue_service" />
+                    <newline />
+                    <group colspan="6" col="4">
+                        <field name="account_transient_id" colspan="2"
+                            attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
+                        <field name="journal_transfer_entry_id" colspan="2"
+                            attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
                     </group>
+                    <newline />
+                    <group colspan="6" col="4">
+                        <field name="journal_auto_invoice_id" colspan="2"
+                            attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
+                        <field name="use_same_partner"/>
+                        <field name="auto_invoice_partner_id"
+                            attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True), ('use_same_partner', '!=', True)]}"/>
+                    </group>
+                    <newline />
+                    <group colspan="6" col="4">
+                        <field name="extra_ue_service_tax_id" colspan="2"
+                            attrs="{'required':[('active_extra_ue_service', '=', True)]}"/>
+                        <field name="extra_ue_line_detail" colspan="2"
+                            attrs="{'required':[('active_extra_ue_service', '=', True)]}"
+                            help="Text accept mako markdown. for example ${object.partner_id.name} for partner or ${object.number} for invoice number, etc..."/>
+                    </group>
+                    <newline />
                 </group>
-                <newline />
-                <group colspan="6" col="4">
-                    <field name="account_transient_id" colspan="2"
-                        attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
-                    <field name="journal_transfer_entry_id" colspan="2"
-                        attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
-                </group>
-                <newline />
-                <group colspan="6" col="4">
-                    <field name="journal_auto_invoice_id" colspan="2"
-                        attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True)]}"/>
-                    <field name="use_same_partner"/>
-                    <field name="auto_invoice_partner_id"
-                        attrs="{'required':['|', ('active_reverse_charge', '=', True), ('active_extra_ue_service', '=', True), ('use_same_partner', '!=', True)]}"/>
-                </group>
-                <newline />
-                <group colspan="6" col="4">
-                    <field name="extra_ue_service_tax_id" colspan="2"
-                        attrs="{'required':[('active_extra_ue_service', '=', True)]}"/>
-                    <field name="extra_ue_line_detail" colspan="2"
-                        attrs="{'required':[('active_extra_ue_service', '=', True)]}"
-                        help="Text accept mako markdown. for example ${object.partner_id.name} for partner or ${object.number} for invoice number, etc..."/>
-                </group>
-                <newline />
             </xpath>
         </field>
     </record>
