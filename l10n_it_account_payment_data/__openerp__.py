@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation Payment Data - Account Didotech',
-    'version': '3.0.0.5',
+    'version': '3.0.0.6',
     'category': 'Localisation/Italy',
     'description': """This module adds standard payment terms.
 
