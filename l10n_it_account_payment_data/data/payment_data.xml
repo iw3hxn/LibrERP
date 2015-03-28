@@ -88,8 +88,8 @@
         <record id="l10n_it_account.payment_direct_line_60" model="account.payment.term.line">
             <field name="name">60 Giorni</field>
             <field name="value">balance</field>
-            <field eval="2" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="60" name="days"/>
             <field eval="0" name="days2"/>
             <field name="payment_id" ref="l10n_it_account.payment_direct_60"/>
         </record>
@@ -163,8 +163,8 @@
             <field eval="1" name="sequence"/>
             <field name="name">60 Giorni</field>
             <field name="value">balance</field>
-            <field eval="2" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="60" name="days"/>
             <field eval="0" name="days2"/>
             <field name="payment_id" ref="l10n_it_account.payment_term_60_net_1"/>
         </record>
@@ -177,8 +177,8 @@
         <record id="l10n_it_account.1_payment_term_90_net_line" model="account.payment.term.line">
             <field name="name">90 Giorni</field>
             <field name="value">balance</field>
-            <field eval="3" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="90" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_90_net_1" name="payment_id"/>
         </record>
@@ -191,8 +191,8 @@
         <record id="l10n_it_account.1_payment_term_120_net_line" model="account.payment.term.line">
             <field name="name">120 Giorni</field>
             <field name="value">balance</field>
-            <field eval="4" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="120" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_120_net_1" name="payment_id"/>
         </record>
@@ -207,8 +207,8 @@
             <field name="value">procent</field>
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
-            <field eval="1" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="30" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_30_60_net_2" name="payment_id"/>
         </record>
@@ -216,8 +216,8 @@
             <field name="name">60 Giorni</field>
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
-            <field eval="2" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="60" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_30_60_net_2" name="payment_id"/>
         </record>
@@ -232,8 +232,8 @@
             <field name="value">procent</field>
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
-            <field eval="2" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="60" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_60_90_net_2" name="payment_id"/>
         </record>
@@ -241,8 +241,8 @@
             <field name="name">90 giorni</field>
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
-            <field eval="3" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="90" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_60_90_net_2" name="payment_id"/>
         </record>
@@ -257,8 +257,8 @@
             <field name="value">procent</field>
             <field eval="1" name="sequence"/>
             <field eval="0.50" name="value_amount"/>
-            <field eval="3" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="90" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_90_120_net_2" name="payment_id"/>
         </record>
@@ -266,8 +266,8 @@
             <field name="name">120 Giorni</field>
             <field name="value">balance</field>
             <field eval="2" name="sequence"/>
-            <field eval="4" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="120" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_90_120_net_2" name="payment_id"/>
         </record>
@@ -282,8 +282,8 @@
             <field name="value">procent</field>
             <field eval="1" name="sequence"/>
             <field eval="0.333334" name="value_amount"/>
-            <field eval="1" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="30" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_30_60_90_net_3" name="payment_id"/>
         </record>
@@ -292,8 +292,8 @@
             <field name="value">procent</field>
             <field eval="2" name="sequence"/>
             <field eval="0.333333" name="value_amount"/>
-            <field eval="2" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="60" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_30_60_90_net_3" name="payment_id"/>
         </record>
@@ -301,8 +301,8 @@
             <field name="name">90 Giorni</field>
             <field name="value">balance</field>
             <field eval="3" name="sequence"/>
-            <field eval="3" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="90" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_30_60_90_net_3" name="payment_id"/>
         </record>
@@ -317,8 +317,8 @@
             <field name="value">procent</field>
             <field eval="1" name="sequence"/>
             <field eval="0.333334" name="value_amount"/>
-            <field eval="2" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="60" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_60_90_120_net_3" name="payment_id"/>
         </record>
@@ -327,8 +327,8 @@
             <field name="value">procent</field>
             <field eval="2" name="sequence"/>
             <field eval="0.333333" name="value_amount"/>
-            <field eval="3" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="90" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_60_90_120_net_3" name="payment_id"/>
         </record>
@@ -336,8 +336,8 @@
             <field name="name">120 Giorni</field>
             <field name="value">balance</field>
             <field eval="3" name="sequence"/>
-            <field eval="4" name="months"/>
-            <field eval="0" name="days"/>
+            <field eval="0" name="months"/>
+            <field eval="120" name="days"/>
             <field eval="0" name="days2"/>
             <field ref="l10n_it_account.payment_term_60_90_120_net_3" name="payment_id"/>
         </record>
