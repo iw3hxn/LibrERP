@@ -24,7 +24,7 @@
 
 {
     "name": "Payment terms - Commercial month",
-    "version": "2.2.4.1",
+    "version": "2.2.4.2",
     "author": "Didotech s.r.l.",
     "website": "http://www.didotech.com",
     "category": "Account / Payments",
