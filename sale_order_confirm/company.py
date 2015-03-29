@@ -26,11 +26,19 @@ class res_company(orm.Model):
 
     _inherit = 'res.company'
 
+    def _getFiscalPosition(self, cr, uid, context=None):
+        fiscal_position_obj = self.pool['account.fiscal.position']
+        fiscal_position_ids = fiscal_position_obj.serach(cr, uid, [], context=context)
+        if fiscal_position_ids:
+            return fiscal_position_ids[0]
+        else:
+            return False
+
     _columns = {
         'check_credit_limit': fields.boolean('Abilita gestione fido'),
         'default_credit_limit': fields.float(string='Fido di default'),
         'enable_margin_validation': fields.boolean('Enable Margin Verify'),
-        'minimum_margin': fields.float(string='Minimun margin %', digits=(2,2)),
+        'minimum_margin': fields.float(string='Minimun margin %', digits=(2, 2)),
         'default_sale_order_validity': fields.integer('Default day of validity'),
         'default_property_account_position': fields.property(
             'account.fiscal.position',
@@ -44,7 +52,7 @@ class res_company(orm.Model):
             'account.payment.term',
             type='many2one',
             relation='account.payment.term',
-            string ='Dafault Payment Term',
+            string ='Default Payment Term',
             view_load=True,
             help="This default payment term will be used on creation of partner"),
         'need_tech_validation': fields.boolean('Need Technical Verification'),
@@ -56,6 +64,7 @@ class res_company(orm.Model):
         'check_credit_limit': True,
         'need_tech_validation': False,
         'need_manager_validation': False,
-        'default_credit_limit' : 0,
-        'default_sale_order_validity' : 30,
+        'default_credit_limit': 0,
+        'default_sale_order_validity': 30,
+        'default_property_account_position': _getFiscalPosition,
     }

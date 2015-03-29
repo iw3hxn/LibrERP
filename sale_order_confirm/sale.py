@@ -265,13 +265,16 @@ class sale_order_line(orm.Model):
         @return: Dictionary of values
         """
 
-        if context is None:
+        if not context:
             context = {}
         res = {}
+        # if line.order_id:
+        #     context['warehouse'] = self.order_id.shop_id.warehouse_id.id
 
         for line in self.browse(cr, uid, ids, context):
-            res[line.id] = {'qty_available': line.product_id and line.product_id.qty_available or 0.0,
-                            'virtual_available': line.product_id and line.product_id.virtual_available or 0.0}
+
+            res[line.id] = {'qty_available': line.product_id and line.product_id.type != 'service' and line.product_id.qty_available or False,
+                            'virtual_available': line.product_id and line.product_id.type != 'service' and line.product_id.virtual_available or False}
         return res
 
     # overwrite of a funcion inside sale_margin

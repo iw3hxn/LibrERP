@@ -29,7 +29,7 @@
 
 {
     "name": "Extend sale_order",
-    "version": "3.9.21.28",
+    "version": "3.10.21.28",
     "category": "Sales Management",
     "description": """This Module, provided user's wizard to confirm/modify sale order.
     It also increases usability on sale order using credit limit amd default payment term

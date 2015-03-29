@@ -342,7 +342,7 @@ msgstr "Q.tà Cons"
 
 #. module: sale_order_confirm
 #: field:res.company,default_property_payment_term:0
-msgid "Dafault Payment Term"
+msgid "Default Payment Term"
 msgstr "Condizioni Pagamento"
 
 #. module: sale_order_confirm
