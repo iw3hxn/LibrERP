@@ -34,12 +34,12 @@
             <field name="arch" type="xml">
                 <field name="line_ids" position="before">
                     <group colspan="2" col="4">
-                    <field name="month_to_be_delayed1"/>
-                    <field name="days_to_be_delayed1"/>
-                    <field name="min_day_to_be_delayed1"/>
-                    <field name="month_to_be_delayed2"/>
-                    <field name="days_to_be_delayed2"/>
-                    <field name="min_day_to_be_delayed2"/>
+                        <field name="month_to_be_delayed1"/>
+                        <field name="month_to_be_delayed2"/>
+                        <field name="days_to_be_delayed1"/>
+                        <field name="days_to_be_delayed2"/>
+                        <field name="min_day_to_be_delayed1"/>
+                        <field name="min_day_to_be_delayed2"/>
                     </group>
                 </field>
             </field>
