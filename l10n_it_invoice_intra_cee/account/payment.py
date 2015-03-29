@@ -42,10 +42,10 @@ class account_payment_term(orm.Model):
         prec = obj_precision.precision_get(cr, uid, 'Account')
         amount_tax = context.get('amount_tax', False)
         # create a lonely line for tax value
-        if context.get('reverse_charge', False) and amount_tax != 0.0:
-            value -= round(amount_tax, prec)
-            amount = round(value, prec)
-            result.append((date_ref, amount_tax))
+        if context.get('reverse_charge', False) and amount_tax and amount_tax != 0.0:
+            value = (abs(value) - abs(amount_tax)) * (value / abs(value))
+            amount = value
+            result.append((date_ref, amount_tax * (value / abs(value))))
 
         for line in pt.line_ids:
             if line.value == 'tax':
@@ -89,6 +89,9 @@ class account_payment_term(orm.Model):
                                 next_date.day >= pt.min_day_to_be_delayed2:
                             next_date += relativedelta(
                                 day=pt.days_to_be_delayed2, months=1)
+                    if context.get('reverse_charge', False) and amount_tax and amount_tax != 0.0:
+                        if (next_date.strftime('%Y-%m-%d')) == date_ref:
+                            next_date += relativedelta(days=1)
                     result.append((next_date.strftime('%Y-%m-%d'), amt))
                 else:
                     next_date = (datetime.strptime(date_ref, '%Y-%m-%d')
@@ -115,6 +118,9 @@ class account_payment_term(orm.Model):
                                 next_date.day >= pt.min_day_to_be_delayed2:
                             next_date += relativedelta(
                                 day=pt.days_to_be_delayed2, months=1)
+                    if context.get('reverse_charge', False) and amount_tax and amount_tax != 0.0:
+                        if (next_date.strftime('%Y-%m-%d')) == date_ref:
+                            next_date += relativedelta(days=1)
                     result.append((next_date.strftime('%Y-%m-%d'), amt))
                 amount -= amt
         return result
