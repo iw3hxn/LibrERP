@@ -24,8 +24,6 @@ from openerp.osv import fields, orm
 from openerp import netsvc
 import decimal_precision as dp
 from openerp.tools.translate import _
-from datetime import datetime
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 import logging
 _logger = logging.getLogger(__name__)

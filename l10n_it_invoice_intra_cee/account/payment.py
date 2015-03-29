@@ -22,7 +22,7 @@
 ##############################################################################
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from openerp.osv import fields, orm
+from openerp.osv import orm
 
 
 class account_payment_term(orm.Model):
