@@ -22,7 +22,7 @@
 
 import time
 from openerp.osv import fields, orm
-from tools.translate import _
+from openerp.tools.translate import _
 from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
@@ -59,14 +59,16 @@ class account_invoice(orm.Model):
         result = {}
         if not len(ids):
             return []
+        ait_obj = self.pool.get('account.invoice.tax')
+        amount_tax = 0.0
         for invoice in self.browse(cr, uid, ids, context):
             if not invoice.id in result:
                 result[invoice.id] = []
             if invoice.state == 'draft':
+                compute_taxes = ait_obj.compute(cr, uid, invoice.id, context=context)
+                for tax in compute_taxes:
+                    amount_tax += compute_taxes[tax]['amount']
                 t_amount_total = invoice.amount_total
-                amount_tax = invoice.amount_tax
-                if invoice.type in ('in_invoice', 'out_refund'):
-                    amount_tax = amount_tax * -1
                 context.update({'amount_tax': amount_tax})
                 if invoice.payment_term:
                     for line in self.pool['account.payment.term'].compute(cr, uid, invoice.payment_term.id, t_amount_total, date_ref=invoice.date_invoice, context=context):
