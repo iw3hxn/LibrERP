@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <record id="view_partner_import_template_form" model="ir.ui.view">
+            <field name="name">partner.import.template.form</field>
+            <field name="model">partner.import.template</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Partner Import Template">
+                    <group colspan="4" col="6">
+                        <field name="name" />
+                        <field name="auto_update" />
+                    </group>
+                    <separator string="Mapping" colspan="4"/>
+                    <newline/>
+                    <field name="account_fiscal_position_ids" colspan="2" widget="one2many_list" nolabel="1">
+                        <tree string="Fiscal Position" editable="bottom">
+                            <field name="source_position" />
+                            <field name="dest_position_id" />
+                        </tree>
+
+                    </field>
+                    <field name="payment_term_ids" colspan="2" widget="one2many_list" nolabel="1">
+                        <tree string="Payment Term" editable="bottom">
+                            <field name="source_term"/>
+                            <field name="dest_position_id"/>
+                            <field name="company_bank_id" />
+                        </tree>
+                    </field>
+                    <separator string="Notes" colspan="4"/>
+                    <field name="note" colspan="4" nolabel="1"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_partner_import_template_tree" model="ir.ui.view">
+            <field name="name">partner.import.template.tree</field>
+            <field name="model">partner.import.template</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Partner Import Template">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_partner_import_template" model="ir.actions.act_window">
+            <field name="name">Partner Import Template</field>
+            <field name="res_model">partner.import.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+            action="action_partner_import_template"
+            id="menu_action_partner_import_template"
+            parent="data_migration_menu" sequence="20"/>
+
+    </data>
+</openerp>

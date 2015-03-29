@@ -67,8 +67,9 @@ class ImportFile(threading.Thread, Utils):
         self.city_obj = self.pool['res.city']
         self.province_obj = self.pool['res.province']
         self.account_fiscal_position_obj = self.pool['account.fiscal.position']
-
-        # Necessario creare un nuovo cursor per il thread, quello fornito dal metodo chiamante viene chiuso
+        self.partner_template = self.pool['partner.import.template']
+        # Necessario creare un nuovo cursor per il thread, quello fornit
+        # o dal metodo chiamante viene chiuso
         # alla fine del metodo e diventa inutilizzabile all'interno del thread.
         self.cr = pooler.get_db(self.dbname).cursor()
 
@@ -91,7 +92,7 @@ class ImportFile(threading.Thread, Utils):
         self.partnerImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.partnerImportID, context=self.context)
         self.file_name = self.partnerImportRecord.file_name.split('\\')[-1]
         self.strict = self.partnerImportRecord.strict
-
+        self.partner_template_id = self.partnerImportRecord.partner_template_id
         #===================================================
         Config = getattr(settings, self.partnerImportRecord.format)
 
@@ -359,7 +360,9 @@ class ImportFile(threading.Thread, Utils):
             country_id = self._contry_by_code(cr, uid, country_code)
             if country_id:
                 country = self.pool['res.country'].browse(cr, uid, country_id)
+
                 fiscal_position_ids = self.account_fiscal_position_obj.search(cr, uid, [('name', '=ilike', country.name)])
+
                 if fiscal_position_ids and len(fiscal_position_ids) == 1:
                     vals_partner['property_account_position'] = fiscal_position_ids[0]
                 else:
@@ -371,6 +374,18 @@ class ImportFile(threading.Thread, Utils):
                 _logger.debug(error)
                 self.error.append(error)
                 return False
+
+        if hasattr(record, 'fiscal_position') and record.fiscal_position:
+            fiscal_position = self.partner_template.map_account_fiscal_position(cr, uid, self.partner_template_id, record.fiscal_position)
+            if fiscal_position:
+                vals_partner['property_account_position'] = fiscal_position
+
+        if hasattr(record, 'payment_term') and record.payment_term:
+            vals_payment = self.partner_template.map_payment_term(cr, uid, self.partner_template_id, record.payment_term)
+            if vals_payment.get('property_payment_term', False):
+                vals_partner['property_payment_term'] = vals_payment['property_payment_term']
+            if vals_payment.get('company_bank_id', False):
+                vals_partner['company_bank_id'] = vals_payment['company_bank_id']
 
         if record.vat and len(record.vat) > 3:
             vals_partner['vat_subjected'] = True

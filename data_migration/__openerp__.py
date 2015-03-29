@@ -41,11 +41,11 @@
         'l10n_it_account',
         'core_extended'
     ],
-    'init_xml': [],
-    'update_xml': [
-        "wizard/file_import_view.xml"
+    'data': [
+        'security/ir.model.access.csv',
+        'wizard/file_import_view.xml',
+        'data_migration_view.xml'
     ],
-    'demo_xml': [],
     'test': [],
     'installable': True,
     'auto_install': False,

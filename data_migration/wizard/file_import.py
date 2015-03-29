@@ -94,6 +94,7 @@ class partner_import(filedata_import):
         'progress_indicator': fields.integer('Progress import ', size=3, translate=False, readonly=True),
         'partner_type': fields.selection((('customer', 'Customer'), ('supplier', 'Supplier')), 'Partner Type', required=True),
         'strict': fields.boolean('Strict', help="Use more strict (and more slow) data check"),
+        'partner_template_id': fields.many2one('partner.import.template', 'Partner Import Template'),
     }
     # default value for data fields of object
     _defaults = {
