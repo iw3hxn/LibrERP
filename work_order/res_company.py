@@ -27,6 +27,17 @@ from openerp.osv import orm, fields
 
 class res_company(orm.Model):
     _inherit = 'res.company'
+
+    def _getWorkHourUoM(self, cr, uid, context=None):
+        md = self.pool['ir.model.data']
+        try:
+            dummy, res_id = md.get_object_reference(cr, uid, 'product', 'uom_hour')
+            check_right = self.pool['product.uom'].search(cr, uid, [('id', '=', res_id)], context=context)
+            if check_right:
+                return res_id
+        except ValueError:
+            pass
+        return False
     
     _columns = {
         'delivery_note_journal_id': fields.many2one('account.analytic.journal', 'Delivery Note Journal'),
@@ -40,6 +51,7 @@ class res_company(orm.Model):
     _defaults = {
         'create_task': True,
         'task_no_user': True,
+        'hour': _getWorkHourUoM,
     }
 
 
