@@ -105,8 +105,12 @@ class account_invoice(orm.Model):
                 if (date_invoice > reg_date):
                     raise orm.except_orm(_('Error date !'), _('The invoice date cannot be later than the date of registration!'))
             #periodo
-            date_start = inv.registration_date or inv.date_invoice or time.strftime('%Y-%m-%d')
-            date_stop = inv.registration_date or inv.date_invoice or time.strftime('%Y-%m-%d')
+            if inv.type in ['in_invoice', 'in_refund']:
+                date_start = inv.registration_date or inv.date_invoice or time.strftime('%Y-%m-%d')
+                date_stop = inv.registration_date or inv.date_invoice or time.strftime('%Y-%m-%d')
+            elif inv.type in ['out_invoice', 'out_refund']:
+                date_start = inv.date_invoice or inv.registration_date or time.strftime('%Y-%m-%d')
+                date_stop = inv.date_invoice or inv.registration_date or time.strftime('%Y-%m-%d')
             period_ids = self.pool['account.period'].search(
                 cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop), ('company_id', '=', inv.company_id.id)])
             if period_ids:
