@@ -21,7 +21,7 @@
 
 {
     "name" : "Purchase No Gap",
-    "version" : "2.0.0.0",
+    "version" : "2.0.0.1",
     "author" : "Camptocamp Austria, Didotech srl",
     "category": 'Purchase Management',
     'complexity': "easy",

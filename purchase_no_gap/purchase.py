@@ -32,6 +32,8 @@ class purchase_order(orm.Model):
     }
 
     def create(self, cr, uid, vals, context=None):
+        if not context:
+            context = {}
         if vals.get('date_order', False):
             context.update({'date': vals.get('date_order')})
         if vals.get('name', '/') == '/':
