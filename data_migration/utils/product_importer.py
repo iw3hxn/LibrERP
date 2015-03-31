@@ -396,7 +396,7 @@ class ImportFile(threading.Thread, Utils):
             product_code = False
                     
         if hasattr(record, 'standard_price') and record.standard_price:
-            vals_product['standard_price'] = float(record.standard_price)
+            vals_product['standard_price'] = float(self.toStr(record.standard_price))
         else:
             if 'standard_price' in self.PRODUCT_WARNINGS:
                 warning = u"Row {0}: No standard price for product {1}".format(self.processed_lines, vals_product['name'])
