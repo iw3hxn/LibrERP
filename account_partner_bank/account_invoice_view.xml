@@ -5,9 +5,10 @@
             <field name="name">account.invoice.tree.bank</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account_bank.invoice_tree_reg_date"/>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
-                <field name="date_due" position="before">
-                    <field name="bank_riba_id" invisible="context.get('type') == 'in_invoice'" groups="account.view_payment_term"/>
+                <field name="bank_riba_id" position="before">
+                    <field name="partner_bank_id" invisible="context.get('type') == 'in_invoice'" groups="account.view_payment_term"/>
                 </field>
             </field>
         </record>
