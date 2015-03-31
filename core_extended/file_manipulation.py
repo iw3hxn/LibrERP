@@ -65,10 +65,9 @@ def import_sheet(filename, content):
 
         for rx in range(1, sh.max_row + 1):
             row = []
-            for cx in range(1, max_column):
+            for cx in range(1, max_column + 1):
                 if rx == 1 and not sh.cell(row=rx, column=cx).value:
-                    max_column = cx
-                    row.append(sh.cell(row=rx, column=cx).value)
+                    max_column = cx - 1
                     break
 
                 row.append(sh.cell(row=rx, column=cx).value)
