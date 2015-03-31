@@ -22,7 +22,7 @@
 {
     "name" : "Purchase Order Lines With Discounts",
     "author" : "Tiny,Pexego",
-    "version" : "1.0",
+    "version" : "1.0.1",
     "category" : "Generic Modules/Sales & Purchases",
     'description': """ """,
     "depends" : [

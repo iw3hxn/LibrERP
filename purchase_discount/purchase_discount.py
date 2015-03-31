@@ -160,7 +160,7 @@ class purchase_order(orm.Model):
         res = super(purchase_order, self)._prepare_inv_line(cr, uid, account_id, order_line, context=context)
 
         res.update({'discount': order_line.discount or 0.0,
-                    'price_unit': purchase_line_id.price_unit, })
+                    'price_unit': order_line.price_unit, })
         return res
 
     def _get_price_unit_invoice(self, cursor, user, move_line, type):
