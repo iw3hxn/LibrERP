@@ -21,14 +21,13 @@
 
 {
     'name': 'Italian Localisation - Account Didotech',
-    'version': '3.0.1.0',
+    'version': '3.0.1.1',
     'category': 'Localisation',
     'description': """This module customizes OpenERP in order to fit italian laws and more - Account version
 
 Functionalities:
 
-- Fiscal code computation for partner
-- Check invoice date consistency
+- Add Default Bank Account on Partner
 
 """,
     'author': 'Didotech SRL',
@@ -36,7 +35,8 @@ Functionalities:
     'license': 'AGPL-3',
     "depends": [
         'account',
-        'l10n_it_account', # serve per onchange dentro account.invoice
+        'l10n_it_account',  # serve per onchange dentro account.invoice
+        'account_bank',
     ],
     "data": [
         'security/security.xml',
