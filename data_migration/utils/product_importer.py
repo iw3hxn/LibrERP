@@ -298,12 +298,12 @@ class ImportFile(threading.Thread, Utils):
                     pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
                 else:
                     pprint(zip(self.HEADER[:len(row_list)], row_str_list))
-            
+
             error = u"""Row {row}: Row_list is {row_len} long. We expect it to be {expected} long, with this columns:
                 {keys}
                 Instead of this we got this:
                 {header}
-                """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER), keys=self.HEADER, header=', '.join(row_str_list))
+                """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER), keys=self.HEADER, header=', '.join(map(lambda s: s or '', row_str_list)))
 
             _logger.error(str(row_list))
             _logger.error(error)

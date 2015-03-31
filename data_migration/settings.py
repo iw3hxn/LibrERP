@@ -132,7 +132,7 @@ class FormatThree():
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['name', 'vat']
 
-    HEADER_PRODUCT = ('codice', 'nome', 'categoria', 'uom_i', 'codiva_acq', 'codiva_cen', 'list_price', 'ean13', 'fornitore', 'cod__prod__forn_', 'prezzo_forn_', 'active', 'available_in_pos', 'sale_ok', 'assupply_method', 'type', 'procure_method', 'cost_method')
+    HEADER_PRODUCT = ('Codice', 'Nome', 'Categoria', 'UoM', 'codiva_acq', 'codiva_cen', 'list_price', 'EAN13', 'fornitore', 'cod__prod__forn_', 'prezzo_forn_', 'active', 'available_in_pos', 'sale_ok', 'assupply_method', 'type', 'procure_method', 'cost_method')
     COLUMNS_PRODUCT = "default_code, name, category, uom, tax_in, tax_out, list_price, ean13, supplier, supplier_product_code, standard_price, active, null, sale_ok, supply_method, type, procure_method, cost_method"
     PRODUCT_SEARCH = ('default_code', 'name')
     REQUIRED_PRODUCT = ['default_code', 'name']
