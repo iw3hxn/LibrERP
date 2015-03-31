@@ -199,7 +199,8 @@ class ImportFile(threading.Thread, Utils):
             'kgm': 'kg',
             'unit': 'Unit(s)',
             'litre': 'Liter(s)',
-            'PCE': 'PCE'
+            'PCE': 'PCE',
+            'Pz.': 'PCE',
         }
 
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':
