@@ -20,6 +20,7 @@
             <field name="name">account.invoice.tree.bank</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
                 <field name="date_invoice" position="after">
                     <field name="payment_term" invisible="context.get('type') == 'in_invoice'" groups="account.view_payment_term"/>

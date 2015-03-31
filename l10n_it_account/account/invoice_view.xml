@@ -67,6 +67,7 @@
             <field name="name">account.invoice.tree.reg_date</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
                 <field name="date_invoice" position="after">
                     <field name="supplier_invoice_number" invisible="context.get('type') == 'out_invoice'"/>
