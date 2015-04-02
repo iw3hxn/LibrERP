@@ -96,13 +96,13 @@ class product_product(orm.Model):
                 res['uos_id'] = category_data['uos_id']
                 res['uos_coef'] = category_data['uos_coef']
 
-            if ids:
+            if len(ids) == 1 and self.browse(cr, uid, ids, context)[0].categ_id.id != categ_id:
                 warn = {
-                    'title': _('Caution'),
-                    'message': _("""The product category has changed, thanks to control :
-* Sale and Purchase taxes
-* Unit sale and stock
-* The price with return unit"""),
+                        'title': _('Caution'),
+                        'message': _("""The product category has changed, thanks to control :
+    * Sale and Purchase taxes
+    * Unit sale and stock
+    * The price with return unit"""),
                 }
 
         return {'value': res, 'warning': warn}
