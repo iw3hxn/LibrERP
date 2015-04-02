@@ -18,8 +18,8 @@
                             <tree string="Bom Line" editable="top" >
                                 <field name="product_id" on_change="bom_product_id_change(product_id, product_uom, product_uom_qty)" />
                                 <field name="name" string="Note"/>
-                                <field name='product_uom' />
                                 <field name='product_uom_qty'  on_change="bom_product_id_change(product_id, product_uom, product_uom_qty, price_unit)"/>
+                                <field name='product_uom' />
                                 <field name='price_unit' />
                                 <field name='price_subtotal' string="Total" sum="Total"/>
                             </tree>
