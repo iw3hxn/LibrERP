@@ -64,9 +64,19 @@ class sale_order(orm.Model):
             # Yes, it's crazy. Thanks to the authors of the sale_order for the wrong field name
             self.write(cr, uid, order.id, {'project_id': project.analytic_account_id.id})
         return True
+
+    def _get_project_task(self, cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        project_task_obj = self.pool['project.task']
+        sale_order_obj = self.pool['sale.order']
+
+        for sale_order in sale_order_obj.browse(cr, uid, ids, context):
+            result[sale_order.id] = project_task_obj.search(cr, uid, [('project_id', '=', sale_order.project_project.id)], context=context)
+        return result
          
     _columns = {
         'project_project': fields.function(_read_project, obj='project.project', fnct_inv=_write_project, string=_('Project'), method=True, type='many2one'),
+        'project_task_ids': fields.function(_get_project_task, 'Project Task', type='one2many', relation="project.task", readonly=True, method=True),
     }
 
     def action_cancel(self, cr, uid, ids, context=None):
@@ -143,21 +153,23 @@ class sale_order(orm.Model):
                     project_name = project_name + ' - ' + order.client_order_ref
                 self.pool['project.project'].write(cr, uid, project_id, {'to_invoice': invoice_ratio, 'state': 'open', 'name': project_name}, context=context)
                 for order_line in order.order_line:
+                    task_number = 1
                     task_vals = False
                     if order_line.product_id and order_line.product_id.is_kit:
                         # test id module sale_bom is installad
                         if sale_line_bom_obj:
                             service_boms = [sale_line_bom for sale_line_bom in order_line.mrp_bom if (sale_line_bom.product_id.type == 'service' and sale_line_bom.product_id.purchase_ok == False)]
                             for bom in service_boms:
-                                if bom.product_id.uom_id.id == user.company_id.hour.id:
+                                if bom.product_uom.id == user.company_id.hour.id:
                                     planned_hours = bom.product_uom_qty
                                 else:
-                                    planned_hours = 0
+                                    planned_hours = self.pool['product.uom']._compute_qty(cr, uid, bom.product_uom.id, bom.product_uom_qty, bom.product_id.uom_id.id)
+                                    task_number = int(bom.product_uom_qty)
                                 task_vals = {
                                     'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
                                     'project_id': project_id,
-                                    'planned_hours': planned_hours,
-                                    'remaining_hours': planned_hours,
+                                    'planned_hours': int(planned_hours / task_number),
+                                    'remaining_hours': int(planned_hours / task_number),
                                     'origin': 'sale.order.line, {0}'.format(order_line.id)
                                 }
                         else:
@@ -197,7 +209,8 @@ class sale_order(orm.Model):
                     if task_vals:
                         if order.company_id.task_no_user:
                             task_vals['user_id'] = False
-                        self.pool['project.task'].create(cr, uid, task_vals, context=context)
+                        for task in range(task_number):
+                            self.pool['project.task'].create(cr, uid, task_vals, context=context)
         return result
 
     def copy(self, cr, uid, id, default=None, context=None):

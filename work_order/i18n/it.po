@@ -125,6 +125,7 @@ msgstr "Attività all'inizio di ogni Commessa"
 
 #. module: work_order
 #: model:ir.model,name:work_order.model_project_task
+#: view:sale.order:0
 msgid "Task"
 msgstr "Attività"
 
