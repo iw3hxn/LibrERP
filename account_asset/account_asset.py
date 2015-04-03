@@ -182,7 +182,7 @@ class account_asset_asset(orm.Model):
         for asset in self.browse(cr, uid, ids, context=context):
             if asset.account_move_line_ids:
                 raise orm.except_orm(_('Error!'),
-                    _('You cannot delete an asset that contains posted depreciation lines.'))
+                    _('You cannot delete an asset that contains posted depreciation lines. You must Deactivate'))
             parent = asset.parent_id
             super(account_asset_asset, self).unlink(cr, uid, [asset.id], context=context)
             if parent:
@@ -1232,9 +1232,11 @@ class account_asset_depreciation_line(orm.Model):
         'init_entry': fields.boolean('Initial Balance Entry',
             help="Set this flag for entries of previous fiscal years "
                  "for which OpenERP has not generated accounting entries."),
+        'active': fields.boolean('Active')
     }
     _defaults = {
         'type': 'depreciate',
+        'active': True
     }
 
     def onchange_amount(self, cr, uid, ids, dl_type, asset_value, amount, depreciated_value, context=None):

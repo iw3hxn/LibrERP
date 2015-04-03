@@ -1375,8 +1375,8 @@ msgstr "Crea Movimento"
 #. module: account_asset
 #: code:addons/account_asset/account_asset.py:185
 #, python-format
-msgid "You cannot delete an asset that contains posted depreciation lines."
-msgstr "You cannot delete an asset that contains posted depreciation lines."
+msgid "You cannot delete an asset that contains posted depreciation lines. You must Deactivate"
+msgstr "Non puoi cancellare l'asset che contiene degli ammortamenti. Bisogna disattivarlo."
 
 #. module: account_asset
 #: field:account.asset.recompute.trigger,date_trigger:0
