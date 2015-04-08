@@ -20,7 +20,7 @@ openerp.web_support = function(openerp) {
                             contract_provider = result.support_contract.contract_provider;
                             contract_provider_url = result.support_contract.contract_provider_url;
                             var footer = '<p class="oe_footer_powered">Powered by ' +
-                                            '<a href="http://www.simplerp.it">SimplERP</a> - ' +
+                                            '<a href="http://www.librerp.com">LibrERP</a> - ' +
                                             'Supported by <a href="' + contract_provider_url + 
                                             '" target="_blank">' + contract_provider +
                                             '</a></span><p>';

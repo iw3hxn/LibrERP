@@ -33,7 +33,7 @@ msgstr "Ok"
 #. openerp-web
 #: addons/web/static/src/js/chrome.js:184
 msgid "Send OpenERP Enterprise Report"
-msgstr "Invia SimplERP Enterprise Report"
+msgstr "Invia LibrERP Enterprise Report"
 
 #. openerp-web
 #: addons/web/static/src/js/chrome.js:198
@@ -150,7 +150,7 @@ msgstr "Cambia Password"
 #. openerp-web
 #: addons/web/static/src/js/chrome.js:1052
 msgid "OpenERP - Unsupported/Community Version"
-msgstr "SimplERP - Unsupported/Community Version"
+msgstr "LibrERP - Unsupported/Community Version"
 
 #. module: web
 #. openerp-web
@@ -1075,7 +1075,7 @@ msgstr "Powered by"
 #: code:addons/web/static/src/xml/base.xml:449
 #, python-format
 msgid "OpenERP"
-msgstr "SimplERP"
+msgstr "LibrERP"
 
 #. module: web
 #. openerp-web
@@ -1225,23 +1225,23 @@ msgid ""
 "Your version of OpenERP is unsupported. Support & maintenance services are "
 "available here:"
 msgstr ""
-"La tua versione di SimplERP non è supportata. Servizi di supporto & "
+"La tua versione di LibrERP non è supportata. Servizi di supporto & "
 "manutenzione sono disponibili qui:"
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:251
 msgid "OpenERP Entreprise"
-msgstr "SimplERP Entreprise"
+msgstr "LibrERP Entreprise"
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:256
 msgid "OpenERP Enterprise Contract."
-msgstr "Contratto SimplERP Enterprise."
+msgstr "Contratto LibrERP Enterprise."
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:257
 msgid "Your report will be sent to the OpenERP Enterprise team."
-msgstr "Il tuo report verrà inviato all'SimplERP Enterprise team."
+msgstr "Il tuo report verrà inviato all'LibrERP Enterprise team."
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:259
@@ -2104,4 +2104,4 @@ msgstr "Per maggiori informazioni visita"
 #: code:addons/web/static/src/xml/base.xml:424
 #, python-format
 msgid "OpenERP.com"
-msgstr "SimplERP.si"
+msgstr "LibrERP.si"

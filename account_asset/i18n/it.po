@@ -202,7 +202,7 @@ msgstr "Righe Ammortamento"
 #. module: account_asset
 #: help:account.asset.asset,date_start:0
 msgid "You should manually add depreciation lines with the depreciations            of previous fiscal years if the Depreciation Start Date is             different from the date for which OpenERP needs to generate             accounting entries."
-msgstr "You should manually add depreciation lines with the depreciations            of previous fiscal years if the Depreciation Start Date is             different from the date for which SimplERP needs to generate             accounting entries."
+msgstr "You should manually add depreciation lines with the depreciations            of previous fiscal years if the Depreciation Start Date is             different from the date for which LibrERP needs to generate             accounting entries."
 
 #. module: account_asset
 #: view:account.asset.asset:0

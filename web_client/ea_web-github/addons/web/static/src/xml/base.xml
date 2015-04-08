@@ -291,7 +291,7 @@
 </t>
 <t t-name="CrashManagerError">
     <t t-if="!session.openerp_entreprise">
-        <span>Your version of SimplERP is unsupported. Support &amp; maintenance services are available here: <a href="http://www.simplerp.it" target="_blank">SimplERP Entreprise</a>.</span>
+        <span>Your version of LibrERP is unsupported. Support &amp; maintenance services are available here: <a href="http://www.librerp.com" target="_blank">LibrERP Entreprise</a>.</span>
     </t>
     <t t-if="session.openerp_entreprise">
         <div class="oe_error_send">
@@ -1900,7 +1900,7 @@
 <t t-name="About-Page">
     <div>
         <a class="oe_activate_debug_mode" href="?debug" style="float:right; font-size: 80%;">Activate the developper mode</a>
-        <h1 style="margin:0;">SimplERP</h1>
+        <h1 style="margin:0;">LibrERP</h1>
         <h3 style="margin:15px 0;padding:0;">Version <t t-esc="version_info.version"/></h3>
         <p>
             Copyright © 2004-2012 OpenERP SA. All Rights Reserved.<br />

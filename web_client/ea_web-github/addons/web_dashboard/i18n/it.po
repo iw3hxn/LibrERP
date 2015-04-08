@@ -95,7 +95,7 @@ msgstr ""
 #. openerp-web
 #: addons/web_dashboard/static/src/xml/web_dashboard.xml:110
 msgid "Welcome to OpenERP"
-msgstr "Benvenuto su SimplERP"
+msgstr "Benvenuto su LibrERP"
 
 #. openerp-web
 #: addons/web_dashboard/static/src/xml/web_dashboard.xml:118
