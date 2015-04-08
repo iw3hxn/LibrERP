@@ -201,6 +201,7 @@ class ImportFile(threading.Thread, Utils):
             'litre': 'Liter(s)',
             'PCE': 'PCE',
             'Pz.': 'PCE',
+            'Pa.': 'PCE'  # Paia
         }
 
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':
@@ -329,11 +330,11 @@ class ImportFile(threading.Thread, Utils):
                 _logger.debug(error)
                 self.error.append(error)
                 return False
-        
-        vals_product = {}
 
         # print '>>>>>>>', record.name
-        vals_product['name'] = record.name
+        vals_product = {
+            'name': record.name
+        }
         
         for field in self.PRODUCT_SEARCH:
             if hasattr(record, field) and getattr(record, field):
