@@ -201,7 +201,8 @@ class ImportFile(threading.Thread, Utils):
             'litre': 'Liter(s)',
             'PCE': 'PCE',
             'Pz.': 'PCE',
-            'Pa.': 'PCE'  # Paia
+            'Pa.': 'PCE',  # Paia
+            'PZ': 'PCE'
         }
 
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':
