@@ -202,7 +202,14 @@ class ImportFile(threading.Thread, Utils):
             'PCE': 'PCE',
             'Pz.': 'PCE',
             'Pa.': 'PCE',  # Paia
-            'PZ': 'PCE'
+            'PZ': 'PCE',
+            'CF': 'PCE',
+            'HH': 'Hour',
+            'M': 'm',
+            'M2': 'PCE',
+            'ML.': 'm',
+            'N.': 'PCE',
+            'LT': 'Litre',
         }
 
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':
