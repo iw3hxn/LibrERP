@@ -110,8 +110,8 @@ class Parser(report_sxw.rml_parse):
             return sign + before + ',' + after
     
     def get_description(self, ddt_name, order_name):
-        ddt_obj = self.pool.get('stock.picking')
-        order_obj = self.pool.get('sale.order')
+        ddt_obj = self.pool['stock.picking']
+        order_obj = self.pool['sale.order']
         description = []
         if ddt_name:
             ddt_ids = ddt_obj.search(self.cr, self.uid, [('name', '=', ddt_name)])
@@ -128,7 +128,10 @@ class Parser(report_sxw.rml_parse):
             if len(order_ids) == 1:
                 order = order_obj.browse(self.cr, self.uid, order_ids[0])
                 order_date = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT)
-                description.append(u'Rif. Ns. Ordine {order} del {order_date}'.format(order=order.name, order_date=order_date.strftime("%d/%m/%Y")))
+                if order.client_order_ref:
+                    description.append(u'Rif. Ns. Ordine {order} del {order_date}, Vs. Ordine {client_order}'.format(order=order.name, order_date=order_date.strftime("%d/%m/%Y"), client_order=order.client_order_ref))
+                else:
+                    description.append(u'Rif. Ns. Ordine {order} del {order_date}'.format(order=order.name, order_date=order_date.strftime("%d/%m/%Y")))
             
         return ' / '.join(description)
     

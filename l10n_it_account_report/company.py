@@ -25,5 +25,5 @@ class res_company(orm.Model):
     _inherit = 'res.company'
     _columns = {
         'disable_sale_ref_invoice_report': fields.boolean("Don't show \
-        sale order ref in invoice report"),
+        sale order ref in invoice report", help="If Set not show on Report the reference to Sale Order"),
     }
