@@ -42,77 +42,51 @@ class sale_order(orm.Model):
 
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
         res = dict.fromkeys(ids, 0.0)
-        for order_id in ids:
-            processed_order = self.browse(cr, uid, order_id, context=context)
-            if processed_order.order_policy == 'prepaid':
+        for order in self.browse(cr, uid, ids, context=context):
+
+            if order.order_policy == 'prepaid':
+                res[order.id] = 0
                 continue
-            partner = processed_order.partner_id
+            partner = order.partner_id
             credit = partner.credit
             # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
             order_obj = self.pool['sale.order']
-            filters = [('partner_id', '=', partner.id), ('state', '<>', 'draft'), ('state', '<>', 'cancel')]
-            approved_invoices_ids = order_obj.search(cr, uid, filters, context=context)
+            approved_invoices_ids = order_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', 'not in', ['draft', 'cancel', 'done'])], context=context)
             approved_invoices_amount = 0.0
-            for order in order_obj.browse(cr, uid, approved_invoices_ids, context=context):
-                for order_line in order.order_line:
+            for orders in order_obj.browse(cr, uid, approved_invoices_ids, context=context):
+                for order_line in orders.order_line:
                     if not order_line.invoiced:
                         approved_invoices_amount += order_line.price_subtotal
 
             # We sum from all the invoices that are in draft the total amount
             invoice_obj = self.pool['account.invoice']
-            filters = [('partner_id', '=', partner.id), ('state', '=', 'draft')]
-            draft_invoices_ids = invoice_obj.search(cr, uid, filters, context=context)
+            draft_invoices_ids = invoice_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', '=', 'draft')], context=context)
             draft_invoices_amount = 0.0
             for invoice in invoice_obj.browse(cr, uid, draft_invoices_ids, context=context):
                 draft_invoices_amount += invoice.amount_total
             available_credit = partner.credit_limit - credit - approved_invoices_amount - draft_invoices_amount
-            res[order_id] = available_credit - processed_order.amount_total
+
+            res[order.id] = available_credit - order.amount_total
         return res
 
     def check_limit(self, cr, uid, ids, context=None):
-        for order_id in ids:
-            processed_order = self.browse(cr, uid, order_id, context=context)
-
-            if processed_order.order_policy == 'prepaid':
-                continue
-
-            partner = processed_order.partner_id
-            credit = partner.credit
-
-            # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
-            order_obj = self.pool['sale.order']
-            filters = [('partner_id', '=', partner.id), ('state', '<>', 'draft'), ('state', '<>', 'cancel')]
-            approved_invoices_ids = order_obj.search(cr, uid, filters, context=context)
-            approved_invoices_amount = 0.0
-            for order in order_obj.browse(cr, uid, approved_invoices_ids, context=context):
-                for order_line in order.order_line:
-                    if not order_line.invoiced:
-                        approved_invoices_amount += order_line.price_subtotal
-
-            # We sum from all the invoices that are in draft the total amount
-            invoice_obj = self.pool['account.invoice']
-            filters = [('partner_id', '=', partner.id), ('state', '=', 'draft')]
-            draft_invoices_ids = invoice_obj.search(cr, uid, filters, context=context)
-            draft_invoices_amount = 0.0
-            for invoice in invoice_obj.browse(cr, uid, draft_invoices_ids, context=context):
-                draft_invoices_amount += invoice.amount_total
-
-            available_credit = partner.credit_limit - credit - approved_invoices_amount - draft_invoices_amount
-            # check if is anable credit check in the company
-            if (processed_order.amount_total > available_credit) and processed_order.company_id and processed_order.company_id.check_credit_limit:
-                title = 'Fido Superato!'
-                msg = 'Non è possibile confermare in quanto il cliente non ha fido sufficiente.'
+        for processed_order in self.browse(cr, uid, ids, context=context):
+            if processed_order.credit_limit < 0 and processed_order.company_id and processed_order.company_id.check_credit_limit:
                 title = 'Fido Superato'
-                msg = u'Non è possibile confermare in quanto il cliente non ha fido sufficiente. \
-                         È possibile cambiare la politica di fatturazione a "pagamento prima della consegna" \
-                         nella scheda "Altre informazioni"'
-
+                msg = u'Non è possibile confermare in quanto il cliente non ha fido sufficiente. \n È possibile cambiare la politica di fatturazione a "pagamento prima della consegna" \n nella scheda "Altre informazioni"'
+                raise orm.except_orm(_(title), _(msg))
+                return False
+            if processed_order.visible_minimum and processed_order.sale_order_minimun > processed_order.amount_untaxed:
+                title = 'Importo Minimo Fatturabile'
+                msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol))
                 raise orm.except_orm(_(title), _(msg))
                 return False
         return True
 
     _columns = {
         'credit_limit': fields.function(_credit_limit, string="Fido Residuo", type='float', readonly=True, method=True),
+        'sale_order_minimun': fields.related('shop_id', 'sale_order_minimun', type='float', string='Minimun Invoice', store=False, readonly=True),
+        'visible_minimum': fields.related('shop_id', 'sale_order_have_minimum', type='boolean', string=_('Minimun Amount'), store=False, readonly=True),
         'visible_credit_limit': fields.related('company_id', 'check_credit_limit', type='boolean', string=_('Fido Residuo Visibile'), store=False, readonly=True),
         'validity': fields.date('Validity'),
         'state': fields.selection([
@@ -161,24 +135,6 @@ class sale_order(orm.Model):
         'validity': lambda self, cr, uid, context: (datetime.today() + relativedelta(days=self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_sale_order_validity or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
     }
 
-    #def default_get(self, cr, uid, fields, context=None):
-    #    """ To get default values for the object.
-    #    @param self: The object pointer.
-    #    @param cr: A database cursor
-    #    @param uid: ID of the user currently logged in
-    #    @param fields: List of fields for which we want default values
-    #    @param context: A standard dictionary
-    #    @return: A dictionary which of fields with values.
-    #    """
-    #    if context is None:
-    #        context = {}
-    #    res = super(sale_order, self).default_get(cr, uid, fields, context=context)
-    #    compant = self.pool['res.users'].browse(cr, uid, uid, context).company_id
-
-    #    if 'validity' in fields:
-    #        res.update({'validity': datetime.today() + relativedelta(days=company.default_sale_order_validity)})
-    #    return res
-
     def action_reopen(self, cr, uid, ids, context=None):
         result = super(sale_order, self).action_reopen(cr, uid, ids, context=context)
 
@@ -187,41 +143,41 @@ class sale_order(orm.Model):
                 self.write(cr, uid, ids, {
                     'tech_validation': False,
                     'manager_validation': False,
-                    'manager_validation': False,
-                    'customer_validation': False
-                })
+                    'email_sent_validation': False,
+                    'customer_validation': False,
+                }, context)
         return result
 
     def action_validate(self, cr, uid, ids, context=None):
-        for o in self.browse(cr, uid, ids):
-            if o.need_tech_validation and not o.tech_validation:
-                self.write(cr, uid, [o.id], {'state': 'wait_technical_validation'})
-            elif o.company_id.enable_margin_validation and o.amount_untaxed and (o.margin / o.amount_untaxed) < o.company_id.minimum_margin and not o.manager_validation:
-                self.write(cr, uid, [o.id], {'state': 'wait_manager_validation'})
-            elif o.need_manager_validation and not o.manager_validation:
-                self.write(cr, uid, [o.id], {'state': 'wait_manager_validation'})
-            elif not o.email_sent_validation:
-                self.write(cr, uid, [o.id], {'state': 'send_to_customer'})
-            elif not o.customer_validation:
-                self.write(cr, uid, [o.id], {'state': 'wait_customer_validation'})
+        for order in self.browse(cr, uid, ids, context):
+            if order.need_tech_validation and not order.tech_validation:
+                self.write(cr, uid, [order.id], {'state': 'wait_technical_validation'}, context)
+            elif order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) < order.company_id.minimum_margin and not order.manager_validation:
+                self.write(cr, uid, [order.id], {'state': 'wait_manager_validation'}, context)
+            elif order.need_manager_validation and not order.manager_validation:
+                self.write(cr, uid, [order.id], {'state': 'wait_manager_validation'}, context)
+            elif not order.email_sent_validation:
+                self.write(cr, uid, [order.id], {'state': 'send_to_customer'}, context)
+            elif not order.customer_validation:
+                self.write(cr, uid, [order.id], {'state': 'wait_customer_validation'}, context)
             else:
-                self.write(cr, uid, [o.id], {'state': 'send_to_customer'})
+                self.write(cr, uid, [order.id], {'state': 'send_to_customer'}, context)
         return True
 
     def check_validate(self, cr, uid, ids, context=None):
-        for o in self.browse(cr, uid, ids):
+        for order in self.browse(cr, uid, ids, context):
             res = True
 
-            if o.need_tech_validation and not o.tech_validation:
+            if order.need_tech_validation and not order.tech_validation:
                 res = False
-            if o.need_manager_validation and not o.manager_validation:
+            if order.need_manager_validation and not order.manager_validation:
                 res = False
-            return res and o.email_sent_validation and o.customer_validation
+            return res and order.email_sent_validation and order.customer_validation
         return True
 
     def check_direct_confirm(self, cr, uid, ids, context=None):
         if self.check_limit(cr, uid, ids, context):
-            for order in self.browse(cr, uid, ids):
+            for order in self.browse(cr, uid, ids, context):
                 values = {
                     'state': 'wait_customer_validation',
                     'customer_validation': True
@@ -232,18 +188,27 @@ class sale_order(orm.Model):
                 if (order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) < order.company_id.minimum_margin) or order.need_manager_validation:
                     values['manager_validation'] = True
 
-                self.write(cr, uid, [order.id], values)
+                self.write(cr, uid, [order.id], values, context)
 
             return self.action_validate(cr, uid, ids, context)
         else:
             return False
 
     def copy(self, cr, uid, order_id, defaults, context=None):
+        defaults['tech_validation'] = False
+        defaults['manager_validation'] = False
         defaults['customer_validation'] = False
         defaults['email_sent_validation'] = False
-
         return super(sale_order, self).copy(cr, uid, order_id, defaults, context)
 
+
+class sale_shop(orm.Model):
+    _inherit = 'sale.shop'
+
+    _columns = {
+        'sale_order_have_minimum': fields.boolean('Minimum Amount', help='The Sale Order of this shop have a Minimun Amount'),
+        'sale_order_minimun': fields.float('Minimum Amount of Sale Order', digits_compute=dp.get_precision('Sale Price')),
+    }
 
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
@@ -272,7 +237,6 @@ class sale_order_line(orm.Model):
         #     context['warehouse'] = self.order_id.shop_id.warehouse_id.id
 
         for line in self.browse(cr, uid, ids, context):
-
             res[line.id] = {'qty_available': line.product_id and line.product_id.type != 'service' and line.product_id.qty_available or False,
                             'virtual_available': line.product_id and line.product_id.type != 'service' and line.product_id.virtual_available or False}
         return res

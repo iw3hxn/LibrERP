@@ -12,6 +12,7 @@
             <field name="act_from" ref="sale.act_draft"/>
             <field name="act_to" ref="act_validation_router"/>
             <field name="signal">action_validation</field>
+            <field name="condition">check_limit()</field>
         </record>
         
         <record id="trans_validation_pre_router" model="workflow.transition">

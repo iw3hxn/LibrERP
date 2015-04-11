@@ -40,6 +40,11 @@
                             <field domain="[('type','=','sale')]" name="pricelist_id" groups="base.group_extended" on_change="onchange_pricelist_id(pricelist_id,order_line)"/>
                             <field name="credit_limit" attrs="{'invisible': [('visible_credit_limit','!=',True)]}" />
                             <field name="visible_credit_limit" invisible="1" />
+
+                            <field name="sale_order_minimun" attrs="{'invisible': [('visible_minimum','!=',True)]}" />
+                            <field name="visible_minimum" invisible="1" />
+
+
                             <field name="project_id" context="{'partner_id':partner_id, 'contact_id':partner_order_id, 'pricelist_id':pricelist_id, 'default_name':name}" groups="analytic.group_analytic_accounting" domain="[('type','&lt;&gt;','view'), ('company_id', '=', company_id), ('parent_id', '!=', False)]"/>
                             
                             <newline/>
@@ -97,7 +102,6 @@
                                 <field name="amount_total"/>
                                 <button name="button_dummy" states="draft,wait_technical_validation,wait_manager_validation,wait_customer_validation" string="Compute" type="object" icon="gtk-execute"/>
                                 <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Advance Invoice" type="action" icon="gtk-execute" states="draft,wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,waiting_date,progress" />
-
                             </group>
                             <group col="17" colspan="4">
                                 <field name="state" widget="statusbar" statusbar_visible="draft,wait_technical_validation,wait_manager_validation,wait_customer_validation,progress,done" statusbar_colors='{"shipping_except":"red","invoice_except":"red","waiting_date":"blue"}'/>
@@ -107,20 +111,22 @@
                                 <button name="ship_corrected" states="shipping_except" string="Ignore Exception" icon="gtk-apply"/>
                                 <button name="action_cancel" states="manual,progress" string="Cancel Order" type="object" icon="gtk-cancel"/>
                                 <button name="%(sale.report_sale_order)d" string="Print Order" type="action" icon="gtk-print" states="waiting_date,manual,progress,done,shipping_except,invoice_except"/>
+                                <button name="%(sale.report_sale_order)d" string="Print Quotation" type="action" icon="gtk-print" states="draft"/>
                                 <button name="manual_invoice" states="manual" string="Create Final Invoice" icon="gtk-go-forward" type="object"/>
+                            </group>
+                            <group colspan="5" col="5" >
+                                <button name="action_validation" string="Confirm Quotation" states="draft" icon="gtk-ok"  />
+                                <button name="action_tech_validation" string="Confirm Technical Review" icon="gtk-ok" states="wait_technical_validation" groups="sale.verify_technical"/>
+                                <button name="action_manager_validation" string="Confirm Manager Review" icon="gtk-ok" states="wait_manager_validation" groups="sale.verify_manager"/>
+                                <button name="action_email_sending" string="Send to Customer" icon="gtk-ok" states="send_to_customer" />
+                                <button name="%(sale_order_revision_note_action)d" string="Reject" type="action" icon="gtk-no" states="wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation"/>
+                                <button name="%(sale_order_confirm_action)d" string="Confirm by Customer" type="action" icon="gtk-ok" states="wait_customer_validation"/>
+                            </group>
+                            <group colspan="5" col="5" >
                                 <button name="ship_cancel" states="shipping_except" string="Cancel Order" icon="gtk-cancel"/>
                                 <button name="action_cancel_draft" states="cancel" string="Set to Draft" type="object" icon="gtk-convert"/>
                                 <button name="cancel" states="draft" string="Cancel Order" icon="gtk-cancel"/>
                                 <button name="invoice_cancel" states="invoice_except" string="Cancel Order" icon="gtk-cancel"/>
-                                <button name="%(sale.report_sale_order)d" string="Print Quotation" type="action" icon="gtk-print" states="draft"/>
-                                <button name="%(sale_order_confirm_action)d" string="Confirm by Customer" type="action" icon="gtk-ok" states="wait_customer_validation"/>
-                                <!--<group colspan="5" col="5" >-->
-                                    <button name="action_validation" string="Confirm Quotation" states="draft" icon="gtk-ok"  />
-                                    <button name="action_tech_validation" string="Confirm Technical Review" icon="gtk-ok" states="wait_technical_validation" groups="sale.verify_technical"/>
-                                    <button name="action_manager_validation" string="Confirm Manager Review" icon="gtk-ok" states="wait_manager_validation" groups="sale.verify_manager"/>
-                                    <button name="action_email_sending" string="Send to Customer" icon="gtk-ok" states="send_to_customer" />
-                                    <button name="%(sale_order_revision_note_action)d" string="Reject" type="action" icon="gtk-no" states="wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation"/>
-                                <!--</group>-->
                             </group>
                         </page>
                         <page string="Other Information">
@@ -216,7 +222,8 @@
                    <field name="pricelist_id" position="after" >
                         <field name="credit_limit" attrs="{'invisible': [('visible_credit_limit','!=',True)]}" />
                         <field name="visible_credit_limit" invisible="1" />
-                        
+                        <field name="sale_order_minimun" attrs="{'invisible': [('visible_minimum','!=',True)]}" />
+                        <field name="visible_minimum" invisible="1" />
                    </field>
                    <field name="fiscal_position" position="after" >
                     <field name="validity"/>
@@ -397,6 +404,20 @@
             </kanban>
         </field>
     </record>
+        <record id="view_shop_minimun_invoice" model="ir.ui.view">
+            <field name="name">sale.shop.minimun.invoice</field>
+            <field name="model">sale.shop</field>
+            <field name="inherit_id" ref="sale.view_shop_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="warehouse_id" position="after">
+                    <separator colspan="4" string="Minimun Order"/>
+                    <field name="sale_order_have_minimum" />
+                    <field name="sale_order_minimun" attrs="{'invisible': [('sale_order_have_minimum','!=',True)], 'required': [('sale_order_have_minimum','=',True)]}" />
+
+                </field>
+            </field>
+        </record>
         
         
     </data>
