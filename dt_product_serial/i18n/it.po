@@ -139,7 +139,7 @@ msgstr "+"
 #. module: dt_product_serial
 #: selection:product.product,lot_split_type:0
 msgid "Single"
-msgstr "Singolo"
+msgstr "Numero di Serie"
 
 #. module: dt_product_serial
 #: model:ir.model,name:dt_product_serial.model_stock_move
@@ -210,7 +210,7 @@ msgstr "Per Favore provvedere la corretta quantità !"
 #. module: dt_product_serial
 #: selection:product.product,lot_split_type:0
 msgid "Logistical Unit"
-msgstr "Unità Logistica"
+msgstr "Lotto"
 
 #. module: dt_product_serial
 #: sql_constraint:res.company:0
@@ -241,7 +241,7 @@ msgstr "Aziende"
 #. module: dt_product_serial
 #: field:product.product,lot_split_type:0
 msgid "Lot split type"
-msgstr "Tipo di Split"
+msgstr "Tipo di Tracciatura"
 
 #. module: dt_product_serial
 #: field:pallet.move,pallet_qty:0
@@ -263,7 +263,7 @@ msgstr "Errore !"
 #. module: dt_product_serial
 #: help:product.product,lot_split_type:0
 msgid "None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"
-msgstr "None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"
+msgstr "Nessuno: no split ; Numero di Serie: 1 linea per ogni prodotto ; Lotto: lo split avverrà utilizzando la prima unità logistica"
 
 #. module: dt_product_serial
 #: code:addons/dt_product_serial/wizard/stock_splitinto.py:48
