@@ -639,7 +639,7 @@ msgid "Total Tax Included"
 msgstr "Totale (tasse incluse)"
 
 #. module: sale_order_confirm
-#: code:addons/sale_order_confirm/sale.py:148
+#: code:addons/sale_order_confirm/sale.py:96
 #, python-format
 msgid "Send To Customer"
 msgstr "Spedire al Cliente"

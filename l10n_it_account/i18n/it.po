@@ -1480,11 +1480,6 @@ msgid "Bank Statement"
 msgstr "Estratto conto"
 
 #. module: account
-#: field:res.partner,property_account_receivable:0
-msgid "Account Receivable"
-msgstr "Conto di credito"
-
-#. module: account
 #: model:ir.actions.report.xml,name:account.account_central_journal
 msgid "Central Journal"
 msgstr "Giornale centralizzato"
@@ -3905,11 +3900,6 @@ msgid "Search Analytic Lines"
 msgstr "Ricerca registraioni analitiche"
 
 #. module: account
-#: field:res.partner,property_account_payable:0
-msgid "Account Payable"
-msgstr "Conto di debito"
-
-#. module: account
 #: model:process.node,name:account.process_node_supplierpaymentorder0
 msgid "Payment Order"
 msgstr "Ordine di pagamento"
@@ -4113,7 +4103,7 @@ msgstr "Visualizza i Partner"
 #. module: account
 #: view:account.invoice:0
 msgid "Validate"
-msgstr "Valida"
+msgstr "Emetti / Valida"
 
 #. module: account
 #: report:account.analytic.account.cost_ledger:0
