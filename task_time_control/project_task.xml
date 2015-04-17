@@ -69,6 +69,9 @@
                 <filter name="open" position="after">
                     <filter name="working" string="Working" domain="[('state','=','working')]" help="Tasks in state working" icon="terp-camera_test"/>
                 </filter>
+                <field name="project_id" position="replace">
+                    <field name="project_id" context="{'project_id':self}" domain="[('state','!=','pending')]" >
+                </field>
                 <field name="user_id" position="replace">
                     <field name="user_id">
                     <filter domain="['|',('user_id','=',uid),('other_users_ids','in',uid)]" help="My Tasks" icon="terp-personal"/>
