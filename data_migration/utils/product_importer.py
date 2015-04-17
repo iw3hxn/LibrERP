@@ -210,6 +210,7 @@ class ImportFile(threading.Thread, Utils):
             'ML.': 'm',
             'N.': 'PCE',
             'LT': 'Litre',
+            'Mt.': 'PCE',
         }
 
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':

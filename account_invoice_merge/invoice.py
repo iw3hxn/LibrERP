@@ -38,7 +38,7 @@ class account_invoice(osv.osv):
         parent = self.pool.get('account.invoice').browse(cr,uid,context['active_id'])
         for inv in invoices :
             if parent.partner_id != inv.partner_id :
-                raise osv.except_osv(_("Partners don't match!"),_("Can not merge invoice(s) on different partners or states !."))
+                raise osv.except_osv(_("Partners don't match!"),_("Can not merge invoice(s) on different partners or states !. %s different from %s") % parent.partner_id.name, inv.partner_id.name )
 
             if inv.state != 'draft' :
                 raise osv.except_osv(_("Invalid action !"),_("You can merge only invoices in draft state."))
