@@ -144,11 +144,11 @@ class purchase_order(orm.Model):
             store={
                 'purchase.order.line': (_get_order, None, 10),
             }, multi="sums", help="The amount without tax"),
-        'amount_tax': fields.function(_amount_all, digits_compute= dp.get_precision('Purchase Price'), string='Taxes',
+        'amount_tax': fields.function(_amount_all, digits_compute=dp.get_precision('Purchase Price'), string='Taxes',
             store={
                 'purchase.order.line': (_get_order, None, 10),
             }, multi="sums", help="The tax amount"),
-        'amount_total': fields.function(_amount_all, digits_compute= dp.get_precision('Purchase Price'), string='Total',
+        'amount_total': fields.function(_amount_all, digits_compute=dp.get_precision('Purchase Price'), string='Total',
             store={
                 'purchase.order.line': (_get_order, None, 10),
             }, multi="sums", help="The total amount"),
@@ -170,6 +170,7 @@ class purchase_order(orm.Model):
         if move_line.purchase_line_id:
             res.update({'discount': move_line.purchase_line_id.discount or 0.0, })
         return res
+
 
 class stock_picking(orm.Model):
     _inherit = 'stock.picking'
