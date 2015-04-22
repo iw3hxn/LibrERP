@@ -86,7 +86,8 @@ class sale_order(orm.Model):
                     line_values = {
                         'product_uom': order_line.product_uom.id,
                         #'order_id': order.id,  # Purchase order
-                        'price_unit': order_line.product_id.standard_price,
+                        'price_unit': order_line.purchase_price or order_line.product_id.standard_price,
+                        'discount': order_line.extra_purchase_discount or 0.00,
                         #'move_dest_id':
                         'product_qty': order_line.product_uom_qty or 1,
                         'partner_id': order_line.supplier_id.id,  # Supplier
