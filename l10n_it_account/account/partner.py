@@ -158,7 +158,7 @@ class res_partner(orm.Model):
         partners = self.browse(cr, uid, ids, context)
         for partner in partners:
             if not partner.fiscalcode_surname or not partner.fiscalcode_firstname or not partner.birth_date or not partner.birth_city or not partner.sex:
-                raise osv.except_osv('Error', 'One or more fields are missing')
+                raise orm.except_orm('Error', 'One or more fields are missing')
             birth_date = datetime.datetime.strptime(partner.birth_date, "%Y-%m-%d")
             CF = self._codicefiscale(partner.fiscalcode_surname, partner.fiscalcode_firstname, str(birth_date.day),
                                      str(birth_date.month), str(birth_date.year), partner.sex,
