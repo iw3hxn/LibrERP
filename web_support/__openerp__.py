@@ -22,7 +22,7 @@
 
 {
     'name': 'Web Support',
-    'version': '1.0',
+    'version': '1.0.a',
     'category': 'Web',
     'author': 'Sistemas ADHOC',
     'website': 'http://www.sistemasadhoc.com.ar/',
