@@ -135,9 +135,13 @@ class sale_order(orm.Model):
                     if requisition_ids:
                         for line in order_lines:
                             line['requisition_id'] = requisition_ids[0]
-                            self.pool['purchase.requisition.line'].create(cr, uid, line)
+                            self.pool['purchase.requisition.line'].create(cr, uid, line, context=context)
                         if order_lines:
-                            requisition_order = purchase_requisition_obj.browse(cr, uid, requisition_ids[0])
+                            requisition_order = purchase_requisition_obj.browse(cr, uid, requisition_ids[0], context=context)
+                            purchase_requisition_obj.write(cr, uid, requisition_ids[0],
+                                {
+                                    'origin': requisition_order.origin + ' | ' + order.name,
+                                }, context=context)
                             message = _("The Requisition order {name} has been updated.").format(name=requisition_order.name)
                             self.log(cr, uid, order.id, message)
                     else:
