@@ -30,6 +30,7 @@
 from openerp.osv import orm, fields
 import crm
 from mail.mail_message import to_email
+from tools.translate import _
 
 
 COLOR_SELECTION = [
@@ -101,7 +102,8 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         'partner_category_id': fields.many2one('res.partner.category', 'Partner Category'),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True),
         'sale_order': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
-        'crm_lead': fields.function(_get_crm_lead, 'Opportunity', type='one2many', relation="crm.lead", readonly=True, method=True)
+        'crm_lead': fields.function(_get_crm_lead, 'Opportunity', type='one2many', relation="crm.lead", readonly=True, method=True),
+        'vat': fields.char('VAT', size=64),
     }
 
     _defaults = {
@@ -111,8 +113,11 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
     _order = "create_date desc"
 
     def _lead_create_partner(self, cr, uid, lead, context=None):
-
+        #todo check on company if required vat on partner creation from lead
         partner_obj = self.pool['res.partner']
+
+        if partner_obj._columns.get('vat') and partner_obj._columns['vat'].required and not lead.vat:
+            raise orm.except_orm(_('Error :'), _("VAT Required"))
         partner_id = partner_obj.create(cr, uid, {
             'name': lead.partner_name or lead.contact_name or lead.name,
             'user_id': lead.user_id.id,
@@ -123,8 +128,8 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             'company_id': lead.company_id.id,
             'customer': False,
             'supplier': False,
-            'category_id': lead.partner_category_id and [(6, 0, [lead.partner_category_id.id])]
-
+            'category_id': lead.partner_category_id and [(6, 0, [lead.partner_category_id.id])],
+            'vat': lead.vat,
         }, context=context)
         #partner_obj.write(cr, uid, partner_id, {'customer': False})
 
@@ -142,23 +147,27 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         return partner_id
 
     def _lead_create_partner_address(self, cr, uid, lead, partner_id, context=None):
-        address = self.pool['res.partner.address']
-        address_id = address.create(cr, uid, {
-            'partner_id': partner_id,
-            'name': lead.contact_name,
-            'phone': lead.phone,
-            'mobile': lead.mobile,
-            'email': lead.email_from and to_email(lead.email_from)[0],
-            'fax': lead.fax,
-            'title': lead.title and lead.title.id or False,
-            'function': lead.function_id and lead.function_id.name or False,
-            'street': lead.street,
-            'street2': lead.street2,
-            'zip': lead.zip,
-            'city': lead.city,
-            'country_id': lead.country_id and lead.country_id.id or False,
-            'state_id': lead.state_id and lead.state_id.id or False,
-        })
+        address_obj = self.pool['res.partner.address']
+        address_ids = address_obj.search(cr, uid, [('partner_id', '=', partner_id), ('type', '=', 'default')])
+        if address_ids:
+            address_id = address_ids[0]
+        else:
+            address_id = address_obj.create(cr, uid, {
+                'partner_id': partner_id,
+                'name': lead.contact_name,
+                'phone': lead.phone,
+                'mobile': lead.mobile,
+                'email': lead.email_from and to_email(lead.email_from)[0],
+                'fax': lead.fax,
+                'title': lead.title and lead.title.id or False,
+                'function': lead.function_id and lead.function_id.name or False,
+                'street': lead.street,
+                'street2': lead.street2,
+                'zip': lead.zip,
+                'city': lead.city,
+                'country_id': lead.country_id and lead.country_id.id or False,
+                'state_id': lead.state_id and lead.state_id.id or False,
+            })
 
         if lead.contact_name:
             vals = {

@@ -1,0 +1,42 @@
+<openerp>
+      <data>
+
+        <record id="crm.view_crm_lead2opportunity_partner" model="ir.ui.view">
+          <field name="name">crm.lead2opportunity.partner.form</field>
+          <field name="model">crm.lead2opportunity.partner</field>
+          <field name="type">form</field>
+          <field name="arch" type="xml">
+               <form string="Convert to Opportunity">
+                   
+                        <field name="action" attrs="{'readonly': [('vat', '!=', False)] }" />
+                        <group attrs="{'invisible':[('action','!=','exist')]}">
+                            <field name="partner_id" attrs="{'required': [('action', '=', 'exist')], 'readonly': [('vat', '!=', False)] }"/>
+                        </group>
+
+                            <field name="vat" invisible="1"/>
+
+                        <separator string="Convert to Opportunity" colspan="4"/>
+                        <field name="name" colspan="4"/>
+                        <group col="4" colspan="4" attrs="{'invisible': [('name', '=', 'convert')]}" >
+                            <separator string="Select Opportunities" colspan="4" />
+                        </group>
+                            <field name="opportunity_ids" colspan="4" nolabel="1" attrs="{'invisible': [('name', '=', 'convert')]}">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="partner_id" />
+                                    <field name="user_id" />
+                                    <field name="section_id" />
+                                </tree>
+                            </field>
+                        
+                        <separator string="" colspan="4" />
+                        <group col="4" colspan="4">
+                            <button special="cancel" string="Cancel" icon="gtk-cancel"/>
+                            <button name="action_apply" string="Create Opportunity" type="object" icon="gtk-ok"/>
+                        </group>
+                  
+              </form>
+          </field>
+       </record>
+     </data>
+</openerp>

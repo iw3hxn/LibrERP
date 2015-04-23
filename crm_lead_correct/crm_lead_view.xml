@@ -51,6 +51,7 @@
                 <page string="Lead">
                     <group colspan="4" col="2">
                         <field name="partner_name" string="Partner Name" />
+                        <field name="vat" />
 						<field name="partner_category_id" widget="selection" />
                     </group>
                     <group colspan="2" col="4">
