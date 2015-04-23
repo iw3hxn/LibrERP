@@ -24,7 +24,7 @@
 
 {
     "name": "Job Order management",
-    "version": "3.15.32.23",
+    "version": "3.16.33.23",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Sales Management",
@@ -43,8 +43,7 @@
         'task_time_control',
         'project_extended',
     ],
-    "init_xml": [],
-    "update_xml": [
+    "data": [
         'security/ir.model.access.csv',
         'res_company_view.xml',
         'stock_picking_view.xml',

@@ -238,8 +238,9 @@ class sale_order(orm.Model):
                 'to_invoice': invoice_ratio,
                 'state': 'pending',
                 'warn_manager': True,
+                'user_id': shop.project_manager_id and shop.project_manager_id.id or False,
             }
-
+            #todo think better with matrix / function project_manager
             if values.get('section_id', False):
                 sale_team = self.pool['crm.case.section'].browse(cr, uid, values['section_id'], context=context)
                 if sale_team.user_id:
@@ -263,6 +264,7 @@ class sale_shop(orm.Model):
     
     _columns = {
         'project_required': fields.boolean(_('Require a Project')),
+        'project_manager_id': fields.many2one('res.users', 'Project Manager')
     }
     
     _defaults = {

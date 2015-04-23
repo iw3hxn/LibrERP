@@ -38,6 +38,7 @@
             <field name="arch" type="xml">
                 <field name="pricelist_id" position="after">
                     <field name="project_required" />
+                    <field name="project_manager_id" attrs="{'invisible': [('project_required', '!=', True)]}"/>
                 </field>
             </field>
         </record>
