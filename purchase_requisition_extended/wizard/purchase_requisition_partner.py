@@ -58,8 +58,8 @@ class purchase_requisition_partner(orm.TransientModel):
             else:
                 res = [row[0] for row in data]
         
-        if not res:
-            res = self.pool['res.partner'].search(cr, uid, [('supplier', '=', True)])
+#        if not res:
+#            res = self.pool['res.partner'].search(cr, uid, [('supplier', '=', True)])
         return res
     
     _columns = {
@@ -69,4 +69,3 @@ class purchase_requisition_partner(orm.TransientModel):
     _defaults = {
         'supplier_ids': _get_requisition_suppliers,
     }
-    

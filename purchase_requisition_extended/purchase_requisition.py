@@ -21,7 +21,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-#from openerp.tools.translate import _
+from openerp.tools.translate import _
 
 
 class virtual_purchase_requisition_partner(orm.TransientModel):
@@ -42,12 +42,12 @@ class purchase_requisition(orm.Model):
     def request_prefered_suppliers(self, cr, uid, ids, context):
         if not len(ids) == 1:
             return True
-        virtual_partner_obj = self.pool.get('virtual.purchase.requisition.partner')
+        virtual_partner_obj = self.pool['virtual.purchase.requisition.partner']
         new_context = {'active_id': ids[0], 'prefered': True}
         products = {}
         suppliers = {}
-        purchase_requisition_line_ids = self.pool.get('purchase.requisition.line').search(cr, uid, [('requisition_id', '=', ids[0])])
-        purchase_requisition_lines = self.pool.get('purchase.requisition.line').browse(cr, uid, purchase_requisition_line_ids)
+        purchase_requisition_line_ids = self.pool['purchase.requisition.line'].search(cr, uid, [('requisition_id', '=', ids[0])], context=context)
+        purchase_requisition_lines = self.pool['purchase.requisition.line'].browse(cr, uid, purchase_requisition_line_ids, context=context)
         
         ## We need this 2 cycles construction to handle situation when there are
         ## more requisition lines with the same product
@@ -58,21 +58,26 @@ class purchase_requisition(orm.Model):
             supplier = virtual_partner_obj._get_requisition_suppliers(cr, uid, context=new_context)
             if supplier:
                 suppliers[supplier[0]] = ''
-        
+        if not suppliers:
+            raise orm.except_orm(_('Missed Supplier !'), _('There are no Prefered Supplier'))
         for supplier_id in suppliers.keys():
-            requisition_partner_id = virtual_partner_obj.create(cr, uid, {'partner_id': supplier_id})
+            requisition_partner_id = virtual_partner_obj.create(cr, uid, {'partner_id': supplier_id}, context)
             virtual_partner_obj.create_order(cr, uid, [requisition_partner_id], context={'active_ids': ids})
-            
+
+        self.tender_in_progress(cr, uid, ids, context=None)
         return True
         
     def request_to_suppliers(self, cr, uid, ids, context):
         virtual_partner_obj = self.pool.get('virtual.purchase.requisition.partner')
         
         suppliers = virtual_partner_obj._get_requisition_suppliers(cr, uid, context={'active_id': ids[0]})
+        if not suppliers:
+            raise orm.except_orm(_('Missed Supplier !'), _('There are no Supplier'))
         for supplier_id in suppliers:
             requisition_partner_id = virtual_partner_obj.create(cr, uid, {'partner_id': supplier_id})
             virtual_partner_obj.create_order(cr, uid, [requisition_partner_id], context={'active_ids': ids})
-            
+
+        self.tender_in_progress(cr, uid, ids, context=None)
         return True
 
 
@@ -83,7 +88,7 @@ class purchase_requisition_line(orm.Model):
         res = {}
         virtual_partner_obj = self.pool['virtual.purchase.requisition.partner']
         
-        requisition_lines = self.browse(cr, uid, ids)
+        requisition_lines = self.browse(cr, uid, ids, context=context)
         for line in requisition_lines:
             if line.product_id:
                 supplier_ids = virtual_partner_obj._get_requisition_suppliers(cr, uid, context={
@@ -92,7 +97,7 @@ class purchase_requisition_line(orm.Model):
                     'product_id': line.product_id.id,
                 })
                 if supplier_ids:
-                    supplier = self.pool['res.partner'].browse(cr, uid, supplier_ids[0])
+                    supplier = self.pool['res.partner'].browse(cr, uid, supplier_ids[0], context)
                     res[line.id] = supplier.name
                 else:
                     res[line.id] = ''
@@ -102,7 +107,7 @@ class purchase_requisition_line(orm.Model):
 
     def _get_requisitions(self, cr, uid, ids, field_name, state, context):
         res = {}
-        
+
         query = """SELECT SUM(product_qty)
             FROM purchase_requisition
             INNER JOIN purchase_order ON purchase_order.requisition_id = purchase_requisition.id
@@ -113,7 +118,7 @@ class purchase_requisition_line(orm.Model):
             AND purchase_order.state IN ('{state}')
         """
         
-        requisition_lines = self.browse(cr, uid, ids)
+        requisition_lines = self.browse(cr, uid, ids, context=context)
         for line in requisition_lines:
             cr.execute(query.format(product_id=line.product_id.id, requisition_id=line.requisition_id.id, state=state))
             res[line.id] = cr.fetchall()[0][0]
@@ -123,7 +128,7 @@ class purchase_requisition_line(orm.Model):
     def _get_color(self, cr, uid, ids, field_name, args, context):
         res = {}
         
-        lines = self.browse(cr, uid, ids)
+        lines = self.browse(cr, uid, ids, context=context)
         if lines:
             query = """ SELECT row.product_id, SUM(product_qty)
                 FROM purchase_requisition_line AS row

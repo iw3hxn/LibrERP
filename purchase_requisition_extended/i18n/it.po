@@ -80,3 +80,22 @@ msgstr "Richiesta d'acquisto"
 #: view:purchase.requisition:0
 msgid "Request a Quotation"
 msgstr "Richiedi preventivo"
+
+#. module: purchase_requisition_extended
+#: code:addons/purchase_requisition_extended/purchase_requisition.py:63
+#: code:addons/purchase_requisition_extended/purchase_requisition.py:77
+#, python-format
+msgid "Missed Supplier !"
+msgstr "Fornitore non presente !"
+
+#. module: purchase_requisition_extended
+#: code:addons/purchase_requisition_extended/purchase_requisition.py:77
+#, python-format
+msgid "There are no Supplier"
+msgstr "Non ci sono fornitori"
+
+#. module: purchase_requisition_extended
+#: code:addons/purchase_requisition_extended/purchase_requisition.py:63
+#, python-format
+msgid "There are no Prefered Supplier"
+msgstr "Non ci sono fornitori preferenziali"
