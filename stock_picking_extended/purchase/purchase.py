@@ -31,8 +31,6 @@ class purchase_order(orm.Model):
 #
 ##############################################################################
 
-
-
     _inherit = "purchase.order"
     '''
     address_id is overridden with partner_id because it's used 2binvoiced
@@ -69,6 +67,6 @@ class purchase_order(orm.Model):
             'invoice_state': '2binvoiced' if order.invoice_method == 'picking' else 'none',
             'purchase_id': order.id,
             'company_id': order.company_id.id,
-            'move_lines' : [],
+            'move_lines': [],
             'partner_id': order.partner_id.id,
         }

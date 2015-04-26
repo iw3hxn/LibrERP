@@ -179,9 +179,9 @@ class stock_picking(orm.Model):
         return res
 
     def action_invoice_create(self, cursor, user, ids, journal_id=False,
-                              group=False, type='out_invoice', context=None):
+                              group=False, _type='out_invoice', context=None):
         res = super(stock_picking, self).action_invoice_create(cursor, user, ids, journal_id,
-                                                               group, type, context)
+                                                               group, _type, context)
         for picking in self.browse(cursor, user, ids, context=context):
             self.pool['account.invoice'].write(cursor, user, res[picking.id], {
                 'carriage_condition_id': picking.carriage_condition_id.id,

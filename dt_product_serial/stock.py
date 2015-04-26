@@ -212,9 +212,9 @@ class stock_picking(orm.Model):
     
 
     def action_invoice_create(self, cursor, user, ids, journal_id=False,
-                            group=False, type='out_invoice', context=None):
+                            group=False, _type='out_invoice', context=None):
         invoice_dict = super(stock_picking, self).action_invoice_create(cursor, user,
-                            ids, journal_id, group, type, context=context)
+                            ids, journal_id, group, _type, context=context)
 
         for picking_key in invoice_dict:
             invoice = self.pool['account.invoice'].browse(cursor, user, invoice_dict[picking_key], context=context)
@@ -267,7 +267,7 @@ class stock_picking(orm.Model):
                 else:
                     new_line_list[hash_key]['quantity'] = new_line_list[hash_key]['quantity'] + line.quantity
                     new_line_list[hash_key]['price_subtotal'] = new_line_list[hash_key]['price_subtotal'] \
-                                                            +  line.price_subtotal
+                                                                + line.price_subtotal
                     self.pool['account.invoice.line'].unlink(cursor, user, line.id, context=context)
 
             # Write modifications made on invoice lines
