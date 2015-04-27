@@ -24,15 +24,14 @@ from openerp.tools.translate import _
 
 
 class account_bank_statement_line(orm.Model):
-    _name = 'account.bank.statement.line'
     _inherit = 'account.bank.statement.line'
 
     _columns = {
         'move_line_id': fields.many2one('account.move.line', 'Account move line'),
     }
 
+
 class account_bank_statement(orm.Model):
-    _name = 'account.bank.statement'
     _inherit = 'account.bank.statement'
 
     def balance_check(self, cr, uid, st_id, journal_type='bank', context=None):
@@ -44,15 +43,15 @@ class account_bank_statement(orm.Model):
     def create_move_from_st_line(self, cr, uid, st_line_id, company_currency_id, st_line_number, move_id, context=None):
         if context is None:
             context = {}
-        res_currency_obj = self.pool.get('res.currency')
-        account_move_line_obj = self.pool.get('account.move.line')
-        account_bank_statement_line_obj = self.pool.get('account.bank.statement.line')
+        res_currency_obj = self.pool['res.currency']
+        account_move_line_obj = self.pool['account.move.line']
+        account_bank_statement_line_obj = self.pool['account.bank.statement.line']
         st_line = account_bank_statement_line_obj.browse(cr, uid, st_line_id, context=context)
         st = st_line.statement_id
 
         context.update({'date': st_line.date})
 
-        acc_cur = ((st_line.amount<=0) and st.journal_id.default_debit_account_id) or st_line.account_id
+        acc_cur = ((st_line.amount <= 0) and st.journal_id.default_debit_account_id) or st_line.account_id
         context.update({
                 'res.currency.compute.account': acc_cur,
             })
@@ -66,8 +65,8 @@ class account_bank_statement(orm.Model):
             'move_id': move_id,
             'partner_id': ((st_line.partner_id) and st_line.partner_id.id) or False,
             'account_id': (st_line.account_id) and st_line.account_id.id,
-            'credit': ((amount>0) and amount) or 0.0,
-            'debit': ((amount<0) and -amount) or 0.0,
+            'credit': ((amount > 0) and amount) or 0.0,
+            'debit': ((amount < 0) and -amount) or 0.0,
             'statement_id': st.id,
             'journal_id': st.journal_id.id,
             'period_id': st.period_id.id,
@@ -91,12 +90,12 @@ class account_bank_statement(orm.Model):
         return move_line_id
 
     def button_confirm_bank(self, cr, uid, ids, context=None):
-        obj_seq = self.pool.get('ir.sequence')
+        obj_seq = self.pool['ir.sequence']
         if context is None:
             context = {}
-        account_move_obj = self.pool.get('account.move')
-        account_move_line_obj = self.pool.get('account.move.line')
-        account_bank_statement_line_obj = self.pool.get('account.bank.statement.line')
+        account_move_obj = self.pool['account.move']
+        account_move_line_obj = self.pool['account.move.line']
+        account_bank_statement_line_obj = self.pool['account.bank.statement.line']
         
         for st in self.browse(cr, uid, ids, context=context):
             j_type = st.journal_id.type
