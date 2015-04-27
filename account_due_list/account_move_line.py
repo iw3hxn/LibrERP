@@ -124,7 +124,7 @@ class account_move_line(orm.Model):
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
     }
 
-    _order = "date_maturity desc, date asc, id asc"
+    _order = "date_maturity desc, date asc, move_id asc, id asc"
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
         view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(
