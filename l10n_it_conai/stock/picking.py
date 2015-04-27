@@ -98,9 +98,9 @@ class stock_picking(orm.Model):
         return res
 
     def action_invoice_create(self, cr, uid, ids, journal_id=False,
-                              group=False, _type='out_invoice', context=None):
+                              group=False, type='out_invoice', context=None):
         res = super(stock_picking, self).action_invoice_create(cr, uid, ids, journal_id,
-                                                               group, _type, context)
+                                                               group, type, context)
         invoice_lines = []
         conai_lines = {}
         invoice_obj = self.pool['account.invoice']
