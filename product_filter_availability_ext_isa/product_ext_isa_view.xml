@@ -9,8 +9,8 @@
             <field name="inherit_id" ref="product.product_search_form_view" />
             <field name="arch" type="xml">
                 <xpath expr="//search[@string='Product']//filter[@string='Services']" position="before">
-                    <filter string="Availability &gt; 0" icon="terp-accessories-archiver" context="{'gt0':True}"/>
                     <filter string="Availability &lt; 0" icon="terp-accessories-archiver" context="{'lt0':True}"/>
+                    <filter string="Availability &gt; 0" icon="terp-accessories-archiver" context="{'gt0':True}"/>
                 </xpath>
             </field>
         </record>
