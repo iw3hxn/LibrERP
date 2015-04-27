@@ -401,10 +401,10 @@ class riba_distinta_line(osv.osv):
                 raise osv.except_osv(_('Warning'), _('Missing Accepted Date'))
             date_accepted = line.distinta_id.date_accepted
             move_id = move_pool.create(cr, uid, {
-                'ref': 'Ri.Ba. %s - line %s' % (line.distinta_id.name, line.sequence),
+                'ref': _('Ri.Ba. %s - line %s') % (line.distinta_id.name, line.sequence),
                 'journal_id': journal.id,
                 'date': date_accepted,
-                }, context=context)
+            }, context=context)
             to_be_reconciled = []
             riba_move_line_name = ''
             for riba_move_line in line.move_line_ids:
@@ -417,7 +417,7 @@ class riba_distinta_line(osv.osv):
                     'debit': (riba_move_line.amount < 0.0) and riba_move_line.amount * -1,
                     'move_id': move_id,
                     'date': date_accepted,
-                    }, context=context)
+                }, context=context)
                 to_be_reconciled.append([move_line_id, riba_move_line.move_line_id.id])
                 riba_move_line_name += riba_move_line.move_line_id.invoice.number
             if total_credit < 0.0:
@@ -431,7 +431,7 @@ class riba_distinta_line(osv.osv):
                 'debit': total_credit,
                 'move_id': move_id,
                 'date': date_accepted,
-                }, context=context)
+            }, context=context)
             move_pool.post(cr, uid, [move_id], context=context)
             for reconcile_ids in to_be_reconciled:
                 move_line_pool.reconcile_partial(cr, uid, reconcile_ids, context=context)
@@ -451,7 +451,7 @@ class riba_distinta_move_line(osv.osv):
     _rec_name = 'amount'
 
     _columns = {
-        'amount' : fields.float('Amount', digits_compute=dp.get_precision('Account')),
+        'amount': fields.float('Amount', digits_compute=dp.get_precision('Account')),
         'move_line_id': fields.many2one('account.move.line', 'Credit move line'),
         'riba_line_id': fields.many2one('riba.distinta.line', 'Distinta line', ondelete='cascade'),
     }

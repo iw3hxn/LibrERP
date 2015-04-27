@@ -1102,3 +1102,9 @@ msgstr "Dettaglio riba"
 msgid "No bank or IBAN specified for "
 msgstr "Nessuna banca o IBAN specificati per "
 
+#. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/riba.py:404
+#, python-format
+msgid "Ri.Ba. %s - line %s"
+msgstr "Ri.Ba. %s - riga %s"
+
