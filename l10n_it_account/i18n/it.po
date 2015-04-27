@@ -399,7 +399,7 @@ msgstr "Data di creazione"
 #. module: account
 #: selection:account.journal,type:0
 msgid "Purchase Refund"
-msgstr "Rimborso acuisti"
+msgstr "Rimborso acquisti"
 
 #. module: account
 #: selection:account.journal,type:0
@@ -7394,7 +7394,7 @@ msgstr "B.B. 30/60/90 Giorni Data fattura Fine Mese"
 #. module: account
 #: field:wizard.multi.charts.accounts,purchase_tax:0
 msgid "Default Purchase Tax"
-msgstr "Imposta di default per gli acuisti"
+msgstr "Imposta di default per gli acquisti"
 
 #. module: account
 #: field:account.chart.template,property_account_income_opening:0
