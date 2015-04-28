@@ -37,6 +37,9 @@ Code repository: https://code.launchpad.net/~niv-openerp/openerp-client-lib/trun
 
 import xmlrpclib
 import logging
+import json
+import urllib2
+import random
 
 _logger = logging.getLogger(__name__)
 
@@ -90,6 +93,66 @@ class XmlRPCSConnector(XmlRPCConnector):
     def __init__(self, hostname, port=8069):
         super(XmlRPCSConnector, self).__init__(hostname, port)
         self.url = 'https://%s:%d/xmlrpc' % (hostname, port)
+
+class JsonRPCException(Exception):
+    def __init__(self, error):
+         self.error = error
+    def __str__(self):
+         return repr(self.error)
+
+def json_rpc(url, fct_name, params):
+    data = {
+        "jsonrpc": "2.0",
+        "method": fct_name,
+        "params": params,
+        "id": random.randint(0, 1000000000),
+    }
+    req = urllib2.Request(url=url, data=json.dumps(data), headers={
+        "Content-Type":"application/json",
+    })
+    result = urllib2.urlopen(req)
+    result = json.load(result)
+    if result.get("error", None):
+        raise JsonRPCException(result["error"])
+    return result["result"]
+
+class JsonRPCConnector(Connector):
+    """
+    A type of connector that uses the JsonRPC protocol.
+    """
+    PROTOCOL = 'jsonrpc'
+    
+    __logger = _getChildLogger(_logger, 'connector.jsonrpc')
+
+    def __init__(self, hostname, port=8069):
+        """
+        Initialize by specifying the hostname and the port.
+        :param hostname: The hostname of the computer holding the instance of OpenERP.
+        :param port: The port used by the OpenERP instance for JsonRPC (default to 8069).
+        """
+        self.url = 'http://%s:%d/jsonrpc' % (hostname, port)
+
+    def send(self, service_name, method, *args):
+        return json_rpc(self.url, "call", {"service": service_name, "method": method, "args": args})
+
+class JsonRPCSConnector(Connector):
+    """
+    A type of connector that uses the JsonRPC protocol.
+    """
+    PROTOCOL = 'jsonrpcs'
+    
+    __logger = _getChildLogger(_logger, 'connector.jsonrpc')
+
+    def __init__(self, hostname, port=8069):
+        """
+        Initialize by specifying the hostname and the port.
+        :param hostname: The hostname of the computer holding the instance of OpenERP.
+        :param port: The port used by the OpenERP instance for JsonRPC (default to 8069).
+        """
+        self.url = 'https://%s:%d/jsonrpc' % (hostname, port)
+
+    def send(self, service_name, method, *args):
+        return json_rpc(self.url, "call", {"service": service_name, "method": method, "args": args})
 
 class Service(object):
     """
@@ -280,7 +343,7 @@ def get_connector(hostname=None, protocol="xmlrpc", port="auto"):
     A shortcut method to easily create a connector to a remote server using XMLRPC.
 
     :param hostname: The hostname to the remote server.
-    :param protocol: The name of the protocol, must be "xmlrpc" or "xmlrpcs".
+    :param protocol: The name of the protocol, must be "xmlrpc", "xmlrpcs", "jsonrpc" or "jsonrpcs".
     :param port: The number of the port. Defaults to auto.
     """
     if port == 'auto':
@@ -289,8 +352,12 @@ def get_connector(hostname=None, protocol="xmlrpc", port="auto"):
         return XmlRPCConnector(hostname, port)
     elif protocol == "xmlrpcs":
         return XmlRPCSConnector(hostname, port)
+    if protocol == "jsonrpc":
+        return JsonRPCConnector(hostname, port)
+    elif protocol == "jsonrpcs":
+        return JsonRPCSConnector(hostname, port)
     else:
-        raise ValueError("You must choose xmlrpc or xmlrpcs")
+        raise ValueError("You must choose xmlrpc, xmlrpcs, jsonrpc or jsonrpcs")
 
 def get_connection(hostname=None, protocol="xmlrpc", port='auto', database=None,
                  login=None, password=None, user_id=None):
@@ -298,7 +365,7 @@ def get_connection(hostname=None, protocol="xmlrpc", port='auto', database=None,
     A shortcut method to easily create a connection to a remote OpenERP server.
 
     :param hostname: The hostname to the remote server.
-    :param protocol: The name of the protocol, must be "xmlrpc" or "xmlrpcs".
+    :param protocol: The name of the protocol, must be "xmlrpc", "xmlrpcs", "jsonrpc" or "jsonrpcs".
     :param port: The number of the port. Defaults to auto.
     :param connector: A valid Connector instance to send messages to the remote server.
     :param database: The name of the database to work on.
