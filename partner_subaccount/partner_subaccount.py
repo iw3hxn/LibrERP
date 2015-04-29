@@ -52,7 +52,7 @@ class res_partner(orm.Model):
             'Codice Cliente Univoco'),
     ]
 
-    def _get_chart_template_property(self, cr, uid, property_chart=None, context=None):
+    def _get_chart_template_property_new(self, cr, uid, property_chart=None, context=None):
         chart_obj = self.pool['account.chart.template']
         # We need Administrator rights to read account.chart.template properties
         chart_obj_ids = chart_obj.search(cr, 1, [])
@@ -75,6 +75,28 @@ class res_partner(orm.Model):
                 raise orm.except_orm('Warning!', "Parent Account Type is not of type 'view'")
         else:
             return []
+
+    def _get_chart_template_property(self, cr, uid, property_chart=None, context=None):
+        res = []
+        chart_obj = self.pool['account.chart.template']
+        # We need Administrator rights to read account.chart.template properties
+        chart_obj_ids = chart_obj.search(cr, 1, [])
+        if len(chart_obj_ids) > 0:
+            # We need Administrator rights to read account.chart.template properties
+            chart_templates = chart_obj.browse(cr, 1, chart_obj_ids, context)
+            for chart_template in chart_templates:
+                if property_chart:
+                    property_chart_id = getattr(chart_template, property_chart).id
+                # if it's not a view type code, it's another branch without partner_subaccount
+                    if self.pool['account.account.template'].browse(cr, 1, property_chart_id).type != 'view':
+                        continue
+                    else:
+                        res = property_chart_id
+                        break
+        if not res:
+            raise orm.except_orm('Warning!', "Parent Account Type is not of type 'view'")
+
+        return res
 
     def get_create_supplier_partner_account(self, cr, uid, vals, context):
         return self.get_create_partner_account(cr, uid, vals, 'supplier', context)
