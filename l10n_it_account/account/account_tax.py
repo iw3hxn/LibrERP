@@ -44,11 +44,11 @@ class account_tax(orm.Model):
         tax_obj = self.pool['account.tax']
         if tax_obj.search(cr, uid, [('name', '=', vals['name'])]):
             raise orm.except_orm(_('Error!'), 
-                    _("Tax name must be unique."))
+                                 _("Tax name '{name}' is not unique.").format(name=vals['name']))
         if vals.get('description', False):
             if tax_obj.search(cr, uid, [('description', '=', vals['description'])]):
                 raise orm.except_orm(_('Error!'), 
-                        _("Tax description must be unique."))
+                                     _("Tax description '{description}' is not unique.").format(description=vals['description']))
 
         if vals['type_tax_use'] == 'sale':
             vals.update({'base_sign': 1, 'tax_sign': 1, 'ref_base_sign': -1, 'ref_tax_sign': -1})
@@ -116,12 +116,12 @@ class account_tax(orm.Model):
         if vals.get('name', False):
             if tax_obj.search(cr, uid, [('name', '=', vals['name'])]):
                 raise orm.except_orm(_('Error!'), 
-                        _("Tax name must be unique."))
+                                     _("Tax name '{name}' is not unique.").format(name=vals['name']))
         
         if vals.get('description', False):
             if tax_obj.search(cr, uid, [('description', '=', vals['description'])]):
                 raise orm.except_orm(_('Error!'), 
-                        _("Tax description must be unique."))
+                                     _("Tax description '{description}' is not unique.").format(description=vals['description']))
 
         if vals.get('type_tax_use', False):
             if vals['type_tax_use'] != tax.type_tax_use:
