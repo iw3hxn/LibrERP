@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2014 Didotech SRL (info at didotech.com)
+# Copyright (c) 2014-2015 Didotech SRL (info at didotech.com)
 #                          All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -53,26 +53,28 @@ class res_partner(orm.Model):
     ]
 
     def _get_chart_template_property(self, cr, uid, property_chart=None, context=None):
-        res = []
         chart_obj = self.pool['account.chart.template']
         # We need Administrator rights to read account.chart.template properties
         chart_obj_ids = chart_obj.search(cr, 1, [])
-        if len(chart_obj_ids) > 0:
+        if len(chart_obj_ids) > 0 and property_chart:
             # We need Administrator rights to read account.chart.template properties
             chart_templates = chart_obj.browse(cr, 1, chart_obj_ids, context)
             for chart_template in chart_templates:
-                if property_chart:
-                    property_chart_id = getattr(chart_template, property_chart).id
+                property_chart_id = getattr(chart_template, property_chart).id
                 # if it's not a view type code, it's another branch without partner_subaccount
-                    if self.pool['account.account.template'].browse(cr, 1, property_chart_id).type != 'view':
-                        continue
+                account_template = self.pool['account.account.template'].browse(cr, 1, property_chart_id)
+                if account_template.type == 'view':
+                    account_account_ids = self.pool['account.account'].search(cr, uid, [('code', '=', account_template.code)])
+                    if account_account_ids:
+                        return account_account_ids[0]
                     else:
-                        res = property_chart_id
-                        break
-        if not res:
-            raise orm.except_orm('Warning!', "Parent Account Type is not of type 'view'")
-
-        return res
+                        continue
+                else:
+                    continue
+            else:
+                raise orm.except_orm('Warning!', "Parent Account Type is not of type 'view'")
+        else:
+            return []
 
     def get_create_supplier_partner_account(self, cr, uid, vals, context):
         return self.get_create_partner_account(cr, uid, vals, 'supplier', context)

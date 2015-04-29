@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2014 Didotech SRL (info at didotech.com)
+# Copyright (c) 2013-2015 Didotech SRL (info at didotech.com)
 #                          All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
