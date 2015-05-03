@@ -156,11 +156,57 @@ class res_partner_address_contact(orm.Model):
 
 class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
+
+
+    def get_full_name(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for re in self.browse(cr, uid, ids, context=context):
+            addr = ''
+            if re.partner_id:
+                if re.partner_id.name != re.name:
+                    addr = re.name or ''
+                    if re.name and (re.city or re.country_id):
+                        addr += ', '
+            addr += (re.city or '') + ', ' + (re.street or '')
+            if re.partner_id and context.get('contact_display', False) == 'partner_address':
+                addr = "%s: %s" % (re.partner_id.name, addr.strip())
+            else:
+                addr = addr.strip()
+            res[re.id] = addr or ''
+        return res
+
+    def name_get(self, cr, uid, ids, context=None):
+        if not len(ids):
+            return []
+        res = []
+        for record in self.browse(cr, uid, ids, context=context):
+            name = record.complete_name or record.name or ''
+            if len(name) > 45:
+                name = name[:45] + '...'
+            res.append((record.id, name))
+        return res
+
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        ids = []
+        name_array = name.split()
+        search_domain = []
+        for n in name_array:
+            search_domain.append('|')
+            search_domain.append(('name', operator, n))
+            search_domain.append(('complete_name', operator, n))
+        ids = self.search(cr, user, search_domain + args, limit=limit, context=context)
+        return self.name_get(cr, user, ids, context=context)
+
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Partner Name', ondelete='set null', select=True, help="Keep empty for a private address, not related to partner.", required=True),
         'contact_ids': fields.one2many('res.partner.address.contact', 'address_id', 'Functions and Contacts'),
         'mobile': fields.char('Mobile', size=64),
         'pec': fields.char('PEC', size=64),
+        'complete_name': fields.function(get_full_name, method=True, type='char', size=1024, readonly=True, store=False),
     }
 
 
