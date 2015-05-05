@@ -511,8 +511,12 @@ class Aeroo_report(report_sxw):
                                       'next':self._next(aeroo_print)})
 
         user_name = pool.get('res.users').browse(cr, uid, uid, {}).name
-        model_id = pool.get('ir.model').search(cr, uid, [('model','=',context.get('active_model', data['model']) or data['model'])])[0]
-        model_name = pool.get('ir.model').browse(cr, uid, model_id).name
+        model_ids = pool.get('ir.model').search(cr, uid, [('model','=',context.get('active_model', data['model']) or data['model'])])
+        if model_ids:
+            model_id = model_ids[0]
+            model_name = pool.get('ir.model').browse(cr, uid, model_id).name
+        else:
+            model_name = 'ftp'
 
         #basic = Template(source=None, filepath=odt_path)
 
