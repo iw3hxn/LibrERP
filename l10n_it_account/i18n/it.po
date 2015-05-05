@@ -1522,7 +1522,7 @@ msgstr "Massimo ammontare della rimanenza"
 #. module: account
 #: view:account.invoice:0
 msgid "Compute Taxes"
-msgstr "Calcola totale e imposta"
+msgstr "Calcola totale e imposte"
 
 #. module: account
 #: field:account.chart.template,code_digits:0
@@ -4103,7 +4103,7 @@ msgstr "Visualizza i Partner"
 #. module: account
 #: view:account.invoice:0
 msgid "Validate"
-msgstr "Emetti / Valida"
+msgstr "Valida / Emetti"
 
 #. module: account
 #: report:account.analytic.account.cost_ledger:0
@@ -7740,13 +7740,6 @@ msgstr "Maggio"
 #, python-format
 msgid "Payable Accounts"
 msgstr "Conti di Debito"
-
-#. module: account
-#: code:addons/account/account_invoice.py:802
-#: code:addons/account/account_invoicexxx.py:802
-#, python-format
-msgid "Global taxes defined, but they are not in invoice lines !"
-msgstr "Imposte globali definite ma non presenti nelle voci fattura!"
 
 #. module: account
 #: model:ir.model,name:account.model_account_chart_template
