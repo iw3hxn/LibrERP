@@ -63,6 +63,7 @@ class task_time_control_confirm_wizard(orm.TransientModel):
 
     _defaults = {
         'time': get_time,
+        'task_date': lambda self, cr, uid, context: fields.date.context_today(cr, uid, context),
     }
 
     def close_confirm(self, cr, uid, ids, context=None):
