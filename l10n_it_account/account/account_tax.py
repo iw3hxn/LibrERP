@@ -177,15 +177,17 @@ class account_tax(orm.Model):
                 return {'value': {'base_sign': -1, 'tax_sign': -1, 'ref_base_sign': 1, 'ref_tax_sign': 1}}
 
     _columns = {
-        'account_tax_code_id': fields.many2one('account.tax.code', 'Tax Code Parent', required=False,),
+        'account_tax_code_id': fields.many2one('account.tax.code', 'Tax Code Parent', required=False,
+                                               help="Campo da valorizzare se si vuole sceglire il conto imposta da movimentare attraverso il codice imposta. \n" \
+                                                    " Il codice imposta richiamato dovrà avare a sua volta un codice padre con un padre non valorizzato"),
         'account_base_tax_code_id': fields.many2one('account.tax.code', 'Base Tax Code Parent', required=False,),
-        'account_collected_id':fields.related('account_tax_code_id', 'vat_statement_account_id', type='many2one',
+        'account_collected_id': fields.related('account_tax_code_id', 'vat_statement_account_id', type='many2one',
                                                relation='account.account', string='Invoice Tax Account', store=True, readonly=True),
-        'account_paid_id':fields.related('account_tax_code_id', 'vat_statement_account_id', type='many2one', 
+        'account_paid_id': fields.related('account_tax_code_id', 'vat_statement_account_id', type='many2one',
                                          relation='account.account', string='Refund Tax Account', store=True, readonly=True),
-        'ref_base_code_id':fields.related('base_code_id', type='many2one', 
+        'ref_base_code_id': fields.related('base_code_id', type='many2one',
                                          relation='account.tax.code', string='Refund Base Code', store=True, readonly=True),
-        'ref_tax_code_id':fields.related('tax_code_id', type='many2one', 
+        'ref_tax_code_id': fields.related('tax_code_id', type='many2one',
                                          relation='account.tax.code', string='Refund Tax Code', store=True, readonly=True),
         'amount': fields.float('Amount', required=True, digits_compute=get_precision_tax(), 
                                help="For taxes of type percentage, enter % ratio between 0-1."),
