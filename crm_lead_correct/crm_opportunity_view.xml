@@ -301,9 +301,10 @@
             <newline/>
             <field name="city" />
             <field name="province" widget="selection"/>
-                <field name="region" widget="selection"/>
+            <field name="region" widget="selection"/>
             <field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
-            </field>
+            <field name="channel_id" widget="selection" />
+        </field>
         </field>
        </record>
     
