@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': "Force Invoice Number",
-    'version': '0.1',
+    'version': '0.2',
     'category': 'Generic Modules/Accounting',
     'description': """
     This module allows to force the invoice numbering.

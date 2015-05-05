@@ -23,11 +23,11 @@
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
                 <data>
-                    <xpath expr="/form/group/group" position="after">
+                    <field name="period_id" position="after">
                         <field name="move_products" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}" on_change="onchange_move_products(partner_id)" />
                         <field name="address_delivery_id" attrs="{'invisible': [('move_products', '==', False)]}" context="{'contact_display':'partner_address'}" colspan="4" />
                         <!--<field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />-->
-                    </xpath>
+                    </field>
                 </data>
             </field>
         </record>
