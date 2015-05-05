@@ -66,6 +66,7 @@ class emissione_riba(orm.TransientModel):
         riba_distinta_move_line = self.pool.get('riba.distinta.move.line')
         move_line_obj = self.pool.get('account.move.line')
 
+
         # create distinta
         rd = {
             'name': self.pool.get('ir.sequence').get(cr, uid, 'seq.riba.distinta'),
@@ -93,6 +94,7 @@ class emissione_riba(orm.TransientModel):
             if move_line.partner_id.bank_riba_id:
                 bank_riba_id = move_line.partner_id.bank_riba_id
             elif move_line.partner_id.bank_ids:
+                bank_riba_id = []
                 bank_id = move_line.partner_id.bank_ids[0]
             else:
                 raise orm.except_orm('Attenzione!', 'Il cliente %s non ha la banca!!!' % move_line.partner_id.name)
