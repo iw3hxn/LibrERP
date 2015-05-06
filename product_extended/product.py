@@ -21,11 +21,19 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import orm
+from openerp.osv import orm, fields
 
 
 class product_product(orm.Model):
     _inherit = 'product.product'
+
+    _columns = {
+        'last_purchase_price': fields.float('Last purchase price', readonly=True),
+        'last_purchase_date': fields.date('Last purchase date', readonly=True),
+        'last_supplier_id': fields.many2one('res.partner', 'Last Supplier', readonly=True),
+        'last_sale_price': fields.float('Last sale price', readonly=True),
+        'last_sale_date': fields.date('Last sale date', readonly=True),
+    }
     
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         new_args = []
