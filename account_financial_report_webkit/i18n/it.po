@@ -40,7 +40,7 @@ msgstr "Layout Options"
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:209
 #: report:addons/account_financial_report_webkit/report/templates/account_report_partners_ledger.mako:260
 msgid "Cumulated Balance on Account"
-msgstr "Cumulated Balance on Account"
+msgstr "Saldo Progressivo"
 
 #. module: account_financial_report_webkit
 #: field:general.ledger.webkit,centralize:0
