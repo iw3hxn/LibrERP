@@ -171,7 +171,7 @@ class sale_order(orm.Model):
                         message = _("The Purchase order has been created.")
                         self.log(cr, uid, order.id, message)
         
-        return super(sale_order, self).action_wait(cr, uid, ids, context=context)
+        return super(sale_order, self).action_wait(cr, uid, ids, context)
 
 
 class sale_order_line(orm.Model):
