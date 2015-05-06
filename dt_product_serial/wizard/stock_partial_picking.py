@@ -54,7 +54,7 @@ class stock_partial_picking_line(orm.TransientModel):
             product_id = move.product_id.id
             existing_prodlot_ids = lot_obj.search(cr, uid, [('name', '=', value), ('product_id', '=', product_id)])
             if existing_prodlot_ids and not existing_prodlot_ids[0] == move.prodlot_id.id:
-                raise osv.except_osv(_('Warning'), _('Serial number "{number}" is already exists'.format(number=value)))
+                raise orm.except_orm(_('Warning'), _('Serial number "{number}" is already exists'.format(number=value)))
             elif not existing_prodlot_ids:
                 prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {
                     'name': value,
