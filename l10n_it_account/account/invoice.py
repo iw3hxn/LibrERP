@@ -111,7 +111,7 @@ class account_invoice(orm.Model):
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '>', date_invoice),
                                             ('number', '<', number), ('journal_id', '=', journal),
                                             ('period_id', 'in', period_ids)])
-                if res and not :
+                if res and not internal_number:
                     raise orm.except_orm(_('Date Inconsistency'),
                                          _('Cannot create invoice! Post the invoice with a greater date'))
             if inv_type == 'in_invoice' or inv_type == 'in_refund':

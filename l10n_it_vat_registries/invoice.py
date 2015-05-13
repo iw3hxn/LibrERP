@@ -76,11 +76,10 @@ class Parser(report_sxw.rml_parse):
             if move_line.tax_code_id and not move_line.tax_code_id.exclude_from_registries:
                 
                 if not move_line.tax_code_id.is_base:
-                    #if move_line.tax_code_id.tax_ids:
-                    if move_line.tax_code_id.tax_ids[0].base_code_id:
+                    if move_line.tax_code_id.tax_ids and move_line.tax_code_id.tax_ids[0].base_code_id:
                         tax_code = move_line.tax_code_id.tax_ids[0].base_code_id
                     #elif move_line.tax_code_id.ref_tax_ids:
-                    elif move_line.tax_code_id.ref_tax_ids[0].ref_base_code_id:
+                    elif move_line.tax_code_id.tax_ids and move_line.tax_code_id.ref_tax_ids[0].ref_base_code_id:
                         tax_code = move_line.tax_code_id.ref_tax_ids[0].ref_tax_code_id
                     else:
                         #import pdb; pdb.set_trace()
