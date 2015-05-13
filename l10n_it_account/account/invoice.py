@@ -60,6 +60,7 @@ class account_invoice(orm.Model):
         super(account_invoice, self).action_number(cr, uid, ids, context)
         for obj_inv in self.browse(cr, uid, ids):
             inv_type = obj_inv.type
+            internal_number = obj_inv.internal_number
             number = obj_inv.number
             date_invoice = obj_inv.date_invoice
             reg_date = obj_inv.registration_date
@@ -110,14 +111,14 @@ class account_invoice(orm.Model):
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '>', date_invoice),
                                             ('number', '<', number), ('journal_id', '=', journal),
                                             ('period_id', 'in', period_ids)])
-                if res:
+                if res and not :
                     raise orm.except_orm(_('Date Inconsistency'),
                                          _('Cannot create invoice! Post the invoice with a greater date'))
             if inv_type == 'in_invoice' or inv_type == 'in_refund':
                 res = self.search(cr, uid, [('type', '=', inv_type), ('registration_date', '>', reg_date),
                                             ('number', '<', number), ('journal_id', '=', journal),
                                             ('period_id', 'in', period_ids)], context=context)
-                if res:
+                if res and not internal_number:
                     raise orm.except_orm(_('Date Inconsistency'),
                                          _('Cannot create invoice! Post the invoice with a greater date'))
                 supplier_invoice_number = obj_inv.supplier_invoice_number
