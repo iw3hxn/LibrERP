@@ -247,6 +247,6 @@ class Parser(report_sxw.rml_parse):
             return []
 
     def _indirizzo(self, partner):
-        address = self.pool['res.partner'].address_get(self.cr, self.uid, [partner.id], ['default', 'invoice'])
+        address = self.pool['res.partner'].address_get(self.cr, self.uid, [partner.parent_id and partner.parent_id.id or partner.id], ['default', 'invoice'])
         return self.pool['res.partner.address'].browse(self.cr, self.uid, address['invoice'] or address['default'])
 
