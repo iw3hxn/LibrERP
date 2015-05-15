@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation - Account Didotech',
-    'version': '3.1.1.2',
+    'version': '3.1.1.3',
     'category': 'Localisation',
     'description': """This module add res.bank for ri.ba. in partner
 
