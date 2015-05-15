@@ -39,3 +39,8 @@ msgstr "Ultimo Fornitore"
 #: view:product.product:0
 msgid "Extra information"
 msgstr "Informazioni Aggiuntive sul Prezzo"
+
+#. module: product_extended
+#: field:product.product,last_sale_date:0
+msgid "Last sale date"
+msgstr "Ultima data vendita"

@@ -320,3 +320,18 @@ msgstr "Condizioni commerciali internazionali sono una serie di condizioni comme
 #: selection:stock.journal,default_invoice_state:0
 msgid "Invoiced"
 msgstr "Fatturato"
+
+#. module: stock_picking_extended
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PAF
+msgid "CHARGED ON INVOICE"
+msgstr "ADDEBITATO IN FATTURA"
+
+#. module: stock_picking_extended
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PA
+msgid "CARRIAGE"
+msgstr "PORTO ASSEGNATO"
+
+#. module: stock_picking_extended
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PF
+msgid "FREEPORT"
+msgstr "PORTO FRANCO"

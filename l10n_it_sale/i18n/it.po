@@ -119,3 +119,8 @@ msgstr "Informazioni aggiuntive"
 msgid "In DDT"
 msgstr "Numero DDT"
 
+#. module: l10n_it_sale
+#: view:res.partner:0
+msgid "Shipping conditions"
+msgstr "Condizioni Spedizione"
+
