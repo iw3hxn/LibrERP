@@ -173,3 +173,16 @@ class account_invoice(orm.Model):
         'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
 #        'reference': fields.related('supplier_invoice_number', type='char' ),
     }
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        if context is None:
+            context = {}
+
+        if not default:
+            default = {}
+
+        # We want supplier_invoice_number, cig, cup to be recreated:
+        default['supplier_invoice_number'] = False
+        default['cig'] = False
+        default['cup'] = False
+        return super(account_invoice, self).copy(cr=cr, uid=uid, id=id, default=default, context=context)

@@ -9029,7 +9029,7 @@ msgstr "Imposta acquisti (%)"
 #: code:addons/account/account_invoicexxx.py:882
 #, python-format
 msgid "Please create some invoice lines."
-msgstr "Creare voci della fattura"
+msgstr "Creare delle delle righe sulla fattura"
 
 #. module: account
 #: report:account.overdue:0
