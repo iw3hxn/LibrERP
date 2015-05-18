@@ -1570,7 +1570,7 @@ msgstr "Una tavola temporanea utilizzata per la Dashboard"
 #: model:ir.actions.act_window,name:account.action_invoice_tree4
 #: model:ir.ui.menu,name:account.menu_action_invoice_tree4
 msgid "Supplier Refunds"
-msgstr "Resi a fornitori"
+msgstr "Nota di Accredito Fornitori"
 
 #. module: account
 #: selection:account.account,type:0
