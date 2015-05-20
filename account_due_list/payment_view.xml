@@ -18,6 +18,7 @@
                 <field name="partner_ref" readonly="1"/>
                 <field name="payment_term_id" readonly="1"/>
                 <field name="payment_term_type" readonly="1"/>
+                <field name="bank_id" readonly="1" />
                 <field name="account_id" readonly="1"/>
                 <field name="debit" readonly="1" sum="Total Debit"/>
                 <field name="credit" readonly="1" sum="Total Credit"/>
@@ -27,6 +28,8 @@
                 <field name="reconcile_id" readonly="1"/>
                 <field name="reconcile_partial_id" readonly="1"/>
                 <field name="day" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+
             </tree>
         </field>
     </record>
@@ -79,11 +82,12 @@
                <field name="date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
                <field name="date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
 
-               <field name="account_id"/>
+               <field name="stored_invoice_id"/>
+               <field name="invoice_origin" />
                <field name="partner_id"/>
-               <field name="payment_term_type"/>
-               <field name="invoice"/>
-               <field name="invoice_origin"/>
+               <field name="payment_term_type" />
+               <field name="bank_id" domain="[('state', '=', 'iban')]" context="{'only_iban': True}"/>
+               <field name="account_id" />
                <field name="date_maturity"/>
 
                <newline/>

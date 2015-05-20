@@ -41,6 +41,8 @@ PAYMENT_TERM_TYPE_SELECTION = [
 
 class account_move_line(orm.Model):
 
+    _inherit = 'account.move.line'
+
     def _residual(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
@@ -56,6 +58,19 @@ class account_move_line(orm.Model):
                 res[line.id] = '-'
             else:
                 res[line.id] = '='
+        return res
+
+    def _get_bank(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        context['only_iban'] = True
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.stored_invoice_id and line.stored_invoice_id.type in ['out_invoice']:
+                invoice = self.pool['account.invoice'].browse(cr, uid, line.stored_invoice_id.id, context)
+                res[line.id] = invoice.partner_bank_id and invoice.partner_bank_id.id \
+                               or invoice.bank_riba_id and invoice.bank_riba_id.id \
+                               or False
+            else:
+                res[line.id] = False
         return res
 
     def _get_invoice(self, cr, uid, ids, field_name, arg, context=None):
@@ -100,14 +115,14 @@ class account_move_line(orm.Model):
             res[id] = cr.fetchone()[0]
         return res
 
-    _inherit = 'account.move.line'
-
     _columns = {
         'invoice_origin': fields.related('invoice', 'origin', type='char', string='Source Doc', store=False),
         'invoice_date': fields.related('invoice', 'date_invoice', type='date', string='Invoice Date', store=False),
         'partner_ref': fields.related('partner_id', 'ref', type='char', string='Partner Ref', store=False),
         'payment_term_id': fields.related('invoice', 'payment_term', type='many2one', string='Payment Term', store=False, relation="account.payment.term"),
         'payment_term_type': fields.related('invoice', 'payment_term', 'type', type="selection", selection=PAYMENT_TERM_TYPE_SELECTION, string="Payment Type", store=False),
+        'bank_id': fields.function(_get_bank, method=True, string="Bank", type="many2one", relation="res.partner.bank",
+                                   store=False),
         'stored_invoice_id': fields.function(_get_invoice, method=True, string="Invoice", type="many2one", relation="account.invoice",
                                              store={
                                                  'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['move_id'], 10),
