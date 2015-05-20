@@ -3086,7 +3086,9 @@ msgstr "Bilancio spese"
 #: code:addons/l10n_it_account/account/invoice.py:84
 #, python-format
 msgid "Length not correct: prefix %s with number of %s length"
-msgstr "Length not correct: prefix %s with number of %s length"
+msgstr "Lunghezza non corretta: prefisso %s con un numero di %s \n"
+"Per correggere verificare che il numero nel forza fattura\n"
+"sia coerente con la sequenza"
 
 #. module: account
 #: help:account.invoice,period_id:0
@@ -4445,7 +4447,7 @@ msgstr "Scritture di chiusura Esercizio"
 #: code:addons/l10n_it_account/account/invoice.py:90
 #, python-format
 msgid "Number Mismatch Error !"
-msgstr "Number Mismatch Error !"
+msgstr "Errore sul numero della sequenza !"
 
 #. module: l10n_it_account
 #: model:account.payment.term,note:l10n_it_account.payment_term_60_90_120_days_10_monthly_3
@@ -8128,7 +8130,9 @@ msgstr "Se questa casella è spuntata, il sistema cercherà di raggruppare le ri
 #: code:addons/l10n_it_account/account/invoice.py:98
 #, python-format
 msgid "After prefix only digits are permitted"
-msgstr "After prefix only digits are permitted"
+msgstr "Dopo il prefisso è valido solo un valore numerico \n"
+"Per correggere verificare che il numero nel forza fattura\n"
+"sia coerente con la sequenza""
 
 #. module: account
 #: help:account.account,reconcile:0
@@ -8429,7 +8433,9 @@ msgstr "Nessun periodo definito pe questa data: %s !\n"
 #: code:addons/l10n_it_account/account/invoice.py:91
 #, python-format
 msgid "Prefix not correct: %s"
-msgstr "Prefix not correct: %s"
+msgstr "Prefisso non corretto: %s \n"
+"Per correggere verificare che il numero nel forza fattura\n"
+"sia coerente con la sequenza"
 
 #. module: account
 #: model:process.transition,name:account.process_transition_filestatement0
@@ -10691,7 +10697,7 @@ msgstr "La durata del periodo deve essere maggiore di zero"
 #: selection:account.invoice,tax_calculation_rounding_method:0
 #: selection:res.company,tax_calculation_rounding_method:0
 msgid "Round per line"
-msgstr "Round per line"
+msgstr "Arrotonda per Linea"
 
 #. module: account
 #: model:ir.actions.act_window,help:account.action_account_form
