@@ -150,77 +150,78 @@
             </xpath>
         </field>
     </record>
-    <record id="view_picking_in_form_manual_split" model="ir.ui.view">
-        <field name="name">view.picking.in.form.manual_split</field>
-        <field name="model">stock.picking</field>
-        <field name="inherit_id" ref="stock.view_picking_in_form" />
-        <field name="type">form</field>
-        <field name="priority">24</field> <!-- inherit after product_hardware_revision -->
-        <field name="arch" type="xml">
-            <xpath expr="/form/notebook/page/field/form/group/button[@string='Split']" position="after">
-                <label string="" colspan="3" />
-                <button name="split_move" string="Manual split"
-                    groups="base.group_extended"
-                    states="draft,waiting,confirmed,assigned"
-                    type="object" icon="terp-stock_effects-object-colorize"
-                    colspan="1" />
-            </xpath>
-            <xpath expr="/form/notebook/page/field/tree/button[@string='Split in production lots']" position="replace">
-                <button name="split_move" string="Manual split"
-                    groups="base.group_extended"
-                    states="draft,waiting,confirmed,assigned"
-                    type="object" icon="terp-stock_effects-object-colorize"/>
-            </xpath>
-        </field>
-    </record>
 
-    <record id="view_picking_out_form_manual_split" model="ir.ui.view">
-        <field name="name">view.picking.out.form.manual_split</field>
-        <field name="model">stock.picking</field>
-        <field name="inherit_id" ref="stock.view_picking_out_form" />
-        <field name="type">form</field>
-        <field name="priority">24</field> <!-- inherit after product_hardware_revision -->
-        <field name="arch" type="xml">
-            <xpath expr="/form/notebook/page/field/form/group/button[@string='Split']" position="after">
-                <label string="" colspan="3" />
-                <button name="split_move" string="Manual split"
-                    groups="base.group_extended"
-                    states="draft,waiting,confirmed,assigned"
-                    type="object" icon="terp-stock_effects-object-colorize"
-                    colspan="1" />
-            </xpath>
-            <xpath expr="/form/notebook/page/field/tree/button[@string='Split in production lots']" position="replace">
-                <button name="split_move" string="Manual split"
-                    groups="base.group_extended"
-                    states="draft,waiting,confirmed,assigned"
-                    type="object" icon="terp-stock_effects-object-colorize"/>
-            </xpath>
-        </field>
-    </record>
+    <!--<record id="view_picking_in_form_manual_split" model="ir.ui.view">-->
+        <!--<field name="name">view.picking.in.form.manual_split</field>-->
+        <!--<field name="model">stock.picking</field>-->
+        <!--<field name="inherit_id" ref="stock.view_picking_in_form" />-->
+        <!--<field name="type">form</field>-->
+        <!--<field name="priority">24</field> &lt;!&ndash; inherit after product_hardware_revision &ndash;&gt;-->
+        <!--<field name="arch" type="xml">-->
+            <!--<xpath expr="/form/notebook/page/field/form/group/button[@string='Split']" position="after">-->
+                <!--<label string="" colspan="3" />-->
+                <!--<button name="split_move" string="Manual split"-->
+                    <!--groups="base.group_extended"-->
+                    <!--states="draft,waiting,confirmed,assigned"-->
+                    <!--type="object" icon="terp-stock_effects-object-colorize"-->
+                    <!--colspan="1" />-->
+            <!--</xpath>-->
+            <!--<xpath expr="/form/notebook/page/field/tree/button[@string='Split in production lots']" position="replace">-->
+                <!--<button name="split_move" string="Manual split"-->
+                    <!--groups="base.group_extended"-->
+                    <!--states="draft,waiting,confirmed,assigned"-->
+                    <!--type="object" icon="terp-stock_effects-object-colorize"/>-->
+            <!--</xpath>-->
+        <!--</field>-->
+    <!--</record>-->
+
+    <!--<record id="view_picking_out_form_manual_split" model="ir.ui.view">-->
+        <!--<field name="name">view.picking.out.form.manual_split</field>-->
+        <!--<field name="model">stock.picking</field>-->
+        <!--<field name="inherit_id" ref="stock.view_picking_out_form" />-->
+        <!--<field name="type">form</field>-->
+        <!--<field name="priority">24</field> &lt;!&ndash; inherit after product_hardware_revision &ndash;&gt;-->
+        <!--<field name="arch" type="xml">-->
+            <!--<xpath expr="/form/notebook/page/field/form/group/button[@string='Split']" position="after">-->
+                <!--<label string="" colspan="3" />-->
+                <!--<button name="split_move" string="Manual split"-->
+                    <!--groups="base.group_extended"-->
+                    <!--states="draft,waiting,confirmed,assigned"-->
+                    <!--type="object" icon="terp-stock_effects-object-colorize"-->
+                    <!--colspan="1" />-->
+            <!--</xpath>-->
+            <!--<xpath expr="/form/notebook/page/field/tree/button[@string='Split in production lots']" position="replace">-->
+                <!--<button name="split_move" string="Manual split"-->
+                    <!--groups="base.group_extended"-->
+                    <!--states="draft,waiting,confirmed,assigned"-->
+                    <!--type="object" icon="terp-stock_effects-object-colorize"/>-->
+            <!--</xpath>-->
+        <!--</field>-->
+    <!--</record>-->
 
     <!-- Internal moves -->
-    <record id="view_picking_form_manual_split" model="ir.ui.view">
-        <field name="name">view.picking.form.manual_split</field>
-        <field name="model">stock.picking</field>
-        <field name="inherit_id" ref="stock.view_picking_form" />
-        <field name="type">form</field>
-        <field name="arch" type="xml">
-            <xpath expr="/form/notebook/page/field/form/group/button[@string='Split']" position="after">
-                <label string="" colspan="3" />
-                <button name="split_move" string="Manual split"
-                    groups="base.group_extended"
-                    states="draft,waiting,confirmed,assigned"
-                    type="object" icon="terp-stock_effects-object-colorize"
-                    colspan="1" />
-            </xpath>
-            <xpath expr="/form/notebook/page/field/tree/button[@string='Split in production lots']" position="replace">
-                <button name="split_move" string="Manual split"
-                    groups="base.group_extended"
-                    states="draft,waiting,confirmed,assigned"
-                    type="object" icon="terp-stock_effects-object-colorize"/>
-            </xpath>
-        </field>
-    </record>
+    <!--<record id="view_picking_form_manual_split" model="ir.ui.view">-->
+        <!--<field name="name">view.picking.form.manual_split</field>-->
+        <!--<field name="model">stock.picking</field>-->
+        <!--<field name="inherit_id" ref="stock.view_picking_form" />-->
+        <!--<field name="type">form</field>-->
+        <!--<field name="arch" type="xml">-->
+            <!--<xpath expr="/form/notebook/page/field/form/group/button[@string='Split']" position="after">-->
+                <!--<label string="" colspan="3" />-->
+                <!--<button name="split_move" string="Manual split"-->
+                    <!--groups="base.group_extended"-->
+                    <!--states="draft,waiting,confirmed,assigned"-->
+                    <!--type="object" icon="terp-stock_effects-object-colorize"-->
+                    <!--colspan="1" />-->
+            <!--</xpath>-->
+            <!--<xpath expr="/form/notebook/page/field/tree/button[@string='Split in production lots']" position="replace">-->
+                <!--<button name="split_move" string="Manual split"-->
+                    <!--groups="base.group_extended"-->
+                    <!--states="draft,waiting,confirmed,assigned"-->
+                    <!--type="object" icon="terp-stock_effects-object-colorize"/>-->
+            <!--</xpath>-->
+        <!--</field>-->
+    <!--</record>-->
     
     <!-- Add "last_location_id" on prod lot view -->
     <record id="view_production_lot_form_unique_production_number" model="ir.ui.view">
