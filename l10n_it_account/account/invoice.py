@@ -70,7 +70,7 @@ class account_invoice(orm.Model):
 
             period = obj_inv.period_id
             vat_statement = self.pool['account.vat.period.end.statement'].search(cr, uid, [('period_ids', 'in', period.id)])
-            if vat_statement and self.pool['account.vat.period.end.statement'].browse(cr, uid, vat_statement)[0].state != 'draft':
+            if vat_statement and self.pool['account.vat.period.end.statement'].browse(cr, uid, vat_statement, context)[0].state != 'draft':
                 raise orm.except_orm(
                     _('Period Mismatch Error!'),
                     _('Period %s have already a closed vat statement.')
@@ -107,14 +107,14 @@ class account_invoice(orm.Model):
 
             period_ids = self.pool['account.period'].search(
                 cr, uid, [('fiscalyear_id', '=', fy_id), ('company_id', '=', obj_inv.company_id.id)])
-            if inv_type == 'out_invoice' or inv_type == 'out_refund':
+            if inv_type in ['out_invoice', 'out_refund']:
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '>', date_invoice),
                                             ('number', '<', number), ('journal_id', '=', journal),
                                             ('period_id', 'in', period_ids)])
                 if res and not internal_number:
                     raise orm.except_orm(_('Date Inconsistency'),
                                          _('Cannot create invoice! Post the invoice with a greater date'))
-            if inv_type == 'in_invoice' or inv_type == 'in_refund':
+            if inv_type in ['in_invoice', 'in_refund']:
                 res = self.search(cr, uid, [('type', '=', inv_type), ('registration_date', '>', reg_date),
                                             ('number', '<', number), ('journal_id', '=', journal),
                                             ('period_id', 'in', period_ids)], context=context)
@@ -139,10 +139,9 @@ class account_invoice(orm.Model):
         fp_result = self.onchange_check_fiscal_position(cr, uid, ids, date_invoice, partner_id)
         if fp_result['value']:
             result['value']['fiscal_position'] = fp_result['value']['fiscal_position']
-        #set company payment if missing payment_term
+        # set company payment if missing payment_term
         company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
-        company_obj = self.pool['res.company']
-        company = company_obj.browse(cr, uid, company_id, context)
+        company = self.pool['res.company'].browse(cr, uid, company_id, context)
         partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
         if not partner.property_payment_term:
             payment_term_company = company.default_property_payment_term.id
@@ -160,10 +159,12 @@ class account_invoice(orm.Model):
                 return {'value': {'fiscal_position': fiscal_position_ids[0]}}
             else:
                 partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
-                if partner.property_account_position:
-                    return {'value': {'fiscal_position': partner.property_account_position.id}}
-                else:
-                    return {'value': {'fiscal_position': False}}
+                return {
+                    'value': {
+                        'fiscal_position': partner.property_account_position and partner.property_account_position.id or False
+                    }
+                }
+
         return {'value': {}}
 
     _columns = {
