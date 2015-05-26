@@ -26,7 +26,7 @@ class purchase_order(orm.Model):
 
 
 ##############################################################################
-#    
+#
 #    ONLY 6.1
 #
 ##############################################################################
@@ -38,6 +38,7 @@ class purchase_order(orm.Model):
     '''
     _columns = {
         'payment_term': fields.many2one('account.payment.term', 'Payment Term'),
+        'carriage_condition_id': fields.many2one('stock.picking.carriage_condition', 'Carriage condition'),
         'incoterm_id': fields.many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions."),
         'delivery_address': fields.text('Delivery Address')
     }
@@ -46,19 +47,25 @@ class purchase_order(orm.Model):
         res = super(purchase_order, self).onchange_partner_id(cr, uid, ids, partner_id)
         supplier = self.pool['res.partner'].browse(cr, uid, partner_id)
         payment_term = supplier.property_payment_term and supplier.property_payment_term.id or False
-        res['value'].update({'payment_term': payment_term})
+        carriage_condition_id = supplier.carriage_condition_id and supplier.carriage_condition_id.id or False
+        res['value'].update(
+            {
+                'payment_term': payment_term,
+                'carriage_condition_id': carriage_condition_id
+            }
+        )
         return res
 
     def action_invoice_create(self, cr, uid, ids, context=None):
-        inv_id = super(purchase_order, self).action_invoice_create(cr, uid, ids, context=None)
+        inv_id = super(purchase_order, self).action_invoice_create(cr, uid, ids, context=context)
         payment_term = self.browse(cr, uid, ids, context)[0].payment_term
         if payment_term:
-            self.pool['account.invoice'].write(cr, uid, inv_id, {'payment_term': payment_term.id})
+            self.pool['account.invoice'].write(cr, uid, inv_id, {'payment_term': payment_term.id}, context=context)
         return inv_id
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
         return {
-            'name': self.pool.get('ir.sequence').get(cr, uid, 'stock.picking.in'),
+            'name': self.pool['ir.sequence'].get(cr, uid, 'stock.picking.in'),
             'origin': order.name + ((order.origin and (':' + order.origin)) or ''),
             'date': order.date_order,
             'type': 'in',
@@ -67,6 +74,7 @@ class purchase_order(orm.Model):
             'invoice_state': '2binvoiced' if order.invoice_method == 'picking' else 'none',
             'purchase_id': order.id,
             'company_id': order.company_id.id,
+            'carriage_condition_id': order.carriage_condition_id and order.carriage_condition_id.id or False,
             'move_lines': [],
             'partner_id': order.partner_id.id,
         }

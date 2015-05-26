@@ -1762,7 +1762,7 @@ msgid "FREEPORT"
 msgstr ""
 
 #. module: stock
-#: model:ir.actions.act_window,name:stock.track_line
+#: model:ir.actions.act_window,name:stock.split_line
 #: view:stock.inventory.line.split:0
 #: view:stock.move.split:0
 msgid "Split in lots"

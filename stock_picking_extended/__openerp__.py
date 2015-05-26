@@ -22,9 +22,9 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.14.13.15',
+    'version': '3.15.14.16',
     'category': 'Others',
-    'description': """SimplERP - Stock picking extension
+    'description': """LibrERP - Stock picking extension
 
 Functionalities:
     - different shipping address for consignement order
