@@ -224,6 +224,7 @@ msgstr "Ordine di Acquisto"
 
 #. module: stock_picking_extended
 #: field:account.invoice,carrier_id:0
+#: field:purchase.order,carrier_id:0
 msgid "Carrier"
 msgstr "Vettore"
 
@@ -239,6 +240,7 @@ msgstr "Pagamenti"
 #: field:account.invoice,carriage_condition_id:0
 #: field:res.partner,carriage_condition_id:0
 #: field:sale.order,carriage_condition_id:0
+#: field:purchase.order,carriage_condition_id:0
 #: field:stock.picking,carriage_condition_id:0
 msgid "Carriage Condition"
 msgstr "Resa Merce"

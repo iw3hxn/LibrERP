@@ -43,7 +43,7 @@ msgstr "Progetti "
 #. module: project_place
 #: constraint:stock.move:0
 msgid "You must assign a production lot for this product"
-msgstr "È necessario assegnare un lotto di produzione per questo prodotto"
+msgstr "È necessario assegnare un lotto/seriale per questo prodotto"
 
 #. module: project_place
 #: field:project.plant,ticket_close_time_out:0

@@ -23,7 +23,7 @@ msgstr "Tracking/Pacco"
 #. module: dt_product_serial
 #: model:ir.model,name:dt_product_serial.model_stock_production_lot
 msgid "Production lot"
-msgstr "Lotto di Produzione"
+msgstr "Lotto/Seriale"
 
 #. module: dt_product_serial
 #: sql_constraint:stock.picking:0
@@ -38,7 +38,7 @@ msgstr "-"
 #. module: dt_product_serial
 #: help:stock.production.lot,last_location_id:0
 msgid "Display the current stock location of this production lot"
-msgstr "Mostra la locazione magazzino corrento per questo lotto di produzione"
+msgstr "Mostra la locazione magazzino corrento per questo lotto/seriale"
 
 #. module: dt_product_serial
 #: constraint:res.company:0
@@ -251,7 +251,7 @@ msgstr "Numero di Pallets"
 #. module: dt_product_serial
 #: constraint:stock.move:0
 msgid "You must assign a production lot for this product"
-msgstr "È necessario assegnare un lotto di produzione per questo prodotto"
+msgstr "È necessario assegnare un lotto/seriale per questo prodotto"
 
 #. module: dt_product_serial
 #: code:addons/dt_product_serial/wizard/stock_splitinto.py:48
@@ -412,4 +412,4 @@ msgstr "Prodotto '%s' ha 'Tipo di Split' = 'Unitò logistica' ma mancano le info
 #: code:addons/dt_product_serial/prodlot_wizard.py:102
 #, python-format
 msgid "Production lot %s exists but not for product %s."
-msgstr "Il lotto di produzione %s esiste ma non per il prodotto %s."
+msgstr "Il lotto/seriale %s esiste ma non per il prodotto %s."
