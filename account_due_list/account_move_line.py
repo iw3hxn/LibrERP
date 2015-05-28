@@ -67,7 +67,6 @@ class account_move_line(orm.Model):
             if line.stored_invoice_id and line.stored_invoice_id.type in ['out_invoice']:
                 invoice = self.pool['account.invoice'].browse(cr, uid, line.stored_invoice_id.id, context)
                 res[line.id] = invoice.partner_bank_id and invoice.partner_bank_id.id \
-                               or invoice.bank_riba_id and invoice.bank_riba_id.id \
                                or False
             else:
                 res[line.id] = False
