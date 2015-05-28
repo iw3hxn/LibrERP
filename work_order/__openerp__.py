@@ -30,7 +30,16 @@
     "category": "Sales Management",
     "description": """
         Module permits to assign product costs to a project
-        
+
+        This module create:
+        a) project if a sale order is create and shop required a project
+        b) project.task for each service sell in sale.order
+        c) is possible to create multiple task in this mode:
+            on res.company set the unit time for project (example Hour)
+            create a product kit with inside a service (to produce) with different unit of measure (example day)
+            sell it
+
+
         NOTE: This module is incompatible with module sale_analytic_plans
     """,
     "depends": [
