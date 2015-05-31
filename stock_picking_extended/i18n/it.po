@@ -134,6 +134,8 @@ msgid " of "
 msgstr " del "
 
 #. module: stock_picking_extended
+#: field:account.invoice,transportation_condition_id:0
+#: field:stock.picking,transportation_condition_id:0
 #: model:ir.model,name:stock_picking_extended.model_stock_picking_transportation_condition
 msgid "transportation Condition"
 msgstr "Condizioni di trasporto"
@@ -284,13 +286,11 @@ msgid "Descriptions of Goods"
 msgstr "Aspetto dei Beni"
 
 #. module: stock_picking_extended
-#: view:stock.picking.goods_description:0
-#: model:ir.model,name:stock_picking_extended.model_stock_picking_goods_description
-#: field:stock.picking.goods_description,name:0
 #: field:account.invoice,goods_description_id:0
 #: field:res.partner,goods_description_id:0
 #: field:sale.order,goods_description_id:0
-msgid "Description of Goods"
+#: field:stock.picking,goods_description_id:0
+msgid "Description of goods"
 msgstr "Aspetto dei Beni"
 
 #. module: stock_picking_extended
