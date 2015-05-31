@@ -46,7 +46,12 @@
                     <field name="ddt_date"/>
                     <field name="ddt_number" readonly="1"/>
                 </field>
-                
+                <page string="Additional info" position="after" >
+                    <page string="CIG / CUP" >
+                        <field name="cig" />
+                        <field name="cup" />
+                    </page>
+                </page>
             </field>
     </record>
 

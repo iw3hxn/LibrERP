@@ -19,6 +19,5 @@
 #
 ##############################################################################
 
-from . import stock
-from . import sale
-from . import wizard
+from . import sale_order
+

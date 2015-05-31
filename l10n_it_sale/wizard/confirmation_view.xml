@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="sale_order_confirmation_inherit" model="ir.ui.view">
+            <field name="name">sale.order.confirm.inherit</field>
+            <field name="model">sale.order.confirm</field>
+            <field name="inherit_id" ref="sale_order_confirm.sale_order_confirmation_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="order_date" position="after">
+                    <separator string="Fatturazione PA" colspan="2"/>
+                    <field name="cig" />
+                    <field name="cup" />
+                </field>
+            </field>
+
+        </record>
+
+    </data>
+</openerp>

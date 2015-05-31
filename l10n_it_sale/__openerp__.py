@@ -22,13 +22,14 @@
 
 {
     'name': 'Italian Localisation - Sale',
-    'version': '3.4.4.8',
+    'version': '3.5.5.9',
     'category': 'Localisation/Italy',
     'description': """OpenERP Italian Localization - Sale version
 
 Functionalities:
 
 - Documento di trasporto
+- CIG, CUP nella conferma ordine cliente
 
 """,
     'author': 'OpenERP Italian Community',
@@ -42,14 +43,17 @@ Functionalities:
         'delivery',
         'sequence_restart',     # ricomincia da 0 le sequenze ogni anno
         'invoice_immediate',    # fattura accompagnatoria
+        'sale_order_confirm',
     ],
     "data": [
         'wizard/assign_ddt.xml',
+        'wizard/confirmation_view.xml',
         'stock/picking_view.xml',
         'stock/sequence.xml',
         'stock/stock_journal_view.xml',
+        'sale/sale_order_view.xml',
     ],
-    "demo" : [],
+    "demo": [],
     "test": [],
     "active": False,
     "installable": True

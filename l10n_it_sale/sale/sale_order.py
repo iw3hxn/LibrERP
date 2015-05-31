@@ -22,48 +22,22 @@
 from openerp.osv import orm, fields
 
 
-class stock_picking(orm.Model):
-    _inherit = "stock.picking"
+class sale_order(orm.Model):
+    _inherit = "sale.order"
     _columns = {
-        'ddt_number': fields.char('DDT', size=64),
-        'ddt_date': fields.date('DDT date'),
-        'ddt_in_reference': fields.char('In DDT', size=32),
-        'ddt_in_date': fields.date('In DDT Date'),
         'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
         'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
     }
     
-    def name_get(self, cr, uid, ids, context=None):
-        res = []
-        for picking in self.browse(cr, uid, ids):
-            res.append((picking.id, picking.ddt_number or picking.ddt_in_reference or picking.name))
-        return res
-        
-    def _check_ddt_in_reference_unique(self, cr, uid, ids, context=None):
-        #qui và cercato da gli stock.picking quelli che hanno ddt_in_reference e partner_id uguali
-        return True
-
-    _constraints = [(_check_ddt_in_reference_unique, 'Error! For a Partner must be only one DDT reference for year.', ['ddt_in_reference', 'partner_id'])]  
-
     #-----------------------------------------------------------------------------
-    # EVITARE LA COPIA DI 'NUMERO DDT'
+    # EVITARE LA COPIA DI 'NUMERO cig/cup'
     #-----------------------------------------------------------------------------
     def copy(self, cr, uid, id, default={}, context=None):
         default = default or {}
         default.update({
-            'ddt_number': '',
-            'ddt_in_reference': '',
             'cig': '',
             'cup': '',
         })
-        if 'ddt_date' not in default:
-            default.update({
-                'ddt_date': False
-            })
-        if 'ddt_in_date' not in default:
-            default.update({
-                'ddt_in_date': False
-            })
         if 'cig' not in default:
             default.update({
                 'cig': False
@@ -73,4 +47,4 @@ class stock_picking(orm.Model):
                 'cup': False
             })
 
-        return super(stock_picking, self).copy(cr, uid, id, default, context)
+        return super(sale_order, self).copy(cr, uid, id, default, context)
