@@ -30,11 +30,14 @@ msgstr "Conferma Diretta"
 msgid "Need Technical Verification"
 msgstr "Richiesta Validazione Tecnica"
 
-#. module: sale_order_confirm
-#: code:addons/sale_order_confirm/sale.py:149
+#. modules: sale_order_confirm
+#: model:ir.actions.act_window,name:repair_center.action_repair_order_processed
+#: model:ir.ui.menu,name:repair_center.menu_action_repair_order_processed
+#: selection:sale.order,state:0
+#: code:addons/sale_order_confirm/sale.py:97
 #, python-format
 msgid "Customer Validation"
-msgstr "Attesa Risposta Cliente"
+msgstr "Validazione Cliente"
 
 #. module: sale_order_confirm
 #: field:sale.order,credit_limit:0
@@ -705,3 +708,13 @@ msgstr "Importo Minimo?"
 msgid "The Sale Order of this shop have a Minimun Amount"
 msgstr "L'ordine di vendita di questo negozio avrà un importo minimo"
 
+#. modules: sale_order_confirm
+#: field:sale.order,client_order_ref:0
+#: field:sale.order.confirm,client_order_ref:0
+msgid "Customer Reference"
+msgstr "Riferimento cliente
+
+#. modules: sale_order_confirm
+#: view:sale.order.confirm:0
+msgid "Customer"
+msgstr "Cliente"

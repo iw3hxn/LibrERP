@@ -143,7 +143,8 @@ class sale_order_confirm(orm.TransientModel):
     _description = "Confirm wizard for Sale order"
 
     _columns = {
-        'order_date': fields.datetime('Date', required=True),
+        'client_order_ref': fields.char('Customer Reference', size=64, required=True),
+        'order_date': fields.date('Date', required=True),
         'sale_order_id': fields.integer('Order'),
         'new_sale_order': fields.boolean('New Sale Order'),
         'confirm_line': fields.one2many('sale.order.confirm.line', 'wizard_id', 'Products'),
@@ -170,21 +171,20 @@ class sale_order_confirm(orm.TransientModel):
     def default_get(self, cr, uid, fields, context=None):
         sale_order_obj = self.pool['sale.order']
         sale_order_line_obj = self.pool['sale.order.line']
-        #sale_order_confirm_line_obj = self.pool['sale.order.confirm.line')
+        # sale_order_confirm_line_obj = self.pool['sale.order.confirm.line')
         
         if context is None:
             context = {}
             
         res = super(sale_order_confirm, self).default_get(cr, uid, fields, context=context)
-        
+
         sale_order_data = sale_order_obj.read(cr, uid, context['active_ids'][0], ['id', 'date_order', 'order_line', 'pricelist_id', 'partner_id'])
-        
+
         res['order_date'] = sale_order_data['date_order']
         res['sale_order_id'] = sale_order_data['id']
         res['pricelist_id'] = sale_order_data['pricelist_id'] and sale_order_data['pricelist_id'][0] or False
         res['partner_id'] = sale_order_data['partner_id'] and sale_order_data['partner_id'][0] or False
         res['new_sale_order'] = False
-
         sale_order_confirm_line_list = []
         
         sale_order_lines = sale_order_line_obj.browse(cr, uid, sale_order_data['order_line'])
@@ -222,8 +222,9 @@ class sale_order_confirm(orm.TransientModel):
         return res
     
     def onchange_line(self, cr, uid, ids, confirm_lines):
-        result = {}
-        result['new_sale_order'] = False
+        result = {
+            'new_sale_order': False
+        }
         for confirm_line in confirm_lines:
             if (isinstance(confirm_line[2], dict)) and ('changed' in confirm_line[2]) and (confirm_line[2]['changed']):
                 result['new_sale_order'] = True
@@ -235,7 +236,7 @@ class sale_order_confirm(orm.TransientModel):
         sale_order_confirm_line_obj = self.pool['sale.order.confirm.line']
         wf_service = netsvc.LocalService("workflow")
         
-        sale_order_confirm_data = self.read(cr, uid, ids[0], ['order_date', 'sale_order_id', 'new_sale_order', 'confirm_line'])
+        sale_order_confirm_data = self.read(cr, uid, ids[0], ['order_date', 'sale_order_id', 'new_sale_order', 'confirm_line', 'client_order_ref', 'order_date'])
         order_id = False
         if sale_order_confirm_data['new_sale_order']:
             old_sale_order_data = sale_order_obj.read(cr, uid, sale_order_confirm_data['sale_order_id'], ['shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'partner_shipping_id', 'pricelist_id', 'sale_version_id', 'version', 'name', 'order_policy', 'picking_policy', 'invoice_quantity', 'section_id', 'categ_id'])
@@ -256,8 +257,10 @@ class sale_order_confirm(orm.TransientModel):
             new_sale_order.update({
                 'version': old_sale_order_data['version'] + 1,
                 'name': old_sale_order_name,
+                'client_order_ref': sale_order_confirm_data['client_order_ref'],
+                'date_order': sale_order_confirm_data['order_date'],
             })
-            #qui creo il nuovo sale.order
+            # qui creo il nuovo sale.order
             context['versioning'] = True
             order_id = sale_order_obj.create(cr, uid, new_sale_order, context=context)
 
@@ -271,10 +274,9 @@ class sale_order_confirm(orm.TransientModel):
                     product_uom = False
                 
                 tax_ids = [tax.id for tax in sale_order_confirm_line_data.tax_id]
-                
+
                 sale_order_line_obj.create(cr, uid, {
                     'product_id': sale_order_confirm_line_data.product_id.id,
-                    #'name': sale_order_confirm_line_data.product_id.name,
                     'name': sale_order_confirm_line_data.product_id.name_get()[0][1],
                     'product_uom_qty': sale_order_confirm_line_data.quantity,
                     'product_uom': product_uom,
@@ -289,10 +291,14 @@ class sale_order_confirm(orm.TransientModel):
                 
                 sequence += 1
             wf_service.trg_validate(uid, 'sale.order', order_id, 'order_confirm', cr)
-            #wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'cancel', cr)
+            # wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'cancel', cr)
             sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {'active': False})
         else:
-            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {'customer_validation': True})
+            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {
+                'customer_validation': True,
+                'client_order_ref': sale_order_confirm_data['client_order_ref'],
+                'date_order': sale_order_confirm_data['order_date'],
+            })
             wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'order_confirm', cr)
          
         mod_obj = self.pool['ir.model.data']

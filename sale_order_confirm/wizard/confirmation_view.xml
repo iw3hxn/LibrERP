@@ -31,9 +31,13 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form>
-                    <field name="order_date" invisible="1"/>
-                    <field name="sale_order_id" invisible="1"/>
-                    <field name="new_sale_order" invisible="1"/>
+                    <separator colspan="4" string="Customer"/>
+                    <group col="4" colspan="4">
+                        <field name="client_order_ref" />
+                        <field name="order_date" />
+                        <field name="sale_order_id" invisible="1"/>
+                        <field name="new_sale_order" invisible="1"/>
+                    </group>
                     <separator colspan="4" string="Products"/>
                     <field name="confirm_line" on_change="onchange_line(confirm_line)" colspan="4" nolabel="1" mode="tree,form" width="550" height="200">
                         <tree editable="bottom" string="Product Order">
