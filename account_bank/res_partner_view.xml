@@ -10,6 +10,8 @@
                     <separator string="Ri.Ba. properties" colspan="2"/>
                     <group col="4" colspan="2">
                         <field name="bank_riba_id" />
+                    </group>
+                    <group col="2" colspan="2">
                         <field name="company_bank_id" domain="[('company_id', '=', company_id), ('state', '=', 'iban')]" />
                     </group>
                 </field>
