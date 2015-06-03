@@ -74,15 +74,15 @@ class Parser(report_sxw.rml_parse):
         for move_line in move.line_id:
             tax_code = False
             if move_line.tax_code_id and not move_line.tax_code_id.exclude_from_registries:
-                
+
                 if not move_line.tax_code_id.is_base:
                     if move_line.tax_code_id.tax_ids and move_line.tax_code_id.tax_ids[0].base_code_id:
                         tax_code = move_line.tax_code_id.tax_ids[0].base_code_id
-                    #elif move_line.tax_code_id.ref_tax_ids:
+
                     elif move_line.tax_code_id.tax_ids and move_line.tax_code_id.ref_tax_ids[0].ref_base_code_id:
                         tax_code = move_line.tax_code_id.ref_tax_ids[0].ref_tax_code_id
                     else:
-                        #import pdb; pdb.set_trace()
+
                         if move_line.tax_code_id.tax_ids:
                             if move_line.tax_code_id.tax_ids[0].parent_id.base_code_id:
                                 tax_code = move_line.tax_code_id.tax_ids[0].parent_id.base_code_id
@@ -99,7 +99,7 @@ class Parser(report_sxw.rml_parse):
                         result[tax_code.id]['tax'] += tax_amount
                     else:
                         raise orm.except_orm(_("Tax codes malconfigured!"),
-                            _("Tax code %s has not a base code!") % move_line.tax_code_id.name)
+                            _("Tax code %s has not a base code! Please verify invoice %s") % (move_line.tax_code_id.name,move_line.stored_invoice_id.number) )
         return result
 
     def _get_tax_lines(self, move):
