@@ -184,10 +184,10 @@ body.openerp {
     bottom: 0;
     text-shadow: 0 1px 1px #999999;
     background: #600606;
-    background: -moz-linear-gradient(rgba(210, 92, 37, 0.55), #EB7B0D);
-    background: -webkit-gradient(linear, left top, left bottom, from(rgba(210, 92, 37, 0.55)), to(#EB7B0D));
-    background: -ms-linear-gradient(top, rgba(210, 92, 37, 0.55), #EB7B0D);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='rgba(210, 92, 37, 0.55)', endColorstr='#EB7B0D',GradientType=0 );
+    background: -moz-linear-gradient(#00BFFF, #1E90FF);
+    background: -webkit-gradient(linear, left top, left bottom, from(#00BFFF), to(#1E90FF));
+    background: -ms-linear-gradient(top, #00BFFF, #1E90FF);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00BFFF', endColorstr='#1E90FF',GradientType=0 );
 }
 
 .login .pane {
