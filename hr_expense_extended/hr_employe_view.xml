@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    <!--
+        ======================
+        Employee
+        ======================
+    -->
+        <record model="ir.ui.view" id="view_employee_form_inherit">
+            <field name="name">hr.employee.form.inherit</field>
+            <field name="type">form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="otherid" position="after">
+                    <field name="vehicle" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

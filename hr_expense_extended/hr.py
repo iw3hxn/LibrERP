@@ -35,3 +35,7 @@ class hr_employee(orm.Model):
             return self.browse(cr, uid, employee_ids[0])
         else:
             raise orm.except_orm('Error', _('No Employee is associated with this user'))
+
+    _columns = {
+        'vehicle': fields.char('Targa Veicolo')
+    }
