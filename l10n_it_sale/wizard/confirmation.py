@@ -60,7 +60,7 @@ class sale_order_confirm(orm.TransientModel):
         result = super(sale_order_confirm, self).sale_order_confirmated(cr, uid, ids, context=context)
         sale_order_confirm_data = self.read(cr, uid, ids[0], ['cig', 'cup'])
 
-        if result['res_id']:
+        if result.get('res_id'):
             sale_order_obj.write(cr, uid, result['res_id'], {
                 'cig': sale_order_confirm_data['cig'],
                 'cup': sale_order_confirm_data['cup'],
