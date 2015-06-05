@@ -712,7 +712,7 @@ msgstr "L'ordine di vendita di questo negozio avrà un importo minimo"
 #: field:sale.order,client_order_ref:0
 #: field:sale.order.confirm,client_order_ref:0
 msgid "Customer Reference"
-msgstr "Riferimento cliente
+msgstr "Riferimento cliente"
 
 #. modules: sale_order_confirm
 #: view:sale.order.confirm:0
