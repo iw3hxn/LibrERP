@@ -23,11 +23,22 @@
                             <field name="type_id" />
                             <field name="progress" widget="progressbar" />
                             <field name="state" invisible="context.get('set_visible',False)"/>
-                    
                         </tree>
                         </field>
                     </page>
                  </xpath>
+            </field>
+        </record>
+
+        <record id="view_project_project_search_extended" model="ir.ui.view">
+            <field name="name">project.project.search.extended</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.view_project_project_filter"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name ="parent_id" />
+                </field>
             </field>
         </record>
 
@@ -37,19 +48,20 @@
             <field name="inherit_id" ref="project.view_project"/>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                 <field name="date" position="replace">
-                    <field name = "date" />
-                 </field>
-                 <field name="progress_rate" position="replace">
-                    <field name="total_sell" groups="project.group_project_manager"/>
-                    <field name="total_sell_service" groups="project.group_project_manager"/>
-                    <field name="total_spent" groups="project.group_project_manager" />
-                    <field name="total_invoice" groups="project.group_project_manager"/>
+                <field name="date" position="replace">
+                    <field name ="date" />
+                    <field name ="parent_id" />
+                </field>
+                <field name="progress_rate" position="replace">
+                    <field name="total_sell" groups="project.group_project_manager" sum="Total Sell"/>
+                    <field name="total_sell_service" groups="project.group_project_manager" sum="Total Service Sell"/>
+                    <field name="total_spent" groups="project.group_project_manager" sum="Total Spent" />
+                    <field name="total_invoice" groups="project.group_project_manager" sum="Total Invoiced"/>
                     <field name="analytic_account_id" invisible="1" />
-                 </field>
-                 <field name="state" position="after">
+                </field>
+                <field name="state" position="after">
                     <field name = "task_count" groups="project.group_project_manager" />
-                 </field>
+                </field>
             </field>
         </record>
 
