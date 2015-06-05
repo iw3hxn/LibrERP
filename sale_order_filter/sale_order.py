@@ -50,8 +50,8 @@ class sale_order(orm.Model):
         result = {}
         
         for order in orders:
-            if order.date_invoice:
-                result[order.id] = datetime.datetime.strptime(order.date_order, '%Y-%m-%d').year
+            if order.date_order:
+                result[order.id] = datetime.strptime(order.date_order, '%Y-%m-%d').year
             else:
                 result[order.id] = False
                 
