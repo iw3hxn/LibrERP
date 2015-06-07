@@ -9,7 +9,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="order_date" position="after">
-                    <separator string="Fatturazione PA" colspan="2"/>
+                    <separator string="Fatturazione PA" colspan="4"/>
                     <field name="cig" />
                     <field name="cup" />
                 </field>
