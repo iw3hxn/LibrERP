@@ -108,3 +108,8 @@ msgstr "Indica che l'Ordine di Vendita è attivo"
 #: view:sale.order:0
 msgid "Create version"
 msgstr "Crea Nuova Revisione"
+
+#. modules: account, sale_order_version
+#: field:sale.shop,sequence_id:0
+msgid "Entry Sequence"
+msgstr "Sequenza Numeratore"

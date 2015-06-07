@@ -62,7 +62,7 @@
             <field name="inherit_id" ref="sale.view_shop_form" />
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <field name="warehouse_id" position="after">
+                <field name="warehouse_id" position="before">
                     <field name="sequence_id" context="{'code': 'sale.order'}"/>
                 </field>
             </field>
