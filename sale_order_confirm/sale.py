@@ -77,13 +77,15 @@ class sale_order(orm.Model):
                 raise orm.except_orm(_(title), _(msg))
                 return False
             if processed_order.visible_minimum and processed_order.sale_order_minimun > processed_order.amount_untaxed:
-                if processed_order.shop_id.user_allow_minimun_id == uid:  # if user can validate
+                if processed_order.shop_id.user_allow_minimun_id and processed_order.shop_id.user_allow_minimun_id.id == uid:  # if user can validate
                     return True
                 title = 'Importo Minimo Fatturabile'
+
                 if processed_order.shop_id.user_allow_minimun_id:
-                    msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol))
-                else:
                     msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency} \n È possibile farlo validare da {user}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol, user=processed_order.shop_id.user_allow_minimun_id.name))
+                else:
+                    msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol))
+
                 raise orm.except_orm(_(title), _(msg))
                 return False
         return True
