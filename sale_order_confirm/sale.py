@@ -77,8 +77,13 @@ class sale_order(orm.Model):
                 raise orm.except_orm(_(title), _(msg))
                 return False
             if processed_order.visible_minimum and processed_order.sale_order_minimun > processed_order.amount_untaxed:
+                if processed_order.shop_id.user_allow_minimun_id == uid:  # if user can validate
+                    return True
                 title = 'Importo Minimo Fatturabile'
-                msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol))
+                if processed_order.shop_id.user_allow_minimun_id:
+                    msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol))
+                else:
+                    msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency} \n È possibile farlo validare da {user}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol, user=processed_order.shop_id.user_allow_minimun_id.name))
                 raise orm.except_orm(_(title), _(msg))
                 return False
         return True
@@ -208,6 +213,7 @@ class sale_shop(orm.Model):
     _columns = {
         'sale_order_have_minimum': fields.boolean('Minimum Amount', help='The Sale Order of this shop have a Minimun Amount'),
         'sale_order_minimun': fields.float('Minimum Amount of Sale Order', digits_compute=dp.get_precision('Sale Price')),
+        'user_allow_minimun_id': fields.many2one('res.users', 'User that can validate'),
     }
 
 class sale_order_line(orm.Model):

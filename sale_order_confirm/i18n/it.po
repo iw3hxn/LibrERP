@@ -718,3 +718,8 @@ msgstr "Riferimento cliente"
 #: view:sale.order.confirm:0
 msgid "Customer"
 msgstr "Cliente"
+
+#. module: sale_order_confirm
+#: field:sale.shop,user_allow_minimun_id:0
+msgid "User that can validate"
+msgstr "Utente che può comunque validare"
