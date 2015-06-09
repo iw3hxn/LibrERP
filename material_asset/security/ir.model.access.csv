@@ -12,6 +12,7 @@
 "access_assets_manager_move_line","asset.move.line","model_asset_move_line","group_assets_manager",1,1,1,1
 "access_assets_manager_move_line","asset.move.line","model_asset_move_line","group_assets_manager_mover",1,1,1,1
 "access_assets_user_move_line","asset.move.line","model_asset_move_line","group_assets_user",1,0,0,0
+"access_assets_user_move_line_warehouse","asset.move.line","model_asset_move_line","stock.group_stock_user",1,0,0,0
 "access_assets_manager_document_type","asset.document.type","model_asset_document_type","group_assets_manager",1,1,1,1
 "access_assets_user_document_type","asset.document.type","model_asset_document_type","group_assets_user",1,0,0,0
 "access_assets_manager_document","asset.document","model_asset_document","group_assets_manager",1,1,1,1
