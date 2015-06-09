@@ -179,10 +179,11 @@ class res_partner_address(orm.Model):
         if not len(ids):
             return []
         res = []
+        length = context.get('name_lenght', False) or 45
         for record in self.browse(cr, uid, ids, context=context):
             name = record.complete_name or record.name or ''
-            if len(name) > 45:
-                name = name[:45] + '...'
+            if len(name) > length:
+                name = name[:length] + '...'
             res.append((record.id, name))
         return res
 
