@@ -53,7 +53,7 @@
                     </page>
                 </page>
             </field>
-    </record>
+        </record>
 
         <record model="ir.ui.view" id="sale_journal_picking_order_out_inh">
             <field name="name">stock.picking.journal.view.form.inh</field>
@@ -68,10 +68,11 @@
         </record>
 
 
-	<record id="stock_picking_tree_ddt_inherit" model="ir.ui.view">
+	    <record id="stock_picking_tree_ddt_inherit" model="ir.ui.view">
             <field name="name">stock.picking.tree.ddt.inherit</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_out_tree"/>
+            <field name="type">search</field>
             <field name="arch" type="xml">
                 <field name="name" position="before">
                     <field name="ddt_number"/>
@@ -83,6 +84,7 @@
         <record id="stock_picking_tree__in_ddt_inherit" model="ir.ui.view">
             <field name="name">stock.picking.tree.ddt.inherit</field>
             <field name="model">stock.picking</field>
+            <field name="type">tree</field>
             <field name="inherit_id" ref="stock.view_picking_in_tree"/>
             <field name="arch" type="xml">
                 <field name="name" position="before">
@@ -92,9 +94,10 @@
             </field>
         </record>
 
-	<record id="stock_picking_search_ddt_inherit" model="ir.ui.view">
+	    <record id="stock_picking_search_ddt_inherit" model="ir.ui.view">
             <field name="name">stock.picking.search.ddt.inherit</field>
             <field name="model">stock.picking</field>
+            <field name="type">search</field>
             <field name="inherit_id" ref="stock.view_picking_out_search"/>
             <field name="arch" type="xml">
                 <field name="name" position="before">
