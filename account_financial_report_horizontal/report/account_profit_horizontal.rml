@@ -195,7 +195,7 @@
           <para style="terp_default_Bold_8">Code</para>
         </td>
         <td>
-          <para style="terp_default_Bold_8">Particular</para>
+          <para style="terp_default_Bold_8">Expense</para>
         </td>
         <td>
           <para style="terp_tblheader_Details_Right">Balance</para>
@@ -204,7 +204,7 @@
           <para style="terp_default_Bold_8">Code</para>
         </td>
         <td>
-          <para style="terp_default_Bold_8">Particular</para>
+          <para style="terp_default_Bold_8">Income</para>
         </td>
         <td>
           <para style="P1">Balance</para>

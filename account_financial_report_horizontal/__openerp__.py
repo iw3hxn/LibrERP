@@ -22,7 +22,7 @@
 ##############################################################################
 {
     "name": "Accounting Financial Reports Horizontal",
-    "version": "2.1.6.6",
+    "version": "2.1.6.7",
     "author": ["Therp BV", "Agile Business Group", "Didotech srl"],
     "category": 'Accounting & Finance',
     'complexity': "normal",

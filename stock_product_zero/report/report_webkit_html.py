@@ -26,25 +26,12 @@ from openerp.osv import osv
 
 class report_webkit_html(report_sxw.rml_parse):
 
-#inventory value for product
-    def _get_product_values(self):
-        res = {}
-        product_obj = self.pool['product.product']
-        product_ids = product_obj.search(self.cr, self.uid, [])
-        for product in product_obj.browse(self.cr, self.uid, product_ids):
-            if product.cost_price:
-                res.update({product.id: product.cost_price})
-            else:
-                res.update({product.id: 0.0})
-        return res
-
     def __init__(self, cr, uid, name, context):
         super(report_webkit_html, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'time': time,
             'cr': cr,
             'uid': uid,
-            'get_products': self._get_product_values,
         })
 
     def set_context(self, objects, data, ids, report_type=None):

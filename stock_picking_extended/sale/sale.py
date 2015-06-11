@@ -52,13 +52,14 @@ class sale_advance_payment_inv(orm.TransientModel):
 
 
 class sale_order_line(orm.Model):
+
     _inherit = "sale.order.line"
     _columns = {
         'purchase_price': fields.float(
-            'Cost Price', digits_compute= dp.get_precision('Purchase Price')),
+            'Cost Price', digits_compute=dp.get_precision('Purchase Price')),
         'th_weight': fields.float(
             'Weight', readonly=True, states={'draft': [('readonly', False)]},
-            digits_compute= dp.get_precision('Stock Weight')),
+            digits_compute=dp.get_precision('Stock Weight')),
     }
 
 
@@ -84,51 +85,18 @@ class sale_order(orm.Model):
             result['value']['goods_description_id'] = partner.goods_description_id.id
         return result
 
-    def _make_invoice(self, cr, uid, order, lines, context=None):
-        #implementation to put advance reference in invoices
-        inv_obj = self.pool['account.invoice']
-        obj_invoice_line = self.pool['account.invoice.line']
-        if context is None:
-            context = {}
-        invoiced_sale_line_ids = self.pool['sale.order.line'].search(cr, uid, [('order_id', '=', order.id), ('invoiced', '=', True)], context=context)
-        from_line_invoice_ids = []
-        for invoiced_sale_line_id in self.pool['sale.order.line'].browse(cr, uid, invoiced_sale_line_ids, context=context):
-            for invoice_line_id in invoiced_sale_line_id.invoice_lines:
-                if invoice_line_id.invoice_id.id not in from_line_invoice_ids:
-                    from_line_invoice_ids.append(invoice_line_id.invoice_id.id)
-        for preinv in order.invoice_ids:
-            if preinv.state not in ('cancel',) and preinv.id not in from_line_invoice_ids:
-                for preline in preinv.invoice_line:
-                    inv_line_id = obj_invoice_line.copy(cr, uid, preline.id, {'invoice_id': False, 'price_unit': -preline.price_unit, 'advance_id': preinv.id, 'sequence': 1000})
-                    lines.append(inv_line_id)
-        inv = self._prepare_invoice(cr, uid, order, lines, context=context)
-        inv_id = inv_obj.create(cr, uid, inv, context=context)
-        data = inv_obj.onchange_payment_term_date_invoice(cr, uid, [inv_id], inv['payment_term'], time.strftime(DEFAULT_SERVER_DATE_FORMAT))
-        if data.get('value', False):
-            inv_obj.write(cr, uid, [inv_id], data['value'], context=context)
-        inv_obj.button_compute(cr, uid, [inv_id])
-        #start code pre-existant
-        #partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id, context=context)
-        self.pool['account.invoice'].write(cr, uid, inv_id, {
-            #'order_id': order.id,
-            'carriage_condition_id': order.carriage_condition_id.id,
-            'goods_description_id': order.goods_description_id.id,
-            #'transportation_reason_id': partner.transportation_reason_id.id,
-            })
-        return inv_id
-
     def action_ship_create(self, cr, uid, ids, *args):
         super(sale_order, self).action_ship_create(cr, uid, ids, *args)
         for order in self.browse(cr, uid, ids, context={}):
-            #partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id)
+            # partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id)
             picking_obj = self.pool['stock.picking']
             picking_ids = picking_obj.search(cr, uid, [('sale_id', '=', order.id)])
             for picking_id in picking_ids:
                 picking_obj.write(cr, uid, picking_id, {
-                    #'order_id': order.id,
+                    # 'order_id': order.id,
                     'carriage_condition_id': order.carriage_condition_id.id,
                     'goods_description_id': order.goods_description_id.id,
-                    #'transportation_reason_id': partner.transportation_reason_id.id,
+                    # 'transportation_reason_id': partner.transportation_reason_id.id,
                     })
         return True
 
@@ -138,7 +106,7 @@ class sale_order(orm.Model):
     '''
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
-        pick_name = self.pool.get('ir.sequence').get(cr, uid, 'stock.picking.out')
+        pick_name = self.pool['ir.sequence'].get(cr, uid, 'stock.picking.out')
         return {
             'name': pick_name,
             'origin': order.name,
@@ -150,6 +118,6 @@ class sale_order(orm.Model):
             'address_id': order.partner_invoice_id.id,
             'address_delivery_id': order.partner_shipping_id.id,
             'note': order.note,
-            'invoice_state': (order.order_policy=='picking' and '2binvoiced') or 'none',
+            'invoice_state': (order.order_policy == 'picking' and '2binvoiced') or 'none',
             'company_id': order.company_id.id,
         }

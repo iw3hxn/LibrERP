@@ -5,15 +5,30 @@
         <record id="stock_picking_out_form_inherit" model="ir.ui.view">
             <field name="name">stock.picking.form.inherit</field>
             <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+            <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
             <field name="priority">1</field>
             <field name="arch" type="xml">
-                <field name="address_id" position="after">
+                <field name="carrier_id" position="before">
                     <field name="address_delivery_id" context="{'name_lenght': '80'}" colspan="6" />
                     <field name="goods_description_id" widget="selection"/>
                     <field name="carriage_condition_id" widget="selection"/>
                     <field name="transportation_condition_id" widget="selection"/>
                 </field>
+                <field name="carrier_tracking_ref" position="replace">
+                    <field name="carrier_tracking_ref"/>
+                </field>
+                <field name="number_of_packages" position="replace">
+                    <field name="number_of_packages"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="stock_picking_out_form_inherit_replace" model="ir.ui.view">
+            <field name="name">stock.picking.form.inherit.replace</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+            <field name="priority">16</field>
+            <field name="arch" type="xml">
                 <field name="date_done" position="replace"/>
                 <field name="date" position="replace">
                     <field name="date_done"/>
@@ -48,7 +63,6 @@
                 </field>
             </field>
         </record>
- 
 
     </data>
 </openerp>

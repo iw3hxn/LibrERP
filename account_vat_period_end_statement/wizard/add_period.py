@@ -33,7 +33,7 @@ class add_period(orm.Model):
     def add_period(self, cr, uid, ids, context=None):
         if 'active_id' not in context:
             raise orm.except_orm(_('Error'), _('Current statement not found'))
-        statement_pool = self.pool.get('account.vat.period.end.statement')
+        statement_pool = self.pool['account.vat.period.end.statement']
         wizard = self.browse(cr, uid, ids, context)[0]
         if wizard.period_id.vat_statement_id:
             raise orm.except_orm(_('Error'), _('Period %s is associated to statement %s yet') % (wizard.period_id.name, wizard.period_id.vat_statement_id.date))

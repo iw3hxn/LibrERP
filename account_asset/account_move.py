@@ -110,14 +110,13 @@ class account_move_line(orm.Model):
         asset_obj = self.pool.get('account.asset.asset')
         move = self.pool.get('account.move').browse(cr, uid, vals['move_id'])
         journal_obj = self.pool['account.journal']
-        if journal_obj.browse(cr, uid, [move.journal_id.id], context=context)[0].type in ('sale', 'sale_refund', 'purchase', 'purchase_refund'):
-            # add not deductible VAT if present, make it depending from l10n_it_partially_deductible_vat
-            asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
-        else:
-            asset_value = vals['debit'] or - vals['credit']
-        
+
         if vals.get('asset_category_id') and not vals.get('asset_id'):
-            
+            if journal_obj.browse(cr, uid, [move.journal_id.id], context=context)[0].type in ('sale', 'sale_refund', 'purchase', 'purchase_refund'):
+                # add not deductible VAT if present, make it depending from l10n_it_partially_deductible_vat
+                asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
+            else:
+                asset_value = vals['debit'] or - vals['credit']
             # create asset
             asset_vals = {
                 'name': vals['name'],
@@ -134,8 +133,13 @@ class account_move_line(orm.Model):
             asset_id = asset_obj.create(cr, uid, asset_vals, context=ctx)
             vals['asset_id'] = asset_id
         elif vals.get('asset_id') and not context.get('create_move_from_button'):
-            #vals['asset_id'] = vals['subsequent_asset_id']
-            #  get variation to put in asset value
+            if journal_obj.browse(cr, uid, [move.journal_id.id], context=context)[0].type in ('sale', 'sale_refund', 'purchase', 'purchase_refund'):
+                # add not deductible VAT if present, make it depending from l10n_it_partially_deductible_vat
+                asset_value = self.get_asset_value_with_ind_tax(cr, uid, vals, context)
+            else:
+                asset_value = vals['debit'] or - vals['credit']
+            # vals['asset_id'] = vals['subsequent_asset_id']
+            # get variation to put in asset value
             vals.update({'subsequent_asset': True})
             ctx = dict(context, update_asset_value_from_move_line=True, move_id=vals['move_id'], asset_value=asset_value)
             

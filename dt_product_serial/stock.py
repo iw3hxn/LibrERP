@@ -426,8 +426,8 @@ class stock_picking(orm.Model):
                 wf_service.trg_validate(uid, 'stock.picking', pick.id, 'button_done', cr)
                 delivered_pack_id = pick.id
 
-            delivered_pack = self.browse(cr, uid, delivered_pack_id, context=context)
-            res[pick.id] = {'delivered_picking': delivered_pack.id or False}
+            # delivered_pack = self.browse(cr, uid, delivered_pack_id, context=context)
+            res[pick.id] = delivered_pack_id
 
         return res
 

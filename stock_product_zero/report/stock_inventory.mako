@@ -23,7 +23,6 @@
 <%
    open = 0.0
    amount = 0.0
-
    sorted_objects = sorted(objects,key=lambda o: o.name )
 %>
     
@@ -50,18 +49,23 @@
           <tr>
             <th style="text-align:left;white-space:nowrap">${_("Code")}</th>
             <th style="text-align:left;white-space:nowrap">${_("Name")}</th>
-            <th style="text-align:left;white-space:nowrap">${_("Lot")}</th>
+            <!--th style="text-align:left;white-space:nowrap">${_("Lot")}</th-->
             <th style="text-align:left;white-space">${_("Quantity counted")}</th>
-            <!--th style="text-align:left;white-space">${_("Quantity computed")}</th-->
-            <!--th style="text-align:left;white-space">${_("Diff")}</th-->
+            <th style="text-align:left;white-space">${_("Quantity computed")}</th>
+            <th style="text-align:left;white-space">${_("Diff")}</th>
             <th style="text-align:left;white-space:nowrap">${_("Unit")}</th>
             <th style="text-align:left;white-space">${_("Value")}</th>
-            <th style="text-align:left;white-space">${_("Total Value")}</th>
+            <th style="text-align:left;white-space">${_("Total Value counted")}</th>
+            <th style="text-align:left;white-space">${_("Total Value computed")}</th>
          </tr>
         </thead>
         <tbody>
 <%
 loc_name = ''
+total_product_qty = 0.0
+total_product_qty_calc = 0.0
+total_value = 0.0
+total_value_computed = 0.0
 %>
 %for line in inv.inventory_line_loc_id:
 %if line.location_id.name != loc_name:
@@ -81,19 +85,37 @@ if line.prod_lot_id.prefix:
 if line.prod_lot_id.name:
     lot_name += line.prod_lot_id.name
 %>
-<% product_list = get_products() %>
+
           <tr>
             <td style="text-align:left;white-space:nowrap">${line.product_id.default_code or ''}</td>
             <td style="text-align:left;white-space">${line.product_id.name}</td>
-            <td style="text-align:left;white-space:nowrap">${lot_name}</td>
-            <td style="text-align:right;white-space:nowrap">${line.product_qty}</td>
+            <!--td style="text-align:left;white-space:nowrap">${lot_name}</td-->
+            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty)}</td>
             <td style="text-align:right;white-space:nowrap">${line.product_qty_calc}</td>
-            <!--td style="text-align:right;white-space:nowrap">${line.product_qty-line.product_qty_calc}</td-->
-            <!--td style="text-align:left;white-space:nowrap">${line.product_uom.name}</td-->
-            <td style="text-align:right;white-space:nowrap">${formatLang(product_list[line.product_id.id])}</td>
-            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty * product_list[line.product_id.id])}</td>
+            <td style="text-align:right;white-space:nowrap">${line.product_qty-line.product_qty_calc}</td>
+            <td style="text-align:left;white-space:nowrap">${line.product_uom.name}</td>
+            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_id.standard_price)}</td>
+            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty*line.product_id.standard_price)}</td>
+            <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty_calc*line.product_id.standard_price)}</td>
          </tr>
+<%
+total_product_qty+=line.product_qty
+total_product_qty_calc+=line.product_qty_calc
+total_value+=line.product_qty*line.product_id.standard_price
+total_value_computed+=line.product_qty_calc*line.product_id.standard_price
+%>
 %endfor
+		 <tr>
+		    <td></td>
+		    <td style="text-align:left;white-space:nowrap">${_("Totals")}</td>
+			<td style="text-align:right;white-space:nowrap">${formatLang(total_product_qty)}</td>
+			<td style="text-align:right;white-space:nowrap">${formatLang(total_product_qty_calc)}</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td style="text-align:right;white-space:nowrap">${formatLang(total_value)}</td>
+			<td style="text-align:right;white-space:nowrap">${formatLang(total_value_computed)}</td>
+		 </tr>
         </tbody>
 </table>
 

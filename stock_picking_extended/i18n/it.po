@@ -173,6 +173,7 @@ msgstr "Errore! Per un Fornitore il numero di DDT deve essere univoco"
 
 #. module: stock_picking_extended
 #: field:account.invoice,transportation_condition_id:0
+#: field:stock.picking,transportation_condition_id:0
 msgid "Transportation condition"
 msgstr "Condizione Trasporto"
 
@@ -337,3 +338,18 @@ msgstr "PORTO ASSEGNATO"
 #: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PF
 msgid "FREEPORT"
 msgstr "PORTO FRANCO"
+
+#. module: stock_picking_extended
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_DEST
+msgid "RECIPIENT"
+msgstr "DESTINATARIO"
+
+#. module: stock_picking_extended
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_MITT
+msgid "SENDER"
+msgstr "MITTENTE"
+
+#. module: stock_picking_extended
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
+msgid "VECTOR"
+msgstr "VETTORE"

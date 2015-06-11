@@ -23,7 +23,7 @@
 
 {
     'name': 'Stock suppress all zero lines',
-    'version': '2.0.0.0',
+    'version': '2.0.1.0',
     'category': 'Warehouse Management',
     'description': """
 This module will not print/display products with zero quantity values in many reports and tree lists.
@@ -43,7 +43,7 @@ Adds a nice inventory report based on webkit
         'inventory_view.xml',
         'stock_inventory_webkit.xml',
     ],
-    #'update_xml': ['product_view.xml'],
+
     'demo_xml': [],
     'installable': True,
     'active': False,

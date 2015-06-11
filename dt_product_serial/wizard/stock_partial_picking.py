@@ -205,7 +205,7 @@ class stock_partial_picking(orm.TransientModel):
                 pallet[wizard_line.pallet_id.id] = 0
             pallet[wizard_line.pallet_id.id] += wizard_line.pallet_qty
             
-        #here i want to create 2 lines
+        # here i want to create 2 lines
 
         for pallet_id, pallet_qty in pallet.iteritems():
             if pallet_qty:
@@ -219,5 +219,17 @@ class stock_partial_picking(orm.TransientModel):
                     'pallet_id': pallet_id,
                 })
         
-        stock_picking.do_partial(cr, uid, [partial.picking_id.id], partial_data, context=context)
-        return {'type': 'ir.actions.act_window_close'}
+        delivered_pack_id = stock_picking.do_partial(cr, uid, [partial.picking_id.id], partial_data, context=context)
+
+        res = self.pool['ir.model.data'].get_object_reference(cr, uid, 'stock', 'view_picking_out_form')
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Delivered',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': res and res[1] or False,
+                'res_model': 'stock.picking',
+                'nodestroy': True,
+                'target': 'current',
+                'res_id': int(delivered_pack_id[partial.picking_id.id]),
+        }

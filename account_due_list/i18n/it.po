@@ -57,6 +57,11 @@ msgid "Unreconciled"
 msgstr "Non riconciliate"
 
 #. module: account_due_list
+#: view:account.move:0
+msgid "Current balance of move"
+msgstr "Sbilancio della registrazione"
+
+#. module: account_due_list
 #: view:account.move.line:0
 msgid "Group By..."
 msgstr "Raggruppa per..."
@@ -232,7 +237,7 @@ msgstr "Partner"
 #. module: account_due_list
 #: field:account.move.line,partner_ref:0
 msgid "Partner Ref"
-msgstr "Rif Partner"
+msgstr "Rif. Partner"
 
 #. module: account_due_list
 #: view:account.move.line:0
@@ -274,13 +279,13 @@ msgstr "Al"
 #. module: account_due_list
 #: field:account.move.line,direction:0
 msgid "Direction"
-msgstr "Direzione"
+msgstr "Verso"
 
 #. module: account_due_list
 #: code:addons/account_due_list/account_move_line.py:67
 #, python-format
 msgid "Error"
-msgstr "Error"
+msgstr "Errore"
 
 
 

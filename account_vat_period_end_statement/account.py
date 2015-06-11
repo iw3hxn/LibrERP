@@ -469,8 +469,8 @@ class account_vat_period_end_statement(orm.Model):
     """
     
     def compute_amounts(self, cr, uid, ids, context=None):
-        debit_line_pool = self.pool.get('statement.debit.account.line')
-        credit_line_pool = self.pool.get('statement.credit.account.line')
+        debit_line_pool = self.pool['statement.debit.account.line']
+        credit_line_pool = self.pool['statement.credit.account.line']
         for statement in self.browse(cr, uid, ids, context):
             statement.write({'previous_debit_vat_amount': 0.0})
             prev_statement_ids = self.search(cr, uid, [('date', '<', statement.date)], order='date')
@@ -494,9 +494,10 @@ class account_vat_period_end_statement(orm.Model):
                     context['period_id'] = period.id
                     total += tax_code_pool.browse(cr, uid, debit_tax_code_id, context).sum_period
                 debit_line_ids.append(
-                    {'account_id': debit_tax_code.vat_statement_account_id.id,
-                     'tax_code_id': debit_tax_code.id,
-                     'amount': total * debit_tax_code.vat_statement_sign, }
+                    {
+                        'account_id': debit_tax_code.vat_statement_account_id.id,
+                        'tax_code_id': debit_tax_code.id,
+                        'amount': total * debit_tax_code.vat_statement_sign, }
                 )
 
             credit_tax_code_ids = tax_code_pool.search(cr, uid,

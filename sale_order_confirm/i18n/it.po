@@ -723,3 +723,8 @@ msgstr "Cliente"
 #: field:sale.shop,user_allow_minimun_id:0
 msgid "User that can validate"
 msgstr "Utente che può comunque validare"
+
+#. module: sale
+#: help:sale.order.confirm,partner_shipping_id:0
+msgid "Shipping address for current sales order."
+msgstr "Ordine di spedizione per l'ordine di vendita corrente"

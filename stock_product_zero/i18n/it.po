@@ -16,6 +16,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:59
+msgid "Total Value counted"
+msgstr "Valore Totale reale"
+
+#. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:111
+msgid "Totals"
+msgstr "Totali"
+
+#. module: stock_product_zero
 #: model:ir.model,name:stock_product_zero.model_stock_inventory
 msgid "Inventory"
 msgstr "Inventario"
@@ -36,9 +46,9 @@ msgid "Product"
 msgstr "Prodotto"
 
 #. module: stock_product_zero
-#: constraint:product.product:0
-msgid "Error msg in raise"
-msgstr "Errore"
+#: view:stock.inventory:0
+msgid "Split inventory lines"
+msgstr "Dividi righe inventario"
 
 #. module: stock_product_zero
 #: field:stock.fill.inventory,display_with_zero_qty:0
@@ -68,9 +78,9 @@ msgid "Products "
 msgstr "Prodotti "
 
 #. module: stock_product_zero
-#: report:addons/stock_product_zero/report/stock_inventory.mako:59
-msgid "Total Value"
-msgstr "Valore Totale"
+#: report:addons/stock_product_zero/report/stock_inventory.mako:60
+msgid "Total Value computed"
+msgstr "Valore Totale Calcolato"
 
 #. module: stock_product_zero
 #: model:ir.model,name:stock_product_zero.model_stock_fill_inventory

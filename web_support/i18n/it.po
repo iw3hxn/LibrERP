@@ -116,3 +116,8 @@ msgstr ""
 msgid "Unfortunatelly your OpenERP instance is not supported."
 msgstr "Sfortunatamente la tua installazione di LibrERP non è supportata."
 
+#. openerp-web
+#: /home/damian/Desarrollo/addons/compartidos/webs/web_support/static/src/xml/base.xml:27
+msgid "This way we can get informed about it and try to fix it as soon as possible."
+msgstr "In questo modo possiamo ricevere le informazione e cercare di risolvere nel più breve tempo possibile"
+

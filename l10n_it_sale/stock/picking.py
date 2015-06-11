@@ -74,3 +74,14 @@ class stock_picking(orm.Model):
             })
 
         return super(stock_picking, self).copy(cr, uid, id, default, context)
+
+    def action_invoice_create(self, cursor, user, ids, journal_id=False,
+                              group=False, type='out_invoice', context=None):
+        res = super(stock_picking, self).action_invoice_create(cursor, user, ids, journal_id,
+                                                               group, type, context)
+        for picking in self.browse(cursor, user, ids, context=context):
+            self.pool['account.invoice'].write(cursor, user, res[picking.id], {
+                'cig': picking.cig,
+                'cup': picking.cup,
+            })
+        return res

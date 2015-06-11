@@ -117,8 +117,14 @@ msgstr "Con saldo diverso da zero"
 
 #. module: account_financial_report_horizontal
 #: report:account.profit_horizontal:0
-msgid "Particular"
+msgid "Expense"
 msgstr "Dettaglio"
+msgstr "Costi"
+
+#. module: account_financial_report_horizontal
+#: report:account.profit_horizontal:0
+msgid "Revenue"
+msgstr "Ricavi"
 
 #. module: account_financial_report_horizontal
 #: selection:account.bs.report,filter:0

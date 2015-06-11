@@ -58,17 +58,27 @@ class sale_order_confirm(orm.TransientModel):
 
         sale_order_obj = self.pool['sale.order']
         result = super(sale_order_confirm, self).sale_order_confirmated(cr, uid, ids, context=context)
-        sale_order_confirm_data = self.read(cr, uid, ids[0], ['cig', 'cup'])
+        sale_order_confirm_data = self.read(cr, uid, ids[0], ['cig', 'cup'], context=context)
 
         if result.get('res_id'):
             sale_order_obj.write(cr, uid, result['res_id'], {
                 'cig': sale_order_confirm_data['cig'],
                 'cup': sale_order_confirm_data['cup'],
-            })
+            }, context=context)
         else:
             sale_order_obj.write(cr, uid, context['active_ids'][0], {
                 'cig': sale_order_confirm_data['cig'],
                 'cup': sale_order_confirm_data['cup'],
-            })
+            }, context=context)
+
+        for order in sale_order_obj.browse(cr, uid, [result.get('res_id') or context['active_ids'][0]], context=context):
+            # partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id)
+            picking_obj = self.pool['stock.picking']
+            picking_ids = picking_obj.search(cr, uid, [('sale_id', '=', order.id)], context=context)
+            for picking_id in picking_ids:
+                picking_obj.write(cr, uid, picking_id, {
+                    'cig': sale_order_confirm_data['cig'] or '',
+                    'cup': sale_order_confirm_data['cup'] or ''
+                }, context=context)
 
         return result
