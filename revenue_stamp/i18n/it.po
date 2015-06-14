@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-20 22:10+0000\n"
-"PO-Revision-Date: 2014-02-20 22:10+0000\n"
+"PO-Revision-Date: 2015-06-14 18:13+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. module: revenue_stamp
 #: field:toinvoice.product,product_toinvoice_id:0
 msgid "Partner related"
-msgstr "Partner related"
+msgstr "Partner correlato"
 
 #. module: revenue_stamp
 #: model:ir.model,name:revenue_stamp.model_account_tax_code
@@ -39,7 +39,7 @@ msgstr "Importo Minimo per Bollo caricato in fattura"
 #: sql_constraint:product.product:0
 #: sql_constraint:unique.revenue.product:0
 msgid "The revenue stamp product must be unique !"
-msgstr "Il prodotto Bollo deve essere unico !"
+msgstr "Il prodotto Bollo deve essere unico!"
 
 #. module: revenue_stamp
 #: model:ir.model,name:revenue_stamp.model_product_product
@@ -69,7 +69,7 @@ msgstr "Marca da Bollo in Fattura"
 #. module: revenue_stamp
 #: view:account.tax.code:0
 msgid "Others"
-msgstr "Others"
+msgstr "Altro"
 
 #. module: revenue_stamp
 #: help:account.tax.code,stamp_in_invoice:0
@@ -84,17 +84,12 @@ msgstr "Costi da addebitare in fattura."
 #. module: revenue_stamp
 #: field:toinvoice.product,product_id:0
 msgid "Products to be charged in invoices"
-msgstr "Products to be charged in invoices"
+msgstr "Prodotti da addebitare in fattura"
 
 #. module: revenue_stamp
 #: field:toinvoice.product,name:0
 msgid "Notes"
 msgstr "Note"
-
-#. module: revenue_stamp
-#: view:res.partner:0
-msgid "Prodotti da addebitare in fattura"
-msgstr "Prodotti da addebitare in fattura"
 
 #. module: revenue_stamp
 #: field:toinvoice.product,qty:0
@@ -114,7 +109,7 @@ msgstr "Costi Fatturazione"
 #. module: revenue_stamp
 #: field:product.product,unique_revenue_stamp_id:0
 msgid "Product id for revenue stamp"
-msgstr "Product id for revenue stamp"
+msgstr "Codice prodotto per marca da bollo"
 
 #. module: revenue_stamp
 #: model:ir.model,name:revenue_stamp.model_account_invoice
@@ -134,4 +129,9 @@ msgstr "Costi Addebitati in fattura"
 #. module: revenue_stamp
 #: field:unique.revenue.product,unique_revenue_stamp:0
 msgid "Product for revenue stamp"
-msgstr "Product for revenue stamp"
+msgstr "Prodotto da usare come marca da bollo"
+
+#. module: revenue_stamp
+# FIXME doesn't work
+msgid "Unique revenue product"
+msgstr "Unico prodotto Marca da bollo"
