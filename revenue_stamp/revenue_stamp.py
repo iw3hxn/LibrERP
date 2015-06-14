@@ -41,6 +41,7 @@ class partner(osv.osv):
 
 class unique_revenue_product(osv.osv):
     _name = 'unique.revenue.product'
+    _description = 'Unique revenue product'
     _columns = {
         'name': fields.char('Description', size=50,),
         'unique_revenue_stamp': fields.boolean('Product for revenue stamp'),
