@@ -22,11 +22,11 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import orm, fields
 import datetime
 
 
-class account_invoice(osv.osv):
+class account_invoice(orm.Model):
     _inherit = 'account.invoice'
     
     def _get_invoice_years(self, cr, uid, fields, context=None):
@@ -57,8 +57,9 @@ class account_invoice(osv.osv):
         return result
     
     _columns = {
-       'year': fields.function(_get_invoice_year, 'Year', type='selection', selection=_get_invoice_years, method=True, help="Select year")
-        
+        'year': fields.function(_get_invoice_year, 'Year', type='selection', selection=_get_invoice_years, method=True, help="Select year"),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
     }
     
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):

@@ -49,3 +49,13 @@ msgstr "Fatture del mese scorso"
 #: view:account.invoice:0
 msgid "Year"
 msgstr "Anno"
+
+#. module: account_invoice_filter
+#: field:account.invoice,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: account_invoice_filter
+#: field:account.invoice,date_to:0
+msgid "Date to"
+msgstr "Al"

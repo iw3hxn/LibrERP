@@ -22,6 +22,8 @@
                         help="Invoices of the current month"
                         domain="[('date_invoice', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_invoice', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
                     />
+                    <field name="date_from" filter_domain="[('date_invoice','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date_invoice','&lt;=',self)]"/>
                 </filter>
                 <field name="period_id" position="after">
                     <field name="year" string="Year" />
