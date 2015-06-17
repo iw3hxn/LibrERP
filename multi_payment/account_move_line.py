@@ -25,7 +25,7 @@ class account_move_line(orm.Model):
     _inherit = 'account.move.line'
 
     _columns = {
-        'user_type': fields.related('account_id', 'account.account', 'Account user type'),
-        'date_from':fields.function(lambda *a,**k:{}, method=True, type='date',string="Date from"),
-        'date_to':fields.function(lambda *a,**k:{}, method=True, type='date',string="Date to"),
+        'user_type': fields.related('account_id', 'user_type', type='many2one', relation='account.account', string='Account user type', store=False),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
     }

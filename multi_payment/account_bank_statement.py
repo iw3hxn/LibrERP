@@ -74,7 +74,7 @@ class account_bank_statement(orm.Model):
             'analytic_account_id': st_line.analytic_account_id and st_line.analytic_account_id.id or False
         }
 
-        if st.currency.id <> company_currency_id:
+        if st.currency.id != company_currency_id:
             amount_cur = res_currency_obj.compute(cr, uid, company_currency_id,
                         st.currency.id, amount, context=context)
             val['amount_currency'] = -amount_cur
@@ -112,7 +112,7 @@ class account_bank_statement(orm.Model):
             if not st.name == '/':
                 st_number = st.name
             else:
-                #1 row copied from c2c_fy - because we need to overwrite without super()
+                # 1 row copied from c2c_fy - because we need to overwrite without super()
                 c = {'fiscalyear_id': st.period_id.fiscalyear_id.id, 'period_id': st.period_id.id, 'journal_id': st.journal_id.id}
                 if st.journal_id.sequence_id:
                     st_number = obj_seq.next_by_id(cr, uid, st.journal_id.sequence_id.id, context=c)
@@ -120,7 +120,7 @@ class account_bank_statement(orm.Model):
                     st_number = obj_seq.next_by_code(cr, uid, 'account.bank.statement', context=c)
 
             for line in st.move_line_ids:
-                if line.state <> 'valid':
+                if line.state != 'valid':
                     raise orm.except_orm(_('Error !'),
                             _('The account entries lines are not in valid state.'))
 
@@ -137,7 +137,7 @@ class account_bank_statement(orm.Model):
             for st_line in st.line_ids:
                 if st_line.analytic_account_id:
                     if not st.journal_id.analytic_journal_id:
-                        raise orm.except_orm(_('No Analytic Journal !'),_("You have to assign an analytic journal on the '%s' journal!") % (st.journal_id.name,))
+                        raise orm.except_orm(_('No Analytic Journal !'), _("You have to assign an analytic journal on the '%s' journal!") % (st.journal_id.name,))
                 if not st_line.amount:
                     continue
                 st_line_number = st_number + '/' + str(st_line.sequence)
@@ -152,7 +152,7 @@ class account_bank_statement(orm.Model):
             else:
                 account_id = st.journal_id.default_debit_account_id.id
 
-            #create total counterpart
+            # create total counterpart
             amount_currency = False
             currency_id = False
             if st.currency.id <> company_currency_id:
@@ -177,7 +177,7 @@ class account_bank_statement(orm.Model):
                     account_move_obj.browse(cr, uid, move_id,
                         context=context).line_id],
                     context=context):
-                if line.state <> 'valid':
+                if line.state != 'valid':
                     raise orm.except_orm(_('Error !'),
                             _('Journal item "%s" is not valid.') % line.name)
 
