@@ -353,3 +353,9 @@ msgstr "MITTENTE"
 #: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
 msgid "VECTOR"
 msgstr "VETTORE"
+
+#. module: purchase
+#: view:sale.order:0 field:sale.order,minimum_planned_date:0
+#: view:stock.picking:0
+msgid "Expected Date"
+msgstr "Data prevista"

@@ -13,6 +13,9 @@
                         <field name="goods_description_id" groups="base.group_extended" widget="selection"/>
                     </group>
                 </field>
+                <field name="date_confirm" position="after">
+                    <field name="minimum_planned_date" groups="base.group_extended" />
+                </field>
             </field>
         </record>
 

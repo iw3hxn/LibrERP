@@ -43,12 +43,23 @@ class account_invoice(orm.Model):
 
     def onchange_partner_id(self, cr, uid, ids, type, partner_id,
             date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+
         result = super(account_invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,
             date_invoice, payment_term, partner_bank_id, company_id)
         if partner_id:
+            partner_address_obj = self.pool['res.partner.address']
+            delivery_ids = partner_address_obj.search(
+                cr, uid, [('partner_id', '=', partner_id), ('default_delivery_partner_address', '=', True)], context=None)
+            if not delivery_ids:
+                delivery_ids = partner_address_obj.search(
+                    cr, uid, [('partner_id', '=', partner_id), ('type', '=', 'delivery')], context=None)
+                if not delivery_ids:
+                    delivery_ids = partner_address_obj.search(cr, uid, [('partner_id', '=', partner_id)], context=None)
+
             partner = self.pool['res.partner'].browse(cr, uid, partner_id)
             result['value']['carriage_condition_id'] = partner.carriage_condition_id.id
             result['value']['goods_description_id'] = partner.goods_description_id.id
+            result['value']['address_delivery_id'] = delivery_ids and delivery_ids[0]
         return result
 
 

@@ -41,7 +41,7 @@ Functionalities:
         'delivery',
         'sequence_restart',     # ricomincia da 0 le sequenze ogni anno
         'sale_margin',
-        'l10n_it_sale'
+        # 'l10n_it_sale'
     ],
     "data": [
         'security/ir.model.access.csv',
