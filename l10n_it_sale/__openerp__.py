@@ -44,6 +44,7 @@ Functionalities:
         'sequence_restart',     # ricomincia da 0 le sequenze ogni anno
         'invoice_immediate',    # fattura accompagnatoria
         'sale_order_confirm',
+        'stock_picking_extended'
     ],
     "data": [
         'wizard/assign_ddt.xml',
