@@ -4,7 +4,7 @@
  * @requires jQuery v1.2.3 or later
  *
  * Examples at: http://malsup.com/jquery/block/
- * Copyright (c) 2007-2010 M. Alsup
+ * Copyright (c) 2007-2010 M. Alsupsrc/css/base.css
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
@@ -88,8 +88,8 @@ $.blockUI.defaults = {
 		left:		'35%',
 		textAlign:	'center',
 		color:		'#000',
-		border:		'3px solid #aaa',
-		backgroundColor:'#fff',
+//		border:		'3px solid #aaa',
+//		backgroundColor: '#fff',
 		cursor:		'wait'
 	},
 	

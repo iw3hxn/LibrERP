@@ -23,7 +23,7 @@ openerp.web_support = function(openerp) {
                                             '<a href="http://www.librerp.com">LibrERP</a> - ' +
                                             'Supported by <a href="' + contract_provider_url + 
                                             '" target="_blank">' + contract_provider +
-                                            '</a></span><p>';
+                                            '</a><p>';
                             $('.oe_footer_powered').html(footer);
                         }
                     });
