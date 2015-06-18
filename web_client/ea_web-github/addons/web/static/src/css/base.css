@@ -8,12 +8,12 @@ body.openerp {
     margin: 0;
     height: 100%;
     font-size: 85%;
-    font-family: Roboto, "Lucida Grande", Droid, Helvetica, Verdana, Arial, sans-serif;
+    font-family: "Lucida Grande",Helvetica,Verdana,Arial,sans-serif;
 }
 
 .openerp, .openerp textarea, .openerp input, .openerp select, .openerp option,
 .openerp button, .openerp .ui-widget {
-    font-family: Roboto, "Lucida Grande", Droid, Helvetica, Verdana, Arial, sans-serif;
+    font-family: "Lucida Grande",Helvetica,Verdana,Arial,sans-serif;
     font-size:90%;
 }
 
@@ -91,7 +91,7 @@ body.openerp {
 .login {
     padding: 0;
     margin: 0;
-    font-family: Roboto, "Lucida Grande", Droid, Helvetica, Verdana, Arial, sans-serif;
+    font-family: "Lucida Grande",Helvetica,Verdana,Arial,sans-serif;
     background: url("/web/static/src/img/pattern.png") repeat;
     color: #eee;
     font-size: 6px;
@@ -121,7 +121,7 @@ body.openerp {
     cursor: pointer;
     padding: 6px 16px;
     font-size: 13px;
-    font-family: Roboto, "Lucida Grande", Droid, Helvetica, Verdana, Arial, sans-serif;
+    font-family: "Lucida Grande",Helvetica,Verdana,Arial,sans-serif;
     border: 1px solid #222222;
     color: black;
     margin: 0;
@@ -142,7 +142,7 @@ body.openerp {
 .login input, .login select {
     width: 252px;
     font-size: 14px;
-    font-family: Roboto, "Lucida Grande", Droid, Helvetica, Verdana, Arial, sans-serif;
+    font-family: "Lucida Grande",Helvetica,Verdana,Arial,sans-serif;
     border: 1px solid #999999;
     background: whitesmoke;
     -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3);
@@ -382,6 +382,8 @@ label.error {
 }
 .openerp .oe-application {
     height: 100%;
+    background: transparent url("/web/static/src/img/form_sheetbg.png") repeat scroll 0% 0%;
+    border: 0px none;
 }
 .openerp .oe-application-container {
     width: 100%;
@@ -459,15 +461,16 @@ label.error {
     cursor: pointer;
     border-left: 1px solid #e6e6e6;
     border-bottom: 1px solid #e6e6e6;
-    width: 21px;
-    height: 21px;
+    width: 23px;
+    height: 23px;
     z-index: 10;
-    background: transparent;
+    background: #FDFDFD;
     color: #1e1e1e;
     text-align: center;
     font-size: 18px;
     line-height: 18px;
     right: 0;
+    border-radius: 13px
 }
 .openerp .secondary_menu.oe_folded .oe_toggle_secondary_menu {
     position: static;
@@ -486,7 +489,7 @@ label.error {
 .openerp .secondary_menu {
     width: 200px;
     min-width: 200px;
-    background: #e6e6e6;
+    background: transparent url("/web/static/src/img/form_sheetbg.png") repeat scroll 0% 0%;
     vertical-align: top;
     height: 100%;
     display: block;
@@ -767,7 +770,7 @@ label.error {
     font-weight: bold;
 }
 .openerp .filter_icon {
-    height: 22px;
+    height: 25px;
     padding: 1px 2px 0 2px;
     margin: 0;
     vertical-align: bottom;
@@ -921,12 +924,12 @@ label.error {
     clear: right;
     width: 100%;
     border-spacing: 0;
-    border: 1px solid silver;
 }
 
 .openerp .oe-listview thead table {
     width: 100%;
     border:  none;
+    background: #FFF none repeat scroll 0% 0%;
 }
 .openerp .oe-listview tr.odd {
     background-color: #f0f0f0;
@@ -1248,6 +1251,7 @@ label.error {
 }
 .openerp .oe_form_frame_cell .input[type="text"] {
     padding-bottom: 1px;
+    border-right: 1px solid #DDD;
 }
 
 .openerp table.oe_frame td {
@@ -1329,6 +1333,8 @@ label.error {
 }
 .openerp .oe_form_frame_cell  .oe_label, .openerp .oe_form_frame_cell  .oe_label_help {
     font-weight: normal;
+    border-right: 1px solid #DDD;
+    padding: 2px 0px;
 }
 .openerp #tiptip_content {
     font-size: 12px;
@@ -1356,6 +1362,7 @@ label.error {
     font-weight: normal;
     color: #1e1e1e;
     font-weight: bold;
+    text-align: left !important;
 }
 .openerp .oe_forms .searchview_group_content label.oe_label, .openerp .searchview_group_content .oe_forms label.oe_label_help { /* making a distinction between labels in search view and other labels */
     margin: 3px 0 0 3px;
@@ -1497,7 +1504,7 @@ label.error {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
     margin-right:-1px;
-    height: 22px;
+    height: 25px;
 }
 
 .openerp .oe_form_field_email button img,
@@ -1529,7 +1536,7 @@ label.error {
 .openerp .oe_forms input[type="file"],
 .openerp .oe_forms select,
 .openerp .oe_forms .oe_button {
-    height: 22px;
+    height: 25px;
 }
 
 .openerp .oe_forms input.field_datetime {
@@ -1555,7 +1562,7 @@ label.error {
     min-width: auto\9;
 }
 .openerp .oe_forms .button {
-    height: 22px;
+    height: 25px;
 }
 .openerp .oe_forms .oe_button span {
     position: relative;
@@ -1617,9 +1624,8 @@ label.error {
     font-weight: bold;
     border-bottom-width: 1px;
     margin: 3px 4px 3px 1px;
-    height: 17px;
     font-size: 120%;
-    
+    color: #7C7BAD;
 }
 .openerp .separator.horizontal:empty {
     height: 5px;
@@ -1652,7 +1658,7 @@ label.error {
     font-size: 1em;
 }
 .openerp .oe_form_field_progressbar .ui-progressbar {
-    height: 22px;
+    height: 25px;
     font-size: 10px;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -1708,9 +1714,12 @@ label.error {
 /* Sidebar */
 .openerp .view-manager-main-table {
     margin: 0;
-    width:100%;
-    border-collapse:collapse;
-    height:100%;
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    border: 1px solid #C8C8D3;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+    background: #FFF none repeat scroll 0% 0%;
 }
 
 .openerp .view-manager-main-table tbody {
@@ -1802,6 +1811,8 @@ label.error {
     width: 180px;
     padding: 0;
     margin: 0;
+    background: transparent url("/web/static/src/img/form_sheetbg.png") repeat scroll 0% 0%;
+    border-bottom: 1px solid #DDD;
 }
 
 .openerp .sidebar-main-div {
@@ -1817,7 +1828,7 @@ label.error {
 }
 
 .openerp .closed-sidebar .sidebar-content {
-    width: 22px;
+    width: 25px;
 }
 
 .openerp .closed-sidebar .sidebar-content {
@@ -2447,7 +2458,15 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     width: 24px;
 }
 .openerp select.oe_search-view-filters-management {
-    font-style: oblique;
+    cursor: text;
+    position: relative;
+    float: right;
+    padding: 1px 0px;
+    line-height: 18px;
+    border: 1px solid #ABABAB;
+    background: #FFF none repeat scroll 0% 0%;
+    border-radius: 13px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2) inset;
     color: #999999;
 }
 
