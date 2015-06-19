@@ -34,7 +34,7 @@ class filedata_import(orm.TransientModel):
     # # # # # # # # # # # # # #
     # action of button click  #
     # # # # # # # # # # # # # #
-    def actionCheckEncoding(self, cr, uid, ids, context):
+    def actionCheckEncoding(self, cr, uid, ids, context=False):
         # WARNING: Context is required, for correct functionally of 'read'.
         record = self.read(cr, uid, ids[0], context=context)
 
@@ -58,7 +58,7 @@ class filedata_import(orm.TransientModel):
         self.actionStartImport(cr, uid, ids, context)
         return False
     
-    def actionStartImport(self, cr, uid, ids, context):
+    def actionStartImport(self, cr, uid, ids, context=False):
         # Set 'end' as a next state
         self.write(cr, uid, ids, {'state': 'end'}, context=context)
 
