@@ -183,8 +183,8 @@ class stock_move(orm.Model):
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
-    def action_assign_wkf(self, cr, uid, ids):
-        result = super(stock_picking, self).action_assign_wkf(cr, uid, ids)
+    def action_confirm(self, cr, uid, ids):
+        result = super(stock_picking, self).action_confirm(cr, uid, ids)
 
         for picking in self.browse(cr, uid, ids):
             if picking.company_id.autosplit_is_active:
@@ -290,11 +290,11 @@ class stock_picking(orm.Model):
         else:
             context = dict(context)
         res = {}
-        move_obj = self.pool.get('stock.move')
-        product_obj = self.pool.get('product.product')
-        currency_obj = self.pool.get('res.currency')
-        uom_obj = self.pool.get('product.uom')
-        sequence_obj = self.pool.get('ir.sequence')
+        move_obj = self.pool['stock.move']
+        product_obj = self.pool['product.product']
+        currency_obj = self.pool['res.currency']
+        uom_obj = self.pool['product.uom']
+        sequence_obj = self.pool['ir.sequence']
         wf_service = netsvc.LocalService("workflow")
         for pick in self.browse(cr, uid, ids, context=context):
             new_picking = None
@@ -303,7 +303,7 @@ class stock_picking(orm.Model):
             for move in pick.move_lines:
                 if move.state in ('done', 'cancel'):
                     continue
-                partial_data = partial_datas.get('move%s'%(move.id), {})
+                partial_data = partial_datas.get('move%s' % (move.id), {})
                 product_qty = partial_data.get('product_qty', 0.0)
                 move_product_qty[move.id] = product_qty
                 product_uom = partial_data.get('product_uom', False)
@@ -344,7 +344,7 @@ class stock_picking(orm.Model):
                             # Get the standard price
                             amount_unit = product.price_get('standard_price', context=context)[product.id]
                             new_std_price = ((amount_unit * product_avail[product.id])\
-                                + (new_price * qty))/(product_avail[product.id] + qty)
+                                + (new_price * qty)) / (product_avail[product.id] + qty)
                         # Write the field according to price type field
                         product_obj.write(cr, uid, [product.id], {'standard_price': new_std_price})
 
