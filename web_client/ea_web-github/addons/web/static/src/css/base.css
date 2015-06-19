@@ -1115,7 +1115,7 @@ label.error {
 .openerp .oe-listview .oe-list-footer {
     text-align: center;
     white-space: nowrap;
-    color: #444;
+    color: black;
     font-size: 85%;
 }
 .openerp .oe-listview .oe-list-footer span {
@@ -1439,7 +1439,7 @@ label.error {
 .openerp .oe_form_readonly .field_date,
 .openerp .oe_form_readonly .field_selection,
 .openerp .oe_forms_readonly .oe_form_field_many2one {
-    padding: 3px 2px 2px 2px;
+    padding: 6px 2px 2px 2px;
 #    background-color: white;
     min-height: 17px;
 }
@@ -1447,15 +1447,16 @@ label.error {
     height: auto;
 }
 .openerp .oe_form_readonly .field_datetime {
-    padding: 1px 2px 2px 2px;
+    padding: 6px 2px 2px 2px;
 #    background-color: white;
     height:19px;
+    color: #000;
 }
 .openerp .oe_form_readonly .oe_form_field_many2one div {
 #    background-color:white;
     height:18px;
     margin-bottom:1px;
-    padding: 0px 2px 5px 2px;
+    padding: 5px 2px 5px 2px;
 }
 
 .openerp .oe_form_readonly .oe_form_field_email div  {
@@ -1486,7 +1487,7 @@ label.error {
     border: 1px solid #999;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
-    border-radius: 3px;
+    border-radius: 6px;
     background: white;
     min-width: 90px;
     color: #1f1f1f;
