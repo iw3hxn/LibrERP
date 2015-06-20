@@ -55,21 +55,21 @@ class product_product(orm.Model):
             }
         else:
             # Search for the default value on this category
-            category_data = self.pool['product.category'].read(cr, uid, categ_id, [], context=context)
+            category_data = self.pool['product.category'].browse(cr, uid, categ_id, context=context)
            
-            if category_data['property_account_expense_categ']:
-                res['property_account_expense'] = category_data['property_account_expense_categ']
-            if category_data['property_account_income_categ']:
-                res['property_account_income'] = category_data['property_account_income_categ']
+            if category_data.property_account_expense_categ:
+                res['property_account_expense'] = category_data.property_account_expense_categ.id
+            if category_data.property_account_income_categ:
+                res['property_account_income'] = category_data.property_account_income_categ.id
 
-            if category_data['provision_type']:
-                res['type'] = category_data['provision_type']
+            if category_data.provision_type:
+                res['type'] = category_data.provision_type
             else:
                 res['type'] = type
-            if category_data['procure_method']:
-                res['procure_method'] = category_data['procure_method']
+            if category_data.procure_method:
+                res['procure_method'] = category_data.procure_method
             if category_data['supply_method']:
-                res['supply_method'] = category_data['supply_method']
+                res['supply_method'] = category_data.supply_method
                 
             if res['type'] == 'service':
                 if purchase_ok:
@@ -84,17 +84,17 @@ class product_product(orm.Model):
                     res['supply_method'] = 'buy'
                     res['purchase_ok'] = True
                     
-            if category_data['sale_taxes_ids']:
-                res['taxes_id'] = category_data['sale_taxes_ids']
-            if category_data['purchase_taxes_ids']:
-                res['supplier_taxes_id'] = category_data['purchase_taxes_ids']
-            if category_data['uom_id']:
-                res['uom_id'] = category_data['uom_id']
-            if category_data['uom_po_id']:
-                res['uom_po_id'] = category_data['uom_po_id']
-            if category_data['uos_id']:
-                res['uos_id'] = category_data['uos_id']
-                res['uos_coef'] = category_data['uos_coef']
+            if category_data.sale_taxes_ids:
+                res['taxes_id'] = [(6, 0, [category_data.sale_taxes_ids.id])]
+            if category_data.purchase_taxes_ids:
+                res['supplier_taxes_id'] = [(6, 0, [category_data.purchase_taxes_ids])]
+            if category_data.uom_id:
+                res['uom_id'] = category_data.uom_id.id
+            if category_data.uom_po_id:
+                res['uom_po_id'] = category_data.uom_po_id.id
+            if category_data.uos_id:
+                res['uos_id'] = category_data.uos_id.id
+                res['uos_coef'] = category_data.uos_coef
 
             if len(ids) == 1 and self.browse(cr, uid, ids, context)[0].categ_id.id != categ_id:
                 warn = {
