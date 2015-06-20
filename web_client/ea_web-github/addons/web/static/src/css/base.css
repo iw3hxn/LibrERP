@@ -20,7 +20,7 @@ body.openerp {
 .openerp .view-manager-main-content {
     width: 100%;
     padding: 0 8px 8px 8px;
-    border: 1px solid #C8C8D3;
+    border: 1px solid #E8E8E8;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -1835,7 +1835,6 @@ label.error {
     margin: 0;
     width: 180px;
     height: 100%;
-    font-size: 0.9em;
 }
 
 .openerp .closed-sidebar .sidebar-content {
@@ -1893,14 +1892,14 @@ label.error {
 .openerp .view-manager-main-sidebar h2 {
     margin:0;
     font-size: 100%;
-    color: #0E0E0E;
+    color: #7C7BAD;
     padding-left: 10px;
     padding-right: 21px;
 
-    background: #E6E6E6; /* Old browsers */
+  /*   background: #E6E6E6; */
     border: 1px solid #8E8E8E;
-    border-radius: 4px;
-    font-weight: normal;
+    border-radius: 12px;
+    font-weight: bold;
 }
 
 .openerp .view-manager-main-sidebar ul {
