@@ -1537,6 +1537,7 @@ label.error {
 .openerp .oe_forms select[disabled],
 .openerp .oe_forms textarea[disabled]{
     border: 0px;
+    background-color: #FAFAFA !important;
 }
 .openerp .oe_forms textarea {
     resize:vertical;
