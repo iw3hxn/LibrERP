@@ -1485,7 +1485,6 @@ label.error {
     box-sizing: border-box;
     padding: 0 2px;
     margin: 0 2px;
-    border: 1px solid #999;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 6px;
@@ -1539,8 +1538,7 @@ label.error {
 .openerp .oe_forms input[disabled],
 .openerp .oe_forms select[disabled],
 .openerp .oe_forms textarea[disabled]{
-    background: #E5E5E5 !important;
-    color: #666;
+    border: 0px;
 }
 .openerp .oe_forms textarea {
     resize:vertical;
