@@ -1496,8 +1496,6 @@ label.error {
     min-width: 300px;
 }
 
-.openerp .oe_forms input.field_many2one,
-.openerp .oe_forms input.field_binary,
 .openerp .oe_forms input.field_binary,
 .openerp .oe_forms input.field_email,
 .openerp .oe_forms input.field_url  {
