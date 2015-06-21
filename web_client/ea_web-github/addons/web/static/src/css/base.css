@@ -15,6 +15,7 @@ body.openerp {
 .openerp button, .openerp .ui-widget {
     font-family: "Lucida Grande",Helvetica,Verdana,Arial,sans-serif;
     font-size:90%;
+    border: 1px solid #ccc;
 }
 
 .openerp .view-manager-main-content {
@@ -538,7 +539,7 @@ label.error {
 .openerp .secondary_menu a.oe_secondary_menu_item {
     font-weight: bold;
     color: #7C7BAD;
-    border: 1px solid #AEAEAE;
+    border: 1px solid #CECECE;
     border-radius: 14px;
     background: transparent url("/web/static/src/img/form_sheetbg.png") repeat scroll 0% 0%
 }
@@ -1560,6 +1561,7 @@ label.error {
     white-space: nowrap;
     min-width: 100%;
     width: 100%;
+    border-radius: 14px;
     /* border-color: #E30000; */
 }
 @-moz-document url-prefix() {
@@ -1840,7 +1842,7 @@ label.error {
 .openerp .sidebar-content {
     padding: 0;
     margin: 0;
-    width: 180px;
+    width: 200px;
     height: 100%;
 }
 
@@ -1904,9 +1906,10 @@ label.error {
     color: #7C7BAD;
     padding-left: 10px;
     padding-right: 21px;
-
+    padding-top: 3px;
+    height: 22px;
   /*   background: #E6E6E6; */
-    border: 1px solid #8E8E8E;
+    border: 1px solid #CECECE;
     border-radius: 12px;
     font-weight: bold;
 }
@@ -1934,7 +1937,9 @@ label.error {
     z-index: 10;
 }
 .openerp .open-sidebar .toggle-sidebar {
-    margin-left: 158px;
+    margin-left: 178px;
+    MARGIN-TOP: 2px;
+    border-radius: 10px;
     background-position: 21px 0;
     position: absolute;
 }
@@ -2499,6 +2504,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 .openerp .oe-binary-image {
   max-width: 130px;
   border-color: #dedede;
+  border-radius: 14px;
 }
 
 /* Debug stuff */

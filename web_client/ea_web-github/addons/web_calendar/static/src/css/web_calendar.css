@@ -258,7 +258,7 @@
     text-shadow: 0 1px 0 white;
     font-weight:bold;
     text-align:center;
-    border-left:1px solid #E9E9E9;
+    border:1px solid #E9E9E9;
     height:18px;
     text-align:right;
     font-size:0.9em;
@@ -666,8 +666,8 @@ font-size:11px;line-height:24px;}
 .openerp .div .dhx_cal_editor{background-color:#FFE4AB;}
 
 .openerp .dhx_month_body{ 
-    border-left:1px solid #E9E9E9;
-    border-bottom:1px solid #E9E9E9;
+    border:1px solid #E9E9E9;
+    border:1px solid #E9E9E9;
 }
 
 .openerp .dhx_scale_bar_last{border-right:none;}

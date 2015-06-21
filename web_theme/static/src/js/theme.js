@@ -80,9 +80,9 @@ openerp.web.FormView = openerp.web.FormView.extend({
 
 	    this._super.apply(this,arguments);
 	    
-		$('.openerp .oe_forms input').css('border', '2px inset #E9E9E9');
-		$('.openerp .oe_forms select').css('border', '2px inset #E9E9E9');
-		$('.openerp .oe_forms textarea').css('border', '2px inset #E9E9E9');
+		//$('.openerp .oe_forms input').css('border', '2px inset #E9E9E9');
+		//$('.openerp .oe_forms select').css('border', '2px inset #E9E9E9');
+		//$('.openerp .oe_forms textarea').css('border', '2px inset #E9E9E9');
 		//$('.openerp .oe_forms input[type="text"],.openerp .oe_forms input[type="password"],.openerp .oe_forms input[type="file"],.openerp .oe_forms select,.openerp .oe_forms textarea').css('border', '2px inset #E9E9E9');
 		
 	}
@@ -95,7 +95,7 @@ openerp.web.PageView = openerp.web.PageView.extend({
 	    
 	    $('.openerp a.oe_form_uri ').css('color', link_color);
 	    $('.openerp a.oe_form_uri').css('text-decoration', 'none');
-		$('.openerp a.oe_form_uri').css('text-shadow', '#CCC 1px 1px 1px');
+	    // $('.openerp a.oe_form_uri').css('text-shadow', '#CCC 1px 1px 1px');
 		
 	}
 });
