@@ -966,7 +966,7 @@ label.error {
     border: none;
     height: 12px;
     width: 12px;
-    background: url("/web/static/src/img/iconset-b-remove.png") no-repeat scroll center center transparent;
+    background: url("http://localhost:8069/web/static/src/img/attachments-close.png") no-repeat scroll center center transparent;
     cursor: pointer;
 }
 
@@ -1195,6 +1195,7 @@ label.error {
 .openerp .oe_form_notebook .ui-tabs-panel {
     background: #FAFAFA;
     border-width: 1px;
+    border-color: #dedede;
 }
 .openerp .oe_form_notebook .ui-tabs-selected {
     background: white;
@@ -1368,6 +1369,7 @@ label.error {
     color: #1e1e1e;
     font-weight: bold;
     text-align: left !important;
+    padding-right: 8px;
 }
 .openerp .oe_forms .searchview_group_content label.oe_label, .openerp .searchview_group_content .oe_forms label.oe_label_help { /* making a distinction between labels in search view and other labels */
     margin: 3px 0 0 3px;
@@ -1633,10 +1635,17 @@ label.error {
 }
 .openerp .separator.horizontal {
     font-weight: bold;
+    font-size: 20px;
+    margin: 15px 0px 10px 0px;
+    color: #7C7BAD;
+    /*
+    font-weight: bold;
     border-bottom-width: 1px;
+    border-color
     margin: 3px 4px 3px 1px;
     font-size: 120%;
     color: #7C7BAD;
+    */
 }
 .openerp .separator.horizontal:empty {
     height: 5px;
@@ -1728,7 +1737,7 @@ label.error {
     margin: 0;
     width: 100%;
     height: 100%;
-    border-collapse: collapse;
+/*    border-collapse: collapse; */
     background: #FFF none repeat scroll 0% 0%;
 }
 
@@ -2485,6 +2494,11 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 .openerp .oe_search-view-filters-management optgroup {
     font-style: normal;
     color: black;
+}
+
+.openerp .oe-binary-image {
+  max-width: 130px;
+  border-color: #dedede;
 }
 
 /* Debug stuff */
