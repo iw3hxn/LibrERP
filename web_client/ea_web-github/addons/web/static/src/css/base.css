@@ -25,6 +25,10 @@ body.openerp {
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+.openerp .view-manager-main-content td.oe-actions {
+     height: 25px;
+}
+
 .openerp .oe_form_frame_cell .view-manager-main-content {
     padding: 0;
 }
@@ -1212,6 +1216,11 @@ label.error {
     padding-top: 3px;
 /*    font-size: 90%; */
     color: #000000;
+    max-width: 350px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .openerp a.oe_form_uri {
     color: #9A0404;
@@ -1595,6 +1604,7 @@ label.error {
     width: 100%;
 }
 .openerp .oe_input_icon_disabled {
+    display: none !important;
     position: absolute;
     cursor: default;
     opacity: 0.5;
@@ -2408,6 +2418,8 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     outline: none;
 }
 
+
+
 .openerp .oe_button:hover {
     -o-background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -2456,6 +2468,16 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     -webkit-box-shadow: none, 0 0 0 transparent;
     -o-box-shadow: none, 0 0 0 transparent;
     box-shadow: none, 0 0 0 transparent;
+}
+
+.openerp .oe_button.oe-list-add {
+    background: #c02c2c;
+    color: white;
+    font-weight: bold;
+}
+
+.openerp .oe_button.oe-list-add:hover {
+    font-weight: normal;
 }
 
 .openerp .oe_button.disabled,
