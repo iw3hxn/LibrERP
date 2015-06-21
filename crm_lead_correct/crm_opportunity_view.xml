@@ -134,8 +134,8 @@
                         <field name="city" on_change="on_change_city(city,zip)" placeholder="City" nolabel="1"/>
                         <field name="find_city" invisible="1" />              
                         <field name="province" on_change="on_change_province(province)" attrs="{'readonly':[('find_city','!=',False)]}" placeholder="Province" invisible="1"/>
-                        <field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}"/>
-                        <field name="country_id" completion="1" attrs="{'readonly':[('region','!=',False)]}"/>                    </group>
+                        <field name="region" on_change="on_change_region(region)" attrs="{'readonly':[('province','!=',False)]}" placeholder="Region" invisible="1"/>
+                        <field name="country_id" completion="1" attrs="{'readonly':[('region','!=',False)]}"/> placeholder="Country" invisible="1" </group>
                     <group colspan="2" col="2">
                         <separator string="Communication" colspan="2"/>
                         <field name="fax"/>
