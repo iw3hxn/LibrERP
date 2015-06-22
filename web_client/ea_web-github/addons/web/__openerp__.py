@@ -53,7 +53,8 @@
         "static/src/js/view_list_editable.js",
         "static/src/js/view_tree.js",
         "static/src/js/view_editor.js",
-        "static/lib/jquery.placeholder/jquery.placeholder.js"
+        "static/lib/jquery.placeholder/jquery.placeholder.js",
+        "static/lib/jquery.textext/jquery.textext.js",
     ],
     'css' : [
         "static/lib/jquery.superfish/css/superfish.css",
@@ -64,6 +65,7 @@
         "static/src/css/base.css",
         "static/src/css/data_export.css",
         "static/src/css/data_import.css",
+        "static/lib/jquery.textext/jquery.textext.css",
     ],
     'qweb' : [
         "static/src/xml/*.xml",

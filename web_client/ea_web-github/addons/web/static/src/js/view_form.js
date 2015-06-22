@@ -3066,150 +3066,290 @@ openerp.web.form.FieldMany2Many = openerp.web.form.Field.extend({
     }
 });
 
-openerp.web.form.FieldMany2ManyTags = openerp.web.form.Field.extend({
+openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
     template: "FieldMany2ManyTags",
-    init: function() {
-        
+    tag_template : "FieldMany2ManyTag",
+    readonly:false,
+    
+    init: function(view, node) {
         this._super(view, node);
         this.list_id = _.uniqueId("many2many");
         this.is_loaded = $.Deferred();
         this.initial_is_loaded = this.is_loaded;
         this.is_setted = $.Deferred();
-        
+        this.textext_plugins = "tags arrow autocomplete suggestions";
+        this.effective_readonly = false;
+        this.value = [];
     },
     start: function() {
-        if (this.get("effective_readonly"))
-            return;
+        this._super.apply(this, arguments);
         var self = this;
-        var ignore_blur = false;
-        self.$text = this.$("textarea");
-        self.$text.textext({
-            plugins : 'tags arrow autocomplete',
-            autocomplete: {
+        if ( this.readonly )
+            return;
+        this.$input = this.$element.find("textarea");
+        
+        this.$input.textext({
+            plugins: this.textext_plugins,
+            html: {
+              arrow: !this.readonly ? '<div class="text-arrow"/>' : '' ,
+            },
+            
+            autocomplete:  {
+                enabled: !this.readonly,
                 render: function(suggestion) {
-                    return $('<span class="text-label"/>').
-                             data('index', suggestion['index']).html(suggestion['label']);
+                    return $('<div>', {'id': suggestion['id'], 'class': 'text-label','name': suggestion['name']}).html(suggestion['label']);
                 }
             },
             ext: {
-                autocomplete: {
-                    selectFromDropdown: function() {
-                        this.trigger('hideDropdown');
-                        var index = Number(this.selectedSuggestionElement().children().children().data('index'));
-                        var data = self.search_result[index];
-                        if (data.id) {
-                            self.add_id(data.id);
-                        } else {
-                            ignore_blur = true;
-                            data.action();
+                core: {
+                    onKeyDown: function(e) {
+                        $.fn.textext.TextExt.prototype.onKeyDown.apply(this, arguments);
+                        if(e.which == 9 && self.required  && self.type == 'many2one' && !self.value) {
+                            var a = self.$input.tipsy({
+                               gravity: "s",
+                               fallback:_.str.sprintf(
+                                       _t(" %s %s does not exist. You should atleast create or select one from the dropdown list."), 
+                                       self.string, self.$input.val()),
+                               trigger: "manual",
+                               fade: true,
+                            }).tipsy("show");
+                            self.$input.data('tipsy').$tip.delay(5000).fadeOut("slow", function() 
+                            {
+                                self.$input.bind('focus', function() {
+                                    self.$input.tipsy('hide');
+                                });
+                            });
                         }
-                        this.trigger('setSuggestions', {result : []});
                     },
+                    
+                    onKeyUp: function(e) {
+                        $.fn.textext.TextExt.prototype.onKeyUp.apply(this, arguments);
+                        if(self.$input.val() === "") {
+                            self._change_int_value(null);
+                        } else if (self.value === null || (self.value && self.$input.val() !== self.value[1])) {
+                            self._change_int_value(undefined);
+                        }
+                        if(e.which == 16 && self.$input.data('tipsy'))
+                            self.$input.tipsy('hide');
+                    }
                 },
                 tags: {
-                    isTagAllowed: function(tag) {
-                        return !!tag.name;
-
+                    addTags: function(tags) {
+                        var set_id = true;
+                        var data = _.map(tags, function(name) {
+                            if(!name instanceof Array) set_id = false; 
+                            return name instanceof Array ? name[1]: name;
+                        });
+                        $.fn.textext.TextExtTags.prototype.addTags.apply(this, [data]);
+                        if(set_id) {
+                        var t = this;
+                            _.map(tags, function(id, index) {
+                                $(t.containerElement().children()[index]).attr('id', (id instanceof Array) ? id[0]: id.id);
+                            });
+                        }
                     },
                     removeTag: function(tag) {
-                        var id = tag.data("id");
-                        self.set({"value": _.without(self.get("value"), id)});
-                    },
-                    renderTag: function(stuff) {
-                        return $.fn.textext.TextExtTags.prototype.renderTag.
-                            call(this, stuff).data("id", stuff.id);
-                    },
+                        if (confirm(_t("Do you really want to remove these records?"))) {
+                            self.value = _.uniq(_.without(self.value, [parseInt(tag.attr('id'), 10)]));
+                            self.dataset.on_unlink(parseInt(tag.attr('id'), 10));
+                            $.fn.textext.TextExtTags.prototype.removeTag.apply(this, arguments);    
+                        } else {
+                            return false;
+                        }
+                    }
                 },
                 itemManager: {
                     itemToString: function(item) {
                         return item.name;
                     },
                 },
-                core: {
-                    onSetInputData: function(e, data) {
-                        if (data == '') {
-                            this._plugins.autocomplete._suggestions = null;
+                autocomplete: {
+                    onEnterKeyPress: function(e) {
+                        var item = this.selectedSuggestionElement().find('div.text-label');
+                        $.fn.textext.TextExtAutocomplete.prototype.onEnterKeyPress.apply(this, arguments);
+                        if(item.length) {
+                            self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
+                        } else if(this.selectedSuggestionElement().find('div.additional-suggestions').length) {
+                            self._quick_create(self.$input.val());
                         }
-                        this.input().val(data);
+                    },
+                    //onClick: function(e) { 
+                        //var item = $(e.target);
+                        //self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
+                        ////self.$text.trigger('setSuggestions', {result : []});
+                        //$.fn.textext.TextExtTags.prototype.addTags.apply(this,arguments);
+                        ////$.fn.textext.TextExtAutocomplete.prototype.onClick.apply(this, arguments);
+                    //}
+                    selectFromDropdown: function(e) {
+                        this.trigger('hideDropdown');
+                        var id = Number(this.selectedSuggestionElement().children().children()[0].id);
+                        if (id) {
+                            self.add_id(id);
+                        } else {
+                            ignore_blur = true;
+                        }
+                        this.trigger('setSuggestions', {result : []});
                     },
                 },
-            },
-        }).bind('getSuggestions', function(e, data) {
-            var _this = this;
-            var str = !!data ? data.query || '' : '';
-            self.get_search_result(str).done(function(result) {
-                self.search_result = result;
-                $(_this).trigger('setSuggestions', {result : _.map(result, function(el, i) {
-                    return _.extend(el, {index:i});
-                })});
-            });
-        }).bind('hideDropdown', function() {
-            self._drop_shown = false;
-        }).bind('showDropdown', function() {
-            self._drop_shown = true;
+                
+                suggestions: {
+                    onGetSuggestions: function(evt, data) {
+                        if(!self.readonly) {
+                            self.get_search_result(evt, data);
+                        } else {
+                            evt.preventDefault();
+                            return false;
+                        }
+                    }
+                },
+                arrow: {
+                    onArrowClick :  function() {
+                        self.$input.trigger('getSuggestions');
+                        $.fn.textext.TextExtArrow.prototype.onArrowClick.apply(this, arguments);
+                    }
+                }
+            }
         });
-        self.tags = self.$text.textext()[0].tags();
-        self.$text
-            .focusin(function () {
-                self.trigger('focused');
-                ignore_blur = false;
-            })
-            .focusout(function() {
-                self.$text.trigger("setInputData", "");
-                if (!ignore_blur) {
-                    self.trigger('blurred');
-                }
-            }).keydown(function(e) {
-                if (e.which === $.ui.keyCode.TAB && self._drop_shown) {
-                    self.$text.textext()[0].autocomplete().selectFromDropdown();
-                }
-            });
+        self.tags = self.$input.textext()[0].tags();
+        this.dataset = new openerp.web.form.Many2ManyDataSet(this, this.field.relation);
+        this.dataset.m2m = this;
+        this.dataset.on_unlink.add_last(function(ids) {
+            self.on_ui_change();
+        });
     },
-    set_value: function(value_) {
-        value_ = value_ || [];
-        if (value_.length >= 1 && value_[0] instanceof Array) {
-            value_ = value_[0][2];
+    set_value: function(value) {
+        value = value || [];
+        if (value.length >= 1 && value[0] instanceof Array) {
+            value = value[0][2];
         }
-        this._super(value_);
-    },
-    is_false: function() {
-        return _(this.get("value")).isEmpty();
+        this.value=value;
+        return this.render_value();
     },
     get_value: function() {
-        var tmp = [commands.replace_with(this.get("value"))];
-        return tmp;
+        return [commands.replace_with(this.value)];
     },
-    get_search_blacklist: function() {
-        return this.get("value");
+    map_tag: function(data){
+        return _.map(data, function(el) {return {name: el[1], id:el[0]};})
+    },
+    get_render_data: function(ids){
+        var self = this;
+        var dataset = new openerp.web.DataSetStatic(this, this.field.relation, self.build_context());
+        return dataset.name_get(ids);
+    },
+    render_tag: function(data) {
+        var self = this;
+        if (! self.readonly) {
+            self.tags.containerElement().children().remove();
+            self.$input.css("padding-left", "3px");
+            self.tags.addTags(self.map_tag(data));
+        } else {
+            self.$element.html(QWeb.render(self.tag_template, {elements: data}));
+        }
     },
     render_value: function() {
         var self = this;
         var dataset = new openerp.web.DataSetStatic(this, this.field.relation, self.build_context());
-        var values = self.get("value");
+        var values = self.value;
         var handle_names = function(data) {
-            if (self.isDestroyed())
-                return;
             var indexed = {};
             _.each(data, function(el) {
                 indexed[el[0]] = el;
             });
             data = _.map(values, function(el) { return indexed[el]; });
-            if (! self.get("effective_readonly")) {
-                self.tags.containerElement().children().remove();
-                self.$('textarea').css("padding-left", "3px");
-                self.tags.addTags(_.map(data, function(el) {return {name: el[1], id:el[0]};}));
-            } else {
-                self.$el.html(QWeb.render("FieldMany2ManyTag", {elements: data}));
-            }
-        };
+            self.render_tag(data);
+        }
         if (! values || values.length > 0) {
-            this._display_orderer.add(dataset.name_get(values)).done(handle_names);
+            return self.get_render_data(values).then(handle_names);
+            //return handle_names(reder_data)
+            //return this._display_orderer.add(self.get_render_data(values)).done(handle_names);
         } else {
             handle_names([]);
         }
     },
+    _change_int_value: function(value) {
+        var self = this;
+        if(value instanceof Array)
+            value = value[0];
+        
+        $.when(this.dataset.set_ids(_.uniq(this.value.concat([value])))).then(function() {
+            self.on_ui_change();
+        });
+    },
+    get_search_result: function(evt, data) {
+        
+        var search_val = (data ? data.query : '') || '',
+            textext = $(evt.target).textext()[0],
+            self = this;
+        var dataset = this.dataset = new openerp.web.DataSetStatic(this, this.field.relation, this.build_context());
+        
+        this.dataset
+            .name_search(search_val, this.build_domain(), 'ilike', this.limit + 1)
+            .done(function(data) {
+                self.last_search = data;
+                // possible selections for the m2o
+                var values = _.map(data, function(x) {
+                    return {
+                        label: _.str.escapeHTML(x[1]),
+                        value:x[1],
+                        name:x[1],
+                        id:x[0]
+                    };
+                });
+                
+                var ids = _.map(data, function(x) {
+                    return x[0];
+                });
+                
+                var raw_result = _(data.result).map(function(x) {return x[1];});
+                
+                var is_search_more = values.length > self.limit;
+                if(is_search_more) {
+                    values = values.slice(0, self.limit);
+                }
+                
+                self.$input.trigger('setSuggestions', {
+                    result : values
+                });
+                
+                self.$input.trigger('showDropdown', function(autocomplete) {
+                    if(!values.length)
+                        autocomplete.clearItems();
+                    var extra_node;
+                    
+                    if (search_val.length > 0 && !_.include(raw_result, search_val) && (!self.value || search_val !== self.value[1])) {
+                        extra_node = autocomplete.addDropdownItem(
+                            _.str.sprintf(_t('<div class="additional-suggestions">Create "<strong>%s</strong>"</div>'), search_val)
+                        ).bind('click', function() {
+                            self.$input.val('');
+                            self._quick_create(search_val);
+                        });
+                    }
+                    
+                    
+                    if(is_search_more) {
+                        extra_node = autocomplete.addDropdownItem(_t("<div class='additional-suggestions'>Search More...</div>")).bind('click', function() {
+                            self.$input.val('');
+                            self._search_more(search_val);
+                        });
+                    }
+                    
+                    autocomplete.addDropdownItem(_t("<div class='additional-suggestions'>Create and Edit...</div>")).bind('click', function() {
+                        self.$input.val('');
+                        self._change_int_value(null);
+                        self._search_create_popup("form", undefined, {"default_name": search_val});
+                    });
+                });
+            });
+    },
+    
+    is_false: function() {
+        return _(this.get("value")).isEmpty();
+    },
+    get_search_blacklist: function() {
+        return this.get("value");
+    },
     add_id: function(id) {
-        this.set({'value': _.uniq(this.get('value').concat([id]))});
+        this.set_value(_.uniq(this.value.concat([id])));
     },
     focus: function () {
         var input = this.$text && this.$text[0];
