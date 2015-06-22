@@ -3069,8 +3069,7 @@ openerp.web.form.FieldMany2Many = openerp.web.form.Field.extend({
 openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
     template: "FieldMany2ManyTags",
     tag_template : "FieldMany2ManyTag",
-    readonly:false,
-    
+    readonly:false,    
     init: function(view, node) {
         this._super(view, node);
         this.list_id = _.uniqueId("many2many");
@@ -3081,6 +3080,7 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
         this.effective_readonly = false;
         this.value = [];
     },
+    
     start: function() {
         this._super.apply(this, arguments);
         var self = this;
@@ -3090,98 +3090,115 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
         
         this.$input.textext({
             plugins: this.textext_plugins,
+            
             html: {
-              arrow: !this.readonly ? '<div class="text-arrow"/>' : '' ,
+              arrow: !this.readonly ? '<div class="text-arrow"/>' : '' ,              
             },
             
             autocomplete:  {
                 enabled: !this.readonly,
+                
                 render: function(suggestion) {
                     return $('<div>', {'id': suggestion['id'], 'class': 'text-label','name': suggestion['name']}).html(suggestion['label']);
                 }
+                
             },
+            
             ext: {
-                core: {
-                    onKeyDown: function(e) {
-                        $.fn.textext.TextExt.prototype.onKeyDown.apply(this, arguments);
-                        if(e.which == 9 && self.required  && self.type == 'many2one' && !self.value) {
-                            var a = self.$input.tipsy({
-                               gravity: "s",
-                               fallback:_.str.sprintf(
-                                       _t(" %s %s does not exist. You should atleast create or select one from the dropdown list."), 
-                                       self.string, self.$input.val()),
-                               trigger: "manual",
-                               fade: true,
-                            }).tipsy("show");
-                            self.$input.data('tipsy').$tip.delay(5000).fadeOut("slow", function() 
-                            {
-                                self.$input.bind('focus', function() {
-                                    self.$input.tipsy('hide');
+                    core: {
+                        onKeyDown: function(e) {
+                            $.fn.textext.TextExt.prototype.onKeyDown.apply(this, arguments);
+                            if(e.which == 9 && self.required  && self.type == 'many2one' && !self.value) {
+                                var a = self.$input.tipsy({
+                                   gravity: "s",
+                                   fallback:_.str.sprintf(
+                                           _t(" %s %s does not exist. You should atleast create or select one from the dropdown list."), 
+                                           self.string, self.$input.val()),
+                                   trigger: "manual",
+                                   fade: true,
+                                }).tipsy("show");
+                                self.$input.data('tipsy').$tip.delay(5000).fadeOut("slow", function() 
+                                {
+                                    self.$input.bind('focus', function() {
+                                        self.$input.tipsy('hide');
+                                    });
                                 });
-                            });
+                            }
+                        },
+                        
+                        onKeyUp: function(e) {
+                            $.fn.textext.TextExt.prototype.onKeyUp.apply(this, arguments);
+                            if(self.$input.val() === "") {
+                                self._change_int_value(null);
+                            } else if (self.value === null || (self.value && self.$input.val() !== self.value[1])) {
+                                self._change_int_value(undefined);
+                            }
+                            if(e.which == 16 && self.$input.data('tipsy'))
+                                self.$input.tipsy('hide');
                         }
                     },
                     
-                    onKeyUp: function(e) {
-                        $.fn.textext.TextExt.prototype.onKeyUp.apply(this, arguments);
-                        if(self.$input.val() === "") {
-                            self._change_int_value(null);
-                        } else if (self.value === null || (self.value && self.$input.val() !== self.value[1])) {
-                            self._change_int_value(undefined);
-                        }
-                        if(e.which == 16 && self.$input.data('tipsy'))
-                            self.$input.tipsy('hide');
-                    }
-                },
-                tags: {
-                    addTags: function(tags) {
-                        var set_id = true;
-                        var data = _.map(tags, function(name) {
-                            if(!name instanceof Array) set_id = false; 
-                            return name instanceof Array ? name[1]: name;
-                        });
-                        $.fn.textext.TextExtTags.prototype.addTags.apply(this, [data]);
-                        if(set_id) {
-                        var t = this;
-                            _.map(tags, function(id, index) {
-                                $(t.containerElement().children()[index]).attr('id', (id instanceof Array) ? id[0]: id.id);
+                    tags: {
+                        addTags: function(tags) {
+                            var set_id = true;
+                            var data = _.map(tags, function(name) {
+                                if(!name instanceof Array) set_id = false; 
+                                return name instanceof Array ? name[1]: name;
                             });
-                        }
+                            $.fn.textext.TextExtTags.prototype.addTags.apply(this, [data]);
+                            if(set_id) {
+                            var t = this;
+                                _.map(tags, function(id, index) {
+                                    $(t.containerElement().children()[index]).attr('id', (id instanceof Array) ? id[0]: id.id);
+                                });
+                            }
+                        },
+                        removeTag: function(tag) {
+                            if (confirm(_t("Do you really want to remove these records?"))) {
+                                self.value = _.uniq(_.without(self.value, [parseInt(tag.attr('id'), 10)]));
+                                self.dataset.on_unlink(parseInt(tag.attr('id'), 10));
+                                $.fn.textext.TextExtTags.prototype.removeTag.apply(this, arguments);    
+                            } else {
+                                return false;
+                            }
+                        },
+                        //onEnterKeyPress:function(e){
+                        //    self._quick_create(self.$input.val().trim());
+                        //}
+                        
                     },
-                    removeTag: function(tag) {
-                        if (confirm(_t("Do you really want to remove these records?"))) {
-                            self.value = _.uniq(_.without(self.value, [parseInt(tag.attr('id'), 10)]));
-                            self.dataset.on_unlink(parseInt(tag.attr('id'), 10));
-                            $.fn.textext.TextExtTags.prototype.removeTag.apply(this, arguments);    
-                        } else {
-                            return false;
-                        }
-                    }
-                },
-                itemManager: {
-                    itemToString: function(item) {
-                        return item.name;
+                    
+                    itemManager: {
+                        itemToString: function(item) {
+                            return item.name;
+                        },
                     },
-                },
-                autocomplete: {
-                    onEnterKeyPress: function(e) {
-                        var item = this.selectedSuggestionElement().find('div.text-label');
-                        $.fn.textext.TextExtAutocomplete.prototype.onEnterKeyPress.apply(this, arguments);
-                        if(item.length) {
-                            self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
-                        } else if(this.selectedSuggestionElement().find('div.additional-suggestions').length) {
-                            self._quick_create(self.$input.val());
-                        }
-                    },
-                    //onClick: function(e) { 
-                        //var item = $(e.target);
-                        //self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
-                        ////self.$text.trigger('setSuggestions', {result : []});
-                        //$.fn.textext.TextExtTags.prototype.addTags.apply(this,arguments);
-                        ////$.fn.textext.TextExtAutocomplete.prototype.onClick.apply(this, arguments);
-                    //}
+                    
+                    autocomplete: {
+                        onEnterKeyPress: function(e) {
+                            var item = this.selectedSuggestionElement().find('div.text-label');
+                            $.fn.textext.TextExtAutocomplete.prototype.onEnterKeyPress.apply(this, arguments);
+                            if(item.length) {
+                                
+                                self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
+                            } else if(this.selectedSuggestionElement().find('div.additional-suggestions').length || self.$input.val().trim() !== "") {
+                                self._quick_create(self.$input.val().trim());
+                            }
+                        },
+                        //onClick: function(e) { 
+                        //    var item = $(e.target);
+                        //    self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
+                        //    //self.$text.trigger('setSuggestions', {result : []});
+                        //    $.fn.textext.TextExtTags.prototype.addTags.apply(this,arguments);
+                        //    //$.fn.textext.TextExtAutocomplete.prototype.onClick.apply(this, arguments);
+                        //},
+                    
                     selectFromDropdown: function(e) {
                         this.trigger('hideDropdown');
+                        if (!this.selectedSuggestionElement().length) {
+                            this.trigger('setSuggestions', {result : []});
+                            return;
+                        }
                         var id = Number(this.selectedSuggestionElement().children().children()[0].id);
                         if (id) {
                             self.add_id(id);
@@ -3192,17 +3209,18 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                     },
                 },
                 
-                suggestions: {
-                    onGetSuggestions: function(evt, data) {
-                        if(!self.readonly) {
-                            self.get_search_result(evt, data);
-                        } else {
-                            evt.preventDefault();
-                            return false;
-                        }
+            suggestions: {
+                onGetSuggestions: function(evt, data) {
+                    if(!self.readonly) {
+                        self.get_search_result(evt, data);
+                    } else {
+                        evt.preventDefault();
+                        return false;
                     }
-                },
-                arrow: {
+                }
+            },
+
+            arrow: {
                     onArrowClick :  function() {
                         self.$input.trigger('getSuggestions');
                         $.fn.textext.TextExtArrow.prototype.onArrowClick.apply(this, arguments);
@@ -3210,6 +3228,13 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                 }
             }
         });
+       
+        //this.$input.onEnterKeyPress(function(e) {
+        //    if (e.which === $.ui.keyCode.TAB) {
+        //        this.$input.textext()[0].autocomplete().selectFromDropdown();
+        //    }
+        //});
+       
         self.tags = self.$input.textext()[0].tags();
         this.dataset = new openerp.web.form.Many2ManyDataSet(this, this.field.relation);
         this.dataset.m2m = this;
@@ -3334,14 +3359,13 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                     }
                     
                     autocomplete.addDropdownItem(_t("<div class='additional-suggestions'>Create and Edit...</div>")).bind('click', function() {
-                        self.$input.val('');
-                        self._change_int_value(null);
+                        //self.$input.val('');
+                        //self._change_int_value(null);
                         self._search_create_popup("form", undefined, {"default_name": search_val});
                     });
                 });
             });
-    },
-    
+    },    
     is_false: function() {
         return _(this.get("value")).isEmpty();
     },
@@ -3354,6 +3378,56 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
     focus: function () {
         var input = this.$text && this.$text[0];
         return input ? input.focus() : false;
+    },
+    _quick_create: function(name) {       
+        var self = this;
+        
+        var slow_create = function () {
+            self._search_create_popup("form", undefined, {"default_name": name});
+        };
+        
+        if (self.get_definition_options().quick_create === undefined || self.get_definition_options().quick_create) {
+            new openerp.web.DataSet(this, this.field.relation, self.build_context())
+                .name_create(name, function(data) {
+                    self.display_value = {};
+                    self.display_value["" + data[0]] = data[1];                
+                    self.add_id(data[0]);
+                }).fail(function(error, event) {
+                    event.preventDefault();
+                    slow_create();
+                });
+        } else
+            slow_create();
+    },
+    _search_create_popup: function(view, ids, context) {
+        var self = this;
+        var pop = new openerp.web.form.SelectCreatePopup(this);
+        
+        pop.select_element(
+            self.field.relation,
+            {
+                title: (view === 'search' ? _t("Search: ") : _t("Create: ")) + (this.string || this.name),
+                initial_ids: ids ? _.map(ids, function(x) {return x[0]}) : undefined,
+                initial_view: view,
+                disable_multiple_selection: true
+            },
+            self.build_domain(),
+            new openerp.web.CompoundContext(self.build_context(), context || {})
+        );
+        
+        pop.on_select_elements.add(function(element_ids) {
+            //this.set({value: element_ids[0]});
+            //self.set_value([element_ids[0]]);
+            self.add_id(element_ids[0]);
+        });
+    },    
+    _search_more: function(search_val) {
+        var self = this;
+        this.dataset.name_search(search_val, this.build_domain(), 'ilike', false)
+        .done(function(data) {
+            self._change_int_value(null);
+            self._search_create_popup("search", data);
+        });
     },
 });
 
@@ -4049,7 +4123,6 @@ openerp.web.form.WidgetHtml = openerp.web.form.Widget.extend({
         });
     }
 });
-
 
 /**
  * Registry of form widgets, called by :js:`openerp.web.FormView`
