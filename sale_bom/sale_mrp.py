@@ -19,11 +19,11 @@
 #
 ###############################################################################
 
-from osv import fields, osv
+from openerp.osv import orm, fields
 import decimal_precision as dp
 
 
-class sale_order_line(osv.osv):
+class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
     
     _columns = {
@@ -46,7 +46,7 @@ class sale_order_line(osv.osv):
         mrp_bom_obj = self.pool['mrp.bom']
         
         if product_id:
-            product = self.pool['product.product'].browse(cr, uid, product_id)
+            product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
             if product.supply_method == 'produce':
                 result['value']['with_bom'] = True
                 
@@ -103,7 +103,7 @@ class sale_order_line(osv.osv):
                 for wline in bom.routing_id.workcenter_lines:
                     wc = wline.workcenter_id
                     cycle = wline.cycle_nbr
-                    #hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
+                    # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
                     price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
             price /= bom.product_qty
             price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
@@ -120,7 +120,7 @@ class sale_order_line(osv.osv):
             return {'value': {'purchase_price': price}}
 
 
-class sale_order_line_mrp_bom(osv.osv):
+class sale_order_line_mrp_bom(orm.Model):
     _name = 'sale.order.line.mrp.bom'
     _description = 'Sales Order Bom Line'
     

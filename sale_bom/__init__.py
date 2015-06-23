@@ -22,4 +22,5 @@
 #
 ##############################################################################
 
-import sale_mrp
+from . import sale_mrp
+from . import stock
