@@ -17,9 +17,9 @@
 					<field name="manage_tax_on_category" invisible="1" />
 					<group colspan="2" col="2" attrs="{'invisible': [('manage_tax_on_category','=',False)]}">
 						<separator string="Sale taxes" colspan="4"/>
-						<field name="sale_taxes_ids" nolabel="1" colspan="4"/>
+						<field name="sale_taxes_ids" nolabel="1" colspan="4" widget="many2many_tags"/>
 						<separator string="Purchase taxes" colspan="4"/>
-						<field name="purchase_taxes_ids" nolabel="1" colspan="4"/>
+						<field name="purchase_taxes_ids" nolabel="1" colspan="4" widget="many2many_tags"/>
 					</group>
                     <group colspan="2" col="2">
                         <separator string="Sale and Purchase Units (UoM)" colspan="4"/>

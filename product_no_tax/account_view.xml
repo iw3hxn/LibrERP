@@ -11,7 +11,7 @@
 
                     <field name="tax_ids" position="replace">
                         <field name="show_tax" invisible="1"/>
-                        <field colspan="4" name="tax_ids" nolabel="1" domain="[('parent_id','=',False)]" attrs="{'invisible': [('show_tax','!=',True)]}" />
+                        <field colspan="4" name="tax_ids" nolabel="1" domain="[('parent_id','=',False)]" attrs="{'invisible': [('show_tax','!=',True)]}" widget="many2many_tags" />
                     </field>
                     
                 </data>

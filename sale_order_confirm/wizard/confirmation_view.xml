@@ -20,7 +20,7 @@
                     <field name="discount"/>
                     <field name="wizard_id" />
                     <field name="changed"/>
-                    <field name="tax_id"/>
+                    <field name="tax_id" widget="many2many_tags"/>
                 </tree>
             </field>
         </record>
