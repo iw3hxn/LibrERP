@@ -10,6 +10,9 @@
                 <form string="Assign DDT">
                     <group col="2">
                         <label colspan="2" string="This will assign the DDT number"/>
+                        <field name="ddt_number" />
+                        <!--<field name="ddt_next_number" readonly="1"/>-->
+                        <field name="ddt_date" />
                         <separator colspan="2"/>
                         <button icon="gtk-cancel" special="cancel" string="Cancel"/>
                         <button icon="gtk-ok" name="assign_ddt" string="Assign" type="object"/>

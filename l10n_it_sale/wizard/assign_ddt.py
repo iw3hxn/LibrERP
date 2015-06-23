@@ -30,23 +30,35 @@ class wizard_assign_ddt(orm.TransientModel):
 
     _name = "wizard.assign.ddt"
 
+    _columns = {
+        'ddt_number': fields.char('DDT', size=64),
+        'ddt_next_number': fields.char('DDT next Number', size=64),
+        'ddt_date': fields.date('DDT date'),
+    }
+
+    _defaults = {
+        'ddt_date': fields.date.context_today,
+        # 'ddt_next_number': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').current_number(cr, uid, 38),
+    }
+
     def assign_ddt(self, cr, uid, ids, context=None):
         picking_obj = self.pool['stock.picking']
         for picking in picking_obj.browse(cr, uid, context.get('active_ids', []), context=context):
+            vals = {}
             if picking.ddt_number:
-                raise osv.except_osv('Error', _('DTT number already assigned'))
-
+                raise orm.except_orm('Error', _('DTT number already assigned'))
+            if not self.browse(cr, uid, ids, context=context)[0].ddt_number:
             # Assign ddt from journal's sequence
-            if picking.stock_journal_id.ddt_sequence:
-                picking.write({
-                    'ddt_number': self.pool['ir.sequence'].get(cr, uid, picking.stock_journal_id.ddt_sequence.code),
-                    'ddt_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                    })
+                if picking.stock_journal_id.ddt_sequence:
+                    vals['ddt_number'] = self.pool['ir.sequence'].get(cr, uid, picking.stock_journal_id.ddt_sequence.code),
+
+                else:
+                    vals['ddt_number'] = self.pool['ir.sequence'].get(cr, uid, 'stock.ddt'),
             else:
-                picking.write({
-                    'ddt_number': self.pool['ir.sequence'].get(cr, uid, 'stock.ddt'),
-                    'ddt_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                    })
+                vals['ddt_number'] = self.browse(cr, uid, ids, context=context)[0].ddt_number
+            vals['ddt_date'] = self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+
+            picking.write(vals)
         return {
             'type': 'ir.actions.act_window_close',
         }
