@@ -1247,7 +1247,8 @@ label.error {
 }
 .oe_form_buttons {
     position: relative;
-    top: -5px;
+    top: 0px;
+    left: 10px;
 }
 .oe_form_header {
     overflow: auto;
