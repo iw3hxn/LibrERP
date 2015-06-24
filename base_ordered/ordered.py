@@ -28,42 +28,34 @@ class purchase_order(osv.osv):
     _inherit = "purchase.order"
     _order = 'name desc, date_order desc, id desc'
 
-purchase_order()
-
 
 class sale_order(osv.osv):
     _inherit = "sale.order"
     _order = 'name desc, id desc'
-
-sale_order()
 
 
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
     _order = 'date desc, id desc'
 
-stock_picking()
-
 
 class stock_move(osv.osv):
     _inherit = "stock.move"
-    _order = 'date desc, id desc'
-
-stock_move()
+    #_order = 'date desc, id desc'
+    _order = 'date desc, product_id, id'
 
 
 class account_invoice(osv.osv):
     _inherit = "account.invoice"
     _order = 'date_invoice desc, number desc, id desc'
 
-account_invoice()
 
-#class product_template(osv.osv):
-#    _inherit = "product.template"
-#    _order = 'name desc,'
-#product_template()
+class product_template(osv.osv):
+    _inherit = "product.template"
+    _order = 'name desc'
 
-#class product_product(osv.osv):
-#    _inherit = "product.product"
-#    _order = 'product_tmpl_id desc, variants desc'
-#product_product()
+
+class product_product(osv.osv):
+    _inherit = "product.product"
+    _order = 'name desc'
+

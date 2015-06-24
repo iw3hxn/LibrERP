@@ -32,9 +32,9 @@ class stock_journal(orm.Model):
     _inherit = 'stock.journal'
 
     _columns = {
-       'reopen_posted':  fields.boolean('Allow Update of Posted Pickings',
+       'reopen_posted': fields.boolean('Allow Update of Posted Pickings',
             help="Allows to reopen posted pickings, as long no invoice is created or no other moves for the products of this picking are posted"),
-        }
+    }
     
     _defaults = {
         'reopen_posted': True
@@ -54,13 +54,13 @@ class stock_picking(orm.Model):
         _logger = logging.getLogger(__name__)
         move_line_obj = self.pool['stock.move']
         account_invoice_obj = self.pool['account.invoice']
-        _logger.debug('FGF picking allow open ids %s ' %(ids)   )
+        _logger.debug('FGF picking allow open ids %s ' % ids)
         for pick in self.browse(cr, uid, ids, context):
-            _logger.debug('FGF picking allow open  %s %s' %(pick.stock_journal_id,pick.stock_journal_id.reopen_posted)   )
+            _logger.debug('FGF picking allow open  %s %s' % (pick.stock_journal_id, pick.stock_journal_id.reopen_posted))
             if pick.stock_journal_id and not pick.stock_journal_id.reopen_posted:
                 raise orm.except_orm(_('Error'), _('You cannot reset to draft pickings of this journal ! Please check "Allow Update of Posted Pickings" in Warehous Configuration / Stock Journals %s') % pick.stock_journal_id.name )
             if pick._columns.get('invoice_ids'):
-                _logger.debug('FGF picking allow open inv_ids '   )
+                _logger.debug('FGF picking allow open inv_ids ')
                 ids2 = []
                 if pick.invoice_ids:
                   for inv in pick.invoice_ids:
@@ -70,20 +70,20 @@ class stock_picking(orm.Model):
                        ids2.append(inv.id) 
                     else:
                        raise orm.except_orm(_('Error'), _('You cannot reset a picking with an open invoice [%s] to draft ! You must reopen the invoice first (install modul account_invoice_reopen' % inv.number))
-                  #account_invoice_obj.unlink(cr, uid, ids2) 
-                  #account_invoice_obj.write(cr, uid, ids2, {'state':'cancel'})
+                  # account_invoice_obj.unlink(cr, uid, ids2)
+                  # account_invoice_obj.write(cr, uid, ids2, {'state':'cancel'})
                   account_invoice_obj.action_cancel(cr, uid, ids2 )
                   if ids2:
-                    self.write(cr, uid, [pick.id], {'invoice_state':'2binvoiced'})
+                    self.write(cr, uid, [pick.id], {'invoice_state': '2binvoiced'})
             elif pick.invoice_state == 'invoiced':
-                _logger.debug('FGF picking invoiced '   )
+                _logger.debug('FGF picking invoiced ')
                 raise orm.except_orm(_('Error'), _('You cannot reset an invoiced picking to draft !'))
             if pick.move_lines:
                 for move in pick.move_lines:
                     # FIXME - not sure if date or id has to be checked or both if average price is used
                     # FGF 20121130 date_expected 
                     if move.product_id.cost_method == 'average':
-                      later_ids = move_line_obj.search(cr, uid, [('product_id','=',move.product_id.id),('state','=','done'),('date_expected','>',move.date),('price_unit','!=',move.price_unit),('company_id','=',move.company_id.id)])
+                      later_ids = move_line_obj.search(cr, uid, [('product_id', '=', move.product_id.id), ('state', '=', 'done'), ('date_expected', '>', move.date), ('price_unit', '!=', move.price_unit), ('company_id', '=', move.company_id.id)])
                       if later_ids:
                         later_prices = []
                         for later_move in move_line_obj.browse(cr, uid, later_ids):

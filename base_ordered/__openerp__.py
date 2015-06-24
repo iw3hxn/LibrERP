@@ -23,7 +23,7 @@
 
 {
     'name': 'Order by date decending',
-    'version': '0.9',
+    'version': '0.1',
     'category': 'Base',
     'description': """
 This module orders the following tables by date desc

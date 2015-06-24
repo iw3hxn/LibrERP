@@ -183,8 +183,8 @@ class stock_move(orm.Model):
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
-    def action_confirm(self, cr, uid, ids):
-        result = super(stock_picking, self).action_confirm(cr, uid, ids)
+    def action_assign_wkf(self, cr, uid, ids):
+        result = super(stock_picking, self).action_assign_wkf(cr, uid, ids)
 
         for picking in self.browse(cr, uid, ids):
             if picking.company_id.autosplit_is_active:

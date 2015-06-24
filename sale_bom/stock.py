@@ -31,6 +31,11 @@ class StockMove(orm.Model):
         @param move: Stock moves
         @return: True
         """
+
+        if move.picking_id.type == 'in':
+            location_dest_id = move.picking_id.partner_id.property_stock_customer.id
+        elif move.picking_id.type == 'out':
+            location_dest_id = move.picking_id.partner_id.property_stock_customer.id
         move_obj = self.pool['stock.move']
         processed_ids = [move.id]
         if move.sale_line_id and move.sale_line_id.with_bom:
@@ -56,6 +61,7 @@ class StockMove(orm.Model):
                         'move_history_ids': [(6, 0, [move.id])],
                         'move_history_ids2': [(6, 0, [])],
                         'procurements': [],
+                        'location_dest_id': location_dest_id,
                     }
                     mid = move_obj.copy(cr, uid, move.id, default=valdef)
                     processed_ids.append(mid)

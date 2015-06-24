@@ -60,4 +60,4 @@ msgstr "Vedere Prezzo di Vendita"
 #. module: stock_move_extended
 #: field:stock.move,sell_price:0
 msgid "Sell Price Unit"
-msgstr "Prezzo di Ordine Vendita"
+msgstr "Prezzo Riga Ordine Vendita"

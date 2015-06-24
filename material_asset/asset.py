@@ -1561,14 +1561,6 @@ class create_asset_onmove(orm.Model):
     _name = "stock.move"
     _inherit = "stock.move"
 
-    def action_confirm(self, cr, uid, ids, context=None):
-        """ Confirms stock move.
-        @return: List of ids.
-        """
-        moves = self.browse(cr, uid, ids, context=context)
-        self.write(cr, uid, ids, {'state': 'confirmed'})
-        self.create_chained_picking(cr, uid, moves, context)
-
     def action_done(self, cr, uid, ids, context=None):
         if context and context.get('asset_created', False):
             return super(create_asset_onmove, self).action_done(cr, uid, ids, context)

@@ -1,9 +1,9 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "access_create_product_product","product_product","model_product_product","group_create_product",1,1,1,0
 "access_create_product_template","product_template","product.model_product_template","group_create_product",1,1,1,0
-"access_create_mrp_bom","mrp_bom","model_mrp_bom","group_create_product",1,1,1,0
+"access_create_mrp_bom","mrp_bom","model_mrp_bom","group_create_product",1,1,1,1
 "access_create_mrp_bom_warehouse","mrp_bom","model_mrp_bom","stock.group_stock_user",1,0,0,0
-"access_create_mrp_bom_version","mrp_bom_revision","mrp.model_mrp_bom_revision","group_create_product",1,1,1,0
+"access_create_mrp_bom_version","mrp_bom_revision","mrp.model_mrp_bom_revision","group_create_product",1,1,1,1
 "access_create_product","model_product_supplierinfo","product.model_product_supplierinfo","group_create_product",1,1,1,0
 "access_create_stock_warehouse_orderpoint","stock_warehouse_orderpoint","procurement.model_stock_warehouse_orderpoint","group_create_product",1,1,1,0
 "access_unlink_product_product","product_product","model_product_product","group_unlink_product",1,1,1,1
