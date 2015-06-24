@@ -55,7 +55,7 @@ class product_template(osv.osv):
     _order = 'name desc'
 
 
-class product_product(osv.osv):
-    _inherit = "product.product"
-    _order = 'name desc'
+# class product_product(osv.osv):
+#     _inherit = "product.product"
+#     _order = 'name desc'
 
