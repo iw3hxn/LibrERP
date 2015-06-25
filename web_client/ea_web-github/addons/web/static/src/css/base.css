@@ -971,7 +971,7 @@ label.error {
     border: none;
     height: 12px;
     width: 12px;
-    background: url("http://localhost:8069/web/static/src/img/attachments-close.png") no-repeat scroll center center transparent;
+    background: url("/web/static/src/img/attachments-close.png") no-repeat scroll center center transparent;
     cursor: pointer;
 }
 
