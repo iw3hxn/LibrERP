@@ -77,33 +77,34 @@ class account_invoice(orm.Model):
                     % (period.name)
                 )
 
-            #check correct typing of number - for module account_invoice_force_number (#TODO move code in that module?)
-            for as_fy in obj_inv.journal_id.sequence_id.fiscal_ids:
-                prefix = as_fy.sequence_id.prefix
-
-                # check if it isn't an old db with %(fy) in sequence - #TODO show a message to correct the sequences
-                if prefix and prefix.find('fy') == -1:  # continue check only if not found
-                    if as_fy.fiscalyear_id == fy:
-                        padding = as_fy.sequence_id.padding
-                        if len(number) != padding + len(prefix):
-                            raise orm.except_orm(
-                                _('Number Mismatch Error!'),
-                                _('Length not correct: prefix %s with number of %s length')
-                                % (prefix, padding)
-                            )
-
-                        if number[:-padding] != prefix:
-                            raise orm.except_orm(
-                                _('Number Mismatch Error !'),
-                                _('Prefix not correct: %s')
-                                % (prefix)
-                            )
-
-                        if not number[-padding:].isdigit():
-                            raise orm.except_orm(
-                                _('Number Mismatch Error!'),
-                                _('After prefix only digits are permitted')
-                            )
+            # COMMENT WRONG CODE
+            # #check correct typing of number - for module account_invoice_force_number (#TODO move code in that module?)
+            # for as_fy in obj_inv.journal_id.sequence_id.fiscal_ids:
+            #     prefix = as_fy.sequence_id.prefix
+            #
+            #     # check if it isn't an old db with %(fy) in sequence - #TODO show a message to correct the sequences
+            #     if prefix and prefix.find('fy') == -1:  # continue check only if not found
+            #         if as_fy.fiscalyear_id == fy:
+            #             padding = as_fy.sequence_id.padding
+            #             if len(number) != padding + len(prefix):
+            #                 raise orm.except_orm(
+            #                     _('Number Mismatch Error!'),
+            #                     _('Length not correct: prefix %s with number of %s length')
+            #                     % (prefix, padding)
+            #                 )
+            #
+            #             if number[:-padding] != prefix:
+            #                 raise orm.except_orm(
+            #                     _('Number Mismatch Error !'),
+            #                     _('Prefix not correct: %s')
+            #                     % (prefix)
+            #                 )
+            #
+            #             if not number[-padding:].isdigit():
+            #                 raise orm.except_orm(
+            #                     _('Number Mismatch Error!'),
+            #                     _('After prefix only digits are permitted')
+            #                 )
 
             period_ids = self.pool['account.period'].search(
                 cr, uid, [('fiscalyear_id', '=', fy_id), ('company_id', '=', obj_inv.company_id.id)])
