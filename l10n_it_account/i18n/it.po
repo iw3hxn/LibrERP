@@ -10709,3 +10709,8 @@ msgstr "Create and manage the accounts you need to record journal entries. An ac
 msgid "The residual amount on a receivable or payable of a journal entry expressed in its currency (maybe different of the company currency)."
 msgstr "The residual amount on a receivable or payable of a journal entry expressed in its currency (maybe different of the company currency)."
 
+#. module: account
+#: code:addons/account/wizard/account_report_aged_partner_balance.py:56
+#, python-format
+msgid "Parent Tax '{name}' has non name."
+msgstr "Il Conto Padre {name} non ha nome."

@@ -83,6 +83,9 @@ class account_tax(orm.Model):
 
         if not vals.get('tax_code_id', False) and vals.get('account_tax_code_id', False):
             parent_tax_code = tax_code_obj.browse(cr, uid, vals['account_tax_code_id'])
+            if not parent_tax_code.code:
+                raise orm.except_orm(_('Error!'),
+                                     _("Parent Tax '{name}' has non name.").format(name=parent_tax_code.name))
             tax_code_vals = {
                 'name': vals['name'],
                 'code': parent_tax_code.code + vals['description'],
