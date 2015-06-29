@@ -36,4 +36,7 @@ class account_invoice(orm.Model):
         partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
         if partner.bank_riba_id:
             result['value']['bank_riba_id'] = partner.bank_riba_id.id
+        if partner.company_bank_id:
+            result['value']['partner_bank_id'] = partner.company_bank_id.id
+
         return result
