@@ -1375,13 +1375,13 @@ label.error {
 }
 
 .openerp .oe_forms label.oe_label, .openerp .oe_forms label.oe_label_help {
-    margin: 3px 0 0 3px;
+    margin: 2px 0 0 0px;
     white-space: nowrap;
     font-weight: normal;
     color: #1e1e1e;
     font-weight: bold;
     text-align: left !important;
-    padding-right: 8px;
+    padding-right: 4px;
 }
 .openerp .oe_forms .searchview_group_content label.oe_label, .openerp .searchview_group_content .oe_forms label.oe_label_help { /* making a distinction between labels in search view and other labels */
     margin: 3px 0 0 3px;
@@ -1451,7 +1451,7 @@ label.error {
 .openerp .oe_form_readonly .field_date,
 .openerp .oe_form_readonly .field_selection,
 .openerp .oe_forms_readonly .oe_form_field_many2one {
-    padding: 6px 2px 2px 2px;
+    padding: 4px 2px 2px 0px;
 #    background-color: white;
     min-height: 17px;
 }
