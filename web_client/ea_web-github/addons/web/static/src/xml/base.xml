@@ -1206,6 +1206,31 @@
         </t>
     </div>
 </t>
+
+<t t-name="FieldMany2ManyCheckBoxes">
+    <t t-if="elements" >
+        <t t-foreach="elements" t-as="record">
+            
+            <td class="checkboxvertical">
+                <t t-if="selected[record[0]]">
+                    <label>
+                        <input type="checkbox" t-att-data-record-id="record[0]" checked="true"/>
+                        <t t-esc="record[1]"/>
+                    </label>
+                </t>
+            </td>
+            <td class="checkboxvertical">
+                <t t-if="!selected[record[0]]">
+                    <label>
+                        <input  type="checkbox" t-att-data-record-id="record[0]"  />
+                        <t t-esc="record[1]"/>
+                    </label>
+                </t>
+            </td>
+        </t>
+    </t>
+</t>
+
 <t t-name="FieldReference">
     <table border="0" width="100%" cellpadding="0" cellspacing="0" class="oe_frame oe_forms">
     <tr>

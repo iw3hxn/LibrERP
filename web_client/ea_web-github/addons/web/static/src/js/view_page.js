@@ -251,6 +251,9 @@ openerp.web.page = function (openerp) {
             this.textext_plugins = "tags";
         },
     });
+    openerp.web.page.FieldMany2ManyCheckBoxesReadonly = openerp.web.form.FieldMany2ManyCheckBoxes.extend({
+        force_readonly: true,
+    });
     openerp.web.page.FieldOne2ManyReadonly = openerp.web.form.FieldOne2Many.extend({
         force_readonly: true
     });
@@ -294,6 +297,7 @@ openerp.web.page = function (openerp) {
         'many2one': 'openerp.web.page.FieldMany2OneReadonly',
         'many2many' : 'openerp.web.page.FieldMany2ManyReadonly',
         'many2many_tags' : 'openerp.web.page.FieldMany2ManyTagsReadonly',
+        'many2many_checkboxes' : 'openerp.web.page.FieldMany2ManyCheckBoxesReadonly',
         'one2many' : 'openerp.web.page.FieldOne2ManyReadonly',
         'one2many_list' : 'openerp.web.page.FieldOne2ManyReadonly',
         'reference': 'openerp.web.page.FieldReferenceReadonly',

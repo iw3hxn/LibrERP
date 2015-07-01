@@ -3431,6 +3431,90 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
     },
 });
 
+openerp.web.form.FieldMany2ManyCheckBoxes = openerp.web.form.FieldMany2Many.extend({
+    template: "FieldMany2ManyCheckBoxes",
+    force_readonly : false,
+    readonly : false,
+    init: function(view, node) {
+        this._super(view, node);
+        this.list_id = _.uniqueId("many2many");
+        this.is_loaded = $.Deferred();
+        this.initial_is_loaded = this.is_loaded;
+        this.is_setted = $.Deferred();
+        this.value = [];
+        this.records = [];
+        this.all_record_names = [];
+        this.selected = {};
+    },
+    start: function() {
+        this._super.apply(this, arguments);
+        var self = this;
+        this.dataset = new openerp.web.form.Many2ManyDataSet(this, this.field.relation);
+        this.dataset.m2m = this;
+        this.dataset.on_unlink.add_last(function(ids) {
+            self.on_ui_change();
+        });
+    },
+    get_render_data: function(){
+        var self = this;
+        var dataset = new openerp.web.DataSetStatic(this, this.field.relation, self.build_context());
+        return dataset.name_search('',this.build_domain());
+    },
+    set_value: function(value) {
+        value = value || [];
+        if (value.length >= 1 && value[0] instanceof Array) {
+            value = value[0][2];
+        }
+        this.value=value;
+        var selected = {}
+        value.forEach(function(val, i){
+            selected[val] = true;
+        });
+        this.selected = selected;
+        this.render_value();
+    }, 
+    get_value: function() {
+        return [commands.replace_with(this.value)];
+    },
+    _change_int_value: function(value) {
+        var self = this;
+        if(value instanceof Array)
+            value = value[0];
+        $.when(this.dataset.set_ids(_.uniq(value))).then(function() {
+            self.on_ui_change();
+        });
+    },
+    update_values: function(e){
+        var new_value = [];
+        this.$element.find("input").each(function() {
+            var elem = $(this);
+            if (elem.is(":checked")) {
+                new_value.push(parseInt(elem.data("record-id"),10))
+            }
+        });
+        if (! _.isEqual(new_value, this.value)){
+            this.value = new_value;
+            this._change_int_value(this.value);
+        }
+    },
+    render_value: function() {
+        var self = this;
+        var handle_names = function(data) {
+            self.$element.html(
+                QWeb.render(
+                    self.template, 
+                    {elements: data,selected:self.selected}
+                )
+            );
+            var inputs = self.$element.find("input");
+            inputs.change(_.bind(self.update_values, self));
+            if (self.force_readonly)
+                inputs.attr("disabled", "true");
+        }
+        return self.get_render_data().then(handle_names);
+    },
+});
+
 openerp.web.form.Many2ManyDataSet = openerp.web.DataSetStatic.extend({
     get_context: function() {
         this.context = this.m2m.build_context();
@@ -4146,6 +4230,7 @@ openerp.web.form.widgets = new openerp.web.Registry({
     'many2one' : 'openerp.web.form.FieldMany2One',
     'many2many' : 'openerp.web.form.FieldMany2Many',
     'many2many_tags' : 'openerp.web.form.FieldMany2ManyTags',
+    'many2many_checkboxes' : 'openerp.web.form.FieldMany2ManyCheckBoxes',    
     'one2many' : 'openerp.web.form.FieldOne2Many',
     'one2many_list' : 'openerp.web.form.FieldOne2Many',
     'reference' : 'openerp.web.form.FieldReference',
