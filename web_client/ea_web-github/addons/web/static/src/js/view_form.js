@@ -3442,8 +3442,6 @@ openerp.web.form.FieldMany2ManyCheckBoxes = openerp.web.form.FieldMany2Many.exte
         this.initial_is_loaded = this.is_loaded;
         this.is_setted = $.Deferred();
         this.value = [];
-        this.records = [];
-        this.all_record_names = [];
         this.selected = {};
     },
     start: function() {
