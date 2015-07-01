@@ -269,7 +269,7 @@
             <notebook position="inside">
                 <page string="Categories">
                     <separator colspan="4" string="Categories"/>
-                    <field colspan="4" name="category_id" nolabel="1"  widget="many2many_tags" />
+                    <field colspan="4" name="category_id" nolabel="1"  widget="many2many_checkboxes" />
                 </page>
             </notebook>
         </field>
