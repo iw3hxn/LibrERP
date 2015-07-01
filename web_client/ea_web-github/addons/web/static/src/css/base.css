@@ -2593,3 +2593,8 @@ padding-top: 0;
   font-style: italic;
   text-decoration: none;
 }
+.checkboxvertical{
+    vertical-align: initial;
+    display: block;
+    align-items: baseline;
+}
