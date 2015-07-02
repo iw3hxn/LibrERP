@@ -83,22 +83,25 @@ class stock_partial_picking_line(orm.TransientModel):
 
     def onchange_new_prodlot_code(self, cr, uid, ids, new_prodlot_code, product_id, prodlot_id, context=None):
         lot_obj = self.pool['stock.production.lot']
-        existing_prodlot_ids = lot_obj.search(cr, uid, [('name', '=', new_prodlot_code), ('product_id', '=', product_id)])
-        
-        if prodlot_id and not existing_prodlot_ids:
-            # Don't update existing prodlot
-            prodlot = lot_obj.browse(cr, uid, prodlot_id)
-            return {'value': {'new_prodlot_code': prodlot.name}}
-        elif (prodlot_id and existing_prodlot_ids and not prodlot_id == existing_prodlot_ids[0]) or \
-                (not prodlot_id and existing_prodlot_ids):
-            return {'warning': {'title': _('Warning!'), 'message': _('Serial number "{number}" is already exists'.format(number=new_prodlot_code))}}
+        existing_prodlot_ids =  lot_obj.name_search(cr, uid, new_prodlot_code, operator='=', context=context)
+        if existing_prodlot_ids:
+            product = self.pool.get("product.product").browse(cr, uid, product_id, context=context)
+            if product.lot_split_type == 'single':
+                return {
+                    'warning': {
+                        'title': _('Warning!'),
+                        'message': _('Serial number "{number}" is already exists'.format(number=new_prodlot_code))
+                    }
+                }
+            else:
+                existing_lot_id = existing_prodlot_ids[0][0]
+                return {'value': {'prodlot_id': existing_lot_id}}
         else:
             prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {
                 'name': new_prodlot_code,
                 'product_id': product_id,
             })
             return {'value': {'prodlot_id': prodlot_id}}
-
 
 class stock_partial_picking(orm.TransientModel):
     _inherit = "stock.partial.picking"

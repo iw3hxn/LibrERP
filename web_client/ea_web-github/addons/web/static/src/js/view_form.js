@@ -3065,7 +3065,10 @@ openerp.web.form.FieldMany2Many = openerp.web.form.Field.extend({
         }
     }
 });
-
+//
+//--New Widget Many2Many_Tags implemented by Denero Team.
+//--Inspired from v9 version of implementation.
+//
 openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
     template: "FieldMany2ManyTags",
     tag_template : "FieldMany2ManyTag",
@@ -3430,6 +3433,10 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
         });
     },
 });
+//
+//--New Widget Many2Many_Checkboxes implemented by Denero Team.
+//--Inspired from v9 version of implementation.
+//
 
 openerp.web.form.FieldMany2ManyCheckBoxes = openerp.web.form.FieldMany2Many.extend({
     template: "FieldMany2ManyCheckBoxes",
@@ -3456,7 +3463,7 @@ openerp.web.form.FieldMany2ManyCheckBoxes = openerp.web.form.FieldMany2Many.exte
     get_render_data: function(){
         var self = this;
         var dataset = new openerp.web.DataSetStatic(this, this.field.relation, self.build_context());
-        return dataset.name_search('',this.build_domain());
+        return dataset.name_search('', self.build_domain());
     },
     set_value: function(value) {
         value = value || [];
@@ -3501,7 +3508,7 @@ openerp.web.form.FieldMany2ManyCheckBoxes = openerp.web.form.FieldMany2Many.exte
             self.$element.html(
                 QWeb.render(
                     self.template, 
-                    {elements: data,selected:self.selected}
+                    {elements: data, selected: self.selected}
                 )
             );
             var inputs = self.$element.find("input");
