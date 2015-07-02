@@ -1248,7 +1248,7 @@ label.error {
 }
 .oe_form_buttons {
     position: relative;
-    top: 0px;
+    top: -1px;
     left: 10px;
 }
 .oe_form_header {
@@ -2100,7 +2100,7 @@ label.error {
 .oe-shortcut-toggle {
     height: 20px;
     margin-top: 0px;
-    padding: 6px;
+    padding: 3px;
     width: 20px;
     cursor: pointer;
     display: block;
@@ -2484,15 +2484,15 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 
 .openerp .oe_button.disabled,
 .openerp .oe_button:disabled {
-    background: #f0f0f0 !important;
-    border: 1px solid #f1f1f1 !important;
+    background: white !important;
+    border: 1px solid white !important;
     font-size: 12px;
     padding: 3px 10px;
     -moz-box-shadow: none !important, 0 0 0 transparent;
     -webkit-box-shadow: none !important, 0 0 0 transparent;
     -o-box-shadow: none !important, 0 0 0 transparent;
     box-shadow: none !important, 0 0 0 transparent;
-    color: #aaaaaa !important;
+    color: white !important;
     cursor: default;
 //    text-shadow: 0 1px 1px white !important;
 }
