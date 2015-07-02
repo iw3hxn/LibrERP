@@ -466,15 +466,14 @@ class stock_production_lot(orm.Model):
     def _check_name_unique(self, cr, uid, ids, context=None):
         if len(ids) == 1:
             lot = self.browse(cr, uid, ids[0])
-            if lot.product_id.lot_split_type == 'single':
-                lot_ids = self.search(cr, uid, [('product_id', '=', lot.product_id.id), ('name', '=', lot.name)])
-                if len(lot_ids) == 1:
-                    return True
-                else:
-                    print '####### Duplicate serial number ########'
-                    return False
-            else:
+            lot_name = self.name_get(cr, uid, ids, context=context)[0][1]
+            lot_ids = self.name_search(cr, uid, lot_name, operator='=', context=context)
+            if len(lot_ids) == 1:
                 return True
+            else:
+                print '####### Duplicate serial number ########'
+                return False
+        
         
         return False
     
