@@ -2495,6 +2495,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     color: white !important;
     cursor: default;
 //    text-shadow: 0 1px 1px white !important;
+    opacity: 0;
 }
 
 .openerp .oe_button.oe_button_small {
