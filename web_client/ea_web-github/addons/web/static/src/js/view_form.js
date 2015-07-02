@@ -3065,7 +3065,10 @@ openerp.web.form.FieldMany2Many = openerp.web.form.Field.extend({
         }
     }
 });
-
+//
+//--New Widget Many2Many_Tags implemented by Denero Team.
+//--Inspired from v9 version of implementation.
+//
 openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
     template: "FieldMany2ManyTags",
     tag_template : "FieldMany2ManyTag",
