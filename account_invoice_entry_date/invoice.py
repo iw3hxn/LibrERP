@@ -59,10 +59,10 @@ class account_invoice(orm.Model):
         result = {}
         if not len(ids):
             return []
-        ait_obj = self.pool.get('account.invoice.tax')
+        ait_obj = self.pool['account.invoice.tax']
         amount_tax = 0.0
         for invoice in self.browse(cr, uid, ids, context):
-            if not invoice.id in result:
+            if invoice.id not in result:
                 result[invoice.id] = []
             if invoice.state == 'draft':
                 compute_taxes = ait_obj.compute(cr, uid, invoice.id, context=context)
@@ -102,9 +102,9 @@ class account_invoice(orm.Model):
                 else:
                     reg_date = time.strftime('%Y-%m-%d')
             if date_invoice and reg_date:
-                if (date_invoice > reg_date):
+                if date_invoice > reg_date:
                     raise orm.except_orm(_('Error date !'), _('The invoice date cannot be later than the date of registration!'))
-            #periodo
+            # periodo
             if inv.type in ['in_invoice', 'in_refund']:
                 date_start = inv.registration_date or inv.date_invoice or time.strftime('%Y-%m-%d')
                 date_stop = inv.registration_date or inv.date_invoice or time.strftime('%Y-%m-%d')
@@ -126,16 +126,16 @@ class account_invoice(orm.Model):
                     sql = "update account_move_line set period_id = " + \
                         str(period_id) + ", date = '" + mov_date + "' where move_id = " + str(inv.move_id.id)
                 cr.execute(sql)
-                if inv.supplier_invoice_number:
-                    self.pool['account.move'].write(
-                    cr, uid, [inv.move_id.id], {
+
+                if hasattr(inv, 'supplier_invoice_number') and inv.supplier_invoice_number:
+                    self.pool['account.move'].write(cr, uid, [inv.move_id.id], {
                         'period_id': period_id,
                         'date': mov_date,
-                        'ref': inv.supplier_invoice_number})
+                        'ref': inv.supplier_invoice_number}, context=context)
                 else:
                     self.pool['account.move'].write(
-                        cr, uid, [inv.move_id.id], {'period_id': period_id, 'date': mov_date})
-                self.pool['account.move'].write(cr, uid, [inv.move_id.id], {'state': 'posted'})
+                        cr, uid, [inv.move_id.id], {'period_id': period_id, 'date': mov_date}, context=context)
+                self.pool['account.move'].write(cr, uid, [inv.move_id.id], {'state': 'posted'}, context=context)
 
         self._log_event(cr, uid, ids)
         return True

@@ -27,15 +27,14 @@
     'author': 'OpenERP Italian Community',
     'website': 'http://www.openerp-italia.org',
     'license': 'AGPL-3',
-    "depends" : [
+    "depends": [
         'account',
-        'l10n_it_account', #for supplier_invoice_number field
-        'account_payment_term_month', #for update payment with tax in function compute
+        'account_payment_term_month', # for update payment with tax in function compute
     ],
-    "data" : [
+    "data": [
         'invoice_view.xml'
     ],
-    "demo" : [],
+    "demo": [],
     "active": False,
     "installable": True
 }
