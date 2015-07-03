@@ -21,7 +21,7 @@ body.openerp {
 .openerp .view-manager-main-content {
     width: 100%;
     padding: 0 8px 8px 8px;
-    border: 1px solid #E8E8E8;
+    border-left: 1px solid #E8E8E8;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
 }
 
