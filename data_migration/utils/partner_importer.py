@@ -66,6 +66,7 @@ class ImportFile(threading.Thread, Utils):
         self.address_obj = self.pool['res.partner.address']
         self.city_obj = self.pool['res.city']
         self.province_obj = self.pool['res.province']
+        self.state_obj = self.pool['res.country.state']
         self.account_fiscal_position_obj = self.pool['account.fiscal.position']
         self.partner_template = self.pool['partner.import.template']
         # Necessario creare un nuovo cursor per il thread, quello fornit
@@ -279,13 +280,17 @@ class ImportFile(threading.Thread, Utils):
                 vals_address['country_id'] = city_data.province_id.region.country_id.id
 
         if not vals_address.get('province'):
-            if hasattr(record, 'province ' + address_type):
-                province_ids = self.province_obj.search(cr, uid, [('code', '=', getattr(record, 'province ' + address_type))])
+            if hasattr(record, 'province_' + address_type):
+                province_ids = self.province_obj.search(cr, uid, [('code', '=', getattr(record, 'province_' + address_type))])
                 if province_ids:
                     vals_address['province'] = province_ids[0]
                     province_data = self.province_obj.browse(cr, uid, province_ids[0])
                     vals_address['region'] = province_data.region.id
                     vals_address['country_id'] = province_data.region.country_id.id
+                else:
+                    state_ids = self.state_obj.search(cr, uid, [('code', '=', getattr(record, 'province_' + address_type))])
+                    if state_ids:
+                        vals_address['state_id'] = state_ids[0]
 
         if record.country_code and not vals_address.get('country_id'):
             vals_address['country_id'] = self._contry_by_code(cr, uid, country_code)

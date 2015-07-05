@@ -38,7 +38,7 @@
         'purchase',
         # 'partner_subaccount',
         # 'l10n_it', not needed, pdc is installed by default and can differ from this one
-        'l10n_it_account',
+        # 'l10n_it_account',
         'core_extended'
     ],
     'data': [
