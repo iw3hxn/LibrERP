@@ -3184,7 +3184,8 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                             if(item.length) {
                                 
                                 self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
-                            } else if(this.selectedSuggestionElement().find('div.additional-suggestions').length || self.$input.val().trim() !== "") {
+                            //} else if(this.selectedSuggestionElement().find('div.additional-suggestions').length || self.$input.val().trim() !== "") {
+                            } else if(self.$input.val().trim() !== "") {
                                 self._quick_create(self.$input.val().trim());
                             }
                         },
@@ -3363,7 +3364,7 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                     
                     autocomplete.addDropdownItem(_t("<div class='additional-suggestions'>Create and Edit...</div>")).bind('click', function() {
                         //self.$input.val('');
-                        //self._change_int_value(null);
+                        self._change_int_value(null);
                         self._search_create_popup("form", undefined, {"default_name": search_val});
                     });
                 });
