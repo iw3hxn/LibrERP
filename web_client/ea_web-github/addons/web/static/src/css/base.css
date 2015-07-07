@@ -1451,7 +1451,7 @@ label.error {
 .openerp .oe_form_readonly .field_date,
 .openerp .oe_form_readonly .field_selection,
 .openerp .oe_forms_readonly .oe_form_field_many2one {
-    padding: 4px 2px 2px 0px;
+    padding: 4px 2px 2px 2px;
 #    background-color: white;
     min-height: 17px;
 }
