@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice extended",
-    "version": "3.0.3.1",
+    "version": "3.1.3.2",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules/Accounting",

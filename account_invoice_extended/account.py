@@ -27,12 +27,16 @@ from openerp import pooler
 
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
+
+    _columns = {
+        'supplier_invoice_number': fields.char('Supplier invoice nr', size=16),
+    }
     
     def copy(self, cr, uid, order_id, defaults, context=None):
         defaults['user_id'] = uid
         return super(account_invoice, self).copy(cr, uid, order_id, defaults, context)
 
-    #override to group product_id too
+    # override to group product_id too
     def inv_line_characteristic_hashcode(self, invoice, invoice_line):
         """Overridable hashcode generation for invoice lines. Lines having the same hashcode
         will be grouped together if the journal has the 'group line' option. Of course a module
@@ -40,9 +44,9 @@ class account_invoice(orm.Model):
         or not."""
         return "%s-%s-%s-%s"%(
             invoice_line['account_id'],
-            invoice_line.get('tax_code_id',"False"),#invoice_line.get('product_id',"False"),
-            invoice_line.get('analytic_account_id',"False"),
-            invoice_line.get('date_maturity',"False"))
+            invoice_line.get('tax_code_id', "False"),#invoice_line.get('product_id',"False"),
+            invoice_line.get('analytic_account_id', "False"),
+            invoice_line.get('date_maturity', "False"))
 
     #override to merge description (after will be trunked to x character everyway)
     def group_lines(self, cr, uid, iml, line, inv):
