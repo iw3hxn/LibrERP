@@ -3072,7 +3072,6 @@ openerp.web.form.FieldMany2Many = openerp.web.form.Field.extend({
 openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
     template: "FieldMany2ManyTags",
     tag_template : "FieldMany2ManyTag",
-    readonly:false,    
     init: function(view, node) {
         this._super(view, node);
         this.list_id = _.uniqueId("many2many");
@@ -3080,14 +3079,13 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
         this.initial_is_loaded = this.is_loaded;
         this.is_setted = $.Deferred();
         this.textext_plugins = "tags arrow autocomplete suggestions";
-        this.effective_readonly = false;
         this.value = [];
     },
     
     start: function() {
         this._super.apply(this, arguments);
         var self = this;
-        if ( this.readonly )
+        if ( this.force_readonly )
             return;
         this.$input = this.$element.find("textarea");
         
@@ -3095,18 +3093,14 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
             plugins: this.textext_plugins,
             
             html: {
-              arrow: !this.readonly ? '<div class="text-arrow"/>' : '' ,              
+              arrow: !this.force_readonly ? '<div class="text-arrow"/>' : '' ,              
             },
-            
             autocomplete:  {
-                enabled: !this.readonly,
-                
+                enabled: !this.force_readonly,
                 render: function(suggestion) {
                     return $('<div>', {'id': suggestion['id'], 'class': 'text-label','name': suggestion['name']}).html(suggestion['label']);
                 }
-                
             },
-            
             ext: {
                     core: {
                         onKeyDown: function(e) {
@@ -3128,7 +3122,6 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                                 });
                             }
                         },
-                        
                         onKeyUp: function(e) {
                             $.fn.textext.TextExt.prototype.onKeyUp.apply(this, arguments);
                             if(self.$input.val() === "") {
@@ -3140,7 +3133,6 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                                 self.$input.tipsy('hide');
                         }
                     },
-                    
                     tags: {
                         addTags: function(tags) {
                             var set_id = true;
@@ -3160,43 +3152,29 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                             if (confirm(_t("Do you really want to remove these records?"))) {
                                 self.value = _.uniq(_.without(self.value, [parseInt(tag.attr('id'), 10)]));
                                 self.dataset.on_unlink(parseInt(tag.attr('id'), 10));
-                                $.fn.textext.TextExtTags.prototype.removeTag.apply(this, arguments);    
+                                $.fn.textext.TextExtTags.prototype.removeTag.apply(this, arguments);
+                                self._change_int_value(null);   
                             } else {
                                 return false;
                             }
                         },
-                        //onEnterKeyPress:function(e){
-                        //    self._quick_create(self.$input.val().trim());
-                        //}
-                        
                     },
-                    
                     itemManager: {
                         itemToString: function(item) {
                             return item.name;
                         },
                     },
-                    
                     autocomplete: {
                         onEnterKeyPress: function(e) {
                             var item = this.selectedSuggestionElement().find('div.text-label');
                             $.fn.textext.TextExtAutocomplete.prototype.onEnterKeyPress.apply(this, arguments);
                             if(item.length) {
-                                
                                 self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
                             //} else if(this.selectedSuggestionElement().find('div.additional-suggestions').length || self.$input.val().trim() !== "") {
                             } else if(self.$input.val().trim() !== "") {
                                 self._quick_create(self.$input.val().trim());
                             }
                         },
-                        //onClick: function(e) { 
-                        //    var item = $(e.target);
-                        //    self._change_int_value([parseInt(item.attr('id'), 10), item.attr('name')]);
-                        //    //self.$text.trigger('setSuggestions', {result : []});
-                        //    $.fn.textext.TextExtTags.prototype.addTags.apply(this,arguments);
-                        //    //$.fn.textext.TextExtAutocomplete.prototype.onClick.apply(this, arguments);
-                        //},
-                    
                     selectFromDropdown: function(e) {
                         this.trigger('hideDropdown');
                         if (!this.selectedSuggestionElement().length) {
@@ -3212,10 +3190,9 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                         this.trigger('setSuggestions', {result : []});
                     },
                 },
-                
             suggestions: {
                 onGetSuggestions: function(evt, data) {
-                    if(!self.readonly) {
+                    if(!self.force_readonly) {
                         self.get_search_result(evt, data);
                     } else {
                         evt.preventDefault();
@@ -3223,7 +3200,6 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                     }
                 }
             },
-
             arrow: {
                     onArrowClick :  function() {
                         self.$input.trigger('getSuggestions');
@@ -3232,13 +3208,6 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                 }
             }
         });
-       
-        //this.$input.onEnterKeyPress(function(e) {
-        //    if (e.which === $.ui.keyCode.TAB) {
-        //        this.$input.textext()[0].autocomplete().selectFromDropdown();
-        //    }
-        //});
-       
         self.tags = self.$input.textext()[0].tags();
         this.dataset = new openerp.web.form.Many2ManyDataSet(this, this.field.relation);
         this.dataset.m2m = this;
@@ -3267,7 +3236,7 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
     },
     render_tag: function(data) {
         var self = this;
-        if (! self.readonly) {
+        if (! self.force_readonly) {
             self.tags.containerElement().children().remove();
             self.$input.css("padding-left", "3px");
             self.tags.addTags(self.map_tag(data));
@@ -3289,8 +3258,6 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
         }
         if (! values || values.length > 0) {
             return self.get_render_data(values).then(handle_names);
-            //return handle_names(reder_data)
-            //return this._display_orderer.add(self.get_render_data(values)).done(handle_names);
         } else {
             handle_names([]);
         }
@@ -3299,13 +3266,11 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
         var self = this;
         if(value instanceof Array)
             value = value[0];
-        
         $.when(this.dataset.set_ids(_.uniq(this.value.concat([value])))).then(function() {
             self.on_ui_change();
         });
     },
     get_search_result: function(evt, data) {
-        
         var search_val = (data ? data.query : '') || '',
             textext = $(evt.target).textext()[0],
             self = this;
@@ -3315,7 +3280,6 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
             .name_search(search_val, this.build_domain(), 'ilike', this.limit + 1)
             .done(function(data) {
                 self.last_search = data;
-                // possible selections for the m2o
                 var values = _.map(data, function(x) {
                     return {
                         label: _.str.escapeHTML(x[1]),
@@ -3353,8 +3317,6 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                             self._quick_create(search_val);
                         });
                     }
-                    
-                    
                     if(is_search_more) {
                         extra_node = autocomplete.addDropdownItem(_t("<div class='additional-suggestions'>Search More...</div>")).bind('click', function() {
                             self.$input.val('');
@@ -3369,12 +3331,6 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
                     });
                 });
             });
-    },    
-    is_false: function() {
-        return _(this.get("value")).isEmpty();
-    },
-    get_search_blacklist: function() {
-        return this.get("value");
     },
     add_id: function(id) {
         this.set_value(_.uniq(this.value.concat([id])));
@@ -3418,10 +3374,7 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
             self.build_domain(),
             new openerp.web.CompoundContext(self.build_context(), context || {})
         );
-        
         pop.on_select_elements.add(function(element_ids) {
-            //this.set({value: element_ids[0]});
-            //self.set_value([element_ids[0]]);
             self.add_id(element_ids[0]);
         });
     },    
@@ -3434,6 +3387,7 @@ openerp.web.form.FieldMany2ManyTags = openerp.web.form.FieldMany2Many.extend({
         });
     },
 });
+
 //
 //--New Widget Many2Many_Checkboxes implemented by Denero Team.
 //--Inspired from v9 version of implementation.
