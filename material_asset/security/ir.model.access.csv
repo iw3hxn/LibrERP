@@ -26,4 +26,5 @@
 "access_assets_warehous_user","asset.product","model_asset_product","stock.group_stock_user",1,0,0,0
 "access_assets_manager_use","asset.use","model_asset_use","group_assets_manager",1,1,1,1
 "access_assets_user_use","asset.use","model_asset_use","group_assets_user",1,0,0,0
+"access_assets_user_use_employee","asset.use","model_asset_use","base.group_user",1,0,0,0
 "access_assets_location",asset.location.property","model_asset_location_property","base.group_user",1,0,0,0

@@ -2,6 +2,7 @@
 "access_create_product_product","product_product","model_product_product","group_create_product",1,1,1,0
 "access_create_product_template","product_template","product.model_product_template","group_create_product",1,1,1,0
 "access_create_mrp_bom","mrp_bom","model_mrp_bom","group_create_product",1,1,1,1
+"access_read_mrp_bom","mrp_bom_employee","model_mrp_bom","base.group_user",1,0,0,0
 "access_create_mrp_bom_warehouse","mrp_bom","model_mrp_bom","stock.group_stock_user",1,0,0,0
 "access_create_mrp_bom_version","mrp_bom_revision","mrp.model_mrp_bom_revision","group_create_product",1,1,1,1
 "access_create_product","model_product_supplierinfo","product.model_product_supplierinfo","group_create_product",1,1,1,0
