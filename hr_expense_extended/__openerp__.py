@@ -24,7 +24,7 @@
 
 {
     "name": "HR Expense Extended",
-    "version": "2.7.12.2",
+    "version": "2.7.13.3",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Human Resources',
@@ -52,7 +52,8 @@
         'hr_employe_view.xml',
         'task_time_control_wizard_view.xml',
         'reports.xml',
-        'security/ir.model.access.csv'
+        'security/ir.model.access.csv',
+        'security/ir_rule.xml'
     ],
     "active": False,
     "installable": True,

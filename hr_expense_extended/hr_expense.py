@@ -132,7 +132,8 @@ class hr_expense_line(orm.Model):
             ('company', _('Company')),
             ('employee', _('Employee')),
             ('other', _('Other')),
-        ), _('Payer'), required=True)
+        ), _('Payer'), required=True),
+        # 'user_id': fields.related('expense_id', 'user_id', type='many2one', relation='res.user', string='User'),
     }
     
     def write(self, cr, uid, ids, values, context=None):
