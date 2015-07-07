@@ -34,7 +34,7 @@ class account_invoice(orm.Model):
     def _maturity(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for o in self.browse(cr, uid, ids, context):
-            if not o.id in res:
+            if o.id not in res:
                 res[o.id] = []
             if o.move_id and o.move_id.line_id:
                 for line in o.move_id.line_id:
@@ -49,9 +49,9 @@ class account_invoice(orm.Model):
         currency_name = invoice.currency_id.name
         amount_total_line = line[1]
         t_pterm = {
-                   'date':self._format_time(line[0]),
-                   'amount':amount_total_line,
-                   'currency_name':currency_name}
+                   'date': self._format_time(line[0]),
+                   'amount': amount_total_line,
+                   'currency_name': currency_name}
         return t_pterm
 
     def _get_preview_lines(self, cr, uid, ids, field_name, arg, context=None):
@@ -118,7 +118,7 @@ class account_invoice(orm.Model):
                 self.write(cr, uid, [inv.id], {'registration_date': reg_date, 'period_id': period_id})
                 mov_date = reg_date or inv.date_invoice or time.strftime('%Y-%m-%d')
                 self.pool['account.move'].write(cr, uid, [inv.move_id.id], {'state': 'draft'})
-                if inv.supplier_invoice_number:
+                if hasattr(inv, 'supplier_invoice_number') and inv.supplier_invoice_number:
                     sql = "update account_move_line set period_id = " + \
                         str(period_id) + ", date = '" + mov_date + "' , ref = '" + \
                         inv.supplier_invoice_number + "' where move_id = " + str(inv.move_id.id)
