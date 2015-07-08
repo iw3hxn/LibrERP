@@ -26,7 +26,7 @@ from osv import fields, osv
 import datetime
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
-#dummy call to workaround strptime bug (https://bugs.launchpad.net/openobject-server/+bug/947231/comments/8):
+# dummy call to workaround strptime bug (https://bugs.launchpad.net/openobject-server/+bug/947231/comments/8):
 datetime.datetime.strptime('2012-01-01 11:11:11', DEFAULT_SERVER_DATETIME_FORMAT)
 
 
@@ -61,8 +61,9 @@ class stock_picking(osv.osv):
         return result
     
     _columns = {
-       'year': fields.function(_get_stock_picking_year, 'Year', type='selection', selection=_get_stock_picking_years, method=True, help="Select year")
-        
+       'year': fields.function(_get_stock_picking_year, 'Year', type='selection', selection=_get_stock_picking_years, method=True, help="Select year"),
+       'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+       'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
     }
     
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):

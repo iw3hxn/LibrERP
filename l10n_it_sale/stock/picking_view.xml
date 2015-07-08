@@ -107,6 +107,14 @@
                     <field name="ddt_date"/>
                     <newline/>
                 </field>
+                <field name="date_from" position="replace" >
+                    <field name="date_from" filter_domain="[('ddt_date','&gt;=',self)]"/>
+                </field>
+
+                <field name="date_to" position="replace" >
+                    <field name="date_to" filter_domain="[('ddt_date','&lt;=',self)]"/>
+                </field>
+
             </field>
         </record>
 		
@@ -119,6 +127,13 @@
                     <field name="ddt_in_reference"/>
                     <field name="ddt_in_date"/>
                     <newline/>
+                </field>
+                <field name="date_from" position="replace" >
+                    <field name="date_from" filter_domain="[('ddt_in_date','&gt;=',self)]"/>
+                </field>
+
+                <field name="date_to" position="replace" >
+                    <field name="date_to" filter_domain="[('ddt_in_date','&lt;=',self)]"/>
                 </field>
             </field>
         </record>
