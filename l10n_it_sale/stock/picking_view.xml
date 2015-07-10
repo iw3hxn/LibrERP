@@ -107,20 +107,33 @@
                     <field name="ddt_date"/>
                     <newline/>
                 </field>
+
+            </field>
+        </record>
+
+        <record id="stock_picking_search_ddt_inherit_date" model="ir.ui.view">
+            <field name="name">stock.picking.search.ddt.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="stock_picking_filter.view_stock_picking_enhanced_filter_out"/>
+            <field name="arch" type="xml">
+
                 <field name="date_from" position="replace" >
-                    <field name="date_from" filter_domain="[('ddt_date','&gt;=',self)]"/>
+                    <field name="date_from" filter_domain="[('ddt_date','&gt;=',self)]" string="DDT dal"/>
                 </field>
 
                 <field name="date_to" position="replace" >
-                    <field name="date_to" filter_domain="[('ddt_date','&lt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('ddt_date','&lt;=',self)]" string="DDT al"/>
                 </field>
 
             </field>
         </record>
+
 		
         <record id="stock_picking_search_ddt_in_inherit" model="ir.ui.view">
             <field name="name">stock.picking.search.ddt.inherit</field>
             <field name="model">stock.picking</field>
+            <field name="type">search</field>
             <field name="inherit_id" ref="stock.view_picking_in_search"/>
             <field name="arch" type="xml">
                 <field name="name" position="before">
@@ -128,12 +141,21 @@
                     <field name="ddt_in_date"/>
                     <newline/>
                 </field>
+            </field>
+        </record>
+
+        <record id="stock_picking_search_ddt_in_inherit_date" model="ir.ui.view">
+            <field name="name">stock.picking.search.ddt.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="stock_picking_filter.view_stock_picking_enhanced_filter"/>
+            <field name="arch" type="xml">
                 <field name="date_from" position="replace" >
-                    <field name="date_from" filter_domain="[('ddt_in_date','&gt;=',self)]"/>
+                    <field name="date_from" filter_domain="[('ddt_in_date','&gt;=',self)]" string="DDT dal"/>
                 </field>
 
                 <field name="date_to" position="replace" >
-                    <field name="date_to" filter_domain="[('ddt_in_date','&lt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('ddt_in_date','&lt;=',self)]" string="DDT al"/>
                 </field>
             </field>
         </record>

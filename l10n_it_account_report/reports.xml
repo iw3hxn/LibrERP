@@ -7,7 +7,7 @@
 	    </record>-->
 
         <record id="account.account_invoices" model="ir.actions.report.xml">
-            <field name="name">Print Fattura</field>
+            <field name="name">Fattura</field>
             <field name="type">ir.actions.report.xml</field>
             <field name="model">account.invoice</field>
             <field name="report_name">account.invoice</field>
