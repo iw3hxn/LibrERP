@@ -41,7 +41,10 @@ class Parser(report_sxw.rml_parse):
             'set_picking': self._set_picking,
             'indirizzo': self._indirizzo,
             'div': self._div,
+            'line_description': self._line_description,
             'desc_nocode': self._desc_nocode,
+            'total_fiscal': self._get_total_fiscal,
+            'total_tax_fiscal': self._get_total_tax_fiscal,
         })
         
         self.cache = {}
@@ -250,3 +253,37 @@ class Parser(report_sxw.rml_parse):
         address = self.pool['res.partner'].address_get(self.cr, self.uid, [partner.parent_id and partner.parent_id.id or partner.id], ['default', 'invoice'])
         return self.pool['res.partner.address'].browse(self.cr, self.uid, address['invoice'] or address['default'])
 
+    def _line_description(self, line):
+        description = []
+        if line.name:
+            description.append(re.compile('\[.*\]\ ').sub('', line.name))
+        if line.note:
+            description.append(line.note)
+
+        return '\n'.join(description)
+
+    def _get_total_tax_fiscal(self, tax_line):
+        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
+        amount_withholding = 0.0
+        for line in tax_line:
+            if line.tax_code_id.notprintable:
+                amount_withholding += line.tax_amount
+        if amount_withholding != 0.0:
+            if invoice.type in ['out_invoice', 'in_invoice']:
+                return invoice.amount_tax - amount_withholding
+            else:
+                return invoice.amount_tax + amount_withholding
+        return invoice.amount_tax
+
+    def _get_total_fiscal(self, tax_line):
+        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
+        amount_withholding = 0.0
+        for line in tax_line:
+            if line.tax_code_id.notprintable:
+                amount_withholding += line.tax_amount
+        if amount_withholding != 0.0:
+            if invoice.type in ['out_invoice', 'in_invoice']:
+                return invoice.amount_total - amount_withholding
+            else:
+                return invoice.amount_total + amount_withholding
+        return invoice.amount_total
