@@ -103,6 +103,11 @@ class FormatOne():
     COLUMNS_PICKING = "doc, origin, date, product, product_uom, qty"
     REQUIRED_PICKING = ['doc', 'origin', 'date', 'product', 'product_uom', 'qty']
 
+    HEADER_PRICELIST = ('Articolo', 'Prezzo')
+    COLUMNS_PRICELIST = "default_code, sell_price"
+    REQUIRED_PRICELIST = ['default_code', 'sell_price']
+
+
 
 class FormatTwo():
     # IB.
