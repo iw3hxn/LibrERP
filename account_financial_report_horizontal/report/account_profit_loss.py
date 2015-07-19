@@ -139,9 +139,16 @@ class report_pl_account_horizontal(report_sxw.rml_parse, common_report_header):
         for typ in types:
             accounts_temp = []
             for account in accounts:
+                if (account.user_type) and (
+                    account.user_type.code == (typ + '_view')
+                ):
+                    accounts_temp.append(
+                                get_account_repr(account, typ))
+                
                 if (account.user_type.report_type) and (
                     account.user_type.report_type == typ
                 ):
+                
                     currency = (
                         account.currency_id and account.currency_id
                         or account.company_id.currency_id)

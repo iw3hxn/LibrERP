@@ -22,15 +22,15 @@
 ##############################################################################
 {
     "name": "Accounting Financial Reports Horizontal",
-    "version": "2.1.6.7",
-    "author": ["Therp BV", "Agile Business Group", "Didotech srl"],
+    "version": "2.1.9.9",
+    "author": ["Therp BV", "Agile Business Group", "Didotech srl", "Simplerp srl"],
     "category": 'Accounting & Finance',
     'complexity': "normal",
     "description": """
-This is a port to OpenERP 7.0 of the horizontal financial reports
-'Balance sheet' and 'Profit and Loss' as found in OpenERP 6.0.
+This is a backport to OpenERP 6.1 of the horizontal financial reports
+'Balance sheet' and 'Profit and Loss' as found in OpenERP 7.0.
     """,
-    'website': 'https://launchpad.net/account-financial-report',
+    'website': 'https://www.simplerp.it',
     'images': [],
     "depends": ["account"],
     'data': [

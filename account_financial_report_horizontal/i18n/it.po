@@ -21,6 +21,11 @@ msgid "Balance Sheet Horizontal"
 msgstr "Stato Patrimoniale orizzontale"
 
 #. module: account_financial_report_horizontal
+#: report:account.profit_horizontal:0
+msgid "Income"
+msgstr "Ricavi"
+
+#. module: account_financial_report_horizontal
 #: model:ir.ui.menu,name:account_financial_report_horizontal.final_accounting_reports
 msgid "Horizontal Financial Reports"
 msgstr "Report Bilancio Orizzontale"
@@ -118,7 +123,6 @@ msgstr "Con saldo diverso da zero"
 #. module: account_financial_report_horizontal
 #: report:account.profit_horizontal:0
 msgid "Expense"
-msgstr "Dettaglio"
 msgstr "Costi"
 
 #. module: account_financial_report_horizontal
