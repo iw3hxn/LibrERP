@@ -78,26 +78,20 @@ class product_catalog_rep_qty(report_sxw.rml_parse):
             'get_product': self.get_products,
             'get_pricelist_name': self.get_pricelist_name,
         })
-        
+
     def setCat(self, cats):
         lst = []
-        for cat in cats:
-            if cat not in lst:
-                if type(cat) is int:
-                    lst.append(cat)
-                    category = self.pool.get('product.category').read(self.cr, self.uid, [cat])
-                else:
-                    lst.append(cat[0])
-                    category = self.pool.get('product.category').read(self.cr, self.uid, [cat[0]])
-                if category[0]['child_id']:
-                    lst.extend(self.setCat(category[0]['child_id']))
+        for cat in self.pool['product.category'].browse(self.cr, self.uid, cats):
+            if cat.id not in lst:
+                lst.append(cat.id)
+                for child_id in cat.child_id:
+                    child_ids = self.setCat([child_id.id])
+                    lst.extend(child_ids)
         return lst
 
     def get_pricelist_name(self, form, pricelist_id):
-        pricelist_data = self.pool.get('product.pricelist').read(self.cr, self.uid, form[pricelist_id][0])
-        position = pricelist_data['currency_id'][1].find("(")
-        price = pricelist_data['currency_id'][1][:position].strip()
-        return '%s (%s)' % (pricelist_data['name'], price)
+        pricelist_data = self.pool['product.pricelist'].browse(self.cr, self.uid, form[pricelist_id][0])
+        return '%s (%s)' % (pricelist_data.name, pricelist_data.currency_id.name)
 
     def get_products(self, c):
         prod_tmpIDs = self.pool.get('product.template').search(self.cr, self.uid, [('categ_id', '=', c), ])

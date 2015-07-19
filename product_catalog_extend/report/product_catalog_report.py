@@ -48,21 +48,19 @@ class product_product(osv.osv):
         quantity = context.get('quantity') or 1.0
         pricelist = context.get('pricelist2', False)
         if pricelist:
-            for id in ids:
+            for product_id in ids:
                 try:
-                    price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist], id, quantity, context=context)[pricelist]
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist], product_id, quantity, context=context)[pricelist]
                 except:
                     price = 0.0
-                res[id] = price
-        for id in ids:
-            res.setdefault(id, 0.0)
+                res[product_id] = price
+        for product_id in ids:
+            res.setdefault(product_id, 0.0)
         return res
 
     _columns = {
         'price2': fields.function(_product_price2, method=True, type='float', string='Pricelist', digits_compute=dp.get_precision('Sale Price')),
     }
-
-product_product()
 
 
 class product_catalog_report(report_sxw.rml_parse):
@@ -81,23 +79,24 @@ class product_catalog_report(report_sxw.rml_parse):
         
     def setCat(self, cats):
         lst = []
-        for cat in cats:
-            if cat not in lst:
-                if type(cat) is int:
-                    lst.append(cat)
-                    category = self.pool.get('product.category').read(self.cr, self.uid, [cat])
-                else:
-                    lst.append(cat[0])
-                    category = self.pool.get('product.category').read(self.cr, self.uid, [cat[0]])
-                if category[0]['child_id']:
-                    lst.extend(self.setCat(category[0]['child_id']))
+        for cat in self.pool['product.category'].browse(self.cr, self.uid, cats):
+            if cat.id not in lst:
+                lst.append(cat.id)
+                for child_id in cat.child_id:
+                    child_ids = self.setCat([child_id.id])
+                    lst.extend(child_ids)
         return lst
 
     def get_pricelist_name(self, form, pricelist_id):
-        pricelist_data = self.pool.get('product.pricelist').read(self.cr, self.uid, form[pricelist_id][0])
-        position = pricelist_data['currency_id'][1].find("(")
-        price = pricelist_data['currency_id'][1][:position].strip()
-        return '%s (%s)' % (pricelist_data['name'], price)
+        pricelist_data = self.pool['product.pricelist'].browse(self.cr, self.uid, form[pricelist_id][0])
+        return '%s (%s)' % (pricelist_data.name, pricelist_data.currency_id.name)
+
+    def get_erase(self, lista):
+        for i in lista:
+            if lista.count(i) > 1:
+                lista.remove(i)
+                Elimina()
+        return lista
 
     def get_categories(self, form):
         category = form.get('category_id', False)
@@ -106,15 +105,17 @@ class product_catalog_report(report_sxw.rml_parse):
         lst = []
         if not category:
             return lst
-        lst = self.setCat([category])
-        cat_ids = self.pool.get('product.category').search(self.cr, self.uid, [('id', 'in', lst)])
+
+        lst = self.setCat([category[0]])
+        # cat_ids = self.pool['product.category'].search(self.cr, self.uid, [('id', 'in', lst)])
+        cat_ids = self.get_erase(lst)
 
         tmpCat_ids = []
         for cat in cat_ids:
-            prod_ids = self.pool.get('product.template').search(self.cr, self.uid, [('categ_id', '=', cat)])
+            prod_ids = self.pool['product.template'].search(self.cr, self.uid, [('categ_id', '=', cat)])
             if len(prod_ids):
                 tmpCat_ids.append(cat)
-        cats = self.pool.get('product.category').browse(self.cr, self.uid, tmpCat_ids)
+        cats = self.pool['product.category'].browse(self.cr, self.uid, tmpCat_ids)
         return cats
 
     def get_products(self, c):
@@ -124,17 +125,17 @@ class product_catalog_report(report_sxw.rml_parse):
             ('sale_ok', '=', True),
         ], order='name')
         price_context = {}
-        if self.pricelist_id not in ('', False, [], None):
+        if self.pricelist_id:
             price_context['pricelist'] = self.pricelist_id[0]
-        if self.pricelist_id2 not in ('', False, [], None):
+        if self.pricelist_id2:
             price_context['pricelist2'] = self.pricelist_id2[0]
-        prods = self.pool.get('product.product').browse(self.cr, self.uid, prod_ids, context=price_context)
+        prods = self.pool['product.product'].browse(self.cr, self.uid, prod_ids, context=price_context)
         return prods
         
     def _getProducts(self, category, lang):
-        prod_tmpIDs = self.pool.get('product.template').search(self.cr, self.uid, [('categ_id', '=', category)])
-        prod_ids = self.pool.get('product.product').search(self.cr, self.uid, [('product_tmpl_id', 'in', prod_tmpIDs)])
-        prods = self.pool.get('product.product').browse(self.cr, self.uid, prod_ids, context={'lang': lang})
+        prod_tmpIDs = self.pool['product.template'].search(self.cr, self.uid, [('categ_id', '=', category)])
+        prod_ids = self.pool['product.product'].search(self.cr, self.uid, [('product_tmpl_id', 'in', prod_tmpIDs)])
+        prods = self.pool['product.product'].browse(self.cr, self.uid, prod_ids, context={'lang': lang})
         return prods
     
     def get_pricelist(self, a):
