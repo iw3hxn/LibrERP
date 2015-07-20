@@ -28,52 +28,104 @@ class partner_import_template(orm.Model):
     _description = "Partner Import Template"
     _columns = {
         'name': fields.char('Name', size=60, required=True),
-        'auto_update': fields.boolean('Auto Create Maps', help="If flag auto create maps"),
-        'account_fiscal_position_ids': fields.one2many('migration.fiscal.position', 'position_id', 'Fiscal Position Mapping'),
-        'payment_term_ids': fields.one2many('migration.payment.term', 'position_id', 'Payment Term Mapping'),
+        'auto_update': fields.boolean(
+            'Auto Create Maps',
+            help="If flag auto create maps"),
+        'account_fiscal_position_ids': fields.one2many(
+            'migration.fiscal.position',
+            'position_id',
+            'Fiscal Position Mapping'),
+        'payment_term_ids': fields.one2many(
+            'migration.payment.term',
+            'position_id',
+            'Payment Term Mapping'),
         'note': fields.text('Note'),
     }
+
     _default = {
         'auto_update': 1
     }
 
-    def map_account_fiscal_position(self, cr, uid, partner_template_id, account_fiscal_position, context=None):
+    def map_account_fiscal_position(
+        self, cr, uid, partner_template_id,
+        account_fiscal_position, context=None
+    ):
         if not account_fiscal_position and not partner_template_id:
             return False
         result = False
         if not partner_template_id and account_fiscal_position:
             fiscal_position_obj = self.pool['account.fiscal.position']
-            fiscal_position_ids = fiscal_position_obj.search(cr, uid, [('name', '=', account_fiscal_position)], context=context)
+            fiscal_position_ids = fiscal_position_obj.search(
+                cr, uid, [
+                    ('name', '=', account_fiscal_position)
+                ], context=context)
             if fiscal_position_ids:
-                result = fiscal_position_obj.browse(cr, uid, fiscal_position_ids, context=context)[0].id
+                result = fiscal_position_obj.browse(
+                    cr, uid, fiscal_position_ids, context=context
+                )[0].id
         else:
-            account_fiscal_position_obj = self.pool['migration.fiscal.position']
-            fiscal_position_ids = account_fiscal_position_obj.search(cr, uid, [('source_position', '=', account_fiscal_position), ('position_id', '=', partner_template_id.id)])
+            account_fiscal_position_obj = \
+                self.pool['migration.fiscal.position']
+            fiscal_position_ids = account_fiscal_position_obj.search(
+                cr, uid, [
+                    ('source_position', '=', account_fiscal_position),
+                    ('position_id', '=', partner_template_id.id)
+                ])
             if fiscal_position_ids:
-                result = account_fiscal_position_obj.browse(cr, uid, fiscal_position_ids, context=context)[0].dest_position_id.id
+                result = account_fiscal_position_obj.browse(
+                    cr, uid, fiscal_position_ids, context=context
+                )[0].dest_position_id.id
             elif partner_template_id.auto_update:
-                account_fiscal_position_obj.create(cr, uid, {'source_position': account_fiscal_position, 'position_id': partner_template_id.id}, context=context)
+                account_fiscal_position_obj.create(
+                    cr, uid, {
+                        'source_position': account_fiscal_position,
+                        'position_id': partner_template_id.id
+                    }, context=context)
         return result
 
-    def map_payment_term(self, cr, uid, partner_template_id, payment_term, context=None):
+    def map_payment_term(
+        self, cr, uid,
+        partner_template_id, payment_term,
+        context=None
+    ):
         if not payment_term and not partner_template_id:
             return {}
         result = {}
         if not partner_template_id and payment_term:
             account_payment_term_obj = self.pool['account.payment.term']
-            account_payment_term_ids = account_payment_term_obj.search(cr, uid, [('name', '=', payment_term)], context=context)
+            account_payment_term_ids = account_payment_term_obj.search(
+                cr, uid, [
+                    ('name', '=', payment_term)
+                ], context=context)
             if account_payment_term_ids:
-                result['property_payment_term'] = account_payment_term_obj.browse(cr, uid, account_payment_term_ids, context=context)[0].id
+                result['property_payment_term'] = \
+                    account_payment_term_obj.browse(
+                        cr, uid,
+                        account_payment_term_ids, context=context
+                    )[0].id
         else:
             migration_payment_term_obj = self.pool['migration.payment.term']
-            migration_payment_term_ids = migration_payment_term_obj.search(cr, uid, [('source_term', '=', payment_term), ('position_id', '=', partner_template_id.id)])
+            migration_payment_term_ids = migration_payment_term_obj.search(
+                cr, uid, [
+                    ('source_term', '=', payment_term),
+                    ('position_id', '=', partner_template_id.id)
+                ])
             if migration_payment_term_ids:
-                migration_payment_term = migration_payment_term_obj.browse(cr, uid, migration_payment_term_ids, context=context)[0]
-                result['property_payment_term'] = migration_payment_term.dest_position_id and migration_payment_term.dest_position_id.id or False
-                result['company_bank_id'] = migration_payment_term.company_bank_id and migration_payment_term.company_bank_id.id or False
+                migration_payment_term = migration_payment_term_obj.browse(
+                    cr, uid, migration_payment_term_ids, context=context)[0]
+                result['property_payment_term'] = (
+                    migration_payment_term.dest_position_id and
+                    migration_payment_term.dest_position_id.id or False
+                )
+                result['company_bank_id'] = (
+                    migration_payment_term.company_bank_id and
+                    migration_payment_term.company_bank_id.id or False
+                )
             elif partner_template_id.auto_update:
-                migration_payment_term_obj.create(cr, uid, {'source_term': payment_term, 'position_id': partner_template_id.id}, context=context)
-
+                migration_payment_term_obj.create(cr, uid, {
+                    'source_term': payment_term,
+                    'position_id': partner_template_id.id
+                }, context=context)
         return result
 
 
@@ -82,11 +134,15 @@ class migration_fiscal_position(orm.Model):
     _description = 'Fiscal Position Mapping'
     _rec_name = 'position_id'
     _columns = {
-        'source_position': fields.char('Source File Fiscal Position', size=64, required=True),
-        'dest_position_id': fields.many2one('account.fiscal.position', 'Fiscal Position'),
-        'position_id': fields.many2one('partner.import.template', 'Partner Import Template', required=True, ondelete='cascade'),
+        'source_position': fields.char(
+            'Source File Fiscal Position', size=64, required=True),
+        'dest_position_id': fields.many2one(
+            'account.fiscal.position', 'Fiscal Position'),
+        'position_id': fields.many2one(
+            'partner.import.template',
+            'Partner Import Template', required=True, ondelete='cascade'
+        ),
     }
-
     _order = 'source_position'
 
 
@@ -95,10 +151,23 @@ class migration_payment_term(orm.Model):
     _description = 'Payment Term Mapping'
     _rec_name = 'position_id'
     _columns = {
-        'source_term': fields.char('Source File Payment Term', size=64, required=True),
-        'dest_position_id': fields.many2one('account.payment.term', 'Payment Term'),
-        'company_bank_id': fields.many2one('res.partner.bank', string='Company bank for Bank Transfer', domain="[('state', '=', 'iban')]"),
-        'position_id': fields.many2one('partner.import.template', 'Partner Import Template', required=True, ondelete='cascade'),
+        'source_term': fields.char(
+            'Source File Payment Term',
+            size=64, required=True
+        ),
+        'dest_position_id': fields.many2one(
+            'account.payment.term',
+            'Payment Term'
+        ),
+        'company_bank_id': fields.many2one(
+            'res.partner.bank',
+            string='Company bank for Bank Transfer',
+            domain="[('state', '=', 'iban')]"
+        ),
+        'position_id': fields.many2one(
+            'partner.import.template',
+            'Partner Import Template',
+            required=True, ondelete='cascade'
+        ),
     }
-
     _order = 'source_term'

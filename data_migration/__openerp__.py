@@ -27,9 +27,11 @@
     'description': """
         This module gives a possibilitie to import products and partners
         from CSV/Excel/OpenOffice formatted files.
-        
-        When option 'strict' is selected, partner will be searched on every field in PARTNER_SEARCH and if in doubt
-        nothing will be changed or updated. It is usefull to use this mode to be shure that nothing will be overwritten.
+
+        When option 'strict' is selected, partner will be searched on every
+        field in PARTNER_SEARCH and if in doubt nothing will be changed or
+        updated. It is usefull to use this mode to be shure that nothing will
+        be overwritten.
     """,
     "author": "Didotech SRL",
     'website': 'http://www.didotech.com',
@@ -37,7 +39,7 @@
         'base',
         'purchase',
         # 'partner_subaccount',
-        # 'l10n_it', not needed, pdc is installed by default and can differ from this one
+        # 'l10n_it', not needed, pdc is installed
         # 'l10n_it_account',
         'core_extended'
     ],
@@ -52,6 +54,6 @@
     'external_dependencies': {
         'python': [
             'xlrd',
-        ]  
+        ]
     }
 }
