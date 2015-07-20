@@ -193,5 +193,49 @@
 
         <menuitem action="picking_file_import" id="menu_picking_file_import" name="Import Picking" parent="data_migration_menu"/>
 
+        <record id="view_pricelist_import_form" model="ir.ui.view">
+            <field name="name">pricelist.import.form</field>
+            <field name="model">pricelist.import</field>
+            <field name="arch" type="xml">
+                <form string="Import pricelist from file">
+                    <group>
+                        <field name="state" invisible="1"/>
+                        <field name="preview_text_original" invisible="1"/>
+                        <group colspan="8" col="8">
+                            <field name="file_name" invisible="1" />
+                            <field name="content_base64" filename="file_name" required="True" />
+                            <field name="format" />
+                        </group>
+                        
+                        <group colspan="8" col="8">
+                            <field name="pricelist_id" />
+                            <field name="pricelist_version_id" />
+                        </group>
+                    </group>
+                    
+                    <group colspan="8" col="8">
+                        <separator string="" colspan="8"/>
+                    </group>
+
+                    <group colspan="8" col="8" >
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button type="object" name="actionCheckEncoding" string="Start Import Pricelist" icon="gtk-ok"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="pricelist_file_import" model="ir.actions.act_window">
+            <field name="name">Import Pricelist in .xls format</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pricelist.import</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_pricelist_import_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="pricelist_file_import" id="menu_pricelist_file_import" name="Import Pricelist" parent="data_migration_menu"/>
+        
     </data>
 </openerp>

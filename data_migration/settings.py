@@ -23,67 +23,93 @@
 # DEBUG = True
 DEBUG = False
 
-    #HEADER_PRODUCT = (
-    #    "name",
-    #    "Categoria",
-    #    "uom_id/id",
-    #    "Cod. Iva In",
-    #    "Cod. Iva Out",
-    #    "list_price",
-    #    "ean13",
-    #    "Fornitore",
-    #    "Cod. prod. forn.",
-    #    "Prezzo forn.",
-    #    "Note",
-    #    "active",
-    #    "available_in_pos",
-    #    "sale_ok",
-    #    "supply_method",
-    #    "type",
-    #    "product_tmpl_id/id",
-    #    "procure_method",
-    #    "cost_method",
-    #    "categ_id/id"
-    #)
-    #COLUMNS_PRODUCT = """
-    #    name,
-    #    category,
-    #    uom,
-    #    tax_in,
-    #    tax_out,
-    #    list_price,
-    #    ean13,
-    #    supplier,
-    #    supplier_product_code,
-    #    standard_price,
-    #    description,
-    #    active,
-    #    available_in_pos,
-    #    sale_ok,
-    #    supply_method,
-    #    type,
-    #    product_tmpl_id,
-    #    procure_method,
-    #    cost_method,
-    #    categ_id
-    #"""
+# HEADER_PRODUCT = (
+#     "name",
+#     "Categoria",
+#     "uom_id/id",
+#     "Cod. Iva In",
+#     "Cod. Iva Out",
+#     "list_price",
+#     "ean13",
+#     "Fornitore",
+#     "Cod. prod. forn.",
+#     "Prezzo forn.",
+#     "Note",
+#     "active",
+#     "available_in_pos",
+#     "sale_ok",
+#     "supply_method",
+#     "type",
+#     "product_tmpl_id/id",
+#     "procure_method",
+#     "cost_method",
+#     "categ_id/id"
+# )
+# COLUMNS_PRODUCT = """
+#     name,
+#     category,
+#     uom,
+#     tax_in,
+#     tax_out,
+#     list_price,
+#     ean13,
+#     supplier,
+#     supplier_product_code,
+#     standard_price,
+#     description,
+#     active,
+#     available_in_pos,
+#     sale_ok,
+#     supply_method,
+#     type,
+#     product_tmpl_id,
+#     procure_method,
+#     cost_method,
+#     categ_id
+# """
 
 
 class FormatOne():
     # R.
-    HEADER_CUSTOMER = (u'Codice', u'Ragione Sociale', u'Nome', u'Indirizzo', u'CAP', u'Località', u'Provincia', u'Indirizzo AM', u'CAP AM', u'Località AM', u'Provincia AM', u'Nazione', u'Partita IVA', u'Codice Fiscale', u'E-Mail', u'Category')
-    #header_supplier = ('Codice', 'Ragione Sociale', 'Nome', 'Indirizzo', 'CAP', 'Località', 'Provincia', 'Indirizzo AM', 'CAP AM', 'Località AM', 'Provincia AM', 'Nazione', 'Partita IVA', 'Codice Fiscale', 'E-Mail')
-    #Codice	Denominazione / Cognome	Nome	Sede legale: indirizzo	SL: CAP	SL: località	SL: Prov.	Sede amministrativa: indirizzo	SA: CAP	SA: località	SA: Prov.	Nazione	PI	CF	e-mail
+    HEADER_CUSTOMER = (
+        u'Codice', u'Ragione Sociale', u'Nome', u'Indirizzo',
+        u'CAP', u'Località', u'Provincia', u'Indirizzo AM',
+        u'CAP AM', u'Località AM', u'Provincia AM', u'Nazione',
+        u'Partita IVA', u'Codice Fiscale', u'E-Mail', u'Category'
+    )
+    # header_supplier = (
+    # 'Codice', 'Ragione Sociale', 'Nome', 'Indirizzo',
+    # 'CAP', 'Località', 'Provincia', 'Indirizzo AM', 'CAP AM',
+    # 'Località AM', 'Provincia AM', 'Nazione', 'Partita IVA',
+    # 'Codice Fiscale', 'E-Mail'
+    # )
+    # Codice	Denominazione / Cognome	Nome
+    # Sede legale: indirizzo
+    # SL: CAP
+    # SL: località
+    # SL: Prov.
+    # Sede amministrativa: indirizzo
+    # SA: CAP
+    # SA: località
+    # SA: Prov.
+    # Nazione	PI  CF  e-mail
     # Telefono, Cellulare, Fax e PEC
-    COLUMNS = "code, name, person_name, street_default, zip_default, city_default, province_default, street_invoice, zip_invoice, city_invoice, province_invoice, country_code, vat, fiscalcode, email, category"
+    COLUMNS = "code, name, person_name, street_default, zip_default, "\
+              "city_default, province_default, street_invoice, zip_invoice, "\
+              "city_invoice, province_invoice, country_code, vat, fiscalcode, "\
+              "email, category"
     REQUIRED = ['name', 'code']
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ('name', 'vat')
 
     REQUIRED_PRODUCT = ['ean13', 'name']
-    HEADER_PRODUCT = ('Codice', 'Descrizione', 'UMC', 'UMT', 'PesoN', 'CostoStd', 'CostoUltimo')
-    COLUMNS_PRODUCT = "default_code, name, uom, uom2, weight_net, standard_price, last_standard_price"
+    HEADER_PRODUCT = (
+        'Codice', 'Descrizione', 'UMC', 'UMT',
+        'PesoN', 'CostoStd', 'CostoUltimo'
+    )
+    COLUMNS_PRODUCT = "default_code, name, uom, uom2, weight_net, "\
+                      "standard_price, last_standard_price"
     PRODUCT_SEARCH = ['default_code', 'name']
     REQUIRED_PRODUCT = ['default_code', 'name']
     PRODUCT_WARNINGS = ['standard_price']
@@ -93,52 +119,98 @@ class FormatOne():
     PRODUCT_DEFAULTS = {
         'supply_method': 'buy',
         'uom': 'PCE',
-        #'type': 'consu',
+        # 'type': 'consu',
         'type': 'product',
         'procure_method': 'make_to_stock',
         'cost_method': 'standard',
     }
 
-    HEADER_PICKING = ('RtbTipdoc', 'RtbNumbol', 'RtbDatbol', 'RboCodart', 'RboUnimis', 'RboQuanti')
+    HEADER_PICKING = (
+        'RtbTipdoc', 'RtbNumbol', 'RtbDatbol',
+        'RboCodart', 'RboUnimis', 'RboQuanti'
+    )
     COLUMNS_PICKING = "doc, origin, date, product, product_uom, qty"
-    REQUIRED_PICKING = ['doc', 'origin', 'date', 'product', 'product_uom', 'qty']
+    REQUIRED_PICKING = [
+        'doc', 'origin', 'date',
+        'product', 'product_uom', 'qty'
+    ]
 
-    HEADER_PRICELIST = ('Articolo', 'Prezzo')
-    COLUMNS_PRICELIST = "default_code, sell_price"
-    REQUIRED_PRICELIST = ['default_code', 'sell_price']
-
+    HEADER_PRICELIST_ITEM = ('Articolo', 'Prezzo')
+    COLUMNS_PRICELIST_ITEM = "code, price_surcharge"
+    REQUIRED_PRICELIST_ITEM = ['code', 'price_surcharge']
 
 
 class FormatTwo():
     # IB.
-    HEADER_CUSTOMER = (u'Codice', u'Denominazione / Cognome', u'Nome', u'Sede legale: indirizzo', u'SL: CAP', u'SL: località', u'SL: Prov.', u'Telefono', u'Fax', u'e-mail', u'Sede amministrativa: indirizzo 1', u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località', u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category', u'Note')
-    #COLUMNS = "code, name, person_name, street_default, zip_default, city_default, province_default, phone_default, fax_default, email_default, street_invoice, street2_invoice, zip_invoice, city_invoice, province_invoice, country_code, vat, fiscalcode, category, comment"
-    COLUMNS = "code, name, person_name, street_invoice, zip_invoice, city_invoice, province_invoice, phone_invoice, fax_invoice, email_invoice, street_delivery, street2_delivery, zip_delivery, city_delivery, province_delivery, country_code, vat, fiscalcode, category, comment"
+    HEADER_CUSTOMER = (
+        u'Codice', u'Denominazione / Cognome', u'Nome',
+        u'Sede legale: indirizzo', u'SL: CAP', u'SL: località',
+        u'SL: Prov.', u'Telefono', u'Fax',
+        u'e-mail', u'Sede amministrativa: indirizzo 1',
+        u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località',
+        u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category', u'Note'
+    )
+    # COLUMNS = "code, name, person_name, street_default, zip_default, "\
+    #           "city_default, province_default, phone_default, "\
+    #           "fax_default, email_default, street_invoice, "\
+    #           "street2_invoice, zip_invoice, city_invoice, "\
+    #           "province_invoice, country_code, vat, "\
+    #           "fiscalcode, category, comment"
+    COLUMNS = "code, name, person_name, street_invoice, zip_invoice, "\
+              "city_invoice, province_invoice, phone_invoice, fax_invoice, "\
+              "email_invoice, street_delivery, street2_delivery, "\
+              "zip_delivery, city_delivery, province_delivery, country_code, "\
+              "vat, fiscalcode, category, comment"
     REQUIRED = ('name', 'code')
     ADDRESS_TYPE = ('invoice', 'delivery')
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['name', 'vat']
 
-    #HEADER_PRODUCT = ('Codice', 'Descrizione', 'UMC', 'UMT', 'PesoN', 'CostoStd', 'CostoUltimo')
-    #COLUMNS_PRODUCT = "default_code, name, uom0, uom2, weight_net, standard_price, last_standard_price"
-    #PRODUCT_SEARCH = ('default_code', 'name')
-    #REQUIRED_PRODUCT = ['default_code', 'name']
-    #PRODUCT_WARNINGS = ['standard_price']
-    #PRODUCT_ERRORS = []
+    # HEADER_PRODUCT = (
+    #     'Codice', 'Descrizione', 'UMC', 'UMT', 'PesoN',
+    #     'CostoStd', 'CostoUltimo'
+    # )
+    # COLUMNS_PRODUCT = "default_code, name, uom0, uom2, weight_net, "\
+    #                   "standard_price, last_standard_price"
+    # PRODUCT_SEARCH = ('default_code', 'name')
+    # REQUIRED_PRODUCT = ['default_code', 'name']
+    # PRODUCT_WARNINGS = ['standard_price']
+    # PRODUCT_ERRORS = []
 
 
 class FormatThree():
     # TP
-    HEADER_CUSTOMER = (u'Codice', u'Denominazione / Cognome', u'Nome', u'Sede legale: indirizzo', u'SL: CAP', u'SL: località', u'SL: Prov.', u'Telefono', u'Fax', u'e-mail', u'Sede amministrativa: indirizzo 1', u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località', u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category', u'Fiscal Position', u'Payment Term')
-    COLUMNS = "code, name, person_name, street_default, zip_default, city_default, province_default, phone_default, fax_default, email_default, street_invoice, street2_invoice, zip_invoice, city_invoice, province_invoice, country_code, vat, fiscalcode, category, fiscal_position, payment_term"
-    #COLUMNS = "code, name, person_name, street_invoice, zip_invoice, city_invoice, province_invoice, phone_invoice, fax_invoice, email_invoice, street_delivery, street2_delivery, zip_delivery, city_delivery, province_delivery, country_code, vat, fiscalcode, email2, category"
+    HEADER_CUSTOMER = (
+        u'Codice', u'Denominazione / Cognome', u'Nome',
+        u'Sede legale: indirizzo', u'SL: CAP', u'SL: località', u'SL: Prov.',
+        u'Telefono', u'Fax', u'e-mail', u'Sede amministrativa: indirizzo 1',
+        u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località',
+        u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category',
+        u'Fiscal Position', u'Payment Term'
+    )
+
+    COLUMNS = "code, name, person_name, street_default, zip_default, "\
+              "city_default, province_default, phone_default, fax_default, "\
+              "email_default, street_invoice, street2_invoice, zip_invoice, "\
+              "city_invoice, province_invoice, country_code, vat, "\
+              "fiscalcode, category, fiscal_position, payment_term"
+
     REQUIRED = ('name', 'code')
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['name', 'vat']
 
-    HEADER_PRODUCT = ('Codice', 'Nome', 'Categoria', 'UoM', 'codiva_acq', 'codiva_cen', 'list_price', 'EAN13', 'fornitore', 'cod__prod__forn_', 'prezzo_forn_', 'active', 'available_in_pos', 'sale_ok', 'assupply_method', 'type', 'procure_method', 'cost_method')
-    COLUMNS_PRODUCT = "default_code, name, category, uom, tax_in, tax_out, list_price, ean13, supplier, supplier_product_code, standard_price, active, null, sale_ok, supply_method, type, procure_method, cost_method"
+    HEADER_PRODUCT = (
+        'Codice', 'Nome', 'Categoria', 'UoM', 'codiva_acq', 'codiva_cen',
+        'list_price', 'EAN13', 'fornitore', 'cod__prod__forn_', 'prezzo_forn_',
+        'active', 'available_in_pos', 'sale_ok', 'assupply_method', 'type',
+        'procure_method', 'cost_method'
+    )
+
+    COLUMNS_PRODUCT = "default_code, name, category, uom, tax_in, tax_out,"\
+                      "list_price, ean13, supplier, supplier_product_code, "\
+                      "standard_price, active, null, sale_ok, "\
+                      "supply_method, type, procure_method, cost_method"
     PRODUCT_SEARCH = ('default_code', 'name')
     REQUIRED_PRODUCT = ['default_code', 'name']
     PRODUCT_WARNINGS = []
@@ -148,7 +220,7 @@ class FormatThree():
     PRODUCT_DEFAULTS = {
         'supply_method': 'buy',
         'uom': 'PCE',
-        #'type': 'consu',
+        # 'type': 'consu',
         'type': 'product',
         'procure_method': 'make_to_stock',
         'cost_method': 'standard',
@@ -158,16 +230,41 @@ class FormatThree():
 
 class FormatFour():
     # TP Extended (differs only for product import)
-    HEADER_CUSTOMER = (u'Codice', u'Denominazione / Cognome', u'Nome', u'Sede legale: indirizzo', u'SL: CAP', u'SL: località', u'SL: Prov.', u'Telefono', u'Fax', u'e-mail', u'Sede amministrativa: indirizzo 1', u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località', u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category')
-    COLUMNS = "code, name, person_name, street_default, zip_default, city_default, province_default, phone_default, fax_default, email_default, street_invoice, street2_invoice, zip_invoice, city_invoice, province_invoice, country_code, vat, fiscalcode, category"
-    #COLUMNS = "code, name, person_name, street_invoice, zip_invoice, city_invoice, province_invoice, phone_invoice, fax_invoice, email_invoice, street_delivery, street2_delivery, zip_delivery, city_delivery, province_delivery, country_code, vat, fiscalcode, email2, category"
+    HEADER_CUSTOMER = (
+        u'Codice', u'Denominazione / Cognome', u'Nome',
+        u'Sede legale: indirizzo', u'SL: CAP', u'SL: località', u'SL: Prov.',
+        u'Telefono', u'Fax', u'e-mail', u'Sede amministrativa: indirizzo 1',
+        u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località',
+        u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category'
+    )
+
+    COLUMNS = "code, name, person_name, street_default, zip_default, "\
+              "city_default, province_default, phone_default, fax_default, "\
+              "email_default, street_invoice, street2_invoice, zip_invoice, "\
+              "city_invoice, province_invoice, country_code, vat, "\
+              "fiscalcode, category"
+    # COLUMNS = "code, name, person_name, street_invoice, zip_invoice, "\
+    #           "city_invoice, province_invoice, phone_invoice, fax_invoice, "\
+    #           "email_invoice, street_delivery, street2_delivery, "\
+    #           "zip_delivery, city_delivery, province_delivery, "\
+    #           "country_code, vat, fiscalcode, email2, category"
+
     REQUIRED = ('name', 'code')
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['name', 'vat']
 
-    HEADER_PRODUCT = ('codice', 'nome', 'categoria', 'brand', 'descrizione vendita', 'uom_i', 'codiva_acq', 'codiva_cen', 'list_price', 'ean13', 'fornitore', 'cod__prod__forn_', 'prezzo_forn_', 'active', 'available_in_pos', 'sale_ok', 'assupply_method', 'type', 'procure_method', 'cost_method')
-    COLUMNS_PRODUCT = "default_code, name, category, brand, description_sale, uom, tax_in, tax_out, list_price, ean13, supplier, supplier_product_code, standard_price, active, null, sale_ok, supply_method, type, procure_method, cost_method"
+    HEADER_PRODUCT = (
+        'codice', 'nome', 'categoria', 'brand', 'descrizione vendita', 'uom_i',
+        'codiva_acq', 'codiva_cen', 'list_price', 'ean13', 'fornitore',
+        'cod__prod__forn_', 'prezzo_forn_', 'active', 'available_in_pos',
+        'sale_ok', 'assupply_method', 'type', 'procure_method', 'cost_method'
+    )
+    COLUMNS_PRODUCT = "default_code, name, category, brand, "\
+                      "description_sale, uom, tax_in, tax_out, list_price, "\
+                      "ean13, supplier, supplier_product_code, "\
+                      "standard_price, active, null, sale_ok, "\
+                      "supply_method, type, procure_method, cost_method"
     PRODUCT_SEARCH = ('default_code', 'name')
     REQUIRED_PRODUCT = ['default_code', 'name']
     PRODUCT_WARNINGS = []
@@ -177,7 +274,7 @@ class FormatFour():
     PRODUCT_DEFAULTS = {
         'supply_method': 'buy',
         'uom': 'PCE',
-        #'type': 'consu',
+        # 'type': 'consu',
         'type': 'product',
         'procure_method': 'make_to_order',
         'cost_method': 'standard',
@@ -186,7 +283,7 @@ class FormatFour():
 
 
 # Nothing should be changed after this line
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 COUNTRY_CODES = {
     'Italia': 'IT',

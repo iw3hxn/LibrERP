@@ -356,7 +356,7 @@ class ImportFile(threading.Thread, Utils):
             return False
         
         if hasattr(record, 'category') and record.category:
-            categories = record.category.split('/')
+            categories = record.category.split('\\')
             vals_product['categ_id'] = self.get_category(cr, uid, categories)
 
         if hasattr(record, 'brand') and record.brand:
