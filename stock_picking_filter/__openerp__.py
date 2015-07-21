@@ -36,6 +36,7 @@
     "depends": [
         'base',
         'account',
+        'stock',
     ],
     "init_xml": [],
     "update_xml": [
