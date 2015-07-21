@@ -23,16 +23,12 @@
 import pooler
 import threading
 from tools.translate import _
-from openerp.osv import orm
 import math
 import data_migration.settings as settings
 from collections import namedtuple
 from pprint import pprint
 from utils import Utils
-import datetime
 from openerp.addons.core_extended.file_manipulation import import_sheet
-import xlrd
-import pdb
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -68,9 +64,8 @@ class ImportFile(threading.Thread, Utils):
         self.uo_new = 0
         self.updated = 0
         self.problems = 0
-        self.cache = {}
         self.cache_product = {}
-    
+
     def run(self):
         # Recupera il record dal database
         self.filedata_obj = self.pool['pricelist.import']
@@ -116,14 +111,16 @@ class ImportFile(threading.Thread, Utils):
                 self.notify_import_result(self.cr, self.uid, title, message, error=True)
 
     def process(self, cr, uid, table):
-        self.message_title = _("Importazione Picking")
+        self.message_title = _("Importazione Pricelist")
         self.progressIndicator = 0
         
         notifyProgressStep = (self.numberOfLines / 100) + 1     # NB: divisione tra interi da sempre un numero intero!
                                                                 # NB: il + 1 alla fine serve ad evitare divisioni per zero
+        
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
         for self.processed_lines, row_list in enumerate(table, start=1):
+
             if not self.import_row(cr, uid, row_list):
                 self.problems += 1
                 
@@ -136,6 +133,7 @@ class ImportFile(threading.Thread, Utils):
         self.progressIndicator = 100
         self.updateProgressIndicator(cr, uid, self.pricelistImportID)        
         return True
+    
     def import_row(self, cr, uid, row_list):
         if self.first_row:
             row_str_list = [self.simple_string(value) for value in row_list]
@@ -145,6 +143,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
                     return True
             self.first_row = False
+
         if not len(row_list) == len(self.HEADER):
             row_str_list = [self.simple_string(value) for value in row_list]
             if DEBUG:
@@ -158,7 +157,7 @@ class ImportFile(threading.Thread, Utils):
                 Instead of this we got this:
                 {header}
                 """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER), keys=self.HEADER, header=', '.join(row_str_list))
-    
+
             _logger.error(str(row_list))
             _logger.error(error)
             self.error.append(error)
@@ -170,30 +169,38 @@ class ImportFile(threading.Thread, Utils):
         record = self.RecordPriceListItem._make([self.simple_string(value) for value in row_list])
         wizard = self.pricelistImportRecord# self.browse(cr, uid, ids[0], context=context)
         pricelist_version_id = wizard.pricelist_version_id
-        pricelist_version_id.write({'items_id':[(2, item.id) for item in pricelist_version_id.items_id]})
+        pricelist_version_id.write({'items_id': [(2, item.id) for item in pricelist_version_id.items_id]})
         # 
         # pricelist_version_item_ids = self.pricelist_item_obj.search(cr, uid, [('price_version_id', '=',pricelist_version_id.id)],context=context)
         # self.pricelist_item_obj.unlink(cr, uid, pricelist_version_item_ids, context)
-        product_ids = self.pool['product.product'].search(cr, uid, [
-            ('default_code', '=', record.code)
-        ])
-        product_id = None
-        if not product_ids:
-            _logger.warning('Product[%s] is not Exist..' % record.code)
-            return True
+        product = record.code
+        if self.cache_product.get(product, False):
+            product_ids = [self.cache_product[product]]
+            _logger.warning(u'Product {0} already processed in cache'.format(product))
+            return False
         else:
-            product_id = product_ids.pop()
+            product_ids = self.pool['product.product'].search(cr, uid, [
+                ('default_code', '=', product)
+            ])
+
+        if not product_ids:
+            _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.code))
+            return False
+
+        product_id = product_ids.pop()
+        self.cache_product[product] = product_id
         pricelist_version_item_vals = {
-            'price_version_id' : pricelist_version_id.id,
-            'name' : record.code,
-            'product_id' : product_id,
-            'base' : 1,
-            'price_discount' : -1,
-            'price_surcharge' : float(record.price_surcharge) or False
+            'price_version_id': pricelist_version_id.id,
+            'name': record.code,
+            'product_id': product_id,
+            'base': 1,
+            'price_discount': -1,
+            'price_surcharge': float(record.price_surcharge) or False
         }
+
         pricelist_version_item_id = self.pricelist_item_obj.create(
             cr, uid, pricelist_version_item_vals
         )
-        _logger.info(u'Create Price List Version Item {0} '.format(pricelist_version_item_id))
+        # _logger.info(u'Create Price List Version Item {0} '.format(pricelist_version_item_id))
+        self.uo_new += 1
         return pricelist_version_item_id
-    

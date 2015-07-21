@@ -50,7 +50,6 @@ class filedata_import(orm.TransientModel):
                 'Attenzione!',
                 'Non è stato selezionato il file da importare'
             )
-
         # Decoding content of file and store the resulting text in object
         decodedText = base64.decodestring(contentBase64)
 
