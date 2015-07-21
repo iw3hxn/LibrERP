@@ -44,23 +44,23 @@ class ImportFile(threading.Thread, Utils):
     def __init__(self, cr, uid, ids, context):
         # Inizializzazione superclasse
         threading.Thread.__init__(self)
-        
+
         # Inizializzazione classe ImportPricelist
         self.uid = uid
         self.dbname = cr.dbname
         self.pool = pooler.get_pool(cr.dbname)
         self.pricelist_ver_obj = self.pool['product.pricelist.version']
         self.pricelist_item_obj = self.pool['product.pricelist.item']
-        
+
         self.cr = pooler.get_db(self.dbname).cursor()
-        
+
         self.pricelistImportID = ids[0]
-        
+
         self.context = context
         self.error = []
         self.warning = []
         self.first_row = True
-        
+
         self.uo_new = 0
         self.updated = 0
         self.problems = 0
@@ -69,78 +69,107 @@ class ImportFile(threading.Thread, Utils):
     def run(self):
         # Recupera il record dal database
         self.filedata_obj = self.pool['pricelist.import']
-        self.pricelistImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.pricelistImportID, context=self.context)
+        self.pricelistImportRecord = self.filedata_obj.browse(
+            self.cr, self.uid,
+            self.pricelistImportID,
+            context=self.context
+        )
         self.file_name = self.pricelistImportRecord.file_name.split('\\')[-1]
         self.pricelist_id = self.pricelistImportRecord.pricelist_id
-        
+
         Config = getattr(settings, self.pricelistImportRecord.format)
         self.HEADER = Config.HEADER_PRICELIST_ITEM
         self.REQUIRED = Config.REQUIRED_PRICELIST_ITEM
-        
-        self.RecordPriceListItem = namedtuple('RecordPriceListItem', Config.COLUMNS_PRICELIST_ITEM)
 
-        table, self.numberOfLines = import_sheet(self.file_name, self.pricelistImportRecord.content_text)
+        self.RecordPriceListItem = namedtuple(
+            'RecordPriceListItem',
+            Config.COLUMNS_PRICELIST_ITEM
+        )
+
+        table, self.numberOfLines = import_sheet(
+            self.file_name,
+            self.pricelistImportRecord.content_text
+        )
 
         if DEBUG:
             # Importa il file
             self.process(self.cr, self.uid, table)
-            
+
             # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+            self.notify_import_result(
+                self.cr, self.uid,
+                self.message_title,
+                'Importazione completata'
+            )
         else:
             # Elaborazione del file
             try:
                 # Importa il listino
                 self.process(self.cr, self.uid, table)
-                
+
                 # Genera il report sull'importazione
-                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+                self.notify_import_result(
+                    self.cr, self.uid,
+                    self.message_title,
+                    'Importazione completata'
+                )
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
                 self.cr.commit()
-                
+
                 title = "Import failed"
-                message = "Errore alla linea %s" % self.processed_lines + "\nDettaglio:\n\n" + str(e)
-                
+                message = "Errore alla linea %s" % (
+                    self.processed_lines + "\nDettaglio:\n\n" + str(e)
+                )
+
                 if DEBUG:
-                    ### Debug
+                    # Debug
                     _logger.debug(message)
                     pdb.set_trace()
-                
-                self.notify_import_result(self.cr, self.uid, title, message, error=True)
+
+                self.notify_import_result(
+                    self.cr, self.uid,
+                    title,
+                    message,
+                    error=True
+                )
 
     def process(self, cr, uid, table):
         self.message_title = _("Importazione Pricelist")
         self.progressIndicator = 0
-        
-        notifyProgressStep = (self.numberOfLines / 100) + 1     # NB: divisione tra interi da sempre un numero intero!
-                                                                # NB: il + 1 alla fine serve ad evitare divisioni per zero
-        
+
+        notifyProgressStep = (self.numberOfLines / 100) + 1
+        # NB: divisione tra interi da sempre un numero intero!
+        # NB: il + 1 alla fine serve ad evitare divisioni per zero
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
         for self.processed_lines, row_list in enumerate(table, start=1):
 
             if not self.import_row(cr, uid, row_list):
                 self.problems += 1
-                
+
             if (self.processed_lines % notifyProgressStep) == 0:
                 cr.commit()
-                completedQuota = float(self.processed_lines) / float(self.numberOfLines)
+                completedQuota = (
+                    float(self.processed_lines) / float(self.numberOfLines)
+                )
                 completedPercentage = math.trunc(completedQuota * 100)
                 self.progressIndicator = completedPercentage
                 self.updateProgressIndicator(cr, uid, self.pricelistImportID)
         self.progressIndicator = 100
-        self.updateProgressIndicator(cr, uid, self.pricelistImportID)        
+        self.updateProgressIndicator(cr, uid, self.pricelistImportID)
         return True
-    
+
     def import_row(self, cr, uid, row_list):
         if self.first_row:
             row_str_list = [self.simple_string(value) for value in row_list]
             for column in row_str_list:
-                #print column
+                # print column
                 if column in self.HEADER:
-                    _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
+                    _logger.info(
+                        'Riga {0}: Trovato Header'.format(self.processed_lines)
+                    )
                     return True
             self.first_row = False
 
@@ -151,12 +180,20 @@ class ImportFile(threading.Thread, Utils):
                     pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
                 else:
                     pprint(zip(self.HEADER[:len(row_list)], row_str_list))
-            
-            error = u"""Row {row}: Row_list is {row_len} long. We expect it to be {expected} long, with this columns:
+
+            error = u"""
+            Row {row}: Row_list is {row_len} long.
+            We expect it to be {expected} long, with this columns:
                 {keys}
                 Instead of this we got this:
                 {header}
-                """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER), keys=self.HEADER, header=', '.join(row_str_list))
+            """.format(
+                row=self.processed_lines,
+                row_len=len(row_list),
+                expected=len(self.HEADER),
+                keys=self.HEADER,
+                header=', '.join(row_str_list)
+            )
 
             _logger.error(str(row_list))
             _logger.error(error)
@@ -166,17 +203,25 @@ class ImportFile(threading.Thread, Utils):
             # pprint(row_list)
             row_str_list = [self.simple_string(value) for value in row_list]
             pprint(zip(self.HEADER, row_str_list))
-        record = self.RecordPriceListItem._make([self.simple_string(value) for value in row_list])
-        wizard = self.pricelistImportRecord# self.browse(cr, uid, ids[0], context=context)
+        record = self.RecordPriceListItem._make(
+            [self.simple_string(value) for value in row_list]
+        )
+        wizard = self.pricelistImportRecord
+        # self.browse(cr, uid, ids[0], context=context)
         pricelist_version_id = wizard.pricelist_version_id
-        pricelist_version_id.write({'items_id': [(2, item.id) for item in pricelist_version_id.items_id]})
-        # 
-        # pricelist_version_item_ids = self.pricelist_item_obj.search(cr, uid, [('price_version_id', '=',pricelist_version_id.id)],context=context)
-        # self.pricelist_item_obj.unlink(cr, uid, pricelist_version_item_ids, context)
+        pricelist_version_id.write(
+            {
+                'items_id': [
+                    (2, item.id) for item in pricelist_version_id.items_id
+                ]
+            }
+        )
         product = record.code
         if self.cache_product.get(product, False):
             product_ids = [self.cache_product[product]]
-            _logger.warning(u'Product {0} already processed in cache'.format(product))
+            _logger.warning(
+                u'Product {0} already processed in cache'.format(product)
+            )
             return False
         else:
             product_ids = self.pool['product.product'].search(cr, uid, [
@@ -184,7 +229,11 @@ class ImportFile(threading.Thread, Utils):
             ])
 
         if not product_ids:
-            _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.code))
+            _logger.warning(
+                u'Row {row}: Not Find {product}'.format(
+                    row=self.processed_lines, product=record.code
+                )
+            )
             return False
 
         product_id = product_ids.pop()
@@ -201,6 +250,6 @@ class ImportFile(threading.Thread, Utils):
         pricelist_version_item_id = self.pricelist_item_obj.create(
             cr, uid, pricelist_version_item_vals
         )
-        # _logger.info(u'Create Price List Version Item {0} '.format(pricelist_version_item_id))
+
         self.uo_new += 1
         return pricelist_version_item_id
