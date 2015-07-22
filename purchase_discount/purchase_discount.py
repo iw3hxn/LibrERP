@@ -19,61 +19,63 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
+import logging
 
-
-import decimal_precision as dp
 from openerp.osv import orm, fields
+import decimal_precision as dp
+
+_logger = logging.getLogger(__name__)
+
 
 
 class purchase_order_line(orm.Model):
     _name = "purchase.order.line"
     _inherit = "purchase.order.line"
 
-    def _amount_line(self, cr, uid, ids, prop, unknow_none, unknow_dict):
-        res = {}
-        cur_obj = self.pool['res.currency']
-        for line in self.browse(cr, uid, ids):
-            cur = line.order_id.pricelist_id.currency_id
-            res[line.id] = cur_obj.round(cr, uid, cur, line.price_unit * line.product_qty * (1 - (line.discount or 0.0) / 100.0))
-        return res
     
     def onchange_product_id(self, cr, uid, ids, pricelist_id, product_id, qty, uom_id,
             partner_id, date_order=False, fiscal_position_id=False, date_planned=False,
             name=False, price_unit=False, notes=False, context=None):
         
         def get_real_price(res_dict, product_id, qty, uom, pricelist):
+
+            _logger.debug('Getting real price')
+            """Retrieve the price before applying the pricelist"""
             item_obj = self.pool['product.pricelist.item']
             price_type_obj = self.pool['product.price.type']
             product_obj = self.pool['product.product']
-            template_obj = self.pool['product.template']
-            field_name = 'list_price'
-
-            if res_dict.get('item_id', False) and res_dict['item_id'].get(pricelist, False):
-                item = res_dict['item_id'].get(pricelist, False)
-                item_base = item_obj.read(cr, uid, [item], ['base'])
-                if item_base:
-                    item_base[0]['base']
-                    if item_base > 0:
-                        field_name = price_type_obj.browse(cr, uid, item_base)[0].field
 
             product = product_obj.browse(cr, uid, product_id, context)
-            product_tmpl_id = product.product_tmpl_id.id
+            price = product.cost_price
 
-            product_read = template_obj.read(cr, uid, product_tmpl_id, [field_name], context)
+            rule_id = res_dict.get(pricelist_id) and res_dict[pricelist_id][1] or False
+            if rule_id:
+                item_base = item_obj.read(cr, uid, [rule_id], ['base'])[0]['base']
+                if item_base > 0:
+                    field_name = price_type_obj.browse(cr, uid, item_base).field
+                    product_read = product_obj.read(cr, uid, product_id, [field_name], context=context)
+                    price = product_read[field_name]
+                elif item_base == -2:
+                    _logger.debug('Checking item base is -2')
+                    price = product.seller_ids[0].pricelist_ids[0].price
+                    # not supported:
+                    # elif item_base == -1:
 
             factor = 1.0
             if uom and uom != product.uom_id.id:
-                product_uom_obj = self.pool['product.uom']
-                uom_data = product_uom_obj.browse(cr, uid, product.uom_id.id, context)
-                factor = uom_data.factor
-            return product_read[field_name] * factor
+                # the unit price is in a different uom
+                factor = self.pool['product.uom']._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
+            return price * factor
+
+        if not context:
+            context = {}
         
         res = super(purchase_order_line, self).onchange_product_id(cr, uid, ids, pricelist_id, product_id, qty, uom_id,
             partner_id, date_order, fiscal_position_id, date_planned,
             name, price_unit, notes, context)
         
-        
-        context = {'partner_id': partner_id}
+
+        context = {'lang': context.get('lang'), 'partner_id': partner_id}
         result = res['value']
         pricelist_obj = self.pool['product.pricelist']
         product_obj = self.pool['product.product']
@@ -83,22 +85,37 @@ class purchase_order_line(orm.Model):
                 price = result['price_unit']
             else:
                 return res
-
+            uom = result.get('product_uom', uom_id)
             product = product_obj.browse(cr, uid, product_id, context)
-            list_price = pricelist_obj.price_get(cr, uid, [pricelist_id],
-                    product.id, qty or 1.0, partner_id, {'uom': uom_id, 'date': date_order,})
+            list_price = pricelist_obj.price_rule_get(cr, uid, [pricelist_id],
+                    product.id, qty or 1.0, partner_id, {'uom': uom_id, 'date': date_order})
 
-            pricelists = pricelist_obj.read(cr, uid, [pricelist_id], ['visible_discount'])
+            so_pricelist = pricelist_obj.browse(cr, uid, pricelist_id, context=context)
 
-            new_list_price = get_real_price(list_price, product.id, qty, uom_id, pricelist_id)
-
-            if len(pricelists) > 0 and pricelists[0]['visible_discount'] and list_price[pricelist_id] != 0:
+            new_list_price = get_real_price(list_price, product_id, qty, uom, pricelist_id)
+            if so_pricelist.visible_discount and list_price[pricelist_id][0] != 0 and new_list_price != 0:
+                if product.company_id and so_pricelist.currency_id.id != product.company_id.currency_id.id:
+                    # new_list_price is in company's currency while price in pricelist currency
+                    ctx = context.copy()
+                    ctx['date'] = date_order
+                    new_list_price = self.pool['res.currency'].compute(cr, uid,
+                                                                       product.company_id.currency_id.id,
+                                                                       so_pricelist.currency_id.id,
+                                                                       new_list_price, context=ctx)
                 discount = (new_list_price - price) / new_list_price * 100
-                result['price_unit'] = new_list_price
-                result['discount'] = discount
-            else:
-                result['discount'] = 0.0
-                
+                if discount > 0:
+                    result['price_unit'] = new_list_price
+                    result['discount'] = discount
+        return res
+
+
+    def _amount_line(self, cr, uid, ids, prop, unknow_none, unknow_dict):
+        res = {}
+        cur_obj = self.pool.get('res.currency')
+        for line in self.browse(cr, uid, ids):
+            cur = line.order_id.pricelist_id.currency_id
+            res[line.id] = cur_obj.round(cr, uid, cur,
+                                         line.price_unit * line.product_qty * (1 - (line.discount or 0.0) / 100.0))
         return res
 
     _columns = {
@@ -114,8 +131,8 @@ class purchase_order_line(orm.Model):
 class purchase_order(orm.Model):
     _name = "purchase.order"
     _inherit = "purchase.order"
-    
-    def _amount_all(self, cr, uid, ids, field_name, arg, context):
+
+    def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         cur_obj = self.pool['res.currency']
         for order in self.browse(cr, uid, ids, context=context):
@@ -127,9 +144,10 @@ class purchase_order(orm.Model):
             val = val1 = 0.0
             cur = order.pricelist_id.currency_id
             for line in order.order_line:
-                for c in self.pool.get('account.tax').compute(cr, uid, line.taxes_id, line.price_unit * (1 - (line.discount or 0.0) / 100.0), line.product_qty, order.partner_address_id.id, line.product_id, order.partner_id):
-                    val += c['amount']
                 val1 += line.price_subtotal
+                for c in self.pool.get('account.tax').compute_all(cr, uid, line.taxes_id, line.price_unit * (
+                    1 - (line.discount or 0.0) / 100.0), line.product_qty, line.product_id, order.partner_id)['taxes']:
+                    val += c.get('amount', 0.0)
             res[order.id]['amount_tax'] = cur_obj.round(cr, uid, cur, val)
             res[order.id]['amount_untaxed'] = cur_obj.round(cr, uid, cur, val1)
             res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] + res[order.id]['amount_tax']
@@ -157,10 +175,9 @@ class purchase_order(orm.Model):
     }
 
     def _prepare_inv_line(self, cr, uid, account_id, order_line, context=None):
-        if context is None:
-            context = {}
-        res = super(purchase_order, self)._prepare_inv_line(cr, uid, account_id, order_line, context=context)
+        if context is None: context = {}
 
+        res = super(purchase_order, self)._prepare_inv_line(cr, uid, account_id, order_line, context=context)
         res.update({'discount': order_line.discount or 0.0,
                     'price_unit': order_line.price_unit, })
         return res
