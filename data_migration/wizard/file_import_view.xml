@@ -198,28 +198,44 @@
             <field name="model">pricelist.import</field>
             <field name="arch" type="xml">
                 <form string="Import pricelist from file">
-                    <group>
+                    <group >
                         <field name="state" invisible="1"/>
                         <field name="preview_text_original" invisible="1"/>
-                        <group colspan="8" col="8">
+                        <group colspan="8" col="8" states="import">
                             <field name="file_name" invisible="1" />
                             <field name="content_base64" filename="file_name" required="True" />
                             <field name="format" />
                         </group>
                         
-                        <group colspan="8" col="8">
+                        <group colspan="8" col="8" states="import">
                             <field name="pricelist_id" />
-                            <field name="pricelist_version_id" />
+                            <field name="pricelist_version_id" required="True"  />
                         </group>
+                    </group>
+                    
+                    <group colspan="8" col="8" states="end">
+                        <label string="Importing Pricelist. You will be notified with a message when the import process is finished"/>
+                        <!-- <label string="Import file. Verra segnalata la fine del'importazione, nelle 'Richieste' (Configurazione -> Personalizzazione -> Oggetti Basso Livello -> Richieste -> Richieste)."/> -->
                     </group>
                     
                     <group colspan="8" col="8">
                         <separator string="" colspan="8"/>
                     </group>
-
-                    <group colspan="8" col="8" >
+            
+                    <group colspan="8" col="8" states="import">
                         <button icon="gtk-cancel" special="cancel" string="Cancel"/>
                         <button type="object" name="actionCheckEncoding" string="Start Import Pricelist" icon="gtk-ok"/>
+                    </group>
+                    
+                    <group colspan="8" col="8" states="preview">
+                        <separator string="" colspan="8"/>
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button type="object" name="actionStartImport" string="Start import" icon="gtk-ok"/>
+                    </group>
+
+                    <!-- Items visibles in state "end" -->
+                    <group colspan="8" col="8" states="end">
+                        <button icon="gtk-ok" special="cancel" string="Close"/>
                     </group>
                 </form>
             </field>

@@ -340,11 +340,3 @@ class pricelist_import(filedata_import):
         'state': 'import',
         'progress_indicator': 0,
     }
-
-    def actionCheckEncoding(self, cr, uid, ids, context=False):
-        res = super(pricelist_import, self).actionCheckEncoding(
-            cr, uid, ids, context=context
-        )
-        return {
-            'type': 'ir.actions.act_window_close'
-        }
