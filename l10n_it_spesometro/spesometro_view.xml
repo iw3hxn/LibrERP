@@ -10,20 +10,19 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='bank_ids']" position="before">
-                    <separator string="Comunicazione art.21" colspan="4" />
-                    <group colspan="2">
-	                	<field name="spesometro_escludi"/>
-	                	<field name="spesometro_operazione" attrs="{'invisible': [('spesometro_escludi', '=', True)]}"/>
-	                	<field name="spesometro_tipo_servizio" attrs="{'invisible': [('spesometro_operazione', '!=', 'BL1')], 'required': [('spesometro_operazione', '=', 'BL1')]}"/>
-	                </group>
-	                <group>
-	                	<field name="spesometro_IVA_non_esposta" attrs="{'invisible': ['|', ('spesometro_escludi', '=', True), ('spesometro_operazione', '!=', 'FA')]}" />
-	                	<field name="spesometro_indirizzo_estero" attrs="{'invisible': ['|','|',('spesometro_operazione', '=', 'FA'), ('spesometro_operazione', '=', 'SA'), ('spesometro_operazione', '=', 'DR')]}" 
-	                	    domain="[('partner_id','=', id)]" />
-	                </group>
-	                <group>
-	                	<field name="spesometro_leasing" attrs="{'invisible': [('spesometro_escludi', '=', True)]}" />
+                <xpath expr="//field[@name='bank_ids']" position="after">
+                    <group string="Comunicazione art.21" colspan="4">
+	                    <group colspan="2">
+		                	<field name="spesometro_escludi"/>
+		                	<field name="spesometro_operazione" attrs="{'invisible': [('spesometro_escludi', '=', True)]}"/>
+		                	<field name="spesometro_tipo_servizio" attrs="{'invisible': [('spesometro_operazione', '!=', 'BL1')], 'required': [('spesometro_operazione', '=', 'BL1')]}"/>
+		                </group>
+		                <group>
+		                	<field name="spesometro_IVA_non_esposta" attrs="{'invisible': ['|', ('spesometro_escludi', '=', True), ('spesometro_operazione', '!=', 'FA')]}" />
+		                </group>
+		                <group>
+		                	<field name="spesometro_leasing" attrs="{'invisible': [('spesometro_escludi', '=', True)]}" />
+		                </group>
 	                </group>
            		</xpath>
             </field>
@@ -37,9 +36,8 @@
             <field name="model">account.tax.code</field>
             <field name="inherit_id" ref="account.view_tax_code_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='sum']" position="after">
-                    <group colspan="2" col="2">
-                    	<separator string="Comunicazione art.21" colspan="2" />
+                <xpath expr="//group[@string='Statistics']" position="after">
+                    <group string="Comunicazione art.21">
 	                	<field name="spesometro_escludi"/>
 	                </group>
            		</xpath>
@@ -55,11 +53,12 @@
             <field name="inherit_id" ref="account.view_account_journal_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='sequence_id']" position="after">
-                    <separator string="Comunicazione art.21" colspan="4" />
+                    <group string="Comunicazione art.21" colspan="4">
 	                	<field name="spesometro"/>
 	                	<field name="spesometro_operazione" attrs="{'invisible': [('spesometro', '=', False)], 'required': [('spesometro', '=', True)]}"/>
 	                	<field name="spesometro_segno" attrs="{'invisible': ['|', ('spesometro', '=', False), ('spesometro_operazione', '=', 'SA')], 'required': [('spesometro_operazione', 'IN', ('FA','BL1','BL2','BL3') )]}" />
 	                	<field name="spesometro_IVA_non_esposta" attrs="{'invisible': ['|', ('spesometro', '=', False), ('spesometro_operazione', '=', 'SA')]}" />
+	                </group>
            		</xpath>
             </field>
 		</record>
@@ -74,7 +73,9 @@
             <field name="inherit_id" ref="base.view_country_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='address_format']" position="after">
+                    <group>
 	                	<field name="codice_stato_agenzia_entrate"/>
+	                </group>
            		</xpath>
             </field>
 		</record>
@@ -114,34 +115,36 @@
             <field name="model">spesometro.configurazione</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-	            <form>
+	            <form string="Configurazione Spesometro">
 	                <group>
 		            	<field name="anno"/>
 		            	<newline/>
 		            	<field name="stato_san_marino"/>
 	            	</group>
 	            	<newline/>
-	            	<separator string="Quadri per dati in forma aggregata" colspan="6"></separator>
-	            	<group string="Quadro FA" col="2">
-	            	   	<label colspan="2">Operazioni documentate da fattura esposte in forma aggregata</label>
-	            	    <field name="quadro_fa_limite_importo" />
-	            	    <field name="quadro_fa_limite_importo_line" />
-	            	</group>
-	            	<group string="Quadro SA" col="2">
-	            	    <label colspan="2">Operazioni senza fattura esposte in forma aggregata</label>
-	            	    <field name="quadro_sa_limite_importo" />
-	            	    <field name="quadro_sa_limite_importo_line" />
-	            	</group>
-	            	<group string="Quadro BL" col="2">
-	            	    <label colspan="2">Operazioni con paesi con fiscalità privilegiata - Operazioni con soggetti non residenti - Acquisti di servizi da soggetti non residenti </label>
-	            	    <field name="quadro_bl_limite_importo" />
-	            	    <field name="quadro_bl_limite_importo_line" />
-	            	</group>
-	            	<newline/>
-	            	<separator string="Quadri per dati in forma analitica" colspan="6"></separator>
-	            	<group string="Quadro SE" col="2">
-	            	    <label colspan="2">Acquisti di servizi da non residenti e Acquisti da operatori di San Marino</label>
-	            	    <field name="quadro_se_limite_importo_line" />
+	            	<group string="Quadri per dati in forma aggregata">
+		            	<group col="2">
+		            	   	<label string="Quadro FA - Operazioni documentate da fattura esposte in forma aggregata" colspan="2" />
+		            	    <field name="quadro_fa_limite_importo" />
+		            	    <field name="quadro_fa_limite_importo_line" />
+		            	</group>
+		            	<group col="2">
+		            	    <label string="Quadro SA - Operazioni senza fattura esposte in forma aggregata" colspan="2"/>
+		            	    <field name="quadro_sa_limite_importo" />
+		            	    <field name="quadro_sa_limite_importo_line" />
+		            	</group>
+		            	<group col="2">
+		            	    <label string="Quadro BL - Operazioni con paesi con fiscalità privilegiata - Operazioni con soggetti non residenti - Acquisti di servizi da soggetti non residenti " colspan="2"/>
+		            	    <field name="quadro_bl_limite_importo" />
+		            	    <field name="quadro_bl_limite_importo_line" />
+		            	</group>
+		            	<newline/>
+		            	<group string="Quadri per dati in forma analitica">
+			            	<group col="2">
+			            	    <label string="Quadro SE - Acquisti di servizi da non residenti e Acquisti da operatori di San Marino" colspan="2"/>
+			            	    <field name="quadro_se_limite_importo_line" />
+			            	</group>
+		            	</group>
 	            	</group>
 	            </form>
             </field>
@@ -167,7 +170,7 @@
             <field name="model">spesometro.comunicazione</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form>
+                <form string="Comunicazione">
                 	<group colspan="4">
                 		<field name="tipo"/>  
                 		<field name="progressivo_telematico"/>  
@@ -197,12 +200,10 @@
 		                		<field name="soggetto_email"/>  
 		                		<field name="soggetto_forma_giuridica"/>
 		                    </group>    
-		                    <group attrs="{'invisible':[('soggetto_forma_giuridica','!=','persona_giuridica')]}">
-		                        	<separator string="Dati persona giuridica" colspan="4"/>
+		                    <group string="Dati persona giuridica" colspan="4" attrs="{'invisible':[('soggetto_forma_giuridica','!=','persona_giuridica')]}">
 			                		<field name="soggetto_pg_denominazione" attrs="{'required':[('soggetto_forma_giuridica','==','persona_giuridica')]}" />    
 			                </group>
-			                <group attrs="{'invisible':[('soggetto_forma_giuridica','==','persona_giuridica')]}">
-			                    	<separator string="Dati persona fisica" colspan="4"/>
+			                <group string="Dati persona fisica" colspan="4" attrs="{'invisible':[('soggetto_forma_giuridica','==','persona_giuridica')]}">
 			                		<field name="soggetto_pf_cognome" attrs="{'required':[('soggetto_forma_giuridica','!=','persona_giuridica')]}"/>  
 			                		<field name="soggetto_pf_nome" attrs="{'required':[('soggetto_forma_giuridica','!=','persona_giuridica')]}"/>  
 			                		<field name="soggetto_pf_sesso" attrs="{'required':[('soggetto_forma_giuridica','!=','persona_giuridica')]}"/>  
@@ -218,12 +219,10 @@
 		                		<field name="soggetto_cm_forma_giuridica"/>
 		                		<field name="soggetto_cm_codice_fiscale"/>
 		                    </group>    
-		                    <group attrs="{'invisible':[('soggetto_cm_forma_giuridica','!=','persona_giuridica')]}">
-		                        	<separator string="Dati persona giuridica" colspan="4"/>
+		                    <group string="Dati persona giuridica" colspan="4" attrs="{'invisible':[('soggetto_cm_forma_giuridica','!=','persona_giuridica')]}">
 			                		<field name="soggetto_cm_pg_denominazione" attrs="{'required':[('soggetto_cm_forma_giuridica','==','persona_giuridica')]}" />    
 			                </group>
-			                <group attrs="{'invisible':[('soggetto_cm_forma_giuridica','==','persona_giuridica')]}">
-			                    	<separator string="Dati persona fisica" colspan="4"/>
+			                <group string="Dati persona fisica" colspan="4" attrs="{'invisible':[('soggetto_cm_forma_giuridica','==','persona_giuridica')]}">
 			                		<field name="soggetto_cm_pf_cognome" attrs="{'required':[('soggetto_cm_forma_giuridica','!=','persona_giuridica')]}"/>  
 			                		<field name="soggetto_cm_pf_nome" attrs="{'required':[('soggetto_cm_forma_giuridica','!=','persona_giuridica')]}"/>  
 			                		<field name="soggetto_cm_pf_sesso" attrs="{'required':[('soggetto_cm_forma_giuridica','!=','persona_giuridica')]}"/>  
@@ -249,7 +248,7 @@
 		         -->
                 	<notebook>
                 	    <page string="Quadri FA">
-                	        <label colspan="4">FORMA AGGREGATA : Operazioni documentate da fattura esposte in forma aggregata</label>
+                	        <label string="FORMA AGGREGATA : Operazioni documentate da fattura esposte in forma aggregata" colspan="4"/>
                 	        <newline/>
                 	    	<field name="line_FA_ids" nolabel="1">
                 	    	    <tree>
@@ -265,7 +264,7 @@
                 	    	</field>
                 	    </page>
                 	    <page string="Quadri SA">
-                	        <label colspan="4">FORMA AGGREGATA : Operazioni senza fattura esposte in forma aggregata</label>
+                	        <label string="FORMA AGGREGATA : Operazioni senza fattura esposte in forma aggregata" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_SA_ids" nolabel="1">
                 	            <tree>
@@ -278,8 +277,8 @@
                 	        </field>
                 	    </page>
                 	    <page string="Quadri BL">
-                	        <label colspan="4">FORMA AGGREGATA : Operazioni con paesi con fiscalità privilegiata - Operazioni con soggetti non residenti 
-                	            - Acquisti di servizi da soggetti non residenti</label>
+                	        <label string="FORMA AGGREGATA : Operazioni con paesi con fiscalità privilegiata - Operazioni con soggetti non residenti 
+                	            - Acquisti di servizi da soggetti non residenti" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_BL_ids" nolabel="1">
                 	        	<tree>
@@ -297,7 +296,7 @@
                 	        </field>
                 	    </page>
                 	    <page string="Quadri SE">
-                	        <label colspan="4">FORMA ANALITICA : Acquisti di servizi da non residenti e Acquisti da operatori di San Marino</label>
+                	        <label string="FORMA ANALITICA : Acquisti di servizi da non residenti e Acquisti da operatori di San Marino" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_SE_ids" nolabel="1">
                 	        	<tree>
@@ -314,7 +313,7 @@
                 	    </page>
                 	    
                 	    <page string="Quadri FE">
-                	        <label colspan="4">FORMA ANALITICA : Fatture emesse e Documenti riepilogativi(Operazioni Attive)</label>
+                	        <label string="FORMA ANALITICA : Fatture emesse e Documenti riepilogativi(Operazioni Attive)" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_FE_ids" nolabel="1">
                 	        	<tree>
@@ -330,7 +329,7 @@
                 	        </field>
                 	    </page>
                 	    <page string="Quadri FR">
-                	        <label colspan="4">FORMA ANALITICA : Fatture ricevute e Documenti riepilogativi (Operazioni passive)</label>
+                	        <label string="FORMA ANALITICA : Fatture ricevute e Documenti riepilogativi (Operazioni passive)" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_FR_ids" nolabel="1">
                 	        	<tree>
@@ -345,7 +344,7 @@
                 	        </field>
                 	    </page>
                 	    <page string="Quadri NE">
-                	        <label colspan="4">FORMA ANALITICA : Note di variazione emesse</label>
+                	        <label string="FORMA ANALITICA : Note di variazione emesse" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_NE_ids" nolabel="1">
                 	        	<tree>
@@ -361,7 +360,7 @@
                 	        </field>
                 	    </page>
                 	    <page string="Quadri NR">
-                	        <label colspan="4">FORMA ANALITICA : Note di variazione ricevute</label>
+                	        <label string="FORMA ANALITICA : Note di variazione ricevute" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_NR_ids" nolabel="1">
                 	        	<tree>
@@ -375,7 +374,7 @@
                 	        </field>
                 	    </page>
                 	    <page string="Quadri DF">
-                	        <label colspan="4">FORMA ANALITICA :  Operazioni senza fattura</label>
+                	        <label string="FORMA ANALITICA :  Operazioni senza fattura" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_DF_ids" nolabel="1">
                 	        	<tree>
@@ -387,7 +386,7 @@
                 	        </field>
                 	    </page>
                 	    <page string="Quadri FN">
-                	        <label colspan="4">FORMA ANALITICA : Operazioni con soggetti non residenti (Operazioni attive)</label>
+                	        <label string="FORMA ANALITICA : Operazioni con soggetti non residenti (Operazioni attive)" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_FN_ids" nolabel="1">
                 	        	<tree>
@@ -405,7 +404,7 @@
                 	        </field>
                 	    </page>
                 	    <page string="Quadri TU">
-                	        <label colspan="4">FORMA ANALITICA : Operazioni legate al turismo - Art. 3 comma 1 D.L. 16/2012</label>
+                	        <label string="FORMA ANALITICA : Operazioni legate al turismo - Art. 3 comma 1 D.L. 16/2012" colspan="4"/>
                 	        <newline/>
                 	        <field name="line_TU_ids" nolabel="1">
                 	        	<tree>
@@ -614,16 +613,14 @@
 	                    	<field name="codice_identificativo_IVA"/>
 	                    </group>
 	                    <newline/>
-	                    <separator string="Persona Giuridica" colspan="4"></separator>
-	                    <group>
+	                    <group string="Persona Giuridica" colspan="4">
 		                    <field name="pg_denominazione"/>
 			                <field name="pg_citta_estera_sede_legale"/>
 			                <field name="pg_codice_stato_estero_domicilio"/>
 			                <field name="pg_indirizzo_sede_legale"/>
 		                </group>
 		                <newline/>
-		                <separator string="Persona Fisica" colspan="4"></separator>
-		                <group>
+		                <group string="Persona Fisica" colspan="4">
 		                	<field name="pf_cognome"/>
 	                    	<field name="pf_nome"/>
 	                    	<field name="pf_data_nascita"/>
@@ -632,8 +629,7 @@
 	                    	<field name="pf_codice_stato_estero_domicilio"/>
 		                </group>
 	                    <newline/>
-	                    <separator string="Documento" colspan="4"></separator>
-	                   	<group>
+	                   	<group string="Documento" colspan="4">
 	                   		<field name="data_emissione"/>    
 	                   		<field name="data_registrazione"/>    
 	                   		<field name="numero_fattura"/>
