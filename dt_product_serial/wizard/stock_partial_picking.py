@@ -224,7 +224,7 @@ class stock_partial_picking(orm.TransientModel):
         
         delivered_pack_id = stock_picking.do_partial(cr, uid, [partial.picking_id.id], partial_data, context=context)
 
-        if stock_picking.browse(cr, uid, ids)[0].type == 'in':
+        if picking_type == 'in':
             res = self.pool['ir.model.data'].get_object_reference(cr, uid, 'stock', 'view_picking_in_form')
         else:
             res = self.pool['ir.model.data'].get_object_reference(cr, uid, 'stock', 'view_picking_out_form')
