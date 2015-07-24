@@ -25,7 +25,7 @@
 
 {
     "name": "VAT on payment",
-    "version": "2.0.1.1",
+    "version": "2.0.2.1",
     'category': 'Generic Modules/Accounting',
     "depends": ["account_voucher_cash_basis"],
     "author": "Didotech srl",
