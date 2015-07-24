@@ -26,6 +26,26 @@ import decimal_precision as dp
 class project_task(orm.Model):
     _inherit = 'project.project'
 
+    def get_color(self, cr, uid, ids, field_name, arg, context):
+        value = {}
+        for project in self.browse(cr, uid, ids, context):
+            # import pdb; pdb.set_trace()
+            effective_hours = project.effective_hours
+            planned_hours = project.planned_hours
+            if effective_hours < (planned_hours * 0.8): #< 80%
+                value[project.id] = 'green'
+            elif effective_hours < planned_hours:
+                value[project.id] = 'yellow'
+            elif effective_hours == planned_hours:
+                value[project.id] = 'black'
+            else:
+                value[project.id] = 'red'
+
+            # ore effettive <= previste verde altrimenti rosso
+
+        return value
+
+
     def _task_count(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
             context = {}
@@ -94,6 +114,7 @@ class project_task(orm.Model):
         return res
     
     _columns = {
+        'row_color': fields.function(get_color, string = 'Row color', type='char', readonly=True, method=True),
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks"),
         'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
         'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),

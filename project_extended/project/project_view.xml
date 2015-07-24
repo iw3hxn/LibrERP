@@ -37,6 +37,9 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <field name="name" position="before">
+                    <separator orientation="vertical"/>
+                    <filter icon="terp-gtk-execute" string="Task" name="Task" domain="[('tasks', '!=',False)]" help="Project with Task"/>
+                    <separator orientation="vertical"/>
                     <field name ="parent_id" />
                 </field>
             </field>
@@ -61,9 +64,35 @@
                 </field>
                 <field name="state" position="after">
                     <field name = "task_count" groups="project.group_project_manager" />
+                    <field name = "row_color"  invisible="1" />
                 </field>
             </field>
         </record>
+
+        <record id="project.view_project" model="ir.ui.view">
+            <field name="name">project.project.tree</field>
+            <field name="model">project.project</field>
+            <field name="type">tree</field>
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+                <tree string="Projects" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="sequence" invisible="1"/>
+                    <field name="date" invisible="1"/>
+                    <field name="name" string="Project Name"/>
+                    <field name="user_id" string="Project Manager"/>
+                    <field name="partner_id" string="Partner"/>
+                    <field name="parent_id" string="Parent" invisible="1"/>
+                    <field name="planned_hours" widget="float_time"/>
+                    <field name="total_hours" widget="float_time"/>
+                    <field name="effective_hours" widget="float_time"/>
+                    <field name="progress_rate" widget="progressbar"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+
 
         <record id="project.open_view_task_list_kanban" model="ir.actions.act_window.view">
             <field name="sequence" eval="10"/>
