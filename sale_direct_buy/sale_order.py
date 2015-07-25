@@ -50,26 +50,25 @@ class sale_order(orm.Model):
                                     for child_bom in order_line.bom_ids:
                                         # At the moment we use main supplier:
                                         supplierinfo = self.pool['product.template']._get_main_product_supplier(cr, uid, child_bom.product_id, context)
-                                        taxes_ids = child_bom.product_id.product_tmpl_id.supplier_taxes_id
-                                        taxes = self.pool['account.fiscal.position'].map_tax(cr, uid, supplierinfo.name.property_account_position, taxes_ids)
+                                        res = self.pool['purchase.order.line'].onchange_product_id(cr, uid, ids, supplierinfo.name.property_product_pricelist_purchase.id, child_bom.product_id.id, child_bom.product_uom_qty or 1, child_bom.product_uom.id,
+            supplierinfo.name.id, order_line.order_id.date_order, supplierinfo.name.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
+            child_bom.product_id.name or '', False, False, context)
+
+
                                         line_values = {
-                                            'product_uom': child_bom.product_uom.id,
-                                            #'order_id': order.id,  # Purchase order
-                                            'price_unit': child_bom.product_id.standard_price,
-                                            #'move_dest_id':
-                                            'product_qty': child_bom.product_uom_qty or 1,
+                                            'product_uom': res['value'].get('product_uom'),  # child_bom.product_uom.id,
+                                            'price_unit': res['value'].get('price_unit'),  # child_bom.product_id.standard_price,
+                                            'discount': res['value'].get('discount'),
+                                            'product_qty': res['value'].get('product_qty'),  # child_bom.product_uom_qty or 1,
                                             'partner_id': supplierinfo.name.id,  # Supplier
-                                            #'invoiced'
-                                            'name': child_bom.product_id.name or '',
+                                            'name': res['value'].get('name'),  # child_bom.product_id.name or '',
                                             #'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
                                             'date_planned': date_planned.strftime(
                                                 DEFAULT_SERVER_DATE_FORMAT),
-                                            #'notes'
                                             'company_id': order_line.company_id.id,
-                                            #'state'
                                             'product_id': child_bom.product_id.id,
                                             'account_analytic_id': order.project_id.id,  # This is not an error. Just a wrong variable name. project_id is account_analytic_id
-                                            'taxes_id': [(6, 0, taxes)],
+                                            'taxes_id': [(6, 0, res['value'].get('taxes_id'))],
                                         }
                                     
                                         if order_line.supplier_id.id in suppliers:
@@ -80,28 +79,22 @@ class sale_order(orm.Model):
                                     break
                 
                 elif order_line.product_id and order_line.type == 'make_to_order' and order_line.supplier_id:
-                    taxes_ids = order_line.product_id.product_tmpl_id.supplier_taxes_id
-                    taxes = self.pool['account.fiscal.position'].map_tax(cr, uid, order_line.supplier_id.property_account_position, taxes_ids)
-                    
+                    res = self.pool['purchase.order.line'].onchange_product_id(cr, uid, ids, order_line.supplier_id.property_product_pricelist_purchase.id, order_line.product_id.id, order_line.product_uom_qty or 1, order_line.product_uom.id,
+                        order_line.supplier_id.id, order_line.order_id.date_order, order_line.supplier_id.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                        order_line.name, order_line.purchase_price or order_line.product_id.standard_price, order_line.notes, context)
+
                     line_values = {
-                        'product_uom': order_line.product_uom.id,
-                        #'order_id': order.id,  # Purchase order
-                        'price_unit': order_line.purchase_price or order_line.product_id.standard_price,
-                        'discount': order_line.extra_purchase_discount or 0.00,
-                        #'move_dest_id':
-                        'product_qty': order_line.product_uom_qty or 1,
+                        'product_uom': res['value'].get('product_uom'),  #  order_line.product_uom.id,
+                        'price_unit': res['value'].get('price_unit'),  # order_line.purchase_price or order_line.product_id.standard_price,
+                        'discount': res['value'].get('discount'),  # order_line.extra_purchase_discount or 0.00,
+                        'product_qty': res['value'].get('product_qty'),  # order_line.product_uom_qty or 1,
                         'partner_id': order_line.supplier_id.id,  # Supplier
-                        #'invoiced'
-                        'name': order_line.name or '',
-                        #'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
-                        'date_planned': date_planned.strftime(
-                            DEFAULT_SERVER_DATE_FORMAT),
-                        #'notes'
+                        'name': res['value'].get('name'),  # order_line.name or '',
+                        'date_planned': date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
                         'company_id': order_line.company_id.id,
-                        #'state'
                         'product_id': order_line.product_id.id,
                         'account_analytic_id': order.project_id.id,  # This is not an error. Just a wrong variable name. project_id is account_analytic_id
-                        'taxes_id': [(6, 0, taxes)],
+                        'taxes_id': [(6, 0, res['value'].get('taxes_id'))],
                     }
                 
                     if order_line.supplier_id.id in suppliers:
@@ -166,6 +159,7 @@ class sale_order(orm.Model):
                         'fiscal_position': purchase_order_values['fiscal_position'],
                         'invoice_method': 'manual',
                         'location_id': location_id,
+                        'payment_term': purchase_order_values['payment_term']
                     })
                     if purchase_id:
                         message = _("The Purchase order has been created.")
@@ -190,7 +184,7 @@ class sale_order_line(orm.Model):
     def create(self, cr, uid, vals, context=None):
         if vals.get('product_id', False):
             product = self.pool['product.product'].browse(cr, uid, vals['product_id'])
-            #onchange_vals = self.pool.get('sale.order.line').product_id_change(cr, uid, [], value['pricelist_id'], linevalue['product_id'], linevalue['product_uom_qty'],False, 0, False, '', value['partner_id'])['value']
+            # onchange_vals = self.pool.get('sale.order.line').product_id_change(cr, uid, [], value['pricelist_id'], linevalue['product_id'], linevalue['product_uom_qty'],False, 0, False, '', value['partner_id'])['value']
             if product.manufacturer and product.manufacturer_pref:
                 vals.update({
                     'manufacturer_id': product.manufacturer.id,
