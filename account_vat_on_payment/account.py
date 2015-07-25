@@ -175,7 +175,6 @@ class account_voucher(orm.Model):
                                 else:
                                     vals['tax_amount'] = new_line_amount
 
-
                             lines_to_create.append(vals)
 
                             # create the reversal move closing vat

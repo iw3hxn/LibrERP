@@ -65,8 +65,13 @@ class account_invoice(orm.Model):
                                 line_tup[2]['account_id'] = (
                                     company.default_property_account_position.account_tax_vat_on_payment_id.id)
                         else:
-                            line_tup[2]['account_id'] = (
-                                invoice_browse.fiscal_position.account_tax_vat_on_payment_id.id)
+                            if invoice_browse.fiscal_position.account_tax_vat_on_payment_id:
+                                line_tup[2]['account_id'] = (
+                                    invoice_browse.fiscal_position.account_tax_vat_on_payment_id.id)
+                            else:
+                                raise orm.except_orm(_("Missing VAT on Payment account for reversal moves"),
+                                    _("for '{}' fiscal position!").format(invoice_browse.fiscal_position.name))
+
             new_move_lines.append(line_tup)
         return new_move_lines
 
