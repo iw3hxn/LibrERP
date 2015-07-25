@@ -97,7 +97,7 @@ class sale_order(orm.Model):
         if context is None:
             context = {}
         res = {}
-        for sale in self.browse(cr, uid, ids):
+        for sale in self.browse(cr, uid, ids, context):
             if sale.sale_version_id:
                 res[sale.id] = self.search(cr, uid, ['|', ('sale_version_id', '=', sale.sale_version_id.id), ('id', '=', sale.sale_version_id.id), ('version', '<', sale.version), '|', ('active', '=', False), ('active', '=', True)])
             else:
