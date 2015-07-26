@@ -478,7 +478,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  */
 .ui-tabs { position: relative; padding: 0; zoom: 1; } /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
 .ui-tabs .ui-tabs-nav { margin: 0; padding: .0em .0em 0; }
-.ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 0px; margin: 0 .2em 0px 0; border-bottom: 0 !important; padding: 0; white-space: nowrap; }
+.ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 0px; margin: 0 .2em 0px 0; border-bottom: 0 !important; padding: 0; white-space: nowrap; height: 20px;}
 .ui-tabs .ui-tabs-nav li a { float: left; padding: 0px 3px; text-decoration: none; }
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected { margin-bottom: 0; padding-bottom: 0px; }
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; font-size: 14px; color: #000000; font-weight: bold;}
