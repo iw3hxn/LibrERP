@@ -17,7 +17,11 @@
                 <field name="cost_price" groups="product_bom.group_cost_price"/>
                 <field name="is_kit" invisible="1"/>
             </field>
-            
+
+            <field name="standard_price" position="replace">
+                <field name="standard_price" groups="product_bom.group_cost_price"/>
+            </field>
+
             <field name="qty_available" position="after">
                 <newline />
                 <field name="immediately_usable_qty" />

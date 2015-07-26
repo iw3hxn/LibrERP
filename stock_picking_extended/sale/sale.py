@@ -161,3 +161,19 @@ class sale_order(orm.Model):
         inv_obj.button_compute(cr, uid, [inv_id])
 
         return inv_id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if not context:
+            context = {}
+        # adaptative function: the system learn
+        if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
+            for order in self.browse(cr, uid, ids, context):
+                partner_vals = {}
+                if not order.partner_id.carriage_condition_id:
+                    partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+                if not order.partner_id.goods_description_id:
+                    partner_vals['goods_description_id'] = vals.get('goods_description_id')
+                if partner_vals:
+                    self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
+
+        return super(sale_order, self).write(cr, uid, ids, vals, context=context)

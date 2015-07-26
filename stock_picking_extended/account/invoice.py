@@ -62,6 +62,21 @@ class account_invoice(orm.Model):
             result['value']['address_delivery_id'] = delivery_ids and delivery_ids[0]
         return result
 
+    def write(self, cr, uid, ids, vals, context=None):
+        if not context:
+            context = {}
+        # adaptative function: the system learn
+        if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
+            for invoice in self.browse(cr, uid, ids, context):
+                partner_vals = {}
+                if not invoice.partner_id.carriage_condition_id:
+                    partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+                if not invoice.partner_id.goods_description_id:
+                    partner_vals['goods_description_id'] = vals.get('goods_description_id')
+                if partner_vals:
+                    self.pool['res.partner'].write(cr, uid, [invoice.partner_id.id], partner_vals, context)
+
+        return super(account_invoice, self).write(cr, uid, ids, vals, context=context)
 
 class account_invoice_line(orm.Model):
     _inherit = "account.invoice.line"

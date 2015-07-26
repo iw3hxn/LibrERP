@@ -85,3 +85,19 @@ class stock_picking(orm.Model):
                 'cup': picking.cup,
             })
         return res
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if not context:
+            context = {}
+        # adaptative function: the system learn
+        if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
+            for picking in self.browse(cr, uid, ids, context):
+                partner_vals = {}
+                if not picking.partner_id.carriage_condition_id:
+                    partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+                if not picking.partner_id.goods_description_id:
+                    partner_vals['goods_description_id'] = vals.get('goods_description_id')
+                if partner_vals:
+                    self.pool['res.partner'].write(cr, uid, [picking.partner_id.id], partner_vals, context)
+
+        return super(stock_picking, self).write(cr, uid, ids, vals, context=context)

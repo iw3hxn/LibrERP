@@ -22,7 +22,7 @@
                 </field>
                 <field name="prodlot_id" position="replace">
                     <field name="new_prodlot_code" on_change="onchange_new_prodlot_code(new_prodlot_code, product_id, prodlot_id)" />
-                    <field name="prodlot_id" domain="[('product_id', '=', product_id)]" invisible="context.get('hide_tracking', False)" attrs="{'required': [('tracking', '=', True), ('new_prodlot_code', '=', False)]}"/>
+                    <field name="prodlot_id" domain="[('product_id', '=', product_id), ('stock_available', '&gt;', 0)]" invisible="context.get('hide_tracking', False)" attrs="{'required': [('tracking', '=', True), ('new_prodlot_code', '=', False)]}"/>
                     <field name="split_type" invisible="True" />
                     <field name="tracking_id" invisible="True" />
                 </field>

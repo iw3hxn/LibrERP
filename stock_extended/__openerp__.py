@@ -42,4 +42,5 @@
     "demo": [],
     "active": False,
     "installable": True,
+    "auto_install": True,
 }
