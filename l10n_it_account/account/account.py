@@ -32,6 +32,7 @@ PAYMENT_TERM_TYPE_SELECTION = [
     ('CC', 'Carta di Credito'),
     ('CO', 'Contrassegno'),
     ('CN', 'Contanti'),
+    ('SD', 'Sepa DD'),
 ]
 
 
