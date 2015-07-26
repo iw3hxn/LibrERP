@@ -103,7 +103,7 @@
                     </td><td class="right_without_line">
                 %endif
                 %if line['index']==0:
-                    ${ formatLang(object.amount) | entity}
+                    ${ formatLang(line['amount_total'])| entity}
                 %endif
                 </td>
                 %if line['index']==0:

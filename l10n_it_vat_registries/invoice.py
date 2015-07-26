@@ -49,6 +49,7 @@ class Parser(report_sxw.rml_parse):
                 'ref': move_line.ref,
                 'invoice_date': (invoice and invoice.date_invoice or move.date or ''),
                 'supplier_invoice_number': (invoice and invoice.supplier_invoice_number or ''),
+                'amount_total': invoice and invoice.amount_total or '',
             }
             res.append(account_item)
             #index += 1
@@ -74,15 +75,15 @@ class Parser(report_sxw.rml_parse):
         for move_line in move.line_id:
             tax_code = False
             if move_line.tax_code_id and not move_line.tax_code_id.exclude_from_registries:
-
+                
                 if not move_line.tax_code_id.is_base:
-                    if move_line.tax_code_id.tax_ids and move_line.tax_code_id.tax_ids[0].base_code_id:
+                    #if move_line.tax_code_id.tax_ids:
+                    if move_line.tax_code_id.tax_ids[0].base_code_id:
                         tax_code = move_line.tax_code_id.tax_ids[0].base_code_id
-
-                    elif move_line.tax_code_id.tax_ids and move_line.tax_code_id.ref_tax_ids[0].ref_base_code_id:
+                    #elif move_line.tax_code_id.ref_tax_ids:
+                    elif move_line.tax_code_id.ref_tax_ids[0].ref_base_code_id:
                         tax_code = move_line.tax_code_id.ref_tax_ids[0].ref_tax_code_id
                     else:
-
                         if move_line.tax_code_id.tax_ids:
                             if move_line.tax_code_id.tax_ids[0].parent_id.base_code_id:
                                 tax_code = move_line.tax_code_id.tax_ids[0].parent_id.base_code_id
@@ -95,11 +96,11 @@ class Parser(report_sxw.rml_parse):
                         tax_amount = (move_line.tax_amount * self.localcontext['data']['tax_sign'])
                     else:
                         tax_amount = move_line.tax_amount
-                    if result.has_key(tax_code):
+                    if result.has_key(tax_code.id):
                         result[tax_code.id]['tax'] += tax_amount
                     else:
                         raise orm.except_orm(_("Tax codes malconfigured!"),
-                            _("Tax code %s has not a base code! Please verify invoice %s") % (move_line.tax_code_id.name,move_line.stored_invoice_id.number) )
+                            _("Tax code %s has not a base code!") % move_line.tax_code_id.name)
         return result
 
     def _get_tax_lines(self, move):
@@ -114,9 +115,20 @@ class Parser(report_sxw.rml_parse):
                     raise Exception(_("Move %s contains different invoices") % move.name)
                 invoice = move_line.invoice
         group_amounts_by_code = self._tax_amounts_by_code(move)
+        #get total without withholding taxes
+        amount_withholding = 0.0
+        for line in invoice.tax_line:
+            if line.tax_code_id.exclude_from_registries:
+                amount_withholding += line.tax_amount
+        if amount_withholding != 0.0:
+            amount_total = invoice.amount_total - amount_withholding
+        else:
+            amount_total = invoice.amount_total
 
         for tax_code_id in group_amounts_by_code:
             tax_code = tax_code_obj.browse(self.cr, self.uid, tax_code_id)
+            if group_amounts_by_code[tax_code_id]['base'] != 0:
+                amount_total *= abs(group_amounts_by_code[tax_code_id]['base']) / group_amounts_by_code[tax_code_id]['base']
             tax_item = {
                 'tax_code_name': tax_code.name,
                 'amount': group_amounts_by_code[tax_code_id]['tax'],
@@ -124,26 +136,12 @@ class Parser(report_sxw.rml_parse):
                 'index': index,
                 'invoice_date': (invoice and invoice.date_invoice
                                  or move.date or ''),
-                'supplier_invoice_number': (invoice and invoice.supplier_invoice_number or '')
+                'supplier_invoice_number': (invoice and invoice.supplier_invoice_number or ''),
+                'amount_total': invoice and invoice.amount_total or '',
             }
             res.append(tax_item)
             index += 1
         return res
-
-    def _get_invoice_total(self, move):
-        total = 0.0
-        receivable_payable_found = False
-        for move_line in move.line_id:
-            if move_line.account_id.type == 'receivable':
-                total += move_line.debit or ( - move_line.credit)
-                receivable_payable_found = True
-            elif move_line.account_id.type == 'payable':
-                total += ( - move_line.debit) or move_line.credit
-                receivable_payable_found = True
-        if receivable_payable_found:
-            return abs(total)
-        else:
-            return abs(move.amount)
 
     def build_parent_tax_codes(self, tax_code):
         res = {}
@@ -210,7 +208,6 @@ class Parser(report_sxw.rml_parse):
             'start_date': self._get_start_date,
             'end_date': self._get_end_date,
             'account_lines': self._get_account_lines,
-            'invoice_total': self._get_invoice_total,
         })
 
     def set_context(self, objects, data, ids, report_type=None):
