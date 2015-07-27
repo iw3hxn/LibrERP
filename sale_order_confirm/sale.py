@@ -31,6 +31,23 @@ import decimal_precision as dp
 class sale_order(orm.Model):
     _inherit = "sale.order"
 
+    def create(self, cr, uid, vals, context=None):
+        if not context:
+            context = {}
+        ids = super(sale_order, self).create(cr, uid, vals, context=context)
+        if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
+            order = self.browse(cr, uid, ids, context)
+            partner_vals = {}
+            if not order.partner_id.section_id:
+                partner_vals['section_id'] = vals.get('section_id')
+            if not order.partner_id.property_delivery_carrier:
+                partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
+            if not order.partner_id.property_payment_term:
+                partner_vals['property_payment_term'] = vals.get('payment_term')
+            if partner_vals:
+                self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
+        return ids
+
     def write(self, cr, uid, ids, vals, context=None):
         if not context:
             context = {}
@@ -40,8 +57,8 @@ class sale_order(orm.Model):
                 partner_vals = {}
                 if not order.partner_id.section_id:
                     partner_vals['section_id'] = vals.get('section_id')
-                if not order.partner_id.carrier_id:
-                    partner_vals['carrier_id'] = vals.get('carrier_id')
+                if not order.partner_id.property_delivery_carrier:
+                    partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
                 if not order.partner_id.property_payment_term:
                     partner_vals['property_payment_term'] = vals.get('payment_term')
                 if partner_vals:

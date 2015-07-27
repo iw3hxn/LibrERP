@@ -158,16 +158,28 @@ class stock_picking(orm.Model):
         
         return super(stock_picking, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order, context=context, count=count)
     
-    def create(self, cr, user, vals, context=None):
+    def create(self, cr, uid, vals, context=None):
         if ('name' not in vals) or (vals.get('name') == '/'):
             if 'type' in vals.keys() and vals['type'] == 'out':
-                vals['name'] = self.pool['ir.sequence'].next_by_code(cr, user, 'stock.picking.out')
+                vals['name'] = self.pool['ir.sequence'].next_by_code(cr, uid, 'stock.picking.out')
             elif 'type' in vals.keys() and vals['type'] == 'internal':
-                vals['name'] = self.pool['ir.sequence'].next_by_code(cr, user, 'stock.picking.internal')
+                vals['name'] = self.pool['ir.sequence'].next_by_code(cr, uid, 'stock.picking.internal')
             else:
-                vals['name'] = self.pool['ir.sequence'].next_by_code(cr, user, 'stock.picking.in')
+                vals['name'] = self.pool['ir.sequence'].next_by_code(cr, uid, 'stock.picking.in')
+        ids = super(stock_picking, self).create(cr, uid, vals, context)
 
-        return super(stock_picking, self).create(cr, user, vals, context)
+        if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
+            picking = self.browse(cr, uid, ids, context)
+            partner_vals = {}
+            if not picking.partner_id.carriage_condition_id:
+                partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+            if not picking.partner_id.goods_description_id:
+                partner_vals['goods_description_id'] = vals.get('goods_description_id')
+            if not picking.partner_id.property_delivery_carrier:
+                partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
+            if partner_vals:
+                self.pool['res.partner'].write(cr, uid, [picking.partner_id.id], partner_vals, context)
+        return ids
 
     def _prepare_invoice_line(self, cr, uid, group, picking, move_line, invoice_id,
         invoice_vals, context=None):
