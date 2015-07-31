@@ -89,6 +89,10 @@ class stock_picking(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         if not context:
             context = {}
+
+        if not isinstance(ids, [list, tuple]):
+            ids = [ids]
+
         # adaptative function: the system learn
         if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
             for picking in self.browse(cr, uid, ids, context):
