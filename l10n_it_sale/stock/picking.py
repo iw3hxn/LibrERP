@@ -90,7 +90,7 @@ class stock_picking(orm.Model):
         if not context:
             context = {}
 
-        if not isinstance(ids, [list, tuple]):
+        if not isinstance(ids, (list, tuple)):
             ids = [ids]
 
         # adaptative function: the system learn
