@@ -23,6 +23,35 @@ from openerp.osv import orm, fields
 import netsvc
 
 
+class stock_picking(orm.Model):
+    _inherit = "stock.picking"
+
+    def action_invoice_create(self, cursor, user, ids, journal_id=False,
+                            group=False, type='out_invoice', context=None):
+        invoice_dict = super(stock_picking, self).action_invoice_create(cursor, user,
+                            ids, journal_id, group, type, context=context)
+
+        for picking_key in invoice_dict:
+            invoice = self.pool['account.invoice'].browse(cursor, user, invoice_dict[picking_key], context=context)
+            if not invoice.company_id.is_group_invoice_line:
+                continue
+
+            for line in invoice.invoice_line:
+                if line.move_line_id and line.move_line_id.sale_line_id and line.move_line_id.sale_line_id.mrp_bom:
+
+                    qty_delivery = 0
+                    for bom_line in line.move_line_id.sale_line_id.mrp_bom:
+                        qty_delivery += bom_line.product_uom_qty
+
+                    new_line_vals = {
+                        'price_unit': line.move_line_id.sale_line_id.price_unit,
+                        'discount': line.move_line_id.sale_line_id.discount,
+                        'quantity': qty_delivery / line.quantity,
+                    }
+                    self.pool['account.invoice.line'].write(cursor, user, line.id, new_line_vals, context=context)
+
+        return invoice_dict
+
 class StockMove(orm.Model):
     _inherit = 'stock.move'
 

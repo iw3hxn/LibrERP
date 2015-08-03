@@ -19,7 +19,7 @@
 
 {
     "name": "Bom in Sales Orders",
-    "version": "3.1.5.12",
+    "version": "3.1.6.12",
     "category": "Sales Management",
     "description": """
 This module adds the 'BOM' on sales order.
@@ -29,7 +29,8 @@ This module adds the 'BOM' on sales order.
     "author": "Didotech Srl",
     "depends": [
         'sale',
-        'mrp'
+        'mrp',
+        'dt_product_serial'
     ],
     "demo_xml": [],
     "update_xml": [
