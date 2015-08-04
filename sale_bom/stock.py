@@ -26,13 +26,13 @@ import netsvc
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
-    def action_invoice_create(self, cursor, user, ids, journal_id=False,
+    def action_invoice_create(self, cr, uid, ids, journal_id=False,
                             group=False, type='out_invoice', context=None):
-        invoice_dict = super(stock_picking, self).action_invoice_create(cursor, user,
+        invoice_dict = super(stock_picking, self).action_invoice_create(cr, uid,
                             ids, journal_id, group, type, context=context)
 
         for picking_key in invoice_dict:
-            invoice = self.pool['account.invoice'].browse(cursor, user, invoice_dict[picking_key], context=context)
+            invoice = self.pool['account.invoice'].browse(cr, uid, invoice_dict[picking_key], context=context)
             if not invoice.company_id.is_group_invoice_line:
                 continue
 
@@ -48,8 +48,8 @@ class stock_picking(orm.Model):
                         'discount': line.move_line_id.sale_line_id.discount,
                         'quantity': qty_delivery / line.quantity,
                     }
-                    self.pool['account.invoice.line'].write(cursor, user, line.id, new_line_vals, context=context)
-
+                    self.pool['account.invoice.line'].write(cr, uid, line.id, new_line_vals, context=context)
+            invoice.button_reset_taxes()
         return invoice_dict
 
 class StockMove(orm.Model):
