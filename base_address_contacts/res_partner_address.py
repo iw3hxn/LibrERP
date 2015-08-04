@@ -233,7 +233,7 @@ class res_partner(orm.Model):
             raise orm.except_orm(_('Error!'),
                                  _('At least one address of type "Default" is needed!'))
         is_default = False
-        if  context.get('default_type', '') == 'lead':
+        if context.get('default_type', '') == 'lead':
             return super(res_partner, self).create(cr, uid, vals, context)
         for address in vals['address']:
             if address[2].get('type') == 'default':
@@ -255,6 +255,15 @@ class res_partner(orm.Model):
                                              _('At least one address of type "Default" is needed!'))
 
         return super(res_partner, self).write(cr, uid, ids, vals, context)
+
+    def unlink(self, cr, uid, ids, context):
+        if context is None:
+            context = {}
+        for partner in self.browse(cr, uid, ids, context):
+            if partner.address:
+                raise orm.except_orm(_('Error!'),
+                                 _('Before Delete the Partner, you need to delete the Address from menù'))
+        return super(res_partner, self).unlink(cr, uid, ids, context)
 
     _columns = {
         'contact_ids': fields.function(_get_contacts, string=_("Functions and Contacts"), type='one2many', method=True, obj='res.partner.address.contact')

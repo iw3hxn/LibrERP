@@ -198,3 +198,19 @@ msgstr "Partner"
 #: model:ir.model,name:base_address_contacts.model_res_partner_address
 msgid "Partner Addresses"
 msgstr "Indirizzi Partner"
+
+#. module: base_address_contacts
+#: code:addons/base_address_contacts/res_partner_address.py:234
+#: code:addons/base_address_contacts/res_partner_address.py:243
+#: code:addons/base_address_contacts/res_partner_address.py:255
+#, python-format
+msgid "At least one address of type \"Default\" is needed!"
+msgstr "Almeno un indirizzo \"Sede Legale\" è necessario!"
+
+#. module: base_address_contacts
+#: code:addons/base_address_contacts/res_partner_address.py:234
+#: code:addons/base_address_contacts/res_partner_address.py:243
+#: code:addons/base_address_contacts/res_partner_address.py:255
+#, python-format
+msgid "Before Delete the Partner, you need to delete the Address from menù"
+msgstr "per cancellare il Partner devi prima cancellare ogni singolo indirizzo dal menù"
