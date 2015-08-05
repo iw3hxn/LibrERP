@@ -151,11 +151,11 @@ class res_partner(orm.Model):
     def create(self, cr, uid, vals, context=None):
         if not context:
             context = {}
-        company = self.pool['res.users'].browse(
-            cr, uid, uid, context).company_id
-        if not company.enable_partner_subaccount:
-            return super(res_partner, self).create(
-                cr, uid, vals, context=context)
+        company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+
+        enable_partner_subaccount = company.enable_partner_subaccount
+        # if not company.enable_partner_subaccount:
+        #     return super(res_partner, self).create(cr, uid, vals, context=context)
 
         #1 se marcato come cliente - inserire se non esiste
         if vals.get('customer', False) and not vals.get('supplier', False):
@@ -163,23 +163,24 @@ class res_partner(orm.Model):
             if not vals.get('property_customer_ref', False):
                 vals['property_customer_ref'] = self.pool['ir.sequence'].get(
                     cr, uid, 'SEQ_CUSTOMER_REF') or ''
-            if vals.get('selection_account_receivable', False):
-                vals['property_account_receivable'] = \
-                    vals['selection_account_receivable']
-            vals['property_account_receivable'] = \
-                self.get_create_customer_partner_account(cr, uid, vals, context)
+            if enable_partner_subaccount:
+                if vals.get('selection_account_receivable', False):
+                    vals['property_account_receivable'] = vals['selection_account_receivable']
+                vals['property_account_receivable'] =  self.get_create_customer_partner_account(cr, uid, vals, context)
 
         #2 se marcato come fornitore - inserire se non esiste
+
         if vals.get('supplier', False) and not vals.get('customer', False):
             vals['block_ref_supplier'] = True
             if not vals.get('property_supplier_ref', False):
                 vals['property_supplier_ref'] = self.pool['ir.sequence'].get(
                     cr, uid, 'SEQ_SUPPLIER_REF') or ''
-            if vals.get('selection_account_payable', False):
+            if enable_partner_subaccount:
+                if vals.get('selection_account_payable', False):
+                    vals['property_account_payable'] = \
+                        vals['selection_account_payable']
                 vals['property_account_payable'] = \
-                    vals['selection_account_payable']
-            vals['property_account_payable'] = \
-                self.get_create_supplier_partner_account(cr, uid, vals, context)
+                    self.get_create_supplier_partner_account(cr, uid, vals, context)
 
         #3 se marcato come cliente e fornitore - inserire se non esiste
         if vals.get('customer', False) and vals.get('supplier', False):
@@ -191,16 +192,18 @@ class res_partner(orm.Model):
             if not vals.get('property_supplier_ref', False):
                 vals['property_supplier_ref'] = self.pool['ir.sequence'].get(
                     cr, uid, 'SEQ_SUPPLIER_REF') or ''
-            if vals.get('selection_account_receivable', False):
+
+            if enable_partner_subaccount:
+                if vals.get('selection_account_receivable', False):
+                    vals['property_account_receivable'] = \
+                        vals['selection_account_receivable']
+                if vals.get('selection_account_payable', False):
+                    vals['property_account_payable'] = \
+                        vals['selection_account_payable']
                 vals['property_account_receivable'] = \
-                    vals['selection_account_receivable']
-            if vals.get('selection_account_payable', False):
+                    self.get_create_customer_partner_account(cr, uid, vals, context)
                 vals['property_account_payable'] = \
-                    vals['selection_account_payable']
-            vals['property_account_receivable'] = \
-                self.get_create_customer_partner_account(cr, uid, vals, context)
-            vals['property_account_payable'] = \
-                self.get_create_supplier_partner_account(cr, uid, vals, context)
+                    self.get_create_supplier_partner_account(cr, uid, vals, context)
 
         return super(res_partner, self).create(cr, uid, vals, context=context)
 
