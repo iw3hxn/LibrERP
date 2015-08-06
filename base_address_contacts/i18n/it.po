@@ -110,6 +110,11 @@ msgid "Mobile"
 msgstr "Cellulare"
 
 #. module: base_address_contacts
+#: field:res.partner.address.contact,fisso:0
+msgid "Phone"
+msgstr "Telefono"
+
+#. module: base_address_contacts
 #: view:res.partner:0
 #: view:res.partner.address.contact:0
 #: field:res.partner.address.contact,comment:0

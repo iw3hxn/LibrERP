@@ -39,6 +39,7 @@
             <tree string="Partner Contact">
                 <field name="last_name"/>
                 <field name="first_name"/>
+                <field name="fisso"/>
                 <field name="mobile"/>
                 <field name="email"/>
                 <field name="lang_id"/>
@@ -69,7 +70,7 @@
                                 <separator string="Communication" colspan="4"/>
                                 <field name="mobile"/>
                                 <field name="email"  widget="email"/>
-                                <field name="website"/>
+                                <field name="fisso"/>
                             </group>
                             <group colspan="2" col="1">
                                 <separator string="Photo" colspan="4"/>
@@ -162,6 +163,7 @@
                                 <field name="last_name" select="1"/>
                                 <field name="first_name" select="1"/>
                                 <field name="function_id" widget="selection"/>
+                                <field name="fisso"/>
                                 <field name="mobile"/>
                                 <field name="email"/>
                                 <field name="lang_id"/>
@@ -179,7 +181,7 @@
                                                 <separator string="Communication" colspan="4"/>
                                                 <field name="mobile"/>
                                                 <field name="email"  widget="email"/>
-                                                <field name="website"/>
+                                                <field name="fisso"/>
                                             </group>
                                             <group colspan="2" col="1">
                                                 <separator string="Photo" colspan="4"/>
@@ -222,6 +224,7 @@
                         <field name="last_name" select="1"/>
                         <field name="first_name" select="1"/>
                         <field name="function_id" widget="selection"/>
+                        <field name="fisso"/>
                         <field name="mobile"/>
                         <field name="email"/>
                         <field name="lang_id"/>
@@ -239,7 +242,7 @@
                                         <separator string="Communication" colspan="4"/>
                                         <field name="mobile"/>
                                         <field name="email"  widget="email"/>
-                                        <field name="website"/>
+                                        <field name="fisso"/>
                                     </group>
                                     <group colspan="2" col="1">
                                         <separator string="Photo" colspan="4"/>

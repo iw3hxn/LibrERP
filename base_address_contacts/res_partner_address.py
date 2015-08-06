@@ -70,6 +70,7 @@ class res_partner_address_contact(orm.Model):
         'last_name': fields.char('Last Name', size=64, required=True),
         'first_name': fields.char('First Name', size=64),
         'mobile': fields.char('Mobile', size=64),
+        'fisso': fields.char('Phone', size=64),
         'title': fields.many2one('res.partner.title', 'Title', domain=[('domain', '=', 'contact')]),
         'website': fields.char('Website', size=120),
         'address_id': fields.many2one('res.partner.address', 'Address'),
