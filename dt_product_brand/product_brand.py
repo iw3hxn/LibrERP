@@ -60,7 +60,7 @@ class product_product(Model):
             context = self.pool['res.users'].context_get(cr, uid, context=context)
 
         res = {}
-        
+
         if not product_brand_id:
             res = {
                 'manufacturer': False,
