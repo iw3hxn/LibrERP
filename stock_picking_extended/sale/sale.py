@@ -166,6 +166,10 @@ class sale_order(orm.Model):
         if not context:
             context = {}
         # adaptative function: the system learn
+
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+         
         if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
             for order in self.browse(cr, uid, ids, context):
                 partner_vals = {}
