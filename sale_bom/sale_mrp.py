@@ -72,54 +72,54 @@ class sale_order_line(orm.Model):
         ## {'value': result, 'domain': domain, 'warning': warning}
         return result
 
-    def onchange_mrp_bom(self, cr, uid, ids, mrp_bom, product_id, context=None):
-        uom_obj = self.pool['product.uom']
-        bom_obj = self.pool['mrp.bom']
-        
-        mrp_bom_filtered = [bom_id for bom_id in mrp_bom if not (isinstance(bom_id, (tuple, list)) and bom_id and bom_id[0] == 2) and not bom_id[0] == 5]
-        
-        line_mrps = self.resolve_o2m_commands_to_record_dicts(cr, uid, 'mrp_bom', mrp_bom_filtered, context=context)
-        
-        # Attention! This lines dupplicate _compute_purchase_price() from product_bom.product module
-        price = 0.
-        
-        for line_mrp in line_mrps:
-            #print line_mrp
-            if line_mrp['product_uom']:
-                if isinstance(line_mrp['product_uom'], (tuple, list)):
-                    uom_id = line_mrp['product_uom'][0]
-                elif isinstance(line_mrp['product_uom'], int):
-                    uom_id = line_mrp['product_uom']
-                qty = uom_obj._compute_qty(cr, uid,
-                                           from_uom_id=uom_id,
-                                           qty=line_mrp['product_uom_qty'],
-                                           to_uom_id=uom_id)
-                price += line_mrp['price_unit'] * qty
-            else:
-                price += line_mrp['price_unit'] * line_mrp['product_uom_qty']
-        
-        bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)])
-        if bom_ids:
-            bom = bom_obj.browse(cr, uid, bom_ids[0])
-            if bom.routing_id:
-                for wline in bom.routing_id.workcenter_lines:
-                    wc = wline.workcenter_id
-                    cycle = wline.cycle_nbr
-                    # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
-                    price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
-            price /= bom.product_qty
-            price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
-        
-        mrp_bom_new = []
-        for line in mrp_bom:
-            if line[2] and not line[2].get('price_subtotal', False) and line[2].get('price_unit', False) and line[2].get('product_uom_qty', False):
-                line[2]['price_subtotal'] = line[2]['price_unit'] * line[2]['product_uom_qty']
-                mrp_bom_new.append(line)
-        
-        if mrp_bom_new:
-            return {'value': {'purchase_price': price, 'mrp_bom': mrp_bom_new}}
-        else:
-            return {'value': {'purchase_price': price}}
+    # def onchange_mrp_bom(self, cr, uid, ids, mrp_bom, product_id, context=None):
+    #     uom_obj = self.pool['product.uom']
+    #     bom_obj = self.pool['mrp.bom']
+    #
+    #     mrp_bom_filtered = [bom_id for bom_id in mrp_bom if not (isinstance(bom_id, (tuple, list)) and bom_id and bom_id[0] == 2) and not bom_id[0] == 5]
+    #
+    #     line_mrps = self.resolve_o2m_commands_to_record_dicts(cr, uid, 'mrp_bom', mrp_bom_filtered, context=context)
+    #
+    #     # Attention! This lines dupplicate _compute_purchase_price() from product_bom.product module
+    #     price = 0.
+    #
+    #     for line_mrp in line_mrps:
+    #         #print line_mrp
+    #         if line_mrp['product_uom']:
+    #             if isinstance(line_mrp['product_uom'], (tuple, list)):
+    #                 uom_id = line_mrp['product_uom'][0]
+    #             elif isinstance(line_mrp['product_uom'], int):
+    #                 uom_id = line_mrp['product_uom']
+    #             qty = uom_obj._compute_qty(cr, uid,
+    #                                        from_uom_id=uom_id,
+    #                                        qty=line_mrp['product_uom_qty'],
+    #                                        to_uom_id=uom_id)
+    #             price += line_mrp['price_unit'] * qty
+    #         else:
+    #             price += line_mrp['price_unit'] * line_mrp['product_uom_qty']
+    #
+    #     bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)])
+    #     if bom_ids:
+    #         bom = bom_obj.browse(cr, uid, bom_ids[0])
+    #         if bom.routing_id:
+    #             for wline in bom.routing_id.workcenter_lines:
+    #                 wc = wline.workcenter_id
+    #                 cycle = wline.cycle_nbr
+    #                 # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
+    #                 price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
+    #         price /= bom.product_qty
+    #         price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
+    #
+    #     mrp_bom_new = []
+    #     for line in mrp_bom:
+    #         if line[2] and not line[2].get('price_subtotal', False) and line[2].get('price_unit', False) and line[2].get('product_uom_qty', False):
+    #             line[2]['price_subtotal'] = line[2]['price_unit'] * line[2]['product_uom_qty']
+    #             mrp_bom_new.append(line)
+    #
+    #     if mrp_bom_new:
+    #         return {'value': {'purchase_price': price, 'mrp_bom': mrp_bom_new}}
+    #     else:
+    #         return {'value': {'purchase_price': price}}
 
 
 class sale_order_line_mrp_bom(orm.Model):
@@ -165,7 +165,7 @@ class sale_order_line_mrp_bom(orm.Model):
             #                           to_uom_id=uom_id)
             return {'value': {
                 'price_unit': price_unit or product.cost_price,
-                'product_uom': product.uom_id.id,
+                'product_uom': uom_id or product.uom_id.id,
                 'price_subtotal': price_unit * product_qty,
             }}
         else:
