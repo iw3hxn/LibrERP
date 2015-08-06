@@ -122,6 +122,21 @@
     <menuitem name="Address" id="base.menu_partner_address_form" groups = "base.group_extended" 
         parent = "base.menu_address_book"  sequence="3"
         />
+
+
+    <record model="ir.ui.view" id="view_partner_tree_ref_inherit">
+            <field name="name">partner_tree_ref.partner.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="ref" position="replace">
+                        <field name="ref" invisible="1" />
+                    </field>
+                </data>
+            </field>
+    </record>
     
     <record model="ir.ui.view" id="view_partner_form_inherit">
         <field name="name">Partner form inherited</field>
@@ -129,6 +144,13 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="type">form</field>
         <field name="arch" type="xml">
+            <field name="ref" position="replace">
+                <field name="ref" invisible="1" />
+            </field>
+            <field name="title" position="replace">
+                <field name="title" invisible="1" />
+            </field>
+
             <field name="address" mode="form,tree" colspan="4" nolabel="1" select="1" position="replace">
                 <field name="address" mode="tree,form" colspan="4" nolabel="1" select="1">
                     <form string="Address">
