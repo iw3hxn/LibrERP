@@ -214,3 +214,8 @@ msgstr "Almeno un indirizzo \"Sede Legale\" è necessario!"
 #, python-format
 msgid "Before Delete the Partner, you need to delete the Address from menù"
 msgstr "per cancellare il Partner devi prima cancellare ogni singolo indirizzo dal menù"
+
+#. module: base_address_contacts
+#: view:res.partner.address.contact:0
+msgid "Surname / Name"
+msgstr "Cognome / Nome"

@@ -100,8 +100,7 @@
         <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Partner Contact">
-                <field name="name" select="1"/>
-                <field name="first_name" select="1"/>
+                <field name="name" filter_domain="['|', ('last_name','ilike',self), ('first_name','ilike',self)]" string="Surname / Name" />
                 <field name="partner_id" select="1" string="Partner"/>
             </search>
         </field>
