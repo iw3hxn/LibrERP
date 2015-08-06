@@ -65,9 +65,13 @@ class account_invoice(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         if not context:
             context = {}
+
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
         # adaptative function: the system learn
         if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
-            for invoice in self.browse(cr, uid, [ids], context):
+            for invoice in self.browse(cr, uid, ids, context):
                 partner_vals = {}
                 if not invoice.partner_id.carriage_condition_id:
                     partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
@@ -84,14 +88,14 @@ class account_invoice(orm.Model):
         # adaptative function: the system learn
         ids = super(account_invoice, self).create(cr, uid, vals, context=context)
         if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
-            invoice = self.browse(cr, uid, ids, context)
-            partner_vals = {}
-            if not invoice.partner_id.carriage_condition_id:
-                partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
-            if not invoice.partner_id.goods_description_id:
-                partner_vals['goods_description_id'] = vals.get('goods_description_id')
-            if partner_vals:
-                self.pool['res.partner'].write(cr, uid, [invoice.partner_id.id], partner_vals, context)
+            for invoice in self.browse(cr, uid, ids, context):
+                partner_vals = {}
+                if not invoice.partner_id.carriage_condition_id:
+                    partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+                if not invoice.partner_id.goods_description_id:
+                    partner_vals['goods_description_id'] = vals.get('goods_description_id')
+                if partner_vals:
+                    self.pool['res.partner'].write(cr, uid, [invoice.partner_id.id], partner_vals, context)
 
         return ids
 
