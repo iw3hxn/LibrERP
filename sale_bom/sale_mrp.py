@@ -49,7 +49,7 @@ class sale_order_line(orm.Model):
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
             if product.supply_method == 'produce':
                 result['value']['with_bom'] = True
-                
+
                 mrp_bom_ids = mrp_bom_obj.search(cr, uid, [('product_id', '=', product_id), ])
                 if mrp_bom_ids and len(mrp_bom_ids) == 1:
                     mrp_bom = mrp_bom_obj.browse(cr, uid, mrp_bom_ids[0])
@@ -58,12 +58,14 @@ class sale_order_line(orm.Model):
                         result['value']['mrp_bom'] = []
                         for bom_line in mrp_bom.bom_lines:
                             line_bom = {
-                                #'name': bom_line.name,
                                 'product_id': bom_line.product_id.id,
                                 'product_uom_qty': bom_line.product_qty,
                                 'product_uom': bom_line.product_uom.id,
-                                'price_unit': bom_line.product_id.standard_price
+                                'price_unit': bom_line.product_id.cost_price,
+                                'price_subtotal': bom_line.product_qty * bom_line.product_id.cost_price
                             }
+                            if ids and len(ids) == 1:
+                                line_bom['order_id'] = ids[0]
                             result['value']['mrp_bom'].append(line_bom)
             else:
                 result['value']['with_bom'] = False
@@ -124,27 +126,29 @@ class sale_order_line_mrp_bom(orm.Model):
     _name = 'sale.order.line.mrp.bom'
     _description = 'Sales Order Bom Line'
     
-    def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
-        if context is None:
-            context = {}
-        res = {}
-
-        for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = line.price_unit * line.product_uom_qty
-        return res
+    # def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
+    #     if context is None:
+    #         context = {}
+    #     res = {}
+    #
+    #     for line in self.browse(cr, uid, ids, context=context):
+    #         res[line.id] = line.price_unit * line.product_uom_qty
+    #     return res
     
     _columns = {
         'name': fields.char('Note', size=256, select=True),
-        'order_id': fields.many2one('sale.order.line', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True),
-        'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], change_default=True),
+        'order_id': fields.many2one('sale.order.line', 'Order Reference', ondelete='cascade', select=True),
+        'product_id': fields.many2one('product.product', 'Product', change_default=True),
         'product_uom_qty': fields.float('Quantity (UoM)', digits_compute=dp.get_precision('Product UoS'), required=True),
         'product_uom': fields.many2one('product.uom', 'Unit of Measure ', required=True),
         'sequence': fields.integer('Sequence', help="Gives the sequence order when displaying a list of sales order lines."),
         'price_unit': fields.float('Unit Price', required=True, digits_compute=dp.get_precision('Sale Price')),
-        'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
+        'price_subtotal': fields.float('Subtotal', required=True, digits_compute=dp.get_precision('Sale Price')),
+        # 'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
     }
     
     _order = 'sequence, id'
+
     _defaults = {
         'product_uom_qty': 1,
         'sequence': 10,
@@ -162,6 +166,7 @@ class sale_order_line_mrp_bom(orm.Model):
             return {'value': {
                 'price_unit': price_unit or product.cost_price,
                 'product_uom': product.uom_id.id,
+                'price_subtotal': price_unit * product_qty,
             }}
         else:
             return {'value': {}}
