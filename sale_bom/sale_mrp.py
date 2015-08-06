@@ -136,7 +136,7 @@ class sale_order_line_mrp_bom(orm.Model):
     _columns = {
         'name': fields.char('Note', size=256, select=True),
         'order_id': fields.many2one('sale.order.line', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True),
-        'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True), ('type', 'not in', ['service'])], change_default=True),
+        'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], change_default=True),
         'product_uom_qty': fields.float('Quantity (UoM)', digits_compute=dp.get_precision('Product UoS'), required=True),
         'product_uom': fields.many2one('product.uom', 'Unit of Measure ', required=True),
         'sequence': fields.integer('Sequence', help="Gives the sequence order when displaying a list of sales order lines."),
@@ -149,6 +149,7 @@ class sale_order_line_mrp_bom(orm.Model):
         'product_uom_qty': 1,
         'sequence': 10,
         'price_unit': 0.0,
+        'order_id': lambda self, cr, uid, context: context.get('default_sale_order_line', False) or False
     }
 
     def bom_product_id_change(self, cr, uid, ids, product_id, uom_id, product_qty, price_unit, context=None):
