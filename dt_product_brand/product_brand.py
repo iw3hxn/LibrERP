@@ -66,7 +66,7 @@ class product_product(Model):
                 'manufacturer': False,
             }
         else:
-            brand_data = self.pool['product.brand'].read(cr, uid, product_brand_id, context=context)
+            brand_data = self.pool['product.brand'].browse(cr, uid, product_brand_id, context=context)
             if brand_data.partner_id:
                 res['manufacturer'] = brand_data.partner_id.id
         return {'value': res, }
