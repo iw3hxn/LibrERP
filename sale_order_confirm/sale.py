@@ -51,6 +51,10 @@ class sale_order(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         if not context:
             context = {}
+
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
         # adaptative function: the system learn
         if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
             for order in self.browse(cr, uid, ids, context):
