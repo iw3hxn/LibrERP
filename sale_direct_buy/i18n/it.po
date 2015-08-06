@@ -55,3 +55,8 @@ msgstr "Linea ordine di vendita"
 #: field:sale.order.line,manufacturer_id:0
 msgid "Manufacturer"
 msgstr "Produttore"
+
+#. module: sale_direct_buy
+#: field:sale.order.line,extra_purchase_discount:0
+msgid "Ex. Purchase Discount"
+msgstr "Sconto Extra Acquisto"
