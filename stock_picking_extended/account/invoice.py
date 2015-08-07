@@ -39,6 +39,7 @@ class account_invoice(orm.Model):
         'weight': fields.float('Weight'),
         'weight_net': fields.float('Net Weight'),
         'carrier_id': fields.many2one('delivery.carrier', 'Carrier'),
+        'origin': fields.char('Source Document', size=256, help="Reference of the document that produced this invoice.", readonly=True, states={'draft': [('readonly', False)]}),
     }
 
     def onchange_partner_id(self, cr, uid, ids, type, partner_id,

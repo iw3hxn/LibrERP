@@ -83,6 +83,10 @@ class account_invoice(orm.Model):
                 if line_origin not in origins:
                     origins[line_origin] = invoice.id
 
+            for invoice_origin in invoice.origin.split(', '):
+                if invoice_origin not in origins:
+                    origins[invoice_origin] = invoice.id
+
         # now on origins i have all the origin and invoice.id
         for origin in origins:
             if origin and len(origin.split(':')) == 2:
