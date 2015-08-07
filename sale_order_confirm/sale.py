@@ -195,19 +195,28 @@ class sale_order(orm.Model):
         return result
 
     def action_validate(self, cr, uid, ids, context=None):
+
         for order in self.browse(cr, uid, ids, context):
+
+            vals = {}
             if order.need_tech_validation and not order.tech_validation:
-                self.write(cr, uid, [order.id], {'state': 'wait_technical_validation'}, context)
+                vals['state'] = 'wait_technical_validation'
             elif order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) < order.company_id.minimum_margin and not order.manager_validation:
-                self.write(cr, uid, [order.id], {'state': 'wait_manager_validation'}, context)
+                vals['state'] = 'wait_manager_validation'
             elif order.need_manager_validation and not order.manager_validation:
-                self.write(cr, uid, [order.id], {'state': 'wait_manager_validation'}, context)
+                vals['state'] = 'wait_manager_validation'
             elif not order.email_sent_validation:
-                self.write(cr, uid, [order.id], {'state': 'send_to_customer'}, context)
+                vals['state'] = 'send_to_customer'
             elif not order.customer_validation:
-                self.write(cr, uid, [order.id], {'state': 'wait_customer_validation'}, context)
+                vals['state'] = 'wait_customer_validation'
             else:
-                self.write(cr, uid, [order.id], {'state': 'send_to_customer'}, context)
+                vals['state'] = 'draft'
+                vals['tech_validation'] = False
+                vals['manager_validation'] = False
+                vals['customer_validation'] = False
+                vals['email_sent_validation'] = False
+            if vals:
+                self.write(cr, uid, [order.id], vals, context)
         return True
 
     def check_validate(self, cr, uid, ids, context=None):
