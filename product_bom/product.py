@@ -37,12 +37,11 @@ class product_product(orm.Model):
     """
     _inherit = 'product.product'
     
-    def _get_prefered_supplier(self, cr, uid, ids, field_name, args, context):
-        res = {}
-        products_lines = self.browse(cr, uid, ids)
-        for line in products_lines:
-            res[line.id] = line.seller_ids and line.seller_ids[0].name.id or False
-        return res
+    # def _get_prefered_supplier(self, cr, uid, ids, field_name, args, context):
+    #     res = {}
+    #     for line in self.browse(cr, uid, ids, context):
+    #         res[line.id] = line.seller_ids and line.seller_ids[0].name.id or False
+    #     return res
 
     def _compute_purchase_price(self, cr, uid, ids,
                                 product_uom=None,
@@ -297,11 +296,12 @@ class product_product(orm.Model):
                                       help="The cost price is the standard price or, if the product has a bom, "
                                       "the sum of all standard price of its components. it take also care of the "
                                       "bom costing like cost per cylce."),
-        'prefered_supplier': fields.function(_get_prefered_supplier, string='Prefered Supplier', method=True, obj='res.partner', type='many2one', 
-                             store = {
-                                 'product.product': (lambda self, cr, uid, ids, c={}: ids, ['seller_ids'], 10),
-                             }
-         ),
+        'prefered_supplier': fields.related('seller_ids', 'name', type='many2one', relation='res.partner', string='Prefered Supplier'),
+    #    'prefered_supplier': fields.function(_get_prefered_supplier, string='Prefered Supplier', method=True, obj='res.partner', type='many2one',
+    #                         store = {
+    #                             'product.product': (lambda self, cr, uid, ids, c={}: ids, ['seller_ids'], 10),
+    #                         }
+    #     ),
         'is_kit': fields.function(_is_kit, fnct_search=_kit_filter, method=True, type="boolean", string="Kit"),
         'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
         'qty_available': fields.function(
