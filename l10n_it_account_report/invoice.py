@@ -35,6 +35,7 @@ class Parser(report_sxw.rml_parse):
         self.localcontext.update({
             'time': time,
             'invoice_tree': self._get_invoice_tree,
+            'invoice_origin': self._get_invoice_origin,
             'italian_number': self._get_italian_number,
             'invoice_move_lines': self._get_invoice_move_lines,
             'ddt': self._get_ddt,
@@ -49,13 +50,46 @@ class Parser(report_sxw.rml_parse):
         
         self.cache = {}
 
-    #def _get_ddt(self):
-    #    return self.pool.get('stock.picking').browse(self.cr, self.uid,
-    #                                                 self.localcontext['data']['form']['picking_id'])
-     
+    def _get_total_tax_fiscal(self, tax_line):
+        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
+        amount_withholding = 0.0
+        for line in tax_line:
+            if line.tax_code_id.notprintable:
+                amount_withholding += line.tax_amount
+        if amount_withholding != 0.0:
+            if invoice.type in ['out_invoice', 'in_invoice']:
+                return invoice.amount_tax - amount_withholding
+            else:
+                return invoice.amount_tax + amount_withholding
+        return invoice.amount_tax
+
+    def _get_total_fiscal(self, tax_line):
+        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
+        amount_withholding = 0.0
+        for line in tax_line:
+            if line.tax_code_id.notprintable:
+                amount_withholding += line.tax_amount
+        if amount_withholding != 0.0:
+            if invoice.type in ['out_invoice', 'in_invoice']:
+                return invoice.amount_total - amount_withholding
+            else:
+                return invoice.amount_total + amount_withholding
+        return invoice.amount_total
+
     def _desc_nocode(self, string):
         return re.compile('\[.*\]\ ').sub('', string)
 
+    def _line_description(self, line):
+        sale_order_line_obj = self.pool['sale.order.line']
+        stock_picking_obj = self.pool['stock.picking']
+        description = []
+        if line.name:
+            description.append(re.compile('\[.*\]\ ').sub('', line.name))
+        if line.note:
+            description.append(line.note)
+
+        return '\n'.join(description)
+        
     def _div(self, up, down):
         res = 0
         #import pdb; pdb.set_trace()
@@ -72,6 +106,7 @@ class Parser(report_sxw.rml_parse):
             picking_ids = self.pool['stock.picking'].search(self.cr, self.uid, [('name', '=', picking_name)])
             if picking_ids:
                 return self.pool['stock.picking'].browse(self.cr, self.uid, picking_ids[0])
+
         invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
         if hasattr(invoice, 'move_products') and invoice.move_products:
             return self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
@@ -111,7 +146,19 @@ class Parser(report_sxw.rml_parse):
             return sign + before
         else:
             return sign + before + ',' + after
-    
+
+    def get_reference(self, order_name):
+        order_obj = self.pool['sale.order']
+        description = []
+        if order_name:
+            order_ids = order_obj.search(self.cr, self.uid, [('name', '=', order_name)])
+            if len(order_ids) == 1:
+                order = order_obj.browse(self.cr, self.uid, order_ids[0])
+                if order.client_order_ref:
+                    order_date = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT)
+                    description.append(u'{client_order} del {order_date}'.format(client_order=order.client_order_ref, order_date=order_date.strftime("%d/%m/%Y")))
+        return '\n'.join(description)
+
     def get_description(self, ddt_name, order_name):
         ddt_obj = self.pool['stock.picking']
         order_obj = self.pool['sale.order']
@@ -157,30 +204,71 @@ class Parser(report_sxw.rml_parse):
             elif move_ids:
                 # The same product from the same sale_order is present in various picking lists
                 raise orm.except_orm('Warning', _('Ambiguous line origin'))
-                
-                #stock_moves = move_obj.browse(self.cr, self.uid, move_ids)
-                #picking_names = []
-                #for stock_move in stock_moves:
-                #    if stock_move.picking_id:
-                #        picking_names.append(stock_move.picking_id.name)
-                #
-                #if picking_names:
-                #    if len(picking_names) == 1:
-                #        picking_names[0]
-                #    else:
-                #        return picking_names
-                #else:
-                #    return False
+
             else:
                 return False
         else:
             return False
-        
+
+    def _get_invoice_origin(self, invoice_lines, type, source_data = 'line'):
+        origins = []
+        sale_orders = []
+        stock_pickings = []
+        picking_obj = self.pool['stock.picking']
+        sale_order_obj = self.pool['sale.order']
+        description = []
+
+        # group origins
+        for invoice_line in invoice_lines:
+            if source_data == 'line':
+                if invoice_line.origin not in origins:
+                    origins.append(invoice_line.origin)
+            elif source_data == 'invoice':
+                for invoice_origin in invoice_line.invoice_id.origin.split(', '):
+                    if invoice_origin not in origins:
+                        origins.append(invoice_origin)
+
+        for origin in origins:
+
+            if ':' in origin:
+                split_list = origin.split(':')
+                ddt, sale_order = split_list[0], split_list[1]
+
+            elif origin[:4] == 'OUT/':
+                ddt = origin
+                sale_order = False
+            elif origin[:4] == 'IN/':
+                ddt = False
+                sale_order = False
+            else:
+                ddt = False
+                sale_order = origin
+
+            if type == 'ddt':
+                if ddt not in stock_pickings:
+                    stock_pickings.append(ddt)
+                    picking_ids = picking_obj.search(self.cr, self.uid, [('name', '=', ddt)])
+                    if picking_ids:
+                        ddt = picking_obj.browse(self.cr, self.uid, picking_ids[0])
+                        ddt_date = datetime.strptime(ddt.ddt_date, DEFAULT_SERVER_DATE_FORMAT)
+                        description.append(u'Ns. DDT {ddt} del {ddt_date}'.format(ddt=ddt.ddt_number, ddt_date=ddt_date.strftime("%d/%m/%Y")))
+            else:
+                if sale_order not in sale_orders:
+                    sale_orders.append(sale_order)
+                    sale_order_ids = sale_order_obj.search(self.cr, self.uid, [('name', '=', sale_order)])
+                    if sale_order_ids:
+                        order = sale_order_obj.browse(self.cr, self.uid, sale_order_ids[0])
+                        # order_date = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT)
+                        description.append(u'Vs. Ordine {client_order}'.format(client_order=order.client_order_ref))
+
+        return '\n'.join(description)
+    
     def _get_invoice_tree(self, invoice_lines):
         invoice = {}
         keys = {}
         picking_obj = self.pool['stock.picking']
         sale_order_obj = self.pool['sale.order']
+        no_tree = False
         for line in invoice_lines:
             if line.origin:
                 if ':' in line.origin:
@@ -239,10 +327,15 @@ class Parser(report_sxw.rml_parse):
                 invoice[key]['lines'].append(line)
             else:
                 description = self.get_description(ddt, sale_order)
-                invoice[key] = {'description': description, 'lines': [line]}
-        
+                customer_ref = self.get_reference(sale_order)
+                invoice[key] = {'description': description, 'origin': customer_ref, 'lines': [line]}
+
+        if no_tree:
+            description = self._get_invoice_origin(invoice_lines, 'ddt', 'invoice')
+            invoice[False]['description'] = description
+
         return OrderedDict(sorted(invoice.items(), key=lambda t: t[0])).values()
-    
+
     def _get_invoice_move_lines(self, move_id):
         if move_id.line_id:
             return [line for line in move_id.line_id if line.date_maturity]
@@ -253,37 +346,3 @@ class Parser(report_sxw.rml_parse):
         address = self.pool['res.partner'].address_get(self.cr, self.uid, [partner.parent_id and partner.parent_id.id or partner.id], ['default', 'invoice'])
         return self.pool['res.partner.address'].browse(self.cr, self.uid, address['invoice'] or address['default'])
 
-    def _line_description(self, line):
-        description = []
-        if line.name:
-            description.append(re.compile('\[.*\]\ ').sub('', line.name))
-        if line.note:
-            description.append(line.note)
-
-        return '\n'.join(description)
-
-    def _get_total_tax_fiscal(self, tax_line):
-        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
-        amount_withholding = 0.0
-        for line in tax_line:
-            if line.tax_code_id.notprintable:
-                amount_withholding += line.tax_amount
-        if amount_withholding != 0.0:
-            if invoice.type in ['out_invoice', 'in_invoice']:
-                return invoice.amount_tax - amount_withholding
-            else:
-                return invoice.amount_tax + amount_withholding
-        return invoice.amount_tax
-
-    def _get_total_fiscal(self, tax_line):
-        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
-        amount_withholding = 0.0
-        for line in tax_line:
-            if line.tax_code_id.notprintable:
-                amount_withholding += line.tax_amount
-        if amount_withholding != 0.0:
-            if invoice.type in ['out_invoice', 'in_invoice']:
-                return invoice.amount_total - amount_withholding
-            else:
-                return invoice.amount_total + amount_withholding
-        return invoice.amount_total
