@@ -23,6 +23,11 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from tools.float_utils import float_compare
 
+LOT_SPLIT_TYPE_SELECTION = [
+    ('none', 'None'),
+    ('single', 'Single'),
+    ('lu', 'Logistical Unit')
+]
 
 class stock_partial_picking_line(orm.TransientModel):
     _inherit = "stock.partial.picking.line"
@@ -44,7 +49,7 @@ class stock_partial_picking_line(orm.TransientModel):
             self.serial = {ids[0]: value}
         else:
             if not ids[0] in self.serial and value in self.serial.values():
-                raise osv.except_osv(_('Warning'), _('Serial number {number} is written more than once'.format(number=value)))
+                raise orm.except_orm(_('Warning'), (_('Serial number {number} is written more than once').format(number=value)))
             else:
                 self.serials.append(value)
         
@@ -52,9 +57,11 @@ class stock_partial_picking_line(orm.TransientModel):
         
         for move in self.browse(cr, uid, ids, context=context):
             product_id = move.product_id.id
+            value = value.upper()
             existing_prodlot_ids = lot_obj.search(cr, uid, [('name', '=', value), ('product_id', '=', product_id)])
             if existing_prodlot_ids and not existing_prodlot_ids[0] == move.prodlot_id.id:
-                raise orm.except_orm(_('Warning'), _('Serial number "{number}" is already exists'.format(number=value)))
+                import pdb; pdb.set_trace()
+                raise orm.except_orm(_('Warning'), (_('Serial number "{number}" is already exists').format(number=value)))
             elif not existing_prodlot_ids:
                 prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {
                     'name': value,
@@ -62,39 +69,39 @@ class stock_partial_picking_line(orm.TransientModel):
                 })
                 
                 move.write({'prodlot_id': int(prodlot_id)})
-            
-    def _get_split(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
-        for move in self.browse(cr, uid, ids):
-            res[move.id] = move.product_id.lot_split_type or False
-        return res
-    
+
+        return True
+
     _columns = {
         'new_prodlot_code': fields.function(_get_prodlot_code, fnct_inv=_set_prodlot_code,
                                             method=True, type='char', size=64,
                                             string='Prodlot fast input', select=1
                                             ),
-        'split_type': fields.function(_get_split, method=True, type='char', string='Split'),
+        'split_type': fields.related('product_id', 'lot_split_type', type="selection", selection=LOT_SPLIT_TYPE_SELECTION, string="Split", store=False),
         'tracking_id': fields.many2one('stock.tracking', 'Pack/Tracking'),
         'balance': fields.boolean('Balance'),
         'pallet_qty': fields.integer('Number Pallet'),
-        'pallet_id':fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]), 
+        'pallet_id': fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]),
     }
 
     def onchange_new_prodlot_code(self, cr, uid, ids, new_prodlot_code, product_id, prodlot_id, context=None):
         lot_obj = self.pool['stock.production.lot']
-        existing_prodlot_ids =  lot_obj.name_search(cr, uid, new_prodlot_code, operator='=', context=context)
+        if new_prodlot_code:
+            new_prodlot_code = new_prodlot_code.upper()  # all serial number must be on uppercase
+        existing_prodlot_ids = lot_obj.search(cr, uid, [('name', '=', new_prodlot_code), ('product_id', '=', product_id)], context=context)
+
+        move_type = self.pool['stock.partial.picking.line'].browse(cr, uid, ids, context=context)[0].move_id.picking_id.type
         if existing_prodlot_ids:
-            product = self.pool.get("product.product").browse(cr, uid, product_id, context=context)
-            if product.lot_split_type == 'single':
+            product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
+            if product.lot_split_type == 'single' and move_type != 'out':
                 return {
                     'warning': {
                         'title': _('Warning!'),
-                        'message': _('Serial number "{number}" is already exists'.format(number=new_prodlot_code))
+                        'message': (_('Serial number "{number}" is already exists').format(number=new_prodlot_code))
                     }
                 }
             else:
-                existing_lot_id = existing_prodlot_ids[0][0]
+                existing_lot_id = existing_prodlot_ids[0]
                 return {'value': {'prodlot_id': existing_lot_id}}
         else:
             prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {
@@ -102,6 +109,7 @@ class stock_partial_picking_line(orm.TransientModel):
                 'product_id': product_id,
             })
             return {'value': {'prodlot_id': prodlot_id}}
+
 
 class stock_partial_picking(orm.TransientModel):
     _inherit = "stock.partial.picking"
@@ -115,7 +123,6 @@ class stock_partial_picking(orm.TransientModel):
     
     _columns = {
         'tracking_code': fields.char('Pack', size=64),
-        
     }
 
     def do_partial(self, cr, uid, ids, context=None):
@@ -134,7 +141,7 @@ class stock_partial_picking(orm.TransientModel):
             line_uom = wizard_line.product_uom
             move_id = wizard_line.move_id.id
 
-            #Quantiny must be Positive
+            # Quantiny must be Positive
             if wizard_line.quantity < 0:
                 raise osv.except_osv(_('Warning!'), _('Please provide Proper Quantity !'))
 
@@ -145,12 +152,12 @@ class stock_partial_picking(orm.TransientModel):
                 if float_compare(qty_in_line_uom, wizard_line.quantity, precision_rounding=line_uom.rounding) != 0:
                     raise osv.except_osv(_('Warning'), _('The uom rounding does not allow you to ship "%s %s", only roundings of "%s %s" is accepted by the uom.') % (wizard_line.quantity, line_uom.name, line_uom.rounding, line_uom.name))
             if move_id:
-                #Check rounding Quantity.ex.
-                #picking: 1kg, uom kg rounding = 0.01 (rounding to 10g),
-                #partial delivery: 253g
-                #=> result= refused, as the qty left on picking would be 0.747kg and only 0.75 is accepted by the uom.
+                # Check rounding Quantity.ex.
+                # picking: 1kg, uom kg rounding = 0.01 (rounding to 10g),
+                # partial delivery: 253g
+                # => result= refused, as the qty left on picking would be 0.747kg and only 0.75 is accepted by the uom.
                 initial_uom = wizard_line.move_id.product_uom
-                #Compute the quantity for respective wizard_line in the initial uom
+                # Compute the quantity for respective wizard_line in the initial uom
                 qty_in_initial_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, initial_uom.id)
                 without_rounding_qty = (wizard_line.quantity / line_uom.factor) * initial_uom.factor
                 if float_compare(qty_in_initial_uom, without_rounding_qty, precision_rounding=initial_uom.rounding) != 0:
@@ -172,7 +179,7 @@ class stock_partial_picking(orm.TransientModel):
             existing_tracking = wizard_line.tracking_id.id
             
             if existing_tracking:  # avoid creating a tracking twice
-                #self.pool['stock.tracking').write(cr, uid, existing_tracking, {'name': partial.tracking_code})
+                # self.pool['stock.tracking').write(cr, uid, existing_tracking, {'name': partial.tracking_code})
                 tracking_id = existing_tracking
             else:
                 if partial.tracking_code:
@@ -190,7 +197,7 @@ class stock_partial_picking(orm.TransientModel):
                 else:
                     tracking_id = None
             
-            partial_data['move%s' % (move_id)] = {
+            partial_data['move%s' % move_id] = {
                 'product_id': wizard_line.product_id.id,
                 'product_qty': wizard_line.quantity,
                 'product_uom': wizard_line.product_uom.id,
@@ -201,7 +208,7 @@ class stock_partial_picking(orm.TransientModel):
                 'pallet_id': wizard_line.pallet_id.id, 
             }
             if (picking_type == 'in') and (wizard_line.product_id.cost_method == 'average'):
-                partial_data['move%s' % (wizard_line.move_id.id)].update(product_price=wizard_line.cost,
+                partial_data['move%s' % wizard_line.move_id.id].update(product_price=wizard_line.cost,
                                                                          product_currency=wizard_line.currency.id)
             # compose the pallet list
             if not wizard_line.pallet_id.id in pallet:
@@ -229,13 +236,13 @@ class stock_partial_picking(orm.TransientModel):
         else:
             res = self.pool['ir.model.data'].get_object_reference(cr, uid, 'stock', 'view_picking_out_form')
         return {
-                'type': 'ir.actions.act_window',
-                'name': 'Delivered',
-                'view_type': 'form',
-                'view_mode': 'form',
-                'view_id': res and res[1] or False,
-                'res_model': 'stock.picking',
-                'nodestroy': True,
-                'target': 'current',
-                'res_id': int(delivered_pack_id[partial.picking_id.id]),
+            'type': 'ir.actions.act_window',
+            'name': 'Delivered',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': res and res[1] or False,
+            'res_model': 'stock.picking',
+            'nodestroy': True,
+            'target': 'current',
+            'res_id': int(delivered_pack_id[partial.picking_id.id]),
         }

@@ -413,3 +413,25 @@ msgstr "Prodotto '%s' ha 'Tipo di Split' = 'Unitò logistica' ma mancano le info
 #, python-format
 msgid "Production lot %s exists but not for product %s."
 msgstr "Il lotto/seriale %s esiste ma non per il prodotto %s."
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:59
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:101
+#, python-format
+msgid "Serial number \"{number}\" is already exists"
+msgstr "Il Numero di Serie \"{number}\" è già esistente"
+
+#. module: dt_product_serial
+#: selection:stock.partial.picking.line,split_type:0
+msgid "None"
+msgstr "Nessuno"
+
+#. module: dt_product_serial
+#: selection:stock.partial.picking.line,split_type:0
+msgid "Single"
+msgstr "Numero di Serie"
+
+#. module: dt_product_serial
+#: selection:stock.partial.picking.line,split_type:0
+msgid "Logistical Unit"
+msgstr "Lotto"

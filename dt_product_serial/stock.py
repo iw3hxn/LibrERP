@@ -145,8 +145,15 @@ class stock_move(orm.Model):
         return result
 
     def split_move(self, cr, uid, ids, context=None):
+        lot_obj = self.pool['stock.production.lot']
+
+        moves = self.browse(cr, uid, ids, context=context)
+        if moves:
+            auto_assign_lot = moves[0].picking_id.company_id.auto_assign_lot
+        else:
+            auto_assign_lot = True
         all_ids = list(ids)
-        for move in self.browse(cr, uid, ids, context=context):
+        for move in moves:
             qty = move.product_qty
             lu_qty = False
             if move.product_id.lot_split_type == 'lu':
@@ -157,15 +164,45 @@ class stock_move(orm.Model):
                 lu_qty = 1
             if lu_qty and qty > 1:
                 # Set existing move to LU quantity
-                self.write(cr, uid, move.id, {'product_qty': lu_qty, 'product_uos_qty': move.product_id.uos_coeff})
+                # search also product_lot
+
+                vals = {
+                    'product_qty': lu_qty,
+                    'product_uos_qty': move.product_id.uos_coeff
+                }
+    #PROVO AD ATTRIBUIRE I NUMERI DI SERIE IN AUTOMATICO
+    ##################### CARLO NON È CORRETTO ANDREBBE FATTO NON DENTRO QUESTO CICLO MA FUORI (DOPO) CHE VADO A SISTEMARE LE COSE PER IL LOTTO DI PRODUZIONE
+    ####### ORA È SOLO UN TEST
+    ##################### 8/8/2015
+                prod_lot_ids = []
+                index_lot = 0
+                if move.picking_id.type == 'out' and move.product_id.track_outgoing and auto_assign_lot:
+                    prod_lot_ids = lot_obj.search(cr, uid, [('product_id', '=', move.product_id.id), ('stock_available', '>', 0)], order="date asc")
+                    if prod_lot_ids:
+                        vals['prodlot_id'] = prod_lot_ids[index_lot]
+                        if move.product_id.lot_split_type == 'single':
+                            index_lot += 1
+
+                self.write(cr, uid, move.id, vals)
                 qty -= lu_qty
                 # While still enough qty to create a new move, create it
                 while qty >= lu_qty:
-                    all_ids.append( self.copy(cr, uid, move.id, {'state': move.state, 'prodlot_id': None}) )
+                    vals = {
+                        'state': move.state,
+                        'prodlot_id': None
+                    }
+                    if len(prod_lot_ids) > index_lot:
+                        vals['prodlot_id'] = prod_lot_ids[index_lot]
+                        if move.product_id.lot_split_type == 'single':
+                            index_lot += 1
+
+
+                    all_ids.append(self.copy(cr, uid, move.id, vals, context))
                     qty -= lu_qty
+
                 # Create a last move for the remainder qty
                 if qty > 0:
-                    all_ids.append( self.copy(cr, uid, move.id, {'state': move.state, 'prodlot_id': None, 'product_qty': qty}) )
+                    all_ids.append(self.copy(cr, uid, move.id, {'state': move.state, 'prodlot_id': None, 'product_qty': qty}))
         return all_ids
     
     def create(self, cr, user, vals, context=None):
@@ -209,7 +246,6 @@ class stock_picking(orm.Model):
     #   - they are from the same sale order lines (requires extra-code)
     # we merge invoice line together and do the sum of quantity and
     # subtotal.
-    
 
     def action_invoice_create(self, cursor, user, ids, journal_id=False,
                             group=False, type='out_invoice', context=None):

@@ -29,10 +29,12 @@ class company(orm.Model):
     _columns = {
         'autosplit_is_active': fields.boolean('Active auto split', help="Active the automatic split of move lines on the pickings."),
         'is_group_invoice_line': fields.boolean('Group invoice lines', help="If active, OpenERP will group the identical invoice lines. If inactive, each move line will generate one invoice line."),
+        'auto_assign_lot': fields.boolean('Auto Assign Outgoing Lot', help="If active, OpenERP will try to assign lot on outgoing shipment."),
     }
 
     _defaults = {
         'autosplit_is_active': lambda *a: True,
         'is_group_invoice_line': lambda *a: True,
+        'auto_assign_lot': lambda *a: True,
     }
 

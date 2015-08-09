@@ -21,14 +21,18 @@
 
 from openerp.osv import orm, fields
 
+LOT_SPLIT_TYPE_SELECTION = [
+    ('none', 'None'),
+    ('single', 'Single'),
+    ('lu', 'Logistical Unit')
+]
+
 
 class product_product(orm.Model):
     _inherit = "product.product"
 
     _columns = {
-        'lot_split_type': fields.selection([('none','None'),
-                                    ('single','Single'),
-                                    ('lu','Logistical Unit')], 'Lot split type', required=True, help="None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"),
+        'lot_split_type': fields.selection(LOT_SPLIT_TYPE_SELECTION, 'Lot split type', required=True, help="None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"),
     }
     _defaults = {
         'lot_split_type': lambda *a: 'none',
