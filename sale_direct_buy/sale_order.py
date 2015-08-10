@@ -41,9 +41,9 @@ class sale_order(orm.Model):
                 date_planned = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT) + \
                     relativedelta(days=order_line.product_id.seller_delay or 0.0)
                 if order_line.product_id.is_kit:
-                    bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)])
+                    bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)], context)
                     if bom_ids:
-                        boms = bom_obj.browse(cr, uid, bom_ids)
+                        boms = bom_obj.browse(cr, uid, bom_ids, context)
                         for bom in boms:
                             if bom.type == 'phantom':
                                 if order_line.bom_ids:
@@ -54,15 +54,14 @@ class sale_order(orm.Model):
             supplierinfo.name.id, order_line.order_id.date_order, supplierinfo.name.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
             child_bom.product_id.name or '', False, False, context)
 
-
                                         line_values = {
                                             'product_uom': res['value'].get('product_uom'),  # child_bom.product_uom.id,
                                             'price_unit': res['value'].get('price_unit'),  # child_bom.product_id.standard_price,
                                             'discount': res['value'].get('discount'),
-                                            'product_qty': res['value'].get('product_qty'),  # child_bom.product_uom_qty or 1,
+                                            'product_qty': res['value'].get('product_qty') - child_bom.product_id.virtual_available,  # child_bom.product_uom_qty or 1,
                                             'partner_id': supplierinfo.name.id,  # Supplier
                                             'name': res['value'].get('name'),  # child_bom.product_id.name or '',
-                                            #'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
+                                            # 'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
                                             'date_planned': date_planned.strftime(
                                                 DEFAULT_SERVER_DATE_FORMAT),
                                             'company_id': order_line.company_id.id,
@@ -82,12 +81,12 @@ class sale_order(orm.Model):
                     res = self.pool['purchase.order.line'].onchange_product_id(cr, uid, ids, order_line.supplier_id.property_product_pricelist_purchase.id, order_line.product_id.id, order_line.product_uom_qty or 1, order_line.product_uom.id,
                         order_line.supplier_id.id, order_line.order_id.date_order, order_line.supplier_id.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
                         order_line.name, order_line.purchase_price or order_line.product_id.standard_price, order_line.notes, context)
-
+                    import pdb; pdb.set_trace()
                     line_values = {
                         'product_uom': res['value'].get('product_uom'),  #  order_line.product_uom.id,
                         'price_unit': res['value'].get('price_unit'),  # order_line.purchase_price or order_line.product_id.standard_price,
                         'discount': res['value'].get('discount'),  # order_line.extra_purchase_discount or 0.00,
-                        'product_qty': res['value'].get('product_qty'),  # order_line.product_uom_qty or 1,
+                        'product_qty': res['value'].get('product_qty') - order_line.product_id.virtual_available,  # order_line.product_uom_qty or 1,
                         'partner_id': order_line.supplier_id.id,  # Supplier
                         'name': res['value'].get('name'),  # order_line.name or '',
                         'date_planned': date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
@@ -123,7 +122,7 @@ class sale_order(orm.Model):
                 if supplier_id == 'no_supplier':
                     # Control if there are requesition requests in state 'draft'. If find any,
                     # use them, if not create new.
-                    requisition_ids = purchase_requisition_obj.search(cr, uid, [('state', '=', 'draft')])
+                    requisition_ids = purchase_requisition_obj.search(cr, uid, [('state', '=', 'draft')], context)
                     
                     if requisition_ids:
                         for line in order_lines:
@@ -143,7 +142,7 @@ class sale_order(orm.Model):
                             'exclusive': 'multiple',
                             'user_id': uid,
                             'line_ids': [(0, 0, val) for val in order_lines],
-                        })
+                        }, context=context)
                         if requisition_id:
                             message = _("The Requisition order has been created.")
                             self.log(cr, uid, order.id, message)
@@ -160,7 +159,7 @@ class sale_order(orm.Model):
                         'invoice_method': 'manual',
                         'location_id': location_id,
                         'payment_term': purchase_order_values['payment_term']
-                    })
+                    }, context=context)
                     if purchase_id:
                         message = _("The Purchase order has been created.")
                         self.log(cr, uid, order.id, message)
@@ -183,7 +182,7 @@ class sale_order_line(orm.Model):
     
     def create(self, cr, uid, vals, context=None):
         if vals.get('product_id', False):
-            product = self.pool['product.product'].browse(cr, uid, vals['product_id'])
+            product = self.pool['product.product'].browse(cr, uid, vals['product_id'], context=context)
             # onchange_vals = self.pool.get('sale.order.line').product_id_change(cr, uid, [], value['pricelist_id'], linevalue['product_id'], linevalue['product_uom_qty'],False, 0, False, '', value['partner_id'])['value']
             if product.manufacturer and product.manufacturer_pref:
                 vals.update({
@@ -196,7 +195,7 @@ class sale_order_line(orm.Model):
         if not context:
             context = {}
         if vals.get('product_id', False):
-            product = self.pool['product.product'].browse(cr, uid, vals['product_id'])
+            product = self.pool['product.product'].browse(cr, uid, vals['product_id'], context)
             if product.manufacturer and product.manufacturer_pref:
                 vals.update({
                     'manufacturer_id': product.manufacturer.id,
@@ -217,7 +216,7 @@ class sale_order_line(orm.Model):
                                                                      lang, update_tax, date_order, packaging, fiscal_position, flag)
         
         if product_id:
-            product = self.pool['product.product'].browse(cr, uid, product_id)
+            product = self.pool['product.product'].browse(cr, uid, product_id, context)
             if product.manufacturer and product.manufacturer_pref:
                 result_dict['value'].update({
                     'manufacturer_id': product.manufacturer.id,
@@ -227,8 +226,8 @@ class sale_order_line(orm.Model):
             if not supplier_id and auto_supplier:
                 #--find the supplier
                 
-                supplier_info_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', product.product_tmpl_id.id)], order="sequence")
-                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids)
+                supplier_info_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', product.product_tmpl_id.id)], order="sequence", context=context)
+                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
                 seller_ids = [info.name.id for info in supplier_infos]
                 
                 if seller_ids:
@@ -243,7 +242,7 @@ class sale_order_line(orm.Model):
                     })
 
             if supplier_id:
-                supplier = self.pool['res.partner'].browse(cr, uid, supplier_id)
+                supplier = self.pool['res.partner'].browse(cr, uid, supplier_id, context=context)
                 pricelist = supplier.property_product_pricelist_purchase and supplier.property_product_pricelist_purchase.id or False
                 if pricelist:
                     ctx = {
