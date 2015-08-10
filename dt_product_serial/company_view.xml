@@ -12,6 +12,7 @@
                    	<separator string="Product serial" colspan="4"/>
                    	<field name="autosplit_is_active"/>
                    	<field name="is_group_invoice_line"/>
+                    <field name="auto_assign_lot" />
                    	<newline/>
                 </page>
             </field>
