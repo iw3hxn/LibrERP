@@ -3080,7 +3080,7 @@ msgstr "Richiesto"
 #: field:product.category,property_account_expense_categ:0
 #: field:product.template,property_account_expense:0
 msgid "Expense Account"
-msgstr "Bilancio spese"
+msgstr "Conto di debito"
 
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:84
@@ -6390,7 +6390,7 @@ msgstr "Altre informazioni"
 #. module: account
 #: field:account.journal,default_credit_account_id:0
 msgid "Default Credit Account"
-msgstr "Conto Crediti predefinito"
+msgstr "Conto predefinito di credito"
 
 #. module: account
 #: help:account.analytic.line,currency_id:0
