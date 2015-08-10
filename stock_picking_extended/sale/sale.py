@@ -181,3 +181,21 @@ class sale_order(orm.Model):
                     self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
 
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
+
+    def create(self, cr, uid, vals, context=None):
+        if not context:
+            context = {}
+        # adaptative function: the system learn
+        sale_order_id = super(sale_order, self).create(cr, uid, vals, context=context)
+        # create function return only 1 id
+        if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
+            order = self.browse(cr, uid, sale_order_id, context)
+            partner_vals = {}
+            if not order.partner_id.carriage_condition_id:
+                partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+            if not order.partner_id.goods_description_id:
+                partner_vals['goods_description_id'] = vals.get('goods_description_id')
+            if partner_vals:
+                self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
+
+        return sale_order_id

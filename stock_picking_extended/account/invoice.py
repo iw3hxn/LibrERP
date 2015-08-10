@@ -87,10 +87,10 @@ class account_invoice(orm.Model):
         if not context:
             context = {}
         # adaptative function: the system learn
-        ids = super(account_invoice, self).create(cr, uid, vals, context=context)
-        
+        invoice_id = super(account_invoice, self).create(cr, uid, vals, context=context)
+        # create function return only 1 id
         if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
-            invoice = self.browse(cr, uid, ids, context)
+            invoice = self.browse(cr, uid, invoice_id, context)
             partner_vals = {}
             if not invoice.partner_id.carriage_condition_id:
                 partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
@@ -99,7 +99,8 @@ class account_invoice(orm.Model):
             if partner_vals:
                 self.pool['res.partner'].write(cr, uid, [invoice.partner_id.id], partner_vals, context)
 
-        return ids
+        return invoice_id
+
 
 class account_invoice_line(orm.Model):
     _inherit = "account.invoice.line"
