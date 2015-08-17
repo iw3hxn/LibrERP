@@ -36,7 +36,8 @@
     'depends': [
         'base',
         'account',
-        'base_partner_ref'
+        'base_address_contact',
+        'base_partner_ref',
     ],
     'data': [
         'ref_sequences.xml',
