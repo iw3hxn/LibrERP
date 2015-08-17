@@ -21,30 +21,31 @@
 ##############################################################################
 
 {
-    "name": "Display HTML",
-    "version": "1.2.0.1",
-    "category": "Hidden",
-    "description": """This module provides a  new widget to display HTML tags.
+    "name" : "Display HTML",
+    "version" : "1.2.0",
+    "category" : "Hidden",
+    "description" : """This module provides a  new widget to display HTML tags.
 You need to add in your view's field widget="text_WYSIWYG" to see the result as HTML instead of text.
 
 If you download and install the widget "web_wysiwyg", you can replace the basic texareas by powerful WYSIWYG editors.
 """,
     "author": "Elico Corp",
     "website": "http://www.openerp.net.cn",
-    "images": [
+    "images" : [
         "images/result.png",
     ],
-    "depends": [],
-    "js": [
+    "depends" : [],
+    "js" : [
         "static/src/js/web_display_html.js",
     ],
-    "css": [
+    "css" : [
         "static/src/css/web_display_html.css",
     ],
-    "init_xml": [],
-    "update_xml": [],
+    "init_xml" : [],
+    "update_xml" : [],
     "demo_xml": [], 
-    "test": [],
-    "auto_install": True,
-    "active": True,
+    "test" : [],
+    "auto_install" : True,
+    "active" : True,
+    "certificate" : "",
 }

@@ -64,4 +64,5 @@ If you download and install the widget "web_display_html", your fields with widg
     "test" : [],
     "auto_install" : True,
     "active" : True,
+    "certificate" : "",
 }

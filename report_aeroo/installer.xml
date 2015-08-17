@@ -60,7 +60,7 @@
     <record id="report_aeroo_installer_todo" model="ir.actions.todo">
         <field name="action_id" ref="action_report_aeroo_installer"/>
         <field name="restart">always</field>
-        <field name="sequence">3</field>
+        <field name="sequence">30</field>
         <field name="type">automatic</field>
     </record>
 

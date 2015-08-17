@@ -77,7 +77,7 @@
         <field name="action_id" ref="action_aeroo_config_installer"/>
         <field name="category_id" ref="base.category_administration_config"/>
         <field name="type">automatic</field>
-        <field name="sequence">3</field>
+        <field name="sequence">30</field>
     </record>
 
   </data>
