@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="crm_case_inbound_phone_tree_view_inh_lead_ext">
+            <field name="name">crm.case.inbound.phone.tree.view.inh.lead.ext</field>
+            <field name="model">crm.phonecall</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="crm.crm_case_inbound_phone_tree_view" />
+            <field name="arch" type="xml">
+                <field name="opportunity_id" position="replace">
+                    <field name="opportunity_id" />
+                </field>
+            </field>
+        </record>
+
+	</data>
+</openerp>
