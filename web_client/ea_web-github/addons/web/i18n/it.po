@@ -2104,4 +2104,4 @@ msgstr "Per maggiori informazioni visita"
 #: code:addons/web/static/src/xml/base.xml:424
 #, python-format
 msgid "OpenERP.com"
-msgstr "LibrERP.si"
+msgstr "LibrERP.com"
