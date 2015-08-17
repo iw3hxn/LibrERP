@@ -20,12 +20,11 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
+from openerp.osv import orm, fields
 from lxml import etree
 import tools
 
-class mass_editing_wizard(osv.osv_memory):
+class mass_editing_wizard(orm.TransientModel):
     _name = 'mass.editing.wizard'
 
     _columns = {
@@ -39,21 +38,21 @@ class mass_editing_wizard(osv.osv_memory):
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
         result = super(mass_editing_wizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar,submenu)
         if context.get('mass_editing_object'):
-            mass_object = self.pool.get('mass.object') 
+            mass_object = self.pool['mass.object']
             editing_data = mass_object.browse(cr, uid, context.get('mass_editing_object'), context)
             all_fields = {}
             xml_form = etree.Element('form', {'string': tools.ustr(editing_data.name)})
             xml_group = etree.SubElement(xml_form, 'group', {'colspan': '4'})
-            etree.SubElement(xml_group, 'field', {'name': 'serpent_image', 'nolabel': '1','colspan': '1', 'modifiers': '{"readonly": true}', 'widget':'image'})
-            etree.SubElement(xml_group, 'label', {'string': '','colspan': '2'})
-            all_fields['serpent_image'] = {'type':'binary', 'string':''}
+            etree.SubElement(xml_group, 'field', {'name': 'serpent_image', 'nolabel': '1', 'colspan': '1', 'modifiers': '{"readonly": true}', 'widget':'image'})
+            etree.SubElement(xml_group, 'label', {'string': '', 'colspan': '2'})
+            all_fields['serpent_image'] = {'type': 'binary', 'string':''}
             xml_group = etree.SubElement(xml_form, 'group', {'colspan': '4'})
-            model_obj = self.pool.get(context.get('active_model'))
+            model_obj = self.pool[context.get('active_model')]
             for field in editing_data.field_ids:
                 if field.ttype == "many2many":
                     field_info = model_obj.fields_get(cr, uid, [field.name], context)
                     all_fields[field.name] = field_info[field.name]
-                    all_fields["selection_"+field.name] = {'type':'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove_m2m','Remove'),('add','Add')]}
+                    all_fields["selection_" + field.name] = {'type': 'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove_m2m','Remove'),('add','Add')]}
                     xml_group = etree.SubElement(xml_group, 'group', {'colspan': '4'})
                     etree.SubElement(xml_group, 'separator', {'string': field_info[field.name]['string'],'colspan': '2'})
                     etree.SubElement(xml_group, 'field', {'name': "selection_"+field.name,'colspan': '2','nolabel':'1'})
@@ -61,14 +60,14 @@ class mass_editing_wizard(osv.osv_memory):
                 elif field.ttype == "many2one":
                     field_info = model_obj.fields_get(cr, uid, [field.name], context)
                     if field_info:
-                        all_fields["selection_"+field.name] = {'type':'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
+                        all_fields["selection_"+field.name] = {'type': 'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
                         all_fields[field.name] = {'type':field.ttype, 'string': field.field_description, 'relation': field.relation}
-                        etree.SubElement(xml_group, 'field', {'name': "selection_"+field.name, 'colspan':'2'})
-                        etree.SubElement(xml_group, 'field', {'name': field.name,'nolabel':'1','colspan':'2', 'attrs':"{'invisible':[('selection_"+field.name+"','=','remove')]}"})
+                        etree.SubElement(xml_group, 'field', {'name': "selection_" + field.name, 'colspan':'2'})
+                        etree.SubElement(xml_group, 'field', {'name': field.name,' nolabel':'1', 'colspan':'2', 'attrs':"{'invisible':[('selection_"+field.name+"','=','remove')]}"})
                 elif field.ttype == "char":
                     field_info = model_obj.fields_get(cr, uid, [field.name], context)
-                    all_fields["selection_"+field.name] = {'type':'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
-                    all_fields[field.name] = {'type':field.ttype, 'string': field.field_description, 'size': field.size or 256}
+                    all_fields["selection_"+field.name] = {'type': 'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
+                    all_fields[field.name] = {'type': field.ttype, 'string': field.field_description, 'size': field.size or 256}
                     etree.SubElement(xml_group, 'field', {'name': "selection_"+field.name,'colspan':'2', 'colspan':'2'})
                     etree.SubElement(xml_group, 'field', {'name': field.name,'nolabel':'1', 'attrs':"{'invisible':[('selection_"+field.name+"','=','remove')]}", 'colspan':'2'})
                 elif field.ttype == 'selection':
@@ -81,21 +80,21 @@ class mass_editing_wizard(osv.osv_memory):
                 else:
                     field_info = model_obj.fields_get(cr, uid, [field.name], context)
                     all_fields[field.name] = {'type':field.ttype, 'string': field.field_description}
-                    all_fields["selection_"+field.name] = {'type':'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
+                    all_fields["selection_" + field.name] = {'type': 'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
                     if field.ttype == 'text':
                         xml_group = etree.SubElement(xml_group, 'group', {'colspan': '6'})
                         etree.SubElement(xml_group, 'separator', {'string': all_fields[field.name]['string'],'colspan': '2'})
                         etree.SubElement(xml_group, 'field', {'name': "selection_"+field.name,'colspan': '2','nolabel':'1'})
                         etree.SubElement(xml_group, 'field', {'name': field.name, 'colspan':'4', 'nolabel':'1', 'attrs':"{'invisible':[('selection_"+field.name+"','=','remove')]}"})
                     else:
-                        all_fields["selection_"+field.name] = {'type':'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
-                        etree.SubElement(xml_group, 'field', {'name': "selection_"+field.name, 'colspan': '2',})
-                        etree.SubElement(xml_group, 'field', {'name': field.name,'nolabel':'1', 'attrs':"{'invisible':[('selection_"+field.name+"','=','remove')]}",'colspan': '2',})
+                        all_fields["selection_"+field.name] = {'type':'selection', 'string': field_info[field.name]['string'], 'selection': [('set', 'Set'),('remove','Remove')]}
+                        etree.SubElement(xml_group, 'field', {'name': "selection_" + field.name, 'colspan': '2',})
+                        etree.SubElement(xml_group, 'field', {'name': field.name,'nolabel': '1', 'attrs': "{'invisible':[('selection_"+field.name+"','=','remove')]}",'colspan': '2',})
 
-            etree.SubElement(xml_form, 'separator', {'string' : '','colspan': '6'})
+            etree.SubElement(xml_form, 'separator', {'string': '', 'colspan': '6'})
             xml_group3 = etree.SubElement(xml_form, 'group', {'col': '2', 'colspan': '4'})
-            etree.SubElement(xml_group3, 'button', {'string' :'Close','icon': "gtk-close", 'special' :'cancel'})
-            etree.SubElement(xml_group3, 'button', {'string' :'Apply','icon': "gtk-execute", 'type' :'object','name':"action_apply"})
+            etree.SubElement(xml_group3, 'button', {'string': 'Close', 'icon': "gtk-close", 'special' :'cancel'})
+            etree.SubElement(xml_group3, 'button', {'string': 'Apply', 'icon': "gtk-execute", 'type' :'object','name':"action_apply"})
 
             root = xml_form.getroottree()
             result['arch'] = etree.tostring(root)
@@ -106,15 +105,15 @@ class mass_editing_wizard(osv.osv_memory):
         if context.get('active_model') and context.get('active_ids'):
             model_obj = self.pool.get(context.get('active_model'))
             dict = {}
-            for key ,val in vals.items():
+            for key, val in vals.items():
                 if key.startswith('selection_'):
-                    split_key= key.split('_',1)[1]
+                    split_key = key.split('_', 1)[1]
                     if val == 'set':
                         dict.update({split_key: vals.get(split_key, False)})
                     elif val == 'remove':
                         dict.update({split_key: False})
                     elif val == 'remove_m2m':
-                        dict.update({split_key: [(5,0,[])]})
+                        dict.update({split_key: [(5, 0, [])]})
                     elif val == 'add':
                         m2m_list = []
                         for m2m_id in vals.get(split_key, False)[0][2]:
@@ -126,8 +125,6 @@ class mass_editing_wizard(osv.osv_memory):
         return result
 
     def action_apply(self, cr, uid, ids, context=None):
-        return  {'type': 'ir.actions.act_window_close'}
-
-mass_editing_wizard()
+        return {'type': 'ir.actions.act_window_close'}
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
