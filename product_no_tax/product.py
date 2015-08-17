@@ -20,27 +20,23 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import orm, fields
 
 
-class product_product(osv.osv):
+class product_product(orm.Model):
     _inherit = "product.product"
         
     def _hide_tax_on_product(self, cr, uid, ids, field_name, arg, context):
         res = {}
         
-        company_id = self.pool.get('res.users').browse(cr, uid, uid).company_id.id
-        company_obj = self.pool.get('res.company')
-        company = company_obj.browse(cr, uid, company_id)
+        company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
+        company_obj = self.pool['res.company']
+        company = company_obj.browse(cr, uid, company_id, context)
         
         for product_id in ids:           
             res[product_id] = company.hide_tax_on_product
         return res
-    
-    
         
     _columns = {
         'hide_tax': fields.function(_hide_tax_on_product, string="Tax Invisible", type='boolean', readonly=True, method=True),
     }
-    

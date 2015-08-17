@@ -29,7 +29,7 @@
 
 {
     "name": "Hide Tax on Product Form",
-    "version": "1.0.1",
+    "version": "3.0.0.1",
     "category": "Accounting",
     "description": """This Module, provided user's wizard for confirm/modify sale order.
     Also increasu usability on sale order using credit limit amd default payment term
