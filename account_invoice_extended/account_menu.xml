@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <menuitem id="account.menu_finance_receivables" name="Customers" parent="account.menu_finance" sequence="2" groups="account.group_customer_account_invoice"/>
+        <menuitem id="account.menu_finance_payables" name="Suppliers" parent="account.menu_finance" sequence="3" groups="account.group_supplier_account_invoice" />
+        <menuitem id="account.menu_finance_reporting" name="Reporting" parent="account.menu_finance" sequence="13" groups="account.group_account_user"/>
+    </data>
+</openerp>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="account.group_customer_account_invoice" model="res.groups">
+            <field name="name">View Customer Invoice</field>
+            <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+            <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+        </record>
+
+        <record id="account.group_supplier_account_invoice" model="res.groups">
+            <field name="name">View Supplier Invoice</field>
+            <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+            <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+        </record>
+
+        <!--<record id="account.group_customer_supplier_account_invoice" model="res.groups">-->
+            <!--<field name="name">View Customer &amp; Supplier Invoice</field>-->
+            <!--<field name="category_id" ref="base.module_category_accounting_and_finance"/>-->
+            <!--<field name="implied_ids" eval="[(4, ref('account.group_customer_account_invoice')), (4, ref('account.group_supplier_account_invoice'))]"/>-->
+        <!--</record>-->
+
+    </data>
+</openerp>
