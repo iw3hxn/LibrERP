@@ -36,7 +36,7 @@
     'depends': [
         'base',
         'account',
-        'base_address_contact',
+        'base_address_contacts',
         'base_partner_ref',
     ],
     'data': [
