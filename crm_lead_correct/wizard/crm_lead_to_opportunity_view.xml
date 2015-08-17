@@ -9,11 +9,18 @@
                <form string="Convert to Opportunity">
                    
                         <field name="action" attrs="{'readonly': [('vat', '!=', False)] }" />
+
+                        <group attrs="{'invisible':[('action','!=','create')]}">
+                            <field name="street" colspan="4" placeholder="Street..." string=" "/>
+                            <field name="street2" colspan="4" string=" "/>
+						    <field name="zip"  on_change="on_change_zip(zip)" placeholder="ZIP" string=" "/>
+						    <field name="city" on_change="on_change_city(city,zip)" placeholder="City" nolabel="1"/>
+                        </group>
                         <group attrs="{'invisible':[('action','!=','exist')]}">
                             <field name="partner_id" attrs="{'required': [('action', '=', 'exist')], 'readonly': [('vat', '!=', False)] }"/>
                         </group>
 
-                            <field name="vat" invisible="1"/>
+                        <field name="vat" invisible="1"/>
 
                         <separator string="Convert to Opportunity" colspan="4"/>
                         <field name="name" colspan="4"/>

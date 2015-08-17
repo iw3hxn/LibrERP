@@ -305,13 +305,21 @@ msgstr "Fasi del caso"
 
 #. module: crm
 #: view:crm.lead:0
+#: view:crm.lead2opportunity.partner:0
 msgid "Street..."
 msgstr "Via..."
 
 #. module: crm
 #: view:crm.lead:0
+#: view:crm.lead2opportunity.partner:0
 msgid "ZIP"
 msgstr "CAP"
+
+#. module: crm
+#: view:crm.lead:0
+#: view:crm.lead2opportunity.partner:0
+msgid "City"
+msgstr "Città"
 
 #. module: crm
 #: view:crm.lead:0

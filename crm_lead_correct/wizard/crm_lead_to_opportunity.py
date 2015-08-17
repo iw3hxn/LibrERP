@@ -29,7 +29,17 @@ class crm_lead2opportunity_partner(orm.TransientModel):
 
     _columns = {
         'vat': fields.char('VAT', size=64, readonly=True),
+        'street': fields.char('Street', size=128, required=True),
+        'street2': fields.char('Street2', size=128),
+        'zip': fields.char('Zip', change_default=True, size=24),
+        'city': fields.char('City', size=128, required=True),
     }
+
+    def on_change_city(self, cr, uid, ids, city, zip_code=None):
+        return self.pool['res.partner.address'].on_change_city(cr, uid, ids, city, zip_code)
+
+    def on_change_zip(self, cr, uid, ids, zip_code):
+        return self.pool['res.partner.address'].on_change_zip(cr, uid, ids, zip_code)
 
     def default_get(self, cr, uid, fields, context=None):
         """
@@ -39,7 +49,7 @@ class crm_lead2opportunity_partner(orm.TransientModel):
         """
         lead_obj = self.pool['crm.lead']
         res = super(crm_lead2opportunity_partner, self).default_get(cr, uid, fields, context=context)
-        for lead in lead_obj.browse(cr, uid, context.get('active_ids')):
+        for lead in lead_obj.browse(cr, uid, context.get('active_ids'), context=context):
             if lead.vat:
                 if vatnumber.check_vat(lead.vat):
                     res['vat'] = lead.vat
@@ -50,5 +60,30 @@ class crm_lead2opportunity_partner(orm.TransientModel):
                         res['action'] = 'exist'
                 else:
                     raise orm.except_orm(_('Error :'), _("VAT '%s' not valid.") % lead.vat)
+            res['street'] = lead.street or ''
+            res['street2'] = lead.street2 or ''
+            res['zip'] = lead.zip or ''
+            res['city'] = lead.city or ''
         return res
 
+    def action_apply(self, cr, uid, ids, context=None):
+        """
+        This converts lead to opportunity and opens Opportunity view
+        """
+        if not context:
+            context = {}
+        lead_obj = self.pool['crm.lead']
+        lead_ids = context.get('active_ids', [])
+
+        lead = self.browse(cr, uid, ids, context)[0]
+
+        vals = {
+            'street': lead.street or '',
+            'street2': lead.street2 or '',
+            'zip': lead.zip or '',
+            'city': lead.city or '',
+        }
+
+        lead_obj.write(cr, uid, lead_ids, vals, context=context)
+        res = super(crm_lead2opportunity_partner, self).action_apply(cr, uid, ids, context=context)
+        return res

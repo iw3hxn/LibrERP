@@ -113,7 +113,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
     _order = "create_date desc"
 
     def _lead_create_partner(self, cr, uid, lead, context=None):
-        #todo check on company if required vat on partner creation from lead
+        # todo check on company if required vat on partner creation from lead
         partner_obj = self.pool['res.partner']
 
         if partner_obj._columns.get('vat') and partner_obj._columns['vat'].required and not lead.vat:
@@ -131,18 +131,6 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             'category_id': lead.partner_category_id and [(6, 0, [lead.partner_category_id.id])],
             'vat': lead.vat,
         }, context=context)
-        #partner_obj.write(cr, uid, partner_id, {'customer': False})
-
-        #import pdb
-        #pdb.set_trace()
-        #category_obj = self.pool['res.partner.category']
-        #category_id = lead.partner_category_id.id
-        #category_data = category_obj.browse(cr, uid, category_id)
-        #if customer_id not in category_data['partner_ids']:
-        #    category_data['partner_ids'].append(partner_id)
-        #    category = category_obj.browse(cr, uid, category_id)
-        #    category.partner_ids = [(6, 0, category_data['partner_ids'])]
-        #    category_obj.write(cr, uid, category_id, category_data)
 
         return partner_id
 
