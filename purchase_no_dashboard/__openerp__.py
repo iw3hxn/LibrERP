@@ -23,7 +23,7 @@
 
 {
     'name': 'Purchase No Dashboard',
-    'version': '1.0',
+    'version': '1.1',
     'category': 'Generic Modules/Purchase',
     'description': """
 This module disable the purchase dashboard, which makes OpenERP fast again with the web-client and real production data that otherwise makes the dashboard very slow and that break your navigation.

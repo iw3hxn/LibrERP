@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 	<record id="base.menu_purchase_root" model="ir.ui.menu">
-		<field name="action" ref="purchase.purchase_form_action"/>
+		<field name="action" ref=""/>
 	</record>
     </data>
 </openerp>

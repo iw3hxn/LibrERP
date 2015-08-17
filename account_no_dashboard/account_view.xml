@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 	<record id="account.menu_finance" model="ir.ui.menu">
-		<field name="action" ref="account.action_invoice_tree1"/>
+		<field name="action" ref=""/>
 	</record>
     </data>
 </openerp>

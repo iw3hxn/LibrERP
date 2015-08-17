@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 	<record id="stock.menu_stock_root" model="ir.ui.menu">
-		<field name="action" ref="stock.action_picking_tree"/>
+		<field name="action" ref=""/>
 	</record>
     </data>
 </openerp>
