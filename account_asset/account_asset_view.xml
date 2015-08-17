@@ -367,7 +367,8 @@
       <field name="view_id" ref="view_account_asset_asset_hierarchy_tree"/>
     </record>
 
-    <menuitem id="menu_finance_assets" name="Assets" parent="account.menu_finance" sequence="9"/>
+    <menuitem id="menu_finance_assets" name="Assets" parent="account.menu_finance" sequence="9" groups="account.group_account_user" />
+
     <menuitem parent="menu_finance_assets" id="menu_action_account_asset_asset_tree"
         sequence="100"
         action="action_account_asset_asset_tree"/>
