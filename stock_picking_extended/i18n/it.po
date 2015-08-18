@@ -359,3 +359,9 @@ msgstr "VETTORE"
 #: view:stock.picking:0
 msgid "Expected Date"
 msgstr "Data prevista"
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_stock_picking_transportation_condition
+#: field:stock.picking.transportation_condition,name:0
+msgid "Transportation Condition"
+msgstr "Condizioni di Trasporto"
