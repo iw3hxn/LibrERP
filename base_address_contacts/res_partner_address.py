@@ -158,7 +158,6 @@ class res_partner_address_contact(orm.Model):
 class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
 
-
     def get_full_name(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for re in self.browse(cr, uid, ids, context=context):
@@ -171,6 +170,7 @@ class res_partner_address(orm.Model):
             addr += (re.city or '') + ', ' + (re.street or '')
             if re.partner_id and context.get('contact_display', False) == 'partner_address':
                 addr = "%s: %s" % (re.partner_id.name, addr.strip())
+                # addr = re.partner_id.name + ': ' + addr
             else:
                 addr = addr.strip()
             res[re.id] = addr or ''
@@ -180,15 +180,15 @@ class res_partner_address(orm.Model):
         if not len(ids):
             return []
         res = []
-        length = context.get('name_lenght', False) or 45
+        length = context.get('name_lenght', False) or 80
         for record in self.browse(cr, uid, ids, context=context):
             name = record.complete_name or record.name or ''
-            if len(name) > length:
-                name = name[:length] + '...'
+            # if len(name) > length:
+            #    name = name[:length] + '...'
             res.append((record.id, name))
         return res
 
-    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
         if not args:
             args = []
         if context is None:
@@ -197,11 +197,15 @@ class res_partner_address(orm.Model):
         name_array = name.split()
         search_domain = []
         for n in name_array:
+            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', operator, name)], limit=limit, context=context)
             search_domain.append('|')
+            search_domain.append(('partner_id', 'in', partner_ids))
             search_domain.append(('name', operator, n))
             search_domain.append(('complete_name', operator, n))
-        ids = self.search(cr, user, search_domain + args, limit=limit, context=context)
-        return self.name_get(cr, user, ids, context=context)
+
+        ids = self.search(cr, uid, search_domain + args, limit=limit, context=context)
+        context['contact_display'] = 'partner_address'
+        return self.name_get(cr, uid, ids, context=context)
 
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Partner Name', ondelete='set null', select=True, help="Keep empty for a private address, not related to partner.", required=True),
