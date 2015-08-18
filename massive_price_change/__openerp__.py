@@ -19,13 +19,17 @@
 
 {
     'name': 'Massive Price Change',
-    'version': '1.1',
+    'version': '3.0.0.0',
     'category': 'Tools',
     'complexity': "easy",
     'description': 'Wizard to change price to a lot of product with one click',
     'author': 'www.andreacometa.it & www.didotech.com',
     'website': '',
-    'depends': ['product'],
+    'depends': [
+        'product',
+        'product_bom',
+        'res_users_helper_functions'
+    ],
     'init_xml': [],
     'update_xml': [
         'wizard/wizard_view.xml'

@@ -67,7 +67,7 @@ msgstr "Modifica Prezzo"
 
 #. module: massive_price_change
 #: model:ir.actions.act_window,name:massive_price_change.action_massive_price_change_wizard
-msgid "Massive Price Chage"
+msgid "Massive Price Change"
 msgstr "Modifica Massiva Prezzo"
 
 #. module: massive_price_change

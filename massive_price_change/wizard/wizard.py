@@ -17,45 +17,53 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-from osv import fields,osv
-from tools.translate import _
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
-class wzd_massive_price_change(osv.osv_memory):
 
-	_name = "wzd.massive_price_change"
+class wzd_massive_price_change(orm.TransientModel):
+    _name = "wzd.massive_price_change"
 
-	_columns = {
-		'name' : fields.selection(
-			(('mku', 'MarkUp'),('fix', 'Fix Price')),
-			'Standard Price MarkUp Type'),
-		'price_type': fields.selection(
-			(('sale', 'Sale'),('cost', 'Cost')),
-			'Price Type'),
-		'value' : fields.float('Value', help="Insert a fix price or a value from 0 to 100 to markup old price"),
-		}
+    _columns = {
+        'name': fields.selection(
+            (('mku', 'MarkUp'), ('fix', 'Fix Price')),
+            'Standard Price MarkUp Type'),
+        'price_type': fields.selection(
+            (('sale', 'Sale'), ('cost', 'Cost')),
+            'Price Type'),
+        'value': fields.float('Value', help="Insert a fix price or a value from 0 to 100 to markup old price"),
+    }
 
-	def change(self, cr, uid, ids, context={}):
-		wzd = self.browse(cr, uid, ids[0], context)
-		
-		if wzd.price_type == 'sale':
-			if wzd.name == 'fix':
-				self.pool.get('product.product').write(cr, uid, context['active_ids'], {'list_price':wzd.value})
-			else:
-				product_obj = self.pool.get('product.product')
-				for id in context['active_ids']:
-					product = product_obj.browse(cr, uid, id, context)
-					new_price = product.list_price + ((product.list_price * wzd.value) / 100.00)
-					product_obj.write(cr, uid, [id, ], {'list_price':new_price})	
-		else:
-			if wzd.name == 'fix':
-				self.pool.get('product.product').write(cr, uid, context['active_ids'], {'standard_price':wzd.value})
-			else:
-				product_obj = self.pool.get('product.product')
-				for id in context['active_ids']:
-					product = product_obj.browse(cr, uid, id, context)
-					new_price = product.standard_price + ((product.standard_price * wzd.value) / 100.00)
-					product_obj.write(cr, uid, [id, ], {'standard_price':new_price})
-					
-		return {'type': 'ir.actions.act_window_close'}
+    def change(self, cr, uid, ids, context={}):
+        wzd = self.browse(cr, uid, ids[0], context)
 
-wzd_massive_price_change()
+        # test if user have autorization
+
+        if wzd.price_type == 'sale':
+            if not self.pool['res.groups'].user_in_group(cr, uid, uid, 'product_bom.group_sell_price', context):
+                raise orm.except_orm(_("You don't have Permission!"), _("You must be on group 'Show Sell Price'"))
+        if wzd.price_type == 'cost':
+            if not self.pool['res.groups'].user_in_group(cr, uid, uid, 'product_bom.group_cost_price', context):
+                raise orm.except_orm(_("You don't have Permission!"), _("You must be on group 'Show Cost Price'"))
+
+        if wzd.price_type == 'sale':
+            if wzd.name == 'fix':
+                self.pool['product.product'].write(cr, uid, context['active_ids'], {'list_price': wzd.value}, context)
+            else:
+                product_obj = self.pool['product.product']
+                for ids in context['active_ids']:
+                    product = product_obj.browse(cr, uid, ids, context)
+                    new_price = product.list_price + ((product.list_price * wzd.value) / 100.00)
+                    product_obj.write(cr, uid, [ids, ], {'list_price': new_price}, context)
+        else:
+            if wzd.name == 'fix':
+                self.pool['product.product'].write(cr, uid, context['active_ids'], {'standard_price': wzd.value}, context)
+            else:
+                product_obj = self.pool['product.product']
+                for ids in context['active_ids']:
+                    product = product_obj.browse(cr, uid, ids, context)
+                    new_price = product.standard_price + ((product.standard_price * wzd.value) / 100.00)
+                    product_obj.write(cr, uid, [ids, ], {'standard_price': new_price}, context)
+
+        return {'type': 'ir.actions.act_window_close'}
+
