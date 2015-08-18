@@ -944,7 +944,7 @@ msgstr "Questo wizard genererà la registrazione relativa all'accredito ricevuto
 #. module: l10n_it_ricevute_bancarie
 #: view:res.partner:0
 msgid "Ri.Ba. properties"
-msgstr "Proprietà Banca"
+msgstr "Proprietà Ri.Ba."
 
 #. module: l10n_it_ricevute_bancarie
 #: code:addons/l10n_it_ricevute_bancarie/wizard/wizard_accreditation.py:168

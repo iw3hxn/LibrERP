@@ -2,7 +2,8 @@
 <openerp>
     <data>
         
-        <menuitem name="Ri.Ba." parent="account.menu_finance" id="menu_riba" icon="STOCK_OPEN" />
+        <menuitem name="Ri.Ba." parent="account.menu_finance" id="menu_riba" icon="STOCK_OPEN"
+                groups="account.view_payment_term" />
 
         <!-- ====================================================== -->
         <!--                     DISTINTA RIBA - FILTRI                 -->
@@ -180,7 +181,7 @@
         <!--                     DISTINTA RIBA - MENU                -->
         <!-- ====================================================== -->
         <menuitem name="Distinte" parent="menu_riba" 
-            id="menu_riba_distinte" action="distinta_riba_action" sequence="2" />
+            id="menu_riba_distinte" action="distinta_riba_action" sequence="2" groups="account.group_account_user"/>
 
         <!-- ====================================================== -->
         <!--                     DISTINTA RIBA LINE TREE            -->
