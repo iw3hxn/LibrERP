@@ -29,9 +29,9 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import fields, osv
 from openerp.tools.translate import _
-import netsvc
+from openerp import netsvc
 
 
 class account_invoice(osv.Model):
@@ -40,6 +40,7 @@ class account_invoice(osv.Model):
         #'discharge_products_in_invoice': fields.boolean('Discharge products in invoice', help="In case of 'immediate invoice', this flag active system of discharge products from stock."),
         #'partner_shipping_id': fields.many2one('res.partner.address', 'Shipping Address', states={'draft': [('readonly', False)]}, help="Shipping address for current invoice.", domain=[('parent_id', '=', 'parent_id')]),
         'move_products': fields.boolean('Load/unload products in stock', help="In case of 'immediate invoice', this flag activate system of loading/unloading products from/to stock."),
+        'picking_id': fields.many2one('stock.picking', 'Stock picking created from invoice immediate'),
     }
     
     def onchange_move_products(self, cr, uid, ids, part):
@@ -99,21 +100,21 @@ class account_invoice(osv.Model):
             assert location_id, _("Stock location's named 'Stock' not exists. please verify.")
             location_id = location_id[0]
             
-            partner_data = partner_obj.read(cr, uid, invoice.partner_id.id, ['property_stock_customer', 'property_stock_supplier'], context)
+            partner_data = partner_obj.browse(cr, uid, invoice.partner_id.id, context)
 
             # prende quello 'generico' di stock.location, nell'unico caso (improbabile)
             # non ci sia il dato in res.partner, 'property_stock_customer'.
             if picking_type == 'out':
-                if not partner_data['property_stock_customer']:
+                if not partner_data.property_stock_customer:
                     customer_location_id = stock_location_obj.search(cr, uid, [('name', '=', 'Customers')])
                     assert customer_location_id, _("Customer location's named 'Customers' not exists. please verify.")
                     customer_location_id = customer_location_id[0]
                 else:
-                    customer_location_id = int(partner_data['property_stock_customer'][0])
+                    customer_location_id = int(partner_data.property_stock_customer.id)
                 dest_id = customer_location_id
             elif picking_type == 'in':
                 dest_id = location_id
-                location_id = int(partner_data['property_stock_supplier'][0])
+                location_id = int(partner_data.property_stock_supplier.id)
             
             invoice_line_ids = invoice_line_obj.search(cr, uid, [('invoice_id', '=', invoice.id)])
             invoice_lines = invoice_line_obj.browse(cr, uid, invoice_line_ids)
@@ -123,16 +124,10 @@ class account_invoice(osv.Model):
                     continue
                 
                 if picking_type == 'out':
-                    if state == 'cancel':
-                        product_qty_new = line.product_id.qty_available + line.quantity
-                        location_id, dest_id = dest_id, location_id
-                        note = _('Invoice cancellation')
-                    else:
-                        product_qty_new = line.product_id.qty_available - line.quantity
-                        note = _('Immediate invoice')
-                        
+                    product_qty_new = line.product_id.qty_available - line.quantity
+                    note = _('Immediate invoice')
                     if product_qty_new < 0:
-                        raise osv.except_osv(_('Warning!'), _('Insufficent quantity of {product}s in stock.'.format(product=line.product_id.name)))
+                        raise osv.except_osv((_('Warning!'), _('Not enough {product} in stock.').format(product=line.product_id.name)))
                 else:
                     note = ''
                 
@@ -163,6 +158,13 @@ class account_invoice(osv.Model):
             picking_obj.force_assign(cr, uid, [picking_id], context)
         return True
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        default.update({
+            'picking_id': False,
+        })
+        return super(account_invoice, self).copy(cr, uid, id, default, context)
+
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = {}
@@ -177,25 +179,18 @@ class account_invoice(osv.Model):
         else:
             object_id = int(ids)
             
-        invoice_data = self.read(cr, uid, object_id, context=context)
-            
-        if 'origin' in vals:
-            origin = vals['origin']
-        else:
-            origin = invoice_data['origin']
-             
-        state = ''
-        if 'state' in vals:
-            state = vals['state']
-            
-        move_products = False
-        if 'move_products' in vals:
-            move_products = vals['move_products']
-        else:
-            move_products = invoice_data['move_products']
+        invoice_data = self.browse(cr, uid, object_id, context=context)
+        origin = vals.get('origin', False) or invoice_data.origin or False
 
-        if move_products:
-            if not origin and state in ('open', 'cancel') and vals.get('move_id', True):
-                self.create_picking(cr, uid, ids, state, context)
+        if vals.get('move_products', False) or invoice_data.move_products or False:
+            if not origin and vals.get('state', False) in ('cancel',):
+                for invoice in self.browse(cr, uid, ids, context=context):
+                    # search if picking is already created and delete
+                    if invoice.picking_id:
+                        self.pool['stock.picking'].action_reopen(cr, uid, [invoice.picking_id.id], context)
+                        self.pool['stock.picking'].action_cancel(cr, uid, [invoice.picking_id.id], context)
+                        self.pool['account.invoice'].write(cr, uid, [invoice.id], {'picking_id': False}, context=context)
+            elif not origin and vals.get('state', False) in ('open',): # and vals.get('move_id', True):
+                self.create_picking(cr, uid, ids, vals['state'], context)
     
         return res

@@ -58,6 +58,11 @@ msgid "Load/unload products in stock"
 msgstr "Movimenta Magazzino"
 
 #. module: invoice_immediate
+#: field:account.invoice,date_done:0
+msgid "Date Done"
+msgstr "Data di esecuzione"
+
+#. module: invoice_immediate
 #: code:addons/invoice_immediate/invoice_immediate.py:129
 #, python-format
 msgid "Warning!"
