@@ -20,7 +20,6 @@
 ###############################################################################
 
 from openerp.osv import orm, fields
-import netsvc
 
 
 class stock_picking(orm.Model):
@@ -54,6 +53,7 @@ class stock_picking(orm.Model):
                     self.pool['account.invoice.line'].write(cr, uid, line.id, new_line_vals, context=context)
             invoice.button_reset_taxes()
         return invoice_dict
+
 
 class StockMove(orm.Model):
     _inherit = 'stock.move'
@@ -98,7 +98,7 @@ class StockMove(orm.Model):
                     mid = move_obj.copy(cr, uid, move.id, default=valdef)
                     processed_ids.append(mid)
                 move_obj.write(cr, uid, [move.id], {
-                    'location_dest_id': move.location_id.id, # dummy move for the kit
+                    'location_dest_id': move.location_id.id,  # dummy move for the kit
                     'auto_validate': True,
                     'picking_id': False,
                     'state': 'confirmed'
