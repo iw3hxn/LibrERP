@@ -21,16 +21,30 @@
 
 import time
 from openerp.osv import orm, fields
-
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 class purchase_order(orm.Model):
     _inherit = "purchase.order"
 
     def wkf_confirm_order(self, cr, uid, ids, context=None):
+        supplierinfo_obj = self.pool['product.supplierinfo']
         res = super(purchase_order, self).wkf_confirm_order(cr, uid, ids, context)
-        for o in self.browse(cr, uid, ids):
+        for o in self.browse(cr, uid, ids, context):
             for line in o.order_line:
                 if line.product_id:
-                    self.pool.get('product.product').write(cr, uid, [line.product_id.id], ({'last_purchase_date': time.strftime('%Y-%m-%d %H:%M:%S'),
-                                                                                         'last_supplier_id': line.partner_id.id}))
-        return True
+                    vals = {
+                        'last_purchase_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                        'last_supplier_id': line.partner_id.id
+                    }
+                    self.pool['product.product'].write(cr, uid, [line.product_id.id], vals, context)
+                    supplierinfo_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('name', '=', line.partner_id.id)], context=context)
+                    if not supplierinfo_ids:
+                        supplierinfo_obj.create(cr, uid, {
+                            'name': line.partner_id.id,
+                            'product_name': line.name,
+                            'product_id': line.product_id.id,
+                            'min_qty': 1,
+                            'product_code': line.product_id.default_code,
+                            'sequence': 10
+                        }, context)
+        return res

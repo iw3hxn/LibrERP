@@ -20,13 +20,12 @@
 ##############################################################################
 
 import time
-from tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.osv import orm, fields
 
 
 class sale_order(orm.Model):
     _inherit = "sale.order"
-
 
     def action_wait(self, cr, uid, ids, *args):
 
@@ -34,6 +33,10 @@ class sale_order(orm.Model):
         for o in self.browse(cr, uid, ids):
             for line in o.order_line:
                 if line.product_id:
-                    self.pool.get('product.product').write(cr,uid,[line.product_id.id],({'last_sale_date': time.strftime('%Y-%m-%d %H:%M:%S')}))
-        return True
+                    vals = {
+                        'last_sale_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                        'last_customer_id': line.partner_id.id
+                    }
+                    self.pool['product.product'].write(cr, uid, [line.product_id.id], vals)
+        return res
 

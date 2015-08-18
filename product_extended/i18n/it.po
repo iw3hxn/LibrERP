@@ -36,6 +36,11 @@ msgid "Last Supplier"
 msgstr "Ultimo Fornitore"
 
 #. module: product_extended
+#: field:product.product,last_customer_id:0
+msgid "Last Supplier"
+msgstr "Ultimo Cliente"
+
+#. module: product_extended
 #: view:product.product:0
 msgid "Extra information"
 msgstr "Informazioni Aggiuntive sul Prezzo"
