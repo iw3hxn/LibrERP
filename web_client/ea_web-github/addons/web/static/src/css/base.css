@@ -1213,13 +1213,13 @@ label.error {
 .openerp .field_selection,
 .openerp a.oe_form_uri {
     vertical-align: middle;
-    padding-top: 3px;
+/*    padding-top: 3px; */
 /*    font-size: 90%; */
     color: #000000;
-    max-width: 350px;
+    max-width: 400px;
     display: inline-block;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: pre-line;
     overflow: hidden;
 }
 .openerp a.oe_form_uri {
@@ -1268,12 +1268,13 @@ label.error {
 }
 .openerp .oe_form_frame_cell .input[type="text"] {
     padding-bottom: 1px;
-    border-right: 1px solid #DDD;
+    border-right: 1px solid #F0F0F0;
 }
 
 .openerp table.oe_frame td {
     color: #4c4c4c;
     border: 0px;
+    vertical-align: baseline;
 }
 .openerp td.oe_form_frame_cell {
     padding: 2px;
@@ -1351,7 +1352,7 @@ label.error {
 }
 .openerp .oe_form_frame_cell  .oe_label, .openerp .oe_form_frame_cell  .oe_label_help {
     font-weight: normal;
-    border-right: 1px solid #DDD;
+    border-right: 1px solid #F0F0F0;
     padding: 2px 0px;
 }
 .openerp #tiptip_content {
@@ -1381,7 +1382,7 @@ label.error {
     color: #1e1e1e;
     font-weight: bold;
     text-align: left !important;
-    padding-left: 6px;
+    padding-left: 2px;
 }
 .openerp .oe_forms .searchview_group_content label.oe_label, .openerp .searchview_group_content .oe_forms label.oe_label_help { /* making a distinction between labels in search view and other labels */
     margin: 3px 0 0 3px;
@@ -1451,8 +1452,8 @@ label.error {
 .openerp .oe_form_readonly .field_date,
 .openerp .oe_form_readonly .field_selection,
 .openerp .oe_forms_readonly .oe_form_field_many2one {
-    padding: 4px 2px 2px 2px;
-#    background-color: white;
+    padding: 1px 1px 1px 1px;
+    vertical-align: middle;
     min-height: 17px;
 }
 .openerp .oe_form_readonly .oe_form_frame_cell .field_text {
@@ -1468,7 +1469,7 @@ label.error {
 #    background-color:white;
     height:18px;
     margin-bottom:1px;
-    padding: 5px 2px 5px 2px;
+    padding: 2px 2px 5px 2px;
 }
 
 .openerp .oe_form_readonly .oe_form_field_email div  {
