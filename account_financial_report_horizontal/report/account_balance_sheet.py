@@ -300,8 +300,10 @@ class report_balancesheet_horizontal(
                 }
             if typ == 'liability':
                 self.result_sum_dr += account_dict['balance']
+                accounts_l_temp.update({account_dict['id']: account_dict})
             if typ == 'asset':
                 self.result_sum_cr += account_dict['balance']
+                accounts_a_temp.update({account_dict['id']: account_dict})
         
         account_l_temp = accounts_l_temp.values()
         account_a_temp = accounts_a_temp.values()
