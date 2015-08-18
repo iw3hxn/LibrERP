@@ -89,6 +89,14 @@ class emissione_riba(orm.TransientModel):
 
         # create lines
         conta = 1
+        no_bank = []
+        for move_line in move_line_obj.browse(cr, uid, move_line_ids, context=context):
+            if not (move_line.partner_id.bank_riba_id or move_line.partner_id.bank_ids):
+                if move_line.partner_id.name not in no_bank:
+                    no_bank.append(move_line.partner_id.name)
+                continue
+        if no_bank:
+            raise orm.except_orm('Attenzione!', 'Il cliente %s non ha la banca!!!' % '\n'.join(no_bank))
 
         for move_line in move_line_obj.browse(cr, uid, move_line_ids, context=context):
             if move_line.partner_id.bank_riba_id:
@@ -96,8 +104,6 @@ class emissione_riba(orm.TransientModel):
             elif move_line.partner_id.bank_ids:
                 bank_riba_id = []
                 bank_id = move_line.partner_id.bank_ids[0]
-            else:
-                raise orm.except_orm('Attenzione!', 'Il cliente %s non ha la banca!!!' % move_line.partner_id.name)
             if move_line.partner_id.group_riba:
                 for key in grouped_lines:
                     if key[0] == move_line.partner_id.id and key[1] == move_line.date_maturity:
