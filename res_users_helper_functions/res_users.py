@@ -19,15 +19,15 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
+from openerp.osv import orm, fields
 
-class groups(osv.osv):
+
+class groups(orm.Model):
     _name = 'res.groups'
     _inherit = 'res.groups'
     
     def id_from_xml_id(self, cr, uid, xml_id, context=None):
-        group_obj = self.pool.get('res.groups')
+        group_obj = self.pool['res.groups']
         group_all_ids = group_obj.search(cr, uid, [], context=context)
         group_xml_ids = group_obj.get_xml_id(cr, uid, group_all_ids, context=context)
         
@@ -38,7 +38,7 @@ class groups(osv.osv):
         return False
         
     def user_in_group(self, cr, uid, user_id, group_xml_id, context=None):
-        user_obj = self.pool.get('res.users')
+        user_obj = self.pool['res.users']
         user = user_obj.browse(cr, uid, user_id, context=context)
         if isinstance(user, list):
             user = user[0]
@@ -48,6 +48,4 @@ class groups(osv.osv):
             if group.id == group_id:
                 return True
         return False
-
-groups()
 
