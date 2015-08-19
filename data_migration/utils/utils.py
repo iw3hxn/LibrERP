@@ -24,6 +24,7 @@ from tools.translate import _
 from datetime import datetime
 import re
 import logging
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
@@ -76,6 +77,8 @@ class Utils():
     def notify_import_result(self, cr, uid, title, body='', error=False):
         EOL = '\n'
 
+        user = self.pool['res.users'].browse(cr, uid, uid)
+
         if not error:
             body += EOL + EOL
             body += u"File '{0}' {1}{1}".format(self.file_name, EOL)
@@ -88,24 +91,25 @@ class Utils():
             if self.warning:
                 body += u'{0}{0}<strong>Warnings:</strong>{0}'.format(EOL) + EOL.join(self.warning)
         
-        ## OpenERP v.6.1:
-        self.pool.get('mail.message').create(cr, uid, {
+        # OpenERP v.6.1:
+        self.pool['mail.message'].create(cr, uid, {
             'subject': title,
-            'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'email_from': 'Data@Import',
+            'date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+            'email_from': user.company_id.email or 'Data@Import',
+            'email_to': user.user_email or '',
             'user_id': uid,
             'body_text': body,
             'model': 'filedata.import'
         })
         
-        ## OpenERP v.7:
-        #self.pool.get('mail.message').create(cr, uid, {
+        # OpenERP v.7:
+        # self.pool.get('mail.message').create(cr, uid, {
         #    'subject': title,
         #    'author_id': uid,
         #    'type': 'notification',
         #    'body': body,
         #    'model': 'filedata.import'
-        #})
+        # })
         
         # Salva il messaggio nel database e chiudi la connessione
         cr.commit()

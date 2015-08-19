@@ -459,7 +459,7 @@ class ImportFile(threading.Thread, Utils):
 
             default_vals_product.update(vals_product)
 
-            product_id = self.product_obj.create(cr, uid, default_vals_product)
+            product_id = self.product_obj.create(cr, uid, default_vals_product, context=self.context)
             self.uo_new += 1
         
         if partner_ids and product_id:
@@ -473,8 +473,8 @@ class ImportFile(threading.Thread, Utils):
                         'product_id': product_id,
                         'min_qty': 1,
                         'product_code': product_code
-                        #'company_id':
-                    })
+                        # 'company_id':
+                    }, context=self.context)
                 else:
                     _logger.info(u'{0}: Creating supplierinfo for product {1}...'.format(self.processed_lines, vals_product['name']))
                     self.supplierinfo_obj.create(cr, uid, {
@@ -483,8 +483,8 @@ class ImportFile(threading.Thread, Utils):
                         'product_id': product_id,
                         'min_qty': 1,
                         'product_code': product_code
-                        #'company_id':
-                    })
+                        # 'company_id':
+                    }, context=self.context)
         else:
             _logger.warning(u'{0}: No supplier for product {1}'.format(self.processed_lines, vals_product['name']))
         
