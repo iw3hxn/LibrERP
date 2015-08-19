@@ -27,6 +27,7 @@
 #
 ##############################################################################
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class sale_order_revision_note(orm.TransientModel):
@@ -44,7 +45,13 @@ class sale_order_revision_note(orm.TransientModel):
             return False
         reason_note = self.browse(cr, uid, ids[0], context=context).name
         sale_order_obj.write(cr, uid, active_ids, {'revision_note': reason_note}, context=context)
-        return sale_order_obj.action_previous_version(cr, uid, active_ids, context=context)
+        res = sale_order_obj.action_previous_version(cr, uid, active_ids, context=context)
+        if reason_note:
+            text = _("Create New Revision for this reason: '%s' ") % reason_note
+        else:
+            text = _("Create New Revision")
+        sale_order_obj.message_append(cr, uid, [res['res_id']], text, body_text=text, context=context)
+        return res
     
     def reject_revision(self, cr, uid, ids, context=None):
         if not ids:
@@ -55,5 +62,8 @@ class sale_order_revision_note(orm.TransientModel):
             return False
         reason_note = self.browse(cr, uid, ids[0], context=context).name
         sale_order_obj.write(cr, uid, active_ids, {'revision_note': reason_note}, context=context)
+        if reason_note:
+            text = _("Add Note for Reject: '%s' ") % reason_note
+            sale_order_obj.message_append(cr, uid, active_ids, text, body_text=text, context=context)
         sale_order_obj.action_cancel(cr, uid, active_ids, context=context)
         return {'type': 'ir.actions.act_window_close'}

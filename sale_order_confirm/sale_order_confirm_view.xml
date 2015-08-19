@@ -276,7 +276,7 @@
             <field name="inherit_id" ref="sale_order_version.view_order_form_add_versions"/>
             <field name="arch" type="xml">
                 <field name="sale_version_id" position="after">
-                    <field name="last_revision_note" />
+                    <field name="revision_note" />
                 </field>
             </field>
         </record>

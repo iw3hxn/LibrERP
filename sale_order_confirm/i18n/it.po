@@ -728,3 +728,21 @@ msgstr "Utente che può comunque validare"
 #: help:sale.order.confirm,partner_shipping_id:0
 msgid "Shipping address for current sales order."
 msgstr "Ordine di spedizione per l'ordine di vendita corrente"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/wizard/add_order_versione.py:50
+#, python-format
+msgid "Create New Revision for this reason: '%s' "
+msgstr "Creata una nuova Revisione per questa ragione: '%s' "
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/wizard/add_order_versione.py:52
+#, python-format
+msgid "Create New Revision"
+msgstr "Creata una nuova Revisione"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/wizard/add_order_versione.py:66
+#, python-format
+msgid "Add Note for Reject: '%s' "
+msgstr "Aggiunta la Nota per il Rifiuto: '%s' "
