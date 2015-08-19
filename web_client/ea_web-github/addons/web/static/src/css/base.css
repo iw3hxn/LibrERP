@@ -2525,9 +2525,10 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 }
 
 .openerp .oe-binary-image {
-  max-width: 130px;
+  max-width: 120px;
   border-color: #dedede;
   border-radius: 14px;
+  vertical-align: text-top;
 }
 
 /* Debug stuff */
