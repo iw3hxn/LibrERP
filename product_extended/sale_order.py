@@ -35,7 +35,7 @@ class sale_order(orm.Model):
                 if line.product_id:
                     vals = {
                         'last_sale_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                        'last_customer_id': line.partner_id.id
+                        'last_customer_id': line.order_partner_id.id
                     }
                     self.pool['product.product'].write(cr, uid, [line.product_id.id], vals)
         return res
