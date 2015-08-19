@@ -36,7 +36,7 @@
                                 <field name="amount_total" sum="Total Tax Included"/>
                                 <field name="state"/>
                                 <field name="sale_version_id"/>
-                                <field name="last_revision_note"  />
+                                <field name="revision_note"  />
                             </tree>                     
                         </field>
                     </page>
