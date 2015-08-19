@@ -19,11 +19,9 @@
 #
 ##############################################################################
 
-#import time
-#from datetime import datetime
-#from dateutil.relativedelta import relativedelta
+
 from openerp.osv import orm, fields
-#from openerp.tools.translate import _
+
 
 class purchase_requisition_partner(orm.TransientModel):
     _inherit = "purchase.requisition.partner"
@@ -31,7 +29,7 @@ class purchase_requisition_partner(orm.TransientModel):
     def _get_requisition_suppliers(self, cr, uid, context=None):
         res = []
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         requisition_id = context.get('active_id', None)
         prefered = context.get('prefered', False)
         

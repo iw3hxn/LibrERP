@@ -22,7 +22,7 @@
 #
 ##############################################################################
 
-from osv import osv
+from openerp.osv import orm, fields
 from cStringIO import StringIO
 import zipfile
 import logging
@@ -30,7 +30,7 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-class ir_attachment(osv.osv):
+class ir_attachment(orm.Model):
     _inherit = 'ir.attachment'
     
     def get_as_zip(self, cr, uid, ids, log=False, encode=True, compress=True):

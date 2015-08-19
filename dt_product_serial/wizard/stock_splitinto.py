@@ -36,7 +36,7 @@ class stock_partial_picking_line_split(orm.TransientModel):
 
     def split(self, cr, uid, data, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         rec_id = context and context.get('active_ids', False)
         move_obj = self.pool['stock.partial.picking.line']

@@ -33,8 +33,8 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
     
     def _build_codes_dict(self, tax_code, res={}, context=None):
         if context is None:
-            context = {}
-        tax_pool = self.pool.get('account.tax')
+            context = self.pool['res.users'].context_get(self.cr, self.uid)
+        tax_pool = self.pool['account.tax']
         if tax_code.sum_period:
             if res.get(tax_code.name, False):
                 raise orm.except_orm(_('Error'), _('Too many occurences of tax code %s') % tax_code.name)
@@ -61,9 +61,9 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
     
     def _get_tax_codes_amounts(self, period_id, tax_code_ids=[], context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(self.cr, self.uid)
         res = {}
-        code_pool = self.pool.get('account.tax.code')
+        code_pool = self.pool['account.tax.code']
         context['period_id'] = period_id
         for tax_code in code_pool.browse(self.cr, self.uid, tax_code_ids, context=context):
             res = self._build_codes_dict(tax_code, res=res, context=context)
@@ -71,8 +71,8 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
     
     def find_period(self, date, context=None):
         if context is None:
-            context = {}
-        period_pool = self.pool.get('account.period')
+            context = self.pool['res.users'].context_get(self.cr, self.uid)
+        period_pool = self.pool['account.period']
         period_ids = period_pool.find(self.cr, self.uid, dt=date, context=context)
         if len(period_ids) > 1:
             raise orm.except_orm(_('Error'), _('Too many periods for date %s') % str(date))
@@ -80,7 +80,7 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
 
     def __init__(self, cr, uid, name, context=None):
         if context is None:
-            context = {}
+             context = self.pool['res.users'].context_get(self.cr, self.uid)
         super(print_vat_period_end_statement, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'time': time,

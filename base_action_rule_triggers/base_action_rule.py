@@ -149,14 +149,14 @@ class base_action_rule(osv.osv):
         """
         def wrapper(cr, uid, vals, context=context):
             if context is None:
-                context = {}
+                context = self.pool['res.users'].context_get(cr, uid)
             # store new and old values in context, to use in trigger expr.
             # _action_trigger=create prevents write trigger to fire
             context.update({
                 '_action_old': {},
                 '_action_new': vals,
                 '_action_trigger': 'create',
-                })
+            })
             new_id = old_create(cr, uid, vals, context=context)
             if not context.get('action'):
                 self.post_action(cr, uid, [new_id], model, context=context)
@@ -170,7 +170,7 @@ class base_action_rule(osv.osv):
         """
         def wrapper(cr, uid, ids, vals, context=context):
             if context is None:
-                context = {}
+                context = self.pool['res.users'].context_get(cr, uid)
             if isinstance(ids, (str, int, long)):
                 ids = [ids]
             # store new and old values in context, to use in trigger expr.
@@ -178,7 +178,7 @@ class base_action_rule(osv.osv):
             context.update({
                 '_action_old': olds,
                 '_action_new': vals,
-                })
+            })
             old_write(cr, uid, ids, vals, context=context)
             if (not context.get('action') and
                 not context.get('_action_trigger')):

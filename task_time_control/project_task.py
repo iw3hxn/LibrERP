@@ -56,7 +56,7 @@ class project_task(orm.Model):
 
     def _get_users_working(self, cr, uid, ids, field_name, args, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
             
         res = {}
         user_task_obj = self.pool["time.control.user.task"]
@@ -92,13 +92,13 @@ class project_task(orm.Model):
 
     def stop_task(self, cr, uid, task_id, final, user_task, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         
         self.pool['time.control.user.task'].write(cr, uid, user_task.id, {'work_end': final})
         
         context['user_id'] = uid
         context['user_task_id'] = user_task.id
-        #Call wizard:
+        # Call wizard:
         wizard_id = self.pool["task.time.control.confirm.wizard"].create(cr, uid, {
             'task_to_start': task_id,
             'user_task': user_task.id,

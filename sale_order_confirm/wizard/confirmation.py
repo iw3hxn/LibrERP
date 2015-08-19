@@ -38,7 +38,7 @@ class sale_order_confirm_line(orm.TransientModel):
     def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         for line in self.browse(cr, uid, ids, context=context):
             price_subtotal = self.calc_price_subtotal(line.quantity, line.discount, line.price_unit)
             res[line.id] = price_subtotal
@@ -70,7 +70,7 @@ class sale_order_confirm_line(orm.TransientModel):
 
     def onchange_product(self, cr, uid, ids, product_id, product_qty, sale_order_id, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         result = {}
         
         sale_order = self.pool['sale.order'].browse(cr, uid, sale_order_id, context=context)
@@ -173,7 +173,7 @@ class sale_order_confirm(orm.TransientModel):
         # sale_order_confirm_line_obj = self.pool['sale.order.confirm.line')
         
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
             
         res = super(sale_order_confirm, self).default_get(cr, uid, fields, context=context)
 

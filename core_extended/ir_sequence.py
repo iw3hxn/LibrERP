@@ -61,7 +61,7 @@ class ir_sequence(orm.Model):
         return super(ir_sequence, self).create(cr, uid, values, context)
 
     def _interpolation_dict(self, context=None):
-        #add possibility to pass context, if set a 'date' field it will be used instead of current date
+        # add possibility to pass context, if set a 'date' field it will be used instead of current date
         if context is None:
             context = {}
         if context.get('date', False):
@@ -101,10 +101,10 @@ class ir_sequence(orm.Model):
         if not seq_ids:
             return False
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         force_company = context.get('force_company')
         if not force_company:
-            force_company = self.pool.get('res.users').browse(cr, uid, uid).company_id.id
+            force_company = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
         sequences = self.read(cr, uid, seq_ids, ['company_id', 'implementation', 'number_next', 'prefix', 'suffix', 'padding'])
         preferred_sequences = [s for s in sequences if s['company_id'] and s['company_id'][0] == force_company]
         seq = preferred_sequences[0] if preferred_sequences else sequences[0]

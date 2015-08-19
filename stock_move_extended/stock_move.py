@@ -26,14 +26,9 @@ class stock_move(orm.Model):
            
     def _get_direction(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         res = {}
         for move in self.browse(cr, uid, ids, context=context):
-            # import pdb; pdb.set_trace()
-
-# ('supplier', 'Supplier Location'), ('view', 'View'), ('internal', 'Internal Location'), ('customer', 'Customer Location'),
-# ('inventory', 'Inventory'), ('procurement', 'Procurement'), ('production', 'Production'),
-# ('transit', 'Transit Location for Inter-Companies Transfers')
 
             if move.location_id.usage == 'internal' and move.location_dest_id.usage == 'customer':
                 res[move.id] = '-'
@@ -46,15 +41,6 @@ class stock_move(orm.Model):
             else:
                 res[move.id] = []
 
-            # if move.picking_id:
-            #     if move.picking_id.type == 'in':
-            #         res[move.id] = '+'
-            #     elif move.picking_id.type == 'out':
-            #         res[move.id] = '-'
-            #     else:
-            #         res[move.id] = '='
-            # else:
-            #     res[move.id] = []
         return res
     
     _columns = {

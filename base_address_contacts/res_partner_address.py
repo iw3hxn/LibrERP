@@ -105,7 +105,7 @@ class res_partner_address_contact(orm.Model):
         if not args:
             args = []
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         if name:
             ids = self.search(
                 cr, uid, ['|', ('last_name', operator, name), ('first_name', operator, name)] + args, limit=limit,
@@ -117,7 +117,7 @@ class res_partner_address_contact(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         name = ''
         update = False
 
@@ -136,7 +136,7 @@ class res_partner_address_contact(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         name = ''
         update = False
@@ -192,7 +192,7 @@ class res_partner_address(orm.Model):
         if not args:
             args = []
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         ids = []
         name_array = name.split()
         search_domain = []
@@ -231,7 +231,7 @@ class res_partner(orm.Model):
 
     def create(self, cr, uid, vals, context):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         if context.get('import', False):
             return super(res_partner, self).create(cr, uid, vals, context)
         if not vals.get('address', False) and context.get('default_type', '') != 'lead':
@@ -251,7 +251,7 @@ class res_partner(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         if vals.get('address', False):
             for address in vals['address']:
                 if address[0] == 2: # 2 means 'delete'
@@ -263,7 +263,7 @@ class res_partner(orm.Model):
 
     def unlink(self, cr, uid, ids, context):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         for partner in self.browse(cr, uid, ids, context):
             if partner.address:
                 raise orm.except_orm(_('Error!'),

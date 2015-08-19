@@ -1,8 +1,8 @@
-# -*- encoding: utf-8 -*-
+
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
+#    Author: Didotech SRL
+#    Copyright 2014 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,17 +18,26 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 from openerp.osv import orm, fields
-from tools.translate import _
 
 
-class res_partner(orm.Model):
-    _name = "res.partner"
-    _inherit = "res.partner"
+class res_company(orm.Model):
 
-    _sql_constraints = [
-        ('vat_uniq', 'unique (vat)', _('Error! Specified VAT Number already exists for any other registered partner.'))
-    ]
+    _inherit = 'res.company'
 
+    def write(self, cr, uid, ids, values, context={}):
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+        if not ids:
+            return False
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        res = super(res_company, self).write(cr, uid, ids, values, context=context)
+
+        if values.get('currency_id', False):
+            product_price_type_obj = self.pool['product.price.type']
+            product_price_type_ids = product_price_type_obj.search(cr, uid, [], context=context)
+            product_price_type_obj.write(cr, uid, product_price_type_ids, {'currency_id': values.get('currency_id')}, context=context)
+
+        return res

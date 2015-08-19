@@ -175,7 +175,8 @@ class purchase_order(orm.Model):
     }
 
     def _prepare_inv_line(self, cr, uid, account_id, order_line, context=None):
-        if context is None: context = {}
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
 
         res = super(purchase_order, self)._prepare_inv_line(cr, uid, account_id, order_line, context=context)
         res.update({'discount': order_line.discount or 0.0,

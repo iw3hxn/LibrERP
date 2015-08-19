@@ -141,7 +141,7 @@ class sale_order(orm.Model):
         inv_obj = self.pool['account.invoice']
         obj_invoice_line = self.pool['account.invoice.line']
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         invoiced_sale_line_ids = self.pool['sale.order.line'].search(cr, uid, [('order_id', '=', order.id), ('invoiced', '=', True)], context=context)
         from_line_invoice_ids = []
         for invoiced_sale_line_id in self.pool['sale.order.line'].browse(cr, uid, invoiced_sale_line_ids, context=context):

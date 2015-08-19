@@ -103,15 +103,15 @@ class product_product(orm.Model):
     
     def copy(self, cr, uid, id, default=None, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         if not default:
             default = {}
         
-        ## We want default code to be recreated:
+        # We want default code to be recreated:
         default['default_code'] = False
         
-        return super(product_product, self).copy(cr=cr, uid=uid, id=id, default=default, context=context)
+        return super(product_product, self).copy(cr, uid, id, default, context)
  
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -176,9 +176,9 @@ class account_invoice(orm.Model):
 #        'reference': fields.related('supplier_invoice_number', type='char' ),
     }
 
-    def copy(self, cr, uid, id, default=None, context=None):
+    def copy(self, cr, uid, ids, default=None, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         if not default:
             default = {}
@@ -187,4 +187,4 @@ class account_invoice(orm.Model):
         default['supplier_invoice_number'] = False
         default['cig'] = False
         default['cup'] = False
-        return super(account_invoice, self).copy(cr=cr, uid=uid, id=id, default=default, context=context)
+        return super(account_invoice, self).copy(cr, uid, ids, default, context)

@@ -19,11 +19,10 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, osv
-from openerp.tools.translate import _
+from openerp.osv import orm, fields
 
 
-class account_invoice_template(osv.osv):
+class account_invoice_template(orm.Model):
 
     _inherit = 'account.document.template'
     _name = 'account.invoice.template'
@@ -32,14 +31,14 @@ class account_invoice_template(osv.osv):
         'partner_id': fields.many2one('res.partner', 'Partner', required=True),
         'account_id': fields.many2one('account.account', 'Account', required=True),
         'template_line_ids': fields.one2many('account.invoice.template.line', 'template_id', 'Template Lines'),
-        'type': fields.selection([
-            ('out_invoice','Customer Invoice'),
-            ('in_invoice','Supplier Invoice'),
-            ('out_refund','Customer Refund'),
-            ('in_refund','Supplier Refund'),
-            ],'Type', required=True ),
-        'journal_id': fields.many2one('account.journal', 'Journal', required=True),
-        }
+            'type': fields.selection([
+                ('out_invoice', 'Customer Invoice'),
+                ('in_invoice', 'Supplier Invoice'),
+                ('out_refund', 'Customer Refund'),
+                ('in_refund', 'Supplier Refund'),
+                ], 'Type', required=True),
+            'journal_id': fields.many2one('account.journal', 'Journal', required=True),
+    }
 
     def type_change(self, cr, uid, ids, type, partner_id):
         if not type:
@@ -76,13 +75,13 @@ class account_invoice_template(osv.osv):
             else:
                 acc_id = p.property_account_payable.id
         result = {'value': {
-            'account_id': acc_id,
-            }
+                    'account_id': acc_id,
+                }
         }
         return result
 
 
-class account_invoice_template_line(osv.osv):
+class account_invoice_template_line(orm.Model):
 
     _name = 'account.invoice.template.line'
     _inherit = 'account.document.template.line'
@@ -93,28 +92,28 @@ class account_invoice_template_line(osv.osv):
         'invoice_line_tax_id': fields.many2many('account.tax', 'account_invoice_template_line_tax', 'invoice_line_id', 'tax_id', 'Taxes', domain=[('parent_id','=',False)]),
         'template_id': fields.many2one('account.invoice.template', 'Template'),
         'product_id': fields.many2one('product.product', 'Product'),
-        }
+    }
 
     _sql_constraints = [
         ('sequence_template_uniq', 'unique (template_id,sequence)', 'The sequence of the line must be unique per template !')
     ]
 
     def product_id_change(self, cr, uid, ids, product_id, type, context=None):
+
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         result = {}
         if not product_id:
             return {}
 
-        product = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
+        product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
 
         # name
         result.update({'name': product.name})
 
         # account
-        account_id = False
-        if type in ('out_invoice','out_refund'):
+        if type in ('out_invoice', 'out_refund'):
             account_id = product.product_tmpl_id.property_account_income.id
             if not account_id:
                 account_id = product.categ_id.property_account_income_categ.id
@@ -127,7 +126,7 @@ class account_invoice_template_line(osv.osv):
             result['account_id'] = account_id
 
         # taxes
-        account_obj = self.pool.get('account.account')
+        account_obj = self.pool['account.account']
         taxes = account_id and account_obj.browse(
             cr, uid, account_id, context=context).tax_ids or False
         if type in ('out_invoice', 'out_refund') and product.taxes_id:

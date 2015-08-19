@@ -39,7 +39,7 @@ class crm_make_sale(orm.TransientModel):
         @return: Dictionary value of created sales order.
         """
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         case_obj = self.pool['crm.lead']
         sale_obj = self.pool['sale.order']

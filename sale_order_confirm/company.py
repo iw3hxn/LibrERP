@@ -28,7 +28,7 @@ class res_company(orm.Model):
 
     def _getFiscalPosition(self, cr, uid, context=None):
         fiscal_position_obj = self.pool['account.fiscal.position']
-        fiscal_position_ids = fiscal_position_obj.serach(cr, uid, [], context=context)
+        fiscal_position_ids = fiscal_position_obj.search(cr, uid, [], context=context)
         if fiscal_position_ids:
             return fiscal_position_ids[0]
         else:

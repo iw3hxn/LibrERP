@@ -44,7 +44,7 @@ class account_invoice(osv.Model):
 
     def action_proforma(self, cr, uid, ids, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         if not ids:
             return True
         if isinstance(ids, (int, long)):

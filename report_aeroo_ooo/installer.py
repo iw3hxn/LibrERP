@@ -80,8 +80,8 @@ class aeroo_config_installer(osv.osv_memory):
         return dict.fromkeys(ids, image) # ok to use .fromkeys() as the image is same for all 
 
     _columns = {
-        'host':fields.char('Host', size=64, required=True),
-        'port':fields.integer('Port', required=True),
+        'host': fields.char('Host', size=64, required=True),
+        'port': fields.integer('Port', required=True),
         'ooo_restart_cmd': fields.char('OOO restart command', size=256, \
             help='Enter the shell command that will be executed to restart the LibreOffice/OpenOffice background process.'+ \
                 'The command will be executed as the user of the OpenERP server process,'+ \
@@ -91,7 +91,7 @@ class aeroo_config_installer(osv.osv_memory):
             ('error','Error'),
             ('done','Done'),
             
-        ],'State', select=True, readonly=True),
+        ], 'State', select=True, readonly=True),
         'msg': fields.text('Message', readonly=True),
         'error_details': fields.text('Error Details', readonly=True),
         'link':fields.char('Installation Manual', size=128, help='Installation (Dependencies and Base system setup)', readonly=True),
@@ -111,7 +111,7 @@ class aeroo_config_installer(osv.osv_memory):
 
     def check(self, cr, uid, ids, context=None):
         config_obj = self.pool.get('oo.config')
-        data = self.read(cr, uid, ids, ['host','port','ooo_restart_cmd'])[0]
+        data = self.read(cr, uid, ids, ['host', 'port', 'ooo_restart_cmd'])[0]
         del data['id']
         config_id = config_obj.search(cr, 1, [], context=context)
         if config_id:
@@ -149,11 +149,11 @@ class aeroo_config_installer(osv.osv_memory):
 
     _defaults = {
         'config_logo': _get_image,
-        'host':'localhost',
-        'port':8100,
-        'ooo_restart_cmd': 'sudo /etc/init.d/libreoffice restart',
-        'state':'init',
-        'link':'http://www.alistek.com/wiki/index.php/Aeroo_Reports_Linux_server#Installation_.28Dependencies_and_Base_system_setup.29',
+        'host': 'localhost',
+        'port': 8100,
+        'ooo_restart_cmd': 'sudo /etc/init.d/office_init  restart',
+        'state': 'init',
+        'link': 'http://www.alistek.com/wiki/index.php/Aeroo_Reports_Linux_server#Installation_.28Dependencies_and_Base_system_setup.29',
     }
 
 aeroo_config_installer()

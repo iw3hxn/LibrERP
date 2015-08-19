@@ -46,7 +46,7 @@ class crm_meeting_by_province(orm.TransientModel):
 
     def print_report(self, cr, uid, ids, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         datas = {'ids': context.get('active_ids', [])}
         res = self.read(cr, uid, ids, ['date_from', 'date_to', 'province'], context=context)
         res = res and res[0] or {}

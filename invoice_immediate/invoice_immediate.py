@@ -167,7 +167,7 @@ class account_invoice(osv.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         
         if not ids:
             return True

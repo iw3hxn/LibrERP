@@ -48,7 +48,7 @@ class project_task(orm.Model):
 
     def _task_count(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, 0)
         ctx = context.copy()
         ctx['active_test'] = False
@@ -74,7 +74,7 @@ class project_task(orm.Model):
 
     def _total_account(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         res = {}
         projects = self.browse(cr, uid, ids, context=context)
         for project_id in projects:

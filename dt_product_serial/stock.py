@@ -322,7 +322,7 @@ class stock_picking(orm.Model):
         @return: Dictionary of values
         """
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         else:
             context = dict(context)
         res = {}
@@ -382,27 +382,27 @@ class stock_picking(orm.Model):
                             new_std_price = ((amount_unit * product_avail[product.id])\
                                 + (new_price * qty)) / (product_avail[product.id] + qty)
                         # Write the field according to price type field
-                        product_obj.write(cr, uid, [product.id], {'standard_price': new_std_price})
+                        product_obj.write(cr, uid, [product.id], {'standard_price': new_std_price}, context)
 
                         # Record the values that were chosen in the wizard, so they can be
                         # used for inventory valuation if real-time valuation is enabled.
                         move_obj.write(cr, uid, [move.id],
                                 {'price_unit': product_price,
-                                 'price_currency_id': product_currency})
+                                 'price_currency_id': product_currency}, context)
 
             for move in too_few:
                 product_qty = move_product_qty[move.id]
                 if not new_picking:
                     new_picking = self.copy(cr, uid, pick.id,
                             {
-                                'name': sequence_obj.get(cr, uid, 'stock.picking.%s'%(pick.type)),
+                                'name': sequence_obj.get(cr, uid, 'stock.picking.%s' % (pick.type)),
                                 'move_lines': [],
-                                'state':'draft',
+                                'state': 'draft',
                             })
                 if product_qty != 0:
                     defaults = {
                         'product_qty': product_qty,
-                        'product_uos_qty': product_qty, #TODO: put correct uos_qty
+                        'product_uos_qty': product_qty, # TODO: put correct uos_qty
                         'picking_id': new_picking,
                         'state': 'assigned',
                         'move_dest_id': False,
@@ -417,16 +417,16 @@ class stock_picking(orm.Model):
                         {
                             'product_qty': move.product_qty - partial_qty[move.id],
                             'product_uos_qty': move.product_qty - partial_qty[move.id],  # TODO: put correct uos_qty
-                        })
+                        }, context)
 
             if new_picking:
                 move_obj.write(cr, uid, [c.id for c in complete], {'picking_id': new_picking})
             for move in complete:
-                partial_data = partial_datas.get('move%s'%(move.id), {})
+                partial_data = partial_datas.get('move%s'% (move.id), {})
                 defaults = {
                     'product_uom': product_uoms[move.id],
                     'product_qty': move_product_qty[move.id],
-                    'balance': True, #if complete then i force to close line CARLO partial_data.get('balance'),
+                    'balance': True, # if complete then i force to close line CARLO partial_data.get('balance'),
                     'pallet_qty': partial_data.get('pallet_qty'),
                     'pallet_id': partial_data.get('pallet_id'),
                 }

@@ -95,7 +95,7 @@ class sale_order(orm.Model):
         
     def _get_version_ids(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         res = {}
         for sale in self.browse(cr, uid, ids, context):
             if sale.sale_version_id:

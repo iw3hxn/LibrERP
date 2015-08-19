@@ -31,7 +31,7 @@ class product_qty0_ext_isa(orm.Model):
                order=None, context=None, count=False):
 
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         if 'gt0' in context:
             return self._search_available(cr, uid, args, offset, limit,
                                           order, context, count, sign='gt')
@@ -44,9 +44,9 @@ class product_qty0_ext_isa(orm.Model):
         
     def _search_available(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False, access_rights_uid=None, sign='>'):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
-        #TODO: verificare se queste condizioni sono tutte necessarie
+        # TODO: verificare se queste condizioni sono tutte necessarie
         if context.get('shop', False):
             cr.execute('SELECT warehouse_id FROM sale_shop WHERE id=%s', (int(context['shop']),))
             res2 = cr.fetchone()
