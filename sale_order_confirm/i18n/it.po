@@ -746,3 +746,14 @@ msgstr "Creata una nuova Revisione"
 #, python-format
 msgid "Add Note for Reject: '%s' "
 msgstr "Aggiunta la Nota per il Rifiuto: '%s' "
+
+#. module: sale_order_confirm
+#: field:product.pricelist,contract:0
+msgid "Contract"
+msgstr "Accordo Quadro"
+
+#. module: sale_order_confirm
+#: help:product.pricelist,contract:0
+msgid "Set if this Pricelist not need approve on order"
+msgstr "Accordo Quadro"
+

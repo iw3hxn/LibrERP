@@ -28,6 +28,14 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
 
 
+class product_pricelist(orm.Model):
+    _inherit = "product.pricelist"
+
+    _columns = {
+        'contract': fields.boolean('Contract', help="Set if this Pricelist not need approve on order")
+    }
+
+
 class sale_order(orm.Model):
     _inherit = "sale.order"
 
@@ -49,8 +57,8 @@ class sale_order(orm.Model):
         return ids
 
     def write(self, cr, uid, ids, vals, context=None):
-        if not context:
-            context = {}
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
 
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
@@ -71,10 +79,12 @@ class sale_order(orm.Model):
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
 
     def onchange_invoice_type_id(self, cr, uid, ids, invoice_type_id, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         res = {}
         if invoice_type_id:
             invoice_type_obj = self.pool['sale_journal.invoice.type']
-            invoice_type = invoice_type_obj.browse(cr, uid, invoice_type_id)
+            invoice_type = invoice_type_obj.browse(cr, uid, invoice_type_id, context)
             if invoice_type.invoicing_method == 'grouped':
                 res['order_policy'] = 'picking'
         return {'value': res}
@@ -194,29 +204,47 @@ class sale_order(orm.Model):
                 }, context)
         return result
 
+    def check_direct_order_confirm(self, cr, uid, ids, context=None):
+        for order in self.browse(cr, uid, ids, context):
+            if order.state == 'draft' and order.pricelist_id and order.pricelist_id.contract:
+                return True
+            else:
+                return False
+
     def action_validate(self, cr, uid, ids, context=None):
 
         for order in self.browse(cr, uid, ids, context):
 
-            vals = {}
             if order.need_tech_validation and not order.tech_validation:
-                vals['state'] = 'wait_technical_validation'
+                vals = {
+                    'state': 'wait_technical_validation',
+                }
             elif order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) < order.company_id.minimum_margin and not order.manager_validation:
-                vals['state'] = 'wait_manager_validation'
+                vals = {
+                    'state': 'wait_manager_validation',
+                }
             elif order.need_manager_validation and not order.manager_validation:
-                vals['state'] = 'wait_manager_validation'
+                vals = {
+                    'state': 'wait_manager_validation',
+                }
             elif not order.email_sent_validation:
-                vals['state'] = 'send_to_customer'
+                vals = {
+                    'state': 'send_to_customer',
+                }
             elif not order.customer_validation:
-                vals['state'] = 'wait_customer_validation'
+                vals = {
+                    'state': 'wait_customer_validation',
+                }
             else:
-                vals['state'] = 'draft'
-                vals['tech_validation'] = False
-                vals['manager_validation'] = False
-                vals['customer_validation'] = False
-                vals['email_sent_validation'] = False
-            if vals:
-                self.write(cr, uid, [order.id], vals, context)
+                vals = {
+                    'state': 'draft',
+                    'tech_validation': False,
+                    'manager_validation': False,
+                    'customer_validation': False,
+                    'email_sent_validation': False,
+                }
+            self.write(cr, uid, [order.id], vals, context)
+
         return True
 
     def check_validate(self, cr, uid, ids, context=None):
@@ -250,10 +278,14 @@ class sale_order(orm.Model):
             return False
 
     def copy(self, cr, uid, order_id, defaults, context=None):
-        defaults['tech_validation'] = False
-        defaults['manager_validation'] = False
-        defaults['customer_validation'] = False
-        defaults['email_sent_validation'] = False
+        defaults.update(
+            {
+                'tech_validation': False,
+                'manager_validation': False,
+                'customer_validation': False,
+                'email_sent_validation': False,
+            }
+        )
         return super(sale_order, self).copy(cr, uid, order_id, defaults, context)
 
 
@@ -329,20 +361,9 @@ class sale_order_line(orm.Model):
                                              type='float', digits_compute=dp.get_precision('Product UoM'),
                                              string='Quantity Available'),
         'product_type': fields.char('Product type', size=64),
-
-        #'pricelist_id': fields.related('order_id', 'pricelist_id', type='many2one', relation='product.pricelist', string='Pricelist'),
-        #'partner_id': fields.related('order_id', 'partner_id', type='many2one', relation='res.partner', string='Customer'),
-        #'date_order':fields.related('order_id', 'date_order', type="date", string="Date"),
-        #'fiscal_position': fields.related('order_id', 'fiscal_position', type='many2one', relation='account.fiscal.position', string='Fiscal Position'),
-        #'shop_id': fields.related('order_id', 'shop_id', type='many2one', relation='sale.shop', string='Shop'),
     }
 
     _defaults = {
         'readonly_price_unit': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.readonly_price_unit,
-        #'pricelist_id': lambda self, cr, uid, c: c.get('pricelist_id', False),
-        #'partner_id': lambda self, cr, uid, c: c.get('partner_id', False),
-        #'date_order': lambda self, cr, uid, c: c.get('date_order', False),
-        #'fiscal_position': lambda self, cr, uid, c: c.get('fiscal_position', False),
-        #'shop_id': lambda self, cr, uid, c: c.get('shop_id', False),
         'order_id': lambda self, cr, uid, context: context.get('default_sale_order', False) or False
     }
