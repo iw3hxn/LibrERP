@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.module.category" id="mail.module_category_sale">
+	        <field name="name">Email</field>
+	        <field name="description">Extend groups for email</field>
+	        <field name="sequence">70</field>
+	    </record>
+
+        <record id="mail.group_template_manager" model="res.groups">
+            <field name="name">Can Create Email Template</field>
+            <field name="category_id" ref="mail.module_category_sale"/>
+        </record>
+    </data>
+</openerp>

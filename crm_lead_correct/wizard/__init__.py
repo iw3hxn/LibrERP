@@ -30,3 +30,4 @@
 from . import crm_meeting_by_province
 from . import crm_make_sale
 from . import crm_lead_to_opportunity
+from . import mail_compose_message
