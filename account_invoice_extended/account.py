@@ -33,8 +33,30 @@ class account_invoice(orm.Model):
     }
     
     def copy(self, cr, uid, order_id, defaults, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         defaults['user_id'] = uid
         return super(account_invoice, self).copy(cr, uid, order_id, defaults, context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+        if vals.get('invoice_line', False):
+
+            ctx = context.copy()
+            ait_obj = self.pool['account.invoice.tax']
+            for id in ids:
+                cr.execute("DELETE FROM account_invoice_tax WHERE invoice_id=%s AND manual is False", (id,))
+                partner = self.browse(cr, uid, id, context=ctx).partner_id
+                if partner.lang:
+                    ctx.update({'lang': partner.lang})
+                for taxe in ait_obj.compute(cr, uid, id, context=ctx).values():
+                    ait_obj.create(cr, uid, taxe)
+
+            #self.button_reset_taxes(cr, uid, ids)
+
+        return super(account_invoice, self).write(cr, uid, ids, vals, context)
 
     # override to group product_id too
     def inv_line_characteristic_hashcode(self, invoice, invoice_line):
@@ -44,11 +66,11 @@ class account_invoice(orm.Model):
         or not."""
         return "%s-%s-%s-%s"%(
             invoice_line['account_id'],
-            invoice_line.get('tax_code_id', "False"),#invoice_line.get('product_id',"False"),
+            invoice_line.get('tax_code_id', "False"),  # invoice_line.get('product_id',"False"),
             invoice_line.get('analytic_account_id', "False"),
             invoice_line.get('date_maturity', "False"))
 
-    #override to merge description (after will be trunked to x character everyway)
+    # override to merge description (after will be trunked to x character everyway)
     def group_lines(self, cr, uid, iml, line, inv):
         """Merge account move lines (and hence analytic lines) if invoice line hashcodes are equals"""
         if inv.journal_id.group_invoice_lines:
@@ -69,12 +91,11 @@ class account_invoice(orm.Model):
                     line2[tmp] = l
             line = []
             for key, val in line2.items():
-                line.append((0,0,val))
+                line.append((0, 0, val))
         return line
 
-
     def unlink(self, cr, uid, ids, context=None):
-        #account_invoice_line_obj = self.pool['account.invoice.line']
+        # account_invoice_line_obj = self.pool['account.invoice.line']
         stock_picking_obj = self.pool['stock.picking']
         origins = {}
         for invoice in self.browse(cr, uid, ids, context):

@@ -27,6 +27,10 @@ class stock_picking(orm.Model):
 
     def action_invoice_create(self, cr, uid, ids, journal_id=False,
                             group=False, type='out_invoice', context=None):
+
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+
         invoice_dict = super(stock_picking, self).action_invoice_create(cr, uid,
                             ids, journal_id, group, type, context=context)
         processed_invoice = []
@@ -51,7 +55,7 @@ class stock_picking(orm.Model):
                         'quantity': qty_delivery / line.quantity,
                     }
                     self.pool['account.invoice.line'].write(cr, uid, line.id, new_line_vals, context=context)
-            invoice.button_reset_taxes()
+            invoice.button_reset_taxes(cr, uid, ids)
         return invoice_dict
 
 
