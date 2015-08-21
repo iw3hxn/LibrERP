@@ -60,7 +60,6 @@ class stock_partial_picking_line(orm.TransientModel):
             value = value.upper()
             existing_prodlot_ids = lot_obj.search(cr, uid, [('name', '=', value), ('product_id', '=', product_id)])
             if existing_prodlot_ids and not existing_prodlot_ids[0] == move.prodlot_id.id:
-                import pdb; pdb.set_trace()
                 raise orm.except_orm(_('Warning'), (_('Serial number "{number}" is already exists').format(number=value)))
             elif not existing_prodlot_ids:
                 prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {

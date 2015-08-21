@@ -15,7 +15,7 @@
                     <page string="Work Order">
                         <field name="create_task" />
                         <field name="task_no_user" />
-                        <field name="hour" attrs="{'invisible':[('create_task', '=', False)]}"/>
+                        <field name="hour"/>
                         
                         <field name="work_order_default_task_ids" colspan="4" nolabel="1" attrs="{'invisible':[('create_task', '=', False)]}">
                             <tree string="Default Work Order Tasks" editable="bottom">

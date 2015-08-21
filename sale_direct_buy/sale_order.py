@@ -81,7 +81,7 @@ class sale_order(orm.Model):
                     res = self.pool['purchase.order.line'].onchange_product_id(cr, uid, ids, order_line.supplier_id.property_product_pricelist_purchase.id, order_line.product_id.id, order_line.product_uom_qty or 1, order_line.product_uom.id,
                         order_line.supplier_id.id, order_line.order_id.date_order, order_line.supplier_id.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
                         order_line.name, order_line.purchase_price or order_line.product_id.standard_price, order_line.notes, context)
-                    import pdb; pdb.set_trace()
+
                     line_values = {
                         'product_uom': res['value'].get('product_uom'),  #  order_line.product_uom.id,
                         'price_unit': res['value'].get('price_unit'),  # order_line.purchase_price or order_line.product_id.standard_price,
