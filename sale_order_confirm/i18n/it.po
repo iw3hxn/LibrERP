@@ -221,6 +221,13 @@ msgid "Readonly Price Unit"
 msgstr "Prezzo di Vendita Sola Lettura"
 
 #. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:269
+#: field:sale.order.line,default_property_advance_product_id:0
+#, python-format
+msgid "Advantage Product"
+msgstr "Prodotto per Acconti"
+
+#. module: sale_order_confirm
 #: model:ir.actions.act_window,name:sale_order_confirm.action_order_to_send
 #: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_to_send
 msgid "Quotation Ready To Send"

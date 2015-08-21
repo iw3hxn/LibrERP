@@ -28,6 +28,28 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
 
 
+class sale_advance_payment_inv(orm.TransientModel):
+
+    _inherit = "sale.advance.payment.inv"
+
+    def default_get(self, cr, uid, fields, context=None):
+        """ To get default values for the object.
+        @param self: The object pointer.
+        @param cr: A database cursor
+        @param uid: ID of the user currently logged in
+        @param fields: List of fields for which we want default values
+        @param context: A standard dictionary
+        @return: A dictionary which of fields with values.
+        """
+        if not context:
+            context = {}
+        res = super(sale_advance_payment_inv, self).default_get(cr, uid, fields, context=context)
+        if not res.get('product_id', False):
+            product_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_property_advance_product_id.id
+            res.update({'product_id': product_id})
+        return res
+
+
 class product_pricelist(orm.Model):
     _inherit = "product.pricelist"
 
