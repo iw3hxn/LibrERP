@@ -26,31 +26,9 @@ import time
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
-from openerp.tools.translate import _
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, float_compare
-
-
-class sale_advance_payment_inv(orm.TransientModel):
-    _inherit = "sale.advance.payment.inv"
-    
-    # Update reference with more information on order linked to advance invoice
-    def create_invoices(self, cr, uid, ids, context=None):
-        res = super(sale_advance_payment_inv, self).create_invoices(cr, uid, ids, context)
-        obj_sale = self.pool.get('sale.order')
-        inv_obj = self.pool.get('account.invoice')
-        ctx = res['context']
-        list_inv = ctx['invoice_id']
-        for sale_adv_obj in self.browse(cr, uid, ids, context=context):
-            for sale in obj_sale.browse(cr, uid, context.get('active_ids', []), context=context):
-                ref = _(' ref. order n. ') + sale.name + _(' of ') + \
-                    datetime.strptime(sale.date_order, DEFAULT_SERVER_DATE_FORMAT).strftime('%d/%m/%Y')
-        for inv in inv_obj.browse(cr, uid, list_inv):
-            for inv_line in inv.invoice_line:
-                name = inv_line.name + ref
-                inv_line.write({'name': name})
-        return res
 
 
 class sale_order_line(orm.Model):
