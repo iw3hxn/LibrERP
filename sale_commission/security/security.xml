@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record model="ir.module.category" id="module_category_commission">
+            <field name="name">Sale Order Commission</field>
+            <field name="description">Extend groups for Sale Order Commission</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="sale_commission.commission_user" model="res.groups">
+            <field name="name">Commission User</field>
+            <field name="category_id" ref="module_category_commission"/>
+        </record>
+
+        <record id="sale_commission.commission_manager" model="res.groups">
+            <field name="name">Commission Manager</field>
+            <field name="category_id" ref="module_category_commission"/>
+            <field name="implied_ids" eval="[(4, ref('commission_user'))]"/>
+        </record>
+
+        <record id="sale_commission.commission_extended" model="res.groups">
+            <field name="name">Commission Extended View</field>
+            <field name="category_id" ref="module_category_commission"/>
+        </record>
+
+        <record id="sale_commission.commission_technical" model="res.groups">
+            <field name="name">Commission Technical</field>
+            <field name="category_id" ref="module_category_commission"/>
+            <field name="implied_ids" eval="[(4, ref('commission_manager'))]"/>
+        </record>
+
+    </data>
+</openerp>
