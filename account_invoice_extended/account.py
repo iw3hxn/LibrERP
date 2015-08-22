@@ -38,26 +38,6 @@ class account_invoice(orm.Model):
         defaults['user_id'] = uid
         return super(account_invoice, self).copy(cr, uid, order_id, defaults, context)
 
-    def write(self, cr, uid, ids, vals, context=None):
-
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-        if vals.get('invoice_line', False):
-
-            ctx = context.copy()
-            ait_obj = self.pool['account.invoice.tax']
-            for id in ids:
-                cr.execute("DELETE FROM account_invoice_tax WHERE invoice_id=%s AND manual is False", (id,))
-                partner = self.browse(cr, uid, id, context=ctx).partner_id
-                if partner.lang:
-                    ctx.update({'lang': partner.lang})
-                for taxe in ait_obj.compute(cr, uid, id, context=ctx).values():
-                    ait_obj.create(cr, uid, taxe)
-
-            #self.button_reset_taxes(cr, uid, ids)
-
-        return super(account_invoice, self).write(cr, uid, ids, vals, context)
-
     # override to group product_id too
     def inv_line_characteristic_hashcode(self, invoice, invoice_line):
         """Overridable hashcode generation for invoice lines. Lines having the same hashcode

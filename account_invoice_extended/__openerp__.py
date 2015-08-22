@@ -36,6 +36,8 @@
             * Invoice Supplier
             * Invoice Customer
 
+        No automatic email send
+
     """,
     "depends": [
         'base',
@@ -46,6 +48,7 @@
         'security/account_security.xml',
         'account_view.xml',
         'account_menu.xml',
+        'account_workflow.xml',
     ],
     "active": False,
     "installable": True,
