@@ -4,7 +4,7 @@
     
     <record model="ir.module.category" id="sale.module_category_sale">
 	    <field name="name">Sale Order</field>
-	    <field name="description">Extend groups for Product</field>
+	    <field name="description">Extend groups for Sale Order</field>
 	    <field name="sequence">20</field>
 	</record>
     
