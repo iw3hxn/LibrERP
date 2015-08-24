@@ -1224,8 +1224,8 @@ label.error {
 }
 .openerp a.oe_form_uri {
     color: #9A0404;
-    line-height: 12px;
-    padding-bottom: 5px;
+#    line-height: 12px;
+#    padding-bottom: 5px;
 }
 
 
@@ -1274,7 +1274,6 @@ label.error {
 .openerp table.oe_frame td {
     color: #4c4c4c;
     border: 0px;
-    vertical-align: baseline;
 }
 .openerp td.oe_form_frame_cell {
     padding: 2px;
