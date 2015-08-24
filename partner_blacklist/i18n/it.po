@@ -1,0 +1,27 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* partner_pos_address
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2012-11-03 09:11+0000\n"
+"PO-Revision-Date: 2012-11-03 09:11+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: partner_blacklist
+#: view:res.partner:0
+#: field:res.partner,blacklist:0
+msgid "Blocked Partner"
+msgstr "Cliente bloccato"
+
+#. module: partner_blacklist
+#: help:res.partner,blacklist:0
+msgid "Remember to set advise on warning section"
+msgstr "Ricorda di selezionare il messaggio da mostrare sui preventivi"
