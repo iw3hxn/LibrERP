@@ -177,11 +177,8 @@ class account_invoice(orm.Model):
         # TODO: set this on a function in workflow, is a wrong mode for call
         state = values.get('state', False)
         if state and state == 'open':
-            import pdb;
-
-            pdb.set_trace()
             for invoice in self.browse(cr, uid, ids, context):
-                if invoice.section_id:
+                if invoice.agent_id:
                     vals_line = {
                         'agent_id': invoice.agent_id.id,
                         'commission_id': invoice.agent_id.commission.id
