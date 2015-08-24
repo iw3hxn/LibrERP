@@ -233,10 +233,9 @@ class res_partner(orm.Model):
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
-        if not context:  # write is called from create, then skip
-            context = {}
-            return super(res_partner, self).write(
-                cr, uid, ids, vals, context=context)
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+            return super(res_partner, self).write(cr, uid, ids, vals, context=context)
 
         company = self.pool['res.users'].browse(
             cr, uid, uid, context).company_id
