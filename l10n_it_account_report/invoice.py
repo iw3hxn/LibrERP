@@ -229,7 +229,8 @@ class Parser(report_sxw.rml_parse):
                         origins.append(invoice_origin)
 
         for origin in origins:
-
+            if not origin:
+                continue
             if ':' in origin:
                 split_list = origin.split(':')
                 ddt, sale_order = split_list[0], split_list[1]
