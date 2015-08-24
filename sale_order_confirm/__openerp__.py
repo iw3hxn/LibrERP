@@ -2,7 +2,7 @@
 ##############################################################################
 #
 # Copyright (c) 2013-2014 Didotech SRL (info at didotech.com)
-#                          All Rights Reserved.
+# All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
@@ -29,7 +29,7 @@
 
 {
     "name": "Extend sale_order",
-    "version": "3.15.28.35",
+    "version": "3.16.29.36",
     "category": "Sales Management",
     "description": """This Module, provided user's wizard to confirm/modify sale order.
     It also increases usability on sale order using credit limit amd default payment term

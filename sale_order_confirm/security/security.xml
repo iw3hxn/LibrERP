@@ -9,7 +9,7 @@
 	</record>
     
     <record id="credit_modifier" model="res.groups">
-        <field name="name">Configuratore Credito</field>
+        <field name="name">Credit Limit Configurator</field>
         <field name="category_id" ref="sale.module_category_sale"/>
     </record>
     <record id="sale.verify_technical" model="res.groups">

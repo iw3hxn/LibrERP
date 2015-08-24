@@ -1,4 +1,3 @@
-
 ##############################################################################
 #
 #    Author: Didotech SRL
@@ -23,7 +22,6 @@ from openerp.osv import orm, fields
 
 
 class res_company(orm.Model):
-
     _inherit = 'res.company'
 
     def _getFiscalPosition(self, cr, uid, context=None):
@@ -35,8 +33,8 @@ class res_company(orm.Model):
             return False
 
     _columns = {
-        'check_credit_limit': fields.boolean('Abilita gestione fido'),
-        'default_credit_limit': fields.float(string='Fido di default'),
+        'check_credit_limit': fields.boolean('Enable Credit Limit Check'),
+        'default_credit_limit': fields.float(string='Default Limit'),
         'enable_margin_validation': fields.boolean('Enable Margin Verify'),
         'minimum_margin': fields.float(string='Minimun margin %', digits=(2, 2)),
         'default_sale_order_validity': fields.integer('Default day of validity'),
@@ -52,7 +50,7 @@ class res_company(orm.Model):
             'account.payment.term',
             type='many2one',
             relation='account.payment.term',
-            string ='Default Payment Term',
+            string='Default Payment Term',
             view_load=True,
             help="This default payment term will be used on creation of partner"),
         'need_tech_validation': fields.boolean('Need Technical Verification'),

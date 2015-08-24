@@ -143,26 +143,26 @@ class sale_order(orm.Model):
     def check_limit(self, cr, uid, ids, context=None):
         for processed_order in self.browse(cr, uid, ids, context=context):
             if processed_order.credit_limit < 0 and processed_order.company_id and processed_order.company_id.check_credit_limit:
-                title = 'Fido Superato'
-                msg = u'Non è possibile confermare in quanto il cliente non ha fido sufficiente. \n È possibile cambiare la politica di fatturazione a "pagamento prima della consegna" \n nella scheda "Altre informazioni"'
+                title = _('Credit Over Limit')
+                msg = _('Is not possible to confirm because customer exceed the credit limit. \n Is Possible change the Order Policy \"Pay Before Delivery\" \n on tab \"Other Information\"')
                 raise orm.except_orm(_(title), _(msg))
                 return False
             if processed_order.visible_minimum and processed_order.sale_order_minimun > processed_order.amount_untaxed:
                 if processed_order.shop_id.user_allow_minimun_id and processed_order.shop_id.user_allow_minimun_id.id == uid:  # if user can validate
                     return True
-                title = 'Importo Minimo Fatturabile'
+                title = _('Minimum Amount Billable')
 
                 if processed_order.shop_id.user_allow_minimun_id:
-                    msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency} \n È possibile farlo validare da {user}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol, user=processed_order.shop_id.user_allow_minimun_id.name))
+                    msg = _('Is not possible to confirm because is not reached the minimum billable {amount} {currency} \n Only {user} can do it').format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol, user=processed_order.shop_id.user_allow_minimun_id.name)
                 else:
-                    msg = (u'Non è possibile confermare in quanto non si è raggionto il minimo fatturabile di {amount} {currency}'.format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol))
+                    msg = _('Is not possible to confirm because is not reached the minimum billable {amount} {currency}').format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol)
 
                 raise orm.except_orm(_(title), _(msg))
                 return False
         return True
 
     _columns = {
-        'credit_limit': fields.function(_credit_limit, string="Fido Residuo", type='float', readonly=True, method=True),
+        'credit_limit': fields.function(_credit_limit, string="Remaining Credit Limit", type='float', readonly=True, method=True),
         'sale_order_minimun': fields.related('shop_id', 'sale_order_minimun', type='float', string='Minimun Invoice', store=False, readonly=True),
         'visible_minimum': fields.related('shop_id', 'sale_order_have_minimum', type='boolean', string=_('Minimun Amount'), store=False, readonly=True),
         'visible_credit_limit': fields.related('company_id', 'check_credit_limit', type='boolean', string=_('Fido Residuo Visibile'), store=False, readonly=True),

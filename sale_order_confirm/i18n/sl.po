@@ -38,7 +38,7 @@ msgstr "Napaka! Ne morete ustvariti rekurzivnih podjetij."
 
 #. module: sale_order_confirm
 #: field:sale.order,credit_limit:0
-msgid "Fido Residuo"
+msgid "Remaining Credit Limit"
 msgstr "Preostali kreditni limit"
 
 #. module: sale_order_confirm
@@ -125,7 +125,7 @@ msgstr "Privzeti kreditni limit"
 
 #. module: sale_order_confirm
 #: field:res.company,check_credit_limit:0
-msgid "Abilita gestione fido"
+msgid "Enable Credit Limit Check"
 msgstr "Omogoči upravljanje kreditnega limita"
 
 #. module: sale_order_confirm

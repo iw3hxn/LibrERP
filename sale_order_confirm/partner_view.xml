@@ -9,8 +9,10 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//form[@string='Partners']//field[@name='credit_limit']" position="replace">
-                        <field name="credit_limit" on_change="onchange_credit_limit(credit_limit)" />
+                        <field name="credit_limit" on_change="onchange_credit_limit(credit_limit)"/>
                         <field name="credit_limit_copy"/>
+                        <label string="Limit Note"/>
+                        <field name="limit_note" nolabel="1"/>
                     </xpath>
                 </data>
             </field>

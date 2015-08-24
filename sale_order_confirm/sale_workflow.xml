@@ -41,13 +41,13 @@
             <field name="condition">check_direct_order_confirm()</field>
         </record>
 
-        
+
         <record id="trans_validation_pre_router" model="workflow.transition">
             <field name="act_from" ref="act_validation_router"/>
             <field name="act_to" ref="act_validation_router"/>
             <field name="signal">action_validation</field>
         </record>
-        
+
         <record id="act_wait_technical" model="workflow.activity">
             <field name="wkf_id" ref="sale.wkf_sale"/>
             <field name="name">wait_technical</field>
@@ -63,7 +63,7 @@
             <field name="act_from" ref="act_wait_technical"/>
             <field name="act_to" ref="act_validation_router"/>
         </record>
-        
+
         <record id="act_wait_manager" model="workflow.activity">
             <field name="wkf_id" ref="sale.wkf_sale"/>
             <field name="name">wait_manager</field>
@@ -79,7 +79,7 @@
             <field name="act_from" ref="act_wait_manager"/>
             <field name="act_to" ref="act_validation_router"/>
         </record>
-        
+
         <record id="act_email_sending" model="workflow.activity">
             <field name="wkf_id" ref="sale.wkf_sale"/>
             <field name="name">wait_email_sending</field>
@@ -95,7 +95,7 @@
             <field name="act_from" ref="act_email_sending"/>
             <field name="act_to" ref="act_validation_router"/>
         </record>
-        
+
         <record id="act_wait_customer" model="workflow.activity">
             <field name="wkf_id" ref="sale.wkf_sale"/>
             <field name="name">wait_customer</field>
@@ -112,14 +112,14 @@
             <field name="act_from" ref="act_wait_customer"/>
             <field name="act_to" ref="act_validation_router"/>
         </record>
-        
+
         <record id="trans_validation_router" model="workflow.transition">
             <field name="act_from" ref="act_validation_router"/>
             <field name="act_to" ref="sale.act_router"/>
             <field name="signal">order_confirm</field>
             <field name="condition">check_validate() and check_limit()</field>
         </record>
-        
+
         <record id="sale.trans_draft_router" model="workflow.transition">
             <field name="act_from" ref="sale.act_draft"/>
             <field name="act_to" ref="sale.act_router"/>
@@ -128,11 +128,11 @@
         </record>
 
         <record id="sale.trans_draft_router_direct" model="workflow.transition">
-            <field name="act_from" ref="act_validation_router" />
+            <field name="act_from" ref="act_validation_router"/>
             <field name="act_to" ref="sale.act_router"/>
             <field name="signal">direct_order_confirm</field>
             <field name="condition">True</field>
         </record>
-        
+
     </data>
 </openerp>
