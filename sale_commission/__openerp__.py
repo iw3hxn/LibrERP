@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Sales commissions',
-    'version': '1.0',
+    'version': '1.0.a',
     'author': 'Pexego',
     "category": "Generic Modules/Sales & Purchases",
     'depends': [
@@ -30,7 +30,8 @@
         'product',
         'sale',
         'hr',
-        'stock'
+        'stock',
+        'sale_crm'
     ],
     'description': 'Sales commissions',
     'init_xml': [],

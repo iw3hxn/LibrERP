@@ -3,7 +3,7 @@
 #
 # OpenERP, Open Source Management Solution
 # Copyright (C) 2011 Pexego Sistemas Informáticos (<http://www.pexego.es>). All Rights Reserved
-#    $Id$
+# $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -123,6 +123,9 @@ class account_invoice(orm.Model):
         'section_id': fields.many2one('crm.case.section', 'Sales Team', states={'draft': [('readonly', False)]}),
         'agent_id': fields.related('section_id', 'sale_agent_id', type='many2one', relation='sale.agent',
                                    string='Agent'),
+        'sale_order_ids': fields.many2many(
+            'sale.order', 'sale_order_invoice_rel', 'invoice_id', 'order_id', 'Sale orders'
+        )
     }
 
     _default = {
@@ -158,7 +161,7 @@ class account_invoice(orm.Model):
     def _refund_cleanup_lines(self, cr, uid, lines):
         """ugly function to map all fields of account.invoice.line when creates refund invoice"""
         res = super(account_invoice, self)._refund_cleanup_lines(cr, uid, lines)
-        # import ipdb; ipdb.set_trace()
+
         for line in res:
             if 'commission_ids' in line[2]:
                 duply_ids = []
@@ -170,6 +173,39 @@ class account_invoice(orm.Model):
 
         return res
 
+    def invoice_set_agent(self, cr, uid, ids, context=None):
+        # this try to set agent on db where module is installed after
+        for invoice in self.browse(cr, uid, ids, context):
+            vals_line = {}
+            if invoice.agent_id:
+                vals_line = {
+                    'agent_id': invoice.agent_id.id,
+                    'commission_id': invoice.agent_id.commission.id
+                }
+            else:
+                for order in invoice.sale_order_ids:
+                    section = order.section_id
+                    if section and section.sale_agent_id:
+                        invoice.write({'section_id': section.id})
+                        vals_line = {
+                            'agent_id': section.sale_agent_id.id,
+                            'commission_id': section.sale_agent_id.commission.id
+                        }
+                if not vals_line:
+                    if invoice.partner_id.section_id and invoice.partner_id.section_id.sale_agent_id:
+                        invoice.write({'section_id': section.id})
+                        vals_line = {
+                            'agent_id': invoice.partner_id.section_id.sale_agent_id.id,
+                            'commission_id': invoice.partner_id.section_id.sale_agent_id.commission.id
+                        }
+
+            if vals_line:
+                for invoice_line in invoice.invoice_line:
+                    # qui devo sistemare tutte le righe
+                    if not invoice_line.commission_ids:
+                        vals_line.update({'invoice_line_id': invoice_line.id})
+                        self.pool['invoice.line.agent'].create(cr, uid, vals_line, context)
+
     def write(self, cr, uid, ids, values, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
@@ -177,18 +213,7 @@ class account_invoice(orm.Model):
         # TODO: set this on a function in workflow, is a wrong mode for call
         state = values.get('state', False)
         if state and state == 'open':
-            for invoice in self.browse(cr, uid, ids, context):
-                if invoice.agent_id:
-                    vals_line = {
-                        'agent_id': invoice.agent_id.id,
-                        'commission_id': invoice.agent_id.commission.id
-                    }
-
-                    for invoice_line in invoice.invoice_line:
-                        # qui devo sistemare tutte le righe
-                        if not invoice_line.commission_ids:
-                            vals_line.update({'invoice_line_id': invoice_line.id})
-                            self.pool['invoice.line.agent'].create(cr, uid, vals_line, context)
+            self.invoice_set_agent(cr, uid, ids, context)
 
         res = super(account_invoice, self).write(cr, uid, ids, values, context=context)
 

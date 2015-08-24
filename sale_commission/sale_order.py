@@ -84,7 +84,8 @@ class sale_order(orm.Model):
 
     _columns = {
         'sale_agent_ids': fields.one2many('sale.order.agent', 'sale_id', 'Agents', readonly=True,
-                                          states={'draft': [('readonly', False)]})
+                                          states={'draft': [('readonly', False)]}),
+        'section_id': fields.many2one('crm.case.section', 'Sales Team', required=True),
     }
 
     def onchange_partner_id(self, cr, uid, ids, part):

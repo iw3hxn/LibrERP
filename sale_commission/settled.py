@@ -93,8 +93,15 @@ class recalculate_commision_wizard(orm.TransientModel):
     def recalculate_exec(self, cr, uid, ids, context=None):
         """se ejecuta correctamente desde dos."""
         company_id = self.pool['res.users']._get_company(cr, uid, context)
+        invoice_obj = self.pool['account.invoice']
 
         for o in self.browse(cr, uid, ids, context=context):
+            # quasi quasi qui farei un ricalcolo delle fatture
+
+            invoice_ids = invoice_obj.search(cr, uid, [('date_invoice', '>=', o.date_from), ('date_invoice', '<=', o.date_to)])
+            invoice_obj.invoice_set_agent(cr, uid, invoice_ids, context)
+
+
             sql = 'SELECT  invoice_line_agent.id FROM account_invoice_line ' \
                   'INNER JOIN invoice_line_agent ON invoice_line_agent.invoice_line_id=account_invoice_line.id ' \
                   'INNER JOIN account_invoice ON account_invoice_line.invoice_id = account_invoice.id ' \
@@ -102,7 +109,7 @@ class recalculate_commision_wizard(orm.TransientModel):
                 map(str, context['active_ids'])) + ') AND invoice_line_agent.settled=False ' \
                                                    'AND account_invoice.state not in (\'draft\',\'cancel\') AND account_invoice.type in (\'out_invoice\',\'out_refund\')' \
                                                    'AND account_invoice.date_invoice >= \'' + o.date_from + '\' AND account_invoice.date_invoice <= \'' + o.date_to + '\'' \
-                                                                                                                                                                      ' AND account_invoice.company_id = ' + str(
+                                                   ' AND account_invoice.company_id = ' + str(
                 company_id)
 
             cr.execute(sql)
