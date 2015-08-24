@@ -35,15 +35,3 @@ class product_product(orm.Model):
         'last_sale_date': fields.date('Last sale date', readonly=True),
         'last_customer_id': fields.many2one('res.partner', 'Last Customer', readonly=True),
     }
-    
-    # def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
-    #     new_args = []
-    #     for arg in args:
-    #         if len(arg) == 3 and arg[1] == 'ilike':
-    #             for name in arg[2].split(' '):
-    #                 if name:
-    #                     new_args.append((arg[0], 'ilike', name))
-    #         else:
-    #             new_args.append(arg)
-    #
-    #     return super(product_product, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order, context=context, count=count)

@@ -30,13 +30,14 @@ class sale_order(orm.Model):
     def action_wait(self, cr, uid, ids, *args):
 
         res = super(sale_order, self).action_wait(cr, uid, ids, *args)
-        for o in self.browse(cr, uid, ids):
+        context = self.pool['res.users'].context_get(cr, uid)
+        for o in self.browse(cr, uid, ids, context):
             for line in o.order_line:
                 if line.product_id:
                     vals = {
                         'last_sale_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                         'last_customer_id': line.order_partner_id.id
                     }
-                    self.pool['product.product'].write(cr, uid, [line.product_id.id], vals)
+                    line.product_id.write(vals)
         return res
 

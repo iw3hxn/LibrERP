@@ -23,6 +23,9 @@ import time
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
+import timeit
+
+
 class purchase_order(orm.Model):
     _inherit = "purchase.order"
 
@@ -36,7 +39,7 @@ class purchase_order(orm.Model):
                         'last_purchase_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                         'last_supplier_id': line.partner_id.id
                     }
-                    self.pool['product.product'].write(cr, uid, [line.product_id.id], vals, context)
+                    line.product_id.write(vals)
                     supplierinfo_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('name', '=', line.partner_id.id)], context=context)
                     if not supplierinfo_ids:
                         supplierinfo_obj.create(cr, uid, {

@@ -37,7 +37,7 @@ msgstr "Ultimo Fornitore"
 
 #. module: product_extended
 #: field:product.product,last_customer_id:0
-msgid "Last Supplier"
+msgid "Last Customer"
 msgstr "Ultimo Cliente"
 
 #. module: product_extended
