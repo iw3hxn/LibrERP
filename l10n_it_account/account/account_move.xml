@@ -8,25 +8,32 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <data>
-                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='ref']" position="attributes">
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='ref']"
+                           position="attributes">
                         <attribute name="groups">base.group_extended</attribute>
                     </xpath>
-                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='invoice']" position="attributes">
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='invoice']"
+                           position="attributes">
                         <attribute name="groups">base.group_extended</attribute>
                     </xpath>
-                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='partner_id']" position="attributes">
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='partner_id']"
+                           position="attributes">
                         <attribute name="groups">base.group_extended</attribute>
                     </xpath>
-                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='tax_code_id']" position="attributes">
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='tax_code_id']"
+                           position="attributes">
                         <attribute name="groups">base.group_extended</attribute>
                     </xpath>
-                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='tax_amount']" position="attributes">
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='tax_amount']"
+                           position="attributes">
                         <attribute name="groups">base.group_extended</attribute>
                     </xpath>
-                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='reconcile_id']" position="attributes">
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='reconcile_id']"
+                           position="attributes">
                         <attribute name="groups">base.group_extended</attribute>
                     </xpath>
-                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='reconcile_partial_id']" position="attributes">
+                    <xpath expr="/form/notebook/page[@string='Journal Items']/field/tree[@string='Journal Items']/field[@name='reconcile_partial_id']"
+                           position="attributes">
                         <attribute name="groups">base.group_extended</attribute>
                     </xpath>
                 </data>

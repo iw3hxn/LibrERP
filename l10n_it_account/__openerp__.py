@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation',
-    'version': '2.14.25.27',
+    'version': '2.14.26.28',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
@@ -35,7 +35,7 @@ Functionalities:
     'author': 'OpenERP Italian Community, Didotech srl',
     'website': 'http://www.openerp-italia.org, http://www.didotech.com',
     'license': 'AGPL-3',
-    "depends": [
+    'depends': [
         'account',
         'base_vat',
         'account_chart',
@@ -45,7 +45,7 @@ Functionalities:
         'sale_order_confirm',
         #'account_invoice_entry_date', not possible for use of a field defined here invoice_supplier_number
     ],
-    "data": [
+    'data': [
         'account/partner_view.xml',
         'account/fiscal_position_view.xml',
         'account/account_sequence.xml',
@@ -58,8 +58,9 @@ Functionalities:
         'account/res_bank_view.xml',
         'account/account_tax_view.xml',
         'account/res_company_view.xml',
+        'account/account_invoice_workflow.xml',
     ],
-    "demo": [],
-    "active": False,
-    "installable": True
+    'demo': [],
+    'active': False,
+    'installable': True
 }

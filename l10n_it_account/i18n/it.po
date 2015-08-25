@@ -10714,3 +10714,15 @@ msgstr "The residual amount on a receivable or payable of a journal entry expres
 #, python-format
 msgid "Parent Tax '{name}' has non name."
 msgstr "Il Conto Padre {name} non ha nome."
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:133
+#, python-format
+msgid "Invoice Duplication"
+msgstr "Fattura Duplicata"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:134
+#, python-format
+msgid "Invoice already posted!"
+msgstr "Fattura Già inserita e validata"

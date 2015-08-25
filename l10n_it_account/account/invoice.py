@@ -58,14 +58,14 @@ class account_invoice(orm.Model):
 
     def action_number(self, cr, uid, ids, context=None):
         super(account_invoice, self).action_number(cr, uid, ids, context)
-        for obj_inv in self.browse(cr, uid, ids):
+        for obj_inv in self.browse(cr, uid, ids, context):
             inv_type = obj_inv.type
             internal_number = obj_inv.internal_number
             number = obj_inv.number
             date_invoice = obj_inv.date_invoice
             reg_date = obj_inv.registration_date
             journal = obj_inv.journal_id.id
-            fy = obj_inv.period_id.fiscalyear_id
+            # fy = obj_inv.period_id.fiscalyear_id
             fy_id = obj_inv.period_id.fiscalyear_id.id
 
             period = obj_inv.period_id
@@ -168,12 +168,19 @@ class account_invoice(orm.Model):
 
         return {'value': {}}
 
+    def invoice_validate_check(self, cr, uid, ids, context=None):
+        for obj_inv in self.browse(cr, uid, ids, context):
+            if obj_inv.type == 'in_invoice' and not obj_inv.supplier_invoice_number:
+                raise orm.except_orm(_('Supplier Invoice'),
+                               _('Impossible to Validate, need to set Supplier invoice nr'))
+                return False
+        return True
+
     _columns = {
         'supplier_invoice_number': fields.char('Supplier invoice nr', size=16),
         'direct_invoice': fields.function(_is_direct_invoice, string='Direct Invoice', type='boolean', method=True),
         'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
         'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
-#        'reference': fields.related('supplier_invoice_number', type='char' ),
     }
 
     def copy(self, cr, uid, ids, default=None, context=None):
