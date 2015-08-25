@@ -22,6 +22,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from openerp import netsvc
 
 
 class virtual_purchase_requisition_partner(orm.TransientModel):
@@ -38,6 +39,15 @@ class virtual_purchase_requisition_partner(orm.TransientModel):
 
 class purchase_requisition(orm.Model):
     _inherit = "purchase.requisition"
+
+    def tender_done(self, cr, uid, ids, context=None):
+        res = super(purchase_requisition, self).tender_done(cr, uid, ids, context)
+        wf_service = netsvc.LocalService("workflow")
+        for tender in self.browse(cr, uid, ids, context):
+            for purchase_order in tender.purchase_ids:
+                if purchase_order.state in ['draft']:
+                    wf_service.trg_validate(uid, 'purchase.order', purchase_order.id, 'purchase_cancel', cr)
+        return res
     
     def request_prefered_suppliers(self, cr, uid, ids, context):
         if not len(ids) == 1:
@@ -49,8 +59,8 @@ class purchase_requisition(orm.Model):
         purchase_requisition_line_ids = self.pool['purchase.requisition.line'].search(cr, uid, [('requisition_id', '=', ids[0])], context=context)
         purchase_requisition_lines = self.pool['purchase.requisition.line'].browse(cr, uid, purchase_requisition_line_ids, context=context)
         
-        ## We need this 2 cycles construction to handle situation when there are
-        ## more requisition lines with the same product
+        # We need this 2 cycles construction to handle situation when there are
+        # more requisition lines with the same product
         for line in purchase_requisition_lines:
             products[line.product_id.id] = ''
         for product_id in products.keys():
@@ -59,7 +69,7 @@ class purchase_requisition(orm.Model):
             if supplier:
                 suppliers[supplier[0]] = ''
         if not suppliers:
-            raise orm.except_orm(_('Missed Supplier !'), _('There are no Prefered Supplier'))
+            raise orm.except_orm(_('Missed Supplier !'), _('There are no Preferred Supplier'))
         for supplier_id in suppliers.keys():
             requisition_partner_id = virtual_partner_obj.create(cr, uid, {'partner_id': supplier_id}, context)
             virtual_partner_obj.create_order(cr, uid, [requisition_partner_id], context={'active_ids': ids})
@@ -170,16 +180,7 @@ class purchase_requisition_line(orm.Model):
         'draft': fields.function(_get_requisitions, arg='draft', string='Draft', type='float', readonly=True, method=True),
         'approved': fields.function(_get_requisitions, arg='approved', string='Confirmed', type='float', readonly=True, method=True),
         'color': fields.function(_get_color, string='Color', type='char', readonly=True, method=True),
-        #'compound_qty': fields.function(_get_compound_qty, string=_('Quantity'), method=True),
-        #'destination_ids': fields.one2many('purchase.requisition.line.destination', 'requisition_line_id', _('Products Distribution'))
+        # 'compound_qty': fields.function(_get_compound_qty, string=_('Quantity'), method=True),
+        # 'destination_ids': fields.one2many('purchase.requisition.line.destination', 'requisition_line_id', _('Products Distribution'))
     }
     
-
-#class PurchaseRequisitionLineDestination(orm.Model):
-#    _name = 'purchase.requisition.line.destination'
-#    _description = ''
-#    
-#    _columns = {
-#        'requisition_line_id': fields.many2one('request.requisition.line', string='Destination of a product'),
-#        'product_qty': fields.integer('Product quantity')
-#    }
