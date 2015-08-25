@@ -231,11 +231,13 @@ class picking_import(filedata_import):
         ),
         'location_id': fields.many2one(
             'stock.location', 'Location',
-            select=True, required=True
-        ),  # TODO add domain
+            select=True, required=True,
+            domain="[('usage', '!=', 'view')]"
+        ),
         'location_dest_id': fields.many2one(
             'stock.location', 'Dest. Location',
-            select=True, required=True
+            select=True, required=True,
+            domain="[('usage', '!=', 'view')]"
         ),
 
         # Data of file, in code BASE64

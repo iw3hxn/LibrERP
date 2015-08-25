@@ -99,7 +99,8 @@ class Utils():
             'email_to': user.user_email or '',
             'user_id': uid,
             'body_text': body,
-            'model': 'filedata.import'
+            'model': 'filedata.import',
+            'state': 'sent'
         })
         
         # OpenERP v.7:

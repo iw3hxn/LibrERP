@@ -144,6 +144,7 @@
                     </group>
                     <group colspan="8" col="8" states="import">
                         <field name="location_id" />
+                        <newline/>
                         <field name="location_dest_id" />
                     </group>
 

@@ -60,7 +60,7 @@ msgstr "Importa Prodotti"
 #. module: data_migration
 #: field:picking.import,location_id:0
 msgid "Location"
-msgstr "Punto di Staccaggio di Provenienza"
+msgstr "Loc. Di Partenza"
 
 #. module: data_migration
 #: model:ir.ui.menu,name:data_migration.menu_partner_file_import
