@@ -39,10 +39,10 @@ class sale_order_line(orm.Model):
                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
                           lang=False, update_tax=True, date_order=False,
                           packaging=False, fiscal_position=False, flag=False, context=None):
-        
+
         result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty, uom, qty_uos, uos, name, partner_id,
                                                                 lang, update_tax, date_order, packaging, fiscal_position, flag, context)
-        
+
         mrp_bom_obj = self.pool['mrp.bom']
         
         if product_id:
@@ -81,10 +81,12 @@ class sale_order_line(orm.Model):
             if line[2] and line[2].get('price_subtotal'):
                 price += line[2].get('price_subtotal')
             else:
-                no_change_line_id.append(line[1])
+                line[1] and no_change_line_id.append(line[1]) # append only if line[1] have a value
 
-        for line_bom in self.pool['sale.order.line.mrp.bom'].browse(cr, uid, no_change_line_id, context):
-            price += line_bom.price_subtotal
+        if no_change_line_id:
+            for line_bom in self.pool['sale.order.line.mrp.bom'].browse(cr, uid, no_change_line_id, context):
+                price += line_bom.price_subtotal
+
 
         return {'value': {'purchase_price': price}}
 

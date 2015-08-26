@@ -293,7 +293,7 @@
                         <field name="customer_validation" invisible="1"/>
                         <button name="order_confirm" string="Direct Confirm" states="draft" icon="gtk-ok" colspan="5"/>
                     </xpath>
-                    <button name="button_dummy" position="attributes">
+                    <!--<button name="button_dummy" position="attributes">
                         <attribute name="states">
                             draft,wait_technical_validation,wait_manager_validation,wait_customer_validation
                         </attribute>
@@ -302,7 +302,7 @@
                         <attribute name="states">
                             draft,wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,waiting_date,progress
                         </attribute>
-                    </button>
+                    </button>-->
                     <xpath expr="/form/notebook/page[@string='Sales Order']/field[@name='order_line']/tree/field[@name='discount']"
                            position="before">
                         <field name="delivered_qty" groups="sale.view_delivered_qty"/>
