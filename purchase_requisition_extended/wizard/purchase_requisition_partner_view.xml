@@ -6,6 +6,9 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_partner"/>
             <field name="arch" type="xml">
+                <field name="partner_id" position="replace" >
+                    <field name="partner_id" on_change="onchange_partner_id(partner_id)"  context="{'search_default_supplier':1,'default_supplier':1,'default_customer':0}" options="{&quot;quick_create&quot;: false}"  />
+                </field>
                 <field name="partner_address_id" position="after" >
                     <field name="supplier_ids" colspan="2" invisible="1"/>
                 </field>

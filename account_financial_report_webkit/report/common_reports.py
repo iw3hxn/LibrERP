@@ -303,14 +303,17 @@ class CommonReportHeaderWebkit(common_report_header):
 
     def _get_st_fiscalyear_period(self, fiscalyear, special=False, order='ASC'):
         period_obj = self.pool.get('account.period')
-        p_id = period_obj.search(self.cursor,
+        if fiscalyear:
+            p_id = period_obj.search(self.cursor,
                                  self.uid,
-                                 [('special','=', special),
+                                 [('special', '=', special),
                                   ('fiscalyear_id', '=', fiscalyear.id)],
                                  limit=1,
                                  order='date_start %s' % (order,))
+        else:
+            p_id = False
         if not p_id:
-            raise osv.except_osv(_('No period found'),'')
+            raise osv.except_osv(_('No period found'), '')
         return period_obj.browse(self.cursor, self.uid, p_id[0])
 
     ####################Initial Balance helper #################################

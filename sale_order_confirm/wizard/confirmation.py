@@ -240,9 +240,9 @@ class sale_order_confirm(orm.TransientModel):
             old_sale_order_data = sale_order_obj.read(cr, uid, sale_order_confirm_data['sale_order_id'], ['shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'sale_version_id', 'version', 'name', 'order_policy', 'picking_policy', 'invoice_quantity', 'section_id', 'categ_id'])
             new_sale_order = {}
             for key in ('shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'contact_id'):
-                new_sale_order[key] = old_sale_order_data[key][0]
+                new_sale_order[key] = old_sale_order_data.get(key, False) and old_sale_order_data[key][0] or False
             for key in ('picking_policy', 'order_policy', 'invoice_quantity'):
-                new_sale_order[key] = old_sale_order_data[key]
+                new_sale_order[key] = old_sale_order_data.get(key, False)
             
             if not old_sale_order_data['sale_version_id']:
                 old_sale_order_name = old_sale_order_data['name'] + u" V.2"
