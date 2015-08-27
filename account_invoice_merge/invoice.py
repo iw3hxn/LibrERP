@@ -62,9 +62,9 @@ class account_invoice(orm.Model):
                 comment += ', %s' % inv.comment
             if inv.origin:
                 origin += ', %s' % inv.origin
-            line_ids = inv_line_obj.search(cr, uid, [('invoice_id', '=', inv.id)], context)
+            line_ids = inv_line_obj.search(cr, uid, [('invoice_id', '=', inv.id)], context=context)
             for inv_lin in inv_line_obj.browse(cr, uid, line_ids, context):
-                mrg_pdt_ids = inv_line_obj.search(cr, uid, [('invoice_id', '=', parent.id), ('product_id', '=', inv_lin.product_id.id)], context)
+                mrg_pdt_ids = inv_line_obj.search(cr, uid, [('invoice_id', '=', parent.id), ('product_id', '=', inv_lin.product_id.id)], context=context)
                 if merge_lines and len(mrg_pdt_ids) == 1 and inv.type == parent.type:  # product found --> add quantity
                     inv_line_obj.write(cr, uid, mrg_pdt_ids, {'quantity': inv_line_obj._can_merge_quantity(cr, uid, mrg_pdt_ids[0], inv_lin.id)})
                     inv_line_obj.unlink(cr, uid, [inv_lin.id])
