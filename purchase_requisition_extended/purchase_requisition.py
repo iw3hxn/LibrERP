@@ -79,13 +79,15 @@ class purchase_requisition(orm.Model):
         
     def request_to_suppliers(self, cr, uid, ids, context):
         virtual_partner_obj = self.pool.get('virtual.purchase.requisition.partner')
-        
-        suppliers = virtual_partner_obj._get_requisition_suppliers(cr, uid, context={'active_id': ids[0]})
-        if not suppliers:
-            raise orm.except_orm(_('Missed Supplier !'), _('There are no Supplier'))
-        for supplier_id in suppliers:
-            requisition_partner_id = virtual_partner_obj.create(cr, uid, {'partner_id': supplier_id})
-            virtual_partner_obj.create_order(cr, uid, [requisition_partner_id], context={'active_ids': ids})
+        for requisition in self.browse(cr, uid, ids, context):
+            suppliers = virtual_partner_obj._get_requisition_suppliers(cr, uid, context={'active_id': requisition.id})
+            if not suppliers:
+                raise orm.except_orm(_('Missed Supplier !'), _('There are no Supplier'))
+            for supplier_id in suppliers:
+                if supplier_id in filter(lambda x: x, [rfq.state != 'cancel' and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
+                    continue
+                requisition_partner_id = virtual_partner_obj.create(cr, uid, {'partner_id': supplier_id})
+                virtual_partner_obj.create_order(cr, uid, [requisition_partner_id], context={'active_ids': [requisition.id]})
 
         self.tender_in_progress(cr, uid, ids, context=None)
         return True
