@@ -29,12 +29,12 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, osv
+from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp import netsvc
 
 
-class account_invoice(osv.Model):
+class account_invoice(orm.Model):
     _inherit = 'account.invoice'
     _columns = {
         #'discharge_products_in_invoice': fields.boolean('Discharge products in invoice', help="In case of 'immediate invoice', this flag active system of discharge products from stock."),
@@ -127,7 +127,7 @@ class account_invoice(osv.Model):
                     product_qty_new = line.product_id.qty_available - line.quantity
                     note = _('Immediate invoice')
                     if product_qty_new < 0:
-                        raise osv.except_osv((_('Warning!'), _('Not enough {product} in stock.').format(product=line.product_id.name)))
+                        raise orm.except_orm((_('Warning!'), _('Not enough {product} in stock.').format(product=line.product_id.name)))
                 else:
                     note = ''
                 
