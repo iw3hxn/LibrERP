@@ -262,14 +262,14 @@ class res_partner(orm.Model):
             # there is already an account created for the partner
                 if partner.property_account_receivable.name != vals['name']:
                     # the account name if different from the partner name,
-                    #so we must update the account name
+                    # so we must update the account name
                     account_obj.write(
                         cr, uid, partner.property_account_receivable.id,
                         {'name': vals['name']})
             else:
                 # the property_account_receivable is a view type,
                 # so we have to create the partner account
-                if not 'property_customer_ref' in vals:
+                if not 'property_customer_ref' in vals and not vals.get('block_ref_customer', False):
                     # there isn't the partner code, so create it
                     vals['property_customer_ref'] = \
                         self.pool['ir.sequence'].get(
