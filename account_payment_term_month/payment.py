@@ -24,6 +24,18 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.osv import fields, orm
 
+PAYMENT_TERM_TYPE_SELECTION = [
+    ('BB', 'Bonifico Bancario'),
+    ('BP', 'Bonifico Postale'),
+    ('RD', 'Rimessa Diretta'),
+    ('RB', 'Ricevuta Bancaria'),
+    ('F4', 'F24'),
+    ('PP', 'Paypal'),
+    ('CC', 'Carta di Credito'),
+    ('CO', 'Contrassegno'),
+    ('CN', 'Contanti'),
+    ('SD', 'Sepa DD'),
+]
 
 class account_payment_term_line(orm.Model):
     ''' Add extra field for manage commercial payments
@@ -76,6 +88,7 @@ class account_payment_term(orm.Model):
             " for second month without payments."),
         'min_day_to_be_delayed2': fields.integer('Second date from which payment will be'
             ' delayed.'),
+        'type': fields.selection(PAYMENT_TERM_TYPE_SELECTION, "Type of payment"),
     }
     
     def compute(self, cr, uid, id, value, date_ref=False, context=None):
