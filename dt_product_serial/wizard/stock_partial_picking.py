@@ -142,14 +142,14 @@ class stock_partial_picking(orm.TransientModel):
 
             # Quantiny must be Positive
             if wizard_line.quantity < 0:
-                raise osv.except_osv(_('Warning!'), _('Please provide Proper Quantity !'))
+                raise orm.except_orm(_('Warning!'), _('Please provide Proper Quantity !'))
 
             #Compute the quantity for respective wizard_line in the line uom (this jsut do the rounding if necessary)
             qty_in_line_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, line_uom.id)
 
             if line_uom.factor and line_uom.factor != 0:
                 if float_compare(qty_in_line_uom, wizard_line.quantity, precision_rounding=line_uom.rounding) != 0:
-                    raise osv.except_osv(_('Warning'), _('The uom rounding does not allow you to ship "%s %s", only roundings of "%s %s" is accepted by the uom.') % (wizard_line.quantity, line_uom.name, line_uom.rounding, line_uom.name))
+                    raise orm.except_orm(_('Warning'), _('The uom rounding does not allow you to ship "%s %s", only roundings of "%s %s" is accepted by the uom.') % (wizard_line.quantity, line_uom.name, line_uom.rounding, line_uom.name))
             if move_id:
                 # Check rounding Quantity.ex.
                 # picking: 1kg, uom kg rounding = 0.01 (rounding to 10g),

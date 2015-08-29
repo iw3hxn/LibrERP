@@ -160,9 +160,11 @@ class stock_move(orm.Model):
                 if not move.product_id.packaging:
                     raise orm.except_orm(_('Error :'), _("Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information.") % (move.product_id.name))
                 lu_qty = move.product_id.packaging[0].qty
+
             elif move.product_id.lot_split_type == 'single':
                 lu_qty = 1
-            if lu_qty and qty > 1:
+
+            if lu_qty and qty >= 1:
                 # Set existing move to LU quantity
                 # search also product_lot
 
@@ -170,20 +172,20 @@ class stock_move(orm.Model):
                     'product_qty': lu_qty,
                     'product_uos_qty': move.product_id.uos_coeff
                 }
-    #PROVO AD ATTRIBUIRE I NUMERI DI SERIE IN AUTOMATICO
+    # PROVO AD ATTRIBUIRE I NUMERI DI SERIE IN AUTOMATICO
     ##################### CARLO NON È CORRETTO ANDREBBE FATTO NON DENTRO QUESTO CICLO MA FUORI (DOPO) CHE VADO A SISTEMARE LE COSE PER IL LOTTO DI PRODUZIONE
     ####### ORA È SOLO UN TEST
     ##################### 8/8/2015
                 prod_lot_ids = []
                 index_lot = 0
                 if move.picking_id.type == 'out' and move.product_id.track_outgoing and auto_assign_lot:
-                    prod_lot_ids = lot_obj.search(cr, uid, [('product_id', '=', move.product_id.id), ('stock_available', '>', 0)], order="date asc")
+                    prod_lot_ids = lot_obj.search(cr, uid, [('product_id', '=', move.product_id.id), ('stock_available', '>', 0)], order="date asc", context=context)
                     if prod_lot_ids:
                         vals['prodlot_id'] = prod_lot_ids[index_lot]
                         if move.product_id.lot_split_type == 'single':
                             index_lot += 1
 
-                self.write(cr, uid, move.id, vals)
+                self.write(cr, uid, move.id, vals, context)
                 qty -= lu_qty
                 # While still enough qty to create a new move, create it
                 while qty >= lu_qty:
@@ -202,12 +204,12 @@ class stock_move(orm.Model):
 
                 # Create a last move for the remainder qty
                 if qty > 0:
-                    all_ids.append(self.copy(cr, uid, move.id, {'state': move.state, 'prodlot_id': None, 'product_qty': qty}))
+                    all_ids.append(self.copy(cr, uid, move.id, {'state': move.state, 'prodlot_id': None, 'product_qty': qty}, context))
         return all_ids
     
     def create(self, cr, user, vals, context=None):
         # For some reason we don't receive 'name', so we should create it:
-        if ('name' not in vals) or (vals.get('name')=='/'):
+        if ('name' not in vals) or (vals.get('name') == '/'):
             product = self.pool['product.product'].browse(cr, user, vals['product_id'], context=context)
             if product.default_code:
                 vals['name'] = '[%s] %s' % (product.default_code, product.name)
