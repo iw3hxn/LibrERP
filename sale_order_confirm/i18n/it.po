@@ -766,8 +766,8 @@ msgstr "Accordo Quadro"
 
 #. module: sale_order_confirm
 #: help:product.pricelist,contract:0
-msgid "Set if this Pricelist not need approve on order"
-msgstr "Accordo Quadro"
+msgid "Set if this Pricelist not need approve on Sale order"
+msgstr "Se selezionato è un Accordo Quadro e quindi l'ordine non ha bisogno di approvazioni"
 
 #. module: sale_order_confirm
 #: code:addons/sale_order_confirm/sale.py:146

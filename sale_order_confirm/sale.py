@@ -54,7 +54,7 @@ class product_pricelist(orm.Model):
     _inherit = "product.pricelist"
 
     _columns = {
-        'contract': fields.boolean('Contract', help="Set if this Pricelist not need approve on order")
+        'contract': fields.boolean('Contract', help="Set if this Pricelist not need approve on Sale order")
     }
 
 
@@ -236,12 +236,12 @@ class sale_order(orm.Model):
     def action_validate(self, cr, uid, ids, context=None):
 
         for order in self.browse(cr, uid, ids, context):
-
+            import pdb; pdb.set_trace()
             if order.need_tech_validation and not order.tech_validation:
                 vals = {
                     'state': 'wait_technical_validation',
                 }
-            elif order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) < order.company_id.minimum_margin and not order.manager_validation:
+            elif order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) * 100 < order.company_id.minimum_margin and not order.manager_validation:
                 vals = {
                     'state': 'wait_manager_validation',
                 }
