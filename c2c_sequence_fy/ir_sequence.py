@@ -66,8 +66,9 @@ class ir_sequence(osv.osv):
         # company_ids = self.pool.get('res.company').search(cr, uid, [], order='company_id', context=context) + [False]
         seq_id = sequence_id
         # create_sequence = ''
+        journal_obj = self.pool['account.journal']
+        journal = []
         if context.get('journal_id') and context['journal_id']:
-            journal_obj = self.pool['account.journal']
             for journal in journal_obj.browse(cr, uid, [context['journal_id']], context=context):
                 # create_sequence = journal.create_sequence
                 if journal.create_sequence == 'create_period' and context.get('period_id') and context['period_id']:
@@ -109,8 +110,13 @@ class ir_sequence(osv.osv):
                 else:
                     fy_obj = self.pool.get('account.fiscalyear')
                     for fy in fy_obj.browse(cr, uid, [fy], context=context):
-                        #fy_code = fy.code
                         fy_name = fy.name
+                        if not journal:
+                            journal_ids = journal_obj.search(cr, uid, [('sequence_id', '=', sequence_id)], context=context)
+                            if journal_ids:
+                                journal = journal_obj.browse(cr, uid, journal_ids[0], context)
+                            else:
+                                raise osv.except_osv(_('No journal found'), '')
                         #prefix = journal.sequence_id.prefix + fy.code +'-' # removed (result as a duplication) but it make a bug for old installation #
 
                         prefix = journal.sequence_id.prefix.replace('/%(year)s/', '').replace('-%(fy)s-', '') + '-' + fy.code +'-'
