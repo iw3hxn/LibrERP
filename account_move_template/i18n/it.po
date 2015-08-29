@@ -207,8 +207,14 @@ msgstr "Carica"
 
 #. module: account_move_template
 #: view:account.move.template.line:0
-msgid "You can refer to other lines using their sequence number (e.g. 'L(1)' for first line). Examples of code: 'L(1) * 0.2'; 'L(2) - L(1)'; 'L(1) + L(2) + L(3)'; '1250'"
-msgstr "Si può fare riferimento alle altre righe usando il loro numero di sequenza (ad es. 'L(1)' per la prima riga). Esempi di codice: 'L(1) * 0.2'; 'L(2) - L(1)'; 'L(1) + L(2) + L(3)'; '1250'"
+msgid ""
+"You can refer to other lines using their sequence number (e.g. 'L(1)' for "
+"first line). Examples of code: 'L(1) * 0.2'; 'L(2) - L(1)'; 'L(1) + L(2) + "
+"L(3)'; '1250'"
+msgstr ""
+"Si può fare riferimento alle altre righe usando il loro numero di sequenza "
+"(ad es. 'L(1)' per la prima riga). Esempi di codice: 'L(1) * 0.2'; 'L(2) - "
+"L(1)'; 'L(1) + L(2) + L(3)'; '1250.00'"
 
 #. module: account_move_template
 #: selection:account.document.template.line,type:0
@@ -294,3 +300,8 @@ msgstr "account.document.template"
 msgid "Journal"
 msgstr "Sezionale"
 
+#. module: account_move_template
+#: code:addons/account_move_template/account_document_template.py:131
+#, python-format
+msgid "'On "%s" replace , with . "
+msgstr "'In "%s" cambiare la , (virgola) con . (punto)"

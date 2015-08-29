@@ -37,7 +37,7 @@
                     <field name="move_line_type"/>
                     <field name="account_tax_id"/>
                     <separator string="Python Code" colspan="4"/>
-                    <field name="python_code" colspan="4" attrs="{'readonly': [('type', '!=', 'computed')]}" nolabel="1"/>
+                    <field name="python_code" on_change="on_change_python(python_code)" colspan="4" attrs="{'readonly': [('type', '!=', 'computed')]}" nolabel="1"/>
                     <label string="You can refer to other lines using their sequence number (e.g. 'L(1)' for first line). Examples of code: 'L(1) * 0.2'; 'L(2) - L(1)'; 'L(1) + L(2) + L(3)'; '1250'" colspan="4"/>
                 </form>
             </field>
@@ -94,6 +94,6 @@
         </record>
         <menuitem
             action="action_move_template_form" id="menu_action_move_template_form" sequence="5"
-            parent="account.menu_configuration_misc" groups="base.group_extended"/>
+            parent="account.menu_configuration_misc" groups="account.group_account_manager"/>
     </data>
 </openerp>
