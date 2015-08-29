@@ -208,7 +208,7 @@
         <field name="context">{'search_default_start_year': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
     </record>
     
-    <menuitem name="Schede Contabili" parent="account.menu_finance_entries" action="action_account_ordered" id="menu_action_account_ledger" sequence="5"/>
+    <menuitem name="Account Ledger" parent="account.menu_finance_entries" action="action_account_ordered" id="menu_action_account_ledger" sequence="5"/>
 
 </data>
 </openerp>

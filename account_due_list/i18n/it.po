@@ -287,6 +287,10 @@ msgstr "Verso"
 msgid "Error"
 msgstr "Errore"
 
+#. module: account_due_list
+#: model:ir.ui.menu,name:account_due_list.menu_action_account_ledger
+msgid "Account Ledger"
+msgstr "Schede Contabili"
 
 
 
