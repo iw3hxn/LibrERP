@@ -236,7 +236,7 @@ class sale_order(orm.Model):
     def action_validate(self, cr, uid, ids, context=None):
 
         for order in self.browse(cr, uid, ids, context):
-            import pdb; pdb.set_trace()
+
             if order.need_tech_validation and not order.tech_validation:
                 vals = {
                     'state': 'wait_technical_validation',
