@@ -329,18 +329,6 @@
             </field>
         </record>
 
-        <record id="view_order_form_add_versions_inherit" model="ir.ui.view">
-            <field name="name">sale.order.form.add_versions.inherit</field>
-            <field name="model">sale.order</field>
-            <field name="type">form</field>
-            <field name="inherit_id" ref="sale_order_version.view_order_form_add_versions"/>
-            <field name="arch" type="xml">
-                <field name="sale_version_id" position="after">
-                    <field name="revision_note"/>
-                </field>
-            </field>
-        </record>
-
         <record model="ir.ui.view" id="sale_journal.sale_journal_sale_order">
             <field name="name">sale.order.journal.view.form</field>
             <field name="type">form</field>

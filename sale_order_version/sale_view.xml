@@ -12,6 +12,7 @@
                 </xpath>
                 <xpath expr="//form/group[1]/group[1]/field[@name='client_order_ref']" position="after">
                     <field name="sale_version_id" readonly="1" />
+                    <field name="revision_note"/>
                     <field name="active" invisible="1"/>
                 </xpath>
 <!--
