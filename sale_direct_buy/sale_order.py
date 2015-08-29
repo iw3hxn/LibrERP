@@ -51,14 +51,19 @@ class sale_order(orm.Model):
                                         # At the moment we use main supplier:
                                         supplierinfo = self.pool['product.template']._get_main_product_supplier(cr, uid, child_bom.product_id, context)
                                         res = self.pool['purchase.order.line'].onchange_product_id(cr, uid, ids, supplierinfo.name.property_product_pricelist_purchase.id, child_bom.product_id.id, child_bom.product_uom_qty or 1, child_bom.product_uom.id,
-            supplierinfo.name.id, order_line.order_id.date_order, supplierinfo.name.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
-            child_bom.product_id.name or '', False, False, context)
+                                            supplierinfo.name.id, order_line.order_id.date_order, supplierinfo.name.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                                            child_bom.product_id.name or '', False, False, context)
+
+                                        product_to_buy = res['value'].get('product_qty') - child_bom.product_id.virtual_available,  # child_bom.product_uom_qty or 1,
+
+                                        if product_to_buy <= 0:
+                                            continue
 
                                         line_values = {
+                                            'product_qty': product_to_buy,
                                             'product_uom': res['value'].get('product_uom'),  # child_bom.product_uom.id,
                                             'price_unit': res['value'].get('price_unit'),  # child_bom.product_id.standard_price,
                                             'discount': res['value'].get('discount'),
-                                            'product_qty': res['value'].get('product_qty') - child_bom.product_id.virtual_available,  # child_bom.product_uom_qty or 1,
                                             'partner_id': supplierinfo.name.id,  # Supplier
                                             'name': res['value'].get('name'),  # child_bom.product_id.name or '',
                                             # 'date_planned': time.strftime(DEFAULT_SERVER_DATE_FORMAT),  # Where we can get it from?
@@ -82,11 +87,16 @@ class sale_order(orm.Model):
                         order_line.supplier_id.id, order_line.order_id.date_order, order_line.supplier_id.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
                         order_line.name, order_line.purchase_price or order_line.product_id.standard_price, order_line.notes, context)
 
+                    product_to_buy = res['value'].get('product_qty') - order_line.product_id.virtual_available  # child_bom.product_uom_qty or 1,
+
+                    if product_to_buy <= 0:
+                        continue
+
                     line_values = {
                         'product_uom': res['value'].get('product_uom'),  #  order_line.product_uom.id,
                         'price_unit': res['value'].get('price_unit'),  # order_line.purchase_price or order_line.product_id.standard_price,
                         'discount': res['value'].get('discount'),  # order_line.extra_purchase_discount or 0.00,
-                        'product_qty': res['value'].get('product_qty') - order_line.product_id.virtual_available,  # order_line.product_uom_qty or 1,
+                        'product_qty': product_to_buy,  # order_line.product_uom_qty or 1,
                         'partner_id': order_line.supplier_id.id,  # Supplier
                         'name': res['value'].get('name'),  # order_line.name or '',
                         'date_planned': date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
@@ -123,7 +133,6 @@ class sale_order(orm.Model):
                     # Control if there are requesition requests in state 'draft'. If find any,
                     # use them, if not create new.
                     requisition_ids = purchase_requisition_obj.search(cr, uid, [('state', '=', 'draft')], context)
-                    
                     if requisition_ids:
                         for line in order_lines:
                             line['requisition_id'] = requisition_ids[0]
@@ -148,7 +157,7 @@ class sale_order(orm.Model):
                             self.log(cr, uid, order.id, message)
                 else:
                     purchase_order_values = purchase_order_obj.onchange_partner_id(cr, uid, [], supplier_id)['value']
-                    
+
                     purchase_id = purchase_order_obj.create(cr, uid, {
                         'origin': order.name,
                         'partner_id': supplier_id,
