@@ -139,6 +139,10 @@ class FormatOne():
     COLUMNS_PRICELIST_ITEM = "code, price_surcharge"
     REQUIRED_PRICELIST_ITEM = ['code', 'price_surcharge']
 
+    HEADER_SALES_ITEM = ('Location', 'Location Name', 'SKU', 'Item Style', 'SKU Description', 'Transaction Date', 'Quantity', 'Extended Cost', 'Item Ledg. Entry No.', 'Gen. Business Posting Group')
+    COLUMNS_SALES_ITEM = "location, location_name, sku, item, sku_description, date, qty, cost, item2, group"
+    REQUIRED_SALES_ITEM = ['item', 'qty']
+
 
 class FormatTwo():
     # IB.

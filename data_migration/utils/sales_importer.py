@@ -24,6 +24,7 @@ import pooler
 import threading
 from tools.translate import _
 from openerp.osv import orm
+import netsvc
 import math
 import data_migration.settings as settings
 from collections import namedtuple
@@ -51,13 +52,13 @@ class ImportFile(threading.Thread, Utils):
         
         # Inizializzazione classe ImportPricelist
         self.uid = uid
-        
+
         self.dbname = cr.dbname
         self.pool = pooler.get_pool(cr.dbname)
+        self.sale_order_obj = self.pool['sale.order']
+        self.sale_order_line_obj = self.pool['sale.order.line']
         self.product_obj = self.pool['product.product']
         self.picking_obj = self.pool['stock.picking']
-        self.move_obj = self.pool['stock.move']
-        self.location_obj = self.pool['stock.location']
 
         # Necessario creare un nuovo cursor per il thread,
         # quello fornito dal metodo chiamante viene chiuso
@@ -65,7 +66,7 @@ class ImportFile(threading.Thread, Utils):
         # all'interno del thread.
         self.cr = pooler.get_db(self.dbname).cursor()
         
-        self.pickingImportID = ids[0]
+        self.salesImportID = ids[0]
         
         self.context = context
         self.error = []
@@ -83,32 +84,31 @@ class ImportFile(threading.Thread, Utils):
     
     def run(self):
         # Recupera il record dal database
-        self.filedata_obj = self.pool['picking.import']
-        self.pickingImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.pickingImportID, context=self.context)
-        self.file_name = self.pickingImportRecord.file_name.split('\\')[-1]
-        self.address_id = self.pickingImportRecord.address_id
-        self.stock_journal_id = self.pickingImportRecord.stock_journal_id
-        self.location_id = self.pickingImportRecord.location_id
-        self.location_dest_id = self.pickingImportRecord.location_dest_id
+        self.filedata_obj = self.pool['sales.import']
+        self.salesImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.salesImportID, context=self.context)
+        self.file_name = self.salesImportRecord.file_name.split('\\')[-1]
+        self.partner_id = self.salesImportRecord.partner_id
+        self.date_order = self.salesImportRecord.date_order
+        self.origin = self.salesImportRecord.origin or ''
+        self.shop_id = self.salesImportRecord.shop_id
+        self.location_id = self.salesImportRecord.location_id
+        self.auto_approve = self.salesImportRecord.auto_approve
 
         # ===================================================
-        Config = getattr(settings, self.pickingImportRecord.format)
+        Config = getattr(settings, self.salesImportRecord.format)
 
-        self.HEADER = Config.HEADER_PICKING
-        self.REQUIRED = Config.REQUIRED_PICKING
-        
-        # Default values
-        self.PRODUCT_DEFAULTS = Config.PRODUCT_DEFAULTS
-        
-        if not len(self.HEADER) == len(Config.COLUMNS_PICKING.split(',')):
-            pprint(zip(self.HEADER, Config.COLUMNS_PICKING.split(',')))
+        self.HEADER = Config.HEADER_SALES_ITEM
+        self.REQUIRED = Config.REQUIRED_SALES_ITEM
+
+        if not len(self.HEADER) == len(Config.COLUMNS_SALES_ITEM.split(',')):
+            pprint(zip(self.HEADER, Config.COLUMNS_SALES_ITEM.split(',')))
             raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
         
-        self.RecordPicking = namedtuple('RecordPicking', Config.COLUMNS_PICKING)
+        self.RecordSales = namedtuple('RecordSales', Config.COLUMNS_SALES_ITEM)
 
         # ===================================================
 
-        table, self.numberOfLines = import_sheet(self.file_name, self.pickingImportRecord.content_text)
+        table, self.numberOfLines = import_sheet(self.file_name, self.salesImportRecord.content_text)
 
         if DEBUG:
             # Importa il file
@@ -119,7 +119,7 @@ class ImportFile(threading.Thread, Utils):
         else:
             # Elaborazione del file
             try:
-                # Importa il listino
+                # Importa il sale order
                 self.process(self.cr, self.uid, table)
                 
                 # Genera il report sull'importazione
@@ -140,7 +140,7 @@ class ImportFile(threading.Thread, Utils):
                 self.notify_import_result(self.cr, self.uid, title, message, error=True)
 
     def process(self, cr, uid, table):
-        self.message_title = _("Importazione Picking")
+        self.message_title = _("Importazione Sales")
         self.progressIndicator = 0
         
         notifyProgressStep = (self.numberOfLines / 100) + 1     # NB: divisione tra interi da sempre un numero intero!
@@ -148,6 +148,7 @@ class ImportFile(threading.Thread, Utils):
         
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
+
         for self.processed_lines, row_list in enumerate(table, start=1):
 
             if not self.import_row(cr, uid, row_list):
@@ -158,19 +159,27 @@ class ImportFile(threading.Thread, Utils):
                 completedQuota = float(self.processed_lines) / float(self.numberOfLines)
                 completedPercentage = math.trunc(completedQuota * 100)
                 self.progressIndicator = completedPercentage
-                self.updateProgressIndicator(cr, uid, self.pickingImportID)
+                self.updateProgressIndicator(cr, uid, self.salesImportID)
 
         # here is import all now need to
 
-        for pick in self.cache:
+        wf_service = netsvc.LocalService("workflow")
 
-            self.picking_obj.draft_validate(cr, uid, [self.cache[pick]])
-            picking_date = self.picking_obj.read(cr, uid, [self.cache[pick]])[0]['date']
-            move_ids = self.move_obj.search(cr, uid, [('picking_id', 'in', [self.cache[pick]])])
-            self.move_obj.write(cr, uid, move_ids, {'date': picking_date})
+        if self.auto_approve:
+            for order in self.cache:
+                wf_service.trg_validate(self.uid, 'sale.order', self.cache[order], 'order_confirm', self.cr)
+                sale_order = self.sale_order_obj.browse(self.cr, self.uid, self.cache[order], self.context)
+                sale_order.manual_invoice()
+
+                if sale_order.picking_ids:
+                    sale_order.picking_ids[0].write({
+                        'auto_picking': True,
+                        'location_id': self.location_id.id
+                    })
+                    self.picking_obj.force_assign(self.cr, self.uid, [sale_order.picking_ids[0].id])
 
         self.progressIndicator = 100
-        self.updateProgressIndicator(cr, uid, self.pickingImportID)
+        self.updateProgressIndicator(cr, uid, self.salesImportID)
         
         return True
     
@@ -209,7 +218,8 @@ class ImportFile(threading.Thread, Utils):
             pprint(zip(self.HEADER, row_str_list))
 
         # Sometime value is only numeric and we don't want string to be treated as Float
-        record = self.RecordPicking._make([self.simple_string(value) for value in row_list])
+        record = self.RecordSales._make([self.simple_string(value) for value in row_list])
+
         for field in self.REQUIRED:
             if not getattr(record, field):
                 error = "Riga {0}: Manca il valore della {1}. La riga viene ignorata.".format(self.processed_lines, field)
@@ -220,41 +230,39 @@ class ImportFile(threading.Thread, Utils):
         # date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime("%d/%m/%Y %H:%M:%S")
         date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
-        origin = record.origin.split('.')[0]
-        picking_type = self.location_obj.picking_type_get(cr, uid, self.location_id, self.location_dest_id)
+        client_order_ref = record.location_name.split('.')[0]
 
-        if self.cache.get(origin):
-            picking_id = self.cache[origin]
-            _logger.info(u'Picking {0} already processed in cache'.format(origin))
-            #    picking_id = picking_id[0]
-        elif self.picking_obj.search(cr, uid, [('origin', '=', origin), ('state', '=', 'draft'), ('type', '=', picking_type)]):
-            picking_id = self.picking_obj.search(cr, uid, [('origin', '=', origin), ('state', '=', 'draft'), ('type', '=', picking_type)])[0]
-            self.cache[origin] = picking_id
-            _logger.warning(u'Picking {0} already exist'.format(origin))
+        if self.cache.get(client_order_ref):
+            sale_id = self.cache[client_order_ref]
+            _logger.info(u'Sales {0} already processed in cache'.format(client_order_ref))
+        elif self.sale_order_obj.search(cr, uid, [('client_order_ref', '=', client_order_ref), ('state', '=', 'draft'), ('partner_id', '=', self.partner_id.id)]):
+            sale_id = self.sale_order_obj.search(cr, uid, [('client_order_ref', '=', client_order_ref), ('state', '=', 'draft'), ('partner_id', '=', self.partner_id.id)])[0]
+            self.cache[client_order_ref] = sale_id
+            _logger.warning(u'Sales {0} already exist'.format(client_order_ref))
         else:
             # i need to create stock.picking
             # so need to create one
-            # picking_type = self.location_obj.picking_type_get(cr, uid, self.location_id, self.location_dest_id)
+            vals_order = self.sale_order_obj.onchange_partner_id(self.cr, self.uid, [], self.partner_id.id).get('value')
+            vals_order.update({
+                'partner_id': self.partner_id.id,
+                'client_order_ref': self.origin + ': ' + client_order_ref,
+                'date_order': self.date_order,
+                'shop_id': self.shop_id.id,
+                'picking_policy': 'one',
+            })
+            if self.auto_approve:
+                vals_order.update({'order_policy': 'manual'})
 
-            vals_picking = {
-                'address_id': self.address_id.id,
-                'origin': origin,
-                'type': picking_type,
-                'move_type': 'one',
-                'invoice_state': 'none',
-                'auto_picking': True,
-                'stock_journal_id': self.stock_journal_id.id,
-                'min_date': date,
-                'date': date,
-            }
-            picking_id = self.picking_obj.create(cr, uid, vals_picking)
-            self.cache[origin] = picking_id
-            _logger.info(u'Create Picking {0} '.format(origin))
-        
-        vals_move = {}
+            if vals_order.get('sale_agent_ids'):
+                del vals_order['sale_agent_ids']
+
+            sale_id = self.sale_order_obj.create(cr, uid, vals_order)
+            self.cache[client_order_ref] = sale_id
+            _logger.info(u'Create Sale Order {0} '.format(client_order_ref))
+
         product_id = False
-        if hasattr(record, 'product') and record.product:
-            product = record.product
+        if hasattr(record, 'item') and record.item:
+            product = record.item
             if self.cache_product.get(product):
                 product_id = self.cache_product[product]
                 _logger.warning(u'Product {0} already processed in cache'.format(product))
@@ -268,22 +276,28 @@ class ImportFile(threading.Thread, Utils):
                     product_id = product_ids[0]
                     self.cache_product[product] = product_id
 
-        if hasattr(record, 'qty') and record.qty:
-            vals_move['product_qty'] = float(record.qty)
-
         if product_id:
-            vals_move['name'] = origin
-            vals_move['picking_id'] = picking_id
-            vals_move['product_id'] = product_id
-            vals_move['product_uom'] = self.product_obj.browse(cr, uid, product_id, context=None).uom_id.id
-            vals_move['location_id'] = self.location_id.id
-            vals_move['location_dest_id'] = self.location_dest_id.id
-            vals_move['date'] = date
-            vals_move['date_expected'] = date
 
-            _logger.info(u'Row {row}: Adding product {product} to picking {picking}'.format(row=self.processed_lines, product=record.product, picking=origin))
+            if hasattr(record, 'qty') and record.qty:
+                product_qty = float(record.qty)
 
-            self.move_obj.create(cr, uid, vals_move)
+            if hasattr(record, 'cost') and record.cost:
+                cost = float(record.cost)
+
+            # riga
+            sale_order = self.sale_order_obj.browse(self.cr, self.uid, sale_id, self.context)
+            vals_sale_order_line = self.sale_order_line_obj.product_id_change(self.cr, self.uid, [], sale_order.pricelist_id.id, product_id, qty=0, partner_id=sale_order.partner_id.id).get('value')
+
+            vals_sale_order_line.update({
+                'order_id': sale_id,
+                'product_id': product_id,
+                'product_uom_qty': product_qty,
+                'price_unit': cost / product_qty
+            })
+
+            _logger.info(u'Row {row}: Adding product {product} to Sale Order {sale}'.format(row=self.processed_lines, product=record.item, sale=sale_order.name))
+
+            self.sale_order_line_obj.create(cr, uid, vals_sale_order_line)
             self.uo_new += 1
         else:
             _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.product))
