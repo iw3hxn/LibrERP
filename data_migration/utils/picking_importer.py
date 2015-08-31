@@ -32,6 +32,7 @@ from utils import Utils
 import datetime
 from openerp.addons.core_extended.file_manipulation import import_sheet
 import xlrd
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -216,7 +217,8 @@ class ImportFile(threading.Thread, Utils):
                 self.error.append(error)
                 return False
 
-        date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime("%d/%m/%Y %H:%M:%S")
+        # date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime("%d/%m/%Y %H:%M:%S")
+        date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         origin = record.origin.split('.')[0]
         if self.cache.get(origin):
