@@ -22,7 +22,7 @@
 {
     'name': "Manage references at the partner's",
     'version': '3.0.0.1',
-    'author': u'Numérigraphe SARL - Didotech SRL',
+    'author': u'Numerigraphe SARL - Didotech SRL',
     'category': 'Custom',
     'depends': ['base', ],
     'description': '''This module Lets you enter the customer and supplier references attributed by the partners in their information systems.
