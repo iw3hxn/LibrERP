@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hs_category,access_hs_category,model_hs_category,,1,1,1,1
+access_hs_code,access_hs_code,model_hs_code,,1,1,1,1
