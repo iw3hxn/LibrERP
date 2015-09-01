@@ -68,7 +68,7 @@ class res_company(orm.Model):
     }
 
     _defaults = {
-        'check_credit_limit': True,
+        # 'check_credit_limit': True,
         'need_tech_validation': False,
         'need_manager_validation': False,
         'default_credit_limit': 0,
