@@ -363,6 +363,8 @@ class sales_import(filedata_import):
         ),
         'auto_approve': fields.boolean('Auto Approve Sale Order and Picking',
             help="if set, the importer will also confirm Sale Order and Stock Picking. Also create Invoice"),
+        'update_price': fields.boolean('Use price from file',
+            help="if set, the importer will use the price from file and not from Listprice"),
 
         'state': fields.selection(
             (

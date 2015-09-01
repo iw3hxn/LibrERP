@@ -262,14 +262,15 @@
                     <group >
                         <field name="state" invisible="1"/>
                         <field name="preview_text_original" invisible="1"/>
-                        <group colspan="8" col="8" states="import">
+                        <group colspan="4" col="4" states="import">
                             <field name="file_name" invisible="1" />
                             <field name="content_base64" filename="file_name" required="True" />
                             <field name="format" />
                             <field name="auto_approve" />
+                            <field name="update_price" />
                         </group>
 
-                        <group colspan="8" col="8" states="import">
+                        <group colspan="4" col="4" states="import">
                             <field name="partner_id" />
                             <field name="date_order" required="True" />
                             <field name="origin" />

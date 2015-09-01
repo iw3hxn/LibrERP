@@ -93,6 +93,7 @@ class ImportFile(threading.Thread, Utils):
         self.shop_id = self.salesImportRecord.shop_id
         self.location_id = self.salesImportRecord.location_id
         self.auto_approve = self.salesImportRecord.auto_approve
+        self.update_price = self.salesImportRecord.update_price
 
         # ===================================================
         Config = getattr(settings, self.salesImportRecord.format)
@@ -174,8 +175,11 @@ class ImportFile(threading.Thread, Utils):
                 if sale_order.picking_ids:
                     sale_order.picking_ids[0].write({
                         'auto_picking': True,
-                        'location_id': self.location_id.id
                     })
+                    for move in sale_order.picking_ids[0].move_lines:
+                        move.write({
+                            'location_id': self.location_id.id
+                        })
                     self.picking_obj.force_assign(self.cr, self.uid, [sale_order.picking_ids[0].id])
 
         self.progressIndicator = 100
@@ -292,8 +296,16 @@ class ImportFile(threading.Thread, Utils):
                 'order_id': sale_id,
                 'product_id': product_id,
                 'product_uom_qty': product_qty,
-                'price_unit': cost / product_qty
             })
+
+            if self.update_price:
+
+                list_price_sell = vals_sale_order_line['price_unit']
+                price_sell = cost / product_qty
+
+                vals_sale_order_line.update({
+                    'discount': (list_price_sell - price_sell) / list_price_sell * 100
+                })
 
             _logger.info(u'Row {row}: Adding product {product} to Sale Order {sale}'.format(row=self.processed_lines, product=record.item, sale=sale_order.name))
 
