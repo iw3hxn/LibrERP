@@ -27,7 +27,8 @@
     'category': "Prduct",
     'depends': ['base', 'product', ],
     'init_xml': ['security/ir.model.access.csv'],
-    'description': """Includes HS codes base
+    'description': """Add HS CODE to product, includes HS codes based on data : http://tariffdata.wto.org/ReportersAndProducts.aspx
+    Also script for
     """,
     'update_xml': [
         'hs_view.xml',
