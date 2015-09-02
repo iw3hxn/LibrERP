@@ -54,7 +54,7 @@ class sale_order(orm.Model):
                                             supplierinfo.name.id, order_line.order_id.date_order, supplierinfo.name.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                             child_bom.product_id.name or '', False, False, context)
 
-                                        product_to_buy = res['value'].get('product_qty') - child_bom.product_id.virtual_available,  # child_bom.product_uom_qty or 1,
+                                        product_to_buy = res['value'].get('product_qty') - child_bom.product_id.virtual_available  # child_bom.product_uom_qty or 1,
 
                                         if product_to_buy <= 0:
                                             continue
