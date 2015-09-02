@@ -121,12 +121,14 @@ class riba_distinta(osv.osv):
     _order = 'name desc'
 
     _defaults = {
-        'user_id': lambda self,cr,uid,context: uid,
+        'user_id': lambda self, cr, uid, context: uid,
         'date_created': fields.date.context_today,
         'date_accepted': fields.date.context_today,
         'date_accreditation': fields.date.context_today,
-        'name': lambda self,cr,uid,context: self.pool.get('ir.sequence').get(cr, uid, 'riba.distinta'),
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'riba.distinta', context=c),
+        'name': lambda self, cr, uid, context: self.pool.get('ir.sequence').get(cr, uid, 'seq.riba.distinta'),
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.company')._company_default_get(cr, uid,
+                                                                                                 'seq.riba.distinta',
+                                                                                                 context=c),
     }
     
     def unlink(self, cr, uid, ids, context=None):
