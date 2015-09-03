@@ -1,0 +1,27 @@
+<openerp>
+    <data>
+
+        <record id="sale_order_cancel_view" model="ir.ui.view">
+            <field name="name">sale.order.cancel.form</field>
+            <field name="model">sale.order.cancel</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Cancel Selected Order">
+                    <separator string="Cancel Selected Order" colspan="4"/>
+                    <group colspan="4" col="6">
+                        <button icon="gtk-cancel" string="Cancel Order" name="order_cancel" type="object"
+                                default_focus="1"/>
+                        <button icon="terp-dialog-close" special="cancel" string="Close"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_sale_order_cancel"
+                    multi="True"
+                    key2="client_action_multi" name="Cancel Selected Sale Order"
+                    res_model="sale.order.cancel" src_model="sale.order"
+                    groups="base.group_system"
+                    view_mode="form" target="new" view_type="form"/>
+    </data>
+</openerp>
