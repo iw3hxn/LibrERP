@@ -20,4 +20,5 @@
 #
 ###############################################################################
 
-import file_import
+from . import file_import
+from . import sale_order_state

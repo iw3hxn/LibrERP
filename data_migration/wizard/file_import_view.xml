@@ -259,7 +259,7 @@
             <field name="model">sales.import</field>
             <field name="arch" type="xml">
                 <form string="Import Sales Order from file">
-                    <group >
+                    <group>
                         <field name="state" invisible="1"/>
                         <field name="preview_text_original" invisible="1"/>
                         <group colspan="4" col="4" states="import">
@@ -273,7 +273,6 @@
                         <group colspan="4" col="4" states="import">
                             <field name="partner_id" />
                             <field name="date_order" required="True" />
-                            <field name="origin" />
                             <field name="shop_id" />
                             <field name="location_id" />
 

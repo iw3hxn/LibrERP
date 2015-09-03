@@ -358,7 +358,7 @@ class sales_import(filedata_import):
         'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
         'location_id': fields.many2one(
             'stock.location', 'Location',
-            select=True, required=True,
+            select=True,
             domain="[('usage', '!=', 'view')]"
         ),
         'auto_approve': fields.boolean('Auto Approve Sale Order and Picking',
