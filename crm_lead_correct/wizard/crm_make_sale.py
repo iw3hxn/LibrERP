@@ -49,9 +49,8 @@ class crm_make_sale(orm.TransientModel):
 
         for make in self.browse(cr, uid, ids, context=context):
             partner = make.partner_id
-            partner_addr = partner_obj.address_get(cr, uid, [partner.id],
-                    ['default', 'invoice', 'delivery', 'contact'])
-            partner_obj.write(cr, uid, [partner.id], {'customer': True})
+            partner_addr = partner_obj.address_get(cr, uid, [partner.id], ['default', 'invoice', 'delivery', 'contact'])
+            partner.write({'customer': True})
             pricelist = partner.property_product_pricelist.id
             fpos = partner.property_account_position and partner.property_account_position.id or False
             payment_term = partner.property_payment_term and partner.property_payment_term.id or False
@@ -60,10 +59,9 @@ class crm_make_sale(orm.TransientModel):
                 if not partner and case.partner_id:
                     partner = case.partner_id
                     fpos = partner.property_account_position and partner.property_account_position.id or False
-                    payment_term = partner.property_payment_term and partner.property_payment_term.id or False
-                    partner_addr = partner_obj.address_get(cr, uid, [partner.id],
-                            ['default', 'invoice', 'delivery', 'contact'])
-                    pricelist = partner.property_product_pricelist.id
+                    payment_term = partner.property_payment_term and partner.property_payment_term.id or make.shop_id.payment_default_id and make.shop_id.payment_default_id.id or False
+                    partner_addr = partner_obj.address_get(cr, uid, [partner.id], ['default', 'invoice', 'delivery', 'contact'])
+                    pricelist = partner.property_product_pricelist and partner.property_product_pricelist.id or make.shop_id.pricelist_id and make.shop_id.pricelist_id.id
                 if False in partner_addr.values():
                     raise orm.except_orm(_('Data Insufficient!'), _('Customer has no addresses defined!'))
 
@@ -81,23 +79,23 @@ class crm_make_sale(orm.TransientModel):
                     'fiscal_position': fpos,
                     'payment_term': payment_term,
                     'user_id': make.user_id.id,
-#                    'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
+                    # 'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
                     'note': case.description or '',
                     'contact_id': case.contact_id and case.contact_id.id or False
                 }
                 
                 new_id = sale_obj.create(cr, uid, vals, context=context)
                 sale_order = sale_obj.browse(cr, uid, new_id, context=context)
-                case_obj.write(cr, uid, [case.id], {'ref': 'sale.order,%s' % new_id})
+                case.write({'ref': 'sale.order,%s' % new_id})
                 new_ids.append(new_id)
                 message = _("Opportunity  '%s' is converted to Quotation.") % (case.name)
                 self.log(cr, uid, case.id, message)
-                case_obj.message_append(cr, uid, [case], _("Converted to Sales Quotation(%s).") % (sale_order.name), context=context)
+                case_obj.message_append(cr, uid, [case], _("Converted to Sales Quotation(%s).") % sale_order.name, context=context)
 
                 if make.move_attachment:
                     attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'crm.lead'), ('res_id', '=', case.id)]) 
                     for attachment_id in attachment_ids:
-                        attachment_obj.write(cr, uid, attachment_id, {'res_model': 'sale.order', 'res_id': new_id } )   
+                        attachment_obj.write(cr, uid, attachment_id, {'res_model': 'sale.order', 'res_id': new_id})
                     
             if make.close:
                 case_obj.case_close(cr, uid, data)
