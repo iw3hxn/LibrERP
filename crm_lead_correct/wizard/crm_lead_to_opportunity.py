@@ -28,11 +28,14 @@ class crm_lead2opportunity_partner(orm.TransientModel):
     _inherit = 'crm.lead2opportunity.partner'
 
     _columns = {
+        'action': fields.selection([('exist', 'Link to an existing partner'), \
+                                    ('create', 'Create a new partner')], \
+                                    'Related Partner', required=True),
         'vat': fields.char('VAT', size=64, readonly=True),
-        'street': fields.char('Street', size=128, required=True),
+        'street': fields.char('Street', size=128),
         'street2': fields.char('Street2', size=128),
         'zip': fields.char('Zip', change_default=True, size=24),
-        'city': fields.char('City', size=128, required=True),
+        'city': fields.char('City', size=128),
     }
 
     def on_change_city(self, cr, uid, ids, city, zip_code=None):
@@ -83,7 +86,7 @@ class crm_lead2opportunity_partner(orm.TransientModel):
             'zip': lead.zip or '',
             'city': lead.city or '',
         }
-
+        import pdb; pdb.set_trace()
         lead_obj.write(cr, uid, lead_ids, vals, context=context)
         res = super(crm_lead2opportunity_partner, self).action_apply(cr, uid, ids, context=context)
         return res
