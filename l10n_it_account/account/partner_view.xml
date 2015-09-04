@@ -24,12 +24,9 @@
                             </group>
                         </page>                
                     </xpath>
-                    <field name="vat" position="replace">
-                        <field name="vat" on_change="vat_change(vat)" colspan="3"/>
-                    </field>
-                    <field name="vat_subjected" position="after">
-                        <field name="cf" colspan="3"/>
+                    <field name="vat_subjected" position="before">
                         <field name="individual"/>
+                        <field name="cf" colspan="3" attrs="{'invisible': [('individual', '=', False)]}"/>
                     </field>
                 </data>
             </field>
