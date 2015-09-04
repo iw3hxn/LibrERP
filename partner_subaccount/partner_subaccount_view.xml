@@ -8,21 +8,27 @@
 			<field name="type">form</field>
             <field name="inherit_id" ref="base_partner_ref.view_partner_ref_inherit"/>
 			<field name="arch" type="xml">
-                <field name="customer" position="after">
+                <field name="customer" position="replace">
+                    <field name="customer" attrs="{'readonly':[('block_ref_customer','=',True)]}"/>
                     <field name="block_ref_customer" invisible="1" />
+                </field>
+                <field name="supplier" position="replace">
+                    <field name="supplier" attrs="{'readonly':[('block_ref_supplier','=',True)]}"/>
                     <field name="block_ref_supplier" invisible="1" />
                 </field>
                 <field name="property_supplier_ref" position="replace">
-                    <field name="property_supplier_ref" attrs="{'readonly':[('block_ref_supplier','=',True),('supplier','=',False)]}"/>
+                    <field name="property_supplier_ref" placeholder="Supplier Ref." nolabel="1"
+                           attrs="{'readonly':['|', ('block_ref_supplier','=',True), ('supplier','!=',True)]}"/>
                 </field>
                 <field name="property_customer_ref" position="replace">
-                    <field name="property_customer_ref" attrs="{'readonly':[('block_ref_customer','=',True),('customer','=',False)]}"/>
+                    <field name="property_customer_ref" placeholder="Customer Ref." nolabel="1"
+                           attrs="{'readonly':['|', ('block_ref_customer','=',True),('customer','=',False)]}"/>
                 </field>
-		    <field name="property_account_payable" position="replace">
-                    <field name="property_account_payable" attrs="{'readonly':[('block_ref_supplier','=',True),('supplier','=',False)]}"/>
+		        <field name="property_account_payable" position="replace">
+                    <field name="property_account_payable" attrs="{'readonly':['|', ('block_ref_supplier','=',True),('supplier','=',False)]}"/>
                 </field>
                 <field name="property_account_receivable" position="replace">
-                    <field name="property_account_receivable" attrs="{'readonly':[('block_ref_customer','=',True),('customer','=',False)]}"/>
+                    <field name="property_account_receivable" attrs="{'readonly':['|', ('block_ref_customer','=',True),('customer','=',False)]}"/>
                 </field>
             </field>
         </record>

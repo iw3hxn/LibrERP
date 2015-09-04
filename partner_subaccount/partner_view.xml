@@ -10,14 +10,28 @@
                 <field name="property_account_receivable" position="before">
                     <field name="selection_account_receivable" 
                     groups="account.group_account_invoice" 
-                    attrs="{'invisible': [('customer','=',False)]}"/>
+                    attrs="{'readonly': [('customer','=',False)]}"/>
                 </field>
                 <field name="property_account_payable" position="before">
                     <field name="selection_account_payable" 
                     groups="account.group_account_invoice" 
-                    attrs="{'invisible': [('supplier','=',False)]}"/>
+                    attrs="{'readonly': [('supplier','=',False)]}"/>
                 </field>
             </data>
+            </field>
+        </record>
+
+        <record id="base_vat.view_partner_form" model="ir.ui.view">
+            <field name="name">res.partner.vat.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/group/group[2]" position="after">
+                    <group colspan="2" col="6">
+                        <field name="vat" on_change="vat_change(vat)"/>
+                        <field name="vat_subjected" invisible="1"   />
+                    </group>
+                </xpath>
             </field>
         </record>
     </data>

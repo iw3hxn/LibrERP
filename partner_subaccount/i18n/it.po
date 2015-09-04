@@ -51,3 +51,25 @@ msgstr "Partner"
 #: field:res.company,enable_partner_subaccount:0
 msgid "Enable Partner Subaccount"
 msgstr "Abilita i sottoconti per ogni cliente"
+
+#. module: base_partner_ref
+#: view:res.partner:0
+#: view:res.partner,property_supplier_ref:0
+msgid "Supplier Ref."
+msgstr "Codice Fornitore"
+
+#. module: base_partner_ref
+#: view:res.partner:0
+#: view:res.partner,property_supplier_ref:0
+msgid "Customer Ref."
+msgstr "Codice Cliente"
+
+#. module: base_partner_ref
+#: help:res.partner,property_customer_ref:0
+msgid "The reference attributed to customer, leave blank for automatic allocation"
+msgstr "Codice attribuito al cliente, lasciare vuoto per attribuzione automatica"
+
+#. module: base_partner_ref
+#: help:res.partner,property_supplier_ref:0
+msgid "The reference attributed to supplier, leave blank for automatic allocation"
+msgstr "Codice attribuito al fornitore, lasciare vuoto per attribuzione automatica"

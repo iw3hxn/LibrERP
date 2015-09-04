@@ -35,14 +35,19 @@ class res_partner(orm.Model):
     _inherit = 'res.partner'
 
     _columns = {
-        'block_ref_customer': fields.boolean('Block Reference'),
-        'block_ref_supplier': fields.boolean('Block Reference'),
+        'property_supplier_ref': fields.char('Supplier Ref.', size=16, help="The reference attributed to supplier, leave blank for automatic allocation"),
+        'property_customer_ref': fields.char('Customer Ref.', size=16, help="The reference attributed to customer, leave blank for automatic allocation"),
+
+        'block_ref_customer': fields.boolean('Block Customer Reference'),
+        'block_ref_supplier': fields.boolean('Block Supplier Reference'),
         'selection_account_receivable': fields.many2one(
             'account.account', 'Parent account', domain="[('type','=','view'),\
-            ('user_type.code','=','account_type_view_assets')]"),
+            ('user_type.code','=','account_type_view_assets')]",
+            help='Used for create sub account'),
         'selection_account_payable': fields.many2one(
             'account.account', 'Parent account', domain="[('type','=','view'),\
-            ('user_type.code','=','account_type_view_liability')]"),
+            ('user_type.code','=','account_type_view_liability')]",
+            help='Used for create sub account'),
     }
 
     _sql_constraints = [
@@ -52,17 +57,19 @@ class res_partner(orm.Model):
             'Codice Cliente Univoco'),
     ]
 
-    def _get_chart_template_property_new(self, cr, uid, property_chart=None, context=None):
+
+    def _get_chart_template_property(self, cr, uid, property_chart=None, context=None):
+        res = []
         chart_obj = self.pool['account.chart.template']
         # We need Administrator rights to read account.chart.template properties
-        chart_obj_ids = chart_obj.search(cr, 1, [])
-        if len(chart_obj_ids) > 0 and property_chart:
+        chart_templates_ids = chart_obj.search(cr, 1, [], context=context)
+        if len(chart_templates_ids) > 0 and property_chart:
             # We need Administrator rights to read account.chart.template properties
-            chart_templates = chart_obj.browse(cr, 1, chart_obj_ids, context)
+            chart_templates = chart_obj.browse(cr, 1, chart_templates_ids, context)
+
             for chart_template in chart_templates:
-                property_chart_id = getattr(chart_template, property_chart).id
                 # if it's not a view type code, it's another branch without partner_subaccount
-                account_template = self.pool['account.account.template'].browse(cr, 1, property_chart_id)
+                account_template = getattr(chart_template, property_chart)
                 if account_template.type == 'view':
                     account_account_ids = self.pool['account.account'].search(cr, uid, [('code', '=', account_template.code)])
                     if account_account_ids:
@@ -76,34 +83,6 @@ class res_partner(orm.Model):
         else:
             return []
 
-    def _get_chart_template_property(self, cr, uid, property_chart=None, context=None):
-        res = []
-        chart_obj = self.pool['account.chart.template']
-        # We need Administrator rights to read account.chart.template properties
-        chart_obj_ids = chart_obj.search(cr, 1, [])
-        if len(chart_obj_ids) > 0:
-            # We need Administrator rights to read account.chart.template properties
-            chart_templates = chart_obj.browse(cr, 1, chart_obj_ids, context)
-            for chart_template in chart_templates:
-                if property_chart:
-                    property_chart_id = getattr(chart_template, property_chart).id
-                # if it's not a view type code, it's another branch without partner_subaccount
-                    if self.pool['account.account.template'].browse(cr, 1, property_chart_id).type != 'view':
-                        continue
-                    else:
-                        res = property_chart_id
-                        break
-        if not res:
-            raise orm.except_orm('Warning!', "Parent Account Type is not of type 'view'")
-
-        return res
-
-    def get_create_supplier_partner_account(self, cr, uid, vals, context):
-        return self.get_create_partner_account(cr, uid, vals, 'supplier', context)
-    
-    def get_create_customer_partner_account(self, cr, uid, vals, context):
-        return self.get_create_partner_account(cr, uid, vals, 'customer', context)
-    
     def get_create_partner_account(self, cr, uid, vals, account_type, context):
         account_obj = self.pool['account.account']
         account_type_obj = self.pool['account.account.type']
@@ -157,8 +136,8 @@ class res_partner(orm.Model):
         # if not company.enable_partner_subaccount:
         #     return super(res_partner, self).create(cr, uid, vals, context=context)
 
-        #1 se marcato come cliente - inserire se non esiste
-        if vals.get('customer', False) and not vals.get('supplier', False):
+        # 1 se marcato come cliente - inserire se non esiste
+        if vals.get('customer', False):
             vals['block_ref_customer'] = True
             if not vals.get('property_customer_ref', False):
                 vals['property_customer_ref'] = self.pool['ir.sequence'].get(
@@ -166,44 +145,20 @@ class res_partner(orm.Model):
             if enable_partner_subaccount:
                 if vals.get('selection_account_receivable', False):
                     vals['property_account_receivable'] = vals['selection_account_receivable']
-                vals['property_account_receivable'] =  self.get_create_customer_partner_account(cr, uid, vals, context)
+                vals['property_account_receivable'] = self.get_create_partner_account(cr, uid, vals, 'customer', context)
 
-        #2 se marcato come fornitore - inserire se non esiste
+        # 2 se marcato come fornitore - inserire se non esiste
 
-        if vals.get('supplier', False) and not vals.get('customer', False):
+        if vals.get('supplier', False):
             vals['block_ref_supplier'] = True
             if not vals.get('property_supplier_ref', False):
                 vals['property_supplier_ref'] = self.pool['ir.sequence'].get(
                     cr, uid, 'SEQ_SUPPLIER_REF') or ''
             if enable_partner_subaccount:
                 if vals.get('selection_account_payable', False):
-                    vals['property_account_payable'] = \
-                        vals['selection_account_payable']
-                vals['property_account_payable'] = \
-                    self.get_create_supplier_partner_account(cr, uid, vals, context)
+                    vals['property_account_payable'] = vals['selection_account_payable']
+                vals['property_account_payable'] = self.get_create_partner_account(cr, uid, vals, 'supplier', context)
 
-        #3 se marcato come cliente e fornitore - inserire se non esiste
-        if vals.get('customer', False) and vals.get('supplier', False):
-            vals['block_ref_customer'] = True
-            if not vals.get('property_customer_ref', False):
-                vals['property_customer_ref'] = self.pool['ir.sequence'].get(
-                    cr, uid, 'SEQ_CUSTOMER_REF') or ''
-            vals['block_ref_supplier'] = True
-            if not vals.get('property_supplier_ref', False):
-                vals['property_supplier_ref'] = self.pool['ir.sequence'].get(
-                    cr, uid, 'SEQ_SUPPLIER_REF') or ''
-
-            if enable_partner_subaccount:
-                if vals.get('selection_account_receivable', False):
-                    vals['property_account_receivable'] = \
-                        vals['selection_account_receivable']
-                if vals.get('selection_account_payable', False):
-                    vals['property_account_payable'] = \
-                        vals['selection_account_payable']
-                vals['property_account_receivable'] = \
-                    self.get_create_customer_partner_account(cr, uid, vals, context)
-                vals['property_account_payable'] = \
-                    self.get_create_supplier_partner_account(cr, uid, vals, context)
 
         return super(res_partner, self).create(cr, uid, vals, context=context)
 
@@ -212,7 +167,7 @@ class res_partner(orm.Model):
             context = {}
         ids_account_payable = []
         ids_account_receivable = []
-        for partner in self.pool['res.partner'].browse(cr, uid, ids, context):
+        for partner in self.browse(cr, uid, ids, context):
             
             if partner.property_account_payable and partner.property_account_payable.type != 'view':
                 if partner.property_account_payable.balance == 0.0:
@@ -229,10 +184,11 @@ class res_partner(orm.Model):
         ids_account = list(set(ids_account_payable + ids_account_receivable))
         
         if res and ids_account:
-            self.pool['account.account'].unlink(cr, 1, ids_account, context) #for unlink force superuser
+            self.pool['account.account'].unlink(cr, 1, ids_account, context) # for unlink force superuser
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
+
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
             return super(res_partner, self).write(cr, uid, ids, vals, context=context)
@@ -246,74 +202,35 @@ class res_partner(orm.Model):
         #         cr, uid, ids, vals, context=context)
         if isinstance(ids, (int, long)):
             ids = [ids]
-        account_obj = self.pool['account.account']
-        partner = self.browse(cr, uid, ids[0], context)
 
-        if partner.block_ref_customer or vals.get('customer', False):
-            # already a customer or flagged as a customer
-            vals['block_ref_customer'] = True
+        for partner in self.browse(cr, uid, ids, context):
 
-            if not 'name' in vals:
-            # if there isn't the name of partner - then it is not modified
-            # so assign it
-                vals['name'] = partner.name
-            
-            if partner.property_account_receivable.type != 'view' and enable_partner_subaccount:
-            # there is already an account created for the partner
-                if partner.property_account_receivable.name != vals['name']:
-                    # the account name if different from the partner name,
-                    # so we must update the account name
-                    account_obj.write(
-                        cr, uid, partner.property_account_receivable.id,
-                        {'name': vals['name']})
-            else:
-                # the property_account_receivable is a view type,
-                # so we have to create the partner account
-                if not 'property_customer_ref' in vals and not vals.get('block_ref_customer', False):
-                    # there isn't the partner code, so create it
-                    vals['property_customer_ref'] = \
-                        self.pool['ir.sequence'].get(
-                            cr, uid, 'SEQ_CUSTOMER_REF') or ''
+            # 1 se marcato come cliente - inserire se non esiste
+            if vals.get('customer', False):
+                vals['block_ref_customer'] = True
+                if not (vals.get('property_customer_ref', False) or partner.property_customer_ref):
+                    vals['property_customer_ref'] = self.pool['ir.sequence'].get(
+                        cr, uid, 'SEQ_CUSTOMER_REF') or ''
                 if enable_partner_subaccount:
                     if vals.get('selection_account_receivable', False):
-                        vals['property_account_receivable'] = \
-                            vals['selection_account_receivable']
-                    else:
-                        vals['property_account_receivable'] = \
-                            partner.property_account_receivable.id
-                            # è il conto vista
-                    vals['property_account_receivable'] = \
-                        self.get_create_customer_partner_account(
-                            cr, uid, vals, context)
+                        vals['property_account_receivable'] = vals['selection_account_receivable']
+                    if partner.property_account_receivable and partner.property_account_receivable.type == 'view':
+                        vals['property_account_receivable'] = self.get_create_partner_account(cr, uid, vals, 'customer', context)
 
-        if partner.block_ref_supplier or vals.get('supplier', False):
-            # already a supplier or flagged as a supplier
-            vals['block_ref_supplier'] = True
-            if not 'name' in vals:
-                vals['name'] = partner.name
-            if partner.property_account_payable.type != 'view' and enable_partner_subaccount:
-                if partner.property_account_payable.name != vals['name']:
-                    account_obj.write(
-                        cr, uid, partner.property_account_payable.id,
-                        {'name': vals['name']})
-            else:
-                if not 'property_supplier_ref' in vals:
-                    vals['property_supplier_ref'] = \
-                        self.pool['ir.sequence'].get(
-                            cr, uid, 'SEQ_SUPPLIER_REF') or ''
+            # 2 se marcato come fornitore - inserire se non esiste
+
+            if vals.get('supplier', False):
+                vals['block_ref_supplier'] = True
+                if not (vals.get('property_supplier_ref', False) or partner.property_supplier_ref):
+                    vals['property_supplier_ref'] = self.pool['ir.sequence'].get(
+                        cr, uid, 'SEQ_SUPPLIER_REF') or ''
                 if enable_partner_subaccount:
                     if vals.get('selection_account_payable', False):
-                        vals['property_account_payable'] = \
-                            vals['selection_account_payable']
-                    else:
-                        vals['property_account_payable'] = \
-                            partner.property_account_payable.id
-                    vals['property_account_payable'] = \
-                        self.get_create_supplier_partner_account(
-                            cr, uid, vals, context)
+                        vals['property_account_payable'] = vals['selection_account_payable']
+                    if partner.selection_account_payable and partner.selection_account_payable.type == 'view':
+                        vals['property_account_payable'] = self.get_create_partner_account(cr, uid, vals, 'supplier', context)
 
-        return super(res_partner, self).write(
-            cr, uid, ids, vals, context=context)
+        return super(res_partner, self).write(cr, uid, ids, vals, context=context)
 
     def copy(self, cr, uid, partner_id, defaults, context=None):
         raise orm.except_orm('Warning', _('Duplication of a partner \
