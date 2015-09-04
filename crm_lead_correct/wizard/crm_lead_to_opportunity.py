@@ -86,7 +86,6 @@ class crm_lead2opportunity_partner(orm.TransientModel):
             'zip': lead.zip or '',
             'city': lead.city or '',
         }
-        import pdb; pdb.set_trace()
         lead_obj.write(cr, uid, lead_ids, vals, context=context)
         res = super(crm_lead2opportunity_partner, self).action_apply(cr, uid, ids, context=context)
         return res
