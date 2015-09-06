@@ -105,7 +105,7 @@ class account_invoice(orm.Model):
 class account_invoice_line(orm.Model):
     _inherit = "account.invoice.line"
     _columns = {
-        'advance_id': fields.many2one('account.invoice', 'Advance invoice'),
+        # 'advance_id': fields.many2one('account.invoice', 'Advance invoice'),
         'sequence': fields.integer('Number'),
     }
 
