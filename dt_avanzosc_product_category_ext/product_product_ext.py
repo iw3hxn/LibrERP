@@ -85,9 +85,12 @@ class product_product(orm.Model):
                     res['purchase_ok'] = True
                     
             if category_data.sale_taxes_ids:
-                res['taxes_id'] = [(6, 0, [category_data.sale_taxes_ids.id])]
+                taxes = [x.id for x in category_data.sale_taxes_ids]
+                res['taxes_id'] = [(6, 0, [taxes])]
             if category_data.purchase_taxes_ids:
-                res['supplier_taxes_id'] = [(6, 0, [category_data.purchase_taxes_ids])]
+                taxes = [x.id for x in category_data.purchase_taxes_ids]
+                res['taxes_id'] = [(6, 0, [taxes])]
+                res['supplier_taxes_id'] = [(6, 0, [taxes])]
             if category_data.uom_id:
                 res['uom_id'] = category_data.uom_id.id
             if category_data.uom_po_id:
@@ -96,10 +99,20 @@ class product_product(orm.Model):
                 res['uos_id'] = category_data.uos_id.id
                 res['uos_coef'] = category_data.uos_coef
 
-            if len(ids) == 1 and self.browse(cr, uid, ids, context)[0].categ_id.id != categ_id:
+            product = self.browse(cr, uid, ids, context)[0]
+
+            if len(ids) == 1 and \
+                    res.get('uom_id', False) and product.uom_id.id != res['uom_id'] or \
+                            res.get('uom_po_id', False) and product.uom_po_id.id != res['uom_po_id'] or \
+                            res.get('uos_coef', False) and product.uos_coef != res['uos_coef'] or \
+                            res.get('type', False) and product.type != res['type'] or \
+                            res.get('procure_method', False) and product.procure_method != res['procure_method'] or \
+                            res.get('supply_method', False) and product.supply_method != res['supply_method'] or \
+                            res.get('property_account_expense', False) and product.property_account_expense.id != res['property_account_expense'] or \
+                            res.get('property_account_income', False) and product.property_account_income.id != res['property_account_income']:
                 warn = {
-                        'title': _('Caution'),
-                        'message': _("""The product category has changed, thanks to control :
+                    'title': _('Caution'),
+                    'message': _("""The product category has changed, thanks to control :
     * Sale and Purchase taxes
     * Unit sale and stock
     * The price with return unit"""),
