@@ -37,7 +37,6 @@ class res_partner(orm.Model):
     _columns = {
         'property_supplier_ref': fields.char('Supplier Ref.', size=16, help="The reference attributed to supplier, leave blank for automatic allocation"),
         'property_customer_ref': fields.char('Customer Ref.', size=16, help="The reference attributed to customer, leave blank for automatic allocation"),
-
         'block_ref_customer': fields.boolean('Block Customer Reference'),
         'block_ref_supplier': fields.boolean('Block Supplier Reference'),
         'selection_account_receivable': fields.many2one(
@@ -189,7 +188,7 @@ class res_partner(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
 
-        if context is None:
+        if context is None or vals == {}:
             context = self.pool['res.users'].context_get(cr, uid)
             return super(res_partner, self).write(cr, uid, ids, vals, context=context)
 
