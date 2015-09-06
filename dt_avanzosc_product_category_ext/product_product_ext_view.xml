@@ -12,7 +12,9 @@
                     <field name="purchase_ok"  on_change="onchange_categ_id(categ_id, purchase_ok, type, is_kit)" />
                 </field>
 
-				<field name="categ_id" position="replace"> 
+				<field name="categ_id" position="replace">
+                </field>
+                <field name="variants" position="after">
 					<field name="categ_id" on_change="onchange_categ_id(categ_id, purchase_ok)" />
 				</field>			
 				
