@@ -144,7 +144,7 @@ class stock_partial_picking(orm.TransientModel):
             if wizard_line.quantity < 0:
                 raise orm.except_orm(_('Warning!'), _('Please provide Proper Quantity !'))
 
-            #Compute the quantity for respective wizard_line in the line uom (this jsut do the rounding if necessary)
+            # Compute the quantity for respective wizard_line in the line uom (this jsut do the rounding if necessary)
             qty_in_line_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, line_uom.id)
 
             if line_uom.factor and line_uom.factor != 0:
@@ -210,7 +210,7 @@ class stock_partial_picking(orm.TransientModel):
                 partial_data['move%s' % wizard_line.move_id.id].update(product_price=wizard_line.cost,
                                                                          product_currency=wizard_line.currency.id)
             # compose the pallet list
-            if not wizard_line.pallet_id.id in pallet:
+            if wizard_line.pallet_id.id not in pallet:
                 pallet[wizard_line.pallet_id.id] = 0
             pallet[wizard_line.pallet_id.id] += wizard_line.pallet_qty
             
@@ -234,7 +234,7 @@ class stock_partial_picking(orm.TransientModel):
             res = self.pool['ir.model.data'].get_object_reference(cr, uid, 'stock', 'view_picking_in_form')
         else:
             res = self.pool['ir.model.data'].get_object_reference(cr, uid, 'stock', 'view_picking_out_form')
-        return {
+        vals = {
             'type': 'ir.actions.act_window',
             'name': 'Delivered',
             'view_type': 'form',
@@ -245,3 +245,7 @@ class stock_partial_picking(orm.TransientModel):
             'target': 'current',
             'res_id': int(delivered_pack_id[partial.picking_id.id]),
         }
+
+        if partial.picking_id.id == vals['res_id']:
+            vals['type'] = 'ir.actions.act_window_close'
+        return vals
