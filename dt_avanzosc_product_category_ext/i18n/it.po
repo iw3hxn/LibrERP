@@ -191,13 +191,20 @@ msgstr "Attenzione"
 #. module: dt_avanzosc_product_category_ext
 #: code:addons/dt_avanzosc_product_category_ext/product_product_ext.py:96
 #, python-format
-msgid "The product category has changed, thanks to control :\n"
-"* Sale and Purchase taxes\n"
-"* Unit sale and stock\n"
-"* The price with return unit"
-msgstr "Si è cambiato la categoria verificare :\n"
-"* Tasse di Acquisto e Vendita\n"
-"* Prezzo di Vendita ed Unità di Prodotto\n"
+msgid "The product category has changed, thanks to control : \n %s "
+msgstr "Si è cambiato la categoria verificare :\n %s"
+
+#. module: dt_avanzosc_product_category_ext
+#: code:addons/dt_avanzosc_product_category_ext/product_product_ext.py:51
+#, python-format
+msgid "Error"
+msgstr "Errore"
+
+#. module: dt_avanzosc_product_category_ext
+#: code:addons/dt_avanzosc_product_category_ext/product_product_ext.py:52
+#, python-format
+msgid "For change you need to create BOM"
+msgstr "Per cambiarlo và creata la Distinta Base"
 
 #. module: dt_avanzosc_product_category_ext
 #: help:product.category,provision_type:0

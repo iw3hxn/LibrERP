@@ -31,11 +31,11 @@ from openerp.tools.translate import _
 class product_product(orm.Model):
     _name = 'product.product'
     _inherit = 'product.product'
-    
+
     #
     ### SI CAMBIAN LA CATEGORIA DEL PRODUCTO
     #
-    def onchange_categ_id(self, cr, uid, ids, categ_id, purchase_ok=None, type='consu', is_kit=None, context=None):
+    def onchange_categ_id(self, cr, uid, ids, field, categ_id, purchase_ok=None, type='consu', is_kit=None, context=None):
         """
         When category changes, we search for taxes, UOM and product type
         """
@@ -44,6 +44,22 @@ class product_product(orm.Model):
 
         res = {}
         warn = False
+        product = self.browse(cr, uid, ids, context)[0]
+
+        if field == 'purchase_ok' and type != 'service' and not purchase_ok and not is_kit:
+            warn = {
+                    'title': _('Error'),
+                    'message': _("For change you need to create BOM"),
+            }
+            res['purchase_ok'] = product.purchase_ok
+            return {'value': res, 'warning': warn}
+        if field == 'supply_method' and type != 'service':
+            warn = {
+                    'title': _('Error'),
+                    'message': _("For change you need to create BOM"),
+            }
+            res['supply_method'] = product.supply_method
+            return {'value': res, 'warning': warn}
 
         if not categ_id:
             res = {
@@ -56,16 +72,24 @@ class product_product(orm.Model):
         else:
             # Search for the default value on this category
             category_data = self.pool['product.category'].browse(cr, uid, categ_id, context=context)
-           
+            message = []
             if category_data.property_account_expense_categ:
                 res['property_account_expense'] = category_data.property_account_expense_categ.id
+                if product.property_account_expense.id != res['property_account_expense']:
+                    message.append(self.fields_get(cr, uid)['property_account_expense']['string'])
+
             if category_data.property_account_income_categ:
                 res['property_account_income'] = category_data.property_account_income_categ.id
+                if product.property_account_income.id != res['property_account_income']:
+                    message.append(self.fields_get(cr, uid)['property_account_income']['string'])
 
             if category_data.provision_type:
                 res['type'] = category_data.provision_type
             else:
                 res['type'] = type
+            if product.type != res['type']:
+                    message.append(self.fields_get(cr, uid)['type']['string'])
+
             if category_data.procure_method:
                 res['procure_method'] = category_data.procure_method
             if category_data['supply_method']:
@@ -87,35 +111,33 @@ class product_product(orm.Model):
             if category_data.sale_taxes_ids:
                 taxes = [x.id for x in category_data.sale_taxes_ids]
                 res['taxes_id'] = [(6, 0, [taxes])]
+
             if category_data.purchase_taxes_ids:
                 taxes = [x.id for x in category_data.purchase_taxes_ids]
-                res['taxes_id'] = [(6, 0, [taxes])]
                 res['supplier_taxes_id'] = [(6, 0, [taxes])]
+
             if category_data.uom_id:
                 res['uom_id'] = category_data.uom_id.id
+                if product.uom_id.id != res['uom_id']:
+                    message.append(self.fields_get(cr, uid)['uom_id']['string'])
+
             if category_data.uom_po_id:
                 res['uom_po_id'] = category_data.uom_po_id.id
+                if product.uom_po_id.id != res['uom_po_id']:
+                    message.append(self.fields_get(cr, uid)['uom_po_id']['string'])
+
             if category_data.uos_id:
                 res['uos_id'] = category_data.uos_id.id
                 res['uos_coef'] = category_data.uos_coef
+                if product.uos_id.id != res['uos_id']:
+                    message.append(self.fields_get(cr, uid)['uos_id']['string'])
+                if product.uos_coef.id != res['uos_coef']:
+                    message.append(self.fields_get(cr, uid)['uos_coef']['string'])
 
-            product = self.browse(cr, uid, ids, context)[0]
-
-            if len(ids) == 1 and \
-                    res.get('uom_id', False) and product.uom_id.id != res['uom_id'] or \
-                            res.get('uom_po_id', False) and product.uom_po_id.id != res['uom_po_id'] or \
-                            res.get('uos_coef', False) and product.uos_coef != res['uos_coef'] or \
-                            res.get('type', False) and product.type != res['type'] or \
-                            res.get('procure_method', False) and product.procure_method != res['procure_method'] or \
-                            res.get('supply_method', False) and product.supply_method != res['supply_method'] or \
-                            res.get('property_account_expense', False) and product.property_account_expense.id != res['property_account_expense'] or \
-                            res.get('property_account_income', False) and product.property_account_income.id != res['property_account_income']:
+            if len(ids) == 1 and message and field == 'categ_id':
                 warn = {
                     'title': _('Caution'),
-                    'message': _("""The product category has changed, thanks to control :
-    * Sale and Purchase taxes
-    * Unit sale and stock
-    * The price with return unit"""),
+                    'message': _("The product category has changed, thanks to control : \n %s " % '\n'.join(message)),
                 }
 
         return {'value': res, 'warning': warn}
