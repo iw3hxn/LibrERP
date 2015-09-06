@@ -28,28 +28,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
 
 
-class sale_advance_payment_inv(orm.TransientModel):
-
-    _inherit = "sale.advance.payment.inv"
-
-    def default_get(self, cr, uid, fields, context=None):
-        """ To get default values for the object.
-        @param self: The object pointer.
-        @param cr: A database cursor
-        @param uid: ID of the user currently logged in
-        @param fields: List of fields for which we want default values
-        @param context: A standard dictionary
-        @return: A dictionary which of fields with values.
-        """
-        if not context:
-            context = {}
-        res = super(sale_advance_payment_inv, self).default_get(cr, uid, fields, context=context)
-        if not res.get('product_id', False):
-            product_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_property_advance_product_id.id
-            res.update({'product_id': product_id})
-        return res
-
-
 class product_pricelist(orm.Model):
     _inherit = "product.pricelist"
 
@@ -310,15 +288,6 @@ class sale_order(orm.Model):
         )
         return super(sale_order, self).copy(cr, uid, order_id, defaults, context)
 
-
-class sale_shop(orm.Model):
-    _inherit = 'sale.shop'
-
-    _columns = {
-        'sale_order_have_minimum': fields.boolean('Minimum Amount', help='The Sale Order of this shop have a Minimun Amount'),
-        'sale_order_minimun': fields.float('Minimum Amount of Sale Order', digits_compute=dp.get_precision('Sale Price')),
-        'user_allow_minimun_id': fields.many2one('res.users', 'User that can validate'),
-    }
 
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"

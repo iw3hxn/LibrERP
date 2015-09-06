@@ -1,11 +1,8 @@
-# -*- encoding: utf-8 -*-
+# -*- coding:utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#
-#    Copyright (C) 2013-2014 Didotech srl (<http://www.didotech.com>).
-#
-#                       All Rights Reserved
+#    Copyright (c) 2013-2015 Didotech srl (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,11 +19,14 @@
 #
 ##############################################################################
 
-from . import wizard
-from . import company
-from . import sale
-from . import partner
-from . import sale_shop
-from . import account_invoice
-from . import stock_picking
+from openerp.osv import orm, fields
+
+
+class account_invoice(orm.Model):
+    _inherit = 'account.invoice'
+
+    _columns = {
+        'advance_order_id': fields.many2one('sale.order', 'Order Reference', readonly=True, states={'draft': [('readonly', False)]}),
+    }
+
 

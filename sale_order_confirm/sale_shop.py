@@ -1,11 +1,8 @@
-# -*- encoding: utf-8 -*-
+# -*- coding:utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#
-#    Copyright (C) 2013-2014 Didotech srl (<http://www.didotech.com>).
-#
-#                       All Rights Reserved
+#    Copyright (c) 2013-2015 Didotech srl (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,11 +19,15 @@
 #
 ##############################################################################
 
-from . import wizard
-from . import company
-from . import sale
-from . import partner
-from . import sale_shop
-from . import account_invoice
-from . import stock_picking
+from openerp.osv import orm, fields
+import decimal_precision as dp
 
+
+class sale_shop(orm.Model):
+    _inherit = 'sale.shop'
+
+    _columns = {
+        'sale_order_have_minimum': fields.boolean('Minimum Amount', help='The Sale Order of this shop have a Minimun Amount'),
+        'sale_order_minimun': fields.float('Minimum Amount of Sale Order', digits_compute=dp.get_precision('Sale Price')),
+        'user_allow_minimun_id': fields.many2one('res.users', 'User that can validate'),
+    }

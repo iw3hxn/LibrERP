@@ -21,3 +21,4 @@
 
 from . import confirmation
 from . import add_order_version
+from . import sale_make_invoice_advance
