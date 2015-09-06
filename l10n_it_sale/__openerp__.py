@@ -22,7 +22,7 @@
 
 {
     'name': 'Italian Localisation - Sale',
-    'version': '3.6.8.12',
+    'version': '3.7.9.13',
     'category': 'Localisation/Italy',
     'description': """OpenERP Italian Localization - Sale version
 
@@ -41,15 +41,16 @@ Functionalities:
         'sale_journal',
         'account', 
         'delivery',
-        'sequence_restart',     # ricomincia da 0 le sequenze ogni anno
-        'invoice_immediate',    # fattura accompagnatoria
+        'sequence_restart',      # ricomincia da 0 le sequenze ogni anno
+        'invoice_immediate',     # fattura accompagnatoria
         'sale_order_confirm',
         'core_extended',
-        'stock_picking_filter', # for have date from and date to on picking filter for ddt date
+        'stock_picking_filter',  # for have date from and date to on picking filter for ddt date
     ],
     "data": [
         'wizard/assign_ddt.xml',
         'wizard/confirmation_view.xml',
+        'wizard/stock_partial_picking.xml',
         'stock/picking_view.xml',
         'stock/sequence.xml',
         'stock/stock_journal_view.xml',

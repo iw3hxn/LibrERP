@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="form_serial_partial_picking_tree" model="ir.ui.view">
+            <field name="name">form.serial.partial.picking.tree</field>
+            <field name="model">stock.partial.picking</field>
+            <field name="inherit_id" ref="stock.stock_partial_picking_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="hide_tracking" position="after">
+                    <field name="type" invisible="1"/>
+                    <field name="ddt_in_reference" attrs="{'required': [('type', '==', 'in')], 'invisible': [('type', '!=', 'in')]}" />
+                    <field name="ddt_in_date" attrs="{'required': [('type', '==', 'in')], 'invisible': [('type', '!=', 'in')]}" />
+                </field>
+
+            </field>
+        </record>
+    </data>
+</openerp>

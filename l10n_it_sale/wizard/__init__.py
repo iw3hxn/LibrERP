@@ -21,3 +21,4 @@
 
 from . import assign_ddt
 from . import confirmation
+from . import stock_partial_picking
