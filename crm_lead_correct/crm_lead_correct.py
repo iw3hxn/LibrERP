@@ -217,6 +217,8 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             if sequence_data_id:
                 new_name = self.pool['ir.sequence'].next_by_id(cr, uid, sequence_data_id[1], context=context)
                 vals.update({'name': new_name})
+        if vals.get('vat', False):
+            vals['vat'] = vals['vat'].upper()
 
         result = super(crm_lead_correct, self).create(cr, uid, vals, context=context)
 
@@ -231,6 +233,8 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
         if vals.get('email_from', False) or vals.get('phone', False):
             self.check_address(cr, uid, ids, vals)
+        if vals.get('vat', False):
+            vals['vat'] = vals['vat'].upper()
 
         return result
 
