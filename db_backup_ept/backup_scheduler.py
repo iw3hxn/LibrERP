@@ -93,7 +93,11 @@ class db_backup_ept(osv.osv):
 
     def _set_pg_psw_env_var(self):
         #if os.name != 'nt' and not os.environ.get('PGPASSWORD', ''):
-        os.environ['PGPASSWORD'] = tools.config['db_password']
+        if tools.config.get('db_password'):
+            os.environ['PGPASSWORD'] = tools.config['db_password']
+        #    self._pg_psw_env_var_is_set = True
+        #else:
+        #    self._pg_psw_env_var_is_set = True
         self._pg_psw_env_var_is_set = True
 
     def _unset_pg_psw_env_var(self):
