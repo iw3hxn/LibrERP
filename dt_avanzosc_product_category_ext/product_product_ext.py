@@ -44,16 +44,19 @@ class product_product(orm.Model):
 
         res = {}
         warn = False
-        product = self.browse(cr, uid, ids, context)[0]
+        if ids:
+            product = self.browse(cr, uid, ids, context)[0]
+        else:
+            product = False
 
-        if field == 'purchase_ok' and type != 'service' and not purchase_ok and not is_kit:
+        if field == 'purchase_ok' and product and type != 'service' and not purchase_ok and not is_kit:
             warn = {
                     'title': _('Error'),
                     'message': _("For change you need to create BOM"),
             }
             res['purchase_ok'] = product.purchase_ok
             return {'value': res, 'warning': warn}
-        if field == 'supply_method' and type != 'service':
+        if field == 'supply_method' and product and type != 'service':
             warn = {
                     'title': _('Error'),
                     'message': _("For change you need to create BOM"),
@@ -75,19 +78,19 @@ class product_product(orm.Model):
             message = []
             if category_data.property_account_expense_categ:
                 res['property_account_expense'] = category_data.property_account_expense_categ.id
-                if product.property_account_expense.id != res['property_account_expense']:
+                if product and product.property_account_expense.id != res['property_account_expense']:
                     message.append(self.fields_get(cr, uid)['property_account_expense']['string'])
 
             if category_data.property_account_income_categ:
                 res['property_account_income'] = category_data.property_account_income_categ.id
-                if product.property_account_income.id != res['property_account_income']:
+                if product and product.property_account_income.id != res['property_account_income']:
                     message.append(self.fields_get(cr, uid)['property_account_income']['string'])
 
             if category_data.provision_type:
                 res['type'] = category_data.provision_type
             else:
                 res['type'] = type
-            if product.type != res['type']:
+            if product and product.type != res['type']:
                     message.append(self.fields_get(cr, uid)['type']['string'])
 
             if category_data.procure_method:
@@ -118,20 +121,20 @@ class product_product(orm.Model):
 
             if category_data.uom_id:
                 res['uom_id'] = category_data.uom_id.id
-                if product.uom_id.id != res['uom_id']:
+                if product and product.uom_id.id != res['uom_id']:
                     message.append(self.fields_get(cr, uid)['uom_id']['string'])
 
             if category_data.uom_po_id:
                 res['uom_po_id'] = category_data.uom_po_id.id
-                if product.uom_po_id.id != res['uom_po_id']:
+                if product and product.uom_po_id.id != res['uom_po_id']:
                     message.append(self.fields_get(cr, uid)['uom_po_id']['string'])
 
             if category_data.uos_id:
                 res['uos_id'] = category_data.uos_id.id
                 res['uos_coef'] = category_data.uos_coef
-                if product.uos_id.id != res['uos_id']:
+                if product and product.uos_id.id != res['uos_id']:
                     message.append(self.fields_get(cr, uid)['uos_id']['string'])
-                if product.uos_coef.id != res['uos_coef']:
+                if product and product.uos_coef.id != res['uos_coef']:
                     message.append(self.fields_get(cr, uid)['uos_coef']['string'])
 
             if len(ids) == 1 and message and field == 'categ_id':
