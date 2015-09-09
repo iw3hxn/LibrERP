@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        
+
         <!-- Add flag "move_products" in invoice form -->
         <record id="view_invoice_immediate" model="ir.ui.view">
             <field name="name">invoice.immediate</field>
@@ -10,13 +10,34 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="name" position="after">
-                        <field name="move_products" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}" on_change="onchange_move_products(partner_id)" />
-                        <!--<field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />-->
+                        <field name="move_products"
+                               attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}"
+                               on_change="onchange_move_products(partner_id, location_id)"/>
                     </field>
+                    <page string="Payments" position="after">
+                        <page string="Shipping"
+                              attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('move_products', '=', '')]}">
+                            <field name="location_id"/>
+                            <field name="address_delivery_id"
+                                   attrs="{'invisible': [('move_products', '==', False)], 'required': [('move_products', '!=', '')] }"
+                                   context="{'contact_display':'partner_address'}" colspan="4"/>
+                            <group string="Shipping Details">
+                                <field name="carriage_condition_id"/>
+                                <field name="goods_description_id"/>
+                                <field name="transportation_condition_id"/>
+                                <field name="carrier_id"/>
+                                <field name="date_done"/>
+                                <field name="weight"/>
+                                <field name="weight_net"/>
+                                <field name="number_of_packages"/>
+                            </group>
+                            <field name="picking_id" readonly="1"/>
+                        </page>
+                    </page>
                 </data>
             </field>
         </record>
-        
+
         <record id="view_supplier_invoice_immediate" model="ir.ui.view">
             <field name="name">supplier.invoice.immediate</field>
             <field name="model">account.invoice</field>
@@ -24,10 +45,18 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="period_id" position="after">
-                        <field name="move_products" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}" on_change="onchange_move_products(partner_id)" />
-                        <field name="address_delivery_id" attrs="{'invisible': [('move_products', '==', False)]}" context="{'contact_display':'partner_address'}" colspan="4" />
-                        <!--<field name="partner_shipping_id" attrs="{'invisible': [('move_products', '==', False)]}" />-->
+                        <newline/>
+                        <field name="move_products"
+                               attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('origin', '!=', '')]}"
+                               on_change="onchange_move_products(partner_id)"/>
                     </field>
+                    <page string="Payments" position="after">
+                        <page string="Shipping"
+                              attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('move_products', '=', '')]}">
+                            <field name="location_id"/>
+                            <field name="picking_id" readonly="1"/>
+                        </page>
+                    </page>
                 </data>
             </field>
         </record>

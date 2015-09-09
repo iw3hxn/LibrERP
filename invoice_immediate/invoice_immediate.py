@@ -37,18 +37,53 @@ from openerp import netsvc
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
     _columns = {
-        #'discharge_products_in_invoice': fields.boolean('Discharge products in invoice', help="In case of 'immediate invoice', this flag active system of discharge products from stock."),
-        #'partner_shipping_id': fields.many2one('res.partner.address', 'Shipping Address', states={'draft': [('readonly', False)]}, help="Shipping address for current invoice.", domain=[('parent_id', '=', 'parent_id')]),
         'move_products': fields.boolean('Load/unload products in stock', help="In case of 'immediate invoice', this flag activate system of loading/unloading products from/to stock."),
-        'picking_id': fields.many2one('stock.picking', 'Stock picking created from invoice immediate'),
+        'picking_id': fields.many2one('stock.picking', 'Stock picking'),
+        'location_id': fields.many2one(
+            'stock.location', 'Location',
+            select=True, domain="[('usage', '!=', 'view')]"
+        ),
+        'carriage_condition_id': fields.many2one('stock.picking.carriage_condition', 'Carriage Condition'),
+        'goods_description_id': fields.many2one('stock.picking.goods_description', 'Description of goods'),
+        'transportation_condition_id': fields.many2one(
+            'stock.picking.transportation_condition', 'Transportation condition'),
+        'address_delivery_id': fields.many2one(
+            'res.partner.address', 'Address', states={'draft': [('readonly', False)]}, help='Delivery address of \
+            partner'),
+        'date_done': fields.datetime('Date Done', help="Date of Completion"),
+        'number_of_packages': fields.integer('Number of Packages'),
+        'weight': fields.float('Weight'),
+        'weight_net': fields.float('Net Weight'),
+        'carrier_id': fields.many2one('delivery.carrier', 'Carrier'),
     }
+
+    def onchange_partner_id(self, cr, uid, ids, type, partner_id,
+            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+
+        result = super(account_invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,
+            date_invoice, payment_term, partner_bank_id, company_id)
+        if partner_id:
+            partner_address_obj = self.pool['res.partner.address']
+            delivery_ids = partner_address_obj.search(
+                cr, uid, [('partner_id', '=', partner_id), ('default_delivery_partner_address', '=', True)], context=None)
+            if not delivery_ids:
+                delivery_ids = partner_address_obj.search(
+                    cr, uid, [('partner_id', '=', partner_id), ('type', '=', 'delivery')], context=None)
+                if not delivery_ids:
+                    delivery_ids = partner_address_obj.search(cr, uid, [('partner_id', '=', partner_id)], context=None)
+
+            partner = self.pool['res.partner'].browse(cr, uid, partner_id)
+            result['value']['carriage_condition_id'] = partner.carriage_condition_id.id
+            result['value']['goods_description_id'] = partner.goods_description_id.id
+            result['value']['address_delivery_id'] = delivery_ids and delivery_ids[0]
+        return result
     
-    def onchange_move_products(self, cr, uid, ids, part):
+    def onchange_move_products(self, cr, uid, ids, part, location_id=None):
         if not part:
             return {'value': {'address_delivery_id': False}}
 
         addr = self.pool['res.partner'].address_get(cr, uid, [part], ['delivery', 'invoice', 'contact'])
-        part = self.pool['res.partner'].browse(cr, uid, part)
+
         val = {
             'address_delivery_id': addr['delivery'] or addr['invoice'],
         }
@@ -61,7 +96,8 @@ class account_invoice(orm.Model):
         partner_obj = self.pool['res.partner']
         move_obj = self.pool['stock.move']
         stock_location_obj = self.pool['stock.location']
-        invoice_line_obj = self.pool['account.invoice.line']
+        currency_obj = self.pool['res.currency']
+        uom_obj = self.pool['product.uom']
 
         for invoice in self.browse(cr, uid, ids, context=context):
             if invoice.address_delivery_id:
@@ -96,14 +132,22 @@ class account_invoice(orm.Model):
             
             self.write(cr, uid, [invoice.id], {'picking_id': picking_id}, context=context)
             
-            location_id = stock_location_obj.search(cr, uid, [('name', '=', 'Stock')])
-            assert location_id, _("Stock location's named 'Stock' not exists. please verify.")
-            location_id = location_id[0]
-            
+            # location_id = stock_location_obj.search(cr, uid, [('name', '=', 'Stock')])
+            # assert location_id, _("Stock location's named 'Stock' not exists. please verify.")
+            # location_id = location_id[0]
+            #
+            if invoice.location_id:
+                location_id = invoice.location_id.id
+            else:
+                location_id = stock_location_obj.search(cr, uid, [('name', '=', 'Stock')])
+                assert location_id, _("Stock location's named 'Stock' not exists. please verify.")
+                location_id = location_id[0]
+
             partner_data = partner_obj.browse(cr, uid, invoice.partner_id.id, context)
 
             # prende quello 'generico' di stock.location, nell'unico caso (improbabile)
             # non ci sia il dato in res.partner, 'property_stock_customer'.
+
             if picking_type == 'out':
                 if not partner_data.property_stock_customer:
                     customer_location_id = stock_location_obj.search(cr, uid, [('name', '=', 'Customers')])
@@ -116,20 +160,20 @@ class account_invoice(orm.Model):
                 dest_id = location_id
                 location_id = int(partner_data.property_stock_supplier.id)
             
-            invoice_line_ids = invoice_line_obj.search(cr, uid, [('invoice_id', '=', invoice.id)])
-            invoice_lines = invoice_line_obj.browse(cr, uid, invoice_line_ids)
-            
-            for line in invoice_lines:
+            # invoice_line_ids = invoice_line_obj.search(cr, uid, [('invoice_id', '=', invoice.id)])
+            # invoice_lines = invoice_line_obj.browse(cr, uid, invoice_line_ids)
+            product_avail = {}
+            for line in invoice.invoice_line:
                 if line.product_id and line.product_id.type == 'service' or not line.product_id:
                     continue
                 
-                if picking_type == 'out':
-                    product_qty_new = line.product_id.qty_available - line.quantity
-                    note = _('Immediate invoice')
-                    if product_qty_new < 0:
-                        raise orm.except_orm((_('Warning!'), _('Not enough {product} in stock.').format(product=line.product_id.name)))
-                else:
-                    note = ''
+                # if picking_type == 'out':
+                #     product_qty_new = line.product_id.qty_available - line.quantity
+                #     note = _('Immediate invoice')
+                #     if product_qty_new < 0:
+                #         raise orm.except_orm((_('Warning!'), _('Not enough {product} in stock.').format(product=line.product_id.name)))
+                # else:
+                #     note = ''
                 
                 if line.quantity < 0:
                     location_id, dest_id = dest_id, location_id
@@ -137,7 +181,7 @@ class account_invoice(orm.Model):
                 vals = {
                     'name': line.name,
                     'product_uom': line.product_id.uom_id.id,
-                    'product_uos': line.product_id.uom_id.id,
+                    'product_uos': line.uos_id.id,
                     'picking_id': picking_id,
                     'product_id': line.product_id.id,
                     'product_uos_qty': abs(line.quantity),
@@ -146,12 +190,40 @@ class account_invoice(orm.Model):
                     'state': 'draft',
                     'location_id': location_id,
                     'location_dest_id': dest_id,
-                    'note': note
+                    'note': (picking_type == 'out') and _('Immediate invoice') or '',
+                    'price_unit': line.price_unit,
+                    'price_currency_id': invoice.currency_id.id,
                 }
                 
                 move_obj.create(cr, uid, vals, context=context)
-                if line.quantity < 0:
-                    location_id, dest_id = dest_id, location_id
+
+                # Average price computation
+                if (picking_type == 'in') and (line.product_id.cost_method == 'average'):
+                    product = line.product_id
+                    move_currency_id = invoice.company_id.currency_id.id
+                    context['currency_id'] = move_currency_id
+                    qty = uom_obj._compute_qty(cr, uid, line.uos_id.id, line.quantity, line.product_id.uom_id.id)
+                    if product.id in product_avail:
+                        product_avail[product.id] += qty
+                    else:
+                        product_avail[product.id] = product.qty_available
+
+                    if qty > 0:
+                        new_price = currency_obj.compute(cr, uid, invoice.currency_id.id,
+                                move_currency_id, line.price_unit)
+                        new_price = uom_obj._compute_price(cr, uid, line.uos_id.id, new_price,
+                                product.uom_id.id)
+                        if product.qty_available <= 0:
+                            new_std_price = new_price
+                        else:
+                            # Get the standard price
+                            amount_unit = product.price_get('standard_price', context=context)[product.id]
+                            new_std_price = ((amount_unit * product_avail[product.id]) + (new_price * qty)) / (product_avail[product.id] + qty)
+                        # Write the field according to price type field
+                        product.write({'standard_price': new_std_price})
+
+                # if line.quantity < 0:
+                #     location_id, dest_id = dest_id, location_id
 
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
@@ -165,6 +237,24 @@ class account_invoice(orm.Model):
         })
         return super(account_invoice, self).copy(cr, uid, id, default, context)
 
+    def create(self, cr, uid, vals, context=None):
+        if not context:
+            context = {}
+        # adaptative function: the system learn
+        invoice_id = super(account_invoice, self).create(cr, uid, vals, context=context)
+        # create function return only 1 id
+        if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
+            invoice = self.browse(cr, uid, invoice_id, context)
+            partner_vals = {}
+            if not invoice.partner_id.carriage_condition_id:
+                partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+            if not invoice.partner_id.goods_description_id:
+                partner_vals['goods_description_id'] = vals.get('goods_description_id')
+            if partner_vals:
+                invoice.partner_id.write(partner_vals)
+
+        return invoice_id
+
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
@@ -173,24 +263,28 @@ class account_invoice(orm.Model):
             return True
         
         res = super(account_invoice, self).write(cr, uid, ids, vals, context=context)
-        
-        if isinstance(ids, list):
-            object_id = int(ids[0])
-        else:
-            object_id = int(ids)
-            
-        invoice_data = self.browse(cr, uid, object_id, context=context)
-        origin = vals.get('origin', False) or invoice_data.origin or False
 
-        if vals.get('move_products', False) or invoice_data.move_products or False:
-            if not origin and vals.get('state', False) in ('cancel',):
-                for invoice in self.browse(cr, uid, ids, context=context):
+        for invoice in self.browse(cr, uid, ids, context=context):
+            origin = vals.get('origin', False) or invoice.origin or False
+            if vals.get('move_products', False) or invoice.move_products or False:
+                if not origin and vals.get('state', False) in ('cancel',):
                     # search if picking is already created and delete
                     if invoice.picking_id:
-                        self.pool['stock.picking'].action_reopen(cr, uid, [invoice.picking_id.id], context)
-                        self.pool['stock.picking'].action_cancel(cr, uid, [invoice.picking_id.id], context)
-                        self.pool['account.invoice'].write(cr, uid, [invoice.id], {'picking_id': False}, context=context)
-            elif not origin and vals.get('state', False) in ('open',): # and vals.get('move_id', True):
-                self.create_picking(cr, uid, ids, vals['state'], context)
+                        invoice.picking_id.action_reopen()
+                        invoice.picking_id.action_cancel()
+                        invoice.write({'picking_id': False})
+                elif not origin and vals.get('state', False) in ('open',):  # and vals.get('move_id', True):
+                    self.create_picking(cr, uid, ids, vals['state'], context)
+
+            # adaptative function: the system learn
+
+            if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
+                partner_vals = {}
+                if not invoice.partner_id.carriage_condition_id:
+                    partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+                if not invoice.partner_id.goods_description_id:
+                    partner_vals['goods_description_id'] = vals.get('goods_description_id')
+                if partner_vals:
+                    invoice.partner_id.write(partner_vals)
     
         return res
