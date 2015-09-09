@@ -124,3 +124,34 @@ msgstr "Numero DDT"
 msgid "Shipping conditions"
 msgstr "Condizioni Spedizione"
 
+#. module: stock_picking_extended
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PAF
+msgid "CHARGED ON INVOICE"
+msgstr "ADDEBITATO IN FATTURA"
+
+#. module: stock_picking_extended
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PA
+msgid "CARRIAGE"
+msgstr "PORTO ASSEGNATO"
+
+#. module: stock_picking_extended
+#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PF
+msgid "FREEPORT"
+msgstr "PORTO FRANCO"
+
+#. module: stock_picking_extended
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_DEST
+msgid "RECIPIENT"
+msgstr "DESTINATARIO"
+
+#. module: stock_picking_extended
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_MITT
+msgid "SENDER"
+msgstr "MITTENTE"
+
+#. module: stock_picking_extended
+#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
+msgid "VECTOR"
+msgstr "VETTORE"
+
+

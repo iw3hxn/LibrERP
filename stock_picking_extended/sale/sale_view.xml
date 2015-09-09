@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <record id="l10n_it_sale.view_order_form_other_data_inherit" model="ir.ui.view">
+        <record id="view_order_form_other_data_inherit" model="ir.ui.view">
             <field name="name">sale.order.form.other.data.inherit</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
@@ -14,7 +14,7 @@
                     </group>
                 </field>
                 <field name="date_confirm" position="after">
-                    <field name="minimum_planned_date" groups="base.group_extended" />
+                    <field name="minimum_planned_date" groups="base.group_extended"/>
                 </field>
             </field>
         </record>
@@ -25,7 +25,8 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <field name="partner_shipping_id" position="replace">
-                    <field name="partner_shipping_id" groups="base.group_extended" options='{"quick_create": false}' context="{'default_partner_id':partner_id, 'contact_display':'partner_address'}"/>
+                    <field name="partner_shipping_id" groups="base.group_extended" options='{"quick_create": false}'
+                           context="{'default_partner_id':partner_id, 'contact_display':'partner_address'}"/>
                 </field>
             </field>
         </record>

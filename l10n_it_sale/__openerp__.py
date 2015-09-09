@@ -22,7 +22,7 @@
 
 {
     'name': 'Italian Localisation - Sale',
-    'version': '3.7.9.13',
+    'version': '3.7.9.14',
     'category': 'Localisation/Italy',
     'description': """OpenERP Italian Localization - Sale version
 
@@ -55,6 +55,9 @@ Functionalities:
         'stock/sequence.xml',
         'stock/stock_journal_view.xml',
         'sale/sale_order_view.xml',
+        'stock/goods_description_data.xml',
+        'stock/carriage_condition_data.xml',
+        'stock/transportation_condition_data.xml',
     ],
     "demo": [],
     "test": [],

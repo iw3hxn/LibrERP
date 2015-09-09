@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-    
+
         # -------------------------------------------------------------
         # Transportation condition
         # -------------------------------------------------------------
@@ -15,6 +15,7 @@
                 </tree>
             </field>
         </record>
+
         <record id="view_transportation_condition_form" model="ir.ui.view">
             <field name="name">stock.picking.transportation_condition.form</field>
             <field name="model">stock.picking.transportation_condition</field>
@@ -22,7 +23,7 @@
             <field name="arch" type="xml">
                 <form string="Condition for transportation">
                     <field name="name" select="1"/>
-            <newline/>
+                    <newline/>
                     <field name="note"/>
                 </form>
             </field>
@@ -36,7 +37,8 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem action="action_transportation_condition_tree" id="menu_action_transportation_condition_tree" parent="stock.menu_stock_configuration"/>
-    
+        <menuitem action="action_transportation_condition_tree" id="menu_action_transportation_condition_tree"
+                  parent="stock.menu_stock_configuration"/>
+
     </data>
 </openerp>

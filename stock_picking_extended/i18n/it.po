@@ -249,8 +249,8 @@ msgid "Carriage Condition"
 msgstr "Resa Merce"
 
 #. module: stock_picking_extended
-#: model:ir.actions.act_window,name:l10n_it_sale.action_carriage_condition_tree
-#: model:ir.ui.menu,name:l10n_it_sale.menu_action_carriage_condition_tree
+#: model:ir.actions.act_window,name:action_carriage_condition_tree
+#: model:ir.ui.menu,name:menu_action_carriage_condition_tree
 #: view:stock.picking.carriage_condition:0
 msgid "Carriage Conditions"
 msgstr "Resa Merce"
@@ -282,7 +282,7 @@ msgstr "Peso"
 
 #. module: stock_picking_extended
 #: view:stock.picking.goods_description:0
-#: model:ir.ui.menu,name:stock_picking_extended.l10n_it_salemenu_action_good_description_tree
+#: model:ir.ui.menu,name:stock_picking_extended.action_goods_description_tree
 msgid "Descriptions of Goods"
 msgstr "Aspetto dei Beni"
 
@@ -323,36 +323,6 @@ msgstr "Condizioni commerciali internazionali sono una serie di condizioni comme
 #: selection:stock.journal,default_invoice_state:0
 msgid "Invoiced"
 msgstr "Fatturato"
-
-#. module: stock_picking_extended
-#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PAF
-msgid "CHARGED ON INVOICE"
-msgstr "ADDEBITATO IN FATTURA"
-
-#. module: stock_picking_extended
-#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PA
-msgid "CARRIAGE"
-msgstr "PORTO ASSEGNATO"
-
-#. module: stock_picking_extended
-#: model:stock.picking.carriage_condition,name:l10n_it_sale.carriage_condition_PF
-msgid "FREEPORT"
-msgstr "PORTO FRANCO"
-
-#. module: stock_picking_extended
-#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_DEST
-msgid "RECIPIENT"
-msgstr "DESTINATARIO"
-
-#. module: stock_picking_extended
-#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_MITT
-msgid "SENDER"
-msgstr "MITTENTE"
-
-#. module: stock_picking_extended
-#: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
-msgid "VECTOR"
-msgstr "VETTORE"
 
 #. module: purchase
 #: view:sale.order:0 field:sale.order,minimum_planned_date:0

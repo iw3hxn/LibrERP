@@ -5,7 +5,7 @@
         # -------------------------------------------------------------
         # Carriage Condition
         # -------------------------------------------------------------
-        <record id="l10n_it_sale.view_carriage_condition_tree" model="ir.ui.view">
+        <record id="view_carriage_condition_tree" model="ir.ui.view">
             <field name="name">stock.picking.carriage_condition.tree</field>
             <field name="model">stock.picking.carriage_condition</field>
             <field name="type">tree</field>
@@ -16,7 +16,7 @@
             </field>
         </record>
 		
-        <record id="l10n_it_sale.view_carriage_condition_form" model="ir.ui.view">
+        <record id="view_carriage_condition_form" model="ir.ui.view">
             <field name="name">stock.picking.carriage_condition.form</field>
             <field name="model">stock.picking.carriage_condition</field>
             <field name="type">form</field>
@@ -29,7 +29,7 @@
             </field>
         </record>
         
-        <record id="l10n_it_sale.action_carriage_condition_tree" model="ir.actions.act_window">
+        <record id="action_carriage_condition_tree" model="ir.actions.act_window">
             <field name="name">Carriage Conditions</field>
             <field name="res_model">stock.picking.carriage_condition</field>
             <field name="type">ir.actions.act_window</field>
@@ -37,7 +37,7 @@
             <field name="view_mode">tree,form</field>
         </record>
         
-        <menuitem action="l10n_it_sale.action_carriage_condition_tree" id="l10n_it_sale.menu_action_carriage_condition_tree" parent="stock.menu_stock_configuration"/>
+        <menuitem action="action_carriage_condition_tree" id="menu_action_carriage_condition_tree" parent="stock.menu_stock_configuration"/>
     
     </data>
 </openerp>
