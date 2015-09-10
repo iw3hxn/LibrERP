@@ -23,51 +23,6 @@
 # DEBUG = True
 DEBUG = False
 
-# HEADER_PRODUCT = (
-#     "name",
-#     "Categoria",
-#     "uom_id/id",
-#     "Cod. Iva In",
-#     "Cod. Iva Out",
-#     "list_price",
-#     "ean13",
-#     "Fornitore",
-#     "Cod. prod. forn.",
-#     "Prezzo forn.",
-#     "Note",
-#     "active",
-#     "available_in_pos",
-#     "sale_ok",
-#     "supply_method",
-#     "type",
-#     "product_tmpl_id/id",
-#     "procure_method",
-#     "cost_method",
-#     "categ_id/id"
-# )
-# COLUMNS_PRODUCT = """
-#     name,
-#     category,
-#     uom,
-#     tax_in,
-#     tax_out,
-#     list_price,
-#     ean13,
-#     supplier,
-#     supplier_product_code,
-#     standard_price,
-#     description,
-#     active,
-#     available_in_pos,
-#     sale_ok,
-#     supply_method,
-#     type,
-#     product_tmpl_id,
-#     procure_method,
-#     cost_method,
-#     categ_id
-# """
-
 
 class FormatOne():
     # R.
@@ -77,23 +32,6 @@ class FormatOne():
         u'CAP AM', u'Località AM', u'Provincia AM', u'Nazione',
         u'Partita IVA', u'Codice Fiscale', u'E-Mail', u'Category'
     )
-    # header_supplier = (
-    # 'Codice', 'Ragione Sociale', 'Nome', 'Indirizzo',
-    # 'CAP', 'Località', 'Provincia', 'Indirizzo AM', 'CAP AM',
-    # 'Località AM', 'Provincia AM', 'Nazione', 'Partita IVA',
-    # 'Codice Fiscale', 'E-Mail'
-    # )
-    # Codice	Denominazione / Cognome	Nome
-    # Sede legale: indirizzo
-    # SL: CAP
-    # SL: località
-    # SL: Prov.
-    # Sede amministrativa: indirizzo
-    # SA: CAP
-    # SA: località
-    # SA: Prov.
-    # Nazione	PI  CF  e-mail
-    # Telefono, Cellulare, Fax e PEC
     COLUMNS = "code, name, person_name, street_default, zip_default, "\
               "city_default, province_default, street_invoice, zip_invoice, "\
               "city_invoice, province_invoice, country_code, vat, fiscalcode, "\
@@ -143,6 +81,9 @@ class FormatOne():
     COLUMNS_SALES_ITEM = "location, location_name, sku, item, sku_description, date, qty, cost, item2, group"
     REQUIRED_SALES_ITEM = ['item', 'qty']
 
+    HEADER_INVOICE_ITEM = ('Location', 'Location Name', 'SKU', 'Item Style', 'SKU Description', 'Transaction Date', 'Quantity', 'Extended Cost', 'Item Ledg. Entry No.', 'Gen. Business Posting Group')
+    COLUMNS_INVOICE_ITEM = "location, location_name, sku, item, sku_description, date, qty, cost, item2, group"
+    REQUIRED_INVOICE_ITEM = ['item', 'qty']
 
 class FormatTwo():
     # IB.

@@ -25,6 +25,7 @@ from data_migration.utils import product_importer
 from data_migration.utils import picking_importer
 from data_migration.utils import pricelist_importer
 from data_migration.utils import sales_importer
+from data_migration.utils import invoice_importer
 import base64
 from tools.translate import _
 
@@ -347,7 +348,7 @@ class pricelist_import(filedata_import):
 
 class sales_import(filedata_import):
     _name = "sales.import"
-    _description = "Import pricelist from file ."
+    _description = "Import Sale Order from file ."
 
     importer = sales_importer
 
@@ -363,6 +364,73 @@ class sales_import(filedata_import):
         ),
         'auto_approve': fields.boolean('Auto Approve Sale Order and Picking',
             help="if set, the importer will also confirm Sale Order and Stock Picking. Also create Invoice"),
+        'update_price': fields.boolean('Use price from file',
+            help="if set, the importer will use the price from file and not from Listprice"),
+
+        'state': fields.selection(
+            (
+                ('import', 'import'),
+                ('preview', 'preview'),
+                ('end', 'end')
+            ), 'state', required=True, translate=False, readonly=True
+        ),
+        'format': fields.selection(
+            (
+                ('FormatOne', _('Format One')),
+            ), 'Formato Dati', required=True, readonly=False
+        ),
+        'content_base64': fields.binary(
+            'Products file path', required=False, translate=False
+        ),
+        'file_name': fields.char('File Name', size=256),
+        'content_text': fields.binary(
+            'File Partner', required=False, translate=False
+        ),
+        'preview_text_original': fields.binary(
+            'Preview text original', required=False,
+            translate=False, readonly=True
+        ),
+        'preview_text_decoded': fields.text(
+            'Preview text decoded', required=False,
+            translate=False, readonly=True
+        ),
+        'progress_indicator': fields.integer(
+            'Progress import ', size=3, translate=False, readonly=True
+        ),
+    }
+
+    # default value for data fields of object
+    _defaults = {
+        'format': 'FormatOne',
+        'state': 'import',
+        'progress_indicator': 0,
+    }
+
+
+class invoice_import(filedata_import):
+    _name = "invoice.import"
+    _description = "Import Invoice from file ."
+
+    importer = invoice_importer
+
+    _columns = {
+        'partner_id': fields.many2one('res.partner', 'Customer', required=True, domain="[('customer', '=', True)]"),
+        'date_invoice': fields.date('Date', required=True),
+        'origin': fields.char('Origin', size=16),
+        'journal_id': fields.many2one('account.journal', 'Journal', required=True),
+        'type': fields.selection([
+            ('out_invoice', 'Customer Invoice'),
+            ('in_invoice', 'Supplier Invoice'),
+            ('out_refund', 'Customer Refund'),
+            ('in_refund', 'Supplier Refund'),
+            ], 'Type', required=True),
+        'location_id': fields.many2one(
+            'stock.location', 'Location',
+            select=True,
+            domain="[('usage', '!=', 'view')]"
+        ),
+        'auto_approve': fields.boolean('Auto Approve',
+            help="if set, the importer will also confirm Invoice"),
         'update_price': fields.boolean('Use price from file',
             help="if set, the importer will use the price from file and not from Listprice"),
 

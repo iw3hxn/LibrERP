@@ -322,5 +322,93 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <record id="view_invoice_import_form" model="ir.ui.view">
+            <field name="name">invoice.import.form</field>
+            <field name="model">sales.invoice</field>
+            <field name="arch" type="xml">
+                <form string="Import Invoice from file">
+                    <group>
+
+                        <field name="state" invisible="1"/>
+                        <field name="preview_text_original" invisible="1"/>
+                        <group colspan="4" col="4" states="import">
+                            <field name="file_name" invisible="1" />
+                            <field name="content_base64" filename="file_name" required="True" />
+                            <field name="format" />
+                            <!--<field name="auto_approve" />-->
+                            <field name="update_price" />
+                        </group>
+
+                        <group colspan="4" col="4" states="import">
+                            <field name="origin" />
+                            <field name="partner_id" />
+                            <field name="date_invoice" required="True" />
+                            <field name="type" />
+                            <field name="journal_id" widget="selection"/>
+                            <field name="location_id" />
+                        </group>
+
+                    </group>
+
+                    <group colspan="8" col="8" states="end">
+                        <label string="Importing Pricelist. You will be notified with a message when the import process is finished"/>
+                        <!-- <label string="Import file. Verra segnalata la fine del'importazione, nelle 'Richieste' (Configurazione -> Personalizzazione -> Oggetti Basso Livello -> Richieste -> Richieste)."/> -->
+                    </group>
+
+                    <group colspan="8" col="8">
+                        <separator string="" colspan="8"/>
+                    </group>
+
+                    <group colspan="8" col="8" states="import">
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button type="object" name="actionCheckEncoding" string="Start Import Sales" icon="gtk-ok"/>
+                    </group>
+
+                    <group colspan="8" col="8" states="preview">
+                        <separator string="" colspan="8"/>
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button type="object" name="actionStartImport" string="Start import" icon="gtk-ok"/>
+                    </group>
+
+                    <!-- Items visibles in state "end" -->
+                    <group colspan="8" col="8" states="end">
+                        <button icon="gtk-ok" special="cancel" string="Close"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="invoice_file_import" model="ir.actions.act_window">
+            <field name="name">Import Invoice in .xls format</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">invoice.import</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_invoice_import_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="invoice_file_import" id="menu_invoice_file_import" name="Import Invoice" parent="data_migration_menu"/>
+
     </data>
 </openerp>
