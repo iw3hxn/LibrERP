@@ -87,6 +87,9 @@ class account_invoice(orm.Model):
         val = {
             'address_delivery_id': addr['delivery'] or addr['invoice'],
         }
+        if not location_id:
+            location_id = self.pool['stock.location'].search(cr, uid, [('name', '=', 'Stock')])
+        val.update({'location_id': location_id})
 
         return {'value': val}
     
@@ -118,7 +121,7 @@ class account_invoice(orm.Model):
                 'address_id': address_id,
                 'type': picking_type,
                 'company_id': invoice.company_id.id,
-                'move_type': 'direct',
+                'move_type': 'one',
                 'note': invoice.comment or "",
                 'invoice_state': 'none',
                 'auto_picking': True,
@@ -126,7 +129,9 @@ class account_invoice(orm.Model):
                 'goods_description_id': invoice.goods_description_id and invoice.goods_description_id.id or False,
                 'transportation_condition_id': invoice.transportation_condition_id and invoice.transportation_condition_id.id or False,
                 'carrier_id': invoice.carrier_id and invoice.carrier_id.id or False,
-                'date_done': invoice.date_done,
+                'date': invoice.date_done or invoice.date_invoice,
+                'min_date': invoice.date_done or invoice.date_invoice,
+                'date_done': invoice.date_done or invoice.date_invoice,
                 'number_of_packages': invoice.number_of_packages,
             }, context=context)
             
@@ -193,6 +198,8 @@ class account_invoice(orm.Model):
                     'note': (picking_type == 'out') and _('Immediate invoice') or '',
                     'price_unit': line.price_unit,
                     'price_currency_id': invoice.currency_id.id,
+                    'date': invoice.date_done or invoice.date_invoice,
+                    'date_expected': invoice.date_done or invoice.date_invoice,
                 }
                 
                 move_obj.create(cr, uid, vals, context=context)
@@ -222,12 +229,21 @@ class account_invoice(orm.Model):
                         # Write the field according to price type field
                         product.write({'standard_price': new_std_price})
 
-                # if line.quantity < 0:
-                #     location_id, dest_id = dest_id, location_id
 
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
             picking_obj.force_assign(cr, uid, [picking_id], context)
+
+            for move_line in picking_obj.browse(cr, uid, [picking_id], context)[0].move_lines:
+                move_line.write(
+                    {
+                        'date': invoice.date_done or invoice.date_invoice,
+                        'date_expected': invoice.date_done or invoice.date_invoice,
+                    })
+            picking_obj.write(cr, uid, [picking_id], {
+                'min_date': invoice.date_done or invoice.date_invoice,
+                'date_done': invoice.date_done or invoice.date_invoice,
+            }, context)
         return True
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -271,7 +287,7 @@ class account_invoice(orm.Model):
                     # search if picking is already created and delete
                     if invoice.picking_id:
                         invoice.picking_id.action_reopen()
-                        invoice.picking_id.action_cancel()
+                        invoice.picking_id.unlink()
                         invoice.write({'picking_id': False})
                 elif not origin and vals.get('state', False) in ('open',):  # and vals.get('move_id', True):
                     self.create_picking(cr, uid, ids, vals['state'], context)
