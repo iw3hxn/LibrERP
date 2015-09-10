@@ -339,3 +339,8 @@ msgstr "Contatto"
 #: view:crm.lead:0
 msgid "Sale Order"
 msgstr "Offerte / Ordini"
+
+#. module: crm
+#: view:crm.lead:0
+msgid "Opportunity History"
+msgstr "Storico Opportunità"
