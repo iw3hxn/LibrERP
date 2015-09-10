@@ -298,7 +298,6 @@ class ImportFile(threading.Thread, Utils):
                 # vals_account_invoice_line.update({
                 #     'discount': (list_price_sell - price_sell) / list_price_sell * 100
                 # })
-            import pdb; pdb.set_trace()
             _logger.info(u'Row {row}: Adding product {product} to Invoice {sale}'.format(row=self.processed_lines, product=record.item, sale=invoice_id))
 
             self.account_invoice_line_obj.create(cr, uid, vals_account_invoice_line, self.context)
