@@ -48,7 +48,8 @@ class stock_move(orm.Model):
         return res
 
     def _set_prodlot_code(self, cr, uid, ids, name, value, arg, context=None):
-        if not value: return False
+        if not value:
+            return False
 
         if isinstance(ids, (int, long)):
             ids = [ids]
@@ -62,12 +63,12 @@ class stock_move(orm.Model):
             #    self.pool['stock.production.lot').write(cr, uid, existing_prodlot.id, {'name': value})
             #else:
             existing_prodlot_id = self.pool['stock.production.lot'].search(cr, uid, [('name', '=', value), ('product_id', '=', product_id)])
-            if not existing_prodlot_id: #avoid creating a prodlot twice
+            if not existing_prodlot_id: # avoid creating a prodlot twice
                 prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {
                     'name': value,
                     'product_id': product_id,
                 })
-                move.write({'prodlot_id' : prodlot_id})
+                move.write({'prodlot_id': prodlot_id})
 
     def _get_tracking_code(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
@@ -82,7 +83,7 @@ class stock_move(orm.Model):
             ids = [ids]
 
         for move in self.browse(cr, uid, ids, context=context):
-            #product_id = move.product_id.id
+            # product_id = move.product_id.id
             existing_tracking = move.tracking_id
             if existing_tracking: #avoid creating a tracking twice
                 self.pool['stock.tracking'].write(cr, uid, existing_tracking.id, {'name': value})
@@ -90,7 +91,7 @@ class stock_move(orm.Model):
                 tracking_id = self.pool['stock.tracking'].create(cr, uid, {
                     'name': value,
                 })
-                move.write({'tracking_id' : tracking_id})
+                move.write({'tracking_id': tracking_id})
 
     _columns = {
         'new_prodlot_code': fields.function(_get_prodlot_code, fnct_inv=_set_prodlot_code,
@@ -288,13 +289,12 @@ class stock_picking(orm.Model):
                     for order_line in order_line_tab:
                         key = key + unicode(order_line) + ";"
 
-
                 # Get the hash of the key
                 hash_key = hashlib.sha224(key.encode('utf8')).hexdigest()
 
                 # if the key doesn't already exist, we keep the invoice line
                 # and we add the key to new_line_list
-                if not hash_key in new_line_list:
+                if hash_key not in new_line_list:
                     new_line_list[hash_key] = {
                         'id': line.id,
                         'quantity': line.quantity,
@@ -341,7 +341,7 @@ class stock_picking(orm.Model):
             for move in pick.move_lines:
                 if move.state in ('done', 'cancel'):
                     continue
-                partial_data = partial_datas.get('move%s' % (move.id), {})
+                partial_data = partial_datas.get('move%s' % move.id, {})
                 product_qty = partial_data.get('product_qty', 0.0)
                 move_product_qty[move.id] = product_qty
                 product_uom = partial_data.get('product_uom', False)
@@ -397,14 +397,14 @@ class stock_picking(orm.Model):
                 if not new_picking:
                     new_picking = self.copy(cr, uid, pick.id,
                             {
-                                'name': sequence_obj.get(cr, uid, 'stock.picking.%s' % (pick.type)),
+                                'name': sequence_obj.get(cr, uid, 'stock.picking.%s' % pick.type),
                                 'move_lines': [],
                                 'state': 'draft',
                             })
                 if product_qty != 0:
                     defaults = {
                         'product_qty': product_qty,
-                        'product_uos_qty': product_qty, # TODO: put correct uos_qty
+                        'product_uos_qty': product_qty,  # TODO: put correct uos_qty
                         'picking_id': new_picking,
                         'state': 'assigned',
                         'move_dest_id': False,

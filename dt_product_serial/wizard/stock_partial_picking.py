@@ -29,6 +29,7 @@ LOT_SPLIT_TYPE_SELECTION = [
     ('lu', 'Logistical Unit')
 ]
 
+
 class stock_partial_picking_line(orm.TransientModel):
     _inherit = "stock.partial.picking.line"
         
