@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="view_split_in_lots" model="ir.ui.view">
+            <field name="name">Split in lots</field>
+            <field name="model">stock.move.split</field>
+            <field name="inherit_id" ref="stock.view_split_in_lots"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="use_exist" position="replace">
+                    <field name="use_exist" invisible="1"/>
+                </field>
+
+                <button name="split_lot" position="replace">
+                    <button name="split_lot_serial" string="Ok"
+                            type="object" icon="gtk-ok"/>
+                </button>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
