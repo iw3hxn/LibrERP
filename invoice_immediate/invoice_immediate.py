@@ -280,9 +280,12 @@ class account_invoice(orm.Model):
         
         res = super(account_invoice, self).write(cr, uid, ids, vals, context=context)
 
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
         for invoice in self.browse(cr, uid, ids, context=context):
-            origin = vals.get('origin', False) or invoice.origin or False
             if vals.get('move_products', False) or invoice.move_products or False:
+                origin = vals.get('origin', False) or invoice.origin or False
                 if not origin and vals.get('state', False) in ('cancel',):
                     # search if picking is already created and delete
                     if invoice.picking_id:

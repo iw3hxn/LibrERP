@@ -17,10 +17,12 @@
                     <page string="Payments" position="after">
                         <page string="Shipping"
                               attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('move_products', '=', '')]}">
-                            <field name="location_id"/>
-                            <field name="address_delivery_id"
+                            <group >
+                                <field name="location_id"/>
+                                <field name="address_delivery_id"
                                    attrs="{'invisible': [('move_products', '==', False)], 'required': [('move_products', '!=', '')] }"
                                    context="{'contact_display':'partner_address'}" colspan="4"/>
+                            </group>
                             <group string="Shipping Details">
                                 <field name="carriage_condition_id"/>
                                 <field name="goods_description_id"/>
