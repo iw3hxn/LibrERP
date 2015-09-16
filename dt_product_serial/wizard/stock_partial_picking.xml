@@ -15,6 +15,7 @@
                 </field>
                 <field name="quantity" position="replace">
                     <field name="quantity" attrs="{'readonly': [('split_type', '=', 'single')]}" />
+                    <field name="line_check" />
                     <field name="balance" groups="stock.view_balance"/>
                     <field name="pallet_qty" groups="stock.view_pallet" />
                     <field name="pallet_id" groups="stock.view_pallet" widget="selection" />
@@ -22,7 +23,6 @@
                 <field name="prodlot_id" position="replace">
                     <field name="new_prodlot_code" on_change="onchange_new_prodlot_code(new_prodlot_code, product_id, prodlot_id)" />
                     <field name="prodlot_id" domain="[('product_id', '=', product_id), ('stock_available', '!=', '0')]" invisible="context.get('hide_tracking', False)" attrs="{'required': [('tracking', '=', True), ('new_prodlot_code', '=', False)]}"/>
-                    <field name="line_check" />
                     <field name="split_type" readonly="1"/>
                     <field name="tracking_id" invisible="True" />
                 </field>
