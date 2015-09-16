@@ -96,7 +96,8 @@ class Parser(report_sxw.rml_parse):
                         tax_amount = (move_line.tax_amount * self.localcontext['data']['tax_sign'])
                     else:
                         tax_amount = move_line.tax_amount
-                    if result.has_key(tax_code.id):
+                    if tax_code and tax_code in result:
+                    # if result.has_key(tax_code.id):
                         result[tax_code.id]['tax'] += tax_amount
                     else:
                         raise orm.except_orm(_("Tax codes malconfigured!"),
