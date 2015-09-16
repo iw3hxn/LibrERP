@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record forcecreate="True" id="renew_sale_orders" model="ir.cron">
+            <field name="name">Sale Orders Renewal</field>
+            <field name="active" eval="True" />
+            <field name="user_id" ref="base.user_root" />
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model" eval="'sale.order'" />
+            <field name="function" eval="'renew_orders'" />
+            <field name="args" eval="('30',)" />
+        </record>        
+    </data>
+</openerp>
+
+

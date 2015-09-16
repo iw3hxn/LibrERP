@@ -1,0 +1,210 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* sale_subscriptions
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.4\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2012-10-03 08:40+0000\n"
+"PO-Revision-Date: 2012-10-03 08:40+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_subscriptions
+#: field:sale.order,order_duration:0
+msgid "Subscription Duration"
+msgstr "Durata contrattuale"
+
+#. module: sale_subscriptions
+#: constraint:ir.cron:0
+msgid "Invalid arguments"
+msgstr "Argomenti non validi"
+
+#. module: sale_subscriptions
+#: field:sale.order,order_start_date:0
+msgid "Subscription Beginning Date"
+msgstr "Data prima fatturazione"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_invoice_duration:0
+msgid "Monthly"
+msgstr "Mensile"
+
+#. module: sale_subscriptions
+#: field:sale.order,automatically_create_new_subscription:0
+#: field:sale.order.line,automatically_create_new_subscription:0
+msgid "Automatically create new subscription"
+msgstr "Crea automaticamente una nuova Offerta"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_duration:0
+msgid "6 months"
+msgstr "6 mesi"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_duration:0
+msgid "1 month"
+msgstr "1 mese"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_duration:0
+msgid "2 months"
+msgstr "2 mesi"
+
+#. module: sale_subscriptions
+#: model:ir.model,name:sale_subscriptions.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: sale_subscriptions
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique !"
+msgstr "Il riferimento ordine deve essere unico!"
+
+#. module: sale_subscriptions
+#: view:sale.order.line:0
+msgid "Subscriptions"
+msgstr "Abbonamenti"
+
+#. module: sale_subscriptions
+#: field:sale.order,order_end_date:0
+msgid "unknown"
+msgstr "unknown"
+
+#. module: sale_subscriptions
+#: help:sale.order,order_duration:0
+msgid "Subscription duration in days"
+msgstr "Durata contrattuale in giorni"
+
+#. module: sale_subscriptions
+#: field:sale.order,have_subscription:0
+msgid "Rates Payment"
+msgstr "Dilazione pagamento"
+
+#. module: sale_subscriptions
+#: model:ir.model,name:sale_subscriptions.model_ir_cron
+msgid "ir.cron"
+msgstr "ir.cron"
+
+#. module: sale_subscriptions
+#: constraint:product.product:0
+#: sql_constraint:product.product:0
+msgid "Reference/Variant has to be unique."
+msgstr "Reference/Variant has to be unique."
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_duration:0
+msgid "1 year"
+msgstr "1 anno"
+
+#. module: sale_subscriptions
+#: field:ir.cron,subscription_id:0
+#: field:product.product,subscription:0
+#: field:sale.order.line,subscription:0
+msgid "Subscription"
+msgstr "Abbonamento"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_invoice_duration:0
+msgid "Bimestral"
+msgstr "Bimestrale"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_duration:0
+msgid "3 months"
+msgstr "3 mesi"
+
+#. module: sale_subscriptions
+#: code:addons/sale_subscriptions/sale.py:173
+#, python-format
+msgid "The quotation '%s' has been converted to a sales order."
+msgstr "La quotazione '%s' è stata convertita in ordine di vendita."
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_invoice_duration:0
+msgid "Annual"
+msgstr "Annuale"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_invoice_duration:0
+msgid "Semiannual"
+msgstr "Semestrale"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_invoice_duration:0
+msgid "Trimestral"
+msgstr "Trimestrale"
+
+#. module: sale_subscriptions
+#: field:sale.order,presentation:0
+msgid "Allega Presentazione"
+msgstr "Allega Presentazione"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_invoice_duration:0
+msgid "Biennial"
+msgstr "Biennale"
+
+#. module: sale_subscriptions
+#: view:sale.order:0
+msgid "Self-renewal"
+msgstr "Auto Rinnovo"
+
+#. module: sale_subscriptions
+#: field:sale.order,order_invoice_duration:0
+#: help:sale.order,order_invoice_duration:0
+msgid "Invoice Period"
+msgstr "Periodo Fatturazione"
+
+#. module: sale_subscriptions
+#: view:sale.order.line:0
+msgid "Total"
+msgstr "Totale"
+
+#. module: sale_subscriptions
+#: model:ir.model,name:sale_subscriptions.model_sale_order
+msgid "Sales Order"
+msgstr "Ordine di vendita"
+
+#. module: sale_subscriptions
+#: help:sale.order,have_subscription:0
+msgid "If set, the total sale price will be allocated in the number of invoices provided by the order in which you enter the product"
+msgstr "Se inserisci il flag, il prezzo di vendita complessivo verrà ripartito nel numero di fatture previste dall’ordine in cui viene inserito il prodotto"
+
+#. module: sale_subscriptions
+#: field:sale.order.line,cron_ids:0
+msgid "Cron"
+msgstr "Cron"
+
+#. module: sale_subscriptions
+#: code:addons/sale_subscriptions/sale.py:138
+#: code:addons/sale_subscriptions/sale.py:179
+#, python-format
+msgid "Subscription expiration: "
+msgstr "Scadenza abbonamento: "
+
+#. module: sale_subscriptions
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Errore: codice EAN non valido"
+
+#. module: sale_subscriptions
+#: view:sale.order:0
+msgid "Subscription Ending Date"
+msgstr "Termine durata contrattuale"
+
+#. module: sale_subscriptions
+#: selection:sale.order,order_duration:0
+msgid "2 years"
+msgstr "2 Anni"
+
+#. module: sale_subscriptions
+#: model:ir.model,name:sale_subscriptions.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Linea d'ordine di vendita"
+
