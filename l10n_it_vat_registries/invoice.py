@@ -105,7 +105,7 @@ class Parser(report_sxw.rml_parse):
 
     def _get_tax_lines(self, move):
         res = []
-        tax_code_obj = self.pool.get('account.tax.code')
+        tax_code_obj = self.pool['account.tax.code']
         # index è usato per non ripetere la stampa dei dati fattura quando ci sono più codici IVA
         index = 0
         invoice = False
@@ -115,8 +115,10 @@ class Parser(report_sxw.rml_parse):
                     raise Exception(_("Move %s contains different invoices") % move.name)
                 invoice = move_line.invoice
         group_amounts_by_code = self._tax_amounts_by_code(move)
-        #get total without withholding taxes
+        # get total without withholding taxes
         amount_withholding = 0.0
+        if not invoice:
+            return res
         for line in invoice.tax_line:
             if line.tax_code_id.exclude_from_registries:
                 amount_withholding += line.tax_amount
