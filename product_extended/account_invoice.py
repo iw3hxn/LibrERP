@@ -28,13 +28,13 @@ class account_invoice(orm.Model):
     def action_date_assign(self, cr, uid, ids, *args):
         res = super(account_invoice, self).action_date_assign(cr, uid, ids, *args)
         context = self.pool['res.users'].context_get(cr, uid)
-        for o in self.browse(cr, uid, ids, context):
-            for line in o.invoice_line:
+        for invoice in self.browse(cr, uid, ids, context):
+            for line in invoice.invoice_line:
                 if line.product_id:
-                    if o.type == 'out_invoice':
+                    if invoice.type == 'out_invoice' and line.price_unit != 0.0:
                         line.product_id.write({'last_sale_price': line.price_unit})
                         # self.pool['product.product'].write(cr, uid, [line.product_id.id], ())
-                    elif o.type == 'in_invoice':
+                    elif invoice.type == 'in_invoice' and line.price_unit != 0.0:
                         line.product_id.write({'last_purchase_price': line.price_unit})
                         # self.pool['product.product'].write(cr, uid, [line.product_id.id], ())
         return res
