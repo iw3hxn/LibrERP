@@ -37,6 +37,10 @@ class split_in_production_lot(orm.TransientModel):
         'location_id': fields.many2one('stock.location', 'Source Location')
     }
 
+    _defaults = {
+        'use_exist': False,
+    }
+
     def split_lot_serial(self, cr, uid, ids, context=None):
         """ To split a lot"""
         if context is None:

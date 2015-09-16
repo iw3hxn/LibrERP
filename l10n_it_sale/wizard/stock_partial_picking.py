@@ -35,6 +35,20 @@ class stock_partial_picking(orm.TransientModel):
 
     }
 
+    def save_partial(self, cr, uid, ids, context=None):
+        res = super(stock_partial_picking, self).save_partial(cr, uid, ids, context=None)
+        partial = self.browse(cr, uid, ids[0], context=context)
+
+        vals = {}
+        if partial.ddt_in_reference:
+            vals.update({'ddt_in_reference': partial.ddt_in_reference})
+        if partial.ddt_in_date:
+            vals.update({'ddt_in_date': partial.ddt_in_date})
+        if vals:
+            partial.picking_id.write(vals)
+
+        return res
+
     def default_get(self, cr, uid, fields, context=None):
         if context is None:
             context = {}

@@ -82,6 +82,7 @@ class stock_partial_picking_line(orm.TransientModel):
         'balance': fields.boolean('Balance'),
         'pallet_qty': fields.integer('Number Pallet'),
         'pallet_id': fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]),
+        'line_check': fields.boolean('Check'),
     }
 
     def onchange_new_prodlot_code(self, cr, uid, ids, new_prodlot_code, product_id, prodlot_id, context=None):
@@ -124,6 +125,39 @@ class stock_partial_picking(orm.TransientModel):
     _columns = {
         'tracking_code': fields.char('Pack', size=64),
     }
+
+    def save_partial(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, 'Partial picking processing may only be done one at a time'
+        stock_picking = self.pool['stock.picking']
+        stock_move = self.pool['stock.move']
+        partial = self.browse(cr, uid, ids[0], context=context)
+        for line in partial.move_ids:
+            if line.move_id.product_qty == line.quantity and line.move_id.product_uom == line.product_uom:
+                vals = {}
+                if line.prodlot_id:
+                    vals.update({'prodlot_id': line.prodlot_id.id})
+                if line.line_check:
+                    vals.update({'line_check': line.line_check})
+                if vals:
+                    line.move_id.write(vals)
+
+        vals = {'type': 'ir.actions.act_window_close'}
+        return vals
+
+    def _partial_move_for(self, cr, uid, move):
+        partial_move = {
+            'product_id': move.product_id.id,
+            'quantity': move.state in ('assigned','draft') and move.product_qty or 0,
+            'product_uom': move.product_uom.id,
+            'prodlot_id': move.prodlot_id.id,
+            'move_id': move.id,
+            'location_id': move.location_id.id,
+            'location_dest_id': move.location_dest_id.id,
+            'line_check': move.line_check,
+        }
+        if move.picking_id.type == 'in' and move.product_id.cost_method == 'average':
+            partial_move.update(update_cost=True, **self._product_cost_for_average_update(cr, uid, move))
+        return partial_move
 
     def do_partial(self, cr, uid, ids, context=None):
         assert len(ids) == 1, 'Partial picking processing may only be done one at a time'
