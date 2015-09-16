@@ -55,15 +55,15 @@ class stock_picking(orm.Model):
         move_line_obj = self.pool['stock.move']
         account_invoice_obj = self.pool['account.invoice']
         _logger.debug('FGF picking allow open ids %s ' % ids)
-        for pick in self.browse(cr, uid, ids, context):
-            _logger.debug('FGF picking allow open  %s %s' % (pick.stock_journal_id, pick.stock_journal_id.reopen_posted))
-            if pick.stock_journal_id and not pick.stock_journal_id.reopen_posted:
-                raise orm.except_orm(_('Error'), _('You cannot reset to draft pickings of this journal ! Please check "Allow Update of Posted Pickings" in Warehous Configuration / Stock Journals %s') % pick.stock_journal_id.name )
-            if pick._columns.get('invoice_ids'):
+        for picking in self.browse(cr, uid, ids, context):
+            _logger.debug('FGF picking allow open  %s %s' % (picking.stock_journal_id, picking.stock_journal_id.reopen_posted))
+            if picking.stock_journal_id and not picking.stock_journal_id.reopen_posted:
+                raise orm.except_orm(_('Error'), _('You cannot reset to draft pickings of this journal ! Please check "Allow Update of Posted Pickings" in Warehous Configuration / Stock Journals %s') % picking.stock_journal_id.name )
+            if picking._columns.get('invoice_ids'):
                 _logger.debug('FGF picking allow open inv_ids ')
                 ids2 = []
-                if pick.invoice_ids:
-                  for inv in pick.invoice_ids:
+                if picking.invoice_ids:
+                  for inv in picking.invoice_ids:
                     if inv.state in ['cancel']:
                        pass
                     elif inv.state in ['draft']:
@@ -74,15 +74,15 @@ class stock_picking(orm.Model):
                   # account_invoice_obj.write(cr, uid, ids2, {'state':'cancel'})
                   account_invoice_obj.action_cancel(cr, uid, ids2 )
                   if ids2:
-                    self.write(cr, uid, [pick.id], {'invoice_state': '2binvoiced'})
-            elif pick.invoice_state == 'invoiced':
+                    self.write(cr, uid, [picking.id], {'invoice_state': '2binvoiced'})
+            elif picking.invoice_state == 'invoiced':
                 _logger.debug('FGF picking invoiced ')
                 raise orm.except_orm(_('Error'), _('You cannot reset an invoiced picking to draft !'))
-            if pick.move_lines:
-                for move in pick.move_lines:
+            if picking.move_lines:
+                for move in picking.move_lines:
                     # FIXME - not sure if date or id has to be checked or both if average price is used
                     # FGF 20121130 date_expected 
-                    if move.product_id.cost_method == 'average':
+                    if move.product_id.cost_method == 'average' and picking.type == 'in':
                       later_ids = move_line_obj.search(cr, uid, [('product_id', '=', move.product_id.id), ('state', '=', 'done'), ('date_expected', '>', move.date), ('price_unit', '!=', move.price_unit), ('company_id', '=', move.company_id.id)])
                       if later_ids:
                         later_prices = []
