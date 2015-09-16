@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_order_form_subscription" model="ir.ui.view">
+            <field name="name">sale.order.form.subscription</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="type">form</field>
+            <field name="priority" eval="31"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="shipped" position="after">
+                        <field name="presentation" />
+                        <field name="have_subscription" />
+                        <!--<field name="automatically_create_new_subscription" string="Self-renewal" attrs="{'invisible': [('have_subscription', '=', 0)], ('state','=','draft')]}" />-->
+                        <field name="automatically_create_new_subscription" string="Self-renewal" attrs="{'invisible': [('have_subscription', '=', 0)]}" />
+                        <field name="order_duration" attrs="{'invisible': [('have_subscription', '=', 0), ('automatically_create_new_subscription', '=', False)], 'required': ['|', ('have_subscription', '=', 1), ('automatically_create_new_subscription', '=', True), ('state', '=', 'draft')]}" />
+                        <field name="order_invoice_duration" attrs="{'invisible': [('have_subscription', '=', 0)], 'required': [('have_subscription', '=', 1), ('state', '=', 'draft')]}" />
+                        <field name="order_start_date" attrs="{'invisible': [('have_subscription', '=', 0)]}" />
+                    </field>
+                    <field name="date_confirm" position="after">
+                        <field name="order_end_date" string="Subscription Ending Date" attrs="{'invisible': [('have_subscription', '=', 0)]}" />
+                    </field>
+                    <!--<field name="tax_id" position="replace">-->
+                        <!--<field colspan="4" name="tax_id" nolabel="1" domain="[('parent_id', '=', False)]" attrs="{'readonly': [('layout_type', '!=', 'article')]}"/>-->
+                    <!--</field>-->
+                    <xpath expr="/form/notebook/page/field[@name='order_line']/tree[@string='Sales Order Lines']/field[@name='name']" position="after">
+                        <field name="subscription" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <!--<record id="view_order_layout_form_subscription" model="ir.ui.view">-->
+            <!--<field name="name">sale.order.layout.form.subscription</field>-->
+            <!--<field name="model">sale.order</field>-->
+            <!--<field name="inherit_id" ref="sale_layout.view_order_form_inherit_1"/>-->
+            <!--<field name="type">form</field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<data>-->
+                    <!-- module sale_layout transforms field[@name='order_line'] in field[@name='abstract_line_ids'] -->
+                    <!--<xpath expr="/form/notebook/page/field[@name='abstract_line_ids']/tree[@string='Sales order lines']/field[@name='name']" position="after">-->
+                        <!--<field name="subscription" />-->
+                    <!--</xpath>-->
+                <!--</data>-->
+            <!--</field>-->
+        <!--</record>-->
+
+        <record id="view_order_tree" model="ir.ui.view">
+            <field name="name">sale.order.tree.renew</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Sales Orders" position="replace">
+                    <tree string="Sales Orders" colors="fuchsia:row_color=='fuchsia';grey:row_color=='grey';blue:row_color=='blue';red:row_color=='red';green:row_color=='green';orange:row_color=='orange'">
+                        <field name="name"/>
+                        <field name="date_order"/>
+                        <!--<field name="client_order_ref" groups="base.group_extended"/>-->
+                        <field name="order_end_date" string="Ending Date" />
+                        <field name="partner_id"/>
+                        <field name="user_id" />
+                        <field name="picked_rate" widget="progressbar"/>
+                        <field name="invoiced_rate" widget="progressbar"/>
+                        <field name="amount_untaxed" sum="Total Tax Excluded"/>
+                        <field name="amount_total" sum="Total Tax Included"/>
+                        <field name="state"/>
+                        <field name="row_color" invisible="1" />
+                    </tree>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_product_product_salesman","product.product salesman","model_product_product","base.group_sale_salesman",1,0,0,0
+"access_ir_cron_salesman","ir.cron salesman","base.model_ir_cron","base.group_sale_salesman",1,1,1,0
