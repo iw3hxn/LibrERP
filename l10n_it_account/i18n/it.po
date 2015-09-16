@@ -7903,7 +7903,7 @@ msgstr "Giorno del mese, inserire -1 per l'ultimo giorno del mese corrente. Se Ã
 #. module: account
 #: model:ir.ui.menu,name:account.menu_finance_legal_statement
 msgid "Legal Reports"
-msgstr "Scritture legali"
+msgstr "Libri Contabili"
 
 #. module: account
 #: field:account.tax.code,sum_period:0
