@@ -19,10 +19,9 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, orm
 
-class partner_invoice_wizard(osv.osv_memory):
+class partner_invoice_wizard(orm.TransientModel):
     """
     questa classe apre il wizard per stampare il fatturato di un cliente/fornitore 
     """
@@ -45,18 +44,16 @@ class partner_invoice_wizard(osv.osv_memory):
         """
         if context is None:
             context = {}
-        datas = {'ids' : context.get('active_ids',[])}
-        res = self.read(cr, uid, ids, ['period_from_id','period_to_id'], context=context)
+        datas = {'ids': context.get('active_ids', [])}
+        res = self.read(cr, uid, ids, ['period_from_id', 'period_to_id'], context=context)
         res = res and res[0] or {}
         res['period_from_id'] = res['period_from_id'][0]
         res['period_to_id'] = res['period_to_id'][0]
         datas['form'] = res      
         return {
-            'type' : 'ir.actions.report.xml',
-            'report_name':'partner.total.invoice',
-            'datas' : datas,
+            'type': 'ir.actions.report.xml',
+            'report_name': 'partner.total.invoice',
+            'datas': datas,
         }    
-        
-partner_invoice_wizard()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

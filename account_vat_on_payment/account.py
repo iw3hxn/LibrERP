@@ -167,9 +167,7 @@ class account_voucher(orm.Model):
                                 vals['currency_id'] = for_curr.id
 
                             if inv_move_line.tax_vat_on_payment_id:
-                                vals[
-                                    'tax_code_id'
-                                    ] = inv_move_line.tax_vat_on_payment_id.id
+                                vals['tax_code_id'] = inv_move_line.tax_vat_on_payment_id.id
                                 if inv_move_line.tax_amount < 0:
                                     vals['tax_amount'] = -new_line_amount
                                 else:
