@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <record id="form_serial_partial_picking_tree" model="ir.ui.view">
-            <field name="name">form.serial.partial.picking.tree</field>
+            <field name="name">form.serial.partial.picking.form</field>
             <field name="model">stock.partial.picking</field>
             <field name="inherit_id" ref="stock.stock_partial_picking_form"/>
             <field name="type">form</field>
