@@ -52,7 +52,7 @@ class stock_picking(orm.Model):
                     new_line_vals = {
                         'price_unit': line.move_line_id.sale_line_id.price_unit,
                         'discount': line.move_line_id.sale_line_id.discount,
-                        'quantity': qty_delivery / line.quantity,
+                        'quantity': line.quantity / qty_delivery,
                     }
                     self.pool['account.invoice.line'].write(cr, uid, line.id, new_line_vals, context=context)
             invoice.button_reset_taxes()
