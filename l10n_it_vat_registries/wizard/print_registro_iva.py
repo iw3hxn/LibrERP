@@ -27,7 +27,7 @@ class wizard_registro_iva(osv.osv_memory):
 
     def _get_period(self, cr, uid, context=None):
         ctx = dict(context or {}, account_period_prefer_normal=True)
-        period_ids = self.pool.get('account.period').find(cr, uid, context=ctx)
+        period_ids = self.pool['account.period'].find(cr, uid, context=ctx)
         return period_ids
 
     _name = "wizard.registro.iva"

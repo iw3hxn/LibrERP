@@ -24,6 +24,7 @@ from openerp.tools.translate import _
 import logging
 from datetime import datetime
 from openerp.osv import fields, orm
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ class Parser(report_sxw.rml_parse):
 
     def _get_account_lines(self, move):
         res = []
-        #tax_code_obj = self.pool.get('account.tax.code')
+        # tax_code_obj = self.pool.get('account.tax.code')
         # index è usato per non ripetere la stampa dei dati fattura quando ci sono più codici IVA
         index = 0
         invoice = False
@@ -52,13 +53,13 @@ class Parser(report_sxw.rml_parse):
                 'amount_total': invoice and invoice.amount_total or '',
             }
             res.append(account_item)
-            #index += 1
+            # index += 1
         return res
 
     def _tax_amounts_by_code(self, move):
         res = {}
         result = {}
-#prima creare solo le righe con l'imponibile
+# prima creare solo le righe con l'imponibile
         for move_line in move.line_id:
             if move_line.tax_code_id and not move_line.tax_code_id.exclude_from_registries:
                 if not res.get(move_line.tax_code_id.id):
@@ -71,16 +72,16 @@ class Parser(report_sxw.rml_parse):
                     else:
                         result[move_line.tax_code_id.id] = {'base': amount, 'tax': 0.0}
 
-#quindi aggiungere la tax se c'è
+# quindi aggiungere la tax se c'è
         for move_line in move.line_id:
             tax_code = False
             if move_line.tax_code_id and not move_line.tax_code_id.exclude_from_registries:
                 
                 if not move_line.tax_code_id.is_base:
-                    #if move_line.tax_code_id.tax_ids:
+                    # if move_line.tax_code_id.tax_ids:
                     if move_line.tax_code_id.tax_ids[0].base_code_id:
                         tax_code = move_line.tax_code_id.tax_ids[0].base_code_id
-                    #elif move_line.tax_code_id.ref_tax_ids:
+                    # elif move_line.tax_code_id.ref_tax_ids:
                     elif move_line.tax_code_id.ref_tax_ids[0].ref_base_code_id:
                         tax_code = move_line.tax_code_id.ref_tax_ids[0].ref_tax_code_id
                     else:
@@ -182,24 +183,24 @@ class Parser(report_sxw.rml_parse):
         return self._compute_totals(parent_codes.keys())
         
     def _get_start_date(self):
-        period_obj = self.pool.get('account.period')
+        period_obj = self.pool['account.period']
         start_date = False
         for period in period_obj.browse(self.cr, self.uid,
                                         self.localcontext['data']['period_ids']):
-            period_start = datetime.strptime(period.date_start, '%Y-%m-%d')
+            period_start = datetime.strptime(period.date_start, DEFAULT_SERVER_DATE_FORMAT)
             if not start_date or start_date > period_start:
                 start_date = period_start
-        return start_date.strftime('%Y-%m-%d')
+        return start_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
         
     def _get_end_date(self):
-        period_obj = self.pool.get('account.period')
+        period_obj = self.pool['account.period']
         end_date = False
         for period in period_obj.browse(self.cr, self.uid,
                                         self.localcontext['data']['period_ids']):
-            period_end = datetime.strptime(period.date_stop, '%Y-%m-%d')
+            period_end = datetime.strptime(period.date_stop, DEFAULT_SERVER_DATE_FORMAT)
             if not end_date or end_date < period_end:
                 end_date = period_end
-        return end_date.strftime('%Y-%m-%d')
+        return end_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
     def __init__(self, cr, uid, name, context):
         super(Parser, self).__init__(cr, uid, name, context)
