@@ -251,13 +251,13 @@ class stock_picking(orm.Model):
     # we merge invoice line together and do the sum of quantity and
     # subtotal.
 
-    def action_invoice_create(self, cursor, user, ids, journal_id=False,
+    def action_invoice_create(self, cr, uid, ids, journal_id=False,
                             group=False, type='out_invoice', context=None):
-        invoice_dict = super(stock_picking, self).action_invoice_create(cursor, user,
+        invoice_dict = super(stock_picking, self).action_invoice_create(cr, uid,
                             ids, journal_id, group, type, context=context)
 
         for picking_key in invoice_dict:
-            invoice = self.pool['account.invoice'].browse(cursor, user, invoice_dict[picking_key], context=context)
+            invoice = self.pool['account.invoice'].browse(cr, uid, invoice_dict[picking_key], context=context)
             if not invoice.company_id.is_group_invoice_line:
                 continue
 
@@ -281,7 +281,7 @@ class stock_picking(orm.Model):
 
                 # Add the sale order line part but check if the field exist because
                 # it's install by a specific module (not from addons)
-                if self.pool['ir.model.fields'].search(cursor, user,
+                if self.pool['ir.model.fields'].search(cr, uid,
                         [('name', '=', 'sale_order_lines'), ('model', '=', 'account.invoice.line')], context=context) != []:
                     order_line_tab = []
                     for order_line in line.sale_order_lines:
@@ -307,13 +307,13 @@ class stock_picking(orm.Model):
                     new_line_list[hash_key]['quantity'] = new_line_list[hash_key]['quantity'] + line.quantity
                     new_line_list[hash_key]['price_subtotal'] = new_line_list[hash_key]['price_subtotal'] \
                                                                 + line.price_subtotal
-                    self.pool['account.invoice.line'].unlink(cursor, user, line.id, context=context)
+                    self.pool['account.invoice.line'].unlink(cr, uid, line.id, context=context)
 
             # Write modifications made on invoice lines
             for hash_key in new_line_list:
                 line_id = new_line_list[hash_key]['id']
                 del new_line_list[hash_key]['id']
-                self.pool['account.invoice.line'].write(cursor, user, line_id, new_line_list[hash_key], context=context)
+                self.pool['account.invoice.line'].write(cr, uid, line_id, new_line_list[hash_key], context=context)
 
         return invoice_dict
 
