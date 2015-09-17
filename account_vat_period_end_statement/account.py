@@ -210,6 +210,7 @@ class account_vat_period_end_statement(orm.Model):
 
     _name = "account.vat.period.end.statement"
     _rec_name = 'date'
+    _order = 'date'
     _columns = {
         'debit_vat_account_line_ids': fields.one2many('statement.debit.account.line', 'statement_id', 'Debit VAT', help='The accounts containing the debit VAT amount to write-off', states={'confirmed': [('readonly', True)], 'paid': [('readonly', True)], 'draft': [('readonly', False)]}),
 
@@ -348,6 +349,10 @@ class account_vat_period_end_statement(orm.Model):
                     line_obj.create(cr, uid, credit_vat_data)
 
             if statement.previous_credit_vat_amount:
+                if not statement.previous_credit_vat_account_id:
+                    raise orm.except_orm(_('Error'),
+                        _('You have a Previous Credits VAT of %s and need to set Previous Credits VAT') % statement.previous_credit_vat_amount)
+
                 previous_credit_vat_data = {'name': _('Previous Credits VAT'),
                                             'account_id': statement.previous_credit_vat_account_id.id,
                                             'move_id': move_id,
@@ -356,6 +361,7 @@ class account_vat_period_end_statement(orm.Model):
                                             'credit': 0.0,
                                             'date': statement.date,
                                             'period_id': period_ids[0], }
+
                 if statement.previous_credit_vat_amount < 0:
                     previous_credit_vat_data['debit'] = math.fabs(statement.previous_credit_vat_amount)
                 else:
@@ -363,6 +369,10 @@ class account_vat_period_end_statement(orm.Model):
                 line_obj.create(cr, uid, previous_credit_vat_data)
 
             if statement.previous_debit_vat_amount:
+                if not statement.previous_debit_vat_amount:
+                    raise orm.except_orm(_('Error'),
+                        _('You have a Previous Debit VAT of %s and need to set Previous Debit VAT') % statement.previous_debit_vat_amount)
+
                 previous_debit_vat_data = {'name': _('Previous Debits VAT'),
                                            'account_id': statement.previous_debit_vat_account_id.id,
                                            'move_id': move_id,

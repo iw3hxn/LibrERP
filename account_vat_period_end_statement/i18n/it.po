@@ -161,6 +161,18 @@ msgid "In the company is not configured the account for interest amount"
 msgstr "Nell'azienda non è stato configurato il conto per gli interessi per l'IVA trimestrale"
 
 #. module: account_vat_period_end_statement
+#: code:addons/account_vat_period_end_statement/account.py:353
+#, python-format
+msgid "You have a Previous Credits VAT of %s and need to set Previous Credits VAT"
+msgstr "Ci sono dei crediti precedenti di %s, và impostato nei conti 'IVA crediti precedenti'"
+
+#. module: account_vat_period_end_statement
+#: code:addons/account_vat_period_end_statement/account.py:373
+#, python-format
+msgid "You have a Previous Debit VAT of %s and need to set Previous Debit VAT"
+msgstr "Ci sono dei debiti precedenti di %s, và impostato nei conti 'IVA debiti precedenti'"
+
+#. module: account_vat_period_end_statement
 #: constraint:account.tax.code:0
 msgid "Error ! You can not create recursive accounts."
 msgstr "Errore! Non puoi creare conti ricorsivi"
@@ -412,6 +424,8 @@ msgstr "Credito"
 #: code:addons/account_vat_period_end_statement/account.py:397
 #: code:addons/account_vat_period_end_statement/account.py:424
 #: code:addons/account_vat_period_end_statement/account.py:453
+#: code:addons/account_vat_period_end_statement/account.py:352
+#: code:addons/account_vat_period_end_statement/account.py:374
 #: code:addons/account_vat_period_end_statement/report/vat_period_end_statement.py:40
 #: code:addons/account_vat_period_end_statement/report/vat_period_end_statement.py:48
 #: code:addons/account_vat_period_end_statement/report/vat_period_end_statement.py:53

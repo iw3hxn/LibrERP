@@ -25,7 +25,7 @@
 
 {
     "name": "Period End VAT Statement",
-    "version": "2.1.2.4",
+    "version": "2.1.3.4",
     'category': 'Generic Modules/Accounting',
     "depends": [
         "account_voucher",
