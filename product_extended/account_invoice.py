@@ -30,11 +30,11 @@ class account_invoice(orm.Model):
         context = self.pool['res.users'].context_get(cr, uid)
         for invoice in self.browse(cr, uid, ids, context):
             for line in invoice.invoice_line:
-                if line.product_id:
+                if line.product_id and line.quantity != 0.0:
                     if invoice.type == 'out_invoice' and line.price_unit != 0.0:
-                        line.product_id.write({'last_sale_price': line.price_unit})
+                        line.product_id.write({'last_sale_price': line.price_subtotal / line.quantity})
                         # self.pool['product.product'].write(cr, uid, [line.product_id.id], ())
                     elif invoice.type == 'in_invoice' and line.price_unit != 0.0:
-                        line.product_id.write({'last_purchase_price': line.price_unit})
+                        line.product_id.write({'last_purchase_price': line.price_subtotal / line.quantity})
                         # self.pool['product.product'].write(cr, uid, [line.product_id.id], ())
         return res
