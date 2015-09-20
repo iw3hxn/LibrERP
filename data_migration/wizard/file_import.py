@@ -30,7 +30,7 @@ import base64
 from tools.translate import _
 
 
-class filedata_import(orm.TransientModel):
+class filedata_import(orm.Model):
     _name = "filedata.import"
     _inherit = "ir.wizard.screen"
 
@@ -414,10 +414,11 @@ class invoice_import(filedata_import):
     importer = invoice_importer
 
     _columns = {
-        'partner_id': fields.many2one('res.partner', 'Customer', required=True, domain="[('customer', '=', True)]"),
-        'date_invoice': fields.date('Date', required=True),
+        'partner_id': fields.many2one('res.partner', 'Customer', domain="[('customer', '=', True)]"),
+        'date_invoice': fields.date('Date'),
         'origin': fields.char('Origin', size=16),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True),
+        'account_id': fields.many2one('account.account', 'Account', domain=[('type', '!=', 'view'), ('type', '!=', 'closed')]),
         'type': fields.selection([
             ('out_invoice', 'Customer Invoice'),
             ('in_invoice', 'Supplier Invoice'),
@@ -433,7 +434,6 @@ class invoice_import(filedata_import):
             help="if set, the importer will also confirm Invoice"),
         'update_price': fields.boolean('Use price from file',
             help="if set, the importer will use the price from file and not from Listprice"),
-
         'state': fields.selection(
             (
                 ('import', 'import'),
@@ -444,6 +444,7 @@ class invoice_import(filedata_import):
         'format': fields.selection(
             (
                 ('FormatOne', _('Format One')),
+                ('FormatTwo', _('Format Two')),
             ), 'Formato Dati', required=True, readonly=False
         ),
         'content_base64': fields.binary(

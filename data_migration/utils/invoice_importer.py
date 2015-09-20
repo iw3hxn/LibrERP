@@ -33,7 +33,7 @@ from utils import Utils
 import datetime
 from openerp.addons.core_extended.file_manipulation import import_sheet
 import xlrd
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -55,6 +55,7 @@ class ImportFile(threading.Thread, Utils):
 
         self.dbname = cr.dbname
         self.pool = pooler.get_pool(cr.dbname)
+        self.partner_obj = self.pool['res.partner']
         self.account_invoice_obj = self.pool['account.invoice']
         self.account_invoice_line_obj = self.pool['account.invoice.line']
         self.product_obj = self.pool['product.product']
@@ -94,7 +95,9 @@ class ImportFile(threading.Thread, Utils):
         self.journal_id = self.invoiceImportRecord.journal_id
         self.location_id = self.invoiceImportRecord.location_id
         self.update_price = self.invoiceImportRecord.update_price
+        self.account_id = self.invoiceImportRecord.account_id
         self.type = self.invoiceImportRecord.type
+        self.format = self.invoiceImportRecord.format
 
         # ===================================================
         Config = getattr(settings, self.invoiceImportRecord.format)
@@ -163,18 +166,12 @@ class ImportFile(threading.Thread, Utils):
                 self.progressIndicator = completedPercentage
                 self.updateProgressIndicator(cr, uid, self.invoiceImportID)
 
-        # here is import all now need to
-
-        wf_service = netsvc.LocalService("workflow")
-
-
         self.progressIndicator = 100
         self.updateProgressIndicator(cr, uid, self.invoiceImportID)
         
         return True
     
     def import_row(self, cr, uid, row_list):
-
         if self.first_row:
             row_str_list = [self.simple_string(value) for value in row_list]
             for column in row_str_list:
@@ -216,93 +213,127 @@ class ImportFile(threading.Thread, Utils):
                 _logger.debug(error)
                 self.error.append(error)
                 return False
-
-        name = record.location_name.split('.')[0]
-
-        if self.cache.get(name):
-            invoice_id = self.cache[name]
-            _logger.info(u'Sales {0} already processed in cache'.format(name))
-        elif self.account_invoice_obj.search(cr, uid, [('name', '=', name), ('state', '=', 'draft'), ('partner_id', '=', self.partner_id.id)]):
-            invoice_id = self.account_invoice_obj.search(cr, uid, [('name', '=', name), ('state', '=', 'draft'), ('partner_id', '=', self.partner_id.id)])[0]
-            self.cache[name] = invoice_id
-            _logger.warning(u'Invoice {0} already exist'.format(name))
-        else:
-            # i need to create invoice
-            # so need to create one
-
-            vals_invoice = {}
-            vals_invoice.update(self.account_invoice_obj.onchange_journal_id(cr, uid, [], self.journal_id.id, self.context).get('value'))
-            vals_invoice.update(self.account_invoice_obj.onchange_partner_id(cr, uid, [], self.type, self.partner_id.id, date_invoice=self.date_invoice).get('value'))
-            vals_invoice.update({
-                'partner_id': self.partner_id.id,
-                'name': self.origin + ': ' + name,
-                'date_invoice': self.date_invoice,
-                'journal_id': self.journal_id.id,
-            })
-
-            if self.location_id:
+        if self.format == 'FormatTwo':
+            partner_ids = self.partner_obj.search(cr, uid, [('name', 'like', record.partner_name.split(' ')[1])], context=self.context)
+            if partner_ids:
+                partner_id = partner_ids[0]
+                vals_invoice = {}
+                vals_invoice.update(self.account_invoice_obj.onchange_journal_id(cr, uid, [], self.journal_id.id, self.context).get('value'))
+                vals_invoice.update(self.account_invoice_obj.onchange_partner_id(cr, uid, [], self.type, partner_id, date_invoice=record.date_invoice or '').get('value'))
                 vals_invoice.update({
-                    'location_id': self.location_id.id,
-                    'move_products': True,
+                    'partner_id': partner_id,
+                    'name': record.number_invoice.split('.')[0],
+                    'internal_number': record.number_invoice.split('.')[0],
+                    'date_invoice': datetime.datetime(*xlrd.xldate_as_tuple(float(record.date_invoice), 0)).strftime(DEFAULT_SERVER_DATE_FORMAT) or '',
+                    'journal_id': self.journal_id.id,
                 })
 
-            if vals_invoice.get('sale_agent_ids'):
-                del vals_invoice['sale_agent_ids']
-
-            invoice_id = self.account_invoice_obj.create(cr, uid, vals_invoice, self.context)
-            self.cache[name] = invoice_id
-            _logger.info(u'Create Invoice {0} on Draft '.format(name))
-            self.fiscal_position = vals_invoice['fiscal_position']
-        product_id = False
-        if hasattr(record, 'item') and record.item:
-            product = record.item
-            if self.cache_product.get(product):
-                product_id = self.cache_product[product]
-                _logger.warning(u'Product {0} already processed in cache'.format(product))
-            else:
-                product_ids = self.product_obj.search(cr, uid, [('default_code', '=', product)])
-                if not product_ids:
-                    product_ids = self.product_obj.search(cr, uid, [('name', '=', product)])
-                    if not product_ids:
-                        product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)])
-                if product_ids:
-                    product_id = product_ids[0]
-                    self.cache_product[product] = product_id
-
-        if product_id:
-
-            if hasattr(record, 'qty') and record.qty:
-                product_qty = float(record.qty)
-
-            if hasattr(record, 'cost') and record.cost:
-                cost = float(record.cost)
-
-            # riga
-            vals_account_invoice_line = self.account_invoice_line_obj.product_id_change(cr, uid, [], product_id, 1, qty=product_qty, name='', type=self.type, partner_id=self.partner_id.id, fposition_id=self.fiscal_position, price_unit=False, address_invoice_id=False, currency_id=False, context=None, company_id=None).get('value')
-
-            vals_account_invoice_line.update({
-                'invoice_id': invoice_id,
-                'product_id': product_id,
-                'quantity': product_qty,
-            })
-
-            if self.update_price:
-                price_sell = cost / product_qty
+                invoice_id = self.account_invoice_obj.create(cr, uid, vals_invoice, self.context)
+                vals_account_invoice_line = {}
                 vals_account_invoice_line.update({
-                     'price_unit': price_sell,
-                     'discount': 0,
+                    'name': 'Import Total Amount',
+                    'invoice_id': invoice_id,
+                    'quantity': 1.0,
+                    'account_id': self.account_id.id,
+                    'price_unit': record.total_amount or 0.0
                 })
-                # list_price_sell = vals_account_invoice_line['price_unit']
-                # price_sell = cost / product_qty
-                #
-                # vals_account_invoice_line.update({
-                #     'discount': (list_price_sell - price_sell) / list_price_sell * 100
-                # })
-            _logger.info(u'Row {row}: Adding product {product} to Invoice {sale}'.format(row=self.processed_lines, product=record.item, sale=invoice_id))
+                self.account_invoice_line_obj.create(cr, uid, vals_account_invoice_line, self.context)
+                _logger.info(u'Row {row}: Adding amount {amount} to Invoice {invoice}'.format(row=self.processed_lines,
+                                                                                              amount=record.total_amount,
+                                                                                              invoice=invoice_id))
+                self.uo_new += 1
+            else:
+                _logger.warning(u'Row {row}: Not Find {partner}'.format(row=self.processed_lines, partner=record.partner_name))
+                invoice_id = False
+            return invoice_id
 
-            self.account_invoice_line_obj.create(cr, uid, vals_account_invoice_line, self.context)
-            self.uo_new += 1
-        else:
-            _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.product))
+        elif self.format == 'FormatOne':
+            name = record.location_name.split('.')[0]
 
-        return product_id
+            if self.cache.get(name):
+                invoice_id = self.cache[name]
+                _logger.info(u'Sales {0} already processed in cache'.format(name))
+            elif self.account_invoice_obj.search(cr, uid, [('name', '=', name), ('state', '=', 'draft'), ('partner_id', '=', self.partner_id.id)]):
+                invoice_id = self.account_invoice_obj.search(cr, uid, [('name', '=', name), ('state', '=', 'draft'), ('partner_id', '=', self.partner_id.id)])[0]
+                self.cache[name] = invoice_id
+                _logger.warning(u'Invoice {0} already exist'.format(name))
+            else:
+                # i need to create invoice
+                # so need to create one
+
+                vals_invoice = {}
+                vals_invoice.update(self.account_invoice_obj.onchange_journal_id(cr, uid, [], self.journal_id.id, self.context).get('value'))
+                vals_invoice.update(self.account_invoice_obj.onchange_partner_id(cr, uid, [], self.type, self.partner_id.id, date_invoice=self.date_invoice).get('value'))
+                vals_invoice.update({
+                    'partner_id': self.partner_id.id,
+                    'name': self.origin + ': ' + name,
+                    'date_invoice': self.date_invoice,
+                    'journal_id': self.journal_id.id,
+                })
+
+                if self.location_id:
+                    vals_invoice.update({
+                        'location_id': self.location_id.id,
+                        'move_products': True,
+                    })
+
+                if vals_invoice.get('sale_agent_ids'):
+                    del vals_invoice['sale_agent_ids']
+
+                invoice_id = self.account_invoice_obj.create(cr, uid, vals_invoice, self.context)
+                self.cache[name] = invoice_id
+                _logger.info(u'Create Invoice {0} on Draft '.format(name))
+                self.fiscal_position = vals_invoice['fiscal_position']
+            product_id = False
+            if hasattr(record, 'item') and record.item:
+                product = record.item
+                if self.cache_product.get(product):
+                    product_id = self.cache_product[product]
+                    _logger.warning(u'Product {0} already processed in cache'.format(product))
+                else:
+                    product_ids = self.product_obj.search(cr, uid, [('default_code', '=', product)])
+                    if not product_ids:
+                        product_ids = self.product_obj.search(cr, uid, [('name', '=', product)])
+                        if not product_ids:
+                            product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)])
+                    if product_ids:
+                        product_id = product_ids[0]
+                        self.cache_product[product] = product_id
+
+            if product_id:
+
+                if hasattr(record, 'qty') and record.qty:
+                    product_qty = float(record.qty)
+
+                if hasattr(record, 'cost') and record.cost:
+                    cost = float(record.cost)
+
+                # riga
+                vals_account_invoice_line = self.account_invoice_line_obj.product_id_change(cr, uid, [], product_id, 1, qty=product_qty, name='', type=self.type, partner_id=self.partner_id.id, fposition_id=self.fiscal_position, price_unit=False, address_invoice_id=False, currency_id=False, context=None, company_id=None).get('value')
+
+                vals_account_invoice_line.update({
+                    'invoice_id': invoice_id,
+                    'product_id': product_id,
+                    'quantity': product_qty,
+                })
+
+                if self.update_price:
+                    price_sell = cost / product_qty
+                    vals_account_invoice_line.update({
+                         'price_unit': price_sell,
+                         'discount': 0,
+                    })
+                    # list_price_sell = vals_account_invoice_line['price_unit']
+                    # price_sell = cost / product_qty
+                    #
+                    # vals_account_invoice_line.update({
+                    #     'discount': (list_price_sell - price_sell) / list_price_sell * 100
+                    # })
+                _logger.info(u'Row {row}: Adding product {product} to Invoice {invoice}'.format(row=self.processed_lines, product=record.item, invoice=invoice_id))
+
+                self.account_invoice_line_obj.create(cr, uid, vals_account_invoice_line, self.context)
+                self.uo_new += 1
+            else:
+                _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.product))
+                invoice_id = False
+            return invoice_id

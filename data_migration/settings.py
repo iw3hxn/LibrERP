@@ -41,7 +41,6 @@ class FormatOne():
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ('name', 'vat')
 
-    REQUIRED_PRODUCT = ['ean13', 'name']
     HEADER_PRODUCT = (
         'Codice', 'Descrizione', 'UMC', 'UMT',
         'PesoN', 'CostoStd', 'CostoUltimo'
@@ -121,6 +120,9 @@ class FormatTwo():
     # REQUIRED_PRODUCT = ['default_code', 'name']
     # PRODUCT_WARNINGS = ['standard_price']
     # PRODUCT_ERRORS = []
+    HEADER_INVOICE_ITEM = ('Number', 'Date', 'Customer Name', 'Total Amount')
+    COLUMNS_INVOICE_ITEM = "number_invoice, date_invoice, partner_name, total_amount"
+    REQUIRED_INVOICE_ITEM = ['number_invoice', 'date_invoice', 'partner_name']
 
 
 class FormatThree():

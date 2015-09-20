@@ -319,29 +319,6 @@
 
         <menuitem action="sales_file_import" id="menu_sales_file_import" name="Import Sales" parent="data_migration_menu"/>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <record id="view_invoice_import_form" model="ir.ui.view">
             <field name="name">invoice.import.form</field>
             <field name="model">sales.invoice</field>
@@ -356,16 +333,17 @@
                             <field name="content_base64" filename="file_name" required="True" />
                             <field name="format" />
                             <!--<field name="auto_approve" />-->
-                            <field name="update_price" />
+                            <field name="update_price" attrs="{'invisible': [('format', '=', 'FormatTwo')]}"/>
                         </group>
 
                         <group colspan="4" col="4" states="import">
-                            <field name="origin" />
-                            <field name="partner_id" />
-                            <field name="date_invoice" required="True" />
                             <field name="type" />
                             <field name="journal_id" widget="selection"/>
-                            <field name="location_id" />
+                            <field name="origin" />
+                            <field name="partner_id" attrs="{'required': [('format', '=', 'FormatOne')], 'invisible': [('format', '=', 'FormatTwo')]}"/>
+                            <field name="date_invoice" attrs="{'required': [('format', '=', 'FormatOne')], 'invisible': [('format', '=', 'FormatTwo')]}" />
+                            <field name="account_id" attrs="{'required': [('format', '=', 'FormatTwo')], 'invisible': [('format', '=', 'FormatOne')]}" />
+                            <field name="location_id" attrs="{'invisible': [('format', '=', 'FormatTwo')]}" />
                         </group>
 
                     </group>

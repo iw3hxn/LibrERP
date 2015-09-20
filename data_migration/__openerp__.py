@@ -18,11 +18,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-#
 
 {
     'name': 'Data migration import',
-    'version': '2.8.38.12',
+    'version': '2.9.39.13',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import products and partners
