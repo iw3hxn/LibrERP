@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
+# OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #    Copyright (C) 2010-2010 Camptocamp Austria (<http://www.camptocamp.at>)
 #
@@ -23,7 +23,7 @@
 
 {
     'name': 'Order by date decending',
-    'version': '0.1',
+    'version': '3.0.0.1',
     'category': 'Base',
     'description': """
 This module orders the following tables by date desc

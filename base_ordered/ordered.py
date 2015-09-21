@@ -21,41 +21,41 @@
 ##############################################################################
 #
 
-from osv import osv
+from openerp.osv import orm
 
 
-class purchase_order(osv.osv):
+class purchase_order(orm.Model):
     _inherit = "purchase.order"
     _order = 'name desc, date_order desc, id desc'
 
 
-class sale_order(osv.osv):
+class sale_order(orm.Model):
     _inherit = "sale.order"
     _order = 'name desc, id desc'
 
 
-class stock_picking(osv.osv):
+class stock_picking(orm.Model):
     _inherit = "stock.picking"
     _order = 'date desc, id desc'
 
 
-class stock_move(osv.osv):
+class stock_move(orm.Model):
     _inherit = "stock.move"
     #_order = 'date desc, id desc'
     _order = 'date desc, product_id, id'
 
 
-class account_invoice(osv.osv):
+class account_invoice(orm.Model):
     _inherit = "account.invoice"
     _order = 'date_invoice desc, number desc, id desc'
 
 
-class product_template(osv.osv):
+class product_template(orm.Model):
     _inherit = "product.template"
     _order = 'name desc'
 
 
-# class product_product(osv.osv):
+# class product_product(orm.Model):
 #     _inherit = "product.product"
 #     _order = 'name desc'
 
