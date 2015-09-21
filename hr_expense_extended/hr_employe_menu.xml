@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-
-        <menuitem id="hr.menu_hr_main" parent="hr.menu_hr_root" name="Human Resources" sequence="0" groups="base.group_extended"/>
-        
         <menuitem id="hr.menu_hr_root" groups="base.group_hr_user"/>
     </data>
 </openerp>
