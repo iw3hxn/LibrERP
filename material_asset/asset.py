@@ -1570,48 +1570,49 @@ class create_asset_onmove(orm.Model):
     def create_asset(self, cr, uid, ids, context):
         if context is None:
             context = {}
-        move = self.browse(cr, uid, ids[0], context=context)
-        if not move.prodlot_id.id and move.location_dest_id.usage == 'assets':
-            prodlot_id = False
-        else:
-            prodlot_id = move.prodlot_id.id
+        for move in self.browse(cr, uid, ids, context=context):
 
-        # verify that product is not yet an asset:
-        asset_product_ids = self.pool.get('asset.product').search(cr, uid, [('product_product_id', '=', move.product_id.id), ])
-        if move.location_dest_id.usage == 'assets' and not asset_product_ids:
-            # Launch a form and ask about category:
-            assign_category_id = self.pool["asset.assign.category"].create(cr, uid, {}, context=dict(context, active_ids=ids))
-            return {
-                'name': _("Assign Category"),
-                'view_mode': 'form',
-                'view_id': False,
-                'view_type': 'form',
-                'res_model': 'asset.assign.category',
-                'res_id': assign_category_id,
-                'type': 'ir.actions.act_window',
-                'nodestroy': True,
-                'target': 'new',
-                'domain': '[]',
-                'context': {
-                    'serial_number': prodlot_id,
-                    'company_id': move.company_id.id,
-                    'product_id': move.product_id.id,
-                    'location': move.location_dest_id._name + ',' + str(move.location_dest_id.id),
-                    'move_ids': ids
-                },
-            }
+            if not move.prodlot_id.id and move.location_dest_id.usage == 'assets':
+                prodlot_id = False
+            else:
+                prodlot_id = move.prodlot_id.id
 
-        elif move.location_dest_id.usage == 'assets':
-            # control if product is an asset:
-            asset_ids = self.pool['asset.asset'].search(cr, uid, [('asset_product_id', '=', asset_product_ids[0]), ('serial_number', '=', prodlot_id), ('serial_number', '!=', False)])
-            if not asset_ids:
-                # create asset.asset
-                self.pool['asset.asset'].create(cr, uid, {
-                    'asset_product_id': asset_product_ids[0],
-                    'serial_number': prodlot_id,
-                    'company_id': move.company_id.id,
-                    'has_date_option': False,
-                    'location': move.location_dest_id._name + ',' + str(move.location_dest_id.id)
-                })
+            # verify that product is not yet an asset:
+            asset_product_ids = self.pool.get('asset.product').search(cr, uid, [('product_product_id', '=', move.product_id.id), ])
+            if move.location_dest_id.usage == 'assets' and not asset_product_ids:
+                # Launch a form and ask about category:
+                assign_category_id = self.pool["asset.assign.category"].create(cr, uid, {}, context=dict(context, active_ids=ids))
+                return {
+                    'name': _("Assign Category"),
+                    'view_mode': 'form',
+                    'view_id': False,
+                    'view_type': 'form',
+                    'res_model': 'asset.assign.category',
+                    'res_id': assign_category_id,
+                    'type': 'ir.actions.act_window',
+                    'nodestroy': True,
+                    'target': 'new',
+                    'domain': '[]',
+                    'context': {
+                        'serial_number': prodlot_id,
+                        'company_id': move.company_id.id,
+                        'product_id': move.product_id.id,
+                        'location': move.location_dest_id._name + ',' + str(move.location_dest_id.id),
+                        'move_ids': ids
+                    },
+                }
+
+            elif move.location_dest_id.usage == 'assets':
+                # control if product is an asset:
+                asset_ids = self.pool['asset.asset'].search(cr, uid, [('asset_product_id', '=', asset_product_ids[0]), ('serial_number', '=', prodlot_id), ('serial_number', '!=', False)])
+                if not asset_ids:
+                    # create asset.asset
+                    self.pool['asset.asset'].create(cr, uid, {
+                        'asset_product_id': asset_product_ids[0],
+                        'serial_number': prodlot_id,
+                        'company_id': move.company_id.id,
+                        'has_date_option': False,
+                        'location': move.location_dest_id._name + ',' + str(move.location_dest_id.id)
+                    })
 
         return super(create_asset_onmove, self).action_done(cr, uid, ids, context)
