@@ -55,6 +55,7 @@ class res_company(orm.Model):
             view_load=True,
             help="This default payment term will be used on creation of partner"),
         'need_tech_validation': fields.boolean('Need Technical Verification'),
+        'tech_validation_if_no_product': fields.boolean('Techical Review if sale\'s line have no product'),
         'need_manager_validation': fields.boolean('Need Supervisor Verification'),
         'readonly_price_unit': fields.boolean('Read Only Price Unit on Sale Order'),
         'default_property_advance_product_id': fields.property(

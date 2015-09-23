@@ -211,6 +211,14 @@ class sale_order(orm.Model):
             else:
                 return False
 
+    def required_tech_validation(self, order):
+        if order.company_id.tech_validation_if_no_product:
+            for line in order.order_line:
+                if not line.product_id:
+                    order.write({'need_tech_validation': True})
+                    return True
+        return False
+
     def action_validate(self, cr, uid, ids, context=None):
 
         for order in self.browse(cr, uid, ids, context):
@@ -221,7 +229,7 @@ class sale_order(orm.Model):
                 raise orm.except_orm(_(title), _(msg))
                 return False
 
-            if order.need_tech_validation and not order.tech_validation:
+            if order.need_tech_validation and not order.tech_validation or self.required_tech_validation(order):
                 vals = {
                     'state': 'wait_technical_validation',
                 }
@@ -249,7 +257,7 @@ class sale_order(orm.Model):
                     'customer_validation': False,
                     'email_sent_validation': False,
                 }
-            self.write(cr, uid, [order.id], vals, context)
+            order.write(vals, context)
 
         return True
 
