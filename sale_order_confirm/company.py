@@ -36,6 +36,7 @@ class res_company(orm.Model):
         'check_credit_limit': fields.boolean('Enable Credit Limit Check'),
         'default_credit_limit': fields.float(string='Default Limit'),
         'enable_margin_validation': fields.boolean('Enable Margin Verify'),
+        'enable_partner_validation': fields.boolean('Enable Partner Validation'),
         'minimum_margin': fields.float(string='Minimun margin %', digits=(2, 2)),
         'default_sale_order_validity': fields.integer('Default day of validity'),
         'default_property_account_position': fields.property(

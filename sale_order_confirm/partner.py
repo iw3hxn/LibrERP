@@ -29,6 +29,7 @@ class res_partner(orm.Model):
         'limit_note': fields.text('Limit Note'),
         'credit_limit_copy': fields.related('credit_limit', type="float", readonly=True, store=False,
                                             string='Credit Limit'),
+        'validate': fields.boolean('Partner Validate'),
     }
 
     def onchange_credit_limit(self, cr, uid, ids, credit_limit):

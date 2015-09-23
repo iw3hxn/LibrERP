@@ -215,6 +215,12 @@ class sale_order(orm.Model):
 
         for order in self.browse(cr, uid, ids, context):
 
+            if not order.partner_id.validate and order.company_id.enable_partner_validation:
+                title = _('Partner To Validate')
+                msg = _('Is not possible to confirm because customer must be validate')
+                raise orm.except_orm(_(title), _(msg))
+                return False
+
             if order.need_tech_validation and not order.tech_validation:
                 vals = {
                     'state': 'wait_technical_validation',
