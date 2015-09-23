@@ -9,6 +9,12 @@
             <field name="priority" eval="31"/>
             <field name="arch" type="xml">
                 <data>
+                    <button name="cancel" position="before">
+                        <button name="suspend" states="progress" string="Suspend" type="object" icon="gtk-cancel"/>
+                        <button name="reactivate" states="suspended" string="Reactivate suspended order" type="object" icon="gtk-cancel"/>
+                        <!--<button name="close" states="suspended" string="Close order" type="object" icon="gtk-cancel"/>-->
+                    </button>
+
                     <field name="shipped" position="after">
                         <field name="presentation" />
                         <field name="have_subscription" />
