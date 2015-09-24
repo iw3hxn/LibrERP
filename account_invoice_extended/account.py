@@ -25,6 +25,7 @@
 from openerp.osv import orm, fields
 from openerp import pooler
 
+
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
@@ -75,6 +76,9 @@ class account_invoice(orm.Model):
         return line
 
     def unlink(self, cr, uid, ids, context=None):
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
         # account_invoice_line_obj = self.pool['account.invoice.line']
         stock_picking_obj = self.pool['stock.picking']
         origins = {}
