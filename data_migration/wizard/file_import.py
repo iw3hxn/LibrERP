@@ -30,7 +30,7 @@ import base64
 from tools.translate import _
 
 
-class filedata_import(orm.Model):
+class filedata_import(orm.TransientModel):
     _name = "filedata.import"
     _inherit = "ir.wizard.screen"
 
