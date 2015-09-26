@@ -234,16 +234,17 @@ class res_partner(orm.Model):
             context = self.pool['res.users'].context_get(cr, uid)
         if context.get('import', False):
             return super(res_partner, self).create(cr, uid, vals, context)
-        if not vals.get('address', False) and context.get('default_type', '') != 'lead':
+        if not vals.get('address', False) and context.get('default_type', '') != 'lead' and not context.get('install_mode', False): 
             raise orm.except_orm(_('Error!'),
                                  _('At least one address of type "Default" is needed!'))
         is_default = False
         if context.get('default_type', '') == 'lead':
             return super(res_partner, self).create(cr, uid, vals, context)
-        for address in vals['address']:
-            if address[2].get('type') == 'default':
-                is_default = True
-        if not is_default:
+        if vals.get('address', False):
+            for address in vals['address']:
+                if address[2].get('type') == 'default':
+                    is_default = True
+        if not is_default and not context.get('install_mode', False):
             raise orm.except_orm(_('Error!'),
                                  _('At least one address of type "Default" is needed!'))
 

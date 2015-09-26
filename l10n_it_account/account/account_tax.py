@@ -50,9 +50,9 @@ class account_tax(orm.Model):
                 raise orm.except_orm(_('Error!'), 
                                      _("Tax description '{description}' is not unique.").format(description=vals['description']))
 
-        if vals['type_tax_use'] == 'sale':
+        if vals.get('type_tax_use', False) == 'sale':
             vals.update({'base_sign': 1, 'tax_sign': 1, 'ref_base_sign': -1, 'ref_tax_sign': -1})
-        elif vals['type_tax_use'] == 'purchase':
+        elif vals.get('type_tax_use', False) == 'purchase':
             vals.update({'base_sign': -1, 'tax_sign': -1, 'ref_base_sign': 1, 'ref_tax_sign': 1})
 
         if vals.get('base_code_id', False) and vals.get('tax_code_id', False):
