@@ -39,6 +39,20 @@ msgstr "Richiesta Validazione Tecnica"
 msgid "Customer Validation"
 msgstr "Validazione Cliente"
 
+#. modules: sale_order_confirm
+#: model:ir.actions.act_window,name:repair_center.action_repair_order_processed
+#: model:ir.ui.menu,name:repair_center.menu_action_repair_order_processed
+#: selection:sale.order,state:0
+#: code:addons/sale_order_confirm/sale.py:97
+#, python-format
+msgid "Technical Validation"
+msgstr "Validazione Tecnica"
+
+#. module: sale_order_confirm
+#: field:res.partner,validate:0
+msgid "Partner Validate"
+msgstr "Validazione Partner"
+
 #. module: sale_order_confirm
 #: field:sale.order,credit_limit:0
 msgid "Remaining Credit Limit"
@@ -834,3 +848,31 @@ msgstr "Vedi Quantità consegnate"
 #: model:res.groups,name:sale.view_qty_warehouse
 msgid "View Qty on Warehouse"
 msgstr "Vedi Quantità in magazzino"
+
+#. module: sale_order_confirm
+#: view:res.company:0
+msgid "Manage Validity on Sale Order"
+msgstr "Gestiona Validazione Ordini di Vendita"
+
+#. module: sale_order_confirm
+#: field:res.company,enable_partner_validation:0
+msgid "Enable Partner Validation"
+msgstr "Richiede la Validazione del Partner"
+
+#. module: sale_order_confirm
+#: field:res.company,tech_validation_if_no_product:0
+msgid "Techical Review if sale's line have no product"
+msgstr "Revisione Tecnica se nelle righe non c'è il prodotto"
+
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:227
+#, python-format
+msgid "Partner To Validate"
+msgstr "Cliente da Validare"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:228
+#, python-format
+msgid "Is not possible to confirm because customer must be validate"
+msgstr "Non è possibile confermare perchè il cliente deve essere prima Validato"
