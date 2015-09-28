@@ -56,27 +56,35 @@ class sale_order_line(orm.Model):
             else:
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
         return res
-    
-    #def _amount_line(self, cr, uid, ids, field_name, order_duration, context=None):
-    #    tax_obj = self.pool.get('account.tax')
-    #    cur_obj = self.pool.get('res.currency')
-    #    order_obj = self.pool.get('sale.order')
-    #    res = {}
-    #    if context is None:
-    #        context = {}
-    #    for line in self.browse(cr, uid, ids, context=context):
-    #        price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-    #        taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)
-    #        cur = line.order_id.pricelist_id.currency_id
-    #        if line.order_id.have_subscription or order_duration and line.product_id.subscription:
-    #            if order_duration:
-    #                k = order_obj.getDurationInMonths(order_duration) / 12.0
-    #            else:
-    #                k = order_obj.getDurationInMonths(line.order_id.order_duration) / 12.0
-    #            res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'] * k)
-    #        else:
-    #            res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
-    #    return res
+
+    # Dangerous! Overwrite standard method
+    def _product_margin(self, s2, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = 0
+            if line.product_id:
+                if line.purchase_price:
+                    purchase_price = line.purchase_price
+                else:
+                    purchase_price = line.product_id.standard_price
+
+                if line.order_id.have_subscription and line.product_id.subscription:
+                    price_unit = line.price_subtotal
+                else:
+                    price_unit = line.price_unit
+
+                res[line.id] = round((price_unit * line.product_uos_qty * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
+
+        return res
+
+    def __init__(self, registry, cr):
+        """
+            Overwriting _product_margin method
+        """
+
+        super(sale_order_line, self).__init__(registry, cr)
+
+        self._columns['margin']._fnct = self._product_margin
 
     _columns = {
         'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute= dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
@@ -110,7 +118,6 @@ class sale_order(orm.Model):
     _inherit = "sale.order"
     _logger = netsvc.Logger()
 
-    # def __init__(self, cr, uid, context=None):
     def __init__(self, registry, cr):
         """
             Add state "Suspended"
@@ -228,6 +235,16 @@ class sale_order(orm.Model):
         'order_end_date': fields.function(get_order_end_date, 'Subscription Ending Date', type='date', readonly=True, method=True),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
     }
+
+    def _amount_line_tax(self, cr, uid, line, context=None):
+        if line.order_id.have_subscription and line.subscription:
+            val = 0.0
+
+            for c in self.pool['account.tax'].compute_all(cr, uid, line.tax_id, line.price_subtotal * (1 - (line.discount or 0.0) / 100.0), line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)['taxes']:
+                val += c.get('amount', 0.0)
+            return val
+        else:
+            return super(sale_order, self)._amount_line_tax(cr, uid, line, context)
 
     def renew_orders(self, cr, uid, anticipation, context=None):
         """
