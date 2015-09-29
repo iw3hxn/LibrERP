@@ -48,8 +48,8 @@ class account_invoice(orm.Model):
         # Merge invoices that are in draft state
         inv_line_obj = self.pool['account.invoice.line']
         name = parent.name or ''
-        comment = parent.comment
-        origin = parent.origin
+        comment = parent.comment or ''
+        origin = parent.origin or ''
         
         for inv in invoices:
             if inv.id == parent.id:
