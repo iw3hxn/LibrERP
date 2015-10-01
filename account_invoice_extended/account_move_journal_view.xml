@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_account_move_line_filter" model="ir.ui.view">
+            <field name="name">Journal Items</field>
+            <field name="model">account.move.line</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Journal Items">
+                    <group>
+                        <filter icon="terp-document-new" string="Unbalanced" domain="[('state','=','draft')]"
+                                help="Unbalanced Journal Items"/>
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-document-new" string="Unposted" domain="[('move_id.state','=','draft')]"
+                                help="Unposted Journal Items"/>
+                        <filter name="posted" icon="terp-camera_test" string="Posted"
+                                domain="[('move_id.state','=','posted')]" help="Posted Journal Items"/>
+                        <separator orientation="vertical"/>
+                        <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                        <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                        <separator orientation="vertical"/>
+                        <filter
+                                icon="terp-dolar_ok!"
+                                string="Unreconciled"
+                                domain="[('reconcile_id','=',False), ('account_id.reconcile','=',True)]"
+                                help="Unreconciled Journal Items"
+                                name="unreconciled"/>
+                        <separator orientation="vertical"/>
+                        <field name="move_id" string="Number (Move)"/>
+                        <field name="date"/>
+                        <field name="account_id"/>
+                        <field name="partner_id">
+                            <filter help="Next Partner Entries to reconcile" name="next_partner"
+                                    context="{'next_partner_only': 1}" icon="terp-gtk-jump-to-ltr"
+                                    domain="[('account_id.reconcile','=',True),('reconcile_id','=',False)]"/>
+                        </field>
+                    </group>
+
+                    <newline/>
+
+                    <group>
+                        <field name="journal_id" widget="selection" context="{'journal_id':self}"/>
+                        <field name="period_id" context="{'period_id':self}"/>
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Move" icon="terp-partner" domain="[]" context="{'group_by':'move_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Journal" icon="terp-folder-orange" domain="[]"
+                                context="{'group_by':'journal_id'}"/>
+                        <filter string="Account" icon="terp-folder-green" context="{'group_by':'account_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Period" icon="terp-go-month" domain="[]" context="{'group_by':'period_id'}"/>
+                    </group>
+                    <newline/>
+                </search>
+            </field>
+        </record>
+
+        <record id="account.action_account_manual_reconcile" model="ir.actions.act_window">
+            <field name="context">{'view_mode': True, 'search_default_next_partner': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+            <field name="domain=">[('reconcile_id','=',False), ('account_id.reconcile','=',True)]</field>
+            <field name="search_view_id" ref="view_account_move_line_filter"/>
+        </record>
+
+        <record id="account.action_account_moves_sale" model="ir.actions.act_window">
+            <field name="context">{'search_default_unreconciled':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+        </record>
+
+    </data>
+</openerp>
