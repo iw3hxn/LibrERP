@@ -54,7 +54,7 @@ class ir_sequence(osv.osv):
     }
     
     def _abbrev(self, name, separator):
-        return "".join(w[0] for w in _(name).split(separator))
+        return "".join(_(name).split(separator)[0])
     # end def _abbrev
     
     def next_by_id(self, cr, uid, sequence_id, context=None):
@@ -139,7 +139,7 @@ class ir_sequence(osv.osv):
                     
         self._logger.debug('next_by_id seq_id `%s`', seq_id)
              
-        #ids = self.search(cr, uid, ['&',('id','=', sequence_id),('company_id','in',company_ids)])
+         #ids = self.search(cr, uid, ['&',('id','=', sequence_id),('company_id','in',company_ids)])
         return self._next(cr, uid, seq_id, context)
     # end def next_by_id
 
