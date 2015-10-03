@@ -63,7 +63,7 @@ class mass_editing_wizard(orm.TransientModel):
                         all_fields["selection_"+field.name] = {'type': 'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
                         all_fields[field.name] = {'type':field.ttype, 'string': field.field_description, 'relation': field.relation}
                         etree.SubElement(xml_group, 'field', {'name': "selection_" + field.name, 'colspan':'2'})
-                        etree.SubElement(xml_group, 'field', {'name': field.name,' nolabel':'1', 'colspan':'2', 'attrs':"{'invisible':[('selection_"+field.name+"','=','remove')]}"})
+                        etree.SubElement(xml_group, 'field', {'name': field.name, 'colspan':'2', 'attrs':"{'invisible':[('selection_"+field.name+"','=','remove')]}"})
                 elif field.ttype == "char":
                     field_info = model_obj.fields_get(cr, uid, [field.name], context)
                     all_fields["selection_"+field.name] = {'type': 'selection', 'string': field_info[field.name]['string'],'selection':[('set','Set'),('remove','Remove')]}
