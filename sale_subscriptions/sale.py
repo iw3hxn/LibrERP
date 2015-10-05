@@ -87,7 +87,7 @@ class sale_order_line(orm.Model):
         self._columns['margin']._fnct = self._product_margin
 
     _columns = {
-        'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute= dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
+        'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute=dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
         'subscription': fields.related('product_id', 'subscription', type='boolean', string='Subscription'),
         'automatically_create_new_subscription': fields.boolean('Automatically create new subscription'),
         'price_subtotal': fields.function(_amount_line, method=True, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
@@ -573,31 +573,27 @@ class sale_order(orm.Model):
 
         return True
 
-    # def close(self, cr, uid, ids, context):
-    #     """
-    #     The button "Close" is visible only if order is already suspended. It will
-    #     cancel order if there are no invoices or set 'done' if there are any
-    #     """
-    #
-    #     wf_service = netsvc.LocalService('workflow')
-    #     sale_order_line_obj = self.pool['sale.order.line']
-    #     invoiced = 0
-    #     for order in self.browse(cr, uid, ids, context):
-    #         LOGGER.notifyChannel(self._name, netsvc.LOG_INFO, 'Closing order {0}'.format(order.name))
-    #         for line in order.order_line:
-    #             if line.product_id.subscription:
-    #                 invoiced += sale_order_line_obj.amount_invoiced(cr, uid, line) or 0
-    #
-    #         pdb.set_trace()
-    #         if invoiced:
-    #             # TODO: Set done
-    #             # Can't cancel order with invoices!!!
-    #             wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
-    #             wf_service.trg_validate(uid, 'sale.order', order.id, 'ship_corrected', cr)
-    #
-    #             # wf_service.trg_validate(uid, 'sale.order', order.id, 'invoice_corrected', cr)
-    #             # wf_service.trg_validate(uid, 'sale.order', order.id, 'all_lines', cr)
-    #             print 'Done'
-    #         else:
-    #             wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
-    #     return True
+    def close(self, cr, uid, ids, context):
+        """
+        The button "Close" is visible only if order is already suspended. It will
+        cancel order if there are no invoices or set 'done' if there are already any
+        """
+
+        wf_service = netsvc.LocalService('workflow')
+        sale_order_line_obj = self.pool['sale.order.line']
+        invoiced = 0
+        for order in self.browse(cr, uid, ids, context):
+            LOGGER.notifyChannel(self._name, netsvc.LOG_INFO, 'Closing order {0}'.format(order.name))
+            for line in order.order_line:
+                if line.product_id.subscription:
+                    invoiced += sale_order_line_obj.amount_invoiced(cr, uid, line) or 0
+
+            if invoiced:
+                if not order.shipped:
+                    self.pool['procurement.order'].run_scheduler(cr, uid, automatic=False, use_new_cursor=False, context=context)
+
+                self.write(cr, uid, order.id, {'state': 'progress'})
+                wf_service.trg_validate(uid, 'sale.order', order.id, 'all_lines', cr)
+            else:
+                wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
+        return True
