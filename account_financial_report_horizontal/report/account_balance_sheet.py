@@ -307,8 +307,8 @@ class report_balancesheet_horizontal(
         
         account_l_temp = accounts_l_temp.values()
         account_a_temp = accounts_a_temp.values()
-        cal_list['asset'] = self.result['asset'] = sorted(account_a_temp, key = lambda k: [k['parent_code'], k['level']])
-        cal_list['liability'] = self.result['liability'] = sorted(account_l_temp, key = lambda k: [k['parent_code'], k['level']])
+        cal_list['asset'] = self.result['asset'] = sorted(account_a_temp, key = lambda k: [k['parent_code'], k['level'], k['code']])
+        cal_list['liability'] = self.result['liability'] = sorted(account_l_temp, key = lambda k: [k['parent_code'], k['level'], k['code']])
 
         if pl_dict['code'] == _('Net Loss'):
             self.result_loss.append(pl_dict)
