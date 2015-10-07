@@ -117,7 +117,7 @@ class account_invoice(orm.Model):
                 picking_type = 'out'
             
             picking_id = picking_obj.create(cr, uid, {
-                'origin': invoice.name,
+                'origin': invoice.number,
                 'address_id': address_id,
                 'type': picking_type,
                 'company_id': invoice.company_id.id,
@@ -228,7 +228,6 @@ class account_invoice(orm.Model):
                             new_std_price = ((amount_unit * product_avail[product.id]) + (new_price * qty)) / (product_avail[product.id] + qty)
                         # Write the field according to price type field
                         product.write({'standard_price': new_std_price})
-
 
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
