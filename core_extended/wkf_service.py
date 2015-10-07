@@ -40,7 +40,7 @@ class workflow_service(wkf_service.workflow_service):
         rows = cr.fetchall()
 
         if len(rows) > 1:
-            raise orm.except_orm(_('Warning'), _('More than one result returned...'))
+            raise orm.except_orm(_('Warning'), _('wkf_instance: More than one result returned...'))
 
         inst_id, wkf_id, uid, res_id, res_type, state = rows[0]
 
@@ -48,7 +48,7 @@ class workflow_service(wkf_service.workflow_service):
         rows = cr.fetchall()
 
         if len(rows) > 1:
-            raise orm.except_orm(_('Warning'), _('More than one result returned...'))
+            raise orm.except_orm(_('Warning'), _('wkf_workitem: More than one result returned for inst_id "{}"...'.format(inst_id)))
 
         act_id, inst_id, state = rows[0]
 
@@ -56,7 +56,7 @@ class workflow_service(wkf_service.workflow_service):
         rows = cr.fetchall()
 
         if len(rows) > 1:
-            raise orm.except_orm(_('Warning'), _('More than one result returned...'))
+            raise orm.except_orm(_('Warning'), _('wkf_activity: More than one result returned...'))
 
         return dict(zip(('wkf_activity_id', 'wkf_instance_id', 'name', 'action'), rows[0]))
 
