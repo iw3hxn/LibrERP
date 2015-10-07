@@ -105,6 +105,8 @@ class report_pl_account_horizontal(report_sxw.rml_parse, common_report_header):
                 'balance': account.balance and (
                     account_type == 'income' and -1 or 1) * account.balance,
                 'type': account.type,
+                'parent_id': account.parent_id.id,
+                'parent_code': account.parent_id.parent_id.id != 1 and account.parent_id.code or account.code,
             }
 
         cr, uid = self.cr, self.uid
@@ -191,6 +193,8 @@ class report_pl_account_horizontal(report_sxw.rml_parse, common_report_header):
                     self.result_sum_cr - self.result_sum_dr)
             self.result[typ] = accounts_temp
             cal_list[typ] = self.result[typ]
+        cal_list['expense'] = sorted(cal_list['expense'], key = lambda k: [k['parent_code'], k['level'], k['code']])
+        cal_list['income'] = sorted(cal_list['income'], key = lambda k: [k['parent_code'], k['level'], k['code']])
         if cal_list:
             temp = {}
             for i in range(
