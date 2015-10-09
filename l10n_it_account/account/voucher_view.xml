@@ -12,7 +12,7 @@
                     </field>
                     <field name="date" position="after">
                         <field name="amount"
-                            invisible="context.get('line_type', False)"
+                            readonly="context.get('line_type', False)"
                             string="Paid Amount"
                             on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
                     </field>
@@ -33,7 +33,7 @@
                     </field>
                     <field name="date" position="after">
                         <field name="amount"
-                            invisible="context.get('line_type', False)"
+                            readonly="context.get('line_type', False)"
                             string="Paid Amount"
                             on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
                     </field>
