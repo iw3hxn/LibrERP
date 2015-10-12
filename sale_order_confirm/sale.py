@@ -219,6 +219,13 @@ class sale_order(orm.Model):
                     return True
         return False
 
+    def check_discount(self, order):
+        for line in order.order_line:
+            if not line.discount:
+                order.write({'need_manager_validation': True})
+                return True
+        return False
+
     def action_validate(self, cr, uid, ids, context=None):
 
         for order in self.browse(cr, uid, ids, context):
@@ -232,6 +239,10 @@ class sale_order(orm.Model):
             if order.need_tech_validation and not order.tech_validation or self.required_tech_validation(order):
                 vals = {
                     'state': 'wait_technical_validation',
+                }
+            elif order.company_id.enable_discount_validation and self.check_discount(order):
+                vals = {
+                    'state': 'wait_manager_validation',
                 }
             elif order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) * 100 < order.company_id.minimum_margin and not order.manager_validation:
                 vals = {

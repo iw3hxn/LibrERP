@@ -17,6 +17,8 @@
                     <separator string="Margin Manager" colspan="4"/>
                     <field name="enable_margin_validation"/>
                     <field name="minimum_margin"/>
+                    <field name="enable_discount_validation"/>
+                    <field name="max_discount"/>
                     <separator string="Parametri Default" colspan="4"/>
                     <field name="default_property_account_position"/>
                     <field name="default_property_payment_term"/>
