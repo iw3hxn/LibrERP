@@ -21,6 +21,7 @@
 
 
 from openerp.osv import fields, orm
+from openerp.tools.translate import _
 
 
 class account_bank_statement_line(orm.Model):
@@ -45,6 +46,9 @@ class account_bank_statement_line(orm.Model):
         }
 
         for line in self.browse(cr, uid, ids, context=context):
+            if line.statement_id.state != 'draft':
+                raise orm.except_orm(_('Error!'),
+                _("The Bank Statement Must be on draft."))
             if line.type == 'customer':
                 res = mod_obj.get_object_reference(cr, uid, 'account_voucher', 'view_vendor_receipt_form')
             elif line.type == 'supplier':

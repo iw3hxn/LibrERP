@@ -21,7 +21,7 @@
 
 {
     "name": "eInvoicing & Payments",
-    "version": "3.0.0.0",
+    "version": "3.1.0.0",
     "author": 'Didotech SRL',
     'complexity': "normal",
     "description": """
