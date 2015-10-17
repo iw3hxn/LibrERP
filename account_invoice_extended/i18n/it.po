@@ -20,3 +20,15 @@ msgstr ""
 #: field:account.invoice,supplier_invoice_number:0
 msgid "Supplier invoice nr"
 msgstr "Fattura Fornitore nr"
+
+#. module: account_voucher_extended
+#: code:addons/account_voucher_extended/account_bank_statement.py:51
+#, python-format
+msgid "The Bank Statement Must be on draft."
+msgstr "Il Movimento Bancario deve essere in stato Nuovo"
+
+#. module: account_voucher_extended
+#: code:addons/account_voucher_extended/account_bank_statement.py:50
+#, python-format
+msgid "Error!"
+msgstr "Errore!"
