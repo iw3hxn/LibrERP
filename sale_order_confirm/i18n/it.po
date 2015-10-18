@@ -490,7 +490,7 @@ msgstr "Preventivi"
 
 #. module: sale_order_confirm
 #: view:sale.order.confirm:0
-msgid "_Confirmated"
+msgid "_Confirmed"
 msgstr "_Conferma"
 
 #. module: sale_order_confirm
