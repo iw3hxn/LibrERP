@@ -30,27 +30,17 @@
                     <!--<field name="tax_id" position="replace">-->
                         <!--<field colspan="4" name="tax_id" nolabel="1" domain="[('parent_id', '=', False)]" attrs="{'readonly': [('layout_type', '!=', 'article')]}"/>-->
                     <!--</field>-->
+
                     <xpath expr="/form/notebook/page/field[@name='order_line']/tree[@string='Sales Order Lines']/field[@name='name']" position="after">
                         <field name="subscription" />
+                    </xpath>
+
+                    <xpath expr="/form/notebook/page/field[@name='order_line']/form[@string='Sales Order Lines']/notebook/page/group/field[@name='name']" position="after">
+                        <field name="subscription" invisible="True" />
                     </xpath>
                 </data>
             </field>
         </record>
-
-        <!--<record id="view_order_layout_form_subscription" model="ir.ui.view">-->
-            <!--<field name="name">sale.order.layout.form.subscription</field>-->
-            <!--<field name="model">sale.order</field>-->
-            <!--<field name="inherit_id" ref="sale_layout.view_order_form_inherit_1"/>-->
-            <!--<field name="type">form</field>-->
-            <!--<field name="arch" type="xml">-->
-                <!--<data>-->
-                    <!-- module sale_layout transforms field[@name='order_line'] in field[@name='abstract_line_ids'] -->
-                    <!--<xpath expr="/form/notebook/page/field[@name='abstract_line_ids']/tree[@string='Sales order lines']/field[@name='name']" position="after">-->
-                        <!--<field name="subscription" />-->
-                    <!--</xpath>-->
-                <!--</data>-->
-            <!--</field>-->
-        <!--</record>-->
 
         <record id="view_order_tree" model="ir.ui.view">
             <field name="name">sale.order.tree.renew</field>
