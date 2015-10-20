@@ -40,7 +40,7 @@ class project_task(orm.Model):
             if effective_hours < (planned_hours * 0.8):  # < 80%
                 value[project.id] = 'green'
             elif effective_hours < planned_hours:
-                value[project.id] = 'yellow'
+                value[project.id] = 'orange'
             elif effective_hours == planned_hours:
                 value[project.id] = 'black'
             else:
