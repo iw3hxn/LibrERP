@@ -28,11 +28,16 @@ class project_task(orm.Model):
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
+        spent_group = self.pool['res.groups'].user_in_group(cr, uid, uid, 'project.can_modify_prices', context=context)
         for project in self.browse(cr, uid, ids, context):
             # import pdb; pdb.set_trace()
-            effective_hours = project.effective_hours
-            planned_hours = project.planned_hours
-            if effective_hours < (planned_hours * 0.8): #< 80%
+            if spent_group:
+                effective_hours = project.total_spent
+                planned_hours = project.total_sell_service
+            else:
+                effective_hours = project.effective_hours
+                planned_hours = project.planned_hours
+            if effective_hours < (planned_hours * 0.8):  # < 80%
                 value[project.id] = 'green'
             elif effective_hours < planned_hours:
                 value[project.id] = 'yellow'

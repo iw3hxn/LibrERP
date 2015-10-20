@@ -19,24 +19,25 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.3.6.11',
+    'version': '3.3.7.12',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,
     'author': 'Didotech SRL',
     'website': 'http://www.didotech.com',
     'license': 'AGPL-3',
-    "depends" : [
+    "depends": [
         'project',
         'project_gtd',
         'project_long_term',
         'project_timesheet',
     ],
-    "data" : [
+    "data": [
         'project/project_view.xml',
         'project/project_task_view.xml',
         'project/project_view_menu.xml',
         'res_partner/res_partner_view.xml',
+        'security/security.xml',
     ],
     "active": False,
     "installable": True
