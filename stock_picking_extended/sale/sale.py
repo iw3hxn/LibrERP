@@ -55,7 +55,7 @@ class sale_order(orm.Model):
             ('picking', 'Invoice based on deliveries'),
             # ('postpaid', 'Invoice on order after delivery'),# SERGIO removed for various problem of usability
             # read https://bugs.launchpad.net/openobject-addons/+bug/1160835/comments/18
-        ]),
+        ], 'Invoice Policy'),
         'minimum_planned_date': fields.date('Expected Date', select=True),
     }
 
