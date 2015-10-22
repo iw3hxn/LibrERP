@@ -24,12 +24,14 @@
 
 {
     "name": "Core extended",
-    "version": "2.0.14.0",
+    "version": "2.1.15.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
     "description": """
         Module extendes OpenERP core functionality:
+        account - add column 'origin_document' to account.invoice.line
+
         ir_sequence - add functions:
             current_number(cr, uid, sequence_id)
             go_back(cr, uid, sequence_id, steps_back=1)
@@ -62,6 +64,7 @@
     """,
     "depends": [
         'base',
+        'account'
     ],
     "init_xml": [],
     "update_xml": [

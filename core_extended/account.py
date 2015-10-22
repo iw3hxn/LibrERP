@@ -1,8 +1,11 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
+#    OpenERP, Open Source Management Solution
 #    Author: Didotech SRL
-#    Copyright 2014 Didotech SRL
+#    Copyright 2015 Didotech SRL
+#
+#                       All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,24 +23,18 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from tools.translate import _
 
 
-class res_company(orm.Model):
+class account_invoice_line(orm.Model):
+    _inherit = 'account.invoice.line'
 
-    _inherit = 'res.company'
+    def _links_get(self, cr, uid, context=None):
+        model_obj = self.pool['ir.model']
+        ids = model_obj.search(cr, uid, [], context=context)
+        res = model_obj.read(cr, uid, ids, ['model', 'name'], context)
+        return [(r['model'], r['name']) for r in res]
 
-    def write(self, cr, uid, ids, values, context={}):
-
-        if not ids:
-            return False
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-
-        res = super(res_company, self).write(cr, uid, ids, values, context=context)
-
-        if values.get('currency_id', False):
-            product_price_type_obj = self.pool['product.price.type']
-            product_price_type_ids = product_price_type_obj.search(cr, uid, [], context=context)
-            product_price_type_obj.write(cr, uid, product_price_type_ids, {'currency_id': values.get('currency_id')}, context=context)
-
-        return res
+    _columns = {
+        'origin_document': fields.reference(_("Origin Document"), selection=_links_get, size=None)
+    }

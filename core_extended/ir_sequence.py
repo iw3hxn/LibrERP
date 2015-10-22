@@ -102,6 +102,10 @@ class ir_sequence(orm.Model):
             return False
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
+
+        if not isinstance(seq_ids, (list, tuple)):
+            seq_ids = [seq_ids]
+
         force_company = context.get('force_company')
         if not force_company:
             force_company = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
