@@ -8426,7 +8426,7 @@ msgstr "mese corrente"
 #, python-format
 msgid "No period defined for this date: %s !\n"
 "Please create one."
-msgstr "Nessun periodo definito pe questa data: %s !\n"
+msgstr "Nessun periodo definito per questa data: %s !\n"
 "Occore crearne uno."
 
 #. module: l10n_it_account
