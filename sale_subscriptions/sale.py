@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2011 Domsense s.r.l. (<http://www.domsense.com>).
-#    Copyright (C) 2012-2014 Didotech (<http://www.didotech.com>).
+#    Copyright (C) 2012-2015 Didotech (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,9 @@ from tools.translate import _
 import decimal_precision as dp
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
-LOGGER = netsvc.Logger()
+import logging
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
 
 import locale
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
@@ -51,7 +53,7 @@ class sale_order_line(orm.Model):
             taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)
             cur = line.order_id.pricelist_id.currency_id
             if line.order_id.have_subscription and line.product_id.subscription:
-                k = order_obj.getDurationInMonths(line.order_id.order_duration) / 12.0
+                k = order_obj.get_duration_in_months(line.order_id.order_duration) / 12.0
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'] * k)
             else:
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
@@ -79,7 +81,7 @@ class sale_order_line(orm.Model):
 
     def __init__(self, registry, cr):
         """
-            Overwriting _product_margin method
+            Overwriting _product_margin method and adding state "Suspended"
         """
 
         super(sale_order_line, self).__init__(registry, cr)
@@ -88,28 +90,29 @@ class sale_order_line(orm.Model):
 
     _columns = {
         'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute=dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
-        'subscription': fields.related('product_id', 'subscription', type='boolean', string='Subscription'),
-        'automatically_create_new_subscription': fields.boolean('Automatically create new subscription'),
+        'subscription': fields.related('product_id', 'subscription', type='boolean', string=_('Subscription')),
+        'automatically_create_new_subscription': fields.boolean(_('Automatically create new subscription')),
         'price_subtotal': fields.function(_amount_line, method=True, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
+        'suspended': fields.boolean(_('Suspended'))
     }
 
     _defaults = {
         'automatically_create_new_subscription': 0,
     }
 
-    def amount_invoiced(self, cr, uid, line):
+    def amount_invoiced(self, cr, uid, order_line):
         """
             return: A total amount of invoices for these order line
         """
-
         cr.execute(
             """SELECT SUM(account_invoice_line.price_subtotal)
-            FROM account_invoice_line LEFT JOIN account_invoice
+            FROM account_invoice_line
+            LEFT JOIN account_invoice
             ON account_invoice_line.invoice_id=account_invoice.id
             WHERE account_invoice_line.name=%s
             AND NOT account_invoice_line.invoice_id IS NULL
-            AND account_invoice_line.origin=%s
-            AND NOT account_invoice.state = 'cancel'""", (line.name, line.order_id.name)
+            AND account_invoice_line.origin_document=%s
+            AND NOT account_invoice.state = 'cancel'""", (order_line.name, 'sale.order.line, {}'.format(order_line.id))
         )
         return cr.fetchall()[0][0]
 
@@ -129,6 +132,90 @@ class sale_order_line(orm.Model):
             result['value']['subscription'] = product.subscription
 
         return result
+
+    def action_suspend(self, cr, uid, line_ids, context):
+        invoice_line_obj = self.pool['account.invoice.line']
+        self.pool['sale.order.line'].write(cr, uid, line_ids, {'suspended': True})
+
+        all_invoices = []
+
+        for line_id in line_ids:
+            invoice_line_ids = invoice_line_obj.search(cr, uid, [('origin_document', '=', 'sale.order.line, {}'.format(line_id))])
+            if invoice_line_ids:
+                for invoice_line in invoice_line_obj.browse(cr, uid, invoice_line_ids, context):
+                    if invoice_line.invoice_id.state == 'draft':
+                        all_invoices.append(invoice_line.invoice_id)
+                        invoice_line_obj.unlink(cr, uid, invoice_line.id)
+
+        all_invoices = list(set(all_invoices))
+
+        for invoice in all_invoices:
+            if not invoice.invoice_line:
+                self.pool['account.invoice'].unlink(cr, uid, invoice.id)
+
+        return True
+
+    def create_installment_invoice_line(self, cr, uid, order_line, invoice_period, invoice=False):
+        sale_order_obj = self.pool['sale.order']
+        sale_order_line_obj = self.pool['sale.order.line']
+
+        # Calculate how much was invoiced
+        invoiced = sale_order_line_obj.amount_invoiced(cr, uid, order_line) or 0
+        remains_to_invoice = order_line.price_unit * order_line.product_uom_qty / 12 * sale_order_obj.get_duration_in_months(order_line.order_id.order_duration) - invoiced
+
+        # Control how much were invoiced and if 100% of line.price_unit is invoiced:
+        if remains_to_invoice <= 0:
+            _logger.debug(u'All invoices for line "%s: %s" order - %s are created' % (order_line.id, order_line.name, order_line.order_id.name))
+
+            sale_order_line_obj.write(cr, uid, [order_line.id], {'invoiced': True})
+            invoice_line_ids = False
+        else:
+            # Make an invoice and add a new line in account.invoice
+            _logger.debug(u'Adding new invoice line for line "%s: %s" (order - %s)' % (order_line.id, order_line.name, order_line.order_id.name))
+
+            # Create account.invoice.line:
+            # This function writes total price and not just installment
+            # It also set 'invoiced' to True
+            invoice_line_ids = sale_order_line_obj.invoice_line_create(cr, uid, [order_line.id])
+
+            # Adjust price_unit of invoice.line
+            sale_order_obj.adjust_price(cr, uid, order_line, invoice_line_ids, remains_to_invoice, invoice_period)
+            values = {'origin_document': 'sale.order.line, {0}'.format(str(order_line.id))}
+            if invoice:
+                values.update({
+                    'invoice_id': invoice.id,
+                    'company_id': invoice.company_id.id,
+                    'partner_id': invoice.partner_id.id
+                })
+            self.pool['account.invoice.line'].write(cr, uid, invoice_line_ids, values)
+
+        return invoice_line_ids
+
+    def action_restore(self, cr, uid, line_ids, context):
+        self.pool['sale.order.line'].write(cr, uid, line_ids, {
+            'suspended': False,
+            'invoiced': False
+        })
+        invoice_obj = self.pool['account.invoice']
+        sale_order_obj = self.pool['sale.order']
+        sale_order_line_obj = self.pool['sale.order.line']
+
+        for order_line in self.browse(cr, uid, line_ids, context):
+            invoice_ids = invoice_obj.search(cr, uid, [('origin', '=', order_line.order_id.name), ('state', '=', 'draft')])
+            invoice_dates = sale_order_obj.get_invoice_dates(cr, uid, order_line.order_id.id, context)
+            invoice_date_period = {invoice_data['invoice_date']: invoice_data['period'] for invoice_data in invoice_dates}
+
+            if invoice_ids:
+                for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
+                    # add/create line with correct amount
+                    invoice_period = invoice_date_period.get(invoice.date_invoice, False)
+                    if invoice_period:
+                        sale_order_line_obj.create_installment_invoice_line(cr, uid, order_line, invoice_period, invoice)
+                    else:
+                        _logger.error(_('Calculated invoice date differ from real date ({})').format(invoice.date_invoice))
+            else:
+                sale_order_obj.auto_invoice(cr, uid, order_line.order_id.id, context)
+        return True
 
 
 class sale_order(orm.Model):
@@ -161,9 +248,9 @@ class sale_order(orm.Model):
                     start_date = datetime.datetime.now()
                 
                 if order.order_duration:
-                    end_date = start_date + relativedelta(months=self.getDurationInMonths(order.order_duration)) - datetime.timedelta(days=1)
+                    end_date = start_date + relativedelta(months=self.get_duration_in_months(order.order_duration)) - datetime.timedelta(days=1)
                 else:
-                    end_date = start_date + relativedelta(months=self.getDurationInMonths(365)) - datetime.timedelta(days=1)
+                    end_date = start_date + relativedelta(months=self.get_duration_in_months(365)) - datetime.timedelta(days=1)
                 value[order.id] = end_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
         
         return value
@@ -297,7 +384,7 @@ class sale_order(orm.Model):
 
             if order_end_date - anticipate < datetime.datetime.now():
                 order = order_obj.browse(cr, uid, order_id, context)
-                LOGGER.notifyChannel(self._name, netsvc.LOG_DEBUG, "Renewing order %s.\nOrder started %s, lasts for %s days and finished %s" % (order.name, order.order_start_date, order.order_duration, order_end_date))
+                _logger.debug(u"Renewing order %s.\nOrder started %s, lasts for %s days and finished %s" % (order.name, order.order_start_date, order.order_duration, order_end_date))
                 values = {
                     'order_start_date': order_end_date + datetime.timedelta(days=1),
                     'validation_date': False,
@@ -311,7 +398,7 @@ class sale_order(orm.Model):
                 new_line_ids = line_obj.search(cr, uid, [('order_id', '=', new_order_id)])
                 new_lines = line_obj.browse(cr, uid, new_line_ids, context)
                 for line in new_lines:
-                    if not line.product_id.subscription:
+                    if not line.product_id.subscription or line.suspended:
                         line_obj.unlink(cr, uid, [line.id])
         
         # We should return smth, if not we will get an error
@@ -368,8 +455,9 @@ class sale_order(orm.Model):
                 return True
 
         return super(sale_order, self).manual_invoice(cr, uid, ids, context)
-    
-    def getDurationInMonths(self, duration_in_days):
+
+    @staticmethod
+    def get_duration_in_months(duration_in_days):
         duration = {
             730: 24,
             365: 12,
@@ -380,21 +468,21 @@ class sale_order(orm.Model):
         }
         return duration[duration_in_days]
 
-    def adjustPrice(self, cr, uid, sale_order_line, invoice_line_ids, remains_to_invoice, period):
-        if not sale_order_line.product_id.subscription:
+    def adjust_price(self, cr, uid, order_line, invoice_line_ids, remains_to_invoice, period):
+        if not order_line.product_id.subscription:
             return
         
-        duration = self.getDurationInMonths(sale_order_line.order_id.order_duration)
-        invoice_duration = self.getDurationInMonths(sale_order_line.order_id.order_invoice_duration)
+        duration = self.get_duration_in_months(order_line.order_id.order_duration)
+        invoice_duration = self.get_duration_in_months(order_line.order_id.order_invoice_duration)
         payments_quantity = duration / invoice_duration
         
         invoice_line = self.pool['account.invoice.line'].browse(cr, uid, invoice_line_ids[0])
 
         price_unit = invoice_line.price_unit
         
-        # Il price is for annual usage of a product
+        # price is for annual usage of a product
         price_unit = round(price_unit / 12 * duration / payments_quantity,
-                            self.pool.get('decimal.precision').precision_get(cr, uid, 'Sale Price'))
+                           self.pool.get('decimal.precision').precision_get(cr, uid, 'Sale Price'))
         
         if remains_to_invoice - price_unit * invoice_line.quantity < price_unit * invoice_line.quantity / 2:
             price_unit = remains_to_invoice / invoice_line.quantity
@@ -405,41 +493,35 @@ class sale_order(orm.Model):
         ## Adjust price_unit
         self.pool['account.invoice.line'].write(cr, uid, [invoice_line.id], {'price_unit': price_unit, 'note': period})
             
-        if invoiced:
-            self.pool['sale.order.line'].write(cr, uid, [sale_order_line.id], {'invoiced': True})
-        else:
-            self.pool['sale.order.line'].write(cr, uid, [sale_order_line.id], {'invoiced': False})
+        self.pool['sale.order.line'].write(cr, uid, [order_line.id], {'invoiced': invoiced})
 
-    def getInvoiceDates(self, cr, uid, order_id, context):
+    def get_invoice_dates(self, cr, uid, order_id, context):
         order = self.browse(cr, uid, order_id, context)
-        invoicing_date = []
+
         start_date = datetime.datetime.strptime(order.order_start_date, DEFAULT_SERVER_DATE_FORMAT)
         #start_date += relativedelta(months=1)
 
-        virtual_start_date_str = '%s-%s-%s' % (start_date.year, start_date.month, '1')
+        virtual_start_date_str = '{year}-{month}-1'.format(year=start_date.year, month=start_date.month)
         virtual_start_date = datetime.datetime.strptime(virtual_start_date_str, DEFAULT_SERVER_DATE_FORMAT)
         
         day_delta = datetime.timedelta(1)
         
-        order_duration = self.getDurationInMonths(order.order_duration)
-        invoice_duration = self.getDurationInMonths(order.order_invoice_duration)
+        order_duration = self.get_duration_in_months(order.order_duration)
+        invoice_duration = self.get_duration_in_months(order.order_invoice_duration)
         payments_quantity = order_duration / invoice_duration
         
-        invoice_delta = relativedelta(months=self.getDurationInMonths(order.order_invoice_duration))
+        invoice_delta = relativedelta(months=self.get_duration_in_months(order.order_invoice_duration))
         
         datetime_date = virtual_start_date
         
         if invoice_duration == 1:
-            dates = [{'invoice_date': order.order_start_date, 'period': start_date.strftime('%B %Y')},]
+            dates = [{'invoice_date': order.order_start_date, 'period': start_date.strftime('%B %Y')}]
         else:
             period_end = start_date + invoice_delta - relativedelta(months=1)
-            dates = [{'invoice_date': order.order_start_date, 'period': start_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')},]
+            dates = [{'invoice_date': order.order_start_date, 'period': start_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')}]
         
         for k in range(1, payments_quantity):
             datetime_date += invoice_delta
-            ## Invoicing on the last day of month:
-            #invoice_date = datetime_date - day_delta
-            #period_end = invoice_date + invoice_delta
             
             ## Invoicing on the first day of next month:
             invoice_date = datetime_date
@@ -451,27 +533,17 @@ class sale_order(orm.Model):
                 dates.append({'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': datetime_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')})
     
         return dates
-    
-    # def amount_invoiced(self, cr, uid, line):
-    #     """
-    #         return: A total amount of invoices for these order line
-    #     """
-    #
-    #     cr.execute("SELECT SUM(price_subtotal) FROM account_invoice_line WHERE name=%s AND NOT invoice_id IS NULL AND origin=%s", (line.name, line.order_id.name))
-    #     return cr.fetchall()[0][0]
-        
+
     def auto_invoice(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        
+
         if not ids:
             return False
         elif not isinstance(ids, (list, tuple)):
             ids = [ids]
 
-        # wf_service = netsvc.LocalService('workflow')
-        
-        LOGGER.notifyChannel(self._name, netsvc.LOG_DEBUG, 'Creating invoices...')
+        _logger.debug(u'Creating invoices...')
         
         def make_invoice(order, lines, invoice_values):
             """
@@ -510,50 +582,46 @@ class sale_order(orm.Model):
             return inv_id
 
         order_id = ids[0]
+        order = self.browse(cr, uid, order_id, context)
         sale_order_line_obj = self.pool['sale.order.line']
+        account_invoice_obj = self.pool['account.invoice']
 
         # Find all active sale.order.line (invoiced == False)
-        sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('invoiced', '=', False), ('state', '!=', 'cancel'), ('order_id', '=', order_id)])
+        domain = [
+            ('invoiced', '=', False),
+            ('state', '!=', 'cancel'),
+            ('order_id', '=', order_id),
+            ('suspended', '=', False)
+        ]
 
-        invoice_dates = self.getInvoiceDates(cr, uid, order_id, context)
+        sale_order_line_ids = sale_order_line_obj.search(cr, uid, domain)
+        invoice_dates = self.get_invoice_dates(cr, uid, order_id, context)
+
+        # Check if there are already invoices for this order
+        active_invoice_ids = account_invoice_obj.search(cr, uid, [
+            ('origin', '=', order.name),
+            ('state', '!=', 'draft')
+        ])
+        if active_invoice_ids:
+            active_invoice_dates = [invoice.date_invoice for invoice in account_invoice_obj.browse(cr, uid, active_invoice_ids, context)]
+        else:
+            active_invoice_dates = []
+
         for invoice_date in invoice_dates:
-            invoices = {}
+            if invoice_date['invoice_date'] in active_invoice_dates:
+                continue
+
+            new_invoice_line_ids = []
             # For every not invoiced line in active order:        
-            for line in sale_order_line_obj.browse(cr, uid, sale_order_line_ids, context):
-                # Calculate how much was invoiced
-                invoiced = sale_order_line_obj.amount_invoiced(cr, uid, line) or 0
-                remains_to_invoice = line.price_unit * line.product_uom_qty / 12 * self.getDurationInMonths(line.order_id.order_duration) - invoiced
-                
-                # Control how much were invoiced and if 100% of line.price_unit is invoiced:
-                if remains_to_invoice <= 0:
-                    LOGGER.notifyChannel(self._name, netsvc.LOG_DEBUG, 'All invoices for line "%s" order - %s are created' % (line.name, line.order_id.name))
-    
-                    sale_order_line_obj.write(cr, uid, [line.id], {'invoiced': True})
-                else:
-                    # Make an invoice and add a new line in account.invoice
-                    LOGGER.notifyChannel(self._name, netsvc.LOG_DEBUG, 'Adding new invoice for line "%s" (order - %s)' % (line.name, line.order_id.name))
-                    if not line.order_id.id in invoices:
-                        invoices[line.order_id.id] = []
-                    
-                    # Create account.invoice.line:
-                    # This function writes total price and not just installment
-                    # It also set 'invoiced' to True
-                    line_id = sale_order_line_obj.invoice_line_create(cr, uid, [line.id])
-                    
-                    # Adjust price_unit of invoice.line
-                    self.adjustPrice(cr, uid, line, line_id, remains_to_invoice, invoice_date['period'])
-                    
-                    for lid in line_id:
-                        invoices[line.order_id.id].append((line, lid))
-                
-            for result in invoices.values():
-                order = result[0][0].order_id
-                il = map(lambda x: x[1], result)
-                res = make_invoice(order, il, invoice_date)
-                
-                cr.execute('INSERT INTO sale_order_invoice_rel \
-                        (order_id, invoice_id) values (%s, %s)', (order.id, res))
-                #action_invoice_create(cr, uid, ids, grouped=False, states=['confirmed', 'done', 'exception'], date_inv = False, context=None)
+            for order_line in sale_order_line_obj.browse(cr, uid, sale_order_line_ids, context):
+                invoice_line_ids = sale_order_line_obj.create_installment_invoice_line(cr, uid, order_line, invoice_date['period'])
+                if invoice_line_ids:
+                    new_invoice_line_ids += invoice_line_ids
+
+            if new_invoice_line_ids:
+                invoice_id = make_invoice(order, new_invoice_line_ids, invoice_date)
+                cr.execute("""INSERT INTO sale_order_invoice_rel
+                           (order_id, invoice_id) values (%s, %s)""", (order_id, invoice_id))
 
     def suspend(self, cr, uid, ids, context):
         wf_service = netsvc.LocalService('workflow')
@@ -561,7 +629,7 @@ class sale_order(orm.Model):
         sale_order_line_obj = self.pool['sale.order.line']
 
         for order in self.browse(cr, uid, ids, context):
-            LOGGER.notifyChannel(self._name, netsvc.LOG_INFO, 'Suspending order {0}'.format(order.name))
+            _logger.debug(u'Suspending order {0}'.format(order.name))
             if order.have_subscription:
                 invoices2cancel = account_invoice_obj.search(cr, uid, [('type', '=', 'out_invoice'), ('origin', '=', order.name)])
                 for invoice in account_invoice_obj.browse(cr, uid, invoices2cancel, context):
@@ -583,7 +651,7 @@ class sale_order(orm.Model):
         print "Reactivating..."
 
         for order in self.browse(cr, uid, ids, context):
-            LOGGER.notifyChannel(self._name, netsvc.LOG_INFO, 'Reactivating order {0}'.format(order.name))
+            _logger.debug(u'Reactivating order {0}'.format(order.name))
             self.auto_invoice(cr, uid, order.id, context=None)
 
         self.write(cr, uid, ids, {'state': 'progress'})
@@ -600,7 +668,7 @@ class sale_order(orm.Model):
         sale_order_line_obj = self.pool['sale.order.line']
         invoiced = 0
         for order in self.browse(cr, uid, ids, context):
-            LOGGER.notifyChannel(self._name, netsvc.LOG_INFO, 'Closing order {0}'.format(order.name))
+            _logger.debug(u'Closing order {0}'.format(order.name))
             for line in order.order_line:
                 if line.product_id.subscription:
                     invoiced += sale_order_line_obj.amount_invoiced(cr, uid, line) or 0

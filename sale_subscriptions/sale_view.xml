@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <data>
                     <button name="cancel" position="before">
-                        <button name="suspend" states="progress" string="Suspend" type="object" icon="gtk-cancel"/>
+                        <button name="suspend" states="progress" string="Suspend" type="object" icon="gtk-cancel" attrs="{'invisible': ['|', ('have_subscription', '=', False)]}"/>
                         <button name="reactivate" states="suspended" string="Reactivate suspended order" type="object" icon="gtk-cancel"/>
                         <button name="close" states="suspended" string="Close order" type="object" icon="gtk-cancel"/>
                     </button>
@@ -35,9 +35,22 @@
                         <field name="subscription" />
                     </xpath>
 
+                    <xpath expr="/form/notebook/page/field[@name='order_line']/tree[@string='Sales Order Lines']/field[@name='price_subtotal']" position="after">
+                        <field name="suspended" invisible="True" />
+                        <field name="state" invisible="True" />
+                        <field name="invoiced" invisible="True" />
+                        <button name="action_suspend" string="Suspend" type="object" icon="kanban-stop" attrs="{'invisible': ['|', '|', '|', ('subscription', '=', False), ('suspended', '=', True), ('state', '=', 'draft'), ('invoiced', '=', False)]}" />
+                        <button name="action_restore" string="Restore" type="object" icon="kanban-pause" attrs="{'invisible': ['|', '|', ('subscription', '=', False), ('suspended', '=', False), ('state', '=', 'draft')]}" />
+                    </xpath>
+
+                    <xpath expr="/form/notebook/page/field[@name='order_line']/tree[@string='Sales Order Lines']" position="attributes">
+                        <attribute name="colors">grey:suspended == True;black:suspended == False</attribute>
+                    </xpath>
+
                     <xpath expr="/form/notebook/page/field[@name='order_line']/form[@string='Sales Order Lines']/notebook/page/group/field[@name='name']" position="after">
                         <field name="subscription" invisible="True" />
                     </xpath>
+
                 </data>
             </field>
         </record>

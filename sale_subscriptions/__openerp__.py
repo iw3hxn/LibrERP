@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2011 Domsense s.r.l. (<http://www.domsense.com>).
-#    Copyright (C) 2012-2014 Didotech (<http://www.didotech.com>).
+#    Copyright (C) 2012-2015 Didotech (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,7 @@
 
 {
     "name": "Subscrption Sale",
-    "version": "3.1.13.8",
+    "version": "3.2.14.9",
     "author": "Agile Business Group & Domsense & Didotech",
     'website': 'http://www.didotech.com',
     'category': 'Generic Modules/Sales & Purchases',
@@ -33,7 +33,8 @@
     """,
     'depends': [
         "sale",
-        'sale_margin'
+        'sale_margin',
+        'core_extended'
         # "sale_layout",
         # "tko_sale_validation",
     ],
