@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
+
         <record id="view_price_security_product_form" model="ir.ui.view">
             <field name="name">price_security.product.form</field>
             <field name="priority" eval="30"/>
@@ -16,27 +17,11 @@
                     </field>
                     
                     <xpath expr="//form//notebook/page[@string='Information']/group[2]">
-                        <field name="can_modify_prices" groups="dt_price_security.can_modify_prices"/>
+                        <field name="can_modify_prices" />
                     </xpath>
                 </data>
             </field>
         </record>
-        
-<!--         <record id="view_product_security_order_line_form" model="ir.ui.view">
-            <field name="name">price_security.order.line.form</field>
-            <field name="priority" eval="30"/>
-            <field name="model">sale.order.line</field>
-            <field name="type">form</field>
-            <field name="inherit_id" ref="sale.view_order_line_form2"/>
-            <field name="arch" type="xml">
-                <data>
-                    <field name="price_unit" position="replace">
-                        <field name="price_unit" on_change="onchange_price_unit(price_unit)"/>
-                        <field name="price_unit_copy" />
-                    </field>
-                </data>
-            </field>
-        </record> -->
         
     </data>
 </openerp>

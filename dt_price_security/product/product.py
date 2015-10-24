@@ -19,11 +19,10 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
+from openerp.osv import orm, fields
 from tools.translate import _
 
-class product_product(osv.osv):
+class product_product(orm.Model):
     _name = 'product.product'
     _inherit = 'product.product'
     
@@ -69,12 +68,12 @@ class product_product(osv.osv):
     
     def write(self, cr, uid, ids, vals, context=None):
         if 'list_price' in vals:
-            group_obj = self.pool.get('res.groups')
+            group_obj = self.pool['res.groups']
           
             if not group_obj.user_in_group(cr, uid, uid, 'dt_price_security.can_modify_prices', context=context):
                 title = _('Violation of permissions')
-                message = _('You do not have the necesary permissions to modify the price of the products')
-                raise osv.except_osv(title, message)
+                message = _('You do not have the necessary permissions to modify the price of the products')
+                raise orm.except_orm(title, message)
       
         return super(product_product, self).write(cr, uid, ids, vals, context=context)
         

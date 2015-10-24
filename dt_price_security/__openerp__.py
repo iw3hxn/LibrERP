@@ -22,7 +22,7 @@
 
 {
     'name': 'Price Security',
-    'version': '2.0.0.0',
+    'version': '2.1.1.1',
     'description': """
     Creates a new permission to restrict the users that can modify the prices
     of the products.
@@ -36,16 +36,20 @@
     'category': 'Sales Management',
     'author': 'Sistemas ADHOC',
     'website': 'http://www.sistemasadhoc.com.ar/',
-    'depends': ['product', 'sale', 'purchase', 'res_users_helper_functions', 'sale_order_confirm'],
-    'init_xml': [],
-    'update_xml': [
-        'res_users_view.xml',
-        'sale_view.xml',
-        'invoice_view.xml',
-        'product_view.xml',
-        'security/price_security_security.xml',],
-    'demo_xml': [],
-    'test':[],
+    'depends': [
+        'product',
+        'sale',
+        'purchase',
+        'res_users_helper_functions',
+        'sale_order_confirm'
+    ],
+    'data': [
+        'security/price_security_security.xml',
+        'res_user/res_users_view.xml',
+        'sale/sale_view.xml',
+        'invoice/invoice_view.xml',
+        'product/product_view.xml',
+    ],
     'installable': True,
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

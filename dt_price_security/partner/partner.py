@@ -19,17 +19,15 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
-from lxml import objectify
+from openerp.osv import orm
 from lxml import etree
 
-class res_partner(osv.osv):
+class res_partner(orm.Model):
     _name = 'res.partner'
     _inherit = 'res.partner'
     
     def fields_view_get(self, cr, user, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
-        group_obj = self.pool.get('res.groups')
+        group_obj = self.pool['res.groups']
         ret = super(res_partner, self).fields_view_get(cr, user, view_id=view_id, view_type=view_type, context=context,
                                                        toolbar=toolbar, submenu=submenu)
         
@@ -47,6 +45,3 @@ class res_partner(osv.osv):
                 
                 ret['arch'] = etree.tostring(root)
         return ret
-        
-res_partner()
-

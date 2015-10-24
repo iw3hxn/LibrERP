@@ -19,11 +19,10 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
+from openerp.osv import orm, fields
 from tools.translate import _
 
-class users(osv.osv):
+class users(orm.Model):
     _name = 'res.users'
     _inherit = 'res.users'
     
@@ -31,10 +30,9 @@ class users(osv.osv):
         'discount_restriction_ids': fields.one2many('price_security.discount_restriction', 'user_id',
                                                     string='Discount Restrictions'),
     }
-        
-users()
 
-class discount_restriction(osv.osv):
+
+class discount_restriction(orm.Model):
     _name = 'price_security.discount_restriction'
     _description = 'Discount Restriction'
     
@@ -46,33 +44,43 @@ class discount_restriction(osv.osv):
         'user_id': fields.many2one('res.users', 'User', required=True),
     }
     
-    def check_discount_with_restriction(self, cr, uid, discount, pricelist_id, context=None):
+    def check_discount_with_restriction(self, cr, uid, discount, pricelist_id, company_id, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid, context=context)
         restriction_id = self.get_restriction_id(cr, uid, uid, pricelist_id, context=context)
         
-        group_obj = self.pool.get('res.groups')
+        group_obj = self.pool['res.groups']
         if not group_obj.user_in_group(cr, uid, uid, 'price_security.can_modify_prices', context=context):
-            titulo = _('Discount out of range')
-            mensaje_1 = _('The applied discount is out of range with respect to the allowed. The discount can be between %s and %s for the current price list.')
-            mensaje_2 = _('The applied discount is out of range with respect to the allowed. You cannot give any discount with the current price list.')
+            title = _('Discount out of range')
+            msg1 = _('The applied discount is out of range with respect to the allowed. The discount can be between %s and %s for the current price list.')
+            msg2 = _('The applied discount is out of range with respect to the allowed. You cannot give any discount with the current price list.')
             
             if restriction_id:
                 restriction = self.browse(cr, uid, restriction_id, context=context)
                 if isinstance(restriction, list):
                     restriction = restriction[0]
                 if discount < restriction.min_discount or discount > restriction.max_discount:
-                        raise osv.except_osv(titulo, mensaje_1 % (restriction.min_discount, restriction.max_discount))
-            
-            elif discount > 0:
-                raise osv.except_osv(titulo, mensaje_2)
+                        raise orm.except_orm(title, msg1 % (restriction.min_discount, restriction.max_discount))
+            else:
+                if not company_id:
+                    company_id = self.pool['res.users']._get_company(cr, uid)
+                company_max_discount = self.pool['res.company'].browse(cr, uid, company_id, context).max_discount
+                if discount > company_max_discount:
+                    if company_max_discount == 0.0:
+                        raise orm.except_orm(title, msg2)
+                    else:
+                        raise orm.except_orm(title, msg1 % (0, company_max_discount))
     
     def get_restriction_id(self, cr, uid, user_id, pricelist_id, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid, context=context)
         filters = [('user_id', '=', user_id)]
         if pricelist_id:
             filters.append(('pricelist_id', '=', pricelist_id))
         restriction_id = self.search(cr, uid, filters, context=context)
         
         if not restriction_id:
-            filters = [('user_id', '=', user_id),('pricelist_id', '=', False)]
+            filters = [('user_id', '=', user_id), ('pricelist_id', '=', False)]
             restriction_id = self.search(cr, uid, filters, context=context)
         
         if not restriction_id:
@@ -81,9 +89,6 @@ class discount_restriction(osv.osv):
         if isinstance(restriction_id, list):
             restriction_id = restriction_id[0]
         return restriction_id
-    
-discount_restriction()
-
 
 
 

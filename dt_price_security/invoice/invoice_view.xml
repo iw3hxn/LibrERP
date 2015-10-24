@@ -14,10 +14,10 @@
                            position="replace">
                         <group colspan="2" col="2">
                             <field name="price_unit" on_change="onchange_price_unit(price_unit)"
-                                  attrs="{'invisible':[('user_can_modify_prices','=', False), ('product_can_modify_prices','=', False)]}" />
-                            <field name="price_unit_copy" attrs="{'invisible':['|', ('user_can_modify_prices','=', True), ('product_can_modify_prices','=', True)]}"/>
-                            <field name="user_can_modify_prices" invisible="1" />
-                            <field name="product_can_modify_prices" invisible="1" />                            
+                                  />
+                            <field name="price_unit_copy" />
+                            <field name="user_can_modify_prices"  />
+                            <field name="product_can_modify_prices"  />
                         </group>
                     </xpath>
                 </data>
@@ -36,11 +36,11 @@
                     <field name="price_unit" position="replace">
                         <group colspan="2" col="2">
                             <field name="price_unit" on_change="onchange_price_unit(price_unit)"
-                                   attrs="{'invisible':[('user_can_modify_prices','=', False), ('product_can_modify_prices','=', False)]}" />
-                            <field name="price_unit_copy" attrs="{'invisible':['|', ('user_can_modify_prices','=', True), ('product_can_modify_prices','=', True)]}"/>
+                                  />
+                            <field name="price_unit_copy" />
                             <!-- <field name="can_modify_prices" invisible="0"/> -->
-                            <field name="user_can_modify_prices" invisible="1"/>
-                            <field name="product_can_modify_prices" invisible="1" />
+                            <field name="user_can_modify_prices" />
+                            <field name="product_can_modify_prices"  />
                         </group>
                     </field>
                 </data>
@@ -56,8 +56,8 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="price_unit" position="replace">
-                        <field name="price_unit" invisible="not context.get('can_modify_prices', True)"/>
-                        <field name="price_unit_copy" invisible="context.get('can_modify_prices', False)"/>
+                        <field name="price_unit" />
+                        <field name="price_unit_copy" />
                     </field>
                 </data>
             </field>

@@ -9,12 +9,12 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                <data>
-                    <xpath expr="//form[@string='Users']/notebook[1]/page[@string='User']">
+                <notebook>
+                    <page string="Discount Restrictions" >
                         <group colspan="2" col="2">
                             <separator string="Discount Restrictions" colspan="8"/>
                             <field name="discount_restriction_ids" nolabel="1" colspan="8">
-                                <tree>
+                                <tree editable="top">
                                     <field name="name"/>
                                     <field name="pricelist_id"/>
                                     <field name="min_discount"/>
@@ -28,10 +28,9 @@
                                 </form>
                             </field>
                         </group>
-                    </xpath>
-                </data>
+                    </page>
+                </notebook>
             </field>
         </record>
-        
     </data>
 </openerp>

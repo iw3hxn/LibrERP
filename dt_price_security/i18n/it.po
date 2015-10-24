@@ -127,7 +127,7 @@ msgstr "Può modificare prezzi"
 #. module: dt_price_security
 #: code:addons/dt_price_security/product.py:76
 #, python-format
-msgid "You do not have the necesary permissions to modify the price of the products"
+msgid "You do not have the neccesary permissions to modify the price of the products"
 msgstr "Non hai i permessi necessari per modificare il prezzo del prodotto"
 
 #. module: dt_price_security
