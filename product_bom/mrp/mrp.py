@@ -29,14 +29,18 @@ _logger.setLevel(logging.DEBUG)
 class mrp_bom(orm.Model):
     _inherit = 'mrp.bom'
     
-    def create(self, cr, uid, vals, context={}):
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         if not vals.get('bom_id', False):
             self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False})
         return super(mrp_bom, self).create(cr, uid, vals, context=context)
     
-    def unlink(self, cr, uid, ids, context={}):
+    def unlink(self, cr, uid, ids, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
-        boms = self.browse(cr, uid, ids)
+        boms = self.browse(cr, uid, ids, context)
         for product_id in [bom.product_id.id for bom in boms]:
             bom_ids_count = self.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], count=True)
             
@@ -45,19 +49,15 @@ class mrp_bom(orm.Model):
         
         return super(mrp_bom, self).unlink(cr, uid, ids, context=context)
     
-    def write(self, cr, uid, ids, vals, context={}): 
+    def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
-        boms = self.browse(cr, uid, ids)
+        boms = self.browse(cr, uid, ids, context)
         for product_old_id in [bom.product_id.id for bom in boms]:
-            
             if vals.get('product_id', False) and not product_old_id == vals['product_id']:
                 # on new product set that have bom
                 self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False})
-                
                 bom_ids_count = self.search(cr, uid, [('product_id', '=', product_old_id), ('bom_id', '=', False)], count=True)
-            
                 if bom_ids_count == 1:
                     self.pool['product.product'].write(cr, uid, product_old_id, {'supply_method': 'buy', 'purchase_ok': True})
         return super(mrp_bom, self).write(cr, uid, ids, vals, context=context)
-    

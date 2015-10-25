@@ -18,9 +18,8 @@
 #
 ##############################################################################
 
-from . import company
 from . import product
-from . import mrp
+from . import pricelist
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

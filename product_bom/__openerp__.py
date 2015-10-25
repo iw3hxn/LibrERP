@@ -20,7 +20,7 @@
 
 {
     "name": "Show Bom in Product",
-    "version": "3.2.7.9",
+    "version": "3.2.8.10",
     "category": "Sales Management",
     "description": """
         This module adds the 'BOM' on Product. And also use BOM as WBS
@@ -37,9 +37,10 @@
     "update_xml": [
         "security/product_price.xml",		# always load groups first!
         "security/ir.model.access.csv",        # load access rights after groups
-        "company.xml",
-        "product.xml",
-        "mrp.xml",
+        "company/company.xml",
+        "product/product.xml",
+        "product/cron.xml",
+        "mrp/mrp.xml",
     ],
     "auto_install": False,
     "installable": True,
