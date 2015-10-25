@@ -21,7 +21,7 @@
 
 {
     "name": "Sale Order Reopen",
-    "version": "1.2",
+    "version": "1.3",
     "author": "Camptocamp Austria",
     "category": 'Sales Management',
     'complexity': "normal",
