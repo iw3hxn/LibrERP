@@ -36,14 +36,14 @@ class product_product(orm.Model):
     _defaults = {
         'can_modify_prices': False,
     }
-    
+
     def onchange_list_price(self, cr, uid, ids, list_price):
         return {'value': {'list_price_copy': list_price}}
-    
+
     def fields_get(self, cr, uid, allfields=None, context=None):
         if not context:
             context = {}
-        group_obj = self.pool.get('res.groups')
+        group_obj = self.pool['res.groups']
         if group_obj.user_in_group(cr, uid, uid, 'dt_price_security.can_modify_prices', context=context):
             context['can_modify_prices'] = True
         else:
@@ -63,18 +63,16 @@ class product_product(orm.Model):
                 ret['standard_price']['invisible'] = True
             if 'cost_method' in ret:
                 ret['cost_method']['invisible'] = True
-          
         return ret
-    
+
     def write(self, cr, uid, ids, vals, context=None):
         if 'list_price' in vals:
             group_obj = self.pool['res.groups']
-          
+
             if not group_obj.user_in_group(cr, uid, uid, 'dt_price_security.can_modify_prices', context=context):
                 title = _('Violation of permissions')
                 message = _('You do not have the necessary permissions to modify the price of the products')
                 raise orm.except_orm(title, message)
-      
         return super(product_product, self).write(cr, uid, ids, vals, context=context)
         
 

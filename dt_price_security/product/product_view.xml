@@ -17,7 +17,7 @@
                     </field>
                     
                     <xpath expr="//form//notebook/page[@string='Information']/group[2]">
-                        <field name="can_modify_prices" />
+                        <field name="can_modify_prices" groups="dt_price_security.can_modify_prices"/>
                     </xpath>
                 </data>
             </field>
