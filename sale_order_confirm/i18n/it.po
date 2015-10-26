@@ -667,11 +667,12 @@ msgstr "Prodotti ordinati"
 msgid "Total Tax Included"
 msgstr "Totale (tasse incluse)"
 
-#. module: sale_order_confirm
-#: code:addons/sale_order_confirm/sale.py:96
+#. modules: sale_order_confirm, sale
+#: selection:sale.order,state:0
+#: code:addons/sale_order_confirm/sale.py:152
 #, python-format
 msgid "Send To Customer"
-msgstr "Spedire al Cliente"
+msgstr "Da Spedire al Cliente"
 
 #. module: sale_order_confirm
 #: field:res.company,readonly_price_unit:0
