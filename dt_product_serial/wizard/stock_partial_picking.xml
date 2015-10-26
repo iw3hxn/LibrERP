@@ -17,8 +17,8 @@
                     <button name="action_add" string="Add" type="object" icon="gtk-add"  attrs="{'invisible': [('split_type', '=', 'single')]}"/>
                     <field name="quantity" attrs="{'readonly': [('split_type', '=', 'single')]}" />
                     <button name="action_remove" string="Remove" type="object" icon="gtk-remove"  attrs="{'invisible': [('split_type', '=', 'single')]}"/>
-                    <field name="line_check" invisible="1" />
-                    <button name="action_check" string="Check" type="object" icon="gtk-check" />
+                    <field name="line_check" />
+                    <button name="action_check" string="Check" type="object" icon="gtk-apply" />
 
                     <field name="balance" groups="stock.view_balance"/>
                     <field name="pallet_qty" groups="stock.view_pallet" />
