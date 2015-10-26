@@ -32,6 +32,24 @@ LOT_SPLIT_TYPE_SELECTION = [
 
 class stock_partial_picking_line(orm.TransientModel):
     _inherit = "stock.partial.picking.line"
+
+    def action_check(self, cr, uid, move_ids, context):
+        line = self.pool['stock.partial.picking.line'].browse(cr, uid, move_ids, context)[0]
+        line.write({'line_check': not line.line_check})
+        return True
+
+    def action_add(self, cr, uid, move_ids, context):
+        line = self.pool['stock.partial.picking.line'].browse(cr, uid, move_ids, context)[0]
+        dest_qty = line.quantity + 1
+        if line.move_id.product_qty >= dest_qty:
+            line.write({'quantity': dest_qty})
+        return True
+
+    def action_remove(self, cr, uid, move_ids, context):
+        line = self.pool['stock.partial.picking.line'].browse(cr, uid, move_ids, context)[0]
+        if line.quantity >= 1.0:
+            line.write({'quantity': line.quantity - 1})
+        return True
         
     def _get_prodlot_code(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
