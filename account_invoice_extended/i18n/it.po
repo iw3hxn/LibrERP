@@ -32,3 +32,7 @@ msgstr "Il Movimento Bancario deve essere in stato Nuovo"
 #, python-format
 msgid "Error!"
 msgstr "Errore!"
+
+#: model:ir.actions.act_window,name:account.action_account_manual_reconcile
+msgid "Journal Items"
+msgstr "Riconciliazione Manuale"
