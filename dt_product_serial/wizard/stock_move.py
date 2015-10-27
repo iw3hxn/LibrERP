@@ -33,7 +33,7 @@ class split_in_production_lot(orm.TransientModel):
         'product_uom': fields.many2one('product.uom', 'UoM'),
         'line_ids': fields.one2many('stock.move.split.lines', 'wizard_id', 'Production Lots'),
         'line_exist_ids': fields.one2many('stock.move.split.lines', 'wizard_exist_id', 'Production Lots'),
-        'use_exist' : fields.boolean('Existing Lots', help="Check this option to select existing lots in the list below, otherwise you should enter new ones line by line."),
+        'use_exist': fields.boolean('Existing Lots', help="Check this option to select existing lots in the list below, otherwise you should enter new ones line by line."),
         'location_id': fields.many2one('stock.location', 'Source Location')
     }
 
@@ -68,7 +68,10 @@ class split_in_production_lot(orm.TransientModel):
                 move_qty = move.product_qty
                 quantity_rest = move.product_qty
                 new_move = []
-                lines = [l for l in data.line_ids if l]
+                if data.use_exist:
+                    lines = [l for l in data.line_exist_ids if l]
+                else:
+                    lines = [l for l in data.line_ids if l]
                 total_move_qty = 0.0
                 for line in lines:
                     quantity = line.quantity
@@ -98,15 +101,18 @@ class split_in_production_lot(orm.TransientModel):
 
                     if quantity_rest == 0:
                         current_move = move.id
-
-                    prodlot_ids = prodlot_obj.search(cr, uid, [('name', '=', line.name), ('product_id', '=', move.product_id.id)])
-                    if not prodlot_ids:
-                        prodlot_id = prodlot_obj.create(cr, uid, {
-                            'name': line.name,
-                            'product_id': move.product_id.id},
-                        context=context)
+                    if line.prodlot_id:
+                        prodlot_id = line.prodlot_id and line.prodlot_id.id or False
                     else:
-                        prodlot_id = prodlot_ids[0]
+                        prodlot_ids = prodlot_obj.search(cr, uid, [('name', '=', line.name), ('product_id', '=', move.product_id.id)])
+                        if not prodlot_ids:
+                            prodlot_id = prodlot_obj.create(cr, uid, {
+                                'name': line.name,
+                                'product_id': move.product_id.id
+                            },
+                            context=context)
+                        else:
+                            prodlot_id = prodlot_ids[0]
 
                     move_obj.write(cr, uid, [current_move], {'prodlot_id': prodlot_id, 'state': move.state})
 
