@@ -142,7 +142,13 @@ class stock_move_split_lines_exist(orm.TransientModel):
 
     def onchange_lot_id(self, cr, uid, ids, prodlot_id=False, product_qty=False,
                         loc_id=False, product_id=False, uom_id=False):
-        return self.pool.get('stock.move').onchange_lot_id(cr, uid, [], prodlot_id, product_qty,
+        res = {}
+        if prodlot_id:
+            res = self.pool['stock.move'].onchange_lot_id(cr, uid, [], prodlot_id, product_qty,
                         loc_id, product_id, uom_id)
+            if not res.get('warning'):
+                stock_available = self.pool['stock.production.lot'].browse(cr, uid, prodlot_id).stock_available
+                res.update({'value': {'quantity': stock_available}})
+        return res
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
