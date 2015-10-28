@@ -21,7 +21,7 @@
     text-indent: 10px;
     vertical-align: middle;
     border-bottom: 1px solid #e5e5e5;
-    background: white url("/web/static/src/img/box-a-header-a.gif") 0% 0% repeat-x;
+    background: #fff;
 }
 
 .openerp h2.oe-dashboard-action-header {

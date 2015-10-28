@@ -2074,7 +2074,7 @@ openerp.web.form.FieldMany2One = openerp.web.form.Field.extend({
     template: 'FieldMany2One',
     init: function(view, node) {
         this._super(view, node);
-        this.limit = 7;
+        this.limit = 10;
         this.value = null;
         this.cm_id = _.uniqueId('m2o_cm_');
         this.last_search = [];

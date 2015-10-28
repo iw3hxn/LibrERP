@@ -9,8 +9,7 @@
 }
 .openerp .dhx_cal_container, .openerp .dhx_cal_event {
     background-position:0 24px;
-    background-repeat:repeat-x;
-    font-family: Ubuntu, Helvetica, sans-serif;
+    font-family: Helvetica Neue, Helvetica, sans-serif;
     position:relative;
     overflow:hidden;
 }
@@ -995,10 +994,10 @@ div.openerp .dhx_cal_editor textarea {
 }
 /*2.3*/
 .openerp .dhx_cal_lsection .dhx_fullday{
-    color:#000000;
+    color:#444;
 }
 .openerp .dhx_cal_light_wide .dhx_cal_lsection{
-    color:#000000;
+    color:#444;
 }
 .openerp .dhx_cal_light_wide .dhx_wrap_section{
     border-top:1px solid #757575;
@@ -1012,7 +1011,7 @@ div.openerp .dhx_cal_editor textarea {
 }
 .openerp .dhx_custom_button{
     background:#ffffff;
-    color:#000000;
+    color:#444;
 }
 /* timeline second scale start */
 .openerp .dhx_cal_header.openerp .dhx_second_cal_header {
@@ -1020,7 +1019,7 @@ div.openerp .dhx_cal_editor textarea {
 }
 /* timeline second scale end */
 .openerp .dhx_cal_light_wide  .dhx_cal_lsection  .dhx_fullday, .openerp .dhx_cal_lsection .dhx_fullday{
-    color:#000000;
+    color:#444;
     font-size: 14px;
 }
 .openerp .dhx_cal_light_wide .dhx_cal_lsection {

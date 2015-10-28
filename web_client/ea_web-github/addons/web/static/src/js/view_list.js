@@ -981,9 +981,7 @@ openerp.web.ListView.List = openerp.web.Class.extend( /** @lends openerp.web.Lis
         if (this.options.selectable) {
             cells.push('<th class="oe-record-selector"></td>');
         }
-        if (this.options.isClarkGable) {
-            cells.push('<th class="oe-record-edit-link"></td>');
-        }
+
         _(this.columns).each(function(column) {
             if (column.invisible === '1') {
                 return;
