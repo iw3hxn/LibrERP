@@ -150,29 +150,34 @@ class stock_partial_picking(orm.TransientModel):
         stock_move = self.pool['stock.move']
         partial = self.browse(cr, uid, ids[0], context=context)
         for line in partial.move_ids:
-            if line.move_id.product_qty == line.quantity and line.move_id.product_uom == line.product_uom:
+            if line.line_check:
                 vals = {}
                 if line.prodlot_id:
                     vals.update({'prodlot_id': line.prodlot_id.id})
-                if line.line_check:
-                    vals.update({'line_check': line.line_check})
-                if vals:
-                    line.move_id.write(vals)
-
+                if line.move_id.product_qty != line.quantity:
+                    vals.update({'check_product_qty': line.quantity})
+                if line.move_id.product_uom != line.product_uom:
+                    vals.update({'check_product_uom': line.product_uom.id})
+                vals.update({'line_check': line.line_check})
+                line.move_id.write(vals)
         vals = {'type': 'ir.actions.act_window_close'}
         return vals
 
     def _partial_move_for(self, cr, uid, move):
         partial_move = {
             'product_id': move.product_id.id,
-            'quantity': move.state in ('assigned','draft') and move.product_qty or 0,
-            'product_uom': move.product_uom.id,
+            'product_uom': move.check_product_uom and move.check_product_uom.id or move.product_uom.id,
             'prodlot_id': move.prodlot_id.id,
             'move_id': move.id,
             'location_id': move.location_id.id,
             'location_dest_id': move.location_dest_id.id,
             'line_check': move.line_check,
         }
+        if move.line_check:
+            partial_move.update({'quantity': move.check_product_qty})
+        else:
+            partial_move.update({'quantity': move.state in ('assigned', 'draft') and move.product_qty or 0})
+
         if move.picking_id.type == 'in' and move.product_id.cost_method == 'average':
             partial_move.update(update_cost=True, **self._product_cost_for_average_update(cr, uid, move))
         return partial_move

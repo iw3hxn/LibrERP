@@ -7,7 +7,7 @@
 #              written by Alexis Demeaulte <alexis.demeaulte@anevia.com>
 #    Copyright (C) 2011 Akretion - Ability to split lines on logistical units
 #              written by Emmanuel Samyn
-#    Copyright (C) 2013-2014 Didotech SRL
+#    Copyright (C) 2013-2015 Didotech SRL
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
 #    published by the Free Software Foundation, either version 3 of the
@@ -27,6 +27,7 @@ from openerp.osv import orm, fields
 from openerp.tools.translate import _
 import hashlib
 from openerp import netsvc
+import decimal_precision as dp
 
 
 class stock_move(orm.Model):
@@ -106,6 +107,8 @@ class stock_move(orm.Model):
         'pallet_qty': fields.integer('Number Pallet'),
         'pallet_id': fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]),
         'line_check': fields.boolean('Check'),
+        'check_product_qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoM')),
+        'check_product_uom': fields.many2one('product.uom', 'Unit of Measure'),
     }
 
     def action_done(self, cr, uid, ids, context=None):
