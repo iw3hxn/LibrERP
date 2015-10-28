@@ -2192,7 +2192,7 @@ label.error {
 
 ul.oe-arrow-list {
     padding-left: 1.1em;
-    margin: 0;
+    margin: 2px 0px 0px 0px;
     white-space: nowrap;
 }
 ul.oe-arrow-list li {
