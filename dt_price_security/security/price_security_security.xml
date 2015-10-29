@@ -4,6 +4,10 @@
         <record id="dt_price_security.can_modify_prices" model="res.groups">
             <field name="name">Can modify prices</field>
         </record>
+
+        <record id="dt_price_security.can_modify_pricelist" model="res.groups">
+            <field name="name">Can modify pricelist on sale order</field>
+        </record>
         
         <record id="dt_price_security.hide_purchase_prices" model="res.groups">
             <field name="name">Hide purchase prices</field>

@@ -45,7 +45,7 @@ class sale_order(orm.Model):
         ret = super(sale_order, self).fields_get(cr, uid, allfields=allfields, context=context)
         
         group_obj = self.pool['res.groups']
-        if group_obj.user_in_group(cr, uid, uid, 'dt_price_security.can_modify_prices', context=context):
+        if group_obj.user_in_group(cr, uid, uid, 'dt_price_security.can_modify_pricelist', context=context):
             if 'pricelist_id_copy' in ret:
                 ret['pricelist_id_copy']['invisible'] = True
         else:
