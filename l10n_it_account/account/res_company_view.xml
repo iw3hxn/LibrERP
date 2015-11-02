@@ -7,9 +7,9 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="base.view_company_form"/>
             <field name="arch" type="xml">
-                <page string="Configuration" position="inside">
+                <field name="currency_id" position="after">
                     <field name="disable_voucher_onchange_amount" />
-                </page>
+                </field>
             </field>
         </record>
     </data>
