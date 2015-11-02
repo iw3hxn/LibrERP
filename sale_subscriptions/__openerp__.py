@@ -44,6 +44,7 @@
         'sale_view.xml',
         'orders_renew.xml',
         'cron.xml',
+        'company_view.xml'
     ],
     'installable': True,
     'active': False,

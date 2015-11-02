@@ -1,9 +1,8 @@
-# -*- encoding: utf-8 -*-
+
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2011 Domsense s.r.l. (<http://www.domsense.com>).
-#    Copyright (C) 2012-2015 Didotech s.r.l. (<http://www.didotech.com>).
+#    Author: Didotech SRL
+#    Copyright 2015 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,6 +19,21 @@
 #
 ##############################################################################
 
-from . import product
-from . import sale
-from . import company
+from openerp.osv import orm, fields
+from tools.translate import _
+
+
+class res_company(orm.Model):
+
+    _inherit = 'res.company'
+
+    _columns = {
+        'subscription_invoice_day': fields.selection((
+            ('1', _('First day of month')),
+            ('31', _('Last day of month'))
+        ), _('Invoice Day')),
+    }
+
+    _defaults = {
+        'subscription_invoice_day': 1
+    }

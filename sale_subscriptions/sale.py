@@ -526,12 +526,16 @@ class sale_order(orm.Model):
             ## Invoicing on the first day of next month:
             invoice_date = datetime_date
             period_end = invoice_date + invoice_delta - day_delta
+
+            user = self.pool['res.users'].browse(cr, uid, uid, context)
+            if user.company_id.subscription_invoice_day == '31':
+                invoice_date = invoice_date - day_delta
             
             if invoice_duration == 1:
                 dates.append({'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': datetime_date.strftime('%B %Y')})
             else:
                 dates.append({'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': datetime_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')})
-    
+
         return dates
 
     def auto_invoice(self, cr, uid, ids, context=None):
@@ -572,7 +576,7 @@ class sale_order(orm.Model):
                 'address_invoice_id': order.partner_invoice_id.id,
                 'address_contact_id': order.partner_invoice_id.id,
                 'invoice_line': [(6, 0, lines)],
-                'currency_id' : order.pricelist_id.currency_id.id,
+                'currency_id': order.pricelist_id.currency_id.id,
                 'comment': order.note,
                 'payment_term': pay_term,
                 'fiscal_position': order.fiscal_position.id or order.partner_id.property_account_position.id,
