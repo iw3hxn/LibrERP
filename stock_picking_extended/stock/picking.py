@@ -77,8 +77,8 @@ class stock_picking(orm.Model):
             'stock.picking.goods_description', 'Description of goods'),
         'transportation_condition_id': fields.many2one(
             'stock.picking.transportation_condition', 'Transportation condition'),
-        #address_id is overridden because it's used 2binvoiced
-        #n.b.: partner_id is only a related, so not useful for the workflow
+        # address_id is overridden because it's used 2binvoiced
+        # n.b.: partner_id is only a related, so not useful for the workflow
         'address_id': fields.many2one(
             'res.partner.address', 'Partner', help="Partner to be invoiced"
         ),
@@ -101,15 +101,12 @@ class stock_picking(orm.Model):
             return {'value': {}}
         
         stock_journal_obj = self.pool['stock.journal']
+        default_invoice_state = False
         if stock_journal_id:
             default_invoice_state = stock_journal_obj.browse(
                 cr, uid, stock_journal_id, context).default_invoice_state
         
-        if default_invoice_state: 
-            return {'value': {'invoice_state': default_invoice_state}}
-        else:
-            return {'value': {'invoice_state': 'none'}}
-        return {'value': {}}
+        return {'value': {'invoice_state': default_invoice_state or 'none'}}
     
     def onchange_partner_in(self, cr, uid, context=None, address_id=None):
         if context is None:
@@ -124,19 +121,19 @@ class stock_picking(orm.Model):
             delivery_ids = partner_address_obj.search(
                 cr, uid, [('partner_id', '=', partner_id.id), (
                     'default_delivery_partner_address', '=', True)],
-                context=None
+                context=context
             )
             
             if not delivery_ids:
                 delivery_ids = partner_address_obj.search(
                     cr, uid, [('partner_id', '=', partner_id.id), (
                         'type', '=', 'delivery')],
-                    context=None
+                    context=context
                 )
                 if not delivery_ids:
                     delivery_ids = partner_address_obj.search(
                         cr, uid, [('partner_id', '=', partner_id.id)],
-                        context=None
+                        context=context
                     )
 
         if delivery_ids:
@@ -148,7 +145,7 @@ class stock_picking(orm.Model):
         new_args = []
         
         for arg in args:
-            #if arg and len(arg)==3 and arg[0] in field_to_sql.keys() and arg[1]=='ilike':
+            # if arg and len(arg)==3 and arg[0] in field_to_sql.keys() and arg[1]=='ilike':
             if arg and len(arg) == 3 and arg[1] == 'ilike':
                 values = arg[2].split(',')
                 if values > 1:
@@ -190,12 +187,12 @@ class stock_picking(orm.Model):
         res['quantity'] = move_line.product_qty or move_line.product_uos_qty
         return res
 
-    def action_invoice_create(self, cursor, user, ids, journal_id=False,
+    def action_invoice_create(self, cr, user, ids, journal_id=False,
                               group=False, type='out_invoice', context=None):
-        res = super(stock_picking, self).action_invoice_create(cursor, user, ids, journal_id,
+        res = super(stock_picking, self).action_invoice_create(cr, user, ids, journal_id,
                                                                group, type, context)
-        for picking in self.browse(cursor, user, ids, context=context):
-            self.pool['account.invoice'].write(cursor, user, res[picking.id], {
+        for picking in self.browse(cr, user, ids, context=context):
+            self.pool['account.invoice'].write(cr, user, res[picking.id], {
                 'carriage_condition_id': picking.carriage_condition_id.id,
                 'goods_description_id': picking.goods_description_id.id,
                 'transportation_condition_id': picking.transportation_condition_id.id,

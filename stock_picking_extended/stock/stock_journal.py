@@ -27,6 +27,8 @@ class stock_journal(orm.Model):
     
     _columns = {
         'name': fields.char('Stock Journal', size=32, required=True, translate=True),
+        'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse', ),
+        'member_ids': fields.many2many('res.users', 'stock_journal_rel', 'journal_id', 'member_id', 'Team Members'),
         'default_invoice_state': fields.selection([
             ("invoiced", "Invoiced"),
             ("2binvoiced", "To Be Invoiced"),

@@ -22,14 +22,16 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.17.18.21',
+    'version': '3.18.18.22',
     'category': 'Others',
     'description': """LibrERP - Stock picking extension
 
 Functionalities:
     - different shipping address for consignement order
     - correct wkfl in stock, sale, invoice
+    - add user for stock_journal
 """,
+
     'author': 'Didotech srl',
     'website': 'http://www.didotech.com',
     'license': 'AGPL-3',
@@ -45,6 +47,7 @@ Functionalities:
     ],
     "data": [
         'security/ir.model.access.csv',
+        'security/journal_security.xml',
         'stock/picking_view.xml',
         'stock/carriage_condition_view.xml',
         'stock/transportation_condition_view.xml',

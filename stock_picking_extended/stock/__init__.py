@@ -20,4 +20,5 @@
 ##############################################################################
 
 from . import picking
-from . import stock
+from . import stock_journal
+from . import stock_move

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="stock_journal_personal_rule" model="ir.rule">
+            <field name="name">Personal Stock Journal</field>
+            <field name="model_id" ref="stock.model_stock_journal"/>
+            <field name="domain_force">['|', ('member_ids','in', [user.id]), ('member_ids','=', False) ]</field>
+            <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+
+        <record id="stock_journal_all_rule" model="ir.rule">
+            <field name="name">Personal Stock Journal</field>
+            <field name="model_id" ref="stock.model_stock_journal"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+
+    </data>
+</openerp>

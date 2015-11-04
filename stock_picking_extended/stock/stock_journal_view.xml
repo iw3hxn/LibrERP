@@ -5,25 +5,31 @@
             <field name="name">stock.journal.form.default.invoice.type</field>
             <field name="model">stock.journal</field>
             <field name="inherit_id" ref="stock.view_stock_journal_form"/>
-            <field name="type">form</field> 
+            <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                            <field name="default_invoice_state" />
-                        </field>    
+                    <field name="warehouse_id"/>
+                    <field name="default_invoice_state"/>
+                </field>
+                <field name="user_id" position="after" >
+                    <separator colspan="4" string="User"/>
+                    <field name="member_ids" nolabel="1" colspan="4" widget="many2many_checkboxes"/>
+                </field>
             </field>
         </record>
-        
+
         <record model="ir.ui.view" id="view_stock_journal_tree_default_invoice_type">
             <field name="name">stock.journal.tree.default.invoice.type</field>
             <field name="model">stock.journal</field>
             <field name="inherit_id" ref="stock.view_stock_journal_tree"/>
-            <field name="type">form</field> 
+            <field name="type">form</field>
             <field name="arch" type="xml">
-                        <field name="name" position="after">
-                            <field name="default_invoice_state" />
-                        </field>    
+                <field name="name" position="after">
+                    <field name="warehouse_id"/>
+                    <field name="default_invoice_state"/>
+                </field>
             </field>
         </record>
-        
+
     </data>
 </openerp>
