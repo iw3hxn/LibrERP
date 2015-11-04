@@ -61,8 +61,8 @@
         </record>
 
         <record id="account.action_account_manual_reconcile" model="ir.actions.act_window">
-            <field name="context">{'view_mode': True, 'search_default_next_partner': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
-            <field name="domain=">[('reconcile_id','=',False), ('account_id.reconcile','=',True)]</field>
+            <field name="context">{'view_mode': True, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+            <field name="domain=">[('account_id.reconcile','=',True)]</field>
             <field name="search_view_id" ref="view_account_move_line_filter"/>
         </record>
 
