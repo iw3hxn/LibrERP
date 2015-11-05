@@ -24,25 +24,34 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from decimal import Decimal, ROUND_UP
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-
-import datetime
-import logging
-
-_logger = logging.getLogger(__name__)
-_logger.setLevel(logging.DEBUG)
-
 
 class sale_shop(orm.Model):
     _inherit = "sale.shop"
 
+    def action_prev(self, cr, uid, ids, context):
+        shop = self.browse(cr, uid, ids, context)[0]
+        date_from = (datetime.strptime(shop.date_from, DEFAULT_SERVER_DATE_FORMAT) + relativedelta(months=-1)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+        date_to = (datetime.strptime(shop.date_to, DEFAULT_SERVER_DATE_FORMAT) + relativedelta(months=-1)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+        shop.write({'date_from': date_from, 'date_to': date_to})
+        return True
+
+    def action_next(self, cr, uid, ids, context):
+        shop = self.browse(cr, uid, ids, context)[0]
+        date_from = (datetime.strptime(shop.date_from, DEFAULT_SERVER_DATE_FORMAT) + relativedelta(months=+1)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+        date_to = (datetime.strptime(shop.date_to, DEFAULT_SERVER_DATE_FORMAT) + relativedelta(months=+1)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+        shop.write({'date_from': date_from, 'date_to': date_to})
+        return True
 
     def _compute_analysis(self, cr, uid, ids, name, args, context=None):
         res = {}
 
         for shop in self.browse(cr, uid, ids, context):
 
-            new_args = []
+            new_args = [('shop_id', '=', shop.id)]
             section_id = context.get('section_id', shop.section_id) or False
             date_from = context.get('date_from', shop.date_from) or False
             date_to = context.get('date_to', shop.date_to) or False

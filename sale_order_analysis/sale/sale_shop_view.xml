@@ -1,61 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
         <record id="sale.view_shop_form" model="ir.ui.view">
             <field name="name">sale.shop</field>
             <field name="model">sale.shop</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Sales Shop">
-                <notebook >
-                    <page string="Info" >
-
-                    <field name="name" select="1"/>
-                    <field name="warehouse_id" required="1" select="1" widget="selection"/>
-                    <field name="company_id" widget="selection" groups="base.group_multi_company"/>
-                    <separator colspan="4" string="Accounting"/>
-                    <field name="payment_default_id"/>
-                    <field domain="[('type','=','sale')]" name="pricelist_id" select="1"/>
-                    <field name="project_id" select="1" groups="analytic.group_analytic_accounting"/>
-                    <separator colspan="4" string="User" />
-                    <field name="member_ids" nolabel="1" colspan="4" widget="many2many_checkboxes"/>
-                    </page>
-				</notebook>
+                    <group col="6" colspan="4">
+                        <field name="name" select="1" colspan="2"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Info">
+                            <field name="warehouse_id" required="1" select="1" widget="selection"/>
+                            <field name="company_id" widget="selection" groups="base.group_multi_company"/>
+                            <separator colspan="4" string="Accounting"/>
+                            <field name="payment_default_id"/>
+                            <field domain="[('type','=','sale')]" name="pricelist_id" select="1"/>
+                            <field name="project_id" select="1" groups="analytic.group_analytic_accounting"/>
+                            <separator colspan="4" string="User"/>
+                            <field name="member_ids" nolabel="1" colspan="4" widget="many2many_checkboxes"/>
+                        </page>
+                    </notebook>
                 </form>
             </field>
         </record>
 
         <record id="sale_shop_analysis" model="ir.ui.view">
-			<field name="name">sale_shop_analysis</field>
-			<field name="model">sale.shop</field>
-			<field name="type">form</field>
+            <field name="name">sale_shop_analysis</field>
+            <field name="model">sale.shop</field>
+            <field name="type">form</field>
             <field name="inherit_id" ref="sale.view_shop_form"/>
-			<field name="arch" type="xml">
-				<notebook position="inside" >
-                    <page string="Analysis" >
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Analysis">
                         <group colspan="2" col="2" string="Parameter">
-                            <field name="date_from" />
-                            <field name="date_to" />
-                            <field name="section_id" />
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="section_id"/>
                         </group>
-                        <group colspan="4" col="4" >
-                        <group colspan="2" col="2" >
-                            <field name="amount_draft" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
-                            <field name="amount_wait" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
-                            <field name="amount_done" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
-                            <field name="amount_lost" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
-                            <field name="amount_total" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                        <group colspan="2" col="2" string="Change Month">
+                            <button name="action_prev" string="Prev Month" type="object" icon="terp-gtk-jump-to-rtl"/>
+                            <button name="action_next" string="Next Month" type="object" icon="terp-gtk-jump-to-ltr"/>
                         </group>
-                        <group colspan="2" col="2" >
-                            <field name="precent_draft" widget="progressbar" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
-                            <field name="precent_wait" widget="progressbar" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
-                            <field name="precent_done" widget="progressbar" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
-                            <field name="precent_lost" widget="progressbar" context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
-                        </group>
+                        <group colspan="4" col="4">
+                            <group colspan="2" col="2">
+                                <field name="amount_draft"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                                <field name="amount_wait"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                                <field name="amount_done"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                                <field name="amount_lost"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                                <field name="amount_total"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                            </group>
+                            <group colspan="2" col="2">
+                                <field name="precent_draft" widget="progressbar"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                                <field name="precent_wait" widget="progressbar"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                                <field name="precent_done" widget="progressbar"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                                <field name="precent_lost" widget="progressbar"
+                                       context="{'date_from': date_from, 'date_to': date_to, 'section_id': section_id, 'shop_id': self }"/>
+                            </group>
                         </group>
                     </page>
-				</notebook>
+                </notebook>
             </field>
         </record>
 

@@ -24,7 +24,7 @@
 
 {
     "name": "Sale Order Analysis",
-    "version": "3.0.0.0",
+    "version": "3.1.1.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Sales Management",
