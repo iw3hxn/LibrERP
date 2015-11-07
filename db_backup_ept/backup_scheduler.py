@@ -77,8 +77,8 @@ class db_backup_ept(osv.osv):
         self._pg_psw_env_var_is_set = False
     
     def schedule_backup(self, cr, user, context={}):
-        conf_ids = self.search(cr, user, [('active', '=', 'True')])
-        confs = self.browse(cr, user, conf_ids)
+        conf_ids = self.search(cr, user, [('active', '=', 'True')], context=context)
+        confs = self.browse(cr, user, conf_ids, context)
         for rec in confs:
             db_list = self.get_db_list(cr, user, [], rec.host, rec.port)
             if rec.name in db_list:
