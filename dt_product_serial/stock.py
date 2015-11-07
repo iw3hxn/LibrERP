@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Product serial module for OpenERP
+# Product serial module for OpenERP
 #    Copyright (C) 2008 Raphaël Valyi
 #    Copyright (C) 2011 Anevia S.A. - Ability to group invoice lines
 #              written by Alexis Demeaulte <alexis.demeaulte@anevia.com>
@@ -39,7 +39,15 @@ class stock_move(orm.Model):
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
             default = {}
-        default['new_prodlot_code'] = False
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+
+        default.update({
+            'new_prodlot_code': False,
+            'check_product_qty': 0,
+            'line_check': False,
+            })
+
         return super(stock_move, self).copy(cr, uid, id, default, context=context)
 
     def _get_prodlot_code(self, cr, uid, ids, field_name, arg, context=None):
@@ -63,8 +71,9 @@ class stock_move(orm.Model):
             #if existing_prodlot: #avoid creating a prodlot twice
             #    self.pool['stock.production.lot').write(cr, uid, existing_prodlot.id, {'name': value})
             #else:
-            existing_prodlot_id = self.pool['stock.production.lot'].search(cr, uid, [('name', '=', value), ('product_id', '=', product_id)])
-            if not existing_prodlot_id: # avoid creating a prodlot twice
+            existing_prodlot_id = self.pool['stock.production.lot'].search(cr, uid, [('name', '=', value),
+                                                                                     ('product_id', '=', product_id)])
+            if not existing_prodlot_id:  # avoid creating a prodlot twice
                 prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {
                     'name': value,
                     'product_id': product_id,
@@ -86,7 +95,7 @@ class stock_move(orm.Model):
         for move in self.browse(cr, uid, ids, context=context):
             # product_id = move.product_id.id
             existing_tracking = move.tracking_id
-            if existing_tracking: #avoid creating a tracking twice
+            if existing_tracking:  #avoid creating a tracking twice
                 self.pool['stock.tracking'].write(cr, uid, existing_tracking.id, {'name': value})
             else:
                 tracking_id = self.pool['stock.tracking'].create(cr, uid, {
@@ -98,11 +107,11 @@ class stock_move(orm.Model):
         'new_prodlot_code': fields.function(_get_prodlot_code, fnct_inv=_set_prodlot_code,
                                             method=True, type='char', size=64,
                                             string='Prodlot fast input', select=1
-                                           ),
+        ),
         'new_tracking_code': fields.function(_get_tracking_code, fnct_inv=_set_tracking_code,
-                                            method=True, type='char', size=64,
-                                            string='Tracking fast input', select=1
-                                           ),
+                                             method=True, type='char', size=64,
+                                             string='Tracking fast input', select=1
+        ),
         'balance': fields.boolean('Balance'),
         'pallet_qty': fields.integer('Number Pallet'),
         'pallet_id': fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]),
@@ -124,7 +133,9 @@ class stock_move(orm.Model):
         result = super(stock_move, self).action_done(cr, uid, ids, context)
         for move in self.browse(cr, uid, ids):
             if move.product_id.lot_split_type and move.move_dest_id and move.move_dest_id.id:
-                cr.execute("select stock_move.id from stock_move_history_ids left join stock_move on stock_move.id = stock_move_history_ids.child_id where parent_id=%s and stock_move.product_qty=1", (move.id,))
+                cr.execute(
+                    "select stock_move.id from stock_move_history_ids left join stock_move on stock_move.id = stock_move_history_ids.child_id where parent_id=%s and stock_move.product_qty=1",
+                    (move.id,))
                 unitary_out_moves = cr.fetchall()
                 if unitary_out_moves and len(unitary_out_moves) > 1:
                     unitary_in_moves = []
@@ -132,7 +143,9 @@ class stock_move(orm.Model):
                     counter = 0
                     while len(unitary_in_moves) != len(unitary_out_moves) and counter < len(unitary_out_moves):
                         out_node = unitary_out_moves[counter][0]
-                        cr.execute("select stock_move.id from stock_move_history_ids left join stock_move on stock_move.id = stock_move_history_ids.parent_id where child_id=%s and stock_move.product_qty=1", (out_node,))
+                        cr.execute(
+                            "select stock_move.id from stock_move_history_ids left join stock_move on stock_move.id = stock_move_history_ids.parent_id where child_id=%s and stock_move.product_qty=1",
+                            (out_node,))
                         unitary_in_moves = cr.fetchall()
                         counter += 1
 
@@ -143,8 +156,11 @@ class stock_move(orm.Model):
                         unitary_in_moves.pop()
                         counter = 0
                         for unitary_in_move in unitary_in_moves:
-                            cr.execute("delete from stock_move_history_ids where parent_id=%s and child_id=%s", (unitary_in_moves[counter][0], out_node))
-                            cr.execute("update stock_move_history_ids set parent_id=%s where parent_id=%s and child_id=%s", (unitary_in_moves[counter][0], move.id, unitary_out_moves[counter][0]))
+                            cr.execute("delete from stock_move_history_ids where parent_id=%s and child_id=%s",
+                                       (unitary_in_moves[counter][0], out_node))
+                            cr.execute(
+                                "update stock_move_history_ids set parent_id=%s where parent_id=%s and child_id=%s",
+                                (unitary_in_moves[counter][0], move.id, unitary_out_moves[counter][0]))
                             counter += 1
 
         return result
@@ -163,7 +179,9 @@ class stock_move(orm.Model):
             lu_qty = False
             if move.product_id.lot_split_type == 'lu':
                 if not move.product_id.packaging:
-                    raise orm.except_orm(_('Error :'), _("Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information.") % (move.product_id.name))
+                    raise orm.except_orm(_('Error :'), _(
+                        "Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information.") % (
+                                         move.product_id.name))
                 lu_qty = move.product_id.packaging[0].qty
 
             elif move.product_id.lot_split_type == 'single':
@@ -177,14 +195,16 @@ class stock_move(orm.Model):
                     'product_qty': lu_qty,
                     'product_uos_qty': move.product_id.uos_coeff
                 }
-    # PROVO AD ATTRIBUIRE I NUMERI DI SERIE IN AUTOMATICO
-    ##################### CARLO NON È CORRETTO ANDREBBE FATTO NON DENTRO QUESTO CICLO MA FUORI (DOPO) CHE VADO A SISTEMARE LE COSE PER IL LOTTO DI PRODUZIONE
-    ####### ORA È SOLO UN TEST
-    ##################### 8/8/2015
+                # PROVO AD ATTRIBUIRE I NUMERI DI SERIE IN AUTOMATICO
+                ##################### CARLO NON È CORRETTO ANDREBBE FATTO NON DENTRO QUESTO CICLO MA FUORI (DOPO) CHE VADO A SISTEMARE LE COSE PER IL LOTTO DI PRODUZIONE
+                ####### ORA È SOLO UN TEST
+                ##################### 8/8/2015
                 prod_lot_ids = []
                 index_lot = 0
                 if move.picking_id.type == 'out' and move.product_id.track_outgoing and auto_assign_lot:
-                    prod_lot_ids = lot_obj.search(cr, uid, [('product_id', '=', move.product_id.id), ('stock_available', '>', 0)], order="date asc", context=context)
+                    prod_lot_ids = lot_obj.search(cr, uid, [('product_id', '=', move.product_id.id),
+                                                            ('stock_available', '>', 0)], order="date asc",
+                                                  context=context)
                     if prod_lot_ids:
                         vals['prodlot_id'] = prod_lot_ids[index_lot]
                         if move.product_id.lot_split_type == 'single':
@@ -203,15 +223,16 @@ class stock_move(orm.Model):
                         if move.product_id.lot_split_type == 'single':
                             index_lot += 1
 
-
                     all_ids.append(self.copy(cr, uid, move.id, vals, context))
                     qty -= lu_qty
 
                 # Create a last move for the remainder qty
                 if qty > 0:
-                    all_ids.append(self.copy(cr, uid, move.id, {'state': move.state, 'prodlot_id': None, 'product_qty': qty}, context))
+                    all_ids.append(
+                        self.copy(cr, uid, move.id, {'state': move.state, 'prodlot_id': None, 'product_qty': qty},
+                                  context))
         return all_ids
-    
+
     def create(self, cr, user, vals, context=None):
         # For some reason we don't receive 'name', so we should create it:
         if ('name' not in vals) or (vals.get('name') == '/'):
@@ -220,7 +241,7 @@ class stock_move(orm.Model):
                 vals['name'] = '[%s] %s' % (product.default_code, product.name)
             else:
                 vals['name'] = product.name
-        
+
         return super(stock_move, self).create(cr, user, vals, context)
 
 
@@ -235,9 +256,9 @@ class stock_picking(orm.Model):
                 for move in picking.move_lines:
                     # Auto split
                     if ((move.product_id.track_production and move.location_id.usage == 'production') or \
-                        (move.product_id.track_production and move.location_dest_id.usage == 'production') or \
-                        (move.product_id.track_incoming and move.location_id.usage == 'supplier') or \
-                        (move.product_id.track_outgoing and move.location_dest_id.usage == 'customer')):
+                                (move.product_id.track_production and move.location_dest_id.usage == 'production') or \
+                                (move.product_id.track_incoming and move.location_id.usage == 'supplier') or \
+                                (move.product_id.track_outgoing and move.location_dest_id.usage == 'customer')):
                         self.pool['stock.move'].split_move(cr, uid, [move.id])
 
         return result
@@ -255,9 +276,9 @@ class stock_picking(orm.Model):
     # subtotal.
 
     def action_invoice_create(self, cr, uid, ids, journal_id=False,
-                            group=False, type='out_invoice', context=None):
+                              group=False, type='out_invoice', context=None):
         invoice_dict = super(stock_picking, self).action_invoice_create(cr, uid,
-                            ids, journal_id, group, type, context=context)
+                                                                        ids, journal_id, group, type, context=context)
 
         for picking_key in invoice_dict:
             invoice = self.pool['account.invoice'].browse(cr, uid, invoice_dict[picking_key], context=context)
@@ -270,9 +291,9 @@ class stock_picking(orm.Model):
 
                 # Build a key
                 key = unicode(line.product_id.id) + ";" \
-                    + unicode(line.discount) + ";" \
-                    + unicode(line.price_unit) + ";" \
-                    + line.name + ";"
+                      + unicode(line.discount) + ";" \
+                      + unicode(line.price_unit) + ";" \
+                      + line.name + ";"
 
                 # Add the tax key part
                 tax_tab = []
@@ -284,8 +305,9 @@ class stock_picking(orm.Model):
 
                 # Add the sale order line part but check if the field exist because
                 # it's install by a specific module (not from addons)
-                if self.pool['ir.model.fields'].search(cr, uid,
-                        [('name', '=', 'sale_order_lines'), ('model', '=', 'account.invoice.line')], context=context) != []:
+                if self.pool['ir.model.fields'].search(cr, uid, [('name', '=', 'sale_order_lines'),
+                                                                 ('model', '=', 'account.invoice.line')],
+                                                       context=context):
                     order_line_tab = []
                     for order_line in line.sale_order_lines:
                         order_line_tab.append(order_line.id)
@@ -354,7 +376,8 @@ class stock_picking(orm.Model):
                 prodlot_id = partial_data.get('prodlot_id')
                 prodlot_ids[move.id] = prodlot_id
                 product_uoms[move.id] = product_uom
-                partial_qty[move.id] = uom_obj._compute_qty(cr, uid, product_uoms[move.id], product_qty, move.product_uom.id)
+                partial_qty[move.id] = uom_obj._compute_qty(cr, uid, product_uoms[move.id], product_qty,
+                                                            move.product_uom.id)
 
                 if move.product_qty == partial_qty[move.id] or partial_data.get('balance'):
                     complete.append(move)
@@ -377,34 +400,34 @@ class stock_picking(orm.Model):
 
                     if qty > 0:
                         new_price = currency_obj.compute(cr, uid, product_currency,
-                                    move_currency_id, product_price)
+                                                         move_currency_id, product_price)
                         new_price = uom_obj._compute_price(cr, uid, product_uom, new_price,
-                                    product.uom_id.id)
+                                                           product.uom_id.id)
                         if product.qty_available <= 0:
                             new_std_price = new_price
                         else:
                             # Get the standard price
                             amount_unit = product.price_get('standard_price', context=context)[product.id]
-                            new_std_price = ((amount_unit * product_avail[product.id])\
-                                + (new_price * qty)) / (product_avail[product.id] + qty)
+                            new_std_price = ((amount_unit * product_avail[product.id]) \
+                                             + (new_price * qty)) / (product_avail[product.id] + qty)
                         # Write the field according to price type field
                         product_obj.write(cr, uid, [product.id], {'standard_price': new_std_price}, context)
 
                         # Record the values that were chosen in the wizard, so they can be
                         # used for inventory valuation if real-time valuation is enabled.
                         move_obj.write(cr, uid, [move.id],
-                                {'price_unit': product_price,
-                                 'price_currency_id': product_currency}, context)
+                                       {'price_unit': product_price,
+                                        'price_currency_id': product_currency}, context)
 
             for move in too_few:
                 product_qty = move_product_qty[move.id]
                 if not new_picking:
                     new_picking = self.copy(cr, uid, pick.id,
-                            {
-                                'name': sequence_obj.get(cr, uid, 'stock.picking.%s' % pick.type),
-                                'move_lines': [],
-                                'state': 'draft',
-                            })
+                                            {
+                                                'name': sequence_obj.get(cr, uid, 'stock.picking.%s' % pick.type),
+                                                'move_lines': [],
+                                                'state': 'draft',
+                                            })
                 if product_qty != 0:
                     defaults = {
                         'product_qty': product_qty,
@@ -420,25 +443,26 @@ class stock_picking(orm.Model):
                         defaults.update(prodlot_id=prodlot_id)
                     move_obj.copy(cr, uid, move.id, defaults)
                 move_obj.write(cr, uid, [move.id],
-                        {
-                            'product_qty': move.product_qty - partial_qty[move.id],
-                            'product_uos_qty': move.product_qty - partial_qty[move.id],  # TODO: put correct uos_qty
-                        }, context)
+                               {
+                                   'product_qty': move.product_qty - partial_qty[move.id],
+                                   'product_uos_qty': move.product_qty - partial_qty[move.id],
+                                   # TODO: put correct uos_qty
+                               }, context)
 
             if new_picking:
                 move_obj.write(cr, uid, [c.id for c in complete], {'picking_id': new_picking})
             for move in complete:
-                partial_data = partial_datas.get('move%s'% (move.id), {})
+                partial_data = partial_datas.get('move%s' % (move.id), {})
                 defaults = {
                     'product_uom': product_uoms[move.id],
                     'product_qty': move_product_qty[move.id],
-                    'balance': True, # if complete then i force to close line CARLO partial_data.get('balance'),
+                    'balance': True,  # if complete then i force to close line CARLO partial_data.get('balance'),
                     'pallet_qty': partial_data.get('pallet_qty'),
                     'pallet_id': partial_data.get('pallet_id'),
                 }
                 if prodlot_ids.get(move.id):
                     defaults.update({'prodlot_id': prodlot_ids[move.id]})
-                
+
                 move_obj.write(cr, uid, [move.id], defaults)
             for move in too_many:
                 product_qty = move_product_qty[move.id]
@@ -488,7 +512,7 @@ class stock_production_lot(orm.Model):
             cr.execute(
                 "select location_dest_id " \
                 "from stock_move inner join stock_report_prodlots on stock_report_prodlots.location_id = location_dest_id and stock_report_prodlots.prodlot_id = %s " \
-                "where stock_move.prodlot_id = %s and stock_move.state=%s "\
+                "where stock_move.prodlot_id = %s and stock_move.state=%s " \
                 "order by stock_report_prodlots.qty DESC ",
                 (prodlot_id, prodlot_id, 'done'))
             results = cr.fetchone()
@@ -504,23 +528,24 @@ class stock_production_lot(orm.Model):
                                             string="Last location",
                                             help="Display the current stock location of this production lot"),
     }
-    
+
     def _check_name_unique(self, cr, uid, ids, context=None):
-#        if len(ids) == 1:
-#            lot = self.browse(cr, uid, ids[0])
-#            lot_name = self.name_get(cr, uid, ids, context=context)[0][1]
-#            lot_ids = self.name_search(cr, uid, lot_name, operator='=', context=context)
-#            if len(lot_ids) == 1:
-#                return True
-#            else:
-#                print '####### Duplicate serial number ########'
-#                import pdb; pdb.set_trace()
-#                return False
-#        
-#
-#        return False
+        #        if len(ids) == 1:
+        #            lot = self.browse(cr, uid, ids[0])
+        #            lot_name = self.name_get(cr, uid, ids, context=context)[0][1]
+        #            lot_ids = self.name_search(cr, uid, lot_name, operator='=', context=context)
+        #            if len(lot_ids) == 1:
+        #                return True
+        #            else:
+        #                print '####### Duplicate serial number ########'
+        #                import pdb; pdb.set_trace()
+        #                return False
+        #
+        #
+        #        return False
         return True
-#    
+
+    #
     _constraints = [
         (_check_name_unique, _('Duplicate serial number'), ['name', 'product_id'])
     ]

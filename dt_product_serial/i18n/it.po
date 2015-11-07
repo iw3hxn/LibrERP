@@ -208,6 +208,12 @@ msgid "Please provide Proper Quantity !"
 msgstr "Per Favore provvedere la corretta quantità !"
 
 #. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:200
+#, python-format
+msgid "Please provide lot on product \"%s\""
+msgstr "Il prodotto \"%s\" ha bisogno della tracciatura !"
+
+#. module: dt_product_serial
 #: selection:product.product,lot_split_type:0
 msgid "Logistical Unit"
 msgstr "Lotto"

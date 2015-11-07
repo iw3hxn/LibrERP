@@ -146,22 +146,17 @@ class stock_partial_picking(orm.TransientModel):
 
     def save_partial(self, cr, uid, ids, context=None):
         assert len(ids) == 1, 'Partial picking processing may only be done one at a time'
-        stock_picking = self.pool['stock.picking']
-        stock_move = self.pool['stock.move']
         partial = self.browse(cr, uid, ids[0], context=context)
         for line in partial.move_ids:
             if line.line_check:
-                vals = {}
+                vals = {'check_product_qty': line.quantity,
+                        'line_check': line.line_check}
                 if line.prodlot_id:
                     vals.update({'prodlot_id': line.prodlot_id.id})
-                if line.move_id.product_qty != line.quantity:
-                    vals.update({'check_product_qty': line.quantity})
                 if line.move_id.product_uom != line.product_uom:
                     vals.update({'check_product_uom': line.product_uom.id})
-                vals.update({'line_check': line.line_check})
                 line.move_id.write(vals)
-        vals = {'type': 'ir.actions.act_window_close'}
-        return vals
+        return {'type': 'ir.actions.act_window_close'}
 
     def _partial_move_for(self, cr, uid, move):
         partial_move = {
@@ -198,9 +193,12 @@ class stock_partial_picking(orm.TransientModel):
             line_uom = wizard_line.product_uom
             move_id = wizard_line.move_id.id
 
-            # Quantiny must be Positive
+            # Quantity must be Positive
             if wizard_line.quantity < 0:
                 raise orm.except_orm(_('Warning!'), _('Please provide Proper Quantity !'))
+
+            if wizard_line.tracking and not (wizard_line.prodlot_id or wizard_line.new_prodlot_code):
+                raise orm.except_orm(_('Error!'), _('Please provide lot on product "%s"' % wizard_line.product_id.name))
 
             # Compute the quantity for respective wizard_line in the line uom (this jsut do the rounding if necessary)
             qty_in_line_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, line_uom.id)
@@ -218,7 +216,7 @@ class stock_partial_picking(orm.TransientModel):
                 qty_in_initial_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, initial_uom.id)
                 without_rounding_qty = (wizard_line.quantity / line_uom.factor) * initial_uom.factor
                 if float_compare(qty_in_initial_uom, without_rounding_qty, precision_rounding=initial_uom.rounding) != 0:
-                    raise osv.except_osv(_('Warning'), _('The rounding of the initial uom does not allow you to ship "%s %s", as it would let a quantity of "%s %s" to ship and only roundings of "%s %s" is accepted by the uom.') % (wizard_line.quantity, line_uom.name, wizard_line.move_id.product_qty - without_rounding_qty, initial_uom.name, initial_uom.rounding, initial_uom.name))
+                    raise orm.except_orm(_('Warning'), _('The rounding of the initial uom does not allow you to ship "%s %s", as it would let a quantity of "%s %s" to ship and only roundings of "%s %s" is accepted by the uom.') % (wizard_line.quantity, line_uom.name, wizard_line.move_id.product_qty - without_rounding_qty, initial_uom.name, initial_uom.rounding, initial_uom.name))
             else:
                 seq_obj_name = 'stock.picking.' + picking_type
                 move_id = stock_move.create(cr, uid, {'name': self.pool['ir.sequence'].get(cr, uid, seq_obj_name),
