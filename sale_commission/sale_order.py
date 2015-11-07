@@ -124,25 +124,27 @@ class sale_order(orm.Model):
         return res
 
     def action_ship_create(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
         """extend this method to add agent_id to picking"""
-        res = super(sale_order, self).action_ship_create(cr, uid, ids, context=context)
+        res = super(sale_order, self).action_ship_create(cr, uid, ids, context)
 
-        for order in self.browse(cr, uid, ids, context=context):
+        for order in self.browse(cr, uid, ids, context):
             pickings = [x.id for x in order.picking_ids]
             agents = [x.agent_id.id for x in order.sale_agent_ids]
             if pickings and agents:
-                self.pool['stock.picking'].write(cr, uid, pickings, {'agent_ids': [[6, 0, agents]]}, context=context)
+                self.pool['stock.picking'].write(cr, uid, pickings, {'agent_ids': [[6, 0, agents]]}, context)
         return res
 
     def create(self, cr, uid, values, context=None):
         """
         Para que el cliente gtk no borre el agente al darle a guardar
         """
-        res = super(sale_order, self).create(cr, uid, values, context=context)
+        res = super(sale_order, self).create(cr, uid, values, context)
         if 'sale_agent_ids' in values:
             for sale_order_agent in values['sale_agent_ids']:
                 if sale_order_agent[1]:
-                    self.pool['sale.order.agent'].write(cr, uid, [sale_order_agent[1]], {'sale_id': res})
+                    self.pool['sale.order.agent'].write(cr, uid, [sale_order_agent[1]], {'sale_id': res}, context)
         return res
 
 
