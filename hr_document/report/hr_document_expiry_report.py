@@ -42,20 +42,22 @@ class hr_document_expiry_report(report_sxw.rml_parse):
             'get_employee': self.get_employee,
             'get_emp_documents': self.get_emp_documents,
         })
+
     def get_employee(self, form):
         result = []
         periods = []
         emp = pooler.get_pool(self.cr.dbname).get('hr.employee')
         emp_ids = form['ids']
-        result = emp.browse(self.cr,self.uid, emp_ids)
+        result = emp.browse(self.cr, self.uid, emp_ids)
         self.date_from = form['date_from']
         self.date_to = form['date_to']
         return result
+
     def get_emp_documents(self, obj):
         result = []
         periods = []
         doc = pooler.get_pool(self.cr.dbname).get('hr.document')
-        doc_ids = doc.search(self.cr, self.uid, [('employee_id','=',obj.id), ('valid_end_date', '>=', self.date_from), ('valid_end_date', '<=', self.date_to)])
+        doc_ids = doc.search(self.cr, self.uid, [('employee_id', '=', obj.id), ('valid_end_date', '>=', self.date_from), ('valid_end_date', '<=', self.date_to)])
         result = doc.browse(self.cr, self.uid, doc_ids)
         return result
 
