@@ -94,13 +94,13 @@ msgid ""
 " suppose to happend. In the Debug tab you can find technical information "
 "about the error."
 msgstr ""
-"Questo è un errore non gestito di LibrERP, questo non doveve succedere."
-"Nella scheda Debug è possibile trovare informazioni tecniche sull'errore."
+"Questo è un errore non gestito di LibrERP, questo non doveva succedere."
+" Nella scheda Debug è possibile trovare informazioni tecniche sull'errore."
 
 #. openerp-web
 #: web_support/static/src/xml/base.xml:21
 msgid "Your OpenERP instance is supported by"
-msgstr "La sua installazione di LibrERP è supportata da"
+msgstr "La sua installazione di LibrERP è supportata da "
 
 #. openerp-web
 #: web_support/static/src/xml/base.xml:24
@@ -108,8 +108,8 @@ msgid ""
 "You can send all the information regarding this error to us directly by "
 "clicking the button \"Send Error\"."
 msgstr ""
-"È possibile inviare tutte le informazioni riguardanti questo errore a noi direttamente"
-"premento il pulsante \" Send Error \ "."
+"È possibile inviare tutte le informazioni riguardanti questo errore a noi direttamente "
+"premendo il pulsante \" Send Error \ "."
 
 #. openerp-web
 #: /home/damian/Desarrollo/addons/compartidos/web/web_support/static/src/xml/base.xml:34
@@ -119,5 +119,5 @@ msgstr "Sfortunatamente la tua installazione di LibrERP non è supportata."
 #. openerp-web
 #: /home/damian/Desarrollo/addons/compartidos/webs/web_support/static/src/xml/base.xml:27
 msgid "This way we can get informed about it and try to fix it as soon as possible."
-msgstr "In questo modo possiamo ricevere le informazione e cercare di risolvere nel più breve tempo possibile"
+msgstr "In questo modo possiamo ricevere le informazioni e cercare di risolvere il problema nel più breve tempo possibile"
 
