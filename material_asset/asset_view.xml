@@ -25,6 +25,12 @@
                     <field name="asset_sequence_id" />
                     <field name="code"/>
                     <field name="has_date_option" />
+
+                    <field name="asset_product_ids" nolabel="1" colspan="4">
+                        <tree string="Asset Products:">
+                            <field name="name" />
+                        </tree>
+                    </field>
                 </form>
             </field>
         </record>

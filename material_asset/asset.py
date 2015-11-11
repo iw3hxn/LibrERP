@@ -248,7 +248,7 @@ class asset_category(orm.Model):
         'parent_left': fields.integer('Left Parent', select=1),
         'parent_right': fields.integer('Right Parent', select=1),
         'sequence': fields.integer('Sequence', select=True, help="Gives the sequence order when displaying a list of product categories."),
-        
+        'asset_product_ids': fields.one2many('asset.product', 'asset_category_id', string=_('Asset Products'))
     }
 
     _parent_name = "parent_id"
