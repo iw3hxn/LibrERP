@@ -58,23 +58,23 @@ class account_invoice(orm.Model):
 
     def action_number(self, cr, uid, ids, context=None):
         super(account_invoice, self).action_number(cr, uid, ids, context)
-        for obj_inv in self.browse(cr, uid, ids, context):
-            inv_type = obj_inv.type
-            internal_number = obj_inv.internal_number
-            number = obj_inv.number
-            date_invoice = obj_inv.date_invoice
-            reg_date = obj_inv.registration_date
-            journal = obj_inv.journal_id.id
+        for invoice in self.browse(cr, uid, ids, context):
+            inv_type = invoice.type
+            internal_number = invoice.internal_number
+            number = invoice.number
+            date_invoice = invoice.date_invoice
+            reg_date = invoice.registration_date
+            journal = invoice.journal_id.id
             # fy = obj_inv.period_id.fiscalyear_id
-            fy_id = obj_inv.period_id.fiscalyear_id.id
+            fy_id = invoice.period_id.fiscalyear_id.id
 
-            period = obj_inv.period_id
+            period = invoice.period_id
             vat_statement = self.pool['account.vat.period.end.statement'].search(cr, uid, [('period_ids', 'in', period.id)])
             if vat_statement and self.pool['account.vat.period.end.statement'].browse(cr, uid, vat_statement, context)[0].state != 'draft':
                 raise orm.except_orm(
                     _('Period Mismatch Error!'),
                     _('Period %s have already a closed vat statement.')
-                    % (period.name)
+                    % period.name
                 )
 
             # COMMENT WRONG CODE
@@ -107,7 +107,8 @@ class account_invoice(orm.Model):
             #                 )
 
             period_ids = self.pool['account.period'].search(
-                cr, uid, [('fiscalyear_id', '=', fy_id), ('company_id', '=', obj_inv.company_id.id)])
+                cr, uid, [('fiscalyear_id', '=', fy_id), ('company_id', '=', invoice.company_id.id)])
+            
             if inv_type in ['out_invoice', 'out_refund']:
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '>', date_invoice),
                                             ('number', '<', number), ('journal_id', '=', journal),
@@ -122,8 +123,8 @@ class account_invoice(orm.Model):
                 if res and not internal_number:
                     raise orm.except_orm(_('Date Inconsistency'),
                                          _('Cannot create invoice! Post the invoice with a greater date'))
-                supplier_invoice_number = obj_inv.supplier_invoice_number
-                partner_id = obj_inv.partner_id.id
+                supplier_invoice_number = invoice.supplier_invoice_number
+                partner_id = invoice.partner_id.id
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '=', date_invoice),
                                             ('journal_id', '=', journal),
                                             ('supplier_invoice_number', '=', supplier_invoice_number),
