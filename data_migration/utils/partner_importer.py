@@ -262,14 +262,13 @@ class ImportFile(threading.Thread, Utils):
         vals_address['zip'] = vals_address.get('zip') and self.simple_string(vals_address['zip'], as_integer=True) or ''
 
         if vals_address.get('zip') or vals_address.get('city'):
-            if vals_address.get('zip'):
-                city_ids = self.city_obj.search(cr, uid, [('zip', '=', vals_address['zip'])])
-            else:
-                city_ids = False
-
+            city_ids = []
             # Not always we can get a city by zip code. A city can have more than one.
-            if vals_address.get('city') and not city_ids:
+            if vals_address.get('city'):
                 city_ids = self.city_obj.search(cr, uid, [('name', '=ilike', vals_address['city'])])
+
+            if vals_address.get('zip') and not city_ids:
+                city_ids = self.city_obj.search(cr, uid, [('zip', '=', vals_address['zip'])])
 
             if city_ids:
                 city_data = self.city_obj.browse(cr, uid, city_ids[0])
