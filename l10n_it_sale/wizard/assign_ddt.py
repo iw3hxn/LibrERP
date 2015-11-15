@@ -30,15 +30,32 @@ class wizard_assign_ddt(orm.TransientModel):
 
     _name = "wizard.assign.ddt"
 
+    # def _next_ddt(self, cr, uid, ids, context=None):
+    #     if context is None:
+    #         context = self.pool['res.users'].context_get(cr, uid)
+    #     res = {}
+    #     picking_obj = self.pool['stock.picking']
+    #     import pdb; pdb.set_trace()
+    #     for wizard in self.browse(cr, uid, ids, context=context):
+    #         for picking in picking_obj.browse(cr, uid, context.get('active_ids', []), context=context):
+    #             if picking.ddt_number:
+    #                 ddt_number = _('DTT number already assigned')
+    #             elif picking.stock_journal_id.ddt_sequence:
+    #                 ddt_number = self.pool['ir.sequence']._get_number_next_actual(cr, uid, [picking.stock_journal_id.ddt_sequence.id], 'number_next_actual', None)
+    #             else:
+    #                 ddt_number = self.pool['ir.sequence'].get(cr, uid, 'stock.ddt')
+    #             res[wizard.id].update({'ddt_next_number': ddt_number})
+    #     return res
+
     _columns = {
-        'ddt_number': fields.char('DDT', size=64),
+        'ddt_number': fields.char('DDT', size=64, help="Keep empty for use sequence"),
         'ddt_next_number': fields.char('DDT next Number', size=64),
         'ddt_date': fields.date('DDT date'),
     }
 
     _defaults = {
         'ddt_date': fields.date.context_today,
-        # 'ddt_next_number': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').current_number(cr, uid, 38),
+        # 'ddt_next_number': _next_ddt,
     }
 
     def assign_ddt(self, cr, uid, ids, context=None):
@@ -50,15 +67,14 @@ class wizard_assign_ddt(orm.TransientModel):
             if not self.browse(cr, uid, ids, context=context)[0].ddt_number:
                 # Assign ddt from journal's sequence
                 if picking.stock_journal_id.ddt_sequence:
-                    vals['ddt_number'] = self.pool['ir.sequence'].get(cr, uid, picking.stock_journal_id.ddt_sequence.code)
-
+                    ddt_number = self.pool['ir.sequence'].next_by_id(cr, uid, picking.stock_journal_id.ddt_sequence.id)
                 else:
-                    vals['ddt_number'] = self.pool['ir.sequence'].get(cr, uid, 'stock.ddt')
-            else:
-                vals['ddt_number'] = self.browse(cr, uid, ids, context=context)[0].ddt_number
-            vals['ddt_date'] = self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                    ddt_number = self.pool['ir.sequence'].get(cr, uid, 'stock.ddt')
+                vals['ddt_number'] = ddt_number
 
+            vals['ddt_date'] = self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
             picking.write(vals)
+
         return {
             'type': 'ir.actions.act_window_close',
         }
