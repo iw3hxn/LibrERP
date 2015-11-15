@@ -5,7 +5,7 @@
         <record id="stock_journal_personal_rule" model="ir.rule">
             <field name="name">Personal Stock Journal</field>
             <field name="model_id" ref="stock.model_stock_journal"/>
-            <field name="domain_force">['|', ('member_ids','in', [user.id]), ('member_ids','=', False) ]</field>
+            <field name="domain_force">[('member_ids','in', user.id)]</field>
             <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
             <field name="perm_read">1</field>
             <field name="perm_write">0</field>
