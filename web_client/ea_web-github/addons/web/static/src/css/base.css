@@ -42,7 +42,8 @@ body.openerp {
 .openerp .view-manager-main-content {
     width: 100%;
     padding: 0 8px 8px 8px;
-#    border-left: 1px solid #E8E8E8;
+    border: 1px solid #E5E5E5;
+    border-top: 0px;
 }
 
 .openerp .view-manager-main-content td.oe-actions {
@@ -2588,7 +2589,8 @@ padding-top: 0;
 .ui-state-default, 
 .ui-widget-content .ui-state-default, 
 .ui-widget-header .ui-state-default {
-    background: white;
+#    background: white;
+    border: 1px solid #e5e5e5;
 }
 
 .openerp textarea, 
