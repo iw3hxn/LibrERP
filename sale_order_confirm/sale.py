@@ -220,16 +220,17 @@ class sale_order(orm.Model):
         return False
 
     def check_discount(self, order):
-        for line in order.order_line:
-            if not line.discount:
-                order.write({'need_manager_validation': True})
-                return True
+        if order.company_id.enable_discount_validation:
+            max_discount = order.company_id.max_discount
+            for line in order.order_line:
+                if line.discount > max_discount:
+                    order.write({'need_manager_validation': True})
+                    return True
         return False
 
     def action_validate(self, cr, uid, ids, context=None):
 
         for order in self.browse(cr, uid, ids, context):
-
             if not order.partner_id.validate and order.company_id.enable_partner_validation:
                 title = _('Partner To Validate')
                 msg = _('Is not possible to confirm because customer must be validate')
@@ -240,7 +241,7 @@ class sale_order(orm.Model):
                 vals = {
                     'state': 'wait_technical_validation',
                 }
-            elif order.company_id.enable_discount_validation and self.check_discount(order):
+            elif self.check_discount(order):
                 vals = {
                     'state': 'wait_manager_validation',
                 }
