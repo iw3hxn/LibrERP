@@ -64,15 +64,19 @@ class wizard_assign_ddt(orm.TransientModel):
             vals = {}
             if picking.ddt_number:
                 raise orm.except_orm('Error', _('DTT number already assigned'))
-            if not self.browse(cr, uid, ids, context=context)[0].ddt_number:
+
+            ddt_number = self.browse(cr, uid, ids, context=context)[0].ddt_number
+            if not ddt_number:
                 # Assign ddt from journal's sequence
                 if picking.stock_journal_id.ddt_sequence:
                     ddt_number = self.pool['ir.sequence'].next_by_id(cr, uid, picking.stock_journal_id.ddt_sequence.id)
                 else:
                     ddt_number = self.pool['ir.sequence'].get(cr, uid, 'stock.ddt')
-                vals['ddt_number'] = ddt_number
 
-            vals['ddt_date'] = self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+            vals.update({
+                'ddt_number': ddt_number,
+                'ddt_date': self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+            })
             picking.write(vals)
 
         return {
