@@ -2,6 +2,7 @@
 ##############################################################################
 #    
 #    Copyright (C) 2011 DeneroTeam. (<http://www.deneroteam.com>)
+#    Copyright (C) 20111-2015 Didotech srl (info@didotech.com)
 #    All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -18,7 +19,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import asset
-import wizard
-import report
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
+from . import asset
+from . import wizard
+from . import report
+from . import stock

@@ -886,7 +886,7 @@ class asset_asset(orm.Model):
 
     _columns = {
         'asset_product_id': fields.many2one("asset.product", "Asset Product", required=True),
-
+        'code': fields.related('asset_product_id', 'code', type='char', store=False, string=_('Product Code')),
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Name'),
         'name': fields.char("Inventory Code", size=24, required=True),
         'serial_number': fields.many2one('stock.production.lot', "Serial Number", ondelete="no action", required=False),
@@ -1521,98 +1521,3 @@ class asset_document(orm.Model):
                 valid_end_date = start + relativedelta(months=+document_type.duration)
                 valid_end_date = valid_end_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
         return {'value': {'valid_end_date': valid_end_date}}
-
-
-# ----------------------------------------------------------
-# Asset Location
-# ----------------------------------------------------------
-class asset_location(orm.Model):
-    '''
-        Add "assets" type to standard location type
-
-        requires "stock" module
-    '''
-    _name = "stock.location"
-    _inherit = "stock.location"
-
-    _columns = {
-        'usage': fields.selection([('supplier', 'Supplier Location'), ('view', 'View'), ('customer', 'Customer Location'), ('inventory', 'Inventory'), ('procurement', 'Procurement'), ('production', 'Production'), ('assets', 'Assets'), ('transit', 'Transit Location for Inter-Companies Transfers'), ('internal', 'Internal Location')], 'Location Type', required=True,
-                                  help="""* Supplier Location: Virtual location representing the source location for products coming from your suppliers
-                                          \n* View: Virtual location used to create a hierarchical structures for your warehouse, aggregating its child locations ; can't directly contain products
-                                          \n* Internal Location: Physical locations inside your own warehouses,
-                                          \n* Customer Location: Virtual location representing the destination location for products sent to your customers
-                                          \n* Inventory: Virtual location serving as counterpart for inventory operations used to correct stock levels (Physical inventories)
-                                          \n* Procurement: Virtual location serving as temporary counterpart for procurement operations when the source (supplier or production) is not known yet. This location should be empty when the procurement scheduler has finished running.
-                                          \n* Assets: Virtual location serving for internal products use
-                                          \n* Production: Virtual counterpart location for production operations: this location consumes the raw material and produces finished products
-                                         """, select=True),
-    }
-
-    _defaults = {
-        'usage': 'assets',
-    }
-
-
-class create_asset_onmove(orm.Model):
-    '''
-        Verify if product is moving to "assets" location, if so, create (if missing)
-        "asset_product" record, so the product will apear among assets.
-    '''
-    _name = "stock.move"
-    _inherit = "stock.move"
-
-    def action_done(self, cr, uid, ids, context=None):
-        if context and context.get('asset_created', False):
-            return super(create_asset_onmove, self).action_done(cr, uid, ids, context)
-        else:
-            return self.create_asset(cr, uid, ids, context)
-
-    def create_asset(self, cr, uid, ids, context):
-        if context is None:
-            context = {}
-        for move in self.browse(cr, uid, ids, context=context):
-
-            if not move.prodlot_id.id and move.location_dest_id.usage == 'assets':
-                prodlot_id = False
-            else:
-                prodlot_id = move.prodlot_id.id
-
-            # verify that product is not yet an asset:
-            asset_product_ids = self.pool.get('asset.product').search(cr, uid, [('product_product_id', '=', move.product_id.id), ])
-            if move.location_dest_id.usage == 'assets' and not asset_product_ids:
-                # Launch a form and ask about category:
-                assign_category_id = self.pool["asset.assign.category"].create(cr, uid, {}, context=dict(context, active_ids=ids))
-                return {
-                    'name': _("Assign Category"),
-                    'view_mode': 'form',
-                    'view_id': False,
-                    'view_type': 'form',
-                    'res_model': 'asset.assign.category',
-                    'res_id': assign_category_id,
-                    'type': 'ir.actions.act_window',
-                    'nodestroy': True,
-                    'target': 'new',
-                    'domain': '[]',
-                    'context': {
-                        'serial_number': prodlot_id,
-                        'company_id': move.company_id.id,
-                        'product_id': move.product_id.id,
-                        'location': move.location_dest_id._name + ',' + str(move.location_dest_id.id),
-                        'move_ids': ids
-                    },
-                }
-
-            elif move.location_dest_id.usage == 'assets':
-                # control if product is an asset:
-                asset_ids = self.pool['asset.asset'].search(cr, uid, [('asset_product_id', '=', asset_product_ids[0]), ('serial_number', '=', prodlot_id), ('serial_number', '!=', False)])
-                if not asset_ids:
-                    # create asset.asset
-                    self.pool['asset.asset'].create(cr, uid, {
-                        'asset_product_id': asset_product_ids[0],
-                        'serial_number': prodlot_id,
-                        'company_id': move.company_id.id,
-                        'has_date_option': False,
-                        'location': move.location_dest_id._name + ',' + str(move.location_dest_id.id)
-                    })
-
-        return super(create_asset_onmove, self).action_done(cr, uid, ids, context)

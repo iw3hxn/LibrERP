@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Asset Logistic Management',
-    'version': '3.4.20.9',
+    'version': '3.4.21.10',
     'category': 'Generic Modules/Asset Logistic Management',
     'description': """
         A generic module to manage company asset and its movements.
@@ -53,6 +53,7 @@
         'asset_data.xml',
         'asset_location_data.xml',
         'views/asset_inherit_view.xml',
+        'views/stock_view.xml',
         'asset_configuration_view.xml',
         'wizard/asset_move_create.xml',
         'wizard/asset_assign_category.xml',
