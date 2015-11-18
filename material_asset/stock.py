@@ -22,8 +22,6 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
-import pdb
-
 
 # ----------------------------------------------------------
 # Asset Location
