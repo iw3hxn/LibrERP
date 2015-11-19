@@ -17,8 +17,7 @@
 						<field name="address_id" required="False" attrs="{'invisible': [('show_address', '=', False)]}" colspan="1"/>
 						<field name="move_date" />
 						<field name="asset_use_id" widget="selection"/>
-						<field name="user_id" invisible="True
-						"/>
+						<field name="user_id" invisible="True"/>
                     </group>
 					
 					<separator string="Assets" colspan="4"/>

@@ -217,6 +217,22 @@ class sale_order_line(orm.Model):
                 sale_order_obj.auto_invoice(cr, uid, order_line.order_id.id, context)
         return True
 
+    def create(self, cr, uid, values, context=None):
+        if values.get('product_id') and values.get('order_id'):
+            product = self.pool['product.product'].browse(cr, uid, values['product_id'], context)
+            order = self.pool['sale.order'].browse(cr, uid, values['order_id'], context)
+            if product.subscription and not order.have_subscription:
+                raise orm.except_orm(_('Error'), _("You've added subscriptable product to an order which has no Payments in Installments"))
+        return super(sale_order_line, self).create(cr, uid, values, context)
+
+    def write(self, cr, uid, ids, values, context=None):
+        if values.get('product_id'):
+            product = self.pool['product.product'].browse(cr, uid, values['product_id'], context)
+            for order_line in self.browse(cr, uid, ids, context):
+                if product.subscription and not order_line.order_id.have_subscription:
+                    raise orm.except_orm(_('Error'), _("You've added subscriptable product to an order which has no Payments in Installments"))
+        return super(sale_order_line, self).write(cr, uid, ids, values, context)
+
 
 class sale_order(orm.Model):
     _inherit = "sale.order"
