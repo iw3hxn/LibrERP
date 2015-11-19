@@ -181,7 +181,7 @@ class stock_move(orm.Model):
                 if not move.product_id.packaging:
                     raise orm.except_orm(_('Error :'), _(
                         "Product '%s' has 'Lot split type' = 'Logistical Unit' but is missing packaging information.") % (
-                                         move.product_id.name))
+                                             move.product_id.name))
                 lu_qty = move.product_id.packaging[0].qty
 
             elif move.product_id.lot_split_type == 'single':
@@ -201,7 +201,7 @@ class stock_move(orm.Model):
                 ##################### 8/8/2015
                 prod_lot_ids = []
                 index_lot = 0
-                if move.picking_id.type == 'out' and move.product_id.track_outgoing and auto_assign_lot:
+                if move.picking_id.type == 'out' and move.product_id.track_outgoing and auto_assign_lot and not move.prodlot_id:
                     prod_lot_ids = lot_obj.search(cr, uid, [('product_id', '=', move.product_id.id),
                                                             ('stock_available', '>', 0)], order="date asc",
                                                   context=context)
