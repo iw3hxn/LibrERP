@@ -269,7 +269,7 @@ class sale_order(orm.Model):
                     'customer_validation': False,
                     'email_sent_validation': False,
                 }
-            order.write(vals, context)
+            order.write(vals)
 
         return True
 
