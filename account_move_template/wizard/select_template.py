@@ -128,7 +128,15 @@ class wizard_select_template(orm.TransientModel):
         computed_lines = template_obj.compute_lines(
             cr, uid, wizard.template_id.id, input_lines)
 
+        new_computed_lines = {}
+
+        while computed_lines:
+            key, value = computed_lines.popitem()
+            if value:
+                new_computed_lines[key] = value
+
         moves = {}
+
         for line in wizard.template_id.template_line_ids:
             if line.journal_id.id not in moves:
                 moves[line.journal_id.id] = self._make_move(
@@ -142,7 +150,7 @@ class wizard_select_template(orm.TransientModel):
             self._make_move_line(
                 cr, uid,
                 line,
-                computed_lines,
+                new_computed_lines,
                 moves[line.journal_id.id],
                 period_id,
                 wizard.partner_id.id
@@ -153,7 +161,7 @@ class wizard_select_template(orm.TransientModel):
                     cr,
                     uid,
                     line,
-                    computed_lines,
+                    new_computed_lines,
                     moves[line.journal_id.id],
                     period_id,
                     trans_account_id,
@@ -171,7 +179,7 @@ class wizard_select_template(orm.TransientModel):
         }
 
     def _make_move(self, cr, uid, ref, period_id, journal_id, partner_id):
-        account_move_obj = self.pool.get('account.move')
+        account_move_obj = self.pool['account.move']
         move_id = account_move_obj.create(cr, uid, {
             'ref': ref,
             'period_id': period_id,
@@ -182,7 +190,7 @@ class wizard_select_template(orm.TransientModel):
 
     def _make_move_line(self, cr, uid, line, computed_lines,
                         move_id, period_id, partner_id):
-        account_move_line_obj = self.pool.get('account.move.line')
+        account_move_line_obj = self.pool['account.move.line']
         analytic_account_id = False
         if line.analytic_account_id:
             if not line.journal_id.analytic_journal_id:
@@ -207,17 +215,20 @@ class wizard_select_template(orm.TransientModel):
             'debit': 0.0,
             'partner_id': partner_id,
         }
+
+        id_line = False
         if line.move_line_type == 'cr':
-            val['credit'] = computed_lines[line.sequence]
-        if line.move_line_type == 'dr':
-            val['debit'] = computed_lines[line.sequence]
-        id_line = account_move_line_obj.create(cr, uid, val)
+            val['credit'] = computed_lines.get(line.sequence, False)
+        elif line.move_line_type == 'dr':
+            val['debit'] = computed_lines.get(line.sequence, False)
+        if val['credit'] or val['debit']:
+            id_line = account_move_line_obj.create(cr, uid, val)
         return id_line
 
     def _make_transitory_move_line(self, cr, uid, line,
                                    computed_lines, move_id, period_id,
                                    trans_account_id, partner_id):
-        account_move_line_obj = self.pool.get('account.move.line')
+        account_move_line_obj = self.pool['account.move.line']
         analytic_account_id = False
         if line.analytic_account_id:
             if not line.journal_id.analytic_journal_id:
@@ -238,11 +249,13 @@ class wizard_select_template(orm.TransientModel):
             'date': time.strftime('%Y-%m-%d'),
             'partner_id': partner_id,
         }
+        id_line = False
         if line.move_line_type != 'cr':
-            val['credit'] = computed_lines[line.sequence]
-        if line.move_line_type != 'dr':
-            val['debit'] = computed_lines[line.sequence]
-        id_line = account_move_line_obj.create(cr, uid, val)
+            val['credit'] = computed_lines.get(line.sequence, False)
+        elif line.move_line_type != 'dr':
+            val['debit'] = computed_lines.get(line.sequence, False)
+        if val['credit'] or val['debit']:
+            id_line = account_move_line_obj.create(cr, uid, val)
         return id_line
 
 
