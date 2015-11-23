@@ -3488,14 +3488,12 @@ msgid "Accounting Dashboard"
 msgstr "Cruscotto Contabilità"
 
 #. module: account
-#: field:account.bank.statement,balance_start:0
 #: field:account.treasury.report,starting_balance:0
 msgid "Starting Balance"
-msgstr "Bilancio di apertura"
+msgstr "Saldo Apertura"
 
 #. module: account
 #: code:addons/account/account_invoice.py:1433
-#: code:addons/account/account_invoicexxx.py:1432
 #, python-format
 msgid "No Partner Defined !"
 msgstr "Non è stato definito alcun Partner!"
@@ -6897,14 +6895,17 @@ msgstr "Da rivedere"
 msgid "If you selected to filter by date or period, this field allow you to add a row to display the amount of debit/credit/balance that precedes the filter you've set."
 msgstr "Se si è scelto di filtrare in base alla data o un periodo, questo campo consente di aggiungere una riga per visualizzare l'importo di debito / credito / saldo che precede il filtro  impostato."
 
-#. module: account
-#: view:account.bank.statement:0
 #: view:account.move:0
 #: model:ir.actions.act_window,name:account.action_move_journal_line
 #: model:ir.ui.menu,name:account.menu_action_move_journal_line_form
 #: model:ir.ui.menu,name:account.menu_finance_entries
 msgid "Journal Entries"
-msgstr "Registrazioni Giornale"
+msgstr "Scritture Contabili"
+
+#. module: account
+#: view:account.bank.statement:0
+msgid "Journal Entries"
+msgstr "Scritture Contabili"
 
 #. module: account
 #: help:account.partner.ledger,page_split:0
@@ -6960,7 +6961,7 @@ msgstr "Selected Entry Lines does not have any account move enties in draft stat
 #: code:addons/account/report/common_report_header.py:67
 #, python-format
 msgid "All Entries"
-msgstr "Tutte le registrazioni"
+msgstr "Tutte le scritture"
 
 #. module: l10n_it_account
 #: model:account.payment.term,note:l10n_it_account.payment_term_120_net_1
@@ -8384,7 +8385,6 @@ msgid "Payment"
 msgstr "Pagamento"
 
 #. module: account
-#: field:account.bank.statement,balance_end_real:0
 #: field:account.treasury.report,ending_balance:0
 msgid "Ending Balance"
 msgstr "Bilancio finale"
@@ -9190,17 +9190,10 @@ msgid "Document"
 msgstr "Documento"
 
 #. module: account
-#: model:ir.actions.act_window,name:account.action_bank_statement_periodic_tree
-#: model:ir.actions.act_window,name:account.action_bank_statement_tree
-#: model:ir.ui.menu,name:account.menu_bank_statement_tree
-msgid "Bank Statements"
-msgstr "Movimenti Bancari"
-
-#. module: account
 #: code:addons/account/account.py:1872
 #, python-format
 msgid " (Copy)"
-msgstr " (Copy)"
+msgstr " (Copia)"
 
 #. module: account
 #: field:account.account,balance:0
