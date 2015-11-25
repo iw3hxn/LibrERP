@@ -59,7 +59,7 @@ class sale_order_line(orm.Model):
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
         return res
 
-    # Dangerous! Overwrite standard method
+    # Dangerous! Overwrites standard method
     def _product_margin(self, s2, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
@@ -251,7 +251,6 @@ class sale_order(orm.Model):
             type_selection.append(option)
 
     def get_order_end_date(self, cr, uid, ids, field_name, arg, context=None):
-        # TODO: rewrite to use relativedelta
         value = {}
         
         for order in self.browse(cr, uid, ids, context):
@@ -512,14 +511,19 @@ class sale_order(orm.Model):
         self.pool['sale.order.line'].write(cr, uid, [order_line.id], {'invoiced': invoiced})
 
     def get_invoice_dates(self, cr, uid, order_id, context):
+        """
+        Period is always for time after invoice
+        :param cr:
+        :param uid:
+        :param order_id:
+        :param context:
+        :return: list of dictionaries containing invoice_date and period of time for which this invoice is applied
+        """
         order = self.browse(cr, uid, order_id, context)
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
 
         start_date = datetime.datetime.strptime(order.order_start_date, DEFAULT_SERVER_DATE_FORMAT)
-        #start_date += relativedelta(months=1)
 
-        virtual_start_date_str = '{year}-{month}-1'.format(year=start_date.year, month=start_date.month)
-        virtual_start_date = datetime.datetime.strptime(virtual_start_date_str, DEFAULT_SERVER_DATE_FORMAT)
-        
         day_delta = datetime.timedelta(1)
         
         order_duration = self.get_duration_in_months(order.order_duration)
@@ -527,23 +531,26 @@ class sale_order(orm.Model):
         payments_quantity = order_duration / invoice_duration
         
         invoice_delta = relativedelta(months=self.get_duration_in_months(order.order_invoice_duration))
-        
-        datetime_date = virtual_start_date
-        
+
+        virtual_start_date = datetime.datetime(start_date.year, start_date.month, 1)
+        if user.company_id.subscription_invoice_day == '31':
+            virtual_start_date += relativedelta(months=1)
+
         if invoice_duration == 1:
-            dates = [{'invoice_date': order.order_start_date, 'period': start_date.strftime('%B %Y')}]
+            dates = [{'invoice_date': order.order_start_date, 'period': virtual_start_date.strftime('%B %Y')}]
+
         else:
-            period_end = start_date + invoice_delta - relativedelta(months=1)
-            dates = [{'invoice_date': order.order_start_date, 'period': start_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')}]
-        
+            period_end = virtual_start_date + invoice_delta - relativedelta(months=1)
+            dates = [{'invoice_date': order.order_start_date, 'period': virtual_start_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')}]
+
+        datetime_date = virtual_start_date
+
         for k in range(1, payments_quantity):
             datetime_date += invoice_delta
-            
-            ## Invoicing on the first day of next month:
+
             invoice_date = datetime_date
             period_end = invoice_date + invoice_delta - day_delta
 
-            user = self.pool['res.users'].browse(cr, uid, uid, context)
             if user.company_id.subscription_invoice_day == '31':
                 invoice_date = invoice_date - day_delta
             
