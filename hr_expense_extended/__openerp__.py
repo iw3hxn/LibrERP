@@ -24,7 +24,7 @@
 
 {
     "name": "HR Expense Extended",
-    "version": "2.7.13.4",
+    "version": "2.7.14.4",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Human Resources',
@@ -60,6 +60,6 @@
         'external_dependencies': {
         'python': [
             'dateutil',
-        ]  
+        ]
     }
 }

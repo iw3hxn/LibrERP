@@ -125,6 +125,8 @@ class hr_expense_expense(orm.Model):
 
 class hr_expense_line(orm.Model):
     _inherit = 'hr.expense.line'
+
+    _order = "date_value asc"
          
     _columns = {
         'task_id': fields.many2one('project.task', string='Project Task', domain="[('state', 'not in', ('draft',))]"),
