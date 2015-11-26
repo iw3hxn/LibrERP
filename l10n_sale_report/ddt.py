@@ -22,6 +22,7 @@
 ##############################################################################
 
 import time
+import re
 from openerp.report import report_sxw
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
@@ -41,7 +42,55 @@ class Parser(report_sxw.rml_parse):
             'italian_number': self._get_italian_number,
             'pallet_sum': self._get_pallet_sum,
             'get_description': self._get_description,
+            'get_reference': self._get_reference,
+            'desc_nocode': self._desc_nocode,
+            'utente': self._get_utente,
+            'raggruppa_sale_line': self._raggruppa_sale_line,
+            'righe_sale_line': self._righe_sale_line,
+            'get_description_line': self._get_description_line
         })
+
+    def _get_reference(self, order_name):
+        order_obj = self.pool['sale.order']
+        description = []
+        if order_name:
+            order_ids = order_obj.search(self.cr, self.uid, [('name', '=', order_name)])
+            if len(order_ids) == 1:
+                order = order_obj.browse(self.cr, self.uid, order_ids[0])
+                if order.client_order_ref:
+                    order_date = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT)
+                    description.append('{client_order} of {customer_order_date}'.format(client_order=order.client_order_ref, customer_order_date=order_date.strftime("%m/%d/%Y")))
+        return '\n'.join(description)
+
+    def _get_utente(self):
+        res = self.pool['res.users'].browse(self.cr, self.uid, self.uid)
+        return res
+
+    def _desc_nocode(self, string):
+        return re.compile('\[.*\]\ ').sub('', string)
+
+    def _raggruppa_sale_line(self, righe_ddt):
+        indice_movimenti = {}
+        movimenti_filtrati = []
+        for riga in righe_ddt:
+            if not riga.sale_line_id in indice_movimenti:
+                indice_movimenti[riga.sale_line_id] = riga.sale_line_id
+                movimenti_filtrati.append(riga)
+        return movimenti_filtrati
+
+    def _righe_sale_line(self, righe_ddt, filtro):
+        righe_filtrate = []
+        for riga in righe_ddt:
+            if riga.sale_line_id == filtro.sale_line_id:
+                righe_filtrate.append(riga)
+        return righe_filtrate
+
+    def _get_description_line(self, object):
+        res = False
+        if object.sale_line_id.with_bom:
+            res = object.sale_line_id.name
+        return res
+
         
     def _get_description(self, order_name):
         order_obj = self.pool['sale.order']
