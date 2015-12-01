@@ -65,7 +65,6 @@ class account_invoice(orm.Model):
 
     def action_reopen(self, cr, uid, ids, *args):
         _logger = logging.getLogger(__name__)
-        import pdb; pdb.set_trace()
         context = self.pool['res.users'].context_get(cr, uid)
         attachment_obj = self.pool['ir.attachment']
         account_move_obj = self.pool['account.move']
