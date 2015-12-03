@@ -47,7 +47,7 @@
                     <field name="backorder_id" readonly="1" groups="base.group_extended"/>
                 </field>
                 <field name="stock_journal_id" position="replace">
-                    <field name="stock_journal_id" groups="base.group_extended"
+                    <field name="stock_journal_id" required="1"
                     on_change="onchange_stock_journal(stock_journal_id,state)" widget="selection"/>
                 </field>
             </field>
