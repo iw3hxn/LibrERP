@@ -24,6 +24,7 @@
 from openerp.osv import orm, fields
 from tools.translate import _
 
+
 class mass_object(orm.Model):
     _name = "mass.object"
 
@@ -95,6 +96,11 @@ class mass_object(orm.Model):
                     ir_values_obj.unlink(cr, uid, template.ref_ir_value.id, context)
             except:
                 raise orm.except_orm(_("Warning"), _("Deletion of the action record failed."))
+        return True
+
+    def unlink(self, cr, uid, ids, context):
+        self.unlink_action(cr, uid, ids, context=None)
+        super(mass_object, self).unlink(cr, uid, ids, context=context)
         return True
 
 
