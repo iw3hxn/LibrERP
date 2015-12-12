@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <act_window name="Merge order"
+                    res_model="order.merge"
+                    src_model="sale.order"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="sale_merge_act_window"/>
+    </data>
+</openerp>
