@@ -438,7 +438,7 @@ msgstr "Loc. di Destinazione"
 #: view:asset.asset:0
 #: field:asset.asset,image:0
 msgid "Image"
-msgstr "Imagine"
+msgstr "Immagine"
 
 #. module: material_asset
 #: model:ir.model,name:material_asset.model_project_place

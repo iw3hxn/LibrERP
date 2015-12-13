@@ -26,7 +26,7 @@
                     <field name="code"/>
                     <field name="has_date_option" />
 
-                    <field name="asset_product_ids" nolabel="1" colspan="4">
+                    <field name="asset_product_ids" nolabel="1" readonly="1" colspan="4">
                         <tree string="Asset Products:">
                             <field name="name" />
                         </tree>
