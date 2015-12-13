@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="product_catalog_form">
+            <field name="name">product.catalog.view.form</field>
+            <field name="type">form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field groups="base.group_extended" name="variants" position="after">
+                    <field name="catalog" groups="base.group_extended"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="product_catalog_tree">
+            <field name="name">product.catalog.view.tree</field>
+            <field name="type">tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+
+                <field name="state" position="after">
+                    <field name="catalog"/>
+                </field>
+
+            </field>
+        </record>
+
+        <record id="product_catalog_search" model="ir.ui.view">
+            <field name="name">product.catalog.view.search</field>
+            <field name="model">product.product</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search[@string='Product']//filter[@string='Services']" position="before">
+                    <filter name="catalog" icon="terp-stock_symbol-selection" domain="[('catalog','=',True)]"
+                            string="Catalog"/>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
