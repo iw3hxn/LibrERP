@@ -19,7 +19,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import res_company
-import wizard
-import report
+from . import res_company
+from . import wizard
+from . import report
+from . import product
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

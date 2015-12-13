@@ -27,15 +27,12 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
+from openerp.osv import orm, fields
 
 
-class res_company(osv.osv):
+class res_company(orm.Model):
     _inherit = 'res.company'
     _columns = {
         'report_footer_line1': fields.char("Footer Line 1", size=256),
         'report_footer_line2': fields.char("Footer Line 2", size=256),
     }
-   
-res_company()

@@ -19,16 +19,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import osv, fields
+from openerp.osv import orm, fields
 
 
-class product_catalog_wizard(osv.osv_memory):
+class product_catalog_wizard(orm.TransientModel):
     _name = 'product.catalog.wizard'
     _description = '#print Product Catalog Report'
 
     _columns = {
-        'name': fields.char('Name', size = 128, required=False, readonly=True),
-        'category_id': fields.many2one('product.category', 'Category Type', required=True),
+        'name': fields.char('Name', size=128, required=False, readonly=True),
+        'category_id': fields.many2one('product.category', 'Category Type', ),
         'pricelist_id': fields.many2one('product.pricelist', 'Pricelist 1'),
         'pricelist_id2': fields.many2one('product.pricelist', 'Pricelist 2'),
     }
@@ -40,16 +40,15 @@ class product_catalog_wizard(osv.osv_memory):
     }
 
     def print_report(self, cr, uid, ids, context=None):
-        print ids
-        print context
+
         if context is None:
             context = {}
         datas = {'ids': context.get('active_ids', [])}
-        print datas
+
         res = self.read(cr, uid, ids, ['category_id', 'pricelist_id', 'pricelist_id2'], context=context)
-        print res
+
         res = res and res[0] or {}
-        print res
+
         datas['form'] = res
         datas['form']['ids'] = context.get('active_ids', [])
         report_name = res['pricelist_id2'] and 'product.catalog.extend2' or 'product.catalog.extend'
@@ -58,5 +57,3 @@ class product_catalog_wizard(osv.osv_memory):
             'report_name': report_name,
             'datas': datas,
         }
-
-product_catalog_wizard()

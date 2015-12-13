@@ -25,7 +25,7 @@ from report import report_sxw
 import pooler
 import pprint
 
-from osv import osv, fields
+from openerp.osv import orm, fields
 import decimal_precision as dp
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -37,7 +37,7 @@ pp = pprint.PrettyPrinter(indent=4)
 #    from StringIO import StringIO
 
 
-class product_product(osv.osv):
+class product_product(orm.TransientModel):
     _name = 'product.product'
     _inherit = 'product.product'
 
@@ -95,16 +95,18 @@ class product_catalog_report(report_sxw.rml_parse):
         for i in lista:
             if lista.count(i) > 1:
                 lista.remove(i)
-                Elimina()
+                # Elimina()
         return lista
 
     def get_categories(self, form):
+        import pdb; pdb.set_trace()
         category = form.get('category_id', False)
         self.pricelist_id = form.get('pricelist_id', False)
         self.pricelist_id2 = form.get('pricelist_id2', False)
         lst = []
         if not category:
-            return lst
+            lst = self.pool['product.category'].search(self.cr, self.uid, [])
+            return self.pool['product.category'].browse(self.cr, self.uid, lst)
 
         lst = self.setCat([category[0]])
         # cat_ids = self.pool['product.category'].search(self.cr, self.uid, [('id', 'in', lst)])
@@ -123,6 +125,7 @@ class product_catalog_report(report_sxw.rml_parse):
         prod_ids = self.pool.get('product.product').search(self.cr, self.uid, [
             ('product_tmpl_id', 'in', prod_tmpIDs),
             ('sale_ok', '=', True),
+            ('catalog', '=', True)
         ], order='name')
         price_context = {}
         if self.pricelist_id:

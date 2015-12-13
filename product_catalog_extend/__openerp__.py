@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Product Catalog Report',
-    'version': '6.1.5',
+    'version': '3.6.1.5',
     'category': 'General',
     'description': """
         A report of product catalog to list the products with images and price appropriatly to the assinged pricelist.
@@ -32,14 +32,12 @@
     'depends': [
         'base', 'sale', 'product',
     ],
-    'init_xml': [
+    'data': [
         'res_company_view.xml',
+        'product_view.xml',
         'wizard/product_catalog_wizard.xml',
     ],
-    'update_xml': [
-        'res_company_view.xml',
-        'wizard/product_catalog_wizard.xml',
-    ],
+
     'demo_xml': [],
     'installable': True,
     'active': False,
