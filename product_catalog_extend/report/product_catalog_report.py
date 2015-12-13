@@ -37,7 +37,7 @@ pp = pprint.PrettyPrinter(indent=4)
 #    from StringIO import StringIO
 
 
-class product_product(orm.TransientModel):
+class product_product(orm.Model):
     _name = 'product.product'
     _inherit = 'product.product'
 
@@ -99,7 +99,6 @@ class product_catalog_report(report_sxw.rml_parse):
         return lista
 
     def get_categories(self, form):
-        import pdb; pdb.set_trace()
         category = form.get('category_id', False)
         self.pricelist_id = form.get('pricelist_id', False)
         self.pricelist_id2 = form.get('pricelist_id2', False)
