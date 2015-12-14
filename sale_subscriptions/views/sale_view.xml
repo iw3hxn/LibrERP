@@ -80,5 +80,29 @@
             </field>
         </record>
 
+        <record id="view_subscription_tree" model="ir.ui.view">
+            <field name="name">subscription.tree</field>
+            <field name="model">sale.order.line</field>
+            <!--<field name="inherit_id" ref="sale.view_order_tree"/>-->
+            <field name="type">tree</field>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <tree string="Subscriptions">
+                    <field name="order_id"/>
+                    <field name="order_start_date" />
+                    <field name="order_duration" />
+                    <field name="order_end_date" />
+                    <field name="partner_id"/>
+                    <field name="name" />
+                    <field name="price_unit" />
+                    <field name="price_subtotal" />
+                    <field name="user_id" />
+                    <field name="section_id" />
+                    <field name="suspended" invisible="True" />
+                    <button name="action_dummy" string="Suspend" type="object" icon="STOCK_YES" attrs="{'invisible': [('suspended', '=', True)]}" />
+                    <button name="action_dummy" string="Restore" type="object" icon="kanban-pause" attrs="{'invisible': [('suspended', '=', False)]}" />
+                </tree>
+            </field>
+        </record>
     </data>
 </openerp>

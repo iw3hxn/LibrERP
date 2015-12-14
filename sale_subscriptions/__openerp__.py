@@ -23,7 +23,7 @@
 
 {
     "name": "Subscrption Sale",
-    "version": "3.2.16.9",
+    "version": "3.2.17.10",
     "author": "Agile Business Group & Domsense & Didotech",
     'website': 'http://www.didotech.com',
     'category': 'Generic Modules/Sales & Purchases',
@@ -41,7 +41,8 @@
     'data': [
         "security/ir.model.access.csv",
         'product_view.xml',
-        'sale_view.xml',
+        'views/sale_view.xml',
+        'views/sale_order_menu.xml',
         'orders_renew.xml',
         'cron.xml',
         'company_view.xml'

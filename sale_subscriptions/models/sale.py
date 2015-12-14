@@ -93,7 +93,21 @@ class sale_order_line(orm.Model):
         'subscription': fields.related('product_id', 'subscription', type='boolean', string=_('Subscription')),
         'automatically_create_new_subscription': fields.boolean(_('Automatically create new subscription')),
         'price_subtotal': fields.function(_amount_line, method=True, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
-        'suspended': fields.boolean(_('Suspended'))
+        'suspended': fields.boolean(_('Suspended')),
+        'partner_id': fields.related('order_id', 'partner_id', 'name', type='char', string=_('Customer')),
+        'order_start_date': fields.related('order_id', 'order_start_date', type='date', string=_('Order Start')),
+        'order_duration': fields.related('order_id', 'order_duration', type='selection', string=_('Duration'), selection=[
+            (30, '1 month'),
+            (60, '2 months'),
+            (90, '3 months'),
+            (180, '6 months'),
+            (365, '1 year'),
+            (730, '2 years')
+        ]),
+        'order_end_date': fields.related('order_id', 'order_end_date', type='date', string=_('Order End')),
+
+        'user_id': fields.related('order_id', 'user_id', 'name', type='char', string=_('Salesman')),
+        'section_id': fields.related('order_id', 'section_id', 'name', type='char', string=_('Sales Team'))
     }
 
     _defaults = {
@@ -232,6 +246,9 @@ class sale_order_line(orm.Model):
                 if product.subscription and not order_line.order_id.have_subscription:
                     raise orm.except_orm(_('Error'), _("You've added subscriptable product to an order which has no Payments in Installments"))
         return super(sale_order_line, self).write(cr, uid, ids, values, context)
+
+    def action_dummy(self, cr, uid, line_ids, context):
+        return True
 
 
 class sale_order(orm.Model):

@@ -1,0 +1,17 @@
+<openerp>
+    <data>
+
+        <record id="action_view_subscriptions" model="ir.actions.act_window">
+            <field name="name">Subscriptions</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_subscription_tree"/>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="domain">[('subscription', '=', True), ('state', '=', 'confirmed')]</field>
+        </record>
+        <menuitem action="action_view_subscriptions" id="menu_subscriptions" parent="base.menu_sales" sequence="10" />
+
+    </data>
+</openerp>
