@@ -73,7 +73,7 @@ class sale_order(orm.Model):
                 if merge_lines and len(
                         mrg_pdt_ids) == 1 and order.shop_id == parent.shop_id:  # product found --> add quantity
                     sale_order_line_obj.write(cr, uid, mrg_pdt_ids, {
-                        'quantity': sale_order_line_obj._can_merge_quantity(cr, uid, mrg_pdt_ids[0], order_line.id)},
+                        'product_uom_qty': sale_order_line_obj._can_merge_quantity(cr, uid, mrg_pdt_ids[0], order_line.id)},
                                               context)
                     sale_order_line_obj.unlink(cr, uid, [order_line.id])
                 else:
@@ -97,19 +97,19 @@ class sale_order(orm.Model):
         return parent.id
 
 
-class account_invoice_line(orm.Model):
-    _inherit = "account.invoice.line"
+class sale_order_line(orm.Model):
+    _inherit = "sale.order.line"
 
     def _can_merge_quantity(self, cr, uid, id1, id2, context=None):
         qty = False
-        invl1 = self.browse(cr, uid, id1)
-        invl2 = self.browse(cr, uid, id2)
+        order1 = self.browse(cr, uid, id1, context)
+        order2 = self.browse(cr, uid, id2, context)
 
-        if invl1.product_id.id == invl2.product_id.id \
-                and invl1.price_unit == invl2.price_unit \
-                and invl1.uos_id.id == invl2.uos_id.id \
-                and invl1.discount == invl2.discount:
-            qty = invl1.quantity + invl2.quantity
+        if order1.product_id.id == order2.product_id.id \
+                and order1.price_unit == order2.price_unit \
+                and order1.product_uom.id == order2.product_uom.id \
+                and order1.discount == order2.discount:
+            qty = order1.product_uom_qty + order2.product_uom_qty
         return qty
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
