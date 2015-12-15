@@ -118,6 +118,7 @@
                     <field name="order_duration" />
                     <field name="order_end_date" />
                     <field name="partner_id"/>
+                    <field name="product_id" invisible="1" />
                     <field name="name" />
                     <field name="price_unit" />
                     <field name="price_subtotal" />

@@ -94,7 +94,7 @@ class sale_order_line(orm.Model):
         'automatically_create_new_subscription': fields.boolean(_('Automatically create new subscription')),
         'price_subtotal': fields.function(_amount_line, method=True, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
         'suspended': fields.boolean(_('Suspended')),
-        'partner_id': fields.related('order_id', 'partner_id', 'name', type='char', string=_('Customer'), ),
+        'partner_id': fields.related('order_id', 'partner_id', 'name', type='char', string=_('Customer'), store=True),
         'order_start_date': fields.related('order_id', 'order_start_date', type='date', string=_('Order Start')),
         'order_duration': fields.related('order_id', 'order_duration', type='selection', string=_('Duration'), selection=[
             (30, '1 month'),
