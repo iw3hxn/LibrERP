@@ -80,6 +80,31 @@
             </field>
         </record>
 
+        <record id="view_subscription_search" model="ir.ui.view">
+            <field name="name">subscription.search</field>
+            <field name="model">sale.order.line</field>
+            <field name="type">search</field>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <filter icon="terp-gtk-go-back-rtl" string="Suspended" domain="[('suspended','=', True)]" name="Suspended" help="Suspended Sale Order Line"/>
+                    <field name="order_id"/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    <field name="user_id"/>
+                    <field name="section_id"/>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Product" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'product_id'}"/>
+                        <filter string="Order" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'order_id'}"/>
+                        <filter string="Customer" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'customer_id'}"/>
+                        <filter string="Internal User" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Sales Team" icon="terp-personal" domain="[]" context="{'group_by':'section_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record id="view_subscription_tree" model="ir.ui.view">
             <field name="name">subscription.tree</field>
             <field name="model">sale.order.line</field>
