@@ -293,7 +293,10 @@ msgstr "Aspetto dei Beni"
 #: field:res.partner,goods_description_id:0
 #: field:sale.order,goods_description_id:0
 #: field:stock.picking,goods_description_id:0
-msgid "Description of goods"
+#: model:ir.actions.act_window,name:stock_picking_extended.action_goods_description_tree
+#: model:ir.ui.menu,name:stock_picking_extended.menu_action_good_description_tree
+#: view:stock.picking.goods_description:0
+msgid "Descriptions of Goods"
 msgstr "Aspetto dei Beni"
 
 #. module: stock_picking_extended

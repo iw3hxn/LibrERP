@@ -144,7 +144,7 @@ msgstr "Prodotto"
 #: field:sale.order.line,order_start_date:0
 #, python-format
 msgid "Order Start"
-msgstr "Inizia"
+msgstr "Data Inizio"
 
 #. module: sale_subscriptions
 #: help:sale.order,order_duration:0
@@ -292,7 +292,7 @@ msgstr "Data Conclusiva"
 #: field:sale.order.line,order_end_date:0
 #, python-format
 msgid "Order End"
-msgstr "Conclusione"
+msgstr "Data Fine"
 
 #. module: sale_subscriptions
 #: model:ir.actions.act_window,name:sale_subscriptions.action_view_subscriptions
@@ -337,7 +337,7 @@ msgstr "Sospeso"
 #: field:sale.order.line,order_duration:0
 #, python-format
 msgid "Duration"
-msgstr "Duration"
+msgstr "Durata"
 
 #. module: sale_subscriptions
 #: view:sale.order:0
@@ -355,7 +355,7 @@ msgstr "2 Anni"
 #: field:sale.order.line,user_id:0
 #, python-format
 msgid "Salesman"
-msgstr "Salesman"
+msgstr "Utente"
 
 #. module: sale_subscriptions
 #: model:ir.model,name:sale_subscriptions.model_sale_order_line
