@@ -87,8 +87,6 @@ class Parser(report_sxw.rml_parse):
 
     def _get_description_line(self, object):
         res = False
-        if object.sale_line_id.with_bom:
-            res = object.sale_line_id.name
         return res
 
         
