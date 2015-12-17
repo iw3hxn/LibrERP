@@ -1040,7 +1040,7 @@ msgstr "Opzioni di Analisi Liquidazione"
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:97
 #: report:addons/account_financial_report_webkit/report/templates/account_report_partners_ledger.mako:106
 msgid "Journal"
-msgstr "Giornale"
+msgstr "Registro"
 
 #. module: account_financial_report_webkit
 #: field:general.ledger.webkit,amount_currency:0
