@@ -29,7 +29,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-import time, datetime
+from datetime import datetime
 import re
 import netsvc
 LOGGER = netsvc.Logger()
@@ -77,8 +77,8 @@ def get_relational_value(self, cr, uid, ids, field_name, arg, context=None):
                         obj_name = ('', 'Unknown record type')
                         
                     if obj_name and len(obj_name) > 1 :
-                        #print (record['id'], "[ " + model_name + " ] " + obj_name[1])
-                        #res.append((record['id'], "[ " + model_name + " ] " + obj_name[1]))
+                        # print (record['id'], "[ " + model_name + " ] " + obj_name[1])
+                        # res.append((record['id'], "[ " + model_name + " ] " + obj_name[1]))
                         res.append((record['id'], obj_name[1]))
                     else:
                         res.append((record['id'], ''))
@@ -117,9 +117,9 @@ def search_location(self, cr, uid, obj, name, args, context):
         'res.partner': {'field': 'name'},
         'hr.employee': {'query_start': """SELECT hr_employee.id FROM {model} LEFT JOIN resource_resource 
             ON resource_resource.id = hr_employee.resource_id """, 'field': 'name'},
-        'res.partner.contact': {'field': 'name'}, # may be in the future we should add first_name also
+        'res.partner.contact': {'field': 'name'},  # may be in the future we should add first_name also
         'stock.location': {'field': 'name'},
-        'res.car': {'field': 'plate'}, # search car by the plate
+        'res.car': {'field': 'plate'},  # search car by the plate
         'project.place': {'query_start': """SELECT project_place.id FROM {model} LEFT JOIN res_partner_address 
             ON res_partner_address.id = project_place.address_id """, 'field': 'res_partner_address.name'},
         'project.plant': {'query_start': """SELECT project_plant.id FROM {model} LEFT JOIN res_partner_address 
@@ -178,7 +178,7 @@ class res_sim_location(orm.Model):
     
     def write(self, cr, uid, ids, vals, context=None):
         if 'model' in vals:
-            raise orm.except_orm(_('Error !'),_('You cannot modify the Object linked to the Document Type!\nCreate another Document instead !'))
+            raise orm.except_orm(_('Error !'), _('You cannot modify the Object linked to the Document Type!\nCreate another Document instead !'))
         return super(res_sim_location, self).write(cr, uid, ids, vals, context=context)
 
 def _get_location(self, cr, uid, context=None):
@@ -295,13 +295,13 @@ class res_sim(orm.Model):
                 if model_name and model_name == 'hr.employee':
                     with_emp = True
             except:
-                LOGGER.notifyChannel(self._name, netsvc.LOG_ERROR,repr(traceback.extract_tb(sys.exc_traceback)))
+                LOGGER.notifyChannel(self._name, netsvc.LOG_ERROR, repr(traceback.extract_tb(sys.exc_traceback)))
             res.append((record['id'], with_emp))
         return dict(res)
     
     def name_get(self, cr, uid, ids, context=None):
         res = []
-        for sim in self.browse(cr, uid, ids):
+        for sim in self.browse(cr, uid, ids, context):
             res.append((sim.id, '[' + sim.sim_internal_number + '] ' + sim.prefix_number + ' ' + sim.number))
         return res
     
@@ -310,13 +310,17 @@ class res_sim(orm.Model):
         return dict(res)
     
     def get_united_field(self, cr, uid, ids, field_name, fields_to_unite, context=None):
+
+        if not context:
+            context = {}
+
         if not len(ids):
             return {}
         res = {}
         
         reads = self.read(cr, uid, ids, ['id'] + fields_to_unite, context=context)
         for record in reads:
-            united_field =[record[field].strip() for field in fields_to_unite if record[field]]
+            united_field = [record[field].strip() for field in fields_to_unite if record[field]]
             if united_field:
                 res[record['id']] = ' '.join(united_field)
             else:
@@ -342,9 +346,10 @@ class res_sim(orm.Model):
         re_parent = re.compile(args[0][2], re.IGNORECASE)
         
         sim_ids = {}
-        all_sim_ids = self.search(cr, uid, [])
+        all_sim_ids = self.search(cr, uid, [], context=context)
         
         parents = self.pool['asset.asset'].get_asset_parents(cr, uid, all_sim_ids, field_name, 'res.sim', context)
+
         for child_id in all_sim_ids:
             if parents[child_id]:
                 # remove direct matching:
@@ -376,11 +381,10 @@ class res_sim(orm.Model):
         'puk': fields.char("Puk", size=8, required=True),
         'subscription_type_id': fields.many2one('res.sim.subscription.type', 'Subscription Type'),
         'sim_type_id': fields.many2one('res.sim.type', 'Sim Type'), 
-        'sim_use_id' : fields.many2one('res.sim.use', 'Utilizzo'),
+        'sim_use_id': fields.many2one('res.sim.use', 'Utilizzo'),
         'apn_group_id': fields.many2one('res.sim.apn_group', 'APN Group'), 
-        #'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
-        'employee_id': fields.function(_get_employee, method=True, string="Employee", type="many2one", relation="hr.employee",
-                                    ),
+        # 'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
+        'employee_id': fields.function(_get_employee, method=True, string="Employee", type="many2one", relation="hr.employee"),
         'subscription_start_date': fields.date("Start Date"),
         'subscription_end_date': fields.date("End Date"),
         'note': fields.text('Note'),
@@ -390,7 +394,7 @@ class res_sim(orm.Model):
         'voice': fields.boolean('Voice'),
         'payment_ids': fields.one2many('res.sim.payment', 'sim_id', 'Payment History'),
         'sim_moves': fields.one2many('res.sim.move.line', 'sim_id', string='Sim Moves', readonly=True),
-        "location": fields.reference("Matching", selection = _get_location, size=128, readonly=True),
+        'location': fields.reference("Matching", selection=_get_location, size=128, readonly=True),
         'location_name': fields.function(get_relational_value, arg={'field_name': 'location'}, fnct_search=search_location, method=True, type="char", string="Matching"),
         'parents': fields.function(_get_parents, fnct_search=_search_by_parent, method=True, string='Parents', type='char'),
         'with_employee': fields.function(_check_with_employee, method=True, type="boolean", string="With Employee?"),
@@ -398,7 +402,7 @@ class res_sim(orm.Model):
     }
 
     _defaults = {
-        'sim_internal_number' : _get_number,
+        'sim_internal_number': _get_number,
         'default': 0,
         'data': 1,
         'voice': 1,
@@ -406,7 +410,7 @@ class res_sim(orm.Model):
 
     _sql_constraints = [
         ('imei_uniq', 'unique(imei)', 'ICCID Code must be unique !'),
-        ('sim_internal_number', 'unique(sim_internal_number)' , 'SIM Internal Code must be unique !'),
+        ('sim_internal_number', 'unique(sim_internal_number)', 'SIM Internal Code must be unique !'),
     ]
 
     _order = "prefix_number asc, number asc, prefix_fax_number asc, fax_number asc, prefix_data_number asc, data_number asc" 
@@ -416,12 +420,12 @@ class res_sim(orm.Model):
             if sim['employee_id']:
                 sim_ids = self.search(cr, uid, [('employee_id', '=', sim['employee_id'][0])], context=context)
                 self.pool['hr.employee'].write(cr, uid, [sim['employee_id'][0]], {'work_phone': sim['prefix_number'] + sim['number']}, context=context)
-                self.write(cr, uid, sim_ids, {'default':False}, context=context)
-                self.write(cr, uid, [sim['id']], {'default':True}, context=context)
+                self.write(cr, uid, sim_ids, {'default': False}, context=context)
+                self.write(cr, uid, [sim['id']], {'default': True}, context=context)
         return True
 
     def _check_dates(self, cr, uid, ids, context=None):
-        for i in self.read(cr, uid, ids, ['has_date_option','subscription_start_date', 'subscription_end_date'], context=context):
+        for i in self.read(cr, uid, ids, ['has_date_option', 'subscription_start_date', 'subscription_end_date'], context=context):
             if i['has_date_option'] and i['subscription_start_date'] >= i['subscription_end_date']:
                 return False
         return True
@@ -433,7 +437,8 @@ class res_sim(orm.Model):
         if subscription_type_id:
             subscription_type_obj = self.pool['res.sim.subscription.type']
             subscription_type = subscription_type_obj.browse(cr, uid, [subscription_type_id], context)
-            if subscription_type and subscription_type[0].has_date_option == True: has_date_option = True
+            if subscription_type and subscription_type[0].has_date_option:
+                has_date_option = True
         return {'value': {'has_date_option': has_date_option}}
         
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
@@ -449,7 +454,7 @@ class res_sim(orm.Model):
         
         query_arg = []
         for arg in args:
-            if arg and len(arg)==3 and arg[0] in field_to_sql.keys() and arg[1]=='ilike':
+            if arg and len(arg) == 3 and arg[0] in field_to_sql.keys() and arg[1] == 'ilike':
                 values = []
                 field_values = arg[2].split(',')
                 
@@ -478,15 +483,15 @@ class res_sim(orm.Model):
         return super(res_sim, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
 
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
-        ## This is the right way, but requires rewriting of the search function: 
-        #sim_ids = self.search(cr, uid, ['|', '|', ('sim_internal_number', 'ilike', name), ('prefix_number', 'ilike', name), ('number', 'ilike', name)])
+        # This is the right way, but requires rewriting of the search function:
+        # sim_ids = self.search(cr, uid, ['|', '|', ('sim_internal_number', 'ilike', name), ('prefix_number', 'ilike', name), ('number', 'ilike', name)])
         sim_ids = self.search(cr, uid, [('sim_internal_number', 'ilike', name + '%')])
         sims = self.browse(cr, uid, sim_ids)
         res = [(sim.id, '[' + sim.sim_internal_number + '] ' + sim.prefix_number + ' ' + sim.number) for sim in sims]
         return res
         
     def write(self, cr, uid, ids, vals, context=None):
-        if vals.has_key('location') and vals['location'] and not ',' in vals['location']:
+        if 'location' in vals and vals['location'] and not ',' in vals['location']:
             del vals['location']
         return super(res_sim, self).write(cr, uid, ids, vals, context)
 
@@ -519,7 +524,7 @@ class res_sim_payment(orm.Model):
             return {}
         for payment in self.read(cr, uid, ids, ['id'] + self._year):
             total_year = payment.get('jan', 0)
-            total_year += payment.get('feb' ,0)
+            total_year += payment.get('feb', 0)
             total_year += payment.get('mar', 0)
             total_year += payment.get('apr', 0)
             total_year += payment.get('may', 0)
@@ -539,8 +544,8 @@ class res_sim_payment(orm.Model):
             return {}
         
         for payment in self.read(cr, uid, ids, ['id', 'type', 'sum_of_year'] + self._year):
-            #print payment
-            #check =  payment.get('jan', 0) >= 0 and \
+            # print payment
+            # check =  payment.get('jan', 0) >= 0 and \
             #    payment.get('feb', 0) >= 0 and \
             #    payment.get('mar', 0) >= 0 and \
             #    payment.get('apr', 0) >= 0 and \
@@ -552,7 +557,7 @@ class res_sim_payment(orm.Model):
             #    payment.get('nov', 0) >= 0 and \
             #    payment.get('dec', 0) >= 0 and True or False
             
-            if  payment.get('type', 'customer') == 'sum':
+            if payment.get('type', 'customer') == 'sum':
                 res[payment['id']] = payment.get('sum_of_year', 0) < 0
             else:
                 res[payment['id']] = False
@@ -572,10 +577,10 @@ class res_sim_payment(orm.Model):
         if not ids:
             return res,
         for pay in self.read(cr, uid, ids, ['type', 'year', 'sim_id'] + self._year, context=context):
-            type = pay["type"]
+            type = pay['type']
             year = pay['year']
             sim_id = pay['sim_id'][0]
-            if type=="customer" and year > 0:
+            if type == "customer" and year > 0:
                 supplier_payment_ids = self.search(cr, uid, [('type', '=', 'supplier'), ('year', '=', year), ('sim_id', '=', sim_id)])
                 if supplier_payment_ids:
                     supplier_payment = self.read(cr, uid, supplier_payment_ids[0], context=context)
@@ -617,9 +622,9 @@ class res_sim_payment(orm.Model):
             return {}
         result = {}
         
-        payments = self.browse(cr, uid, ids)
+        payments = self.browse(cr, uid, ids, context)
         for p in payments:
-            #result[p.id] = p.sim_id.sim_type_id.name
+            # result[p.id] = p.sim_id.sim_type_id.name
             result[p.id] = p.sim_id.sim_type_id.id
             
         return result
@@ -745,15 +750,15 @@ class res_sim_payment(orm.Model):
 
     _defaults = {
         'year': lambda * a: datetime.now().year,
-        'sim_id' : lambda self, cr, uid, context: context.get('default_sim_id',False) or False,
-        #'month': lambda * a: datetime.now().month,
-        'payment_date': fields.date.context_today,
+        'sim_id': lambda self, cr, uid, context: context.get('default_sim_id' ,False) or False,
+        # 'month': lambda * a: datetime.now().month,
+        # 'payment_date': fields.date.context_today,
     }
     _order = 'year desc, sequence, id'
     
     def write(self, cr, uid, ids, vals, context=None):
-        for payment in self.browse(cr,uid,ids,context=context):
-            is_year_changed = vals.has_key('year') and vals.get('year',payment.year) != payment.year or False
+        for payment in self.browse(cr, uid, ids, context=context):
+            is_year_changed = vals.has_key('year') and vals.get('year', payment.year) != payment.year or False
             if payment.type == 'sum':
                 if (vals.has_key('type') and vals.get('type','sum') != 'sum') or is_year_changed:
                     raise orm.except_orm(
@@ -799,7 +804,7 @@ class res_sim_payment(orm.Model):
                     if len(changed_year_sum_payment_ids) > 0:
                         changed_year_payments = self.search(cr, uid, [('type', '!=', 'sum'), ('year', '=', payment.year), ('sim_id', '=', payment.sim_id.id)], context=context)
                         res = { 'jan': 0, 'feb': 0, 'mar': 0, 'apr': 0, 'may': 0, 'jun': 0, 'jul': 0, 'aug': 0, 'sep': 0, 'oct': 0, 'nov': 0, 'dec': 0,}
-                        for pay_line in self.read(cr,uid,changed_year_payments, ['id', 'type'] + self._year):
+                        for pay_line in self.read(cr, uid, changed_year_payments, ['id', 'type'] + self._year):
                             is_supplier = pay_line['type'] == 'supplier'
                             res['jan'] += is_supplier and - pay_line['jan'] or pay_line['jan']
                             res['feb'] += is_supplier and - pay_line['feb'] or pay_line['feb']
@@ -821,14 +826,14 @@ class res_sim_payment(orm.Model):
         year = vals.get('year', datetime.now().year)
         sim_id = vals.get('sim_id', 0)
         if not sim_id:
-            raise osv.except_osv(
+            raise orm.except_orm(
                 _('Operation forbidden'),
                 _('You have not defined the sim for given payment line')
             )
         
         sum_payment_ids = self.search(cr, uid, [('type', '=', 'sum'), ('year', '=', year), ('sim_id', '=', sim_id)], context=context)
         if type == 'sum' and len(sum_payment_ids) > 0:
-            raise osv.except_osv(
+            raise orm.except_orm(
                 _('Operation forbidden'),
                 _('You can not add more then one record with type is sum for same year')
             )
