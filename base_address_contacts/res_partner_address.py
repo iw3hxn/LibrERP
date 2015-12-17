@@ -180,6 +180,8 @@ class res_partner_address(orm.Model):
         if not len(ids):
             return []
         res = []
+        if not context:
+            context = {}
         length = context.get('name_lenght', False) or 80
         for record in self.browse(cr, uid, ids, context=context):
             name = record.complete_name or record.name or ''
