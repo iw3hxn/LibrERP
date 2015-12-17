@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2014 Didotech SRL (info at didotech.com)
+# Copyright (c) 2013-2015 Didotech SRL (info at didotech.com)
 #                          All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -48,7 +48,7 @@ class sale_order_confirm_line(orm.TransientModel):
     _name = "sale.order.confirm.line"
     _rec_name = 'product_id'
     _columns = {
-        'order_id': fields.integer('Order Reference'),
+        'order_id': fields.integer(_('Order Reference')),
         'sale_line_id': fields.many2one('sale.order.line', 'Order Line Reference'),
         'product_id': fields.many2one('product.product', string='Product', ondelete='CASCADE'),
         'name': fields.char('Description', size=256, select=True, readonly=True),
@@ -105,7 +105,6 @@ class sale_order_confirm_line(orm.TransientModel):
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
         
         if product_id and sale_order.pricelist_id:
-            
             result['price_unit'] = self.pool['product.pricelist'].price_get(cr, uid, [sale_order.pricelist_id.id],
                                                                             product_id, product_qty or 1.0, sale_order.partner_id.id,
                                                                             dict(
@@ -251,7 +250,7 @@ class sale_order_confirm(orm.TransientModel):
             'partner_shipping_id',
             'confirm_line_qty'
         ])
-        order_id = False
+        new_order_id = False
 
         if sale_order_confirm_data['new_sale_order'] or not sale_order_confirm_data['confirm_line_qty'] == len(sale_order_confirm_data['confirm_line']):
             old_sale_order_data = sale_order_obj.read(cr, uid, sale_order_confirm_data['sale_order_id'], ['shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'sale_version_id', 'version', 'name', 'order_policy', 'picking_policy', 'invoice_quantity', 'section_id', 'categ_id'])
@@ -278,7 +277,7 @@ class sale_order_confirm(orm.TransientModel):
             })
             # qui creo il nuovo sale.order
             context['versioning'] = True
-            order_id = sale_order_obj.create(cr, uid, new_sale_order, context=context)
+            new_order_id = sale_order_obj.create(cr, uid, new_sale_order, context=context)
 
             sequence = 10
             for sale_order_confirm_line_id in sale_order_confirm_data['confirm_line']:
@@ -299,14 +298,14 @@ class sale_order_confirm(orm.TransientModel):
                     'price_unit': sale_order_confirm_line_data.price_unit,
                     'discount': sale_order_confirm_line_data.discount,
                     'sequence': sequence,
-                    'order_id': int(order_id),
+                    'order_id': int(new_order_id),
                     'delay': 7.0,
                     'tax_id': [(6, 0, tax_ids)],
                     'sale_line_copy_id': sale_order_confirm_line_data.sale_line_id.id or None
                 }, context=context)
                 
                 sequence += 1
-            wf_service.trg_validate(uid, 'sale.order', order_id, 'order_confirm', cr)
+            wf_service.trg_validate(uid, 'sale.order', new_order_id, 'order_confirm', cr)
             # wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'cancel', cr)
             sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {'active': False})
         else:
@@ -316,27 +315,23 @@ class sale_order_confirm(orm.TransientModel):
                 'date_order': sale_order_confirm_data['order_date'],
                 'partner_shipping_id': sale_order_confirm_data['partner_shipping_id'][0]
             })
-            wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'order_confirm', cr)
-         
-        mod_obj = self.pool['ir.model.data']
-        res = mod_obj.get_object_reference(cr, uid, 'sale', 'view_order_form')
-        res_id = res and res[1] or False,
 
-        if order_id:
-            result = {
+            wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'order_confirm', cr)
+
+        if new_order_id:
+            view_ids = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale', 'view_order_form')
+            return {
                 'type': 'ir.actions.act_window',
                 'name': 'Sale Order',
                 'view_type': 'form',
                 'view_mode': 'form',
-                'view_id': res_id,
+                'view_id': view_ids and view_ids[1] or False,
                 'res_model': 'sale.order',
                 'nodestroy': True,
                 'target': 'current',
-                'res_id': order_id,
+                'res_id': new_order_id,
             }
         else:
-            result = {
+            return {
                 'type': 'ir.actions.act_window_close'
             }
-
-        return result

@@ -106,7 +106,7 @@
             <field name="act_from" ref="act_validation_router"/>
             <field name="act_to" ref="act_wait_customer"/>
             <field name="signal">order_confirm</field>
-            <field name="condition">check_limit()</field>
+            <field name="condition">check_limit() and state == 'draft'</field>
         </record>
         <record id="trans_validation_router_customer_validation" model="workflow.transition">
             <field name="act_from" ref="act_wait_customer"/>
@@ -117,7 +117,7 @@
             <field name="act_from" ref="act_validation_router"/>
             <field name="act_to" ref="sale.act_router"/>
             <field name="signal">order_confirm</field>
-            <field name="condition">check_validate() and check_limit()</field>
+            <field name="condition">check_validate() and check_limit() and state == 'wait_customer_validation'</field>
         </record>
 
         <record id="sale.trans_draft_router" model="workflow.transition">
