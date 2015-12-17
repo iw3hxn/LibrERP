@@ -109,7 +109,7 @@ msgstr "Importazione Picking"
 #. module: data_migration
 #: field:picking.import,stock_journal_id:0
 msgid "Stock Journal"
-msgstr "Giornale di Magazzino"
+msgstr "Causale Movimentazione"
 
 #. module: data_migration
 #: selection:partner.import,state:0

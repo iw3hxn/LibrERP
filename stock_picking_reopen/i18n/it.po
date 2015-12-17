@@ -24,7 +24,7 @@ msgstr "Non puoi riaprire questa presa, perchè il prodotto \"%s\" è stato succ
 #. module: stock_picking_reopen
 #: model:ir.model,name:stock_picking_reopen.model_stock_journal
 msgid "Stock Journal"
-msgstr "Giornale di magazzino"
+msgstr "Causale Movimentazione"
 
 #. module: stock_picking_reopen
 #: help:stock.journal,reopen_posted:0
@@ -76,4 +76,4 @@ msgstr "Non puoi riportare in bozza una presa che è già stata fatturata !"
 #: code:addons/stock_picking_reopen/stock.py:59
 #, python-format
 msgid "You cannot reset to draft pickings of this journal ! Please check \"Allow Update of Posted Pickings\" in Warehous Configuration / Stock Journals %s"
-msgstr "Non puoi riportare prese in bozza di questo Giornale ! Per favore verifica \"Permette l'aggiornamento di prese già eseguite\" nella configurazione del giornale di magazzino %s"
+msgstr "Non puoi riportare prese in bozza di questo Giornale ! Per favore verifica \"Permette l'aggiornamento di prese già eseguite\" nella configurazione nella Causale Movimentazione %s"

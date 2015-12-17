@@ -66,7 +66,7 @@ msgstr "Data DDT"
 #. module: l10n_it_sale
 #: model:ir.model,name:l10n_it_sale.model_stock_journal
 msgid "Stock Journal"
-msgstr "Giornale di magazzino"
+msgstr "Causale Movimentazione"
 
 #. module: l10n_it_sale
 #: field:stock.picking,ddt_in_date:0

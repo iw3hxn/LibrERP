@@ -9565,7 +9565,7 @@ msgstr "Totale errato !"
 #. module: account
 #: field:account.journal,sequence_id:0
 msgid "Entry Sequence"
-msgstr "Sequenza Scrittura"
+msgstr "Contatore Protocolli"
 
 #. module: account
 #: model:ir.actions.act_window,help:account.action_account_period_tree
@@ -9610,7 +9610,6 @@ msgstr "Confronto"
 
 #. module: account
 #: code:addons/account/account_invoice.py:439
-#: code:addons/account/account_invoicexxx.py:439
 #, python-format
 msgid "Unknown Error"
 msgstr "Errore sconosciuto"

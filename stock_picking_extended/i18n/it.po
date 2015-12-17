@@ -138,7 +138,7 @@ msgstr " del "
 #: field:stock.picking,transportation_condition_id:0
 #: model:ir.model,name:stock_picking_extended.model_stock_picking_transportation_condition
 msgid "transportation Condition"
-msgstr "Condizioni di trasporto"
+msgstr "Trasporto a cura di"
 
 #. module: stock_picking_extended
 #: field:account.invoice,weight_net:0
@@ -203,7 +203,7 @@ msgstr "Da Fatturare"
 #: model:ir.ui.menu,name:stock_picking_extended.menu_action_transportation_condition_tree
 #: view:stock.picking.transportation_condition:0
 msgid "Conditions for transportation"
-msgstr "Condizioni di Trasporto"
+msgstr "Trasporto a cura di"
 
 #. module: stock_picking_extended
 #: view:purchase.order:0
@@ -213,7 +213,7 @@ msgstr "Picking list"
 #. module: stock_picking_extended
 #: model:ir.model,name:stock_picking_extended.model_stock_journal
 msgid "Stock Journal"
-msgstr "Giornale di magazzino"
+msgstr "Causale Movimentazione"
 
 #. module: stock_picking_extended
 #: view:account.invoice:0
@@ -339,4 +339,4 @@ msgstr "Data prevista"
 #: model:ir.model,name:stock_picking_extended.model_stock_picking_transportation_condition
 #: field:stock.picking.transportation_condition,name:0
 msgid "Transportation Condition"
-msgstr "Condizioni di Trasporto"
+msgstr "Trasporto a cura di"
