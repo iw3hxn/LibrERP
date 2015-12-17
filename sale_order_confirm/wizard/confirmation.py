@@ -150,6 +150,7 @@ class sale_order_confirm(orm.TransientModel):
         'sale_order_id': fields.integer('Order'),
         'new_sale_order': fields.boolean('New Sale Order'),
         'confirm_line': fields.one2many('sale.order.confirm.line', 'wizard_id', 'Products'),
+        'confirm_line_qty': fields.integer('Confirm line qty')
     }
     
     def get_generic_product(self, cr, uid):
@@ -216,18 +217,20 @@ class sale_order_confirm(orm.TransientModel):
                 'tax_id': tax_id,
                 'price_subtotal': products_price - discount_price
             })
+
+        res['confirm_line_qty'] = len(sale_order_confirm_line_list)
         res.update(confirm_line=sale_order_confirm_line_list)
         return res
     
     def onchange_line(self, cr, uid, ids, confirm_lines):
         result = {
-            'new_sale_order': False
+            'new_sale_order': False,
         }
 
         for confirm_line in confirm_lines:
             if (isinstance(confirm_line[2], dict)) and ('changed' in confirm_line[2]) and (confirm_line[2]['changed']):
                 result['new_sale_order'] = True
-            elif confirm_line[0] == 5:
+            elif confirm_line[0] == 2:
                 result['new_sale_order'] = True
 
         return {'value': result}
@@ -238,10 +241,19 @@ class sale_order_confirm(orm.TransientModel):
         sale_order_confirm_line_obj = self.pool['sale.order.confirm.line']
         wf_service = netsvc.LocalService("workflow")
         
-        sale_order_confirm_data = self.read(cr, uid, ids[0], ['order_date', 'sale_order_id', 'new_sale_order', 'confirm_line', 'client_order_ref', 'order_date', 'partner_shipping_id'])
+        sale_order_confirm_data = self.read(cr, uid, ids[0], [
+            'order_date',
+            'sale_order_id',
+            'new_sale_order',
+            'confirm_line',
+            'client_order_ref',
+            'order_date',
+            'partner_shipping_id',
+            'confirm_line_qty'
+        ])
         order_id = False
 
-        if sale_order_confirm_data['new_sale_order']:
+        if sale_order_confirm_data['new_sale_order'] or not sale_order_confirm_data['confirm_line_qty'] == len(sale_order_confirm_data['confirm_line']):
             old_sale_order_data = sale_order_obj.read(cr, uid, sale_order_confirm_data['sale_order_id'], ['shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'sale_version_id', 'version', 'name', 'order_policy', 'picking_policy', 'invoice_quantity', 'section_id', 'categ_id'])
             new_sale_order = {}
             for key in ('shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'contact_id'):

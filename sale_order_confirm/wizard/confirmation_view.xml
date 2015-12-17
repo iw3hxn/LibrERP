@@ -37,6 +37,7 @@
                         <field name="order_date" />
                         <field name="sale_order_id" invisible="1"/>
                         <field name="new_sale_order" invisible="1"/>
+                        <field name="confirm_line_qty" invisible="True"/>
                     </group>
                     <separator colspan="4" string="Address"/>
                     <field name="partner_shipping_id" colspan="4" nolabel="1"/>
