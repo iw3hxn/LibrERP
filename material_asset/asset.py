@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2011 DeneroTeam. (<http://www.deneroteam.com>)
-#    Copyright (C) 2012-2014 Didotech srl (info@didotech.com)
+#    Copyright (C) 2012-2015 Didotech srl (info@didotech.com)
 #    All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ def get_relational_value(self, cr, uid, ids, field_name, arg, context=None):
                 if model_name and obj_id:
                     obj_id = int(obj_id)
                     model = self.pool[model_name]
-                    model_obj = model.name_get(cr, uid, [obj_id])
+                    model_obj = model.name_get(cr, uid, [obj_id], context)
                     if isinstance(model_obj, list):
                         obj_name = model_obj[0]
                     elif isinstance(model_obj, dict):
@@ -803,19 +803,20 @@ class asset_asset(orm.Model):
         if not len(ids):
             return {}
 
+        move_line_obj = self.pool['asset.move.line']
         res = {}
 
         assets = self.read(cr, uid, ids, ['id', 'location'])
         for asset in assets:
-            asset_dest_line_ids = self.pool.get('asset.move.line').search(cr, uid, [('asset_id', '=', asset['id']), ('dest_location', '=', asset['location'])], order='datetime desc')
-            asset_source_line_ids = self.pool.get('asset.move.line').search(cr, uid, [('asset_id', '=', asset['id']), ('source_location', '=', asset['location'])], order='datetime desc')
+            asset_dest_line_ids = move_line_obj.search(cr, uid, [('asset_id', '=', asset['id']), ('dest_location', '=', asset['location'])], order='date desc')
+            asset_source_line_ids = move_line_obj.search(cr, uid, [('asset_id', '=', asset['id']), ('source_location', '=', asset['location'])], order='date desc')
             if asset_dest_line_ids:
-                asset_line = self.pool.get('asset.move.line').read(cr, uid, asset_dest_line_ids[0], ['datetime'])
-                res[asset['id']] = {'added': asset_line['datetime']}
+                asset_line = move_line_obj.read(cr, uid, asset_dest_line_ids[0], ['date'])
+                res[asset['id']] = {'added': asset_line['date']}
                 if asset_source_line_ids:
-                    asset_line = self.pool.get('asset.move.line').read(cr, uid, asset_source_line_ids[0], ['datetime'])
-                    if asset_line['datetime'] > res[asset['id']]['added']:
-                        res[asset['id']]['removed'] = asset_line['datetime']
+                    asset_line = move_line_obj.read(cr, uid, asset_source_line_ids[0], ['date'])
+                    if asset_line['date'] > res[asset['id']]['added']:
+                        res[asset['id']]['removed'] = asset_line['date']
 
             else:
                 res[asset['id']] = {}
