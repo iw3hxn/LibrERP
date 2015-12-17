@@ -38,7 +38,7 @@ class ExcelExportView(ExcelExport):
     _cp_path = '/web/export/xls_view'
 
     def from_data(self, fields, rows, separators):
-        workbook = xlwt.Workbook()
+        workbook = xlwt.Workbook(style_compression=2)
         worksheet = workbook.add_sheet('Sheet 1')
 
         for i, fieldname in enumerate(fields):
