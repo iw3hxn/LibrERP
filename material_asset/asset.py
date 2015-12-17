@@ -806,7 +806,7 @@ class asset_asset(orm.Model):
         move_line_obj = self.pool['asset.move.line']
         res = {}
 
-        assets = self.read(cr, uid, ids, ['id', 'location'])
+        assets = self.read(cr, uid, ids, ['id', 'location'], context=context)
         for asset in assets:
             asset_dest_line_ids = move_line_obj.search(cr, uid, [('asset_id', '=', asset['id']), ('dest_location', '=', asset['location'])], order='date desc')
             asset_source_line_ids = move_line_obj.search(cr, uid, [('asset_id', '=', asset['id']), ('source_location', '=', asset['location'])], order='date desc')
@@ -833,19 +833,19 @@ class asset_asset(orm.Model):
         in this function we are inside 'res.sim' model.
         """
         asset_ids = []
-        sim_obj = self.pool.get('res.sim')
+        sim_obj = self.pool['res.sim']
         for sim in sim_obj.browse(cr, uid, ids, context=context):
             if sim.location and sim.location._name == 'asset.asset':
                 asset_ids.append(sim.location.id)
 
         if asset_ids:
-            assets = self.pool.get('asset.asset').browse(cr, uid, asset_ids)
+            assets = self.pool['asset.asset'].browse(cr, uid, asset_ids, context)
             for asset in assets:
                 if asset.__hasattr__('location') and asset.location and asset.location._name == 'asset.asset':
                     parent_location_id = asset.location.id
                     asset_ids.append(asset.location.id)
                     while parent_location_id:
-                        parent = self.pool.get('asset.asset').browse(cr, uid, parent_location_id)
+                        parent = self.pool['asset.asset'].browse(cr, uid, parent_location_id, context)
                         if parent.__hasattr__('location') and parent.location and parent.location._name == 'asset.asset':
                             parent_location_id = parent.location.id
                             asset_ids.append(parent.location.id)
@@ -1007,7 +1007,7 @@ class asset_asset(orm.Model):
                         self.pool.get('asset.document').create(cr, uid, new_document)
 
         if 'new_serial_number' in vals and vals['new_serial_number'] and len(ids) == 1:
-            prodlot_id = self.pool.get('stock.production.lot').create(cr, uid, {
+            prodlot_id = self.pool['stock.production.lot'].create(cr, uid, {
                 'name': vals['new_serial_number'],
                 'product_id': assets[0].asset_product_id.product_product_id.id,
             })
@@ -1025,7 +1025,7 @@ class asset_asset(orm.Model):
 
         # Recursive search for a sequence on the category
         while category_id is not False:
-            category = asset_category_obj.read(cr, uid, [category_id], ['asset_sequence_id', 'parent_id'])
+            category = asset_category_obj.read(cr, uid, [category_id], ['asset_sequence_id', 'parent_id'], context=context)
             category = category and category[0] or {}
             # If the category has a sequence, stop here
             if category.get('asset_sequence_id', False):
@@ -1057,7 +1057,7 @@ class asset_asset(orm.Model):
     def create(self, cr, uid, values, context=None):
         asset_product_id = values.get('asset_product_id', False)
         if asset_product_id:
-            asset_product = self.pool['asset.product'].browse(cr, uid, asset_product_id)
+            asset_product = self.pool['asset.product'].browse(cr, uid, asset_product_id, context)
             category_id = asset_product.asset_category_id.id
             values['name'] = self._get_sequence(cr, uid, category_id)
             new_asset_id = super(asset_asset, self).create(cr, uid, values)
@@ -1099,15 +1099,15 @@ class asset_asset(orm.Model):
     ]
 
     def _get_assets_serials(self, cr, uid, ids, product_id, context=None):
-        stock_move_obj = self.pool.get('stock.move')
+        stock_move_obj = self.pool['stock.move']
         serials = []
 
-        asset_location_ids = self.pool.get('stock.location').search(cr, uid, [('usage', '=', 'assets')])
+        asset_location_ids = self.pool['stock.location'].search(cr, uid, [('usage', '=', 'assets')], context=context)
         for location_id in asset_location_ids:
             stock_move_ids = stock_move_obj.search(cr, uid, [('location_dest_id', '=', location_id)])
 
             # TODO: order_by and only take serials that are still in location
-            stock_move = stock_move_obj.browse(cr, uid, stock_move_ids)
+            stock_move = stock_move_obj.browse(cr, uid, stock_move_ids, context)
             [serials.append(row.prodlot_id.name) for row in stock_move if not str(row.prodlot_id.name) == 'None']
 
         return serials
@@ -1118,7 +1118,7 @@ class asset_asset(orm.Model):
         partner_id = ''
         product_product_id = 0
         if asset_product_id:
-            asset_product_obj = self.pool.get('asset.product')
+            asset_product_obj = self.pool['asset.product']
             asset_product = asset_product_obj.browse(cr, uid, asset_product_id, context)
             if asset_product and asset_product.has_date_option:
                 has_date_option = True
@@ -1154,7 +1154,7 @@ class asset_property(orm.Model):
         if not ids:
             return {}
         res = {}
-        properties = self.browse(cr, uid, ids)
+        properties = self.browse(cr, uid, ids, context)
         for asset_property in properties:
             res[asset_property.id] = asset_property.asset_id.location.name
         return res
@@ -1173,11 +1173,11 @@ class asset_property(orm.Model):
         @group: Property name
         '''
 
-        group_ids = self.pool.get('asset.property.group').search(cr, uid, [('name', '=', group)])
+        group_ids = self.pool['asset.property.group'].search(cr, uid, [('name', '=', group)])
         if group_ids:
             group_id = group_ids[0]
         else:
-            group_id = self.pool.get('asset.property.group').create(cr, uid, {'name': group, 'description': group_description})
+            group_id = self.pool['asset.property.group'].create(cr, uid, {'name': group, 'description': group_description})
 
         return self.create(cr, uid, {'asset_id': asset_id, 'name': name, 'group_id': group_id, 'description': description})
 
@@ -1217,9 +1217,9 @@ class asset_move(orm.Model):
         else:
             if 'date_done' in vals and len(vals['move_lines']) == 1:
                 move_line_obj = self.pool['stock.move']
-                move_lines = move_line_obj.browse(cr, uid, vals['move_lines'][0][2])
+                move_lines = move_line_obj.browse(cr, uid, vals['move_lines'][0][2], context)
                 for move_line in move_lines:
-                    doubled_or_early_movements = move_line_obj.search(cr, uid, [('product_id', '=', move_line.product_id.id), ('prodlot_id', '=', move_line.prodlot_id.id), ('date', '>=', vals['date'])])
+                    doubled_or_early_movements = move_line_obj.search(cr, uid, [('product_id', '=', move_line.product_id.id), ('prodlot_id', '=', move_line.prodlot_id.id), ('date', '>=', vals['date'])], context=context)
                     if len(doubled_or_early_movements) > 1 or (len(doubled_or_early_movements) == 1 and not doubled_or_early_movements[0] == move_line.id):
                         raise orm.except_orm(_('Warning!'), _("Product should be moved with the time superior to last move"))
 
@@ -1240,11 +1240,11 @@ class asset_move(orm.Model):
             move_line_obj = self.pool['stock.move']
 
             asset_move_to_delete = self.browse(cr, uid, ids[0], context)
-            move_line_ids = move_line_obj.search(cr, uid, [('picking_id', '=', asset_move_to_delete.stock_picking_id.id)])
+            move_line_ids = move_line_obj.search(cr, uid, [('picking_id', '=', asset_move_to_delete.stock_picking_id.id)], context=context)
             
-            for move_line in move_line_obj.browse(cr, uid, move_line_ids):
+            for move_line in move_line_obj.browse(cr, uid, move_line_ids, context):
                 # asset_id -> product_id + prodlot_id
-                stock_move_ids = move_line_obj.search(cr, uid, [('product_id', '=', move_line.product_id.id), ('prodlot_id', '=', move_line.prodlot_id.id)], order='date_done desc', limit=1)
+                stock_move_ids = move_line_obj.search(cr, uid, [('product_id', '=', move_line.product_id.id), ('prodlot_id', '=', move_line.prodlot_id.id)], order='date_done desc', limit=1, context=context)
                 
                 if not stock_move_ids[0] == move_line.id:
                     raise orm.except_orm(_('Error'), _('You can only delete the last Asset Move!'))
@@ -1287,7 +1287,7 @@ class stock_move(orm.Model):
         
         asset_move_line_obj = self.pool['asset.move.line']
 
-        asset_move_line_ids = asset_move_line_obj.search(cr, uid, [('stock_move_id', 'in', ids)])
+        asset_move_line_ids = asset_move_line_obj.search(cr, uid, [('stock_move_id', 'in', ids)], context=context)
         
         for asset_move_line in asset_move_line_obj.browse(cr, uid, asset_move_line_ids, context):
             result[asset_move_line.stock_move_id.id] = {}
@@ -1375,7 +1375,7 @@ class hr_employee(orm.Model):
         res = []
         try:
             for id in ids:
-                res.append((id, self.pool.get('asset.asset').search(cr, uid, [('location', '=', model_name + ',' + str(id))])))
+                res.append((id, self.pool['asset.asset'].search(cr, uid, [('location', '=', model_name + ',' + str(id))])))
         except:
             print repr(traceback.extract_tb(sys.exc_traceback))
         return dict(res)
@@ -1395,7 +1395,7 @@ class res_car(orm.Model):
         res = []
         try:
             for id in ids:
-                res.append((id, self.pool.get('asset.asset').search(cr, uid, [('location', '=', model_name + ',' + str(id))])))
+                res.append((id, self.pool['asset.asset'].search(cr, uid, [('location', '=', model_name + ',' + str(id))])))
         except:
             print repr(traceback.extract_tb(sys.exc_traceback))
         return dict(res)
@@ -1431,7 +1431,7 @@ class asset_document_type(orm.Model):
 
     def _check_date_option(self, cr, uid, ids, filed_name, arg, context):
         res = {}
-        document_types = self.browse(cr, uid, ids)
+        document_types = self.browse(cr, uid, ids, context)
         for document_type in document_types:
             if document_type.duration:
                 res[document_type.id] = True
@@ -1460,7 +1460,7 @@ class asset_document(orm.Model):
 
     def _check_date_option(self, cr, uid, ids, filed_name, arg, context):
         res = {}
-        documents = self.browse(cr, uid, ids)
+        documents = self.browse(cr, uid, ids, context)
         for document in documents:
             if document.document_type_id.has_date_option1:
                 res[document.id] = True
@@ -1470,7 +1470,7 @@ class asset_document(orm.Model):
 
     def _check_if_expired(self, cr, uid, ids, filed_name, arg, context):
         res = {}
-        documents = self.browse(cr, uid, ids)
+        documents = self.browse(cr, uid, ids, context)
         for document in documents:
             if document.valid_end_date and datetime.datetime.strptime(document.valid_end_date, DEFAULT_SERVER_DATE_FORMAT) < datetime.datetime.now():
                 res[document.id] = True
@@ -1505,7 +1505,7 @@ class asset_document(orm.Model):
     def onchange_document_type_id(self, cr, uid, ids, document_type_id, context=None):
         has_date_option1 = False
         if document_type_id:
-            document_type_obj = self.pool.get('asset.document.type')
+            document_type_obj = self.pool['asset.document.type']
             document_type = document_type_obj.browse(cr, uid, [document_type_id], context)
             if document_type and document_type[0].has_date_option1:
                 has_date_option1 = True
@@ -1516,7 +1516,7 @@ class asset_document(orm.Model):
 
         start = datetime.datetime.strptime(start_date, DEFAULT_SERVER_DATE_FORMAT)
         if document_type_id:
-            document_type_obj = self.pool.get('asset.document.type')
+            document_type_obj = self.pool['asset.document.type']
             document_type = document_type_obj.browse(cr, uid, document_type_id, context)
             if document_type and document_type.has_date_option1 and document_type.duration:
                 valid_end_date = start + relativedelta(months=+document_type.duration)
