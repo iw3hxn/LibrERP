@@ -610,8 +610,8 @@ class asset_asset(orm.Model):
         move_line_ids = move_line_obj.search(cr, uid, [
             ('dest_location', '=', model_name + ',' + str(parent_id)),
             ('date', '<=', end_date)
-        ], order='date')
-        move_lines = move_line_obj.browse(cr, uid, move_line_ids)
+        ], order='date', context=context)
+        move_lines = move_line_obj.browse(cr, uid, move_line_ids, context)
         for line in move_lines:
             if line.date > start_date:
                 start = line.date
@@ -628,12 +628,12 @@ class asset_asset(orm.Model):
             return_ids = move_line_obj.search(cr, uid, [
                 ('asset_id', '=', line.asset_id.id),
                 ('source_location', '=', model_name + ',' + str(parent_id)),
-                ('date', '>', line.datetime),
+                ('date', '>', line.date),
                 ('date', '<=', end_date)
             ], order='date')
 
             if return_ids:
-                return_line = move_line_obj.browse(cr, uid, return_ids[0])
+                return_line = move_line_obj.browse(cr, uid, return_ids[0], context)
 
                 return_date_date = datetime.datetime.strptime(return_line.datetime, DEFAULT_SERVER_DATETIME_FORMAT)
                 start_date_date = datetime.datetime.strptime(start_date, DEFAULT_SERVER_DATETIME_FORMAT)
@@ -679,7 +679,7 @@ class asset_asset(orm.Model):
         res = {}
 
         for parent_id in ids:
-            asset_ids = self.search(cr, uid, [('location', '=', model_name + ',' + str(parent_id))])
+            asset_ids = self.search(cr, uid, [('location', '=', model_name + ',' + str(parent_id))], context=context)
             tree = self.get_tree(cr, uid, asset_ids)
             res[parent_id] = [leave['ids'] for leave in tree]
 
