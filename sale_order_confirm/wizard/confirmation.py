@@ -33,8 +33,6 @@ import decimal_precision as dp
 import netsvc
 from tools import ustr
 
-import pdb
-
 
 class sale_order_confirm_line(orm.TransientModel):
     def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
@@ -225,7 +223,7 @@ class sale_order_confirm(orm.TransientModel):
         result = {
             'new_sale_order': False
         }
-        pdb.set_trace()
+
         for confirm_line in confirm_lines:
             if (isinstance(confirm_line[2], dict)) and ('changed' in confirm_line[2]) and (confirm_line[2]['changed']):
                 result['new_sale_order'] = True
@@ -242,7 +240,7 @@ class sale_order_confirm(orm.TransientModel):
         
         sale_order_confirm_data = self.read(cr, uid, ids[0], ['order_date', 'sale_order_id', 'new_sale_order', 'confirm_line', 'client_order_ref', 'order_date', 'partner_shipping_id'])
         order_id = False
-        pdb.set_trace()
+
         if sale_order_confirm_data['new_sale_order']:
             old_sale_order_data = sale_order_obj.read(cr, uid, sale_order_confirm_data['sale_order_id'], ['shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'sale_version_id', 'version', 'name', 'order_policy', 'picking_policy', 'invoice_quantity', 'section_id', 'categ_id'])
             new_sale_order = {}
