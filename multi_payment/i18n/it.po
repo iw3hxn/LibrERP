@@ -72,11 +72,6 @@ msgid "Unbalanced"
 msgstr "Squadrate"
 
 #. module: multi_payment
-#: view:account.bank.statement:0
-msgid "Transaction"
-msgstr "Transazione"
-
-#. module: multi_payment
 #: view:account.statement.from.invoice.lines:0
 msgid "Ok"
 msgstr "Ok"

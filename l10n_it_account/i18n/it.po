@@ -1657,12 +1657,6 @@ msgid "Refund Tax Account"
 msgstr "Conto per rimborso imposte"
 
 #. module: account
-#: view:account.bank.statement:0
-#: field:account.bank.statement,line_ids:0
-msgid "Statement lines"
-msgstr "Voci del movimento"
-
-#. module: account
 #: model:ir.actions.act_window,help:account.action_bank_statement_tree
 msgid "A bank statement is a summary of all financial transactions occurring over a given period of time on a deposit account, a credit card or any other type of financial account. The starting balance will be proposed automatically and the closing balance is to be found on your statement. When you are in the Payment column of a line, you can press F1 to open the reconciliation form."
 msgstr "Un estratto conto è il rapporto delle transazioni finanziare avvenute durante un certo periodo di tempo su un conto corrente, una carta di credito o qualsiasi altro dipo di conto finanziario. Il bilancio iniziale verrà proposto automaticamente ed il bilancio di chiusura si troverà nel tuo estratto conto.Quando sei su una linea della colonna dei pagamenti, puoi premere F1 per aprire il modulo di riconciliazione."
@@ -4793,7 +4787,7 @@ msgstr "Codice rimborso imposta"
 #. module: account
 #: view:validate.account.move:0
 msgid "All draft account entries in this journal and period will be validated. It means you won't be able to modify their accounting fields anymore."
-msgstr "All draft account entries in this journal and period will be validated. It means you won't be able to modify their accounting fields anymore."
+msgstr "Tutte le voci contabili di questo Gionale e periodo saranno convalidati. Significa che non sarà più in grado di modificare i loro campi di contabilità."
 
 #. module: l10n_it_account
 #: model:account.payment.term,name:l10n_it_account.payment_term_60_90_120_days_3
@@ -5422,11 +5416,6 @@ msgstr "Conti analitici con termine ultimo scaduto."
 #: report:account.partner.balance:0
 msgid "(Account/Partner) Name"
 msgstr "Nome (Conto/Partner)"
-
-#. module: account
-#: view:account.bank.statement:0
-msgid "Transaction"
-msgstr "Transazione"
 
 #. module: account
 #: help:account.tax,base_code_id:0
