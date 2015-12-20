@@ -39,6 +39,22 @@ class account_invoice(orm.Model):
         defaults['user_id'] = uid
         return super(account_invoice, self).copy(cr, uid, order_id, defaults, context)
 
+    def button_change_fiscal_position(self, cr, uid, ids, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+
+        fpos_obj = self.pool['account.fiscal.position']
+        inv_line_obj = self.pool['account.invoice.line']
+
+        for inv in self.browse(cr, uid, ids, context):
+            for line in inv.invoice_line:
+                if line.product_id:
+                    new_taxes = fpos_obj.map_tax(cr, uid, inv.fiscal_position, line.product_id.taxes_id)
+                    line.write({'invoice_line_tax_id': [(6, 0, new_taxes)]})
+            inv.button_reset_taxes()
+
+        return True
+
     # override to group product_id too
     def inv_line_characteristic_hashcode(self, invoice, invoice_line):
         """Overridable hashcode generation for invoice lines. Lines having the same hashcode

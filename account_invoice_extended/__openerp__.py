@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice extended",
-    "version": "3.1.5.5",
+    "version": "3.1.6.6",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules/Accounting",
@@ -37,6 +37,8 @@
             * Invoice Customer
 
         No automatic email send
+
+        Clear Account Move menu on Customer/Supplier Invoice
 
     """,
     "depends": [
@@ -51,6 +53,7 @@
         'account_menu.xml',
         'account_workflow.xml',
         'account_move_journal_view.xml',
+        'account_menu_clear.xml',
     ],
     "active": False,
     "installable": True,

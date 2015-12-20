@@ -6,6 +6,18 @@
             <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
         </record>
 
+        <record model="ir.ui.view" id="account_invoice_form_onchange_fiscal_position">
+			<field name="name">account.invoice.form.onchange.fiscal.position</field>
+			<field name="model">account.invoice</field>
+			<field name="inherit_id" ref="account.invoice_form"/>
+			<field name="arch" type="xml">
+				<field name="fiscal_position" position="after">
+                    <button name="button_change_fiscal_position" states="draft" string="Change"
+                        type="object" groups="base.group_user" icon="terp-stock_effects-object-colorize"/>
+				</field>
+			</field>
+		</record>
+
         <record id="invoice_tree_reg_date" model="ir.ui.view">
             <field name="name">account.invoice.tree.reg_date</field>
             <field name="model">account.invoice</field>
