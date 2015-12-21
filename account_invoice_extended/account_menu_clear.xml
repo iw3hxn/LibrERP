@@ -5,6 +5,8 @@
         <delete model="ir.ui.menu" id="account.menu_eaction_account_moves_sale" />
         <delete model="ir.ui.menu" id="account.menu_eaction_account_moves_purchase" />
         <delete model="ir.ui.menu" id="account.menu_action_account_moves_bank" />
+        <delete model="ir.ui.menu" id="account_voucher.menu_action_sale_receipt" />
+        <delete model="ir.ui.menu" id="account_voucher.menu_action_purchase_receipt" />
 
     </data>
 </openerp>
