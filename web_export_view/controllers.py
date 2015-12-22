@@ -60,7 +60,7 @@ class ExcelExportView(ExcelExport):
                                 separators['thousands_sep'], ''
                             ).replace(
                                 separators['decimal_point'], '.'
-                            )
+                            ) or 0.00
                         )
                         style = xlwt.easyxf(num_format_str='#,##0.00')
                 if cell_value is False:
