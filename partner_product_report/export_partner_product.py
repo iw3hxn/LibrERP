@@ -98,7 +98,7 @@ class WizardExportPartnerProduct(orm.TransientModel):
 
     _columns = {
         'data': fields.binary("File", readonly=True),
-        'name': fields.char('Filename', 32, readonly=True),
+        'name': fields.char('Filename', 64, readonly=True),
         'state': fields.selection((
             ('choose', 'choose'),   # choose
             ('get', 'get'),         # get the file
