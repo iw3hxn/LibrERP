@@ -65,7 +65,7 @@ class nov_journal_print(report_sxw.rml_parse):
 
     def __init__(self, cr, uid, name, context):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         super(nov_journal_print, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'time': time,

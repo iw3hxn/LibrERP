@@ -68,7 +68,7 @@ class purchase_order_line(orm.Model):
             return price * factor
 
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         
         res = super(purchase_order_line, self).onchange_product_id(cr, uid, ids, pricelist_id, product_id, qty, uom_id,
             partner_id, date_order, fiscal_position_id, date_planned,

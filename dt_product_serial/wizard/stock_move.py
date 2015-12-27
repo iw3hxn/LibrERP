@@ -44,7 +44,7 @@ class split_in_production_lot(orm.TransientModel):
     def split_lot_serial(self, cr, uid, ids, context=None):
         """ To split a lot"""
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         res = self.split_serial(cr, uid, ids, context.get('active_ids'), context=context)
         return {'type': 'ir.actions.act_window_close'}
 
@@ -54,7 +54,7 @@ class split_in_production_lot(orm.TransientModel):
         :param move_ids: the ID or list of IDs of stock move we want to split
         """
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         assert context.get('active_model') == 'stock.move',\
              'Incorrect use of the stock move split wizard'
 

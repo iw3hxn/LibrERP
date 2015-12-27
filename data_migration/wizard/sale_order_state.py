@@ -36,7 +36,7 @@ class sale_order_cancel(orm.TransientModel):
 
     def order_cancel(self, cr, uid, ids, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         sale_orders = self.pool['sale.order'].browse(cr, uid, context['active_ids'], context=context)
 

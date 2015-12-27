@@ -229,7 +229,7 @@ class sale_order_line(orm.Model):
                     line_agent_id = self._create_invoice_line_agent(cr, uid, [], l_comm.agent_id.id,
                                                                     l_comm.commission_id.id)
                     list_ids.append(line_agent_id)
-        res['commission_ids'] = [(6, 0, list_ids)]
+        # res['commission_ids'] = [(6, 0, list_ids)]
         return res
 
     def _create_line_commission(self, cr, uid, ids, agent_id, commission_id):

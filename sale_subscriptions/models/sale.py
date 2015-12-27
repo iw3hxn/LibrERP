@@ -47,7 +47,7 @@ class sale_order_line(orm.Model):
         order_obj = self.pool['sale.order']
         res = {}
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         for line in self.browse(cr, uid, ids, context=context):
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)
@@ -579,7 +579,7 @@ class sale_order(orm.Model):
 
     def auto_invoice(self, cr, uid, ids, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         if not ids:
             return False

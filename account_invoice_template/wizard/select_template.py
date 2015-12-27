@@ -80,7 +80,7 @@ class wizard_select_template(orm.TransientModel):
 
     def load_template(self, cr, uid, ids, context=None):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         template_obj = self.pool['account.invoice.template']
         account_invoice_obj = self.pool['account.invoice']
         account_invoice_line_obj = self.pool['account.invoice.line']

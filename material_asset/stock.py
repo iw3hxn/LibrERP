@@ -69,7 +69,7 @@ class create_asset_onmove(orm.Model):
 
     def create_asset(self, cr, uid, ids, context):
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         for move in self.browse(cr, uid, ids, context=context):
 
             if not move.prodlot_id.id and move.location_dest_id.usage == 'assets':
@@ -78,7 +78,7 @@ class create_asset_onmove(orm.Model):
                 prodlot_id = move.prodlot_id.id
 
             # verify that product is not yet an asset:
-            asset_product_ids = self.pool.get('asset.product').search(cr, uid, [('product_product_id', '=', move.product_id.id), ])
+            asset_product_ids = self.pool['asset.product'].search(cr, uid, [('product_product_id', '=', move.product_id.id), ], context=context)
             if move.location_dest_id.usage == 'assets' and not asset_product_ids:
                 # Launch a form and ask about category:
                 assign_category_id = self.pool["asset.assign.category"].create(cr, uid, {}, context=dict(context, active_ids=ids))

@@ -37,7 +37,7 @@ class sale_order(orm.Model):
 
     def recalculate_prices(self, cr, uid, ids, context=None):
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         for sale in self.browse(cr, uid, ids, context):
             for line in sale.order_line:
                 order = line.order_id

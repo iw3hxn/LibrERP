@@ -120,14 +120,14 @@ class account_invoice(orm.Model):
         #                     attachment_obj.write(cr, uid, a.id, vals)
 
         # unset set the invoices move_id 
-        self.write(cr, uid, ids, {'move_id': False})
+        self.write(cr, uid, ids, {'move_id': False}, context)
 
         if move_ids:
 
-            for move in account_move_obj.browse(cr, uid, move_ids):
+            for move in account_move_obj.browse(cr, uid, move_ids, context):
                 name = move.name + now
                 account_move_obj.write(cr, uid, [move.id], {'name': name})
-                _logger.debug('FGF reopen move_copy moveid %s' % (move.id))
+                _logger.debug('FGF reopen move_copy moveid %s' % move.id)
                 if move.journal_id.entry_posted:
                     raise orm.except_orm(_('Error !'),
                                          _('You can not reopen an invoice if the journal is set to skip draft!'))
@@ -137,21 +137,21 @@ class account_invoice(orm.Model):
                 cr.execute("""update account_move_line
                                  set debit=credit, credit=debit, tax_amount= -tax_amount
                                where move_id = %s;""" % move_copy_id)
-                account_move_obj.write(cr, uid, [move_copy_id], {'name': name})
+                account_move_obj.write(cr, uid, [move_copy_id], {'name': name}, context)
                 _logger.debug('FGF reopen move_copy_id validate')
-                account_move_obj.button_validate(cr, uid, [move_copy_id], context=None)
+                account_move_obj.button_validate(cr, uid, [move_copy_id], context=context)
                 _logger.debug('FGF reopen move_copy_id validated')
                 # reconcile 
-                r_id = self.pool.get('account.move.reconcile').create(cr, uid, {'type': 'auto'})
+                r_id = self.pool.get('account.move.reconcile').create(cr, uid, {'type': 'auto'}, context)
                 _logger.debug('FGF reopen reconcile_id %s' % r_id)
-                line_ids = account_move_line_obj.search(cr, uid, [('move_id', 'in', [move_copy_id, move.id])])
+                line_ids = account_move_line_obj.search(cr, uid, [('move_id', 'in', [move_copy_id, move.id])], context=context)
                 _logger.debug('FGF reopen reconcile_line_ids %s' % line_ids)
                 lines_to_reconile = []
-                for ltr in account_move_line_obj.browse(cr, uid, line_ids):
+                for ltr in account_move_line_obj.browse(cr, uid, line_ids, context):
                     if ltr.account_id.id in (
                             ltr.partner_id.property_account_payable.id, ltr.partner_id.property_account_receivable.id):
                         lines_to_reconile.append(ltr.id)
-                account_move_line_obj.write(cr, uid, lines_to_reconile, {'reconcile_id': r_id})
+                account_move_line_obj.write(cr, uid, lines_to_reconile, {'reconcile_id': r_id}, context)
 
         self._log_event(cr, uid, ids, -1.0, 'Reopened Invoice')
 
@@ -173,6 +173,3 @@ class account_invoice(orm.Model):
             if not inv.internal_number:
                 super(account_invoice, self).action_number(cr, uid, ids, context)
         return True
-
-
-account_invoice()

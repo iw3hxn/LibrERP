@@ -143,7 +143,7 @@ class sale_order(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         # adaptative function: the system learn
 
         if not isinstance(ids, (list, tuple)):
@@ -163,7 +163,7 @@ class sale_order(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         # adaptative function: the system learn
         sale_order_id = super(sale_order, self).create(cr, uid, vals, context=context)
         # create function return only 1 id

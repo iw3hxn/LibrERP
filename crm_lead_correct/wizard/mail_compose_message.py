@@ -34,7 +34,7 @@ class mail_compose_message(orm.TransientModel):
     def default_get(self, cr, uid, fields, context=None):
 
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         result = super(mail_compose_message, self).default_get(cr, uid, fields, context=context)
 
         # link to model and record if not done yet

@@ -9,7 +9,7 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <field name="carrier_id" position="before">
-                    <field name="address_delivery_id" context="{'name_lenght': '80'}" colspan="6" />
+                    <field name="address_delivery_id" context="{'name_lenght': '180'}" colspan="6" />
                     <field name="goods_description_id" widget="selection"/>
                     <field name="carriage_condition_id" widget="selection"/>
                     <field name="transportation_condition_id" widget="selection"/>

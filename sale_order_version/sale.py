@@ -53,7 +53,7 @@ class sale_order(orm.Model):
             default = {}
             
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         
         attachment_obj = self.pool['ir.attachment']
         

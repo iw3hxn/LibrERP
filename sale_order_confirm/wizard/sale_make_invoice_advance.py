@@ -36,7 +36,7 @@ class sale_advance_payment_inv(orm.TransientModel):
         @return: A dictionary which of fields with values.
         """
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         res = super(sale_advance_payment_inv, self).default_get(cr, uid, fields, context=context)
         if not res.get('product_id', False):
             product_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_property_advance_product_id.id

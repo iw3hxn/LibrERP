@@ -404,13 +404,13 @@ class fiscal_year_closing(osv.osv):
         """
         
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         #
         # Make sure the lang is defined on the context
         #
-        user = self.pool.get('res.users').browse(cr, uid, uid, context)
-        #for 7.0## context['lang'] = context.get('lang') or user.lang
-        context['lang'] = context.get('lang') or user.context_lang
+        # user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        # #for 7.0## context['lang'] = context.get('lang') or user.lang
+        # context['lang'] = context.get('lang') or user.context_lang
 
         for fyc in self.browse(cr, uid, ids, context):
             #
@@ -508,13 +508,13 @@ class fiscal_year_closing(osv.osv):
         Called when the user clicks the confirm button.
         """
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         #
         # Make sure the lang is defined on the context
         #
-        user = self.pool.get('res.users').browse(cr, uid, uid, context)
-        #for 7.0###context['lang'] = context.get('lang') or user.lang
-        context['lang'] = context.get('lang') or user.context_lang
+        # user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        # #for 7.0###context['lang'] = context.get('lang') or user.lang
+        # context['lang'] = context.get('lang') or user.context_lang
 
         for fyc in self.browse(cr, uid, ids, context):
             #
@@ -608,13 +608,13 @@ class fiscal_year_closing(osv.osv):
         Called when the user clicks the cancel button.
         """
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         #
         # Make sure the lang is defined on the context
         #
-        user = self.pool.get('res.users').browse(cr, uid, uid, context)
-        #for 7.0###context['lang'] = context.get('lang') or user.lang
-        context['lang'] = context.get('lang') or user.context_lang
+        # user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        # #for 7.0###context['lang'] = context.get('lang') or user.lang
+        # context['lang'] = context.get('lang') or user.context_lang
         #
         # Uncheck all the operations
         #
@@ -681,7 +681,10 @@ class fiscal_year_closing(osv.osv):
         Called when the user clicks the draft button to create
         a new workflow instance.
         """
-        self.write(cr, uid, ids, {'state': 'new'})
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
+
+        self.write(cr, uid, ids, {'state': 'new'}, context)
         wf_service = netsvc.LocalService("workflow")
         for item_id in ids:
             wf_service.trg_create(uid, 'account_fiscal_year_closing.fyc', item_id, cr)

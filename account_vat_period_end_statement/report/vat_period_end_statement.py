@@ -80,7 +80,7 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
 
     def __init__(self, cr, uid, name, context=None):
         if context is None:
-             context = self.pool['res.users'].context_get(self.cr, self.uid)
+            context = self.pool['res.users'].context_get(self.cr, self.uid)
         super(print_vat_period_end_statement, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'time': time,

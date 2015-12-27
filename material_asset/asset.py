@@ -329,7 +329,7 @@ class asset_product(orm.Model):
     def _product_code(self, cr, uid, ids, name, arg, context=None):
         res = {}
         if context is None:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         for p in self.browse(cr, uid, ids, context=context):
             res[p.id] = self._get_partner_code_name(cr, uid, [], p, context.get('partner_id', None), context=context)['code']
         return res
@@ -345,7 +345,7 @@ class asset_product(orm.Model):
     def onchange_category_id(self, cr, uid, ids, asset_category_id, context=None):
         has_date_option = False
         if asset_category_id:
-            category_id_obj = self.pool.get('asset.category')
+            category_id_obj = self.pool['asset.category']
             category_type = category_id_obj.browse(cr, uid, [asset_category_id], context)
             if category_type and category_type[0].has_date_option:
                 has_date_option = True
