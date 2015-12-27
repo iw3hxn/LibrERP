@@ -55,7 +55,6 @@
         'wizard/add_order_version_view.xml',
         'wizard/sale_make_invoice_advance.xml',
         'sale_order_confirm_view.xml',
-        'sale_margin_view.xml',
         'sale_order_menu.xml',
         'sale_workflow.xml',
         'partner_view.xml',

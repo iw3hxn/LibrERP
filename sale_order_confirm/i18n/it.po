@@ -836,11 +836,6 @@ msgid "Verify Manager"
 msgstr "Verifica Manager"
 
 #. module: sale_order_confirm
-#: model:res.groups,name:sale.view_margin
-msgid "View Margin"
-msgstr "Vedi i Margini"
-
-#. module: sale_order_confirm
 #: model:res.groups,name:sale.view_delivered_qty
 msgid "View Delivered Qty"
 msgstr "Vedi Quantità consegnate"

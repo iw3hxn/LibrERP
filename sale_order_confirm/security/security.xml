@@ -21,12 +21,7 @@
         <field name="name">Verify Manager</field>
         <field name="category_id" ref="sale.module_category_sale"/>
     </record>
-    
-    <record id="sale.view_margin" model="res.groups">
-        <field name="name">View Margin</field>
-        <field name="category_id" ref="sale.module_category_sale"/>
-    </record>
-    
+
     <record id="sale.view_delivered_qty" model="res.groups">
         <field name="name">View Delivered Qty</field>
         <field name="category_id" ref="sale.module_category_sale"/>
