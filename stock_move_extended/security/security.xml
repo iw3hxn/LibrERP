@@ -18,7 +18,11 @@
         <field name="name">View Sell Order Price</field>
         <field name="category_id" ref="stock.module_category_warehouse"/>
     </record>
-    
+
+    <record id="stock.view_qty_warehouse" model="res.groups">
+        <field name="name">View Qty on Stock Move</field>
+        <field name="category_id" ref="stock.module_category_warehouse"/>
+    </record>
     
 </data>
 </openerp>

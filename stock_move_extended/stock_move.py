@@ -20,6 +20,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+import decimal_precision as dp
 
 
 class stock_move(orm.Model):
@@ -41,15 +42,39 @@ class stock_move(orm.Model):
                 res[move.id] = '<>'
             else:
                 res[move.id] = []
+        return res
 
+    def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
+        """ Finds the incoming and outgoing quantity of product.
+        @return: Dictionary of values
+        """
+
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        # if line.order_id:
+        #     context['warehouse'] = self.order_id.shop_id.warehouse_id.id
+
+        for move in self.browse(cr, uid, ids, context):
+            c = context.copy()
+            c.update({'location': move.location_id.id})
+            qty_available = move.product_id._product_available(field_names=['qty_available'], context=c)[move.product_id.id]['qty_available']
+            res[move.id] = {
+                'qty_available': qty_available or 0.0,
+            }
         return res
     
     _columns = {
-        'direction': fields.function(_get_direction, method=True, type="char", string='Dir', readonly=True),
-        'sell_price': fields.related('sale_line_id', 'price_unit', type='float', relation='sale.order.line', string='Sell Price Unit', readonly=True)
+        'direction': fields.function(_get_direction, method=True, type='char', string='Dir', readonly=True),
+        'sell_price': fields.related('sale_line_id', 'price_unit', type='float', relation='sale.order.line', string='Sell Price Unit', readonly=True),
+        'qty_available': fields.function(_product_available, multi='qty_available',
+                                         type='float', digits_compute=dp.get_precision('Product UoM'),
+                                         string='Quantity On Hand'),
     }
 
     def write(self, cr, uid, ids, values, context=None):  # check if when change unit of sale is the same category of product
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
         if values.get('product_uos', False):
             to_unit = self.pool['product.uom'].browse(cr, uid, values.get('product_uos'), context)
             for move in self.browse(cr, uid, ids, context):

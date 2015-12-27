@@ -35,6 +35,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_id']" position="after">
                     <field name="note"  />
+                    <field name="qty_available" groups="stock.view_qty_warehouse"/>
                 </xpath>
 
                 <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_uom']" position="after">
