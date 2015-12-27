@@ -340,3 +340,8 @@ msgstr "Data prevista"
 #: field:stock.picking.transportation_condition,name:0
 msgid "Transportation Condition"
 msgstr "Trasporto a cura di"
+
+#. modules: stock_move_extended
+#: field:stock.move,qty_available:0
+msgid "Quantity On Hand"
+msgstr "Q.tà A Mag"

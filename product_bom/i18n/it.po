@@ -78,7 +78,7 @@ msgstr "Il nome azienda deve essere unico!"
 #: code:addons/product_bom/product.py:379
 #, python-format
 msgid "Quantity On Hand"
-msgstr "Quantità disponibile"
+msgstr "Quantità a magazzino"
 
 #. module: product_bom
 #: code:addons/product_bom/product.py:436
