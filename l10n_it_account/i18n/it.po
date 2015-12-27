@@ -10707,3 +10707,15 @@ msgstr "Fattura Duplicata"
 #, python-format
 msgid "Invoice already posted!"
 msgstr "Fattura Già inserita e validata"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:180
+#, python-format
+msgid "Impossible to Validate, need to set Supplier invoice nr"
+msgstr "Impossibile da Emettere. Bisogna inserire il numero della fattura Fornitore"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:176
+#, python-format
+msgid "Impossible to Validate, need to set Partner VAT"
+msgstr "Impossibile da Emettere. Bisogna impostare nel partner la partita iva o il codice fiscale"

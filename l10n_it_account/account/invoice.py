@@ -170,8 +170,14 @@ class account_invoice(orm.Model):
         return {'value': {}}
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
-        for obj_inv in self.browse(cr, uid, ids, context):
-            if obj_inv.type == 'in_invoice' and not obj_inv.supplier_invoice_number:
+        for invoice in self.browse(cr, uid, ids, context):
+            if not ((not invoice.partner_id.individual and invoice.partner_id.vat) or (invoice.partner_id.individual and invoice.partner_id.cf)):
+                if invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
+                    continue
+                raise orm.except_orm(_('Supplier Invoice'),
+                               _('Impossible to Validate, need to set Partner VAT'))
+                return False
+            if invoice.type == 'in_invoice' and not invoice.supplier_invoice_number:
                 raise orm.except_orm(_('Supplier Invoice'),
                                _('Impossible to Validate, need to set Supplier invoice nr'))
                 return False
