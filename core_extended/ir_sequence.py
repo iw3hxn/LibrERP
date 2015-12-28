@@ -63,7 +63,7 @@ class ir_sequence(orm.Model):
     def _interpolation_dict(self, context=None):
         # add possibility to pass context, if set a 'date' field it will be used instead of current date
         if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+            context = {}
         if context.get('date', False):
             date = context.get('date')
             t = datetime.strptime(date, DEFAULT_SERVER_DATE_FORMAT)
