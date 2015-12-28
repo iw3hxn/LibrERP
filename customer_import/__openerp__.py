@@ -36,7 +36,7 @@
     'update_xml': ["wizard/file_import_view.xml"],
     'demo_xml': [],
     'test': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }
 
