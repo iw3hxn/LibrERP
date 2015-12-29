@@ -28,9 +28,10 @@ class res_partner(orm.Model):
     _inherit = 'res.partner'
 
     def check_fiscalcode(self, cr, uid, ids, context={}):
-        
         for partner in self.browse(cr, uid, ids, context):
             if not partner.fiscalcode:
+                return True
+            if partner.fiscalcode.isdigit() or partner.fiscalcode[2:].isdigit():
                 return True
             return isvalid(partner.fiscalcode.upper())
         return True
