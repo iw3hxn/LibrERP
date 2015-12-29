@@ -46,7 +46,6 @@
         'partner_subaccount_view.xml',
         'security/ir.model.access.csv',
         'company_view.xml',
-        'partner_view.xml',
     ],
     'demo': [],
     'test': ['test/partner_create_modify.yml',],

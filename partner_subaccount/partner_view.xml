@@ -29,6 +29,7 @@
                 <xpath expr="/form/group/group[2]" position="after">
                     <group colspan="2" col="6">
                         <field name="vat" on_change="vat_change(vat)"/>
+                        <button name="button_check_vat" string="Check VAT" type="object" icon="gtk-execute"/>
                         <field name="vat_subjected" invisible="1"   />
                     </group>
                 </xpath>
