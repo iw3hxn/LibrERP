@@ -30,6 +30,7 @@ from pprint import pprint
 from utils import Utils
 from osv import osv
 import vatnumber
+import sys
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -401,17 +402,19 @@ class ImportFile(threading.Thread, Utils):
                 vals_partner['vat'] = record.vat
 
             #if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
-            if not vatnumber.check_vat(vals_partner['vat']):
+            if vatnumber.check_vat(vals_partner['vat']):
+                if record.vat == record.fiscalcode:
+                    vals_partner['fiscalcode'] = vals_partner['vat']
+            else:
                 error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: {record.vat}".format(line=self.processed_lines, record=record)
                 _logger.debug(error)
                 self.error.append(error)
                 if DONT_STOP_ON_WRONG_VAT:
                     del vals_partner['vat']
+                    if vals_partner.get('fiscalcode'):
+                        del vals_partner['fiscalcode']
                 else:
                     return False
-
-            if record.vat == record.fiscalcode:
-                vals_partner['fiscalcode'] = vals_partner['vat']
 
         # if record.fiscalcode and not record.fiscalcode == record.vat and not len(record.fiscalcode) == 16:
         #    error = u"Riga {0}: Codice Fiscale {1} errato".format(self.processed_lines, record.fiscalcode)
@@ -421,7 +424,7 @@ class ImportFile(threading.Thread, Utils):
         # elif record.fiscalcode and not record.vat:
         #    vals_partner['individual'] = True
 
-        if record.fiscalcode and not record.vat:
+        if vals_partner.get('fiscalcode') and not vals_partner.get('vat'):
             vals_partner['individual'] = True
 
         # if country_code == 'IT':
@@ -480,8 +483,16 @@ class ImportFile(threading.Thread, Utils):
             return False
         else:
             self.context['import'] = True
-            partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)
-            self.uo_new += 1
+            try:
+                partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)
+                self.uo_new += 1
+            # except ValidateError as e:
+            except:
+                e = sys.exc_info()[0]
+                error = u"Riga {0}: Partner '{1} {2}'. I dati non corretti. (Error: {3}) La riga viene ignorata.".format(self.processed_lines, record_code, vals_partner['name'], e)
+                _logger.debug(error)
+                self.error.append(error)
+                return False
 
         address_type_1 = self.ADDRESS_TYPE[0]
         address_type_2 = self.ADDRESS_TYPE[1]
