@@ -213,7 +213,7 @@ msgstr "Attività iniziata da un altro utente."
 #: model:ir.ui.menu,name:task_time_control.menu_project_task_work_list
 #: view:project.task.work:0
 msgid "Hours on Task"
-msgstr "Ore su Attività"
+msgstr "Rapportini Ore"
 
 #. module: task_time_control
 #: code:addons/task_time_control/project_task.py:166
