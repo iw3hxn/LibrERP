@@ -62,7 +62,7 @@ Functionalities:
     ],
     'demo': [],
     'active': False,
-    'installable': True
+    'installable': True,
     'external_dependencies': {
         'python': ['codicefiscale'],
     }
