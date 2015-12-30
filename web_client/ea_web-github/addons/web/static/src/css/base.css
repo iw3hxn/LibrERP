@@ -1053,18 +1053,14 @@ label.error {
     margin: 0;
     padding-left: 3px;
     color: #333;
-#    text-align: center;
-#    border-left: 1px solid #FAFAFA;
+    text-align: center;
+    border-left: 1px solid #FAFAFA;
 }
 .openerp .oe-listview th.oe-sortable .ui-icon {
     margin: -4px 0 0;
     display: inline;
     display: inline-block;
     vertical-align: middle;
-}
-
-.openerp .oe-listview > table > tbody > tr > td {
-#    border-bottom: 1px solid #E3E3E3;
 }
 
 
