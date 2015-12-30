@@ -797,7 +797,7 @@ msgid "Is not possible to confirm because customer exceed the credit limit. \n"
 " Is Possible change the Order Policy \"Pay Before Delivery\" \n"
 " on tab \"Other Information\""
 msgstr "Non è possibile confermare in quanto il cliente non ha fido sufficiente. \n"
-" È possibile cambiare la politica di fatturazione a \"pagamento prima della consegna\" \n"
+" È possibile cambiare la creazione della fattura a \"Prima della consegna\" \n"
 " nella scheda \"Altre informazioni\""
 
 #. module: sale_order_confirm

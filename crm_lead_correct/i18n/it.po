@@ -344,3 +344,13 @@ msgstr "Offerte / Ordini"
 #: view:crm.lead:0
 msgid "Opportunity History"
 msgstr "Storico Opportunità"
+
+#. module: crm_lead_correct
+#: field:crm.lead,vat:0
+msgid "VAT"
+msgstr "P.IVA"
+
+#. module: crm
+#: view:crm.lead:0
+msgid "Function on business card"
+msgstr "Funzione nel biglietto da Visita"

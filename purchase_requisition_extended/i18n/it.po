@@ -99,3 +99,8 @@ msgstr "Non ci sono fornitori"
 #, python-format
 msgid "There are no Preffered Supplier"
 msgstr "Non ci sono fornitori preferenziali"
+
+#. modules: purchase_requisition_extended
+#: model:ir.ui.menu,name:base.menu_procurement_management_supplier_name
+msgid "Suppliers"
+msgstr "Fornitori"
