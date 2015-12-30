@@ -1147,7 +1147,7 @@
     <tr>
         <td width="100%" valign="top">
             <t t-call="FieldChar"/>
-            <t t-if="!widget.readonly">
+            <t t-if="! widget.created">
             <span class="oe-m2o-drop-down-button">
                 <img draggable="false" t-att-src='_s + "/web/static/src/img/down-arrow.png"' />
             </span>

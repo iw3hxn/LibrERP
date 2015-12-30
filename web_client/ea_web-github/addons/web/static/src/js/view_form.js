@@ -2978,6 +2978,7 @@ openerp.web.form.One2ManyFormView = openerp.web.FormView.extend({
 openerp.web.form.FieldMany2Many = openerp.web.form.Field.extend({
     template: 'FieldMany2Many',
     multi_selection: false,
+    force_readonly : false,
     init: function(view, node) {
         this._super(view, node);
         this.list_id = _.uniqueId("many2many");

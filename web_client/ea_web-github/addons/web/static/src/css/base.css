@@ -44,6 +44,7 @@ body.openerp {
     padding: 0 8px 8px 8px;
     border: 1px solid #E5E5E5;
     border-top: 0px;
+    background: #f9f9f9
 }
 
 .openerp .view-manager-main-content td.oe-actions {
@@ -984,6 +985,7 @@ label.error {
 .openerp .oe-listview tr.odd {
     background-color: #f0f0f0;
 }
+
 .openerp .oe-listview tr.odd.selected {
     background-color: #73B0FF;
 }
@@ -1209,14 +1211,13 @@ label.error {
     border-width: 0px 0px 1px;
     background: white;
 }
+
 .openerp .oe_form_notebook .ui-tabs-panel {
-    padding: 1px;
-    -moz-border-radius-topright: 4px;
-    -webkit-border-top-right-radius: 4px;
-    border-top-right-radius: 4px;
-    color: #0069D6;
-    background: transparent none repeat scroll 0% 0%;
+    background: #FAFAFA;
+    border-width: 1px;
+    border-color: #999999;
 }
+
 .openerp .oe_form_notebook ul.ui-tabs-nav {
     padding-left: 0;
     background: none;
@@ -1233,12 +1234,9 @@ label.error {
 .openerp .oe_form_notebook ul.ui-tabs-nav li {
     font-weight: normal;
     padding: 0px 10px 0px;
+    border-color: #999999;
 }
-.openerp .oe_form_notebook .ui-tabs-panel {
-    background: #FAFAFA;
-    border-width: 1px;
-    border-color: #dedede;
-}
+
 .openerp .oe_form_notebook .ui-tabs-selected {
     background: white;
 
@@ -1297,7 +1295,8 @@ label.error {
     margin: 3px 0 3px 2px;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    border-bottom-color: #d1d1d1;
+    border-bottom-color: #ffffff;
+    background: #f5f5f5;
 }
 
 .openerp .placeholder {
@@ -1315,7 +1314,7 @@ label.error {
 }
 
 .openerp td.oe_form_frame_cell .oe_form_field  {
-    border-right: 1px solid #DEDEDE;
+    border-right: 1px solid #efefef;
 }
 
 .openerp table.oe_frame td {
@@ -1388,7 +1387,7 @@ label.error {
 
 .openerp label.oe_label_help, .openerp label.oe_label {
     display: block;
-    color: #4c4c4c;
+ #   color: #4c4c4c;
     font-weight: normal;
 }
 .openerp label.oe_label_help {
@@ -1626,7 +1625,7 @@ label.error {
  * Avoids buttons overflow
  * */
 .openerp .oe_forms .oe_form_button .oe_button {
-    min-width: auto\9;
+    min-width: auto;
 }
 .openerp .oe_forms .button {
     height: 25px;
@@ -1769,7 +1768,8 @@ label.error {
 }
 .openerp .ui-widget-header {
     border: 0px;
-    background: transparent url("/web/static/src/img/form_sheetbg.png") repeat scroll 0% 0%;
+#    background: transparent url("/web/static/src/img/form_sheetbg.png") repeat scroll 0% 0%;
+    background: #f0f0f0;
 }
 /* progress bars */
 .openerp .ui-progressbar .ui-widget-header {
