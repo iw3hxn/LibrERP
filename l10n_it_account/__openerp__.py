@@ -27,7 +27,7 @@
 
 Functionalities:
 
-- Fiscal code computation for partner
+- Fiscal code computation for partner, and fiscal code check
 - Check invoice date consistency
 - CIG on invoice
 
@@ -63,4 +63,9 @@ Functionalities:
     'demo': [],
     'active': False,
     'installable': True
+    'external_dependencies': {
+        'python': ['codicefiscale'],
+    }
+
+
 }
