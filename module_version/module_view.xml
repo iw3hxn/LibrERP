@@ -42,5 +42,20 @@
             <field name="help">You can install new modules in order to activate new features, menu, reports or data in your OpenERP instance. To install some modules, click on the button "Install" from the form view and then click on "Start Upgrade".</field>
         </record>
 
+        <record id="action_upgrade_modules" model="ir.actions.server">
+            <field name="name">Upgrade modules</field>
+            <field name="model_id" ref="model_ir_module_module"/>
+            <field name="state">code</field>
+            <field name="code">self.upgrade_modules(cr, uid, context=context)</field>
+        </record>
+
+        <record id="menu_upgrade_modules" model="ir.values">
+            <field name="object" eval="True" />
+            <field name="name">Upgrade Modules Values</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%d'%action_upgrade_modules" />
+            <field name="key">action</field>
+            <field name="model">ir.module.module</field>
+        </record>
     </data>
 </openerp>

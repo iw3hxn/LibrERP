@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013 Didotech srl (info at didotech.com)
+# Copyright (c) 2013-2015 Didotech srl (info at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -60,3 +60,28 @@ class module(osv.osv):
         'need_upgrade': fields.function(_need_upgrade, string=_('Need Upgrade'), method=True, type='boolean', store=True),
         'check_upgrade': fields.function(_check_upgrade, string=_('Need Upgrade'), method=True, type='boolean', store=False)
     }
+
+    def upgrade_modules(self, cr, uid, context, count=0):
+        if context.get('active_ids'):
+            module_ids = context.get('active_ids')
+        else:
+            module_ids = self.search([('need_upgrade', '=', True), ('state', 'in', ('installed', 'to upgrade', 'to remove'))])
+
+        self.button_upgrade(cr, uid, module_ids, context)
+
+        modules_to_upgrade_ids = self.search(cr, uid, [('state', '=', 'to upgrade')])
+        if modules_to_upgrade_ids:
+            self.pool['base.module.upgrade'].upgrade_module(cr, uid, modules_to_upgrade_ids, context)
+
+        modules_to_upgrade_ids = self.search(cr, uid, [('state', '=', 'to upgrade')])
+
+        if count > 5:
+            print 'Too many attempts'
+            return False
+        elif modules_to_upgrade_ids:
+            count += 1
+            print 'Count:', count
+            context['active_ids'] = modules_to_upgrade_ids
+            return self.upgrade_modules(cr, uid, context, count)
+        else:
+            return True
