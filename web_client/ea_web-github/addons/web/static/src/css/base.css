@@ -2502,7 +2502,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 .openerp .oe-binary-image {
   max-width: 130px;
   border-color: #dedede;
-  border-radius: 50%;
+  border-radius: 10%;
 }
 
 /* Debug stuff */
