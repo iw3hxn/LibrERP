@@ -48,3 +48,8 @@ msgstr "Annulla Aggiornamento"
 #, python-format
 msgid "Need Upgrade"
 msgstr "Richiede Aggiornamento"
+
+#. module: module_version
+#: model:ir.actions.server,name:module_version.action_upgrade_modules
+msgid "Upgrade modules"
+msgstr "Aggiorna tutti i moduli"
