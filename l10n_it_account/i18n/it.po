@@ -53,13 +53,15 @@ msgid "B.B. 30/60 GG Data Fattura"
 msgstr "B.B. 30/60 GG Data Fattura"
 
 #. module: l10n_it_account
-#: code:addons/l10n_it_account/account/invoice.py:91
+#: code:addons/l10n_it_account/account/invoice.py:39
+#: code:addons/l10n_it_account/account/invoice.py:89
 #, python-format
 msgid "Period Mismatch Error!"
 msgstr "Errore nel Periodo!"
 
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:92
+#: code:addons/l10n_it_account/account/invoice.py:40
 #, python-format
 msgid "Period %s have already a closed vat statement."
 msgstr "Il periodo %s ha già una liquidazione IVA chiusa."

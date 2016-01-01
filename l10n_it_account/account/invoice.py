@@ -28,6 +28,20 @@ import datetime
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
+    def action_cancel(self, cr, uid, ids, context=None):
+        for obj_inv in self.browse(cr, uid, ids, context):
+            period = obj_inv.period_id
+            vat_statement = self.pool['account.vat.period.end.statement'].search(
+                cr, uid, [('period_ids', 'in', period.id)], context=context)
+            if vat_statement and self.pool['account.vat.period.end.statement'].browse(
+                    cr, uid, vat_statement, context)[0].state != 'draft':
+                raise orm.except_orm(
+                    _('Period Mismatch Error!'),
+                    _('Period %s have already a closed vat statement.')
+                    % period.name
+                )
+        return super(account_invoice, self).action_cancel(cr, uid, ids, context)
+
     def _is_direct_invoice(self, cr, uid, ids, filed_name, args, context=None):
         """
         u'IN/00429-OUT/00366-return:CNL/2015/000374, IN/00367-OUT/00217-return:CNL/2015/000350'
