@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+    
+    <record id="sale.view_subscription_invoice_day" model="res.groups">
+        <field name="name">Change Invoice Day on Sale Order</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+
+</data>
+</openerp>

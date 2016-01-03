@@ -23,29 +23,27 @@
 
 {
     "name": "Subscrption Sale",
-    "version": "3.4.17.13",
+    "version": "3.5.18.14",
     "author": "Agile Business Group & Domsense & Didotech",
     'website': 'http://www.didotech.com',
     'category': 'Generic Modules/Sales & Purchases',
     "description": """This module allows to sale subscription products and generate new quotations when subscription ends.
-    
-    For more info: http://planet.domsense.com/en/2011/06/selling-subscriptions-with-openerp/
+
     """,
     'depends': [
         "sale",
         'sale_margin',
         'core_extended'
-        # "sale_layout",
-        # "tko_sale_validation",
     ],
     'data': [
-        "security/ir.model.access.csv",
-        'product_view.xml',
+        'security/ir.model.access.csv',
+        'security/security.xml',
+        'views/product_view.xml',
         'views/sale_view.xml',
         'views/sale_order_menu.xml',
         'orders_renew.xml',
         'cron.xml',
-        'company_view.xml'
+        'views/company_view.xml'
     ],
     'installable': True,
     'active': False,

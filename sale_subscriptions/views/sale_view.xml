@@ -18,11 +18,14 @@
                     <field name="shipped" position="after">
                         <field name="presentation" />
                         <field name="have_subscription" />
-                        <!--<field name="automatically_create_new_subscription" string="Self-renewal" attrs="{'invisible': [('have_subscription', '=', 0)], ('state','=','draft')]}" />-->
-                        <field name="automatically_create_new_subscription" string="Self-renewal" attrs="{'invisible': [('have_subscription', '=', 0)]}" />
-                        <field name="order_duration" attrs="{'invisible': [('have_subscription', '=', 0), ('automatically_create_new_subscription', '=', False)], 'required': ['|', ('have_subscription', '=', 1), ('automatically_create_new_subscription', '=', True), ('state', '=', 'draft')]}" />
-                        <field name="order_invoice_duration" attrs="{'invisible': [('have_subscription', '=', 0)], 'required': [('have_subscription', '=', 1), ('state', '=', 'draft')]}" />
-                        <field name="order_start_date" attrs="{'invisible': [('have_subscription', '=', 0)]}" />
+                        <group attrs="{'invisible': [('have_subscription', '=', 0)]}" >
+                            <!--<field name="automatically_create_new_subscription" string="Self-renewal" attrs="{'invisible': [('have_subscription', '=', 0)], ('state','=','draft')]}" />-->
+                            <field name="automatically_create_new_subscription" string="Self-renewal" attrs="{'invisible': [('have_subscription', '=', 0)]}" />
+                            <field name="order_duration" attrs="{'invisible': [('have_subscription', '=', 0), ('automatically_create_new_subscription', '=', False)], 'required': ['|', ('have_subscription', '=', 1), ('automatically_create_new_subscription', '=', True), ('state', '=', 'draft')]}" />
+                            <field name="order_invoice_duration" attrs="{'invisible': [('have_subscription', '=', 0)], 'required': [('have_subscription', '=', 1), ('state', '=', 'draft')]}" />
+                            <field name="subscription_invoice_day" groups="sale.view_subscription_invoice_day" />
+                            <field name="order_start_date" attrs="{'invisible': [('have_subscription', '=', 0)]}" />
+                        </group>
                     </field>
                     <field name="date_confirm" position="after">
                         <field name="order_end_date" string="Subscription Ending Date" attrs="{'invisible': [('have_subscription', '=', 0)]}" />

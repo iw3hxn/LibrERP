@@ -102,7 +102,8 @@ class sale_order_line(orm.Model):
             (90, '3 months'),
             (180, '6 months'),
             (365, '1 year'),
-            (730, '2 years')
+            (730, '2 years'),
+            (1095, '3 years'),
         ]),
         'order_end_date': fields.related('order_id', 'order_end_date', type='date', string=_('Order End'), store=True),
         'user_id': fields.related('order_id', 'user_id', 'name', type='char', string=_('Salesman'), store=True),
@@ -335,7 +336,8 @@ class sale_order(orm.Model):
                 (90, '3 months'),
                 (180, '6 months'),
                 (365, '1 year'),
-                (730, '2 years')
+                (730, '2 years'),
+                (1095, '3 years'),
             ],
             'Subscription Duration',
             help='Subscription duration in days',
@@ -352,7 +354,8 @@ class sale_order(orm.Model):
                 (90, 'Trimestral'),
                 (180, 'Semiannual'),
                 (365, 'Annual'),
-                (730, 'Biennial')
+                (730, 'Biennial'),
+                (1095, 'Triennial'),
             ], 'Invoice Period',
             help='Invoice Period',
             states={
@@ -368,7 +371,15 @@ class sale_order(orm.Model):
                                             'cancel': [('readonly', True)]
                                         }),
         'order_end_date': fields.function(get_order_end_date, 'Subscription Ending Date', type='date', readonly=True, method=True),
-        'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
+        'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,),
+        'subscription_invoice_day': fields.selection((
+            ('1', _('First day of month')),
+            ('31', _('Last day of month'))
+        ), _('Invoice Day')),
+    }
+
+    _defaults = {
+        'subscription_invoice_day': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.subscription_invoice_day,
     }
 
     def _amount_line_tax(self, cr, uid, line, context=None):
@@ -405,7 +416,7 @@ class sale_order(orm.Model):
         two_years_ago = datetime.datetime.now() - relativedelta(years=2)
         
         # Find all orders that should be renewed:
-        #order_ids = order_obj.search(cr, uid, [('automatically_create_new_subscription', '=', True), ('order_start_date', '>', two_years_ago), ('state', 'not in', ('draft', 'cancel', 'wait_valid'))])
+        # order_ids = order_obj.search(cr, uid, [('automatically_create_new_subscription', '=', True), ('order_start_date', '>', two_years_ago), ('state', 'not in', ('draft', 'cancel', 'wait_valid'))])
         order_ids = order_obj.search(cr, uid, [('automatically_create_new_subscription', '=', True), ('order_start_date', '>', two_years_ago), ('state', 'in', ('progress',))])
         
         order_end_dates = self.get_order_end_date(cr, uid, order_ids, '', '')
@@ -549,7 +560,7 @@ class sale_order(orm.Model):
         invoice_delta = relativedelta(months=self.get_duration_in_months(order.order_invoice_duration))
 
         virtual_start_date = datetime.datetime(start_date.year, start_date.month, 1)
-        if user.company_id.subscription_invoice_day == '31':
+        if order.subscription_invoice_day == '31':
             virtual_start_date += relativedelta(months=1)
 
         if invoice_duration == 1:
@@ -567,7 +578,7 @@ class sale_order(orm.Model):
             invoice_date = datetime_date
             period_end = invoice_date + invoice_delta - day_delta
 
-            if user.company_id.subscription_invoice_day == '31':
+            if order.subscription_invoice_day == '31':
                 invoice_date = invoice_date - day_delta
             
             if invoice_duration == 1:

@@ -70,6 +70,7 @@ msgstr "Reattiva Ordini Sospesi"
 #. module: sale_subscriptions
 #: code:addons/sale_subscriptions/company.py:33
 #: selection:res.company,subscription_invoice_day:0
+#: selection:sale.order,subscription_invoice_day:0
 #, python-format
 msgid "Last day of month"
 msgstr "Ultimo giorno del mese"
@@ -77,6 +78,7 @@ msgstr "Ultimo giorno del mese"
 #. module: sale_subscriptions
 #: code:addons/sale_subscriptions/company.py:34
 #: field:res.company,subscription_invoice_day:0
+#: field:sale.order,subscription_invoice_day:0
 #, python-format
 msgid "Invoice Day"
 msgstr "Giorno Fatturazione"
@@ -93,7 +95,8 @@ msgstr "Totale non tassato"
 
 #. module: sale_subscriptions
 #: code:addons/sale_subscriptions/company.py:32
-#: selection:res.company,subscription_invoice_day:0
+#: selection:res.company,subscription_invoice_day:07
+#: selection:sale.order,subscription_invoice_day:0
 #, python-format
 msgid "First day of month"
 msgstr "Primo giorno del mese"
@@ -254,6 +257,11 @@ msgid "Biennial"
 msgstr "Biennale"
 
 #. module: sale_subscriptions
+#: selection:sale.order,order_invoice_duration:0
+msgid "Triennial"
+msgstr "Triennale"
+
+#. module: sale_subscriptions
 #: code:addons/sale_subscriptions/models/sale.py:238
 #: code:addons/sale_subscriptions/models/sale.py:246
 #, python-format
@@ -351,6 +359,12 @@ msgid "2 years"
 msgstr "2 Anni"
 
 #. module: sale_subscriptions
+#: selection:sale.order,order_duration:0
+#: selection:sale.order.line,order_duration:0
+msgid "3 years"
+msgstr "3 Anni"
+
+#. module: sale_subscriptions
 #: code:addons/sale_subscriptions/models/sale.py:108
 #: field:sale.order.line,user_id:0
 #, python-format
@@ -362,3 +376,7 @@ msgstr "Utente"
 msgid "Sales Order Line"
 msgstr "Linea d'ordine di vendita"
 
+#. module: sale_order_confirm
+#: model:res.groups,name:sale.verify_manager
+msgid "Change Invoice Day on Sale Order"
+msgstr "Cambia il giorno di Fatturazione nell'ordine di Vendita"
