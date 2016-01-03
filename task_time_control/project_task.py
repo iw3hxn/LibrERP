@@ -94,7 +94,7 @@ class project_task(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         
-        self.pool['time.control.user.task'].write(cr, uid, user_task.id, {'work_end': final})
+        self.pool['time.control.user.task'].write(cr, uid, user_task.id, {'work_end': final}, context)
         
         context['user_id'] = uid
         context['user_task_id'] = user_task.id
@@ -119,27 +119,29 @@ class project_task(orm.Model):
             'context': context
         }
       
-    def work_start_btn(self, cr, uid, task_ids, context):
+    def work_start_btn(self, cr, uid, task_ids, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         start = datetime.now()
-        user_task_obj = self.pool["time.control.user.task"]
+        user_task_obj = self.pool['time.control.user.task']
         project_task_obj = self.pool['project.task']
         
-        user_task_ids = user_task_obj.search(cr, uid, [('user', '=', uid), ('started_task', 'in', task_ids)])
+        user_task_ids = user_task_obj.search(cr, uid, [('user', '=', uid), ('started_task', 'in', task_ids)], context=context)
         
         if user_task_ids:
-            user_task = user_task_obj.browse(cr, uid, user_task_ids)[0]
+            user_task = user_task_obj.browse(cr, uid, user_task_ids, context)[0]
             if user_task.started_task:
                 if user_task.started_task.id == task_ids[0]:
                     raise orm.except_orm(_("Warning !"), _("Task is alredy started."))
                 return self.stop_task(cr, uid, task_ids[0], start, user_task, context)
             else:
-                task = project_task_obj.browse(cr, uid, task_ids)[0]
+                task = project_task_obj.browse(cr, uid, task_ids, context)[0]
                 if task.state == 'draft':
                     self.do_open(cr, uid, task_ids, context)
                 project_task_obj.write(cr, uid, task_ids, {'state': 'working'})
-                user_task_obj.write(cr, uid, user_task_ids, {'work_start': start, 'started_task': task_ids[0]})
+                user_task_obj.write(cr, uid, user_task_ids, {'work_start': start, 'started_task': task_ids[0]}, context)
         else:
-            task = self.pool.get('project.task').browse(cr, uid, task_ids)[0]
+            task = self.pool.get('project.task').browse(cr, uid, task_ids, context)[0]
             if task.state == 'draft':
                 self.do_open(cr, uid, task_ids, context)
             
@@ -147,17 +149,19 @@ class project_task(orm.Model):
                 'user': uid,
                 'work_start': start,
                 'started_task': task_ids[0]
-            })
-            project_task_obj.write(cr, uid, task_ids, {'state': 'working'})
+            }, context)
+            project_task_obj.write(cr, uid, task_ids, {'state': 'working'}, context)
         return True
         
-    def work_end_btn(self, cr, uid, task_ids, context):
+    def work_end_btn(self, cr, uid, task_ids, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         end_datetime = datetime.now()
-        user_task_obj = self.pool["time.control.user.task"]
+        user_task_obj = self.pool['time.control.user.task']
         
-        user_task_ids = user_task_obj.search(cr, uid, [('user', '=', uid), ('started_task', 'in', task_ids)])
+        user_task_ids = user_task_obj.search(cr, uid, [('user', '=', uid), ('started_task', 'in', task_ids)], context=context)
         if user_task_ids:
-            user_task = user_task_obj.browse(cr, uid, user_task_ids[0])
+            user_task = user_task_obj.browse(cr, uid, user_task_ids[0], context)
             if user_task.started_task.id == task_ids[0]:
                 finished = self.stop_task(cr, uid, None, end_datetime, user_task, context)
                 if finished:
@@ -176,5 +180,7 @@ class project_task_work(orm.Model):
     
     _columns = {
         'work_start': fields.datetime('Work start'),
-        'work_end': fields.datetime('Work end')
+        'work_end': fields.datetime('Work end'),
+        'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
+        'issue_id': fields.many2one('project.issue', 'Issue'),
     }
