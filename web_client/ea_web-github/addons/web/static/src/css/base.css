@@ -1289,10 +1289,10 @@ label.error {
     overflow: auto;
     padding: 3px 0 3px 2px;
     margin: 3px 0 3px 2px;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: #ffffff;
     background: #f5f5f5;
+    border-color: #999999;
+    border: 1px solid;
+    border-radius: 3px;
 }
 
 .openerp .placeholder {
