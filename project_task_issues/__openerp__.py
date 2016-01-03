@@ -21,17 +21,21 @@
 ##############################################################################
 {
     'name': 'Project Task Issues',
-    'version': '1.0.0.1',
+    'version': '1.0.1.2',
     'category': 'Generic Modules/Projects & Services',
     'description': """Issues list associated to task. In the task form, you can see the issues related to that task
 		Create issues from tasks.""",
-    'author': 'Agile Business Group',
+    'author': 'Agile Business Group, Didotech SRL',
     'website': 'http://www.agilebg.com',
     'license': 'AGPL-3',
-    "depends" : ['project_issue'],
-    "init_xml" : ['project_view.xml'],
-    "update_xml" : [],
-    "demo_xml" : [],
+    "depends": [
+        'project_issue',
+        'project_issue'
+    ],
+    "data": [
+        'project_view.xml',
+        'project_issue_view.xml'
+    ],
     "active": False,
     "installable": True
 }

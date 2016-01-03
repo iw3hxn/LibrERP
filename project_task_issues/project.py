@@ -19,13 +19,32 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import orm, fields
 
-class task(osv.osv):
+class project_task(orm.Model):
+
     _inherit = "project.task"
     
     _columns = {
         'issue_ids': fields.one2many('project.issue', 'task_id', 'Issues', readonly=False),
-        }
-    
-task()
+    }
+
+
+class project_issue(orm.Model):
+
+    _inherit = "project.issue"
+
+    _columns = {
+        'work_ids': fields.one2many('project.task.work', 'issue_id', 'Work done'),
+        'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
+    }
+
+
+#class project_task_work(orm.Model):
+
+#    _inherit = "project.task.work"
+
+#    _default = {
+#        'task_id': lambda self, cr, uid, context: context.get('default_task_id', False),
+#    }
+

@@ -7,13 +7,28 @@
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
-                 <page string="Extra Info" position="after">
+                <page string="Extra Info" position="after">
                     <page string="Issues">
-                        <field name="issue_ids" nolabel="1" colspan="4"/>
+                        <field name="issue_ids" nolabel="1" colspan="4">
+                            <tree string="Issue Tracker Tree"
+                                  colors="black:state=='open';blue:state=='pending';grey:state in ('cancel', 'done')">
+                                <field name="id"/>
+                                <field name="create_date"/>
+                                <field name="name"/>
+                                <field name="partner_id" invisible="1"/>
+                                <field name="project_id" invisible="1"/>
+                                <field name="priority" string="Priority"/>
+                                <field name="type_id"  string="Stages"/>
+                                <field name="version_id" />
+                                <field name="user_id"/>
+                                <field name="state"/>
+                                <field name="categ_id" invisible="1"/>
+                                <field name="task_id" />
+                            </tree>
+                        </field>
                     </page>
-                 </page>
+                </page>
             </field>
         </record>
-        
     </data>
 </openerp>
