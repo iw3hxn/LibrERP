@@ -25,6 +25,8 @@
             <field name="type">search</field>
             <field name="inherit_id" ref="base.view_module_filter"/>
             <field name="arch" type="xml">
+                <filter name="app" position="replace" />
+                <filter name="extra" position="replace" />
                 <filter icon="terp-dialog-close" string="Not Installed" position="after">
                     <!--<field name="need_upgrade" invisible="1" />-->
                     <filter icon="terp-tools" string="To upgrade" domain="[('need_upgrade', '=', True), ('state', 'in', ['installed', 'to upgrade', 'to remove'])]"/>

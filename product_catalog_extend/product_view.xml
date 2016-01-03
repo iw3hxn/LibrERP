@@ -36,7 +36,9 @@
             <field name="inherit_id" ref="product.product_search_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//search[@string='Product']//filter[@string='Services']" position="before">
-                    <filter name="catalog" icon="terp-stock_symbol-selection" domain="[('catalog','=',True)]"
+                    <filter name="not_catalog" icon="terp-stock_symbol-selection" domain="[('catalog', '=', False)]"
+                            string="Not in Catalog"/>
+                    <filter name="catalog" icon="terp-stock_symbol-selection" domain="[('catalog', '=', True)]"
                             string="Catalog"/>
                 </xpath>
             </field>

@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Product Catalog Report',
-    'version': '3.6.1.5',
+    'version': '3.6.1.6',
     'category': 'General',
     'description': """
         A report of product catalog to list the products with images and price appropriatly to the assinged pricelist.

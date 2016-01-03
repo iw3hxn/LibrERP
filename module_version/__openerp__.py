@@ -22,7 +22,7 @@
 
 {
     'name': 'Show modules to upgrade',
-    'version': '3.0.1.4',
+    'version': '3.0.1.5',
     'category': 'Tools',
     'description': """
         Modules add a column that shows if module should be upgraded.
