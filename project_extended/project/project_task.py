@@ -19,10 +19,11 @@
 #
 ##############################################################################.
 
-from osv import fields, osv
+from openerp.osv import orm, fields
 
 
-class project_task(osv.osv):
+class project_task(orm.Model):
+
     _inherit = 'project.task'
     _order = 'date_deadline asc, priority asc, partner_id'
     
