@@ -23,13 +23,9 @@ from osv import fields, osv
 
 class account_fiscalyear(osv.osv):
     _inherit = "account.fiscalyear"
-    _columns = \
-    { 'sequence_code': fields.char
-        ( 'Sequence Code'
-        , size = 6
-        , help = """This code will be used to format the start date of the fiscalyear for the placeholder 'fy' defined for sequences as prefix and suffix.
+    _columns = {
+        'sequence_code': fields.char('Sequence Code', size=6,
+                                     help="""This code will be used to format the start date of the fiscalyear for the placeholder 'fy' defined for sequences as prefix and suffix.
 Example: a fiscal year starting on March 1st with a sequence code %Ya will generate 2011a.
-This allows to handle multiple fiscal years per calendar year and fiscal years not matching calendar years easily"""
-        )
+This allows to handle multiple fiscal years per calendar year and fiscal years not matching calendar years easily""")
     }
-account_fiscalyear()

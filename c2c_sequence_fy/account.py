@@ -23,29 +23,23 @@ from osv import fields, osv
 
 class account_journal(osv.osv):
     _inherit = "account.journal"
-    _selection = [('none','No creation'), ('create','Create'), ('create_fy','Create per Fiscal Year'), ('create_period','Create per Period')]
-    _columns = \
-    { 'prefix_pattern' : fields.char('Prefix Pattern', size=64, help="Prefix pattern for the sequence if not defined in sequence")
-    , 'suffix_pattern' : fields.char('Suffix Pattern', size=64, help="Suffix pattern for the sequence if not defined in sequence")
-    , 'create_sequence': fields.selection
-        ( _selection
-        , 'Create Sequence'
-        , required = "True"
-        , help = """Sequence will be created on the fly using the code of the journal and for fy the fy prefix to compose the prefix"""
-        )
+    _selection = [('none', 'No creation'), ('create', 'Create'), ('create_fy', 'Create per Fiscal Year'), ('create_period', 'Create per Period')]
+    _columns = {
+        'prefix_pattern': fields.char('Prefix Pattern', size=64, help="Prefix pattern for the sequence if not defined in sequence"),
+        'suffix_pattern': fields.char('Suffix Pattern', size=64, help="Suffix pattern for the sequence if not defined in sequence"),
+        'create_sequence': fields.selection(_selection, 'Create Sequence', required="True",
+                                             help="""Sequence will be created on the fly using the code of the journal and for fy the fy prefix to compose the prefix""")
     }
+
     _defaults = {
-       'create_sequence' : 'create_fy',
+       'create_sequence': 'create_fy',
     }
 
     def create_sequence(self, cr, uid, vals, context=None):
-       res =  super(account_journal,self).create_sequence(cr, uid, vals, context)
+       res = super(account_journal, self).create_sequence(cr, uid, vals, context)
        seq_obj = self.pool.get('ir.sequence')
-       for seq in seq_obj.browse(cr, uid, [res],context) :
+       for seq in seq_obj.browse(cr, uid, [res], context):
            # FIXME - include the new parameters like fy,etc and uset the prefix_pattern
-           prefix = seq.prefix.replace('/%(year)s/','-%(fy)s-')
-           seq_obj.write(cr, uid, res,{'prefix' : prefix }) 
+           prefix = seq.prefix.replace('/%(year)s/', '%(fy)s/')
+           seq_obj.write(cr, uid, res, {'prefix': prefix}, context)
        return res
-
-
-account_journal()

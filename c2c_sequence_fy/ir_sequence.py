@@ -108,7 +108,7 @@ class ir_sequence(osv.osv):
                     for fy_s in fy_seq_obj.browse(cr, uid, fy_seq_ids, context=context):
                         seq_id = fy_s.sequence_id.id
                 else:
-                    fy_obj = self.pool.get('account.fiscalyear')
+                    fy_obj = self.pool['account.fiscalyear']
                     for fy in fy_obj.browse(cr, uid, [fy], context=context):
                         fy_name = fy.name
                         if not journal:
@@ -117,9 +117,8 @@ class ir_sequence(osv.osv):
                                 journal = journal_obj.browse(cr, uid, journal_ids[0], context)
                             else:
                                 raise osv.except_osv(_('No journal found'), '')
-                        #prefix = journal.sequence_id.prefix + fy.code +'-' # removed (result as a duplication) but it make a bug for old installation #
-
-                        prefix = journal.sequence_id.prefix.replace('/%(year)s/', '').replace('-%(fy)s-', '') + '-' + fy.code +'-'
+                        # prefix = journal.sequence_id.prefix + fy.code +'-' # removed (result as a duplication) but it make a bug for old installation #
+                        prefix = journal.sequence_id.prefix.replace('/%(year)s/', '').replace('%(fy)s', '') + '/' + fy.code + '/'
 
                     sequence_code = journal.sequence_id.code
                     vals = {
@@ -138,8 +137,7 @@ class ir_sequence(osv.osv):
                     fy_seq_obj.create(cr, SUPERUSER_ID, vals2, context=context)
                     
         self._logger.debug('next_by_id seq_id `%s`', seq_id)
-             
-         #ids = self.search(cr, uid, ['&',('id','=', sequence_id),('company_id','in',company_ids)])
+        # ids = self.search(cr, uid, ['&',('id','=', sequence_id),('company_id','in',company_ids)])
         return self._next(cr, uid, seq_id, context)
     # end def next_by_id
 
@@ -203,7 +201,7 @@ class ir_sequence(osv.osv):
     # end def _journal_name
     
     def _seq_type(self, cr, uid, seq):
-        seq_type_obj = self.pool.get('ir.sequence.type')
+        seq_type_obj = self.pool['ir.sequence.type']
         ids = seq_type_obj.search(cr, uid, [('code', '=', seq.code)])
         if ids:
             return seq_type_obj.browse(cr, uid, ids[0])
@@ -273,20 +271,20 @@ class ir_sequence(osv.osv):
         
         for user in self.pool.get('res.users').browse(cr, uid, [uid], context):
             self._logger.debug('next_by_code comp `%s`', user)
-            company_id = user.company_id.id
+            # company_id = user.company_id.id
         
         # Disabled until bug in official stock addon is corrected
-        #seq_ids = self.search(cr, uid, [('code', '=', sequence_code), ('company_id', '=', company_id)])
-        seq_ids = self.search(cr, uid, [('code', '=', sequence_code)])
+        # seq_ids = self.search(cr, uid, [('code', '=', sequence_code), ('company_id', '=', company_id)])
+        seq_ids = self.search(cr, uid, [('code', '=', sequence_code)], context=context)
         if not seq_ids:
-            seq_type_obj = self.pool.get('ir.sequence.type')
-            seq_type_ids = seq_type_obj.search(cr, uid, [('code', '=', sequence_code)])
+            seq_type_obj = self.pool['ir.sequence.type']
+            seq_type_ids = seq_type_obj.search(cr, uid, [('code', '=', sequence_code)], context=context)
             if not seq_type_ids:
                 raise osv.except_osv(
                     _('Integrity Error !'),
                     _('Missing sequence-code %s') % sequence_code
                 )
-            seq_type = seq_type_obj.browse(cr, uid, seq_type_ids[0])
+            seq_type = seq_type_obj.browse(cr, uid, seq_type_ids[0], context)
             if seq_type.create_sequence == 'none':
                 raise osv.except_osv(
                     _('Integrity Error !'),
@@ -296,7 +294,7 @@ class ir_sequence(osv.osv):
             values = {
                 'code': sequence_code,
                 'name': self._abbrev(seq_type.name, ' '),
-                #'prefix':  # "%(stn)-",
+                # 'prefix':  # "%(stn)-",
                 'padding': 3,
                 'implementation': 'no_gap'
             }
