@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Project Task Issues',
-    'version': '1.0.1.2',
+    'version': '1.0.1.3',
     'category': 'Generic Modules/Projects & Services',
     'description': """Issues list associated to task. In the task form, you can see the issues related to that task
 		Create issues from tasks.""",
@@ -30,7 +30,6 @@
     'license': 'AGPL-3',
     "depends": [
         'project_issue',
-        'project_issue'
     ],
     "data": [
         'project_view.xml',

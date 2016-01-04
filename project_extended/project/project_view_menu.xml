@@ -15,9 +15,10 @@
                   parent="base.menu_main_pm" sequence="5"
                   groups="project.group_project_manager"/>
         
-        <menuitem id="project_long_term.menu_project_phase_list" parent="project.menu_project_management"
+        <menuitem id="project_long_term.menu_project_phase_list" parent="project.menu_project_config_project"
                   groups="base.group_extended" />
-        
+
+        <menuitem id="project.menu_open_view_project_all" parent="project.menu_project_management"/>
         
         <act_window
             context="{'search_default_account_id': [analytic_account_id], 'search_default_user_id': False, 'default_account_id': analytic_account_id}"
