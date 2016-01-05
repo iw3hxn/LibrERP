@@ -21,19 +21,21 @@
 ##############################################################################
 from osv import fields, osv
 
+
 class ir_sequence_type(osv.osv):
     _inherit = 'ir.sequence.type'
-    _selection = [('none','No creation'), ('create','Create'), ('create_fy','Create per Fiscal Year'),('create_period','Create per Period (Month)')]
-    _columns = \
-    { 'prefix_pattern' : fields.char('Prefix Pattern', size=64, help="Prefix pattern for the sequence")
-    , 'suffix_pattern' : fields.char('Suffix Pattern', size=64, help="Suffix pattern for the sequence")
-    , 'create_sequence': fields.selection
-        ( _selection
-        , 'Create Sequence'
-        , required = "True"
-        , help = """Sequence will be created on the fly using the code of the journal and for fy the fy prefix to compose the prefix"""
+    _selection = [('none', 'No creation'), ('create', 'Create'), ('create_fy', 'Create per Fiscal Year'),
+                  ('create_period', 'Create per Period (Month)')]
+
+    _columns = {
+        'prefix_pattern': fields.char('Prefix Pattern', size=64, help="Prefix pattern for the sequence"),
+        'suffix_pattern': fields.char('Suffix Pattern', size=64, help="Suffix pattern for the sequence"),
+        'create_sequence': fields.selection(_selection, 'Create Sequence', required="True",
+            help="""Sequence will be created on the fly using the code of the journal and for fy the fy prefix to compose the prefix"""
         )
     }
 
-    _defaults = {'create_sequence' : lambda *a: 'create'}
-ir_sequence_type()
+    _defaults = {
+        'create_sequence': lambda *a: 'create'
+    }
+

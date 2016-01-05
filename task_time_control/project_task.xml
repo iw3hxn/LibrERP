@@ -97,7 +97,7 @@
             <field name="name">My Tasks</field>
             <field name="res_model">project.task</field>
             <field name="search_view_id" ref="project_gtd.view_task_gtd_search"/>
-            <field name="context">{'set_editable':True,'set_visible':True,'gtd':True,'user_invisible':True, "search_default_open": 1}</field>
+            <field name="context">{'set_visible':True,'gtd':True,'user_invisible':True, "search_default_open": 1}</field>
             <field name="domain">['|',('user_id','=',uid),('other_users_ids','in',uid)]</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar,gantt,graph,kanban</field>
@@ -122,7 +122,6 @@
                     <field name="hours" widget="float_time"/>
                     <field name="task_id" domain="['|',('user_id','=',uid),('other_users_ids','in',uid),('state','in',['open','working'])]"/>
                     <field name="name"/>
-                    
                     <field name="user_id"/>
                 </tree>    
             </field>
@@ -135,7 +134,8 @@
             <field name="arch" type="xml">
                 <search string="Hours on Task">
                     <group>
-                        <filter name="today" icon="terp-go-today" domain="[('date', '=', time.strftime('%%Y-%%m-%%d'))]" string="Today"/>
+                        <filter name="today" icon="terp-go-today" string="Today" domain="[('date','&gt;=',datetime.date.today().strftime('%%Y-%%m-%%d 00:00:00')),('date','&lt;=',datetime.date.today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                        <filter icon="gtk-go-forward" string="Yesterday" domain="[('date','&lt;',datetime.date.today().strftime('%%Y-%%m-%%d 00:00:00')),('date','&gt;=',(datetime.date.today() - relativedelta(days=1)).strftime('%%Y-%%m-%%d 00:00:00'))]"/>
                         <separator orientation="vertical"/>
                         <field name="date"/>
                         <field name="task_id"/>
