@@ -19,7 +19,7 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.3.8.14',
+    'version': '3.4.9.14',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,
