@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2011-2013 Didotech Srl. (<http://www.didotech.com>)
+#    Copyright (C) 2011-2016 Didotech Srl. (<http://www.didotech.com>)
 #    All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -23,14 +23,13 @@ from openerp.osv import orm, fields
 import decimal_precision as dp
 
 
-class project_task(orm.Model):
+class project_project(orm.Model):
     _inherit = 'project.project'
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
         spent_group = self.pool['res.groups'].user_in_group(cr, uid, uid, 'project.can_modify_prices', context=context)
         for project in self.browse(cr, uid, ids, context):
-            # import pdb; pdb.set_trace()
             if spent_group:
                 effective_hours = project.total_spent
                 planned_hours = project.total_sell_service
@@ -47,9 +46,7 @@ class project_task(orm.Model):
                 value[project.id] = 'red'
 
             # ore effettive <= previste verde altrimenti rosso
-
         return value
-
 
     def _task_count(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
@@ -81,27 +78,69 @@ class project_task(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         res = {}
-        projects = self.browse(cr, uid, ids, context=context)
-        for project_id in projects:
-            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id)], context=context)
-            sale_ids = self.pool['sale.order'].search(cr, uid, [('project_id', '=', project_id.analytic_account_id.id), ('state', 'not in', ['draft'])], context=context)
-            
+
+        for project_id in self.browse(cr, uid, ids, context=context):
             res[project_id.id] = {
                 'total_spent': 0.0,
                 'total_invoice': 0.0,
                 'total_sell': 0.0,
                 'total_sell_service': 0.0,
             }
+
+            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id)], context=context)
             for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
                 if account.amount > 0:
                     res[project_id.id]['total_invoice'] += account.amount
                 else:
                     res[project_id.id]['total_spent'] += abs(account.amount)
+
+            sale_ids = self.pool['sale.order'].search(cr, uid, [
+                ('project_id', '=', project_id.analytic_account_id.id),
+                ('state', 'not in', ['draft'])
+            ], context=context)
+
+            # if sale_ids:
+            #     cr.execute("""
+            #         SELECT COALESCE(SUM(amount_untaxed))
+            #         FROM sale_order
+            #         WHERE sale_order.id IN ({sale_ids})
+            #     """.format(sale_ids=', '.join([str(sale_id) for sale_id in sale_ids])))
+            #
+            #     total_sell = cr.fetchone()[0] or 0.0
+            #
+            #     cr.execute("""
+            #         SELECT COALESCE(SUM(price_subtotal))
+            #         FROM sale_order_line
+            #         LEFT JOIN product_product ON sale_order_line.product_id = product_product.id
+            #         LEFT JOIN product_template ON product_product.product_tmpl_id = product_template.id
+            #         WHERE sale_order_line.order_id IN ({sale_ids})
+            #         AND product_template.type ILIKE 'service'
+            #     """.format(sale_ids=', '.join([str(sale_id) for sale_id in sale_ids])))
+            #     total_sell_service = cr.fetchone()[0] or 0.0
+            # else:
+            #     total_sell = 0.0
+            #     total_sell_service = 0.0
+            #
+            # res[project_id.id]['total_sell'] = total_sell
+            # res[project_id.id]['total_sell_service'] = total_sell_service
+
             for sale in self.pool['sale.order'].browse(cr, uid, sale_ids, context):
                 res[project_id.id]['total_sell'] += sale.amount_untaxed
+
                 for sale_line in sale.order_line:
                     if sale_line.product_id and sale_line.product_id.type == 'service':
                         res[project_id.id]['total_sell_service'] += sale_line.price_subtotal
+            #
+            # if not total_sell == res[project_id.id]['total_sell']:
+            #     pdb.set_trace()
+            # else:
+            #     print 'YYYYYYYYY'
+            #
+            # if not total_sell_service == res[project_id.id]['total_sell_service']:
+            #     pdb.set_trace()
+            # else:
+            #     print 'ZZZZZZZZZ'
+
         return res
     
     def name_get(self, cr, uid, ids, context=None):
