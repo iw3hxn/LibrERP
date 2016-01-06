@@ -58,6 +58,11 @@ msgid "Today"
 msgstr "Oggi"
 
 #. module: task_time_control
+#: view:project.task.work:0
+msgid "Yesterday"
+msgstr "Ieri"
+
+#. module: task_time_control
 #: view:task.time.control.confirm.wizard:0
 msgid "Confirm time"
 msgstr "Conferma il Tempo"
