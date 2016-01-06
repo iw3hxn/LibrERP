@@ -179,6 +179,8 @@ class project_task_work(orm.Model):
     _inherit = "project.task.work"
     
     _columns = {
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'work_start': fields.datetime('Work start'),
         'work_end': fields.datetime('Work end'),
         'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),

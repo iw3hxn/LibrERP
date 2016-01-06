@@ -138,6 +138,9 @@
                         <filter icon="gtk-go-forward" string="Yesterday" domain="[('date','&lt;',datetime.date.today().strftime('%%Y-%%m-%%d 00:00:00')),('date','&gt;=',(datetime.date.today() - relativedelta(days=1)).strftime('%%Y-%%m-%%d 00:00:00'))]"/>
                         <separator orientation="vertical"/>
                         <field name="date"/>
+                        <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                        <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                        <separator orientation="vertical"/>
                         <field name="task_id"/>
                         <field name="user_id" groups="project.group_project_manager"/>
                     </group>

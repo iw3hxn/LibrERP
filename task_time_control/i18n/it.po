@@ -231,7 +231,7 @@ msgstr "Attività Iniziate"
 #. module: task_time_control
 #: model:ir.model,name:task_time_control.model_project_task_history
 msgid "History of Tasks"
-msgstr "Storico delle Attività"
+msgstr "Storico Attività"
 
 #. module: task_time_control
 #: view:task.time.control.confirm.wizard:0
@@ -243,3 +243,13 @@ msgstr "Annulla"
 #: field:time.control.user.task,work_end:0
 msgid "Work end"
 msgstr "Conclusi"
+
+#. module: task_time_control
+#: field:project.task.work,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: task_time_control
+#: field:project.task.work,date_to:0
+msgid "Date to"
+msgstr "Al"
