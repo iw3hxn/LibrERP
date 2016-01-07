@@ -501,6 +501,7 @@ class sale_order(orm.Model):
     @staticmethod
     def get_duration_in_months(duration_in_days):
         duration = {
+            1095: 36,
             730: 24,
             365: 12,
             180: 6,
