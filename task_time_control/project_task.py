@@ -185,4 +185,5 @@ class project_task_work(orm.Model):
         'work_end': fields.datetime('Work end'),
         'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
         'issue_id': fields.many2one('project.issue', 'Issue'),
+        'partner_id': fields.related('task_id', 'project_id', 'parter_id', relation='res.partner', type='many2one', string='Partner'),
     }
