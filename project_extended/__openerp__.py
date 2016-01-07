@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #    
-#    Copyright (C) 2013-2014 Didotech SRL
+#    Copyright (C) 2013-2016 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +19,7 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.4.9.14',
+    'version': '3.4.10.14',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,

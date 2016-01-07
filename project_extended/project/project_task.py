@@ -40,3 +40,15 @@ class project_task(orm.Model):
                 name = name[:65] + '...'
             res.append((record.id, name))
         return res
+
+    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+        task_selection = super(project_task, self).name_search(cr, uid, name, args, operator, context=context, limit=limit)
+        if name:
+            project_ids = self.pool['project.project'].search(cr, uid, [('name', 'ilike', name)])
+            if project_ids:
+                relative_tasks = self.name_search(cr, uid, '', [('project_id', 'in', project_ids)], operator, context=context, limit=limit)
+                if relative_tasks:
+                    task_selection = list(set(task_selection + relative_tasks))
+
+        # Sort by name
+        return sorted(task_selection, key=lambda x: x[1])
