@@ -18,7 +18,7 @@
 #################################################################################
 {
     'name': 'Sale Order Merge',
-    'version': '3.0.0.0',
+    'version': '3.0.1.0',
     'category': 'Accounting Modules',
     'description': """
         Merge sale order from the same partner

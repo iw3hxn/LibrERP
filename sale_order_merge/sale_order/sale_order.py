@@ -23,14 +23,15 @@
 from openerp.osv import fields, orm
 from tools.translate import _
 import datetime
+import netsvc
 
 
 class sale_order(orm.Model):
     _inherit = "sale.order"
 
     def merge_order(self, cr, uid, orders, merge_lines, context=None):
-        """ Merge draft invoices. Work only with same partner.
-            You can merge invoices and refund invoices with echa other.
+        """ Merge draft order. Work only with same partner.
+            You can merge invoices and refund invoices with each other.
             Moves all lines on the first invoice.
         """
         if context is None:
@@ -44,57 +45,53 @@ class sale_order(orm.Model):
                 raise orm.except_orm(_('Error!'),
                     _('Can not merge order(s) on different partners or states ! {parent} different from {order}').format(parent=parent.partner_id.name, order=order.partner_id.name))
 
+            if parent.shop_id != order.shop_id:
+                raise orm.except_orm(_('Error!'),
+                    _('Can not merge order(s) on different shop! {parent} different from {order}').format(parent=parent.shop_id.name, order=order.shop_id.name))
+
             if order.state != 'draft':
                 raise orm.except_orm(_('Error!'), _("You can merge only orders in draft state."))
 
+        parent_id = self.pool['sale.order'].copy(cr, uid, parent.id, context=context)
+        parent = self.browse(cr, uid, parent_id, context=context)
+
         # Merge invoices that are in draft state
         sale_order_line_obj = self.pool['sale.order.line']
-        name = parent.name or ''
         note = parent.note or ''
         origin = parent.origin or ''
 
         for order in orders:
             if order.id == parent.id:
                 continue
-
             # check if a line with the same product already exist. if so add quantity. else hang up invoice line to first invoice head.
-
             if order.note:
                 note += ', %s' % order.note
             if order.origin:
                 origin += ', %s' % order.origin
-
-            line_ids = sale_order_line_obj.search(cr, uid, [('order_id', '=', order.id)], context=context)
-
-            for order_line in sale_order_line_obj.browse(cr, uid, line_ids, context):
-                mrg_pdt_ids = sale_order_line_obj.search(cr, uid, [('order_id', '=', parent.id),
-                                                                   ('product_id', '=', order_line.product_id.id)],
-                                                         context=context)
-                if merge_lines and len(
-                        mrg_pdt_ids) == 1 and order.shop_id == parent.shop_id:  # product found --> add quantity
+            for order_line in order.order_line:
+                mrg_pdt_ids = sale_order_line_obj.search(cr, uid, [('order_id', '=', parent.id), ('product_id', '=', order_line.product_id.id)], context=context)
+                if merge_lines and len(mrg_pdt_ids) == 1:  # product found --> add quantity
                     sale_order_line_obj.write(cr, uid, mrg_pdt_ids, {
-                        'product_uom_qty': sale_order_line_obj._can_merge_quantity(cr, uid, mrg_pdt_ids[0], order_line.id)},
-                                              context)
-                    sale_order_line_obj.unlink(cr, uid, [order_line.id])
-                else:
+                        'product_uom_qty': sale_order_line_obj._can_merge_quantity(cr, uid, mrg_pdt_ids[0], order_line.id)}, context)
+                    # sale_order_line_obj.unlink(cr, uid, [order_line.id])
+                elif order_line.order_id.id != context['active_id']: # not the same line of initial order
+                    order_line_copy_id = sale_order_line_obj.copy(cr, uid, order_line.id, context)
                     vals = {
                         'order_id': parent.id,
                     }
+                    sale_order_line_obj.write(cr, uid, order_line_copy_id, vals, context)
+            wf_service = netsvc.LocalService("workflow")
+            wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
+            # self.unlink(cr, uid, [order.id], context)
 
-                sale_order_line_obj.write(cr, uid, order_line.id, vals, context)
-
-            self.write(cr, uid, parent.id, {
-                'date_order': datetime.date.today(),
-                'origin': origin,
-                'name': self.pool['ir.sequence'].get(cr, uid, 'sale.order'),
-                'order_line': [(6, 0, sale_order_line_obj.search(cr, uid, [('order_id', '=', parent.id)], context=context))],
-                'note': note,
-            }, context)
-
-            self.unlink(cr, uid, [order.id], context)
+        self.write(cr, uid, parent.id, {
+            'date_order': datetime.date.today(),
+            'origin': origin,
+            'note': note,
+        }, context)
 
         self.button_dummy(cr, uid, [parent.id])
-        return parent.id
+        return [parent.id]
 
 
 class sale_order_line(orm.Model):

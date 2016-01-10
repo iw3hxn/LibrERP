@@ -42,7 +42,7 @@ class order_merge(orm.TransientModel):
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
         res = super(order_merge, self).fields_view_get(cr, uid, view_id=view_id, view_type=view_type, context=context,
                                                        toolbar=toolbar, submenu=False)
-        parent = self.pool['sale.order'].browse(cr, uid, context['active_id'])
+        parent = self.pool['sale.order'].browse(cr, uid, context['active_id'], context=context)
 
         doc = etree.XML(res['arch'])
         nodes = doc.xpath("//field[@name='orders']")
@@ -63,9 +63,20 @@ class order_merge(orm.TransientModel):
     def merge_orders(self, cr, uid, ids, context):
 
         data = self.browse(cr, uid, ids, context=context)[0]
-        self.pool['sale.order'].merge_order(cr, uid, data.orders, data.merge_lines, context)
+        order_id = self.pool['sale.order'].merge_order(cr, uid, data.orders, data.merge_lines, context)
 
-        return {'type': 'ir.actions.act_window_close'}
+        mod_obj = self.pool['ir.model.data']
+        res = mod_obj.get_object_reference(cr, uid, 'sale', 'view_order_form')
+        res_id = res and res[1] or False,
 
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+        return {
+            'name': 'Sale Order',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': res_id,
+            'res_model': 'sale.order',
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'current',
+            'res_id': order_id and order_id[0] or False,
+        }
