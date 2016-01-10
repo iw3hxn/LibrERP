@@ -85,6 +85,8 @@
                 <field name="invoice"/>
                 <field name="invoice_origin"/>
                 <field name="date_maturity"/>
+                <field name="date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
+                <field name="date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
                 <newline/>
                 <group expand="0" string="Group by..." colspan="11">
                     <filter string="Group by customer" icon="terp-personal" domain="[]" context="{'group_by':'partner_id'}"/>
