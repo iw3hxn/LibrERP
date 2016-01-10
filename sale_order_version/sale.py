@@ -29,7 +29,7 @@ from tools import ustr
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
     _columns = {
-        #'active': fields.related('order_id', 'active', type='boolean', string='Active', store=False),
+        # 'active': fields.related('order_id', 'active', type='boolean', string='Active', store=False),
         'sale_line_copy_id': fields.many2one('sale.order.line', 'Orig version', required=False, readonly=False),
     }
     
@@ -118,6 +118,8 @@ class sale_order(orm.Model):
     }
     
     def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         if vals.get('name', '/') == '/':
             shop = self.pool['sale.shop'].browse(cr, uid, vals['shop_id'], context=context)
             if shop and shop.sequence_id:
