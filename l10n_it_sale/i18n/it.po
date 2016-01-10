@@ -107,7 +107,12 @@ msgstr "DDT"
 #. module: l10n_it_sale
 #: view:wizard.assign.ddt:0
 msgid "Assign"
-msgstr "Assegnata"
+msgstr "Assegna Numero DDT"
+
+#. module: l10n_it_sale
+#: field:wizard.assign.ddt,ddt_date:0
+msgid "DDT date"
+msgstr "Data del DDT"
 
 #. module: l10n_it_sale
 #: view:stock.picking:0
