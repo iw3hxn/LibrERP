@@ -22,6 +22,11 @@
         <field name="category_id" ref="sale.module_category_sale"/>
     </record>
 
+    <record id="sale.verify_supervisor_validation" model="res.groups">
+        <field name="name">Verify Supervisor</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+
     <record id="sale.view_delivered_qty" model="res.groups">
         <field name="name">View Delivered Qty</field>
         <field name="category_id" ref="sale.module_category_sale"/>

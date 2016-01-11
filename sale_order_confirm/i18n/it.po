@@ -45,6 +45,15 @@ msgstr "Validazione Cliente"
 #: selection:sale.order,state:0
 #: code:addons/sale_order_confirm/sale.py:97
 #, python-format
+msgid "Supervisor Validation"
+msgstr "Validazione Supervisore"
+
+#. modules: sale_order_confirm
+#: model:ir.actions.act_window,name:repair_center.action_repair_order_processed
+#: model:ir.ui.menu,name:repair_center.menu_action_repair_order_processed
+#: selection:sale.order,state:0
+#: code:addons/sale_order_confirm/sale.py:97
+#, python-format
 msgid "Technical Validation"
 msgstr "Validazione Tecnica"
 
@@ -857,8 +866,13 @@ msgstr "Richiede la Validazione del Partner"
 
 #. module: sale_order_confirm
 #: field:res.company,tech_validation_if_no_product:0
-msgid "Techical Review if sale's line have no product"
+msgid "Technical Review if sale's line have no product"
 msgstr "Revisione Tecnica se nelle righe non c'è il prodotto"
+
+#. module: sale_order_confirm
+#: field:res.company,need_supervisor_validation:0
+msgid "Need Supervisor Verification after Customer Confirmation"
+msgstr "Richiesta verifica di un supervisore dopo la validazione cliente"
 
 
 #. module: sale_order_confirm
@@ -870,5 +884,10 @@ msgstr "Cliente da Validare"
 #. module: sale_order_confirm
 #: code:addons/sale_order_confirm/sale.py:228
 #, python-format
-msgid "Is not possible to confirm because customer must be validate"
+msgid "It's not possible to confirm because customer must be validated"
 msgstr "Non è possibile confermare perchè il cliente deve essere prima Validato"
+
+#. modules: sale_order_confirm
+#: view:sale.order.confirm:0
+msgid "Address"
+msgstr "Indirizzo di Consegna"

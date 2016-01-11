@@ -35,6 +35,7 @@ from tools import ustr
 
 
 class sale_order_confirm_line(orm.TransientModel):
+
     def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         if context is None:
@@ -42,8 +43,26 @@ class sale_order_confirm_line(orm.TransientModel):
         for line in self.browse(cr, uid, ids, context=context):
             price_subtotal = self.calc_price_subtotal(line.quantity, line.discount, line.price_unit)
             res[line.id] = price_subtotal
-
         return res
+
+    def action_add(self, cr, uid, ids, context):
+        import pdb; pdb.set_trace()
+        line = self.pool['sale.order.confirm.line'].browse(cr, uid, ids, context)[0]
+        line.write({
+            'quantity': line.quantity + 1,
+            'changed': True
+        })
+        return True
+
+    def action_remove(self, cr, uid, ids, context):
+        import pdb; pdb.set_trace()
+        line = self.pool['sale.order.confirm.line'].browse(cr, uid, ids, context)[0]
+        if line.quantity >= 1.0:
+            line.write({
+                'quantity': line.quantity - 1,
+                'changed': True
+            })
+        return True
 
     _name = "sale.order.confirm.line"
     _rec_name = 'product_id'
@@ -71,14 +90,17 @@ class sale_order_confirm_line(orm.TransientModel):
     def onchange_product(self, cr, uid, ids, product_id, product_qty, sale_order_id, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
-        result = {}
         
         sale_order = self.pool['sale.order'].browse(cr, uid, sale_order_id, context=context)
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
         if product.default_code:
-            result['name'] = '[%s] %s' % (product.default_code, product.name)
+            result = {
+                'name': '[%s] %s' % (product.default_code, product.name)
+            }
         else:
-            result['name'] = '%s' % (product.name)
+            result = {
+                'name': '%s' % product.name
+            }
         
         if sale_order.pricelist_id:
             result['price_unit'] = self.pool['product.pricelist'].price_get(cr, uid, [sale_order.pricelist_id.id],
@@ -90,12 +112,13 @@ class sale_order_confirm_line(orm.TransientModel):
                                                                             ))[sale_order.pricelist_id.id]
         else:
             result['price_unit'] = product.list_price or 0.0
-        
-        result['product_uom'] = product.uom_id.id
-        result['changed'] = True
-        result['discount'] = 0
-        tax_ids = [tax_id.id for tax_id in product.taxes_id]
-        result['tax_id'] = [(6, 0, tax_ids)]
+
+        result.update({
+            'product_uom': product.uom_id.id,
+            'changed': True,
+            'discount': 0,
+            'tax_id': [(6, 0, [tax_id.id for tax_id in product.taxes_id])],
+        })
         
         return {'value': result}
 
@@ -105,30 +128,32 @@ class sale_order_confirm_line(orm.TransientModel):
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
         
         if product_id and sale_order.pricelist_id:
-            result['price_unit'] = self.pool['product.pricelist'].price_get(cr, uid, [sale_order.pricelist_id.id],
+            result.update({'price_unit': self.pool['product.pricelist'].price_get(cr, uid, [sale_order.pricelist_id.id],
                                                                             product_id, product_qty or 1.0, sale_order.partner_id.id,
                                                                             dict(
                                                                                 context,
                                                                                 uom=product.uom_id.id,
                                                                                 date=sale_order.date_order,
-                                                                            ))[sale_order.pricelist_id.id]
-            price_unit = result['price_unit']
-        
-        result['price_subtotal'] = self.calc_price_subtotal(product_qty, discount, price_unit)
-        result['changed'] = True
+                                                                            ))[sale_order.pricelist_id.id]})
+        price_unit = result.get('price_unit') or 0.0
+        result.upgrade({
+            'price_subtotal': self.calc_price_subtotal(product_qty, discount, price_unit),
+            'changed': True
+        })
         return {'value': result}
 
     def onchange_discount(self, cr, uid, ids, quantity, discount, price_unit):
-        result = {}
-        result['price_subtotal'] = self.calc_price_subtotal(quantity, discount, price_unit)
-        result['changed'] = True
+        result = {
+            'price_subtotal': self.calc_price_subtotal(quantity, discount, price_unit),
+            'changed': True
+        }
         return {'value': result}
 
     def onchange_price(self, cr, uid, ids, quantity, discount, price_unit):
-        result = {}
-        
-        result['price_subtotal'] = self.calc_price_subtotal(quantity, discount, price_unit)
-        result['changed'] = True
+        result = {
+            'price_subtotal': self.calc_price_subtotal(quantity, discount, price_unit),
+            'changed': True
+        }
         return {'value': result}
     
     def calc_price_subtotal(self, quantity, discount, price_unit):
@@ -178,12 +203,15 @@ class sale_order_confirm(orm.TransientModel):
         res = super(sale_order_confirm, self).default_get(cr, uid, fields, context=context)
 
         sale_order_data = sale_order_obj.browse(cr, uid, context['active_ids'][0], context=context)
-        res['partner_shipping_id'] = sale_order_data.partner_shipping_id.id
-        res['order_date'] = sale_order_data.date_order
-        res['sale_order_id'] = sale_order_data.id
-        res['pricelist_id'] = sale_order_data.pricelist_id.id
-        res['partner_id'] = sale_order_data.partner_id.id
-        res['new_sale_order'] = False
+
+        res.update({
+            'partner_shipping_id': sale_order_data.partner_shipping_id.id,
+            'order_date': sale_order_data.date_order,
+            'sale_order_id': sale_order_data.id,
+            'pricelist_id': sale_order_data.pricelist_id.id,
+            'partner_id': sale_order_data.partner_id.id,
+            'new_sale_order': False,
+        })
         sale_order_confirm_line_list = []
 
         for sale_order_line in sale_order_data.order_line:

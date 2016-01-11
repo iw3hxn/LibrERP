@@ -46,7 +46,9 @@
                         <tree editable="bottom" string="Product Order">
                             <field name="product_id" on_change="onchange_product(product_id, quantity, parent.sale_order_id, context)"/>
                             <field name="name" />
+                            <!--<button name="action_add" string="Add" type="object" icon="gtk-add" />-->
                             <field name="quantity" on_change="onchange_qty(product_id, quantity, discount, price_unit, parent.sale_order_id, context)"/>
+                            <!--<button name="action_remove" string="Remove" type="object" icon="gtk-remove" />-->
                             <field name="product_uom"/>
                             <field name="discount" on_change="onchange_discount(quantity, discount, price_unit)"/>
                             <field name="price_unit" on_change="onchange_price(quantity, discount, price_unit)" />
