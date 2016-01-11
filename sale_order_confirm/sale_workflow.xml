@@ -97,7 +97,7 @@
             <field name="act_to" ref="act_supervisor_validation"/>
             <field name="signal">action_supervisor_validation</field>
         </record>
-        <record id="sale.trans_supervisor_validation_router" model="workflow.transition">
+        <record id="trans_supervisor_validation_router" model="workflow.transition">
             <field name="act_from" ref="act_supervisor_validation"/>
             <field name="act_to" ref="sale.act_router"/>
         </record>
