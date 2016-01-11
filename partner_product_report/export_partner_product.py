@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2015 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2015-2016 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -196,6 +196,7 @@ class WizardExportPartnerProduct(orm.TransientModel):
             WHERE s_order.state IN ('confirmed', 'progress', 'done')
             AND s_order.date_confirm >= '{start}'
             AND s_order.date_confirm <= '{end}'
+            AND s_order.active = 'true'
             GROUP BY s_order.partner_id, line.product_id
         """.format(start=date_start, end=date_end)
 
@@ -228,6 +229,7 @@ class WizardExportPartnerProduct(orm.TransientModel):
             LEFT JOIN res_partner AS partner ON s_order.partner_id=partner.id
             LEFT JOIN product_product AS product ON line.product_id=product.id
             WHERE s_order.state IN ('confirmed', 'progress', 'done')
+            AND s_order.active = 'true'
             GROUP BY s_order.partner_id, line.product_id, partner.name, product.name_template, product.default_code
             ORDER BY partner.name
         """

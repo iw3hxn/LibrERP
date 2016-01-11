@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2015 Didotech SRL (info at didotech.com)
+# Copyright (c) 2015-2016 Didotech SRL (info at didotech.com)
 # All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -29,7 +29,7 @@
 
 {
     "name": "Partner Product Report",
-    "version": "3.1.0.0",
+    "version": "3.1.1.0",
     "category": "Partner",
     "description": """This Module, provided user's wizard to export Partner/Product report
     """,
