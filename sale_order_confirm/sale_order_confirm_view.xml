@@ -155,9 +155,12 @@
                                         states="send_to_customer"/>
                                 <button name="%(sale_order_revision_note_action)d" string="Reject" type="action"
                                         icon="gtk-no"
-                                        states="wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation"/>
+                                        states="wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,wait_supervisor_validation"/>
                                 <button name="%(sale_order_confirm_action)d" string="Confirm by Customer" type="action"
                                         icon="gtk-ok" states="wait_customer_validation"/>
+                                <button name="action_supervisor_validation" string="Confirm Customer Order" icon="gtk-ok"
+                                    states="wait_supervisor_validation"/>
+                                    <!--states="wait_supervisor_validation" groups="sale.verify_manager"/>-->
                             </group>
                             <group colspan="5" col="5">
                                 <button name="ship_cancel" states="shipping_except" string="Cancel Order"
@@ -242,7 +245,11 @@
             <field name="priority">5</field>
             <field name="arch" type="xml">
                 <data>
-
+                    <button name="%(sale.action_view_sale_advance_payment_inv)d" position="attributes">
+                        <attribute name="states">
+                            draft,wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,waiting_date,progress
+                        </attribute>
+                    </button>
                     <button name="order_confirm" position="after">
                         <button name="action_validation" string="Confirm Quotation" states="draft" icon="gtk-ok"/>
                         <button name="action_tech_validation" string="Confirm Technical Review" icon="gtk-ok"
