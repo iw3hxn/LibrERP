@@ -30,7 +30,7 @@
     "category": 'Accounting & Finance',
     "description": """
         Module adds extra functionality to sale_order:
-            - possibility to filter invoices by year
+            - possibility to filter order by year
             - possibility to see sale of last or current month
     """,
     "depends": [
@@ -42,4 +42,5 @@
     ],
     "active": False,
     "installable": True,
+    'auto_install': True,
 }

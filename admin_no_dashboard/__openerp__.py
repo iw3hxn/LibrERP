@@ -35,5 +35,6 @@ Notice that the dashboard is still available through it's dedicated menu.""",
     'update_xml': ['admin_view.xml'],
     'demo_xml': [],
     'installable': True,
+    'auto_install': True,
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
