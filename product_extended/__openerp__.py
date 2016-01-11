@@ -36,7 +36,9 @@
     "depends": [
         'base',
         'product',
-        'product_bom'
+        'product_bom',
+        'purchase',
+        'sale'
     ],
     "data": ['product_view.xml'],
     "active": False,
