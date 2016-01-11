@@ -136,7 +136,7 @@ class sale_order_confirm_line(orm.TransientModel):
                                                                                 date=sale_order.date_order,
                                                                             ))[sale_order.pricelist_id.id]})
         price_unit = result.get('price_unit') or 0.0
-        result.upgrade({
+        result.update({
             'price_subtotal': self.calc_price_subtotal(product_qty, discount, price_unit),
             'changed': True
         })
