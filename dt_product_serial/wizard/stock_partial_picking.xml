@@ -9,6 +9,11 @@
             <field name="arch" type="xml">
                 <field name="hide_tracking" position="after">
                     <field name="tracking_code"/>
+                    <newline/>
+                    <button name="action_set_zero_all" string="Set To Zero All" colspan="1" type="object" icon="gtk-clear"/>
+                    <button name="action_set_zero_except_check" string="Set To Zero Except Check" colspan="1" type="object" icon="gtk-clear"/>
+                    <button name="action_set_max" string="Set To Max" colspan="1" type="object" icon="gtk-home"/>
+                    <button name="action_set_max_except_check" string="Set To Max Except Check" colspan="1" type="object" icon="gtk-home"/>
                 </field>
                 <field name="product_id" position="replace">
                     <field name="product_id" readonly="1" />

@@ -144,6 +144,28 @@ class stock_partial_picking(orm.TransientModel):
         'tracking_code': fields.char('Pack', size=64),
     }
 
+    def action_set_zero_all(self, cr, uid, move_ids, context):
+        for line in self.pool['stock.partial.picking'].browse(cr, uid, move_ids, context)[0].move_ids:
+            line.write({'quantity': 0})
+        return True
+
+    def action_set_zero_except_check(self, cr, uid, move_ids, context):
+        for line in self.pool['stock.partial.picking'].browse(cr, uid, move_ids, context)[0].move_ids:
+            if not line.line_check:
+                line.write({'quantity': 0})
+        return True
+
+    def action_set_max(self, cr, uid, move_ids, context):
+        for line in self.pool['stock.partial.picking'].browse(cr, uid, move_ids, context)[0].move_ids:
+            line.write({'quantity': line.move_id.product_qty})
+        return True
+
+    def action_set_max_except_check(self, cr, uid, move_ids, context):
+        for line in self.pool['stock.partial.picking'].browse(cr, uid, move_ids, context)[0].move_ids:
+            if not line.line_check:
+                line.write({'quantity': line.move_id.product_qty})
+        return True
+
     def save_partial(self, cr, uid, ids, context=None):
         assert len(ids) == 1, 'Partial picking processing may only be done one at a time'
         partial = self.browse(cr, uid, ids[0], context=context)

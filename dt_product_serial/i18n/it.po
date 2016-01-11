@@ -441,3 +441,28 @@ msgstr "Numero di Serie"
 #: selection:stock.partial.picking.line,split_type:0
 msgid "Logistical Unit"
 msgstr "Lotto"
+
+#. module: dt_product_serial
+#: view:stock.partial.picking:0
+msgid "Set To Zero All"
+msgstr "Porta a Zero tutte le righe"
+
+#. module: dt_product_serial
+#: view:stock.partial.picking:0
+msgid "Set To Zero Except Check"
+msgstr "Porta a Zero solo le righe non controllate"
+
+#. module: dt_product_serial
+#: view:stock.partial.picking:0
+msgid "Set To Max"
+msgstr "Porta al massimo tutte le righe"
+
+#. module: dt_product_serial
+#: view:stock.partial.picking:0
+msgid "Set To Max Except Check"
+msgstr "Porta al massimo solo le righe non controllate"
+
+#. module: dt_product_serial
+#: view:stock.partial.picking:0
+msgid "_Save"
+msgstr "Salva"
