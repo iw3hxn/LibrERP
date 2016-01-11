@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2014 Didotech SRL (info at didotech.com)
+# Copyright (c) 2013-2016 Didotech SRL (info at didotech.com)
 # All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -29,10 +29,14 @@
 
 {
     "name": "Extend sale_order",
-    "version": "3.20.37.44",
+    "version": "3.21.38.45",
     "category": "Sales Management",
     "description": """This Module, provided user's wizard to confirm/modify sale order.
     It also increases usability on sale order using credit limit amd default payment term
+
+    Look inside 'company' table to configure module.
+    If "Need Supervisor Verification after Customer Confirmation" is selected,
+    one more confirmation after customer confirmation is required.
     """,
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",

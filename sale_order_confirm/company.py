@@ -1,7 +1,7 @@
 ##############################################################################
 #
 #    Author: Didotech SRL
-#    Copyright 2014 Didotech SRL
+#    Copyright 2014-2016 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -57,8 +57,9 @@ class res_company(orm.Model):
             view_load=True,
             help="This default payment term will be used on creation of partner"),
         'need_tech_validation': fields.boolean('Need Technical Verification'),
-        'tech_validation_if_no_product': fields.boolean('Techical Review if sale\'s line have no product'),
+        'tech_validation_if_no_product': fields.boolean('Technical Review if sale\'s line have no product'),
         'need_manager_validation': fields.boolean('Need Supervisor Verification'),
+        'need_supervisor_validation': fields.boolean('Need Supervisor Verification after Customer Confirmation'),
         'readonly_price_unit': fields.boolean('Read Only Price Unit on Sale Order'),
         'default_property_advance_product_id': fields.property(
             'product.product',

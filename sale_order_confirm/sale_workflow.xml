@@ -80,6 +80,28 @@
             <field name="act_to" ref="act_validation_router"/>
         </record>
 
+        <record id="act_wait_supervisor" model="workflow.activity">
+            <field name="wkf_id" ref="sale.wkf_sale"/>
+            <field name="name">wait_supervisor</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state': 'wait_supervisor_validation'})</field>
+        </record>
+        <record id="act_supervisor_validation" model="workflow.activity">
+            <field name="wkf_id" ref="sale.wkf_sale"/>
+            <field name="name">supervisor_validation</field>
+            <field name="kind">function</field>
+            <field name="action">write({'supervisor_validation': True})</field>
+        </record>
+        <record id="trans_wait_supervisor_validation_validation_router" model="workflow.transition">
+            <field name="act_from" ref="act_wait_supervisor"/>
+            <field name="act_to" ref="act_supervisor_validation"/>
+            <field name="signal">action_supervisor_validation</field>
+        </record>
+        <record id="sale.trans_supervisor_validation_router" model="workflow.transition">
+            <field name="act_from" ref="act_supervisor_validation"/>
+            <field name="act_to" ref="sale.act_router"/>
+        </record>
+
         <record id="act_email_sending" model="workflow.activity">
             <field name="wkf_id" ref="sale.wkf_sale"/>
             <field name="name">wait_email_sending</field>
@@ -117,7 +139,14 @@
             <field name="act_from" ref="act_validation_router"/>
             <field name="act_to" ref="sale.act_router"/>
             <field name="signal">order_confirm</field>
-            <field name="condition">check_validate() and check_limit() and state == 'wait_customer_validation'</field>
+            <field name="condition">check_validate() and check_limit() and state in ('wait_customer_validation', 'wait_supervisor_validation')</field>
+        </record>
+
+        <record id="trans_validation_router_supervisor_validation" model="workflow.transition">
+            <field name="act_from" ref="act_validation_router"/>
+            <field name="act_to" ref="act_wait_supervisor"/>
+            <field name="signal">order_confirm</field>
+            <field name="condition">not check_validate() and check_limit() and state == 'wait_customer_validation'</field>
         </record>
 
         <record id="sale.trans_draft_router" model="workflow.transition">

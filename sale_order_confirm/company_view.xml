@@ -28,6 +28,7 @@
                     <field name="need_tech_validation"/>
                     <field name="tech_validation_if_no_product" />
                     <field name="need_manager_validation"/>
+                    <field name="need_supervisor_validation"/>
                     <!--			<separator name="Sale Order View" colspan="4"/>
                                 <field name="readonly_price_unit" />-->
                 </page>

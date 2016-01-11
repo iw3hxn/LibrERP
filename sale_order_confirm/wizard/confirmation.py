@@ -308,17 +308,7 @@ class sale_order_confirm(orm.TransientModel):
             wf_service.trg_validate(uid, 'sale.order', new_order_id, 'order_confirm', cr)
             # wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'cancel', cr)
             sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {'active': False})
-        else:
-            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {
-                'customer_validation': True,
-                'client_order_ref': sale_order_confirm_data['client_order_ref'],
-                'date_order': sale_order_confirm_data['order_date'],
-                'partner_shipping_id': sale_order_confirm_data['partner_shipping_id'][0]
-            })
 
-            wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'order_confirm', cr)
-
-        if new_order_id:
             view_ids = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale', 'view_order_form')
             return {
                 'type': 'ir.actions.act_window',
@@ -332,6 +322,15 @@ class sale_order_confirm(orm.TransientModel):
                 'res_id': new_order_id,
             }
         else:
+            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {
+                'customer_validation': True,
+                'client_order_ref': sale_order_confirm_data['client_order_ref'],
+                'date_order': sale_order_confirm_data['order_date'],
+                'partner_shipping_id': sale_order_confirm_data['partner_shipping_id'][0]
+            })
+
+            wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'order_confirm', cr)
+
             return {
                 'type': 'ir.actions.act_window_close'
             }

@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
-#    Copyraght (c) 2013-2014 Didotech srl (<http://www.didotech.com>)
+#    Copyraght (c) 2013-2016 Didotech srl (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
+
+import pdb
 
 
 class product_pricelist(orm.Model):
@@ -151,6 +153,7 @@ class sale_order(orm.Model):
             ('wait_manager_validation', _('Manager Validation')),
             ('send_to_customer', _('Send To Customer')),
             ('wait_customer_validation', _('Customer Validation')),
+            ('wait_supervisor_validation', _('Supervisor Validation')),
             ('waiting_date', _('Waiting Schedule')),
             ('manual', _('To Invoice')),
             ('progress', _('In Progress')),
@@ -179,6 +182,10 @@ class sale_order(orm.Model):
         'manager_validation': fields.boolean("Manager Validated ?", readonly=True),
         'email_sent_validation': fields.boolean("Email Sent to Customer ?", readonly=True),
         'customer_validation': fields.boolean("Customer Validated ?", readonly=True),
+        # A validation after customer confirmation:
+        'required_supervisor_validation': fields.related('company_id', 'need_supervisor_validation', type='boolean', string=_('Required Supervisor Validation'), store=False, readonly=True),
+        'supervisor_validation': fields.boolean(_("Supervisor Validated?"), readonly=True),
+
         'revision_note': fields.char('Reason', size=256, select=True),
         'last_revision_note': fields.related('sale_version_id', 'revision_note', type='char', string="Last Revision Note", store=True),
     }
@@ -188,6 +195,7 @@ class sale_order(orm.Model):
         'need_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
         'required_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
         'required_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
+        'required_supervisor_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_supervisor_validation,
         'validity': lambda self, cr, uid, context: (datetime.today() + relativedelta(days=self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_sale_order_validity or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
     }
 
@@ -229,11 +237,10 @@ class sale_order(orm.Model):
         return False
 
     def action_validate(self, cr, uid, ids, context=None):
-
         for order in self.browse(cr, uid, ids, context):
             if not order.partner_id.validate and order.company_id.enable_partner_validation:
                 title = _('Partner To Validate')
-                msg = _('Is not possible to confirm because customer must be validate')
+                msg = _("It's not possible to confirm because customer must be validated")
                 raise orm.except_orm(_(title), _(msg))
                 return False
 
@@ -261,6 +268,10 @@ class sale_order(orm.Model):
                 vals = {
                     'state': 'wait_customer_validation',
                 }
+            elif order.required_supervisor_validation and not order.supervisor_validation:
+                vals = {
+                    'state': 'wait_supervisor_validation',
+                }
             else:
                 vals = {
                     'state': 'draft',
@@ -268,6 +279,7 @@ class sale_order(orm.Model):
                     'manager_validation': False,
                     'customer_validation': False,
                     'email_sent_validation': False,
+                    'supervisor_validation': False
                 }
             order.write(vals)
 
@@ -279,8 +291,11 @@ class sale_order(orm.Model):
 
             if order.need_tech_validation and not order.tech_validation:
                 res = False
-            if order.need_manager_validation and not order.manager_validation:
+            elif order.need_manager_validation and not order.manager_validation:
                 res = False
+            elif order.required_supervisor_validation and not order.supervisor_validation:
+                res = False
+
             return res and order.email_sent_validation and order.customer_validation
         return True
 
@@ -297,6 +312,9 @@ class sale_order(orm.Model):
                 if (order.company_id.enable_margin_validation and order.amount_untaxed and (order.margin / order.amount_untaxed) < order.company_id.minimum_margin) or order.need_manager_validation:
                     values['manager_validation'] = True
 
+                if order.required_supervisor_validation:
+                    values['supervisor_validation'] = True
+
                 self.write(cr, uid, [order.id], values, context)
 
             return self.action_validate(cr, uid, ids, context)
@@ -310,6 +328,7 @@ class sale_order(orm.Model):
                 'manager_validation': False,
                 'customer_validation': False,
                 'email_sent_validation': False,
+                'supervisor_validation': False
             }
         )
         return super(sale_order, self).copy(cr, uid, order_id, defaults, context)
