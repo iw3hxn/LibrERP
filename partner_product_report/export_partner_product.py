@@ -215,10 +215,10 @@ class WizardExportPartnerProduct(orm.TransientModel):
 
         ws, row_number = self.write_header(ws, report.year)
 
-        partner_ids = self.pool['res.partner'].search(cr, uid, [])
-        partners = self.pool['res.partner'].browse(cr, uid, partner_ids, context)
-
-        partners = {partner.id: partner for partner in partners}
+        # partner_ids = self.pool['res.partner'].search(cr, uid, [])
+        # partners = self.pool['res.partner'].browse(cr, uid, partner_ids, context)
+        #
+        # partners = {partner.id: partner for partner in partners}
 
         row_number += 1
 
@@ -229,10 +229,12 @@ class WizardExportPartnerProduct(orm.TransientModel):
             LEFT JOIN res_partner AS partner ON s_order.partner_id=partner.id
             LEFT JOIN product_product AS product ON line.product_id=product.id
             WHERE s_order.state IN ('confirmed', 'progress', 'done')
+            AND s_order.date_confirm >= '{year}-01-01'
+            AND s_order.date_confirm <= '{year}-12-31'
             AND s_order.active = 'true'
             GROUP BY s_order.partner_id, line.product_id, partner.name, product.name_template, product.default_code
             ORDER BY partner.name
-        """
+        """.format(year=report.year)
 
         cr.execute(query)
         results = cr.dictfetchall()
