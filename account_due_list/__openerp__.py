@@ -28,7 +28,8 @@
     'website': 'http://www.didotech.com',
     'license': 'AGPL-3',
     "depends": [
-        'account'
+        'account',
+        'report_webkit'
     ],
     "data": [
         'payment_view.xml',
