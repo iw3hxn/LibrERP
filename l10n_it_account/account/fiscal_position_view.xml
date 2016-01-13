@@ -1,6 +1,22 @@
 <?xml version="1.0" ?>
 <openerp>
     <data>
+        <record id="view_account_position_form" model="ir.ui.view">
+            <field name="name">account.fiscal.position.vat.default.view</field>
+            <field name="model">account.fiscal.position</field>
+            <field name="inherit_id" ref="account.view_account_position_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/separator[@string='Mapping']" position="before">
+                    <group>
+                        <group col="6">
+                            <field name="no_check_vat"/>
+                        </group>
+                        <newline/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_account_position_exemption_form" model="ir.ui.view">
             <field name="name">account.fiscal.position.exemption.form</field>
             <field name="model">account.fiscal.position</field>
@@ -13,12 +29,12 @@
                         <field name="name" select="1"/>
                         <field name="company_id" widget="selection" groups="base.group_multi_company"/>
                         <field name="active" groups="base.group_extended"/>
-                        <field name="is_tax_exemption" invisible="1" />
-                        <field name="partner_id" attrs="{'required': [('is_tax_exemption', '=', True)]}" />
-                        <field name="number" />
-                        <field name="date" />
-                        <field name="end_validity" attrs="{'required': [('is_tax_exemption', '=', True)]}" />
-                        <field name="amount" />
+                        <field name="is_tax_exemption" invisible="1"/>
+                        <field name="partner_id" attrs="{'required': [('is_tax_exemption', '=', True)]}"/>
+                        <field name="number"/>
+                        <field name="date"/>
+                        <field name="end_validity" attrs="{'required': [('is_tax_exemption', '=', True)]}"/>
+                        <field name="amount"/>
                     </group>
                     <separator string="Mapping" colspan="4"/>
                     <newline/>
@@ -45,30 +61,31 @@
                     <separator string="Notes" colspan="4"/>
                     <field name="note" colspan="4" nolabel="1"/>
                 </form>
-                
-                
+
+
             </field>
         </record>
-        
+
         <record id="view_account_position_exemption_tree" model="ir.ui.view">
             <field name="name">account.fiscal.position.exemption.tree</field>
             <field name="model">account.fiscal.position</field>
             <field name="type">tree</field>
             <field name="priority">50</field>
             <field name="arch" type="xml">
-                <tree string="Fiscal Position" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                <tree string="Fiscal Position"
+                      colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                     <field name="name"/>
-                    <field name="partner_id" />
-                    <field name="number" />
-                    <field name="date" />
-                    <field name="end_validity" />
-                    <field name="is_tax_exemption" invisible="1"  />
+                    <field name="partner_id"/>
+                    <field name="number"/>
+                    <field name="date"/>
+                    <field name="end_validity"/>
+                    <field name="is_tax_exemption" invisible="1"/>
                     <field name="company_id" groups="base.group_multi_company" widget="selection"/>
-                    <field name="row_color" invisible="1" />
+                    <field name="row_color" invisible="1"/>
                 </tree>
             </field>
         </record>
-        
+
         <record id="view_account_position_exemption_search" model="ir.ui.view">
             <field name="name">account.fiscal.position.exemption.search</field>
             <field name="model">account.fiscal.position</field>
@@ -77,16 +94,16 @@
             <field name="arch" type="xml">
                 <search string="Fiscal Position">
                     <field name="name"/>
-                    <field name="partner_id" />
-                    <field name="number" />
-                    <field name="date" />
-                    <field name="end_validity" />
-                    <field name="is_tax_exemption" invisible="1"  />
+                    <field name="partner_id"/>
+                    <field name="number"/>
+                    <field name="date"/>
+                    <field name="end_validity"/>
+                    <field name="is_tax_exemption" invisible="1"/>
                     <field name="company_id" groups="base.group_multi_company" widget="selection"/>
                 </search>
             </field>
         </record>
-        
+
         <record id="action_account_fiscal_position_exemption_form" model="ir.actions.act_window">
             <field name="name">Lettere Intenti</field>
             <field name="res_model">account.fiscal.position</field>
@@ -97,28 +114,27 @@
             <field name="search_view_id" ref="view_account_position_exemption_search"/>
         </record>
 
-        
-        
+
         <record id="action_account_fiscal_position_exemption_view1" model="ir.actions.act_window.view">
             <field eval="10" name="sequence"/>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_account_position_exemption_tree"/>
             <field name="act_window_id" ref="action_account_fiscal_position_exemption_form"/>
         </record>
-        
+
         <record id="action_account_fiscal_position_exemption_view2" model="ir.actions.act_window.view">
             <field eval="20" name="sequence"/>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_account_position_exemption_form"/>
             <field name="act_window_id" ref="action_account_fiscal_position_exemption_form"/>
         </record>
-                
+
         <menuitem
-            action="action_account_fiscal_position_exemption_form"
-            id="menu_action_account_fiscal_position_exemption_form"
-            parent="account.next_id_27" sequence="20"/>
-        
-        
+                action="action_account_fiscal_position_exemption_form"
+                id="menu_action_account_fiscal_position_exemption_form"
+                parent="account.next_id_27" sequence="20"/>
+
+
         <record id="view_account_position_search" model="ir.ui.view">
             <field name="name">account.fiscal.position.search</field>
             <field name="model">account.fiscal.position</field>
@@ -131,7 +147,7 @@
                 </search>
             </field>
         </record>
-        
-        
+
+
     </data>
 </openerp>

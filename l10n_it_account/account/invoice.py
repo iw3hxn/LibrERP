@@ -186,7 +186,7 @@ class account_invoice(orm.Model):
     def invoice_validate_check(self, cr, uid, ids, context=None):
         for invoice in self.browse(cr, uid, ids, context):
             if not ((not invoice.partner_id.individual and invoice.partner_id.vat) or (invoice.partner_id.individual and invoice.partner_id.cf)):
-                if invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
+                if invoice.fiscal_position and invoice.fiscal_position.no_check_vat or invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
                     continue
                 raise orm.except_orm(_('Supplier Invoice'),
                                _('Impossible to Validate, need to set Partner VAT'))
@@ -212,7 +212,10 @@ class account_invoice(orm.Model):
             default = {}
 
         # We want supplier_invoice_number, cig, cup to be recreated:
-        default['supplier_invoice_number'] = False
-        default['cig'] = False
-        default['cup'] = False
+        default.update({
+            'supplier_invoice_number': False,
+            'internal_number': False,
+            'cig': False,
+            'cup': False,
+        })
         return super(account_invoice, self).copy(cr, uid, ids, default, context)

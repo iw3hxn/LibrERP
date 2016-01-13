@@ -19,6 +19,7 @@
 ##############################################################################
 from openerp.osv import orm
 
+
 class account_voucher(orm.Model):
     _inherit = 'account.voucher'
 

@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation',
-    'version': '2.14.28.31',
+    'version': '2.15.29.32',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
@@ -43,7 +43,7 @@ Functionalities:
         'l10n_it_base',
         'account_voucher',
         'sale_order_confirm',
-        #'account_invoice_entry_date', not possible for use of a field defined here invoice_supplier_number
+        # 'account_invoice_entry_date', not possible for use of a field defined here invoice_supplier_number
     ],
     'data': [
         'account/partner_view.xml',
@@ -56,7 +56,7 @@ Functionalities:
         'data/bank_iban_data.xml',
         'account/account_move.xml',
         'account/res_bank_view.xml',
-        'account/account_tax_view.xml',
+        # 'account/account_tax_view.xml',
         'account/res_company_view.xml',
         'account/account_invoice_workflow.xml',
     ],

@@ -28,14 +28,14 @@ class account_fiscal_position(orm.Model):
     
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
-        dichiarazioni = self.browse(cr, uid, ids)
+        dichiarazioni = self.browse(cr, uid, ids, context)
         for dichirazione in dichiarazioni:
             value[dichirazione.id] = 'black'
-
         return value
     
     _columns = {
         'is_tax_exemption': fields.boolean('Ha dichiarazione di intento IVA?'),
+        'no_check_vat': fields.boolean('Non obbligo P.IVA in emissione fattura'),
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'number': fields.char('Numero Dichiarante', size=32),
         'date': fields.date('Data Dichiarazione'),
