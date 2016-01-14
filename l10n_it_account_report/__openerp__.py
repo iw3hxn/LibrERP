@@ -33,7 +33,7 @@
     'license': 'AGPL-3',
     "depends": [
         'l10n_it_account',
-        'report_aeroo',
+        'report_aeroo_ooo',
         'report_webkit',
         'core_extended'
     ],
