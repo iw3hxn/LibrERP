@@ -22,7 +22,7 @@
 
 {
     'name': 'Sequence Financial Year Extension fy (for v61 and above',
-    'version': '2.0.2.0',
+    'version': '2.0.3.0',
     'category': 'Accounting & Finance',
     'description': """
 This module adds 

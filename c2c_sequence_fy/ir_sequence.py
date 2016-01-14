@@ -79,7 +79,7 @@ class ir_sequence(osv.osv):
                             seq_id = per_seq.sequence_id.id
                     else:
                         period_obj = self.pool['account.period']
-                        for period in period_obj.browse(cr, uid, [context['period_id']]):
+                        for period in period_obj.browse(cr, uid, [context['period_id']], context):
                             period_code = period.code
                             prefix = journal.sequence_id.prefix + period.fiscalyear_id.code  # +'-'+ period_code[2:6] +'-'
                         sequence_code = journal.sequence_id.code
@@ -103,7 +103,7 @@ class ir_sequence(osv.osv):
             self._logger.debug('fy `%s`', fy)
             if fy:
                 fy_seq_obj = self.pool['account.sequence.fiscalyear']
-                fy_seq_ids = fy_seq_obj.search(cr, uid, [('sequence_main_id', '=', sequence_id), ('fiscalyear_id', '=', fy)])
+                fy_seq_ids = fy_seq_obj.search(cr, uid, [('sequence_main_id', '=', sequence_id), ('fiscalyear_id', '=', fy)], context=context)
                 if fy_seq_ids:
                     for fy_s in fy_seq_obj.browse(cr, uid, fy_seq_ids, context=context):
                         seq_id = fy_s.sequence_id.id
@@ -118,7 +118,10 @@ class ir_sequence(osv.osv):
                             else:
                                 raise osv.except_osv(_('No journal found'), '')
                         # prefix = journal.sequence_id.prefix + fy.code +'-' # removed (result as a duplication) but it make a bug for old installation #
-                        prefix = journal.sequence_id.prefix.replace('/%(year)s/', '').replace('%(fy)s', '') + '/' + fy.code + '/'
+                        if journal.sequence_id.prefix:
+                            prefix = journal.sequence_id.prefix.replace('/%(year)s/', '').replace('%(fy)s', '') + '/' + fy.code + '/'
+                        else:
+                            prefix = fy.code + '/'
 
                     sequence_code = journal.sequence_id.code
                     vals = {
