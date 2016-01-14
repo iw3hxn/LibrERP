@@ -355,7 +355,7 @@ msgstr "Prego impostare una intestazione nei settaggi dell'azienda"
 #: view:partners.ledger.webkit:0
 #: view:trial.balance.webkit:0
 msgid "Time Filters"
-msgstr "Time Filters"
+msgstr "Filtro Temporale"
 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_partners_ledger.mako:226
