@@ -12,7 +12,7 @@
                     <attribute name="domain">[('project_id', '=', project_id), ('state', 'in', ['open', 'working'])]</attribute>
                 </field>
                 <field name="progress" position="replace">
-                    <field name="remaining_hours" readonly="1" />
+                    <field name="remaining_hours" readonly="1" widget="float_time" />
                 </field>
                 <xpath expr="//notebook/page[@string='General']" position="after">
                     <page string="Worklogs" attrs="{'invisible':[('state','in', ['draft'])]}">
