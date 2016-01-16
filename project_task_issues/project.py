@@ -23,11 +23,18 @@ from openerp.osv import orm, fields
 
 
 class project_task(orm.Model):
-
     _inherit = "project.task"
     
     _columns = {
         'issue_ids': fields.one2many('project.issue', 'task_id', 'Issues', readonly=False),
+    }
+
+
+class project_task_work(orm.Model):
+    _inherit = "project.task.work"
+
+    _columns = {
+        'issue_id': fields.many2one('project.issue', 'Issue'),
     }
 
 
