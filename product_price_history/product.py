@@ -37,18 +37,16 @@ class product_template(orm.Model):
         """
         Add old Sale Price or Sale Cost to historial
         """
-        for id in ids:
-            prod_template = self.browse(cr, uid, id, context=context)
-
-            history_values = {}
+        for prod_template in self.browse(cr, uid, ids, context=context):
             if ('list_price' in values and prod_template.list_price != values['list_price']) or \
                ('standard_price' in values and prod_template.standard_price != values['standard_price']):
-                history_values['list_price'] = prod_template.list_price
-                history_values['standard_price'] = prod_template.standard_price
-                history_values['product_id'] = prod_template.id
-                history_values['date_to'] = time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-
-                self.pool.get('product.price.history').create(cr, uid, history_values, context=context)
+                history_values = {
+                    'list_price': prod_template.list_price,
+                    'standard_price': prod_template.standard_price,
+                    'product_id': prod_template.id,
+                    'date_to': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                }
+                self.pool['product.price.history'].create(cr, uid, history_values, context=context)
 
         return super(product_template, self).write(cr, uid, ids, values, context=context)
 
@@ -57,8 +55,6 @@ class product_product(orm.Model):
     _inherit = 'product.product'
 
     def copy(self, cr, uid, ids, default, context=None):
-        #import pdb; pdb.set_trace()
-    
         if not default:
             default = {}
         default.update({
