@@ -13,8 +13,9 @@
                     <button name="work_end_btn" attrs="{'invisible': ['|', ('state', 'not in', ['working', ]), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', False)]}" type="object" string="Stop" icon="gtk-cancel" context="{'default_task_id': active_id}" />
                 </field>
                 <field name="notes" position="before">
+                    <separator string="Other User" colspan="4"/>
                     <field name="user_is_working" invisible="True" />
-                    <field name="other_users_ids" />
+                    <field name="other_users_ids" nolabel="1"/>
                 </field>
             </field>
         </record>
@@ -85,7 +86,7 @@
                 <field name="name">project.task.time.control.search_gtd</field>
                 <field name="model">project.task</field>
                 <field name="type">search</field>
-                <field name="inherit_id" ref="project_gtd.view_task_gtd_search" />
+                <field name="inherit_id" ref="project.view_task_search_form" />
                 <field name="arch" type="xml">
                     <filter name="open" position="after">
                         <filter name="working" string="working" domain="[('state','=','working')]" help="Tasks in state working" icon="terp-camera_test"/>
@@ -93,10 +94,10 @@
                 </field>
             </record>
             
-        <record model="ir.actions.act_window" id="project_gtd.open_gtd_task">
+        <record model="ir.actions.act_window" id="open_gtd_task">
             <field name="name">My Tasks</field>
             <field name="res_model">project.task</field>
-            <field name="search_view_id" ref="project_gtd.view_task_gtd_search"/>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
             <field name="context">{'set_visible':True,'gtd':True,'user_invisible':True, "search_default_open": 1}</field>
             <field name="domain">['|',('user_id','=',uid),('other_users_ids','in',uid)]</field>
             <field name="view_type">form</field>
@@ -111,7 +112,7 @@
             <field name="domain">['|',('user_id','=',uid),('other_users_ids','in',uid),('state','in',['open','working'])]</field>
             <field name="view_id" ref="project.view_task_tree"/>
         </record>
-        
+
         <record model="ir.ui.view" id="project_task_work">
             <field name="name">project.task.work.control</field>
             <field name="model">project.task.work</field>
@@ -119,11 +120,13 @@
             <field name="arch" type="xml">
                 <tree editable="top" string="Task Work">
                     <field name="date"/>
-                    <field name="hours" widget="float_time"/>
-                    <field name="task_id" domain="['|',('user_id','=',uid),('other_users_ids','in',uid),('state','in',['open','working'])]"/>
-                    <field name="name"/>
                     <field name="user_id"/>
-                </tree>    
+                    <field name="name"/>
+                    <field name="task_id" required="1"
+                           domain="['|', '|', ('user_id','=', False), ('user_id','=',uid), ('other_users_ids','in',uid), ('state','in',['open','working'])]"/>
+                    <field name="hours" widget="float_time"/>
+                    <field name="remaining_hours" readonly="1" widget="float_time"/>
+                </tree>
             </field>
         </record>
         
