@@ -7,16 +7,16 @@
                   parent="base.menu_main_pm"
                   groups="project.group_project_manager" />
 
-        <menuitem id="project_long_term.menu_phase_schedule"
-                  name="Scheduling" parent="base.menu_main_pm" sequence="4"
-                  groups="project.group_project_manager"/>
+        <!--<menuitem id="project_long_term.menu_phase_schedule"-->
+                  <!--name="Scheduling" parent="base.menu_main_pm" sequence="4"-->
+                  <!--groups="project.group_project_manager"/>-->
 
         <menuitem id="project_timesheet.menu_project_billing" name="Invoicing"
                   parent="base.menu_main_pm" sequence="5"
                   groups="project.group_project_manager"/>
 
-        <menuitem id="project_long_term.menu_project_phase_list" parent="project.menu_project_config_project"
-                  groups="base.group_extended" />
+        <!--<menuitem id="project_long_term.menu_project_phase_list" parent="project.menu_project_config_project"-->
+                  <!--groups="base.group_extended" />-->
 
         <menuitem id="project.menu_open_view_project_all" parent="project.menu_project_management"/>
 
