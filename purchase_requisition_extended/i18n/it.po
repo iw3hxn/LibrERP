@@ -33,7 +33,7 @@ msgstr "Confermati"
 #. module: purchase_requisition_extended
 #: field:purchase.requisition.line,color:0
 msgid "Color"
-msgstr "Color"
+msgstr "Colore"
 
 #. module: purchase_requisition_extended
 #: view:purchase.requisition:0
@@ -97,7 +97,7 @@ msgstr "Non ci sono fornitori"
 #. module: purchase_requisition_extended
 #: code:addons/purchase_requisition_extended/purchase_requisition.py:63
 #, python-format
-msgid "There are no Preffered Supplier"
+msgid "There are no Preferred Supplier"
 msgstr "Non ci sono fornitori preferenziali"
 
 #. modules: purchase_requisition_extended
