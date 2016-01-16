@@ -31,12 +31,9 @@ class project(orm.Model):
     
     def _get_project_products(self, cr, uid, ids, field_name, args, context=None):
         purchase_order_line_obj = self.pool['purchase.order.line']
-        
-        projects = self.browse(cr, uid, ids)
-        
         result = {}
-        for project in projects:
-            result[project.id] = purchase_order_line_obj.search(cr, uid, [('account_analytic_id', '=', project.analytic_account_id.id)])
+        for project in self.browse(cr, uid, ids, context):
+            result[project.id] = purchase_order_line_obj.search(cr, uid, [('account_analytic_id', '=', project.analytic_account_id.id)], context=context)
 
         return result
     

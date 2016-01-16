@@ -33,7 +33,8 @@
     """,
     "depends": [
         'base',
-        'project'
+        'project',
+        'purchase'
     ],
     "init_xml": [],
     "update_xml": [
