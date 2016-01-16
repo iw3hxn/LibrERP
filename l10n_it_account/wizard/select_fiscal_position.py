@@ -19,25 +19,25 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import fields, orm
 
 
-class select_fiscal_position(osv.osv_memory):
+class select_fiscal_position(orm.TransientModel):
     _name = "select.fiscal.position"
     _description = "Select Fiscal Position"
     _inherit = "ir.wizard.screen"
     
     def _get_accounts(self, cr, uid, context=None):
-        fiscal_position_obj = self.pool.get('account.fiscal.position')
+        fiscal_position_obj = self.pool['account.fiscal.position']
         partner_id = context.get('active_id', False)
         if partner_id:
-            fiscal_position_ids = fiscal_position_obj.search(cr, uid, ['|', ('partner_id', '=', False), ('partner_id', '=', partner_id)])
+            fiscal_position_ids = fiscal_position_obj.search(cr, uid, ['|', ('partner_id', '=', False), ('partner_id', '=', partner_id)], context=context)
         else:
-            fiscal_position_ids = fiscal_position_obj.search(cr, uid, [('partner_id', '=', False)])
+            fiscal_position_ids = fiscal_position_obj.search(cr, uid, [('partner_id', '=', False)], context=context)
         
         result = []
         
-        for fiscal_position in fiscal_position_obj.browse(cr, uid, fiscal_position_ids):
+        for fiscal_position in fiscal_position_obj.browse(cr, uid, fiscal_position_ids, context):
             result.append((fiscal_position.id, fiscal_position.name))
         return result
     
@@ -48,5 +48,5 @@ class select_fiscal_position(osv.osv_memory):
 
     def action_select_position(self, cr, uid, ids, context):
         selected_position = self.browse(cr, uid, ids[0], context=context)
-        self.pool.get('res.partner').write(cr, uid, selected_position.partner_id, {'property_account_position': u'account.fiscal.position,' + selected_position.property_account_position})
+        self.pool['res.partner'].write(cr, uid, selected_position.partner_id, {'property_account_position': u'account.fiscal.position,' + selected_position.property_account_position})
         return {'type': 'ir.actions.act_window_close'}

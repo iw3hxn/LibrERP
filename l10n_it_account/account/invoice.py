@@ -29,8 +29,8 @@ class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
     def action_cancel(self, cr, uid, ids, context=None):
-        for obj_inv in self.browse(cr, uid, ids, context):
-            period = obj_inv.period_id
+        for invoice in self.browse(cr, uid, ids, context):
+            period = invoice.period_id
             vat_statement = self.pool['account.vat.period.end.statement'].search(
                 cr, uid, [('period_ids', 'in', period.id)], context=context)
             if vat_statement and self.pool['account.vat.period.end.statement'].browse(
@@ -50,24 +50,25 @@ class account_invoice(orm.Model):
 
         """
         result = {}
-        if ids:
-            invoices = self.browse(cr, uid, ids, context)
-            for invoice in invoices:
-                result[invoice.id] = False
-                # if hasattr(invoice, 'move_products') and invoice.move_products:
-                #     result[invoice.id] = True
-                if invoice.origin:
-                    for origin in invoice.origin.split(','):
-                        if ':' in origin:
-                            picking_name = origin.split(':')[0] # picking is first element
-                        else:
-                            picking_name = origin
-                        picking_out_ids = self.pool['stock.picking'].search(cr, uid, [('type', '=', 'out'), ('name', '=', picking_name)], context=context)
-                        if picking_out_ids:
-                            picking = self.pool['stock.picking'].browse(cr, uid, picking_out_ids[0], context=context)
-                            if not picking.ddt_number:
-                                result[invoice.id] = True
-                                break
+
+        for invoice in self.browse(cr, uid, ids, context):
+            result[invoice.id] = False
+            # if hasattr(invoice, 'move_products') and invoice.move_products:
+            # result[invoice.id] = True
+            if invoice.origin:
+                for origin in invoice.origin.split(','):
+                    if ':' in origin:
+                        picking_name = origin.split(':')[0]  # picking is first element
+                    else:
+                        picking_name = origin
+                    picking_out_ids = self.pool['stock.picking'].search(cr, uid, [('type', '=', 'out'),
+                                                                                  ('name', '=', picking_name)],
+                                                                        context=context)
+                    if picking_out_ids:
+                        picking = self.pool['stock.picking'].browse(cr, uid, picking_out_ids[0], context=context)
+                        if not picking.ddt_number:
+                            result[invoice.id] = True
+                            break
         return result
 
     def action_number(self, cr, uid, ids, context=None):
@@ -186,7 +187,9 @@ class account_invoice(orm.Model):
     def invoice_validate_check(self, cr, uid, ids, context=None):
         for invoice in self.browse(cr, uid, ids, context):
             if not ((not invoice.partner_id.individual and invoice.partner_id.vat) or (invoice.partner_id.individual and invoice.partner_id.cf)):
-                if invoice.fiscal_position and invoice.fiscal_position.no_check_vat or invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
+                if not invoice.fiscal_position or \
+                                invoice.fiscal_position and invoice.fiscal_position.no_check_vat or \
+                                invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
                     continue
                 raise orm.except_orm(_('Supplier Invoice'),
                                _('Impossible to Validate, need to set Partner VAT'))

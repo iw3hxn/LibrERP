@@ -25,6 +25,6 @@ from . import account_fiscal_position
 from . import res_partner_bank
 from . import partner
 from . import res_bank
-# from . import account_tax
+from . import account_tax
 from . import res_company
 from . import account_voucher

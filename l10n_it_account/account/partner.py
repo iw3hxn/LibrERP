@@ -69,11 +69,10 @@ class res_partner(orm.Model):
             'account.payment.term',
             type='many2one',
             relation='account.payment.term',
-            string ='Payment Term',
+            string='Payment Term',
             view_load=True,
             help="This payment term will be used instead of the default one for the current partner for supplier moves."),
-        'ref_companies': fields.one2many('res.company', 'partner_id',
-            'Companies that refers to partner'),
+        'ref_companies': fields.one2many('res.company', 'partner_id', 'Companies that refers to partner'),
         'last_reconciliation_date': fields.datetime(
             'Latest Reconciliation Date', help='Date on which the partner accounting entries were reconciled last time')
     }
