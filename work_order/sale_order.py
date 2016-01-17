@@ -35,13 +35,12 @@ class sale_order(orm.Model):
     def _read_project(self, cr, uid, ids, field_name, args, context):
         result = {}
         project_obj = self.pool['project.project']
-        
-        orders = self.browse(cr, uid, ids)
-        for order in orders:
+
+        for order in self.browse(cr, uid, ids, context):
             if order.project_id:
-                project_ids = project_obj.search(cr, uid, [('analytic_account_id', '=', order.project_id.id)])
+                project_ids = project_obj.search(cr, uid, [('analytic_account_id', '=', order.project_id.id)], context=context)
                 if project_ids:
-                    project = project_obj.browse(cr, uid, project_ids[0])
+                    project = project_obj.browse(cr, uid, project_ids[0], context)
                     result[order.id] = (project.id, project.name)
                 else:
                     result[order.id] = False
@@ -57,10 +56,8 @@ class sale_order(orm.Model):
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
         
-        project = self.pool['project.project'].browse(cr, uid, field_value)
-        
-        orders = self.browse(cr, uid, ids)
-        for order in orders:
+        project = self.pool['project.project'].browse(cr, uid, field_value, context)
+        for order in self.browse(cr, uid, ids, context):
             # Yes, it's crazy. Thanks to the authors of the sale_order for the wrong field name
             self.write(cr, uid, order.id, {'project_id': project.analytic_account_id.id})
         return True
@@ -81,8 +78,7 @@ class sale_order(orm.Model):
 
     def action_cancel(self, cr, uid, ids, context=None):
         result = super(sale_order, self).action_cancel(cr, uid, ids, context)
-        orders = self.browse(cr, uid, ids, context=context)
-        for order in orders:
+        for order in self.browse(cr, uid, ids, context=context):
             if order.project_project:
                 project_obj = self.pool['project.project']
                 task_obj = self.pool['project.task']
@@ -96,8 +92,8 @@ class sale_order(orm.Model):
                         task_obj.action_close(cr, uid, [task.id], context=context)
                         unlink_project = False
 
-                analytic_account_line_ids = analytic_account_line_obj.search(cr, uid, [('account_id', '=', order.project_project.analytic_account_id.id)])
-                sale_order_ids = self.search(cr, uid, [('project_project', '=', order.project_project.id)])
+                analytic_account_line_ids = analytic_account_line_obj.search(cr, uid, [('account_id', '=', order.project_project.analytic_account_id.id)], context=context)
+                sale_order_ids = self.search(cr, uid, [('project_project', '=', order.project_project.id)], context=context)
                 if unlink_project and not analytic_account_line_ids and len(sale_order_ids) > 1:
                     analytic_account_id = order.project_project.analytic_account_id.id
                     project_obj.unlink(cr, uid, [order.project_project.id], context=context)
@@ -111,7 +107,7 @@ class sale_order(orm.Model):
         result = super(sale_order, self).action_cancel_draft(cr, uid, ids, context)
         orders = self.browse(cr, uid, ids, context=context)
         for order in orders:
-            shop = self.pool['sale.shop'].browse(cr, uid, [order.shop_id.id], context=context)[0]
+            shop = order.shop_id
             if (not order.project_project) and (not order.project_id) and shop and shop.project_required and (not order.project_project or not context.get('versioning', False)):
                 if order.order_policy == 'picking':
                     invoice_ratio = 1
@@ -130,18 +126,18 @@ class sale_order(orm.Model):
                 project_id = self.pool['project.project'].create(cr, uid, value, context={
                     'model': 'sale.order',
                 })
-                self.write(cr, uid, [order.id], {'project_project': project_id}, context=context)
+                order.write({'project_project': project_id})
+
         return result
 
     def action_wait(self, cr, uid, ids, context=None):
         result = super(sale_order, self).action_wait(cr, uid, ids, context)
         
         bom_obj = self.pool['mrp.bom']
-        sale_line_bom_obj = self.pool.get('sale.order.line.mrp.bom') or False
+        sale_line_bom_obj = self.pool.get('sale.order.line.mrp.bom') or False # in this mode test if exist object 'sale.order.line.mrp.bom'
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
-        
-        orders = self.browse(cr, uid, ids, context=context)
-        for order in orders:
+
+        for order in self.browse(cr, uid, ids, context=context):
             if order.project_project and order.company_id.create_task:
                 project_id = order.project_project.id
                 if order.order_policy == 'picking':
@@ -199,8 +195,13 @@ class sale_order(orm.Model):
                             planned_hours = order_line.product_uom_qty
                         else:
                             planned_hours = 0
+
+                        if order_line.product_id.name_get()[0][1] == order_line.name:
+                            task_name = order_line.product_id.name
+                        else:
+                            task_name = order_line.name
                         task_vals = {
-                            'name': u"{0}: {1}".format(order.name, order_line.product_id.name),
+                            'name': u"{0}: {1}".format(order.name, task_name),
                             'project_id': project_id,
                             'planned_hours': planned_hours,
                             'remaining_hours': planned_hours,
@@ -240,7 +241,7 @@ class sale_order(orm.Model):
                 'warn_manager': True,
                 'user_id': shop.project_manager_id and shop.project_manager_id.id or False,
             }
-            #todo think better with matrix / function project_manager
+            # qtodo think better with matrix / function project_manager
             if values.get('section_id', False):
                 sale_team = self.pool['crm.case.section'].browse(cr, uid, values['section_id'], context=context)
                 if sale_team.user_id:

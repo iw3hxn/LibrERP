@@ -3,18 +3,30 @@
     <data>
     
         <record id="view_stock_picking_commission" model="ir.ui.view">
-            <field name="name">view_stock_picking_commission_form</field>
+            <field name="name">work_order_picking_inherit</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_out_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="stock_journal_id" position="after">
-                    <field name="project_id" attrs="{'invisible': [('sale_id','!=',False), ('account_id','!=',False)]}" groups="analytic.group_analytic_accounting"/>
-                    <field name="account_id" attrs="{'invisible': [('sale_id','!=',False), ('project_id','!=',False)]}" groups="analytic.group_analytic_accounting"/>
+                    <field name="project_id" on_change="onchange_account_id(project_id)" attrs="{'invisible': [('sale_id','!=',False), ('account_id','!=',False)]}" groups="analytic.group_analytic_accounting"/>
+                    <field name="account_id" attrs="{'invisible': ['|', ('sale_id','!=',False), ('project_id','!=',False)]}" groups="analytic.group_analytic_accounting"/>
                     <field name="sale_project" attrs="{'invisible': [('sale_id','=',False)]}" groups="analytic.group_analytic_accounting"/>
                 </field>
             </field>
         </record>
+
+        <!--<record id="view_stock_picking_sale" model="ir.ui.view">-->
+            <!--<field name="name">work_order_picking_sale_order_inherit</field>-->
+            <!--<field name="model">stock.picking</field>-->
+            <!--<field name="inherit_id" ref="sale.stock_picking_inherit_sale"/>-->
+            <!--<field name="type">form</field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<field name="sale_id" position="attribute">-->
+                    <!--<attribute name="on_change">onchange_sale_id(sale_id)</attribute>-->
+                <!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
     
         <record id="view_picking_commission_tree" model="ir.ui.view">
             <field name="name">view_stock_picking_commission_tree</field>

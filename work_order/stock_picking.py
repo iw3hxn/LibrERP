@@ -34,12 +34,34 @@ class stock_picking(orm.Model):
         'account_id': fields.related('sale_id', 'project_id', type='many2one', relation='account.analytic.account', string=_('Analytic Account'), store=False),
         'sale_project': fields.related('sale_id', 'project_project', type='many2one', relation='project.project', string=_('Project'), store=False),
     }
+
+    def onchange_account_id(self, cr, uid, ids, project_id):
+        res = {}
+        if project_id:
+            context = self.pool['res.users'].context_get(cr, uid)
+            project = self.pool['project.project'].browse(cr, uid, project_id, context)
+            res.update({
+                'account_id': project.analytic_account_id.id,
+                'sale_project': project.id
+            })
+        return {'value': res}
+
+    def onchange_sale_id(self, cr, uid, ids, sale_id):
+        res = {}
+        if sale_id:
+            context = self.pool['res.users'].context_get(cr, uid)
+            order = self.pool['sale.order'].browse(cr, uid, sale_id, context)
+            if order.project_project:
+                res.update({
+                    'project_id': order.project_project.id
+                })
+        return {'value': res}
     
     def do_partial(self, cr, uid, ids, partial_data, context):
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
 
-        for picking in self.browse(cr, uid, ids):
+        for picking in self.browse(cr, uid, ids, context):
             if picking.project_id or picking.sale_project or picking.account_id:
                 for move in picking.move_lines:
                     values = {

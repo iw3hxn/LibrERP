@@ -32,10 +32,10 @@ class project_project(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         project_id = super(project_project, self).create(cr, uid, vals, context)
-        project = self.pool['project.project'].browse(cr, uid, project_id)
+        project = self.pool['project.project'].browse(cr, uid, project_id, context)
         
         if not project.partner_id and context.get('partner_id', False):
-            self.pool['project.project'].write(cr, uid, project_id, {'partner_id': context['partner_id']})
+            self.pool['project.project'].write(cr, uid, project_id, {'partner_id': context['partner_id']}, context)
 
         if context.get('model', False) == 'sale.order':
             user = self.pool['res.users'].browse(cr, uid, uid, context=context)
