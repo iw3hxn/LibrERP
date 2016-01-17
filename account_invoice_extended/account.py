@@ -44,7 +44,6 @@ class account_invoice(orm.Model):
             context = self.pool['res.users'].context_get(cr, uid)
 
         fpos_obj = self.pool['account.fiscal.position']
-        inv_line_obj = self.pool['account.invoice.line']
 
         for inv in self.browse(cr, uid, ids, context):
             for line in inv.invoice_line:
