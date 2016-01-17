@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="purchase_order_pricelist_form_view_inh">
+			<field name="name">purchase.order.pricelist.form.inh</field>
+			<field name="model">purchase.order</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="purchase.purchase_order_form" />
+			<field name="arch" type="xml">
+				<field name="pricelist_id" position="replace">
+                    <field name="pricelist_id" domain="[('type','=','purchase')]" on_change="onchange_pricelist_id(pricelist_id,order_line)" groups="base.group_extended"/>
+                    <field name="recalculate_prices" invisible="1"/>
+                    <button name="recalculate_prices" string="Recalculate prices" type="object" colspan="4" attrs="{'invisible': [('recalculate_prices','!=',True)]}"/>
+                </field>
+			</field>
+		</record>
+
+	</data>
+</openerp>
