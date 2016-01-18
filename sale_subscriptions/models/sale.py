@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2011 Domsense s.r.l. (<http://www.domsense.com>).
-#    Copyright (C) 2012-2015 Didotech (<http://www.didotech.com>).
+#    Copyright (C) 2012-2016 Didotech (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -250,6 +250,30 @@ class sale_order_line(orm.Model):
     def action_dummy(self, cr, uid, line_ids, context):
         return True
 
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False):
+        # no reason to sum price_units
+        fields.remove('price_unit')
+        result = super(sale_order_line, self).read_group(cr, uid, domain, fields, groupby, offset, limit=limit, context=context, orderby=orderby)
+
+        if groupby:
+            group_key = groupby[0]
+            cr.execute("""SELECT {g_key}, SUM(price_unit * product_uom_qty) AS subtotal
+                FROM sale_order_line
+                WHERE state NOT IN ('draft')
+                AND suspended = 'false'
+                GROUP BY {g_key}
+            """.format(g_key=group_key))
+
+            partners_subtotal = {row[group_key]: row['subtotal'] for row in cr.dictfetchall()}
+
+            for row in result:
+                if isinstance(row[group_key], (list, tuple)):
+                    g_key = row[group_key][0]
+                else:
+                    g_key = row[group_key]
+                row['price_subtotal'] = partners_subtotal.get(g_key, 0)
+
+        return result
 
 class sale_order(orm.Model):
     _inherit = "sale.order"
