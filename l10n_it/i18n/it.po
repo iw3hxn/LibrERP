@@ -16,6 +16,12 @@ msgstr ""
 "X-Launchpad-Export-Date: 2012-08-28 09:49+0000\n"
 "X-Generator: Launchpad (build 15864)\n"
 
+#. modules: l10n_it
+#: field:account.tax.code.template,exclude_from_registries:0
+#: field:account.tax.code,exclude_from_registries:0
+msgid "Exclude from VAT registries"
+msgstr "Escludi dai registri IVA"
+
 #. module: l10n_it
 #: model:account.account.type,name:l10n_it.account_type_cash
 msgid "Liquidità"

@@ -154,7 +154,8 @@ msgid "VAT Registries"
 msgstr "Stampe Registri IVA"
 
 #. module: l10n_it_vat_registries
-#: field:account.tax,exclude_from_registries:0
+#: field:account.tax.code.template,exclude_from_registries:0
+#: field:account.tax.code,exclude_from_registries:0
 msgid "Exclude from VAT registries"
 msgstr "Escludi dai registri IVA"
 
