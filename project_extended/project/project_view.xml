@@ -59,6 +59,7 @@
                     <field name="total_sell" groups="project.group_project_manager" sum="Total Sell"/>
                     <field name="total_sell_service" groups="project.group_project_manager" sum="Total Service Sell"/>
                     <field name="total_spent" groups="project.group_project_manager" sum="Total Spent" />
+                    <field name="total_service_spent" groups="project.group_project_manager" sum="Total Service Spent" />
                     <field name="total_invoice" groups="project.group_project_manager" sum="Total Invoiced"/>
                     <field name="analytic_account_id" invisible="1" />
                 </field>

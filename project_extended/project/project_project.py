@@ -28,10 +28,15 @@ class project_project(orm.Model):
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
-        spent_group = self.pool['res.groups'].user_in_group(cr, uid, uid, 'project.can_modify_prices', context=context)
+        total_spent_group = self.pool['res.groups'].user_in_group(cr, uid, uid, 'project.can_modify_prices', context=context)
+        service_spent_group = self.pool['res.groups'].user_in_group(cr, uid, uid, 'project.color_service_spent_amount', context=context)
+
         for project in self.browse(cr, uid, ids, context):
-            if spent_group:
+            if total_spent_group:
                 effective_hours = project.total_spent
+                planned_hours = project.total_sell_service
+            elif service_spent_group:
+                effective_hours = project.total_service_spent
                 planned_hours = project.total_sell_service
             else:
                 effective_hours = project.effective_hours
@@ -85,14 +90,20 @@ class project_project(orm.Model):
                 'total_invoice': 0.0,
                 'total_sell': 0.0,
                 'total_sell_service': 0.0,
+                'total_service_spent': 0.0,
             }
-
+            # import pdb; pdb.set_trace()
             account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id)], context=context)
             for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
                 if account.amount > 0:
                     res[project_id.id]['total_invoice'] += account.amount
                 else:
                     res[project_id.id]['total_spent'] += abs(account.amount)
+
+            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('product_id.type', '=', 'service')], context=context)
+            for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
+                if not account.amount > 0:
+                    res[project_id.id]['total_service_spent'] += abs(account.amount)
 
             sale_ids = self.pool['sale.order'].search(cr, uid, [
                 ('project_id', '=', project_id.analytic_account_id.id),
@@ -158,10 +169,11 @@ class project_project(orm.Model):
         return res
     
     _columns = {
-        'row_color': fields.function(get_color, string = 'Row color', type='char', readonly=True, method=True),
+        'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks"),
         'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
         'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),
         'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Spent Amount"),
+        'total_service_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Spent Amount"),
         'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Invoice Amount"),
     }

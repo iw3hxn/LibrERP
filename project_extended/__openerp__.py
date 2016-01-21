@@ -19,7 +19,7 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.4.10.14',
+    'version': '3.6.11.16',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,
@@ -27,11 +27,13 @@
     'website': 'http://www.didotech.com',
     'license': 'AGPL-3',
     "depends": [
+        'account',
         'project',
         'project_timesheet',
         'res_users_helper_functions'
     ],
     "data": [
+        'account/account_analytic_line_view.xml',
         'project/project_view.xml',
         'project/project_task_view.xml',
         'project/project_view_menu.xml',

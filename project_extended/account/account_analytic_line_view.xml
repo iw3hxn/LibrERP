@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_account_analytic_line_search_inherit" model="ir.ui.view">
+            <field name="name">account.analytic.line.search.product</field>
+            <field name="model">account.analytic.line</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="account.view_account_analytic_line_filter"/>
+            <field name="arch" type="xml">
+                <field name="date" position="before">
+
+                    <filter string="Services" icon="terp-accessories-archiver"
+                            domain="[('product_id.type','=','service')]"/>
+                    <filter string="Products" icon="terp-accessories-archiver"
+                            domain="['|',('product_id.type','=','product'),('product_id.type','=','consu')]"/>
+                    <separator orientation="vertical"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
