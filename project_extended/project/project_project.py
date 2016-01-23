@@ -34,7 +34,7 @@ class project_project(orm.Model):
         for project in self.browse(cr, uid, ids, context):
             if total_spent_group:
                 effective_hours = project.total_spent
-                planned_hours = project.total_sell_service
+                planned_hours = project.total_sell
             elif service_spent_group:
                 effective_hours = project.total_service_spent
                 planned_hours = project.total_sell_service
