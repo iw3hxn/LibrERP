@@ -105,6 +105,23 @@
             </field>
         </record>
 
+        <record id="view_hr_agent_commission_tree" model="ir.ui.view">
+            <field name="name">view.hr.agent.commission.tree</field>
+            <field name="model">hr.agent.commission</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="commission agent's" editable="top">
+                    <field name="name" />
+                    <field name="product_id"/>
+                    <field name="category_id" />
+                    <field name="customer_id"/>
+                    <field name="commission_percent"/>
+                    <field name="fixed_commission"/>
+                    <field name="commission_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="commission_form">
             <field name="name">Commissions</field>
             <field name="model">commission</field>
@@ -116,6 +133,11 @@
                     <field name="type" select="1" groups="sale_commission.commission_extended"/>
                     <group string="Definition of rates" colspan="4">
                         <field name="fix_qty" attrs="{'invisible':[('type', '!=', 'fix')]}"/>
+
+                        <field name="commission_ids" widget="one2many_list" colspan="4" nolabel="1"
+                               attrs="{'invisible':[('type','!=','fix')]}" />
+                        <newline/>
+
                         <field name="sections" widget="one2many_list" colspan="4" nolabel="1"
                                attrs="{'invisible':[('type','!=','sections')]}">
                             <tree string="sections" editable="top">
@@ -124,18 +146,19 @@
                                 <field name="percent"/>
                             </tree>
                         </field>
+
                     </group>
-                    <field name="product_agent_ids" nolabel="1" colspan="4">
-                        <tree string="Agents and Commissions" editable="top">
-                            <field name="agent_ids" widget="many2many_tags"/>
-                            <field name="product_id"/>
-                        </tree>
-                        <form>
-                            <field name="product_id"/>
-                            <separator colspan="4" string="Agents/Commissions"/>
-                            <field name="agent_ids" colspan="4" nolabel="1" widget="many2many_tags"/>
-                        </form>
-                    </field>
+                    <!--<field name="product_agent_ids" nolabel="1" colspan="4">-->
+                        <!--<tree string="Agents and Commissions" editable="top">-->
+                            <!--<field name="agent_ids" widget="many2many_tags"/>-->
+                            <!--<field name="product_id"/>-->
+                        <!--</tree>-->
+                        <!--<form>-->
+                            <!--<field name="product_id"/>-->
+                            <!--<separator colspan="4" string="Agents/Commissions"/>-->
+                            <!--<field name="agent_ids" colspan="4" nolabel="1" widget="many2many_tags"/>-->
+                        <!--</form>-->
+                    <!--</field>-->
                 </form>
             </field>
         </record>

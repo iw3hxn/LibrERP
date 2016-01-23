@@ -43,28 +43,25 @@ class settled_wizard(orm.TransientModel):
         'date_to': lambda *a: time.strftime('%Y-%m-%d'),
     }
 
-
     def settlement_exec(self, cr, uid, ids, context=None):
         """se ejecuta correctamente desde dos."""
-        for o in self.browse(cr, uid, ids, context=context):
-
+        for settle_period in self.browse(cr, uid, ids, context=context):
             # 'tax_id': [(6, 0, res.get('invoice_line_tax_id'))],
 
-
             pool_liq = self.pool['settlement']
-            liq_id = pool_liq.search(cr, uid, [('date_to', '>=', o.date_from), ('state', '!=', 'invoiced')],
+            liq_id = pool_liq.search(cr, uid, [('date_to', '>=', settle_period.date_from), ('state', '!=', 'invoiced')],
                                      context=context)
             if not liq_id:
                 vals = {
-                    'name': o.date_from + " // " + o.date_to,
-                    'date_from': o.date_from,
-                    'date_to': o.date_to
+                    'name': settle_period.date_from + " // " + settle_period.date_to,
+                    'date_from': settle_period.date_from,
+                    'date_to': settle_period.date_to
                 }
                 liq_id = int(pool_liq.create(cr, uid, vals, context))
             else:
                 liq_id = liq_id[0]
 
-            pool_liq.calcula(cr, uid, liq_id, context['active_ids'], o.date_from, o.date_to)
+            pool_liq.calcula(cr, uid, liq_id, context['active_ids'], settle_period.date_from, settle_period.date_to)
 
         return {
             'type': 'ir.actions.act_window_close',
@@ -484,11 +481,39 @@ class settlement_line(orm.Model):
                 invoice_line_amount = line.invoice_line_id.price_subtotal
                 if commission_app.type == "fix":
                     commission_per = commission_app.fix_qty
+                    datas_commission_ids = self.pool['hr.agent.commission'].search(cr, uid, [('commission_id', '=', commission_app.id)], context=context)
                     # Para tener en cuenta las rectificativas
-                    if line.invoice_line_id.invoice_id.type == 'out_refund':
-                        amount = amount - line.invoice_line_id.price_subtotal * float(commission_per) / 100
+                    if datas_commission_ids:
+                        for data_commission in self.pool['hr.agent.commission'].browse(cr, uid, datas_commission_ids, context):
+                            commission_percent = 0.0
+                            fixed_commission = 0.0
+                            if line.invoice_line_id.product_id:
+                                if line.invoice_line_id.product_id.categ_id == data_commission.category_id:
+                                    commission_percent = float(data_commission.commission_percent)
+                                    fixed_commission = float(data_commission.fixed_commission)
+                                    break
+                                elif line.invoice_line_id.product_id == data_commission.product_id:
+                                    commission_percent = float(data_commission.commission_percent)
+                                    fixed_commission = float(data_commission.fixed_commission)
+                                    break
+                            if line.invoice_id.partner_id == data_commission.customer_id:
+                                commission_percent = float(data_commission.commission_percent)
+                                fixed_commission = float(data_commission.fixed_commission)
+                                break
+
+                        if not (commission_percent or fixed_commission):
+                            commission_percent = commission_per
+                        commission = (line.invoice_line_id.price_subtotal * float(commission_percent) / 100) + (float(fixed_commission) * line.invoice_line_id.quantity)
+
+                        if line.invoice_line_id.invoice_id.type == 'out_refund':
+                            amount -= commission
+                        else:
+                            amount += commission
                     else:
-                        amount = amount + line.invoice_line_id.price_subtotal * float(commission_per) / 100
+                        if line.invoice_line_id.invoice_id.type == 'out_refund':
+                            amount -= line.invoice_line_id.price_subtotal * float(commission_per) / 100
+                        else:
+                            amount += line.invoice_line_id.price_subtotal * float(commission_per) / 100
 
                 elif commission_app.type == "sections":
                     invoice_line_amount = 0

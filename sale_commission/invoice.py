@@ -65,19 +65,19 @@ class invoice_line_agent(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         result = {}
-        v = {}
+        value = {}
 
         if agent_id:
             agent = self.pool['sale.agent'].browse(cr, uid, agent_id, context)
-            v['commission_id'] = agent.commission.id
+            value['commission_id'] = agent.commission.id
 
             agent_line = self.browse(cr, uid, ids, context)
             if agent_line:
-                v['quantity'] = agent_line[0].invoice_line_id.price_subtotal * (agent.commission.fix_qty / 100.0)
+                value['quantity'] = agent_line[0].invoice_line_id.price_subtotal * (agent.commission.fix_qty / 100.0)
             else:
-                v['quantity'] = 0
+                value['quantity'] = 0
 
-        result['value'] = v
+        result['value'] = value
         return result
 
     def onchange_commission_id(self, cr, uid, ids, agent_id, commission_id, context=None):
@@ -85,12 +85,12 @@ class invoice_line_agent(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         result = {}
-        v = {}
+        value = {}
         if commission_id and ids:
             partner_commission = self.pool['commission'].browse(cr, uid, commission_id, context)
             agent_line = self.browse(cr, uid, ids)
-            v['quantity'] = agent_line[0].invoice_line_id.price_subtotal * (partner_commission.fix_qty / 100.0)
-            result['value'] = v
+            value['quantity'] = agent_line[0].invoice_line_id.price_subtotal * (partner_commission.fix_qty / 100.0)
+            result['value'] = value
             if partner_commission.sections:
                 if agent_id:
                     agent = self.pool['sale.agent'].browse(cr, uid, agent_id, context)

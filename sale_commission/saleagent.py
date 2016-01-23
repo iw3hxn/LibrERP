@@ -23,6 +23,20 @@
 from openerp.osv import orm, fields
 
 
+class hr_agent_commission(orm.Model):
+    _name = 'hr.agent.commission'
+    _description = 'Commission'
+    _columns = {
+        'name': fields.char('Name'),
+        'product_id': fields.many2one('product.product', 'Product', ondelete='cascade'),
+        'category_id': fields.many2one('product.category', 'Category Product\'s', ondelete='cascade'),
+        'customer_id': fields.many2one('res.partner', 'Customer', ondelete='cascade'),
+        'commission_percent': fields.float('Commission (%)', digits=(5, 2)),
+        'fixed_commission': fields.float('fixed commission', digits=(10, 2)),
+        'commission_id': fields.many2one('commission', 'Applied commission'),
+    }
+
+
 class commission(orm.Model):
     """Objeto comisión"""
 
@@ -34,6 +48,7 @@ class commission(orm.Model):
         'fix_qty': fields.float('Fix Percentage'),
         'sections': fields.one2many('commission.section', 'commission_id', 'Sections'),
         'product_agent_ids': fields.one2many('product.agent.commission', 'commission_id', 'Agents'),
+        'commission_ids': fields.one2many('hr.agent.commission', 'commission_id', 'Agents'),
     }
     _defaults = {
         'type': lambda *a: 'fix',

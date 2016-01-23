@@ -254,7 +254,7 @@ class sale_order_line(orm.Model):
         if product:
             # todo riscrivere
             list_agent_ids = []
-            product_obj = self.pool["product.product"].browse(cr, uid, product, context)
+            product_obj = self.pool['product.product'].browse(cr, uid, product, context)
             sale_line_agent = self.pool["sale.line.agent"]
             if ids:
                 sale_line_agent.unlink(cr, uid, sale_line_agent.search(cr, uid, [('line_id', 'in', ids)]), context)
@@ -264,7 +264,7 @@ class sale_order_line(orm.Model):
                 order_comm_ids = [x[1] for x in sale_agent_ids if x[0] != 2 and x[1]]
                 if order_comm_ids:
                     order_agent_ids = [x.agent_id.id for x in
-                                       self.pool["sale.order.agent"].browse(cr, uid, order_comm_ids, context)]
+                                       self.pool['sale.order.agent'].browse(cr, uid, order_comm_ids, context)]
                     dic = {}
 
                     for prod_record in product_obj.product_agent_ids:
