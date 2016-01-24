@@ -312,6 +312,6 @@ class ImportFile(threading.Thread, Utils):
             self.sale_order_line_obj.create(cr, uid, vals_sale_order_line)
             self.uo_new += 1
         else:
-            _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.product))
+            _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.item))
 
         return product_id
