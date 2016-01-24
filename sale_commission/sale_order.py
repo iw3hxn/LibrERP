@@ -70,10 +70,11 @@ class sale_order_agent(orm.Model):
                 if agent_id:
                     agent = self.pool['sale.agent'].browse(cr, uid, agent_id, context)
                     if agent.commission.id != partner_commission.id:
-                        result['warning'] = {}
-                        result['warning']['title'] = _('Fee installments!')
-                        result['warning']['message'] = _(
-                            'A commission has been assigned by sections that does not match that defined for the agent by default, so that these sections shall apply only on this bill.')
+                        result['warning'] = {
+                            'title': _('Fee installments!'),
+                            'message': _(
+                                'A commission has been assigned by sections that does not match that defined for the agent by default, so that these sections shall apply only on this bill.')
+                        }
         return result
 
 
