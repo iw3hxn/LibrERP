@@ -29,3 +29,6 @@
 "access_sale_line_agent_salesman","access_sale_line_agent_salesman","model_sale_line_agent","base.group_sale_salesman",1,1,1,1
 "access_product_agent_commission_salesman","access_product_agent_commission_salesman","model_product_agent_commission","base.group_sale_salesman",1,0,0,0
 "access_product_agent_commission_sale_manager","access_product_agent_commission_sale_manager","model_product_agent_commission","base.group_sale_manager",1,1,1,1
+"access_hr_agent_commission_salesman","access_hr_agent_commission_salesman","model_hr_agent_commission","base.group_sale_salesman",1,1,1,1
+"access_hr_agent_commission_sale_manager","access_hr_agent_commission_sale_manager","model_hr_agent_commission","base.group_sale_manager",1,1,1,1
+

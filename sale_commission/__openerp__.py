@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Sales commissions',
-    'version': '1.0.b',
+    'version': '1.0.c',
     'author': 'Pexego',
     "category": "Generic Modules/Sales & Purchases",
     'depends': [
