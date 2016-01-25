@@ -345,3 +345,8 @@ msgstr "Trasporto a cura di"
 #: field:stock.move,qty_available:0
 msgid "Quantity On Hand"
 msgstr "Q.tà A Mag"
+
+#. module: stock_move_extended
+#: field:stock.picking,client_order_ref:0
+msgid "Customer Reference"
+msgstr "Riferimento cliente"

@@ -91,6 +91,9 @@ class stock_picking(orm.Model):
             ("2binvoiced", "To Be Invoiced"),
             ("none", "Not Applicable")], "Invoice Control",
             select=True, required=True, readonly=False),
+        'client_order_ref': fields.related(
+            'sale_id', 'client_order_ref', type='char',
+            string='Customer Reference'),
     }
     
     def onchange_stock_journal(
@@ -191,6 +194,7 @@ class stock_picking(orm.Model):
                               group=False, type='out_invoice', context=None):
         res = super(stock_picking, self).action_invoice_create(cr, user, ids, journal_id,
                                                                group, type, context)
+        import pdb; pdb.set_trace()
         for picking in self.browse(cr, user, ids, context=context):
             self.pool['account.invoice'].write(cr, user, res[picking.id], {
                 'carriage_condition_id': picking.carriage_condition_id.id,

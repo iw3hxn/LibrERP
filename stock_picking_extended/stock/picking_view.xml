@@ -64,5 +64,53 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="sale_journal_picking_order_tree">
+            <field name="name">stock.picking.journal.view.tree</field>
+            <field name="type">tree</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="sale_journal.sale_journal_picking_order_tree" />
+            <field name="arch" type="xml">
+                <field name="invoice_type_id" position="replace">
+                    <field name="client_order_ref" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sale_journal_picking_order_tree_out">
+            <field name="name">stock.picking.journal.view.tree</field>
+            <field name="type">tree</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="sale_journal.sale_journal_picking_order_tree_out" />
+            <field name="arch" type="xml">
+                <field name="invoice_type_id" position="replace">
+                    <field name="client_order_ref" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sale_journal_picking_order_out">
+            <field name="name">stock.picking.journal.view.form</field>
+            <field name="type">form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="sale_journal.sale_journal_picking_order_out" />
+            <field name="arch" type="xml">
+                <field name="invoice_type_id" position="after">
+                    <field name="client_order_ref" select="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_stock_picking_enhanced_filter_out" model="ir.ui.view">
+            <field name="name">stock.picking.enhanced.filter</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_out_search"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="client_order_ref" />
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>
