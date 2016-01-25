@@ -27,8 +27,6 @@ from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
 
-import pdb
-
 
 class product_pricelist(orm.Model):
     _inherit = "product.pricelist"
@@ -41,9 +39,45 @@ class product_pricelist(orm.Model):
 class sale_order(orm.Model):
     _inherit = "sale.order"
 
+    def service_only(self, cr, uid, ids, values, context):
+        deleted_products = []
+        service = True
+        if values and 'order_line' in values and values['order_line']:
+            for line in values['order_line']:
+                # create new line
+                if line[0] == 0:
+                    if 'product_id' in line[2]:
+                        product = self.pool['product.product'].browse(cr, uid, line[2]['product_id'], context)
+                        if not product.type == 'service':
+                            if line[0] == 0:
+                                return False
+                elif line[0] == 2 and line[1]:
+                    order_line = self.pool['sale.order.line'].browse(cr, uid, line[1], context)
+                    if order_line.product_id and not order_line.product_id.type == 'service':
+                        deleted_products.append(order_line.product_id.id)
+        elif not ids:
+            return False
+        else:
+            service = False
+
+        if ids:
+            for order in self.browse(cr, uid, ids, context):
+                if order.order_line:
+                    for order_line in order.order_line:
+                        if not order_line.product_id.type == 'service' and not order_line.product_id.id in deleted_products:
+                            return False
+                else:
+                    if not service:
+                        return False
+        return True
+
     def create(self, cr, uid, vals, context=None):
         if not context:
             context = {}
+
+        if self.service_only(cr, uid, False, vals, context) and vals.get('order_policy', '') == 'picking':
+            raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
+
         ids = super(sale_order, self).create(cr, uid, vals, context=context)
         if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
             order = self.browse(cr, uid, ids, context)
@@ -64,6 +98,10 @@ class sale_order(orm.Model):
 
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
+
+        for order in self.browse(cr, uid, ids, context):
+            if self.service_only(cr, uid, ids, vals, context) and vals.get('order_policy', order.order_policy) == 'picking':
+                raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
 
         # adaptative function: the system learn
         if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
