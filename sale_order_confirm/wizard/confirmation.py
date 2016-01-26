@@ -46,7 +46,7 @@ class sale_order_confirm_line(orm.TransientModel):
         return res
 
     def action_add(self, cr, uid, ids, context):
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         line = self.pool['sale.order.confirm.line'].browse(cr, uid, ids, context)[0]
         line.write({
             'quantity': line.quantity + 1,
@@ -55,7 +55,7 @@ class sale_order_confirm_line(orm.TransientModel):
         return True
 
     def action_remove(self, cr, uid, ids, context):
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         line = self.pool['sale.order.confirm.line'].browse(cr, uid, ids, context)[0]
         if line.quantity >= 1.0:
             line.write({

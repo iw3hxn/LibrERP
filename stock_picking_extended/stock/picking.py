@@ -194,7 +194,7 @@ class stock_picking(orm.Model):
                               group=False, type='out_invoice', context=None):
         res = super(stock_picking, self).action_invoice_create(cr, user, ids, journal_id,
                                                                group, type, context)
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         for picking in self.browse(cr, user, ids, context=context):
             self.pool['account.invoice'].write(cr, user, res[picking.id], {
                 'carriage_condition_id': picking.carriage_condition_id.id,
