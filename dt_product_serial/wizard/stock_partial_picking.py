@@ -107,12 +107,12 @@ class stock_partial_picking_line(orm.TransientModel):
         lot_obj = self.pool['stock.production.lot']
         if new_prodlot_code:
             new_prodlot_code = new_prodlot_code.upper()  # all serial number must be on uppercase
-        existing_prodlot_ids = lot_obj.search(cr, uid, [('name', '=', new_prodlot_code), ('product_id', '=', product_id)], context=context)
-
+        existing_prodlot_ids = lot_obj.search(cr, uid, [('name', '=', new_prodlot_code), ('product_id', '=', product_id)], limit=1, context=context)
+        existing_lot = lot_obj.browse(cr, uid, existing_prodlot_ids, context)
         move_type = self.pool['stock.partial.picking.line'].browse(cr, uid, ids, context=context)[0].move_id.picking_id.type
-        if existing_prodlot_ids:
+        if existing_lot:
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
-            if product.lot_split_type == 'single' and move_type != 'out':
+            if product.lot_split_type == 'single' and move_type != 'out' and existing_lot[0].stock_available > 0:
                 return {
                     'warning': {
                         'title': _('Warning!'),
