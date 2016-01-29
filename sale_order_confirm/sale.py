@@ -46,7 +46,7 @@ class sale_order(orm.Model):
             for line in values['order_line']:
                 # create new line
                 if line[0] == 0:
-                    if 'product_id' in line[2]:
+                    if 'product_id' in line[2] and line[2]['product_id']:
                         product = self.pool['product.product'].browse(cr, uid, line[2]['product_id'], context)
                         if not product.type == 'service':
                             if line[0] == 0:
