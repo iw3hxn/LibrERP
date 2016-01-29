@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_wizard_export_primanota_teamsystem" model="ir.ui.view">
+                <field name="name">wizard.export.primanota.teamsystem.form</field>
+                <field name="model">wizard.export.primanota.teamsystem</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form col="6" string="Download Primanota Report">
+                        <group col="5" fill="0" height="100" states="choose">
+                            <group colspan="5">
+                                <button special="cancel" icon="gtk-cancel" string="Cancel"/>
+                                <button type="object" name="action_export_primanota" icon="gtk-go-forward"
+                                        string="Download Report"/>
+                            </group>
+                            <field invisible="1" name="state"/>
+                        </group>
+
+                        <group col="6" fill="0" states="end">
+                            <separator colspan="5" string="Export done"/>
+                            <field name="data" filename="name"/>
+                            <field name="name" select="1" invisible="1" />
+                        </group>
+
+                    </form>
+                </field>
+        </record>
+
+        <record id="action_wizard_export_primanota" model="ir.actions.act_window">
+            <field name="name">Export Primanota TeamSystem</field>
+            <field name="res_model">wizard.export.primanota.teamsystem</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wizard_export_primanota_teamsystem"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="menu_download_primanota_teamsystem" model="ir.values">
+            <field name="object" eval="True" />
+            <field name="name">Menu Download Teamsystem</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_export_primanota'))" />
+            <field name="key">action</field>
+            <field name="model">account.invoice</field>
+        </record>
+    </data>
+</openerp>
