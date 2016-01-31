@@ -80,7 +80,7 @@ class res_partner(orm.Model):
     def get_create_partner_account(self, cr, uid, vals, account_type, context):
         account_obj = self.pool['account.account']
         account_type_obj = self.pool['account.account.type']
-        
+
         if account_type == 'customer':
             property_account = 'property_account_receivable'
             type_account = 'receivable'
@@ -92,7 +92,7 @@ class res_partner(orm.Model):
         else:
             # Unknown account type
             return False
-            
+
         if not vals.get(property_account, False):
             vals[property_account] = self._get_chart_template_property(
                 cr, uid, property_account, context)
@@ -123,7 +123,7 @@ class res_partner(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
 
         enable_partner_subaccount = company.enable_partner_subaccount
@@ -158,7 +158,7 @@ class res_partner(orm.Model):
 
     def unlink(self, cr, uid, ids, context=None):
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         ids_account_payable = []
         ids_account_receivable = []
         for partner in self.browse(cr, uid, ids, context):
