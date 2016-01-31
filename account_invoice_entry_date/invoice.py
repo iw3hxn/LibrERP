@@ -32,6 +32,8 @@ class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
     def _maturity(self, cr, uid, ids, field_name, arg, context=None):
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
         res = {}
         for o in self.browse(cr, uid, ids, context):
             if o.id not in res:
@@ -55,7 +57,8 @@ class account_invoice(orm.Model):
         return t_pterm
 
     def _get_preview_lines(self, cr, uid, ids, field_name, arg, context=None):
-        context = context or {}
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
         result = {}
         if not len(ids):
             return []
@@ -92,6 +95,8 @@ class account_invoice(orm.Model):
     }
     
     def action_move_create(self, cr, uid, ids, context=None):
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
         super(account_invoice, self).action_move_create(cr, uid, ids, context=context)
         for invoice in self.browse(cr, uid, ids):
             date_invoice = invoice.date_invoice
