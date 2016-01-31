@@ -102,4 +102,17 @@ class account_invoice(orm.Model):
     _inherit = "account.invoice"
     _columns = {
         'unsolved_move_line_ids': fields.many2many('account.move.line', 'invoice_unsolved_line_rel', 'invoice_id', 'line_id', 'Unsolved journal items'),
-        }
+    }
+
+    def invoice_validate_check(self, cr, uid, ids, context=None):
+        res = super(account_invoice, self).invoice_validate_check(cr, uid, ids, context)
+        if not res:
+            return False
+        else:
+            for invoice in self.browse(cr, uid, ids, context):
+                if invoice.payment_term and invoice.payment_term.riba:
+                    if not invoice.partner_id.bank_riba_id:
+                        raise orm.except_orm(('Fattura Cliente'),
+                                   ('Impossibile da validare in quanto non è impostata la banca appoggio Riba'))
+                        return False
+        return True
