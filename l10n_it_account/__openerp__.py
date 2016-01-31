@@ -56,7 +56,7 @@ Functionalities:
         'data/bank_iban_data.xml',
         'account/account_move.xml',
         'account/res_bank_view.xml',
-        # 'account/account_tax_view.xml',
+        'account/account_tax_view.xml',
         'account/res_company_view.xml',
         'account/account_invoice_workflow.xml',
     ],
