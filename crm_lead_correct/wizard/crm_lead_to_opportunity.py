@@ -74,7 +74,7 @@ class crm_lead2opportunity_partner(orm.TransientModel):
         This converts lead to opportunity and opens Opportunity view
         """
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
         lead_obj = self.pool['crm.lead']
         lead_ids = context.get('active_ids', [])
 
