@@ -168,19 +168,24 @@ class ImportFile(threading.Thread, Utils):
 
         if self.auto_approve:
             for order in self.cache:
-                wf_service.trg_validate(self.uid, 'sale.order', self.cache[order], 'order_confirm', self.cr)
-                sale_order = self.sale_order_obj.browse(self.cr, self.uid, self.cache[order], self.context)
-                sale_order.manual_invoice()
+                try:
+                    wf_service.trg_validate(self.uid, 'sale.order', self.cache[order], 'order_confirm', self.cr)
+                    sale_order = self.sale_order_obj.browse(self.cr, self.uid, self.cache[order], self.context)
+                    sale_order.manual_invoice()
 
-                if sale_order.picking_ids:
-                    sale_order.picking_ids[0].write({
-                        'auto_picking': True,
-                    })
-                    for move in sale_order.picking_ids[0].move_lines:
-                        move.write({
-                            'location_id': self.location_id.id
+                    if sale_order.picking_ids:
+                        sale_order.picking_ids[0].write({
+                            'auto_picking': True,
                         })
-                    self.picking_obj.force_assign(self.cr, self.uid, [sale_order.picking_ids[0].id])
+                        for move in sale_order.picking_ids[0].move_lines:
+                            move.write({
+                                'location_id': self.location_id.id
+                            })
+                        self.picking_obj.force_assign(self.cr, self.uid, [sale_order.picking_ids[0].id])
+                except Exception as e:
+                    error = "Sale Order {0}: Impossibile da validare {1}".format(sale_order.name, e)
+                    _logger.debug(error)
+                    self.error.append(error)
 
         self.progressIndicator = 100
         self.updateProgressIndicator(cr, uid, self.salesImportID)
@@ -312,6 +317,6 @@ class ImportFile(threading.Thread, Utils):
             self.sale_order_line_obj.create(cr, uid, vals_sale_order_line)
             self.uo_new += 1
         else:
-            _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.item))
+            _logger.error(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.item))
 
         return product_id
