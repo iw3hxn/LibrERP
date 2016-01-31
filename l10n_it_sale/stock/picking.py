@@ -34,13 +34,15 @@ class stock_picking(orm.Model):
     }
     
     def name_get(self, cr, uid, ids, context=None):
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
         res = []
-        for picking in self.browse(cr, uid, ids):
+        for picking in self.browse(cr, uid, ids, context):
             res.append((picking.id, picking.ddt_number or picking.ddt_in_reference or picking.name))
         return res
         
     def _check_ddt_in_reference_unique(self, cr, uid, ids, context=None):
-        #qui và cercato da gli stock.picking quelli che hanno ddt_in_reference e partner_id uguali
+        # qui và cercato da gli stock.picking quelli che hanno ddt_in_reference e partner_id uguali
         return True
 
     _constraints = [(_check_ddt_in_reference_unique, 'Error! For a Partner must be only one DDT reference for year.', ['ddt_in_reference', 'partner_id'])]  
@@ -48,7 +50,9 @@ class stock_picking(orm.Model):
     #-----------------------------------------------------------------------------
     # EVITARE LA COPIA DI 'NUMERO DDT'
     #-----------------------------------------------------------------------------
-    def copy(self, cr, uid, id, default={}, context=None):
+    def copy(self, cr, uid, ids, default={}, context=None):
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
         default = default or {}
         default.update({
             'ddt_number': '',
@@ -73,14 +77,18 @@ class stock_picking(orm.Model):
                 'cup': False
             })
 
-        return super(stock_picking, self).copy(cr, uid, id, default, context)
+        return super(stock_picking, self).copy(cr, uid, ids, default, context)
 
-    def action_invoice_create(self, cursor, user, ids, journal_id=False,
+    def action_invoice_create(self, cr, uid, ids, journal_id=False,
                               group=False, type='out_invoice', context=None):
-        res = super(stock_picking, self).action_invoice_create(cursor, user, ids, journal_id,
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
+
+        res = super(stock_picking, self).action_invoice_create(cr, uid, ids, journal_id,
                                                                group, type, context)
-        for picking in self.browse(cursor, user, ids, context=context):
-            self.pool['account.invoice'].write(cursor, user, res[picking.id], {
+
+        for picking in self.browse(cr, uid, ids, context=context):
+            self.pool['account.invoice'].write(cr, uid, res[picking.id], {
                 'cig': picking.cig,
                 'cup': picking.cup,
             })
@@ -88,7 +96,7 @@ class stock_picking(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
