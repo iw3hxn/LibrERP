@@ -44,6 +44,7 @@ class account_invoice(orm.Model):
                         property_account_receivable_id = invoice.partner_id.property_account_receivable.id
                     else:
                         vals = {
+                            'name': invoice.partner_id.name,
                             'selection_account_receivable': invoice.partner_id.selection_account_receivable and invoice.partner_id.selection_account_receivable.id or False,
                             'property_account_receivable': invoice.account_id.id,
                             'property_customer_ref': invoice.partner_id.property_customer_ref
@@ -60,6 +61,7 @@ class account_invoice(orm.Model):
                         property_account_payable_id = invoice.partner_id.property_account_payable.id
                     else:
                         vals = {
+                            'name': invoice.partner_id.name,
                             'selection_account_payable': invoice.partner_id.selection_account_payable and invoice.partner_id.selection_account_payable.id or False,
                             'property_account_payable': invoice.account_id.id,
                             'property_supplier_ref': invoice.partner_id.property_supplier_ref,
