@@ -51,7 +51,6 @@ class res_partner_bank_add(orm.Model):
     _columns = {
         'codice_sia': fields.char('Codice SIA', size=5, help="Identification Code of the Company in the System Interbank")
     }
-res_partner_bank_add()
 
 
 # se distinta_line_ids == None allora non è stata emessa
@@ -59,16 +58,16 @@ class account_move_line(orm.Model):
     _inherit = "account.move.line"
 
     _columns = {
-        'distinta_line_ids' : fields.one2many('riba.distinta.move.line', 'move_line_id', "Dettaglio riba"),
-        'riba': fields.related('invoice', 'payment_term', 'riba',
+        'distinta_line_ids': fields.one2many('riba.distinta.move.line', 'move_line_id', "Dettaglio riba"),
+        'riba': fields.related('stored_invoice_id', 'payment_term', 'riba',
             type='boolean', string='RiBa', store=False),
         'unsolved_invoice_ids': fields.many2many('account.invoice', 'invoice_unsolved_line_rel', 'line_id', 'invoice_id', 'Unsolved Invoices'),
-        'iban' : fields.related('partner_id', 'bank_ids', 'iban', type='char', string='IBAN', store=False),
-        'abi' : fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
-        'cab' : fields.related('partner_id', 'bank_riba_id', 'cab', type='char', string='CAB', store=False),
+        'iban': fields.related('partner_id', 'bank_ids', 'iban', type='char', string='IBAN', store=False),
+        'abi': fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
+        'cab': fields.related('partner_id', 'bank_riba_id', 'cab', type='char', string='CAB', store=False),
     }
     _defaults = {
-        'distinta_line_ids' : None,
+        'distinta_line_ids': None,
     }
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
@@ -94,7 +93,7 @@ class account_move_line(orm.Model):
                 for riba_line in riba_distinta_line_obj.browse(cr, uid, riba_line_ids, context=context):
                     if riba_line.state in ['draft', 'cancel']:
                         riba_distinta_line_obj.unlink(cr, uid, riba_line_ids, context=context)
-                        #TODO: unlink in 'accepted' state too?
+                        # TODO: unlink in 'accepted' state too?
         return super(account_move_line, self).unlink(cr, uid, ids, context=context, check=check)
 
 

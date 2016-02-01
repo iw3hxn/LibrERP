@@ -82,6 +82,16 @@ class riba_distinta(osv.osv):
                         move_line_ids.append(payment.id)
             res[distinta.id] = move_line_ids
         return res
+   
+    def _get_total(self, cr, uid, ids, name, arg, context):
+         res = {}
+         for distinta in self.browse(cr, uid, ids, context=context):
+             total = 0
+             for line in distinta.line_ids:
+                 for move_line in line.move_line_ids:
+                     total += move_line.amount
+             res[distinta.id] = total
+         return res
 
     _name = 'riba.distinta'
     _description = 'Distinta Riba'
