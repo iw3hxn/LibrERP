@@ -62,6 +62,7 @@ class sale_order_line(orm.Model):
     # Dangerous! Overwrites standard method
     def _product_margin(self, s2, cr, uid, ids, field_name, arg, context=None):
         res = {}
+
         for line in self.browse(cr, uid, ids, context=context):
             res[line.id] = 0
             if line.product_id:
@@ -71,11 +72,11 @@ class sale_order_line(orm.Model):
                     purchase_price = line.product_id.standard_price
 
                 if line.order_id.have_subscription and line.product_id.subscription:
-                    price_unit = line.price_subtotal
+                    price_subtotal = line.price_subtotal
                 else:
-                    price_unit = line.price_unit
+                    price_subtotal = line.price_unit * line.product_uos_qty
 
-                res[line.id] = round((price_unit * line.product_uos_qty * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
+                res[line.id] = round((price_subtotal * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
 
         return res
 
@@ -410,7 +411,8 @@ class sale_order(orm.Model):
         if line.order_id.have_subscription and line.subscription:
             val = 0.0
 
-            for c in self.pool['account.tax'].compute_all(cr, uid, line.tax_id, line.price_subtotal * (1 - (line.discount or 0.0) / 100.0), line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)['taxes']:
+            # for c in self.pool['account.tax'].compute_all(cr, uid, line.tax_id, line.price_subtotal * (1 - (line.discount or 0.0) / 100.0), line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)['taxes']:
+            for c in self.pool['account.tax'].compute_all(cr, uid, line.tax_id, line.price_unit * (1 - (line.discount or 0.0) / 100.0), line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)['taxes']:
                 val += c.get('amount', 0.0)
             return val
         else:
