@@ -27,7 +27,7 @@ book_values = {
     'type': 0,
     'partner_id': 34,
     'name': 'Cliente prova con nome estremamente lungo'[:32],
-    'address': 'via Italia Dalla Nato'[:30],
+    'address': 'via Tre Porcellini'[:30],
     'zip': 35020,
     'city': 'Padova',
     'province': 'PD'[:2],

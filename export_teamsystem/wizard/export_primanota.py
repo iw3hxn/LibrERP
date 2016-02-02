@@ -21,6 +21,8 @@
 from openerp.osv import orm, fields
 import logging
 from cStringIO import StringIO
+import re
+import datetime
 
 from openerp.addons.export_teamsystem.team_system_template import cash_book
 
@@ -55,19 +57,28 @@ class WizardExportPrimaNota(orm.TransientModel):
     def map_invoice_data(self, cr, uid, invoice_id, context):
         invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
 
+        # pdb.set_trace()
+        address_ids = self.pool['res.partner'].address_get(cr, uid, [invoice.partner_id.id], ['invoice', 'default'])
+        address = self.pool['res.partner.address'].browse(cr, uid, address_ids['invoice'] or address_ids['default'], context)
+
+        if invoice.partner_id.vat and address.country_id.code == 'IT':
+            vat = invoice.partner_id.vat.isdigit() and invoice.partner_id.vat or re.findall('\d+', invoice.partner_id.vat)[0]
+        else:
+            vat = 0
+
         return {
             'company_id': 1,
             'version': 3,
             'type': 0,
-            'partner_id': 34,
-            'name': 'Cliente prova con nome estremamente lungo'[:32],
-            'address': 'via Italia Dalla Nato'[:30],
-            'zip': 35020,
-            'city': 'Padova',
-            'province': 'PD'[:2],
-            'fiscalcode': 'RSSMRA85T10A562S',
-            'vat_number': 01032450072,
-            'individual': True and 'S' or 'N',  # 134
+            'partner_id': invoice.partner_id.id,  # ?
+            'name': invoice.partner_id.name[:32],
+            'address': address.street and address.street[:30],
+            'zip': int(address.zip),
+            'city': address.city,
+            'province': address.province and address.province.code[:2],
+            'fiscalcode': invoice.partner_id.fiscalcode or '',
+            'vat_number': int(vat),
+            'individual': invoice.partner_id.individual and 'S' or 'N',  # 134
             'space': 0,  # Posizione spazio fra cognome nome
 
             # Estero:
@@ -76,20 +87,20 @@ class WizardExportPrimaNota(orm.TransientModel):
             'fiscalcode_ext': '',
 
             # Dati di nascita,se questi dati sono vuoti vengono presi dal codice fiscale.
-            'sex': 'M',  # M/F   173
-            'birthday': 01012001,  # ggmmaaaa
-            'city_of_birth': 'Palermo',  # KGB?
-            'province_of_birth': 'PA',
-            'phone_prefix': '091',
-            'phone': '1234567',
-            'fax_prefix': '0921',
-            'fax': '7890123',
+            'sex': '',  # M/F   173
+            'birthday': 0,  # ggmmaaaa
+            'city_of_birth': '',  # KGB?
+            'province_of_birth': '',
+            'phone_prefix': '',
+            'phone': address.phone,
+            'fax_prefix': '',
+            'fax': address.fax,
 
             # Solo per i fornitori 246 -
-            'account_code': 9999999,  # Codice conto di costo abituale
-            'payment_conditions_code': 4444,  # Codice condizioni di pagamento
-            'abi': 3002,
-            'cab': 3280,
+            'account_code': 9999999,  # ?? Codice conto di costo abituale
+            'payment_conditions_code': 4444,  # ?? Codice condizioni di pagamento
+            'abi': 3002,  # ??
+            'cab': 3280,  # ??
             'partner_interm': 2,  # Codice intermedio clienti / fornitori  267
 
             # Dati fattura 268
@@ -103,30 +114,30 @@ class WizardExportPrimaNota(orm.TransientModel):
                             # Vendita agenzia di viaggio=causale collegata alla 1 o alla 20 con il campo agenzia di viaggio = S
                             # Acquisti agenzia di viaggio=causale collagta alla 11 con il campo agenzia di viaggio = S
             'causal_description': 'FATT. VENDITA',
-            'causal_ext': 'Causale aggiuntiva',
-            'causal_ext_1': 'Causale aggiuntiva 1',
-            'causal_ext_2': 'Causale aggiuntiva 2',
+            'causal_ext': '',
+            'causal_ext_1': '',
+            'causal_ext_2': '',
             'registration_date': 0,  # Se 0 si intende uguale alla data documento
-            'document_date': 01012016,
-            'document_number': 345,  # Numero documento fornitore compreso sezionale
-            'document_number_no_sectional': 34,  # Numero documento (numero doc senza sezionale)
-            'vat_sectional': 22,
+            'document_date': datetime.datetime.strptime(invoice.date_invoice, '%Y-%m-%d').strftime('%d%m%Y'),
+            'document_number': 345,  # ??? Numero documento fornitore compreso sezionale
+            'document_number_no_sectional': 34,  # ??? Numero documento (numero doc senza sezionale)
+            'vat_sectional': 22,  # ???
             'account_extract': 1501,  # Estratto conto Numero partita (numero doc + sezionale (tutto unito):
                                       #  es. 1501 per una fattura numero 15 del sez. 1)
-            'account_extract_year': 2016,  # Estratto conto Anno partita (anno di emissione della fattura in formato AAAA)
+            'account_extract_year': datetime.datetime.strptime(invoice.date_invoice, '%Y-%m-%d').year,  # Estratto conto Anno partita (anno di emissione della fattura in formato AAAA)
             'ae_currency': 0,  # Estratto conto in valuta Codice valuta estera
-            'ae_exchange_rate': 1000000,  # 13(7+6 dec)
-            'ae_date': 23012016,
-            'ae_total_currency': 240000,  # 16(13+3dec)
-            'ae_total_currency_vat': 52800,  # 16(13+3dec)
-            'plafond_month': 012016,  # MMAAAA Riferimento PLAFOND e fatture diferite
+            'ae_exchange_rate': 0,  # 13(7+6 dec)
+            'ae_date': 0,
+            'ae_total_currency': 0,  # 16(13+3dec)
+            'ae_total_currency_vat': 0,  # 16(13+3dec)
+            'plafond_month': int(datetime.datetime.strptime(invoice.date_invoice, '%Y-%m-%d').strftime('%m%Y')),  # MMAAAA Riferimento PLAFOND e fatture diferite
 
             # Dati iva
-            'taxable': 240000000,  # Imponibile 6 dec?
+            'taxable': int(invoice.amount_untaxed * 1000000),  # Imponibile 6 dec?
             'vat_code': 22,  # Aliquota Iva o Codice esenzione
             'agro_vat_code': 0,  # Aliquota iva di compensazione agricola
             'vat11_code': 0,
-            'vat_total': 52800,
+            'vat_total': int(invoice.amount_tax * 1000000),
 
             # Unknown
             'val_1': 0,
@@ -138,11 +149,11 @@ class WizardExportPrimaNota(orm.TransientModel):
             'val_7': 0,
 
             # Totale fattura
-            'invoice_total': 240000000,  # Imponibile 6 dec?
+            'invoice_total': int(invoice.amount_total * 1000000),  # Imponibile 6 dec?
 
             # Conti di ricavo/costo
             'account_proceeds': 5810502,
-            'total_proceeds': 240000000,  # Imponibile 6 dec?
+            'total_proceeds': 240000000,  # ?? Imponibile 6 dec?
 
             # Dati eventuale pagamento fattura o movimenti diversi
 

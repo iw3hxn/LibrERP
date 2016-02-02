@@ -36,8 +36,7 @@ cash_book = u"""{company_id:05}{version:1}{type:1}\
 {invoice_total:012}\
 {account_proceeds:07}{total_proceeds:012}\
 {val_0:06} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:014}\
-{empty:83}
-"""
+{empty:83}"""
 
 # a tabella altri movimenti (lunghezza complessiva di 5120 caratteri)
 # è composta da 80 elementi i che comprendono i campi da TRF-CONTO a TRF-EC-IMP-VAL
