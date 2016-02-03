@@ -96,27 +96,27 @@ class riba_file_export(osv.osv_memory):
 
     def _Record20(self, ragione_soc1_creditore, indirizzo_creditore, cap_citta_creditore, ref_creditore,):
         self._creditore =  ragione_soc1_creditore.ljust(24)
-        return " 20" + str(self._progressivo).rjust(7,'0') + self._creditore[0:24] + indirizzo_creditore.ljust(24)[0:24] + cap_citta_creditore.ljust(24)[0:24]+ ref_creditore.ljust(24)[0:24]  + " " * 14 + "\r\n"
+        return " 20" + str(self._progressivo).rjust(7, '0') + self._creditore[0:24] + indirizzo_creditore.ljust(24)[0:24] + cap_citta_creditore.ljust(24)[0:24]+ ref_creditore.ljust(24)[0:24]  + " " * 14 + "\r\n"
 
     def _Record30(self, nome_debitore, codice_fiscale_debitore):
-        return " 30" + str(self._progressivo).rjust(7,'0') + nome_debitore.ljust(60)[0:60] + codice_fiscale_debitore.ljust(16,' ') + " " * 34 + "\r\n"
+        return " 30" + str(self._progressivo).rjust(7, '0') + nome_debitore.ljust(60)[0:60] + codice_fiscale_debitore.ljust(16, ' ') + " " * 34 + "\r\n"
 
     def _Record40(self, indirizzo_debitore, cap_debitore, comune_debitore, provincia_debitore, descrizione_domiciliataria=""):
-        self._comune_provincia_debitor = comune_debitore + provincia_debitore.rjust(25-len(comune_debitore),' ')
-        return " 40" + str(self._progressivo).rjust(7,'0') + indirizzo_debitore.ljust(30)[0:30] + str(cap_debitore).rjust(5,'0') + self._comune_provincia_debitor + descrizione_domiciliataria.ljust(50)[0:50] + "\r\n"
+        self._comune_provincia_debitor = comune_debitore + provincia_debitore.rjust(25-len(comune_debitore), ' ')
+        return " 40" + str(self._progressivo).rjust(7, '0') + indirizzo_debitore.ljust(30)[0:30] + str(cap_debitore).rjust(5, '0') + self._comune_provincia_debitor + descrizione_domiciliataria.ljust(50)[0:50] + "\r\n"
 
     def _Record50(self, importo_debito, invoice_ref, data_invoice, partita_iva_creditore, cup, cig):
-        self._descrizione = cup + cig +'FT N. ' + invoice_ref + ' DEL '+ data_invoice #+ ' IMP '+ str(importo_debito)
-        return " 50" + str(self._progressivo).rjust(7,'0') + self._descrizione.ljust(80)[0:80] + " " * 10 + partita_iva_creditore.ljust(16,' ') + " " * 4 + "\r\n"
+        self._descrizione = cup + cig + 'FT N. ' + invoice_ref + ' DEL ' + data_invoice #+ ' IMP '+ str(importo_debito)
+        return " 50" + str(self._progressivo).rjust(7, '0') + self._descrizione.ljust(80)[0:80] + " " * 10 + partita_iva_creditore.ljust(16, ' ') + " " * 4 + "\r\n"
 
     def _Record51(self, numero_ricevuta_creditore):
-        return " 51" + str(self._progressivo).rjust(7,'0') + str(numero_ricevuta_creditore).rjust(10,'0') + self._creditore[0:20] + " " * 80 + "\r\n"
+        return " 51" + str(self._progressivo).rjust(7, '0') + str(numero_ricevuta_creditore).rjust(10,'0') + self._creditore[0:20] + " " * 80 + "\r\n"
 
     def _Record70(self):
         return " 70" + str(self._progressivo).rjust(7, '0') + " " * 110 + "\r\n"
 
     def _RecordEF(self):  # record di coda
-        return " EF" + self._sia + self._assuntrice + self._data + self._supporto + " " * 6 + str(self._progressivo).rjust(7,'0 ') + str(int(round(self._totale * 100))).rjust(15, '0') + "0" * 15 + str(int(self._progressivo)*7+2).rjust(7,'0') + " " * 24 + self._valuta + " " * 6 + "\r\n"
+        return " EF" + self._sia + self._assuntrice + self._data + self._supporto + " " * 6 + str(self._progressivo).rjust(7, '0') + str(int(round(self._totale * 100))).rjust(15, '0') + "0" * 15 + str(int(self._progressivo)*7+2).rjust(7,'0') + " " * 24 + self._valuta + " " * 6 + "\r\n"
 
     def _creaFile(self, intestazione, ricevute_bancarie):
         accumulatore = self._RecordIB(intestazione[0], intestazione[1], intestazione[4], intestazione[5],
