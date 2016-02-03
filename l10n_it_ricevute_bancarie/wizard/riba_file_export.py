@@ -91,7 +91,6 @@ class riba_file_export(osv.osv_memory):
 
     def _Record14(self, scadenza, importo, abi_assuntrice, cab_assuntrice, conto, abi_domiciliataria, cab_domiciliataria, sia_credit, codice_cliente):
         self._totale += importo
-        print (self._progressivo, scadenza, importo, abi_assuntrice, cab_assuntrice, conto, abi_domiciliataria, cab_domiciliataria, sia_credit, codice_cliente)
         return " 14" + str(self._progressivo).rjust(7, '0') + " " * 12 + scadenza + "30000" + str(int(round(importo * 100))).rjust(13, '0') + "-" + abi_assuntrice.rjust(5, '0') + cab_assuntrice.rjust(5,'0') + conto.ljust(12,'0') + abi_domiciliataria.rjust(5,'0') + cab_domiciliataria.rjust(5,'0') + " " * 12 + str(sia_credit).rjust(5,'0') + "4" + codice_cliente.ljust(16) + " " * 6 + self._valuta + "\r\n"
 
     def _Record20(self, ragione_soc1_creditore, indirizzo_creditore, cap_citta_creditore, ref_creditore,):
@@ -110,7 +109,7 @@ class riba_file_export(osv.osv_memory):
         return " 50" + str(self._progressivo).rjust(7, '0') + self._descrizione.ljust(80)[0:80] + " " * 10 + partita_iva_creditore.ljust(16, ' ') + " " * 4 + "\r\n"
 
     def _Record51(self, numero_ricevuta_creditore):
-        return " 51" + str(self._progressivo).rjust(7, '0') + str(numero_ricevuta_creditore).rjust(10,'0') + self._creditore[0:20] + " " * 80 + "\r\n"
+        return " 51" + str(self._progressivo).rjust(7, '0') + str(numero_ricevuta_creditore).rjust(10, '0') + self._creditore[0:20] + " " * 80 + "\r\n"
 
     def _Record70(self):
         return " 70" + str(self._progressivo).rjust(7, '0') + " " * 110 + "\r\n"
