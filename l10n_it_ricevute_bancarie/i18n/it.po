@@ -186,6 +186,12 @@ msgid "No SIA Code specified for: "
 msgstr "Nessun codice SIA specificato per:"
 
 #. module: l10n_it_ricevute_bancarie
+#: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:126
+#, python-format
+msgid "No ABI / CAB specified for bank in "
+msgstr "Nessun ABI/CAB definito per la banca di: "
+
+#. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0
 msgid "Move lines"
 msgstr "Righe contabili"

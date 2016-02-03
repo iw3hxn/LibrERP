@@ -82,7 +82,7 @@ class riba_file_export(osv.osv_memory):
     _comune_provincia_debitor = ''
 
     def _RecordIB(self, sia_assuntrice, abi_assuntrice, data_creazione, nome_supporto, codice_divisa): #record di testa
-        self._sia = sia_assuntrice.rjust(5,'0')
+        self._sia = sia_assuntrice.rjust(5, '0')
         self._assuntrice = abi_assuntrice.rjust(5, '0')
         self._data = data_creazione.rjust(6, '0')
         self._valuta = codice_divisa[0:1]
@@ -91,7 +91,8 @@ class riba_file_export(osv.osv_memory):
 
     def _Record14(self, scadenza, importo, abi_assuntrice, cab_assuntrice, conto, abi_domiciliataria, cab_domiciliataria, sia_credit, codice_cliente):
         self._totale += importo
-        return " 14" + str(self._progressivo).rjust(7,'0') + " " * 12 + scadenza + "30000" + str(int(round(importo*100))).rjust(13,'0') + "-" + abi_assuntrice.rjust(5,'0') + cab_assuntrice.rjust(5,'0') + conto.ljust(12,'0') + abi_domiciliataria.rjust(5,'0') + cab_domiciliataria.rjust(5,'0') + " " * 12 + str(sia_credit).rjust(5,'0') + "4" + codice_cliente.ljust(16) + " " * 6 + self._valuta + "\r\n"
+        print (self._progressivo, scadenza, importo, abi_assuntrice, cab_assuntrice, conto, abi_domiciliataria, cab_domiciliataria, sia_credit, codice_cliente)
+        return " 14" + str(self._progressivo).rjust(7, '0') + " " * 12 + scadenza + "30000" + str(int(round(importo * 100))).rjust(13, '0') + "-" + abi_assuntrice.rjust(5, '0') + cab_assuntrice.rjust(5,'0') + conto.ljust(12,'0') + abi_domiciliataria.rjust(5,'0') + cab_domiciliataria.rjust(5,'0') + " " * 12 + str(sia_credit).rjust(5,'0') + "4" + codice_cliente.ljust(16) + " " * 6 + self._valuta + "\r\n"
 
     def _Record20(self, ragione_soc1_creditore, indirizzo_creditore, cap_citta_creditore, ref_creditore,):
         self._creditore =  ragione_soc1_creditore.ljust(24)
@@ -112,24 +113,29 @@ class riba_file_export(osv.osv_memory):
         return " 51" + str(self._progressivo).rjust(7,'0') + str(numero_ricevuta_creditore).rjust(10,'0') + self._creditore[0:20] + " " * 80 + "\r\n"
 
     def _Record70(self):
-        return " 70" + str(self._progressivo).rjust(7,'0') + " " * 110 + "\r\n"
+        return " 70" + str(self._progressivo).rjust(7, '0') + " " * 110 + "\r\n"
 
     def _RecordEF(self):  # record di coda
-        return " EF" + self._sia + self._assuntrice + self._data + self._supporto + " " * 6 + str(self._progressivo).rjust(7,'0') + str(int(round(self._totale * 100))).rjust(15,'0') + "0" * 15 + str(int(self._progressivo)*7+2).rjust(7,'0') + " " * 24 + self._valuta + " " * 6 + "\r\n"
+        return " EF" + self._sia + self._assuntrice + self._data + self._supporto + " " * 6 + str(self._progressivo).rjust(7,'0 ') + str(int(round(self._totale * 100))).rjust(15, '0') + "0" * 15 + str(int(self._progressivo)*7+2).rjust(7,'0') + " " * 24 + self._valuta + " " * 6 + "\r\n"
 
     def _creaFile(self, intestazione, ricevute_bancarie):
-        accumulatore = self._RecordIB(intestazione[0], intestazione[1], intestazione[4], intestazione[5], intestazione[6])
+        accumulatore = self._RecordIB(intestazione[0], intestazione[1], intestazione[4], intestazione[5],
+                                      intestazione[6])
         for value in ricevute_bancarie:  # estraggo le ricevute dall'array
-            self._progressivo =self._progressivo + 1
-            accumulatore = accumulatore + self._Record14(
-                value[1], value[2], intestazione[1], intestazione[2], intestazione[3], value[9], value[10], intestazione[0], value[12])
-            accumulatore = accumulatore + self._Record20(intestazione[7], intestazione[8], intestazione[9], intestazione[10])
-            accumulatore = accumulatore + self._Record30(value[3], value[4])
-            accumulatore = accumulatore + self._Record40(value[5], value[6], value[7], value[8], value[11])
-            accumulatore = accumulatore + self._Record50(value[2], value[13], value[14], intestazione[11], value[15], value[16])
-            accumulatore = accumulatore + self._Record51(value[0])
-            accumulatore = accumulatore + self._Record70()
-        accumulatore = accumulatore + self._RecordEF()
+            if not value[9] or not value[10]:
+                raise osv.except_osv('Error', _('No ABI / CAB specified for bank in ') + value[3])
+            accumulatore += self._Record14(
+                value[1], value[2], intestazione[1], intestazione[2], intestazione[3], value[9], value[10],
+                intestazione[0], value[12])
+            accumulatore += self._Record20(intestazione[7], intestazione[8], intestazione[9],
+                                           intestazione[10])
+            accumulatore += self._Record30(value[3], value[4])
+            accumulatore += self._Record40(value[5], value[6], value[7], value[8], value[11])
+            accumulatore += self._Record50(value[2], value[13], value[14], intestazione[11], value[15],
+                                           value[16])
+            accumulatore += self._Record51(value[0])
+            accumulatore += self._Record70()
+        accumulatore += self._RecordEF()
         self._progressivo = 0
         self._totale = 0
         return accumulatore
