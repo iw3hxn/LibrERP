@@ -36,6 +36,26 @@ msgid "Last Supplier"
 msgstr "Ultimo Fornitore"
 
 #. module: product_extended
+#: field:product.product,last_purchase_order_id:0
+msgid "Last Purchase Order"
+msgstr "Ultimo Ordine Fornitore"
+
+#. module: product_extended
+#: field:product.product,last_sale_order_id:0
+msgid "Last Sale Order"
+msgstr "Ultimo Ordine Cliente"
+
+#. module: product_extended
+#: field:product.product,last_customer_invoice_id:0
+msgid "Last Customer Invoice"
+msgstr "Ultima Fattura Cliente"
+
+#. module: product_extended
+#: field:product.product,last_supplier_invoice_id:0
+msgid "Last Supplier Invoice"
+msgstr "Ultima Fattura Fornitore"
+
+#. module: product_extended
 #: field:product.product,last_customer_id:0
 msgid "Last Customer"
 msgstr "Ultimo Cliente"

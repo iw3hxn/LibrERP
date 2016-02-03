@@ -28,16 +28,21 @@ class sale_order(orm.Model):
     _inherit = "sale.order"
 
     def action_wait(self, cr, uid, ids, *args):
-
         res = super(sale_order, self).action_wait(cr, uid, ids, *args)
         context = self.pool['res.users'].context_get(cr, uid)
-        for o in self.browse(cr, uid, ids, context):
-            for line in o.order_line:
+        self.update_product(cr, uid, ids, context)
+        return res
+
+    def update_product(self, cr, uid, ids, context):
+        for order in self.browse(cr, uid, ids, context):
+            for line in order.order_line:
                 if line.product_id:
                     vals = {
-                        'last_sale_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                        'last_customer_id': line.order_partner_id.id
+                        # 'last_sale_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                        'last_sale_date': order.date_order or time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                        'last_customer_id': line.order_partner_id.id,
+                        'last_sale_order_id': order.id
                     }
                     line.product_id.write(vals)
-        return res
+        return True
 

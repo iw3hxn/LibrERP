@@ -24,7 +24,7 @@
 
 {
     "name": "Product Extended",
-    "version": "3.2.5.3",
+    "version": "3.3.6.4",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     'category': 'Sales Management',
@@ -32,6 +32,8 @@
        Module extends functionality of the product module.
        
        Module improves search, so product is searchable by more than one word written in any order.
+
+       'inside script directory there are a script for update al database
     """,
     "depends": [
         'base',

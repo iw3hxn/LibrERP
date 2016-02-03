@@ -31,7 +31,11 @@ class product_product(orm.Model):
         'last_purchase_price': fields.float('Last purchase price', readonly=True),
         'last_purchase_date': fields.date('Last purchase date', readonly=True),
         'last_supplier_id': fields.many2one('res.partner', 'Last Supplier', readonly=True),
+        'last_purchase_order_id': fields.many2one('purchase.order', 'Last Purchase Order', readonly=True),
         'last_sale_price': fields.float('Last sale price', readonly=True),
         'last_sale_date': fields.date('Last sale date', readonly=True),
         'last_customer_id': fields.many2one('res.partner', 'Last Customer', readonly=True),
+        'last_sale_order_id': fields.many2one('sale.order', 'Last Sale Order', readonly=True),
+        'last_customer_invoice_id': fields.many2one('account.invoice', 'Last Customer Invoice', readonly=True),
+        'last_supplier_invoice_id': fields.many2one('account.invoice', 'Last Supplier Invoice', readonly=True),
     }
