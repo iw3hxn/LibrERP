@@ -39,7 +39,7 @@
                     <field name="config" />
                     <field name="date_accepted" />
                     <field name="date_paid" />
-                    <field name="total" />
+                    <!--<field name="total" />-->
                     <field name="state" />
                 </tree>
             </field>

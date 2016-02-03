@@ -240,12 +240,13 @@ class riba_distinta_line(osv.osv):
     def _get_line_values(self, cr, uid, ids, field_name, arg, context):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = {}
-            res[line.id]['amount'] = 0.0
-            res[line.id]['invoice_date'] = ''
-            res[line.id]['invoice_number'] = ''
-            res[line.id]['cup'] = ''
-            res[line.id]['cig'] = ''
+            res[line.id] = {
+                'amount': 0.0,
+                'invoice_date': '',
+                'invoice_number': '',
+                'cup': '',
+                'cig': '',
+            }
             for move_line in line.move_line_ids:
                 res[line.id]['amount'] += move_line.amount
                 if move_line.move_line_id.invoice:
@@ -254,14 +255,14 @@ class riba_distinta_line(osv.osv):
                     else:
                         res[line.id]['invoice_date'] += ', ' + str(datetime.strptime(move_line.move_line_id.invoice.date_invoice, '%Y-%m-%d').strftime('%d/%m/%Y'))
                     if not res[line.id]['invoice_number']:
-                        res[line.id]['invoice_number'] = str(move_line.move_line_id.invoice.internal_number)
+                        res[line.id]['invoice_number'] = str(move_line.move_line_id.invoice.number)
                     else:
-                        res[line.id]['invoice_number'] += ', '+str(move_line.move_line_id.invoice.internal_number)
+                        res[line.id]['invoice_number'] += ', ' + str(move_line.move_line_id.invoice.number)
                     if move_line.move_line_id.invoice.cup:
                         if not res[line.id]['cup']:
                             res[line.id]['cup'] = str(move_line.move_line_id.invoice.cup)
                         else:
-                            res[line.id]['cup'] += ', '+str(move_line.move_line_id.invoice.cup)
+                            res[line.id]['cup'] += ', ' + str(move_line.move_line_id.invoice.cup)
                     if move_line.move_line_id.invoice.cig:
                         if not res[line.id]['cig']:
                             res[line.id]['cig'] = str(move_line.move_line_id.invoice.cig)
