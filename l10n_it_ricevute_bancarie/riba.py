@@ -84,14 +84,14 @@ class riba_distinta(osv.osv):
         return res
    
     def _get_total(self, cr, uid, ids, name, arg, context):
-         res = {}
-         for distinta in self.browse(cr, uid, ids, context=context):
-             total = 0
-             for line in distinta.line_ids:
-                 for move_line in line.move_line_ids:
-                     total += move_line.amount
-             res[distinta.id] = total
-         return res
+        res = {}
+        for distinta in self.browse(cr, uid, ids, context=context):
+            total = 0
+            for line in distinta.line_ids:
+                for move_line in line.move_line_ids:
+                    total += move_line.amount
+            res[distinta.id] = total
+        return res
 
     _name = 'riba.distinta'
     _description = 'Distinta Riba'
@@ -119,13 +119,14 @@ class riba_distinta(osv.osv):
         'date_unsolved': fields.date('Unsolved date', readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
         'acceptance_move_ids': fields.function(_get_acceptance_move_ids, type='many2many', relation='account.move', method=True, string="Acceptance Entries"),
-        #sc: modify accreditation from id to ids
+        # sc: modify accreditation from id to ids
         'accreditation_move_ids': fields.function(_get_accreditation_move_ids, type='many2many', relation='account.move', method=True, string="Accreditation Entries"),
         'accruement_move_ids': fields.function(_get_accruement_move_ids, type='many2many', relation='account.move', method=True, string="Accruement Entries"),
-        #'accreditation_move_id': fields.many2one('account.move', 'Accreditation Entry', readonly=True),
+        # 'accreditation_move_id': fields.many2one('account.move', 'Accreditation Entry', readonly=True),
         'payment_ids': fields.function(_get_payment_ids, relation='account.move.line', type="many2many", string='Payments'),
         'unsolved_move_ids': fields.function(_get_unsolved_move_ids, type='many2many', relation='account.move', method=True, string="Unsolved Entries"),
         'type': fields.related('config', 'tipo', type='char', size=32, string='Type', readonly=True),
+        'total': fields.function(_get_total, method=True, string="Total amount of distinta"),
     }
 
     _order = 'name desc'
@@ -422,8 +423,13 @@ class riba_distinta_line(osv.osv):
             riba_move_line_name = ''
             for riba_move_line in line.move_line_ids:
                 total_credit += riba_move_line.amount
+                if riba_move_line.move_line_id.invoice.number:
+                    riba_move_line_name += riba_move_line.move_line_id.invoice.number
+                else:
+                    if riba_move_line.move_line_id.name:
+                        riba_move_line_name += riba_move_line.move_line_id.name
                 move_line_id = move_line_pool.create(cr, uid, {
-                    'name': riba_move_line.move_line_id.invoice.number,
+                    'name': riba_move_line_name,
                     'partner_id': line.partner_id.id,
                     'account_id': riba_move_line.move_line_id.account_id.id,
                     'credit': (riba_move_line.amount >= 0.0) and riba_move_line.amount,

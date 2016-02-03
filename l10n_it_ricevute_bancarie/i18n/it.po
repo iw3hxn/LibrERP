@@ -325,6 +325,11 @@ msgid "Paid date"
 msgstr "Data pagamento"
 
 #. module: l10n_it_ricevute_bancarie
+#: field:riba.distinta,total:0
+msgid "Total amount of distinta"
+msgstr "  "
+
+#. module: l10n_it_ricevute_bancarie
 #: view:riba.configurazione:0
 msgid "Accreditation"
 msgstr "Accredito"

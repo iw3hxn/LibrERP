@@ -39,7 +39,7 @@
                     <field name="config" />
                     <field name="date_accepted" />
                     <field name="date_paid" />
-                    <!--<field name="total" />-->
+                    <field name="total" />
                     <field name="state" />
                 </tree>
             </field>
@@ -256,6 +256,125 @@
         <!-- ====================================================== -->
         <menuitem name="Ri.ba. Linee" parent="menu_riba" 
             id="menu_riba_distinte_line" action="distinta_riba_line_action" sequence="2" />
+
+        <!--                     RIBA MANUALE                -->
+        <record id="view_account_move_riba_form" model="ir.ui.view">
+            <field name="name">account.move.riba.form</field>
+            <field name="model">account.move</field>
+            <field name="type">form</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <form string="Journal Entries">
+                    <group colspan="4" col="6">
+                        <field name="name" readonly="True"/>
+                        <field name="ref"/>
+                        <field name="to_check" groups="base.group_extended"/>
+                        <field name="journal_id"/>
+                        <field name="period_id"/>
+                        <field name="date"/>
+                        <field name="company_id" required="1" groups="base.group_multi_company"/>
+                        <field name="partner_id" invisible="1"/>
+                        <field name="amount" invisible="1"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Journal Items">
+                            <field name="balance" invisible="1"/>
+                            <field colspan="4" name="line_id" nolabel="1" height="250" widget="one2many_list" 
+                            on_change="onchange_line_id(line_id)"
+                            context="{'balance': balance , 'journal': journal_id }">
+                                <form string="Journal Item">
+                                    <group col="6" colspan="4">
+                                        <field name="name"/>
+                                        <field name="partner_id" domain="[('customer','=',True)]" on_change="onchange_partner_id(False,partner_id,account_id,debit,credit,date)"/>
+                                        <field name="journal_id"/>
+                                        <field name="period_id"/>
+                                        <field name="company_id" required="1" groups="base.group_multi_company"/>
+                                    </group>
+                                    <notebook colspan="4">
+                                        <page string="Information">
+                                            <group col="2" colspan="2">
+                                                <separator colspan="2" string="Amount"/>
+                                                <field name="account_id" domain="[('company_id', '=', parent.company_id), ('type','&lt;&gt;','view'),('type','&lt;&gt;','consolidation')]"/>
+                                                <field name="debit"/>
+                                                <field name="credit"/>
+                                                <field name="quantity"/>
+                                            </group>
+
+                                            <group col="2" colspan="2">
+                                                <separator colspan="2" string="Accounting Documents"/>
+                                                <field name="invoice"/>
+                                                <field name="move_id" required="False"/>
+                                                <field name="statement_id"/>
+                                            </group>
+
+                                            <group col="2" colspan="2">
+                                                <separator colspan="2" string="Dates"/>
+                                                <field name="date"/>
+                                                <field name="date_maturity"/>
+                                                <field name="date_created"/>
+                                            </group>
+
+                                            <group col="2" colspan="2">
+                                                <separator colspan="2" string="Reconciliation"/>
+                                                <field name="reconcile_id"/>
+                                                <field name="reconcile_partial_id"/>
+                                            </group>
+
+                                            <group col="2" colspan="2">
+                                                <separator colspan="2" string="States"/>
+                                                <field name="state"/>
+                                                <field name="blocked"/>
+                                            </group>
+
+                                            <group col="2" colspan="2" groups="base.group_extended">
+                                                <separator colspan="2" string="Analytic"/>
+                                                <field name="analytic_account_id" domain="[('parent_id','!=',False)]" groups="analytic.group_analytic_accounting"/>
+                                            </group>
+                                            <separator string="Internal Note" colspan="4"/>
+                                            <field name="narration" colspan="4" nolabel="1"/>
+                                        </page>
+                                        <page string="Analytic Lines" groups="analytic.group_analytic_accounting">
+                                            <field colspan="4" name="analytic_lines" nolabel="1" context="{'default_general_account_id':account_id, 'default_name': name, 'default_date':date, 'amount': (debit or 0.0)-(credit or 0.0)}"/>
+                                        </page>
+                                    </notebook>
+                                </form>
+                                <tree colors="blue:state == 'draft';black:state == 'posted'" editable="top" string="Journal Items">
+                                    <field name="name"/>
+                                    <field name="partner_id" domain="[('customer','=',True)]" on_change="onchange_partner_id(False,partner_id,account_id,debit,credit,parent.date,parent.journal_id)"/>
+                                    <field name="account_id" domain="[('journal_id','=',parent.journal_id),('company_id', '=', parent.company_id)]"/>
+                                    <field name="date_maturity"/>
+                                    <field name="payment_term_type"/>
+                                    <field name="debit" sum="Total Debit"/>
+                                    <field name="credit" sum="Total Credit"/>
+                                    <field name="state"/>
+                                    <field name="reconcile_id"/>
+                                    <field name="reconcile_partial_id" groups="base.group_extended"/>
+                                </tree>
+                            </field>
+                            <separator colspan="4" string="Internal Note"/>
+                            <field name="narration" colspan="4" nolabel="1" height="50"/>
+                            <group col="4" colspan="4">
+                                <field name="state" select="1"/>
+                                <button name="button_cancel" states="posted" string="Cancel" type="object" icon="gtk-cancel"/>
+                                <button name="button_validate" states="draft" string="Post" type="object" icon="terp-camera_test"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record id="riba_manuale_action" model="ir.actions.act_window">
+            <field name="name">Crea Ri.Ba. manuale</field>
+            <field name="view_id" ref="view_account_move_riba_form"/>
+            <field name="res_model">account.move</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name='context'>{'form_view_ref':'l10n_it_ricevute_bancarie.view_account_move_riba_form'}</field>
+        </record>
+
+        <menuitem name="Crea Ri.ba. manuale" parent="menu_riba" 
+            id="menu_riba_manual" action="riba_manuale_action" sequence="4" />
 
     </data>
 </openerp>
