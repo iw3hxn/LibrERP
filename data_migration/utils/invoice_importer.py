@@ -217,7 +217,9 @@ class ImportFile(threading.Thread, Utils):
             partner_ids = self.partner_obj.search(cr, uid, [('name', 'like', record.partner_name.split(' ')[1])], context=self.context)
             if partner_ids:
                 partner_id = partner_ids[0]
-                vals_invoice = {}
+                vals_invoice = {
+                    'type': self.type
+                }
                 vals_invoice.update(self.account_invoice_obj.onchange_journal_id(cr, uid, [], self.journal_id.id, self.context).get('value'))
                 vals_invoice.update(self.account_invoice_obj.onchange_partner_id(cr, uid, [], self.type, partner_id, date_invoice=record.date_invoice or '').get('value'))
                 vals_invoice.update({
