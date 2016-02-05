@@ -185,6 +185,9 @@ class account_invoice(orm.Model):
         return {'value': {}}
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
+        res = super(account_invoice, self).invoice_validate_check(cr, uid, ids, context)
+        if not res:
+            return False
         for invoice in self.browse(cr, uid, ids, context):
             if not ((not invoice.partner_id.individual and invoice.partner_id.vat) or (invoice.partner_id.individual and invoice.partner_id.cf)):
                 if not invoice.fiscal_position or \
