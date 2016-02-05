@@ -19,9 +19,10 @@
 #
 ##############################################################################
 
-from team_system_template import cash_book
+from team_system_template import cash_book, deadline_book
 
-book_values = {
+
+cash_book_values = {
     'company_id': 1,
     'version': 3,
     'type': 0,
@@ -118,12 +119,23 @@ book_values = {
                                 # R=Risconto    C=Competenza
                                 # N=Non aggiorna estratto conto
 
+    'val_0': 0,
+    'empty': ''
+}
+
+deadline_book_values = {
+    'company_id': 1,
+    'version': 3,
+    'type': 1,
+
+    # Dati INTRASTAT
 
     'val_0': 0,
-    'empty': '',
-
+    'empty': ''
 }
 
 if __name__ == '__main__':
-    print cash_book.format(**book_values)
-    print len(cash_book.format(**book_values))
+    # print cash_book.format(**cash_book_values)
+    # print len(cash_book.format(**cash_book_values))
+    print deadline_book.format(**deadline_book_values)
+    print len(deadline_book.format(**deadline_book_values))

@@ -18,25 +18,4 @@
 #
 ##############################################################################
 
-{
-    'name': 'export_primanota_teamsystem',
-    'version': '3.0.0.0b',
-    'category': 'Accounting & Finance',
-    'description': """
-    Export Primanota in format accepted by TeamSystem program
-    """,
-    'author': 'Didotech SRL',
-    'website': 'http://www.didotech.com',
-    'license': 'AGPL-3',
-    "depends": [
-        'base',
-        'account'
-    ],
-    "data": [
-        'wizard/export_primanota.xml'
-    ],
-    "demo": [],
-    "active": False,
-    "installable": True,
-    'external_dependencies': {}
-}
+from . import test_export

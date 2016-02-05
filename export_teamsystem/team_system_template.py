@@ -33,10 +33,12 @@ cash_book = u"""{company_id:05}{version:1}{type:1}\
 {plafond_month:06}\
 {taxable:012}{vat_code:03}{agro_vat_code:03}{vat11_code:02}{vat_total:012} \
 {val_1:030} {val_2:030} {val_3:030} {val_4:030} {val_5:030} {val_6:030} {val_7:030}\
-{invoice_total:012}\
-{account_proceeds:07}{total_proceeds:012}\
-{val_0:06} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:014}\
-{empty:83}"""
+{invoice_total:012}"""
+
+# Conti di ricavo/costo 735
+cash_book += "{account_proceeds:07}{total_proceeds:012}"
+
+cash_book += "{val_0:06} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:014}{empty:83}"
 
 # a tabella altri movimenti (lunghezza complessiva di 5120 caratteri)
 # è composta da 80 elementi i che comprendono i campi da TRF-CONTO a TRF-EC-IMP-VAL
@@ -89,3 +91,20 @@ cash_book += """{empty:1}{empty:16}{empty:1}{empty:1}{empty:1}{vat_collectabilit
 
 # ODOA CRLF
 cash_book += "\r\n"
+
+
+# portafoglio/scadenze
+deadline_book = u"""{company_id:05}{version:1}{type:1}\
+{val_0:05}{val_0:02}{val_0:03}{val_0:014}"""
+
+# Movimenti INTRASTAT BENI
+deadline_book += """{empty:8}{val_0:012}{val_0:012}{empty:1}{val_0:012}{val_0:012}{val_0:012}\
+{empty:1}{empty:1}{val_0:03}{val_0:03}{val_0:03}{empty:2}{empty:2}{empty:1}""" * 20
+deadline_book += "{empty:1}{val_0:06}{empty:173}"
+
+# Ritenuta d’acconto 1912
+deadline_book += """{val_0:01}{val_0:011}{val_0:04}{val_0:010}{val_0:011}{val_0:06}{val_0:02}{val_0:04}{val_0:08}\
+{val_0:011}{val_0:01}{empty:4}{empty:12}{empty:12}{val_0:05}{val_0:05}{val_0:04}{val_0:11}"""
+
+# Dati contributo INPS e modello GLA/D
+
