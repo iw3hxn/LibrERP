@@ -17,6 +17,19 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import account_invoice
-from . import account_payment_term
-from . import account_journal
+
+from openerp.osv import fields, orm
+
+
+DIRECTIONS = [
+    (0, 'Sinistra'),
+    (1, 'Destra')
+]
+class account_journal(orm.Model):
+    _inherit = 'account.journal'
+    _columns = {
+        'teamsystem_code': fields.integer('Codice TeamSystem'),
+        'teamsystem_invoice_position': fields.selection(DIRECTIONS, 'Posizione nella sequenza del numero')
+    }
+
+    # _sql_constraints = [('teamsystem_code', 'unique(code)', 'Codice TeamSystem deve essere univoco')]

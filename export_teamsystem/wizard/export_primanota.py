@@ -128,6 +128,8 @@ class WizardExportPrimaNota(orm.TransientModel):
         phone = get_phone_number(address.phone, prefix)
         fax = get_phone_number(address.fax, prefix)
 
+
+
         return {
             'company_id': 1,
             'version': 3,
@@ -181,14 +183,13 @@ class WizardExportPrimaNota(orm.TransientModel):
             'causal_ext_2': '',
             'registration_date': 0,  # Se 0 si intende uguale alla data documento
             'document_date': datetime.datetime.strptime(invoice.date_invoice, '%Y-%m-%d').strftime('%d%m%Y'),
-            'document_number': 0,  # Numero documento fornitore compreso sezionale
+            'document_number': invoice.supplier_invoice_number or 0,  # Numero documento fornitore compreso sezionale
 
             # TODO: Verifica TRF-NDOC e TRF-SERIE perché sono sbagliati
-            'document_number_no_sectional': 34,  # ??? Numero documento (numero doc senza sezionale)
-            'vat_sectional': 22,  # ???
-
-            'account_extract': 1501,  # ??? Estratto conto Numero partita (numero doc + sezionale (tutto unito):
-                                      #  es. 1501 per una fattura numero 15 del sez. 1)
+            'document_number_no_sectional': int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]),  # ??? Numero documento (numero doc senza sezionale)
+            'vat_sectional': invoice.journal_id.teamsystem_code,  # ???
+            'account_extract': int('{number:04}{section:02}'.format(number=int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]), section=invoice.journal_id.teamsystem_code)),  # ??? Estratto conto Numero partita (numero doc + sezionale (tutto unito):
+                #  es. 1501 per una fattura numero 15 del sez. 1)
             'account_extract_year': datetime.datetime.strptime(invoice.date_invoice, '%Y-%m-%d').year,  # Estratto conto Anno partita (anno di emissione della fattura in formato AAAA)
             'ae_currency': 0,  # Estratto conto in valuta Codice valuta estera
             'ae_exchange_rate': 0,  # 13(7+6 dec)

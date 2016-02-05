@@ -20,7 +20,7 @@
 
 {
     'name': 'export_primanota_teamsystem',
-    'version': '3.0.0.0b',
+    'version': '3.0.0.0c',
     'category': 'Accounting & Finance',
     'description': """
     Export Primanota in format accepted by TeamSystem program
@@ -36,6 +36,7 @@
     "data": [
         'wizard/export_primanota.xml',
         'views/account_payment_term_view.xml',
+        'views/account_journal_view.xml',
     ],
     "demo": [],
     "active": False,
