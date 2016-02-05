@@ -20,7 +20,7 @@
 
 {
     'name': 'export_primanota_teamsystem',
-    'version': '3.0.0.0c',
+    'version': '3.0.0.0d',
     'category': 'Accounting & Finance',
     'description': """
     Export Primanota in format accepted by TeamSystem program

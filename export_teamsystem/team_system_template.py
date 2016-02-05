@@ -30,21 +30,25 @@ cash_book = u"""{company_id:05}{version:1}{type:1}\
 {registration_date:8}{document_date:8}{document_number:08}{document_number_no_sectional:05}\
 {vat_sectional:02}{account_extract:06}{account_extract_year:04}\
 {ae_currency:03}{ae_exchange_rate:013}{ae_date:08}{ae_total_currency:016}{ae_total_currency_vat:016}\
-{plafond_month:06}\
-{taxable:012}{vat_code:03}{agro_vat_code:03}{vat11_code:02}{vat_total:012} \
-{val_1:030} {val_2:030} {val_3:030} {val_4:030} {val_5:030} {val_6:030} {val_7:030}\
-{invoice_total:012}"""
+{plafond_month:06}"""
+
+# Dati Iva 475
+cash_book += "{taxable:012}{vat_code:03}{agro_vat_code:03}{vat11_code:02}{vat_total:011}" * 8
+
+# Totale fattura
+cash_book += "{invoice_total:012}"
 
 # Conti di ricavo/costo 735
-cash_book += "{account_proceeds:07}{total_proceeds:012}"
+cash_book += "{account_proceeds:07}{total_proceeds:012}" * 8
 
-cash_book += "{val_0:06} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:018} {val_0:014}{empty:83}"
+# Dati eventuale pagamento fattura o movimenti diversi 887
+cash_book += "{val_0:03}{empty:15}{empty:34}{empty:34}"
 
-# a tabella altri movimenti (lunghezza complessiva di 5120 caratteri)
-# è composta da 80 elementi i che comprendono i campi da TRF-CONTO a TRF-EC-IMP-VAL
+# # a tabella altri movimenti (lunghezza complessiva di 5120 caratteri)
+# # è composta da 80 elementi i che comprendono i campi da TRF-CONTO a TRF-EC-IMP-VAL
 cash_book += "{val_0:07} {val_0:012}{empty:18}{val_0:06}{val_0:04}{val_0:016}" * 80
 
-# Ratei e risconti
+# Ratei e risconti 6093
 # La tabella ratei e risconti (lunghezza complessiva di 190 caratteri)
 # è composta da 10 elementi i che comprendono i campi da TRF-RIFER-TAB a TRF-DT-FIN
 cash_book += "{empty:1}{val_0:02}{val_0:08}{val_0:08}" * 10
@@ -55,13 +59,13 @@ cash_book += "{val_0:06}"
 # Ulteriori dati cliente fornitore
 cash_book += "{empty:1}{val_0:01}"
 
-# Ulteriori dati eventuale pagamento fattura o movimenti diversi
+# # Ulteriori dati eventuale pagamento fattura o movimenti diversi 6291
 cash_book += "{val_0:02}" * 80
 
 # Ulteriori dati gestione professionista per eventuale pagamento incasso fattura o dati fattura
 cash_book += "{val_0:07}{val_0:08}{val_0:012}{val_0:012}{val_0:012}{val_0:012}{val_0:012}{val_0:012}"
 
-# Ulteriori dati per unità produttive  ricavi
+# Ulteriori dati per unità produttive  ricavi 6538
 cash_book += "{val_0:02}" * 8
 
 # Ulteriori dati per unita’ produttive pagamenti
@@ -70,20 +74,20 @@ cash_book += "{val_0:02}" * 80
 # Ulteriori dati cliente fornitore
 cash_book += "{empty:4}{empty:20}{empty:1}{empty:1}"
 
-# Ulteriori dati gestione professionista per eventuale incasso/ pagamento fattura o dati fattura
+# Ulteriori dati gestione professionista per eventuale incasso/ pagamento fattura o dati fattura 6740
 cash_book += "{val_0:07}{val_0:07}{val_0:07}{val_0:07}{val_0:07}{val_0:07}"
 
-# Varie
+# Varie 6782
 cash_book += "{empty:1}{empty:1}{val_0:08}{val_0:03}"
 
-# Prima nota previsionale dati aggiuntivi
+# Prima nota previsionale dati aggiuntivi 6795
 cash_book += "{empty:1}{empty:1}{val_0:08}{val_0:08}{empty:1}"
 
 # Varie 6814
 cash_book += """{empty:20}{val_0:02}{val_0:01}{val_0:07}{val_0:011}{empty:12}{empty:32}{val_0:08}\
 {empty:1}{val_0:06}{empty:1}{val_0:02}{empty:1}"""
 
-# Iva Editoria
+# Iva Editoria 6918
 cash_book += "{val_0:03}" * 8
 cash_book += """{empty:1}{empty:16}{empty:1}{empty:1}{empty:1}{vat_collectability:01}\
 {empty:1}{empty:1}{empty:1}{empty:1}{val_0:06}{empty:20}\
@@ -106,5 +110,33 @@ deadline_book += "{empty:1}{val_0:06}{empty:173}"
 deadline_book += """{val_0:01}{val_0:011}{val_0:04}{val_0:010}{val_0:011}{val_0:06}{val_0:02}{val_0:04}{val_0:08}\
 {val_0:011}{val_0:01}{empty:4}{empty:12}{empty:12}{val_0:05}{val_0:05}{val_0:04}{val_0:11}"""
 
-# Dati contributo INPS e modello GLA/D
+# Dati contributo INPS e modello GLA/D 2034
+deadline_book += """{empty:1}{val_0:011}{val_0:011}{val_0:011}{val_0:011}{empty:11}{val_0:08}{val_0:011}{val_0:011}\
+{val_0:08}{val_0:08}{val_0:02}{val_0:02}{val_0:03}{val_0:011}{empty:184}"""
 
+# Dati portafoglio
+deadline_book += """{payment_condition:03}{abi:05}{cab:05}{agency_description:30}{total_number_of_payments:02}{invoice_total:012}"""
+
+# Dettaglio effetti 2395
+deadline_book += """{payment_count:02}{payment_deadline:08}{document_type:01}\
+{payment_total:012}{payment_total_currency:015}{total_stamps:012}{payment_stamp_currency:015}\
+{payment_state:1}{payment_subtype:1}""" * 12
+
+deadline_book += "{agent_code:04}"
+deadline_book += "{paused_payment:1}" * 12
+deadline_book += "{cig:15}{cup:15}{empty:294}"
+
+# Movimenti INTRASTAT BENI dati aggiuntivi 3539
+deadline_book += "{empty:3}{empty:16}" * 20
+
+# Movimenti INTRASTAT SERVIZI 3919
+deadline_book += """{empty:6}{val_0:03}{val_0:012}{val_0:012}{val_0:08}{empty:1}{empty:1}\
+{val_0:06}{val_0:06}{val_0:06}{val_0:02}{empty:15}{empty:1}{empty:3}{empty:16}""" * 20
+deadline_book += "{empty:1}{val_0:06}"
+
+# Check iva reverse charge 5886
+deadline_book += "{empty:1}" * 8
+deadline_book += "{empty:15}{empty:1091}"
+
+# ODOA CRLF
+deadline_book += "\r\n"

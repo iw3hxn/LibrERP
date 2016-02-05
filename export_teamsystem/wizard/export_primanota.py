@@ -232,14 +232,48 @@ class WizardExportPrimaNota(orm.TransientModel):
 
             'val_0': 0,
             'empty': '',
-
         }
 
     def map_deadline_data(self, cr, uid, invoice_id, context):
 
         return {
+            'company_id': 1,
+            'version': 3,
+            'type': 1,
+
             'val_0': 0,
-            'empty': ''
+            'empty': '',
+
+            # Dati portafoglio
+            'payment_condition': 0,  # ??? Codice condizione di pagamento
+            'abi': 0,  # ???
+            'cab': 0,  # ???
+            'agency_description': '',  # Descrizione agenzia
+            'total_number_of_payments': 0,  # ??? Numero totale rate
+            'invoice_total': 0, # ??? Totale documento (totale fattura)
+
+            # Dettaglio effetti
+            'payment_count': 0,  # ??? Numero rata
+            'payment_deadline': 0,  # ??? Data scadenza
+            'document_type': 0,     # Tipo effetto
+                                    # 1=Tratta
+                                    # 2=Ricevuta bancaria
+                                    # 3=Rimessa diretta
+                                    # 4=Cessioni
+                                    # 5=Solo descrittivo
+                                    # 6=Contanti alla consegna
+            'payment_total': 0,  # ??? Importo effetto
+            'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
+            'total_stamps': 0,  # Importo bolli
+            'payment_stamp_currency': 0,   # Portafoglio in valuta. Importo bolli  in valuta
+            'payment_state': '',  # ??? Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
+            'payment_subtype': '',  # Sottotipo rimessa diretta
+            'agent_code': 0,  # Codice agente
+            'paused_payment': '',  # Effetto sospeso
+            'cig': '',
+            'cup': '',
+
+            # Movimenti INTRASTAT BENI dati aggiuntivi...
         }
 
     def action_export_primanota(self, cr, uid, ids, context):
