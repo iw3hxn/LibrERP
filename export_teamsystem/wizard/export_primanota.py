@@ -186,8 +186,8 @@ class WizardExportPrimaNota(orm.TransientModel):
             'document_number': invoice.supplier_invoice_number or 0,  # Numero documento fornitore compreso sezionale
 
             # TODO: Verifica TRF-NDOC e TRF-SERIE perché sono sbagliati
-            'document_number_no_sectional': int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]),  # ??? Numero documento (numero doc senza sezionale)
-            'vat_sectional': invoice.journal_id.teamsystem_code,  # ???
+            'document_number_no_sectional': int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]),  # Numero documento (numero doc senza sezionale)
+            'vat_sectional': invoice.journal_id.teamsystem_code,  #
             'account_extract': int('{number:04}{section:02}'.format(number=int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]), section=invoice.journal_id.teamsystem_code)),  # ??? Estratto conto Numero partita (numero doc + sezionale (tutto unito):
                 #  es. 1501 per una fattura numero 15 del sez. 1)
             'account_extract_year': datetime.datetime.strptime(invoice.date_invoice, '%Y-%m-%d').year,  # Estratto conto Anno partita (anno di emissione della fattura in formato AAAA)
@@ -200,11 +200,11 @@ class WizardExportPrimaNota(orm.TransientModel):
             'plafond_month': 0,  # MMAAAA Riferimento PLAFOND e fatture diferite
 
             # Dati iva
-            'taxable': int(invoice.amount_untaxed * 1000000),  # Imponibile 6 dec?
+            'taxable': int(invoice.amount_untaxed * 1000000),  # Imponibile 6 dec
             'vat_code': 22,  # ??? Aliquota Iva o Codice esenzione
             'agro_vat_code': 0,  # Aliquota iva di compensazione agricola
             'vat11_code': 0,
-            'vat_total': int(invoice.amount_tax * 1000000),
+            'vat_total': int(self.pool['account.invoice'].get_total_tax_fiscal(cr, uid, invoice_id, context * 1000000)),
 
             # Unknown
             'val_1': 0,
@@ -216,7 +216,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'val_7': 0,
 
             # Totale fattura
-            'invoice_total': int(invoice.amount_total * 1000000),  # Imponibile 6 dec?
+            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, invoice_id, context * 1000000)),  # Imponibile 6 dec?
 
             # Conti di ricavo/costo 735
             'account_proceeds': 5810502,  # ??? Codice conto di ricavo/costo

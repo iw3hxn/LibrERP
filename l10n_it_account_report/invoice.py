@@ -51,37 +51,15 @@ class Parser(report_sxw.rml_parse):
         self.cache = {}
 
     def _get_total_tax_fiscal(self, tax_line):
-        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
-        amount_withholding = 0.0
-        for line in tax_line:
-            if line.tax_code_id.notprintable:
-                amount_withholding += line.tax_amount
-        if amount_withholding != 0.0:
-            if invoice.type in ['out_invoice', 'in_invoice']:
-                return invoice.amount_tax - amount_withholding
-            else:
-                return invoice.amount_tax + amount_withholding
-        return invoice.amount_tax
+        return self.pool['account.invoice'].get_total_tax_fiscal(self.cr, self.uid, self.ids)
 
     def _get_total_fiscal(self, tax_line):
-        invoice = self.pool['account.invoice'].browse(self.cr, self.uid, self.ids[0])
-        amount_withholding = 0.0
-        for line in tax_line:
-            if line.tax_code_id.notprintable:
-                amount_withholding += line.tax_amount
-        if amount_withholding != 0.0:
-            if invoice.type in ['out_invoice', 'in_invoice']:
-                return invoice.amount_total - amount_withholding
-            else:
-                return invoice.amount_total + amount_withholding
-        return invoice.amount_total
+        return self.pool['account.invoice'].get_total_fiscal(self.cr, self.uid, self.ids)
 
     def _desc_nocode(self, string):
         return re.compile('\[.*\]\ ').sub('', string)
 
     def _line_description(self, line):
-        sale_order_line_obj = self.pool['sale.order.line']
-        stock_picking_obj = self.pool['stock.picking']
         description = []
         if line.name:
             description.append(re.compile('\[.*\]\ ').sub('', line.name))

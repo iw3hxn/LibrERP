@@ -28,6 +28,26 @@ import datetime
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
+    def get_total_tax_fiscal(self, cr, uid, ids, context=None):
+        invoice = self.browse(cr, uid, ids[0], context)
+        amount_withholding = 0.0
+        for line in invoice.tax_line:
+            if line.tax_code_id.notprintable:
+                amount_withholding += line.tax_amount
+        if amount_withholding != 0.0:
+            return invoice.amount_tax - amount_withholding
+        return invoice.amount_tax
+
+    def get_total_fiscal(self, cr, uid, ids, context=None):
+        invoice = self.browse(cr, uid, ids[0], context)
+        amount_withholding = 0.0
+        for line in invoice.tax_line:
+            if line.tax_code_id.notprintable:
+                amount_withholding += line.tax_amount
+        if amount_withholding != 0.0:
+            return invoice.amount_total - amount_withholding
+        return invoice.amount_total
+
     def action_cancel(self, cr, uid, ids, context=None):
         for invoice in self.browse(cr, uid, ids, context):
             period = invoice.period_id
