@@ -24,6 +24,7 @@ import logging
 from cStringIO import StringIO
 import re
 import datetime
+from openerp.tools.translate import _
 
 from openerp.addons.export_teamsystem.team_system_template import cash_book
 
@@ -159,9 +160,9 @@ class WizardExportPrimaNota(orm.TransientModel):
 
             # Solo per i fornitori 246 -
             'account_code': 0,  # Codice conto di costo abituale (Solo per fornitori)
-            'payment_conditions_code': 4444,  # ?? Codice condizioni di pagamento
-            'abi': 3002,  # ??
-            'cab': 3280,  # ??
+            'payment_conditions_code': invoice.payment_term and invoice.payment_term.teamsystem_code or 0,  # Codice condizioni di pagamento
+            'abi': 0,  # ??
+            'cab': 0,  # ??
             'partner_interm': 0,  # Codice intermedio clienti / fornitori  267
 
             # Dati fattura 268

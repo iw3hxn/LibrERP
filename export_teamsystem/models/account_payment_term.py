@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Didotech SRL
@@ -13,10 +13,18 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
+#    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-from . import wizard
-from . import models
+from openerp.osv import fields, orm
+
+
+class account_payment_term(orm.Model):
+    _inherit = 'account.payment.term'
+    _columns = {
+        'teamsystem_code': fields.integer('TeamSystem Code', required=True),
+    }
+
+    _sql_constraints = [('teamsystem_code', 'unique(code)', 'Codice TeamSystem deve essere univoco')]

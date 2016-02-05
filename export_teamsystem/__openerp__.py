@@ -30,10 +30,12 @@
     'license': 'AGPL-3',
     "depends": [
         'base',
-        'account'
+        'account',
+        'l10n_it_account'
     ],
     "data": [
-        'wizard/export_primanota.xml'
+        'wizard/export_primanota.xml',
+        'views/account_payment_term_view.xml',
     ],
     "demo": [],
     "active": False,
