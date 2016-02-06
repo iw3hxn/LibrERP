@@ -114,8 +114,8 @@ class WizardExportPrimaNota(orm.TransientModel):
         return tax_code
 
     def tax_creation(self, cr, uid, invoice, context=None):
-        # create a separate function, so is possible to extend on a separate module
-        # create tax with max 8 tax
+        # created a separate function, so it is possible to extend on a separate module
+        # create tax with max 8 taxes
         tax_data = []
         for tax_line in invoice.tax_line:
             tax_code = self.get_tax_code(cr, uid, tax_line, context)
@@ -179,6 +179,9 @@ class WizardExportPrimaNota(orm.TransientModel):
         fax = get_phone_number(address.fax, prefix)
 
         tax_data = self.tax_creation(cr, uid, invoice, context)  # max 8
+
+
+
         # conti di ricavo/costo
         account_data = self.account_creation(cr, uid, invoice, context)
 
@@ -257,15 +260,6 @@ class WizardExportPrimaNota(orm.TransientModel):
             'agro_vat_code': tax_data[0].get('agro_vat_code'),  # Aliquota iva di compensazione agricola
             'vat11_code': tax_data[0].get('vat11_code'),
             'vat_total': tax_data[0].get('vat_total'),          # Imposta
-
-            # Unknown
-            'val_1': 0,
-            'val_2': 0,
-            'val_3': 0,
-            'val_4': 0,
-            'val_5': 0,
-            'val_6': 0,
-            'val_7': 0,
 
             # Totale fattura
             'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Imponibile 6 dec?
