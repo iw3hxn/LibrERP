@@ -102,6 +102,26 @@ class WizardExportPrimaNota(orm.TransientModel):
         else:
             return False
 
+    def get_tax_code(self, cr, uid, invoice, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        tax_code = []
+        tax_pool = self.pool['account.tax']
+        for tax_line in invoice.tax_line:
+            tax_id = self.pool['account.tax'].get_tax_by_invoice_tax(
+                cr, uid, tax_line.name, context=context)
+            tax = tax_pool.browse(cr, uid, tax_id, context=context)
+
+            if not tax.tax_code_id.notprintable:
+                tax_code.append(tax.description)
+
+        tax_code = list(set(tax_code))
+        if len(tax_code) > 1:
+            raise orm.except_orm(_('Errore'), _('Troppe Tasse per una riga'))   # in italia troppe tasse a prescindere
+        res.update({'tax_code': tax_code})
+        return True
+
     def map_invoice_data(self, cr, uid, invoice_id, context):
         invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
 
@@ -128,6 +148,7 @@ class WizardExportPrimaNota(orm.TransientModel):
         phone = get_phone_number(address.phone, prefix)
         fax = get_phone_number(address.fax, prefix)
 
+        vat_code
 
 
         return {
@@ -201,7 +222,7 @@ class WizardExportPrimaNota(orm.TransientModel):
 
             # Dati iva
             'taxable': int(invoice.amount_untaxed * 1000000),  # Imponibile 6 dec
-            'vat_code': 22,  # ??? Aliquota Iva o Codice esenzione
+            'vat_code': self.get_tax_code(cr, uid, invoice)['tax_code'],  # Aliquota Iva o Codice esenzione
             'agro_vat_code': 0,  # Aliquota iva di compensazione agricola
             'vat11_code': 0,
             'vat_total': int(self.pool['account.invoice'].get_total_tax_fiscal(cr, uid, invoice_id, context * 1000000)),
@@ -220,7 +241,7 @@ class WizardExportPrimaNota(orm.TransientModel):
 
             # Conti di ricavo/costo 735
             'account_proceeds': 5810502,  # ??? Codice conto di ricavo/costo
-            'total_proceeds': 0,  # ?? Imponibile 6 dec?
+            'total_proceeds': int(invoice.amount_untaxed * 1000000),  # ?? Imponibile 6 dec?
 
             # Dati eventuale pagamento fattura o movimenti diversi
 
