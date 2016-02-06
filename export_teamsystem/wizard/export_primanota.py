@@ -323,14 +323,14 @@ class WizardExportPrimaNota(orm.TransientModel):
             'empty': '',
 
             # Dati portafoglio
-            'payment_condition': invoice.payment_term.teamsystem_code,  # ??? Codice condizione di pagamento
-            'abi': 0,  # ???
-            'cab': 0,  # ???
-            'agency_description': '',  # Descrizione agenzia
-            'total_number_of_payments': 0,  # ??? Numero totale rate
-            'invoice_total': 0, # ??? Totale documento (totale fattura)
+            'payment_condition': invoice.payment_term.teamsystem_code,  #  Codice condizione di pagamento
+            'abi': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.abi) or 0,  #
+            'cab': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.cab) or 0,  #
+            'agency_description': invoice.partner_id.bank_riba_id and invoice.partner_id.bank_riba_id.name,  # Descrizione agenzia
+            'total_number_of_payments': len(invoice.maturity_ids),  # ??? Numero totale rate
+            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Totale documento (totale fattura)
 
-            # Dettaglio effetti
+            # Dettaglio effetti x 12 elementi
             'payment_count': 0,  # ??? Numero rata
             'payment_deadline': 0,  # ??? Data scadenza
             'document_type': 0,     # Tipo effetto
