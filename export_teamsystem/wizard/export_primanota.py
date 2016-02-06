@@ -107,18 +107,21 @@ class WizardExportPrimaNota(orm.TransientModel):
             context = {}
         tax_code = ''
         tax_pool = self.pool['account.tax']
+        tax_browse = False
         tax_id = tax_pool.get_tax_by_invoice_tax(cr, uid, tax_line.name, context=context)
         tax = tax_pool.browse(cr, uid, tax_id, context=context)
         if not tax.tax_code_id.notprintable:
             tax_code = tax.description
-        return tax_code
+            tax_browse = tax
+        return tax_code, tax_browse
 
     def tax_creation(self, cr, uid, invoice, context=None):
         # created a separate function, so it is possible to extend on a separate module
         # create tax with max 8 taxes
         tax_data = []
         for tax_line in invoice.tax_line:
-            tax_code = self.get_tax_code(cr, uid, tax_line, context)
+            tax_code, tax = self.get_tax_code(cr, uid, tax_line, context)
+            import pdb; pdb.set_trace()
             if tax_code:
                 tax_data.append(
                     {
@@ -127,11 +130,16 @@ class WizardExportPrimaNota(orm.TransientModel):
                         'vat_code': int(tax_code),
                         'agro_vat_code': 0,
                         'vat11_code': 0,
-                        'vat_total': int(tax_line.amount * 1000000)
+                        'vat_total': int(tax_line.amount * 1000000),
+                        'payability': tax.payability,
+                        'law_reference': tax.law_reference,
+                        'non_taxable_nature': tax.non_taxable_nature
                     }
                 )
-            if len(tax_code) > 8:
-                raise orm.except_orm(_('Errore'), _('Ci sono più di 8 tasse'))
+        if not tax_data:
+            raise orm.except_orm('Errore', 'Ci sono tasse definite nella fattura {invoice}'.format(invoice=invoice.number))
+        if len(tax_code) > 8:
+            raise orm.except_orm('Errore', 'Ci sono più di 8 tasse nella fattura {invoice}'.format(invoice=invoice.number))
         return tax_data
 
     def account_creation(self, cr, uid, invoice, context=None):
@@ -184,6 +192,19 @@ class WizardExportPrimaNota(orm.TransientModel):
 
         # conti di ricavo/costo
         account_data = self.account_creation(cr, uid, invoice, context)
+
+        if invoice.type == 'out_refund':
+            vat_collectability = 3
+        elif tax_data[0].get('payability') == 'S':
+            vat_collectability = 4
+        elif tax_data[0].get('payability') == 'D':
+            vat_collectability = 1
+        else:
+            vat_collectability = 0
+                                        # 0=Immediata 1=Differita 2=Differita DL. 185/08
+                                        # 3=Immediata per note credito/debito 4=Split payment
+                                        # R=Risconto    C=Competenza
+                                        # N=Non aggiorna estratto conto
 
         res = {
             'company_id': 1,
@@ -271,7 +292,8 @@ class WizardExportPrimaNota(orm.TransientModel):
             # Dati eventuale pagamento fattura o movimenti diversi
 
                 # Iva Editoria
-            'vat_collectability': 0,    # 0=Immediata 1=Differita 2=Differita DL. 185/08
+            'vat_collectability': vat_collectability,
+                                        # 0=Immediata 1=Differita 2=Differita DL. 185/08
                                         # 3=Immediata per note credito/debito 4=Split payment
                                         # R=Risconto    C=Competenza
                                         # N=Non aggiorna estratto conto
@@ -283,6 +305,8 @@ class WizardExportPrimaNota(orm.TransientModel):
 
     def map_deadline_data(self, cr, uid, invoice_id, context):
         invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
+        if invoice.payment_term and invoice.payment_term.teamsystem_code == 0:
+            raise orm.except_orm('Errore', 'Impossibile da esportare la fattura di {partner} in quanto sul termine di pagamento \'{payment}\' manca il codice TeamSystem'.format(partner=invoice.partner_id.name, payment=invoice.payment_term.name))
 
         res = {
             'company_id': 1,
@@ -293,14 +317,14 @@ class WizardExportPrimaNota(orm.TransientModel):
             'empty': '',
 
             # Dati portafoglio
-            'payment_condition': 0,  # ??? Codice condizione di pagamento
-            'abi': 0,  # ???
-            'cab': 0,  # ???
-            'agency_description': '',  # Descrizione agenzia
-            'total_number_of_payments': 0,  # ??? Numero totale rate
-            'invoice_total': 0, # ??? Totale documento (totale fattura)
+            'payment_condition': invoice.payment_term.teamsystem_code,  #  Codice condizione di pagamento
+            'abi': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.abi) or 0,  #
+            'cab': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.cab) or 0,  #
+            'agency_description': invoice.partner_id.bank_riba_id and invoice.partner_id.bank_riba_id.name,  # Descrizione agenzia
+            'total_number_of_payments': len(invoice.maturity_ids),  # ??? Numero totale rate
+            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Totale documento (totale fattura)
 
-            # Dettaglio effetti
+            # Dettaglio effetti x 12 elementi
             'payment_count': 0,  # ??? Numero rata
             'payment_deadline': 0,  # ??? Data scadenza
             'document_type': 0,     # Tipo effetto
