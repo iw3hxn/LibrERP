@@ -33,7 +33,9 @@ cash_book = u"""{company_id:05}{version:1}{type:1}\
 {plafond_month:06}"""
 
 # Dati Iva 475
-cash_book += "{taxable:012}{vat_code:03}{agro_vat_code:03}{vat11_code:02}{vat_total:011}" * 8
+tax_template = "{taxable:012}{vat_code:03}{agro_vat_code:03}{vat11_code:02}{vat_total:011}"
+
+cash_book += "{tax_data}"
 
 # Totale fattura
 cash_book += "{invoice_total:012}"

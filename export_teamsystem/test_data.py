@@ -95,15 +95,6 @@ cash_book_values = {
     'vat11_code': 0,
     'vat_total': 52800,
 
-    # Unknown
-    'val_1': 0,
-    'val_2': 0,
-    'val_3': 0,
-    'val_4': 0,
-    'val_5': 0,
-    'val_6': 0,
-    'val_7': 0,
-
     # Totale fattura
     'invoice_total': 240000000,  # Imponibile 6 dec?
 

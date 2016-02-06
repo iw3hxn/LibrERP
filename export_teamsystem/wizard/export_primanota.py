@@ -26,7 +26,7 @@ import re
 import datetime
 from openerp.tools.translate import _
 
-from openerp.addons.export_teamsystem.team_system_template import cash_book
+from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, deadline_book
 
 
 _logger = logging.getLogger(__name__)
@@ -118,29 +118,46 @@ class WizardExportPrimaNota(orm.TransientModel):
     def tax_creation(self, cr, uid, invoice, context=None):
         # created a separate function, so it is possible to extend on a separate module
         # create tax with max 8 taxes
-        tax_data = []
-        for tax_line in invoice.tax_line:
+        # tax_data = []
+        tax_data = ''
+        payability = ''
+
+        for count, tax_line in enumerate(invoice.tax_line, 1):
             tax_code, tax = self.get_tax_code(cr, uid, tax_line, context)
-            import pdb; pdb.set_trace()
+
             if tax_code:
-                tax_data.append(
-                    {
-                        'tax_code': tax_code,
-                        'taxable': int(tax_line.base * 1000000),
-                        'vat_code': int(tax_code),
-                        'agro_vat_code': 0,
-                        'vat11_code': 0,
-                        'vat_total': int(tax_line.amount * 1000000),
-                        'payability': tax.payability,
-                        'law_reference': tax.law_reference,
-                        'non_taxable_nature': tax.non_taxable_nature
-                    }
-                )
+                tax_values = {
+                    'tax_code': tax_code,
+                    'taxable': int(tax_line.base * 1000000),
+                    'vat_code': int(tax_code),
+                    'agro_vat_code': 0,
+                    'vat11_code': 0,
+                    'vat_total': int(tax_line.amount * 1000000),
+                    #'payability': tax.payability,
+                    'law_reference': tax.law_reference,
+                    'non_taxable_nature': tax.non_taxable_nature
+                }
+                # tax_data.append(tax_values)
+                payability = tax.payability
+                tax_data += tax_template.format(**tax_values)
+
         if not tax_data:
-            raise orm.except_orm('Errore', 'Ci sono tasse definite nella fattura {invoice}'.format(invoice=invoice.number))
-        if len(tax_code) > 8:
+            raise orm.except_orm('Errore', 'Non ci sono tasse definite nella fattura {invoice}'.format(invoice=invoice.number))
+        elif count > 8:
             raise orm.except_orm('Errore', 'Ci sono più di 8 tasse nella fattura {invoice}'.format(invoice=invoice.number))
-        return tax_data
+
+        empty_tax_values = {
+            'taxable': 0,
+            'vat_code': 0,
+            'agro_vat_code': 0,
+            'vat11_code': 0,
+            'vat_total': 0
+        }
+
+        for a in range(0, 8 - count):
+            tax_data += tax_template.format(**empty_tax_values)
+
+        return tax_data, payability
 
     def account_creation(self, cr, uid, invoice, context=None):
         account = {}
@@ -186,18 +203,19 @@ class WizardExportPrimaNota(orm.TransientModel):
         phone = get_phone_number(address.phone, prefix)
         fax = get_phone_number(address.fax, prefix)
 
-        tax_data = self.tax_creation(cr, uid, invoice, context)  # max 8
-
-
+        tax_data, payability = self.tax_creation(cr, uid, invoice, context)  # max 8
+        # pdb.set_trace()
 
         # conti di ricavo/costo
         account_data = self.account_creation(cr, uid, invoice, context)
 
         if invoice.type == 'out_refund':
             vat_collectability = 3
-        elif tax_data[0].get('payability') == 'S':
+        # elif tax_data[0].get('payability') == 'S':
+        elif payability == 'S':
             vat_collectability = 4
-        elif tax_data[0].get('payability') == 'D':
+        # elif tax_data[0].get('payability') == 'D':
+        elif payability == 'D':
             vat_collectability = 1
         else:
             vat_collectability = 0
@@ -276,11 +294,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'plafond_month': 0,  # MMAAAA Riferimento PLAFOND e fatture diferite
 
             # Dati iva x8
-            'taxable': tax_data[0].get('taxable'),              # Imponibile
-            'vat_code': tax_data[0].get('vat_code'),            # Aliquota Iva o Codice esenzione
-            'agro_vat_code': tax_data[0].get('agro_vat_code'),  # Aliquota iva di compensazione agricola
-            'vat11_code': tax_data[0].get('vat11_code'),
-            'vat_total': tax_data[0].get('vat_total'),          # Imposta
+            'tax_data': tax_data,
 
             # Totale fattura
             'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Imponibile 6 dec?
