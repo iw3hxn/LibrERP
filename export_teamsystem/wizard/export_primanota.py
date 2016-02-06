@@ -102,25 +102,55 @@ class WizardExportPrimaNota(orm.TransientModel):
         else:
             return False
 
-    def get_tax_code(self, cr, uid, invoice, context=None):
+    def get_tax_code(self, cr, uid, tax_line, context=None):
         if context is None:
             context = {}
-        res = {}
-        tax_code = []
+        tax_code = ''
         tax_pool = self.pool['account.tax']
+        tax_id = tax_pool.get_tax_by_invoice_tax(cr, uid, tax_line.name, context=context)
+        tax = tax_pool.browse(cr, uid, tax_id, context=context)
+        if not tax.tax_code_id.notprintable:
+            tax_code = tax.description
+        return tax_code
+
+    def tax_creation(self, cr, uid, invoice, context=None):
+        # create a separate function, so is possible to extend on a separate module
+        # create tax with max 8 tax
+        tax_data = []
         for tax_line in invoice.tax_line:
-            tax_id = self.pool['account.tax'].get_tax_by_invoice_tax(
-                cr, uid, tax_line.name, context=context)
-            tax = tax_pool.browse(cr, uid, tax_id, context=context)
+            tax_code = self.get_tax_code(cr, uid, tax_line, context)
+            if tax_code:
+                tax_data.append(
+                    {
+                        'tax_code': tax_code,
+                        'taxable': int(tax_line.base * 1000000),
+                        'vat_code': int(tax_code),
+                        'agro_vat_code': 0,
+                        'vat11_code': 0,
+                        'vat_total': int(tax_line.amount * 1000000)
+                    }
+                )
+            if len(tax_code) > 8:
+                raise orm.except_orm(_('Errore'), _('Ci sono più di 8 tasse'))
+        return tax_data
 
-            if not tax.tax_code_id.notprintable:
-                tax_code.append(tax.description)
-
-        tax_code = list(set(tax_code))
-        if len(tax_code) > 1:
-            raise orm.except_orm(_('Errore'), _('Troppe Tasse per una riga'))   # in italia troppe tasse a prescindere
-        res.update({'tax_code': tax_code})
-        return True
+    def account_creation(self, cr, uid, invoice, context=None):
+        account = {}
+        account_data = []
+        for line in invoice.invoice_line:
+            if line.account_id.code in account:
+                account[line.account_id.code] += line.price_subtotal
+            else:
+                account[line.account_id.code] = line.price_subtotal
+        for account_code in account.keys():
+            code = account_code.isdigit() and int(account_code) or 5810501  # 5810501 è un numero fisso merci/vendita
+            account_data.append(
+                {
+                    'account_proceeds': code,
+                    'total_proceeds': int(account.get(account_code) * 1000000)
+                }
+            )
+        return account_data
 
     def map_invoice_data(self, cr, uid, invoice_id, context):
         invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
@@ -148,10 +178,11 @@ class WizardExportPrimaNota(orm.TransientModel):
         phone = get_phone_number(address.phone, prefix)
         fax = get_phone_number(address.fax, prefix)
 
-        vat_code
+        tax_data = self.tax_creation(cr, uid, invoice, context)  # max 8
+        # conti di ricavo/costo
+        account_data = self.account_creation(cr, uid, invoice, context)
 
-
-        return {
+        res = {
             'company_id': 1,
             'version': 3,
             'type': 0,
@@ -220,12 +251,12 @@ class WizardExportPrimaNota(orm.TransientModel):
             # 'plafond_month': int(datetime.datetime.strptime(invoice.date_invoice, '%Y-%m-%d').strftime('%m%Y')),  # MMAAAA Riferimento PLAFOND e fatture diferite
             'plafond_month': 0,  # MMAAAA Riferimento PLAFOND e fatture diferite
 
-            # Dati iva
-            'taxable': int(invoice.amount_untaxed * 1000000),  # Imponibile 6 dec
-            'vat_code': self.get_tax_code(cr, uid, invoice)['tax_code'],  # Aliquota Iva o Codice esenzione
-            'agro_vat_code': 0,  # Aliquota iva di compensazione agricola
-            'vat11_code': 0,
-            'vat_total': int(self.pool['account.invoice'].get_total_tax_fiscal(cr, uid, invoice_id, context * 1000000)),
+            # Dati iva x8
+            'taxable': tax_data[0].get('taxable'),              # Imponibile
+            'vat_code': tax_data[0].get('vat_code'),            # Aliquota Iva o Codice esenzione
+            'agro_vat_code': tax_data[0].get('agro_vat_code'),  # Aliquota iva di compensazione agricola
+            'vat11_code': tax_data[0].get('vat11_code'),
+            'vat_total': tax_data[0].get('vat_total'),          # Imposta
 
             # Unknown
             'val_1': 0,
@@ -237,11 +268,11 @@ class WizardExportPrimaNota(orm.TransientModel):
             'val_7': 0,
 
             # Totale fattura
-            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, invoice_id, context * 1000000)),  # Imponibile 6 dec?
+            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Imponibile 6 dec?
 
             # Conti di ricavo/costo 735
-            'account_proceeds': 5810502,  # ??? Codice conto di ricavo/costo
-            'total_proceeds': int(invoice.amount_untaxed * 1000000),  # ?? Imponibile 6 dec?
+            'account_proceeds': account_data[0].get('account_proceeds'),  # Codice conto di ricavo/costo
+            'total_proceeds': account_data[0].get('total_proceeds'),  # Imponibile 6 dec?
 
             # Dati eventuale pagamento fattura o movimenti diversi
 
@@ -254,10 +285,12 @@ class WizardExportPrimaNota(orm.TransientModel):
             'val_0': 0,
             'empty': '',
         }
+        return res
 
     def map_deadline_data(self, cr, uid, invoice_id, context):
+        invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
 
-        return {
+        res = {
             'company_id': 1,
             'version': 3,
             'type': 1,
@@ -287,7 +320,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
             'total_stamps': 0,  # Importo bolli
             'payment_stamp_currency': 0,   # Portafoglio in valuta. Importo bolli  in valuta
-            'payment_state': '',  # ??? Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
+            'payment_state': '0',  # Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
             'payment_subtype': '',  # Sottotipo rimessa diretta
             'agent_code': 0,  # Codice agente
             'paused_payment': '',  # Effetto sospeso
@@ -296,6 +329,7 @@ class WizardExportPrimaNota(orm.TransientModel):
 
             # Movimenti INTRASTAT BENI dati aggiuntivi...
         }
+        return res
 
     def action_export_primanota(self, cr, uid, ids, context):
         file_name = 'Primanota.txt'

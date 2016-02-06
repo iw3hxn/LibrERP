@@ -24,7 +24,7 @@ from openerp.osv import fields, orm
 class account_payment_term(orm.Model):
     _inherit = 'account.payment.term'
     _columns = {
-        'teamsystem_code': fields.integer('TeamSystem Code', required=True),
+        'teamsystem_code': fields.integer('Codice TeamSystem', required=False),
     }
 
     _sql_constraints = [('teamsystem_code', 'unique(code)', 'Codice TeamSystem deve essere univoco')]
