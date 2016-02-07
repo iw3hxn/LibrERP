@@ -31,7 +31,8 @@
     "depends": [
         'base',
         'account',
-        'l10n_it_account'
+        'l10n_it_account',
+        'l10n_it_ricevute_bancarie',
     ],
     "data": [
         'wizard/export_primanota.xml',

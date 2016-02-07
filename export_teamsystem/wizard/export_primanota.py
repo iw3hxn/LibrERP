@@ -26,7 +26,7 @@ import re
 import datetime
 from openerp.tools.translate import _
 
-from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, deadline_book
+from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, maturity_template, deadline_book
 
 
 _logger = logging.getLogger(__name__)
@@ -317,10 +317,74 @@ class WizardExportPrimaNota(orm.TransientModel):
         }
         return res
 
+    def maturity_creation(self, cr, uid, invoice, context=None):
+        # created a separate function, so it is possible to extend on a separate module
+        # create tax with max 8 taxes
+        # tax_data = []
+        maturity_data = ''
+        payability = ''
+
+        for count, maturity_line in enumerate(invoice.maturity_ids, 1):
+
+            maturity_values = {
+                'payment_count': count,  # Numero rata
+                'payment_deadline': datetime.datetime.strptime(maturity_line.maturity, '%Y-%m-%d').strftime('%d%m%Y'),  # Data scadenza
+                'document_type': invoice.payment_term.riba and 2 or 0,      # Tipo effetto
+                                                                            # 1=Tratta
+                                                                            # 2=Ricevuta bancaria
+                                                                            # 3=Rimessa diretta
+                                                                            # 4=Cessioni
+                                                                            # 5=Solo descrittivo
+                                                                            # 6=Contanti alla consegna
+                'payment_total': maturity_data.debit or maturity_data.credit or 0,  # Importo effetto
+                'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
+                'total_stamps': 0,  # Importo bolli
+                'payment_stamp_currency': 0,   # Portafoglio in valuta. Importo bolli  in valuta
+                'payment_state': '0',  # Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
+                'payment_subtype': '',  # Sottotipo rimessa diretta
+                'agent_code': 0,  # Codice agente
+                'paused_payment': '',  # Effetto sospeso
+                'cig': invoice.cig or '',
+                'cup': invoice.cup or '',
+            }
+            maturity_data += maturity_template.format(**maturity_values)
+
+        if count > 12:
+            raise orm.except_orm('Errore', 'Ci sono più di 12 scadenze nella fattura {invoice}'.format(invoice=invoice.number))
+
+        empty_maturity_values = {
+            'payment_count': 0,  # ??? Numero rata
+            'payment_deadline': 0,  # ??? Data scadenza
+            'document_type': 0,  # Tipo effetto
+            # 1=Tratta
+            # 2=Ricevuta bancaria
+            # 3=Rimessa diretta
+            # 4=Cessioni
+            # 5=Solo descrittivo
+            # 6=Contanti alla consegna
+            'payment_total': 0,  # ??? Importo effetto
+            'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
+            'total_stamps': 0,  # Importo bolli
+            'payment_stamp_currency': 0,  # Portafoglio in valuta. Importo bolli  in valuta
+            'payment_state': '0',  # Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
+            'payment_subtype': '',  # Sottotipo rimessa diretta
+            'agent_code': 0,  # Codice agente
+            'paused_payment': '',  # Effetto sospeso
+            'cig': '',
+            'cup': '',
+        }
+
+        for a in range(0, 12 - count):
+            maturity_data += maturity_template.format(**empty_maturity_values)
+
+        return maturity_data
+
     def map_deadline_data(self, cr, uid, invoice_id, context):
         invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
         if invoice.payment_term and invoice.payment_term.teamsystem_code == 0:
             raise orm.except_orm('Errore', 'Impossibile da esportare la fattura di {partner} in quanto sul termine di pagamento \'{payment}\' manca il codice TeamSystem'.format(partner=invoice.partner_id.name, payment=invoice.payment_term.name))
+
+        maturity_data = self.maturity_creation(cr, uid, invoice, context)
 
         res = {
             'company_id': 1,
@@ -338,26 +402,27 @@ class WizardExportPrimaNota(orm.TransientModel):
             'total_number_of_payments': len(invoice.maturity_ids),  # ??? Numero totale rate
             'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Totale documento (totale fattura)
 
-            # Dettaglio effetti x 12 elementi
-            'payment_count': 0,  # ??? Numero rata
-            'payment_deadline': 0,  # ??? Data scadenza
-            'document_type': 0,     # Tipo effetto
-                                    # 1=Tratta
-                                    # 2=Ricevuta bancaria
-                                    # 3=Rimessa diretta
-                                    # 4=Cessioni
-                                    # 5=Solo descrittivo
-                                    # 6=Contanti alla consegna
-            'payment_total': 0,  # ??? Importo effetto
-            'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
-            'total_stamps': 0,  # Importo bolli
-            'payment_stamp_currency': 0,   # Portafoglio in valuta. Importo bolli  in valuta
-            'payment_state': '0',  # Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
-            'payment_subtype': '',  # Sottotipo rimessa diretta
-            'agent_code': 0,  # Codice agente
-            'paused_payment': '',  # Effetto sospeso
-            'cig': '',
-            'cup': '',
+            'maturity_data': maturity_data
+            # # Dettaglio effetti x 12 elementi
+            # 'payment_count': 0,  # ??? Numero rata
+            # 'payment_deadline': 0,  # ??? Data scadenza
+            # 'document_type': 0,     # Tipo effetto
+            #                         # 1=Tratta
+            #                         # 2=Ricevuta bancaria
+            #                         # 3=Rimessa diretta
+            #                         # 4=Cessioni
+            #                         # 5=Solo descrittivo
+            #                         # 6=Contanti alla consegna
+            # 'payment_total': 0,  # ??? Importo effetto
+            # 'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
+            # 'total_stamps': 0,  # Importo bolli
+            # 'payment_stamp_currency': 0,   # Portafoglio in valuta. Importo bolli  in valuta
+            # 'payment_state': '0',  # Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
+            # 'payment_subtype': '',  # Sottotipo rimessa diretta
+            # 'agent_code': 0,  # Codice agente
+            # 'paused_payment': '',  # Effetto sospeso
+            # 'cig': '',
+            # 'cup': '',
 
             # Movimenti INTRASTAT BENI dati aggiuntivi...
         }
