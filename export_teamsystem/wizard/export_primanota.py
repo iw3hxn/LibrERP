@@ -26,7 +26,8 @@ import re
 import datetime
 from openerp.tools.translate import _
 
-from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, maturity_template, deadline_book
+from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, account_template
+from openerp.addons.export_teamsystem.team_system_template import maturity_template, deadline_book
 
 
 _logger = logging.getLogger(__name__)
@@ -160,21 +161,34 @@ class WizardExportPrimaNota(orm.TransientModel):
         return tax_data, payability
 
     def account_creation(self, cr, uid, invoice, context=None):
+        # Conti di ricavo/costo
+        # La tabella costi/ricavi (lunghezza complessiva di 152 caratteri) è composta da 8 elementi
         account = {}
-        account_data = []
+        account_data = ''
         for line in invoice.invoice_line:
             if line.account_id.code in account:
                 account[line.account_id.code] += line.price_subtotal
             else:
                 account[line.account_id.code] = line.price_subtotal
+
+        if not account:
+            raise orm.except_orm('Errore', 'Non ci sono conti ricavo/costo definite nella fattura {invoice}'.format(invoice=invoice.number))
+        elif len(account) > 8:
+            raise orm.except_orm('Errore', 'Ci sono più di 8 conti ricavo/costo nella fattura {invoice}'.format(invoice=invoice.number))
+
         for account_code in account.keys():
             code = account_code.isdigit() and int(account_code) or 5810501  # 5810501 è un numero fisso merci/vendita
-            account_data.append(
-                {
-                    'account_proceeds': code,
-                    'total_proceeds': int(account.get(account_code) * 1000000)
-                }
-            )
+            account_data += account_template.format(**{
+                'account_proceeds': code,
+                'total_proceeds': int(account.get(account_code) * 1000000)
+            })
+
+        for k in range(0, 8 - len(account)):
+            account_data += account_template.format(**{
+                'account_proceeds': 0,
+                'total_proceeds': 0
+            })
+
         return account_data
 
     def map_invoice_data(self, cr, uid, invoice_id, context):
@@ -299,8 +313,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Imponibile 6 dec?
 
             # Conti di ricavo/costo 735
-            'account_proceeds': account_data[0].get('account_proceeds'),  # Codice conto di ricavo/costo
-            'total_proceeds': account_data[0].get('total_proceeds'),  # Imponibile 6 dec?
+            'account_data': account_data,
 
             # Dati eventuale pagamento fattura o movimenti diversi
 

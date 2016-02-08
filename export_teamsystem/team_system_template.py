@@ -41,7 +41,8 @@ cash_book += "{tax_data}"
 cash_book += "{invoice_total:012}"
 
 # Conti di ricavo/costo 735
-cash_book += "{account_proceeds:07}{total_proceeds:012}" * 8
+account_template = "{account_proceeds:07}{total_proceeds:012}"
+cash_book += "{account_data}"
 
 # Dati eventuale pagamento fattura o movimenti diversi 887
 cash_book += "{val_0:03}{empty:15}{empty:34}{empty:34}"
