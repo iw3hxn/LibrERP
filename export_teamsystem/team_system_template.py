@@ -120,9 +120,12 @@ deadline_book += """{empty:1}{val_0:011}{val_0:011}{val_0:011}{val_0:011}{empty:
 deadline_book += """{payment_condition:03}{abi:05}{cab:05}{agency_description:30}{total_number_of_payments:02}{invoice_total:012}"""
 
 # Dettaglio effetti 2395
-deadline_book += """{payment_count:02}{payment_deadline:08}{document_type:01}\
+
+maturity_template = """{payment_count:02}{payment_deadline:08}{document_type:01}\
 {payment_total:012}{payment_total_currency:015}{total_stamps:012}{payment_stamp_currency:015}\
-{payment_state:1}{payment_subtype:1}""" * 12
+{payment_state:1}{payment_subtype:1}"""
+
+deadline_book += "{maturity_data}"
 
 deadline_book += "{agent_code:04}"
 deadline_book += "{paused_payment:1}" * 12

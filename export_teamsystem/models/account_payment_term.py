@@ -27,4 +27,4 @@ class account_payment_term(orm.Model):
         'teamsystem_code': fields.integer('Codice TeamSystem', required=False),
     }
 
-    _sql_constraints = [('teamsystem_code', 'unique(code)', 'Codice TeamSystem deve essere univoco')]
+    _sql_constraints = [('teamsystem_code_unique', 'unique(teamsystem_code)', 'Codice TeamSystem deve essere univoco')]

@@ -204,7 +204,6 @@ class WizardExportPrimaNota(orm.TransientModel):
         fax = get_phone_number(address.fax, prefix)
 
         tax_data, payability = self.tax_creation(cr, uid, invoice, context)  # max 8
-        # pdb.set_trace()
 
         # conti di ricavo/costo
         account_data = self.account_creation(cr, uid, invoice, context)
@@ -318,17 +317,14 @@ class WizardExportPrimaNota(orm.TransientModel):
         return res
 
     def maturity_creation(self, cr, uid, invoice, context=None):
-        # created a separate function, so it is possible to extend on a separate module
-        # create tax with max 8 taxes
-        # tax_data = []
+        # Dettaglio effetti x 12 elementi
+
         maturity_data = ''
-        payability = ''
 
         for count, maturity_line in enumerate(invoice.maturity_ids, 1):
-
             maturity_values = {
                 'payment_count': count,  # Numero rata
-                'payment_deadline': datetime.datetime.strptime(maturity_line.maturity, '%Y-%m-%d').strftime('%d%m%Y'),  # Data scadenza
+                'payment_deadline': int(datetime.datetime.strptime(maturity_line.date_maturity, '%Y-%m-%d').strftime('%d%m%Y')),  # Data scadenza
                 'document_type': invoice.payment_term.riba and 2 or 0,      # Tipo effetto
                                                                             # 1=Tratta
                                                                             # 2=Ricevuta bancaria
@@ -336,16 +332,12 @@ class WizardExportPrimaNota(orm.TransientModel):
                                                                             # 4=Cessioni
                                                                             # 5=Solo descrittivo
                                                                             # 6=Contanti alla consegna
-                'payment_total': maturity_data.debit or maturity_data.credit or 0,  # Importo effetto
+                'payment_total': int(maturity_line.debit * 1000000 or maturity_line.credit * 1000000 or 0),  # Importo effetto
                 'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
                 'total_stamps': 0,  # Importo bolli
                 'payment_stamp_currency': 0,   # Portafoglio in valuta. Importo bolli  in valuta
                 'payment_state': '0',  # Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
                 'payment_subtype': '',  # Sottotipo rimessa diretta
-                'agent_code': 0,  # Codice agente
-                'paused_payment': '',  # Effetto sospeso
-                'cig': invoice.cig or '',
-                'cup': invoice.cup or '',
             }
             maturity_data += maturity_template.format(**maturity_values)
 
@@ -356,22 +348,18 @@ class WizardExportPrimaNota(orm.TransientModel):
             'payment_count': 0,  # ??? Numero rata
             'payment_deadline': 0,  # ??? Data scadenza
             'document_type': 0,  # Tipo effetto
-            # 1=Tratta
-            # 2=Ricevuta bancaria
-            # 3=Rimessa diretta
-            # 4=Cessioni
-            # 5=Solo descrittivo
-            # 6=Contanti alla consegna
+                                # 1=Tratta
+                                # 2=Ricevuta bancaria
+                                # 3=Rimessa diretta
+                                # 4=Cessioni
+                                # 5=Solo descrittivo
+                                # 6=Contanti alla consegna
             'payment_total': 0,  # ??? Importo effetto
             'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
             'total_stamps': 0,  # Importo bolli
             'payment_stamp_currency': 0,  # Portafoglio in valuta. Importo bolli  in valuta
             'payment_state': '0',  # Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
             'payment_subtype': '',  # Sottotipo rimessa diretta
-            'agent_code': 0,  # Codice agente
-            'paused_payment': '',  # Effetto sospeso
-            'cig': '',
-            'cup': '',
         }
 
         for a in range(0, 12 - count):
@@ -386,7 +374,7 @@ class WizardExportPrimaNota(orm.TransientModel):
 
         maturity_data = self.maturity_creation(cr, uid, invoice, context)
 
-        res = {
+        return {
             'company_id': 1,
             'version': 3,
             'type': 1,
@@ -402,31 +390,15 @@ class WizardExportPrimaNota(orm.TransientModel):
             'total_number_of_payments': len(invoice.maturity_ids),  # ??? Numero totale rate
             'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Totale documento (totale fattura)
 
-            'maturity_data': maturity_data
-            # # Dettaglio effetti x 12 elementi
-            # 'payment_count': 0,  # ??? Numero rata
-            # 'payment_deadline': 0,  # ??? Data scadenza
-            # 'document_type': 0,     # Tipo effetto
-            #                         # 1=Tratta
-            #                         # 2=Ricevuta bancaria
-            #                         # 3=Rimessa diretta
-            #                         # 4=Cessioni
-            #                         # 5=Solo descrittivo
-            #                         # 6=Contanti alla consegna
-            # 'payment_total': 0,  # ??? Importo effetto
-            # 'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
-            # 'total_stamps': 0,  # Importo bolli
-            # 'payment_stamp_currency': 0,   # Portafoglio in valuta. Importo bolli  in valuta
-            # 'payment_state': '0',  # Stato effetto 0=Aperto 1=Chiuso 2=Insoluto 3=Personalizzato
-            # 'payment_subtype': '',  # Sottotipo rimessa diretta
-            # 'agent_code': 0,  # Codice agente
-            # 'paused_payment': '',  # Effetto sospeso
-            # 'cig': '',
-            # 'cup': '',
+            'maturity_data': maturity_data,
+
+            'agent_code': 0,  # Codice agente
+            'paused_payment': '',  # Effetto sospeso
+            'cig': '',
+            'cup': '',
 
             # Movimenti INTRASTAT BENI dati aggiuntivi...
         }
-        return res
 
     def action_export_primanota(self, cr, uid, ids, context):
         file_name = 'Primanota.txt'
@@ -440,6 +412,9 @@ class WizardExportPrimaNota(orm.TransientModel):
         for invoice_id in invoice_ids:
             book_values = self.map_invoice_data(cr, uid, invoice_id, context)
             file_data.write(cash_book.format(**book_values))
+
+            deadline_values = self.map_deadline_data(cr, uid, invoice_id, context)
+            file_data.write(deadline_book.format(**deadline_values))
 
         out = file_data.getvalue()
         out = out.encode("base64")
