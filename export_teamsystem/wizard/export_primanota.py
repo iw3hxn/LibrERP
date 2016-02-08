@@ -26,7 +26,7 @@ import re
 import datetime
 from openerp.tools.translate import _
 
-from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, account_template
+from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, account_template, industrial_accounting_template
 from openerp.addons.export_teamsystem.team_system_template import maturity_template, deadline_book
 
 
@@ -444,7 +444,7 @@ class WizardExportPrimaNota(orm.TransientModel):
 
         return accounting_data
 
-    def map_industrial_data(self, cr, uid, ids, context):
+    def map_industrial_data(self, cr, uid, invoice_id, context):
         invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
         return {
             'company_id': 1,
