@@ -145,9 +145,25 @@ class WizardExportPrimaNota(orm.TransientModel):
                     'law_reference': tax.law_reference,
                     'non_taxable_nature': tax.non_taxable_nature
                 }
-                # tax_data.append(tax_values)
-                payability = payability
                 tax_data += tax_template.format(**tax_values)
+
+        if not tax_data:
+            raise orm.except_orm('Errore', 'Non ci sono tasse definite nella fattura {invoice}'.format(invoice=invoice.number))
+        elif count > 8:
+            raise orm.except_orm('Errore', 'Ci sono più di 8 tasse nella fattura {invoice}'.format(invoice=invoice.number))
+
+        empty_tax_values = {
+            'taxable': 0,
+            'vat_code': 0,
+            'agro_vat_code': 0,
+            'vat11_code': 0,
+            'vat_total': 0
+        }
+
+        for a in range(0, 8 - count):
+            tax_data += tax_template.format(**empty_tax_values)
+
+        return tax_data, payability
 
     def account_creation(self, cr, uid, invoice, context=None):
         # Conti di ricavo/costo
@@ -400,6 +416,47 @@ class WizardExportPrimaNota(orm.TransientModel):
             'cup': '',
 
             # Movimenti INTRASTAT BENI dati aggiuntivi...
+        }
+
+    def get_accounting_data(self, cr, uid, invoice, context):
+        empty_accounting = {
+            'val_0': 0,
+            'empty': '',
+            'causal': 0,  # ??? Causale cont. industr.
+                        # Fatt vendita = 001
+                        # Fatt acquisto = 002
+            'account': 0,   # ??? Conto cont. Industriale
+                            # 1 = sistemi
+                            # 2 = Noleggi
+                            # 3 = domotica
+            'account_proceeds': 0,   # ??? Voce di spesa / ricavo (uguale ai conti di ricavo contabilità generale ma con uno 0 in più)
+                                            # 58100501
+                                            # 58100502
+                                            # 58100503
+            'sign': '',  # ??? Segno ( D o A )
+            'total_ammount': 0,  # Importo movimento o costo complessivo
+        }
+
+        accounting_data = ''
+
+        for k in range(0, 20):
+            accounting_data += industrial_accounting_template.format(**empty_accounting)
+
+        return accounting_data
+
+    def map_industrial_data(self, cr, uid, ids, context):
+        invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
+        return {
+            'company_id': 1,
+            'version': 3,
+            'type': 2,
+
+            'val_0': 0,
+            # 'empty': '',
+
+            # CONTAB. INDUSTRIALE 8
+            'accounting_data': self.get_accounting_data(cr, uid, invoice, context)
+
         }
 
     def action_export_primanota(self, cr, uid, ids, context):

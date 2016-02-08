@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from team_system_template import cash_book, deadline_book
+from team_system_template import cash_book, deadline_book, industrial_accounting_template, industrial_accounting
 
 
 cash_book_values = {
@@ -156,14 +156,56 @@ deadline_book_values = {
     # Movimenti INTRASTAT BENI dati aggiuntivi...
 }
 
-if __name__ == '__main__':
-    # c_book = False
-    c_book = True
 
-    if c_book:
+def get_accounting_data():
+    empty_accounting = {
+        'val_0': 0,
+        'empty': '',
+        'causal': 0,  # ??? Causale cont. industr.
+                    # Fatt vendita = 001
+                    # Fatt acquisto = 002
+        'account': 0,   # ??? Conto cont. Industriale
+                        # 1 = sistemi
+                        # 2 = Noleggi
+                        # 3 = domotica
+        'account_proceeds': 0,   # ??? Voce di spesa / ricavo (uguale ai conti di ricavo contabilità generale ma con uno 0 in più)
+                                        # 58100501
+                                        # 58100502
+                                        # 58100503
+        'sign': '',  # ??? Segno ( D o A )
+        'total_ammount': 0,  # Importo movimento o costo complessivo
+    }
+
+    accounting_data = ''
+
+    for k in range(0, 20):
+        accounting_data += industrial_accounting_template.format(**empty_accounting)
+
+    return accounting_data
+
+
+industrial_accounting_values = {
+    'company_id': 1,
+    'version': 3,
+    'type': 2,
+
+    'val_0': 0,
+    # 'empty': '',
+
+    # CONTAB. INDUSTRIALE 8
+    'accounting_data': get_accounting_data()
+
+}
+
+if __name__ == '__main__':
+    record_type = 2
+
+    if record_type == 0:
         record = cash_book.format(**cash_book_values)
-    else:
+    elif record_type == 1:
         record = deadline_book.format(**deadline_book_values)
+    elif record_type == 2:
+        record = industrial_accounting.format(**industrial_accounting_values)
 
     print record
 
