@@ -121,7 +121,14 @@ class WizardExportPrimaNota(orm.TransientModel):
         # create tax with max 8 taxes
         # tax_data = []
         tax_data = ''
-        payability = ''
+        payability = 'I'
+
+        for tax_line in invoice.tax_line:
+            tax_id = self.pool['account.tax'].get_tax_by_invoice_tax(
+                cr, uid, tax_line.name, context=context)
+            tax = self.pool['account.tax'].browse(cr, uid, tax_id, context=context)
+            if tax.payability:
+                payability = tax.payability
 
         for count, tax_line in enumerate(invoice.tax_line, 1):
             tax_code, tax = self.get_tax_code(cr, uid, tax_line, context)
@@ -134,31 +141,13 @@ class WizardExportPrimaNota(orm.TransientModel):
                     'agro_vat_code': 0,
                     'vat11_code': 0,
                     'vat_total': int(tax_line.amount * 1000000),
-                    #'payability': tax.payability,
+                    # 'payability': tax.payability,
                     'law_reference': tax.law_reference,
                     'non_taxable_nature': tax.non_taxable_nature
                 }
                 # tax_data.append(tax_values)
-                payability = tax.payability
+                payability = payability
                 tax_data += tax_template.format(**tax_values)
-
-        if not tax_data:
-            raise orm.except_orm('Errore', 'Non ci sono tasse definite nella fattura {invoice}'.format(invoice=invoice.number))
-        elif count > 8:
-            raise orm.except_orm('Errore', 'Ci sono più di 8 tasse nella fattura {invoice}'.format(invoice=invoice.number))
-
-        empty_tax_values = {
-            'taxable': 0,
-            'vat_code': 0,
-            'agro_vat_code': 0,
-            'vat11_code': 0,
-            'vat_total': 0
-        }
-
-        for a in range(0, 8 - count):
-            tax_data += tax_template.format(**empty_tax_values)
-
-        return tax_data, payability
 
     def account_creation(self, cr, uid, invoice, context=None):
         # Conti di ricavo/costo
