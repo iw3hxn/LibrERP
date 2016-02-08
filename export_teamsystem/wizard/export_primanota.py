@@ -414,7 +414,7 @@ class WizardExportPrimaNota(orm.TransientModel):
         }
 
     def action_export_primanota(self, cr, uid, ids, context):
-        file_name = 'Primanota.txt'
+        file_name = 'TRAF2000.txt'
         file_data = StringIO()
 
         if context.get('active_ids'):
