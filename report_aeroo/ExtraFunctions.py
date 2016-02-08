@@ -372,12 +372,14 @@ class ExtraFunctions(object):
 
     def _asimage(self, field_value, rotate=None, size_x=None, size_y=None, uom='px', hold_ratio=False):
         def size_by_uom(val, uom, dpi):
-            if uom=='px':
-                result=str(val/dpi)+'in'
-            elif uom=='cm':
-                result=str(val/2.54)+'in'
-            elif uom=='in':
-                result=str(val)+'in'
+            val = float(val)
+            dpi = float(dpi)
+            if uom == 'px':
+                result = str(val / dpi) + 'in'
+            elif uom == 'cm':
+                result = str(val / 2.54) + 'in'
+            elif uom == 'in':
+                result = str(val) + 'in'
             return result
         ##############################################
         if not field_value:
