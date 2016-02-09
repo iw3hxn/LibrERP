@@ -116,11 +116,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             tax_browse = tax
         return tax_code, tax_browse
 
-    def tax_creation(self, cr, uid, invoice, context=None):
-        # created a separate function, so it is possible to extend on a separate module
-        # create tax with max 8 taxes
-        # tax_data = []
-        tax_data = ''
+    def get_tax_payability(self, cr, uid, invoice, context=None):
         payability = 'I'
 
         for tax_line in invoice.tax_line:
@@ -129,6 +125,14 @@ class WizardExportPrimaNota(orm.TransientModel):
             tax = self.pool['account.tax'].browse(cr, uid, tax_id, context=context)
             if tax.payability:
                 payability = tax.payability
+        return payability
+
+    def tax_creation(self, cr, uid, invoice, context=None):
+        # created a separate function, so it is possible to extend on a separate module
+        # create tax with max 8 taxes
+        # tax_data = []
+        tax_data = ''
+        payability = self.get_tax_payability(cr, uid, invoice, context)
 
         for count, tax_line in enumerate(invoice.tax_line, 1):
             tax_code, tax = self.get_tax_code(cr, uid, tax_line, context)
@@ -237,6 +241,8 @@ class WizardExportPrimaNota(orm.TransientModel):
             vat_collectability = 1
         else:
             vat_collectability = 0
+        if self.get_tax_payability(cr, uid, invoice, context) == 'S':
+            vat_collectability = 4
                                         # 0=Immediata 1=Differita 2=Differita DL. 185/08
                                         # 3=Immediata per note credito/debito 4=Split payment
                                         # R=Risconto    C=Competenza
@@ -332,6 +338,8 @@ class WizardExportPrimaNota(orm.TransientModel):
             'val_0': 0,
             'empty': '',
         }
+        print res['invoice_total']
+        print res['vat_collectability']
         return res
 
     def maturity_creation(self, cr, uid, invoice, context=None):
