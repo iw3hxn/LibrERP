@@ -35,6 +35,7 @@
         'l10n_it_ricevute_bancarie',
     ],
     "data": [
+        'security/ir.model.access.csv',
         'wizard/export_primanota.xml',
         'views/account_payment_term_view.xml',
         'views/account_journal_view.xml',

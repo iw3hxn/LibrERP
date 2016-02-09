@@ -136,11 +136,11 @@ class WizardExportPrimaNota(orm.TransientModel):
             if tax_code:
                 tax_values = {
                     'tax_code': tax_code,
-                    'taxable': int(tax_line.base * 1000000),
+                    'taxable': int(tax_line.base * 100),
                     'vat_code': int(tax_code),
                     'agro_vat_code': 0,
                     'vat11_code': 0,
-                    'vat_total': int(tax_line.amount * 1000000),
+                    'vat_total': int(tax_line.amount * 100),
                     # 'payability': tax.payability,
                     'law_reference': tax.law_reference,
                     'non_taxable_nature': tax.non_taxable_nature
@@ -185,7 +185,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             code = account_code.isdigit() and int(account_code) or 5810501  # 5810501 è un numero fisso merci/vendita
             account_data += account_template.format(**{
                 'account_proceeds': code,
-                'total_proceeds': int(account.get(account_code) * 1000000)
+                'total_proceeds': int(account.get(account_code) * 100)
             })
 
         for k in range(0, 8 - len(account)):
@@ -315,7 +315,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'tax_data': tax_data,
 
             # Totale fattura
-            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Imponibile 6 dec?
+            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 100),  # Imponibile 6 dec?
 
             # Conti di ricavo/costo 735
             'account_data': account_data,
@@ -343,14 +343,14 @@ class WizardExportPrimaNota(orm.TransientModel):
             maturity_values = {
                 'payment_count': count,  # Numero rata
                 'payment_deadline': int(datetime.datetime.strptime(maturity_line.date_maturity, '%Y-%m-%d').strftime('%d%m%Y')),  # Data scadenza
-                'document_type': invoice.payment_term.riba and 2 or 0,      # Tipo effetto
+                'document_type': invoice.payment_term.riba and 2 or 3,      # Tipo effetto
                                                                             # 1=Tratta
                                                                             # 2=Ricevuta bancaria
                                                                             # 3=Rimessa diretta
                                                                             # 4=Cessioni
                                                                             # 5=Solo descrittivo
                                                                             # 6=Contanti alla consegna
-                'payment_total': int(maturity_line.debit * 1000000 or maturity_line.credit * 1000000 or 0),  # Importo effetto
+                'payment_total': int(maturity_line.debit * 100 or maturity_line.credit * 100 or 0),  # Importo effetto
                 'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
                 'total_stamps': 0,  # Importo bolli
                 'payment_stamp_currency': 0,   # Portafoglio in valuta. Importo bolli  in valuta
@@ -366,12 +366,12 @@ class WizardExportPrimaNota(orm.TransientModel):
             'payment_count': 0,  # ??? Numero rata
             'payment_deadline': 0,  # ??? Data scadenza
             'document_type': 0,  # Tipo effetto
-                                # 1=Tratta
-                                # 2=Ricevuta bancaria
-                                # 3=Rimessa diretta
-                                # 4=Cessioni
-                                # 5=Solo descrittivo
-                                # 6=Contanti alla consegna
+                                 # 1=Tratta
+                                 # 2=Ricevuta bancaria
+                                 # 3=Rimessa diretta
+                                 # 4=Cessioni
+                                 # 5=Solo descrittivo
+                                 # 6=Contanti alla consegna
             'payment_total': 0,  # ??? Importo effetto
             'payment_total_currency': 0,  # Portafoglio in valuta. Importo effetto in valuta
             'total_stamps': 0,  # Importo bolli
@@ -401,12 +401,12 @@ class WizardExportPrimaNota(orm.TransientModel):
             'empty': '',
 
             # Dati portafoglio
-            'payment_condition': invoice.payment_term.teamsystem_code,  #  Codice condizione di pagamento
+            'payment_condition': invoice.payment_term.teamsystem_code,  # Codice condizione di pagamento
             'abi': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.abi) or 0,  #
             'cab': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.cab) or 0,  #
             'agency_description': invoice.partner_id.bank_riba_id and invoice.partner_id.bank_riba_id.name,  # Descrizione agenzia
-            'total_number_of_payments': len(invoice.maturity_ids),  # ??? Numero totale rate
-            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 1000000),  # Totale documento (totale fattura)
+            'total_number_of_payments': len(invoice.maturity_ids),  # Numero totale rate
+            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 100),  # Totale documento (totale fattura)
 
             'maturity_data': maturity_data,
 
@@ -419,6 +419,34 @@ class WizardExportPrimaNota(orm.TransientModel):
         }
 
     def get_accounting_data(self, cr, uid, invoice, context):
+
+        account_data = ''
+        account = {}
+
+        for line in invoice.invoice_line:
+            if line.account_analytic_id:
+                if line.account_analytic_id in account:
+                    account[line.account_id] += line.price_subtotal
+                else:
+                    account[line.account_id] = line.price_subtotal
+
+        if len(account) > 20:
+            raise orm.except_orm('Errore', 'Ci sono più di 20 conti analitici nella fattura {invoice}'.format(invoice=invoice.number))
+
+        for account_code in account.keys():
+            code = account_code.isdigit() and int(account_code) or 5810501  # 5810501 è un numero fisso merci/vendita
+            account_data += account_template.format(**{
+                'account_proceeds': code,
+                'total_proceeds': int(account.get(account_code) * 100)
+            })
+
+        for k in range(0, 8 - len(account)):
+            account_data += account_template.format(**{
+                'account_proceeds': 0,
+                'total_proceeds': 0
+            })
+
+
         empty_accounting = {
             'val_0': 0,
             'empty': '',
@@ -438,8 +466,7 @@ class WizardExportPrimaNota(orm.TransientModel):
         }
 
         accounting_data = ''
-
-        for k in range(0, 20):
+        for k in range(0, 20 - len(account)):
             accounting_data += industrial_accounting_template.format(**empty_accounting)
 
         return accounting_data
