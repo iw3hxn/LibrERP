@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp.osv import orm, fields
 from tools.translate import _
+from openerp import SUPERUSER_ID
 
 
 class res_partner(orm.Model):
@@ -30,18 +31,18 @@ class res_partner(orm.Model):
         ('vat_uniq', 'unique (vat)', _('Error! Specified VAT Number already exists for any other registered partner.'))
     ]
 
-    def vat_search(self, cr, uid, ids, vat, context):
+    def vat_search(self, cr, ids, vat, context):
         # import pdb; pdb.set_trace()
-        partner_vat = self.search(cr, uid, [('vat', '=', vat)], context=context)
+        partner_vat = self.search(cr, SUPERUSER_ID, [('vat', '=', vat)], context=context)
         # partner_vat_dif = set(partner_vat).symmetric_difference(set(ids))
         if partner_vat and ids not in partner_vat:
-            partner = self.browse(cr, uid, partner_vat, context)[0]
+            partner = self.browse(cr, SUPERUSER_ID, partner_vat, context)[0]
             raise orm.except_orm(_('Error!'),
                 _("Vat {vat} just exist on partner {partner} assigned to {user}!").format(vat=vat, partner=partner.name, user=partner.user_id.name or ''))
-        partner_vat = self.search(cr, uid, [('vat', '=', vat), ('active', '=', False)], context=context)
+        partner_vat = self.search(cr, SUPERUSER_ID, [('vat', '=', vat), ('active', '=', False)], context=context)
 
         if partner_vat and ids not in partner_vat:
-            partner = self.browse(cr, uid, partner_vat, context)[0]
+            partner = self.browse(cr, SUPERUSER_ID, partner_vat, context)[0]
             raise orm.except_orm(_('Error!'),
                 _("Vat {vat} just exist non active partner {partner} assigned to {user}!").format(vat=vat, partner=partner.name, user=partner.user_id and partner.user_id.name or ''))
         return True
@@ -50,14 +51,14 @@ class res_partner(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         if vals.get('vat', False):
-            self.vat_search(cr, uid, ids, vals.get('vat'), context)
+            self.vat_search(cr, ids, vals.get('vat'), context)
         return super(res_partner, self).write(cr, uid, ids, vals, context)
 
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         if vals.get('vat', False):
-            self.vat_search(cr, uid, [], vals.get('vat'), context)
+            self.vat_search(cr, [], vals.get('vat'), context)
         return super(res_partner, self).create(cr, uid, vals, context)
 
 
