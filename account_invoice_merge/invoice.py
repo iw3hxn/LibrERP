@@ -88,7 +88,7 @@ class account_invoice(orm.Model):
 
             self.unlink(cr, uid, [inv.id], context)
 
-        self.button_reset_taxes(cr, uid, [parent.id])
+        self.button_reset_taxes(cr, uid, [parent.id], context)
         return parent.id
 
 
