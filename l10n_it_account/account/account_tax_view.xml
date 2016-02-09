@@ -19,13 +19,13 @@
                         <attribute name="readonly">False</attribute>
                     </xpath>
                     <xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='tax_sign']" position="attributes">
-                        <attribute name="readonly">True</attribute>
+                        <attribute name="readonly">False</attribute>
                     </xpath>
                     <xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='ref_base_sign']" position="attributes">
                         <attribute name="readonly">False</attribute>
                     </xpath>
                     <xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='ref_tax_sign']" position="attributes">
-                        <attribute name="readonly">True</attribute>
+                        <attribute name="readonly">False</attribute>
                     </xpath>
                 </data>
             </field>
