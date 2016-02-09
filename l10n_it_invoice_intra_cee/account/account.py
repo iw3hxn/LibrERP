@@ -101,22 +101,22 @@ class account_invoice(orm.Model):
 
             for line in invoice.invoice_line:
 
-                if fp and fp.active_reverse_charge and line.invoice_line_tax_id[0].auto_invoice_tax_id:
+                if fp and fp.active_reverse_charge and line.invoice_line_tax_id and line.invoice_line_tax_id[0].auto_invoice_tax_id:
 
                     for tax_id in line.invoice_line_tax_id:
                         if not tax_id.auto_invoice_tax_id:
-                            #perhaps possible for Travel agencies, which has withholding tax with reverse charge for intermediaries
+                            # perhaps possible for Travel agencies, which has withholding tax with reverse charge for intermediaries
                             raise orm.except_orm(
                                 _('Tax configuration Error!'),
                                 _("The %s tax is configured as reverse charge, so the row must have only reverse charge taxes.")
-                                % (tax_id.name)
+                                % tax_id.name
                             )
                         for child_tax in tax_id.child_ids:
                             if not child_tax.auto_invoice_tax_id:
                                 raise orm.except_orm(
                                     _('Tax configuration Error!'),
                                     _("The %s tax is configured as reverse charge, so its childs must be too.")
-                                    % (tax_id.name)
+                                    % tax_id.name
                                 )
 
                     res[invoice.id]['auto_invoice_amount_untaxed'] += line.price_subtotal
@@ -159,7 +159,7 @@ class account_invoice(orm.Model):
     def _get_tax_relation(self, cr, uid, invoice_id, context=None):
         # ----- keep relation between tax and relative intra cee tax
         tax_relation = {}
-        inv = self.browse(cr, uid, invoice_id)
+        inv = self.browse(cr, uid, invoice_id, context)
         for line in inv.invoice_line:
             # ----- Check if tax has autoinvoice tax
             for tax in line.invoice_line_tax_id:
@@ -178,7 +178,7 @@ class account_invoice(orm.Model):
                     _('Error!'),
                     _('Property_account_receivable of partner "%s" can\'t be of type \'view\'. \
                     Verify if the partner is set properly as \'customer\'.')
-                    %(invoice.partner_id.name))
+                    % invoice.partner_id.name)
         else:
             if fiscal_position.auto_invoice_partner_id:
                 partner_id = fiscal_position.auto_invoice_partner_id.id
@@ -189,7 +189,7 @@ class account_invoice(orm.Model):
                         _('Error!'),
                         _('Property_account_receivable of partner "%s" can\'t be of type \'view\'. \
                         Verify if the partner is set properly as \'customer\'.')
-                        %(fiscal_position.auto_invoice_partner_id.name))
+                        % fiscal_position.auto_invoice_partner_id.name)
             else:
                 raise orm.except_orm(
                     _('Error!'),
@@ -299,7 +299,7 @@ class account_invoice(orm.Model):
                 continue
 
             for line in inv.invoice_line:
-                if not line.invoice_line_tax_id[0].auto_invoice_tax_id:
+                if not line.invoice_line_tax_id and line.invoice_line_tax_id[0].auto_invoice_tax_id:
                     continue
 
             # ----- Get actual invoice copy based on fiscal position flag
@@ -319,11 +319,11 @@ class account_invoice(orm.Model):
             wf_service.trg_validate(uid, 'account.invoice',
                                     auto_invoice_id, 'invoice_open', cr)
             new_invoice = self.browse(cr, uid, auto_invoice_id, context)
-            #get move_line_ids of auto invoice with partner-account_id partner for reconciliation
+            # get move_line_ids of auto invoice with partner-account_id partner for reconciliation
             for move_line in new_invoice.move_id.line_id:
                 if move_line.account_id == move_line.partner_id.property_account_receivable:
                     auto_invoice_to_be_reconciled.append(move_line.id)
-            #the same for supplier invoice
+            # the same for supplier invoice
             for move_line in inv.move_id.line_id:
                 if move_line.account_id == move_line.partner_id.property_account_payable and \
                         move_line.amount_residual == inv.amount_tax:
@@ -347,8 +347,8 @@ class account_invoice(orm.Model):
                 'debit': debit_1,
                 'credit': credit_1,
                 'partner_id': inv.partner_id.id,
-                'account_id': inv.account_id.id, # use actual account_id configured in invoice
-                #if set, instead of generic partner_id.property_account_payable.id,
+                'account_id': inv.account_id.id,  # use actual account_id configured in invoice
+                # if set, instead of generic partner_id.property_account_payable.id,
             }))
             # ----- Products values
             account_move_line_vals.append((0, 0, {
@@ -384,7 +384,7 @@ class account_invoice(orm.Model):
             self.write(cr, uid, [inv.id],
                        {'auto_invoice_id': auto_invoice_id,
                         'transfer_entry_id': transfer_entry_id})
-            #get move_line_ids of auto invoice with partner-account_id partner for reconciliation
+            # get move_line_ids of auto invoice with partner-account_id partner for reconciliation
             move = move_obj.browse(cr, uid, [transfer_entry_id], context)[0]
             for move_line in move.line_id:
                 if move_line.account_id == move_line.partner_id.property_account_receivable:
@@ -412,7 +412,7 @@ class account_invoice(orm.Model):
         for inv in invoices:
             # ----- Delete Auto Invoice
             if inv.auto_invoice_id:
-                # ----- Delete Payments for suppier invoice
+                # ----- Delete Payments for supplier invoice
                 if len(inv.payment_ids) > 1:
                     raise orm.except_orm(
                         _('Error!'),
