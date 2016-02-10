@@ -407,6 +407,16 @@ class product_product(orm.Model):
             bom_obj.copy(cr, uid, bom_id, {'product_id': copy_id}, context=context)
         return copy_id
 
+    def update_product_bom_price(self, cr, uid, ids, context=None):
+        """
+        This Function is call by scheduler.
+        """
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+        for product in self.browse(cr, uid, ids, context):
+            product.write({'standard_price': product.cost_price})
+        return True
+
     def update_bom_price(self, cr, uid, context=None):
         """
         This Function is call by scheduler.
