@@ -87,6 +87,20 @@
         <menuitem action="action_order_to_send" id="menu_sale_order_to_send" parent="base.menu_sales" sequence="8"
                   groups="base.group_sale_salesman,base.group_sale_manager"/>
 
+        <record id="action_order_form_supervisor" model="ir.actions.act_window">
+            <field name="name">Quotation Supervisor Review</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="search_view_id" ref="view_sales_order_filter_simple"/>
+            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="domain">[('state','=','wait_supervisor_validation')]</field>
+        </record>
+
+        <menuitem action="action_order_form_supervisor" id="menu_sale_order_supervisor" parent="base.menu_sales" sequence="9"
+                  groups="sale.verify_supervisor_validation"/>
+
         <record id="action_order_waiting_customer" model="ir.actions.act_window">
             <field name="name">Quotation Waiting Customer</field>
             <field name="type">ir.actions.act_window</field>
