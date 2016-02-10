@@ -33,19 +33,37 @@ class account_invoice(orm.Model):
 
     def update_product(self, cr, uid, ids, context):
         for invoice in self.browse(cr, uid, ids, context):
+            user = self.pool['res.users'].browse(cr, uid, uid, context)
+            from_currency = invoice.currency_id.id
+            to_currency = user.company_id.currency_id.id
+
             for line in invoice.invoice_line:
                 if line.product_id and line.quantity != 0.0 and line.price_unit != 0.0:
                     if invoice.type == 'out_invoice':
+                        price_subtotal = self.pool['res.currency'].compute(
+                            cr, uid,
+                            from_currency_id=from_currency,
+                            to_currency_id=to_currency,
+                            from_amount=line.price_subtotal,
+                            context=context
+                        )
                         line.product_id.write(
                             {
-                                'last_sale_price': line.price_subtotal / line.quantity,
+                                'last_sale_price': price_subtotal / line.quantity,
                                 'last_customer_invoice_id': invoice.id
                             }
                         )
                     elif invoice.type == 'in_invoice':
+                        price_subtotal = self.pool['res.currency'].compute(
+                            cr, uid,
+                            from_currency_id=from_currency,
+                            to_currency_id=to_currency,
+                            from_amount=line.price_subtotal,
+                            context=context
+                        )
                         line.product_id.write(
                             {
-                                'last_purchase_price': line.price_subtotal / line.quantity,
+                                'last_purchase_price': price_subtotal / line.quantity,
                                 'last_supplier_invoice_id': invoice.id
                             }
                         )
