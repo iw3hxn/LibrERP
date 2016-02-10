@@ -300,7 +300,7 @@ class sale_order_confirm(orm.TransientModel):
                 'version': old_sale_order_data['version'] + 1,
                 'name': old_sale_order_name,
                 'client_order_ref': sale_order_confirm_data['client_order_ref'],
-                'date_order': sale_order_confirm_data['order_date'],
+                'date_confirm': sale_order_confirm_data['order_date'],
                 'partner_shipping_id': sale_order_confirm_data['partner_shipping_id'][0]
             })
             # qui creo il nuovo sale.order
@@ -353,12 +353,14 @@ class sale_order_confirm(orm.TransientModel):
             sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {
                 'customer_validation': True,
                 'client_order_ref': sale_order_confirm_data['client_order_ref'],
-                'date_order': sale_order_confirm_data['order_date'],
                 'partner_shipping_id': sale_order_confirm_data['partner_shipping_id'][0]
             })
 
             wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'order_confirm', cr)
-
+            # need to write after validation
+            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {
+                'date_confirm': sale_order_confirm_data['order_date'],
+            })
             return {
                 'type': 'ir.actions.act_window_close'
             }

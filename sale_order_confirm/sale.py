@@ -180,6 +180,7 @@ class sale_order(orm.Model):
         return True
 
     _columns = {
+        'create_uid': fields.many2one('res.users', 'Created by', readonly=True),
         'credit_limit': fields.function(_credit_limit, string="Remaining Credit Limit", type='float', readonly=True, method=True),
         'sale_order_minimun': fields.related('shop_id', 'sale_order_minimun', type='float', string='Minimun Invoice', store=False, readonly=True),
         'visible_minimum': fields.related('shop_id', 'sale_order_have_minimum', type='boolean', string=_('Minimun Amount'), store=False, readonly=True),

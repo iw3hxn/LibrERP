@@ -39,6 +39,7 @@ class sale_order(orm.Model):
                 if line.product_id:
                     vals = {
                         # 'last_sale_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                        'state': 'sellable',
                         'last_sale_date': order.date_order or time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                         'last_customer_id': line.order_partner_id.id,
                         'last_sale_order_id': order.id
