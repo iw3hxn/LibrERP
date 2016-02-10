@@ -55,6 +55,7 @@ class product_product(orm.Model):
         
         context = context or {}
         bom_properties = bom_properties or []
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
         
         bom_obj = self.pool['mrp.bom']
         uom_obj = self.pool['product.uom']
@@ -104,12 +105,25 @@ class product_product(orm.Model):
                 # no BoM: use standard_price
                 # use standard_price if no supplier indicated
                 if product.prefered_supplier:
-                    pricelist = product.prefered_supplier.property_product_pricelist_purchase and product.prefered_supplier.property_product_pricelist_purchase.id or False
+                    pricelist = product.prefered_supplier.property_product_pricelist_purchase and product.prefered_supplier.property_product_pricelist_purchase or False
                     ctx = {
                         'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                     }
-                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist], product.id, 1, context=ctx)[pricelist] or 0
-                    res[product.id] = price
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, context=ctx)[pricelist.id] or 0
+
+                    price_subtotal = 0.0
+                    if pricelist:
+                        from_currency = pricelist.currency_id.id
+                        to_currency = user.company_id.currency_id.id
+                        price_subtotal = self.pool['res.currency'].compute(
+                            cr, uid,
+                            from_currency_id=from_currency,
+                            to_currency_id=to_currency,
+                            from_amount=price,
+                            context=context
+                        )
+
+                    res[product.id] = price_subtotal or price
                 else:
                     res[product.id] = product.standard_price
                 continue
