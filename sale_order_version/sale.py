@@ -24,6 +24,7 @@
 
 from openerp.osv import orm, fields
 from tools import ustr
+from tools.translate import _
 
 
 class sale_order_line(orm.Model):
@@ -47,6 +48,15 @@ class sale_order_line(orm.Model):
 class sale_order(orm.Model):
     """ Modificaciones de sale order para añadir la posibilidad de versionar el pedido de venta. """
     _inherit = "sale.order"
+
+    def action_wait(self, cr, uid, ids, *args):
+        res = super(sale_order, self).action_wait(cr, uid, ids, *args)
+        context = self.pool['res.users'].context_get(cr, uid)
+        for order in self.browse(cr, uid, ids, context):
+            if order.shop_id and order.shop_id.sale_order_sequence_id:
+                sequence = self.pool['ir.sequence'].next_by_id(cr, uid, order.shop_id.sale_order_sequence_id.id)
+                order.write({'name': sequence})
+        return res
     
     def action_previous_version(self, cr, uid, ids, default=None, context=None):
         if not default:
@@ -141,4 +151,23 @@ class sale_shop(orm.Model):
     
     _columns = {
         'sequence_id': fields.many2one('ir.sequence', 'Entry Sequence', help="This field contains the informatin related to the numbering of the Sale Orders.", domain="[('code', '=', 'sale.order')]"),
+        'sale_order_sequence_id': fields.many2one('ir.sequence', 'Entry Sequence Confirmed', help="This field contains the informatin related to the numbering of the Sale Orders Confirmed by Customer", domain="[('code', '=', 'sale.order')]"),
     }
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        if vals.get('sequence_id', False) and vals.get('sale_order_sequence_id', False):
+            if vals.get('sequence_id', False) == vals.get('sale_order_sequence_id', False):
+                raise orm.except_orm(_('Error!'),
+                    _("In not possible to have same sequence"))
+
+        return super(sale_shop, self).write(cr, uid, ids, vals, context=context)
+
+    def create(self, cr, uid, vals, context=None):
+        if vals.get('sequence_id', False) and vals.get('sale_order_sequence_id', False):
+            if vals.get('sequence_id', False) == vals.get('sale_order_sequence_id', False):
+                raise orm.except_orm(_('Error!'),
+                    _("In not possible to have same sequence"))
+
+        return super(sale_shop, self).create(cr, uid, vals, context=context)
