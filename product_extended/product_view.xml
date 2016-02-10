@@ -15,14 +15,14 @@
 	                    		<field name="last_sale_price" groups="product_bom.group_sell_price"/>
 	                    		<field name="last_sale_date" groups="product_bom.group_sell_price"/>
                                 <field name="last_sale_order_id" groups="base.group_sale_salesman"/>
-                                <field name="last_customer_invoice_id" groups="base.group_sale_salesman"/>
+                                <field name="last_customer_invoice_id" groups="base.group_sale_salesman" context="{'type':'out_invoice', 'journal_type':'sale'}"/>
                     		</group>
                             <group colspan="2" col="2">
 	                    		<field name="last_supplier_id" groups="product_bom.group_supplier_product"/>
                                 <field name="last_purchase_price" groups="product_bom.group_cost_price"/>
 	                    		<field name="last_purchase_date" groups="product_bom.group_cost_price"/>
                                 <field name="last_purchase_order_id" groups="purchase.group_purchase_user,stock.group_stock_user"/>
-                                <field name="last_supplier_invoice_id" groups="purchase.group_purchase_user"/>
+                                <field name="last_supplier_invoice_id" groups="purchase.group_purchase_user" context="{'type':'in_invoice', 'journal_type':'purchase'}"/>
                     		</group>
                     	</group>  
                     	<newline/>

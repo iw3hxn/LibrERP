@@ -64,7 +64,7 @@ def connect_db(oerp, database):
 if __name__ == '__main__':
     connection = None
     try:
-        connection = oerplib.OERP(server='localhost', protocol='xmlrpc', port=8069)
+        connection = oerplib.OERP(server='localhost', protocol='xmlrpc', port=8269)
     except:
         raise "Not able to connect, please check connetion parameters!!!"
     while 1:
