@@ -54,3 +54,9 @@ msgstr "Errore"
 #, python-format
 msgid "You cannot reset this Sale Order to draft, because invoice %s %s is not in state draft or cancel "
 msgstr "Non puoi riportare questa richiesta d'acquisto, perchè la fattura [ %s %s ] non è in stato Bozza o Cancellato "
+
+#. module: purchase_order_reopen
+#: code:addons/purchase_order_reopen/purchase.py:289
+#, python-format
+msgid "Purchase order '%s' is deactivate.."
+msgstr "L'ordine di acquisto '%s' è stato disattivato."
