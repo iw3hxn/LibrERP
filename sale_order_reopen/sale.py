@@ -32,12 +32,12 @@ import logging
 class sale_order(osv.osv):
     _inherit = 'sale.order'
 
-#    def _auto_init(self, cr, context=None):
-#           cr.execute("""update wkf_instance
-#                         set state = 'active'
-#                       where state = 'complete'
-#                         and res_type = 'sale.order'
-#""")
+    # def _auto_init(self, cr, context=None):
+    #           cr.execute("""update wkf_instance
+    #                         set state = 'active'
+    #                       where state = 'complete'
+    #                         and res_type = 'sale.order'
+    #""")
 
 
     def allow_reopen(self, cr, uid, ids, context=None):
@@ -50,7 +50,7 @@ class sale_order(osv.osv):
             if order.picking_ids:
                 for pick in order.picking_ids:
                     stock_picking_obj.allow_reopen(cr, uid, [pick.id])
-                    
+
                     #if pick.state not in ['draft','cancel','confirmed']: # very restrictive
                     #    raise osv.except_osv(_('Error'), _('You cannot reset this Sale Order to draft, because picking [ %s %s ] is not in state draft or cancel ')% (pick.name, pick.state))
 
@@ -58,12 +58,13 @@ class sale_order(osv.osv):
                 #for inv in order.invoice_ids:
                 #    account_invoice_obj.action_reopen(cr, uid, [inv.id])
                 for inv in order.picking_ids:
-                    if inv.state not in ['draft','cancel']: # very restrictive
-                        raise osv.except_osv(_('Error'), _('You cannot reset this Sale Order to draft, because invoice %s %s is not in state draft or cancel ')% (inv.name, inv.state))
+                    if inv.state not in ['draft', 'cancel']:  # very restrictive
+                        raise osv.except_osv(_('Error'), _(
+                            'You cannot reset this Sale Order to draft, because invoice %s %s is not in state draft or cancel ') % (
+                                             inv.name, inv.state))
 
         return True
 
-    
 
     def action_reopen(self, cr, uid, ids, context=None):
         """ Changes SO from to draft.
@@ -85,44 +86,46 @@ class sale_order(osv.osv):
             if order.invoice_ids:
                 for inv in order.invoice_ids:
                     account_invoice_obj.action_reopen(cr, uid, [inv.id])
-                    if inv.journal_id.update_posted: 
+                    if inv.journal_id.update_posted:
                         _logger.debug('FGF sale_order reopen cancel invoice %s' % (ids))
                         account_invoice_obj.action_cancel(cr, uid, [inv.id])
                     else:
                         _logger.debug('FGF sale_order reopen cancel 2 invoice %s' % (ids))
-                        account_invoice_obj.write(cr, uid, [inv.id], {'state':'cancel', 'move_id':False})
+                        account_invoice_obj.write(cr, uid, [inv.id], {'state': 'cancel', 'move_id': False})
 
             if order.picking_ids:
                 for pick in order.picking_ids:
                     stock_picking_obj.action_reopen(cr, uid, [pick.id])
-                    stock_picking_obj.write(cr, uid, [pick.id], {'state':'cancel'})
+                    stock_picking_obj.write(cr, uid, [pick.id], {'state': 'cancel'})
                     if pick.move_lines:
                         move_ids = []
                         for m in pick.move_lines:
                             move_ids.append(m.id)
-                        stock_move_obj.write(cr, uid, move_ids, {'state':'cancel'})
-                    #stock_picking_obj.action_cancel(cr, uid, [pick.id])
-                     
-            # for some reason datas_fname has .pdf.pdf extension
-            report_ids = report_xml_obj.search(cr, uid, [('model','=', 'sale.order'), ('attachment','!=', False)])
-            for report in report_xml_obj.browse(cr, uid, report_ids):
-              if report.attachment:
-                aname = report.attachment.replace('object','order')
-                if eval(aname):
-                  aname = eval(aname)+'.pdf'
-                  attachment_ids = attachment_obj.search(cr, uid, [('res_model','=','sale.order'),('datas_fname', '=', aname),('res_id','=',order.id)])
-                  for a in attachment_obj.browse(cr, uid, attachment_ids):
-                    vals = {
-                        'name': a.name.replace('.pdf', now+'.pdf'),
-                        'datas_fname': a.datas_fname.replace('.pdf.pdf', now+'.pdf.pdf')
-                           }
-                    attachment_obj.write(cr, uid, a.id, vals)
+                        stock_move_obj.write(cr, uid, move_ids, {'state': 'cancel'})
+                        #stock_picking_obj.action_cancel(cr, uid, [pick.id])
 
-            self.write(cr, uid, order.id, {'state':'draft'})
+            # for some reason datas_fname has .pdf.pdf extension
+            report_ids = report_xml_obj.search(cr, uid, [('model', '=', 'sale.order'), ('attachment', '!=', False)])
+            for report in report_xml_obj.browse(cr, uid, report_ids):
+                if report.attachment:
+                    aname = report.attachment.replace('object', 'order')
+                    if eval(aname):
+                        aname = eval(aname) + '.pdf'
+                        attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'sale.order'),
+                                                                         ('datas_fname', '=', aname),
+                                                                         ('res_id', '=', order.id)])
+                        for a in attachment_obj.browse(cr, uid, attachment_ids):
+                            vals = {
+                                'name': a.name.replace('.pdf', now + '.pdf'),
+                                'datas_fname': a.datas_fname.replace('.pdf.pdf', now + '.pdf.pdf')
+                            }
+                            attachment_obj.write(cr, uid, a.id, vals)
+
+            self.write(cr, uid, order.id, {'state': 'draft'})
             line_ids = []
             for line in order.order_line:
                 line_ids.append(line.id)
-            order_line_obj.write(cr, uid, line_ids, {'state':'draft', 'invoiced': False})
+            order_line_obj.write(cr, uid, line_ids, {'state': 'draft', 'invoiced': False})
 
             wf_service = netsvc.LocalService("workflow")
 
@@ -132,11 +135,11 @@ class sale_order(osv.osv):
             wf_service.trg_create(uid, 'sale.order', order.id, cr)
 
             #self.log_sale(cr, uid, ids, context=context)  
-            
+
         return True
 
 
-#    def button_reopen(self, cr, uid, ids, context=None):
+# def button_reopen(self, cr, uid, ids, context=None):
 #        _logger = logging.getLogger(__name__)   
 #        self.allow_reopen(cr, uid, ids, context)
 #        _logger.debug('FGF picking allow open  '   )
