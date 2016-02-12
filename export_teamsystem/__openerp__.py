@@ -20,10 +20,10 @@
 
 {
     'name': 'export_primanota_teamsystem',
-    'version': '3.0.0.0i',
+    'version': '3.0.1.0',
     'category': 'Accounting & Finance',
     'description': """
-    Export Primanota in format accepted by TeamSystem program
+    Export Primanota in format TRAF2000 accepted by TeamSystem program
     """,
     'author': 'Didotech SRL',
     'website': 'http://www.didotech.com',

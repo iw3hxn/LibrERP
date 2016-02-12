@@ -19,7 +19,21 @@
 #
 ##############################################################################
 
-from team_system_template import cash_book, deadline_book, industrial_accounting_template, industrial_accounting
+from team_system_template import cash_book, account_template, tax_template
+from team_system_template import deadline_book, industrial_accounting_template, industrial_accounting
+
+tax_data = tax_template.format(**{
+    'taxable': 240000000,  # Imponibile 6 dec?
+    'vat_code': 22,  # Aliquota Iva o Codice esenzione
+    'agro_vat_code': 0,  # Aliquota iva di compensazione agricola
+    'vat11_code': 0,
+    'vat_total': 52800}
+) * 8
+
+account_data = account_template.format(**{
+    'account_proceeds': 5810502,
+    'total_proceeds': 240000000  # Imponibile 6 dec?
+}) * 8
 
 
 cash_book_values = {
@@ -89,18 +103,13 @@ cash_book_values = {
     'plafond_month': 012016,  # MMAAAA Riferimento PLAFOND e fatture diferite
 
     # Dati iva
-    'taxable': 240000000,  # Imponibile 6 dec?
-    'vat_code': 22,  # Aliquota Iva o Codice esenzione
-    'agro_vat_code': 0,  # Aliquota iva di compensazione agricola
-    'vat11_code': 0,
-    'vat_total': 52800,
+    'tax_data': tax_data,
 
     # Totale fattura
     'invoice_total': 240000000,  # Imponibile 6 dec?
 
     # Conti di ricavo/costo
-    'account_proceeds': 5810502,
-    'total_proceeds': 240000000,  # Imponibile 6 dec?
+    'account_data': account_data,
 
     # Dati eventuale pagamento fattura o movimenti diversi
 
@@ -194,11 +203,10 @@ industrial_accounting_values = {
 
     # CONTAB. INDUSTRIALE 8
     'accounting_data': get_accounting_data()
-
 }
 
 if __name__ == '__main__':
-    record_type = 2
+    record_type = 0
 
     if record_type == 0:
         record = cash_book.format(**cash_book_values)

@@ -21,7 +21,7 @@
 
 from openerp.osv import orm, fields
 import logging
-from cStringIO import StringIO
+from StringIO import StringIO
 import re
 import datetime
 from openerp.tools.translate import _
@@ -29,11 +29,8 @@ from openerp.tools.translate import _
 from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, account_template, industrial_accounting_template
 from openerp.addons.export_teamsystem.team_system_template import maturity_template, deadline_book
 
-
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
-
-import pdb
 
 
 def get_phone_number(number, prefix=''):
@@ -103,18 +100,19 @@ class WizardExportPrimaNota(orm.TransientModel):
         else:
             return False
 
-    def get_tax_code(self, cr, uid, tax_line, context=None):
+    def get_printable_tax(self, cr, uid, tax_line, context=None):
         if context is None:
             context = {}
-        tax_code = ''
-        tax_pool = self.pool['account.tax']
-        tax_browse = False
-        tax_id = tax_pool.get_tax_by_invoice_tax(cr, uid, tax_line.name, context=context)
-        tax = tax_pool.browse(cr, uid, tax_id, context=context)
-        if not tax.tax_code_id.notprintable:
-            tax_code = tax.description
-            tax_browse = tax
-        return tax_code, tax_browse
+
+        tax_obj = self.pool['account.tax']
+
+        tax_id = tax_obj.get_tax_by_invoice_tax(cr, uid, tax_line.name, context=context)
+        tax = tax_obj.browse(cr, uid, tax_id, context=context)
+        if tax.tax_code_id.notprintable:
+            return '', False
+        else:
+            tax_code = re.findall(r'[0-9]*', tax.description)[0]
+            return tax_code, tax
 
     def get_tax_payability(self, cr, uid, invoice, context=None):
         payability = 'I'
@@ -129,15 +127,23 @@ class WizardExportPrimaNota(orm.TransientModel):
 
     def tax_creation(self, cr, uid, invoice, context=None):
         # created a separate function, so it is possible to extend on a separate module
-        # create tax with max 8 taxes
-        # tax_data = []
+        # create tax with max 8 taxes. Total length 248
+
+        if not context:
+            context = {}
+
+        # This is required for correct tax search
+        context['type'] = invoice.type
+
         tax_data = ''
+
         payability = self.get_tax_payability(cr, uid, invoice, context)
+        no_tax = 0
 
         for count, tax_line in enumerate(invoice.tax_line, 1):
-            tax_code, tax = self.get_tax_code(cr, uid, tax_line, context)
+            tax_code, tax = self.get_printable_tax(cr, uid, tax_line, context)
 
-            if tax_code:
+            if tax:
                 tax_values = {
                     'tax_code': tax_code,
                     'taxable': int(tax_line.base * 100),
@@ -150,6 +156,8 @@ class WizardExportPrimaNota(orm.TransientModel):
                     'non_taxable_nature': tax.non_taxable_nature
                 }
                 tax_data += tax_template.format(**tax_values)
+            else:
+                no_tax += 1
 
         if not tax_data:
             raise orm.except_orm('Errore', 'Non ci sono tasse definite nella fattura {invoice}'.format(invoice=invoice.number))
@@ -164,7 +172,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'vat_total': 0
         }
 
-        for a in range(0, 8 - count):
+        for a in range(0, 8 - count + no_tax):
             tax_data += tax_template.format(**empty_tax_values)
 
         return tax_data, payability
@@ -320,7 +328,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             # Dati iva x8
             'tax_data': tax_data,
 
-            # Totale fattura
+            # Totale fattura 723
             'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 100),  # Imponibile 6 dec?
 
             # Conti di ricavo/costo 735
@@ -328,7 +336,8 @@ class WizardExportPrimaNota(orm.TransientModel):
 
             # Dati eventuale pagamento fattura o movimenti diversi
 
-                # Iva Editoria
+            # Iva Editoria
+            # pos. 6962:
             'vat_collectability': vat_collectability,
                                         # 0=Immediata 1=Differita 2=Differita DL. 185/08
                                         # 3=Immediata per note credito/debito 4=Split payment
@@ -454,7 +463,6 @@ class WizardExportPrimaNota(orm.TransientModel):
                 'total_proceeds': 0
             })
 
-
         empty_accounting = {
             'val_0': 0,
             'empty': '',
@@ -491,7 +499,6 @@ class WizardExportPrimaNota(orm.TransientModel):
 
             # CONTAB. INDUSTRIALE 8
             'accounting_data': self.get_accounting_data(cr, uid, invoice, context)
-
         }
 
     def action_export_primanota(self, cr, uid, ids, context):
@@ -511,5 +518,5 @@ class WizardExportPrimaNota(orm.TransientModel):
             file_data.write(deadline_book.format(**deadline_values))
 
         out = file_data.getvalue()
-        out = out.encode("base64")
+        out = out.encode('utf-8').encode("base64")
         return self.write(cr, uid, ids, {'state': 'end', 'data': out, 'name': file_name}, context=context)
