@@ -177,7 +177,7 @@ class riba_file_export(osv.osv_memory):
                'E',
                name_company,
                creditor_address[0].street or '',
-               creditor_address[0].zip or '' + ' ' + creditor_city,
+               creditor_address[0].zip and creditor_address[0].zip.replace('x', '0')[0:5] or '' + ' ' + creditor_city,
                order_obj.config.company_id.partner_id.ref or '',
                order_obj.config.company_id.partner_id.vat and order_obj.config.company_id.partner_id.vat[2:] or order_obj.config.company_id.partner_id.fiscalcode,
                ]
@@ -214,10 +214,10 @@ class riba_file_export(osv.osv_memory):
             else:
                 raise osv.except_osv('Error', _('No Street specified for ') + line.partner_id.name)
             if debitor_address[0].zip:
-                debitor_zip = debitor_address[0].zip
+                debitor_zip = debitor_address[0].zip.replace('x', '0')[0:5]
             else:
                 raise osv.except_osv('Error', _('No CAP specified for ') + line.partner_id.name)
-            #TODO search for bank_riba_id: if exists, use its abi cab
+            # TODO search for bank_riba_id: if exists, use its abi cab
             
             if debitor_address[0].city:
                 debitor_city = debitor_address[0].city.ljust(23)[0:23] or ''

@@ -117,7 +117,7 @@ class account_invoice(orm.Model):
                 date_start = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                 date_stop = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
             period_ids = self.pool['account.period'].search(
-                cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop), ('company_id', '=', invoice.company_id.id)])
+                cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop), ('company_id', '=', invoice.company_id.id), ('special', '!=', True)])
             if period_ids:
                 period_id = period_ids[0]
                 self.write(cr, uid, [invoice.id], {'registration_date': reg_date, 'period_id': period_id})
