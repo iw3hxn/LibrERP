@@ -19,6 +19,6 @@
 #
 ##############################################################################
 
-from . import sale
 from . import company
+from . import sale
 from . import product
