@@ -121,6 +121,7 @@ class riba_file_export(osv.osv_memory):
         accumulatore = self._RecordIB(intestazione[0], intestazione[1], intestazione[4], intestazione[5],
                                       intestazione[6])
         for value in ricevute_bancarie:  # estraggo le ricevute dall'array
+            self._progressivo += 1
             if not value[9] or not value[10]:
                 raise osv.except_osv('Error', _('No ABI / CAB specified for bank in ') + value[3])
             accumulatore += self._Record14(
@@ -180,7 +181,7 @@ class riba_file_export(osv.osv_memory):
                creditor_address[0].zip and creditor_address[0].zip.replace('x', '0')[0:5] or '' + ' ' + creditor_city,
                order_obj.config.company_id.partner_id.ref or '',
                order_obj.config.company_id.partner_id.vat and order_obj.config.company_id.partner_id.vat[2:] or order_obj.config.company_id.partner_id.fiscalcode,
-               ]
+            ]
         arrayRiba = []
         for line in order_obj.line_ids:
             debit_abi = False
@@ -233,7 +234,7 @@ class riba_file_export(osv.osv_memory):
 
             if not line.partner_id.vat and not line.partner_id.fiscalcode:
                 raise osv.except_osv('Error', _('No VAT or Fiscal code specified for ') + line.partner_id.name)
-            if not debit_bank_name: #.bank and debit_bank.bank.name or debit_bank.bank_name):
+            if not debit_bank_name:  # .bank and debit_bank.bank.name or debit_bank.bank_name):
                 raise osv.except_osv('Error', _('No debit_bank specified for ') + line.partner_id.name)
             cup = ''
             cig = ''
@@ -261,7 +262,7 @@ class riba_file_export(osv.osv_memory):
                         line.invoice_date,
                         cup,
                         cig,
-                        ]
+                    ]
             arrayRiba.append(Riba)
 
         out = base64.encodestring(self._creaFile(array_testata, arrayRiba).encode("utf8"))
@@ -278,7 +279,7 @@ class riba_file_export(osv.osv_memory):
     }
     _defaults = {
         'state': lambda *a: 'choose',
-        }
+    }
 
 
 riba_file_export()

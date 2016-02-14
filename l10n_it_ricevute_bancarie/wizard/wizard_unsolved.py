@@ -21,11 +21,11 @@
 #
 ##############################################################################
 
-from osv import fields,osv
-from tools.translate import _
-import netsvc
+from openerp.osv import fields, orm
+from openerp.tools.translate import _
 
-class riba_unsolved(osv.osv_memory):
+
+class RibaUnsolved(orm.TransientModel):
 
     def _get_unsolved_journal_id(self, cr, uid, context=None):
         return self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'unsolved_journal_id', context=context)
@@ -38,7 +38,9 @@ class riba_unsolved(osv.osv_memory):
             context = {}
         if not context.get('active_id', False):
             return False
-        return self.pool.get('riba.distinta.line').browse(cr, uid, context['active_id'], context=context).amount
+        return self.pool.get(
+            'riba.distinta.line'
+        ).browse(cr, uid, context['active_id'], context=context).amount
 
     def _get_riba_bank_account_id(self, cr, uid, context=None):
         res = False
@@ -59,20 +61,26 @@ class riba_unsolved(osv.osv_memory):
 
     _name = "riba.unsolved"
     _columns = {
-        'unsolved_journal_id': fields.many2one('account.journal', "Unsolved journal",
+        'unsolved_journal_id': fields.many2one(
+            'account.journal', "Unsolved journal",
             domain=[('type', '=', 'bank')]),
-        'effects_account_id': fields.many2one('account.account', "Effects account",
+        'effects_account_id': fields.many2one(
+            'account.account', "Effects account",
             domain=[('type', '=', 'receivable')]),
         'effects_amount': fields.float('Effects amount'),
-        'riba_bank_account_id': fields.many2one('account.account', "Ri.Ba. bank account"),
+        'riba_bank_account_id': fields.many2one('account.account',
+                                                "Ri.Ba. bank account"),
         'riba_bank_amount': fields.float('Ri.Ba. bank amount'),
-        'overdue_effects_account_id': fields.many2one('account.account', "Overdue Effects account",
+        'overdue_effects_account_id': fields.many2one(
+            'account.account', "Overdue Effects account",
             domain=[('type', '=', 'receivable')]),
         'overdue_effects_amount': fields.float('Overdue Effects amount'),
-        'bank_account_id': fields.many2one('account.account', "Bank account",
+        'bank_account_id': fields.many2one(
+            'account.account', "Bank account",
             domain=[('type', '=', 'liquidity')]),
         'bank_amount': fields.float('Taken amount'),
-        'bank_expense_account_id': fields.many2one('account.account', "Bank Expenses account"),
+        'bank_expense_account_id': fields.many2one('account.account',
+                                                   "Bank Expenses account"),
         'expense_amount': fields.float('Expenses amount'),
         'new_due_date': fields.date('New due date'),
         }
@@ -96,10 +104,10 @@ class riba_unsolved(osv.osv_memory):
         wf_service = netsvc.LocalService("workflow")
         active_id = context and context.get('active_id', False) or False
         if not active_id:
-            raise osv.except_osv(_('Error'), _('No active ID found'))
-        line_pool = self.pool.get('riba.distinta.line')
-        line_pool.write(cr, uid, active_id,
-            {'state': 'unsolved'}, context=context)
+            raise orm.except_orm(_('Error'), _('No active ID found'))
+        line_pool = self.pool['riba.distinta.line']
+        line_pool.write(cr, uid, active_id, {'state': 'unsolved'},
+                        context=context)
         wf_service.trg_validate(
             uid, 'riba.distinta', line_pool.browse(cr, uid, active_id).distinta_id.id, 'unsolved', cr)
         return {'type': 'ir.actions.act_window_close'}
@@ -110,16 +118,23 @@ class riba_unsolved(osv.osv_memory):
         wf_service = netsvc.LocalService("workflow")
         active_id = context and context.get('active_id', False) or False
         if not active_id:
-            raise osv.except_osv(_('Error'), _('No active ID found'))
-        move_pool = self.pool.get('account.move')
-        invoice_pool = self.pool.get('account.invoice')
-#        move_line_pool = self.pool.get('account.move.line')
-        distinta_line = self.pool.get('riba.distinta.line').browse(cr, uid, active_id, context=context)
+            raise orm.except_orm(_('Error'), _('No active ID found'))
+        move_pool = self.pool['account.move']
+        invoice_pool = self.pool['account.invoice']
+        move_line_pool = self.pool['account.move.line']
+        distinta_line = self.pool['riba.distinta.line'].browse(
+            cr, uid, active_id, context=context)
         wizard = self.browse(cr, uid, ids)[0]
-        if not wizard.unsolved_journal_id or not wizard.effects_account_id or not wizard.riba_bank_account_id or not wizard.overdue_effects_account_id or not wizard.bank_account_id or not wizard.bank_expense_account_id:
-            raise osv.except_osv(_('Error'), _('Every account is mandatory'))
+        if (not wizard.unsolved_journal_id or
+                not wizard.effects_account_id or
+                not wizard.riba_bank_account_id or
+                not wizard.overdue_effects_account_id or
+                not wizard.bank_account_id or
+                not wizard.bank_expense_account_id):
+            raise orm.except_orm(_('Error'), _('Every account is mandatory'))
         move_vals = {
-            'ref': _('Unsolved Ri.Ba. %s - line %s') % (distinta_line.distinta_id.name, distinta_line.sequence),
+            'ref': _('Unsolved Ri.Ba. %s - line %s') % (
+                distinta_line.distinta_id.name, distinta_line.sequence),
             'journal_id': wizard.unsolved_journal_id.id,
             'line_id': [
                 (0, 0, {
@@ -147,15 +162,15 @@ class riba_unsolved(osv.osv_memory):
                     'account_id': wizard.bank_account_id.id,
                     'credit': wizard.bank_amount,
                     'debit': 0.0,
-                    }),
+                }),
                 (0, 0, {
                     'name': _('Expenses'),
                     'account_id': wizard.bank_expense_account_id.id,
                     'debit': wizard.expense_amount,
                     'credit': 0.0,
-                    }),
-                ]
-            }
+                }),
+            ]
+        }
         move_id = move_pool.create(cr, uid, move_vals, context=context)
 
         for move_line in move_pool.browse(cr, uid, move_id, context=context).line_id:

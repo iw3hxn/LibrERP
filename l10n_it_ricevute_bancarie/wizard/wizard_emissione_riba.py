@@ -66,7 +66,6 @@ class emissione_riba(orm.TransientModel):
         riba_distinta_move_line = self.pool.get('riba.distinta.move.line')
         move_line_obj = self.pool.get('account.move.line')
 
-
         # create distinta
         rd = {
             'name': self.pool.get('ir.sequence').get(cr, uid, 'seq.riba.distinta'),
