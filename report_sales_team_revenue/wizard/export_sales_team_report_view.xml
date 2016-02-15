@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_export_sales_team_report" model="ir.ui.view">
+                <field name="name">wizard.export.sales.team.report.form</field>
+                <field name="model">export.sales.team.report</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form col="6" string="Download Sales Team Report">
+                        <group col="5" fill="0" height="100" states="selection">
+                            <field name="year" />
+                            <group colspan="5">
+                                <button special="cancel" icon="gtk-cancel" string="Cancel"/>
+                                <button type="object" name="action_team_report" icon="gtk-go-forward"
+                                        string="Download Report"/>
+                            </group>
+                            <field invisible="1" name="state"/>
+                        </group>
+
+                        <group col="6" fill="0" states="end">
+                            <separator colspan="5" string="Export done"/>
+                            <field name="data" filename="name"/>
+                            <field name="name" select="1" invisible="1" />
+                        </group>
+
+                    </form>
+                </field>
+        </record>
+
+        <record id="action_wizard_export_sales_team_report" model="ir.actions.act_window">
+            <field name="name">Export Sales Team Report</field>
+            <field name="res_model">export.sales.team.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_export_sales_team_report"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="menu_download_sales_team_report" model="ir.values">
+            <field name="object" eval="True" />
+            <field name="name">Menu Sales Team Report</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_export_sales_team_report'))" />
+            <field name="key">action</field>
+            <field name="model">crm.case.section</field>
+        </record>
+    </data>
+</openerp>
