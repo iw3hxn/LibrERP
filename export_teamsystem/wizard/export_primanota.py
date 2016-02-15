@@ -313,9 +313,13 @@ class WizardExportPrimaNota(orm.TransientModel):
 
             # TODO: Verifica TRF-NDOC e TRF-SERIE perché sono sbagliati
             'document_number_no_sectional': int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]),  # Numero documento (numero doc senza sezionale)
-            'vat_sectional': invoice.journal_id.teamsystem_code,  #
-            'account_extract': int('{number:04}{section:02}'.format(number=int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]), section=invoice.journal_id.teamsystem_code)),  # ??? Estratto conto Numero partita (numero doc + sezionale (tutto unito):
-                #  es. 1501 per una fattura numero 15 del sez. 1)
+            'vat_sectional': invoice.journal_id.teamsystem_code,
+
+            #  es. 1501 per una fattura numero 15 del sez. 1)
+            # 'account_extract': int('{number:04}{section:02}'.format(number=int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]), section=invoice.journal_id.teamsystem_code)),  # ??? Estratto conto Numero partita (numero doc + sezionale (tutto unito):
+            #
+            'account_extract': int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]),  # Estratto conto Numero partita (numero doc):
+
             'account_extract_year': datetime.datetime.strptime(invoice.date_invoice, '%Y-%m-%d').year,  # Estratto conto Anno partita (anno di emissione della fattura in formato AAAA)
             'ae_currency': 0,  # Estratto conto in valuta Codice valuta estera
             'ae_exchange_rate': 0,  # 13(7+6 dec)
