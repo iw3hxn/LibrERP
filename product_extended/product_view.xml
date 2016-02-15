@@ -15,7 +15,7 @@
 	                    		<field name="last_sale_price" groups="product_bom.group_sell_price"/>
 	                    		<field name="last_sale_date" groups="product_bom.group_sell_price"/>
                                 <field name="last_sale_order_id" groups="base.group_sale_salesman"/>
-                                <field name="last_customer_invoice_id" groups="base.group_sale_salesman" context="{'type':'out_invoice', 'journal_type':'sale'}"/>
+                                <field name="last_customer_invoice_id" groups="base.group_sale_salesman" context="{'type':'out_invoice', 'journal_type':'sale', 'form_view_ref':'account.invoice_form'}"/>
                     		</group>
                             <group colspan="2" col="2">
 	                    		<field name="last_supplier_id" groups="product_bom.group_supplier_product"/>
