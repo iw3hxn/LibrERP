@@ -105,7 +105,7 @@ class WizardExportPartnerProduct(orm.TransientModel):
         )),
         'year': fields.selection(get_years, _('Year'), required=True),
         #'state': fields.selection([('open', 'Open'), ('done', 'Done')], 'State', required=True),
-        'state': fields.selection([('0', 'Quotation'), ('1', 'Order Confirmed'), ('2', 'Invoiced')], 'State', required="1", help="Quotation = Quotation & Send To Customer ")
+        #'state': fields.selection([('0', 'Quotation'), ('1', 'Order Confirmed'), ('2', 'Invoiced')], 'State', required="1", help="Quotation = Quotation & Send To Customer ")
     }
 
     _defaults = {
