@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-cash_book = u"""{company_id:05}{version:1}{type:1}\
+cash_book = """{company_id:05}{version:1}{type:1}\
 {partner_id:05}{name:32}{address:30}{zip:05}{city:25}{province:2}\
 {fiscalcode:16}{vat_number:011}{individual:1}{space:02}\
 {country:04}{vat_ext:12}{fiscalcode_ext:20}\
@@ -101,7 +101,7 @@ cash_book += "\r\n"
 
 
 # portafoglio/scadenze
-deadline_book = u"""{company_id:05}{version:1}{type:1}\
+deadline_book = """{company_id:05}{version:1}{type:1}\
 {val_0:05}{val_0:02}{val_0:03}{val_0:014}"""
 
 # Movimenti INTRASTAT BENI

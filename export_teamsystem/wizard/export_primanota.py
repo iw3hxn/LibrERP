@@ -21,7 +21,7 @@
 
 from openerp.osv import orm, fields
 import logging
-from StringIO import StringIO
+from cStringIO import StringIO
 import re
 import datetime
 from openerp.tools.translate import _
@@ -261,7 +261,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'version': 3,
             'type': 0,
             'partner_id': 0,
-            'name': invoice.partner_id.name[:32],
+            'name': invoice.partner_id.name.encode('latin', 'ignore')[:32],
             'address': address.street and address.street[:30],
             'zip': int(address.zip),
             'city': address.city,
@@ -516,11 +516,17 @@ class WizardExportPrimaNota(orm.TransientModel):
 
         for invoice_id in invoice_ids:
             book_values = self.map_invoice_data(cr, uid, invoice_id, context)
-            file_data.write(cash_book.format(**book_values))
+            row = cash_book.format(**book_values)
+            if not len(row) == 7001:
+                raise orm.except_orm(_('Error'), "La lunghezza della riga errata")
+            file_data.write(row)
 
             deadline_values = self.map_deadline_data(cr, uid, invoice_id, context)
-            file_data.write(deadline_book.format(**deadline_values))
+            row = deadline_book.format(**deadline_values)
+            if not len(row) == 7001:
+                raise orm.except_orm(_('Error'), "La lunghezza della riga errata")
+            file_data.write(row)
 
         out = file_data.getvalue()
-        out = out.encode('utf-8').encode("base64")
+        out = out.encode("base64")
         return self.write(cr, uid, ids, {'state': 'end', 'data': out, 'name': file_name}, context=context)
