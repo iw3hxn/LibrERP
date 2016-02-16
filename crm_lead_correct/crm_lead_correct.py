@@ -172,6 +172,25 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             contact_partner_address_obj.create(cr, uid, vals, context)
         return address_id
 
+    def onchange_contact_id(self, cr, uid, ids, contact_id):
+        """This function returns value of partner email based on Partner Address
+        :param ids: List of case IDs
+        :param add: Id of Partner's address
+        :param email: Partner's email ID
+        """
+        data = {'value': {'email_from': False, 'phone': False}}
+        context = self.pool['res.users'].context_get(cr, uid)
+
+        if contact_id:
+            contact = self.pool['res.partner.address.contact'].browse(cr, uid, contact_id, context)
+            data['value'] = {
+                'email_from': contact and contact.email or False,
+                'phone': contact and contact.mobile or False,
+                'partner_address_id': contact.address_id and contact.address_id.id or False,
+                'partner_id': contact.address_id and contact.address_id.partner_id and contact.address_id and contact.address_id.partner_id.id or False,
+            }
+        return data
+
     def on_change_city(self, cr, uid, ids, city, zip_code=None):
         return self.pool['res.partner.address'].on_change_city(cr, uid, ids, city, zip_code)
 
