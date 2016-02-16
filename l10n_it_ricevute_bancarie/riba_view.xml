@@ -55,7 +55,7 @@
             <field name="arch" type="xml">
                 <form string="Ri.Ba. - Distinta">
                     <field name="name" />
-                    <field name="date_created" />
+                    <field name="date_created" attrs="{'readonly':[('state','!=','draft')]}" />
                     <field name="config" widget="selection"/>
                     <notebook colspan="4">
                         <page string="General">

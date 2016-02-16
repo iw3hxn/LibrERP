@@ -29,6 +29,7 @@ import decimal_precision as dp
 from openerp import netsvc
 from openerp.tools.translate import _
 from datetime import datetime
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 class riba_distinta(osv.osv):
     
@@ -112,7 +113,7 @@ class riba_distinta(osv.osv):
         'line_ids': fields.one2many('riba.distinta.line', 'distinta_id',
             'Riba deadlines', readonly=False,),# states={'draft': [('readonly', False)]}),
         'user_id': fields.many2one('res.users', 'User', required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'date_created': fields.date('Creation date', readonly=True),
+        'date_created': fields.date('Creation date', readonly=False),
         'date_accepted': fields.date('Acceptance date', readonly=False),
         'date_accreditation': fields.date('Accreditation date', readonly=False),
         'date_paid': fields.date('Paid date', readonly=True),
@@ -414,10 +415,15 @@ class riba_distinta_line(osv.osv):
             if not line.distinta_id.date_accepted:
                 raise osv.except_osv(_('Warning'), _('Missing Accepted Date'))
             date_accepted = line.distinta_id.date_accepted
+            dt = datetime.strptime(date_accepted, DEFAULT_SERVER_DATE_FORMAT)
+            period_id = self.pool['account.period'].find(cr, uid, dt=dt, context=context)
+            if period_id:
+                period_id = period_id[0]
             move_id = move_pool.create(cr, uid, {
                 'ref': _('Ri.Ba. %s - line %s') % (line.distinta_id.name, line.sequence),
                 'journal_id': journal.id,
                 'date': date_accepted,
+                'period_id': period_id
             }, context=context)
             to_be_reconciled = []
             riba_move_line_name = ''
