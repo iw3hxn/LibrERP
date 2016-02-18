@@ -263,7 +263,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'partner_id': 0,
             'name': invoice.partner_id.name.encode('latin', 'ignore')[:32],
             'address': address.street and address.street[:30],
-            'zip': int(address.zip),
+            'zip': int(address.zip and address.zip.replace('x', '0')[0:5] or '0'),
             'city': address.city,
             'province': address.province and address.province.code[:2],
             'fiscalcode': invoice.partner_id.fiscalcode or '',
