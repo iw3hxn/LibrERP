@@ -42,6 +42,7 @@
         'dt_product_brand',
         'stock_picking_extended',
         'purchase_discount',
+        'purchase_requisition_extended'
     ],
     "data": [
         'sale_order_view.xml'
