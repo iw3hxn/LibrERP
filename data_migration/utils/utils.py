@@ -36,7 +36,14 @@ class Utils():
         
         self.filedata_obj.write(cr, uid, ids, vals={'progress_indicator': self.progressIndicator}, context=self.context)
         _logger.info('Import status: %d %s (%d lines processed)' % (self.progressIndicator, '%', self.processed_lines))
-        
+
+    def update_progress_indicator(self, cr, uid, ids):
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
+        self.filedata_obj.write(cr, uid, ids, vals={'progress_indicator': self.progress_indicator}, context=self.context)
+        _logger.info('Import status: %d %s (%d lines processed)' % (self.progress_indicator, '%', self.processed_lines))
+
     def toStr(self, value):
         number = re.compile(r'^[0-9.,]+$')
         number_vith_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')

@@ -32,8 +32,6 @@ from openerp.addons.export_teamsystem.team_system_template import maturity_templ
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
-import pdb
-
 
 def get_phone_number(number, prefix=''):
     phone = ''
@@ -270,7 +268,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'partner_id': 0,
             'name': invoice.partner_id.name.encode('latin', 'ignore')[:32],
             'address': address.street and address.street.encode('latin', 'ignore')[:30],
-            'zip': int(address.zip),
+            'zip': int(address.zip and address.zip.replace('x', '0')[0:5] or '0'),
             'city': address.city and address.city.encode('latin', 'ignore'),
             'province': address.province and address.province.code[:2],
             'fiscalcode': invoice.partner_id.fiscalcode or '',
@@ -525,8 +523,6 @@ class WizardExportPrimaNota(orm.TransientModel):
             book_values = self.map_invoice_data(cr, uid, invoice_id, context)
             row = cash_book.format(**book_values)
             if not len(row) == 7001:
-                print len(row)
-                pdb.set_trace()
                 invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
                 raise orm.except_orm(_('Error'), "La lunghezza della riga Prima Nota errata ({}). Fattura {}".format(len(row), invoice.number))
             file_data.write(row)
@@ -534,8 +530,6 @@ class WizardExportPrimaNota(orm.TransientModel):
             deadline_values = self.map_deadline_data(cr, uid, invoice_id, context)
             row = deadline_book.format(**deadline_values)
             if not len(row) == 7001:
-                print len(row)
-                pdb.set_trace()
                 invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
                 raise orm.except_orm(_('Error'), "La lunghezza della riga INTRASTAT errata ({}). Fattura {}".format(len(row), invoice.number))
 

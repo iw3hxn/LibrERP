@@ -20,8 +20,10 @@
 ##############################################################################
 
 
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
+
+from collections import OrderedDict
 
 
 class FormatOne():
@@ -228,6 +230,13 @@ class FormatFour():
         'sale_ok': True
     }
 
+
+class Inventory(object):
+    TABLE = OrderedDict((
+        ('default_code', 'Product Code'),
+        ('name', 'Product Name'),
+        ('qty_available', 'Product quantity')
+    ))
 
 # Nothing should be changed after this line
 # -----------------------------------------------------------------------------

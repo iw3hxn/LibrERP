@@ -99,6 +99,8 @@ class base_action_rule(osv.osv):
             if rule.last_run:
                 last_run = get_datetime(rule.last_run)
             now = datetime.now()
+            if not model_pool:
+                continue
             for obj_id in model_pool.search(cr, uid, [], context=context):
                 obj = model_pool.browse(cr, uid, obj_id, context=context)
                 # Calculate when this action should next occur for this object
