@@ -37,29 +37,29 @@ def get_phone_number(number, prefix=''):
     phone = ''
     if number:
         if number[0] == '+':
-            raise orm.except_orm(_('Warning'), _("Phone numbers beginning with '+' are not handled yet"))
-        else:
-            if ',' in number:
-                number, other_numbers = number.split(',', 1)
+            return {'prefix': '', 'number': ''}
 
-            if prefix:
-                if number[0] == '0':
-                    prefix = '0' + prefix
+        if ',' in number:
+            number, other_numbers = number.split(',', 1)
 
-                if number[:len(prefix)] == prefix:
+        if prefix:
+            if number[0] == '0':
+                prefix = '0' + prefix
+
+            if number[:len(prefix)] == prefix:
+                number = number.replace(' ', '')
+                phone = number[len(prefix):]
+
+        if not phone:
+            if ' ' in number:
+                prefix, phone = number.split(' ', 1)
+                if len(prefix) > 4:
                     number = number.replace(' ', '')
-                    phone = number[len(prefix):]
-
-            if not phone:
-                if ' ' in number:
-                    prefix, phone = number.split(' ', 1)
-                    if len(prefix) > 4:
-                        number = number.replace(' ', '')
-                        prefix = number[:4]
-                        phone = number[4:]
-                else:
                     prefix = number[:4]
                     phone = number[4:]
+            else:
+                prefix = number[:4]
+                phone = number[4:]
 
     phone = ''.join(re.findall(r'[0-9 ]*', phone))
     return {'prefix': prefix, 'number': phone}
@@ -414,7 +414,7 @@ class WizardExportPrimaNota(orm.TransientModel):
     def map_deadline_data(self, cr, uid, invoice_id, context):
         invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
         if invoice.payment_term and invoice.payment_term.teamsystem_code == 0:
-            raise orm.except_orm('Errore', 'Impossibile da esportare la fattura di {partner} in quanto sul termine di pagamento \'{payment}\' manca il codice TeamSystem'.format(partner=invoice.partner_id.name, payment=invoice.payment_term.name))
+            raise orm.except_orm('Errore', 'Impossibile da esportare la fattura numero {number} di {partner} in quanto sul termine di pagamento \'{payment}\' manca il codice TeamSystem'.format(number=invoice.number, partner=invoice.partner_id.name, payment=invoice.payment_term.name))
 
         maturity_data = self.maturity_creation(cr, uid, invoice, context)
 
