@@ -32,6 +32,8 @@ from openerp.addons.export_teamsystem.team_system_template import maturity_templ
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
+import pdb
+
 
 def get_phone_number(number, prefix=''):
     phone = ''
@@ -61,6 +63,7 @@ def get_phone_number(number, prefix=''):
                     prefix = number[:4]
                     phone = number[4:]
 
+    phone = ''.join(re.findall(r'[0-9 ]*', phone))
     return {'prefix': prefix, 'number': phone}
 
 
@@ -211,6 +214,10 @@ class WizardExportPrimaNota(orm.TransientModel):
     def map_invoice_data(self, cr, uid, invoice_id, context):
         invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
 
+        if not invoice.number:
+            raise orm.except_orm(_('Error'), u"Fattura al cliente {partner} {origine} non è stata emessa. ".format(
+                partner=invoice.partner_id.name, origine=invoice.origin and u'con documento di origine {}'.format(invoice.origin) or ''))
+
         address_ids = self.pool['res.partner'].address_get(cr, uid, [invoice.partner_id.id], ['invoice', 'default'])
         address = self.pool['res.partner.address'].browse(cr, uid, address_ids['invoice'] or address_ids['default'], context)
 
@@ -262,9 +269,9 @@ class WizardExportPrimaNota(orm.TransientModel):
             'type': 0,
             'partner_id': 0,
             'name': invoice.partner_id.name.encode('latin', 'ignore')[:32],
-            'address': address.street and address.street[:30],
+            'address': address.street and address.street.encode('latin', 'ignore')[:30],
             'zip': int(address.zip),
-            'city': address.city,
+            'city': address.city and address.city.encode('latin', 'ignore'),
             'province': address.province and address.province.code[:2],
             'fiscalcode': invoice.partner_id.fiscalcode or '',
             'vat_number': int(vat),
@@ -282,9 +289,9 @@ class WizardExportPrimaNota(orm.TransientModel):
             'city_of_birth': '',  # KGB?
             'province_of_birth': '',
             'phone_prefix': phone['prefix'],
-            'phone': phone['number'],
+            'phone': phone['number'][:20],
             'fax_prefix': fax['prefix'],
-            'fax': fax['number'],
+            'fax': fax['number'][:9],
 
             # Solo per i fornitori 246 -
             'account_code': 0,  # Codice conto di costo abituale (Solo per fornitori)
@@ -425,7 +432,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'payment_condition': invoice.payment_term.teamsystem_code,  # Codice condizione di pagamento
             'abi': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.abi) or 0,  #
             'cab': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.cab) or 0,  #
-            'agency_description': invoice.partner_id.bank_riba_id and invoice.partner_id.bank_riba_id.name,  # Descrizione agenzia
+            'agency_description': invoice.partner_id.bank_riba_id and invoice.partner_id.bank_riba_id.name.encode('latin', 'ignore')[:30],  # Descrizione agenzia
             'total_number_of_payments': len(invoice.maturity_ids),  # Numero totale rate
             'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 100),  # Totale documento (totale fattura)
 
@@ -518,13 +525,20 @@ class WizardExportPrimaNota(orm.TransientModel):
             book_values = self.map_invoice_data(cr, uid, invoice_id, context)
             row = cash_book.format(**book_values)
             if not len(row) == 7001:
-                raise orm.except_orm(_('Error'), "La lunghezza della riga errata")
+                print len(row)
+                pdb.set_trace()
+                invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
+                raise orm.except_orm(_('Error'), "La lunghezza della riga Prima Nota errata ({}). Fattura {}".format(len(row), invoice.number))
             file_data.write(row)
 
             deadline_values = self.map_deadline_data(cr, uid, invoice_id, context)
             row = deadline_book.format(**deadline_values)
             if not len(row) == 7001:
-                raise orm.except_orm(_('Error'), "La lunghezza della riga errata")
+                print len(row)
+                pdb.set_trace()
+                invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
+                raise orm.except_orm(_('Error'), "La lunghezza della riga INTRASTAT errata ({}). Fattura {}".format(len(row), invoice.number))
+
             file_data.write(row)
 
         out = file_data.getvalue()
