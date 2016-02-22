@@ -44,7 +44,7 @@ class Parser(report_sxw.rml_parse):
                 account_item = {
                     'amount': move_line.tax_amount,
                     'account_name': move_line.account_id.name,
-                    'partner_name': invoice and invoice.partner_id.name or ''
+                    'partner_name': invoice and invoice.partner_id.name or '',
                     'ref': move_line.ref,
                     'invoice_date': invoice and invoice.date_invoice or '',
                     'supplier_invoice_number': invoice and invoice.supplier_invoice_number or '',
