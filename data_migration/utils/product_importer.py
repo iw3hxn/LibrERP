@@ -342,6 +342,12 @@ class ImportFile(threading.Thread, Utils):
 
         # print '>>>>>>>', record.name
         vals_product = self.product_obj.default_get(cr, uid, ['taxes_id', 'supplier_taxes_id', 'property_account_income', 'property_account_expense'], self.context)
+
+        if vals_product.get('taxes_id'):
+            vals_product['taxes_id'] = [(6, 0, vals_product.get('taxes_id'))]
+        if vals_product.get('supplier_taxes_id'):
+            vals_product['supplier_taxes_id'] = [(6, 0, vals_product.get('supplier_taxes_id'))]
+
         vals_product.update({
             'name': record.name
         })
