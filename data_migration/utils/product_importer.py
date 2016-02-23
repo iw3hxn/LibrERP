@@ -341,9 +341,10 @@ class ImportFile(threading.Thread, Utils):
                 return False
 
         # print '>>>>>>>', record.name
-        vals_product = {
+        vals_product = self.product_obj.default_get(cr, uid, ['taxes_id', 'supplier_taxes_id', 'property_account_income', 'property_account_expense'], self.context)
+        vals_product.update({
             'name': record.name
-        }
+        })
         
         for field in self.PRODUCT_SEARCH:
             if hasattr(record, field) and getattr(record, field):
