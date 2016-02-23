@@ -128,7 +128,7 @@ class account_tax(orm.Model):
 
         if vals.get('type_tax_use', False):
             if vals['type_tax_use'] != tax.type_tax_use:
-                raise orm.except_orm(_('Error!'), 
+                raise orm.except_orm(_('Error!'),
                     _("Tax Type cannot be changed - create a different tax."))
 
 #         if (vals.get('type_tax_use', False) or tax.type_tax_use) == 'sale':

@@ -211,8 +211,8 @@ class account_invoice(orm.Model):
                                 invoice.fiscal_position and invoice.fiscal_position.no_check_vat or \
                                 invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
                     continue
-                raise orm.except_orm(_('Supplier Invoice'),
-                               _('Impossible to Validate, need to set Partner VAT'))
+                raise orm.except_orm(_('Invoice'),
+                    _('Impossible to Validate, need to set on Partner {partner} VAT').format(partner=invoice.partner_id.name))
                 return False
             if invoice.type == 'in_invoice' and not invoice.supplier_invoice_number:
                 raise orm.except_orm(_('Supplier Invoice'),

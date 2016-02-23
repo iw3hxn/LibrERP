@@ -10719,5 +10719,17 @@ msgstr "Impossibile da Emettere. Bisogna inserire il numero della fattura Fornit
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:176
 #, python-format
-msgid "Impossible to Validate, need to set Partner VAT"
-msgstr "Impossibile da Emettere. Bisogna impostare nel Partner la P.IVA o il Codice fiscale, se i Partner non lo hà abilitare nella posizione fiscale la non verifica"
+msgid "Invoice"
+msgstr "Fattura"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:176
+#, python-format
+msgid "Supplier Invoice"
+msgstr "Fattura Fornitore"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:176
+#, python-format
+msgid "Impossible to Validate, need to set on Partner {partner} VAT"
+msgstr "Impossibile da Emettere. Bisogna impostare nel Partner {partner} la P.IVA o il Codice fiscale, se i Partner non lo hà abilitare nella posizione fiscale la non verifica"
