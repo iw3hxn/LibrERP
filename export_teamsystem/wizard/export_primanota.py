@@ -386,7 +386,9 @@ class WizardExportPrimaNota(orm.TransientModel):
             }
             maturity_data += maturity_template.format(**maturity_values)
 
-        if count > 12:
+        if count == 0:
+            raise orm.except_orm('Errore', 'La fattura {invoice} non ha nessuna scadenza'.format(invoice=invoice.number))
+        elif count > 12:
             raise orm.except_orm('Errore', 'Ci sono più di 12 scadenze nella fattura {invoice}'.format(invoice=invoice.number))
 
         empty_maturity_values = {

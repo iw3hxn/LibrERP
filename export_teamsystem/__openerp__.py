@@ -20,7 +20,7 @@
 
 {
     'name': 'export_primanota_teamsystem',
-    'version': '3.0.5.0',
+    'version': '3.0.6.0',
     'category': 'Accounting & Finance',
     'description': """
     Export Primanota in format TRAF2000 accepted by TeamSystem program
