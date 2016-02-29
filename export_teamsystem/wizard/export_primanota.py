@@ -364,6 +364,7 @@ class WizardExportPrimaNota(orm.TransientModel):
         # Dettaglio effetti x 12 elementi
 
         maturity_data = ''
+        count = 0
 
         for count, maturity_line in enumerate(invoice.maturity_ids, 1):
             maturity_values = {
