@@ -29,6 +29,7 @@
         Custom Modules. This module displays the unit price on the input stock move line, and also +/- based on direction
 
     """,
+    'depends': ['stock'],
     'data': [
             'security/security.xml',
             'stock_move_view.xml',
