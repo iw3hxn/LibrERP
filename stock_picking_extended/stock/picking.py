@@ -200,5 +200,5 @@ class stock_picking(orm.Model):
                 'carriage_condition_id': picking.carriage_condition_id.id,
                 'goods_description_id': picking.goods_description_id.id,
                 'transportation_condition_id': picking.transportation_condition_id.id,
-            })
+            }, context)
         return res
