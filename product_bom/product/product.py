@@ -67,8 +67,8 @@ class product_product(orm.Model):
             # print(u'{product.id}: {product.name}'.format(product=product))
             bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
             if bom_id:
-                sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)])
-                sub_products = bom_obj.browse(cr, uid, sub_bom_ids)
+                sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
+                sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
                 
                 price = 0.
                 
@@ -90,7 +90,7 @@ class product_product(orm.Model):
                     # Don't use browse when we already have it
                     bom = sub_products[0].bom_id
                 else:
-                    bom = bom_obj.browse(cr, uid, bom_id)
+                    bom = bom_obj.browse(cr, uid, bom_id, context)
                 
                 if bom.routing_id:
                     for wline in bom.routing_id.workcenter_lines:
@@ -147,7 +147,7 @@ class product_product(orm.Model):
         for search in args:
             if search[0] == 'is_kit':
                 if search[2]:
-                    bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', False)])
+                    bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', False)], context=context)
                     if bom_ids:
                         res = [bom.product_id.id for bom in bom_obj.browse(cr, uid, bom_ids, context)]
                         return [('id', 'in', res)]
@@ -271,7 +271,7 @@ class product_product(orm.Model):
         result = {}
         
         for product_id in ids:
-            result[product_id] = self.pool['mrp.bom'].search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)])
+            result[product_id] = self.pool['mrp.bom'].search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
         
         return result
     
@@ -279,8 +279,8 @@ class product_product(orm.Model):
         context = context or {}
         if 'currency_id' in context:
             pricetype_obj = self.pool['product.price.type']
-            price_type_id = pricetype_obj.search(cr, uid, [('field', '=', ptype)])[0]
-            price_type_currency_id = pricetype_obj.browse(cr, uid, price_type_id).currency_id.id
+            price_type_id = pricetype_obj.search(cr, uid, [('field', '=', ptype)], context=context)[0]
+            price_type_currency_id = pricetype_obj.browse(cr, uid, price_type_id, context).currency_id.id
 
         res = {}
         product_uom_obj = self.pool['product.uom']
