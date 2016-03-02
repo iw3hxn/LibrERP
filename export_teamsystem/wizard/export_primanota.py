@@ -27,7 +27,7 @@ import datetime
 from openerp.tools.translate import _
 
 from openerp.addons.export_teamsystem.team_system_template import cash_book, tax_template, account_template, industrial_accounting_template
-from openerp.addons.export_teamsystem.team_system_template import maturity_template, deadline_book
+from openerp.addons.export_teamsystem.team_system_template import maturity_template, deadline_book, industrial_accounting
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -338,7 +338,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'tax_data': tax_data,
 
             # Totale fattura 723
-            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 100),  # Imponibile 6 dec?
+            'invoice_total': int(round(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 100, 0)),  # Imponibile 6 dec?
 
             # Conti di ricavo/costo 735
             'account_data': account_data,
@@ -535,6 +535,12 @@ class WizardExportPrimaNota(orm.TransientModel):
             if not len(row) == 7001:
                 invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
                 raise orm.except_orm(_('Error'), "La lunghezza della riga INTRASTAT errata ({}). Fattura {}".format(len(row), invoice.number))
+            #
+            # industrial_values = self.map_industrial_data(cr, uid, invoice_id, context)
+            # row = industrial_accounting.format(**industrial_values)
+            # if not len(row) == 7001:
+            #     invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
+            #     raise orm.except_orm(_('Error'), "La lunghezza della riga INDUSTRIALE errata ({}). Fattura {}".format(len(row), invoice.number))
 
             file_data.write(row)
 
