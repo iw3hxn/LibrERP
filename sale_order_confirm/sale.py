@@ -224,7 +224,7 @@ class sale_order(orm.Model):
         # A validation after customer confirmation:
         'required_supervisor_validation': fields.related('company_id', 'need_supervisor_validation', type='boolean', string=_('Required Supervisor Validation'), store=False, readonly=True),
         'supervisor_validation': fields.boolean(_("Supervisor Validated?"), readonly=True),
-
+        'product_id': fields.related('order_line', 'product_id', type='many2one', relation='product.product', string='Product'),
         'revision_note': fields.char('Reason', size=256, select=True),
         'last_revision_note': fields.related('sale_version_id', 'revision_note', type='char', string="Last Revision Note", store=True),
     }

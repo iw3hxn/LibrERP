@@ -28,6 +28,9 @@
                 <field name="period_id" position="after">
                     <field name="year" string="Year" />
                 </field>
+                <field name="partner_id" position="after">
+                    <field name="product_id"/>
+                </field>
             </field>
         </record>
     

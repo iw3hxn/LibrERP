@@ -893,6 +893,11 @@ msgid "Address"
 msgstr "Indirizzo di Consegna"
 
 #. module: sale_order_confirm
+#: field:sale.order,product_id:0
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: sale_order_confirm
 #: code:addons/sale_order_confirm/sale.py:79
 #: code:addons/sale_order_confirm/sale.py:104
 #, python-format

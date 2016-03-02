@@ -59,3 +59,8 @@ msgstr "Dal"
 #: field:account.invoice,date_to:0
 msgid "Date to"
 msgstr "Al"
+
+#. module: account_invoice_filter
+#: field:account.invoice,product_id:0
+msgid "Product"
+msgstr "Prodotto"

@@ -369,6 +369,7 @@
                     <field name="name"
                            filter_domain="['|', ('name','ilike',self),('client_order_ref','ilike',self)]"/>
                     <field name="partner_id"/>
+                    <field name="product_id" />
                     <field name="user_id">
                         <filter domain="[('user_id','=',uid)]" help="My Sale Orders" icon="terp-personal"/>
                     </field>
