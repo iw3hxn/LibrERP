@@ -353,6 +353,18 @@
             </field>
         </record>
 
+        <record id="view_sale_order_filter_by_product" model="ir.ui.view">
+            <field name="name">sale.order.filter.by.year</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="product_id" />
+                </field>
+            </field>
+        </record>
+
         <record id="view_sales_order_filter_quotation" model="ir.ui.view">
             <field name="name">sale.order.list.select.quotation</field>
             <field name="model">sale.order</field>
