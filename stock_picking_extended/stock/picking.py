@@ -202,3 +202,10 @@ class stock_picking(orm.Model):
                 'transportation_condition_id': picking.transportation_condition_id.id,
             }, context)
         return res
+
+    def _invoice_line_hook(self, cr, uid, move_line, invoice_line_id):
+        company_id = self.pool['res.users'].get_current_company(cr, uid)[0][0]
+        company = self.pool['res.company'].browse(cr, uid, company_id)
+        if company.note_on_invoice_line:
+            self.pool['account.invoice.line'].write(cr, uid, invoice_line_id, {'note': move_line.note})
+        return super( stock_picking, self)._invoice_line_hook(cr, uid, move_line, invoice_line_id)
