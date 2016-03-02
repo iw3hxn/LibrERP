@@ -109,9 +109,12 @@ class account_invoice(orm.Model):
 
         # now on origins i have all the origin and invoice.id
         for origin in origins:
-            if origin and len(origin.split(':')) == 2:
+            if origin:
                 # OUTxxx:SOyy
-                pickings_name = origin.split(':')[0]
+                if len(origin.split(':')) == 2:
+                    pickings_name = origin.split(':')[0]
+                else:
+                    pickings_name = origin
                 picking_id = stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
                 if super(account_invoice, self).unlink(cr, uid, [origins[origin]], context=context):
                     if picking_id:
