@@ -4,19 +4,19 @@ __version__ = '1.0.0'
 import oerplib
 
 
-def check_module_update(oerp):
+def update_module(oerp):
     invoice_obj = oerp.get('account.invoice')
-    invoice_ids = invoice_obj.search([('type', 'in', ['out_invoice', 'in_invoice'])])
+    invoice_ids = invoice_obj.search([('type', 'in', ['out_invoice', 'in_invoice'])], order="date_invoice asc")
     invoice_obj.update_product(invoice_ids)
     print 'Invoice Done'
 
     order_obj = oerp.get('sale.order')
-    order_ids = order_obj.search([('state', 'in', ['manual', 'progress', 'done'])])
+    order_ids = order_obj.search([('state', 'in', ['manual', 'progress', 'done'])], order="date_order asc")
     order_obj.update_product(order_ids)
     print 'Sale Order Done'
 
     purchase_obj = oerp.get('purchase.order')
-    purchase_ids = purchase_obj.search([('state', 'in', ['done'])])
+    purchase_ids = purchase_obj.search([('state', 'in', ['done'])], order="date_order asc")
     purchase_obj.update_product(purchase_ids)
     print 'Purchase Done'
 
@@ -64,10 +64,10 @@ def connect_db(oerp, database):
 if __name__ == '__main__':
     connection = None
     try:
-        connection = oerplib.OERP(server='localhost', protocol='xmlrpc', port=8269)
+        connection = oerplib.OERP(server='localhost', protocol='xmlrpc', port=8069)
     except:
         raise "Not able to connect, please check connetion parameters!!!"
     while 1:
         db_name = show_db(connection)
         oerp = connect_db(connection, db_name)
-        check_module_update(oerp)
+        update_module(oerp)
