@@ -100,8 +100,7 @@ class res_partner(orm.Model):
         property_account_id = vals.get(property_account, False)
         if property_account_id:
             property_account = account_obj.browse(cr, uid, property_account_id, context)
-            
-            account_ids = account_obj.search(cr, uid, [('code', '=', '{0}{1}'.format(property_account.code, vals[property_ref]))])
+            account_ids = account_obj.search(cr, uid, [('code', '=', '{0}{1}'.format(property_account.code, vals.get(property_ref, '')))])
             if account_ids:
                 return account_ids[0]
             else:
