@@ -32,6 +32,8 @@ from openerp.addons.export_teamsystem.team_system_template import maturity_templ
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
+import pdb
+
 
 def get_phone_number(number, prefix=''):
     phone = ''
@@ -448,32 +450,8 @@ class WizardExportPrimaNota(orm.TransientModel):
         }
 
     def get_accounting_data(self, cr, uid, invoice, context):
-
         account_data = ''
         account = {}
-
-        for line in invoice.invoice_line:
-            if line.account_analytic_id:
-                if line.account_analytic_id in account:
-                    account[line.account_id] += line.price_subtotal
-                else:
-                    account[line.account_id] = line.price_subtotal
-
-        if len(account) > 20:
-            raise orm.except_orm('Errore', 'Ci sono più di 20 conti analitici nella fattura {invoice}'.format(invoice=invoice.number))
-
-        for account_code in account.keys():
-            code = account_code.isdigit() and int(account_code) or 5810501  # 5810501 è un numero fisso merci/vendita
-            account_data += account_template.format(**{
-                'account_proceeds': code,
-                'total_proceeds': int(account.get(account_code) * 100)
-            })
-
-        for k in range(0, 8 - len(account)):
-            account_data += account_template.format(**{
-                'account_proceeds': 0,
-                'total_proceeds': 0
-            })
 
         empty_accounting = {
             'val_0': 0,
@@ -493,7 +471,27 @@ class WizardExportPrimaNota(orm.TransientModel):
             'total_ammount': 0,  # Importo movimento o costo complessivo
         }
 
+        for line in invoice.invoice_line:
+            if line.account_analytic_id:
+                if line.account_analytic_id in account:
+                    account[line.account_analytic_id] += line.price_subtotal
+                else:
+                    account[line.account_analytic_id] = line.price_subtotal
+
+        if len(account) > 20:
+            raise orm.except_orm('Errore', 'Ci sono più di 20 conti analitici nella fattura {invoice}'.format(invoice=invoice.number))
+
         accounting_data = ''
+
+        for account_code in account.keys():
+            code = account_code.code and account_code.code.isdigit() and int(account_code.code) or 5810501  # 5810501 è un numero fisso merci/vendita
+            accounting_value = empty_accounting.copy()
+            accounting_value.update({
+                'account_proceeds': code,
+                'total_ammount': int(account.get(account_code) * 100)
+            })
+            accounting_data += industrial_accounting_template.format(**accounting_value)
+
         for k in range(0, 20 - len(account)):
             accounting_data += industrial_accounting_template.format(**empty_accounting)
 
@@ -535,13 +533,14 @@ class WizardExportPrimaNota(orm.TransientModel):
             if not len(row) == 7001:
                 invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
                 raise orm.except_orm(_('Error'), "La lunghezza della riga INTRASTAT errata ({}). Fattura {}".format(len(row), invoice.number))
-            #
-            # industrial_values = self.map_industrial_data(cr, uid, invoice_id, context)
-            # row = industrial_accounting.format(**industrial_values)
-            # if not len(row) == 7001:
-            #     invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
-            #     raise orm.except_orm(_('Error'), "La lunghezza della riga INDUSTRIALE errata ({}). Fattura {}".format(len(row), invoice.number))
+            file_data.write(row)
 
+            industrial_values = self.map_industrial_data(cr, uid, invoice_id, context)
+            row = industrial_accounting.format(**industrial_values)
+            if not len(row) == 7001:
+                pdb.set_trace()
+                invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
+                raise orm.except_orm(_('Error'), "La lunghezza della riga INDUSTRIALE errata ({}). Fattura {}".format(len(row), invoice.number))
             file_data.write(row)
 
         out = file_data.getvalue()

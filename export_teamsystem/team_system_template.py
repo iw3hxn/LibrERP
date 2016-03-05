@@ -156,6 +156,7 @@ industrial_accounting_template = """{causal:03}{account:08}{account_proceeds:08}
 {empty:18}{val_0:03}{val_0:03}{val_0:06}{val_0:03}{val_0:01}"""
 industrial_accounting += "{accounting_data}"
 
+# 4048
 industrial_accounting += "{val_0:02}" * 20
 
 industrial_accounting += "{val_0:02912}"
