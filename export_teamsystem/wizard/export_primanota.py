@@ -538,7 +538,6 @@ class WizardExportPrimaNota(orm.TransientModel):
             industrial_values = self.map_industrial_data(cr, uid, invoice_id, context)
             row = industrial_accounting.format(**industrial_values)
             if not len(row) == 7001:
-                pdb.set_trace()
                 invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
                 raise orm.except_orm(_('Error'), "La lunghezza della riga INDUSTRIALE errata ({}). Fattura {}".format(len(row), invoice.number))
             file_data.write(row)
