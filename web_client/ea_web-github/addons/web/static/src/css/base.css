@@ -53,6 +53,8 @@ body.openerp {
 
 .openerp .oe_form_frame_cell .view-manager-main-content {
     padding: 0;
+    border: 1px solid #8e8e8e;
+    border-radius: 3px;
 }
 
 .oe_box {
@@ -1210,7 +1212,7 @@ label.error {
 
 .openerp .oe_form_notebook .ui-tabs-panel {
     background: #FAFAFA;
-    border-width: 1px;
+    border-width: 1px 0px 1px 0px;
     border-color: #999999;
 }
 
@@ -2433,6 +2435,8 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     color: black;
     font-weight: bold;
     background: #e3e3e3;
+    border: 1px solid #7c7bad;
+    border-radius: 3px;
 }
 
 .openerp .oe_button:hover {
