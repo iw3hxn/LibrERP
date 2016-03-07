@@ -152,7 +152,7 @@ industrial_accounting = u"{company_id:05}{version:1}{type:1}"
 
 # CONTAB. INDUSTRIALE 8
 industrial_accounting_template = """{causal:03}{account:08}{account_proceeds:08}{val_0:08}{val_0:08}{val_0:06}\
-{val_0:03}{empty:20}{sign:1}{val_0:012}{val_0:017}{total_ammount:018}{val_0:012}{val_0:010}{val_0:017}{val_0:017}\
+{val_0:03}{empty:20}{sign:1}{quantity:012}{val_0:017}{total_ammount:018}{val_0:012}{val_0:010}{val_0:017}{val_0:017}\
 {empty:18}{val_0:03}{val_0:03}{val_0:06}{val_0:03}{val_0:01}"""
 industrial_accounting += "{accounting_data}"
 

@@ -521,26 +521,25 @@ class WizardExportPrimaNota(orm.TransientModel):
             return {'type': 'ir.actions.act_window_close'}
 
         for invoice_id in invoice_ids:
+            invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
             book_values = self.map_invoice_data(cr, uid, invoice_id, context)
             row = cash_book.format(**book_values)
             if not len(row) == 7001:
-                invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
                 raise orm.except_orm(_('Error'), "La lunghezza della riga Prima Nota errata ({}). Fattura {}".format(len(row), invoice.number))
             file_data.write(row)
 
             deadline_values = self.map_deadline_data(cr, uid, invoice_id, context)
             row = deadline_book.format(**deadline_values)
             if not len(row) == 7001:
-                invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
                 raise orm.except_orm(_('Error'), "La lunghezza della riga INTRASTAT errata ({}). Fattura {}".format(len(row), invoice.number))
             file_data.write(row)
 
             industrial_values = self.map_industrial_data(cr, uid, invoice_id, context)
             row = industrial_accounting.format(**industrial_values)
             if not len(row) == 7001:
-                invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id, context)
                 raise orm.except_orm(_('Error'), "La lunghezza della riga INDUSTRIALE errata ({}). Fattura {}".format(len(row), invoice.number))
             file_data.write(row)
+            invoice.write({'teamsystem_export': True})
 
         out = file_data.getvalue()
         out = out.encode("base64")

@@ -38,3 +38,16 @@ class account_invoice(orm.Model):
                                          'Impossibile da validare la fattura di {partner} in quanto sul termine di pagamento \'{payment}\' manca il codice TeamSystem'.format(partner=invoice.partner_id.name, payment=invoice.payment_term.name))
                     return False
         return True
+
+    def action_cancel(self, cr, uid, ids, context=None):
+        for invoice in self.browse(cr, uid, ids, context):
+            if invoice.teamsystem_export:
+                raise orm.except_orm(
+                    'Errore!',
+                    'La fattura è già stata esportata in teamsystem, chiedere lo sblocco'
+                )
+        return super(account_invoice, self).action_cancel(cr, uid, ids, context)
+
+    _columns = {
+        'teamsystem_export': fields.boolean('Esportato in Teamsystem'),
+    }

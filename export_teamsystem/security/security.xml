@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data >
+
+        <record id="verify_teamsystem" model="res.groups">
+            <field name="name">Visualizza Blocco Teamsystem su fattura</field>
+        </record>
+
+    </data>
+</openerp>

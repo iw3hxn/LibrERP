@@ -20,7 +20,7 @@
 
 {
     'name': 'export_primanota_teamsystem',
-    'version': '3.0.7.0',
+    'version': '3.1.7.1',
     'category': 'Accounting & Finance',
     'description': """
     Export Primanota in format TRAF2000 accepted by TeamSystem program
@@ -36,9 +36,11 @@
     ],
     "data": [
         'security/ir.model.access.csv',
+        'security/security.xml',
         'wizard/export_primanota.xml',
         'views/account_payment_term_view.xml',
         'views/account_journal_view.xml',
+        'views/account_invoice_view.xml',
     ],
     "demo": [],
     "active": False,
