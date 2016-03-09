@@ -201,6 +201,16 @@ msgid "Account Source"
 msgstr "Conto sorgente"
 
 #. module: account
+#: field:account.fiscal.position,no_check_vat:0
+msgid "No required VAT"
+msgstr "Non obbligo P.IVA in emissione fattura"
+
+#. module: account
+#: field:account.fiscal.position,required_tax:0
+msgid "Requiered Tax on invoice"
+msgstr "Deve esserci sempre una tassa"
+
+#. module: account
 #: model:ir.actions.act_window,name:account.act_acc_analytic_acc_5_report_hr_timesheet_invoice_journal
 msgid "All Analytic Entries"
 msgstr "Dettaglio Costi Analitica"
@@ -10715,6 +10725,18 @@ msgstr "Fattura Già inserita e validata"
 #, python-format
 msgid "Impossible to Validate, need to set Supplier invoice nr"
 msgstr "Impossibile da Emettere. Bisogna inserire il numero della fattura Fornitore"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:228
+#, python-format
+msgid "Impossible to Validate, need to set on Tax Line on invoice of {partner}"
+msgstr "Impossibile da Emettere. Bisogna inserire delle tasse sulla fattura del partner {partner}"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:228
+#, python-format
+msgid "Invoice"
+msgstr "Fattura"
 
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:176

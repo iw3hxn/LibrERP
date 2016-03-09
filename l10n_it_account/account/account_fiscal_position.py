@@ -35,7 +35,8 @@ class account_fiscal_position(orm.Model):
     
     _columns = {
         'is_tax_exemption': fields.boolean('Ha dichiarazione di intento IVA?'),
-        'no_check_vat': fields.boolean('Non obbligo P.IVA in emissione fattura'),
+        'required_tax': fields.boolean('Requiered Tax on invoice'),
+        'no_check_vat': fields.boolean('No required VAT'),
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'number': fields.char('Numero Dichiarante', size=32),
         'date': fields.date('Data Dichiarazione'),

@@ -206,18 +206,28 @@ class account_invoice(orm.Model):
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
         for invoice in self.browse(cr, uid, ids, context):
+
             if not ((not invoice.partner_id.individual and invoice.partner_id.vat) or (invoice.partner_id.individual and invoice.partner_id.cf)):
                 if not invoice.fiscal_position or \
-                                invoice.fiscal_position and invoice.fiscal_position.no_check_vat or \
-                                invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
+                        invoice.fiscal_position and invoice.fiscal_position.no_check_vat or \
+                        invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
                     continue
                 raise orm.except_orm(_('Invoice'),
                     _('Impossible to Validate, need to set on Partner {partner} VAT').format(partner=invoice.partner_id.name))
                 return False
+
             if invoice.type == 'in_invoice' and not invoice.supplier_invoice_number:
                 raise orm.except_orm(_('Supplier Invoice'),
                                _('Impossible to Validate, need to set Supplier invoice nr'))
                 return False
+
+            if invoice.fiscal_position and invoice.fiscal_position.required_tax:
+                invoice.button_reset_taxes()
+                if invoice.tax_line:
+                    continue
+                raise orm.except_orm(_('Invoice'),
+                    _('Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(partner=invoice.partner_id.name))
+
         return True
 
     _columns = {

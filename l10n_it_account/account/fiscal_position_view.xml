@@ -9,6 +9,7 @@
                 <xpath expr="/form/separator[@string='Mapping']" position="before">
                     <group>
                         <group col="6">
+                            <field name="required_tax"/>
                             <field name="no_check_vat"/>
                         </group>
                         <newline/>
