@@ -44,8 +44,16 @@ class sale_order_revision_note(orm.TransientModel):
         if not active_ids:
             return False
         reason_note = self.browse(cr, uid, ids[0], context=context).name
-        sale_order_obj.write(cr, uid, active_ids, {'revision_note': reason_note}, context=context)
-        res = sale_order_obj.action_previous_version(cr, uid, active_ids, context=context)
+
+        for order in sale_order_obj.browse(cr, uid, active_ids, context):
+
+            if order.state in ['waiting_date', 'manual', 'progress', 'shipping_except', 'invoice_except', 'done', 'cancel' ]:
+                raise orm.except_orm(_('Sale Order'), _('Impossible because order is on state {state}'.format(state=order.state)))
+                return False
+
+            order.write(cr, uid, order.id, {'revision_note': reason_note}, context=context)
+            res = sale_order_obj.action_previous_version(cr, uid, order.id, context=context)
+
         if reason_note:
             text = _("Create New Revision for this reason: '%s' ") % reason_note
         else:

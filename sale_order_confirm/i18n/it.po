@@ -57,6 +57,18 @@ msgstr "Validazione Supervisore"
 msgid "Technical Validation"
 msgstr "Validazione Tecnica"
 
+#. modules: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:51
+#, python-format
+msgid "Impossible because order is on state {state}"
+msgstr "Impossibile perchè è in stato {state}"
+
+#. modules: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:51
+#, python-format
+msgid "Sale Order"
+msgstr "Ordine di Vendita"
+
 #. module: sale_order_confirm
 #: field:res.partner,validate:0
 msgid "Partner Validate"
