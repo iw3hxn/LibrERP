@@ -27,11 +27,13 @@ class stock_journal(orm.Model):
     
     _columns = {
         'name': fields.char('Stock Journal', size=32, required=True, translate=True),
-        'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse', ),
+        'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse'),
         'member_ids': fields.many2many('res.users', 'stock_journal_rel', 'journal_id', 'member_id', 'Team Members'),
         'default_invoice_state': fields.selection([
             ("invoiced", "Invoiced"),
             ("2binvoiced", "To Be Invoiced"),
             ("none", "Not Applicable")], "Invoice Control",
             select=True, required=False, readonly=False),
-        }
+        'lot_input_id': fields.many2one('stock.location', 'Default Location Input', required=True, domain=[('usage', '!=', 'view')]),
+        'lot_output_id': fields.many2one('stock.location', 'Default Location Output', required=True, domain=[('usage', '!=', 'view')]),
+    }

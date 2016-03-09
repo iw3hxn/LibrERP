@@ -33,12 +33,27 @@ class stock_move(orm.Model):
         stock_journal_id = context.get('stock_journal_id', False)
         res = []
         if picking_type == 'out' and stock_journal_id:
-            journal = self.pool['stock.journal'].browse(cr, uid, stock_journal_id)
-            res = journal.warehouse_id and journal.warehouse_id.lot_stock_id and journal.warehouse_id.lot_stock_id.id or []
+            journal = self.pool['stock.journal'].browse(cr, uid, stock_journal_id, context)
+            res = journal.warehouse_id and journal.warehouse_id.lot_stock_id and journal.warehouse_id.lot_stock_id.id or False
         if not res:
-            res = super(stock_move, self)._default_location_source( cr, uid, context)
+            res = super(stock_move, self)._default_location_source(cr, uid, context)
+        return res
+
+    def _default_journal_location_destination(self, cr, uid, context=None):
+        """ Gets default address of partner for source location
+        @return: Address id or False
+        """
+        picking_type = context.get('picking_type', False)
+        stock_journal_id = context.get('stock_journal_id', False)
+        res = []
+        if picking_type == 'out' and stock_journal_id:
+            journal = self.pool['stock.journal'].browse(cr, uid, stock_journal_id, context)
+            res = journal.lot_output_id and journal.lot_output_id.id or journal.warehouse_id and journal.warehouse_id.lot_output_id and journal.warehouse_id.lot_output_id.id or False
+        if not res:
+            res = super(stock_move, self)._default_location_destination(cr, uid, context)
         return res
 
     _defaults = {
         'location_id': _default_journal_location_source,
+        'location_dest_id': _default_journal_location_destination,
     }

@@ -9,6 +9,8 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="warehouse_id"/>
+                    <field name="lot_input_id"/>
+                    <field name="lot_output_id" />
                     <field name="default_invoice_state"/>
                 </field>
                 <field name="user_id" position="after" >
