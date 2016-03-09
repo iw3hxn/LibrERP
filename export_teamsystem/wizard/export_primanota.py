@@ -119,12 +119,12 @@ class WizardExportPrimaNota(orm.TransientModel):
 
     def get_tax_payability(self, cr, uid, invoice, context=None):
         payability = 'I'
-
+        # import pdb; pdb.set_trace()
         for tax_line in invoice.tax_line:
             tax_id = self.pool['account.tax'].get_tax_by_invoice_tax(
                 cr, uid, tax_line.name, context=context)
             tax = self.pool['account.tax'].browse(cr, uid, tax_id, context=context)
-            if tax.payability:
+            if tax.payability != 'I':
                 payability = tax.payability
         return payability
 
@@ -512,7 +512,7 @@ class WizardExportPrimaNota(orm.TransientModel):
         }
 
     def action_export_primanota(self, cr, uid, ids, context):
-        file_name = 'TRAF2000.txt'
+        file_name = 'TRAF2000{number}.txt'.format(number=ids and ids[0])
         file_data = StringIO()
 
         if context.get('active_ids'):
