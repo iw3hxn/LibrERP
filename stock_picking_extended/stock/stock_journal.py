@@ -34,6 +34,6 @@ class stock_journal(orm.Model):
             ("2binvoiced", "To Be Invoiced"),
             ("none", "Not Applicable")], "Invoice Control",
             select=True, required=False, readonly=False),
-        'lot_input_id': fields.many2one('stock.location', 'Default Location Input', required=True, domain=[('usage', '!=', 'view')]),
-        'lot_output_id': fields.many2one('stock.location', 'Default Location Output', required=True, domain=[('usage', '!=', 'view')]),
+        'lot_input_id': fields.many2one('stock.location', 'Default Location Input', domain=[('usage', '!=', 'view')]),
+        'lot_output_id': fields.many2one('stock.location', 'Default Location Output', domain=[('usage', '!=', 'view')]),
     }
