@@ -51,7 +51,7 @@ class sale_order_revision_note(orm.TransientModel):
                 raise orm.except_orm(_('Sale Order'), _('Impossible because order is on state {state}'.format(state=order.state)))
                 return False
 
-            order.write(cr, uid, order.id, {'revision_note': reason_note}, context=context)
+            sale_order_obj.write(cr, uid, order.id, {'revision_note': reason_note}, context=context)
             res = sale_order_obj.action_previous_version(cr, uid, order.id, context=context)
 
         if reason_note:
