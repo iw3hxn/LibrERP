@@ -97,28 +97,28 @@ class ir_sequence(orm.Model):
             }
         return res
 
-    def _next(self, cr, uid, seq_ids, context=None):
-        if not seq_ids:
-            return False
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-
-        if not isinstance(seq_ids, (list, tuple)):
-            seq_ids = [seq_ids]
-
-        force_company = context.get('force_company')
-        if not force_company:
-            force_company = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
-        sequences = self.read(cr, uid, seq_ids, ['company_id', 'implementation', 'number_next', 'prefix', 'suffix', 'padding'])
-        preferred_sequences = [s for s in sequences if s['company_id'] and s['company_id'][0] == force_company]
-        seq = preferred_sequences[0] if preferred_sequences else sequences[0]
-        if seq['implementation'] == 'standard':
-            cr.execute("SELECT nextval('ir_sequence_%03d')" % seq['id'])
-            seq['number_next'] = cr.fetchone()
-        else:
-            cr.execute("SELECT number_next FROM ir_sequence WHERE id=%s FOR UPDATE NOWAIT", (seq['id'],))
-            cr.execute("UPDATE ir_sequence SET number_next=number_next+number_increment WHERE id=%s ", (seq['id'],))
-        d = self._interpolation_dict(context)  # only this row is modified from standard ocb
-        interpolated_prefix = self._interpolate(seq['prefix'], d)
-        interpolated_suffix = self._interpolate(seq['suffix'], d)
-        return interpolated_prefix + '%%0%sd' % seq['padding'] % seq['number_next'] + interpolated_suffix
+    # def _next(self, cr, uid, seq_ids, context=None):
+    #     if not seq_ids:
+    #         return False
+    #     if context is None:
+    #         context = self.pool['res.users'].context_get(cr, uid)
+    #
+    #     if not isinstance(seq_ids, (list, tuple)):
+    #         seq_ids = [seq_ids]
+    #
+    #     force_company = context.get('force_company')
+    #     if not force_company:
+    #         force_company = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
+    #     sequences = self.read(cr, uid, seq_ids, ['company_id', 'implementation', 'number_next', 'prefix', 'suffix', 'padding'])
+    #     preferred_sequences = [s for s in sequences if s['company_id'] and s['company_id'][0] == force_company]
+    #     seq = preferred_sequences[0] if preferred_sequences else sequences[0]
+    #     if seq['implementation'] == 'standard':
+    #         cr.execute("SELECT nextval('ir_sequence_%03d')" % seq['id'])
+    #         seq['number_next'] = cr.fetchone()
+    #     else:
+    #         cr.execute("SELECT number_next FROM ir_sequence WHERE id=%s FOR UPDATE NOWAIT", (seq['id'],))
+    #         cr.execute("UPDATE ir_sequence SET number_next=number_next+number_increment WHERE id=%s ", (seq['id'],))
+    #     d = self._interpolation_dict(context)  # only this row is modified from standard ocb
+    #     interpolated_prefix = self._interpolate(seq['prefix'], d)
+    #     interpolated_suffix = self._interpolate(seq['suffix'], d)
+    #     return interpolated_prefix + '%%0%sd' % seq['padding'] % seq['number_next'] + interpolated_suffix

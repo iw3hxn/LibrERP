@@ -222,11 +222,12 @@ class account_invoice(orm.Model):
                 return False
 
             if invoice.fiscal_position and invoice.fiscal_position.required_tax:
-                invoice.button_reset_taxes()
-                if invoice.tax_line:
-                    continue
-                raise orm.except_orm(_('Invoice'),
-                    _('Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(partner=invoice.partner_id.name))
+                if invoice.type in ['out_invoice', 'out_refund']:
+                    invoice.button_reset_taxes()
+                    if invoice.tax_line:
+                        continue
+                    raise orm.except_orm(_('Invoice'),
+                        _('Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(partner=invoice.partner_id.name))
 
         return True
 
