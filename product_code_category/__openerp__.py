@@ -24,7 +24,7 @@
 
 {
     'name': 'Product Code Category',
-    'version': '3.1.1.2',
+    'version': '3.1.2.2',
     'category': 'Generic Modules/Products',
     'description': """This module automatically creates a product code, depending of the product's category, at the product's creation""",
     'author': 'SYLEAM',

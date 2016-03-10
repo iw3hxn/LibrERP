@@ -23,6 +23,8 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from tools.translate import _
+
 
 class product_category(orm.Model):
     """
@@ -44,11 +46,11 @@ class product_product(orm.Model):
     """
     _inherit = 'product.product'
 
-    def _check_defaultcode_and_variants(self, cr, uid, ids):
+    def _check_defaultcode_and_variants(self, cr, uid, ids, context=None):
         for product in self.browse(cr, uid, ids):
             res = self.search(cr, uid, [('default_code', '=', product.default_code),
                                         ('variants', '=', product.variants)
-                                        ])
+                                        ], context=context)
             # Result may contain the current product if it's active: we remove it here.
             if product.id in res:
                 res.remove(product.id)
@@ -57,6 +59,10 @@ class product_product(orm.Model):
                 # we have duplicate entries
                 return False
         return True
+
+    _constraints = [
+        (_check_defaultcode_and_variants, _('Duplicate code'), ['default_code', 'variants'])
+    ]
     
     def _get_sequence(self, cr, uid, category_id, context=None):
         product_category_obj = self.pool['product.category']
@@ -67,7 +73,7 @@ class product_product(orm.Model):
         
         # Recursive search for a sequence on the category
         while category_id is not False:
-            category = product_category_obj.read(cr, uid, [category_id], ['product_sequence_id', 'parent_id'])
+            category = product_category_obj.read(cr, uid, [category_id], ['product_sequence_id', 'parent_id'], context=context)
             category = category and category[0] or {}
             # If the category has a sequence, stop here
             if category.get('product_sequence_id', False):
@@ -101,7 +107,7 @@ class product_product(orm.Model):
         res = super(product_product, self).create(cr, uid, vals, context=context)
         return res
     
-    def copy(self, cr, uid, id, default=None, context=None):
+    def copy(self, cr, uid, ids, default=None, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
 
@@ -111,7 +117,7 @@ class product_product(orm.Model):
         # We want default code to be recreated:
         default['default_code'] = False
         
-        return super(product_product, self).copy(cr, uid, id, default, context)
+        return super(product_product, self).copy(cr, uid, ids, default, context)
  
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
