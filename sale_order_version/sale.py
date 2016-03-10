@@ -59,6 +59,10 @@ class sale_order(orm.Model):
         return res
     
     def action_previous_version(self, cr, uid, ids, default=None, context=None):
+
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
         if not default:
             default = {}
             
@@ -66,10 +70,9 @@ class sale_order(orm.Model):
             context = self.pool['res.users'].context_get(cr, uid)
         
         attachment_obj = self.pool['ir.attachment']
-        
-        orders = self.browse(cr, uid, ids, context=context)
+
         order_ids = []
-        for order in orders:
+        for order in self.browse(cr, uid, ids, context=context):
             vals = {
                 'version': (order.version and order.version or 1) + 1,
             }
@@ -83,7 +86,7 @@ class sale_order(orm.Model):
             
             attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'sale.order'), ('res_id', '=', order.id)])
             if attachment_ids:
-                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']})
+                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']}, context)
             order.write({'active': False})
             order_ids.append(new_order_id)
             
@@ -109,7 +112,7 @@ class sale_order(orm.Model):
         res = {}
         for sale in self.browse(cr, uid, ids, context):
             if sale.sale_version_id:
-                res[sale.id] = self.search(cr, uid, ['|', ('sale_version_id', '=', sale.sale_version_id.id), ('id', '=', sale.sale_version_id.id), ('version', '<', sale.version), '|', ('active', '=', False), ('active', '=', True)])
+                res[sale.id] = self.search(cr, uid, ['|', ('sale_version_id', '=', sale.sale_version_id.id), ('id', '=', sale.sale_version_id.id), ('version', '<', sale.version), '|', ('active', '=', False), ('active', '=', True)], context=context)
             else:
                 res[sale.id] = []
         return res
