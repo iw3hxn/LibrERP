@@ -52,7 +52,7 @@ class sale_order_revision_note(orm.TransientModel):
                 return False
 
             sale_order_obj.write(cr, uid, order.id, {'revision_note': reason_note}, context=context)
-            res = sale_order_obj.action_previous_version(cr, uid, order.id, context=context)
+            res = sale_order_obj.action_previous_version(cr, uid, [order.id], context=context)
 
         if reason_note:
             text = _("Create New Revision for this reason: '%s' ") % reason_note
