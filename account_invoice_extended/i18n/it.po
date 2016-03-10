@@ -16,23 +16,29 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: l10n_it_account
+#. module: account_invoice_extended
 #: field:account.invoice,supplier_invoice_number:0
 msgid "Supplier invoice nr"
 msgstr "Fattura Fornitore nr"
 
-#. module: account_voucher_extended
+#. module: account_invoice_extended
 #: code:addons/account_voucher_extended/account_bank_statement.py:51
 #, python-format
 msgid "The Bank Statement Must be on draft."
 msgstr "Il Movimento Bancario deve essere in stato Nuovo"
 
-#. module: account_voucher_extended
+#. module: account_invoice_extended
 #: code:addons/account_voucher_extended/account_bank_statement.py:50
 #, python-format
 msgid "Error!"
 msgstr "Errore!"
 
+#. module: account_invoice_extended
 #: model:ir.actions.act_window,name:account.action_account_manual_reconcile
 msgid "Journal Items"
 msgstr "Riconciliazione Manuale"
+
+#. module: account_invoice_extended
+#: view:account.invoice:0
+msgid "Stock Picking"
+msgstr "Uscita Merce / DDT"

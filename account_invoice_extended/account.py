@@ -29,8 +29,54 @@ from openerp import pooler
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
+    # def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
+    #     result = {}
+    #     crm_lead_obj = self.pool['crm.lead']
+    #     sale_order_obj = self.pool['sale.order']
+    #
+    #     for crm_lead in crm_lead_obj.browse(cr, uid, ids, context):
+    #         partner_id = crm_lead.partner_id.id
+    #         contact_id = crm_lead.partner_address_id.id
+    #         if contact_id:
+    #             result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_order_id', '=', contact_id)])
+    #         else:
+    #             result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)])
+    #     return result
+
+    def _get_stock_picking(self, cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        stock_picking_obj = self.pool['stock.picking']
+
+        for invoice in self.browse(cr, uid, ids, context):
+            origins = {}
+
+            for line in invoice.invoice_line:
+                line_origin = line.origin or False
+                if line_origin not in origins:
+                    origins[line_origin] = invoice.id
+            if invoice.origin:
+                for invoice_origin in invoice.origin.split(', '):
+                    if invoice_origin not in origins:
+                        origins[invoice_origin] = invoice.id
+            picking_ids = []
+            for origin in origins:
+                if origin:
+                    # OUTxxx:SOyy
+                    if len(origin.split(':')) == 2:
+                        pickings_name = origin.split(':')[0]
+                    else:
+                        pickings_name = origin
+                    picking_ids += stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
+                    print picking_ids
+
+            result[invoice.id] = picking_ids
+
+        return result
+
     _columns = {
         'supplier_invoice_number': fields.char('Supplier invoice nr', size=16),
+#        'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
+        'stock_picking_ids': fields.function(_get_stock_picking, 'Stock Picking', type='one2many', relation="stock.picking", readonly=True, method=True),
     }
     
     def copy(self, cr, uid, order_id, defaults, context=None):

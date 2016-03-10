@@ -18,6 +18,19 @@
 			</field>
 		</record>
 
+        <record id="view_invoice_form_picking_origin" model="ir.ui.view">
+            <field name="name">account.invoice.picking_origin</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Stock Picking">
+                        <field name="stock_picking_ids" nolabel="1" context="{'type':'out', 'form_view_ref':'stock.view_picking_out_form', 'tree_view_ref':'stock.view_picking_out_tree'}"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
         <record id="invoice_tree_reg_date" model="ir.ui.view">
             <field name="name">account.invoice.tree.reg_date</field>
             <field name="model">account.invoice</field>
