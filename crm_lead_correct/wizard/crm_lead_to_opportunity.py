@@ -63,10 +63,12 @@ class crm_lead2opportunity_partner(orm.TransientModel):
                         res['action'] = 'exist'
                 else:
                     raise orm.except_orm(_('Error :'), _("VAT '%s' not valid.") % lead.vat)
-            res['street'] = lead.street or ''
-            res['street2'] = lead.street2 or ''
-            res['zip'] = lead.zip or ''
-            res['city'] = lead.city or ''
+            res.update({
+                'street': lead.street or '',
+                'street2': lead.street2 or '',
+                'zip': lead.zip or '',
+                'city': lead.city or '',
+            })
         return res
 
     def action_apply(self, cr, uid, ids, context=None):

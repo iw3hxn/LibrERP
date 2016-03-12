@@ -75,7 +75,7 @@ class crm_make_sale(orm.TransientModel):
                     'partner_invoice_id': partner_addr['invoice'],
                     'partner_order_id': case.partner_address_id and case.partner_address_id.id or case.partner_address_id,
                     'partner_shipping_id': case.partner_address_id and case.partner_address_id.id or partner_addr['delivery'],
-                    'date_order': fields.date.context_today(self,cr,uid,context=context),
+                    'date_order': fields.date.context_today(self, cr, uid, context=context),
                     'fiscal_position': fpos,
                     'payment_term': payment_term,
                     'user_id': make.user_id.id,
@@ -93,9 +93,9 @@ class crm_make_sale(orm.TransientModel):
                 case_obj.message_append(cr, uid, [case], _("Converted to Sales Quotation(%s).") % sale_order.name, context=context)
 
                 if make.move_attachment:
-                    attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'crm.lead'), ('res_id', '=', case.id)]) 
+                    attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'crm.lead'), ('res_id', '=', case.id)], context=context)
                     for attachment_id in attachment_ids:
-                        attachment_obj.write(cr, uid, attachment_id, {'res_model': 'sale.order', 'res_id': new_id})
+                        attachment_obj.write(cr, uid, attachment_id, {'res_model': 'sale.order', 'res_id': new_id}, context)
                     
             if make.close:
                 case_obj.case_close(cr, uid, data)

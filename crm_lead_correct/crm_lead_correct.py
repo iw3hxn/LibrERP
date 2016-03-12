@@ -65,16 +65,17 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
    
     def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
         result = {}
-        crm_lead_obj = self.pool['crm.lead']
+        # crm_lead_obj = self.pool['crm.lead']
         sale_order_obj = self.pool['sale.order']
-        
-        for crm_lead in crm_lead_obj.browse(cr, uid, ids, context):
+
+        for crm_lead in self.browse(cr, uid, ids, context):
             partner_id = crm_lead.partner_id.id
-            contact_id = crm_lead.partner_address_id.id
-            if contact_id:
-                result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_order_id', '=', contact_id)])
+            partner_address_id = crm_lead.partner_address_id.id
+            if partner_address_id:
+                result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_order_id', '=', partner_address_id)], context=context)
             else:
-                result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)])
+                result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)], context=context)
+
         return result
     
     def _get_crm_lead(self, cr, uid, ids, field_name, model_name, context=None):
@@ -205,9 +206,9 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
     def check_address(self, cr, uid, ids, vals):
         address_obj = self.pool['res.partner.address']
-        leads = self.browse(cr, uid, ids)
+        context = self.pool['res.users'].context_get(cr, uid)
 
-        for lead in leads:
+        for lead in self.browse(cr, uid, ids, context):
             partner_vals = {}
             if lead.partner_id:
                 if not lead.partner_id.email and vals.get('email_from', False):
@@ -218,13 +219,13 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
                 if partner_vals:
                     address_ids = address_obj.search(cr, uid, [
-                        ('partner_id', '=', lead.partner_id.id), ('type', '=', 'default')])
+                        ('partner_id', '=', lead.partner_id.id), ('type', '=', 'default')], context=context)
                     if address_ids:
-                        address_obj.write(cr, uid, address_ids[0], partner_vals)
+                        address_obj.write(cr, uid, address_ids[0], partner_vals, context)
                     else:
                         partner_vals['type'] = 'default'
                         partner_vals['partner_id'] = lead.partner_id.id
-                        address_obj.create(cr, uid, partner_vals)
+                        address_obj.create(cr, uid, partner_vals, context)
         return True
 
     def create(self, cr, uid, vals, context=None):
@@ -259,7 +260,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
     def copy(self, cr, uid, ids, defaults, context=None):
         defaults['name'] = '/'
-        #defaults['type'] = 'lead'
+        # defaults['type'] = 'lead'
 
         return super(crm_lead_correct, self).copy(cr, uid, ids, defaults, context)
 

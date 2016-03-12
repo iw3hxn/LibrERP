@@ -68,7 +68,7 @@
                         <group colspan="4" >
                             <field name="partner_id" select="1"
                                 on_change="onchange_partner_id(partner_id, email_from)" string="Customer"
-                                colspan="2" required="1"/>
+                                colspan="3" required="1"/>
 <!--
                             <button name="%(crm.action_crm_lead2partner)d"
                                 icon="terp-partner" type="action"
@@ -83,7 +83,7 @@
                             on_change="onchange_partner_address_id(partner_address_id, email_from)"
                             options='{"quick_create": false}' 
                             context="{'default_partner_id':partner_id}"
-                            colspan="1" required="1"
+                            colspan="3" required="1"
                             groups="crm.extended_view"/>
                         <field name="contact_id"
                                on_change="onchange_contact_id(contact_id)"
