@@ -1,0 +1,6 @@
+name,chart_template_id:id,id
+Regime Ordinario,l10n_it_chart_template_generic,it
+Importazioni,l10n_it_chart_template_generic,a-extra
+Acquisti Intracomunitari,l10n_it_chart_template_generic,a-intra
+Cessioni all'esportazione,l10n_it_chart_template_generic,c-extra
+Vendite Intracomunitarie,l10n_it_chart_template_generic,c-intra

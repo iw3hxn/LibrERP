@@ -1,0 +1,26 @@
+id,code,name,parent_id:id,user_type:id,type,reconcile
+0,0,Azienda,,account.data_account_type_view,view,FALSE
+1,1,ATTIVO ,0,account.data_account_type_view,view,TRUE
+11,11,DISPONIBILITÀ LIQUIDE ,1,account.data_account_type_view,view,TRUE
+1101,1101,banche c/c ,11,account.data_account_type_bank,liquidity,TRUE
+1121,1121,denaro in cassa ,11,account.data_account_type_cash,liquidity,TRUE
+13,13,CREDITI COMMERCIALI ,1,account.data_account_type_view,view,TRUE
+1301,1301,crediti v/clienti ,13,account.data_account_type_receivable,receivable,TRUE
+2,2,PASSIVO ,0,account.data_account_type_view,view,TRUE
+22,22,DEBITI COMMERCIALI ,2,account.data_account_type_view,view,TRUE
+2202,2202,debiti v/fornitori ,22,account.data_account_type_payable,payable,TRUE
+26,26,DEBITI TRIBUTARI,2,account.data_account_type_view,view,TRUE
+2672,2672,Erario c/ ritenute,26,account.data_account_type_liability,other,TRUE
+2601,2601,IVA n/debito,26,account.data_account_type_liability,other,TRUE
+2605,2605,IVA n/credito ,26,account.data_account_type_asset,other,TRUE
+30,30,PATRIMONIO NETTO ,2,account.data_account_type_view,view,TRUE
+3033,3033,patrimonio netto ,30,account.data_account_type_liability,other,TRUE
+3039,3039,utile d'esercizio ,30,account.data_account_type_liability,other,TRUE
+4,4,RICAVI,0,account.data_account_type_view,view,TRUE
+44,44,VENDITE,4,account.data_account_type_view,view,TRUE
+4404,4404,merci c/vendite ,44,account.data_account_type_income,other,TRUE
+5,5,COSTI,0,account.data_account_type_view,view,TRUE
+55,55,COSTO DEL VENDUTO ,5,account.data_account_type_view,view,TRUE
+5505,5505,merci c/acquisti ,55,account.data_account_type_expense,other,TRUE
+9,9,CONTI DI RISULTATO ,0,account.data_account_type_view,view,TRUE
+9101,9101,conto di risultato economico ,9,account.data_account_type_expense,other,TRUE

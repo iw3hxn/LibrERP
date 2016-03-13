@@ -1,0 +1,15 @@
+code,id,name,parent_id:id
+,vat_code_chart_root,Tassazione,
+B-IVA-E,template_b_iva_vendite,Imponibile Vendite,vat_code_chart_root
+B-IVA-F,template_b_iva_acquisti,Imponibile Acquisti,vat_code_chart_root
+B-PRE,template_b_previdenza,Imponibile Previdenza,vat_code_chart_root
+B-RIT,template_b_ritenute,Imponibile Ritenute,vat_code_chart_root
+T-IVA-E,template_t_iva_vendite,IVA vendite,vat_code_chart_root
+T-IVA-F,template_t_iva_acquisti,IVA acquisti,vat_code_chart_root
+T-IVA-E-22,template_t_iva_vendite_22,IVA vendite 22,template_t_iva_vendite
+B-IVA-E-22,template_b_iva_vendite_22,Imponibile IVA vendite 22,template_b_iva_vendite
+T-IVA-F-22,template_t_iva_acquisti_22,IVA acquisti 22,template_t_iva_acquisti
+B-IVA-F-22,template_b_iva_acquisti_22,Imponibile IVA acquisti 22,template_b_iva_acquisti
+RIT,template_rit,Ritenute d acconto,vat_code_chart_root
+T-RIT-20,template_rit_20_t,Ritenuta d acconto 20,template_rit
+B-RIT-20,template_rit_20_b,Imponibile ritenuta 20 acquisti,template_rit
