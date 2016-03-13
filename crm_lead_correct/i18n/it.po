@@ -327,7 +327,7 @@ msgstr "Città"
 #: field:crm.meeting,partner_address_id:0
 #: field:crm.phonecall,partner_address_id:0
 msgid "Partner Contact"
-msgstr "Contatto Partner"
+msgstr "Indirizzo Contatto"
 
 #. module: crm_lead_correct
 #: field:crm.lead,contact_id:0
