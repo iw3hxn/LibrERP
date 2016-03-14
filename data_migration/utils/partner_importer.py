@@ -266,13 +266,13 @@ class ImportFile(threading.Thread, Utils):
             city_ids = []
             # Not always we can get a city by zip code. A city can have more than one.
             if vals_address.get('city'):
-                city_ids = self.city_obj.search(cr, uid, [('name', '=ilike', vals_address['city'])])
+                city_ids = self.city_obj.search(cr, uid, [('name', '=ilike', vals_address['city'])], context=self.context)
 
             if vals_address.get('zip') and not city_ids:
-                city_ids = self.city_obj.search(cr, uid, [('zip', '=', vals_address['zip'])])
+                city_ids = self.city_obj.search(cr, uid, [('zip', '=', vals_address['zip'])], context=self.context)
 
             if city_ids:
-                city_data = self.city_obj.browse(cr, uid, city_ids[0])
+                city_data = self.city_obj.browse(cr, uid, city_ids[0], self.context)
                 vals_address['city'] = city_data.name
                 vals_address['zip'] = city_data.zip
                 vals_address['province'] = city_data.province_id.id
@@ -288,7 +288,7 @@ class ImportFile(threading.Thread, Utils):
                     vals_address['region'] = province_data.region.id
                     vals_address['country_id'] = province_data.region.country_id.id
                 else:
-                    state_ids = self.state_obj.search(cr, uid, [('code', '=', getattr(record, 'province_' + address_type))])
+                    state_ids = self.state_obj.search(cr, uid, [('code', '=', getattr(record, 'province_' + address_type))], context=self.context)
                     if state_ids:
                         vals_address['state_id'] = state_ids[0]
 
@@ -299,12 +299,12 @@ class ImportFile(threading.Thread, Utils):
             pprint(vals_address)
 
         if vals_address.get('country_id'):
-            address_ids = self.address_obj.search(cr, uid, [('partner_id', '=', vals_address['partner_id']), ('type', '=', vals_address['type'])])
+            address_ids = self.address_obj.search(cr, uid, [('partner_id', '=', vals_address['partner_id']), ('type', '=', vals_address['type'])], context=self.context)
             if address_ids:
                 address_id = address_ids[0]
-                self.address_obj.write(cr, uid, address_id, vals_address)
+                self.address_obj.write(cr, uid, address_id, vals_address, self.context)
             else:
-                self.address_obj.create(cr, uid, vals_address)
+                self.address_obj.create(cr, uid, vals_address, self.context)
 
         return True
 
@@ -354,7 +354,10 @@ class ImportFile(threading.Thread, Utils):
         }
 
         if 'supplier' in vals_partner:
-            vals_partner['customer'] = False
+            vals_partner.update({
+                'customer': False,
+                'supplier': True
+            })
 
         if hasattr(record, 'person_name') and record.person_name:
             vals_partner['name'] += ' {0}'.format(record.person_name)
@@ -364,9 +367,9 @@ class ImportFile(threading.Thread, Utils):
         if country_code:
             country_id = self._contry_by_code(cr, uid, country_code)
             if country_id:
-                country = self.pool['res.country'].browse(cr, uid, country_id)
+                country = self.pool['res.country'].browse(cr, uid, country_id, self.context)
 
-                fiscal_position_ids = self.account_fiscal_position_obj.search(cr, uid, [('name', '=ilike', country.name)])
+                fiscal_position_ids = self.account_fiscal_position_obj.search(cr, uid, [('name', '=ilike', country.name)], context=self.context)
 
                 if fiscal_position_ids and len(fiscal_position_ids) == 1:
                     vals_partner['property_account_position'] = fiscal_position_ids[0]
@@ -401,7 +404,7 @@ class ImportFile(threading.Thread, Utils):
             else:
                 vals_partner['vat'] = record.vat
 
-            #if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
+            # if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
             if vatnumber.check_vat(vals_partner['vat']):
                 if record.vat == record.fiscalcode:
                     vals_partner['fiscalcode'] = vals_partner['vat']
@@ -441,10 +444,14 @@ class ImportFile(threading.Thread, Utils):
             vals_partner['comment'] = record.comment
 
         record_code = self.simple_string(record.code, as_integer=True)
-        code_partner_ids = self.partner_obj.search(cr, uid, [(PROPERTY_REF_MAP[self.partner_type], '=', record_code)])
+
+        if PROPERTY_REF_MAP[self.partner_type]:
+            code_partner_ids = self.partner_obj.search(cr, uid, [(PROPERTY_REF_MAP[self.partner_type], '=', record_code)], context=self.context)
+        else:
+            code_partner_ids = False
 
         if code_partner_ids and not UPDATE_ON_CODE:
-            code_partner_data = self.partner_obj.browse(cr, uid, code_partner_ids[0])
+            code_partner_data = self.partner_obj.browse(cr, uid, code_partner_ids[0], self.context)
             if vals_partner.get('vat', False) and not code_partner_data.vat == vals_partner['vat']:
                 error = u"Riga {0}: Partner '{1} {2}'; codice gia utilizzato per partner {3}. La riga viene ignorata.".format(self.processed_lines, record_code, vals_partner['name'], code_partner_data['name'])
                 _logger.debug(error)
@@ -460,10 +467,11 @@ class ImportFile(threading.Thread, Utils):
             if PROPERTY_REF_MAP[self.partner_type] not in self.PARTNER_SEARCH:
                 self.PARTNER_SEARCH.insert(0, PROPERTY_REF_MAP[self.partner_type])
         else:
-            vals_partner[PROPERTY_REF_MAP[self.partner_type]] = record_code
+            if record_code:
+                vals_partner[PROPERTY_REF_MAP[self.partner_type]] = record_code
 
         if hasattr(record, 'category') and record.category:
-            category_ids = self.category_obj.search(cr, uid, [('name', 'ilike', record.category)])
+            category_ids = self.category_obj.search(cr, uid, [('name', 'ilike', record.category)], context=self.context)
 
             if len(category_ids) == 1:
                 vals_partner['category_id'] = [(6, 0, category_ids)]
@@ -471,7 +479,7 @@ class ImportFile(threading.Thread, Utils):
                 vals_partner['category_id'] = [(6, 0, [self.category_obj.create(cr, uid, {
                     'name': record.category,
                     'active': True
-                })])]
+                }), self.context])]
 
         # partner_id = self._find_partner(cr, uid, record)
         partner_id = self._find_partner(cr, uid, vals_partner)

@@ -198,7 +198,7 @@ class FormatFour():
     #           "zip_delivery, city_delivery, province_delivery, "\
     #           "country_code, vat, fiscalcode, email2, category"
 
-    REQUIRED = ('name', 'code')
+    REQUIRED = ('name', )
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['name', 'vat']
