@@ -20,7 +20,7 @@
 ##############################################################################
 
 {
-    "name": "Italy - Accounting",
+    "name": "Italy - Accounting SMART",
     "version": "0.1",
     "author": "OpenERP Italian Community",
     "description": """
