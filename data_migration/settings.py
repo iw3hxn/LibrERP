@@ -86,6 +86,11 @@ class FormatOne():
     COLUMNS_INVOICE_ITEM = "location, location_name, sku, item, sku_description, date, qty, cost, item2, group"
     REQUIRED_INVOICE_ITEM = ['item', 'qty']
 
+    HEADER_INVENTORY_ITEM = ('Articolo', 'Quantità')
+    COLUMNS_INVENTORY_ITEM = "default_code, product_qty"
+    REQUIRED_INVENTORY_ITEM = ['default_code']
+    INVENTORY_PRODUCT_SEARCH = ['default_code']
+
 class FormatTwo():
     # IB.
     HEADER_CUSTOMER = (
