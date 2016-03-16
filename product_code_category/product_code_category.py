@@ -24,6 +24,9 @@
 
 from openerp.osv import orm, fields
 from tools.translate import _
+import logging
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
 
 class product_category(orm.Model):
@@ -47,7 +50,7 @@ class product_product(orm.Model):
     _inherit = 'product.product'
 
     def _check_defaultcode_and_variants(self, cr, uid, ids, context=None):
-        for product in self.browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids, context):
             res = self.search(cr, uid, [('default_code', '=', product.default_code),
                                         ('variants', '=', product.variants)
                                         ], context=context)
@@ -57,6 +60,10 @@ class product_product(orm.Model):
             if len(res):
                 # If we have any results left
                 # we have duplicate entries
+                if product.variants:
+                    _logger.error(u"Exist other product with code '{code}' and variants'{variants}'".format(code=product.default_code, variants=product.variants))
+                else:
+                    _logger.error(u"Exist other product with code '{code}'".format(code=product.default_code))
                 return False
         return True
 
