@@ -319,13 +319,13 @@ class stock_partial_picking(orm.TransientModel):
 
         vals = {
             'type': 'ir.actions.act_window',
-            'name': 'Delivered',
+            'name': _('Delivered'),
             'view_type': 'form',
             'view_mode': 'form',
             'view_id': res and res[1] or False,
             'res_model': 'stock.picking',
             'nodestroy': True,
-            'target': 'current',
+            'target': 'new',
             'res_id': int(delivered_pack_id[partial.picking_id.id]),
         }
 

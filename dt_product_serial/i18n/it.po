@@ -466,3 +466,9 @@ msgstr "Porta al massimo solo le righe non controllate"
 #: view:stock.partial.picking:0
 msgid "_Save"
 msgstr "Salva"
+
+#. module: dt_product_serial
+#: code:addons/dt_product_serial/wizard/stock_partial_picking.py:322
+#, python-format
+msgid "Delivered"
+msgstr "Inviato"
