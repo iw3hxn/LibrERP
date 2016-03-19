@@ -12,7 +12,7 @@
                         <field name="number_method" nolabel="1" />
                         <group col="2" attrs="{'invisible': [('number_method', '=', 'sequence')]}" >
                             <label colspan="2" string="This will assign the DDT number"/>
-                            <field name="ddt_number" />
+                            <field name="ddt_number" attrs="{'required': [('number_method', '=', 'force')]}"/>
                         </group>
                         <!--<field name="ddt_next_number" readonly="1"/>-->
                         <field name="ddt_date" />
