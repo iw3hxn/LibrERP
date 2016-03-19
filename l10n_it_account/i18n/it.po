@@ -3811,7 +3811,7 @@ msgstr "Annulla riconciliazione"
 #: view:analytic.entries.report:0
 #: field:analytic.entries.report,user_id:0
 msgid "User"
-msgstr "Utente Open ERP"
+msgstr "Utente"
 
 #. module: account
 #: view:account.chart.template:0
