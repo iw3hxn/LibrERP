@@ -89,6 +89,8 @@ class stock_partial_picking(orm.TransientModel):
             })
 
         if context.get('no_auto_ddt', False):
+            return result
+        else:
             return {
                 'type': 'ir.actions.act_window',
                 'name': _('Assign DDT'),
@@ -99,6 +101,4 @@ class stock_partial_picking(orm.TransientModel):
                 'target': 'new',
                 'context': context,
             }
-        else :
-            return {'type': 'ir.actions.act_window_close'}
 
