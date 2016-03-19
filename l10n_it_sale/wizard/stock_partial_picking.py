@@ -88,16 +88,17 @@ class stock_partial_picking(orm.TransientModel):
                 'old_result': result
             })
 
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Assign DDT'),
-            'view_mode': 'form',
-            'view_type': 'form',
-            'res_model': 'wizard.assign.ddt',
-            # 'res_id': res_id,
-            'target': 'new',
-            'context': context,
-        }
-
-        # return {'type': 'ir.actions.act_window_close'}
+        if context.get('no_auto_ddt', False):
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Assign DDT'),
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'wizard.assign.ddt',
+                # 'res_id': res_id,
+                'target': 'new',
+                'context': context,
+            }
+        else :
+            return {'type': 'ir.actions.act_window_close'}
 
