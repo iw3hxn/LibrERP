@@ -48,6 +48,7 @@ class wizard_assign_ddt(orm.TransientModel):
     #     return res
 
     _columns = {
+        'number_method': fields.selection([('force', 'Force'), ('sequence', 'Sequence')], 'Number Method', required=True),
         'ddt_number': fields.char('DDT', size=64, help="Keep empty for use sequence"),
         'ddt_next_number': fields.char('DDT next Number', size=64),
         'ddt_date': fields.date('DDT date'),
@@ -55,10 +56,12 @@ class wizard_assign_ddt(orm.TransientModel):
 
     _defaults = {
         'ddt_date': fields.date.context_today,
+        'number_method': 'sequence'
         # 'ddt_next_number': _next_ddt,
     }
 
     def assign_ddt(self, cr, uid, ids, context=None):
+
         picking_obj = self.pool['stock.picking']
         for picking in picking_obj.browse(cr, uid, context.get('active_ids', []), context=context):
             vals = {}
@@ -79,8 +82,11 @@ class wizard_assign_ddt(orm.TransientModel):
             })
             picking.write(vals)
 
-        return {
-            'type': 'ir.actions.act_window_close',
-        }
+        if context.get('old_result', False):
+            return context['old_result']
+        else:
+            return {
+                'type': 'ir.actions.act_window_close',
+            }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

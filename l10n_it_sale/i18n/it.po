@@ -53,6 +53,7 @@ msgstr "SFUSI"
 
 #. module: l10n_it_sale
 #: model:ir.actions.act_window,name:l10n_it_sale.action_wizard_assign_ddt
+#: code:addons/l10n_it_sale/wizard/stock_partial_picking.py:98
 #: view:stock.picking:0
 #: view:wizard.assign.ddt:0
 msgid "Assign DDT"
@@ -91,7 +92,7 @@ msgstr "CARTONI-PALLETS"
 #. module: l10n_it_sale
 #: view:wizard.assign.ddt:0
 msgid "Cancel"
-msgstr "Annulla"
+msgstr "No, lo farò in seguito"
 
 #. module: l10n_it_sale
 #: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_CAR
@@ -158,5 +159,21 @@ msgstr "MITTENTE"
 #: model:stock.picking.transportation_condition,name:l10n_it_sale.transportation_condition_VETT
 msgid "VECTOR"
 msgstr "VETTORE"
+
+
+#. module: l10n_it_sale
+#: field:wizard.assign.ddt,number_method:0
+msgid "Number Method"
+msgstr "Numerazione"
+
+#. module: l10n_it_sale
+#: selection:wizard.assign.ddt,number_method:0
+msgid "Force"
+msgstr "Forzata Manualmente"
+
+#. module: l10n_it_sale
+#: selection:wizard.assign.ddt,number_method:0
+msgid "Sequence"
+msgstr "Assegnata Automanticamente"
 
 

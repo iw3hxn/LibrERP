@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class stock_partial_picking(orm.TransientModel):
@@ -30,8 +31,7 @@ class stock_partial_picking(orm.TransientModel):
         'ddt_in_reference': fields.char('In DDT', size=32),
         'ddt_in_date': fields.date('In DDT Date'),
         'type': fields.selection([('out', 'Sending Goods'), ('in', 'Getting Goods'), ('internal', 'Internal')],
-                                 'Shipping Type', required=True,
-                                ),
+                                 'Shipping Type', required=True,),
 
     }
 
@@ -58,8 +58,7 @@ class stock_partial_picking(orm.TransientModel):
         picking_id, = picking_ids
         picking = self.pool['stock.picking'].browse(cr, uid, picking_id, context)
         if 'type' in fields:
-            type = picking.type
-            res.update(type=type)
+            res.update(type=picking.type)
         if 'ddt_in_date':
             if picking.ddt_in_date:
                 res.update(ddt_in_date=picking.ddt_in_date)
@@ -70,7 +69,9 @@ class stock_partial_picking(orm.TransientModel):
         return res
 
     def do_partial(self, cr, uid, ids, context=None):
-        res = super(stock_partial_picking, self).do_partial(cr, uid, ids, context)
+        if not context:
+            context = {}
+        result = super(stock_partial_picking, self).do_partial(cr, uid, ids, context)
         partial = self.browse(cr, uid, ids, context=context)[0]
         vals = {}
         if partial.ddt_in_reference:
@@ -78,6 +79,25 @@ class stock_partial_picking(orm.TransientModel):
         if partial.ddt_in_date:
             vals.update({'ddt_in_date': partial.ddt_in_date})
         if vals:
-            self.pool['stock.picking'].write(cr, uid, res['res_id'], vals, context)
+            self.pool['stock.picking'].write(cr, uid, result['res_id'], vals, context)
 
-        return res
+        if result.get('res_id', False) != context.get('active_id', False):
+            context.update({
+                'active_id': result.get('res_id', False),
+                'active_ids': [result.get('res_id', False)],
+                'old_result': result
+            })
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Assign DDT'),
+            'view_mode': 'form',
+            'view_type': 'form',
+            'res_model': 'wizard.assign.ddt',
+            # 'res_id': res_id,
+            'target': 'new',
+            'context': context,
+        }
+
+        # return {'type': 'ir.actions.act_window_close'}
+
