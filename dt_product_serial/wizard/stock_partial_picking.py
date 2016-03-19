@@ -325,7 +325,7 @@ class stock_partial_picking(orm.TransientModel):
             'view_id': res and res[1] or False,
             'res_model': 'stock.picking',
             'nodestroy': True,
-            'target': 'new',
+            'target': 'current',
             'res_id': int(delivered_pack_id[partial.picking_id.id]),
         }
 
