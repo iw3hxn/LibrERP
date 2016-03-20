@@ -31,7 +31,7 @@ from collections import namedtuple
 from pprint import pprint
 from utils import Utils
 from openerp.addons.core_extended.file_manipulation import import_sheet
-
+from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -49,7 +49,7 @@ class ImportFile(threading.Thread, Utils):
         
         # Inizializzazione classe ImportPricelist
         self.uid = uid
-        
+        self.start_time = datetime.now()
         self.dbname = cr.dbname
         self.pool = pooler.get_pool(cr.dbname)
         self.product_obj = self.pool['product.product']
@@ -111,7 +111,7 @@ class ImportFile(threading.Thread, Utils):
             self.process(self.cr, self.uid, table)
             
             # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
         else:
             # Elaborazione del listino prezzi
             try:
@@ -119,7 +119,7 @@ class ImportFile(threading.Thread, Utils):
                 self.process(self.cr, self.uid, table)
                 
                 # Genera il report sull'importazione
-                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
@@ -133,7 +133,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.debug(message)
                     pdb.set_trace()
                 
-                self.notify_import_result(self.cr, self.uid, title, message, error=True)
+                self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
 
     def process(self, cr, uid, table):
         self.message_title = _("Importazione prodotti")
@@ -166,7 +166,7 @@ class ImportFile(threading.Thread, Utils):
                 print(categories)
             category_obj = self.pool['product.category']
             name = categories.pop(0)
-            category_ids = category_obj.search(cr, uid, [('name', '=', name.strip()), ('parent_id', '=', parent_id)])
+            category_ids = category_obj.search(cr, uid, [('name', '=', name.strip()), ('parent_id', '=', parent_id)], context=self.context)
 
             if len(category_ids) == 1:
                 if categories:
@@ -184,7 +184,7 @@ class ImportFile(threading.Thread, Utils):
                 #self.error.append(error)
                 #return False
 
-                category_id = category_obj.create(cr, uid, {'name': name, 'parent_id': parent_id})
+                category_id = category_obj.create(cr, uid, {'name': name, 'parent_id': parent_id}, context=self.context)
                 
                 if categories:
                     return self.get_category(cr, uid, categories, category_id)
@@ -223,7 +223,7 @@ class ImportFile(threading.Thread, Utils):
             self.error.append(error)
             return False
 
-        uom_ids = self.pool['product.uom'].search(cr, uid, [('name', '=ilike', translate[uom_name])])
+        uom_ids = self.pool['product.uom'].search(cr, uid, [('name', '=ilike', translate[uom_name])], context=self.context)
         if len(uom_ids) == 1:
             return uom_ids[0]
         elif len(uom_ids) > 1:
@@ -240,7 +240,7 @@ class ImportFile(threading.Thread, Utils):
     def get_taxes(self, cr, uid, description):
         tax_obj = self.pool['account.tax']
         
-        tax_ids = tax_obj.search(cr, uid, [('description', '=', description)])
+        tax_ids = tax_obj.search(cr, uid, [('description', '=', description)], context=self.context)
         
         if len(tax_ids) == 1:
             return tax_ids
@@ -261,7 +261,7 @@ class ImportFile(threading.Thread, Utils):
         
         for name in names:
             name = name.strip()
-            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)])
+            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)], context=self.context)
             
             if len(partner_ids) == 1:
                 supplier_ids += partner_ids
@@ -280,7 +280,7 @@ class ImportFile(threading.Thread, Utils):
     
     def get_brand(self, cr, uid, name):
         brand_obj = self.pool['product.brand']
-        brand_ids = brand_obj.search(cr, uid, [('name', '=ilike', name)])
+        brand_ids = brand_obj.search(cr, uid, [('name', '=ilike', name)], context=self.context)
         
         if len(brand_ids) == 1:
             return brand_ids[0]
@@ -290,7 +290,7 @@ class ImportFile(threading.Thread, Utils):
             self.warning.append(warning)
             return False
         else:
-            return brand_obj.create(cr, uid, {'name': name})
+            return brand_obj.create(cr, uid, {'name': name}, context=self.context)
     
     def import_row(self, cr, uid, row_list):
         if self.first_row:
@@ -445,13 +445,13 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'weight_net') and record.weight_net:
             vals_product['weight_net'] = record.weight_net
 
-        product_ids = self.product_obj.search(cr, uid, [(field, '=ilike', vals_product[field].replace('\\', '\\\\'))])
+        product_ids = self.product_obj.search(cr, uid, [(field, '=ilike', vals_product[field].replace('\\', '\\\\'))], context=self.context)
         if product_ids:
             _logger.info(u'Row {row}: Updating product {product}...'.format(row=self.processed_lines, product=vals_product[field]))
             product_id = product_ids[0]
             if self.update_product_name:
-                vals_product['name'] = self.product_obj.browse(cr, uid, product_id, context=None).name
-            self.product_obj.write(cr, uid, product_id, vals_product)
+                vals_product['name'] = self.product_obj.browse(cr, uid, product_id, self.context).name
+            self.product_obj.write(cr, uid, product_id, vals_product, self.context)
             self.updated += 1
         else:
             _logger.info(u'Row {row}: Adding product {product}...'.format(row=self.processed_lines, product=vals_product[field]))
@@ -466,12 +466,12 @@ class ImportFile(threading.Thread, Utils):
 
             default_vals_product.update(vals_product)
 
-            product_id = self.product_obj.create(cr, uid, default_vals_product, context=self.context)
+            product_id = self.product_obj.create(cr, uid, default_vals_product, self.context)
             self.uo_new += 1
         
         if partner_ids and product_id:
             for partner_id in partner_ids:
-                supplierinfo_ids = self.supplierinfo_obj.search(cr, uid, [('product_id', '=', product_id), ('name', '=', partner_id)])
+                supplierinfo_ids = self.supplierinfo_obj.search(cr, uid, [('product_id', '=', product_id), ('name', '=', partner_id)], context=self.context)
                 if supplierinfo_ids:
                     _logger.info(u'{0}: Updating supplierinfo for product {1}'.format(self.processed_lines, vals_product['name']))
                     self.supplierinfo_obj.write(cr, uid, supplierinfo_ids[0], {
@@ -501,7 +501,7 @@ class ImportFile(threading.Thread, Utils):
         # Get the product_tempalte ID
         
         # Retrive the record associated with the product id
-        productObject = self.pool.get('product.product').browse(self.cr, self.uid, product_id)
+        productObject = self.pool.get('product.product').browse(self.cr, self.uid, product_id, self.context)
         
         # Retrive the template id
         product_template_id = productObject.product_tmpl_id.id

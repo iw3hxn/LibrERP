@@ -81,17 +81,21 @@ class Utils():
             else:
                 return False
     
-    def notify_import_result(self, cr, uid, title, body='', error=False):
-        EOL = '\n'
-
-        user = self.pool['res.users'].browse(cr, uid, uid)
+    def notify_import_result(self, cr, uid, title, body='', error=False, record=False):
+        EOL = '\n<br/>'
+        end_time = datetime.now()
+        duration_seconds = (end_time - self.start_time).seconds
+        duration = '{min}m {sec}sec'.format(min=duration_seconds / 60, sec=duration_seconds - duration_seconds / 60 * 60)
+        user = self.pool['res.users'].browse(cr, uid, uid, context=self.context)
 
         if not error:
             body += EOL + EOL
             body += u"File '{0}' {1}{1}".format(self.file_name, EOL)
             body += _(u"Importate righe: {self.uo_new}{eol}Righe non importate: {self.problems}{eol}").format(self=self, eol=EOL)
             body += _(u"Righe aggiornate: {0}{1}").format(self.updated, EOL)
-               
+            body += _('Inizio: {0}{1}').format(self.start_time.strftime('%Y-%m-%d %H:%M:%S'), EOL)
+            body += _('Fine: {0}{1}').format(end_time.strftime('%Y-%m-%d %H:%M:%S'), EOL)
+            body += _('Importazione eseguita in: {0}{1}{1}').format(duration, EOL)
             if self.error:
                 body += u'{0}{0}<strong>Errors:</strong>{0}'.format(EOL) + EOL.join(self.error)
                 
@@ -99,16 +103,31 @@ class Utils():
                 body += u'{0}{0}<strong>Warnings:</strong>{0}'.format(EOL) + EOL.join(self.warning)
         
         # OpenERP v.6.1:
-        self.pool['mail.message'].create(cr, uid, {
+        mail_id = self.pool['mail.message'].create(cr, uid, {
             'subject': title,
             'date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
             'email_from': user.company_id.email or 'Data@Import',
             'email_to': user.user_email or '',
             'user_id': uid,
             'body_text': body,
+            'body_html': body,
             'model': 'filedata.import',
-            'state': 'sent'
-        })
+            'state': 'sent',
+            'subtype': 'html',
+        }, context=self.context)
+
+        if record:
+            # add file to attachment of email for future use
+            self.pool['mail.message'].write(cr, uid, mail_id, {
+                'attachment_ids': [(0, 0, {
+                    'res_model': 'mail.message',
+                    'name': record.file_name.split('\\')[-1],
+                    'datas_fname': record.file_name,
+                    'datas': record.content_base64,
+                    'res_id': mail_id
+                })]
+            })
+
         
         # OpenERP v.7:
         # self.pool.get('mail.message').create(cr, uid, {

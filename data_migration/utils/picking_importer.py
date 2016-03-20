@@ -29,11 +29,10 @@ import data_migration.settings as settings
 from collections import namedtuple
 from pprint import pprint
 from utils import Utils
-import datetime
 from openerp.addons.core_extended.file_manipulation import import_sheet
 import xlrd
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-
+from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -51,7 +50,7 @@ class ImportFile(threading.Thread, Utils):
         
         # Inizializzazione classe ImportPricelist
         self.uid = uid
-        
+        self.start_time = datetime.now()
         self.dbname = cr.dbname
         self.pool = pooler.get_pool(cr.dbname)
         self.product_obj = self.pool['product.product']
@@ -115,7 +114,7 @@ class ImportFile(threading.Thread, Utils):
             self.process(self.cr, self.uid, table)
             
             # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.pickingImportRecord)
         else:
             # Elaborazione del file
             try:
@@ -123,7 +122,7 @@ class ImportFile(threading.Thread, Utils):
                 self.process(self.cr, self.uid, table)
                 
                 # Genera il report sull'importazione
-                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.pickingImportRecord)
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
@@ -137,7 +136,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.debug(message)
                     pdb.set_trace()
                 
-                self.notify_import_result(self.cr, self.uid, title, message, error=True)
+                self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.pickingImportRecord)
 
     def process(self, cr, uid, table):
         self.message_title = _("Importazione Picking")
@@ -163,11 +162,16 @@ class ImportFile(threading.Thread, Utils):
         # here is import all now need to
 
         for pick in self.cache:
-
-            self.picking_obj.draft_validate(cr, uid, [self.cache[pick]])
-            picking_date = self.picking_obj.read(cr, uid, [self.cache[pick]])[0]['date']
-            move_ids = self.move_obj.search(cr, uid, [('picking_id', 'in', [self.cache[pick]])])
-            self.move_obj.write(cr, uid, move_ids, {'date': picking_date})
+            try:
+                self.picking_obj.draft_validate(cr, uid, [self.cache[pick]], context=self.context)
+                picking = self.picking_obj.browse(cr, uid, [self.cache[pick]], context=self.context)
+                move_ids = self.move_obj.search(cr, uid, [('picking_id', 'in', [self.cache[pick]])], context=self.context)
+                self.move_obj.write(cr, uid, move_ids, {'date': picking.picking_date}, context=self.context)
+            except Exception as e:
+                title = "Import failed"
+                message = "Errore alla linea %s" % self.processed_lines + "\nDettaglio:\n\n" + str(e)
+                _logger.error(message)
+                self.error.append(message)
 
         self.progressIndicator = 100
         self.updateProgressIndicator(cr, uid, self.pickingImportID)
@@ -218,7 +222,7 @@ class ImportFile(threading.Thread, Utils):
                 return False
 
         # date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime("%d/%m/%Y %H:%M:%S")
-        date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        date = datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         origin = record.origin.split('.')[0]
         picking_type = self.location_obj.picking_type_get(cr, uid, self.location_id, self.location_dest_id)
@@ -227,8 +231,8 @@ class ImportFile(threading.Thread, Utils):
             picking_id = self.cache[origin]
             _logger.info(u'Picking {0} already processed in cache'.format(origin))
             #    picking_id = picking_id[0]
-        elif self.picking_obj.search(cr, uid, [('origin', '=', origin), ('state', '=', 'draft'), ('type', '=', picking_type)]):
-            picking_id = self.picking_obj.search(cr, uid, [('origin', '=', origin), ('state', '=', 'draft'), ('type', '=', picking_type)])[0]
+        elif self.picking_obj.search(cr, uid, [('origin', '=', origin), ('state', '=', 'draft'), ('type', '=', picking_type)], context=self.context):
+            picking_id = self.picking_obj.search(cr, uid, [('origin', '=', origin), ('state', '=', 'draft'), ('type', '=', picking_type)], context=self.context)[0]
             self.cache[origin] = picking_id
             _logger.warning(u'Picking {0} already exist'.format(origin))
         else:
@@ -247,7 +251,7 @@ class ImportFile(threading.Thread, Utils):
                 'min_date': date,
                 'date': date,
             }
-            picking_id = self.picking_obj.create(cr, uid, vals_picking)
+            picking_id = self.picking_obj.create(cr, uid, vals_picking, context=self.context)
             self.cache[origin] = picking_id
             _logger.info(u'Create Picking {0} '.format(origin))
         
@@ -259,11 +263,11 @@ class ImportFile(threading.Thread, Utils):
                 product_id = self.cache_product[product]
                 _logger.warning(u'Product {0} already processed in cache'.format(product))
             else:
-                product_ids = self.product_obj.search(cr, uid, [('default_code', '=', product)])
+                product_ids = self.product_obj.search(cr, uid, [('default_code', '=', product)], context=self.context)
                 if not product_ids:
-                    product_ids = self.product_obj.search(cr, uid, [('name', '=', product)])
+                    product_ids = self.product_obj.search(cr, uid, [('name', '=', product)], context=self.context)
                     if not product_ids:
-                        product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)])
+                        product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)], context=self.context)
                 if product_ids:
                     product_id = product_ids[0]
                     self.cache_product[product] = product_id
@@ -272,18 +276,20 @@ class ImportFile(threading.Thread, Utils):
             vals_move['product_qty'] = float(record.qty)
 
         if product_id:
-            vals_move['name'] = origin
-            vals_move['picking_id'] = picking_id
-            vals_move['product_id'] = product_id
-            vals_move['product_uom'] = self.product_obj.browse(cr, uid, product_id, context=None).uom_id.id
-            vals_move['location_id'] = self.location_id.id
-            vals_move['location_dest_id'] = self.location_dest_id.id
-            vals_move['date'] = date
-            vals_move['date_expected'] = date
+            vals_move.update({
+                'name': origin,
+                'picking_id': picking_id,
+                'product_id': product_id,
+                'product_uom': self.product_obj.browse(cr, uid, product_id, context=self.context).uom_id.id,
+                'location_id': self.location_id.id,
+                'location_dest_id': self.location_dest_id.id,
+                'date': date,
+                'date_expected': date,
+            })
 
             _logger.info(u'Row {row}: Adding product {product} to picking {picking}'.format(row=self.processed_lines, product=record.product, picking=origin))
 
-            self.move_obj.create(cr, uid, vals_move)
+            self.move_obj.create(cr, uid, vals_move, self.context)
             self.uo_new += 1
         else:
             _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.product))

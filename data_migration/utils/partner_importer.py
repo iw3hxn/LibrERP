@@ -28,10 +28,10 @@ import data_migration.settings as settings
 from collections import namedtuple
 from pprint import pprint
 from utils import Utils
-from osv import osv
+from openerp.osv import orm
 import vatnumber
 import sys
-
+from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -49,7 +49,6 @@ PROPERTY_REF_MAP = {
     'customer': 'property_customer_ref'
 }
 
-UPDATE_ON_CODE = True
 DONT_STOP_ON_WRONG_VAT = True
 
 
@@ -61,6 +60,7 @@ class ImportFile(threading.Thread, Utils):
         # Inizializzazione classe ImportPartner
         self.uid = uid
         self.dbname = cr.dbname
+        self.start_time = datetime.now()
         self.pool = pooler.get_pool(cr.dbname)
         self.partner_obj = self.pool['res.partner']
         self.category_obj = self.pool['res.partner.category']
@@ -94,6 +94,7 @@ class ImportFile(threading.Thread, Utils):
         self.partnerImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.partnerImportID, context=self.context)
         self.file_name = self.partnerImportRecord.file_name.split('\\')[-1]
         self.strict = self.partnerImportRecord.strict
+        self.UPDATE_ON_CODE = self.partnerImportRecord.update_on_code
         self.partner_template_id = self.partnerImportRecord.partner_template_id
         #===================================================
         Config = getattr(settings, self.partnerImportRecord.format)
@@ -105,7 +106,7 @@ class ImportFile(threading.Thread, Utils):
 
         if not len(self.HEADER) == len(Config.COLUMNS.split(',')):
             pprint(zip(self.HEADER, Config.COLUMNS.split(',')))
-            raise osv.except_osv('Error: wrong configuration!', 'The length of columns and headers must be the same')
+            raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
 
         self.Record = namedtuple('Record', Config.COLUMNS)
         #===================================================
@@ -119,7 +120,7 @@ class ImportFile(threading.Thread, Utils):
             except:
                 pass
         else:
-            raise osv.except_osv('Error', _('Unknown encoding'))
+            raise orm.except_orm('Error', _('Unknown encoding'))
 
         sheet = []
         sh = book.sheet_by_index(0)
@@ -137,7 +138,7 @@ class ImportFile(threading.Thread, Utils):
             self.process(self.cr, self.uid, sheet, book.datemode)
 
             # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, 'Importazione partner')
+            self.notify_import_result(self.cr, self.uid, 'Importazione partner', record=self.partnerImportRecord)
         else:
             # Elaborazione del Partner
             try:
@@ -145,7 +146,7 @@ class ImportFile(threading.Thread, Utils):
                 self.process(self.cr, self.uid, sheet, book.datemode)
 
                 # Genera il report sull'importazione
-                self.notify_import_result(self.cr, self.uid, 'Importazione partner')
+                self.notify_import_result(self.cr, self.uid, 'Importazione partner', record=self.partnerImportRecord)
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
@@ -158,7 +159,7 @@ class ImportFile(threading.Thread, Utils):
                     ### Debug
                     print message
                     pdb.set_trace()
-                self.notify_import_result(self.cr, self.uid, title, message, error=True)
+                self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.partnerImportRecord)
 
     def process(self, cr, uid, table, book_datemode):
         self.progressIndicator = 0
@@ -200,15 +201,15 @@ class ImportFile(threading.Thread, Utils):
         partner_clone = set()
         for field in self.PARTNER_SEARCH:
             if vals_partner.get(field, False):
-                _logger.info(u"{0} = {1}".format(field, vals_partner[field]))
-                partner_ids = self.partner_obj.search(cr, uid, [(field, '=', vals_partner[field])])
+                _logger.info(u"Ricerca {0} = {1}".format(field, vals_partner[field]))
+                partner_ids = self.partner_obj.search(cr, uid, [(field, '=', vals_partner[field])], context=self.context)
                 if len(partner_ids) == 1:
                     if self.strict:
                         partner_clone.add(partner_ids[0])
                     else:
                         return partner_ids[0]
                 elif len(partner_ids) > 1:
-                    error = u'Riga {line}: Trovati più clienti con {field} = {name}'.format(line=self.processed_lines, field=field, name=vals_partner[field])
+                    error = u'Riga {line}: Trovati più partner con {field} = {name}'.format(line=self.processed_lines, field=field, name=vals_partner[field])
                     _logger.debug(error)
                     self.error.append(error)
                     return -1
@@ -218,7 +219,7 @@ class ImportFile(threading.Thread, Utils):
             partner = self.partner_obj.browse(cr, uid, partner_id, context)
             for field in self.PARTNER_SEARCH:
                 if vals_partner.get(field, False) and not vals_partner[field] == getattr(partner, field):
-                    error = u'Riga {line}: Trovati più cloni del cliente {name}'.format(line=self.processed_lines, name=partner.name)
+                    error = u'Riga {line}: Trovati più cloni del partner {name}'.format(line=self.processed_lines, name=partner.name)
                     _logger.debug(error)
                     self.error.append(error)
                     
@@ -235,7 +236,7 @@ class ImportFile(threading.Thread, Utils):
         return False
 
     def _contry_by_code(self, cr, uid, code):
-        country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)])
+        country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
         if country_ids:
             return country_ids[0]
         else:
@@ -281,7 +282,7 @@ class ImportFile(threading.Thread, Utils):
 
         if not vals_address.get('province'):
             if hasattr(record, 'province_' + address_type):
-                province_ids = self.province_obj.search(cr, uid, [('code', '=', getattr(record, 'province_' + address_type))])
+                province_ids = self.province_obj.search(cr, uid, [('code', '=', getattr(record, 'province_' + address_type))], context=self.context)
                 if province_ids:
                     vals_address['province'] = province_ids[0]
                     province_data = self.province_obj.browse(cr, uid, province_ids[0])
@@ -330,7 +331,7 @@ class ImportFile(threading.Thread, Utils):
                 return True
             else:
                 for column in record:
-                    #column_ascii = unicodedata.normalize('NFKD', column).encode('ascii', 'ignore').lower()
+                    # column_ascii = unicodedata.normalize('NFKD', column).encode('ascii', 'ignore').lower()
                     if column in self.HEADER:
                         warning = u'Riga {0}: Trovato Header'.format(self.processed_lines)
                         _logger.debug(warning)
@@ -404,12 +405,13 @@ class ImportFile(threading.Thread, Utils):
             else:
                 vals_partner['vat'] = record.vat
 
+            vals_partner['vat'] = vals_partner['vat'].replace(' ', '')
             # if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
             if vatnumber.check_vat(vals_partner['vat']):
                 if record.vat == record.fiscalcode:
                     vals_partner['fiscalcode'] = vals_partner['vat']
             else:
-                error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: {record.vat}".format(line=self.processed_lines, record=record)
+                error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: <strong>'{vat}'</strong>".format(line=self.processed_lines, record=record, vat=vals_partner['vat'])
                 _logger.debug(error)
                 self.error.append(error)
                 if DONT_STOP_ON_WRONG_VAT:
@@ -445,12 +447,12 @@ class ImportFile(threading.Thread, Utils):
 
         record_code = self.simple_string(record.code, as_integer=True)
 
-        if PROPERTY_REF_MAP[self.partner_type]:
+        if self.UPDATE_ON_CODE and  PROPERTY_REF_MAP[self.partner_type]:
             code_partner_ids = self.partner_obj.search(cr, uid, [(PROPERTY_REF_MAP[self.partner_type], '=', record_code)], context=self.context)
         else:
             code_partner_ids = False
 
-        if code_partner_ids and not UPDATE_ON_CODE:
+        if code_partner_ids and not self.UPDATE_ON_CODE:
             code_partner_data = self.partner_obj.browse(cr, uid, code_partner_ids[0], self.context)
             if vals_partner.get('vat', False) and not code_partner_data.vat == vals_partner['vat']:
                 error = u"Riga {0}: Partner '{1} {2}'; codice gia utilizzato per partner {3}. La riga viene ignorata.".format(self.processed_lines, record_code, vals_partner['name'], code_partner_data['name'])
@@ -462,7 +464,7 @@ class ImportFile(threading.Thread, Utils):
                 _logger.debug(error)
                 self.error.append(error)
                 return False
-        elif code_partner_ids and UPDATE_ON_CODE:
+        elif code_partner_ids and self.UPDATE_ON_CODE:
             vals_partner[PROPERTY_REF_MAP[self.partner_type]] = record_code
             if PROPERTY_REF_MAP[self.partner_type] not in self.PARTNER_SEARCH:
                 self.PARTNER_SEARCH.insert(0, PROPERTY_REF_MAP[self.partner_type])

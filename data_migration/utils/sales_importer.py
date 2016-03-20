@@ -30,11 +30,10 @@ import data_migration.settings as settings
 from collections import namedtuple
 from pprint import pprint
 from utils import Utils
-import datetime
 from openerp.addons.core_extended.file_manipulation import import_sheet
 import xlrd
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-
+from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -52,7 +51,7 @@ class ImportFile(threading.Thread, Utils):
         
         # Inizializzazione classe ImportPricelist
         self.uid = uid
-
+        self.start_time = datetime.now()
         self.dbname = cr.dbname
         self.pool = pooler.get_pool(cr.dbname)
         self.sale_order_obj = self.pool['sale.order']
@@ -116,7 +115,7 @@ class ImportFile(threading.Thread, Utils):
             self.process(self.cr, self.uid, table)
             
             # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.salesImportRecord)
         else:
             # Elaborazione del file
             try:
@@ -124,7 +123,7 @@ class ImportFile(threading.Thread, Utils):
                 self.process(self.cr, self.uid, table)
                 
                 # Genera il report sull'importazione
-                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.salesImportRecord)
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
@@ -138,7 +137,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.debug(message)
                     pdb.set_trace()
                 
-                self.notify_import_result(self.cr, self.uid, title, message, error=True)
+                self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.salesImportRecord)
 
     def process(self, cr, uid, table):
         self.message_title = _("Importazione Sales")
@@ -237,7 +236,7 @@ class ImportFile(threading.Thread, Utils):
                 return False
 
         # date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime("%d/%m/%Y %H:%M:%S")
-        date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        date = datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         client_order_ref = record.location_name.split('.')[0]
 
@@ -314,7 +313,7 @@ class ImportFile(threading.Thread, Utils):
 
             _logger.info(u'Row {row}: Adding product {product} to Sale Order {sale}'.format(row=self.processed_lines, product=record.item, sale=sale_order.name))
 
-            self.sale_order_line_obj.create(cr, uid, vals_sale_order_line)
+            self.sale_order_line_obj.create(cr, uid, vals_sale_order_line, self.context)
             self.uo_new += 1
         else:
             _logger.error(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.item))

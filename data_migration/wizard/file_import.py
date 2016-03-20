@@ -41,10 +41,10 @@ class filedata_import(orm.TransientModel):
     # # # # # # # # # # # # # #
     def actionCheckEncoding(self, cr, uid, ids, context=False):
         # WARNING: Context is required, for correct functionally of 'read'.
-        record = self.read(cr, uid, ids[0], context=context)
+        record = self.browse(cr, uid, ids[0], context=context)
 
         # Extration file content, encoded in base64
-        contentBase64 = record['content_base64']
+        contentBase64 = record.content_base64
 
         # Check if user supplied the data,
         # if data was not supplied show a message
@@ -59,7 +59,7 @@ class filedata_import(orm.TransientModel):
 
         vals = {
             'content_text': decodedText,
-            'file_name': record['file_name'],
+            'file_name': record.file_name,
         }
         self.write(cr, uid, ids, vals, context=context)
 
@@ -121,6 +121,9 @@ class partner_import(filedata_import):
         ),
         'strict': fields.boolean(
             'Strict', help="Use more strict (and more slow) data check"
+        ),
+        'update_on_code': fields.boolean(
+            'Update Partner by Code', help="Update Partner based on code"
         ),
         'partner_template_id': fields.many2one(
             'partner.import.template', 'Partner Import Template'

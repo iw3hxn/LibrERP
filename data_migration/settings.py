@@ -91,6 +91,7 @@ class FormatOne():
     REQUIRED_INVENTORY_ITEM = ['default_code']
     INVENTORY_PRODUCT_SEARCH = ['default_code']
 
+
 class FormatTwo():
     # IB.
     HEADER_CUSTOMER = (
@@ -206,7 +207,7 @@ class FormatFour():
     REQUIRED = ('name', )
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
-    PARTNER_SEARCH = ['name', 'vat']
+    PARTNER_SEARCH = ['vat', 'name']
 
     HEADER_PRODUCT = (
         'codice', 'nome', 'categoria', 'brand', 'descrizione vendita', 'uom_i',

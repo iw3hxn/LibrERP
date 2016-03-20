@@ -29,7 +29,7 @@ from collections import namedtuple
 from pprint import pprint
 from utils import Utils
 from openerp.addons.core_extended.file_manipulation import import_sheet
-
+from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -51,7 +51,7 @@ class ImportFile(threading.Thread, Utils):
         self.pool = pooler.get_pool(cr.dbname)
         self.pricelist_ver_obj = self.pool['product.pricelist.version']
         self.pricelist_item_obj = self.pool['product.pricelist.item']
-
+        self.start_time = datetime.now()
         self.cr = pooler.get_db(self.dbname).cursor()
 
         self.pricelistImportID = ids[0]
@@ -99,7 +99,8 @@ class ImportFile(threading.Thread, Utils):
             self.notify_import_result(
                 self.cr, self.uid,
                 self.message_title,
-                'Importazione completata'
+                'Importazione completata',
+                record=self.pricelistImportRecord
             )
         else:
             # Elaborazione del file
@@ -111,7 +112,8 @@ class ImportFile(threading.Thread, Utils):
                 self.notify_import_result(
                     self.cr, self.uid,
                     self.message_title,
-                    'Importazione completata'
+                    'Importazione completata',
+                    record=self.pricelistImportRecord
                 )
             except Exception as e:
                 # Annulla le modifiche fatte
@@ -132,7 +134,8 @@ class ImportFile(threading.Thread, Utils):
                     self.cr, self.uid,
                     title,
                     message,
-                    error=True
+                    error=True,
+                    record=self.pricelistImportRecord
                 )
 
     def process(self, cr, uid, table):
@@ -226,7 +229,7 @@ class ImportFile(threading.Thread, Utils):
         else:
             product_ids = self.pool['product.product'].search(cr, uid, [
                 ('default_code', '=', product)
-            ])
+            ], context=self.context)
 
         if not product_ids:
             _logger.warning(

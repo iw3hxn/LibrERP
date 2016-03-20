@@ -31,7 +31,7 @@ from collections import namedtuple
 from pprint import pprint
 from utils import Utils
 from openerp.addons.core_extended.file_manipulation import import_sheet
-
+from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -51,6 +51,7 @@ class ImportFile(threading.Thread, Utils):
         self.uid = uid
         
         self.dbname = cr.dbname
+        self.start_time = datetime.now()
         self.pool = pooler.get_pool(cr.dbname)
         self.product_obj = self.pool['product.product']
         self.inventory_line_obj = self.pool['stock.inventory.line']
@@ -112,7 +113,7 @@ class ImportFile(threading.Thread, Utils):
             self.process(self.cr, self.uid, table)
             
             # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
         else:
             # Elaborazione del listino prezzi
             try:
@@ -120,7 +121,7 @@ class ImportFile(threading.Thread, Utils):
                 self.process(self.cr, self.uid, table)
                 
                 # Genera il report sull'importazione
-                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
@@ -133,11 +134,11 @@ class ImportFile(threading.Thread, Utils):
                     ### Debug
                     _logger.debug(message)
                     pdb.set_trace()
-                
-                self.notify_import_result(self.cr, self.uid, title, message, error=True)
+
+                self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
 
     def process(self, cr, uid, table):
-        self.message_title = _("Importazione prodotti")
+        self.message_title = _("Importazione Inventario")
         self.progressIndicator = 0
         
         notifyProgressStep = (self.numberOfLines / 100) + 1     # NB: divisione tra interi da sempre un numero intero!

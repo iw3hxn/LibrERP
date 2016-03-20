@@ -34,6 +34,7 @@ import datetime
 from openerp.addons.core_extended.file_manipulation import import_sheet
 import xlrd
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from datetime import datetime
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -52,7 +53,7 @@ class ImportFile(threading.Thread, Utils):
         
         # Inizializzazione classe ImportPricelist
         self.uid = uid
-
+        self.start_time = datetime.now()
         self.dbname = cr.dbname
         self.pool = pooler.get_pool(cr.dbname)
         self.partner_obj = self.pool['res.partner']
@@ -120,7 +121,7 @@ class ImportFile(threading.Thread, Utils):
             self.process(self.cr, self.uid, table)
             
             # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.invoiceImportRecord)
         else:
             # Elaborazione del file
             try:
@@ -128,7 +129,7 @@ class ImportFile(threading.Thread, Utils):
                 self.process(self.cr, self.uid, table)
                 
                 # Genera il report sull'importazione
-                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata')
+                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.invoiceImportRecord)
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
@@ -142,10 +143,10 @@ class ImportFile(threading.Thread, Utils):
                     _logger.debug(message)
                     pdb.set_trace()
                 
-                self.notify_import_result(self.cr, self.uid, title, message, error=True)
+                self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.invoiceImportRecord)
 
     def process(self, cr, uid, table):
-        self.message_title = _("Importazione Sales")
+        self.message_title = _("Import Invoice")
         self.progressIndicator = 0
         
         notifyProgressStep = (self.numberOfLines / 100) + 1     # NB: divisione tra interi da sempre un numero intero!
@@ -226,7 +227,7 @@ class ImportFile(threading.Thread, Utils):
                     'partner_id': partner_id,
                     'name': record.number_invoice.split('.')[0],
                     'internal_number': record.number_invoice.split('.')[0],
-                    'date_invoice': datetime.datetime(*xlrd.xldate_as_tuple(float(record.date_invoice), 0)).strftime(DEFAULT_SERVER_DATE_FORMAT) or '',
+                    'date_invoice': datetime(*xlrd.xldate_as_tuple(float(record.date_invoice), 0)).strftime(DEFAULT_SERVER_DATE_FORMAT) or '',
                     'journal_id': self.journal_id.id,
                 })
 
@@ -293,11 +294,11 @@ class ImportFile(threading.Thread, Utils):
                     product_id = self.cache_product[product]
                     _logger.warning(u'Product {0} already processed in cache'.format(product))
                 else:
-                    product_ids = self.product_obj.search(cr, uid, [('default_code', '=', product)])
+                    product_ids = self.product_obj.search(cr, uid, [('default_code', '=', product)], context=self.context)
                     if not product_ids:
-                        product_ids = self.product_obj.search(cr, uid, [('name', '=', product)])
+                        product_ids = self.product_obj.search(cr, uid, [('name', '=', product)], context=self.context)
                         if not product_ids:
-                            product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)])
+                            product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)], context=self.context)
                     if product_ids:
                         product_id = product_ids[0]
                         self.cache_product[product] = product_id
@@ -336,6 +337,6 @@ class ImportFile(threading.Thread, Utils):
                 self.account_invoice_line_obj.create(cr, uid, vals_account_invoice_line, self.context)
                 self.uo_new += 1
             else:
-                _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.product))
+                _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.item))
                 invoice_id = False
             return invoice_id

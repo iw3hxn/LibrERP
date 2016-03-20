@@ -109,18 +109,15 @@ class partner_import_template(orm.Model):
                 cr, uid, [
                     ('source_term', '=', payment_term),
                     ('position_id', '=', partner_template_id.id)
-                ])
+                ], context=context)
             if migration_payment_term_ids:
                 migration_payment_term = migration_payment_term_obj.browse(
                     cr, uid, migration_payment_term_ids, context=context)[0]
-                result['property_payment_term'] = (
-                    migration_payment_term.dest_position_id and
-                    migration_payment_term.dest_position_id.id or False
-                )
-                result['company_bank_id'] = (
-                    migration_payment_term.company_bank_id and
-                    migration_payment_term.company_bank_id.id or False
-                )
+                result.update({
+                    'property_payment_term': migration_payment_term.dest_position_id and migration_payment_term.dest_position_id.id or False,
+                    'company_bank_id': migration_payment_term.company_bank_id and migration_payment_term.company_bank_id.id or False
+                })
+
             elif partner_template_id.auto_update:
                 migration_payment_term_obj.create(cr, uid, {
                     'source_term': payment_term,
