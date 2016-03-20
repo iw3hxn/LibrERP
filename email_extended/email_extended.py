@@ -26,10 +26,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import orm, fields
 
 
-class res_partner(osv.osv):
+class res_partner(orm.Model):
     _inherit = 'res.partner'
     _columns = {
         'mail_invoice_id': fields.many2one('res.partner.address.contact', 'Contact Invoices', required=False),
@@ -38,4 +38,3 @@ class res_partner(osv.osv):
         'mail_quotation_id': fields.many2one('res.partner.address.contact', 'Contact Quotes', required=False),
         'mail_communication_id': fields.many2one('res.partner.address.contact', 'Contact Communications', required=False),
     }
-res_partner()

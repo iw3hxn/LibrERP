@@ -28,7 +28,7 @@
 ##############################################################################
 {
     'name': 'Module extended res.partner for mail addresses of reference',
-    'version': '2.0.0.0',
+    'version': '3.0.0.0',
     'category': 'contacts',
     'description': """A module for res.partner. email's contacts of reference """,
     "author": "Didotech SRL",
