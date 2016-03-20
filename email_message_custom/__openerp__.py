@@ -19,7 +19,7 @@
 ##############################################################################
 {
     "name": "Email message customized",
-    "version": "0.5.1",
+    "version": "3.0.5.1",
     "author": "Matmoz d.o.o. (Didotech Group)",
     "website": "http://www.matmoz.si",
     "category": "Vertical Modules/Parametrization",
@@ -35,12 +35,11 @@
                 "web_wysiwyg",
                 "web_display_html"
             ],
-    "init_xml": [],
-    "demo_xml": [],
-    "update_xml": [
+    "data": [
         "email_wysiwyg_data.xml",
         "tree_view.xml"
     ],
     "active": False,
-    "installable": True
+    "installable": True,
+    "auto_install": True,
 }
