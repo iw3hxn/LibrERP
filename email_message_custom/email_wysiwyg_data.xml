@@ -15,17 +15,17 @@
                         </html>
                 </field>
 
-                <field name="model" position="replace">
-                    <field name="model" readonly="0"/>
-                </field>
+                <!--<field name="model" position="replace">-->
+                    <!--<field name="model" readonly="0"/>-->
+                <!--</field>-->
 
-                <field name="res_id" position="replace">
-                    <field name="res_id" readonly="0"/>
-                </field>
+                <!--<field name="res_id" position="replace">-->
+                    <!--<field name="res_id" readonly="0"/>-->
+                <!--</field>-->
 
-                <field name="subtype" position="replace">
-                    <field name="subtype" readonly="0"/>
-                </field>
+                <!--<field name="subtype" position="replace">-->
+                    <!--<field name="subtype" readonly="0"/>-->
+                <!--</field>-->
 
             </field>
 
