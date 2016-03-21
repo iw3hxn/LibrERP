@@ -83,8 +83,7 @@
                             on_change="onchange_partner_address_id(partner_address_id, email_from)"
                             options='{"quick_create": false}' 
                             context="{'default_partner_id':partner_id}"
-                            colspan="3" required="1"
-                            groups="crm.extended_view"/>
+                            colspan="3" required="1" />
                         <field name="contact_id"
                                on_change="onchange_contact_id(contact_id)"
                                context="{'address_id': partner_address_id}"
@@ -148,7 +147,7 @@
                         <field name="optout" on_change="on_change_optout(optout)"/>
                     </group>
                 </page>
-                <page string="Communication &amp; History">
+                <page string="Communication &amp; History" groups="crm.extended_view">
                   <group colspan="4">
                       <field colspan="4" name="email_cc" widget="char" size="512"/>
                   </group>
