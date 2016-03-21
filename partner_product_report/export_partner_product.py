@@ -84,7 +84,7 @@ class WizardExportPartnerProduct(orm.TransientModel):
     _description = 'Download Partner Product'
 
     def get_years(self, cr, uid, context):
-        cr.execute("""SELECT TO_CHAR(s_order.date_confirm, 'YYYY') AS year
+        cr.execute("""SELECT TO_CHAR(s_order.date_order, 'YYYY') AS year
             FROM sale_order_line AS line
             LEFT JOIN sale_order AS s_order ON line.order_id=s_order.id
             WHERE s_order.state IN ('confirmed', 'progress', 'done')
@@ -103,9 +103,7 @@ class WizardExportPartnerProduct(orm.TransientModel):
             ('choose', 'choose'),   # choose
             ('get', 'get'),         # get the file
         )),
-        'year': fields.selection(get_years, _('Year'), required=True),
-        #'state': fields.selection([('open', 'Open'), ('done', 'Done')], 'State', required=True),
-        #'state': fields.selection([('0', 'Quotation'), ('1', 'Order Confirmed'), ('2', 'Invoiced')], 'State', required="1", help="Quotation = Quotation & Send To Customer ")
+        'year': fields.selection(get_years, _('Year'), required=True)
     }
 
     _defaults = {
@@ -196,8 +194,8 @@ class WizardExportPartnerProduct(orm.TransientModel):
             LEFT JOIN product_product AS product ON line.product_id=product.id
             LEFT JOIN product_template AS template ON product.product_tmpl_id=template.id
             WHERE s_order.state IN ('confirmed', 'progress', 'done')
-            AND s_order.date_confirm >= '{start}'
-            AND s_order.date_confirm <= '{end}'
+            AND s_order.date_order >= '{start}'
+            AND s_order.date_order <= '{end}'
             AND s_order.active = 'true'
             GROUP BY s_order.partner_id, line.product_id
         """.format(start=date_start, end=date_end)
@@ -231,8 +229,8 @@ class WizardExportPartnerProduct(orm.TransientModel):
             LEFT JOIN res_partner AS partner ON s_order.partner_id=partner.id
             LEFT JOIN product_product AS product ON line.product_id=product.id
             WHERE s_order.state IN ('confirmed', 'progress', 'done')
-            AND s_order.date_confirm >= '{year}-01-01'
-            AND s_order.date_confirm <= '{year}-12-31'
+            AND s_order.date_order >= '{year}-01-01'
+            AND s_order.date_order <= '{year}-12-31'
             AND s_order.active = 'true'
             GROUP BY s_order.partner_id, line.product_id, partner.name, product.name_template, product.default_code
             ORDER BY partner.name
@@ -284,8 +282,8 @@ class WizardExportPartnerProduct(orm.TransientModel):
                         sale_order_line_ids = self.pool['sale.order.line'].search(cr, uid, [
                             ('order_id.partner_id', '=', partner_id),
                             ('product_id', '=', product_id),
-                            ('order_id.date_confirm', '>=', date_start),
-                            ('order_id.date_confirm', '<=', date_end)
+                            ('order_id.date_order', '>=', date_start),
+                            ('order_id.date_order', '<=', date_end)
                         ])
 
                         if sale_order_line_ids:
