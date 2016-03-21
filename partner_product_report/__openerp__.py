@@ -29,7 +29,7 @@
 
 {
     "name": "Partner Product Report",
-    "version": "3.2.2.1",
+    "version": "3.2.3.1",
     "category": "Partner",
     "description": """This Module, provided user's wizard to export Partner/Product report
     """,

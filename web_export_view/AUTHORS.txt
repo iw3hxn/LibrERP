@@ -6,3 +6,4 @@ Lorenzo Battistini <lorenzo.battistini@agilebg.com>
 Stefan Rijnhart <stefan@therp.nl>
 Mariano Ruiz <mrsarm@gmail.com>
 Cristian Salamea <ovnicraft@gmail.com>
+Andrei Levin <andrei.levin@didotech.com>

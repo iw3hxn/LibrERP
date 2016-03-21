@@ -9,7 +9,6 @@
                     <form col="6" string="Download Partner/Product Report">
                         <group col="5" fill="0" height="100" states="choose">
                             <field name="year" />
-                            <field name="state" />
                             <group colspan="5">
                                 <button special="cancel" icon="gtk-cancel" string="Cancel"/>
                                 <button type="object" name="export_partner_product" icon="gtk-go-forward"
