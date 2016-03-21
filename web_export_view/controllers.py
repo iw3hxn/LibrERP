@@ -3,6 +3,7 @@
 #    
 #    Copyright (C) 2012 Agile Business Group sagl (<http://www.agilebg.com>)
 #    Copyright (C) 2012 Domsense srl (<http://www.domsense.com>)
+#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,6 +19,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 try:
     import json
 except ImportError:
@@ -30,8 +32,8 @@ except ImportError:
     xlwt = None
 
 import web.common.http as openerpweb
-
 from web.controllers.main import ExcelExport
+from datetime import datetime
 
 
 class ExcelExportView(ExcelExport):
@@ -46,15 +48,18 @@ class ExcelExportView(ExcelExport):
             worksheet.col(i).width = 8000  # around 220 pixels
 
         style = xlwt.easyxf('align: wrap yes')
-        m = "^[\d%s]+(\%s\d+)?$" % (
+        number_pattern = re.compile(r"^-?[\d%s]+(\%s\d+)?$" % (
             separators['thousands_sep'],
             separators['decimal_point']
-        )
+        ))
+        date_pattern = re.compile('\d{2}[-/]\d{2}[-/]\d{4}')
+
         for row_index, row in enumerate(rows):
             for cell_index, cell_value in enumerate(row):
                 if isinstance(cell_value, basestring):
                     cell_value = re.sub("\r", " ", cell_value)
-                    if re.match(m, cell_value):
+
+                    if number_pattern.match(cell_value):
                         cell_value = float(
                             cell_value.replace(
                                 separators['thousands_sep'], ''
@@ -62,7 +67,13 @@ class ExcelExportView(ExcelExport):
                                 separators['decimal_point'], '.'
                             ) or 0.00
                         )
-                        style = xlwt.easyxf(num_format_str='#,##0.00')
+                        # style = xlwt.easyxf(num_format_str='#,##0.00')
+                        style = xlwt.easyxf(num_format_str='#,##0.00;[RED]-#,##0.00')
+                    elif date_pattern.match(cell_value):
+                        cell_value = datetime.strptime(cell_value, '%d/%m/%Y')
+                        # style = xlwt.easyxf(num_format_str='dd/mm/yyyy')
+                        style = xlwt.easyxf(num_format_str='d mmm yyyy')
+
                 if cell_value is False:
                     cell_value = None
                 worksheet.write(row_index + 1, cell_index, cell_value, style)
