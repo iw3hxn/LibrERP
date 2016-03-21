@@ -88,7 +88,7 @@ class stock_partial_picking(orm.TransientModel):
                 'old_result': result
             })
 
-        if context.get('no_auto_ddt', False):
+        if context.get('no_auto_ddt', False) or partial.type == 'in':
             return result
         else:
             return {
