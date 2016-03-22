@@ -22,7 +22,7 @@
 
 {
     'name': 'Export Current View',
-    'version': '1.0.2',
+    'version': '1.0.3.0',
     'category': 'Web',
     'description': """
 WEB EXPORT VIEW
@@ -39,9 +39,13 @@ After you installed it, you’ll find an additional link ‘Export current view�
     'author': 'Agile Business Group',
     'website': 'http://www.agilebg.com',
     'license': 'AGPL-3',
-    'depends': ['web'],
-    'external_dependencies' : {
-        'python' : ['xlwt'],
+    'depends': [
+        'web'
+    ],
+    'external_dependencies': {
+        'python': [
+            'xlwt'
+        ],
      },
     'data': [],
     'active': False,
@@ -50,4 +54,3 @@ After you installed it, you’ll find an additional link ‘Export current view�
         'static/js/web_advanced_export.js',
     ],
 }
-

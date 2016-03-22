@@ -52,7 +52,7 @@ class ExcelExportView(ExcelExport):
             separators['thousands_sep'],
             separators['decimal_point']
         ))
-        date_pattern = re.compile('\d{2}[-/]\d{2}[-/]\d{4}')
+        date_pattern = re.compile('^\d{2}[-/]\d{2}[-/]\d{4}$')
 
         for row_index, row in enumerate(rows):
             for cell_index, cell_value in enumerate(row):
