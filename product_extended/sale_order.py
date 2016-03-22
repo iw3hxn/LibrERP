@@ -22,6 +22,7 @@
 import time
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.osv import orm, fields
+from openerp import SUPERUSER_ID
 
 
 class sale_order(orm.Model):
@@ -44,6 +45,6 @@ class sale_order(orm.Model):
                         'last_customer_id': line.order_partner_id.id,
                         'last_sale_order_id': order.id
                     }
-                    line.product_id.write(vals)
+                    self.pool['product.product'].write(cr, SUPERUSER_ID, line.product_id.id, vals, context)
         return True
 

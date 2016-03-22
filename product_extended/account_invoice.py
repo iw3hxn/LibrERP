@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp import SUPERUSER_ID
 
 
 class account_invoice(orm.Model):
@@ -47,12 +48,11 @@ class account_invoice(orm.Model):
                             from_amount=line.price_subtotal,
                             context=context
                         )
-                        line.product_id.write(
-                            {
-                                'last_sale_price': price_subtotal / line.quantity,
-                                'last_customer_invoice_id': invoice.id
-                            }
-                        )
+                        vals = {
+                            'last_sale_price': price_subtotal / line.quantity,
+                            'last_customer_invoice_id': invoice.id
+                        }
+                        self.pool['product.product'].write(cr, SUPERUSER_ID, line.product_id.id, vals, context)
                     elif invoice.type == 'in_invoice':
                         price_subtotal = self.pool['res.currency'].compute(
                             cr, uid,
@@ -61,10 +61,9 @@ class account_invoice(orm.Model):
                             from_amount=line.price_subtotal,
                             context=context
                         )
-                        line.product_id.write(
-                            {
-                                'last_purchase_price': price_subtotal / line.quantity,
-                                'last_supplier_invoice_id': invoice.id
-                            }
-                        )
+                        vals = {
+                            'last_purchase_price': price_subtotal / line.quantity,
+                            'last_supplier_invoice_id': invoice.id
+                        }
+                        self.pool['product.product'].write(cr, SUPERUSER_ID, line.product_id.id, vals, context)
         return True
