@@ -22,7 +22,7 @@
 
 {
     'name': 'Export Current View',
-    'version': '1.0.3.0',
+    'version': '1.0.4.0',
     'category': 'Web',
     'description': """
 WEB EXPORT VIEW

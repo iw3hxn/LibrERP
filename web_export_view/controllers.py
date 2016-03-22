@@ -43,9 +43,11 @@ class ExcelExportView(ExcelExport):
         workbook = xlwt.Workbook(style_compression=2)
         worksheet = workbook.add_sheet('Sheet 1')
 
+        # style for header
+        style_header = xlwt.easyxf('font: bold on; pattern: pattern solid, fore-colour grey25; align: horiz center')
         for i, fieldname in enumerate(fields):
-            worksheet.write(0, i, fieldname)
-            worksheet.col(i).width = 8000  # around 220 pixels
+            worksheet.write(0, i, fieldname, style_header)
+            worksheet.col(i).width = len(fieldname) * 300
 
         style = xlwt.easyxf('align: wrap yes')
         number_pattern = re.compile(r"^-?[\d%s]+(\%s\d+)?$" % (
@@ -73,10 +75,16 @@ class ExcelExportView(ExcelExport):
                         cell_value = datetime.strptime(cell_value, '%d/%m/%Y')
                         # style = xlwt.easyxf(num_format_str='dd/mm/yyyy')
                         style = xlwt.easyxf(num_format_str='d mmm yyyy')
+                        worksheet.col(cell_index).width = 4000
+                    else:
+                        if worksheet.col(cell_index).width < len(cell_value) * 300:
+                            worksheet.col(cell_index).width = len(cell_value) * 300
 
                 if cell_value is False:
                     cell_value = None
                 worksheet.write(row_index + 1, cell_index, cell_value, style)
+
+
 
         fp = StringIO()
         workbook.save(fp)
