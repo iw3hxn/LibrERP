@@ -112,7 +112,7 @@ class Utils():
             'body_text': body,
             'body_html': body,
             'model': 'filedata.import',
-            'state': 'sent',
+            'state': 'outgoing',
             'subtype': 'html',
         }, context=self.context)
 
