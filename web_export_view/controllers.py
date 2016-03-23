@@ -70,15 +70,17 @@ class ExcelExportView(ExcelExport):
                             ) or 0.00
                         )
                         # style = xlwt.easyxf(num_format_str='#,##0.00')
+                        len_cell = len('{num}'.format(num=cell_value)) * 600
                         style = xlwt.easyxf(num_format_str='#,##0.00;[RED]-#,##0.00')
                     elif date_pattern.match(cell_value):
-                        cell_value = datetime.strptime(cell_value, '%d/%m/%Y')
+                        cell_value = datetime.strptime(cell_value, separators['date_format'])
                         # style = xlwt.easyxf(num_format_str='dd/mm/yyyy')
                         style = xlwt.easyxf(num_format_str='d mmm yyyy')
-                        worksheet.col(cell_index).width = 4000
+                        len_cell = 4000
                     else:
-                        if worksheet.col(cell_index).width < len(cell_value) * 300:
-                            worksheet.col(cell_index).width = len(cell_value) * 300
+                        len_cell = len(cell_value) * 300
+                    if worksheet.col(cell_index).width < len_cell:
+                        worksheet.col(cell_index).width = len_cell
 
                 if cell_value is False:
                     cell_value = None
@@ -96,15 +98,15 @@ class ExcelExportView(ExcelExport):
     @openerpweb.httprequest
     def index(self, req, data, token):
         data = json.loads(data)
-        model = data.get('model',[])
-        columns_headers = data.get('headers',[])
-        rows = data.get('rows',[])
+        model = data.get('model', [])
+        columns_headers = data.get('headers', [])
+        rows = data.get('rows', [])
 
         context = req.session.eval_context(req.context)
         lang = context.get('lang', 'en_US')
         Model = req.session.model('res.lang')
-        ids = Model.search([['code', '=', lang]])
-        record = Model.read(ids, ['decimal_point', 'thousands_sep'])
+        ids = Model.search([['code', '=', lang]], context=context)
+        record = Model.read(ids, ['decimal_point', 'thousands_sep', 'date_format'])
 
         return req.make_response(
             self.from_data(columns_headers, rows, record[0]),
