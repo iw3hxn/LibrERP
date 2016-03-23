@@ -225,11 +225,12 @@ class ImportFile(threading.Thread, Utils):
 
         if not product_ids:
 
-            _logger.warning(
-                u'Row {row}: Not Find {product}'.format(
+            error = u'Row {row}: Not Find {product}'.format(
                     row=self.processed_lines, product=record.default_code
-                )
             )
+            _logger.error(str(row_list))
+            _logger.error(error)
+            self.error.append(error)
             return False
 
         product_id = product_ids.pop()
