@@ -166,7 +166,6 @@ class ImportFile(threading.Thread, Utils):
             try:
                 self.picking_obj.draft_validate(cr, uid, [self.cache[pick]], context=self.context)
                 move_ids = self.move_obj.search(cr, uid, [('picking_id', 'in', [self.cache[pick]])], context=self.context)
-                import pdb; pdb.set_trace()
                 self.move_obj.write(cr, uid, move_ids, {'date': picking.date_done}, context=self.context)
             except Exception as e:
                 title = "Import failed"
