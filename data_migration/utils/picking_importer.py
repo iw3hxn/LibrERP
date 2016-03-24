@@ -222,7 +222,11 @@ class ImportFile(threading.Thread, Utils):
                 return False
 
         # date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime("%d/%m/%Y %H:%M:%S")
-        date = datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        if record.date.replace('.', '').isdigit():
+            # Ex: u'42359.0' -> '2015-12-21 00:00:00'
+            date = datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        else:
+            date = record.date[:19]
 
         origin = record.origin.split('.')[0]
         picking_type = self.location_obj.picking_type_get(cr, uid, self.location_id, self.location_dest_id)

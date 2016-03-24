@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2014 Didotech srl (info at didotech.com)
+# Copyright (c) 2013-2016 Didotech srl (info at didotech.com)
 #
 # This program is Free Software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,9 +19,8 @@
 #
 ##############################################################################
 
-
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
 from collections import OrderedDict
 
