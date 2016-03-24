@@ -162,14 +162,15 @@ class ImportFile(threading.Thread, Utils):
         # here is import all now need to
 
         for pick in self.cache:
+            picking = self.picking_obj.browse(cr, uid, [self.cache[pick]], context=self.context)[0]
             try:
                 self.picking_obj.draft_validate(cr, uid, [self.cache[pick]], context=self.context)
-                picking = self.picking_obj.browse(cr, uid, [self.cache[pick]], context=self.context)
                 move_ids = self.move_obj.search(cr, uid, [('picking_id', 'in', [self.cache[pick]])], context=self.context)
+                import pdb; pdb.set_trace()
                 self.move_obj.write(cr, uid, move_ids, {'date': picking.date_done}, context=self.context)
             except Exception as e:
                 title = "Import failed"
-                message = "Errore nel picking %s" % pick.name + "\nDettaglio:\n\n" + str(e)
+                message = "Errore nel picking %s" % pick + "\nDettaglio:\n\n" + str(e)
                 _logger.error(message)
                 self.error.append(message)
 
