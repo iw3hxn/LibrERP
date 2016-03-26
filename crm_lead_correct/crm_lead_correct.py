@@ -31,6 +31,7 @@ from openerp.osv import orm, fields
 import crm
 from mail.mail_message import to_email
 from tools.translate import _
+from openerp import SUPERUSER_ID
 
 
 COLOR_SELECTION = [
@@ -90,6 +91,40 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             else:
                 result[crm_lead.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('name', '!=', name)])
         return result
+
+    def vat_change(self, cr, uid, ids, vat, context=None):
+
+        if not vat:
+            return False
+
+        vat_country, vat_number = self.pool['res.partner']._split_vat(vat)
+        if ids or not self.pool['res.partner'].simple_vat_check(cr, uid, vat_country, vat_number, context):
+            return False
+
+        vat = (vat_country + vat_number).upper()
+        partner_vat = self.pool['res.partner'].search(cr, uid, [('vat', '=', vat)], context=context)
+        if partner_vat:
+            partner = self.pool['res.partner'].browse(cr, uid, partner_vat, context)[0]
+            return {'value': {
+                'partner_name': partner.name,
+                'vat': partner.vat,
+                'partner_id': partner.id,
+                'street': partner.address and partner.address[0].street or '',
+                'zip': partner.address and partner.address[0].zip or '',
+                'city': partner.address and partner.address[0].city or '',
+                'province': partner.address and partner.address[0].province and partner.address[0].province.id or '',
+                'region': partner.address and partner.address[0].region and partner.address[0].region.id or '',
+                'country_id': partner.address and partner.address[0].country_id and partner.address[0].country_id.id or '',
+            }}
+        else:
+            partner_vat_all = self.pool['res.partner'].search(cr, SUPERUSER_ID, [('vat', '=', vat)], context=context)
+            if partner_vat_all:
+                partner = self.pool['res.partner'].browse(cr, uid, partner_vat_all, context)[0]
+                raise orm.except_orm('Errore!',
+                    "Cliente {partner} con P.Iva {vat} già presente ed assegnato all'utente {user}!".format(vat=vat, partner=partner.name, user=partner.user_id.name or ''))
+                return False
+
+        return {'value': {}}
 
     _columns = {
         'province': fields.many2one('res.province', string='Province', ondelete='restrict'),

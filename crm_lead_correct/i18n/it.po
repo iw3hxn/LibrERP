@@ -158,9 +158,12 @@ msgid "Meeting Type"
 msgstr "Tipo di meeting"
 
 #. module: crm_lead_correct
+#: view:crm.lead:0
+#: field:crm.lead,province:0
 #: field:crm.meeting.by.province,province:0
+#: view:res.province:0
 msgid "Province"
-msgstr "Provincie"
+msgstr "Provincia"
 
 #. module: crm_lead_correct
 #: report:crm.meeting.province:0
@@ -354,3 +357,34 @@ msgstr "P.IVA"
 #: view:crm.lead:0
 msgid "Function on business card"
 msgstr "Funzione nel biglietto da Visita"
+
+#. modules: crm
+#: view:crm.lead:0
+#: field:crm.lead,region:0
+msgid "Region"
+msgstr "Regione"
+
+#. modules: crm
+#: view:crm.lead:0
+#: field:crm.lead,title:0
+msgid "Title"
+msgstr "Qualifica"
+
+#. modules: crm
+#: view:crm.lead:0
+#: field:crm.lead,function:0
+#: field:crm.lead,function_id:0
+msgid "Function"
+msgstr "Funzione"
+
+#. module: crm
+#: selection:crm.lead2opportunity.partner,name:0
+#: selection:crm.lead2opportunity.partner.mass,name:0
+msgid "Convert to Opportunities"
+msgstr "Converti in Opportunità"
+
+#. module: crm
+#: selection:crm.lead2opportunity.partner,name:0
+#: selection:crm.lead2opportunity.partner.mass,name:0
+msgid "Merge with existing Opportunities"
+msgstr "Unisci con Opportunità già esistenti"
