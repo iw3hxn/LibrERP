@@ -133,7 +133,7 @@ msgstr "Mostra Provincia?"
 #: model:ir.actions.act_window,name:l10n_it_base.action_province
 #: model:ir.ui.menu,name:l10n_it_base.menu_province_partner
 msgid "Provinces"
-msgstr "Province"
+msgstr "Provincie"
 
 #. module: l10n_it_base
 #: model:res.partner.title,shortcut:l10n_it_base.pf
