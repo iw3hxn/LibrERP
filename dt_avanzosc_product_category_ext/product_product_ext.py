@@ -35,7 +35,7 @@ class product_product(orm.Model):
     #
     ### SI CAMBIAN LA CATEGORIA DEL PRODUCTO
     #
-    def onchange_categ_id(self, cr, uid, ids, field, categ_id, purchase_ok=None, type='consu', is_kit=None, context=None):
+    def onchange_categ_id(self, cr, uid, ids, field, categ_id, purchase_ok=None, type=None, is_kit=None, context=None):
         """
         When category changes, we search for taxes, UOM and product type
         """
@@ -88,8 +88,7 @@ class product_product(orm.Model):
 
             if category_data.provision_type:
                 res['type'] = category_data.provision_type
-            else:
-                res['type'] = type
+
             if product and product.type != res['type']:
                     message.append(self.fields_get(cr, uid)['type']['string'])
 
@@ -98,18 +97,16 @@ class product_product(orm.Model):
             if category_data['supply_method']:
                 res['supply_method'] = category_data.supply_method
                 
-            if res['type'] == 'service':
+            if res.get('type', False) == 'service':
                 if purchase_ok:
                     res['supply_method'] = 'buy'
                 else:
                     res['supply_method'] = 'produce'
             else:
                 if is_kit:
-                    res['supply_method'] = 'produce'
-                    res['purchase_ok'] = False
+                    res.update(supply_method='produce', purchase_ok=False)
                 else:
-                    res['supply_method'] = 'buy'
-                    res['purchase_ok'] = True
+                    res.update(supply_method='buy', purchase_ok=True)
                     
             if category_data.sale_taxes_ids:
                 taxes = [x.id for x in category_data.sale_taxes_ids]
