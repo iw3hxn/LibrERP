@@ -26,6 +26,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
+import re
 
 
 class product_pricelist(orm.Model):
@@ -178,6 +179,36 @@ class sale_order(orm.Model):
                 raise orm.except_orm(_(title), _(msg))
                 return False
         return True
+
+    def name_get(self, cr, uid, ids, context=None):
+        if not len(ids):
+            return []
+        res = []
+        for sale in self.browse(cr, uid, ids, context=context):
+            name = u'[{sale_name}] {partner_name}'.format(sale_name=sale.name, partner_name=sale.partner_id.name)
+            res.append((sale.id, name))
+        return res
+
+    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=10):
+
+        if not args:
+            args = []
+        if name:
+            ids = self.search(cr, uid, [('name', '=', name)] + args, limit=limit, context=context)
+            if not len(ids):
+                ids = self.search(cr, uid, [('partner_id', 'ilike', name)] + args, limit=limit, context=context)
+                ids = list(set(ids))
+            if not len(ids):
+                ptrn = re.compile('(\[(.*?)\])')
+                res = ptrn.search(name)
+                if res:
+                    ids = self.search(
+                        cr, uid, [('name', '=', res.group(2))] + args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, uid, args, limit=limit, context=context)
+
+        result = self.name_get(cr, uid, ids, context=context)
+        return result
 
     _columns = {
         'create_uid': fields.many2one('res.users', 'Created by', readonly=True),
