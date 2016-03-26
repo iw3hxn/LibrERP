@@ -8,12 +8,12 @@
 			<field name="type">form</field>
             <field name="inherit_id" ref="base_partner_ref.view_partner_ref_inherit"/>
 			<field name="arch" type="xml">
-                <field name="customer" position="replace">
-                    <field name="customer" attrs="{'readonly':[('block_ref_customer','=',True)]}"/>
+                <field name="customer" position="after">
+                    <!--<field name="customer" attrs="{'readonly':[('block_ref_customer','=',True)]}"/>-->
                     <field name="block_ref_customer" invisible="1" />
                 </field>
-                <field name="supplier" position="replace">
-                    <field name="supplier" attrs="{'readonly':[('block_ref_supplier','=',True)]}"/>
+                <field name="supplier" position="after">
+                    <!--<field name="supplier" attrs="{'readonly':[('block_ref_supplier','=',True)]}"/>-->
                     <field name="block_ref_supplier" invisible="1" />
                 </field>
                 <field name="property_supplier_ref" position="replace">

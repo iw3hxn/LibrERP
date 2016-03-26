@@ -29,7 +29,7 @@
 
 {
     'name': 'Module added sub account for accounting in res.partner.',
-    'version': '3.0.14.4',
+    'version': '3.0.14.5',
     'category': 'Generic Modules',
     'description': """A module for res.partner. email's contacts of reference """,
     "author": "Didotech SRL.",
