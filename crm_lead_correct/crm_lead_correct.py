@@ -140,6 +140,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
         'crm_lead_ids': fields.function(_get_crm_lead, 'Opportunity', type='one2many', relation="crm.lead", readonly=True, method=True),
         'vat': fields.char('VAT', size=64),
+        'sale_order': fields.many2one('sale.order', string='Created Sale Order'),
     }
 
     _defaults = {

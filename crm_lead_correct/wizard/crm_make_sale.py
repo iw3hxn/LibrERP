@@ -41,7 +41,7 @@ class crm_make_sale(orm.TransientModel):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
 
-        case_obj = self.pool['crm.lead']
+        lead_obj = self.pool['crm.lead']
         sale_obj = self.pool['sale.order']
         partner_obj = self.pool['res.partner']
         attachment_obj = self.pool['ir.attachment']
@@ -51,54 +51,57 @@ class crm_make_sale(orm.TransientModel):
             partner = make.partner_id
             partner_addr = partner_obj.address_get(cr, uid, [partner.id], ['default', 'invoice', 'delivery', 'contact'])
             partner.write({'customer': True})
-            pricelist = partner.property_product_pricelist.id
-            fpos = partner.property_account_position and partner.property_account_position.id or False
+            pricelist_id = partner.property_product_pricelist.id
+            fpos_id = partner.property_account_position and partner.property_account_position.id or False
             payment_term = partner.property_payment_term and partner.property_payment_term.id or False
             new_ids = []
-            for case in case_obj.browse(cr, uid, data, context=context):
-                if not partner and case.partner_id:
-                    partner = case.partner_id
-                    fpos = partner.property_account_position and partner.property_account_position.id or False
+            for lead in lead_obj.browse(cr, uid, data, context=context):
+                if not partner and lead.partner_id:
+                    partner = lead.partner_id
+                    fpos_id = partner.property_account_position and partner.property_account_position.id or False
                     payment_term = partner.property_payment_term and partner.property_payment_term.id or make.shop_id.payment_default_id and make.shop_id.payment_default_id.id or False
                     partner_addr = partner_obj.address_get(cr, uid, [partner.id], ['default', 'invoice', 'delivery', 'contact'])
-                    pricelist = partner.property_product_pricelist and partner.property_product_pricelist.id or make.shop_id.pricelist_id and make.shop_id.pricelist_id.id
+                    pricelist_id = partner.property_product_pricelist and partner.property_product_pricelist.id or make.shop_id.pricelist_id and make.shop_id.pricelist_id.id
                 if False in partner_addr.values():
                     raise orm.except_orm(_('Data Insufficient!'), _('Customer has no addresses defined!'))
 
                 vals = {
-                    'origin': _('Opportunity: %s') % str(case.id),
-                    'section_id': case.section_id and case.section_id.id or False,
-                    'categ_id': case.categ_id and case.categ_id.id or False,
+                    'origin': _('Opportunity: %s') % str(lead.id),
+                    'section_id': lead.section_id and lead.section_id.id or False,
+                    'categ_id': lead.categ_id and lead.categ_id.id or False,
                     'shop_id': make.shop_id.id,
                     'partner_id': partner.id,
-                    'pricelist_id': pricelist,
+                    'pricelist_id': pricelist_id,
                     'partner_invoice_id': partner_addr['invoice'],
-                    'partner_order_id': case.partner_address_id and case.partner_address_id.id or case.partner_address_id,
-                    'partner_shipping_id': case.partner_address_id and case.partner_address_id.id or partner_addr['delivery'],
+                    'partner_order_id': lead.partner_address_id and lead.partner_address_id.id or lead.partner_address_id,
+                    'partner_shipping_id': lead.partner_address_id and lead.partner_address_id.id or partner_addr['delivery'],
                     'date_order': fields.date.context_today(self, cr, uid, context=context),
-                    'fiscal_position': fpos,
+                    'fiscal_position': fpos_id,
                     'payment_term': payment_term,
                     'user_id': make.user_id.id,
                     # 'user_id': partner and partner.user_id and partner.user_id.id or case.user_id and case.user_id.id,
-                    'note': case.description or '',
-                    'contact_id': case.contact_id and case.contact_id.id or False
+                    'note': lead.description or '',
+                    'contact_id': lead.contact_id and lead.contact_id.id or False
                 }
                 
                 new_id = sale_obj.create(cr, uid, vals, context=context)
                 sale_order = sale_obj.browse(cr, uid, new_id, context=context)
-                case.write({'ref': 'sale.order,%s' % new_id})
+                lead_obj.write(cr, uid, [lead.id], {
+                    'ref': 'sale.order,%s' % new_id,
+                    'sale_order': new_id
+                }, context)
                 new_ids.append(new_id)
-                message = _("Opportunity  '%s' is converted to Quotation.") % (case.name)
-                self.log(cr, uid, case.id, message)
-                case_obj.message_append(cr, uid, [case], _("Converted to Sales Quotation(%s).") % sale_order.name, context=context)
+                message = _("Opportunity  '%s' is converted to Quotation.") % (lead.name)
+                self.log(cr, uid, lead.id, message)
+                lead_obj.message_append(cr, uid, [lead], _("Converted to Sales Quotation(%s).") % sale_order.name, context=context)
 
                 if make.move_attachment:
-                    attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'crm.lead'), ('res_id', '=', case.id)], context=context)
+                    attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id)], context=context)
                     for attachment_id in attachment_ids:
                         attachment_obj.write(cr, uid, attachment_id, {'res_model': 'sale.order', 'res_id': new_id}, context)
                     
             if make.close:
-                case_obj.case_close(cr, uid, data)
+                lead_obj.case_close(cr, uid, data)
              
             if not new_ids:
                 return {'type': 'ir.actions.act_window_close'}
