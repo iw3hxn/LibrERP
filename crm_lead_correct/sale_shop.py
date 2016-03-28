@@ -30,20 +30,8 @@
 from openerp.osv import orm, fields
 
 
-class sale_order(orm.Model):
-    _inherit = 'sale.order'
-
+class sale_shop(orm.Model):
+    _inherit = 'sale.shop'
     _columns = {
-        'contact_id': fields.many2one('res.partner.address.contact', 'Contact'), 
+        'crm_sale_stage_ids': fields.one2many('crm.sale.stage', 'shop_id', string='CRM Sale Stage'),
     }
-
-    def hook_sale_state(self, cr, uid, orders, vals, context):
-        crm_obj = self.pool['crm.lead']
-        state = vals.get('state')
-        for order in orders:
-            lead_ids = crm_obj.search(cr, uid, [('sale_order', '=', order.id)], context=context)
-            if lead_ids:
-                for stage in order.shop_id.crm_sale_stage_ids:
-                    if stage.name == state:
-                        crm_obj.write(cr, uid, lead_ids, {'stage_id': stage.stage_id.id}, context)
-        return super(sale_order, self).hook_sale_state(cr, uid, orders, vals, context)

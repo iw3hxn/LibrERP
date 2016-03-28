@@ -53,6 +53,20 @@ COLOR_SELECTION = [
 class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
     _inherit = 'crm.lead'
 
+    def stage_next(self, cr, uid, ids, context=None):
+        """This function computes next stage for case from its current stage
+        using available stage for that case type
+        """
+        # import pdb; pdb.set_trace()
+        return self.stage_change(cr, uid, ids, '>','sequence', context)
+
+    def stage_previous(self, cr, uid, ids, context=None):
+        """This function computes previous stage for case from its current
+        stage using available stage for that case type
+        """
+        # import pdb; pdb.set_trace()
+        return self.stage_change(cr, uid, ids, '<', 'sequence desc', context)
+
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
         leads = self.browse(cr, uid, ids)

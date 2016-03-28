@@ -40,6 +40,7 @@
         'base_address_contacts',
         'l10n_it_base',
         'sale_crm',
+        'sale_order_confirm',
         'web_support',  # because of field email_from created there
     ],
     'init_xml': [],
@@ -57,6 +58,7 @@
         'crm_phonecall_view.xml',
         # 'crm_lead_data.xml',
         'sale_order_view.xml',
+        'sale_shop_view.xml',
         'report/crm_meeting_report_by_province.xml',
         'wizard/crm_meeting_by_province_view.xml',
         'wizard/crm_lead_to_opportunity_view.xml',

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2014 Didotech SRL (info at didotech.com)
+# Copyright (c) 2016 Didotech SRL (info at didotech.com)
 #                          All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -30,20 +30,16 @@
 from openerp.osv import orm, fields
 
 
-class sale_order(orm.Model):
-    _inherit = 'sale.order'
+class crm_sale_stage(orm.Model):
+    _name = 'crm.sale.stage'
+    _description = 'CRM Sale Stage'
+
+    def _get_sale_order_state(self, cr, uid, context=None):
+        state_selection = self.pool['sale.order']._columns['state'].selection
+        return state_selection
 
     _columns = {
-        'contact_id': fields.many2one('res.partner.address.contact', 'Contact'), 
+        'name': fields.selection(_get_sale_order_state, 'Order State', required=True),
+        'shop_id': fields.many2one('sale.shop', 'Shop'),
+        'stage_id': fields.many2one('crm.case.stage', 'Stage', required=True),
     }
-
-    def hook_sale_state(self, cr, uid, orders, vals, context):
-        crm_obj = self.pool['crm.lead']
-        state = vals.get('state')
-        for order in orders:
-            lead_ids = crm_obj.search(cr, uid, [('sale_order', '=', order.id)], context=context)
-            if lead_ids:
-                for stage in order.shop_id.crm_sale_stage_ids:
-                    if stage.name == state:
-                        crm_obj.write(cr, uid, lead_ids, {'stage_id': stage.stage_id.id}, context)
-        return super(sale_order, self).hook_sale_state(cr, uid, orders, vals, context)
