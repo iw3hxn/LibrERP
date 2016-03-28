@@ -30,4 +30,7 @@ class sale_shop(orm.Model):
         'sale_order_have_minimum': fields.boolean('Minimum Amount', help='The Sale Order of this shop have a Minimun Amount'),
         'sale_order_minimun': fields.float('Minimum Amount of Sale Order', digits_compute=dp.get_precision('Sale Price')),
         'user_allow_minimun_id': fields.many2one('res.users', 'User that can validate'),
+        'user_tech_validation_id': fields.many2one('res.users', 'User that can be Tech Validation'),
+        'user_manager_validation_id': fields.many2one('res.users', 'User that can be Manager Validation'),
+        'user_supervisor_validation': fields.many2one('res.users', 'User that can be Verification after Customer Confirmation'),
     }

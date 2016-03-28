@@ -245,6 +245,12 @@
             <field name="priority">5</field>
             <field name="arch" type="xml">
                 <data>
+                    <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/form//field[@name='name']" position="attributes">
+                        <attribute name="nolabel">1</attribute>
+                        <attribute name="placeholder">Description</attribute>
+                        <attribute name="colspan">4</attribute>
+                    </xpath>
+
                     <button name="%(sale.action_view_sale_advance_payment_inv)d" position="attributes">
                         <attribute name="states">
                             draft,wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,waiting_date,progress
@@ -487,22 +493,6 @@
 
                     </templates>
                 </kanban>
-            </field>
-        </record>
-        <record id="view_shop_minimun_invoice" model="ir.ui.view">
-            <field name="name">sale.shop.minimun.invoice</field>
-            <field name="model">sale.shop</field>
-            <field name="inherit_id" ref="sale.view_shop_form"/>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <field name="warehouse_id" position="after">
-                    <separator colspan="4" string="Minimun Order"/>
-                    <field name="sale_order_have_minimum"/>
-                    <field name="sale_order_minimun"
-                           attrs="{'invisible': [('sale_order_have_minimum','!=',True)], 'required': [('sale_order_have_minimum','=',True)]}"/>
-                    <field name="user_allow_minimun_id" attrs="{'invisible': [('sale_order_have_minimum','!=',True)]}"
-                           colspan="4"/>
-                </field>
             </field>
         </record>
 

@@ -58,6 +58,7 @@
             <field name="act_from" ref="act_validation_router"/>
             <field name="act_to" ref="act_wait_technical"/>
             <field name="signal">action_tech_validation</field>
+            <field name="condition">check_tech_validation()</field>
         </record>
         <record id="trans_validation_router_tech_validation" model="workflow.transition">
             <field name="act_from" ref="act_wait_technical"/>
@@ -74,6 +75,7 @@
             <field name="act_from" ref="act_validation_router"/>
             <field name="act_to" ref="act_wait_manager"/>
             <field name="signal">action_manager_validation</field>
+            <field name="condition">check_manager_validation()</field>
         </record>
         <record id="trans_validation_router_manager_validation" model="workflow.transition">
             <field name="act_from" ref="act_wait_manager"/>
@@ -96,6 +98,7 @@
             <field name="act_from" ref="act_wait_supervisor"/>
             <field name="act_to" ref="act_supervisor_validation"/>
             <field name="signal">action_supervisor_validation</field>
+            <field name="condition">check_supervisor_validation()</field>
         </record>
         <record id="trans_supervisor_validation_router" model="workflow.transition">
             <field name="act_from" ref="act_supervisor_validation"/>

@@ -72,9 +72,13 @@ class sale_order(orm.Model):
                         return False
         return True
 
+    def hook_sale_state(self, cr, uid, orders, vals, context):
+        print vals
+        return True
+
     def create(self, cr, uid, vals, context=None):
         if not context:
-            context = {}
+            context = self.pool['res.users'].context_get(cr, uid)
 
         if self.service_only(cr, uid, False, vals, context) and vals.get('order_policy', '') == 'picking':
             raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
@@ -100,7 +104,8 @@ class sale_order(orm.Model):
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
 
-        for order in self.browse(cr, uid, ids, context):
+        orders = self.browse(cr, uid, ids, context)
+        for order in orders:
             if self.service_only(cr, uid, ids, vals, context) and vals.get('order_policy', order.order_policy) == 'picking':
                 raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
 
@@ -116,6 +121,9 @@ class sale_order(orm.Model):
                     partner_vals['property_payment_term'] = vals.get('payment_term')
                 if partner_vals:
                     self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
+
+        if vals.get('state', False):
+            self.hook_sale_state(cr, uid, orders, vals, context)
 
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
 
@@ -289,6 +297,46 @@ class sale_order(orm.Model):
             else:
                 return False
 
+    def check_tech_validation(self, cr, uid, ids, context=None):
+        for order in self.browse(cr, uid, ids, context):
+            if order.shop_id.user_tech_validation_id:
+                if order.shop_id.user_tech_validation_id.id == uid:
+                    return True
+                else:
+                    title = _('Technical Validation')
+                    msg = _(u"It's not possible to confirm, for shop {shop} only user '{user}' can do it".format(shop=order.shop_id.name, user=order.shop_id.user_tech_validation_id.name))
+                    raise orm.except_orm(_(title), _(msg))
+                    return False
+
+            else:
+                return True
+
+    def check_manager_validation(self, cr, uid, ids, context=None):
+        for order in self.browse(cr, uid, ids, context):
+            if order.shop_id.user_manager_validation_id:
+                if order.shop_id.user_manager_validation_id.id == uid:
+                    return True
+                else:
+                    title = _('Manager Validation')
+                    msg = _(u"It's not possible to confirm, for shop {shop} only user '{user}' can do it".format(shop=order.shop_id.name, user=order.shop_id.user_tech_validation_id.name))
+                    raise orm.except_orm(_(title), _(msg))
+                    return False
+            else:
+                return True
+
+    def check_supervisor_validation(self, cr, uid, ids, context=None):
+        for order in self.browse(cr, uid, ids, context):
+            if order.shop_id.user_supervisor_validation:
+                if order.shop_id.user_supervisor_validation.id == uid:
+                    return True
+                else:
+                    title = _('Supervisor Validation')
+                    msg = _(u"It's not possible to confirm, for shop {shop} only user '{user}' can do it".format(shop=order.shop_id.name, user=order.shop_id.user_tech_validation_id.name))
+                    raise orm.except_orm(_(title), _(msg))
+                    return False
+            else:
+                return True
+
     def required_tech_validation(self, order):
         if order.company_id.tech_validation_if_no_product:
             for line in order.order_line:
@@ -458,7 +506,7 @@ class sale_order_line(orm.Model):
 
     _columns = {
         'order_id': fields.many2one('sale.order', 'Order Reference', ondelete='cascade', select=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'readonly_price_unit': fields.related('order_id', 'company_id', 'need_tech_validation', type='boolean', string=_('Readonly Price Unit'), store=False, readonly=True),
+        'readonly_price_unit': fields.related('order_id', 'company_id', 'readonly_price_unit', type='boolean', string=_('Readonly Price Unit'), store=False, readonly=True),
         'delivered_qty': fields.function(_delivered_qty, digits_compute=dp.get_precision('Product UoM'), string='Delivered Qty'),
         'qty_available': fields.function(_product_available, multi='qty_available',
                                          type='float', digits_compute=dp.get_precision('Product UoM'),

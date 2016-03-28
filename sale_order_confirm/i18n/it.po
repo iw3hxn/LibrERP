@@ -915,3 +915,62 @@ msgstr "Prodotto"
 #, python-format
 msgid "You can't create an order with Invoicing being based on Picking if there are only service products"
 msgstr "Non è possibile creare un ordine con metodo di fatturazione basato sulle consegne di Magazzino, in quanto sono previsti solo servizi. Inserire sotto Altre Informazioni/Crea Fattura: Manualmente da Ordine"
+
+#. modules: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:313
+#: code:addons/sale_order_confirm/sale.py:326
+#: code:addons/sale_order_confirm/sale.py:299
+#, python-format
+msgid "It's not possible to confirm, for shop {shop} only user '{user}' can do it"
+msgstr "Non è possibile confermare, per {shop} è autorizzato solo l'utente {user}"
+
+#. modules: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:298
+#, python-format
+msgid "Technical Validation"
+msgstr "Validazione Tecnica"
+
+#. modules: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:312
+#, python-format
+msgid "Manager Validation"
+msgstr "Validazione Manager"
+
+#. modules: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:312
+#, python-format
+msgid "Supervisor Validation"
+msgstr "Supervisore Manager"
+
+#. modules: sale_order_confirm, sale
+#: field:sale.order.line,name:0
+#: field:sale.order.confirm.line,name:0
+#: view:sale.order.line,name:0
+#: view:sale.order.confirm.line,name:0
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: sale_order_confirm
+#: field:sale.shop,user_tech_validation_id:0
+msgid "User that can be Tech Validation"
+msgstr "Utente Validazione Tecnica"
+
+#. module: sale_order_confirm
+#: field:sale.shop,user_manager_validation_id:0
+msgid "User that can be Manager Validation"
+msgstr "Utente Validazione Manager"
+
+#. module: sale_order_confirm
+#: field:sale.shop,user_supervisor_validation_id:0
+msgid "User that can be Verification after Customer Confirmation"
+msgstr "Utente Supervisore"
+
+#. module: sale_order_confirm
+#: view:sale.shop:0
+msgid "User Validation"
+msgstr "Utenti Validazione"
+
+#. module: sale_order_confirm
+#: view:sale.shop:0
+msgid "Validation"
+msgstr "Validazione"
