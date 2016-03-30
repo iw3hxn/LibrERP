@@ -309,9 +309,11 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         return result
 
     def copy(self, cr, uid, ids, defaults, context=None):
-        defaults['name'] = '/'
-        # defaults['type'] = 'lead'
-
+        if defaults is None:
+            defaults = {}
+        if context is None:
+            context = {}
+        defaults.update({'name': '/', 'sale_order': False})
         return super(crm_lead_correct, self).copy(cr, uid, ids, defaults, context)
 
 
