@@ -221,7 +221,7 @@ class ImportFile(threading.Thread, Utils):
             )
             return False
         else:
-            product_ids = self.pool['product.product'].search(cr, uid, [('default_code', '=', product)], context=self.context)
+            product_ids = self.pool['product.product'].search(cr, uid, ['|', ('default_code', '=', product), ('name', '=', product)], context=self.context)
 
         if not product_ids:
 

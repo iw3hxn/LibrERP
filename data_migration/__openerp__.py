@@ -40,7 +40,8 @@
         # 'partner_subaccount',
         # 'l10n_it', not needed, pdc is installed
         # 'l10n_it_account',
-        'core_extended'
+        'core_extended',
+        'email_message_custom'
     ],
     'data': [
         'security/ir.model.access.csv',

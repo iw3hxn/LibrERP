@@ -488,7 +488,7 @@ class inventory_import(filedata_import):
     importer = inventory_importer
 
     _columns = {
-        'location_id': fields.many2one('stock.location', 'Location', domain="[('usage','=','internal')]", required=True),
+        'location_id': fields.many2one('stock.location', 'Location', domain="[('usage','!=','view')]", required=True),
         'date': fields.datetime("Date of inventory", help="Using 'Fill inventory' wizard, the inventory will be calculated at this date", required=True),
         'state': fields.selection(
             (
