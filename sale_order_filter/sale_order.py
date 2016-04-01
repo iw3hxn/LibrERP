@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2016 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -58,15 +58,31 @@ class sale_order(orm.Model):
         return result
     
     _columns = {
-       'year': fields.function(_get_order_year, 'Year', type='selection', selection=_get_order_years, method=True, help="Select year")
+        'year': fields.function(_get_order_year, 'Year', type='selection', selection=_get_order_years, method=True, help="Select year")
     }
-    
+
+    def get_crm_section_children(self, cr, uid, section_id, context):
+        child_ids = self.pool['crm.case.section'].search(cr, uid, [('parent_id', '=', section_id)], context=context)
+        if child_ids:
+            sub_child_ids = []
+            for child_id in child_ids:
+                sub_child_ids += self.get_crm_section_children(cr, uid, child_id, context)
+
+            return child_ids + sub_child_ids
+        else:
+            return []
+
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         new_args = []
+
         for arg in args:
             if arg[0] == 'year':
                 new_args.append(('date_order', '>=', '{year}-01-01'.format(year=arg[2])))
                 new_args.append(('date_order', '<=', '{year}-12-31'.format(year=arg[2])))
+            elif arg[0] == 'section_id':
+                section_ids = self.get_crm_section_children(cr, uid, arg[2], context)
+                section_ids.append(arg[2])
+                new_args.append(['section_id', 'in', section_ids])
             else:
                 new_args.append(arg)
                 

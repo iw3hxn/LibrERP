@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2016 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice Extended",
-    "version": "3.0.0.0",
+    "version": "3.0.1.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Accounting & Finance',
@@ -32,6 +32,7 @@
         Module adds extra functionality to sale_order:
             - possibility to filter order by year
             - possibility to see sale of last or current month
+            - search by sales team includes children
     """,
     "depends": [
         'sale',
