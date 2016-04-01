@@ -62,8 +62,10 @@ class product_product(orm.Model):
                 # we have duplicate entries
                 if product.variants:
                     _logger.error(u"Exist other product with code '{code}' and variants'{variants}'".format(code=product.default_code, variants=product.variants))
+                    raise orm.except_orm(_('Error!'), _(u"Exist other product with code '{code}' and variants'{variants}'").format(code=product.default_code, variants=product.variants))
                 else:
                     _logger.error(u"Exist other product with code '{code}'".format(code=product.default_code))
+                    raise orm.except_orm(_('Error!'), _(u"Exist other product with code '{code}'").format(code=product.default_code))
                 return False
         return True
 
