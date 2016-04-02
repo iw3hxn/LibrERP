@@ -24,10 +24,11 @@ from openerp.tools.translate import _
 from datetime import date, datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from dateutil.relativedelta import relativedelta
-from xlwt import Workbook, easyxf
+from xlwt import Workbook, easyxf, Formula
 from cStringIO import StringIO
 import collections
 
+LETTER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
 
 class Style:
     bold_header = easyxf('font: bold on; align: horiz center')
@@ -137,10 +138,12 @@ class ExportSalesTeamReport(orm.TransientModel):
             ws.write(2, 0, 'Divisa: {}'.format(currency.name))
 
             Style.currency = easyxf('align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+            Style.currency_bold = easyxf('font: bold on; align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
 
             ws = self.write_header(ws, 4)
 
-            for row, item in enumerate(report.items(), 5):
+            first_row = 5
+            for row, item in enumerate(report.items(), first_row):
                 partner_id, values = item
 
                 ws.write(row, 0, values['name'])
@@ -149,6 +152,15 @@ class ExportSalesTeamReport(orm.TransientModel):
 
                 for month in range(1, 13):
                     ws.write(row, month + 2, values.get(month, 0), Style.currency)
+
+            row += 1
+            last_row = row
+
+            for month in range(1, 14):
+                column = month + 1
+                ws.write(row, column,
+                         Formula("SUM({column}{start}:{column}{end})".format(column=LETTER[column], start=first_row + 1, end=last_row)),
+                         Style.currency_bold)
 
         """PARSING DATA AS STRING """
         file_data = StringIO()
