@@ -114,7 +114,21 @@ class ImportFile(threading.Thread, Utils):
 
         # ===================================================
 
-        table, self.numberOfLines = import_sheet(self.file_name, self.invoiceImportRecord.content_text)
+        try:
+            table, self.numberOfLines = import_sheet(self.file_name, self.invoiceImportRecord.content_text)
+        except Exception as e:
+            # Annulla le modifiche fatte
+            self.cr.rollback()
+            self.cr.commit()
+
+            title = "Import failed"
+            message = "Errore nell'importazione del file %s" % self.file_name + "\nDettaglio:\n\n" + str(e)
+
+            if DEBUG:
+                ### Debug
+                _logger.debug(message)
+                pdb.set_trace()
+            self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.invoiceImportRecord)
 
         if DEBUG:
             # Importa il file

@@ -103,8 +103,21 @@ class ImportFile(threading.Thread, Utils):
         self.RecordProduct = namedtuple('RecordProduct', Config.COLUMNS_PRODUCT)
 
         # ===================================================
+        try:
+            table, self.numberOfLines = import_sheet(self.file_name, self.productImportRecord.content_text)
+        except Exception as e:
+            # Annulla le modifiche fatte
+            self.cr.rollback()
+            self.cr.commit()
 
-        table, self.numberOfLines = import_sheet(self.file_name, self.productImportRecord.content_text)
+            title = "Import failed"
+            message = "Errore nell'importazione del file %s" % self.file_name + "\nDettaglio:\n\n" + str(e)
+
+            if DEBUG:
+                ### Debug
+                _logger.debug(message)
+                pdb.set_trace()
+            self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
 
         if DEBUG:
             # Importa il listino
