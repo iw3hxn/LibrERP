@@ -67,7 +67,7 @@ class res_partner_address_contact(orm.Model):
     _columns = {
         'complete_name': fields.function(_name_get_full, string='Name', size=64, type="char", store=False, select=True),
         'name': fields.char('Name', size=64, ),
-        'last_name': fields.char('Last Name', size=64, required=True),
+        'last_name': fields.char('Last Name', size=64),
         'first_name': fields.char('First Name', size=64),
         'mobile': fields.char('Mobile', size=64),
         'fisso': fields.char('Phone', size=64),
@@ -113,7 +113,6 @@ class res_partner_address_contact(orm.Model):
         else:
             ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context=context)
-
 
     def create(self, cr, uid, vals, context=None):
         if context is None:
