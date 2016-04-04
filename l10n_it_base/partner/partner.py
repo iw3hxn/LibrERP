@@ -87,12 +87,12 @@ class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
 
     def _check_unique_default_type(self, cr, uid, ids, context=None):
-        addresses = self.browse(cr, uid, ids)
+        addresses = self.browse(cr, uid, ids, context)
         for address in addresses:
             if address.partner_id and address.type in ('default', 'invoice'):
                 address_ids = self.search(cr, uid, [('type', '=', address.type),
                                                     ('partner_id', '=', address.partner_id.id),
-                                                    ])
+                                                    ], context=context)
                 if len(address_ids) > 1:
                     _logger.debug(
                         u'####### Duplicate Default Address ########')
@@ -108,13 +108,13 @@ class res_partner_address(orm.Model):
         result = {}
         country_obj = self.pool['res.country']
 
-        for indirizzo in self.browse(cr, uid, ids):
-            country_ids = country_obj.search(cr, uid, [('name', '=', indirizzo.country_id.name)])
+        for indirizzo in self.browse(cr, uid, ids, context):
+            country_ids = country_obj.search(cr, uid, [('name', '=', indirizzo.country_id.name)], context=context)
             if country_ids:
                 countries = country_obj.browse(cr, uid, country_ids)
                 for country in countries:
                     for field_name in field_names:
-                        if not indirizzo.id in result:
+                        if indirizzo.id not in result:
                             result[indirizzo.id] = {}
 
                         if getattr(country, field_name):
@@ -123,10 +123,9 @@ class res_partner_address(orm.Model):
                             result[indirizzo.id][field_name] = True
             else:
                 for field_name in field_names:
-                    if not indirizzo.id in result:
+                    if indirizzo.id not in result:
                         result[indirizzo.id] = {}
                     result[indirizzo.id][field_name] = False
-
         return result
 
     _columns = {
@@ -216,13 +215,13 @@ class res_partner_address(orm.Model):
             }}
         return res
 
-    def _set_vals_city_data(self, cr, uid, vals):
+    def _set_vals_city_data(self, cr, uid, vals, context=None):
         if 'city' in vals and not 'province' in vals and not 'region' in vals:
             if vals['city']:
                 city_obj = self.pool['res.city']
-                city_ids = city_obj.search(cr, uid, [('name', '=ilike', vals['city'].title())])
+                city_ids = city_obj.search(cr, uid, [('name', '=ilike', vals['city'].title())], context=context)
                 if city_ids:
-                    city = city_obj.browse(cr, uid, city_ids[0])
+                    city = city_obj.browse(cr, uid, city_ids[0], context)
                     if not 'zip' in vals:
                         vals['zip'] = city.zip
                     if city.province_id:
@@ -234,9 +233,9 @@ class res_partner_address(orm.Model):
         return vals
 
     def create(self, cr, uid, vals, context=None):
-        vals = self._set_vals_city_data(cr, uid, vals)
+        vals = self._set_vals_city_data(cr, uid, vals, context)
         return super(res_partner_address, self).create(cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context=None):
-        vals = self._set_vals_city_data(cr, uid, vals)
+        vals = self._set_vals_city_data(cr, uid, vals, context)
         return super(res_partner_address, self).write(cr, uid, ids, vals, context)
