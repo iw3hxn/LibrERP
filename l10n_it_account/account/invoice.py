@@ -207,6 +207,14 @@ class account_invoice(orm.Model):
     def invoice_validate_check(self, cr, uid, ids, context=None):
         for invoice in self.browse(cr, uid, ids, context):
 
+            if invoice.fiscal_position and invoice.fiscal_position.required_tax:
+                if invoice.type in ['out_invoice', 'out_refund']:
+                    invoice.button_reset_taxes()
+                    if invoice.tax_line:
+                        continue
+                    raise orm.except_orm(_('Invoice'),
+                        _('Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(partner=invoice.partner_id.name))
+
             if not ((not invoice.partner_id.individual and invoice.partner_id.vat) or (invoice.partner_id.individual and invoice.partner_id.cf)):
                 if not invoice.fiscal_position or \
                         invoice.fiscal_position and invoice.fiscal_position.no_check_vat or \
@@ -221,13 +229,6 @@ class account_invoice(orm.Model):
                                _('Impossible to Validate, need to set Supplier invoice nr'))
                 return False
 
-            if invoice.fiscal_position and invoice.fiscal_position.required_tax:
-                if invoice.type in ['out_invoice', 'out_refund']:
-                    invoice.button_reset_taxes()
-                    if invoice.tax_line:
-                        continue
-                    raise orm.except_orm(_('Invoice'),
-                        _('Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(partner=invoice.partner_id.name))
 
         return True
 
