@@ -207,7 +207,11 @@ class account_invoice(orm.Model):
     def invoice_validate_check(self, cr, uid, ids, context=None):
         for invoice in self.browse(cr, uid, ids, context):
 
-            if invoice.fiscal_position and invoice.fiscal_position.required_tax:
+            if not invoice.fiscal_position and invoice.company_id.check_invoice_fiscal_position:
+                raise orm.except_orm(_('Invoice'),
+                    _('Impossible to Validate, need to set Fiscal Position on invoice of {partner}').format(partner=invoice.partner_id.name))
+
+            elif invoice.fiscal_position.required_tax:
                 if invoice.type in ['out_invoice', 'out_refund']:
                     invoice.button_reset_taxes()
                     if invoice.tax_line:

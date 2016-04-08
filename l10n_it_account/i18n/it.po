@@ -469,7 +469,7 @@ msgstr "Template del piano dei conti"
 #. module: account
 #: help:res.company,tax_calculation_rounding_method:0
 msgid "If you select 'Round per line' : for each tax, the tax amount will first be computed and rounded for each PO/SO/invoice line and then these rounded amounts will be summed, leading to the total amount for that tax. If you select 'Round globally': for each tax, the tax amount will be computed for each PO/SO/invoice line, then these amounts will be summed and eventually this total tax amount will be rounded. If you sell with tax included, you should choose 'Round per line' because you certainly want the sum of your tax-included line subtotals to be equal to the total amount with taxes."
-msgstr "If you select 'Round per line' : for each tax, the tax amount will first be computed and rounded for each PO/SO/invoice line and then these rounded amounts will be summed, leading to the total amount for that tax. If you select 'Round globally': for each tax, the tax amount will be computed for each PO/SO/invoice line, then these amounts will be summed and eventually this total tax amount will be rounded. If you sell with tax included, you should choose 'Round per line' because you certainly want the sum of your tax-included line subtotals to be equal to the total amount with taxes."
+msgstr "Se selezionato 'Arrotonda per riga' : per ogni tassa, verrà fatto il calcolo su singola riga e poi sommato. Se selezionato 'Arrotonda Globalmente': per ogni tassa, verrà prima calcolato il totale imponibile e poi calcolata l'imposta"
 
 #. module: account
 #: help:account.model.line,amount_currency:0
@@ -10755,3 +10755,25 @@ msgstr "Fattura Fornitore"
 #, python-format
 msgid "Impossible to Validate, need to set on Partner {partner} VAT"
 msgstr "Impossibile da Emettere. Bisogna impostare nel Partner {partner} la P.IVA o il Codice fiscale, se i Partner non lo hà abilitare nella posizione fiscale la non verifica"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:176
+#, python-format
+msgid "Impossible to Validate, need to set on Partner {partner} VAT"
+msgstr "Impossibile da Emettere. Bisogna impostare nel Partner {partner} la P.IVA o il Codice fiscale, se i Partner non lo hà abilitare nella posizione fiscale la non verifica"
+
+#. module: account
+#: field:res.company,disable_voucher_onchange_amount:0
+msgid "Disable Automatic Reconciliation in Voucher"
+msgstr "Disabilita la Riconcigliazione automativa nei Voucher"
+
+#. module: account
+#: field:res.company,check_invoice_fiscal_position:0
+msgid "Check Fiscal Position on Invoice"
+msgstr "Obbliga la Posizione Fiscale in Fattura"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:212
+#, python-format
+msgid "Impossible to Validate, need to set Fiscal Position on invoice of {partner}"
+msgstr "Impossibile da Emettere. Bisogna impostare nella fattura  del Partner {partner} la 'POSIZIONE FISCALE'"
