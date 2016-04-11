@@ -168,29 +168,28 @@ class sale_order_confirm(orm.TransientModel):
     _description = "Confirm wizard for Sale order"
 
     _columns = {
-        'client_order_ref': fields.char('Customer Reference', size=64, required=True),
+        'client_order_ref': fields.char('Customer Reference', size=64),
         'partner_shipping_id': fields.many2one('res.partner.address', 'Shipping Address', required=True, help="Shipping address for current sales order."),
-        'order_date': fields.date('Date', required=True),
+        'order_date': fields.date('Date'),
         'sale_order_id': fields.integer('Order'),
         'new_sale_order': fields.boolean('New Sale Order'),
         'confirm_line': fields.one2many('sale.order.confirm.line', 'wizard_id', 'Products'),
         'confirm_line_qty': fields.integer('Confirm line qty')
     }
     
-    def get_generic_product(self, cr, uid):
-        product_ids = self.pool['product.product'].search(cr, uid, [('name', '=', 'Generic product')])
+    def get_generic_product(self, cr, uid, context):
+        product_ids = self.pool['product.product'].search(cr, uid, [('name', '=', 'Generic product')], context=context)
         if product_ids:
             return product_ids[0]
         else:
             uom_id = 1
             price = 1.0
-            
             return self.pool['product.product'].create(cr, uid, {
                 'name': 'Generic product',
                 'uom_id': uom_id,
                 'uom_po_id': uom_id,
                 'cost_price': price,
-            })
+            }, context)
 
     def default_get(self, cr, uid, fields, context=None):
         sale_order_obj = self.pool['sale.order']
@@ -221,7 +220,7 @@ class sale_order_confirm(orm.TransientModel):
             if sale_order_line.product_id:
                 product_id = sale_order_line.product_id.id
             else:
-                product_id = self.get_generic_product(cr, uid)
+                product_id = self.get_generic_product(cr, uid, context)
                 
             if sale_order_line.tax_id:
                 tax_id = [(6, 0, [tax_id.id for tax_id in sale_order_line.tax_id])]
@@ -354,13 +353,13 @@ class sale_order_confirm(orm.TransientModel):
                 'customer_validation': True,
                 'client_order_ref': sale_order_confirm_data['client_order_ref'],
                 'partner_shipping_id': sale_order_confirm_data['partner_shipping_id'][0]
-            })
+            }, context)
 
             wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'order_confirm', cr)
             # need to write after validation
             sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {
                 'date_confirm': sale_order_confirm_data['order_date'],
-            })
+            }, context)
             return {
                 'type': 'ir.actions.act_window_close'
             }

@@ -75,6 +75,11 @@ msgid "Partner Validate"
 msgstr "Validazione Partner"
 
 #. module: sale_order_confirm
+#: field:res.company,default_property_advance_product_id:0
+msgid "Advantage Product"
+msgstr "Prodotto per Acconti"
+
+#. module: sale_order_confirm
 #: field:sale.order,credit_limit:0
 msgid "Remaining Credit Limit"
 msgstr "Fido Residuo"
@@ -482,6 +487,16 @@ msgstr "Preventivo"
 #: field:res.company,enable_margin_validation:0
 msgid "Enable Margin Verify"
 msgstr "Abilita verifica sul margine"
+
+#. module: sale_order_confirm
+#: field:res.company,max_discount:0
+msgid "Max Discount %"
+msgstr "Sconto massimo in %"
+
+#. module: sale_order_confirm
+#: field:res.company,enable_discount_validation
+msgid "Enable Discount Verify"
+msgstr "Abilita verifica sullo sconto"
 
 #. module: sale_order_confirm
 #: code:addons/sale_order_confirm/sale.py:155
