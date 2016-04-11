@@ -97,7 +97,7 @@ class stock_picking(orm.Model):
     }
     
     def onchange_stock_journal(
-            self, cr, uid, context=None, stock_journal_id=None, state=None):
+            self, cr, uid, ids, stock_journal_id=None, state=None, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         if state != 'draft':
@@ -111,7 +111,7 @@ class stock_picking(orm.Model):
         
         return {'value': {'invoice_state': default_invoice_state or 'none'}}
     
-    def onchange_partner_in(self, cr, uid, context=None, address_id=None):
+    def onchange_partner_in(self, cr, uid, ids, address_id=None, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         partner_address_obj = self.pool['res.partner.address']
