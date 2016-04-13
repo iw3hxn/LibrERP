@@ -159,6 +159,7 @@ class product_import(filedata_import):
                 # ('FormatTwo', _('Format Two')),
                 ('FormatThree', _('Format Three')),
                 ('FormatFour', _('Format Four')),
+                ('FormatFive', _('Format Five')),
             ), 'Formato Dati', required=True, readonly=False
         ),
         # Data of file, in code BASE64
@@ -386,11 +387,11 @@ class sales_import(filedata_import):
             ), 'Formato Dati', required=True, readonly=False
         ),
         'content_base64': fields.binary(
-            'Products file path', required=False, translate=False
+            'Sale file path', required=False, translate=False
         ),
         'file_name': fields.char('File Name', size=256),
         'content_text': fields.binary(
-            'File Partner', required=False, translate=False
+            'File Sale', required=False, translate=False
         ),
         'preview_text_original': fields.binary(
             'Preview text original', required=False,

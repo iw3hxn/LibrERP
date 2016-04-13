@@ -236,7 +236,7 @@ class ImportFile(threading.Thread, Utils):
                 return False
 
         # date = datetime.datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime("%d/%m/%Y %H:%M:%S")
-        date = datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        # date = datetime(*xlrd.xldate_as_tuple(float(record.date), 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         client_order_ref = record.location_name.split('.')[0]
 
