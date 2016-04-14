@@ -45,5 +45,5 @@ class sale_order(orm.Model):
             if lead_ids:
                 for stage in order.shop_id.crm_sale_stage_ids:
                     if stage.name == state:
-                        crm_obj.write(cr, uid, lead_ids, {'stage_id': stage.stage_id.id}, context)
+                        crm_obj.write(cr, uid, lead_ids, {'stage_id': stage.stage_id.id}, context.update({'force_stage_id': True}))
         return super(sale_order, self).hook_sale_state(cr, uid, orders, vals, context)
