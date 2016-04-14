@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+
         <record id="product_normal_form_view_subscription" model="ir.ui.view">
             <field name="name">product.normal.form.subscription</field>
             <field name="model">product.product</field>
@@ -9,7 +10,8 @@
             <field name="arch" type="xml">
                  <field name="purchase_ok" position="after">
                     <!--<field name="subscription" on_change="onchange_subscription(subscription)"/>-->
-                    <field name="subscription" />
+                     <field name="subscription" />
+                     <field name="order_duration" attrs="{'invisible': [('subscription', '=', 0)]}"/>
                 </field>
             </field>
         </record>
@@ -22,9 +24,11 @@
             <field name="arch" type="xml">
                  <field name="variants" position="after">
                     <!--<field name="subscription" on_change="onchange_subscription(subscription)"/>-->
-                    <field name="subscription" />
+                     <field name="subscription" />
+                     <field name="order_duration" />
                 </field>
             </field>
         </record>
+
     </data>
 </openerp>
