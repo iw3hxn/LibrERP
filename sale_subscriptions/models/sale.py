@@ -107,6 +107,16 @@ class sale_order_line(orm.Model):
             (730, '2 years'),
             (1095, '3 years'),
         ]),
+        'product_duration': fields.related('product_id', 'order_duration', type='selection', string=_('Duration'), selection=[
+            (30, '1 month'),
+            (60, '2 months'),
+            (90, '3 months'),
+            (120, '4 months'),
+            (180, '6 months'),
+            (365, '1 year'),
+            (730, '2 years'),
+            (1095, '3 years'),
+        ]),
         'order_end_date': fields.related('order_id', 'order_end_date', type='date', string=_('Order End'), store=True),
         'user_id': fields.related('order_id', 'user_id', 'name', type='char', string=_('Salesman'), store=True),
         'section_id': fields.related('order_id', 'section_id', 'name', type='char', string=_('Sales Team'), store=True)
@@ -152,7 +162,6 @@ class sale_order_line(orm.Model):
                 else:
                     ratio = 1
                 result['value'].update({
-                    'order_duration': product.order_duration,
                     'price_unit': result['value']['price_unit'] * ratio
                 })
 
@@ -285,6 +294,7 @@ class sale_order_line(orm.Model):
                 row['price_subtotal'] = partners_subtotal.get(g_key, 0)
 
         return result
+
 
 class sale_order(orm.Model):
     _inherit = "sale.order"
