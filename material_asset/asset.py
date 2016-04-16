@@ -402,18 +402,18 @@ class asset_asset(orm.Model):
         if not len(ids):
             return ()
 
-        reads = self.read(cr, uid, ids, ['asset_product_id', 'name', 'serial_number'], context=context)
+        assets = self.browse(cr, uid, ids, context=context)
         res = []
-        for record in reads:
+        for asset in assets:
             name = ""
-            if record['name']:
-                name = "[" + record['name'] + "] "
-            if record['asset_product_id']:
-                name = name + record['asset_product_id'][1]
+            if asset.name:
+                name = "[" + asset.name + "] "
+            if asset.asset_product_id:
+                name = name + asset.asset_product_id.name
 
-            if record['serial_number']:
-                name = name + " (" + record['serial_number'][1] + ")"
-            res.append((record['id'], name))
+            if asset.serial_number:
+                name = name + " (" + asset.serial_number.name + ")"
+            res.append((asset.id, name))
 
         return res
 
@@ -886,6 +886,8 @@ class asset_asset(orm.Model):
         return result
 
     _columns = {
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'asset_product_id': fields.many2one("asset.product", "Asset Product", required=True),
         'code': fields.related('asset_product_id', 'code', type='char', store=False, string=_('Product Code')),
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Name'),

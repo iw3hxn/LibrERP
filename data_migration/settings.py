@@ -236,6 +236,37 @@ class FormatFour():
     }
 
 
+class FormatFive():
+    # TP Extended (differs only for product import)
+    HEADER_PRODUCT = (
+        "pruduct_id", "product_name", "product_description", "product_price",
+        "price_min", "product_position", "payment_periodicity", "category_path",
+        "category_name", "category_description", "pricelist_id", "pricelist_name",
+        "supplier_name", "supplier_vat_number", "product_type_code",
+        "product_type_short_description", "product_type_description"
+    )
+
+    COLUMNS_PRODUCT = "default_code, name, description_sale, list_price, "\
+                      "none, order, order_duration, category, none0, "\
+                      "none1, none2, none3, "\
+                      "brand, none4, none5, none6, none7"
+
+    PRODUCT_SEARCH = ['default_code', 'name']
+    REQUIRED_PRODUCT = ['default_code', 'name']
+    PRODUCT_WARNINGS = []
+    PRODUCT_ERRORS = []
+
+    # Default values
+    PRODUCT_DEFAULTS = {
+        'supply_method': 'buy',
+        'uom': 'PCE',
+        'type': 'service',
+        'procure_method': 'make_to_order',
+        'cost_method': 'standard',
+        'sale_ok': True
+    }
+
+
 class Inventory(object):
     TABLE = OrderedDict((
         ('default_code', 'Product Code'),

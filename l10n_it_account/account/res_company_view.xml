@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <field name="currency_id" position="after">
                     <field name="disable_voucher_onchange_amount" />
+                    <field name="check_invoice_fiscal_position" />
                 </field>
             </field>
         </record>

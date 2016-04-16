@@ -57,19 +57,27 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         """This function computes next stage for case from its current stage
         using available stage for that case type
         """
-        # import pdb; pdb.set_trace()
-        return self.stage_change(cr, uid, ids, '>','sequence', context)
+        for crm in self.browse(cr, uid, ids, context=context):
+            if crm.shop_id:
+                if crm.sale_order and crm.shop_id.crm_sale_stage_ids:
+                    raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
+                    return False
+        return self.stage_change(cr, uid, ids, '>', 'sequence', context)
 
     def stage_previous(self, cr, uid, ids, context=None):
         """This function computes previous stage for case from its current
         stage using available stage for that case type
         """
-        # import pdb; pdb.set_trace()
+        for crm in self.browse(cr, uid, ids, context=context):
+            if crm.shop_id:
+                if crm.sale_order and crm.shop_id.crm_sale_stage_ids:
+                    raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
+                    return False
         return self.stage_change(cr, uid, ids, '<', 'sequence desc', context)
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
-        leads = self.browse(cr, uid, ids)
+        leads = self.browse(cr, uid, ids, context)
         for lead in leads:
             if lead.categ_id:
                 value[lead.id] = lead.categ_id.color
@@ -140,6 +148,37 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
         return {'value': {}}
 
+    def action_view_sale_order(self, cr, uid, ids, context=None):
+        '''
+        This function returns an action that display existing delivery orders
+        of given sales order ids. It can either be a in a list or in a form
+        view, if there is only one delivery order to show.
+        '''
+
+        mod_obj = self.pool['ir.model.data']
+        act_obj = self.pool['ir.actions.act_window']
+
+        result = mod_obj.get_object_reference(cr, uid, 'sale', 'action_order_form')
+        id = result and result[1] or False
+        result = act_obj.read(cr, uid, [id], context=context)[0]
+
+        # compute the number of delivery orders to display
+        sale_ids = []
+
+        for crm in self.browse(cr, uid, ids, context=context):
+            sale_ids += [crm.sale_order.id]
+
+        # choose the view_mode accordingly
+        if len(sale_ids) > 1:
+            result['domain'] = "[('id','in',[" + ','.join(map(str, sale_ids)) + "])]"
+        else:
+            res = mod_obj.get_object_reference(cr, uid, 'sale', 'view_order_form')
+            result['views'] = [(res and res[1] or False, 'form')]
+            result['res_id'] = sale_ids and sale_ids[0] or False
+        result['context'] = {'nodelete': '1', 'nocreate': '1'}
+
+        return result
+
     _columns = {
         'province': fields.many2one('res.province', string='Province', ondelete='restrict'),
         'region': fields.many2one('res.region', string='Region', ondelete='restrict'),
@@ -155,6 +194,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         'crm_lead_ids': fields.function(_get_crm_lead, 'Opportunity', type='one2many', relation="crm.lead", readonly=True, method=True),
         'vat': fields.char('VAT', size=64),
         'sale_order': fields.many2one('sale.order', string='Created Sale Order'),
+        'shop_id': fields.many2one('sale.shop', 'Shop', required=False, readonly=True, states={'draft': [('readonly', False)]}),
     }
 
     _defaults = {
@@ -298,7 +338,18 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         return result
 
     def write(self, cr, uid, ids, vals, context=None):
+        if not context:
+            context = {'force_stage_id': True}
+
         vals = self.pool['res.partner.address']._set_vals_city_data(cr, uid, vals)
+
+        if vals.get('stage_id', False) and not context.get('force_stage_id', False):
+            for crm in self.browse(cr, uid, ids, context=context):
+                if crm.shop_id:
+                    if crm.sale_order and crm.shop_id.crm_sale_stage_ids:
+                        raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
+                        return False
+
         result = super(crm_lead_correct, self).write(cr, uid, ids, vals, context=context)
 
         if vals.get('email_from', False) or vals.get('phone', False):

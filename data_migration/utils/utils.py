@@ -114,7 +114,7 @@ class Utils():
             'model': 'filedata.import',
             'state': 'outgoing',
             'subtype': 'html',
-        }, context=self.context)
+        })
 
         if record:
             # add file to attachment of email for future use

@@ -101,6 +101,17 @@ class sale_order_line(orm.Model):
             (30, '1 month'),
             (60, '2 months'),
             (90, '3 months'),
+            (120, '4 months'),
+            (180, '6 months'),
+            (365, '1 year'),
+            (730, '2 years'),
+            (1095, '3 years'),
+        ]),
+        'product_duration': fields.related('product_id', 'order_duration', type='selection', string=_('Duration'), selection=[
+            (30, '1 month'),
+            (60, '2 months'),
+            (90, '3 months'),
+            (120, '4 months'),
             (180, '6 months'),
             (365, '1 year'),
             (730, '2 years'),
@@ -145,28 +156,36 @@ class sale_order_line(orm.Model):
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id, context)
             result['value']['subscription'] = product.subscription
+            if product.subscription:
+                if product.order_duration:
+                    ratio = 365 / product.order_duration
+                else:
+                    ratio = 1
+                result['value'].update({
+                    'price_unit': result['value']['price_unit'] * ratio
+                })
 
         return result
 
     def action_suspend(self, cr, uid, line_ids, context):
         invoice_line_obj = self.pool['account.invoice.line']
-        self.pool['sale.order.line'].write(cr, uid, line_ids, {'suspended': True})
+        self.pool['sale.order.line'].write(cr, uid, line_ids, {'suspended': True}, context)
 
         all_invoices = []
 
         for line_id in line_ids:
-            invoice_line_ids = invoice_line_obj.search(cr, uid, [('origin_document', '=', 'sale.order.line, {}'.format(line_id))])
+            invoice_line_ids = invoice_line_obj.search(cr, uid, [('origin_document', '=', 'sale.order.line, {}'.format(line_id))], context=context)
             if invoice_line_ids:
                 for invoice_line in invoice_line_obj.browse(cr, uid, invoice_line_ids, context):
                     if invoice_line.invoice_id.state == 'draft':
                         all_invoices.append(invoice_line.invoice_id)
-                        invoice_line_obj.unlink(cr, uid, invoice_line.id)
+                        invoice_line_obj.unlink(cr, uid, invoice_line.id, context)
 
         all_invoices = list(set(all_invoices))
 
         for invoice in all_invoices:
             if not invoice.invoice_line:
-                self.pool['account.invoice'].unlink(cr, uid, invoice.id)
+                self.pool['account.invoice'].unlink(cr, uid, invoice.id, context)
 
         return True
 
@@ -276,6 +295,7 @@ class sale_order_line(orm.Model):
 
         return result
 
+
 class sale_order(orm.Model):
     _inherit = "sale.order"
     _logger = netsvc.Logger()
@@ -359,6 +379,7 @@ class sale_order(orm.Model):
                 (30, '1 month'),
                 (60, '2 months'),
                 (90, '3 months'),
+                (120, '4 months'),
                 (180, '6 months'),
                 (365, '1 year'),
                 (730, '2 years'),

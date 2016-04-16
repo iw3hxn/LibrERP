@@ -27,6 +27,7 @@ class res_company(orm.Model):
 
     _columns = {
         'disable_voucher_onchange_amount': fields.boolean('Disable Automatic Reconciliation in Voucher'),
+        'check_invoice_fiscal_position': fields.boolean('Check Fiscal Position on Invoice')
     }
 
     _defaults = {

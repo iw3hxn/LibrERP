@@ -206,12 +206,19 @@ msgid "3 months"
 msgstr "3 mesi"
 
 #. module: sale_subscriptions
+#: selection:sale.order,order_duration:0
+#: selection:sale.order.line,order_duration:0
+msgid "4 months"
+msgstr "4 mesi"
+
+#. module: sale_subscriptions
 #: view:res.company:0
 msgid "Sale Subscription"
 msgstr "Abbonamenti"
 
 #. module: sale_subscriptions
 #: field:sale.order,order_duration:0
+#: field:product.product,order_duration:0
 msgid "Subscription Duration"
 msgstr "Durata contrattuale"
 
@@ -380,3 +387,43 @@ msgstr "Linea d'ordine di vendita"
 #: model:res.groups,name:sale.verify_manager
 msgid "Change Invoice Day on Sale Order"
 msgstr "Cambia il giorno di Fatturazione nell'ordine di Vendita"
+
+#. module: sale_subscriptions
+#: selection:product.product,order_duration:0
+msgid "1 month"
+msgstr "1 mese"
+
+#. module: sale_subscriptions
+#: selection:product.product,order_duration:0
+msgid "2 months"
+msgstr "2 mesi"
+
+#. module: sale_subscriptions
+#: selection:product.product,order_duration:0
+msgid "3 months"
+msgstr "3 mesi"
+
+#. module: sale_subscriptions
+#: selection:product.product,order_duration:0
+msgid "4 months"
+msgstr "4 mesi"
+
+#. module: sale_subscriptions
+#: selection:product.product,order_duration:0
+msgid "6 months"
+msgstr "6 mesi"
+
+#. module: sale_subscriptions
+#: selection:product.product,order_duration:0
+msgid "1 year"
+msgstr "1 anno"
+
+#. module: sale_subscriptions
+#: selection:product.product,order_duration:0
+msgid "2 years"
+msgstr "2 anni"
+
+#. module: sale_subscriptions
+#: selection:product.product,order_duration:0
+msgid "3 years"
+msgstr "3 anni"

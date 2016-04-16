@@ -304,17 +304,38 @@ class ImportFile(threading.Thread, Utils):
             return False
         else:
             return brand_obj.create(cr, uid, {'name': name}, context=self.context)
-    
+
+    def get_order_duration(self, cr, uid, name):
+        # (CM= canone mensile, UT= unatantum, CA= Canone annuale, CT = canone trimestrale, CS = canone semestrale, CQ= canone quadrimestrale)
+        translate = {
+            'CM': 30,
+            'CT': 90,
+            'CQ': 120,
+            'CS': 180,
+            'CA': 365,
+        }
+
+        res = {
+            'subscription': False,
+            'order_duration': False
+        }
+
+        if translate.get(name, False):
+            res = {
+                'subscription': True,
+                'order_duration': translate[name],
+            }
+        return res
+
     def import_row(self, cr, uid, row_list):
         if self.first_row:
             row_str_list = [self.simple_string(value) for value in row_list]
             for column in row_str_list:
-                #print column
+                # print column
                 if column in self.HEADER:
                     _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
                     return True
             self.first_row = False
-
         if not len(row_list) == len(self.HEADER):
             row_str_list = [self.simple_string(value) for value in row_list]
             if DEBUG:
@@ -342,7 +363,7 @@ class ImportFile(threading.Thread, Utils):
         record = self.RecordProduct._make([self.simple_string(value) for value in row_list])
         if record.default_code and record.default_code in self.cache:
             _logger.warning(u'Code {0} already processed'.format(record.default_code))
-            return False
+            # return False
         elif record.default_code:
             self.cache.append(record.default_code)
         
@@ -362,9 +383,9 @@ class ImportFile(threading.Thread, Utils):
             vals_product['supplier_taxes_id'] = [(6, 0, vals_product.get('supplier_taxes_id'))]
 
         vals_product.update({
-            'name': record.name
+            'name': unicode(record.name, 'utf-8')
         })
-        
+
         for field in self.PRODUCT_SEARCH:
             if hasattr(record, field) and getattr(record, field):
                 vals_product[field] = getattr(record, field)
@@ -376,14 +397,23 @@ class ImportFile(threading.Thread, Utils):
             return False
         
         if hasattr(record, 'category') and record.category:
-            categories = record.category.split('\\')
+            if '\\' in record.category:
+                categories = record.category.split('\\')
+            elif '/' in record.category:
+                categories = record.category.split('/')
+            else:
+                categories = record.category
             vals_product['categ_id'] = self.get_category(cr, uid, categories)
 
         if hasattr(record, 'brand') and record.brand:
             vals_product['product_brand_id'] = self.get_brand(cr, uid, record.brand)
+
+        if hasattr(record, 'order_duration') and record.order_duration:
+            subscription = self.get_order_duration(cr, uid, record.order_duration)
+            vals_product.update(subscription)
         
         if hasattr(record, 'description_sale') and record.description_sale:
-            vals_product['description_sale'] = record.description_sale
+            vals_product['description_sale'] = unicode(record.description_sale, 'utf-8')
         
         if hasattr(record, 'uom') and record.uom:
             vals_product['uom_id'] = self.get_uom(cr, uid, record.uom)

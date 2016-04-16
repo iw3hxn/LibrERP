@@ -388,3 +388,15 @@ msgstr "Converti in Opportunità"
 #: selection:crm.lead2opportunity.partner.mass,name:0
 msgid "Merge with existing Opportunities"
 msgstr "Unisci con Opportunità già esistenti"
+
+#. module: crm_lead_correct
+#: code:crm_lead_correct/crm_lead_correct.py:63
+#: code:crm_lead_correct/crm_lead_correct.py:74
+#, python-format
+msgid "Can't change stage because is connect to a Sale Order"
+msgstr "Non si può cambiare lo Stadio in quanto collegato all'Ordine di Vendita"
+
+#. module: crm
+#: view:crm.lead:0
+msgid "View Sale Order"
+msgstr "Vedi Ordine di Vendita"

@@ -543,6 +543,7 @@
                     <!--<field name="asset_ids" />-->
                     <field name="is_kit" />
                     <field name="have_sim" groups="hr_sim.group_sim_user"/>
+                    <field name="date_end" />
                 </tree>
             </field>
         </record>
@@ -587,6 +588,8 @@
 
                     <field name="location_name"/>
                     <field name="asset_use_id" widget="selection" />
+                    <field name="date_from" filter_domain="[('date_end','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date_end','&lt;=',self)]"/>
                     <newline/>
                     <group expand="0" string="Group By..." colspan="11" col="11" groups="base.group_extended">
                         <filter string="Product" icon="terp-product" domain="[]" context="{'group_by':'asset_product_id'}"/>
