@@ -57,6 +57,12 @@ class ExportSalesTeamReport(orm.TransientModel):
                 ('selection', 'selection'),
                 ('end', 'end')
             ), 'state', required=True, translate=False, readonly=True
+        ),
+        'model': fields.selection(
+            (
+                ('sale.order', _('Sale')),
+                ('account.invoice', _('Invoice'))
+            ), _('Base model'), required=True
         )
     }
 
@@ -70,16 +76,28 @@ class ExportSalesTeamReport(orm.TransientModel):
         2: {'name': 'totale', 'width': 3000}
     })
 
-    def get_query(self, date_start, date_end, section_id):
-        return """SELECT partner_id, SUM(amount_total)
-                FROM sale_order
-                WHERE date_order >= '{date_start}'
-                AND date_order <= '{date_end}'
-                AND state in ('manual', 'progress', 'done')
-                AND section_id = {section_id}
-                GROUP BY partner_id""".format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                                              date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                                              section_id=section_id)
+    def get_query(self, date_start, date_end, section_id, model='sale.order'):
+        if model == 'sale.order':
+            return """SELECT partner_id, SUM(amount_total)
+                    FROM sale_order
+                    WHERE date_order >= '{date_start}'
+                    AND date_order <= '{date_end}'
+                    AND state IN ('manual', 'progress', 'done')
+                    AND section_id = {section_id}
+                    GROUP BY partner_id""".format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                                                  date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                                                  section_id=section_id)
+        else:
+            return """SELECT partner_id, SUM(amount_total)
+                    FROM account_invoice
+                    WHERE date_invoice >= '{date_start}'
+                    AND date_invoice <= '{date_end}'
+                    AND state NOT IN ('draft', 'proforma')
+                    AND type = 'out_invoice'
+                    AND section_id = {section_id}
+                    GROUP BY partner_id""".format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                                                  date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                                                  section_id=section_id)
 
     def get_period(self, year, month):
         start_date = date(year, month, 1)
@@ -100,7 +118,7 @@ class ExportSalesTeamReport(orm.TransientModel):
         wizard = self.browse(cr, uid, ids[0], context)
         year = int(wizard.year)
 
-        file_name = 'Sales_Team_{year}.xls'.format(year=year)
+        file_name = 'Sales_Team_{model}_{year}.xls'.format(model=wizard.model, year=year)
 
         book = Workbook(encoding='utf-8')
 
@@ -108,7 +126,7 @@ class ExportSalesTeamReport(orm.TransientModel):
             #ws = book.add_sheet(name, cell_overwrite_ok=True)
             ws = book.add_sheet(section.name)
 
-            query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id)
+            query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, wizard.model)
             cr.execute(query)
             results = cr.fetchall()
             results = dict(results)
@@ -122,14 +140,18 @@ class ExportSalesTeamReport(orm.TransientModel):
 
             for month in range(1, 13):
                 date_start, date_end = self.get_period(year, month)
-                query = self.get_query(date_start, date_end, section.id)
+                query = self.get_query(date_start, date_end, section.id, wizard.model)
                 cr.execute(query)
                 results = cr.fetchall()
 
                 for key, value in results:
                     report[key].update({month: value})
 
-            ws.write(0, 5, 'Fatturato Mensile Clienti', Style.bold_header)
+            if wizard.model == 'sale.order':
+                ws.write(0, 5, 'Ordinato Mensile Clienti', Style.bold_header)
+            else:
+                ws.write(0, 5, 'Fatturato Mensile Clienti', Style.bold_header)
+
             now = datetime.now()
             ws.write(1, 0, 'DATA: {}'.format(now.strftime('%d/%m/%Y')))
             ws.write(1, 2, 'ORA: {}'.format(now.strftime('%H:%M')))

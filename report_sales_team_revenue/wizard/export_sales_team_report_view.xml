@@ -9,6 +9,7 @@
                     <form col="6" string="Download Sales Team Report">
                         <group col="5" fill="0" height="100" states="selection">
                             <field name="year" />
+                            <field name="model" />
                             <group colspan="5">
                                 <button special="cancel" icon="gtk-cancel" string="Cancel"/>
                                 <button type="object" name="action_team_report" icon="gtk-go-forward"
