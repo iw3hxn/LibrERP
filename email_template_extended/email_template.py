@@ -2,8 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2009 Sharoon Thomas
-#    Copyright (C) 2010-Today OpenERP SA (<http://www.openerp.com>)
+#    Copyright (C) 2016 Didotech
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,25 +18,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 ##############################################################################
+from osv import osv
+from osv import fields
 
-{
-    "name": "E-Mail Templates Extended",
-    "version": "3.0.0.1",
-    "author": "Didotech SRL",
-    "website": "http://www.didotech.com",
-    "category": "Marketing",
-    'complexity': "expert",
-    "depends": ['mail', 'email_template'],
-    "description": """
 
-        Add a specific group for create Template email
+class email_template(osv.osv):
+    _inherit = 'mail.message'
 
-    """,
-    "data": [
-        'security/security.xml',
-        'email_template_view.xml',
-    ],
-    "installable": True,
-    "auto_install": True,
+    _columns = {
+        'subject': fields.char('Subject', size=256, translate=False),
+        'body_text': fields.text('Text contents', translate=False),
+        'body_html': fields.text('Rich-text contents', translate=False),
+    }
 
-}

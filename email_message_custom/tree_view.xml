@@ -9,8 +9,9 @@
 
             <field name="arch" type="xml">
                 <field name="email_from" position="after">
-                    <field name="model" string="Model"/>
-                    <field name="res_id" string="Model ID"/>
+                    <field name="email_to" />
+                    <field name="model" string="Model" invisible="1"/>
+                    <field name="res_id" string="Model ID" invisible="1"/>
                 </field>
             </field>
 

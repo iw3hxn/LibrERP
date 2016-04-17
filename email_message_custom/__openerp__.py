@@ -19,7 +19,7 @@
 ##############################################################################
 {
     "name": "Email message customized",
-    "version": "3.0.5.1",
+    "version": "3.0.5.2",
     "author": "Matmoz d.o.o. (Didotech Group)",
     "website": "http://www.matmoz.si",
     "category": "Vertical Modules/Parametrization",

@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <openerp>
     <data>
+
         <record id="ir_ui_view_mail_wysiwyg" model="ir.ui.view">
             <field name="name">mail.message.inherit_wysiwyg</field>
             <field name="model">mail.message</field>
@@ -15,20 +16,37 @@
                         </html>
                 </field>
 
-                <!--<field name="model" position="replace">-->
-                    <!--<field name="model" readonly="0"/>-->
-                <!--</field>-->
+                <field name="model" position="replace">
+                    <field name="model" readonly="0"/>
+                </field>
 
-                <!--<field name="res_id" position="replace">-->
-                    <!--<field name="res_id" readonly="0"/>-->
-                <!--</field>-->
+                <field name="res_id" position="replace">
+                    <field name="res_id" readonly="0"/>
+                </field>
 
-                <!--<field name="subtype" position="replace">-->
-                    <!--<field name="subtype" readonly="0"/>-->
-                <!--</field>-->
-
+                <field name="subtype" position="replace">
+                    <field name="subtype" readonly="0"/>
+                </field>
             </field>
-
         </record>
+
+        <!--IMPOSSIBLE TO USE BECAUSE text_WYSIWYG NOW SAVE VALUE-->
+        <!--<record id="ir_ui_view_mail_compose_wysiwyg" model="ir.ui.view">-->
+            <!--<field name="name">mail.compose.message.inherit_wysiwyg</field>-->
+            <!--<field name="model">mail.compose.message</field>-->
+            <!--<field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>-->
+            <!--<field name="type">form</field>-->
+
+            <!--<field name="arch" type="xml">-->
+                <!--<field name="body_text" position="replace">-->
+                    <!--<field name="body_html" widget="text_WYSIWYG" nolabel="1" colspan="4"/>-->
+                        <!--<html>-->
+                            <!--<a onclick="javascript:toggle_ckeditor();" class="wysiwyg_button wysiwyg_button_off oe_button">WYSIWYG on</a>-->
+                        <!--</html>-->
+                <!--</field>-->
+
+            <!--</field>-->
+        <!--</record>-->
+
     </data>
 </openerp>
