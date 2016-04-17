@@ -226,42 +226,42 @@ class sale_order_line(orm.Model):
         
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id, context)
-            if product.manufacturer and product.manufacturer_pref:
-                result_dict['value'].update({
-                    'manufacturer_id': product.manufacturer.id,
-                    'manufacturer_pref': product.manufacturer_pref,
-                })
-            
-            if not supplier_id and auto_supplier:
-                #--find the supplier
-                
-                supplier_info_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', product.product_tmpl_id.id)], order="sequence", context=context)
-                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-                seller_ids = [info.name.id for info in supplier_infos]
-                
-                if seller_ids:
+            if product.supply_method == 'buy':
+                if product.manufacturer and product.manufacturer_pref:
                     result_dict['value'].update({
-                        'supplier_id': seller_ids[0],
-                        'supplier_ids': seller_ids,
-                    })
-                else:
-                    result_dict['value'].update({
-                        'supplier_id': False,
-                        'supplier_ids': [],
+                        'manufacturer_id': product.manufacturer.id,
+                        'manufacturer_pref': product.manufacturer_pref,
                     })
 
-            if supplier_id:
-                supplier = self.pool['res.partner'].browse(cr, uid, supplier_id, context=context)
-                pricelist = supplier.property_product_pricelist_purchase and supplier.property_product_pricelist_purchase.id or False
-                if pricelist:
-                    ctx = {
-                        'date': date_order or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                    }
-                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist], product_id, 1, context=ctx)[pricelist] or 0
-                    if price:
-                        result_dict['value'].update({'purchase_price': price})
-            result_dict['value'].update({'type': 'make_to_order'})
-            
+                if not supplier_id and auto_supplier:
+                    # --find the supplier
+                    supplier_info_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', product.product_tmpl_id.id)], order="sequence", context=context)
+                    supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
+                    seller_ids = [info.name.id for info in supplier_infos]
+
+                    if seller_ids:
+                        result_dict['value'].update({
+                            'supplier_id': seller_ids[0],
+                            'supplier_ids': seller_ids,
+                        })
+                    else:
+                        result_dict['value'].update({
+                            'supplier_id': False,
+                            'supplier_ids': [],
+                        })
+
+                if supplier_id:
+                    supplier = self.pool['res.partner'].browse(cr, uid, supplier_id, context=context)
+                    pricelist = supplier.property_product_pricelist_purchase and supplier.property_product_pricelist_purchase.id or False
+                    if pricelist:
+                        ctx = {
+                            'date': date_order or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                        }
+                        price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist], product_id, 1, context=ctx)[pricelist] or 0
+                        if price:
+                            result_dict['value'].update({'purchase_price': price})
+                result_dict['value'].update({'type': 'make_to_order'})
+
         else:
             result_dict['value'].update({
                 'manufacturer_id': False,
@@ -270,7 +270,7 @@ class sale_order_line(orm.Model):
         
         if extra_purchase_discount and result_dict['value'].get('purchase_price', False):
                 price = result_dict['value'].get('purchase_price', 0.0)
-                price = price * (1 - (extra_purchase_discount or 0.0) / 100.0)
+                price *= (1 - (extra_purchase_discount or 0.0) / 100.0)
                 result_dict['value'].update({'purchase_price': price})
         
         return result_dict
