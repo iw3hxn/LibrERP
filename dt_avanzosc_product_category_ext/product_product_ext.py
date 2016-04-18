@@ -89,7 +89,7 @@ class product_product(orm.Model):
             if category_data.provision_type:
                 res['type'] = category_data.provision_type
 
-            if product and product.type != res['type']:
+            if product and product.type != res.get('type', False):
                     message.append(self.fields_get(cr, uid)['type']['string'])
 
             if category_data.procure_method:
