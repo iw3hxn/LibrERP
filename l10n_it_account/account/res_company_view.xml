@@ -10,6 +10,7 @@
                 <field name="currency_id" position="after">
                     <field name="disable_voucher_onchange_amount" />
                     <field name="check_invoice_fiscal_position" />
+                    <field name="check_invoice_payment_term" />
                 </field>
             </field>
         </record>

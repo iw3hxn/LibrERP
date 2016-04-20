@@ -3099,7 +3099,7 @@ msgstr "Lunghezza non corretta: prefisso %s con un numero di %s \n"
 #. module: account
 #: help:account.invoice,period_id:0
 msgid "Keep empty to use the period of the validation(invoice) date."
-msgstr "Lasciare vuoto per usare il periodo della data di validazione (fattura)."
+msgstr "Lasciare vuoto per usare il periodo della data di validazione (fattura). Se si imposta la numerazione viene presa in base al numero."
 
 #. module: account
 #: help:account.bank.statement,account_id:0
@@ -10772,8 +10772,19 @@ msgstr "Disabilita la Riconcigliazione automativa nei Voucher"
 msgid "Check Fiscal Position on Invoice"
 msgstr "Obbliga la Posizione Fiscale in Fattura"
 
+#. module: account
+#: field:res.company,check_invoice_payment_term:0
+msgid "Check Payment Term on Invoice"
+msgstr "Obbliga i Termini di Pagamento in Fattura"
+
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:212
 #, python-format
 msgid "Impossible to Validate, need to set Fiscal Position on invoice of {partner}"
-msgstr "Impossibile da Emettere. Bisogna impostare nella fattura  del Partner {partner} la 'POSIZIONE FISCALE'"
+msgstr "Impossibile da Emettere. Bisogna impostare nella fattura del Partner {partner} la 'POSIZIONE FISCALE'"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:212
+#, python-format
+msgid "Impossible to Validate, need to set Payment Term on invoice of {partner}"
+msgstr "Impossibile da Emettere. Bisogna impostare nella fattura del Partner {partner} i 'TERMINI DI PAGAMENTO'"
