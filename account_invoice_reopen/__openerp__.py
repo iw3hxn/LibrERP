@@ -43,7 +43,7 @@ This allows to change all content of the invoice if necessary.
     'init_xml': [],
     'update_xml': ['account_reopen_view.xml','account_invoice_workflow.xml' ],
     'demo_xml': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }
 
