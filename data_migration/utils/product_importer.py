@@ -382,8 +382,13 @@ class ImportFile(threading.Thread, Utils):
         if vals_product.get('supplier_taxes_id'):
             vals_product['supplier_taxes_id'] = [(6, 0, vals_product.get('supplier_taxes_id'))]
 
+        if isinstance(record.name, unicode):
+            name = record.name
+        else:
+            name = unicode(record.name, 'utf-8')
+
         vals_product.update({
-            'name': unicode(record.name, 'utf-8')
+            'name': name
         })
 
         for field in self.PRODUCT_SEARCH:
@@ -413,7 +418,11 @@ class ImportFile(threading.Thread, Utils):
             vals_product.update(subscription)
         
         if hasattr(record, 'description_sale') and record.description_sale:
-            vals_product['description_sale'] = unicode(record.description_sale, 'utf-8')
+            if isinstance(record.description_sale, unicode):
+                description_sale = record.description_sale
+            else:
+                description_sale = unicode(record.description_sale, 'utf-8')
+            vals_product['description_sale'] = description_sale
         
         if hasattr(record, 'uom') and record.uom:
             vals_product['uom_id'] = self.get_uom(cr, uid, record.uom)
