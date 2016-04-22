@@ -91,7 +91,9 @@ class account_invoice(orm.Model):
                             break
         return result
 
-    def action_number(self, cr, uid, ids, context):
+    def action_number(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
         result = super(account_invoice, self).action_number(cr, uid, ids, context)
         for invoice in self.browse(cr, uid, ids, context):
             inv_type = invoice.type
