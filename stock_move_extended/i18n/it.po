@@ -61,3 +61,13 @@ msgstr "Vedere Prezzo di Vendita"
 #: field:stock.move,sell_price:0
 msgid "Sell Price Unit"
 msgstr "Prezzo Riga Ordine Vendita"
+
+#. module: stock_move_extended
+#: field:stock.move,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: stock_move_extended
+#: field:stock.move,date_to:0
+msgid "Date to"
+msgstr "Al"

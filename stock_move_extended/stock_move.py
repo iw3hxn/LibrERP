@@ -65,6 +65,8 @@ class stock_move(orm.Model):
         return res
     
     _columns = {
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'direction': fields.function(_get_direction, method=True, type='char', string='Dir', readonly=True),
         'sell_price': fields.related('sale_line_id', 'price_unit', type='float', relation='sale.order.line', string='Sell Price Unit', readonly=True),
         'qty_available': fields.function(_product_available, multi='qty_available',
