@@ -174,7 +174,7 @@ class ExtraFunctions(object):
         return get_log
 
     def _get_report_xml(self):
-        return self.pool.get('ir.actions.report.xml').browse(self.cr, self.uid, self.report_id)
+        return self.pool.get('ir.actions.report.xml').browse(self.cr, self.uid, self.report_id, self.context)
 
     def _get_lang(self, source='current'):
         if source=='current':
@@ -280,9 +280,9 @@ class ExtraFunctions(object):
         return localspace['value_list']
 
     def _get_name(self, obj):
-        if obj.__class__==osv.orm.browse_record:
+        if obj.__class__ == osv.orm.browse_record:
             return self.pool.get(obj._table_name).name_get(self.cr, self.uid, [obj.id], {'lang':self._get_lang()})[0][1]
-        elif type(obj)==str: # only for fields in root record
+        elif type(obj) == str: # only for fields in root record
             model = self.context['model']
             field, rec_id = obj.split(',')
             rec_id = int(rec_id)
