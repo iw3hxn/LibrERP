@@ -307,7 +307,6 @@ class Aeroo_report(report_sxw):
                 temp_file = NamedTemporaryFile(suffix='.odt', prefix='aeroo-report-', delete=False)
                 try:
                     temp_file.write(report)
-                    print temp_file.name
                 finally:
                     temp_file.close()
                 # self.oo_subreports[print_id].append(temp_file.name)
@@ -546,12 +545,12 @@ class Aeroo_report(report_sxw):
                                        'prev': self._prev(aeroo_print),
                                        'next': self._next(aeroo_print)})
 
-        user_name = pool.get('res.users').browse(cr, uid, uid, {}).name
+        user_name = pool.get('res.users').browse(cr, uid, uid, {}, context).name
         model_ids = pool.get('ir.model').search(cr, uid, [
-            ('model', '=', context.get('active_model', data['model']) or data['model'])])
+            ('model', '=', context.get('active_model', data['model']) or data['model'])], context=context)
         if model_ids:
             model_id = model_ids[0]
-            model_name = pool.get('ir.model').browse(cr, uid, model_id).name
+            model_name = pool.get('ir.model').browse(cr, uid, model_id, context).name
         else:
             model_name = 'ftp'
 
