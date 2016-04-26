@@ -63,6 +63,19 @@ class FormatOne():
         'cost_method': 'standard',
     }
 
+    HEADER_CRM = (
+        'CLIENTE', 'PIVA', 'INDIRIZZO', 'COMUNE', 'TELEFONO', 'REFERENTE', 'KO IMMEDIATO (RIFIUTO APPUNTAMENTO) + MOTIVAZIONI'
+    )
+    COLUMNS_CRM = ['partner_name', 'vat', 'street', 'city', 'phone', 'contact_name', 'description']
+    CRM_SEARCH = ['partner_name']
+    REQUIRED_CRM = ['partner_name']
+    CRM_WARNINGS = []
+    CRM_ERRORS = []
+
+    # Default values
+    CRM_DEFAULTS = {
+    }
+
     HEADER_PICKING = (
         'RtbTipdoc', 'RtbNumbol', 'RtbDatbol',
         'RboCodart', 'RboUnimis', 'RboQuanti'

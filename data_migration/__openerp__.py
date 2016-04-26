@@ -21,7 +21,7 @@
 
 {
     'name': 'Data migration import',
-    'version': '3.11.45.17',
+    'version': '3.12.46.18',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import products and partners
@@ -47,7 +47,7 @@
         'security/ir.model.access.csv',
         'wizard/file_import_view.xml',
         'wizard/sale_order_state_view.xml',
-        'data_migration_view.xml'
+        'partner_template_view.xml'
     ],
     'test': [],
     'installable': True,

@@ -121,7 +121,7 @@ msgstr "fine"
 #. module: data_migration
 #: field:picking.import,content_base64:0
 #: field:product.import,content_base64:0
-msgid "Products file path"
+msgid "Picking file path"
 msgstr "File"
 
 #. module: data_migration
@@ -253,6 +253,11 @@ msgstr "Importa Prodotti"
 #. module: data_migration
 #: view:picking.import:0
 #: view:product.import:0
+#: view:crm.import:0
+#: view:pricelist.import:0
+#: view:product.import:0
+#: view:sales.import:0
+#: view:sales.invoice:0
 msgid "Start import"
 msgstr "Avvia l'importazione"
 

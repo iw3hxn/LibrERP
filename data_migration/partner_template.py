@@ -83,11 +83,7 @@ class partner_import_template(orm.Model):
                     }, context=context)
         return result
 
-    def map_payment_term(
-        self, cr, uid,
-        partner_template_id, payment_term,
-        context=None
-    ):
+    def map_payment_term(self, cr, uid, partner_template_id, payment_term, context=None):
         if not payment_term and not partner_template_id:
             return {}
         result = {}

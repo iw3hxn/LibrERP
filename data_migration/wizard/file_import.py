@@ -27,6 +27,7 @@ from data_migration.utils import pricelist_importer
 from data_migration.utils import sales_importer
 from data_migration.utils import invoice_importer
 from data_migration.utils import inventory_importer
+from data_migration.utils import crm_importer
 
 import base64
 from tools.translate import _
@@ -251,7 +252,7 @@ class picking_import(filedata_import):
 
         # Data of file, in code BASE64
         'content_base64': fields.binary(
-            'Products file path', required=False, translate=False
+            'Picking file path', required=False, translate=False
         ),
         'file_name': fields.char('File Name', size=256),
         # Data of file, in code text
@@ -326,7 +327,7 @@ class pricelist_import(filedata_import):
             ), 'Formato Dati', required=True, readonly=False
         ),
         'content_base64': fields.binary(
-            'Products file path', required=False, translate=False
+            'Pricelist file path', required=False, translate=False
         ),
         'file_name': fields.char('File Name', size=256),
         'content_text': fields.binary(
@@ -455,7 +456,7 @@ class invoice_import(filedata_import):
             ), 'Formato Dati', required=True, readonly=False
         ),
         'content_base64': fields.binary(
-            'Products file path', required=False, translate=False
+            'Invoice file path', required=False, translate=False
         ),
         'file_name': fields.char('File Name', size=256),
         'content_text': fields.binary(
@@ -504,7 +505,7 @@ class inventory_import(filedata_import):
             ), 'Formato Dati', required=True, readonly=False
         ),
         'content_base64': fields.binary(
-            'Products file path', required=False, translate=False
+            'Inventory file path', required=False, translate=False
         ),
         'file_name': fields.char('File Name', size=256),
         'content_text': fields.binary(
@@ -526,6 +527,69 @@ class inventory_import(filedata_import):
     # default value for data fields of object
     _defaults = {
         'format': 'FormatOne',
+        'state': 'import',
+        'progress_indicator': 0,
+    }
+
+
+class crm_import(filedata_import):
+    _name = "crm.import"
+    _description = "Import CRM Lead from file in .csv format."
+
+    importer = crm_importer
+
+    # data fields on DB table
+    _columns = {
+        # State of this wizard
+        'state': fields.selection(
+            (
+                ('import', 'import'),
+                ('preview', 'preview'),
+                ('end', 'end')
+            ), 'state', required=True, translate=False, readonly=True
+        ),
+        'format': fields.selection(
+            (
+                ('FormatOne', _('Format One')),
+
+            ), 'Formato Dati', required=True, readonly=False
+        ),
+        # Data of file, in code BASE64
+        'content_base64': fields.binary(
+            'CRM file path', required=False, translate=False
+        ),
+        'file_name': fields.char('File Name', size=256),
+        # Data of file, in code text
+        'content_text': fields.binary(
+            'File Partner', required=False, translate=False
+        ),
+        # Codecs
+        # 'text_encoding': fields.selection(
+        #     [
+        #         (ASCII_CODE, 'ascii'),
+        #         (ISO_8859_15_CODE, 'iso-8859-15'),
+        #         ('utf-8',  'Unicode 8')
+        #     ], 'Text encoding', required=True, translate=False
+        # ),
+        # problem's row of product. original code
+        'preview_text_original': fields.binary(
+            'Preview text original', required=False,
+            translate=False, readonly=True
+        ),
+        # problem's row of product. decoded
+        'preview_text_decoded': fields.text(
+            'Preview text decoded', required=False,
+            translate=False, readonly=True
+        ),
+
+        'progress_indicator': fields.integer(
+            'Progress import ', size=3, translate=False, readonly=True
+        ),
+
+    }
+    # default value for data fields of object
+    _defaults = {
+        # 'text_encoding': ISO_8859_15_CODE,
         'state': 'import',
         'progress_indicator': 0,
     }

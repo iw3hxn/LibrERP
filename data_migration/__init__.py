@@ -20,5 +20,5 @@
 #
 ###############################################################################
 import wizard
-import settings
-import data_migration
+from . import settings
+from . import partner_template
