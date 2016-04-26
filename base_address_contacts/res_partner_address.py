@@ -49,10 +49,10 @@ class res_partner_address_contact(orm.Model):
     def name_get(self, cr, uid, ids, context=None):
         res = []
         for rec in self.browse(cr, uid, ids, context=context):
+            name = u"{name} {surname}".format(name=rec.last_name or '', surname=rec.first_name or '')
             if rec.title:
-                res.append((rec.id, rec.title.name + ' ' + rec.last_name + ' ' + (rec.first_name or '')))
-            else:
-                res.append((rec.id, rec.last_name + ' ' + (rec.first_name or '')))
+                name = rec.title.name + name
+            res.append((rec.id, name))
         return res
 
     def _name_get_full(self, cr, uid, ids, prop, unknow_none, context=None):
