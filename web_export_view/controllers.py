@@ -80,7 +80,8 @@ class ExcelExportView(ExcelExport):
                     else:
                         len_cell = len(cell_value) * 300
                     if worksheet.col(cell_index).width < len_cell:
-                        worksheet.col(cell_index).width = len_cell
+                        if len_cell < 65535:
+                            worksheet.col(cell_index).width = len_cell
 
                 if cell_value is False:
                     cell_value = None
