@@ -174,6 +174,10 @@ class ImportFile(threading.Thread, Utils):
         return True
         
     def get_category(self, cr, uid, categories, parent_id=False):
+
+        if isinstance(categories, (unicode, str)):
+            categories = [categories]
+
         if categories:
             if DEBUG:
                 print(categories)

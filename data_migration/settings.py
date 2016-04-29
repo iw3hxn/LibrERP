@@ -68,7 +68,7 @@ class FormatOne():
     )
     COLUMNS_CRM = ['partner_name', 'vat', 'street', 'city', 'phone', 'contact_name', 'description']
     CRM_SEARCH = ['partner_name']
-    REQUIRED_CRM = ['partner_name']
+    REQUIRED_CRM = ['partner_name', 'vat']
     CRM_WARNINGS = []
     CRM_ERRORS = []
 
