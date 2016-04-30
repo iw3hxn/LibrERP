@@ -149,7 +149,7 @@ class ImportFile(threading.Thread, Utils):
                 self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
 
     def process(self, cr, uid, table):
-        self.message_title = _("Importazione prodotti")
+        self.message_title = _("Importazione CRM")
         self.progressIndicator = 0
         
         notifyProgressStep = (self.numberOfLines / 100) + 1     # NB: divisione tra interi da sempre un numero intero!
