@@ -35,7 +35,7 @@ _logger.setLevel(logging.INFO)
 
 import locale
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
-#locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+# locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 class sale_order_line(orm.Model):
@@ -119,11 +119,14 @@ class sale_order_line(orm.Model):
         ]),
         'order_end_date': fields.related('order_id', 'order_end_date', type='date', string=_('Order End'), store=True),
         'user_id': fields.related('order_id', 'user_id', 'name', type='char', string=_('Salesman'), store=True),
-        'section_id': fields.related('order_id', 'section_id', 'name', type='char', string=_('Sales Team'), store=True)
+        'section_id': fields.related('order_id', 'section_id', 'name', type='char', string=_('Sales Team'), store=True),
+        'can_activate': fields.boolean("Activate ?")
     }
 
     _defaults = {
         'automatically_create_new_subscription': 0,
+        'can_activate': 1,
+        # 'suspended' : 1,
     }
 
     def amount_invoiced(self, cr, uid, order_line):
@@ -169,27 +172,48 @@ class sale_order_line(orm.Model):
 
     def action_suspend(self, cr, uid, line_ids, context):
         invoice_line_obj = self.pool['account.invoice.line']
-        self.pool['sale.order.line'].write(cr, uid, line_ids, {'suspended': True}, context)
-
+        
+        order_to_suspend = []
         all_invoices = []
-
-        for line_id in line_ids:
-            invoice_line_ids = invoice_line_obj.search(cr, uid, [('origin_document', '=', 'sale.order.line, {}'.format(line_id))], context=context)
-            if invoice_line_ids:
-                for invoice_line in invoice_line_obj.browse(cr, uid, invoice_line_ids, context):
-                    if invoice_line.invoice_id.state == 'draft':
-                        all_invoices.append(invoice_line.invoice_id)
+        suspend_date = datetime.datetime.now()
+        for line in self.browse(cr, uid, line_ids, context=context):
+            active_order_line_count = 0
+            for oline in line.order_id.order_line:
+                if not oline.suspended:
+                    active_order_line_count += 1
+            
+            if active_order_line_count == 1:
+                order_to_suspend.append(line.order_id.id)
+            else:
+                self.pool['sale.order.line'].write(cr, uid, line_ids, {'suspended': True}, context)
+                invoice_lines = line.invoice_lines
+                for invoice_line in invoice_lines:
+                    invoice = invoice_line.invoice_id
+                    invoice_date = datetime.datetime.strptime(
+                        invoice.date_invoice,
+                        DEFAULT_SERVER_DATE_FORMAT
+                    )
+                    if invoice.state == 'draft' and invoice_date.date() >= suspend_date.date():
                         invoice_line_obj.unlink(cr, uid, invoice_line.id, context)
+        if order_to_suspend:
+            self.pool['sale.order'].suspend(cr, uid, order_to_suspend, context=context)
 
-        all_invoices = list(set(all_invoices))
-
-        for invoice in all_invoices:
-            if not invoice.invoice_line:
-                self.pool['account.invoice'].unlink(cr, uid, invoice.id, context)
+        #     invoice_line_ids = invoice_line_obj.search(cr, uid, [('origin_document', '=', 'sale.order.line, {}'.format(line_id))], context=context)
+        #     if invoice_line_ids:
+        #         for invoice_line in invoice_line_obj.browse(cr, uid, invoice_line_ids, context):
+        #             if invoice_line.invoice_id.state == 'draft':
+        #                 all_invoices.append(invoice_line.invoice_id)
+        #                 invoice_line_obj.unlink(cr, uid, invoice_line.id, context)
+        #
+        # all_invoices = list(set(all_invoices))
+        #
+        # for invoice in all_invoices:
+        #     if not invoice.invoice_line:
+        #         self.pool['account.invoice'].unlink(cr, uid, invoice.id, context)
 
         return True
 
-    def create_installment_invoice_line(self, cr, uid, order_line, invoice_period, invoice=False):
+    def create_installment_invoice_line(self, cr, uid, order_line, invoice_period, invoice=False, context=None):
         sale_order_obj = self.pool['sale.order']
         sale_order_line_obj = self.pool['sale.order.line']
 
@@ -201,7 +225,7 @@ class sale_order_line(orm.Model):
         if remains_to_invoice <= 0:
             _logger.debug(u'All invoices for line "%s: %s" order - %s are created' % (order_line.id, order_line.name, order_line.order_id.name))
 
-            sale_order_line_obj.write(cr, uid, [order_line.id], {'invoiced': True})
+            sale_order_line_obj.write(cr, uid, [order_line.id], {'invoiced': True}, context)
             invoice_line_ids = False
         else:
             # Make an invoice and add a new line in account.invoice
@@ -210,7 +234,7 @@ class sale_order_line(orm.Model):
             # Create account.invoice.line:
             # This function writes total price and not just installment
             # It also set 'invoiced' to True
-            invoice_line_ids = sale_order_line_obj.invoice_line_create(cr, uid, [order_line.id])
+            invoice_line_ids = sale_order_line_obj.invoice_line_create(cr, uid, [order_line.id], context)
 
             # Adjust price_unit of invoice.line
             sale_order_obj.adjust_price(cr, uid, order_line, invoice_line_ids, remains_to_invoice, invoice_period)
@@ -221,7 +245,7 @@ class sale_order_line(orm.Model):
                     'company_id': invoice.company_id.id,
                     'partner_id': invoice.partner_id.id
                 })
-            self.pool['account.invoice.line'].write(cr, uid, invoice_line_ids, values)
+            self.pool['account.invoice.line'].write(cr, uid, invoice_line_ids, values, context)
 
         return invoice_line_ids
 
@@ -233,8 +257,12 @@ class sale_order_line(orm.Model):
         invoice_obj = self.pool['account.invoice']
         sale_order_obj = self.pool['sale.order']
         sale_order_line_obj = self.pool['sale.order.line']
-
+        
         for order_line in self.browse(cr, uid, line_ids, context):
+            if order_line.order_id.state == "suspended":
+                self.pool.get('sale.order').write(cr, uid, [order_line.order_id.id], {'state': 'progress'})
+                sale_order_obj.auto_invoice(cr, uid, order_line.order_id.id, context)
+                continue
             invoice_ids = invoice_obj.search(cr, uid, [('origin', '=', order_line.order_id.name), ('state', '=', 'draft')])
             invoice_dates = sale_order_obj.get_invoice_dates(cr, uid, order_line.order_id.id, context)
             invoice_date_period = {invoice_data['invoice_date']: invoice_data['period'] for invoice_data in invoice_dates}
@@ -460,7 +488,7 @@ class sale_order(orm.Model):
         line_obj = self.pool['sale.order.line']
         order_obj = self.pool['sale.order']
         
-        two_years_ago = datetime.datetime.now() - relativedelta(years=2)
+        two_years_ago = datetime.datetime.now() - relativedelta(years=3)
         
         # Find all orders that should be renewed:
         # order_ids = order_obj.search(cr, uid, [('automatically_create_new_subscription', '=', True), ('order_start_date', '>', two_years_ago), ('state', 'not in', ('draft', 'cancel', 'wait_valid'))])
@@ -493,7 +521,7 @@ class sale_order(orm.Model):
         # We should return smth, if not we will get an error
         return {'value': {}}
     
-    #def copy(self, cr, uid, id, values=None, context=None):
+    # def copy(self, cr, uid, id, values=None, context=None):
     #    new_order_id = super(sale_order, self).copy(cr, uid, id)
     #    self.write(cr, uid, [new_order_id], values)
     #    return new_order_id
@@ -698,11 +726,12 @@ class sale_order(orm.Model):
 
         sale_order_line_ids = sale_order_line_obj.search(cr, uid, domain)
         invoice_dates = self.get_invoice_dates(cr, uid, order_id, context)
-
+        activation_date = datetime.datetime.now()
         # Check if there are already invoices for this order
         active_invoice_ids = account_invoice_obj.search(cr, uid, [
             ('origin', '=', order.name),
-            ('state', '!=', 'draft')
+            ('state', 'not in', ['cancel'])
+            # ('date_invoice', '>', activation_date.strftime(DEFAULT_SERVER_DATE_FORMAT ))
         ])
         if active_invoice_ids:
             active_invoice_dates = [invoice.date_invoice for invoice in account_invoice_obj.browse(cr, uid, active_invoice_ids, context)]
@@ -710,13 +739,14 @@ class sale_order(orm.Model):
             active_invoice_dates = []
 
         for invoice_date in invoice_dates:
+            
             if invoice_date['invoice_date'] in active_invoice_dates:
                 continue
 
             new_invoice_line_ids = []
             # For every not invoiced line in active order:        
             for order_line in sale_order_line_obj.browse(cr, uid, sale_order_line_ids, context):
-                invoice_line_ids = sale_order_line_obj.create_installment_invoice_line(cr, uid, order_line, invoice_date['period'])
+                invoice_line_ids = sale_order_line_obj.create_installment_invoice_line(cr, uid, order_line, invoice_date['period'], context=context)
                 if invoice_line_ids:
                     new_invoice_line_ids += invoice_line_ids
 
@@ -733,7 +763,12 @@ class sale_order(orm.Model):
         for order in self.browse(cr, uid, ids, context):
             _logger.debug(u'Suspending order {0}'.format(order.name))
             if order.have_subscription:
-                invoices2cancel = account_invoice_obj.search(cr, uid, [('type', '=', 'out_invoice'), ('origin', '=', order.name)])
+                invoices2cancel = account_invoice_obj.search(
+                    cr, uid,
+                    [('type', '=', 'out_invoice'),
+                     ('origin', '=', order.name),
+                     ('date_invoice', '>=', datetime.datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT))]
+                )
                 for invoice in account_invoice_obj.browse(cr, uid, invoices2cancel, context):
                     if invoice.state == 'draft':
                         print "canceling invoice {0} ({1})...".format(invoice.name, invoice.id)
@@ -742,9 +777,13 @@ class sale_order(orm.Model):
 
                 for line in order.order_line:
                     if line.product_id.subscription:
+                        update_line_vals = {
+                            'suspended': True,
+                        }
                         invoiced = sale_order_line_obj.amount_invoiced(cr, uid, line) or 0
                         if invoiced < line.price_subtotal:
-                            sale_order_line_obj.write(cr, uid, line.id, {'invoiced': False}, context)
+                            update_line_vals.update({'invoiced': False})
+                        sale_order_line_obj.write(cr, uid, line.id, update_line_vals, context)
 
         self.write(cr, uid, ids, {'state': 'suspended'})
         return True
@@ -754,6 +793,8 @@ class sale_order(orm.Model):
 
         for order in self.browse(cr, uid, ids, context):
             _logger.debug(u'Reactivating order {0}'.format(order.name))
+            line_ids = [line.id for line in order.order_line]
+            self.pool.get('sale.order.line').write(cr, uid, line_ids, {'suspended': False}, context=context)
             self.auto_invoice(cr, uid, order.id, context=None)
 
         self.write(cr, uid, ids, {'state': 'progress'})
