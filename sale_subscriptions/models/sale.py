@@ -62,9 +62,8 @@ class sale_order_line(orm.Model):
     # Dangerous! Overwrites standard method
     def _product_margin(self, s2, cr, uid, ids, field_name, arg, context=None):
         res = {}
-
         for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = 0
+            res[line.id]['margin'] = 0
             if line.product_id:
                 if line.purchase_price:
                     purchase_price = line.purchase_price
@@ -76,7 +75,7 @@ class sale_order_line(orm.Model):
                 else:
                     price_subtotal = line.price_unit * line.product_uos_qty
 
-                res[line.id] = round((price_subtotal * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
+                res[line.id]['margin'] = round((price_subtotal * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
 
         return res
 
@@ -93,7 +92,7 @@ class sale_order_line(orm.Model):
         'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute=dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
         'subscription': fields.related('product_id', 'subscription', type='boolean', string=_('Subscription')),
         'automatically_create_new_subscription': fields.boolean(_('Automatically create new subscription')),
-        'price_subtotal': fields.function(_amount_line, method=True, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
+        'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
         'suspended': fields.boolean(_('Suspended')),
         'partner_id': fields.related('order_id', 'partner_id', 'name', type='char', string=_('Customer'), store=True),
         'order_start_date': fields.related('order_id', 'order_start_date', type='date', string=_('Order Start')),
