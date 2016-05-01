@@ -253,18 +253,18 @@ class sale_order_line(orm.Model):
         self.pool['sale.order.line'].write(cr, uid, line_ids, {
             'suspended': False,
             'invoiced': False
-        })
+        }, context)
         invoice_obj = self.pool['account.invoice']
         sale_order_obj = self.pool['sale.order']
         sale_order_line_obj = self.pool['sale.order.line']
         
         for order_line in self.browse(cr, uid, line_ids, context):
             if order_line.order_id.state == "suspended":
-                self.pool.get('sale.order').write(cr, uid, [order_line.order_id.id], {'state': 'progress'})
+                self.pool['sale.order'].write(cr, uid, [order_line.order_id.id], {'state': 'progress'}, context)
                 sale_order_obj.auto_invoice(cr, uid, order_line.order_id.id, context)
                 continue
-            invoice_ids = invoice_obj.search(cr, uid, [('origin', '=', order_line.order_id.name), ('state', '=', 'draft')])
-            invoice_dates = sale_order_obj.get_invoice_dates(cr, uid, order_line.order_id.id, context)
+            invoice_ids = invoice_obj.search(cr, uid, [('origin', '=', order_line.order_id.name), ('state', '=', 'draft')], context=context)
+            invoice_dates = sale_order_obj.get_invoice_dates(cr, uid, order_line.order_id, order_line.order_id.order_duration, order_line.order_id.order_invoice_duration, context)
             invoice_date_period = {invoice_data['invoice_date']: invoice_data['period'] for invoice_data in invoice_dates}
 
             if invoice_ids:
@@ -613,24 +613,26 @@ class sale_order(orm.Model):
             
         self.pool['sale.order.line'].write(cr, uid, [order_line.id], {'invoiced': invoiced})
 
-    def get_invoice_dates(self, cr, uid, order_id, context):
+    def get_invoice_dates(self, cr, uid, order, order_duration, order_invoice_duration, context):
         """
         Period is always for time after invoice
         :param cr:
         :param uid:
-        :param order_id:
+        :param order:
+        :param order_duration:
+        :param order_invoice_duration:
         :param context:
         :return: list of dictionaries containing invoice_date and period of time for which this invoice is applied
         """
-        order = self.browse(cr, uid, order_id, context)
+        # order = self.browse(cr, uid, order_id, context)
         user = self.pool['res.users'].browse(cr, uid, uid, context)
 
         start_date = datetime.datetime.strptime(order.order_start_date, DEFAULT_SERVER_DATE_FORMAT)
 
         day_delta = datetime.timedelta(1)
         
-        order_duration = self.get_duration_in_months(order.order_duration)
-        invoice_duration = self.get_duration_in_months(order.order_invoice_duration)
+        order_duration = self.get_duration_in_months(order_duration)
+        invoice_duration = self.get_duration_in_months(order_invoice_duration)
         payments_quantity = order_duration / invoice_duration
         
         invoice_delta = relativedelta(months=self.get_duration_in_months(order.order_invoice_duration))
@@ -674,7 +676,7 @@ class sale_order(orm.Model):
             ids = [ids]
 
         _logger.debug(u'Creating invoices...')
-        
+
         def make_invoice(order, lines, invoice_values):
             """
                  To make invoices.
@@ -690,7 +692,7 @@ class sale_order(orm.Model):
                 pay_term = order.partner_id.property_payment_term.id
             else:
                 pay_term = False
-                
+
             inv = {
                 'name': order.name,
                 'origin': order.name,
@@ -725,7 +727,7 @@ class sale_order(orm.Model):
         ]
 
         sale_order_line_ids = sale_order_line_obj.search(cr, uid, domain)
-        invoice_dates = self.get_invoice_dates(cr, uid, order_id, context)
+        invoice_dates = self.get_invoice_dates(cr, uid, order, order.order_duration, order.order_invoice_duration, context)
         activation_date = datetime.datetime.now()
         # Check if there are already invoices for this order
         active_invoice_ids = account_invoice_obj.search(cr, uid, [
