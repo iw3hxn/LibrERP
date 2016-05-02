@@ -1225,6 +1225,7 @@ label.error {
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
     line-height: 20px;
+    height: 25px;
     font-size: 95%;
     color: #8e8e8e;
     font-weight: normal;
