@@ -6,5 +6,13 @@
             <field name="condition">invoice_validate_check()</field>
         </record>
 
+        <record id="account.t9" model="workflow.transition">
+            <field name="condition">invoice_cancel_check()</field>
+        </record>
+
+        <record id="account.pro2_to_cancel" model="workflow.transition">
+            <field name="condition">invoice_cancel_check()</field>
+        </record>
+
     </data>
 </openerp>

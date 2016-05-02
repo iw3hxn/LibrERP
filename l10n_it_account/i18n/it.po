@@ -8134,7 +8134,7 @@ msgstr "Se questa casella è spuntata, il sistema cercherà di raggruppare le ri
 msgid "After prefix only digits are permitted"
 msgstr "Dopo il prefisso è valido solo un valore numerico \n"
 "Per correggere verificare che il numero nel forza fattura\n"
-"sia coerente con la sequenza""
+"sia coerente con la sequenza"
 
 #. module: account
 #: help:account.account,reconcile:0
@@ -10788,3 +10788,9 @@ msgstr "Impossibile da Emettere. Bisogna impostare nella fattura del Partner {pa
 #, python-format
 msgid "Impossible to Validate, need to set Payment Term on invoice of {partner}"
 msgstr "Impossibile da Emettere. Bisogna impostare nella fattura del Partner {partner} i 'TERMINI DI PAGAMENTO'"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:212
+#, python-format
+msgid "Impossible to Cancel, need to cancel Internal Number {number}"
+msgstr "Impossibile da Annullare. Bisogna bisogna prima cancellare il 'FORZA NUMERO' {number}"

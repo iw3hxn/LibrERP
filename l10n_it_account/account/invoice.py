@@ -240,6 +240,17 @@ class account_invoice(orm.Model):
 
         return True
 
+    def invoice_cancel_check(self, cr, uid, ids, context=None):
+        for invoice in self.browse(cr, uid, ids, context):
+            if invoice.internal_number:
+                raise orm.except_orm(_('Invoice'),
+                                     _('Impossible to Cancel, need to cancel Internal Number {number}').format(
+                                         number=invoice.internal_number))
+
+                return False
+
+        return True
+
     _columns = {
         'supplier_invoice_number': fields.char('Supplier invoice nr', size=16),
         'direct_invoice': fields.function(_is_direct_invoice, string='Direct Invoice', type='boolean', method=True),
