@@ -278,7 +278,7 @@ class ImportFile(threading.Thread, Utils):
         
         for name in names:
             name = name.strip()
-            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)], context=self.context)
+            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)])
             
             if len(partner_ids) == 1:
                 supplier_ids += partner_ids
