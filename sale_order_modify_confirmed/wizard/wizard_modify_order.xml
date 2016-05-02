@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <!-- ====================================================== -->
+        <!--                        WIZARD                          -->
+        <!-- ====================================================== -->
+        <record id="wizard_modify_order" model="ir.ui.view">
+            <field name="name">wizard.modify.order</field>
+            <field name="model">wizard.modifyorder</field>
+            <field name="arch" type="xml">
+                <form string="Wizard Modify Sale Order" >
+                    <group>
+                        <field name="order_id" required="1"
+                            on_change="onchange_order_id(order_id, context)" invisible="1"/>
+                        <field name="partner_id" invisible="1"/>
+                        <field name="partner_invoice_id"
+                            domain="[('parent_id','=', partner_id)]"/>
+                        <field name="partner_shipping_id"
+                            domain="[('parent_id','=', partner_id)]"/>
+                        <field name="order_line" nolabel="1" colspan="4">
+                            <tree string="Order Line" editable="bottom">
+                                <field name="name"/>
+                                <field name="product_id"/>
+                                <field name="price_unit"/>
+                                <field name="discount"/>
+                                <field name="line_id" invisible="1" required="1" />
+                                <field name="purchase_price" />
+                            </tree>
+                        </field>
+                        <button string="Done" name="write_order" type="object" class="oe_highlight" />
+                        <button string="Cancel" special="cancel" class="oe_link"/>
+                    </group>
+                    <!--<group>-->
+                        <!--<button string="Done" name="write_order" type="object" class="oe_highlight" colspan="2"/>-->
+                        <!--<button string="Cancel" special="cancel" class="oe_link"/>-->
+                    <!--</group>-->
+                </form>
+            </field>
+        </record>
+
+
+        <!-- ====================================================== -->
+        <!--                    WIZARD ACTION                       -->
+        <!-- ====================================================== -->
+        <record id="action_modify_saleorder" model="ir.actions.act_window">
+            <field name="name">Modify Sale Order</field>
+            <field name="res_model">wizard.modifyorder</field>
+            <field name="src_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_modify_order"/>
+            <field name="group_id" ref="base.group_sale_manager" />
+        </record>
+
+        <!-- ====================================================== -->
+        <!--                    WIZARD ACTION/PRINT                 -->
+        <!-- ====================================================== -->
+        <act_window id="act_modify_saleorder"
+            key2="client_action_multi"
+            name="Modify Sale Order"
+            res_model="wizard.modifyorder"
+            src_model="sale.order"
+            view_id="wizard_modify_order"
+            view_mode="form" target="new" view_type="form" />
+
+    </data>
+</openerp>
