@@ -270,7 +270,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'partner_id': 0,
             'name': invoice.partner_id.name.encode('latin', 'ignore')[:32],
             'address': address.street and address.street.encode('latin', 'ignore')[:30],
-            'zip': int(address.zip and address.zip.replace('x', '0')[0:5] or '0'),
+            'zip': address.zip and address.zip.isdigit() and int(address.zip and address.zip.replace('x', '0')[0:5] or '0') or 0,
             'city': address.city and address.city.encode('latin', 'ignore'),
             'province': address.province and address.province.code[:2],
             'fiscalcode': invoice.partner_id.fiscalcode or '',
@@ -358,8 +358,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'val_0': 0,
             'empty': '',
         }
-        print res['invoice_total']
-        print res['vat_collectability']
+        print res
         return res
 
     def maturity_creation(self, cr, uid, invoice, context=None):
