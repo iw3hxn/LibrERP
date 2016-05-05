@@ -10800,3 +10800,14 @@ msgstr "Impossibile da Annullare. Bisogna bisogna prima cancellare il 'FORZA NUM
 #, python-format
 msgid "Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}"
 msgstr "Impossibile da Emettere. C'è gia la fattura del {partner} a cui è forzato il numero {invoice_number} da emettere prima"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:212
+#, python-format
+msgid "Impossible to Proforma, need to cancel Internal Number {number}"
+msgstr "Impossibile da emettere la Proforma. Bisogna bisogna prima cancellare il 'FORZA NUMERO' {number}"
+
+#. module: account_invoice_extended
+#: model:res.groups,name:account.group_number_account_invoice
+msgid "Cancel Internal Number"
+msgstr "Può eliminare il numero interno della fattura"

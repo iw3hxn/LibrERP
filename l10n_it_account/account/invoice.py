@@ -226,10 +226,9 @@ class account_invoice(orm.Model):
             elif invoice.fiscal_position.required_tax:
                 if invoice.type in ['out_invoice', 'out_refund']:
                     invoice.button_reset_taxes()
-                    if invoice.tax_line:
-                        continue
-                    raise orm.except_orm(_('Invoice'),
-                        _('Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(partner=invoice.partner_id.name))
+                    if not invoice.tax_line:
+                        raise orm.except_orm(_('Invoice'),
+                            _('Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(partner=invoice.partner_id.name))
 
             if not invoice.fiscal_position.no_check_vat:
                 if not (invoice.partner_id.vat or invoice.partner_id.cf):
@@ -251,6 +250,16 @@ class account_invoice(orm.Model):
                                      _('Impossible to Cancel, need to cancel Internal Number {number}').format(
                                          number=invoice.internal_number))
 
+                return False
+
+        return True
+
+    def invoice_proforma_check(self, cr, uid, ids, context=None):
+        for invoice in self.browse(cr, uid, ids, context):
+            if invoice.internal_number:
+                raise orm.except_orm(_('Invoice'),
+                                     _('Impossible to Proforma, need to cancel Internal Number {number}').format(
+                                         number=invoice.internal_number))
                 return False
 
         return True
@@ -277,3 +286,15 @@ class account_invoice(orm.Model):
             'cup': False,
         })
         return super(account_invoice, self).copy(cr, uid, ids, default, context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+
+        if 'internal_number' in vals.keys():
+            if not vals['internal_number'] or vals['internal_number'].replace(' ', '') == '':
+            # for invoice in self.browse(cr, uid, ids, context):
+                if not self.pool['res.groups'].user_in_group(cr, uid, uid, 'account.group_number_account_invoice', context):
+                    raise orm.except_orm(_("You don't have Permission!"), _("You must be on group 'Cancel Internal Number'"))
+
+        return super(account_invoice, self).write(cr, uid, ids, vals, context)

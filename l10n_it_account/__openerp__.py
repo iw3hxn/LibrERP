@@ -44,8 +44,10 @@ Functionalities:
         'account_voucher',
         'sale_order_confirm',
         'account_invoice_entry_date',  # not possible for use of a field defined here invoice_supplier_number
+        'res_users_helper_functions',
     ],
     'data': [
+        'security/account_security.xml',
         'account/partner_view.xml',
         'account/fiscal_position_view.xml',
         'account/account_sequence.xml',

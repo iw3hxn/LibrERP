@@ -14,5 +14,9 @@
             <field name="condition">invoice_cancel_check()</field>
         </record>
 
+        <record id="account.draft_to_pro2" model="workflow.transition">
+            <field name="condition">invoice_proforma_check()</field>
+        </record>
+
     </data>
 </openerp>
