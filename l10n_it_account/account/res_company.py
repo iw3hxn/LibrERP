@@ -29,6 +29,7 @@ class res_company(orm.Model):
         'disable_voucher_onchange_amount': fields.boolean('Disable Automatic Reconciliation in Voucher'),
         'check_invoice_fiscal_position': fields.boolean('Check Fiscal Position on Invoice'),
         'check_invoice_payment_term': fields.boolean('Check Payment Term on Invoice'),
+        'stop_invoice_internal_number': fields.boolean('Stop Invoice Validation if invoice with Internal Number'),
     }
 
     _defaults = {

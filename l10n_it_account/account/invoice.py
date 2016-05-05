@@ -208,6 +208,13 @@ class account_invoice(orm.Model):
     def invoice_validate_check(self, cr, uid, ids, context=None):
         for invoice in self.browse(cr, uid, ids, context):
 
+            if invoice.company_id.stop_invoice_internal_number:
+                invoice_ids = self.search(cr, 1, [('internal_number', '!=', True), ('type', '=', 'out_invoice'), ('journal_id', '=', invoice.journal_id.id)], context=context)
+                for invoice_old in self.browse(cr, 1, invoice_ids, context):
+                    raise orm.except_orm(_('Invoice'),
+                        _('Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}').format(
+                            partner=invoice_old.partner_id.name, invoice_number=invoice_old.internal_number))
+
             if not invoice.payment_term and invoice.company_id.check_invoice_payment_term:
                 raise orm.except_orm(_('Invoice'),
                     _('Impossible to Validate, need to set Payment Term on invoice of {partner}').format(partner=invoice.partner_id.name))
@@ -224,14 +231,11 @@ class account_invoice(orm.Model):
                     raise orm.except_orm(_('Invoice'),
                         _('Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(partner=invoice.partner_id.name))
 
-            if not ((not invoice.partner_id.individual and invoice.partner_id.vat) or (invoice.partner_id.individual and invoice.partner_id.cf)):
-                if not invoice.fiscal_position or \
-                        invoice.fiscal_position and invoice.fiscal_position.no_check_vat or \
-                        invoice.partner_id.parent_id and invoice.partner_id.parent_id.vat:
-                    continue
-                raise orm.except_orm(_('Invoice'),
-                    _('Impossible to Validate, need to set on Partner {partner} VAT').format(partner=invoice.partner_id.name))
-                return False
+            if not invoice.fiscal_position.no_check_vat:
+                if not (invoice.partner_id.vat or invoice.partner_id.cf):
+                    raise orm.except_orm(_('Invoice'),
+                        _('Impossible to Validate, need to set on Partner {partner} VAT').format(partner=invoice.partner_id.name))
+                    return False
 
             if invoice.type == 'in_invoice' and not invoice.supplier_invoice_number:
                 raise orm.except_orm(_('Supplier Invoice'),

@@ -11,6 +11,7 @@
                     <field name="disable_voucher_onchange_amount" />
                     <field name="check_invoice_fiscal_position" />
                     <field name="check_invoice_payment_term" />
+                    <field name="stop_invoice_internal_number" />
                 </field>
             </field>
         </record>
