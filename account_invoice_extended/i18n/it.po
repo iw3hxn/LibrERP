@@ -42,3 +42,13 @@ msgstr "Riconciliazione Manuale"
 #: view:account.invoice:0
 msgid "Stock Picking"
 msgstr "Uscita Merce / DDT"
+
+#. module: account_invoice_extended
+#: model:res.groups,name:account.group_customer_account_invoice
+msgid "View Customer Invoice"
+msgstr "Visualizza Fatture Clienti"
+
+#. module: account_invoice_extended
+#: model:res.groups,name:account.group_supplier_account_invoice
+msgid "View Supplier Invoice"
+msgstr "Visualizza Fatture Fornitori"
