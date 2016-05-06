@@ -209,7 +209,7 @@ class account_invoice(orm.Model):
         for invoice in self.browse(cr, uid, ids, context):
 
             if invoice.company_id.stop_invoice_internal_number:
-                invoice_ids = self.search(cr, 1, [('internal_number', '!=', True), ('type', '=', 'out_invoice'), ('journal_id', '=', invoice.journal_id.id)], context=context)
+                invoice_ids = self.search(cr, 1, [('internal_number', '!=', True), ('type', '=', 'out_invoice'), ('journal_id', '=', invoice.journal_id.id), ('state', '=', 'draft')], context=context)
                 for invoice_old in self.browse(cr, 1, invoice_ids, context):
                     raise orm.except_orm(_('Invoice'),
                         _('Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}').format(
