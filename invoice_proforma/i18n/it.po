@@ -16,17 +16,29 @@ msgstr ""
 "Plural-Forms: \n"
 "X-Generator: Poedit 1.5.4\n"
 
-#. module: l10n_it_proforma
+#. module: invoice_proforma
 #: help:account.invoice,proforma_number:0
 msgid "Proforma Invoice Number"
 msgstr "N. Proforma"
 
-#. module: l10n_it_proforma
+#. module: invoice_proforma
 #: field:account.invoice,proforma_number:0
 msgid "Proforma Number"
 msgstr "N. Proforma"
 
-#. module: l10n_it_proforma
-#: model:ir.model,name:l10n_it_proforma.model_account_invoice
+#. module: invoice_proforma
+#: model:ir.model,name:invoice_proforma.model_account_invoice
 msgid "Invoice"
 msgstr "Fattura"
+
+#. module: invoice_proforma
+#: code:addons/invoice_proforma/account_invoice.py:58
+#, python-format
+msgid "Invoice just validate with number {number}, impossible to Create PROFORMA"
+msgstr "Impossibile da emettere la Proforma. La fattura ha già numero {number}"
+
+#. module: invoice_proforma
+#: code:addons/invoice_proforma/account_invoice.py:58
+#, python-format
+msgid "Invoice just validate with internal number {number}, impossible to Create PROFORMA"
+msgstr "Impossibile da emettere la Proforma. La fattura è già stata emessa con numero {number}"

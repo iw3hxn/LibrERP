@@ -20,11 +20,12 @@
 ##############################################################################
 
 import time
-from osv import fields, osv
+from openerp.osv import fields, orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools.translate import _
 
 
-class account_invoice(osv.Model):
+class account_invoice(orm.Model):
 
     _inherit = 'account.invoice'
 
@@ -51,25 +52,33 @@ class account_invoice(osv.Model):
             ids = [ids]
         ait_obj = self.pool['account.invoice.tax']
         
-        for inv in self.browse(cr, uid, ids, context=context):
-                        
+        for invoice in self.browse(cr, uid, ids, context=context):
+            if invoice.number:
+                raise orm.except_orm(_("Invoice"),
+                                     _("Invoice just validate with number {number}, impossible to Create PROFORMA".format(number=invoice.number)))
+            elif invoice.internal_number:
+                raise orm.except_orm(_("Invoice"),
+                                     _("Invoice just validate with internal number {number}, impossible to Create PROFORMA".format(number=invoice.internal_number)))
+
             vals = {
                 'state': 'proforma2',
                 'proforma_number': self.pool['ir.sequence'].get(
                     cr, uid, 'account.invoice.proforma',
                     ),
-                'date_proforma': inv.date_proforma or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                'number': False,
-                'date_invoice': False,
-                'internal_number': False
+                'date_proforma': invoice.date_proforma or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                # 'number': False,
+                # 'date_invoice': False,
+                # 'internal_number': False
             }
-            compute_taxes = ait_obj.compute(cr, uid, inv.id, context=context)
-            self.check_tax_lines(cr, uid, inv, compute_taxes, ait_obj)
-            self.write(cr, uid, inv.id, vals, context=context)
+            compute_taxes = ait_obj.compute(cr, uid, invoice.id, context=context)
+            self.check_tax_lines(cr, uid, invoice, compute_taxes, ait_obj)
+            self.write(cr, uid, invoice.id, vals, context=context)
 
         return True
 
     def copy(self, cr, uid, id, default=None, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         default = default or {}
         default.update({
             'proforma_number': False,
