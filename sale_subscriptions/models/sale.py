@@ -63,7 +63,7 @@ class sale_order_line(orm.Model):
     def _product_margin(self, s2, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = {'margin': 0}
+            res[line.id] = 0
             if line.product_id:
                 if line.purchase_price:
                     purchase_price = line.purchase_price
@@ -75,8 +75,7 @@ class sale_order_line(orm.Model):
                 else:
                     price_subtotal = line.price_unit * line.product_uos_qty
 
-                res[line.id] = {'margin': round((price_subtotal * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)}
-
+                res[line.id] = round((price_subtotal * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
         return res
 
     def __init__(self, registry, cr):

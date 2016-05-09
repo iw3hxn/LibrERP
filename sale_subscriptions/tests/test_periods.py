@@ -50,10 +50,10 @@ class TestPeriods(TransactionCase):
     def test_invoice_dates(self):
         order = Order()
         order.order_start_date = '2016-01-02'
-        order.order_duration = 365
+        # order.order_duration = 365
         order.order_invoice_duration = 90
         order.subscription_invoice_day = 1
-        invoice_dates = self.order_obj.get_invoice_dates(self.cr, self.uid, order, context={})
+        invoice_dates = self.order_obj.get_invoice_dates(self.cr, self.uid, order, 365, 90, context={})
         self.assertEqual(invoice_dates[0]['period'], 'Gennaio 2016 - Marzo 2016')
 
 if __name__ == '__main__':
