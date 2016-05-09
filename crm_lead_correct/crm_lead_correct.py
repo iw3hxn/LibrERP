@@ -32,6 +32,10 @@ import crm
 from mail.mail_message import to_email
 from tools.translate import _
 from openerp import SUPERUSER_ID
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+import time
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 COLOR_SELECTION = [
@@ -112,6 +116,29 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
                 result[crm_lead.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_address_id', '=', contact_id), ('name', '!=', name)])
             else:
                 result[crm_lead.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('name', '!=', name)])
+        return result
+
+    def _get_meeting_history(self, cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        meeting_history = []
+        for crm_lead in self.browse(cr, uid, ids, context):
+            result[crm_lead.id] = {
+                'meeting_smart_history': '',
+                'last_meeting_date': False,
+            }
+            meeting_date = False
+            for meeting in crm_lead.meeting_ids:
+                meeting_date = datetime.strptime(meeting.date, DEFAULT_SERVER_DATETIME_FORMAT).date()
+                meeting_history.append(meeting_date.strftime(DEFAULT_SERVER_DATE_FORMAT) or '')
+                meeting_history.append(meeting.description or '')
+                # todo write better function
+                last_meeting_date = datetime.strptime(crm_lead.meeting_ids[0].date, DEFAULT_SERVER_DATETIME_FORMAT).date()
+
+            if meeting_history:
+                result[crm_lead.id]['meeting_smart_history'] = '\n'.join(meeting_history)
+            if meeting_date:
+                result[crm_lead.id]['last_meeting_date'] = last_meeting_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
+
         return result
 
     def vat_change(self, cr, uid, ids, vat, context=None):
@@ -195,6 +222,8 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         'vat': fields.char('VAT', size=64),
         'sale_order': fields.many2one('sale.order', string='Created Sale Order'),
         'shop_id': fields.many2one('sale.shop', 'Shop', required=False, readonly=True, states={'draft': [('readonly', False)]}),
+        'meeting_smart_history': fields.function(_get_meeting_history, string='Meeting', type='text', readonly=True, multi='sums'),
+        'last_meeting_date': fields.function(_get_meeting_history, string='Last Meeting Date', type='date', readonly=True, multi='sums'),
     }
 
     _defaults = {

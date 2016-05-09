@@ -400,3 +400,13 @@ msgstr "Non si può cambiare lo Stadio in quanto collegato all'Ordine di Vendita
 #: view:crm.lead:0
 msgid "View Sale Order"
 msgstr "Vedi Ordine di Vendita"
+
+#. module: crm_lead_correct
+#: field:crm.lead,meeting_smart_history:0
+msgid "Meeting"
+msgstr "Storico Meeting"
+
+#. module: crm_lead_correct
+#: field:crm.lead,last_meeting_date:0
+msgid "Last Meeting Date"
+msgstr "Ultimo Appuntamento"

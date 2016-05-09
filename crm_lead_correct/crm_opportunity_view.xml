@@ -114,6 +114,9 @@
                     </group>
                     <separator colspan="4" string="Details"/>
                     <field name="description" nolabel="1" colspan="4"/>
+                    <separator colspan="4" string="Meeting History"/>
+                    <field name="meeting_smart_history" nolabel="1" colspan="4"/>
+                    <field name="last_meeting_date" />
                     <separator colspan="4"/>
                     <group col="10" colspan="4">
                         <field name="state" widget="statusbar" statusbar_visible="draft,open,done" statusbar_colors='{"pending":"blue"}'/>
@@ -260,6 +263,7 @@
                 <field name="name" string="Opportunity"/>
                 <field name="partner_id" string="Customer"/>
                 <field name="country_id" invisible="context.get('invisible_country', True)" />
+                <field name="last_meeting_date" />
                 <field name="date_action"/>
                 <field name="title_action" />
                 <field name="channel_id" invisible="1"/>
