@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation',
-    'version': '2.19.36.37',
+    'version': '2.19.37.37',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
@@ -45,6 +45,7 @@ Functionalities:
         'sale_order_confirm',
         'account_invoice_entry_date',  # not possible for use of a field defined here invoice_supplier_number
         'res_users_helper_functions',
+        'sequence_recovery',
     ],
     'data': [
         'security/account_security.xml',

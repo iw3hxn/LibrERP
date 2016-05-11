@@ -22,7 +22,7 @@
 
 {
     'name': 'Italian Localisation - Sale',
-    'version': '3.8.13.16',
+    'version': '3.8.14.16',
     'category': 'Localisation/Italy',
     'description': """OpenERP Italian Localization - Sale version
 
@@ -46,6 +46,7 @@ Functionalities:
         'sale_order_confirm',
         'core_extended',
         'stock_picking_filter',  # for have date from and date to on picking filter for ddt date
+        'sequence_recovery',
     ],
     "data": [
         'wizard/assign_ddt.xml',

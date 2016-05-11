@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="group_sequence_recovery" model="res.groups">
+			<field name="name">Sequence Recovery/User</field>
+		</record>
+
+	</data>
+</openerp>

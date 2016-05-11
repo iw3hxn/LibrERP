@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="sequence_recovery_tree_view" model="ir.ui.view">
+            <field name="name">ir.sequence_recovery.tree</field>
+            <field name="model">ir.sequence_recovery</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+               <tree string="Sequence Recovery" editable="top">
+                    <field name="name"/>
+                    <field name="sequence_id"/>
+                    <field name="sequence"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sequence_recovery_search" model="ir.ui.view">
+            <field name="name">ir.sequence_recovery.search</field>
+            <field name="model">ir.sequence_recovery</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Sequence Recovery">
+                    <field name="name" select="1"/>
+                    <field name="sequence_id" select="1"/>
+                    <field name="sequence" select="1"/>
+                    <field name="date" select="1"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_sequence_recovery" model="ir.actions.act_window">
+            <field name="name">Sequence Recovery</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ir.sequence_recovery</field>
+            <field name="view_type">tree</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="sequence_recovery_tree_view"/>
+            <field name="search_view_id" ref="sequence_recovery_search"/>
+            <field name="context">{}</field>
+        </record>
+
+        <menuitem string="Sequence Recovery" action="action_sequence_recovery" id="menu_sequence_recovery"
+                  parent="base.next_id_5"/>
+    </data>
+</openerp>

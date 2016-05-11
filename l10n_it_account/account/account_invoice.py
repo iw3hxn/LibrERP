@@ -94,14 +94,16 @@ class account_invoice(orm.Model):
     def action_number(self, cr, uid, ids, context=None):
         if not context:
             context = {}
+
         result = super(account_invoice, self).action_number(cr, uid, ids, context)
+
         for invoice in self.browse(cr, uid, ids, context):
             inv_type = invoice.type
             internal_number = invoice.internal_number
             number = invoice.number
             date_invoice = invoice.date_invoice
             reg_date = invoice.registration_date
-            journal = invoice.journal_id.id
+            journal_id = invoice.journal_id.id
             # fy = obj_inv.period_id.fiscalyear_id
             fy_id = invoice.period_id.fiscalyear_id.id
             period = invoice.period_id
@@ -147,14 +149,14 @@ class account_invoice(orm.Model):
             
             if inv_type in ['out_invoice', 'out_refund']:
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '>', date_invoice),
-                                            ('number', '<', number), ('journal_id', '=', journal),
+                                            ('number', '<', number), ('journal_id', '=', journal_id),
                                             ('period_id', 'in', period_ids)], context=context)
                 if res and not internal_number:
                     raise orm.except_orm(_('Date Inconsistency'),
                                          _('Cannot create invoice! Post the invoice with a greater date'))
             if inv_type in ['in_invoice', 'in_refund']:
                 res = self.search(cr, uid, [('type', '=', inv_type), ('registration_date', '>', reg_date),
-                                            ('number', '<', number), ('journal_id', '=', journal),
+                                            ('number', '<', number), ('journal_id', '=', journal_id),
                                             ('period_id', 'in', period_ids)], context=context)
                 if res and not internal_number:
                     raise orm.except_orm(_('Date Inconsistency'),
@@ -162,7 +164,7 @@ class account_invoice(orm.Model):
                 supplier_invoice_number = invoice.supplier_invoice_number
                 partner_id = invoice.partner_id.id
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '=', date_invoice),
-                                            ('journal_id', '=', journal),
+                                            ('journal_id', '=', journal_id),
                                             ('supplier_invoice_number', '=', supplier_invoice_number),
                                             ('partner_id', '=', partner_id),
                                             ('state', 'not in', ('draft', 'cancel'))], context=context)
@@ -210,7 +212,7 @@ class account_invoice(orm.Model):
 
             if invoice.company_id.stop_invoice_internal_number:
                 invoice_ids = self.search(cr, 1, [('internal_number', '!=', True), ('type', '=', 'out_invoice'), ('journal_id', '=', invoice.journal_id.id), ('state', '=', 'draft')], context=context)
-                for invoice_old in self.browse(cr, 1, invoice_ids, context):
+                for invoice_old in self.browse(cr, 1, [x for x in invoice_ids if x not in ids], context):
                     raise orm.except_orm(_('Invoice'),
                         _('Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}').format(
                             partner=invoice_old.partner_id.name, invoice_number=invoice_old.internal_number))
@@ -293,8 +295,9 @@ class account_invoice(orm.Model):
 
         if 'internal_number' in vals.keys():
             if not vals['internal_number'] or vals['internal_number'].replace(' ', '') == '':
-            # for invoice in self.browse(cr, uid, ids, context):
                 if not self.pool['res.groups'].user_in_group(cr, uid, uid, 'account.group_number_account_invoice', context):
                     raise orm.except_orm(_("You don't have Permission!"), _("You must be on group 'Cancel Internal Number'"))
+                for invoice in self.browse(cr, uid, ids, context):
+                    self.pool.get('ir.sequence_recovery').set(cr, uid, [invoice.id], 'account.invoice', 'internal_number', '', invoice.journal_id.sequence_id.id)
 
         return super(account_invoice, self).write(cr, uid, ids, vals, context)
