@@ -243,6 +243,13 @@ class account_invoice(orm.Model):
                                _('Impossible to Validate, need to set Supplier invoice nr'))
                 return False
 
+            # check if internal number is on recovery sequence
+            if invoice.internal_number:
+                recovery_ids = self.pool['ir.sequence_recovery'].search(cr, uid, [('name', '=', 'account.invoice'), ('sequence', '=', invoice.internal_number)], context=context)
+                if recovery_ids:
+                    recovery_id = recovery_ids[0]
+                    self.pool['ir.sequence_recovery'].write(cr, uid, recovery_id, {'active': False}, context)
+
         return True
 
     def invoice_cancel_check(self, cr, uid, ids, context=None):
