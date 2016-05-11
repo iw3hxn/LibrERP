@@ -316,6 +316,10 @@ class ImportFile(threading.Thread, Utils):
                     if product_ids:
                         product_id = product_ids[0]
                         self.cache_product[product] = product_id
+                    else:
+                        error = u'Row {row}: Product "{product}" not Found'.format(row=self.processed_lines, product=product)
+                        _logger.error(error)
+                        self.error.append(error)
 
             if product_id:
 
@@ -351,6 +355,6 @@ class ImportFile(threading.Thread, Utils):
                 self.account_invoice_line_obj.create(cr, uid, vals_account_invoice_line, self.context)
                 self.uo_new += 1
             else:
-                _logger.warning(u'Row {row}: Not Find {product}'.format(row=self.processed_lines, product=record.item))
+                _logger.warning(u'Row {row}: Not Found {product}'.format(row=self.processed_lines, product=record.item))
                 invoice_id = False
             return invoice_id

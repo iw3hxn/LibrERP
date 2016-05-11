@@ -289,6 +289,10 @@ class ImportFile(threading.Thread, Utils):
                 if product_ids:
                     product_id = product_ids[0]
                     self.cache_product[product] = product_id
+                else:
+                    error = u'Row {row}: Product "{product}" not Found'.format(row=self.processed_lines, product=product)
+                    _logger.error(error)
+                    self.error.append(error)
 
         if hasattr(record, 'qty') and record.qty:
             vals_move['product_qty'] = float(record.qty)
