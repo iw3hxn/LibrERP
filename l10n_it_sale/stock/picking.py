@@ -121,8 +121,8 @@ class stock_picking(orm.Model):
             sequence_id = picking.stock_journal_id.ddt_sequence and \
                           picking.stock_journal_id.ddt_sequence.id or False
             if not sequence_id:
-                ids = self.search(cr, uid, [('code', '=', 'stock.ddt')])
+                ids = self.pool['ir.sequence_recovery'].search(cr, uid, [('code', '=', 'stock.ddt')])
                 sequence_id = ids[0]
 
-            self.pool.get('ir.sequence_recovery').set(cr, uid, [picking.id], 'stock.picking', 'ddt_number', '', sequence_id)
+            self.pool['ir.sequence_recovery'].set(cr, uid, [picking.id], 'stock.picking', 'ddt_number', '', sequence_id)
         return super(stock_picking, self).unlink(cr, uid, ids, context)
