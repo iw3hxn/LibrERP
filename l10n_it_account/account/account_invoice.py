@@ -209,57 +209,57 @@ class account_invoice(orm.Model):
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
         for invoice in self.browse(cr, uid, ids, context):
-
-            if invoice.company_id.stop_invoice_internal_number:
-                invoice_ids = self.search(cr, 1, [('internal_number', '!=', True), ('type', '=', 'out_invoice'),
-                                                  ('journal_id', '=', invoice.journal_id.id), ('state', '=', 'draft')],
-                                          context=context)
-                for invoice_old in self.browse(cr, 1, [x for x in invoice_ids if x not in ids], context):
-                    raise orm.except_orm(_('Invoice'),
-                                         _(
-                                             'Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}').format(
-                                             partner=invoice_old.partner_id.name,
-                                             invoice_number=invoice_old.internal_number))
-
-            if not invoice.payment_term and invoice.company_id.check_invoice_payment_term:
-                raise orm.except_orm(_('Invoice'),
-                                     _(
-                                         'Impossible to Validate, need to set Payment Term on invoice of {partner}').format(
-                                         partner=invoice.partner_id.name))
-
-            if not invoice.fiscal_position and invoice.company_id.check_invoice_fiscal_position:
-                raise orm.except_orm(_('Invoice'),
-                                     _(
-                                         'Impossible to Validate, need to set Fiscal Position on invoice of {partner}').format(
-                                         partner=invoice.partner_id.name))
-
-            elif invoice.fiscal_position.required_tax:
-                if invoice.type in ['out_invoice', 'out_refund']:
-                    invoice.button_reset_taxes()
-                    if not invoice.tax_line:
+            if invoice.type in ['out_invoice', 'out_refund']:
+                if invoice.company_id.stop_invoice_internal_number:
+                    invoice_ids = self.search(cr, 1, [('internal_number', '!=', True), ('type', '=', 'out_invoice'),
+                                                      ('journal_id', '=', invoice.journal_id.id), ('state', '=', 'draft')],
+                                              context=context)
+                    for invoice_old in self.browse(cr, 1, [x for x in invoice_ids if x not in ids], context):
                         raise orm.except_orm(_('Invoice'),
                                              _(
-                                                 'Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(
-                                                 partner=invoice.partner_id.name))
+                                                 'Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}').format(
+                                                 partner=invoice_old.partner_id.name,
+                                                 invoice_number=invoice_old.internal_number))
 
-            if invoice.company_id.check_invoice_fiscal_position and not invoice.fiscal_position.no_check_vat:
-                vat_on_parent = False
-                vat_on_partner = False
-                import pdb; pdb.set_trace()
-                if invoice.partner_id.parent_id:
-                    if invoice.partner_id.parent_id.vat or invoice.partner_id.parent_id.cf:
-                        vat_on_parent = True
-
-                elif invoice.partner_id.vat or invoice.partner_id.cf:
-                    vat_on_partner = True
-
-                if not (vat_on_parent or vat_on_partner):
+                if not invoice.payment_term and invoice.company_id.check_invoice_payment_term:
                     raise orm.except_orm(_('Invoice'),
-                                         _('Impossible to Validate, need to set on Partner {partner} VAT').format(
+                                         _(
+                                             'Impossible to Validate, need to set Payment Term on invoice of {partner}').format(
                                              partner=invoice.partner_id.name))
-                    return False
 
-            if invoice.type == 'in_invoice' and not invoice.supplier_invoice_number:
+                if not invoice.fiscal_position and invoice.company_id.check_invoice_fiscal_position:
+                    raise orm.except_orm(_('Invoice'),
+                                         _(
+                                             'Impossible to Validate, need to set Fiscal Position on invoice of {partner}').format(
+                                             partner=invoice.partner_id.name))
+
+                elif invoice.fiscal_position.required_tax:
+                    if invoice.type in ['out_invoice', 'out_refund']:
+                        invoice.button_reset_taxes()
+                        if not invoice.tax_line:
+                            raise orm.except_orm(_('Invoice'),
+                                                 _(
+                                                     'Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(
+                                                     partner=invoice.partner_id.name))
+
+                if invoice.fiscal_position and not invoice.fiscal_position.no_check_vat:
+                    vat_on_parent = False
+                    vat_on_partner = False
+
+                    if invoice.partner_id.parent_id:
+                        if invoice.partner_id.parent_id.vat or invoice.partner_id.parent_id.cf:
+                            vat_on_parent = True
+
+                    elif invoice.partner_id.vat or invoice.partner_id.cf:
+                        vat_on_partner = True
+
+                    if not (vat_on_parent or vat_on_partner):
+                        raise orm.except_orm(_('Invoice'),
+                                             _('Impossible to Validate, need to set on Partner {partner} VAT').format(
+                                                 partner=invoice.partner_id.name))
+                        return False
+
+            elif not invoice.supplier_invoice_number:
                 raise orm.except_orm(_('Supplier Invoice'),
                                      _('Impossible to Validate, need to set Supplier invoice nr'))
                 return False
@@ -325,6 +325,6 @@ class account_invoice(orm.Model):
                 if not self.pool['res.groups'].user_in_group(cr, uid, uid, 'account.group_number_account_invoice', context):
                     raise orm.except_orm(_("You don't have Permission!"), _("You must be on group 'Cancel Internal Number'"))
                 for invoice in self.browse(cr, uid, ids, context):
-                    self.pool.get('ir.sequence_recovery').set(cr, uid, [invoice.id], 'account.invoice', 'internal_number', '', invoice.journal_id.sequence_id.id)
+                    self.pool['ir.sequence_recovery'].set(cr, uid, [invoice.id], 'account.invoice', 'internal_number', '', invoice.journal_id.sequence_id.id)
 
         return super(account_invoice, self).write(cr, uid, ids, vals, context)

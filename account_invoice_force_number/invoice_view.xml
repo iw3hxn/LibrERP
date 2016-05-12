@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-<data>
+    <data>
 
         <record model="ir.ui.view" id="account_invoice_form_int_number">
             <field name="name">account.invoice.form.int_number</field>
@@ -9,12 +9,14 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <xpath expr="/form/group/field[@name='number']" position="after">
-                    <field name="internal_number" attrs="{'invisible':[('state','!=','draft')]}" string="Force Number" help="Force invoice number. Use this field if you don't want to use the default numbering"/>
+                    <field name="internal_number" attrs="{'invisible':[('state','!=','draft')]}" string="Force Number"
+                           help="Force invoice number. Use this field if you don't want to use the default numbering"
+                        on_change="onchange_internal_number(internal_number, type, journal_id)"/>
                     <newline/>
                 </xpath>
             </field>
         </record>
-        
+
         <record model="ir.ui.view" id="account_invoice_supplier_form_int_number">
             <field name="name">account.invoice.supplier.form.int_number</field>
             <field name="model">account.invoice</field>
@@ -22,11 +24,14 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <xpath expr="/form/group/field[@name='number']" position="after">
-                    <field name="internal_number" attrs="{'invisible':[('state','!=','draft')]}" string="Force Number" help="Force invoice number. Use this field if you don't want to use the default numbering"/>
+                    <field name="internal_number" attrs="{'invisible':[('state','!=','draft')]}" string="Force Number"
+                           help="Force invoice number. Use this field if you don't want to use the default numbering"
+                           on_change="onchange_internal_number(internal_number, type, journal_id)"
+                    />
                     <newline/>
                 </xpath>
             </field>
         </record>
 
-</data>
+    </data>
 </openerp>

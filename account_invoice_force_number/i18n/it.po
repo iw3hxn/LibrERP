@@ -45,3 +45,16 @@ msgstr "Forza numero fattura"
 msgid "Invoice"
 msgstr "Fattura"
 
+#. module: account_invoice_force_number
+#: code:addons/account_invoice_force_number/invoice.py:54
+#, python-format
+msgid "Warning there are another invoice number to recovery: \n"
+" {recovery_number}"
+msgstr "Attenzione ci sono dei protocolli da recuperare: \n"
+" {recovery_number}"
+
+#. module: account_invoice_force_number
+#: code:addons/account_invoice_force_number/invoice.py:42
+#, python-format
+msgid "Caution there are another invoice with number {invoice_number}"
+msgstr "Attenzione c'è un altra fattura con numero {invoice_number}"
