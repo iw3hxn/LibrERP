@@ -317,8 +317,12 @@ class account_invoice(orm.Model):
         return super(account_invoice, self).copy(cr, uid, ids, default, context)
 
     def write(self, cr, uid, ids, vals, context=None):
+
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
+
+        if isinstance(ids, (int, long)):
+            ids = [ids]
 
         if 'internal_number' in vals.keys():
             if not vals['internal_number'] or vals['internal_number'].replace(' ', '') == '':
