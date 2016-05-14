@@ -208,6 +208,10 @@ class account_invoice(orm.Model):
         return {'value': {}}
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
+        res = super(account_invoice, self).invoice_validate_check(cr, uid, ids, context)
+        if not res:
+            return res
+
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.type in ['out_invoice', 'out_refund']:
                 if invoice.company_id.stop_invoice_internal_number:
@@ -273,6 +277,9 @@ class account_invoice(orm.Model):
         return True
 
     def invoice_cancel_check(self, cr, uid, ids, context=None):
+        res = super(account_invoice, self).invoice_cancel_check(cr, uid, ids, context)
+        if not res:
+            return res
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.internal_number:
                 raise orm.except_orm(_('Invoice'),
@@ -284,6 +291,9 @@ class account_invoice(orm.Model):
         return True
 
     def invoice_proforma_check(self, cr, uid, ids, context=None):
+        res = super(account_invoice, self).invoice_proforma_check(cr, uid, ids, context)
+        if not res:
+            return res
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.internal_number:
                 raise orm.except_orm(_('Invoice'),

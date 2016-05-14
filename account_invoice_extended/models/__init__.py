@@ -22,4 +22,5 @@
 #
 ##############################################################################
 
-from . import models
+from . import account_invoice
+from . import fiscal_position

@@ -46,6 +46,7 @@ Functionalities:
         'account_invoice_entry_date',  # not possible for use of a field defined here invoice_supplier_number
         'res_users_helper_functions',
         'sequence_recovery',
+        'account_invoice_extended'
     ],
     'data': [
         'security/account_security.xml',
@@ -61,7 +62,6 @@ Functionalities:
         'account/res_bank_view.xml',
         'account/account_tax_view.xml',
         'account/res_company_view.xml',
-        'account/account_invoice_workflow.xml',
     ],
     'demo': [],
     'active': False,

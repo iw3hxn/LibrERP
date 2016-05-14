@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -22,4 +22,13 @@
 #
 ##############################################################################
 
-from . import models
+from openerp.osv import orm, fields
+
+
+class account_fiscal_position(orm.Model):
+    _inherit = 'account.fiscal.position'
+
+    _columns = {
+        'sale_journal_id': fields.many2one('account.journal', 'Default Sale Journal', domain="[('type', '=', 'sale')]"),
+        'purchase_journal_id': fields.many2one('account.journal', 'Default Purchase Journal', domain="[('type', '=', 'purchase')]")
+    }

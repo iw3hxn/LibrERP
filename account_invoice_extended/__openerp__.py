@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice extended",
-    "version": "3.2.8.8",
+    "version": "3.3.9.9",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules/Accounting",
@@ -49,11 +49,13 @@
     ],
     "data": [
         'security/account_security.xml',
-        'account_view.xml',
-        'account_menu.xml',
-        'account_workflow.xml',
-        'account_move_journal_view.xml',
-        'account_menu_clear.xml',
+        'views/account_view.xml',
+        'views/account_menu.xml',
+        'views/account_workflow.xml',
+        'views/account_move_journal_view.xml',
+        'views/account_menu_clear.xml',
+        'views/fiscal_position_view.xml',
+        'workflows/account_invoice_workflow.xml',
     ],
     "active": False,
     "installable": True,

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record model="ir.ui.view" id="account_fiscal_position_inherit_journal">
+			<field name="name">account.fiscal.position.inherit_journal</field>
+			<field name="model">account.fiscal.position</field>
+			<field name="inherit_id" ref="account.view_account_position_form"/>
+			<field name="arch" type="xml">
+				<field name="active" position="after">
+					<group colspan="4">
+						<field name="sale_journal_id" />
+						<field name="purchase_journal_id" />
+					</group>
+				</field>
+			</field>
+		</record>
+
+    </data>
+</openerp>

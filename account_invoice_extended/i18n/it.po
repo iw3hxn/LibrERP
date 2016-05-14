@@ -52,3 +52,31 @@ msgstr "Visualizza Fatture Clienti"
 #: model:res.groups,name:account.group_supplier_account_invoice
 msgid "View Supplier Invoice"
 msgstr "Visualizza Fatture Fornitori"
+
+#. module: account_invoice_extended
+#: field:account.fiscal.position,sale_journal_id:0
+msgid "Default Sale Journal"
+msgstr "Registro Vendite"
+
+#. module: account_invoice_extended
+#: field:account.fiscal.position.purchase_journal_id:0
+msgid "Default Purchase Journal"
+msgstr "Registro Acquisti"
+
+#. module: account_invoice_extended
+#: code:addons/account_invoice_extended/models/account_invoice.py:54
+#, python-format
+msgid "Is Change from \n"
+"{old_fiscal_position} to \n"
+"{new_fiscal_position}: \n"
+"Please Press Button for recalculate tax"
+msgstr "É cambiata la Posizione Fiscale da:\n"
+"'{old_fiscal_position}' a\n"
+"'{new_fiscal_position}' \n"
+"Premere il pulsante 'CALCOLA TOTALE E IMPOSTE'"
+
+#. module: account_invoice_extended
+#: code:addons/account_invoice_extended/models/account_invoice.py:93
+#, python-format
+msgid "Impossibile to valide invoice of {partner} because journal on invoive '{invoice_journal}' is different from journal '{fiscal_position_journal}' set on fiscal position '{invoice_fiscal_position}'"
+msgstr "Non si può validare la fattura di {partner} perchè il registro '{invoice_journal}' è differente dal registro '{fiscal_position_journal}' impostato nella posizione fiscale '{invoice_fiscal_position}'"
