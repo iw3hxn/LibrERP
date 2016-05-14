@@ -59,7 +59,7 @@ msgid "Default Sale Journal"
 msgstr "Registro Vendite"
 
 #. module: account_invoice_extended
-#: field:account.fiscal.position.purchase_journal_id:0
+#: field:account.fiscal.position,purchase_journal_id:0
 msgid "Default Purchase Journal"
 msgstr "Registro Acquisti"
 
