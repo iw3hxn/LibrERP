@@ -64,17 +64,17 @@
                 </p>
                 <thead>
                 <tr>
-                    <th style="text-align:left;white-space:nowrap">${_("Code")}</th>
-                    <th style="text-align:left;white-space:nowrap">${_("Name")}</th>
-                    <th style="text-align:left;white-space:nowrap">${_("Lot")}</th>
-                    <th style="text-align:left;white-space:nowrap">${_("Default Supplier")}</th>
-                    <th style="text-align:left;white-space">${_("Quantity counted")}</th>
-                    <th style="text-align:left;white-space">${_("Quantity computed")}</th>
-                    <th style="text-align:left;white-space">${_("Diff")}</th>
-                    <th style="text-align:left;white-space:nowrap">${_("Unit")}</th>
-                    <th style="text-align:left;white-space">${_("Value")}</th>
-                    <th style="text-align:left;white-space">${_("Total Value counted")}</th>
-                    <th style="text-align:left;white-space">${_("Total Value computed")}</th>
+                    <th style="text-align:center;white-space:nowrap">${_("Code")}</th>
+                    <th style="text-align:center;white-space:nowrap">${_("Name")}</th>
+                    <th style="text-align:center;white-space:nowrap">${_("Lot")}</th>
+                    <th style="text-align:center;white-space:nowrap">${_("Default Supplier")}</th>
+                    <th style="text-align:center;white-space">${_("Quantity counted")}</th>
+                    <th style="text-align:center;white-space">${_("Quantity computed")}</th>
+                    <th style="text-align:center;white-space">${_("Diff")}</th>
+                    <th style="text-align:center;white-space:nowrap">${_("Unit")}</th>
+                    <th style="text-align:center;white-space">${_("Value")}</th>
+                    <th style="text-align:center;white-space">${_("Total Value counted")}</th>
+                    <th style="text-align:center;white-space">${_("Total Value computed")}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -105,17 +105,23 @@
                         %>
 
                         <tr>
+
                             <td style="text-align:left;white-space:nowrap">${line.product_id.default_code or ''}</td>
                             <td style="text-align:left;white-space">${line.product_id.name}</td>
                             <td style="text-align:left;white-space:nowrap">${lot_name}</td>
                             <td style="text-align:left;white-space:nowrap">${line.product_id.prefered_supplier and line.product_id.prefered_supplier.name or ''}</td>
                             <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty)}</td>
-                            <td style="text-align:right;white-space:nowrap">${line.product_qty_calc}</td>
-                            <td style="text-align:right;white-space:nowrap">${line.product_qty-line.product_qty_calc}</td>
+                            %if line.product_qty < 0:
+                                <td style="background-color: red;text-align:right;white-space:nowrap">${line.product_qty_calc}</td>
+                            % else:
+                                <td style="text-align:right;white-space:nowrap">${line.product_qty_calc}</td>
+                            %endif
+                            <td style="text-align:right;white-space:nowrap">${line.product_qty - line.product_qty_calc}</td>
                             <td style="text-align:left;white-space:nowrap">${line.product_uom.name}</td>
                             <td style="text-align:right;white-space:nowrap">${formatLang(line.product_id.standard_price)}</td>
                             <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty*line.product_id.standard_price)}</td>
                             <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty_calc*line.product_id.standard_price)}</td>
+
                         </tr>
                         <%
                             total_product_qty+=line.product_qty
