@@ -308,7 +308,7 @@ class product_product(orm.Model):
         'cost_price': fields.function(_cost_price,
                                       method=True,
                                       string=_('Cost Price (incl. BoM)'),
-                                      digits_compute=dp.get_precision('Sale Price'),
+                                      digits_compute=dp.get_precision('Purchase Price'),
                                       help="The cost price is the standard price or, if the product has a bom, "
                                       "the sum of all standard price of its components. it take also care of the "
                                       "bom costing like cost per cylce."),
