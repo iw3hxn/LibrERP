@@ -33,13 +33,17 @@ class sale_order_line(orm.Model):
         # 'active': fields.related('order_id', 'active', type='boolean', string='Active', store=False),
         'sale_line_copy_id': fields.many2one('sale.order.line', 'Orig version', required=False, readonly=False),
     }
-    
+
     def copy_data(self, cr, uid, line_id, defaults=None, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         defaults = defaults or {}
         defaults['sale_line_copy_id'] = line_id
         return super(sale_order_line, self).copy_data(cr, uid, line_id, defaults, context)
-        
+
     def copy(self, cr, uid, line_id, defaults, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         defaults = defaults or {}
         defaults['sale_line_copy_id'] = line_id
         return super(sale_order_line, self).copy(cr, uid, line_id, defaults, context)
@@ -57,18 +61,20 @@ class sale_order(orm.Model):
                 sequence = self.pool['ir.sequence'].next_by_id(cr, uid, order.shop_id.sale_order_sequence_id.id)
                 order.write({'name': sequence})
         return res
-    
+
     def action_previous_version(self, cr, uid, ids, default=None, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
 
         if isinstance(ids, (int, long)):
             ids = [ids]
 
         if not default:
             default = {}
-            
+
         if not context:
             context = self.pool['res.users'].context_get(cr, uid)
-        
+
         attachment_obj = self.pool['ir.attachment']
 
         order_ids = []
@@ -76,20 +82,23 @@ class sale_order(orm.Model):
             vals = {
                 'version': (order.version and order.version or 1) + 1,
             }
-            
+
             if not order.sale_version_id:
                 vals['sale_version_id'] = order.id
-            
+
             context['versioning'] = True
-            vals['name'] = (order.sale_version_id and order.sale_version_id.name or order.name) + u" V." + ustr(vals['version'])
+            vals['name'] = (order.sale_version_id and order.sale_version_id.name or order.name) + u" V." + ustr(
+                vals['version'])
             new_order_id = self.copy(cr, uid, order.id, vals, context=context)
-            
-            attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'sale.order'), ('res_id', '=', order.id)])
+
+            attachment_ids = attachment_obj.search(cr, uid,
+                                                   [('res_model', '=', 'sale.order'), ('res_id', '=', order.id)], context=context)
             if attachment_ids:
-                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']}, context)
+                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']},
+                                     context)
             order.write({'active': False})
             order_ids.append(new_order_id)
-            
+
         mod_obj = self.pool['ir.model.data']
         res = mod_obj.get_object_reference(cr, uid, 'sale', 'view_order_form')
         res_id = res and res[1] or False,
@@ -105,31 +114,35 @@ class sale_order(orm.Model):
             'target': 'current',
             'res_id': order_ids and order_ids[0] or False,
         }
-        
+
     def _get_version_ids(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         res = {}
         for sale in self.browse(cr, uid, ids, context):
             if sale.sale_version_id:
-                res[sale.id] = self.search(cr, uid, ['|', ('sale_version_id', '=', sale.sale_version_id.id), ('id', '=', sale.sale_version_id.id), ('version', '<', sale.version), '|', ('active', '=', False), ('active', '=', True)], context=context)
+                res[sale.id] = self.search(cr, uid, ['|', ('sale_version_id', '=', sale.sale_version_id.id),
+                                                     ('id', '=', sale.sale_version_id.id),
+                                                     ('version', '<', sale.version), '|', ('active', '=', False),
+                                                     ('active', '=', True)], context=context)
             else:
                 res[sale.id] = []
         return res
-    
+
     _columns = {
         'sale_version_id': fields.many2one('sale.order', 'Orig version', required=False, readonly=False),
         'version': fields.integer('Version no.', readonly=True),
         'active': fields.boolean('Active', readonly=False, help="It indicates that the sales order is active."),
-        'version_ids': fields.function(_get_version_ids, method=True, type="one2many", relation='sale.order', string='Versions', readonly=True)
+        'version_ids': fields.function(_get_version_ids, method=True, type="one2many", relation='sale.order',
+                                       string='Versions', readonly=True)
     }
-    
+
     _defaults = {
         'active': True,
         'version': 0,
         'name': '/',
     }
-    
+
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
@@ -141,36 +154,44 @@ class sale_order(orm.Model):
             else:
                 sequence = self.pool['ir.sequence'].get(cr, uid, 'sale.order')
                 vals.update({'name': sequence})
-        
+
         if (not context or not context.get('versioning', False)) and vals.get('sale_version_id', False):
             del vals['sale_version_id']
             vals['version'] = 0
-        
+
         return super(sale_order, self).create(cr, uid, vals, context)
 
 
 class sale_shop(orm.Model):
     _inherit = 'sale.shop'
-    
+
     _columns = {
-        'sequence_id': fields.many2one('ir.sequence', 'Entry Sequence', help="This field contains the informatin related to the numbering of the Sale Orders.", domain="[('code', '=', 'sale.order')]"),
-        'sale_order_sequence_id': fields.many2one('ir.sequence', 'Entry Sequence Confirmed', help="This field contains the informatin related to the numbering of the Sale Orders Confirmed by Customer", domain="[('code', '=', 'sale.order')]"),
+        'sequence_id': fields.many2one('ir.sequence', 'Entry Sequence',
+                                       help="This field contains the informatin related to the numbering of the Sale Orders.",
+                                       domain="[('code', '=', 'sale.order')]"),
+        'sale_order_sequence_id': fields.many2one('ir.sequence', 'Entry Sequence Confirmed',
+                                                  help="This field contains the informatin related to the numbering of the Sale Orders Confirmed by Customer",
+                                                  domain="[('code', '=', 'sale.order')]"),
     }
 
     def write(self, cr, uid, ids, vals, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         if isinstance(ids, (int, long)):
             ids = [ids]
         if vals.get('sequence_id', False) and vals.get('sale_order_sequence_id', False):
             if vals.get('sequence_id', False) == vals.get('sale_order_sequence_id', False):
                 raise orm.except_orm(_('Error!'),
-                    _("In not possible to have same sequence"))
+                                     _("In not possible to have same sequence"))
 
         return super(sale_shop, self).write(cr, uid, ids, vals, context=context)
 
     def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
         if vals.get('sequence_id', False) and vals.get('sale_order_sequence_id', False):
             if vals.get('sequence_id', False) == vals.get('sale_order_sequence_id', False):
                 raise orm.except_orm(_('Error!'),
-                    _("In not possible to have same sequence"))
+                                     _("In not possible to have same sequence"))
 
         return super(sale_shop, self).create(cr, uid, vals, context=context)

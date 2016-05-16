@@ -23,13 +23,14 @@
 import tools
 from osv import fields, osv
 
+
 class sale_report(osv.osv):
     _inherit = "sale.report"
-    
-    _columns = {       
+
+    _columns = {
         'active': fields.boolean('Active', readonly=False, help="It indicates that the sales order is active."),
     }
-    
+
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'sale_report')
         cr.execute("""
@@ -84,4 +85,3 @@ class sale_report(osv.osv):
                     s.active
             )
         """)
-sale_report()

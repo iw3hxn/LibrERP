@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>        
+    <data>
         <record id="view_order_form_add_versions" model="ir.ui.view">
             <field name="name">sale.order.form.add_versions</field>
             <field name="model">sale.order</field>
@@ -8,28 +8,28 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//form/group[1]/group[1]/field[@name='name']" position="replace">
-                    <field name="name" readonly="1" />
+                    <field name="name" readonly="1"/>
                 </xpath>
                 <xpath expr="//form/group[1]/group[1]/field[@name='client_order_ref']" position="after">
-                    <field name="sale_version_id" readonly="1" />
-                    <field name="revision_note"/>
+                    <field name="sale_version_id" attrs="{'invisible':[('sale_version_id','=',False)]}"/>
+                    <field name="revision_note" attrs="{'invisible':[('sale_version_id','=',False)]}"/>
                     <field name="active" invisible="1"/>
                 </xpath>
-<!--
-                    <button 
-                        name="action_previous_version"
-                        string="Create version"
-                        type="object"
-                        icon="gtk-go-forward"
-                        colspan="2"
-                        states="draft"
-                    /> -->
-                
+                <!--
+                                    <button
+                                        name="action_previous_version"
+                                        string="Create version"
+                                        type="object"
+                                        icon="gtk-go-forward"
+                                        colspan="2"
+                                        states="draft"
+                                    /> -->
+
 
                 <page string="Other Information" position="after">
-                    <page string="Versions" attrs="{'invisible':[('sale_version_id','=',False)]}" >
+                    <page string="Versions" attrs="{'invisible':[('sale_version_id','=',False)]}">
                         <field name="version_ids" colspan="4" nolabel="1" readonly="1">
-                            <tree string="" >
+                            <tree string="">
                                 <field name="name"/>
                                 <field name="date_order"/>
                                 <field name="user_id"/>
@@ -37,8 +37,8 @@
                                 <field name="amount_total" sum="Total Tax Included"/>
                                 <field name="state"/>
                                 <field name="sale_version_id"/>
-                                <field name="revision_note"  />
-                            </tree>                     
+                                <field name="revision_note"/>
+                            </tree>
                         </field>
                     </page>
                 </page>
@@ -52,15 +52,16 @@
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
                 <filter string="Order Date" position="after">
-                    <filter string="Orig. Version" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'sale_version_id'}"/>
+                    <filter string="Orig. Version" icon="terp-accessories-archiver" domain="[]"
+                            context="{'group_by':'sale_version_id'}"/>
                 </filter>
             </field>
         </record>
-        
+
         <record id="view_shop_sequence_form" model="ir.ui.view">
             <field name="name">sale.shop</field>
             <field name="model">sale.shop</field>
-            <field name="inherit_id" ref="sale.view_shop_form" />
+            <field name="inherit_id" ref="sale.view_shop_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="warehouse_id" position="before">
