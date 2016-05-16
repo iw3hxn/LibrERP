@@ -36,6 +36,11 @@ msgid "Lot"
 msgstr "Lotto"
 
 #. module: stock_product_zero
+#: report:addons/stock_product_zero/report/stock_inventory.mako:53
+msgid "Default Supplier"
+msgstr "Fornitore Preferenziale"
+
+#. module: stock_product_zero
 #: model:ir.actions.report.xml,name:stock_product_zero.stock_inventory_webkit
 msgid "WebKit Inventory"
 msgstr "Inventario Valorizzato"

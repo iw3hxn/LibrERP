@@ -67,6 +67,7 @@
                     <th style="text-align:left;white-space:nowrap">${_("Code")}</th>
                     <th style="text-align:left;white-space:nowrap">${_("Name")}</th>
                     <th style="text-align:left;white-space:nowrap">${_("Lot")}</th>
+                    <th style="text-align:left;white-space:nowrap">${_("Default Supplier")}</th>
                     <th style="text-align:left;white-space">${_("Quantity counted")}</th>
                     <th style="text-align:left;white-space">${_("Quantity computed")}</th>
                     <th style="text-align:left;white-space">${_("Diff")}</th>
@@ -107,6 +108,7 @@
                             <td style="text-align:left;white-space:nowrap">${line.product_id.default_code or ''}</td>
                             <td style="text-align:left;white-space">${line.product_id.name}</td>
                             <td style="text-align:left;white-space:nowrap">${lot_name}</td>
+                            <td style="text-align:left;white-space:nowrap">${line.product_id.prefered_supplier and line.product_id.prefered_supplier.name or ''}</td>
                             <td style="text-align:right;white-space:nowrap">${formatLang(line.product_qty)}</td>
                             <td style="text-align:right;white-space:nowrap">${line.product_qty_calc}</td>
                             <td style="text-align:right;white-space:nowrap">${line.product_qty-line.product_qty_calc}</td>
@@ -123,6 +125,7 @@
                         %>
                     %endfor
                 <tr>
+                    <td></td>
                     <td></td>
                     <td style="text-align:left;white-space:nowrap">${_("Totals")}</td>
                     <td></td>
