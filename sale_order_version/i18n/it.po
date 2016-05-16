@@ -44,8 +44,13 @@ msgstr "Versioni"
 
 #. module: sale_order_version
 #: help:sale.shop,sequence_id:0
-msgid "This field contains the informatin related to the numbering of the Sale Orders."
+msgid "This field contains the information related to the numbering of the Sale Orders."
 msgstr "Questo campo contiene le informazioni relative al numero dell'Ordine di Vendita"
+
+#. module: sale_order_version
+#: help:sale.shop,sequence_id:0
+msgid "This field contains the information related to the numbering of the Sale Orders Confirmed by Customer"
+msgstr "Questo campo contiene le informazioni relative al numero dell'Ordine di Vendita confermato dal Cliente"
 
 #. module: sale_order_version
 #: view:sale.order:0

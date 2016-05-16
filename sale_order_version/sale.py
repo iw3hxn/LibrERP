@@ -167,10 +167,10 @@ class sale_shop(orm.Model):
 
     _columns = {
         'sequence_id': fields.many2one('ir.sequence', 'Entry Sequence',
-                                       help="This field contains the informatin related to the numbering of the Sale Orders.",
+                                       help="This field contains the information related to the numbering of the Sale Orders.",
                                        domain="[('code', '=', 'sale.order')]"),
         'sale_order_sequence_id': fields.many2one('ir.sequence', 'Entry Sequence Confirmed',
-                                                  help="This field contains the informatin related to the numbering of the Sale Orders Confirmed by Customer",
+                                                  help="This field contains the information related to the numbering of the Sale Orders Confirmed by Customer",
                                                   domain="[('code', '=', 'sale.order')]"),
     }
 
