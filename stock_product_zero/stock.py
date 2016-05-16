@@ -19,25 +19,26 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import fields, orm
 import logging
 
-class stock_location_product(osv.osv_memory):
+
+class stock_location_product(orm.ModelTransient):
     _inherit = "stock.location.product"
-    _logger  = logging.getLogger(__name__)
-    _columns = {'display_with_zero_qty' : fields.boolean('Display lines with zero')}
+    _logger = logging.getLogger(__name__)
+    _columns = {'display_with_zero_qty': fields.boolean('Display lines with zero')}
 
     def action_open_window_nok(self, cr, uid, ids, context=None):
-        res = super(stock_location_product, self).action_open_window( cr, uid, ids, context=None)
+        res = super(stock_location_product, self).action_open_window(cr, uid, ids, context=None)
         self._logger.debug('FGF stock_location_product action_open_window pre %s', res)
 
         location_products = self.read(cr, uid, ids, ['display_with_zero_qty'], context)
         # FIXME - I am not able to add display_with_zero_qty to context
-        #raise osv.except_osv(_('FGF Warning !'), _('We check location_products:'))
+        # raise osv.except_osv(_('FGF Warning !'), _('We check location_products:'))
 
         if location_products:
             res['context']['display_with_zero_qty'] = location_products['display_with_zero_qty']
-        #self._logger.debug('FGF stock_location_product action_open_window post %s', res)
+        # self._logger.debug('FGF stock_location_product action_open_window post %s', res)
         return res
 
     def action_open_window(self, cr, uid, ids, context=None):
@@ -57,8 +58,8 @@ class stock_location_product(osv.osv_memory):
          @param context: A standard dictionary
          @return: Invoice type
         """
-        #mod_obj = self.pool.get('ir.model.data')
-        for location_obj in self.read(cr, uid, ids, ['from_date', 'to_date','display_with_zero_qty']):
+        # mod_obj = self.pool.get('ir.model.data')
+        for location_obj in self.read(cr, uid, ids, ['from_date', 'to_date', 'display_with_zero_qty']):
             return {
                 'name': False,
                 'view_type': 'form',
@@ -66,26 +67,25 @@ class stock_location_product(osv.osv_memory):
                 'res_model': 'product.product',
                 'type': 'ir.actions.act_window',
                 'context': {'location': context['active_id'],
-                       'from_date': location_obj['from_date'],
-                       'to_date': location_obj['to_date'],
-                       'display_with_zero_qty': location_obj['display_with_zero_qty'],
-                },
+                            'from_date': location_obj['from_date'],
+                            'to_date': location_obj['to_date'],
+                            'display_with_zero_qty': location_obj['display_with_zero_qty'],
+                            },
                 'domain': [('type', '!=', 'service')],
             }
-stock_location_product()
 
-class product_product(osv.osv):
+
+class product_product(orm.Model):
     _inherit = "product.product"
     _logger = logging.getLogger(__name__)
 
-
     # FIXME this returns correct records, but group by catagory ignores this and uses all results for grouping
     # opening a category crashes
-    def read_test(self,cr, uid, ids, fields=None, context=None, load='_classic_read'):
-        res_all = super(product_product, self).read(cr,uid, ids, fields, context, load='_classic_read')
+    def read_test(self, cr, uid, ids, fields=None, context=None, load='_classic_read'):
+        res_all = super(product_product, self).read(cr, uid, ids, fields, context, load='_classic_read')
         res = []
         self._logger.debug('FGF stock_location_product read ids %s', res_all)
-        if  context.get('display_with_zero_qty') and context.get('display_with_zero_qty') is False:
+        if context.get('display_with_zero_qty') and context.get('display_with_zero_qty') is False:
             self._logger.debug('FGF stock_location_product read  only not null')
             for prod in self.browse(cr, uid, res_all):
                 qty = prod.get('qty_available')
@@ -102,21 +102,21 @@ class product_product(osv.osv):
     def not_0(self, cr, uid, digits, context):
         to_check = context.get('to_check')
         for t in to_check:
-            if round(t,digits) != 0.0:
+            if round(t, digits) != 0.0:
                 return True
         return False
 
     def fields_to_check(self, cr, uid):
-        fields = ['qty_available', 'virtual_available' ]
+        fields = ['qty_available', 'virtual_available']
         return fields
 
     def search_0(self, cr, uid, res, context):
         res2 = []
         digits = self.pool.get('decimal.precision').precision_get(cr, uid, 'Product UoM')
-        for prod in self.browse(cr,uid,res,context):
+        for prod in self.browse(cr, uid, res, context):
             to_check = []
             for v in self.fields_to_check(cr, uid):
-                v1 = eval('prod.'+v)
+                v1 = eval('prod.' + v)
                 to_check.append(v1)
             context['to_check'] = to_check
             if self.not_0(cr, uid, digits, context):
@@ -126,7 +126,7 @@ class product_product(osv.osv):
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if not context: context = {}
         res = []
-        if not context.get('location') or  context.get('display_with_zero_qty',True) :
+        if not context.get('location') or context.get('display_with_zero_qty', True):
             res = super(product_product, self).search(cr, uid, args, offset, limit, order, context, count)
         else:
             # FIXME how to handle offset and limit
@@ -134,5 +134,3 @@ class product_product(osv.osv):
             res = self.search_0(cr, uid, res_all, context)
 
         return res
-
-product_product()
