@@ -88,12 +88,15 @@ class ExportSalesTeamReport(orm.TransientModel):
                                                   date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   section_id=section_id)
         else:
-            return """SELECT partner_id, SUM(amount_total)
+            return """SELECT partner_id,
+                    SUM(CASE WHEN type='out_invoice' THEN amount_total
+                        WHEN type='out_refund' THEN -1 * amount_total
+                    END) AS amount_total
                     FROM account_invoice
                     WHERE date_invoice >= '{date_start}'
                     AND date_invoice <= '{date_end}'
                     AND state NOT IN ('draft', 'proforma')
-                    AND type = 'out_invoice'
+                    AND type in ('out_invoice', 'out_refund')
                     AND section_id = {section_id}
                     GROUP BY partner_id""".format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
