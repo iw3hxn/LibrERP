@@ -131,6 +131,7 @@ class sale_order_line(orm.Model):
         """
             return: A total amount of invoices for these order line
         """
+        partner_id = order_line.order_id.partner_id
         cr.execute(
             """SELECT SUM(account_invoice_line.price_subtotal)
             FROM account_invoice_line
@@ -139,7 +140,8 @@ class sale_order_line(orm.Model):
             WHERE account_invoice_line.name=%s
             AND NOT account_invoice_line.invoice_id IS NULL
             AND account_invoice_line.origin_document=%s
-            AND NOT account_invoice.state = 'cancel'""", (order_line.name, 'sale.order.line, {}'.format(order_line.id))
+            AND NOT account_invoice.state = 'cancel'
+            AND account_invoice.partner_id = %s""", (order_line.name, 'sale.order.line, {}'.format(order_line.id), partner_id.id)
         )
         return cr.fetchall()[0][0]
 
@@ -591,11 +593,12 @@ class sale_order(orm.Model):
         duration = self.get_duration_in_months(order_line.order_id.order_duration)
         invoice_duration = self.get_duration_in_months(order_line.order_id.order_invoice_duration)
         payments_quantity = duration / invoice_duration
+        if payments_quantity <= 0:
+            raise orm.except_orm(_('Error'), _("You've configured Subscription duration with less period of Invoicing Period."))
         
         invoice_line = self.pool['account.invoice.line'].browse(cr, uid, invoice_line_ids[0])
 
         price_unit = invoice_line.price_unit
-        
         # price is for annual usage of a product
         price_unit = round(price_unit / 12 * duration / payments_quantity,
                            self.pool.get('decimal.precision').precision_get(cr, uid, 'Sale Price'))
@@ -633,7 +636,7 @@ class sale_order(orm.Model):
         invoice_duration = self.get_duration_in_months(order_invoice_duration)
         payments_quantity = order_duration / invoice_duration
         
-        invoice_delta = relativedelta(months=self.get_duration_in_months(order.order_invoice_duration))
+        invoice_delta = relativedelta(months=self.get_duration_in_months(order_invoice_duration))
 
         virtual_start_date = datetime.datetime(start_date.year, start_date.month, 1)
         if order.subscription_invoice_day == '31':
@@ -765,7 +768,7 @@ class sale_order(orm.Model):
             if order.have_subscription:
                 invoices2cancel = account_invoice_obj.search(
                     cr, uid,
-                    [('type', '=', 'out_invoice'),
+                    [
                      ('origin', '=', order.name),
                      ('date_invoice', '>=', datetime.datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT))]
                 )

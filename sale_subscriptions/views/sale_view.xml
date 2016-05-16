@@ -36,7 +36,7 @@
 
                     <xpath expr="/form/notebook/page/field[@name='order_line']/tree[@string='Sales Order Lines']/field[@name='name']" position="after">
                         <field name="subscription" />
-                        <field name="product_duration" />
+                        <field name="product_duration" invisible="1"/>
                     </xpath>
 
                     <xpath expr="/form/notebook/page/field[@name='order_line']/tree[@string='Sales Order Lines']/field[@name='price_subtotal']" position="after">
