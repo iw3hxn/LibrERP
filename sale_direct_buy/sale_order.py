@@ -93,7 +93,7 @@ class sale_order(orm.Model):
                         continue
 
                     line_values = {
-                        'product_uom': res['value'].get('product_uom'),  #  order_line.product_uom.id,
+                        'product_uom': res['value'].get('product_uom'),  # order_line.product_uom.id,
                         'price_unit': res['value'].get('price_unit'),  # order_line.purchase_price or order_line.product_id.standard_price,
                         'discount': res['value'].get('discount'),  # order_line.extra_purchase_discount or 0.00,
                         'product_qty': product_to_buy,  # order_line.product_uom_qty or 1,
@@ -226,7 +226,7 @@ class sale_order_line(orm.Model):
         
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id, context)
-            if product.supply_method == 'buy':
+            if product.supply_method == 'buy' and product.procure_method == 'make_to_order':
                 if product.manufacturer and product.manufacturer_pref:
                     result_dict['value'].update({
                         'manufacturer_id': product.manufacturer.id,
