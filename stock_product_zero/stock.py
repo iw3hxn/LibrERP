@@ -19,11 +19,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import fields, orm
 import logging
+from openerp.osv import fields, orm
+from tools.translate import _
 
 
-class stock_location_product(orm.ModelTransient):
+class stock_location_product(orm.TransientModel):
     _inherit = "stock.location.product"
     _logger = logging.getLogger(__name__)
     _columns = {'display_with_zero_qty': fields.boolean('Display lines with zero')}

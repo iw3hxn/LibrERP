@@ -105,7 +105,7 @@ class product_product(orm.Model):
                 # no BoM: use standard_price
                 # use standard_price if no supplier indicated
                 if product.prefered_supplier:
-                    pricelist = product.prefered_supplier.property_product_pricelist_purchase and product.prefered_supplier.property_product_pricelist_purchase or False
+                    pricelist = product.prefered_supplier.property_product_pricelist_purchase  or False
                     ctx = {
                         'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                     }
