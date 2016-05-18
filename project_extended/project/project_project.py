@@ -167,9 +167,33 @@ class project_project(orm.Model):
                 name = name[:45] + '...'
             res.append((record.id, name))
         return res
+
+    def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        sale_order_obj = self.pool['sale.order']
+        for project in self.browse(cr, uid, ids, context):
+            name = project.name.split('-')[0]
+            result[project.id] = sale_order_obj.search(cr, uid, [('name', 'like', name)], context=context)
+
+        return result
+
+    def _get_purchase_order(self, cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        purchase_order_obj = self.pool['purchase.order']
+
+        for project in self.browse(cr, uid, ids, context):
+            name = project.name.split('-')[0]
+            result[project.id] = purchase_order_obj.search(cr, uid, [('origin', 'ilike', name), ('state', 'not in', ['draft', 'cancel'])], context=context)
+
+        return result
+
     
     _columns = {
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
+        'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order",
+                                          readonly=True, method=True),
+        'purchase_order_ids': fields.function(_get_purchase_order, 'Purchase Order', type='one2many', relation="purchase.order",
+                                          readonly=True, method=True),
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks"),
         'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
         'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),

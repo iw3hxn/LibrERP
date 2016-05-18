@@ -39,3 +39,19 @@ msgstr "Totale Venduto"
 #: field:project.project,total_sell_service:0
 msgid "Service Sell Amount"
 msgstr "Totale Servizi Venduti"
+
+#. module: project_extended
+#: view:project.project:0
+msgid "Tasks"
+msgstr "Attività"
+
+#. module: project_extended
+#: view:project.project:0
+msgid "Order"
+msgstr "Ordini"
+
+#. module: project_extended
+#: view:project.project:0
+msgid "Purchase"
+msgstr "Acquisti"
+
