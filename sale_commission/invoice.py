@@ -207,6 +207,8 @@ class account_invoice(orm.Model):
                         self.pool['invoice.line.agent'].create(cr, uid, vals_line, context)
 
     def write(self, cr, uid, ids, values, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
 
