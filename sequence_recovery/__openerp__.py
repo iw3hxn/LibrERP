@@ -23,7 +23,7 @@
 
 {
 	'name': 'Sequence Recovery',
-	'version': '1.1',
+	'version': '1.2',
 	'category': 'Sequences',
 	'description':
 		"""
