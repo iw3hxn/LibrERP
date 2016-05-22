@@ -65,7 +65,7 @@ msgstr "Attenzione: non puoi creare aziende ricorsive"
 #. module: sale_subscriptions
 #: view:sale.order:0
 msgid "Reactivate suspended order"
-msgstr "Reattiva Ordini Sospesi"
+msgstr "Riattiva Ordini Sospesi"
 
 #. module: sale_subscriptions
 #: code:addons/sale_subscriptions/company.py:33
