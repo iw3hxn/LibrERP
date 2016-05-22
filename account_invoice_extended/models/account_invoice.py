@@ -278,7 +278,7 @@ class account_invoice_line(orm.Model):
                         tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes)
                         account_id = fpos_obj.map_account(cr, uid, fpos, account_id)
                     else:
-                        tax_id = taxes
+                        tax_id = [line.id for line in taxes]
 
                     res.update({
                         'invoice_line_tax_id': [(6, 0, tax_id)],
@@ -295,7 +295,7 @@ class account_invoice_line(orm.Model):
                         tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes)
                         account_id = fpos_obj.map_account(cr, uid, fpos, account_id)
                     else:
-                        tax_id = taxes
+                        tax_id = [line.id for line in taxes]
 
                     res.update({
                         'invoice_line_tax_id': [(6, 0, tax_id)],
