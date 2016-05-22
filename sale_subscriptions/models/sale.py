@@ -264,7 +264,7 @@ class sale_order_line(orm.Model):
                 sale_order_obj.auto_invoice(cr, uid, order_line.order_id.id, context)
                 continue
             invoice_ids = invoice_obj.search(cr, uid, [('origin', '=', order_line.order_id.name), ('state', '=', 'draft')], context=context)
-            invoice_dates = sale_order_obj.get_invoice_dates(cr, uid, order_line.order_id, order_line.order_id.order_duration, order_line.order_id.order_invoice_duration, context)
+            invoice_dates = sale_order_obj.get_invoice_dates(cr, uid, order_line.order_id, order_line.order_id.order_duration, order_line.order_id.order_invoice_duration, context=context)
             invoice_date_period = {invoice_data['invoice_date']: invoice_data['period'] for invoice_data in invoice_dates}
 
             if invoice_ids:
@@ -614,7 +614,7 @@ class sale_order(orm.Model):
             
         self.pool['sale.order.line'].write(cr, uid, [order_line.id], {'invoiced': invoiced})
 
-    def get_invoice_dates(self, cr, uid, order, order_duration, order_invoice_duration, context):
+    def get_invoice_dates(self, cr, uid, order, order_duration, order_invoice_duration, delta_month=0, context={}):
         """
         Period is always for time after invoice
         :param cr:
@@ -626,7 +626,7 @@ class sale_order(orm.Model):
         :return: list of dictionaries containing invoice_date and period of time for which this invoice is applied
         """
         # order = self.browse(cr, uid, order_id, context)
-        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        # user = self.pool['res.users'].browse(cr, uid, uid, context)
 
         start_date = datetime.datetime.strptime(order.order_start_date, DEFAULT_SERVER_DATE_FORMAT)
 
@@ -642,12 +642,15 @@ class sale_order(orm.Model):
         if order.subscription_invoice_day == '31':
             virtual_start_date += relativedelta(months=1)
 
-        if invoice_duration == 1:
-            dates = [{'invoice_date': order.order_start_date, 'period': virtual_start_date.strftime('%B %Y')}]
+        invoice_date = start_date
+        if delta_month:
+            invoice_date += relativedelta(months=delta_month)
 
+        if invoice_duration == 1:
+            dates = [{'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': virtual_start_date.strftime('%B %Y')}]
         else:
             period_end = virtual_start_date + invoice_delta - relativedelta(months=1)
-            dates = [{'invoice_date': order.order_start_date, 'period': virtual_start_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')}]
+            dates = [{'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': virtual_start_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')}]
 
         datetime_date = virtual_start_date
 
@@ -659,6 +662,9 @@ class sale_order(orm.Model):
 
             if order.subscription_invoice_day == '31':
                 invoice_date = invoice_date - day_delta
+
+            if delta_month:
+                invoice_date += relativedelta(months=delta_month)
             
             if invoice_duration == 1:
                 dates.append({'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': datetime_date.strftime('%B %Y')})
@@ -728,7 +734,7 @@ class sale_order(orm.Model):
         ]
 
         sale_order_line_ids = sale_order_line_obj.search(cr, uid, domain, context=context)
-        invoice_dates = self.get_invoice_dates(cr, uid, order, order.order_duration, order.order_invoice_duration, context)
+        invoice_dates = self.get_invoice_dates(cr, uid, order, order.order_duration, order.order_invoice_duration, context=context)
         activation_date = datetime.datetime.now()
         # Check if there are already invoices for this order
         active_invoice_ids = account_invoice_obj.search(cr, uid, [
