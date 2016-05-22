@@ -660,11 +660,11 @@ class sale_order(orm.Model):
             invoice_date = datetime_date
             period_end = invoice_date + invoice_delta - day_delta
 
-            if order.subscription_invoice_day == '31':
-                invoice_date = invoice_date - day_delta
-
             if delta_month:
                 invoice_date += relativedelta(months=delta_month)
+
+            if order.subscription_invoice_day == '31':
+                invoice_date = invoice_date - day_delta
             
             if invoice_duration == 1:
                 dates.append({'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': datetime_date.strftime('%B %Y')})
