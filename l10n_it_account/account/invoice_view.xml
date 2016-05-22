@@ -54,7 +54,7 @@
                     </field>
 <!--insert in the customer invoice the new line invoice created with 'form_view_ref' tag-->
                     <xpath expr="/form/notebook/page[@string='Invoice']/field[@name='invoice_line']" position="attributes">
-                        <attribute name="context">{'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_customer'}</attribute>
+                        <attribute name="context">{'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_customer', 'fiscal_position': fiscal_position}</attribute>
                     </xpath>
                     <xpath expr="/form/notebook/page[@string='Invoice']/group/group/button[@string='Print Invoice']" position="replace">
                         <button name="%(account.account_invoices)d" string="Print Invoice" type="action" icon="gtk-print"/>
@@ -106,7 +106,7 @@
                 </xpath>
 <!--insert in the supplier invoice the new line invoice created with 'form_view_ref' tag-->
                 <field name="invoice_line" position="replace">
-                    <field colspan="4" context="{'address_invoice_id': address_invoice_id, 'partner_id': partner_id, 'price_type': 'price_type' in dir() and price_type or False, 'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_supplier'}" name="invoice_line" nolabel="1"/>
+                    <field colspan="4" context="{'address_invoice_id': address_invoice_id, 'partner_id': partner_id, 'price_type': 'price_type' in dir() and price_type or False, 'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_supplier', 'fiscal_position': fiscal_position}" name="invoice_line" nolabel="1"/>
                 </field>
             </field>
         </record>
