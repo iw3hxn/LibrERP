@@ -53,7 +53,7 @@ class sale_order_line(orm.Model):
             taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)
             cur = line.order_id.pricelist_id.currency_id
             if line.order_id.have_subscription and line.product_id.subscription:
-                k = order_obj.get_duration_in_months(line.order_id.order_duration) / 12.0
+                k = order_obj.get_duration_in_months(line.order_id.order_duration)
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'] * k)
             else:
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
@@ -711,7 +711,7 @@ class sale_order(orm.Model):
                 'fiscal_position': order.fiscal_position.id or order.partner_id.property_account_position.id,
             }
             
-            inv_id = self.pool['account.invoice'].create(cr, uid, inv)
+            inv_id = self.pool['account.invoice'].create(cr, uid, inv, context)
             return inv_id
 
         order_id = ids[0]
@@ -727,7 +727,7 @@ class sale_order(orm.Model):
             ('suspended', '=', False)
         ]
 
-        sale_order_line_ids = sale_order_line_obj.search(cr, uid, domain)
+        sale_order_line_ids = sale_order_line_obj.search(cr, uid, domain, context=context)
         invoice_dates = self.get_invoice_dates(cr, uid, order, order.order_duration, order.order_invoice_duration, context)
         activation_date = datetime.datetime.now()
         # Check if there are already invoices for this order
