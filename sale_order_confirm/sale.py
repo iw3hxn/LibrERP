@@ -439,7 +439,7 @@ class sale_order(orm.Model):
         else:
             return False
 
-    def copy(self, cr, uid, order_id, defaults, context=None):
+    def copy(self, cr, uid, ids, defaults, context=None):
         defaults.update(
             {
                 'tech_validation': False,
@@ -449,7 +449,8 @@ class sale_order(orm.Model):
                 'supervisor_validation': False
             }
         )
-        return super(sale_order, self).copy(cr, uid, order_id, defaults, context)
+        defaults.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
+        return super(sale_order, self).copy(cr, uid, ids, defaults, context)
 
 
 class sale_order_line(orm.Model):
