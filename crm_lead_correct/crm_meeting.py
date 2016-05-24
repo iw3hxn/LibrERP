@@ -60,3 +60,5 @@ class crm_meeting(orm.Model):
         'email_from': lambda self, cr, uid, context: context.get('email_from', False),
         'categ_id': lambda self, cr, uid, context: context.get('categ_id', False)
     }
+
+    _order = "date desc"

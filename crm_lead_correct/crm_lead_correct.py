@@ -207,6 +207,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         return result
 
     _columns = {
+        'partner_address_id': fields.many2one('res.partner.address', 'Partner Contact'),
         'province': fields.many2one('res.province', string='Province', ondelete='restrict'),
         'region': fields.many2one('res.region', string='Region', ondelete='restrict'),
         'find_city': fields.boolean('Find City'),
@@ -223,7 +224,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         'sale_order': fields.many2one('sale.order', string='Created Sale Order'),
         'shop_id': fields.many2one('sale.shop', 'Shop', required=False, readonly=True, states={'draft': [('readonly', False)]}),
         'meeting_smart_history': fields.function(_get_meeting_history, string='Meeting', type='text', readonly=True, multi='sums'),
-        'last_meeting_date': fields.function(_get_meeting_history, string='Last Meeting Date', type='date', readonly=True, multi='sums'),
+        'last_meeting_date': fields.function(_get_meeting_history, string='Last Meeting Date', type='date', readonly=True, multi='sums', store=True),
     }
 
     _defaults = {

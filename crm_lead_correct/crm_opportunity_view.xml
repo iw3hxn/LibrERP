@@ -88,7 +88,8 @@
                         <field name="partner_address_id"
                             string="Partner Contact"
                             on_change="onchange_partner_address_id(partner_address_id, email_from)"
-                            options='{"quick_create": false}' 
+                            options='{"quick_create": false}'
+                            domain="[('partner_id','=',partner_id)]"
                             context="{'default_partner_id':partner_id}"
                             colspan="3" required="1" />
                         <field name="contact_id"
