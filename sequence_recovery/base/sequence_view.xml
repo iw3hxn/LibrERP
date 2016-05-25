@@ -42,5 +42,9 @@
 
         <menuitem string="Sequence Recovery" action="action_sequence_recovery" id="menu_sequence_recovery"
                   parent="base.next_id_5"/>
+
+        <menuitem string="Sequence Recovery" action="action_sequence_recovery" id="menu_account_sequence_recovery"
+                  parent="account.menu_configuration_misc"/>
+
     </data>
 </openerp>

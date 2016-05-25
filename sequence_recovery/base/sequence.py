@@ -61,7 +61,11 @@ class ir_sequence_recovery(orm.Model):
                     'sequence': sequence,
                     'sequence_id': seq_id,
                 }
-                recovery_id = self.create(cr, uid, vals, context)
+                recovery_ids = self.search(cr, uid, [('name', '=', class_name), ('sequence', '=', sequence), ('sequence_id', '=', seq_id)], context=context)
+                if recovery_ids:
+                    recovery_id = recovery_ids[0]
+                else:
+                    recovery_id = self.create(cr, uid, vals, context)
                 recovery_ids.append(recovery_id)
         return recovery_ids
 
@@ -78,7 +82,7 @@ class ir_sequence(orm.Model):
             # ----- If found it, it recoveries the sequence and return it
             recovery_id = recovery_ids[0]
             sequence = recovery_obj.browse(cr, uid, recovery_id, context).sequence
-            recovery_obj.write(cr, uid, recovery_id, {'active': False}, context)
+            recovery_obj.write(cr, uid, recovery_ids, {'active': False}, context)
             return sequence
         else:
             return super(ir_sequence, self).next_by_id(cr, uid, sequence_id, context)
