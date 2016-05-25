@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_compute_stock_availability_wizard" model="ir.ui.view">
+            <field name="name">Stock Compute Out</field>
+            <field name="model">stock.compute.out</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <label string="This report allows you to check the stock availability based on the product stock rules. By default, a scheduler is launched automatically every night by OpenERP, and the result is send by email to all user in 'Warehouse Management / Stock Monitor' group." colspan="4"/>
+                    <group col="2" fill="0" states="done">
+                        <separator colspan="2" string="Report done"/>
+                        <field name="name" invisible="1" />
+                        <field name="data" colspan="2" nolabel="1" readonly="1" filename="name"/>
+                    </group>
+                    <separator colspan="4"/>
+                    <group col="2" colspan="4">
+                        <button icon='gtk-cancel' special="cancel" string="Cancel" />
+                        <button name="compute_out" string="Check Stock" colspan="1" type="object" icon="gtk-ok" attrs="{'readonly': [('state','=','done')]}" />
+                        <field invisible="1" name="state"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Products Out of Stock"
+            res_model="stock.compute.out"
+            src_model="product.product"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_compute_stock_availability"/>
+
+        <menuitem action="action_compute_stock_availability"
+            id="menu_compute_stock_availability"
+            parent="stock.next_id_61"
+            sequence="20"
+            groups="stock.group_stock_manager"/>
+    </data>
+</openerp>
