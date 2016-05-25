@@ -30,6 +30,7 @@
                 </field>
                 <field name="partner_id" position="after">
                     <field name="product_id"/>
+                    <field name="origin" />
                 </field>
             </field>
         </record>
