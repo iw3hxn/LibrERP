@@ -56,6 +56,6 @@ class account_fiscal_position(orm.Model):
     }
     
     def create(self, cr, uid, vals, context={}):
-        if not 'number' in vals or not vals['number'] and vals.get('is_tax_exemption', False):
-            vals['number'] = self.pool.get('ir.sequence').next_by_code(cr, uid, self._name, context)
+        if 'number' not in vals or not vals['number'] and vals.get('is_tax_exemption', False):
+            vals['number'] = self.pool['ir.sequence'].next_by_code(cr, uid, self._name, context)
         return super(account_fiscal_position, self).create(cr, uid, vals, context=context)
