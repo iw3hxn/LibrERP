@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2011-2013 Didotech Srl. (<http://www.didotech.com>)
+#    Copyright (C) 2011-2016 Didotech Srl. (<http://www.didotech.com>)
 #    All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -42,11 +42,15 @@ class project_task(orm.Model):
         return res
 
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+
         task_selection = super(project_task, self).name_search(cr, uid, name, args, operator, context=context, limit=limit)
         if name:
             project_ids = self.pool['project.project'].search(cr, uid, [('name', 'ilike', name)])
             if project_ids:
-                relative_tasks = self.name_search(cr, uid, '', [('project_id', 'in', project_ids)], operator, context=context, limit=limit)
+                if args:
+                    relative_tasks = self.name_search(cr, uid, '', args + [('project_id', 'in', project_ids)], operator, context=context, limit=limit)
+                else:
+                    relative_tasks = self.name_search(cr, uid, '', [('project_id', 'in', project_ids)], operator, context=context, limit=limit)
                 if relative_tasks:
                     task_selection = list(set(task_selection + relative_tasks))
 
