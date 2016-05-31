@@ -9,7 +9,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="project_id" position="replace">
-                    <field name="project_project" context="{'model': 'sale.order', 'name': name, 'partner_id': partner_id}" groups="analytic.group_analytic_accounting" />
+                    <field name="project_project" context="{'model': 'sale.order', 'name': name, 'partner_id': partner_id}" groups="project.group_project_user" />
                 </field>
                 <field name="picking_ids" position="after" >
                     <group groups="project.group_project_user" >
@@ -27,7 +27,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="project_id" position="replace">
-                    <field name="project_project" context="{'model': 'sale.order', 'name': name, 'partner_id': partner_id}"/>
+                    <field name="project_project" context="{'model': 'sale.order', 'name': name, 'partner_id': partner_id}" groups="project.group_project_user" />
                 </field>
             </field>
         </record>
