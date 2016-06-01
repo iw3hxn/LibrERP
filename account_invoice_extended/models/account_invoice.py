@@ -268,34 +268,49 @@ class account_invoice_line(orm.Model):
             fpos_obj = self.pool['account.fiscal.position']
             if context.get('type', False):
                 if context['type'] in ['out_invoice', 'out_refund']:
-                    taxes = self.pool['product.product'].default_get(cr, uid, ['taxes_id'])['taxes_id']
-                    taxes = self.pool['account.tax'].browse(cr, uid, taxes, context)
+
+                    taxes = self.pool['product.product'].default_get(cr, uid, ['taxes_id']).get('taxes_id', False)
+                    if taxes:
+                        taxes = self.pool['account.tax'].browse(cr, uid, taxes, context)
                     account_id = self.pool['product.product'].default_get(cr, uid, ['property_account_income'])['property_account_income'] or \
                                  self.pool['product.category'].default_get(cr, uid, ['property_account_income_categ'])['property_account_income_categ']
 
                     if context.get('fiscal_position', False):
                         fpos = fpos_obj.browse(cr, uid, context['fiscal_position'], context)
-                        tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes)
+                        if taxes:
+                            tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes)
+                        else:
+                            tax_id = []
                         account_id = fpos_obj.map_account(cr, uid, fpos, account_id)
                     else:
-                        tax_id = [line.id for line in taxes]
+                        if taxes:
+                            tax_id = [line.id for line in taxes]
+                        else:
+                            tax_id = []
 
                     res.update({
                         'invoice_line_tax_id': [(6, 0, tax_id)],
                         'account_id': account_id,
                     })
                 if context['type'] in ['in_invoice', 'in_refund']:
-                    taxes = self.pool['product.product'].default_get(cr, uid, ['supplier_taxes_id'])['supplier_taxes_id']
-                    taxes = self.pool['account.tax'].browse(cr, uid, taxes, context)
+                    taxes = self.pool['product.product'].default_get(cr, uid, ['supplier_taxes_id']).get('supplier_taxes_id', False)
+                    if taxes:
+                        taxes = self.pool['account.tax'].browse(cr, uid, taxes, context)
                     account_id = self.pool['product.product'].default_get(cr, uid, ['property_account_expense'])['property_account_expense'] or \
                                  self.pool['product.category'].default_get(cr, uid, ['property_account_expense_categ'])['property_account_expense_categ']
 
                     if context.get('fiscal_position', False):
                         fpos = fpos_obj.browse(cr, uid, context['fiscal_position'], context)
-                        tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes)
+                        if taxes:
+                            tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes)
+                        else:
+                            tax_id = []
                         account_id = fpos_obj.map_account(cr, uid, fpos, account_id)
                     else:
-                        tax_id = [line.id for line in taxes]
+                        if taxes:
+                            tax_id = [line.id for line in taxes]
+                        else:
+                            tax_id = []
 
                     res.update({
                         'invoice_line_tax_id': [(6, 0, tax_id)],
