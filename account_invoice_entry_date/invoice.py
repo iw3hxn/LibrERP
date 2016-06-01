@@ -35,25 +35,25 @@ class account_invoice(orm.Model):
         if not context:
             context = self.pool['res.users'].context_get(cr, uid)
         res = {}
-        for o in self.browse(cr, uid, ids, context):
-            if o.id not in res:
-                res[o.id] = []
-            if o.move_id and o.move_id.line_id:
-                for line in o.move_id.line_id:
+        for invoice in self.browse(cr, uid, ids, context):
+            if invoice.id not in res:
+                res[invoice.id] = []
+            if invoice.move_id and invoice.move_id.line_id:
+                for line in invoice.move_id.line_id:
                     if line.date_maturity:
-                        res[o.id].append(line.id)
+                        res[invoice.id].append(line.id)
         return res
 
     def _format_time(self, date):
-        return datetime.strptime(date, DEFAULT_SERVER_DATE_FORMAT).strftime('%d/%m/%Y') # caution is not DEFAULT_SERVER_DATE_FORMAT
+        return datetime.strptime(date, DEFAULT_SERVER_DATE_FORMAT).strftime('%d/%m/%Y')  # caution is not DEFAULT_SERVER_DATE_FORMAT
 
     def _get_preview_line(self, invoice, line):
         currency_name = invoice.currency_id.name
         amount_total_line = line[1]
         t_pterm = {
-                   'date': self._format_time(line[0]),
-                   'amount': amount_total_line,
-                   'currency_name': currency_name}
+            'date': self._format_time(line[0]),
+            'amount': amount_total_line,
+            'currency_name': currency_name}
         return t_pterm
 
     def _get_preview_lines(self, cr, uid, ids, field_name, arg, context=None):
