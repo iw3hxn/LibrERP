@@ -100,7 +100,7 @@ class account_invoice(orm.Model):
         for invoice in self.browse(cr, uid, ids, context):
             inv_type = invoice.type
             internal_number = invoice.internal_number
-            number = invoice.number
+            # number = invoice.number
             date_invoice = invoice.date_invoice
             reg_date = invoice.registration_date
             journal_id = invoice.journal_id.id
@@ -108,10 +108,17 @@ class account_invoice(orm.Model):
             fy_id = invoice.period_id.fiscalyear_id.id
             period = invoice.period_id
             vat_statement = self.pool['account.vat.period.end.statement'].search(cr, uid, [('period_ids', 'in', period.id)], context=context)
+            if internal_number:
+                already_invoice = self.pool['account.invoice'].search(cr, uid, [('number', '=', internal_number)], context=context)
+                if already_invoice:
+                    raise orm.except_orm(
+                        _(u'Force Number Error!'),
+                        _(u'There are just another invoice with number {invoice_number}'.format(invoice_number=internal_number))
+                    )
             if vat_statement and self.pool['account.vat.period.end.statement'].browse(cr, uid, vat_statement, context)[0].state != 'draft':
                 raise orm.except_orm(
-                    _('Period Mismatch Error!'),
-                    _('Period %s have already a closed vat statement.')
+                    _(u'Period Mismatch Error!'),
+                    _(u'Period %s have already a closed vat statement.')
                     % period.name
                 )
 
@@ -148,19 +155,20 @@ class account_invoice(orm.Model):
                 cr, uid, [('fiscalyear_id', '=', fy_id), ('company_id', '=', invoice.company_id.id)], context=context)
             
             if inv_type in ['out_invoice', 'out_refund']:
+
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '>', date_invoice),
                                             ('number', '<', number), ('journal_id', '=', journal_id),
-                                            ('period_id', 'in', period_ids)], context=context)
+                                            ('period_id', 'in', period_ids), ('state', 'in', ['open', 'paid'])], context=context)
                 if res and not internal_number:
-                    raise orm.except_orm(_('Date Inconsistency'),
-                                         _('Cannot create invoice! Post the invoice with a greater date'))
+                    raise orm.except_orm(_(u'Date Inconsistency'),
+                                         _(u'Cannot create invoice! Post the invoice with a greater date'))
             if inv_type in ['in_invoice', 'in_refund']:
                 res = self.search(cr, uid, [('type', '=', inv_type), ('registration_date', '>', reg_date),
                                             ('number', '<', number), ('journal_id', '=', journal_id),
                                             ('period_id', 'in', period_ids)], context=context)
                 if res and not internal_number:
-                    raise orm.except_orm(_('Date Inconsistency'),
-                                         _('Cannot create invoice! Post the invoice with a greater date'))
+                    raise orm.except_orm(_(u'Date Inconsistency'),
+                                         _(u'Cannot create invoice! Post the invoice with a greater date'))
                 supplier_invoice_number = invoice.supplier_invoice_number
                 partner_id = invoice.partner_id.id
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '=', date_invoice),
@@ -169,8 +177,8 @@ class account_invoice(orm.Model):
                                             ('partner_id', '=', partner_id),
                                             ('state', 'not in', ('draft', 'cancel'))], context=context)
                 if res:
-                    raise orm.except_orm(_('Invoice Duplication'),
-                                         _('Invoice already posted!'))
+                    raise orm.except_orm(_(u'Invoice Duplication'),
+                                         _(u'Invoice already posted!'))
         return result
 
     def onchange_partner_id(self, cr, uid, ids, i_type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False, context=None):

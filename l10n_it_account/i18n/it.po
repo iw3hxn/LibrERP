@@ -67,6 +67,18 @@ msgid "Period %s have already a closed vat statement."
 msgstr "Il periodo %s ha già una liquidazione IVA chiusa."
 
 #. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:114
+#, python-format
+msgid "There are just another invoice with number {invoice_number}"
+msgstr "C'è già un altra fattura con numero '{invoice_number}'"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:114
+#, python-format
+msgid "Force Number Error!"
+msgstr "Errore nel Forza Numero."
+
+#. module: l10n_it_account
 #: model:ir.actions.act_window,name:l10n_it_account.action_account_fiscal_position_exemption_form
 #: model:ir.ui.menu,name:l10n_it_account.menu_action_account_fiscal_position_exemption_form
 msgid "Letters of Intents"
@@ -2777,7 +2789,7 @@ msgstr "Contabilità Analitica"
 #. module: account
 #: report:account.aged_trial_balance:0
 msgid "Not due"
-msgstr "Non dovuto"
+msgstr "A scadere"
 
 #. module: account
 #: view:account.account:0
