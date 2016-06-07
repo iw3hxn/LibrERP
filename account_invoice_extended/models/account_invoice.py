@@ -112,7 +112,7 @@ class account_invoice(orm.Model):
         new_fiscal_position = fpos_obj.browse(cr, uid, fiscal_position, context)
         if ttype in ['out_invoice']:
             journal_id = new_fiscal_position.sale_journal_id and new_fiscal_position.sale_journal_id.id or journal_id
-        elif self.type in ['in_invoice']:
+        elif ttype in ['in_invoice']:
             journal_id = new_fiscal_position.purchase_journal_i and new_fiscal_position.purchase_journal_id.id or journal_id
 
         # if is an exiting invoice, also change tax inside line to new fiscal position
