@@ -40,7 +40,7 @@ class account_tax_code(orm.Model):
     _defaults = {
         'spesometro_escludi' : False,
     }
-    
+
 class account_journal(orm.Model): 
     _inherit = "account.journal"
     _columns =  {
@@ -79,6 +79,7 @@ class res_partner(orm.Model):
         'spesometro_tipo_servizio': fields.selection((('cessione','Cessione Beni'), 
                                   ('servizi','Prestazione di servizi')),
                     'Tipo servizio', help="Specificare per 'Operazioni con paesi con fiscalità privilegiata' "),
+        'spesometro_indirizzo_estero': fields.many2one('res.partner.address', 'Indirizzo non residente'),
     }
     
     _defaults = {
@@ -306,16 +307,15 @@ class spesometro_comunicazione(orm.Model):
     
     def _get_partner_address_obj(self, cr, uid, move, invoice, arg):
         address = False
-        partner_address_obj = False
-        if move.partner_id.parent_id:
-            partner_address_obj = move.partner_id.parent_id 
-        else:
-            partner_address_obj = move.partner_id
-        return partner_address_obj
+        if move.partner_id.spesometro_indirizzo_estero:
+            address = move.partner_id.spesometro_indirizzo_estero
+        elif move.partner_id.address[0]:
+            address = move.partner_id.address[0]
+        return address
     
     def compute_invoice_amounts(self, cr, uid, move, invoice, arg):
         '''
-        Calcolo totali documento. Dall'imponibile vanno esclusi gli importi esclusi, fuori campo o esenti
+        Calcolo totali documento. Dall'imponibile vanno esclusi gli importi assoggettati ad un'imposta che ha l'esclusione sulla  "Comunicazione art.21"
         '''
         res ={
               'amount_untaxed' : 0,
@@ -323,7 +323,8 @@ class spesometro_comunicazione(orm.Model):
               'amount_total' : 0,
               }
         for line in invoice.tax_line:
-            if not line.tax_code_id.spesometro_escludi:
+            if (line.tax_code_id and not line.tax_code_id.spesometro_escludi) or \
+                    (line.base_code_id and not line.base_code_id.spesometro_escludi):
                 res['amount_untaxed'] += line.base
                 res['amount_tax'] += line.amount
                 res['amount_total'] += round(line.base + line.amount, 2)
@@ -581,24 +582,24 @@ class spesometro_comunicazione(orm.Model):
             # Persona fisica o giuridica
             # Considerazione: se se lunghezza codice fiscale < 16 allora c'è la P.Iva e quindi trattasi di soggetto giuridico
             tipo_persona = 'persona_fisica'
-            if company.partner_id.fiscalcode and len(company.partner_id.fiscalcode) < 16:
+            if len(company.partner_id.fiscalcode) < 16:
                 tipo_persona = 'persona_giuridica'
                 
             values = {
-                      'company_id': company.id,
-                      'codice_fiscale_fornitore': company.partner_id.fiscalcode,
-                      'tipo': params.get('tipo', False),
-                      'periodo': params.get('periodo', False),
-                      'anno': params.get('anno', False),
-                      'mese': params.get('mese', False),
+                      'company_id' : company.id,
+                      'codice_fiscale_fornitore' : company.partner_id.fiscalcode,
+                      'tipo' : params.get('tipo', False),
+                      'periodo' : params.get('periodo', False),
+                      'anno' : params.get('anno', False),
+                      'mese' : params.get('mese', False),
                       'trimestre' : params.get('trimestre', False),
                       'progressivo_telematico' : progressivo_telematico or False,
                       'tipo_fornitore' : params.get('tipo_fornitore', False),
                       'formato_dati' : params.get('formato_dati', False),
                       'soggetto_codice_fiscale' : company.partner_id and company.partner_id.fiscalcode or '',  
                       'soggetto_partitaIVA' : partita_iva,
-                      'soggetto_telefono' : company.partner_id and company.partner_id.address[0].phone or '',
-                      'soggetto_fax' : company.partner_id and company.partner_id.address[0].fax or '',
+                      'soggetto_telefono' : company.partner_id and company.partner_id.address[0].phone or '',  
+                      'soggetto_fax' : company.partner_id and company.partner_id.address[0].fax or '',  
                       'soggetto_email' : company.partner_id and company.partner_id.address[0].email or '',
                       'soggetto_forma_giuridica' : tipo_persona,  
                       'soggetto_pg_denominazione' : company.partner_id and company.partner_id.name or company.name or '',
@@ -937,15 +938,12 @@ class spesometro_comunicazione_line_BL(orm.Model):
                 partita_iva = '{:11s}'.format("".zfill(11))
             # prov. nascita
             prov_code = False
-            '''
-            >>>> mancano dati persona fisica
             if move.partner_id.birth_city.name:
                 city_data = move.partner_id.address[0]._set_vals_city_data(cr, uid, {'city' : move.partner_id.birth_city.name})
                 prov_id = city_data.get('province_id', False)
                 if prov_id:
                     prov = self.pool.get('res.province').borwse(cr, uid, prov_id)
                     prov_nascita_code = prov.code
-            '''
             
             val = {
                 'comunicazione_id' : comunicazione_id,
@@ -953,12 +951,12 @@ class spesometro_comunicazione_line_BL(orm.Model):
                 'codice_fiscale' : move.partner_id.fiscalcode or False,
                 'noleggio' : move.partner_id.spesometro_leasing or False,
                 
-                ##'pf_cognome' : move.partner_id.fiscalcode_surname or False,
-                ##'pf_nome' : move.partner_id.fiscalcode_firstname or False,
-                ##'pf_data_nascita' : move.partner_id.birth_date or False,
-                ##'pf_comune_stato_nascita' : move.partner_id.birth_city.name or False,
-                ##'pf_provincia_nascita' : prov_code or False,
-                ##'pf_codice_stato_estero' : move.partner_id.address[0].country_id.codice_stato_agenzia_entrate or '',
+                'pf_cognome' : move.partner_id.fiscalcode_surname or False,
+                'pf_nome' : move.partner_id.fiscalcode_firstname or False,
+                'pf_data_nascita' : move.partner_id.birth_date or False,
+                'pf_comune_stato_nascita' : move.partner_id.birth_city.name or False,
+                'pf_provincia_nascita' : prov_code or False,
+                'pf_codice_stato_estero' : move.partner_id.address[0].country_id.codice_stato_agenzia_entrate or '',
                 
                 'pg_denominazione' : move.partner_id.name or False,
                 'pg_citta_estera_sede_legale' : move.partner_id.address[0].city or False,
@@ -980,10 +978,10 @@ class spesometro_comunicazione_line_BL(orm.Model):
             # attive
             if arg.get('segno', False) == 'attiva':
                 
-                if val['operazione_fiscalita_privilegiata'] or val['operazione_con_soggetti_non_residenti']:
+                if val.get('operazione_fiscalita_privilegiata', False) or val.get('operazione_con_soggetti_non_residenti', False):
                     val['attive_importo_complessivo'] = doc_vals.get('amount_total', 0)
                     val['attive_imposta'] = doc_vals.get('amount_tax', 0)
-                if val['operazione_fiscalita_privilegiata'] == True:
+                if val.get('operazione_fiscalita_privilegiata', False) == True:
                     if move.partner_id.spesometro_operazione == 'cessioni':
                         val['attive_non_sogg_cessione_beni'] = doc_vals.get('amount_total', 0)
                     else:
@@ -994,10 +992,10 @@ class spesometro_comunicazione_line_BL(orm.Model):
             # passive         
             else:
                 
-                if val['operazione_fiscalita_privilegiata'] or val['operazione_con_soggetti_non_residenti'] or val['Acquisto_servizi_da_soggetti_non_residenti']:
+                if val.get('operazione_fiscalita_privilegiata', False) or val.get('operazione_con_soggetti_non_residenti', False) or val.get('Acquisto_servizi_da_soggetti_non_residenti', False):
                     val['passive_importo_complessivo'] = doc_vals.get('amount_total', 0)
                     val['passive_imposta'] = doc_vals.get('amount_tax', 0)
-                if val['operazione_fiscalita_privilegiata'] == True:
+                if val.get('operazione_fiscalita_privilegiata', False) == True:
                     val['passive_non_sogg_importo_complessivo'] = doc_vals.get('amount_total', 0)
                 if 'refund' in move.journal_id.type:
                     val['passive_note_variazione'] = doc_vals.get('amount_untaxed', 0)
@@ -1009,10 +1007,10 @@ class spesometro_comunicazione_line_BL(orm.Model):
                 # attive
                 if arg.get('segno', False) == 'attiva':
                     
-                    if val['operazione_fiscalita_privilegiata'] or val['operazione_con_soggetti_non_residenti']:
+                    if val.get('operazione_fiscalita_privilegiata', False) or val.get('operazione_con_soggetti_non_residenti', False):
                         val['attive_importo_complessivo'] = com_line.attive_importo_complessivo + doc_vals.get('amount_total', 0)
                         val['attive_imposta'] = com_line.attive_imposta + doc_vals.get('amount_tax', 0)
-                    if val['operazione_fiscalita_privilegiata'] == True:
+                    if val.get('operazione_fiscalita_privilegiata', False) == True:
                         if move.partner_id.spesometro_operazione == 'cessioni':
                             val['attive_non_sogg_cessione_beni'] = com_line.attive_non_sogg_cessione_beni + doc_vals.get('amount_total', 0)
                         else:
@@ -1024,10 +1022,10 @@ class spesometro_comunicazione_line_BL(orm.Model):
                 # passive         
                 else:
                     
-                    if val['operazione_fiscalita_privilegiata'] or val['operazione_con_soggetti_non_residenti'] or val['Acquisto_servizi_da_soggetti_non_residenti']:
+                    if val.get('operazione_fiscalita_privilegiata', False) or val.get('operazione_con_soggetti_non_residenti', False) or val.get('Acquisto_servizi_da_soggetti_non_residenti', False):
                         val['passive_importo_complessivo'] = com_line.passive_importo_complessivo + doc_vals.get('amount_total', 0)
                         val['passive_imposta'] = com_line.passive_imposta + doc_vals.get('amount_tax', 0)
-                    if val['operazione_fiscalita_privilegiata'] == True:
+                    if val.get('operazione_fiscalita_privilegiata', False) == True:
                         val['passive_non_sogg_importo_complessivo'] = com_line.passive_non_sogg_importo_complessivo + doc_vals.get('amount_total', 0)
                     if 'refund' in move.journal_id.type:
                         val['passive_note_variazione'] = com_line.passive_note_variazione + doc_vals.get('amount_untaxed', 0)
@@ -1211,8 +1209,6 @@ class spesometro_comunicazione_line_SE(orm.Model):
         else:
             partita_iva = '{:11s}'.format("".zfill(11))
         # prov. nascita
-        '''
-        >> dati persona fisica>> da aggiungere
         prov_code = False
         if move.partner_id.birth_city.name:
             city_data = move.partner_id.address[0]._set_vals_city_data(cr, uid, {'city' : move.partner_id.birth_city.name})
@@ -1220,7 +1216,6 @@ class spesometro_comunicazione_line_SE(orm.Model):
             if prov_id:
                 prov = self.pool.get('res.province').borwse(cr, uid, prov_id)
                 prov_nascita_code = prov.code
-        '''
         # Indirizzo
         address = self.pool.get('spesometro.comunicazione')._get_partner_address_obj(cr, uid, move, invoice, arg)
         # Codice identificativo IVA -Da indicare esclusivamente per operazioni con San Marino (Codice Stato = 037)
@@ -1233,12 +1228,12 @@ class spesometro_comunicazione_line_SE(orm.Model):
             'codice_fiscale' : move.partner_id.fiscalcode or False,
             'noleggio' : move.partner_id.spesometro_leasing or False,
             
-            #'pf_cognome' : move.partner_id.fiscalcode_surname or False,
-            #'pf_nome' : move.partner_id.fiscalcode_firstname or False,
-            #'pf_data_nascita' : move.partner_id.birth_date or False,
-            #'pf_comune_stato_nascita' : move.partner_id.birth_city.name or False,
-            #'pf_provincia_nascita' : prov_code or False,
-            #'pf_codice_stato_estero_domicilio' : address.country_id.codice_stato_agenzia_entrate or codice_identificativo_iva or '',
+            'pf_cognome' : move.partner_id.fiscalcode_surname or False,
+            'pf_nome' : move.partner_id.fiscalcode_firstname or False,
+            'pf_data_nascita' : move.partner_id.birth_date or False,
+            'pf_comune_stato_nascita' : move.partner_id.birth_city.name or False,
+            'pf_provincia_nascita' : prov_code or False,
+            'pf_codice_stato_estero_domicilio' : address.country_id.codice_stato_agenzia_entrate or codice_identificativo_iva or '',
             
             'pg_denominazione' : move.partner_id.name or False,
             'pg_citta_estera_sede_legale' : address.city or False,
