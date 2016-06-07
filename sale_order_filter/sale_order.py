@@ -58,7 +58,9 @@ class sale_order(orm.Model):
         return result
     
     _columns = {
-        'year': fields.function(_get_order_year, 'Year', type='selection', selection=_get_order_years, method=True, help="Select year")
+        'year': fields.function(_get_order_year, 'Year', type='selection', selection=_get_order_years, method=True, help="Select year"),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
     }
 
     def get_crm_section_children(self, cr, uid, section_id, context):

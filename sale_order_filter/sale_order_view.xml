@@ -12,15 +12,18 @@
                     <filter icon="terp-go-month"
                         string="Last Month"
                         name="last_month"
-                        help="Invoices of the last month"
+                        help="Sale Orders of the last month"
                         domain="[('date_order', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_order', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
                     />                    
                     <filter icon="terp-go-month"
                         string="Current Month"
                         name="current_month"
-                        help="Invoices of the current month"
+                        help="Sale Orders of the current month"
                         domain="[('date_order', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_order', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
                     />
+                    <separator orientation="vertical"/>
+                    <field name="date_from" filter_domain="[('date_order','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date_order','&lt;=',self)]"/>
                     <separator orientation="vertical"/>
                 </filter>
                 <field name="shop_id" position="after">

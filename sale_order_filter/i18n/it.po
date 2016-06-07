@@ -37,13 +37,23 @@ msgstr "Fattura"
 
 #. module: sale_order_filter
 #: view:.sale.order:0
-msgid "Invoices of the current month"
-msgstr "Fatture del mese corrente"
+msgid "Sale Orders of the current month"
+msgstr "Ordini del mese corrente"
 
 #. module: sale_order_filter
 #: view:sale.order:0
-msgid "Invoices of the last month"
-msgstr "Fatture del mese scorso"
+msgid "Sale Orders of the last month"
+msgstr "Ordini del mese scorso"
+
+#. module: sale_order_filter
+#: field:sale.order,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: sale_order_filter
+#: field:sale.order,date_to:0
+msgid "Date to"
+msgstr "Al"
 
 #. module: sale_order_filter
 #: view:sale.order:0
