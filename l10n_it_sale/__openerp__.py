@@ -22,7 +22,7 @@
 
 {
     'name': 'Italian Localisation - Sale',
-    'version': '3.8.14.16',
+    'version': '3.8.14.17',
     'category': 'Localisation/Italy',
     'description': """OpenERP Italian Localization - Sale version
 
