@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice Extended",
-    "version": "2.0.2.2",
+    "version": "2.0.3.3",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Accounting & Finance',

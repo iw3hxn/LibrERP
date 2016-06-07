@@ -44,3 +44,18 @@ msgstr "Movimenti del mese precedente"
 #: view:stock.picking:0
 msgid "Picking of the current month"
 msgstr "Movimenti del mese corrente"
+
+#. module: stock_picking_filter
+#: field:stock.picking,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: stock_picking_filter
+#: field:stock.picking,date_to:0
+msgid "Date to"
+msgstr "Al"
+
+#. module: stock_picking_filter
+#: field:stock.picking,product_id:0
+msgid "Product"
+msgstr "Prodotto"

@@ -25,6 +25,8 @@
                     <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
                     <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
                     <field name="year" string="Year" />
+                    <field name="product_id"/>
+                    <newline/>
                 </filter>
             </field>
         </record>
@@ -52,6 +54,8 @@
                     <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
                     <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
                     <field name="year" string="Year" />
+                    <field name="product_id"/>
+                    <newline/>
                 </filter>
             </field>
         </record>

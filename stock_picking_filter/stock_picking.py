@@ -46,24 +46,28 @@ class stock_picking(osv.osv):
             result.append((str(year), str(year)))
         
         return result
-        
+
     def _get_stock_picking_year(self, cr, uid, ids, field_name, arg, context):
         stock_pickings = self.browse(cr, uid, ids)
-        
+
         result = {}
-        
+
         for stock_picking in stock_pickings:
             if stock_picking.date:
-                result[stock_picking.id] = datetime.datetime.strptime(stock_picking.date, DEFAULT_SERVER_DATETIME_FORMAT).year
+                result[stock_picking.id] = datetime.datetime.strptime(stock_picking.date,
+                                                                      DEFAULT_SERVER_DATETIME_FORMAT).year
             else:
                 result[stock_picking.id] = False
-                
+
         return result
-    
+
     _columns = {
-       'year': fields.function(_get_stock_picking_year, 'Year', type='selection', selection=_get_stock_picking_years, method=True, help="Select year"),
-       'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
-       'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'year': fields.function(_get_stock_picking_year, 'Year', type='selection', selection=_get_stock_picking_years,
+                                method=True, help="Select year"),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'product_id': fields.related('move_lines', 'product_id', type='many2one', relation='product.product',
+                                     string='Product'),
     }
     
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
