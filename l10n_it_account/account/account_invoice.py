@@ -100,7 +100,7 @@ class account_invoice(orm.Model):
         for invoice in self.browse(cr, uid, ids, context):
             inv_type = invoice.type
             internal_number = invoice.internal_number
-            # number = invoice.number
+            number = invoice.number
             date_invoice = invoice.date_invoice
             reg_date = invoice.registration_date
             journal_id = invoice.journal_id.id
