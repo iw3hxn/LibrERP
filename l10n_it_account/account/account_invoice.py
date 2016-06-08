@@ -110,7 +110,7 @@ class account_invoice(orm.Model):
             vat_statement = self.pool['account.vat.period.end.statement'].search(cr, uid, [('period_ids', 'in', period.id)], context=context)
             if internal_number:
                 already_invoice = self.pool['account.invoice'].search(cr, uid, [('number', '=', internal_number)], context=context)
-                if already_invoice:
+                if already_invoice and invoice.id not in already_invoice:
                     raise orm.except_orm(
                         _(u'Force Number Error!'),
                         _(u'There are just another invoice with number {invoice_number}'.format(invoice_number=internal_number))

@@ -67,7 +67,7 @@ msgid "Period %s have already a closed vat statement."
 msgstr "Il periodo %s ha già una liquidazione IVA chiusa."
 
 #. module: l10n_it_account
-#: code:addons/l10n_it_account/account/invoice.py:114
+#: code:addons/l10n_it_account/account/invoice.py:116
 #, python-format
 msgid "There are just another invoice with number {invoice_number}"
 msgstr "C'è già un altra fattura con numero '{invoice_number}'"
