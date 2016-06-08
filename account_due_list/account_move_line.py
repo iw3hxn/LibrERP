@@ -110,7 +110,7 @@ class account_move_line(orm.Model):
         for id in ids:
             cr.execute('SELECT date,account_id FROM account_move_line WHERE id=%s', (id,))
             dt, acc = cr.fetchone()
-            cr.execute('SELECT SUM(debit-credit) FROM account_move_line WHERE account_id = %s AND (date<%s OR (date=%s AND id<=%s))', (acc,dt,dt,id))
+            cr.execute('SELECT SUM(debit-credit) FROM account_move_line WHERE account_id = %s AND (date<%s OR (date=%s AND id<=%s))', (acc, dt, dt, id))
             res[id] = cr.fetchone()[0]
         return res
 
@@ -139,15 +139,17 @@ class account_move_line(orm.Model):
     }
 
     _order = "date_maturity desc, move_id asc, ref asc, id asc"
+    # _order = "date_maturity desc, date asc, move_id asc, id asc"
+    # _sql_constraints = [
+    #     ('maturity_date', "CHECK (date_maturity>='1900-01-01')", 'Wrong date maturity in accounting entry !'),
+    # ]
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
         view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(
             cr, uid, 'account_due_list', 'view_payments_tree')
-        view_account_ordered_tree_id = self.pool.get('ir.model.data').get_object_reference(
-            cr, uid, 'account_due_list', 'view_account_ordered_tree')
-        if view_id == view_payments_tree_id[1] or view_id == view_account_ordered_tree_id[1]:
+        if view_id == view_payments_tree_id[1]:
             # Use due list
-            result = super(osv.osv, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
+            result = super(orm.Model, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
         else:
             # Use special views for account.move.line object (for ex. tree view contains user defined fields)
             result = super(account_move_line, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)

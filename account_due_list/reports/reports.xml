@@ -328,7 +328,7 @@
                 id="report_stampa_scadenzario"
                 model="account.move.line"
                 name="account_due_list.stampa_scadenzario"
-                file="account_due_list_extended/reports/scadenzario.mako"
+                file="account_due_list/reports/scadenzario.mako"
                 string="Stampa Scadenzario"
                 report_type="webkit"
                 webkit_header="account_due_list_portrait_header"

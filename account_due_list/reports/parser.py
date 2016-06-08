@@ -21,13 +21,13 @@ class account_due_list_webkit(report_sxw.rml_parse):
         self.localcontext.update({
             'datetime': datetime,
             'time': time,
-            'cr':cr,
+            'cr': cr,
             'uid': uid,
-            'file_path':file_path,
+            'file_path': file_path,
         })
 
 report_sxw.report_sxw('report.account_due_list.scadenzario',
                        'account.move.line', 
-                       'account_due_list_extended/reports/scadenzario.mako',
+                       'account_due_list/reports/scadenzario.mako',
                        parser=account_due_list_webkit)
 

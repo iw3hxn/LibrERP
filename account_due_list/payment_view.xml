@@ -190,8 +190,11 @@
                     <separator orientation="vertical"/>
                     <filter icon="terp-go-today" string="From Start Current Month" domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date" name="start_month"/>
                     <separator orientation="vertical"/>
-                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
-                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    <field string="Invoice from" name="date_from" filter_domain="[('invoice_date','&gt;=',self)]"/>
+                    <field string="Invoice to" name="date_to" filter_domain="[('invoice_date','&lt;=',self)]"/>
+                    <separator orientation="vertical"/>
+                    <field string="Due from" name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field string="Due to" name="date_to" filter_domain="[('date','&lt;=',self)]"/>
                 </group>
            </search>
         </field>

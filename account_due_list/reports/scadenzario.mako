@@ -8,25 +8,20 @@
 
 <br/>
 <center><H1>SCADENZARIO</H1></center>
-
-    <table class="font_9 w100 bordi_arrotondati">
-        <tr>
-			<td class="w10">Sezionale</td>
-			<td class="w25"><p class="centered">Partner</p></td>
-			<td class="w10"><p class="centered">Scadenza</p></td>
-			<td class="w10"><p class="centered">Fattura</p></td>
-			<td class="w15"><p class="centered">Pagamento</p></td>
-			<td class="w10"><p class="centered">Residuo</p></td>
-			<td class="w10"><p class="centered">Dare</p></td>
-			<td class="w10"><p class="centered">Avere</p></td>
-		</tr>
-	</table>
-		
-
-
 	<div class="clear"></div>
 
     <table id="content" class="font_9 w100">
+        <tr>
+			<!--td class="w10">Sezionale</td-->
+			<td class="w35 bordi_arrotondati"><p style="text-align:left;">Partner</p></td>
+			<td class="w10 bordi_arrotondati"><p style="text-align:left;">Scadenza</p></td>
+			<td class="w10 bordi_arrotondati"><p style="text-align:left;">Fattura</p></td>
+			<td class="w15 bordi_arrotondati"><p style="text-align:left;">Pagamento</p></td>
+			<td class="w10 bordi_arrotondati"><p style="text-align:right; font-weight: bold;">Residuo</p></td>
+			<td class="w10 bordi_arrotondati"><p style="text-align:right; font-weight: bold;">Dare</p></td>
+			<td class="w10 bordi_arrotondati"><p style="text-align:right; font-weight: bold;">Avere</p></td>
+		</tr>
+
 		<% tot_importo = 0 %>
 		<% tot_dare = 0 %>
 		<% tot_avere = 0 %>
@@ -37,14 +32,14 @@
 				%if data_scadenza != '0000-00-00':
 					<tr><td colspan=8><hr style="width:100%"></td></tr>
 					<tr>
-						<td class="w10">&nbsp;</td>
-						<td class="w25">&nbsp;</td>
+						<!--td class="w10">&nbsp;</td-->
+						<td class="w35">&nbsp;</td>
 						<td class="w10">&nbsp;</td>
 						<td class="w10">&nbsp;</td>
 						<td class="w15"><b>TOTALE SCADENZA</b></td>
-						<td class="w10"><p style="text-align:right;"><b>${parziale_importo}</b></p></td>
-						<td class="w10"><p style="text-align:right;"><b>${parziale_dare}</b></p></td>
-						<td class="w10"><p style="text-align:right;"><b>${parziale_avere}</b></p></td>
+						<td class="w10"><p style="text-align:right;"><b>${formatLang(parziale_importo, digits=get_digits(dp='Account'))}</b></p></td>
+						<td class="w10"><p style="text-align:right;"><b>${formatLang(parziale_dare, digits=get_digits(dp='Account'))}</b></p></td>
+						<td class="w10"><p style="text-align:right;"><b>${formatLang(parziale_avere, digits=get_digits(dp='Account'))}</b></p></td>
 					</tr>
 					<tr><td colspan=8>&nbsp;</td></tr>
 				%endif
@@ -55,10 +50,10 @@
 			%endif
 
 			<tr>
-				<td class="w10"><p style="text-align:left;">${line.invoice.journal_id and line.invoice.journal_id.code or ''}</p></td>
-				<td class="w25"><p style="text-align:left;">${line.partner_id.name or ''}</p></td>
+				<!--td class="w10"><p style="text-align:left;">${line.invoice.journal_id and line.invoice.journal_id.code or ''}</p></td-->
+				<td class="w35"><p style="text-align:left;">${line.partner_id.name or ''}</p></td>
 				<td class="w10"><p style="text-align:left;">${line.date_maturity or line.date}</p></td>
-				<td class="w10"><p style="text-align:left;">${line.invoice.number or line.name or ''}</p></td>
+				<td class="w10"><p style="text-align:left;">${line.invoice.supplier_invoice_number or line.name or ''} - ${line.invoice.number or ''}</p></td>
 				<td class="w15"><p style="text-align:left;">${line.invoice.payment_term and line.invoice.payment_term.name or ''}</p></td>
 				<td class="w10"><p style="text-align:right;">${formatLang(line.amount_residual or 0.00, digits=get_digits(dp='Account'))}</p></td>
 				<td class="w10"><p style="text-align:right;">${formatLang(line.debit or 0.00, digits=get_digits(dp='Account'))}</p></td>
@@ -79,27 +74,27 @@
         %endfor
 		<tr><td colspan=8><hr style="width:100%"></td></tr>
 		<tr>
-			<td class="w10">&nbsp;</td>
-			<td class="w25">&nbsp;</td>
+			<!--td class="w10">&nbsp;</td-->
+			<td class="w35">&nbsp;</td>
 			<td class="w10">&nbsp;</td>
 			<td class="w10">&nbsp;</td>
 			<td class="w15"><b>TOTALE SCADENZA</b></td>
-			<td class="w10"><p style="text-align:right;"><b>${parziale_importo}</b></p></td>
-			<td class="w10"><p style="text-align:right;"><b>${parziale_dare}</b></p></td>
-			<td class="w10"><p style="text-align:right;"><b>${parziale_avere}</b></p></td>
+			<td class="w10"><p style="text-align:right;"><b>${formatLang(parziale_importo, digits=get_digits(dp='Account'))}</b></p></td>
+			<td class="w10"><p style="text-align:right;"><b>${formatLang(parziale_dare, digits=get_digits(dp='Account'))}</b></p></td>
+			<td class="w10"><p style="text-align:right;"><b>${formatLang(parziale_avere, digits=get_digits(dp='Account'))}</b></p></td>
 		</tr>
 		<tr><td colspan=8>&nbsp;</td></tr>
 
         <tr><td colspan=8><hr style="width:100%"></td></tr>
 		<tr style="height:100%">
-			<td class="w10">&nbsp;</td>
-			<td class="w25">&nbsp;</td>
+			<!--td class="w10">&nbsp;</td-->
+			<td class="w35">&nbsp;</td>
 			<td class="w10">&nbsp;</td>
 			<td class="w10">&nbsp;</td>
 			<td class="w15"><b>TOTALE COMPLESSIVO</b></td>
-			<td class="w10"><p style="text-align:right; font-weight: bold;">${tot_importo}</p></td>
-			<td class="w10"><p style="text-align:right; font-weight: bold;">${tot_dare}</p></td>
-			<td class="w10"><p style="text-align:right; font-weight: bold;">${tot_avere}</p></td>
+			<td class="w10"><p style="text-align:right; font-weight: bold;">${formatLang(tot_importo, digits=get_digits(dp='Account'))}</p></td>
+			<td class="w10"><p style="text-align:right; font-weight: bold;">${formatLang(tot_dare, digits=get_digits(dp='Account'))}</p></td>
+			<td class="w10"><p style="text-align:right; font-weight: bold;">${formatLang(tot_avere, digits=get_digits(dp='Account'))}</p></td>
 		</tr>
     </table>
     
