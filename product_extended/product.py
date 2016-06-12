@@ -24,6 +24,21 @@
 from openerp.osv import orm, fields
 
 
+class product_template(orm.Model):
+    _inherit = 'product.template'
+
+    def __init__(self, registry, cr):
+        """
+            Add cost method "Last Purchase Price"
+        """
+        super(product_template, self).__init__(registry, cr)
+        option = ('lpp', 'Last Purchase Price')
+
+        type_selection = self._columns['cost_method'].selection
+        if option not in type_selection:
+            type_selection.append(option)
+
+
 class product_product(orm.Model):
     _inherit = 'product.product'
 

@@ -69,3 +69,8 @@ msgstr "Informazioni Aggiuntive sul Prezzo"
 #: field:product.product,last_sale_date:0
 msgid "Last sale date"
 msgstr "Ultima data vendita"
+
+#. module: product_extended
+#: selection:product.template,cost_method:0
+msgid "Last Purchase Price"
+msgstr "Ultimo Prezzo Acquisto (fattura)"

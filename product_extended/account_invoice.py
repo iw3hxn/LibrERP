@@ -65,5 +65,8 @@ class account_invoice(orm.Model):
                             'last_purchase_price': price_subtotal / line.quantity,
                             'last_supplier_invoice_id': invoice.id
                         }
+                        if line.product_id.cost_method == 'lpp':
+                            vals.update({'standard_price': price_subtotal / line.quantity})
+
                         self.pool['product.product'].write(cr, SUPERUSER_ID, line.product_id.id, vals, context)
         return True
