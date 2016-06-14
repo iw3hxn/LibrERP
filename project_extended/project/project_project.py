@@ -168,6 +168,26 @@ class project_project(orm.Model):
             res.append((record.id, name))
         return res
 
+    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+
+        project_selection = super(project_project, self).name_search(cr, uid, name, args, operator, context=context,
+                                                                     limit=limit)
+        if name:
+            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', 'ilike', name)])
+            if partner_ids:
+                if args:
+                    relative_project = self.name_search(cr, uid, '', args + [('partner_id', 'in', partner_ids)],
+                                                        operator,
+                                                        context=context, limit=limit)
+                else:
+                    relative_project = self.name_search(cr, uid, '', [('partner_id', 'in', partner_ids)], operator,
+                                                        context=context, limit=limit)
+                if relative_project:
+                    project_selection = list(set(project_selection + relative_project))
+
+        # Sort by name
+        return sorted(project_selection, key=lambda x: x[1])
+
     def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
         result = {}
         sale_order_obj = self.pool['sale.order']

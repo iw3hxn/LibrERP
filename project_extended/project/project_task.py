@@ -56,3 +56,7 @@ class project_task(orm.Model):
 
         # Sort by name
         return sorted(task_selection, key=lambda x: x[1])
+
+    _columns = {
+        'project_id': fields.many2one('project.project', 'Project', ondelete='set null', select="1", required=True),
+    }
