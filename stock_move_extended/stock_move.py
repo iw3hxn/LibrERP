@@ -63,6 +63,51 @@ class stock_move(orm.Model):
                 'qty_available': qty_available or 0.0,
             }
         return res
+
+    def picking_open(self, cr, uid, ids, context=None):
+        """
+        @description  Open document (invoice or payment) related to the
+                      unapplied payment or outstanding balance on this line
+        """
+
+        if not context:
+            context = {}
+        active_id = context.get('active_id')
+        models = self.pool['ir.model.data']
+        # Get this line's invoice id
+        move = self.browse(cr, uid, ids[0], context)
+        # if this is an unapplied payment(all unapplied payments hard-coded to -999),
+        # get the referenced voucher
+        if move.picking_id:
+            if move.picking_id.type == 'in':
+                view = models.get_object_reference(cr, uid, 'stock', 'view_picking_in_form')
+            else:
+                view = models.get_object_reference(cr, uid, 'stock', 'view_picking_out_form')
+
+            view_id = view and view[1] or False
+            name = _('Picking')
+            res_model = 'stock.picking'
+            ctx = "{}"
+            doc_id = move.picking_id.id
+
+            if not doc_id:
+                return {}
+        else:
+            return {}
+
+        # Open up the picking's form
+        return {
+            'name': name,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [view_id],
+            'res_model': res_model,
+            'context': ctx,
+            'type': 'ir.actions.act_window',
+            'nodestroy': False,
+            'target': 'current',
+            'res_id': doc_id,
+        }
     
     _columns = {
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),

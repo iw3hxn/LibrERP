@@ -85,6 +85,9 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="stock.view_move_tree" />
             <field name="arch" type="xml">
+                <field name="picking_id" position="after">
+                    <button name="picking_open" type="object" icon="STOCK_INDEX" attrs=""/>
+                </field>
                 <field name="product_id" position="after">
                     <field name="note" />
                 </field>
