@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<openerp>
+    <data>
+        <record id="action_expense_report_tree" model="ir.actions.act_window">
+            <field name="name">Expense Company</field>
+            <field name="res_model">account.aged.partner.balance</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_account_aged_partner_balance_tree"/>
+        </record>
+
+        <record id="action_account_aged_partner_balance" model="ir.actions.act_window">
+            <field name="name">Aged Partner Balance View</field>
+            <field name="res_model">account.aged.partner.balance</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_account_aged_partner_balance_tree"/>
+            <field name="view_mode">tree</field>
+            <field name="limit">99999999</field>
+            <!--<field name="context">{'search_default_posted': 0}</field>-->
+            <!--<field name="search_view_id" ref="account.view_account_move_line_filter"/>-->
+            <field name="help"/>
+        </record>
+
+        <record id="account.action_account_aged_balance_view" model="ir.actions.act_window">
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem 
+            action="action_account_aged_partner_balance"
+            id="menu_action_account_aged_partner_balance"
+            parent="account.menu_finance_legal_statement" 
+            sequence="100"
+            />
+    </data>
+</openerp>
