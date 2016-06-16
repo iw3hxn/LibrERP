@@ -98,12 +98,18 @@ class GeneralLedgerWebkit(report_sxw.rml_parse, CommonReportHeaderWebkit):
             stop = stop_period
 
         initial_balance = self.is_initial_balance_enabled(main_filter)
-        initial_balance_mode = initial_balance and self._get_initial_balance_mode(start) or False
+        if main_filter == 'filter_date':
+            initial_balance_mode = 'initial_balance'
+        else:
+            initial_balance_mode = initial_balance and self._get_initial_balance_mode(start) or False
 
         # Retrieving accounts
         accounts = self.get_all_accounts(new_ids, exclude_type=['view'])
         if initial_balance_mode == 'initial_balance':
-            init_balance_memoizer = self._compute_initial_balances(accounts, start, fiscalyear)
+            if main_filter == 'filter_date':
+                init_balance_memoizer = self._compute_initial_balances_by_date(accounts, start, fiscalyear)
+            else:
+                init_balance_memoizer = self._compute_initial_balances(accounts, start, fiscalyear)
         elif initial_balance_mode == 'opening_balance':
             init_balance_memoizer = self._read_opening_balance(accounts, start)
 

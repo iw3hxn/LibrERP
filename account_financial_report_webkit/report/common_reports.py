@@ -222,10 +222,14 @@ class CommonReportHeaderWebkit(common_report_header):
         """Return the opening included in normal period we use the assumption
         that there is only one opening period per fiscal year"""
         period_obj =  self.pool.get('account.period')
+        date_start = date_stop = period
+        if not isinstance(period, unicode):
+            date_start = period.date_start
+            date_stop = period.date_stop
         return period_obj.search(self.cursor, self.uid,
                                  [('special', '=', True),
-                                  ('date_start', '>=', period.date_start),
-                                  ('date_stop', '<=', period.date_stop)],
+                                  ('date_start', '>=', date_start),
+                                  ('date_stop', '<=', date_stop)],
                                   limit=1)
 
     def periods_contains_move_lines(self, period_ids):
@@ -258,9 +262,14 @@ class CommonReportHeaderWebkit(common_report_header):
         period_obj = self.pool.get('account.period')
         mv_line_obj = self.pool.get('account.move.line')
         # We look for previous opening period
+        date_start = date_stop = start_period
+        if not isinstance(start_period, unicode):
+            date_start = start_period.date_start
+            date_stop = start_period.date_stop
+
         if stop_at_previous_opening:
             opening_search = [('special', '=', True),
-                             ('date_stop', '<', start_period.date_start)]
+                             ('date_stop', '<', date_start)]
             if fiscalyear:
                 opening_search.append(('fiscalyear_id', '=', fiscalyear.id))
 
@@ -279,7 +288,7 @@ class CommonReportHeaderWebkit(common_report_header):
                 opening_period_br = period_obj.browse(self.cursor, self.uid, opening_period_id)
                 past_limit = [('date_start', '>=', opening_period_br.date_stop)]
 
-        periods_search = [('date_stop', '<=', start_period.date_stop)]
+        periods_search = [('date_stop', '<=', date_stop)]
         periods_search += past_limit
 
         if not include_opening:
@@ -291,8 +300,10 @@ class CommonReportHeaderWebkit(common_report_header):
         if include_opening and opening_period_id:
             periods.append(opening_period_id)
         periods = list(set(periods))
-        if start_period.id in periods:
-            periods.remove(start_period.id)
+
+        if not isinstance(start_period, unicode):
+            if start_period.id in periods:
+                periods.remove(start_period.id)
         return periods
 
     def get_first_fiscalyear_period(self, fiscalyear):
@@ -345,6 +356,42 @@ class CommonReportHeaderWebkit(common_report_header):
                 'init_balance': res.get('balance') or 0.0,
                 'init_balance_currency': res.get('curr_balance') or 0.0,
                 'state': mode}
+
+    def _compute_init_balance_by_date(self, account_id=None, date=None, mode='computed', default_values=False):
+        res = {}
+
+        if not default_values:
+            if not account_id or not date:
+                raise Exception('Missing account or period_ids')
+            try:
+                self.cursor.execute("SELECT sum(debit) AS debit, "
+                                    " sum(credit) AS credit, "
+                                    " sum(debit)-sum(credit) AS balance, "
+                                    " sum(amount_currency) AS curr_balance"
+                                    " FROM account_move_line"
+                                    " WHERE date < %s"
+                                    " AND account_id = %s", (date, account_id))
+                res = self.cursor.dictfetchone()
+
+            except Exception, exc:
+                self.cursor.rollback()
+                raise
+
+        return {'debit': res.get('debit') or 0.0,
+                'credit': res.get('credit') or 0.0,
+                'init_balance': res.get('balance') or 0.0,
+                'init_balance_currency': res.get('curr_balance') or 0.0,
+                'state': mode}
+
+    def _compute_initial_balances_by_date(self, account_ids, start_date, fiscalyear):
+        """We compute initial balance by date.
+        This function will sum pear and apple in currency amount if account as no secondary currency"""
+        res = {}
+
+        for acc in self.pool.get('account.account').browse(self.cursor, self.uid, account_ids):
+            res[acc.id] = self._compute_init_balance_by_date(default_values=True)
+            res[acc.id] = self._compute_init_balance_by_date(acc.id, start_date)
+        return res
 
     def _read_opening_balance(self, account_ids, start_period):
         """ Read opening balances from the opening balance
@@ -433,7 +480,7 @@ class CommonReportHeaderWebkit(common_report_header):
         else:
             raise osv.except_osv(_('No valid filter'), _('Please set a valid time filter'))
 
-    def _get_move_line_datas(self, move_line_ids, order='per.special DESC, l.date ASC, per.date_start ASC, m.name ASC'):
+    def _get_move_line_datas(self, move_line_ids, order='per.special DESC, m.date ASC, per.date_start ASC, m.name ASC'):
         if not move_line_ids:
             return []
         if not isinstance(move_line_ids, list):
@@ -441,6 +488,7 @@ class CommonReportHeaderWebkit(common_report_header):
         monster ="""
 SELECT l.id AS id,
             l.date AS ldate,
+            m.date AS mdate,
             j.code AS jcode ,
             j.name AS jname ,
             l.currency_id,
@@ -464,6 +512,7 @@ SELECT l.id AS id,
             i.type AS invoice_type,
             i.number AS invoice_number,
             i.supplier_invoice_number AS supplier_invoice_number,
+            i.date_invoice AS date_invoice,
             l.date_maturity
 FROM account_move_line l
     JOIN account_move m on (l.move_id=m.id)
@@ -512,7 +561,7 @@ WHERE move_id in %s"""
         return res and dict(res) or {}
 
     def is_initial_balance_enabled(self, main_filter):
-        if main_filter not in ('filter_no', 'filter_year', 'filter_period'):
+        if main_filter not in ('filter_no', 'filter_year', 'filter_period', 'filter_date'):
             return False
         return True
 

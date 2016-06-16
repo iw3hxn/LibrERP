@@ -39,6 +39,7 @@ class AccountReportGeneralLedgerWizard(osv.osv_memory):
         return res
 
     _columns = {
+        'name': fields.char("General Ledger", size=64),
         'amount_currency': fields.boolean("With Currency",
                                           help="It adds the currency column"),
 
