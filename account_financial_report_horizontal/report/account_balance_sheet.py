@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
@@ -28,7 +28,7 @@ from openerp.report import report_sxw
 from openerp.addons.account_financial_report_horizontal.report import (
     account_profit_loss
 )
-from common_report_header import common_report_header
+from .common_report_header import common_report_header
 from openerp.tools.translate import _
 
 
@@ -46,18 +46,12 @@ class report_balancesheet_horizontal(
         self.result = {}
         self.res_bl = {}
         self.result_temp = []
-        self.result_loss = []
-        self.result_profit = []
         self.localcontext.update({
             'time': time,
             'get_lines': self.get_lines,
             'get_lines_another': self.get_lines_another,
-            'get_profit': self.get_profit,
-            'get_loss': self.get_loss,
             'sum_dr': self.sum_dr,
             'sum_cr': self.sum_cr,
-            'sum_partial_dr': self.sum_partial_dr,
-            'sum_partial_cr': self.sum_partial_cr,
             'get_data': self.get_data,
             'get_pl_balance': self.get_pl_balance,
             'get_fiscalyear': self._get_fiscalyear,
@@ -86,12 +80,6 @@ class report_balancesheet_horizontal(
         return super(
             report_balancesheet_horizontal, self
         ).set_context(objects, data, new_ids, report_type=report_type)
-
-    def sum_partial_dr(self):
-        return self.result_sum_dr
-
-    def sum_partial_cr(self):
-        return self.result_sum_cr
 
     def sum_dr(self):
         if self.res_bl['type'] == _('Net Profit'):
@@ -137,7 +125,6 @@ class report_balancesheet_horizontal(
         account_id = data['form'].get('chart_account_id', False)
         if account_id:
             account_id = account_id[0]
-        chart = self.pool['account.chart.template'].browse(cr, 1, account_id)
         account_ids = account_pool._get_children_and_consol(
             cr, uid, account_id, context=ctx)
         accounts = account_pool.browse(cr, uid, account_ids, context=ctx)
@@ -157,15 +144,12 @@ class report_balancesheet_horizontal(
             'balance': self.res_bl['balance'],
             'type': self.res_bl['type'],
         }
-
-        accounts_l_temp = {}
-        accounts_a_temp = {}
         for typ in types:
+            accounts_temp = []
             for account in accounts:
-                # Show normal accounts
-                if (account.user_type.report_type) and (account.user_type.report_type == typ) and (
-                    account.parent_id.code != chart.property_account_receivable.code) and (
-                    account.parent_id.code != chart.property_account_payable.code):
+                if (account.user_type.report_type) and (
+                    account.user_type.report_type == typ
+                ):
                     account_dict = {
                         'id': account.id,
                         'code': account.code,
@@ -175,145 +159,49 @@ class report_balancesheet_horizontal(
                             account.balance and typ == 'liability' and -1 or 1
                         ) * account.balance,
                         'type': account.type,
-                        'parent_id': account.parent_id.id,
-                        'parent_code': account.parent_id.code,
                     }
-                    account_parent_dict = {
-                        'id': account_dict['parent_id'],
-                        'balance': account_dict['balance'],
-                        'code': account.parent_id.code,
-                        'name': account.parent_id.name,
-                        'level': account.parent_id.level,
-                        'type': account.parent_id.type,
-                        'parent_id': account.parent_id.parent_id.id,
-                        'parent_code': account.parent_id.code,
-                    }
-                    currency = (account.currency_id and account.currency_id or account.company_id.currency_id)
-
-                    #sum negative asset as positive in liability and viceversa
-                    if (typ == 'liability' and account_dict['balance'] >= 0.0 or
-                        typ == 'asset' and account_dict['balance'] < 0.0
-                        ) and account.type != 'view' and (account.debit != account.credit):
-                            self.result_sum_dr += (typ == 'liability' and 1 or -1) * account_dict['balance']
-                    if (typ == 'asset' and account_dict['balance'] >= 0.0 or
-                        typ == 'liability' and account_dict['balance'] < 0.0
-                        ) and account.type != 'view' and (account.debit != account.credit):
-                        self.result_sum_cr += (typ == 'asset' and 1 or -1) * account_dict['balance']
-
+                    currency = (
+                        account.currency_id and account.currency_id or
+                        account.company_id.currency_id
+                    )
+                    if typ == 'liability' and account.type != 'view' and (
+                        account.debit != account.credit
+                    ):
+                        self.result_sum_dr += account_dict['balance']
+                    if typ == 'asset' and account.type != 'view' and (
+                        account.debit != account.credit
+                    ):
+                        self.result_sum_cr += account_dict['balance']
                     if data['form']['display_account'] == 'bal_movement':
-                        if (not currency_pool.is_zero(
+                        if (
+                            not currency_pool.is_zero(
                                 self.cr, self.uid, currency, account.credit
-                            )) or (not currency_pool.is_zero(
+                            )) or (
+                                not currency_pool.is_zero(
                                     self.cr, self.uid, currency, account.debit
-                            )) or (not currency_pool.is_zero(
+                                )
+                        ) or (
+                                not currency_pool.is_zero(
                                     self.cr, self.uid, currency,
-                                    account.balance)):
-                            previous_balance = 0.0
-                            if (typ == 'liability' and account_dict['balance'] > 0.0) or (typ == 'asset' and account_dict['balance'] < 0.0):
-                                if  account_dict['balance'] < 0.0:
-                                    account_dict.update({'balance': account_dict['balance'] * -1})
-                                    account_parent_dict.update({'balance': account_parent_dict['balance'] * -1})
-                                if accounts_l_temp:
-                                    if account_dict['parent_id'] in accounts_l_temp:
-                                        previous_balance = accounts_l_temp[account_dict['parent_id']]['balance']
-                                        account_parent_dict.update({'balance': previous_balance + account_dict['balance']})
-                                accounts_l_temp.update({account_dict['parent_id']: account_parent_dict})
-                                accounts_l_temp.update({account_dict['id']: account_dict})
-                            elif (typ == 'asset' and account_dict['balance'] > 0.0) or (typ == 'liability' and account_dict['balance'] < 0.0):
-                                if  account_dict['balance'] < 0.0:
-                                    account_dict.update({'balance': account_dict['balance'] * -1})
-                                    account_parent_dict.update({'balance': account_parent_dict['balance'] * -1})
-                                if accounts_a_temp:
-                                    if account_dict['parent_id'] in accounts_a_temp:
-                                        previous_balance = accounts_a_temp[account_dict['parent_id']]['balance']
-                                        account_parent_dict.update({'balance': previous_balance + account_dict['balance']})
-                                accounts_a_temp.update({account_dict['parent_id']: account_parent_dict})
-                                accounts_a_temp.update({account_dict['id']: account_dict})    
-                                
+                                    account.balance
+                                )
+                        ):
+                            accounts_temp.append(account_dict)
                     elif data['form']['display_account'] == 'bal_solde':
                         if not currency_pool.is_zero(
-                            self.cr, self.uid, currency, account.balance):
-                            #update positive liability or negative asset in liability column
-                            previous_balance = 0.0
-                            if (typ == 'liability' and account_dict['balance'] > 0.0) or (typ == 'asset' and account_dict['balance'] < 0.0):
-                                if  account_dict['balance'] < 0.0:
-                                    account_dict.update({'balance': account_dict['balance'] * -1})
-                                    account_parent_dict.update({'balance': account_parent_dict['balance'] * -1})
-                                if accounts_l_temp:
-                                    if account_dict['parent_id'] in accounts_l_temp:
-                                        previous_balance = accounts_l_temp[account_dict['parent_id']]['balance']
-                                        account_parent_dict.update({'balance': previous_balance + account_dict['balance']})
-                                accounts_l_temp.update({account_dict['parent_id']: account_parent_dict})
-                                accounts_l_temp.update({account_dict['id']: account_dict})
-                            elif (typ == 'asset' and account_dict['balance'] > 0.0) or (typ == 'liability' and account_dict['balance'] < 0.0):
-                                if  account_dict['balance'] < 0.0:
-                                    account_dict.update({'balance': account_dict['balance'] * -1})
-                                    account_parent_dict.update({'balance': account_parent_dict['balance'] * -1})
-                                if accounts_a_temp:
-                                    if account_dict['parent_id'] in accounts_a_temp:
-                                        previous_balance = accounts_a_temp[account_dict['parent_id']]['balance']
-                                        account_parent_dict.update({'balance': previous_balance + account_dict['balance']})
-                                accounts_a_temp.update({account_dict['parent_id']: account_parent_dict})
-                                accounts_a_temp.update({account_dict['id']: account_dict})    
-
+                            self.cr, self.uid, currency, account.balance
+                        ):
+                            accounts_temp.append(account_dict)
                     else:
-                            previous_balance = 0.0
-                            if (typ == 'liability' and account_dict['balance'] > 0.0) or (typ == 'asset' and account_dict['balance'] < 0.0):
-                                if  account_dict['balance'] < 0.0:
-                                    account_dict.update({'balance': account_dict['balance'] * -1})
-                                    account_parent_dict.update({'balance': account_parent_dict['balance'] * -1})
-                                if accounts_l_temp:
-                                    if account_dict['parent_id'] in accounts_l_temp:
-                                        previous_balance = accounts_l_temp[account_dict['parent_id']]['balance']
-                                        account_parent_dict.update({'balance': previous_balance + account_dict['balance']})
-                                accounts_l_temp.update({account_dict['parent_id']: account_parent_dict})
-                                accounts_l_temp.update({account_dict['id']: account_dict})
-                            elif (typ == 'asset' and account_dict['balance'] > 0.0) or (typ == 'liability' and account_dict['balance'] < 0.0):
-                                if  account_dict['balance'] < 0.0:
-                                    account_dict.update({'balance': account_dict['balance'] * -1})
-                                    account_parent_dict.update({'balance': account_parent_dict['balance'] * -1})
-                                if accounts_a_temp:
-                                    if account_dict['parent_id'] in accounts_a_temp:
-                                        previous_balance = accounts_a_temp[account_dict['parent_id']]['balance']
-                                        account_parent_dict.update({'balance': previous_balance + account_dict['balance']})
-                                accounts_a_temp.update({account_dict['parent_id']: account_parent_dict})
-                                accounts_a_temp.update({account_dict['id']: account_dict})    
+                        accounts_temp.append(account_dict)
 
-            
-            #add supplier and customer total
-            if typ == 'liability':
-                account_view_id = account_pool.search(cr, uid, [('code', '=', chart.property_account_payable.code)])
-            if typ == 'asset':
-                account_view_id = account_pool.search(cr, uid, [('code', '=', chart.property_account_receivable.code)])
-            account_view = account_pool.browse(cr, uid, account_view_id[0], context=ctx)
-            account_dict = {
-                    'id': account_view.id,
-                    'code': account_view.code,
-                    'name': account_view.name,
-                    'level': account_view.level,
-                    'balance': (
-                        account_view.balance and typ == 'liability' and -1 or 1
-                    ) * account_view.balance,
-                    'type': account_view.type,
-                    'parent_id': account_view.parent_id.id,
-                    'parent_code': account_view.code,
-                }
-            if typ == 'liability':
-                self.result_sum_dr += account_dict['balance']
-                accounts_l_temp.update({account_dict['id']: account_dict})
-            if typ == 'asset':
-                self.result_sum_cr += account_dict['balance']
-                accounts_a_temp.update({account_dict['id']: account_dict})
-        
-        account_l_temp = accounts_l_temp.values()
-        account_a_temp = accounts_a_temp.values()
-        cal_list['asset'] = self.result['asset'] = sorted(account_a_temp, key = lambda k: [k['parent_code'], k['level'], k['code']])
-        cal_list['liability'] = self.result['liability'] = sorted(account_l_temp, key = lambda k: [k['parent_code'], k['level'], k['code']])
+            self.result[typ] = accounts_temp
+            cal_list[typ] = self.result[typ]
 
         if pl_dict['code'] == _('Net Loss'):
-            self.result_loss.append(pl_dict)
+            self.result['asset'].append(pl_dict)
         else:
-            self.result_profit.append(pl_dict)
+            self.result['liability'].append(pl_dict)
 
         if cal_list:
             temp = {}
@@ -372,12 +260,6 @@ class report_balancesheet_horizontal(
 
     def get_lines_another(self, group):
         return self.result.get(group, [])
-
-    def get_profit(self):
-        return self.result_profit
-
-    def get_loss(self):
-        return self.result_loss
 
 report_sxw.report_sxw(
     'report.account.balancesheet.horizontal', 'account.account',

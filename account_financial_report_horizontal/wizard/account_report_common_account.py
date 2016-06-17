@@ -37,7 +37,7 @@ class account_common_account_report(orm.TransientModel):
 
     }
     _defaults = {
-        'display_account': 'bal_solde',
+        'display_account': 'bal_all',
     }
 
     def pre_print_report(self, cr, uid, ids, data, context=None):

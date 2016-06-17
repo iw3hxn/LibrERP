@@ -44,7 +44,7 @@ class account_common_report(orm.TransientModel):
         'filter': fields.selection([
             ('filter_no', 'No Filters'), ('filter_date', 'Date'),
             ('filter_period', 'Periods')
-            ],
+        ],
             "Filter by", required=True),
         'period_from': fields.many2one('account.period', 'Start period'),
         'period_to': fields.many2one('account.period', 'End period'),
