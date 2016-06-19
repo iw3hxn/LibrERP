@@ -22,3 +22,4 @@
 import wizard
 from . import settings
 from . import partner_template
+from . import product

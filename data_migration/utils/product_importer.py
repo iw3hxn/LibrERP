@@ -31,6 +31,7 @@ from collections import namedtuple
 from pprint import pprint
 from utils import Utils
 from openerp.addons.core_extended.file_manipulation import import_sheet
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
@@ -500,6 +501,8 @@ class ImportFile(threading.Thread, Utils):
         
         if hasattr(record, 'weight_net') and record.weight_net:
             vals_product['weight_net'] = record.weight_net
+
+        vals_product['listprice_update_date'] = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
 
         product_ids = self.product_obj.search(cr, uid, [(field, '=ilike', vals_product[field].replace('\\', '\\\\'))], context=self.context)
         if product_ids:
