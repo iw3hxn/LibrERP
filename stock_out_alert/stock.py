@@ -29,6 +29,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class stock_move(osv.osv):
     _inherit = "stock.move"
 
@@ -44,30 +45,30 @@ class stock_move(osv.osv):
                 cr = pooler.get_db(use_new_cursor).cursor()
             _logger.info("Starting products availability check...")
             prod_list = self._check_op_stock_availability(cr, uid, context)
-            if len(prod_list)>0:
+            if len(prod_list) > 0:
                 _logger.info("...%s products out of stock found." % len(prod_list))
-                mail_message_obj = self.pool.get('mail.message')
-                user_obj = self.pool.get('res.users')
-                group_obj = self.pool.get('res.groups')
+                mail_message_obj = self.pool['mail.message']
+                user_obj = self.pool['res.users']
+                group_obj = self.pool['res.groups']
                 email_body = self.make_stock_out_email(cr, uid, prod_list, context)
                 if _logger.isEnabledFor(logging.DEBUG):
                     _logger.debug("\n" + email_body)
                 email_from = tools.config.get('email_from', False)
                 if not email_from:
-                    email_from = str(user_obj.browse(cr,uid,uid,context=context).user_email)
-                wm_monitor_id = group_obj.search(cr,uid,[ \
-                        ('name','=','Stock Monitor'),('category_id.name','=','Warehouse Management')],context=context)[0]
-                email_to = [str(u.user_email) for u in group_obj.browse(cr,uid,wm_monitor_id,context=context).users]
+                    email_from = str(user_obj.browse(cr, uid, uid, context=context).user_email)
+                wm_monitor_id = group_obj.search(cr, uid, [('name', '=', 'Stock Monitor'), ('category_id.name', '=', 'Warehouse Management')],
+                                                 context=context)[0]
+                email_to = [str(u.user_email) for u in group_obj.browse(cr, uid, wm_monitor_id, context=context).users]
                 mail_message_obj.schedule_with_attach(cr, uid,
-                        email_from,
-                        email_to,
-                        "OpenERP - " + str(len(prod_list)) + " " + _("products out of stock found"),
-                        email_body,
-                        attachments=None,
-                        subtype='plain',
-                        reply_to=email_from,
-                        auto_delete=True,
-                        context=context)
+                                                      email_from,
+                                                      email_to,
+                                                      "ERP - " + str(len(prod_list)) + " " + _("products out of stock found"),
+                                                      email_body,
+                                                      attachments=None,
+                                                      subtype='plain',
+                                                      reply_to=email_from,
+                                                      auto_delete=True,
+                                                      context=context)
             else:
                 _logger.info("...no product out of stock found.")
             if use_new_cursor:
@@ -83,8 +84,8 @@ class stock_move(osv.osv):
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
         uom_obj = self.pool.get('product.uom')
         prod_list = []
-        for op_id in orderpoint_obj.search(cr,uid,[('active', '=', True)], context=context):
-            op = orderpoint_obj.browse(cr,uid,op_id,context=context)
+        for op_id in orderpoint_obj.search(cr, uid, [('active', '=', True)], context=context):
+            op = orderpoint_obj.browse(cr, uid, op_id, context=context)
             product = op.product_id
             uom = product.product_tmpl_id.uom_id
             uom_po = product.product_tmpl_id.uom_po_id
@@ -146,10 +147,11 @@ class stock_move(osv.osv):
 
     def _get_email_body(self, cr, uid, stock_out, context={}):
         body = "=== " + _("Product List - Out of Stock") + " ==="
-        if len(stock_out)==0:
+        if len(stock_out) == 0:
             body += "\n\n  * %s" % _("No product out of stock found.")
             return body
-        head  = "  " + _("Product").ljust(38) + _("Qty. Available").rjust(15) + "\t" + _("Qty. Virtual").rjust(15) + "\t" + _("Qty. Needed").rjust(15) + "\n"
+        head = "  " + _("Product").ljust(38) + _("Qty. Available").rjust(15) + "\t" + _("Qty. Virtual").rjust(
+            15) + "\t" + _("Qty. Needed").rjust(15) + "\n"
         head += "  " + ("-" * len(_("Product"))).ljust(38) + "-" * 15 + "\t" + "-" * 15 + "\t" + "-" * 15 + "\n"
         for company_id in stock_out.keys():
             body += "\n\n> " + stock_out[company_id]['company'].name + "\n"
@@ -159,16 +161,17 @@ class stock_move(osv.osv):
                 body += "\n\n* " + location_data['location'].name + "\n"
                 body += "  " + "=" * len(location_data['location'].name) + "\n\n"
                 body += head
-                if len(location_data['products'])==0:
+                if len(location_data['products']) == 0:
                     body += "  %s" % _("No product out of stock found.")
                 else:
                     for product_data in location_data['products']:
                         product_reg = {
                             'name': ("[%s] %s" % (product_data['product'].default_code, product_data['product'].name))[0:37],
                             'qty_available': "%s %s" % (product_data['product'].qty_available, product_data['product'].product_tmpl_id.uom_id.name),
-                            'virtual_available': "%s %s" % (product_data['product'].virtual_available,product_data['product'].product_tmpl_id.uom_id.name),
-                            'needed': "%s %s" % (product_data['qty'],product_data['uom'].name)
-                            
+                            'virtual_available': "%s %s" % (product_data['product'].virtual_available,
+                                                            product_data['product'].product_tmpl_id.uom_id.name),
+                            'needed': "%s %s" % (product_data['qty'], product_data['uom'].name)
+
                         }
                         body += "  %(name)-38s%(qty_available)15s\t%(virtual_available)15s\t%(needed)15s\n" % product_reg
         return body
@@ -182,4 +185,3 @@ class stock_move(osv.osv):
         mail = self._get_email_body(cr, uid, res, context)
         return mail
 
-stock_move()
