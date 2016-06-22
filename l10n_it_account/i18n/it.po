@@ -4821,7 +4821,7 @@ msgstr "B.B. 60/90/120 GG D.F. F.M."
 #. module: account
 #: model:ir.actions.report.xml,name:account.account_invoices
 msgid "Print Fattura"
-msgstr "Print Fattura"
+msgstr "Fattura"
 
 #. module: account
 #: field:account.chart.template,property_account_income:0
