@@ -80,7 +80,7 @@
               cumul_balance =  0.0
               cumul_balance_curr = 0.0
               %>
-            <div class="act_as_table list_table" style="margin-top: 10px;">
+            <div class="act_as_table list_table" style="page-break-after:always; margin-top: 10px;">
                 
                 <div class="act_as_caption account_title">
                     ${account.code} - ${account.name}
@@ -226,7 +226,6 @@
                     </div>
                 </div>
             </div>
-            <p style="page-break-after:always;"/>
           %endif
         %endfor
     </body>
