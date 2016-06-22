@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+        <record id="view_account_bank_statement_filter_by_year" model="ir.ui.view">
+            <field name="name">account.bank.statement.filter.by.year</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account.view_bank_statement_search"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <filter string="Confirmed" position="after">
+                    <separator orientation="vertical"/>
+                    <filter icon="terp-go-month"
+                        string="Last Month"
+                        name="last_month"
+                        help="Invoices of the last month"
+                        domain="[('date', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
+                    />                    
+                    <filter icon="terp-go-month"
+                        string="Current Month"
+                        name="current_month"
+                        help="Invoices of the current month"
+                        domain="[('date', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
+                    />
+                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                </filter>
+                <field name="period_id" position="after">
+                    <field name="year" string="Year" />
+                    <newline/>
+                </field>
+                <field name="date" position="replace">
+                    <field name="partner_id"/>
+                </field>
+            </field>
+        </record>
+    
+    </data>
+</openerp>
