@@ -88,7 +88,7 @@ class account_tax(orm.Model):
                                      _("Parent Tax '{name}' has non name.").format(name=parent_tax_code.name))
             tax_code_vals = {
                 'name': vals['name'],
-                'code': parent_tax_code.code + vals['description'],
+                'code': parent_tax_code.code + (vals.get('description') and vals.get('description') or u''),
                 'parent_id': vals['account_tax_code_id'],
                 'is_base': False,
                 'vat_statement_type': vals['type_tax_use'] == 'sale' and 'debit' or vals['type_tax_use'] == 'purchase' and 'credit',
