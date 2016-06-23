@@ -23,16 +23,17 @@
 ##############################################################################
 
 {
-    "name": "Account Invoice Extended",
+    "name": "Sale Order Filter",
     "version": "3.1.1.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
-    "category": 'Accounting & Finance',
+    "category": 'Sale',
     "description": """
         Module adds extra functionality to sale_order:
             - possibility to filter order by year
             - possibility to see sale of last or current month
             - search by sales team includes children
+            - search by product
     """,
     "depends": [
         'sale',
