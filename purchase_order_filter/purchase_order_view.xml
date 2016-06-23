@@ -3,8 +3,8 @@
     <data>
     
         <record id="view_sale_order_filter_by_year" model="ir.ui.view">
-            <field name="name">sale.order.filter.by.year</field>
-            <field name="model">sale.order</field>
+            <field name="name">purchase.order.filter.by.year</field>
+            <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
             <field name="type">search</field>
             <field name="arch" type="xml">
