@@ -47,13 +47,12 @@ class settled_wizard(orm.TransientModel):
         """se ejecuta correctamente desde dos."""
         for settle_period in self.browse(cr, uid, ids, context=context):
             # 'tax_id': [(6, 0, res.get('invoice_line_tax_id'))],
-
             pool_liq = self.pool['settlement']
             liq_id = pool_liq.search(cr, uid, [('date_to', '>=', settle_period.date_from), ('state', '!=', 'invoiced')],
                                      context=context)
             if not liq_id:
                 vals = {
-                    'name': settle_period.date_from + " // " + settle_period.date_to,
+                    'name': settle_period.date_from + " <=> " + settle_period.date_to,
                     'date_from': settle_period.date_from,
                     'date_to': settle_period.date_to
                 }
@@ -149,7 +148,7 @@ class settlement(orm.Model):
         if vals.get('date_from', False) or vals.get('date_to', False):
 
             for o in self.browse(cr, uid, ids, context=context):
-                name = vals.get('date_from', o.date_from) + " // " + vals.get('date_to', o.date_to)
+                name = vals.get('date_from', o.date_from) + " <=> " + vals.get('date_to', o.date_to)
             vals.update({'name': name})
 
         return super(settlement, self).write(cr, uid, ids, vals, context=context)
@@ -214,9 +213,13 @@ class settlement_agent(orm.Model):
     _name = 'settlement.agent'
     _rec_name = 'agent_id'
 
-    def _invoice_line_hook(self, cursor, user, move_line, invoice_line_id):
-        '''Call after the creation of the invoice line'''
-        return
+    # def _invoice_line_hook(self, cursor, user, move_line, invoice_line_id):
+    #     '''Call after the creation of the invoice line'''
+    #     return
+    #
+    # def _invoice_hook(self, cursor, user, picking, invoice_id):
+    #     '''Call after the creation of the invoice'''
+    #     return
 
     def _get_address_invoice(self, cursor, user, settlement):
         '''Return {'contact': address, 'invoice': address} for invoice'''
@@ -225,9 +228,6 @@ class settlement_agent(orm.Model):
         return self.pool['res.partner'].address_get(cursor, user, [partner.id],
                                                     ['contact', 'invoice'])
 
-    def _invoice_hook(self, cursor, user, picking, invoice_id):
-        '''Call after the creation of the invoice'''
-        return
 
     _columns = {
         'agent_id': fields.many2one('sale.agent', 'Agent', required=True, select=1),
@@ -361,33 +361,38 @@ class settlement_agent(orm.Model):
         context = self.pool['res.users'].context_get(cr, uid)
         settlement_line_pool = self.pool['settlement.line']
         invoice_line_agent_pool = self.pool['invoice.line.agent']
-        set_agent = self.browse(cr, uid, ids)
+        set_agent = self.browse(cr, uid, ids, context)
         user = self.pool['res.users'].browse(cr, uid, uid, context)
         # Recalculamos todas las lineas sujetas a comision
-        sql = 'SELECT  invoice_line_agent.id FROM account_invoice_line ' \
-              'INNER JOIN invoice_line_agent ON invoice_line_agent.invoice_line_id=account_invoice_line.id ' \
-              'INNER JOIN account_invoice ON account_invoice_line.invoice_id = account_invoice.id ' \
-              'WHERE invoice_line_agent.agent_id=' + str(set_agent.agent_id.id) + ' ' \
-              'AND invoice_line_agent.settled=True ' \
-              'AND account_invoice.state<>\'draft\' AND account_invoice.type=\'out_invoice\'' \
-              'AND account_invoice.date_invoice >= \'' + date_from + '\' ' \
-              'AND account_invoice.date_invoice <= \'' + date_to + '\' ' \
-              'AND account_invoice.company_id = ' + str(user.company_id.id)
+        sql = """
+              SELECT  invoice_line_agent.id FROM account_invoice_line
+              INNER JOIN invoice_line_agent ON invoice_line_agent.invoice_line_id=account_invoice_line.id
+              INNER JOIN account_invoice ON account_invoice_line.invoice_id = account_invoice.id
+              WHERE invoice_line_agent.agent_id= {agent_id}
+              AND invoice_line_agent.settled = True
+              AND account_invoice.state in ('open', 'paid') AND account_invoice.type in ('out_invoice', 'out_refund')
+              AND account_invoice.date_invoice >= '{date_from}'
+              AND account_invoice.date_invoice <= '{date_to}'
+              AND account_invoice.company_id = {company_id}
+              """.format(agent_id=set_agent.agent_id.id, date_from=date_from, date_to=date_to, company_id=user.company_id.id)
         cr.execute(sql)
         res = cr.fetchall()
         inv_line_agent_ids = [x[0] for x in res]
         invoice_line_agent_pool.calculate_commission(cr, uid, inv_line_agent_ids, context=context)
-        sql = 'SELECT  account_invoice_line.id FROM account_invoice_line ' \
-              'INNER JOIN invoice_line_agent ON invoice_line_agent.invoice_line_id=account_invoice_line.id ' \
-              'INNER JOIN account_invoice ON account_invoice_line.invoice_id = account_invoice.id ' \
-              'WHERE invoice_line_agent.agent_id=' + str(set_agent.agent_id.id) + ' ' \
-              'AND invoice_line_agent.settled=False ' \
-              'AND account_invoice.state<>\'draft\' AND account_invoice.type=\'out_invoice\'' \
-              'AND account_invoice.date_invoice >= \'' + date_from + '\' ' \
-              'AND account_invoice.date_invoice <= \'' + date_to + '\' ' \
-              'AND account_invoice.company_id = ' + str(user.company_id.id)
+        sql = """
+              SELECT  account_invoice_line.id FROM account_invoice_line
+              INNER JOIN invoice_line_agent ON invoice_line_agent.invoice_line_id=account_invoice_line.id
+              INNER JOIN account_invoice ON account_invoice_line.invoice_id = account_invoice.id
+              WHERE invoice_line_agent.agent_id = {agent_id}
+              AND invoice_line_agent.settled = False
+              AND account_invoice.state in ('open', 'paid') AND account_invoice.type in ('out_invoice', 'out_refund')
+              AND account_invoice.date_invoice >= '{date_from}'
+              AND account_invoice.date_invoice <= '{date_to}'
+              AND account_invoice.company_id = {company_id}
+              """.format(agent_id=set_agent.agent_id.id, date_from=date_from, date_to=date_to, company_id=user.company_id.id)
         cr.execute(sql)
         res = cr.fetchall()
+        import pdb; pdb.set_trace()
         inv_line_ids = [x[0] for x in res]
         total_per = 0
         total_sections = 0
@@ -405,9 +410,9 @@ class settlement_agent(orm.Model):
             if line.commission_id.type == "fix":
                 total_per = total_per + line.commission
                 inv_ag_ids = self.pool['invoice.line.agent'].search(cr, uid, [('invoice_line_id', '=', inv_line_id),
-                                                                              ('agent_id', '=', set_agent.agent_id.id)])
+                                                                              ('agent_id', '=', set_agent.agent_id.id)], context=context)
                 self.pool['invoice.line.agent'].write(cr, uid, inv_ag_ids,
-                                                      {'settled': True, 'quantity': line.commission})
+                                                      {'settled': True, 'quantity': line.commission}, context=context)
             if line.commission_id.type == "sections":
                 if line.invoice_line_id.product_id.commission_exent != True:
                     # Hacemos un agregado de la base de cálculo agrupándolo por las distintas comisiones en tramos que tenga el agente asignadas
@@ -418,30 +423,28 @@ class settlement_agent(orm.Model):
 
                     if line.commission_id.id in sections:
                         sections[line.commission_id.id]['base'] = sections[line.commission_id.id]['base'] + sign_price
-                        sections[line.commission_id.id]['lines'].append(
-                            line)  # Añade la línea de la que se añade esta base para el cálculo por tramos
+                        sections[line.commission_id.id]['lines'].append(line)  # Añade la línea de la que se añade esta base para el cálculo por tramos
                     else:
                         sections[line.commission_id.id] = {'type': line.commission_id, 'base': sign_price,
                                                            'lines': [line]}
         # Tramos para cada tipo de comisión creados
         for section in sections:
             # Cálculo de la comisión  para cada section
-            sections[section].update(
-                {'commission': sections[section]['type'].calculate_sections(sections[section]['base'])})
+            sections[section].update({'commission': sections[section]['type'].calculate_sections(sections[section]['base'])})
             total_sections = total_sections + sections[section]['commission']
             # reparto de la comisión para cada linea
 
             for line_section in sections[section]['lines']:
                 com_por_linea = sections[section]['commission'] * (
                     line_section.invoice_line_id.price_subtotal / (abs(sections[section]['base']) or 1.0))
-                line_section.write({'commission': com_por_linea})
+                line_section.write({'commission': com_por_linea}, context)
                 inv_ag_ids = self.pool['invoice.line.agent'].search(cr, uid, [
                     ('invoice_line_id', '=', line_section.invoice_line_id.id),
-                    ('agent_id', '=', set_agent.agent_id.id)])
-                self.pool['invoice.line.agent'].write(cr, uid, inv_ag_ids, {'settled': True, 'quantity': com_por_linea})
+                    ('agent_id', '=', set_agent.agent_id.id)], context=context)
+                self.pool['invoice.line.agent'].write(cr, uid, inv_ag_ids, {'settled': True, 'quantity': com_por_linea}, context)
 
         total = total_per + total_sections
-        self.write(cr, uid, ids, {'total_per': total_per, 'total_sections': total_sections, 'total': total})
+        self.write(cr, uid, ids, {'total_per': total_per, 'total_sections': total_sections, 'total': total}, context)
 
 
 class settlement_line(orm.Model):

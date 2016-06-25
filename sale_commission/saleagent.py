@@ -108,7 +108,7 @@ class sale_agent(orm.Model):
                                        'Period settlement', required=True),
         'active': fields.boolean('Active'),
         'settlement_ids': fields.one2many('settlement.agent', 'agent_id', 'Settlements executed', readonly=True),
-        'section_id': fields.many2one('crm.case.section', 'Sales Team', domain=[('sale_agent_id', '=', False)]),
+        'section_id': fields.many2one('crm.case.section', 'Sales Team', domain=[('sale_agent_id', '=', False)], required=True),
     }
 
     _defaults = {
