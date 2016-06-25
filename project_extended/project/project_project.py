@@ -231,6 +231,11 @@ class project_project(orm.Model):
 
         return result
 
+    def _get_project(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool['project.task'].browse(cr, uid, ids, context=context):
+            result[line.project_id.id] = True
+        return result.keys()
     
     _columns = {
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
@@ -238,7 +243,9 @@ class project_project(orm.Model):
                                           readonly=True, method=True),
         'purchase_order_ids': fields.function(_get_purchase_order, 'Purchase Order', type='one2many', relation="purchase.order",
                                           readonly=True, method=True),
-        'task_count': fields.function(_task_count, type='integer', string="Open Tasks"),
+        'task_count': fields.function(_task_count, type='integer', string="Open Tasks", store={
+            'project.task': (_get_project, ['state'], 10),
+        }, ),
         'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
         'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),
         'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Spent Amount"),
