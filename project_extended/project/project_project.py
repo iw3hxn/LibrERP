@@ -94,62 +94,86 @@ class project_project(orm.Model):
             }
             # import pdb; pdb.set_trace()
             account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id)], context=context)
-            for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
-                if account.amount > 0:
-                    res[project_id.id]['total_invoice'] += account.amount
-                else:
-                    res[project_id.id]['total_spent'] += abs(account.amount)
 
-            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('product_id.type', '=', 'service')], context=context)
-            for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
-                if not account.amount > 0:
-                    res[project_id.id]['total_service_spent'] += abs(account.amount)
+            if account_ids:
+                cr.execute("""
+                    SELECT COALESCE(SUM(amount))
+                    FROM account_analytic_line
+                    WHERE account_analytic_line.id IN ({account_ids}) AND account_analytic_line.amount > 0
+                """.format(account_ids=', '.join([str(account_id) for account_id in account_ids])))
+                total_invoice = cr.fetchone()[0] or 0.0
+                res[project_id.id]['total_invoice'] = total_invoice
+
+                cr.execute("""
+                    SELECT ABS(COALESCE(SUM(amount)))
+                    FROM account_analytic_line
+                    WHERE account_analytic_line.id IN ({account_ids}) AND account_analytic_line.amount < 0
+                """.format(account_ids=', '.join([str(account_id) for account_id in account_ids])))
+                total_spent = cr.fetchone()[0] or 0.0
+                res[project_id.id]['total_spent'] = total_spent
+
+                account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('product_id.type', '=', 'service')], context=context)
+                if account_ids:
+                    cr.execute("""
+                        SELECT ABS(COALESCE(SUM(amount)))
+                        FROM account_analytic_line
+                        WHERE account_analytic_line.id IN ({account_ids}) AND account_analytic_line.amount < 0
+                    """.format(account_ids=', '.join([str(account_id) for account_id in account_ids])))
+                    total_service_spent = cr.fetchone()[0] or 0.0
+                    res[project_id.id]['total_service_spent'] = total_service_spent
+
+            # for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
+            #     if account.amount > 0:
+            #         res[project_id.id]['total_invoice'] += account.amount
+            #     else:
+            #         res[project_id.id]['total_spent'] += abs(account.amount)
+
+            # account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('product_id.type', '=', 'service')], context=context)
+            # for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
+            #     if not account.amount > 0:
+            #         res[project_id.id]['total_service_spent'] += abs(account.amount)
 
             sale_ids = self.pool['sale.order'].search(cr, uid, [
                 ('project_id', '=', project_id.analytic_account_id.id),
                 ('state', 'not in', ['draft'])
             ], context=context)
 
-            # if sale_ids:
-            #     cr.execute("""
-            #         SELECT COALESCE(SUM(amount_untaxed))
-            #         FROM sale_order
-            #         WHERE sale_order.id IN ({sale_ids})
-            #     """.format(sale_ids=', '.join([str(sale_id) for sale_id in sale_ids])))
-            #
-            #     total_sell = cr.fetchone()[0] or 0.0
-            #
-            #     cr.execute("""
-            #         SELECT COALESCE(SUM(price_subtotal))
-            #         FROM sale_order_line
-            #         LEFT JOIN product_product ON sale_order_line.product_id = product_product.id
-            #         LEFT JOIN product_template ON product_product.product_tmpl_id = product_template.id
-            #         WHERE sale_order_line.order_id IN ({sale_ids})
-            #         AND product_template.type ILIKE 'service'
-            #     """.format(sale_ids=', '.join([str(sale_id) for sale_id in sale_ids])))
-            #     total_sell_service = cr.fetchone()[0] or 0.0
-            # else:
-            #     total_sell = 0.0
-            #     total_sell_service = 0.0
-            #
-            # res[project_id.id]['total_sell'] = total_sell
-            # res[project_id.id]['total_sell_service'] = total_sell_service
+            if sale_ids:
+                cr.execute("""
+                    SELECT COALESCE(SUM(amount_untaxed))
+                    FROM sale_order
+                    WHERE sale_order.id IN ({sale_ids})
+                """.format(sale_ids=', '.join([str(sale_id) for sale_id in sale_ids])))
 
-            for sale in self.pool['sale.order'].browse(cr, uid, sale_ids, context):
-                res[project_id.id]['total_sell'] += sale.amount_untaxed
+                total_sell = cr.fetchone()[0] or 0.0
+                res[project_id.id]['total_sell'] = total_sell
+                cr.execute("""
+                    SELECT COALESCE(SUM(price_subtotal))
+                    FROM sale_order_line
+                    LEFT JOIN product_product ON sale_order_line.product_id = product_product.id
+                    LEFT JOIN product_template ON product_product.product_tmpl_id = product_template.id
+                    WHERE sale_order_line.order_id IN ({sale_ids})
+                    AND product_template.type ILIKE 'service'
+                """.format(sale_ids=', '.join([str(sale_id) for sale_id in sale_ids])))
+                total_sell_service = cr.fetchone()[0] or 0.0
+                res[project_id.id]['total_sell_service'] = total_sell_service
 
-                for sale_line in sale.order_line:
-                    if sale_line.product_id and sale_line.product_id.type == 'service':
-                        res[project_id.id]['total_sell_service'] += sale_line.price_subtotal
+            # for sale in self.pool['sale.order'].browse(cr, uid, sale_ids, context):
+            #     res[project_id.id]['total_sell'] += sale.amount_untaxed
+            #
+            #     for sale_line in sale.order_line:
+            #         if sale_line.product_id and sale_line.product_id.type == 'service':
+            #             res[project_id.id]['total_sell_service'] += sale_line.price_subtotal
             #
             # if not total_sell == res[project_id.id]['total_sell']:
-            #     pdb.set_trace()
+            #     import pdb; pdb.set_trace()
             # else:
             #     print 'YYYYYYYYY'
             #
             # if not total_sell_service == res[project_id.id]['total_sell_service']:
             #     pdb.set_trace()
             # else:
+            #     import pdb;
             #     print 'ZZZZZZZZZ'
 
         return res
