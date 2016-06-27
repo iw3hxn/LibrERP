@@ -392,7 +392,6 @@ class settlement_agent(orm.Model):
               """.format(agent_id=set_agent.agent_id.id, date_from=date_from, date_to=date_to, company_id=user.company_id.id)
         cr.execute(sql)
         res = cr.fetchall()
-        import pdb; pdb.set_trace()
         inv_line_ids = [x[0] for x in res]
         total_per = 0
         total_sections = 0
