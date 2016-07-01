@@ -21,12 +21,14 @@
 
 from openerp.osv import orm, fields
 import decimal_precision as dp
+from datetime import datetime
 
 
 class project_project(orm.Model):
     _inherit = 'project.project'
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
+        start_time = datetime.now()
         value = {}
         total_spent_group = self.pool['res.groups'].user_in_group(cr, uid, uid, 'project.can_modify_prices', context=context)
         service_spent_group = self.pool['res.groups'].user_in_group(cr, uid, uid, 'project.color_service_spent_amount', context=context)
@@ -51,6 +53,10 @@ class project_project(orm.Model):
                 value[project.id] = 'red'
 
             # ore effettive <= previste verde altrimenti rosso
+        end_time = datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        print duration
         return value
 
     def _task_count(self, cr, uid, ids, field_name, arg, context=None):
@@ -65,7 +71,7 @@ class project_project(orm.Model):
                 res[task.project_id.id] += 1
         return res
     
-    #def _total_sale(self, cr, uid, ids, field_name, arg, context=None):
+    # def _total_sale(self, cr, uid, ids, field_name, arg, context=None):
     #    if context is None:
     #        context = {}
     #    res = {}
@@ -83,7 +89,6 @@ class project_project(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         res = {}
-
         for project_id in self.browse(cr, uid, ids, context=context):
             res[project_id.id] = {
                 'total_spent': 0.0,
@@ -93,17 +98,20 @@ class project_project(orm.Model):
                 'total_service_spent': 0.0,
             }
             # import pdb; pdb.set_trace()
-            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id)], context=context)
+            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('invoice_id', '!=', False)], context=context)
 
             if account_ids:
                 cr.execute("""
                     SELECT COALESCE(SUM(amount))
                     FROM account_analytic_line
-                    WHERE account_analytic_line.id IN ({account_ids}) AND account_analytic_line.amount > 0
+                    WHERE account_analytic_line.id IN ({account_ids})
                 """.format(account_ids=', '.join([str(account_id) for account_id in account_ids])))
                 total_invoice = cr.fetchone()[0] or 0.0
                 res[project_id.id]['total_invoice'] = total_invoice
 
+            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('invoice_id', '=', False)],
+                                                                        context=context)
+            if account_ids:
                 cr.execute("""
                     SELECT ABS(COALESCE(SUM(amount)))
                     FROM account_analytic_line
@@ -112,7 +120,7 @@ class project_project(orm.Model):
                 total_spent = cr.fetchone()[0] or 0.0
                 res[project_id.id]['total_spent'] = total_spent
 
-                account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('product_id.type', '=', 'service')], context=context)
+                account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('product_id.type', '=', 'service'), ('invoice_id', '=', False)], context=context)
                 if account_ids:
                     cr.execute("""
                         SELECT ABS(COALESCE(SUM(amount)))
@@ -236,6 +244,28 @@ class project_project(orm.Model):
         for line in self.pool['project.task'].browse(cr, uid, ids, context=context):
             result[line.project_id.id] = True
         return result.keys()
+
+    def _get_project_account(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool['account.analytic.line'].browse(cr, uid, ids, context=context):
+            if line.account_id:
+                for project in self.pool['project.project'].search(cr, uid, [('analytic_account_id', '=', line.account_id.id)], context=context):
+                    result[project] = True
+        return result.keys()
+
+    def _get_project_order_line(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool['sale.order.line'].browse(cr, uid, ids, context=context):
+            if line.order_id.project_project:
+                result[line.order_id.project_project.id] = True
+        return result.keys()
+
+    def _get_project_order(self, cr, uid, ids, context=None):
+        result = {}
+        for order in self.pool['sale.order'].browse(cr, uid, ids, context=context):
+            if order.project_project:
+                result[order.project_project.id] = True
+        return result.keys()
     
     _columns = {
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
@@ -246,9 +276,33 @@ class project_project(orm.Model):
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks", store={
             'project.task': (_get_project, ['state'], 10),
         }, ),
-        'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
-        'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),
-        'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Spent Amount"),
-        'total_service_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Spent Amount"),
-        'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Invoice Amount"),
+        # 'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
+        # 'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),
+        # 'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Spent Amount"),
+        # 'total_service_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Spent Amount"),
+        # 'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Invoice Amount"),
+        'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
+                                      multi='sums', string="Sell Amount", store={
+                'sale.order': (_get_project_order, ['state'], 50),
+                'sale.order.line': (_get_project_order_line, ['price_subtotal'], 50),
+            }, ),
+        'total_sell_service': fields.function(_total_account, type='float',
+                                              digits_compute=dp.get_precision('Sale Price'), multi='sums',
+                                              string="Service Sell Amount", store={
+                'sale.order': (_get_project_order, ['state'], 50),
+                'sale.order.line': (_get_project_order_line, ['price_subtotal'], 50),
+            }, ),
+        'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
+                                       multi='sums', string="Spent Amount", store={
+                'account.analytic.line': (_get_project_account, ['amount'], 40),
+            }, ),
+        'total_service_spent': fields.function(_total_account, type='float',
+                                               digits_compute=dp.get_precision('Sale Price'), multi='sums',
+                                               string="Service Spent Amount", store={
+                'account.analytic.line': (_get_project_account, ['amount'], 40),
+            }, ),
+        'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
+                                         multi='sums', string="Invoice Amount", store={
+                'account.analytic.line': (_get_project_account, ['amount'], 40),
+            }, ),
     }
