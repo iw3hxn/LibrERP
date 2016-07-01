@@ -85,7 +85,7 @@ class sale_order_line(orm.Model):
 
         super(sale_order_line, self).__init__(registry, cr)
 
-        self._columns['margin']._fnct = self._product_margin
+#        self._columns['margin']._fnct = self._product_margin
 
     _columns = {
         'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute=dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
@@ -219,7 +219,9 @@ class sale_order_line(orm.Model):
 
         # Calculate how much was invoiced
         invoiced = sale_order_line_obj.amount_invoiced(cr, uid, order_line) or 0
-        remains_to_invoice = order_line.price_unit * order_line.product_uom_qty / 12 * sale_order_obj.get_duration_in_months(order_line.order_id.order_duration) - invoiced
+        remains_to_invoice = (order_line.price_unit * order_line.product_uom_qty) - invoiced
+        if order_line.product_id.subscription:
+            remains_to_invoice = order_line.price_unit * order_line.product_uom_qty / 12 * sale_order_obj.get_duration_in_months(order_line.order_id.order_duration) - invoiced
 
         # Control how much were invoiced and if 100% of line.price_unit is invoiced:
         if remains_to_invoice <= 0:
@@ -627,8 +629,10 @@ class sale_order(orm.Model):
         """
         # order = self.browse(cr, uid, order_id, context)
         # user = self.pool['res.users'].browse(cr, uid, uid, context)
-
-        start_date = datetime.datetime.strptime(order.order_start_date, DEFAULT_SERVER_DATE_FORMAT)
+        if order.order_start_date:
+            start_date = datetime.datetime.strptime(order.order_start_date, DEFAULT_SERVER_DATE_FORMAT)
+        else:
+            start_date = datetime.date.today()
 
         day_delta = datetime.timedelta(1)
         
@@ -670,7 +674,6 @@ class sale_order(orm.Model):
                 dates.append({'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': datetime_date.strftime('%B %Y')})
             else:
                 dates.append({'invoice_date': invoice_date.strftime(DEFAULT_SERVER_DATE_FORMAT), 'period': datetime_date.strftime('%B %Y') + ' - ' + period_end.strftime('%B %Y')})
-
         return dates
 
     def auto_invoice(self, cr, uid, ids, context=None):
