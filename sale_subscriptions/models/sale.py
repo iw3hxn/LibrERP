@@ -53,7 +53,7 @@ class sale_order_line(orm.Model):
             taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)
             cur = line.order_id.pricelist_id.currency_id
             if line.order_id.have_subscription and line.product_id.subscription:
-                k = order_obj.get_duration_in_months(line.order_id.order_duration)
+                k = order_obj.get_duration_in_months(line.order_id.order_duration) / order_obj.get_duration_in_months(line.product_id.order_duration)
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'] * k)
             else:
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
