@@ -64,7 +64,7 @@ class irCron(orm.Model):
                     (job['id'],), log_exceptions=False)
 
                 # Got the lock on the job row, run its code
-                logger.debug('Job `%s` triggered from form', job['name'])
+                logger.info('Job `%s` triggered from form', job['name'])
                 model = self.pool.get(job['model'])
                 method = getattr(model, job['function'])
                 args = safe_eval('tuple(%s)' % (job['args'] or ''))
