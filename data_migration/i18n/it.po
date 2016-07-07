@@ -79,6 +79,12 @@ msgid "Unknown encoding"
 msgstr "encoding sconosciuto"
 
 #. module: data_migration
+#: code:addons/data_migration/utils/inventory_importer.py:119
+#, python-format
+msgid "Inventory of {date} on location {location}"
+msgstr "Iventario al {date} per la locazione {location}"
+
+#. module: data_migration
 #: model:ir.actions.act_window,name:data_migration.product_file_import
 msgid "Import Products in .xls format"
 msgstr "Importa i Prodotti da un file in formato Excel .xls"

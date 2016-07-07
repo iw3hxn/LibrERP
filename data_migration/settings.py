@@ -144,6 +144,11 @@ class FormatTwo():
     COLUMNS_INVOICE_ITEM = "number_invoice, date_invoice, partner_name, total_amount"
     REQUIRED_INVOICE_ITEM = ['number_invoice', 'date_invoice', 'partner_name']
 
+    HEADER_INVENTORY_ITEM = ('Articolo', 'Quantità', 'Seriale / Lotto', 'Prezzo', 'Locazione')
+    COLUMNS_INVENTORY_ITEM = "default_code, product_qty, prod_lot, price, location"
+    REQUIRED_INVENTORY_ITEM = ['default_code']
+    INVENTORY_PRODUCT_SEARCH = ['default_code']
+
 
 class FormatThree():
     # TP

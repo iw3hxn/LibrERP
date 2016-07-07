@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2015 Andrei Levin (andrei.levin at didotech.com)
+# Copyright (c) 2013-2016 Didoetch SRL (info at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -55,6 +55,7 @@ class ImportFile(threading.Thread, Utils):
         self.pool = pooler.get_pool(cr.dbname)
         self.product_obj = self.pool['product.product']
         self.inventory_line_obj = self.pool['stock.inventory.line']
+        self.product_obj = self.pool['product.product']
 
         # Necessario creare un nuovo cursor per il thread,
         # quello fornito dal metodo chiamante viene chiuso
@@ -93,8 +94,6 @@ class ImportFile(threading.Thread, Utils):
         self.HEADER = Config.HEADER_INVENTORY_ITEM
         self.REQUIRED_INVENTORY_ITEM = Config.REQUIRED_INVENTORY_ITEM
         self.PRODUCT_SEARCH = Config.INVENTORY_PRODUCT_SEARCH
-        self.PRODUCT_WARNINGS = Config.PRODUCT_WARNINGS
-        self.PRODUCT_ERRORS = Config.PRODUCT_ERRORS
 
         # Default values
         
@@ -122,13 +121,13 @@ class ImportFile(threading.Thread, Utils):
             self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
 
         if DEBUG:
-            # Importa il listino
+            # Importa inventario
             self.process(self.cr, self.uid, table)
             
             # Genera il report sull'importazione
             self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
         else:
-            # Elaborazione del listino prezzi
+            # Elaborazione dell'inventario
             try:
                 # Importa il listino
                 self.process(self.cr, self.uid, table)
@@ -159,10 +158,9 @@ class ImportFile(threading.Thread, Utils):
         
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
-        location = self.pool['stock.location'].browse(cr, uid, self.location_id, context=self.context)
 
         vals_inventory = {
-            'name': 'Inventory of {date} on location {location}'.format(date=self.date, location=location.name),
+            'name': _(u'Inventory of {date} on location {location}').format(date=self.date, location=self.location_id.name),
             'date': self.date,
         }
 
@@ -234,7 +232,7 @@ class ImportFile(threading.Thread, Utils):
             )
             return False
         else:
-            product_ids = self.pool['product.product'].search(cr, uid, ['|', ('default_code', '=', product), ('name', '=', product)], context=self.context)
+            product_ids = self.product_obj.search(cr, uid, ['|', ('default_code', '=', product), ('name', '=', product)], context=self.context)
 
         if not product_ids:
 
@@ -249,17 +247,49 @@ class ImportFile(threading.Thread, Utils):
         product_id = product_ids.pop()
         self.cache_product[product] = product_id
 
-        vals_inventory_line = self.inventory_line_obj.on_change_product_id(cr, uid, self.location_id.id, product_id, '', self.date)
+        vals_inventory_line = self.inventory_line_obj.on_change_product_id(cr, uid, self.location_id.id, product_id, '', self.date)['value']
 
         vals_inventory_line.update({
             'inventory_id': inventory_id,
             'location_id': self.location_id.id,
             'product_id': product_id,
             'product_qty': record.product_qty or 0.0,
-            'product_uom': self.pool['product.product'].browse(cr, uid, product_id, context=self.context).uom_id.id
+            'product_uom': self.product_obj.browse(cr, uid, product_id, self.context).uom_id.id
         })
 
         inventory_line_id = self.inventory_line_obj.create(cr, uid, vals_inventory_line, self.context)
+
+        # extra function on version2
+        vals_product = {}
+        if hasattr(record, 'location') and record.location:
+            vals_product.update({'loc_rack': record.location})
+
+        if hasattr(record, 'price') and record.price:
+            vals_product.update({'standard_price': record.price})
+
+        if hasattr(record, 'prod_lot') and record.prod_lot:
+            vals_product.update({
+                'track_incoming': True,
+                'track_outgoing': True
+            })
+            if float(record.product_qty) == 1:
+                vals_product.update({'lot_split_type': 'single'})
+            prod_lot = record.prod_lot.replace('.0', '')
+            prod_lot_ids = self.pool['stock.production.lot'].search(cr, uid, [('name', '=', prod_lot), ('product_id', '=', product_id)], context=self.context)
+            if prod_lot_ids:
+                prod_lot_id = prod_lot_ids[0]
+            else:
+                prod_lot_vals = {
+                    'name': prod_lot,
+                    'product_id': product_id,
+                    'date': self.date
+                }
+                prod_lot_id = self.pool['stock.production.lot'].create(cr, uid, prod_lot_vals, context=self.context)
+
+            self.inventory_line_obj.write(cr, uid, [inventory_line_id], {'prod_lot_id': prod_lot_id}, context=self.context)
+
+        if vals_product:
+            self.product_obj.write(cr, uid, [product_id], vals_product, context=self.context)
 
         # print '>>>>>>>', record.name
 
