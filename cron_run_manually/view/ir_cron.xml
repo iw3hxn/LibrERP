@@ -6,10 +6,25 @@
             <field name="model">ir.cron</field>
             <field name="inherit_id" ref="base.ir_cron_view" />
             <field name="arch" type="xml">
-                <field name="args" position="after">
+                <field name="doall" position="after">
                     <button name="run_manually"
                             string="Run now"
                             type="object"
+                            icon="terp-gtk-jump-to-ltr"
+                            />
+                </field>
+            </field>
+        </record>
+
+        <record id="ir_cron_tree_view" model="ir.ui.view">
+            <field name="model">ir.cron</field>
+            <field name="inherit_id" ref="base.ir_cron_view_tree" />
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <button name="run_manually"
+                            string="Run now"
+                            type="object"
+                            icon="terp-gtk-jump-to-ltr"
                             />
                 </field>
             </field>

@@ -22,7 +22,7 @@
 
 {
     'name': 'Call cron jobs from their form view',
-    'version': '0.1',
+    'version': '0.2',
     'author': ["Therp BV", "OpenERP S.A."],
     'license': 'AGPL-3',
     'category': 'Tools',
