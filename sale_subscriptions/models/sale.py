@@ -200,8 +200,6 @@ class sale_order_line(orm.Model):
         # for invoice where a unlink line recalculate
         unlink_invoice_ids = []
         for invoice in invoice_obj.browse(cr, uid, updated_invoice_ids, context):
-            import pdb;
-            pdb.set_trace()
             if not invoice.invoice_line:
                 unlink_invoice_ids.append(invoice.id)
             else:
