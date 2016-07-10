@@ -172,10 +172,11 @@ class sale_order_line(orm.Model):
 
     def action_suspend(self, cr, uid, line_ids, context):
         invoice_line_obj = self.pool['account.invoice.line']
-        
+        invoice_obj = self.pool['account.invoice']
         order_to_suspend = []
         all_invoices = []
         suspend_date = datetime.datetime.now()
+        updated_invoice_ids = []
         for line in self.browse(cr, uid, line_ids, context=context):
             active_order_line_count = 0
             for oline in line.order_id.order_line:
@@ -194,7 +195,21 @@ class sale_order_line(orm.Model):
                         DEFAULT_SERVER_DATE_FORMAT
                     )
                     if invoice.state == 'draft' and invoice_date.date() >= suspend_date.date():
+                        updated_invoice_ids.append(invoice_line.invoice_id.id)
                         invoice_line_obj.unlink(cr, uid, invoice_line.id, context)
+        # for invoice where a unlink line recalculate
+        unlink_invoice_ids = []
+        for invoice in invoice_obj.browse(cr, uid, updated_invoice_ids, context):
+            import pdb;
+            pdb.set_trace()
+            if not invoice.invoice_line:
+                unlink_invoice_ids.append(invoice.id)
+            else:
+                invoice.button_reset_taxes()
+
+        if unlink_invoice_ids:
+            invoice_obj.unlink(cr, uid, unlink_invoice_ids, context)
+
         if order_to_suspend:
             self.pool['sale.order'].suspend(cr, uid, order_to_suspend, context=context)
 
