@@ -48,6 +48,15 @@ class account_invoice(orm.Model):
                 )
         return super(account_invoice, self).action_cancel(cr, uid, ids, context)
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        default.update({
+            'teamsystem_export': False,
+        })
+        return super(account_invoice, self).copy(cr, uid, id, default, context)
+
     _columns = {
         'teamsystem_export': fields.boolean('Esportato in Teamsystem'),
     }

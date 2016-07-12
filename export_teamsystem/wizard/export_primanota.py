@@ -539,6 +539,9 @@ class WizardExportPrimaNota(orm.TransientModel):
                 raise orm.except_orm(_('Error'), "La lunghezza della riga INDUSTRIALE errata ({}). Fattura {}".format(len(row), invoice.number))
             file_data.write(row)
             invoice.write({'teamsystem_export': True})
+            text = invoice.number or invoice.name + _(' esportata in TeamSytem')
+            self.pool['account.invoice'].log(cr, uid, invoice_id, text)
+            self.pool['account.invoice'].message_append(cr, uid, [invoice_id], text, body_text=text, context=context)
 
         out = file_data.getvalue()
         out = out.encode("base64")
