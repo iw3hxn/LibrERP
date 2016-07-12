@@ -49,9 +49,6 @@
                         <field name="cig" />
                         <field name="cup" />
                     </field>
-                    <field name="fiscal_position" position="replace">
-                        <field name="fiscal_position" widget="selection"/>
-                    </field>
 <!--insert in the customer invoice the new line invoice created with 'form_view_ref' tag-->
                     <xpath expr="/form/notebook/page[@string='Invoice']/field[@name='invoice_line']" position="attributes">
                         <attribute name="context">{'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_customer', 'fiscal_position': fiscal_position}</attribute>
