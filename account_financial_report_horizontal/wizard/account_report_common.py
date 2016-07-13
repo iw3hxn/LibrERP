@@ -79,52 +79,43 @@ class account_common_report(orm.TransientModel):
             res['arch'] = etree.tostring(doc)
         return res
 
-    def onchange_filter(
-        self, cr, uid, ids, filter='filter_no', fiscalyear_id=False,
-        context=None
-    ):
+    def onchange_filter(self, cr, uid, ids, filter='filter_no', fiscalyear_id=False, context=None):
         res = {}
         if filter == 'filter_no':
-            res['value'] = {
-                'period_from': False, 'period_to': False,
-                'date_from': False, 'date_to': False
-                }
+            res['value'] = {'period_from': False, 'period_to': False, 'date_from': False, 'date_to': False}
         if filter == 'filter_date':
-            res['value'] = {
-                'period_from': False, 'period_to': False,
-                'date_from': time.strftime('%Y-01-01'),
-                'date_to': time.strftime('%Y-%m-%d')
-                }
+            if fiscalyear_id:
+                fyear = self.pool.get('account.fiscalyear').browse(cr, uid, fiscalyear_id, context=context)
+                date_from = fyear.date_start
+                date_to = fyear.date_stop > time.strftime('%Y-%m-%d') and time.strftime('%Y-%m-%d') or fyear.date_stop
+            else:
+                date_from, date_to = time.strftime('%Y-01-01'), time.strftime('%Y-%m-%d')
+            res['value'] = {'period_from': False, 'period_to': False, 'date_from': date_from, 'date_to': date_to}
         if filter == 'filter_period' and fiscalyear_id:
             start_period = end_period = False
             cr.execute('''
                 SELECT * FROM (SELECT p.id
                                FROM account_period p
-                               LEFT JOIN account_fiscalyear f
-                               ON (p.fiscalyear_id = f.id)
+                               LEFT JOIN account_fiscalyear f ON (p.fiscalyear_id = f.id)
                                WHERE f.id = %s
+                               AND COALESCE(p.special, FALSE) = FALSE
                                ORDER BY p.date_start ASC
                                LIMIT 1) AS period_start
-                UNION
+                UNION ALL
                 SELECT * FROM (SELECT p.id
                                FROM account_period p
-                               LEFT JOIN account_fiscalyear f
-                               ON (p.fiscalyear_id = f.id)
+                               LEFT JOIN account_fiscalyear f ON (p.fiscalyear_id = f.id)
                                WHERE f.id = %s
                                AND p.date_start < NOW()
+                               AND COALESCE(p.special, FALSE) = FALSE
                                ORDER BY p.date_stop DESC
-                               LIMIT 1) AS period_stop''', (
-                fiscalyear_id, fiscalyear_id
-                )
-            )
+                               LIMIT 1) AS period_stop''', (fiscalyear_id, fiscalyear_id))
             periods = [i[0] for i in cr.fetchall()]
-            if periods and len(periods) > 1:
-                start_period = periods[0]
-                end_period = periods[1]
-            res['value'] = {
-                'period_from': start_period, 'period_to': end_period,
-                'date_from': False, 'date_to': False
-                }
+            if periods:
+                start_period = end_period = periods[0]
+                if len(periods) > 1:
+                    end_period = periods[1]
+            res['value'] = {'period_from': start_period, 'period_to': end_period, 'date_from': False, 'date_to': False}
         return res
 
     def _get_account(self, cr, uid, context=None):
@@ -186,9 +177,9 @@ class account_common_report(orm.TransientModel):
         data['ids'] = context.get('active_ids', [])
         data['model'] = context.get('active_model', 'ir.ui.menu')
         data['form'] = self.read(cr, uid, ids, [
-            'date_from',  'date_to',  'fiscalyear_id', 'period_from',
-            'period_to',  'filter',  'chart_account_id', 'target_move'
-            ])[0]
+            'date_from', 'date_to', 'fiscalyear_id', 'period_from',
+            'period_to', 'filter', 'chart_account_id', 'target_move'
+        ])[0]
         used_context = self._build_contexts(
             cr, uid, ids, data, context=context)
         data['form']['periods'] = used_context.get(
