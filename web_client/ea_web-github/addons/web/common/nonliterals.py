@@ -189,7 +189,8 @@ class Context(BaseContext):
 class SuperDict(dict):
     def __getattr__(self, name):
         try:
-            return self[name]
+            return self.get(name, False)
+            # return self[name]
         except KeyError:
             raise AttributeError(name)
     def __getitem__(self, key):
