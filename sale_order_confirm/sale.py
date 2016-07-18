@@ -138,6 +138,17 @@ class sale_order(orm.Model):
                 res['order_policy'] = 'picking'
         return {'value': res}
 
+    def onchange_partner_id(self, cr, uid, ids, part, context=None):
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
+        res = super(sale_order, self).onchange_partner_id(cr, uid, ids, part)
+        if res.get('value', False) and part:
+            if not res['value'].get('property_account_position', False):
+                company_id = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id.id
+                company = self.pool['res.company'].browse(cr, uid, company_id, context)
+                res['value']['fiscal_position'] = company.default_property_account_position and company.default_property_account_position.id
+        return res
+
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
         res = dict.fromkeys(ids, 0.0)
         for order in self.browse(cr, uid, ids, context=context):

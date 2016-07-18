@@ -53,19 +53,17 @@ class res_partner(orm.Model):
         return ret
 
     def create(self, cr, uid, vals, context={}):
-
-        company_obj = self.pool['res.company']
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         if vals.get('company_id', False):
             company_id = vals['company_id']
         else:
             company_id = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id.id
-        company = company_obj.browse(cr, uid, company_id)
+        company = self.pool['res.company'].browse(cr, uid, company_id, context)
         if not vals.get('credit_limit', False):
             vals['credit_limit'] = company.default_credit_limit
         if not vals.get('property_payment_term', False):
-            vals['property_payment_term'] = company.default_property_payment_term.id
+            vals['property_payment_term'] = company.default_property_payment_term and company.default_property_payment_term.id
         if not vals.get('property_account_position', False):
-            vals['property_account_position'] = company.default_property_account_position.id
+            vals['property_account_position'] = company.default_property_account_position and company.default_property_account_position.id
         return super(res_partner, self).create(cr, uid, vals, context=context)
