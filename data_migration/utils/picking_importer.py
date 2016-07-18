@@ -79,6 +79,7 @@ class ImportFile(threading.Thread, Utils):
         self.problems = 0
         self.cache = {}
         self.cache_product = {}
+        self.cache_uom_product = {}
     
     def run(self):
         # Recupera il record dal database
@@ -289,6 +290,7 @@ class ImportFile(threading.Thread, Utils):
                 if product_ids:
                     product_id = product_ids[0]
                     self.cache_product[product] = product_id
+                    self.cache_uom_product[product_id] = self.product_obj.read(cr, uid, product_id, ['uom_id'], context=self.context)['uom_id'][0]
                 else:
                     error = u'Row {row}: Product "{product}" not Found'.format(row=self.processed_lines, product=product)
                     _logger.error(error)
@@ -302,7 +304,7 @@ class ImportFile(threading.Thread, Utils):
                 'name': origin,
                 'picking_id': picking_id,
                 'product_id': product_id,
-                'product_uom': self.product_obj.browse(cr, uid, product_id, context=self.context).uom_id.id,
+                'product_uom': self.cache_uom_product[product_id],
                 'location_id': self.location_id.id,
                 'location_dest_id': self.location_dest_id.id,
                 'date': date,
