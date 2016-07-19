@@ -48,7 +48,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="before">
                     <separator orientation="vertical"/>
-                    <filter icon="terp-gtk-execute" string="Task" name="Task" domain="[('tasks', '!=',False)]" help="Project with Task"/>
+                    <filter icon="gtk-justify-left" string="Task" name="Task" domain="[('tasks', '!=',False)]" help="Project with Task"/>
                     <separator orientation="vertical"/>
                     <field name ="parent_id" />
                 </field>
