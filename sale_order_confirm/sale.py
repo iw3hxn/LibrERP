@@ -146,7 +146,8 @@ class sale_order(orm.Model):
             if not res['value'].get('property_account_position', False):
                 company_id = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id.id
                 company = self.pool['res.company'].browse(cr, uid, company_id, context)
-                res['value']['fiscal_position'] = company.default_property_account_position and company.default_property_account_position.id
+                if company.default_property_account_position:
+                    res['value']['fiscal_position'] = company.default_property_account_position and company.default_property_account_position.id
         return res
 
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
