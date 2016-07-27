@@ -252,24 +252,6 @@ class account_invoice(orm.Model):
         })
         return super(account_invoice, self).copy(cr, uid, id, default, context)
 
-    def create(self, cr, uid, vals, context=None):
-        if not context:
-            context = {}
-        # adaptative function: the system learn
-        invoice_id = super(account_invoice, self).create(cr, uid, vals, context=context)
-        # create function return only 1 id
-        if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
-            invoice = self.browse(cr, uid, invoice_id, context)
-            partner_vals = {}
-            if not invoice.partner_id.carriage_condition_id:
-                partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
-            if not invoice.partner_id.goods_description_id:
-                partner_vals['goods_description_id'] = vals.get('goods_description_id')
-            if partner_vals:
-                invoice.partner_id.write(partner_vals)
-
-        return invoice_id
-
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
@@ -293,16 +275,5 @@ class account_invoice(orm.Model):
                         invoice.write({'picking_id': False})
                 elif not origin and vals.get('state', False) in ('open',):  # and vals.get('move_id', True):
                     self.create_picking(cr, uid, ids, vals['state'], context)
-
-            # adaptative function: the system learn
-
-            if vals.get('carriage_condition_id', False) or vals.get('goods_description_id', False):
-                partner_vals = {}
-                if not invoice.partner_id.carriage_condition_id:
-                    partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
-                if not invoice.partner_id.goods_description_id:
-                    partner_vals['goods_description_id'] = vals.get('goods_description_id')
-                if partner_vals:
-                    invoice.partner_id.write(partner_vals)
     
         return res
