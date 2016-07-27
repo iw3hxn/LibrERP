@@ -22,6 +22,7 @@
                                 <field name="address_delivery_id"
                                    attrs="{'invisible': [('move_products', '==', False)], 'required': [('move_products', '!=', '')] }"
                                    context="{'contact_display':'partner_address'}" colspan="4"/>
+                                <field name="picking_id" readonly="1"/>
                             </group>
                             <group string="Shipping Details">
                                 <field name="carriage_condition_id"/>
@@ -33,7 +34,7 @@
                                 <field name="weight_net"/>
                                 <field name="number_of_packages"/>
                             </group>
-                            <field name="picking_id" readonly="1"/>
+
                         </page>
                     </page>
                 </data>

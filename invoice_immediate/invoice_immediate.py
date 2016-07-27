@@ -93,7 +93,7 @@ class account_invoice(orm.Model):
 
         return {'value': val}
     
-    def create_picking(self, cr, uid, ids, state, context=None):
+    def create_picking(self, cr, uid, ids, state=None, context=None):
         """Create a picking for each order and validate it."""
         picking_obj = self.pool['stock.picking']
         partner_obj = self.pool['res.partner']
@@ -101,6 +101,9 @@ class account_invoice(orm.Model):
         stock_location_obj = self.pool['stock.location']
         currency_obj = self.pool['res.currency']
         uom_obj = self.pool['product.uom']
+
+        if isinstance(ids, (int, long)):
+            ids = [ids]
 
         for invoice in self.browse(cr, uid, ids, context=context):
             if invoice.address_delivery_id:
@@ -148,22 +151,22 @@ class account_invoice(orm.Model):
                 assert location_id, _("Stock location's named 'Stock' not exists. please verify.")
                 location_id = location_id[0]
 
-            partner_data = partner_obj.browse(cr, uid, invoice.partner_id.id, context)
+            partner = partner_obj.browse(cr, uid, invoice.partner_id.id, context)
 
             # prende quello 'generico' di stock.location, nell'unico caso (improbabile)
             # non ci sia il dato in res.partner, 'property_stock_customer'.
 
             if picking_type == 'out':
-                if not partner_data.property_stock_customer:
+                if not partner.property_stock_customer:
                     customer_location_id = stock_location_obj.search(cr, uid, [('name', '=', 'Customers')])
                     assert customer_location_id, _("Customer location's named 'Customers' not exists. please verify.")
                     customer_location_id = customer_location_id[0]
                 else:
-                    customer_location_id = int(partner_data.property_stock_customer.id)
+                    customer_location_id = int(partner.property_stock_customer.id)
                 dest_id = customer_location_id
             elif picking_type == 'in':
                 dest_id = location_id
-                location_id = int(partner_data.property_stock_supplier.id)
+                location_id = int(partner.property_stock_supplier.id)
             
             # invoice_line_ids = invoice_line_obj.search(cr, uid, [('invoice_id', '=', invoice.id)])
             # invoice_lines = invoice_line_obj.browse(cr, uid, invoice_line_ids)
@@ -171,17 +174,11 @@ class account_invoice(orm.Model):
             for line in invoice.invoice_line:
                 if line.product_id and line.product_id.type == 'service' or not line.product_id:
                     continue
-                
-                # if picking_type == 'out':
-                #     product_qty_new = line.product_id.qty_available - line.quantity
-                #     note = _('Immediate invoice')
-                #     if product_qty_new < 0:
-                #         raise orm.except_orm((_('Warning!'), _('Not enough {product} in stock.').format(product=line.product_id.name)))
-                # else:
-                #     note = ''
-                
+
                 if line.quantity < 0:
-                    location_id, dest_id = dest_id, location_id
+                    move_location_id, move_dest_id = dest_id, location_id
+                else:
+                    move_location_id, move_dest_id = location_id, dest_id
 
                 vals = {
                     'name': line.name,
@@ -193,8 +190,8 @@ class account_invoice(orm.Model):
                     'product_qty': abs(line.quantity),
                     'tracking_id': False,
                     'state': 'draft',
-                    'location_id': location_id,
-                    'location_dest_id': dest_id,
+                    'location_id': move_location_id,
+                    'location_dest_id': move_dest_id,
                     'note': (picking_type == 'out') and _('Immediate invoice') or '',
                     'price_unit': line.price_unit,
                     'price_currency_id': invoice.currency_id.id,
