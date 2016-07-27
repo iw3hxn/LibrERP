@@ -294,15 +294,15 @@ class project_project(orm.Model):
             }, ),
         'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                        multi='sums', string="Spent Amount", store={
-                'account.analytic.line': (_get_project_account, ['amount'], 40),
+                'account.analytic.line': (_get_project_account, ['amount'], 60),
             }, ),
         'total_service_spent': fields.function(_total_account, type='float',
                                                digits_compute=dp.get_precision('Sale Price'), multi='sums',
                                                string="Service Spent Amount", store={
-                'account.analytic.line': (_get_project_account, ['amount'], 40),
+                'account.analytic.line': (_get_project_account, ['amount'], 70),
             }, ),
         'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                          multi='sums', string="Invoice Amount", store={
-                'account.analytic.line': (_get_project_account, ['amount'], 40),
+                'account.analytic.line': (_get_project_account, ['amount'], 80),
             }, ),
     }
