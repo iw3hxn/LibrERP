@@ -2,6 +2,10 @@
 <openerp>
     <data>
 
+        <record model="ir.actions.act_window" id="stock.action_move_form2">
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+        </record>
+
         <!--SEARCH VIEW-->
 
         <record model="ir.ui.view" id="view_picking_out_search_inh_filter">
