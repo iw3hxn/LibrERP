@@ -15,10 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: mass_editing
+#. modules: mass_editing, base
+#: model:ir.module.module,shortdesc:base.module_mass_editing
 #: model:ir.actions.act_window,name:mass_editing.action_mass_object_form
 #: model:ir.ui.menu,name:mass_editing.menu_mass_editing
 #: model:ir.ui.menu,name:mass_editing.menu_mass_object_view
+#, python-format
 msgid "Mass Editing"
 msgstr "Modifiche Massive"
 
