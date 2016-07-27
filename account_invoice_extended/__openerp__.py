@@ -40,6 +40,8 @@
 
         Clear Account Move menu on Customer/Supplier Invoice
 
+        Add adaptative function: the system learn.. form invoice to partner form
+
     """,
     "depends": [
         'base',
