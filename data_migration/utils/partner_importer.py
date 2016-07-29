@@ -183,7 +183,7 @@ class ImportFile(threading.Thread, Utils):
 
         return True
 
-    #def _find_partner(self, cr, uid, record):
+    # def _find_partner(self, cr, uid, record):
     #    for field in self.PARTNER_SEARCH:
     #        if getattr(record, field):
     #            _logger.info(u"{0} = {1}".format(field, getattr(record, field)))

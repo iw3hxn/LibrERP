@@ -433,6 +433,10 @@ class ImportFile(threading.Thread, Utils):
             vals_product['uom_id'] = self.get_uom(cr, uid, record.uom)
             vals_product['uom_po_id'] = vals_product['uom_id']
 
+        if hasattr(record, 'active') and record.active:
+            if record.active == 'FALSE':
+                vals_product['active'] = False
+
         if hasattr(record, 'tax_out') and record.tax_out:
             taxes_ids = self.get_taxes(cr, uid, record.tax_out)
             if taxes_ids:
