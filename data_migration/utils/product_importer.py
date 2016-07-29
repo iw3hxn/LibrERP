@@ -437,6 +437,12 @@ class ImportFile(threading.Thread, Utils):
             if record.active == 'FALSE':
                 vals_product['active'] = False
 
+        if hasattr(record, 'procure_method') and record.procure_method:
+            if record.procure_method == 'make to stock':
+                vals_product['procure_method'] = 'make_to_stock'
+            if record.procure_method == 'make to order':
+                vals_product['procure_method'] = 'make_to_order',
+
         if hasattr(record, 'tax_out') and record.tax_out:
             taxes_ids = self.get_taxes(cr, uid, record.tax_out)
             if taxes_ids:
