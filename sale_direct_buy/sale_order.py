@@ -83,9 +83,19 @@ class sale_order(orm.Model):
                                     break
                 
                 elif order_line.product_id and order_line.type == 'make_to_order' and order_line.supplier_id:
+
+                    standard_price = order_line.product_id.standard_price
+
+                    purchase_price = self.pool['res.currency'].compute(cr, uid,
+                                                                       order.pricelist_id.currency_id.id,
+                                                                       order_line.supplier_id.property_product_pricelist_purchase.id,
+                                                                       order_line.purchase_price, round=True,
+                                                                       currency_rate_type_from=False,
+                                                                       currency_rate_type_to=False, context=context)
+
                     res = self.pool['purchase.order.line'].onchange_product_id(cr, uid, ids, order_line.supplier_id.property_product_pricelist_purchase.id, order_line.product_id.id, order_line.product_uom_qty or 1, order_line.product_uom.id,
                         order_line.supplier_id.id, order_line.order_id.date_order, order_line.supplier_id.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                        order_line.name, order_line.purchase_price or order_line.product_id.standard_price, order_line.notes, context)
+                        order_line.name, purchase_price or standard_price, order_line.notes, context)
 
                     product_to_buy = res['value'].get('product_qty') - order_line.product_id.virtual_available  # child_bom.product_uom_qty or 1,
 
@@ -132,7 +142,7 @@ class sale_order(orm.Model):
                 if supplier_id == 'no_supplier':
                     # Control if there are requesition requests in state 'draft'. If find any,
                     # use them, if not create new.
-                    requisition_ids = purchase_requisition_obj.search(cr, uid, [('state', '=', 'draft')], context)
+                    requisition_ids = purchase_requisition_obj.search(cr, uid, [('state', '=', 'draft')], context=context)
                     if requisition_ids:
                         for line in order_lines:
                             line['requisition_id'] = requisition_ids[0]
@@ -219,7 +229,6 @@ class sale_order_line(orm.Model):
                           supplier_id=False, extra_purchase_discount=0.0, auto_supplier=True, context=None):
         
         supplierinfo_obj = self.pool['product.supplierinfo']
-        
         result_dict = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty,
                                                                      uom, qty_uos, uos, name, partner_id,
                                                                      lang, update_tax, date_order, packaging, fiscal_position, flag)
@@ -252,13 +261,19 @@ class sale_order_line(orm.Model):
 
                 if supplier_id:
                     supplier = self.pool['res.partner'].browse(cr, uid, supplier_id, context=context)
-                    pricelist = supplier.property_product_pricelist_purchase and supplier.property_product_pricelist_purchase.id or False
-                    if pricelist:
+                    supplier_pricelist = supplier.property_product_pricelist_purchase and supplier.property_product_pricelist_purchase.id or False
+                    if supplier_pricelist:
                         ctx = {
                             'date': date_order or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                         }
-                        price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist], product_id, 1, context=ctx)[pricelist] or 0
+                        price = self.pool['product.pricelist'].price_get(cr, uid, [supplier_pricelist], product_id, 1, context=ctx)[supplier_pricelist] or 0
                         if price:
+                            order_pricelist_id = self.pool['product.pricelist'].browse(cr, uid, pricelist, context).currency_id.id
+                            price = self.pool['res.currency'].compute(cr, uid,
+                                                              supplier.property_product_pricelist_purchase.currency_id.id,
+                                                              order_pricelist_id,
+                                                              price, round=True, currency_rate_type_from=False,
+                                                              currency_rate_type_to=False, context=context)
                             result_dict['value'].update({'purchase_price': price})
                 result_dict['value'].update({'type': 'make_to_order'})
 
@@ -267,7 +282,6 @@ class sale_order_line(orm.Model):
                 'manufacturer_id': False,
                 'manufacturer_pref': None,
             })
-        
         if extra_purchase_discount and result_dict['value'].get('purchase_price', False):
                 price = result_dict['value'].get('purchase_price', 0.0)
                 price *= (1 - (extra_purchase_discount or 0.0) / 100.0)

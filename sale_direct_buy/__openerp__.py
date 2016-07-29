@@ -24,7 +24,7 @@
 
 {
     "name": "Set Supplier inside Sale Order",
-    "version": "3.3.17.7",
+    "version": "3.3.18.7",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Sale',
