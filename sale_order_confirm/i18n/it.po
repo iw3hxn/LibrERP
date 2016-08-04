@@ -450,7 +450,7 @@ msgstr "Gestione Fido"
 #. module: sale_order_confirm
 #: view:sale.order:0
 msgid "Packings"
-msgstr "Imballaggi"
+msgstr "Uscite di Magazzino"
 
 #. module: sale_order_confirm
 #: view:sale.order:0
