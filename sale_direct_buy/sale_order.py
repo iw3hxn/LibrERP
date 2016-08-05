@@ -85,13 +85,7 @@ class sale_order(orm.Model):
                 elif order_line.product_id and order_line.type == 'make_to_order' and order_line.supplier_id:
 
                     standard_price = order_line.product_id.standard_price
-
-                    purchase_price = self.pool['res.currency'].compute(cr, uid,
-                                                                       order.pricelist_id.currency_id.id,
-                                                                       order_line.supplier_id.property_product_pricelist_purchase.id,
-                                                                       order_line.purchase_price, round=True,
-                                                                       currency_rate_type_from=False,
-                                                                       currency_rate_type_to=False, context=context)
+                    purchase_price = self.pool['res.currency'].compute(cr, uid, order.pricelist_id.currency_id.id, order_line.supplier_id.property_product_pricelist_purchase.currency_id.id, order_line.purchase_price, round=True, currency_rate_type_from=False, currency_rate_type_to=False, context=context)
 
                     res = self.pool['purchase.order.line'].onchange_product_id(cr, uid, ids, order_line.supplier_id.property_product_pricelist_purchase.id, order_line.product_id.id, order_line.product_uom_qty or 1, order_line.product_uom.id,
                         order_line.supplier_id.id, order_line.order_id.date_order, order_line.supplier_id.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
