@@ -471,6 +471,19 @@ class sale_order(orm.Model):
         'subscription_invoice_day': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.subscription_invoice_day,
     }
 
+    def copy(self, cr, uid, ids, default=None, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+
+        if not default:
+            default = {}
+
+        # We want supplier_invoice_number, cig, cup to be recreated:
+        default.update({
+            'order_start_date': False,
+        })
+        return super(sale_order, self).copy(cr, uid, ids, default, context)
+
     def _amount_line_tax(self, cr, uid, line, context=None):
         if line.order_id.have_subscription and line.subscription:
             val = 0.0
@@ -489,7 +502,7 @@ class sale_order(orm.Model):
         """
 
         if context and 'anticipation' in context:
-            cron_ids = self.pool['ir.cron'].search(cr, uid, [('function', '=', 'renew_orders')])
+            cron_ids = self.pool['ir.cron'].search(cr, uid, [('function', '=', 'renew_orders')], context=context)
             if cron_ids:
                 cron = self.pool['ir.cron'].browse(cr, uid, cron_ids[0], context)
                 anticipate = datetime.timedelta(days=int(cron.args.strip("(',)")))
@@ -507,7 +520,7 @@ class sale_order(orm.Model):
         
         # Find all orders that should be renewed:
         # order_ids = order_obj.search(cr, uid, [('automatically_create_new_subscription', '=', True), ('order_start_date', '>', two_years_ago), ('state', 'not in', ('draft', 'cancel', 'wait_valid'))])
-        order_ids = order_obj.search(cr, uid, [('automatically_create_new_subscription', '=', True), ('order_start_date', '>', two_years_ago), ('state', 'in', ('progress',))])
+        order_ids = order_obj.search(cr, uid, [('automatically_create_new_subscription', '=', True), ('order_start_date', '>', two_years_ago), ('state', 'in', ('progress',))], context=context)
         
         order_end_dates = self.get_order_end_date(cr, uid, order_ids, '', '')
 
@@ -525,9 +538,9 @@ class sale_order(orm.Model):
                 }
                 new_order_id = self.copy(cr, uid, order.id, values)
                 
-                order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': False})
+                order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': False}, context)
                 
-                new_line_ids = line_obj.search(cr, uid, [('order_id', '=', new_order_id)])
+                new_line_ids = line_obj.search(cr, uid, [('order_id', '=', new_order_id)], context=context)
                 new_lines = line_obj.browse(cr, uid, new_line_ids, context)
                 for line in new_lines:
                     if not line.product_id.subscription or line.suspended:

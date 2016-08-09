@@ -24,7 +24,7 @@
 		<!-- 				WIZARD MASSIVE Category ACTION				-->
 		<!-- ====================================================== -->
 		<record id="action_massive_category_change_wizard" model="ir.actions.act_window">
-			<field name="name">Massive Category Chage</field>
+			<field name="name">Massive Category Change</field>
 			<field name="res_model">wzd.massive_category_change</field>
 			<field name="src_model">product.product</field>
 			<field name="view_type">form</field>
@@ -39,7 +39,7 @@
 		<record model="ir.values" id="act_massive_category_change_wizard">
 			<field name="model_id" ref="product.model_product_product" />
 			<field name="object" eval="1" />
-			<field name="name">Massive Category Chage</field>
+			<field name="name">Massive Category Change</field>
 			<field name="key2">client_action_multi</field>
 			<field name="value" eval="'ir.actions.act_window,' + str(ref('action_massive_category_change_wizard'))" />
 			<field name="key">action</field>

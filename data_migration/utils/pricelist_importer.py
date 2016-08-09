@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2015 Andrei Levin (andrei.levin at didotech.com)
+# Copyright (c) 2013-2016 Didotech SRL (info at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -119,10 +119,9 @@ class ImportFile(threading.Thread, Utils):
                 # Annulla le modifiche fatte
                 self.cr.rollback()
                 self.cr.commit()
-
                 title = "Import failed"
                 message = "Errore alla linea %s" % (
-                    self.processed_lines + "\nDettaglio:\n\n" + str(e)
+                    str(self.processed_lines) + "\nDettaglio:\n\n" + str(e)
                 )
 
                 if DEBUG:
@@ -147,9 +146,16 @@ class ImportFile(threading.Thread, Utils):
         # NB: il + 1 alla fine serve ad evitare divisioni per zero
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
+        wizard = self.pricelistImportRecord
+        # self.browse(cr, uid, ids[0], context=context)
+        pricelist_version_id = wizard.pricelist_version_id
+        pricelist_version_id.write({
+            'items_id': [(2, item.id) for item in pricelist_version_id.items_id]
+        })
+
         for self.processed_lines, row_list in enumerate(table, start=1):
 
-            if not self.import_row(cr, uid, row_list):
+            if not self.import_row(cr, uid, row_list, pricelist_version_id):
                 self.problems += 1
 
             if (self.processed_lines % notifyProgressStep) == 0:
@@ -160,11 +166,12 @@ class ImportFile(threading.Thread, Utils):
                 completedPercentage = math.trunc(completedQuota * 100)
                 self.progressIndicator = completedPercentage
                 self.updateProgressIndicator(cr, uid, self.pricelistImportID)
+
         self.progressIndicator = 100
         self.updateProgressIndicator(cr, uid, self.pricelistImportID)
         return True
 
-    def import_row(self, cr, uid, row_list):
+    def import_row(self, cr, uid, row_list, pricelist_version_id):
         if self.first_row:
             row_str_list = [self.simple_string(value) for value in row_list]
             for column in row_str_list:
@@ -209,34 +216,22 @@ class ImportFile(threading.Thread, Utils):
         record = self.RecordPriceListItem._make(
             [self.simple_string(value) for value in row_list]
         )
-        wizard = self.pricelistImportRecord
-        # self.browse(cr, uid, ids[0], context=context)
-        pricelist_version_id = wizard.pricelist_version_id
-        pricelist_version_id.write(
-            {
-                'items_id': [
-                    (2, item.id) for item in pricelist_version_id.items_id
-                ]
-            }
-        )
+
+
         product = record.code
         if self.cache_product.get(product, False):
-            product_ids = [self.cache_product[product]]
-            _logger.warning(
-                u'Product {0} already processed in cache'.format(product)
-            )
+            # product_ids = [self.cache_product[product]]
+            warning = u'Product {0} already processed in cache'.format(product)
+            _logger.warning(warning)
+            self.warning.append(warning)
             return False
         else:
-            product_ids = self.pool['product.product'].search(cr, uid, [
-                ('default_code', '=', product)
-            ], context=self.context)
+            product_ids = self.pool['product.product'].search(cr, uid, [('default_code', '=', product)], context=self.context)
 
         if not product_ids:
-            _logger.warning(
-                u'Row {row}: Not Find {product}'.format(
-                    row=self.processed_lines, product=record.code
-                )
-            )
+            error = u'Row {row} => Not Find code: {product}'.format(row=self.processed_lines, product=record.code)
+            _logger.error(error)
+            self.error.append(error)
             return False
 
         product_id = product_ids.pop()

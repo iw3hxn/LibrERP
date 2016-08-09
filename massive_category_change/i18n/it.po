@@ -28,7 +28,7 @@ msgstr "Chiudi"
 
 #. module: massive_category_change
 #: model:ir.actions.act_window,name:massive_category_change.action_massive_category_change_wizard
-msgid "Massive Category Chage"
+msgid "Massive Category Change"
 msgstr "Modifica Massiva Categoria"
 
 #. module: massive_category_change

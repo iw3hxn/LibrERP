@@ -384,7 +384,7 @@ msgid "Sales Order Line"
 msgstr "Linea d'ordine di vendita"
 
 #. module: sale_order_confirm
-#: model:res.groups,name:sale.verify_manager
+#: model:res.groups,name:sale.view_subscription_invoice_day
 msgid "Change Invoice Day on Sale Order"
 msgstr "Cambia il giorno di Fatturazione nell'ordine di Vendita"
 

@@ -140,7 +140,7 @@ class ImportFile(threading.Thread, Utils):
                 self.cr.commit()
                 
                 title = "Import failed"
-                message = "Errore alla linea %s" % self.processed_lines + "\nDettaglio:\n\n" + str(e)
+                message = "Errore alla linea %s" % str(self.processed_lines) + "\nDettaglio:\n\n" + str(e)
                 
                 if DEBUG:
                     ### Debug
@@ -438,10 +438,16 @@ class ImportFile(threading.Thread, Utils):
                 vals_product['active'] = False
 
         if hasattr(record, 'procure_method') and record.procure_method:
-            if record.procure_method == 'make to stock':
+            if record.procure_method.lower() == 'make to stock':
                 vals_product['procure_method'] = 'make_to_stock'
-            if record.procure_method == 'make to order':
+            if record.procure_method.lower() == 'make to order':
                 vals_product['procure_method'] = 'make_to_order'
+
+        if hasattr(record, 'cost_method') and record.cost_method:
+            if record.cost_method.lower() == 'average price':
+                vals_product['cost_method'] = 'average'
+            else:
+                vals_product['cost_method'] = 'standard'
 
         if hasattr(record, 'tax_out') and record.tax_out:
             taxes_ids = self.get_taxes(cr, uid, record.tax_out)

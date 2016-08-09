@@ -153,7 +153,7 @@ class ImportFile(threading.Thread, Utils):
                 self.cr.commit()
 
                 title = "Import failed"
-                message = u"Errore alla linea %s" % self.processed_lines + "\nDettaglio:\n\n" + str(e)
+                message = u"Errore alla linea %s" % str(self.processed_lines) + "\nDettaglio:\n\n" + str(e)
 
                 if DEBUG:
                     ### Debug
