@@ -38,47 +38,48 @@ class account_invoice(orm.Model):
         if len(invoices) <= 1:
             return False
         parent = self.pool['account.invoice'].browse(cr, uid, context['active_id'], context=context)
-        for inv in invoices:
-            if parent.partner_id != inv.partner_id:
-                raise orm.except_orm(_("Partners don't match!"), _("Can not merge invoice(s) on different partners or states !. %s different from %s") % parent.partner_id.name, inv.partner_id.name)
+        for invoice in invoices:
+            if parent.partner_id != invoice.partner_id:
+                raise orm.except_orm(_("Partners don't match!"), _("Can not merge invoice(s) on different partners or states !. %s different from %s") % parent.partner_id.name, invoice.partner_id.name)
 
-            if inv.state != 'draft':
+            if invoice.state != 'draft':
                 raise orm.except_orm(_("Invalid action !"), _("You can merge only invoices in draft state."))
 
         # Merge invoices that are in draft state
-        inv_line_obj = self.pool['account.invoice.line']
+        invoice_line_obj = self.pool['account.invoice.line']
+        sale_order_obj = self.pool['sale.order']
         name = parent.name or ''
         comment = parent.comment or ''
         origin = parent.origin or ''
         
-        for inv in invoices:
-            if inv.id == parent.id:
+        for invoice in invoices:
+            if invoice.id == parent.id:
                 continue
 
             # check if a line with the same product already exist. if so add quantity. else hang up invoice line to first invoice head.
-            if inv.name:
-                name += ', %s' % inv.name
-            if inv.comment:
-                comment += ', %s' % inv.comment
-            if inv.origin:
-                origin += ', %s' % inv.origin
-            line_ids = inv_line_obj.search(cr, uid, [('invoice_id', '=', inv.id)], context=context)
-            for inv_lin in inv_line_obj.browse(cr, uid, line_ids, context):
-                mrg_pdt_ids = inv_line_obj.search(cr, uid, [('invoice_id', '=', parent.id), ('product_id', '=', inv_lin.product_id.id)], context=context)
-                if merge_lines and len(mrg_pdt_ids) == 1 and inv.type == parent.type:  # product found --> add quantity
-                    inv_line_obj.write(cr, uid, mrg_pdt_ids, {'quantity': inv_line_obj._can_merge_quantity(cr, uid, mrg_pdt_ids[0], inv_lin.id)})
-                    inv_line_obj.unlink(cr, uid, [inv_lin.id])
-                elif inv.type == parent.type:
+            if invoice.name:
+                name += ', %s' % invoice.name
+            if invoice.comment:
+                comment += ', %s' % invoice.comment
+            if invoice.origin:
+                origin += ', %s' % invoice.origin
+            invoice_line_ids = invoice_line_obj.search(cr, uid, [('invoice_id', '=', invoice.id)], context=context)
+            for invoice_line in invoice_line_obj.browse(cr, uid, invoice_line_ids, context):
+                mrg_pdt_ids = invoice_line_obj.search(cr, uid, [('invoice_id', '=', parent.id), ('product_id', '=', invoice_line.product_id.id)], context=context)
+                if merge_lines and len(mrg_pdt_ids) == 1 and invoice.type == parent.type:  # product found --> add quantity
+                    invoice_line_obj.write(cr, uid, mrg_pdt_ids, {'quantity': invoice_line_obj._can_merge_quantity(cr, uid, mrg_pdt_ids[0], invoice_line.id)}, context)
+                    invoice_line_obj.unlink(cr, uid, [invoice_line.id], context)
+                elif invoice.type == parent.type:
                     vals = {
                         'invoice_id': parent.id,
                     }
                 else:
                     vals = {
                         'invoice_id': parent.id,
-                        'quantity': -inv_lin.quantity,
+                        'quantity': -invoice_line.quantity,
                     }
 
-                inv_line_obj.write(cr, uid, inv_lin.id, vals, context)
+                invoice_line_obj.write(cr, uid, invoice_line.id, vals, context)
 
             self.write(cr, uid, parent.id, {
                 'origin': origin,
@@ -86,7 +87,10 @@ class account_invoice(orm.Model):
                 'comment': comment
             }, context)
 
-            self.unlink(cr, uid, [inv.id], context)
+            sale_order_ids = sale_order_obj.search(cr, uid, [('invoice_ids', 'in', invoice.id)], context=context)
+            sale_order_obj.write(cr, uid, sale_order_ids, {'invoice_ids': [(4, parent.id)]}, context)
+            self.write(cr, uid, [invoice.id], {'origin': ''}, context)  # no reopen model
+            self.unlink(cr, uid, [invoice.id], context)
 
         self.button_reset_taxes(cr, uid, [parent.id], context)
         return parent.id
@@ -97,8 +101,8 @@ class account_invoice_line(orm.Model):
 
     def _can_merge_quantity(self, cr, uid, id1, id2, context=None):
         qty = False
-        invl1 = self.browse(cr, uid, id1)
-        invl2 = self.browse(cr, uid, id2)
+        invl1 = self.browse(cr, uid, id1, context)
+        invl2 = self.browse(cr, uid, id2, context)
 
         if invl1.product_id.id == invl2.product_id.id \
             and invl1.price_unit == invl2.price_unit \

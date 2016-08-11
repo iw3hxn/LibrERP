@@ -24,7 +24,7 @@
         Merge draft invoices from the same partner
     """,
     'author': 'Mikel Martin (http://ZhenIT.com)',
-    'depends': ['base','account'],
+    'depends': ['base', 'account', 'sale'],
     'init_xml': [],
     'update_xml': [
         "wizard/invoice_merge_view.xml",

@@ -90,3 +90,8 @@ msgstr "Azione non valida !"
 msgid "Use this wizard to merge draft invoices from the same partner"
 msgstr "Usa questa funzione per raggruppare bozze fattura dello stesso partner"
 
+#. module: account_invoice_merge
+#: field:invoice.merge,merge_lines:0
+msgid "Merge invoice lines"
+msgstr "Raggruppa le righe della fattura"
+

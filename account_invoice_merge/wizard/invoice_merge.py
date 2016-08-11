@@ -20,13 +20,11 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-import time
+from openerp.osv import fields, orm
 from lxml import etree
-from tools.translate import _
 
 
-class invoice_merge(osv.osv_memory):
+class invoice_merge(orm.TransientModel):
     """
     Merge invoices
     """
@@ -34,18 +32,21 @@ class invoice_merge(osv.osv_memory):
     _name = 'invoice.merge'
     _description = 'Use this wizard to merge draft invoices from the same partner'
 
-    _columns={
-        'merge_lines':fields.boolean('Merge invoice lines', help = 'Merge invoice lines with same product at the same price.'),
-        'invoices':fields.many2many('account.invoice', 'account_invoice_merge_rel', 'merge_id', 'invoice_id', 'Invoices')
-     }
+    _columns = {
+        'merge_lines': fields.boolean('Merge invoice lines',
+                                      help='Merge invoice lines with same product at the same price.'),
+        'invoices': fields.many2many('account.invoice', 'account_invoice_merge_rel', 'merge_id', 'invoice_id',
+                                     'Invoices')
+    }
+
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
         res = super(invoice_merge, self).fields_view_get(cr, uid, view_id=view_id, view_type=view_type, context=context, toolbar=toolbar, submenu=False)
-        parent = self.pool.get('account.invoice').browse(cr,uid,context['active_id'])
+        parent = self.pool['account.invoice'].browse(cr, uid, context['active_id'], context)
 
         doc = etree.XML(res['arch'])
         nodes = doc.xpath("//field[@name='invoices']")
         for node in nodes:
-            node.set('domain', '["&",("partner_id", "=", '+ str(parent.partner_id.id) +'),("state", "=","draft")]')
+            node.set('domain', '["&",("partner_id", "=", ' + str(parent.partner_id.id) + '),("state", "=","draft")]')
         res['arch'] = etree.tostring(doc)
         context['partner'] = parent.partner_id.id
         return res
@@ -62,10 +63,8 @@ class invoice_merge(osv.osv_memory):
     def merge_invoices(self, cr, uid, ids, context):
 
         data = self.browse(cr, uid, ids, context=context)[0]
-        self.pool.get('account.invoice').merge_invoice(cr, uid, data.invoices, data.merge_lines, context)
+        self.pool['account.invoice'].merge_invoice(cr, uid, data.invoices, data.merge_lines, context)
 
         return {'type': 'ir.actions.act_window_close'}
-
-invoice_merge()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
