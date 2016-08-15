@@ -26,6 +26,9 @@
                     <field name="date_to" filter_domain="[('date_order','&lt;=',self)]"/>
                     <separator orientation="vertical"/>
                 </filter>
+                <field name="name" position="after">
+                    <newline/>
+                </field>
                 <field name="shop_id" position="after">
                     <field name="year" string="Year" />
                 </field>
