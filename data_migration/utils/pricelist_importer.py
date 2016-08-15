@@ -211,11 +211,9 @@ class ImportFile(threading.Thread, Utils):
             return False
         elif DEBUG:
             # pprint(row_list)
-            row_str_list = [self.simple_string(value) for value in row_list]
+            row_str_list = [self.toStr(value) for value in row_list]
             pprint(zip(self.HEADER, row_str_list))
-        record = self.RecordPriceListItem._make(
-            [self.simple_string(value) for value in row_list]
-        )
+        record = self.RecordPriceListItem._make([self.toStr(value) for value in row_list])
 
 
         product = record.code
@@ -245,9 +243,7 @@ class ImportFile(threading.Thread, Utils):
             'price_surcharge': float(record.price_surcharge) or False
         }
 
-        pricelist_version_item_id = self.pricelist_item_obj.create(
-            cr, uid, pricelist_version_item_vals
-        )
+        pricelist_version_item_id = self.pricelist_item_obj.create(cr, uid, pricelist_version_item_vals)
 
         self.uo_new += 1
         return pricelist_version_item_id

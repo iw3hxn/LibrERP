@@ -334,7 +334,7 @@ class ImportFile(threading.Thread, Utils):
 
     def import_row(self, cr, uid, row_list):
         if self.first_row:
-            row_str_list = [self.simple_string(value) for value in row_list]
+            row_str_list = [self.toStr(value) for value in row_list]
             for column in row_str_list:
                 # print column
                 if column in self.HEADER:
@@ -342,7 +342,7 @@ class ImportFile(threading.Thread, Utils):
                     return True
             self.first_row = False
         if not len(row_list) == len(self.HEADER):
-            row_str_list = [self.simple_string(value) for value in row_list]
+            row_str_list = [self.toStr(value) for value in row_list]
             if DEBUG:
                 if len(row_list) > len(self.HEADER):
                     pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
@@ -361,11 +361,12 @@ class ImportFile(threading.Thread, Utils):
             return False
         elif DEBUG:
             # pprint(row_list)
-            row_str_list = [self.simple_string(value) for value in row_list]
+            row_str_list = [self.toStr(value) for value in row_list]
             pprint(zip(self.HEADER, row_str_list))
         
         # Sometime value is only numeric and we don't want string to be treated as Float
-        record = self.RecordProduct._make([self.simple_string(value) for value in row_list])
+        record = self.RecordProduct._make([self.toStr(value) for value in row_list])
+        print record
         if record.default_code and record.default_code in self.cache:
             _logger.warning(u'Code {0} already processed'.format(record.default_code))
             # return False
@@ -529,7 +530,7 @@ class ImportFile(threading.Thread, Utils):
             self.product_obj.write(cr, uid, product_id, vals_product, self.context)
             self.updated += 1
         else:
-            _logger.info(u'Row {row}: Adding product {product}...'.format(row=self.processed_lines, product=vals_product[field]))
+            _logger.info(u'Row {row}: Adding product {product}'.format(row=self.processed_lines, product=vals_product[field]))
             default_vals_product = self.PRODUCT_DEFAULTS.copy()
             if not vals_product.get('uom_id') and default_vals_product.get('uom'):
                 vals_product['uom_id'] = self.get_uom(cr, uid, default_vals_product['uom'])

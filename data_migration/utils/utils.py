@@ -45,29 +45,45 @@ class Utils():
         _logger.info('Import status: %d %s (%d lines processed)' % (self.progress_indicator, '%', self.processed_lines))
 
     def toStr(self, value):
-        number = re.compile(r'^[0-9.,]+$')
-        number_vith_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
-        number_vith_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
-
-        if isinstance(value, (str, unicode)):
-            if number.match(value) and not value[0] == '0':
-                if ',' in value or '.' in value:
-                    if number_vith_thousands_separator_italian.match(value):
-                        value = value.replace('.', '')
-                    elif number_vith_thousands_separator.match(value):
-                        value = value.replace(',', '')
-                    value = value.replace(',', '.')
-                    value = float(value)
-                else:
-                    value = int(value)
-                return unicode(value)
-            else:
-                return value.strip()
-        else:
-            if value:
-                return unicode(value)
-            else:
+        if value:
+            if isinstance(value, (str, unicode)) and value.lower() == 'null':
                 return False
+
+            number = re.compile(r'^(?!0)[0-9.,]+$')
+            number_with_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
+            number_with_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
+            if isinstance(value, (unicode, str)):
+                if number.match(value):
+                    if ',' in value or '.' in value:
+                        if number_with_thousands_separator_italian.match(value):
+                            value = value.replace('.', '')
+                        elif number_with_thousands_separator.match(value):
+                            value = value.replace(',', '')
+                        else:
+                            if value[0] in ('0', '+'):
+                                return unicode(value)
+                            elif value.count('.') > 1:
+                                # not a number
+                                return unicode(value)
+
+                        value = value.replace(',', '.')
+                        value = float(value)
+                    else:
+                        value = int(value)
+                    return unicode(value)
+                else:
+                    return value.strip()
+            else:
+                if value:
+                    if int(value) == value:
+                        # Trim .0
+                        return unicode(int(value))
+                    else:
+                        return unicode(value)
+                else:
+                    return False
+        else:
+            return False
 
     def simple_string(self, value, as_integer=False):
         if isinstance(value, (str, unicode)):

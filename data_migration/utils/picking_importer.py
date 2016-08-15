@@ -196,7 +196,7 @@ class ImportFile(threading.Thread, Utils):
     def import_row(self, cr, uid, row_list):
 
         if self.first_row:
-            row_str_list = [self.simple_string(value) for value in row_list]
+            row_str_list = [self.toStr(value) for value in row_list]
             for column in row_str_list:
                 # print column
                 if column in self.HEADER:

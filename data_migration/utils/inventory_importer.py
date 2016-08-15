@@ -215,7 +215,7 @@ class ImportFile(threading.Thread, Utils):
             pprint(zip(self.HEADER, row_str_list))
         
         # Sometime value is only numeric and we don't want string to be treated as Float
-        record = self.RecordProduct._make([self.simple_string(value) for value in row_list])
+        record = self.RecordProduct._make([self.toStr(value) for value in row_list])
 
         for field in self.REQUIRED_INVENTORY_ITEM:
             if not getattr(record, field):
