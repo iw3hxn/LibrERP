@@ -243,7 +243,7 @@ class ImportFile(threading.Thread, Utils):
             'price_surcharge': float(record.price_surcharge) or False
         }
 
-        pricelist_version_item_id = self.pricelist_item_obj.create(cr, uid, pricelist_version_item_vals)
+        pricelist_version_item_id = self.pricelist_item_obj.create(cr, uid, pricelist_version_item_vals, self.context)
 
         self.uo_new += 1
         return pricelist_version_item_id
