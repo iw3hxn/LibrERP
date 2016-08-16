@@ -26,22 +26,22 @@ class res_partner(orm.Model):
     _name = 'res.partner'
     _inherit = 'res.partner'
     
-    def fields_view_get(self, cr, user, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
-        group_obj = self.pool['res.groups']
-        ret = super(res_partner, self).fields_view_get(cr, user, view_id=view_id, view_type=view_type, context=context,
-                                                       toolbar=toolbar, submenu=submenu)
-        
-        if group_obj.user_in_group(cr, user, user, 'dt_price_security.hide_purchase_prices', context=context):
-            if 'arch' in ret:
-                xml = ret['arch']
-                root = etree.XML(xml)
-                
-                to_remove = root.xpath('//form//field[@name="property_product_pricelist_purchase"]')
-                if to_remove:
-                    if isinstance(to_remove, list):
-                        to_remove = to_remove[0]
-                    group_to_remove = to_remove.getparent()
-                    group_to_remove.getparent().remove(group_to_remove)
-                
-                ret['arch'] = etree.tostring(root)
-        return ret
+    # def fields_view_get(self, cr, user, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+    #     group_obj = self.pool['res.groups']
+    #     ret = super(res_partner, self).fields_view_get(cr, user, view_id=view_id, view_type=view_type, context=context,
+    #                                                    toolbar=toolbar, submenu=submenu)
+    #
+    #     if group_obj.user_in_group(cr, user, user, 'dt_price_security.hide_purchase_prices', context=context):
+    #         if 'arch' in ret:
+    #             xml = ret['arch']
+    #             root = etree.XML(xml)
+    #
+    #             to_remove = root.xpath('//form//field[@name="property_product_pricelist_purchase"]')
+    #             if to_remove:
+    #                 if isinstance(to_remove, list):
+    #                     to_remove = to_remove[0]
+    #                 group_to_remove = to_remove.getparent()
+    #                 group_to_remove.getparent().remove(group_to_remove)
+    #
+    #             ret['arch'] = etree.tostring(root)
+    #     return ret
