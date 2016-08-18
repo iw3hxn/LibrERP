@@ -22,6 +22,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+import decimal_precision as dp
 
 
 class stock_picking_carriage_condition(orm.Model):
@@ -94,6 +95,8 @@ class stock_picking(orm.Model):
         'client_order_ref': fields.related(
             'sale_id', 'client_order_ref', type='char',
             string='Customer Reference'),
+        'weight': fields.float('Gross weight', digits_compute=dp.get_precision('Stock Weight'), help="The gross weight in Kg."),
+        'weight_net': fields.float('Net weight', digits_compute=dp.get_precision('Stock Weight'), help="The net weight in Kg."),
     }
     
     def onchange_stock_journal(
