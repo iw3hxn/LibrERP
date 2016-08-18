@@ -130,11 +130,23 @@ class sale_order(orm.Model):
 
         return result
 
+    def create_task(self, cr, uid, order_line, task_number, task_vals, context):
+        for matrix_line in order_line.order_id.company_id.sale_task_matix_ids:
+            task_vals[matrix_line.task_field_id.name] = order_line[matrix_line.sale_order_line_field_id.name]
+
+        if order_line.order_id.company_id.task_no_user:
+            task_vals['user_id'] = False
+
+        for task in range(task_number):
+            self.pool['project.task'].create(cr, uid, task_vals, context=context)
+
+        return True
+
     def action_wait(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
         result = super(sale_order, self).action_wait(cr, uid, ids, context)
-        
         bom_obj = self.pool['mrp.bom']
-        sale_line_bom_obj = self.pool.get('sale.order.line.mrp.bom') or False # in this mode test if exist object 'sale.order.line.mrp.bom'
+        sale_line_bom_obj = self.pool.get('sale.order.line.mrp.bom')  # WARNING: in this mode test if exist object 'sale.order.line.mrp.bom'
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
 
         for order in self.browse(cr, uid, ids, context=context):
@@ -150,11 +162,10 @@ class sale_order(orm.Model):
                 self.pool['project.project'].write(cr, uid, project_id, {'to_invoice': invoice_ratio, 'state': 'open', 'name': project_name}, context=context)
                 for order_line in order.order_line:
                     task_number = 1
-                    task_vals = False
                     if order_line.product_id and order_line.product_id.is_kit:
                         # test id module sale_bom is installad
                         if sale_line_bom_obj:
-                            service_boms = [sale_line_bom for sale_line_bom in order_line.mrp_bom if (sale_line_bom.product_id.type == 'service' and sale_line_bom.product_id.purchase_ok == False)]
+                            service_boms = [sale_line_bom for sale_line_bom in order_line.mrp_bom if (sale_line_bom.product_id.type == 'service' and not sale_line_bom.product_id.purchase_ok)]
                             for bom in service_boms:
                                 if bom.product_uom.id == user.company_id.hour.id:
                                     planned_hours = bom.product_uom_qty
@@ -168,6 +179,8 @@ class sale_order(orm.Model):
                                     'remaining_hours': int(planned_hours / task_number),
                                     'origin': 'sale.order.line, {0}'.format(order_line.id)
                                 }
+                                self.create_task(cr, uid, order_line, task_number, task_vals, context)
+
                         else:
                             main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)], context=context)
                             if main_bom_ids:
@@ -176,7 +189,7 @@ class sale_order(orm.Model):
                                 
                                 bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', main_bom_ids[0])], context=context)
                                 boms = bom_obj.browse(cr, uid, bom_ids, context=context)
-                                service_boms = [bom for bom in boms if (bom.product_id.type == 'service' and order_line.product_id.purchase_ok == False)]
+                                service_boms = [bom for bom in boms if (bom.product_id.type == 'service' and not order_line.product_id.purchase_ok)]
                                 for bom in service_boms:
                                     if bom.product_uom.id == user.company_id.hour.id:
                                         planned_hours = bom.product_qty
@@ -189,8 +202,9 @@ class sale_order(orm.Model):
                                         'remaining_hours': planned_hours,
                                         'origin': 'sale.order.line, {0}'.format(order_line.id)
                                     }
+                                    self.create_task(cr, uid, order_line, task_number, task_vals, context)
                             
-                    elif order_line.product_id and order_line.product_id.type == 'service' and order_line.product_id.purchase_ok == False:
+                    elif order_line.product_id and order_line.product_id.type == 'service' and not order_line.product_id.purchase_ok:
                         if order_line.product_id.uom_id.id == user.company_id.hour.id:
                             planned_hours = order_line.product_uom_qty
                         else:
@@ -200,6 +214,7 @@ class sale_order(orm.Model):
                             task_name = order_line.product_id.name
                         else:
                             task_name = order_line.name
+
                         task_vals = {
                             'name': u"{0}: {1}".format(order.name, task_name),
                             'project_id': project_id,
@@ -207,11 +222,9 @@ class sale_order(orm.Model):
                             'remaining_hours': planned_hours,
                             'origin': 'sale.order.line, {0}'.format(order_line.id)
                         }
-                    if task_vals:
-                        if order.company_id.task_no_user:
-                            task_vals['user_id'] = False
-                        for task in range(task_number):
-                            self.pool['project.task'].create(cr, uid, task_vals, context=context)
+
+                        self.create_task(cr, uid, order_line, task_number, task_vals, context)
+
         return result
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -241,7 +254,7 @@ class sale_order(orm.Model):
                 'warn_manager': True,
                 'user_id': shop.project_manager_id and shop.project_manager_id.id or False,
             }
-            # qtodo think better with matrix / function project_manager
+            # todo think better with matrix / function project_manager
             if values.get('section_id', False):
                 sale_team = self.pool['crm.case.section'].browse(cr, uid, values['section_id'], context=context)
                 if sale_team.user_id:

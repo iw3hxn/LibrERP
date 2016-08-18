@@ -24,6 +24,13 @@
                                 <field name="user_id" />
                             </tree>
                         </field>
+
+                        <field name="sale_task_matix_ids" colspan="4" nolabel="1" attrs="{'invisible':[('create_task', '=', False)]}">
+                            <tree string="Matrix Sale to Task" editable="bottom">
+                                <field name="sale_order_line_field_id"/>
+                                <field name="task_field_id" />
+                            </tree>
+                        </field>
                     </page>
                 </notebook>
             </field>

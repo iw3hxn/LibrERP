@@ -24,7 +24,7 @@
 
 {
     "name": "Job Order management",
-    "version": "3.16.34.28",
+    "version": "3.17.35.29",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Sales Management",
@@ -38,6 +38,7 @@
             on res.company set the unit time for project (example Hour)
             create a product kit with inside a service (to produce) with different unit of measure (example day)
             sell it
+        d) is possible to create a map of field from sale order line to task
 
 
         NOTE: This module is incompatible with module sale_analytic_plans

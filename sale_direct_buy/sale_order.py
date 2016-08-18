@@ -41,7 +41,7 @@ class sale_order(orm.Model):
                 date_planned = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT) + \
                     relativedelta(days=order_line.product_id.seller_delay or 0.0)
                 if order_line.product_id.is_kit:
-                    bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)], context)
+                    bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)], context=context)
                     if bom_ids:
                         boms = bom_obj.browse(cr, uid, bom_ids, context)
                         for bom in boms:
@@ -74,14 +74,14 @@ class sale_order(orm.Model):
                                             'account_analytic_id': order.project_id.id,  # This is not an error. Just a wrong variable name. project_id is account_analytic_id
                                             'taxes_id': [(6, 0, res['value'].get('taxes_id'))],
                                         }
-                                    
+
                                         if order_line.supplier_id.id in suppliers:
                                             suppliers[supplierinfo.name.id].append(line_values)
                                         else:
                                             suppliers[supplierinfo.name.id] = [line_values]
-                                
+
                                     break
-                
+
                 elif order_line.product_id and order_line.type == 'make_to_order' and order_line.supplier_id:
 
                     standard_price = order_line.product_id.standard_price
@@ -109,7 +109,7 @@ class sale_order(orm.Model):
                         'account_analytic_id': order.project_id.id,  # This is not an error. Just a wrong variable name. project_id is account_analytic_id
                         'taxes_id': [(6, 0, res['value'].get('taxes_id'))],
                     }
-                
+
                     if order_line.supplier_id.id in suppliers:
                         suppliers[order_line.supplier_id.id].append(line_values)
                     else:
@@ -120,7 +120,7 @@ class sale_order(orm.Model):
                         'product_qty': order_line.product_uom_qty or 1,
                         'product_id': order_line.product_id.id,
                     }
-                    
+
                     if 'no_supplier' in suppliers:
                         suppliers['no_supplier'].append(line_values)
                     else:
@@ -129,9 +129,7 @@ class sale_order(orm.Model):
         if suppliers:
             purchase_order_obj = self.pool['purchase.order']
             purchase_requisition_obj = self.pool['purchase.requisition']
-            
             location_id = order.shop_id.warehouse_id.lot_stock_id.id
-            
             for supplier_id, order_lines in suppliers.iteritems():
                 if supplier_id == 'no_supplier':
                     # Control if there are requesition requests in state 'draft'. If find any,
@@ -176,13 +174,13 @@ class sale_order(orm.Model):
                     if purchase_id:
                         message = _("The Purchase order has been created.")
                         self.log(cr, uid, order.id, message)
-        
+
         return super(sale_order, self).action_wait(cr, uid, ids, context)
 
 
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
-    
+
     _columns = {
         'manufacturer_id': fields.many2one('res.partner', 'Manufacturer',),
         'manufacturer_pref': fields.char('Manufacturer Product Code', size=64),
@@ -192,7 +190,7 @@ class sale_order_line(orm.Model):
         'bom_ids': fields.one2many('sale.order.line.mrp.bom', 'order_id', 'BoM'),
         'product_brand_id': fields.related('product_id', 'product_tmpl_id', 'product_brand_id', type='many2one', relation='product.brand', string=_('Brand'), store=False)
     }
-    
+
     def create(self, cr, uid, vals, context=None):
         if vals.get('product_id', False):
             product = self.pool['product.product'].browse(cr, uid, vals['product_id'], context=context)
@@ -203,7 +201,7 @@ class sale_order_line(orm.Model):
                     'manufacturer_pref': product.manufacturer_pref,
                 })
         return super(sale_order_line, self).create(cr, uid, vals, context=context)
-        
+
     def write(self, cr, uid, ids, vals, context=None):
         if not context:
             context = {}
@@ -214,19 +212,19 @@ class sale_order_line(orm.Model):
                     'manufacturer_id': product.manufacturer.id,
                     'manufacturer_pref': product.manufacturer_pref,
                 })
-        
+
         return super(sale_order_line, self).write(cr, uid, ids, vals, context=context)
-    
+
     def product_id_change(self, cr, uid, ids, pricelist, product_id, qty=0,
                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
                           lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False,
                           supplier_id=False, extra_purchase_discount=0.0, auto_supplier=True, context=None):
-        
+
         supplierinfo_obj = self.pool['product.supplierinfo']
         result_dict = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty,
                                                                      uom, qty_uos, uos, name, partner_id,
                                                                      lang, update_tax, date_order, packaging, fiscal_position, flag)
-        
+
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id, context)
             if product.supply_method == 'buy' and product.procure_method == 'make_to_order':
@@ -280,5 +278,4 @@ class sale_order_line(orm.Model):
                 price = result_dict['value'].get('purchase_price', 0.0)
                 price *= (1 - (extra_purchase_discount or 0.0) / 100.0)
                 result_dict['value'].update({'purchase_price': price})
-        
         return result_dict

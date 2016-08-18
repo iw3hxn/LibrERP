@@ -43,6 +43,7 @@ class res_company(orm.Model):
         'delivery_note_journal_id': fields.many2one('account.analytic.journal', 'Delivery Note Journal'),
         'expense_journal_id': fields.many2one('account.analytic.journal', 'Expense Journal'),
         'work_order_default_task_ids': fields.one2many('template.task', 'company_id', string='Default Work Order Tasks'),
+        'sale_task_matix_ids': fields.one2many('sale.order.task.matrix', 'company_id', string='Matrix Sale Order Line to Task'),
         'hour': fields.many2one('product.uom', 'Hour UoM', required=True),
         'create_task': fields.boolean('Create Task from Sale Order?'),
         'task_no_user': fields.boolean('Task without default user', help='If set the task will not have a user, so will be visible to all')
@@ -64,4 +65,15 @@ class template_task(orm.Model):
         'planned_hours': fields.float('Planned Hours', help='Estimated time to do the task, usually set by the project manager when the task is in draft state.'),
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'user_id': fields.many2one('res.users', 'Task owner User')
+    }
+
+
+class sale_order_task_matrix(orm.Model):
+    _name = 'sale.order.task.matrix'
+    _description = "Matrix Sale to Task"
+
+    _columns = {
+        'sale_order_line_field_id': fields.many2one('ir.model.fields', 'Field From Sale Order Line', domain=[('model', '=', 'sale.order.line')], required=True),
+        'task_field_id': fields.many2one('ir.model.fields', 'Field To Task', domain=[('model', '=', 'project.task')], required=True),
+        'company_id': fields.many2one('res.company', 'Company', required=True),
     }
