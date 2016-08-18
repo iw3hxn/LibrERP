@@ -24,7 +24,7 @@
 
 {
     "name": "Job Order management",
-    "version": "3.17.35.30",
+    "version": "3.18.36.30",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Sales Management",
