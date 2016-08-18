@@ -10823,3 +10823,8 @@ msgstr "Impossibile da emettere la Proforma. Bisogna bisogna prima cancellare il
 #: model:res.groups,name:account.group_number_account_invoice
 msgid "Cancel Internal Number"
 msgstr "Può eliminare il numero interno della fattura"
+
+#. module: l10n_it_account
+#: constraint:res.partner:0
+msgid "The fiscal code doesn't seem to be correct."
+msgstr "Il codice fiscale inserito sembra non essere corretto"
