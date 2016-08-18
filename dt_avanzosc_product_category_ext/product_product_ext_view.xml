@@ -9,23 +9,23 @@
 			<field name="inherit_id" ref="product.product_normal_form_view" />
 			<field name="arch" type="xml">
                 <field name="purchase_ok" position="replace">
-                    <field name="purchase_ok"  on_change="onchange_categ_id('purchase_ok', categ_id, purchase_ok, type, is_kit)" />
+                    <field name="purchase_ok"  on_change="onchange_categ_id('purchase_ok', categ_id, purchase_ok, supply_method, type, supply_method, is_kit)" />
                 </field>
 
 				<field name="categ_id" position="replace">
                 </field>
                 <field name="variants" position="after">
-					<field name="categ_id" on_change="onchange_categ_id('categ_id', categ_id, purchase_ok)" />
+					<field name="categ_id" on_change="onchange_categ_id('categ_id', categ_id, purchase_ok, supply_method, type, supply_method, is_kit)" />
 				</field>			
 				
 				<field name="type" position="attributes"> 
-					<attribute name="on_change">onchange_categ_id('type', categ_id, purchase_ok, type, is_kit)</attribute>
+					<attribute name="on_change">onchange_categ_id('type', categ_id, purchase_ok, supply_method, type, is_kit)</attribute>
 				</field>	
 				<field name="procure_method" position="attributes"> 
-					<attribute name="on_change">onchange_categ_id('procure_method', categ_id, purchase_ok, type, is_kit)</attribute>
+					<attribute name="on_change">onchange_categ_id('procure_method', categ_id, purchase_ok, supply_method, type, is_kit)</attribute>
 				</field>
                 <field name="supply_method" position="attributes">
-					<attribute name="on_change">onchange_categ_id('supply_method', categ_id, purchase_ok, type, is_kit)</attribute>
+					<attribute name="on_change">onchange_categ_id('supply_method', categ_id, purchase_ok, supply_method, type, is_kit)</attribute>
 				</field>
 			</field>
 		</record>

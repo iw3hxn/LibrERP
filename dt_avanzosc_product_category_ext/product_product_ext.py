@@ -35,17 +35,17 @@ class product_product(orm.Model):
     #
     ### SI CAMBIAN LA CATEGORIA DEL PRODUCTO
     #
-    def onchange_categ_id(self, cr, uid, ids, field, categ_id, purchase_ok=None, type=None, is_kit=None, context=None):
+    def onchange_categ_id(self, cr, uid, ids, field, categ_id, purchase_ok=None, supply_method=False, type=False, is_kit=False, context=False):
         """
         When category changes, we search for taxes, UOM and product type
         """
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid, context=context)
+        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
 
         res = {}
         warn = False
+        # for product in self.browse(cr, uid, ids, context):
         if ids:
-            product = self.browse(cr, uid, ids, context)[0]
+            product = self.browse(cr, uid, ids[0], context)
         else:
             product = False
 
@@ -86,28 +86,28 @@ class product_product(orm.Model):
                 if product and product.property_account_income.id != res['property_account_income']:
                     message.append(self.fields_get(cr, uid)['property_account_income']['string'])
 
-            if category_data.provision_type:
-                res['type'] = category_data.provision_type
+            res['type'] = category_data.provision_type or type
 
-            if product and product.type != res.get('type', False):
+            if res.get('type', False) and product and product.type != res.get('type'):
                     message.append(self.fields_get(cr, uid)['type']['string'])
 
             if category_data.procure_method:
                 res['procure_method'] = category_data.procure_method
-            if category_data['supply_method']:
+            if category_data.supply_method:
                 res['supply_method'] = category_data.supply_method
-                
+
             if res.get('type', False) == 'service':
-                if purchase_ok:
-                    res['supply_method'] = 'buy'
+                if purchase_ok and field == 'purchase_ok' or supply_method == 'buy' and field == 'supply_method':
+                    res.update(purchase_ok=True, supply_method='buy')
                 else:
-                    res['supply_method'] = 'produce'
+                    res.update(purchase_ok=False, supply_method='produce')
             else:
                 if is_kit:
-                    res.update(supply_method='produce', purchase_ok=False)
+                    res.update(purchase_ok=False, supply_method='produce')
                 else:
-                    res.update(supply_method='buy', purchase_ok=True)
-                    
+                    res.update(purchase_ok=True, supply_method='buy')
+            print res['type'], res['purchase_ok'], res['supply_method']
+
             if category_data.sale_taxes_ids:
                 taxes = [x.id for x in category_data.sale_taxes_ids]
                 res['taxes_id'] = [(6, 0, [taxes])]

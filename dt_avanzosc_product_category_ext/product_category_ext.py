@@ -24,6 +24,8 @@ from openerp.osv import orm, fields
 #
 ### HEREDO LA PRODUCTOS PARA AÑADIRLE CAMPOS NUEVOS
 #
+
+
 class product_category(orm.Model):
     
     _name = 'product.category'
@@ -31,9 +33,9 @@ class product_category(orm.Model):
     
     def _manage_tax_on_category(self, cr, uid, ids, field_name, arg, context):
         res = {}
-        company_id = self.pool['res.users'].browse(cr, uid, uid).company_id.id
+        company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
         company_obj = self.pool['res.company']
-        company = company_obj.browse(cr, uid, company_id)
+        company = company_obj.browse(cr, uid, company_id, context)
         
         for product_id in ids:
             res[product_id] = company.manage_tax_on_category

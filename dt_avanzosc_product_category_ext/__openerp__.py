@@ -23,7 +23,7 @@
 
 {
     "name": "Avanzosc Product Category Extension", 
-    "version": "3.0.6.6",
+    "version": "3.0.7.7",
     "depends": [
         "product",
         "product_bom",
