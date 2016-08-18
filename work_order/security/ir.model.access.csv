@@ -1,6 +1,6 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "access_template_task","template.task","model_template_task",,1,1,1,1
-"access_template_matrix","sale.order.task.matrix","model_sale_order_task_matrix'",,1,1,1,1
+"access_template_matrix","sale.order.task.matrix","model_sale_order_task_matrix",,1,1,1,1
 "create_project","project.project","project.model_project_project","base.group_sale_salesman",1,1,1,0
 "unlink_project","project.project","project.model_project_project","base.group_sale_salesman",1,1,1,1
 "create_project_all_lead","project.project","project.model_project_project","base.group_sale_salesman_all_leads",1,1,1,0
