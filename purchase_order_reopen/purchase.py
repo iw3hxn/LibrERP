@@ -22,14 +22,14 @@
 
 # FIXME remove logger lines or change to debug
 
-from osv import fields, osv
+from openerp.osv import fields, orm
 import netsvc
 from tools.translate import _
 import time
 import logging
 
 
-class purchase_order(osv.osv):
+class purchase_order(orm.Model):
     _inherit = 'purchase.order'
 
     _columns = {
@@ -41,7 +41,7 @@ class purchase_order(osv.osv):
     }
 
     def unlink(self, cr, uid, ids, context=None):
-        # res = super(purchase_order, self).unlink(cr, uid, ids, context=context)
+        #
         purchase_orders = self.browse(cr, uid, ids, context)
         unlink_ids = []
         for order in purchase_orders:
@@ -50,16 +50,17 @@ class purchase_order(osv.osv):
                 message = _("Purchase order '%s' is deactivate.") % (order.name,)
                 self.log(cr, uid, order.id, message)
             else:
-                raise osv.except_osv(_('Invalid action !'), _('In order to delete a purchase order, it must be cancelled first!'))
+                raise orm.except_orm(_('Invalid action !'), _('In order to delete a purchase order, it must be cancelled first!'))
 
         wf_service = netsvc.LocalService("workflow")
 
-        for id in unlink_ids:
-            wf_service.trg_validate(uid, 'purchase.order', id, 'purchase_cancel', cr)
+        # for id in unlink_ids:
+        #     wf_service.trg_validate(uid, 'purchase.order', id, 'purchase_cancel', cr)
+        #
+        # self.write(cr, uid, unlink_ids, {'active': False}, context)
+        res = super(purchase_order, self).unlink(cr, uid, ids, context=context)
 
-        self.write(cr, uid, unlink_ids, {'active': False}, context)
-
-        return True
+        return res
 
     #    def _auto_init(self, cr, context=None):
     #           cr.execute("""update wkf_instance
@@ -72,8 +73,8 @@ class purchase_order(osv.osv):
         _logger = logging.getLogger(__name__)
 
         _logger.debug('FGF purchase_order reopen %s' % (ids))
-        stock_picking_obj = self.pool.get('stock.picking')
-        account_invoice_obj = self.pool.get('account.invoice')
+        stock_picking_obj = self.pool['stock.picking']
+
         for order in self.browse(cr, uid, ids, context):
             if order.picking_ids:
                 for pick in order.picking_ids:
@@ -84,7 +85,7 @@ class purchase_order(osv.osv):
 
             if order.invoice_ids:
                 for inv in order.invoice_ids:
-                    raise osv.except_osv(_('Error'), _(
+                    raise orm.except_orm(_('Error'), _(
                         'You cannot reset this Purchase Order to draft, because there are invoice %s %s, please erase it before proced ') % (
                                          inv.name, inv.state))
 
@@ -98,62 +99,62 @@ class purchase_order(osv.osv):
         _logger = logging.getLogger(__name__)
 
         _logger.debug('FGF purchase_order action reopen %s' % (ids))
-        self.allow_reopen(cr, uid, ids, context=None)
-        account_invoice_obj = self.pool.get('account.invoice')
-        stock_picking_obj = self.pool.get('stock.picking')
-        stock_move_obj = self.pool.get('stock.move')
-        report_xml_obj = self.pool.get('ir.actions.report.xml')
-        attachment_obj = self.pool.get('ir.attachment')
-        order_line_obj = self.pool.get('purchase.order.line')
+        self.allow_reopen(cr, uid, ids, context=context)
+        account_invoice_obj = self.pool['account.invoice']
+        stock_picking_obj = self.pool['stock.picking']
+        stock_move_obj = self.pool['stock.move']
+        report_xml_obj = self.pool['ir.actions.report.xml']
+        attachment_obj = self.pool['ir.attachment']
+        order_line_obj = self.pool['purchase.order.line']
 
         now = ' ' + _('Invalid') + time.strftime(' [%Y%m%d %H%M%S]')
-        for order in self.browse(cr, uid, ids):
+        for order in self.browse(cr, uid, ids, context):
 
             if order.invoice_ids:
                 for inv in order.invoice_ids:
-                    account_invoice_obj.action_reopen(cr, uid, [inv.id])
+                    account_invoice_obj.action_reopen(cr, uid, [inv.id], context=context)
                     if inv.journal_id.update_posted:
                         _logger.debug('FGF purchase_order reopen cancel invoice %s' % (ids))
-                        account_invoice_obj.action_cancel(cr, uid, [inv.id])
+                        account_invoice_obj.action_cancel(cr, uid, [inv.id], context=context)
                     else:
                         _logger.debug('FGF purchase_order reopen cancel 2 invoice %s' % (ids))
-                        account_invoice_obj.write(cr, uid, [inv.id], {'state': 'cancel', 'move_id': False})
+                        account_invoice_obj.write(cr, uid, [inv.id], {'state': 'cancel', 'move_id': False}, context)
 
             if order.picking_ids:
                 for pick in order.picking_ids:
                     _logger.debug('FGF purchase_order reopen picking %s' % (pick.name))
-                    stock_picking_obj.action_reopen(cr, uid, [pick.id])
-                    stock_picking_obj.write(cr, uid, [pick.id], {'state': 'cancel'})
+                    stock_picking_obj.action_reopen(cr, uid, [pick.id], context=context)
+                    stock_picking_obj.write(cr, uid, [pick.id], {'state': 'cancel'}, context)
                     if pick.move_lines:
                         move_ids = []
                         for m in pick.move_lines:
                             move_ids.append(m.id)
-                        stock_move_obj.write(cr, uid, move_ids, {'state': 'cancel'})
+                        stock_move_obj.write(cr, uid, move_ids, {'state': 'cancel'}, context=context)
 
                         #stock_picking_obj.action_cancel(cr, uid, [pick.id])
 
             # for some reason datas_fname has .pdf.pdf extension
-            report_ids = report_xml_obj.search(cr, uid, [('model', '=', 'purchase.order'), ('attachment', '!=', False)])
-            for report in report_xml_obj.browse(cr, uid, report_ids):
+            report_ids = report_xml_obj.search(cr, uid, [('model', '=', 'purchase.order'), ('attachment', '!=', False)], context=context)
+            for report in report_xml_obj.browse(cr, uid, report_ids, context):
                 if report.attachment:
                     aname = report.attachment.replace('object', 'pick')
                     if eval(aname):
                         aname = eval(aname) + '.pdf'
                         attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'purchase.order'),
                                                                          ('datas_fname', '=', aname),
-                                                                         ('res_id', '=', order.id)])
-                        for a in attachment_obj.browse(cr, uid, attachment_ids):
+                                                                         ('res_id', '=', order.id)], context=context)
+                        for a in attachment_obj.browse(cr, uid, attachment_ids, context):
                             vals = {
                                 'name': a.name.replace('.pdf', now + '.pdf'),
                                 'datas_fname': a.datas_fname.replace('.pdf.pdf', now + '.pdf.pdf')
                             }
-                            attachment_obj.write(cr, uid, a.id, vals)
+                            attachment_obj.write(cr, uid, a.id, vals, context)
 
-            self.write(cr, uid, order.id, {'state': 'draft'})
+            self.write(cr, uid, order.id, {'state': 'draft'}, context)
             line_ids = []
             for line in order.order_line:
                 line_ids.append(line.id)
-            order_line_obj.write(cr, uid, line_ids, {'state': 'draft'})
+            order_line_obj.write(cr, uid, line_ids, {'state': 'draft'}, context)
 
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_delete(uid, 'purchase.order', order.id, cr)
@@ -172,9 +173,5 @@ class purchase_order(osv.osv):
 #        self.log_picking(cr, uid, ids, context=context)
 #        _logger.debug('FGF picking log'   )
 
-
-
-purchase_order()
-    
 
 
