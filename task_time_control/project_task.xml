@@ -12,10 +12,12 @@
                     <button name="work_start_btn" type="object" string="Start" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'open', 'working']), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', True)]}" icon="gtk-apply"/>
                     <button name="work_end_btn" attrs="{'invisible': ['|', ('state', 'not in', ['working', ]), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', False)]}" type="object" string="Stop" icon="gtk-cancel" context="{'default_task_id': active_id}" />
                 </field>
-                <field name="notes" position="before">
-                    <separator string="Other User" colspan="4"/>
-                    <field name="user_is_working" invisible="True" />
-                    <field name="other_users_ids" nolabel="1"/>
+                <field name="notes" position="after">
+                    <group groups="project.group_project_manager">
+                        <separator string="Other User" colspan="4"/>
+                        <field name="user_is_working" invisible="True" />
+                        <field name="other_users_ids" nolabel="1" />
+                    </group>
                 </field>
             </field>
         </record>
