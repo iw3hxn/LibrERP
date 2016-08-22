@@ -73,7 +73,8 @@ class sale_order_task_matrix(orm.Model):
     _description = "Matrix Sale to Task"
 
     _columns = {
-        'sale_order_line_field_id': fields.many2one('ir.model.fields', 'Field From Sale Order Line', domain=[('model', '=', 'sale.order.line')], required=True),
+        'sale_order_field_id': fields.many2one('ir.model.fields', 'Field From Sale Order', domain=[('model', '=', 'sale.order')]),
+        'sale_order_line_field_id': fields.many2one('ir.model.fields', 'Field From Sale Order Line', domain=[('model', '=', 'sale.order.line')]),
         'task_field_id': fields.many2one('ir.model.fields', 'Field To Task', domain=[('model', '=', 'project.task')], required=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
     }

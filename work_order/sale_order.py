@@ -132,10 +132,18 @@ class sale_order(orm.Model):
 
     def create_task(self, cr, uid, order_line, task_number, task_vals, context):
         for matrix_line in order_line.order_id.company_id.sale_task_matix_ids:
-            lst = self.pool['sale.order.line'].read(cr, uid, order_line.id, [matrix_line.sale_order_line_field_id.name], context)[matrix_line.sale_order_line_field_id.name]
-            if isinstance(lst, (list, tuple)):
-                lst = lst[0]
-            task_vals[matrix_line.task_field_id.name] = lst
+
+            if matrix_line.sale_order_field_id:
+                lst = self.pool['sale.order'].read(cr, uid, order_line.order_id.id, [matrix_line.sale_order_field_id.name], context)[matrix_line.sale_order_field_id.name]
+                if isinstance(lst, (list, tuple)):
+                    lst = lst[0]
+                task_vals[matrix_line.task_field_id.name] = lst
+
+            if matrix_line.sale_order_line_field_id:
+                lst = self.pool['sale.order.line'].read(cr, uid, order_line.id, [matrix_line.sale_order_line_field_id.name], context)[matrix_line.sale_order_line_field_id.name]
+                if isinstance(lst, (list, tuple)):
+                    lst = lst[0]
+                task_vals[matrix_line.task_field_id.name] = lst
 
         if order_line.order_id.company_id.task_no_user:
             task_vals['user_id'] = False
