@@ -350,3 +350,13 @@ msgstr "Q.tà A Mag"
 #: field:stock.picking,client_order_ref:0
 msgid "Customer Reference"
 msgstr "Riferimento cliente"
+
+#. module: stock_move_extended
+#: help:stock.picking,weight:0
+msgid "The gross weight in Kg."
+msgstr "Il peso lordo in kg."
+
+#. module: stock_move_extended
+#: help:stock.picking,weight:0
+msgid "The net weight in Kg."
+msgstr "Il peso netto in kg."
