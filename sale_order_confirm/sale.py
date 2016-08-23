@@ -43,6 +43,9 @@ class sale_order(orm.Model):
     def service_only(self, cr, uid, ids, values, context):
         deleted_products = []
         service = True
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
         if values and 'order_line' in values and values['order_line']:
             for line in values['order_line']:
                 # create new line
@@ -65,7 +68,7 @@ class sale_order(orm.Model):
             for order in self.browse(cr, uid, ids, context):
                 if order.order_line:
                     for order_line in order.order_line:
-                        if not order_line.product_id.type == 'service' and not order_line.product_id.id in deleted_products:
+                        if order_line.product_id.type != 'service' or order_line.product_id.id in deleted_products:
                             return False
                 else:
                     if not service:
@@ -73,7 +76,8 @@ class sale_order(orm.Model):
         return True
 
     def hook_sale_state(self, cr, uid, orders, vals, context):
-        print vals
+        # print vals
+        # function call if change state the sale order
         return True
 
     def create(self, cr, uid, vals, context=None):
@@ -106,7 +110,7 @@ class sale_order(orm.Model):
 
         orders = self.browse(cr, uid, ids, context)
         for order in orders:
-            if self.service_only(cr, uid, ids, vals, context) and vals.get('order_policy', order.order_policy) == 'picking':
+            if self.service_only(cr, uid, [order.id], vals, context) and vals.get('order_policy', order.order_policy) == 'picking':
                 raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
 
         # adaptative function: the system learn
