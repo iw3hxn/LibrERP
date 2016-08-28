@@ -396,16 +396,16 @@
                             <field name="asset_moves" colspan="4" nolabel="1" >
                                 <tree string="Asset Moves">
                                     <field name="date" />
-                                    <field name="source_location" />
-                                    <field name="dest_location" />
+                                    <field name="source_location" context="{'contact_display': 'partner_address'}"/>
+                                    <field name="dest_location" context="{'contact_display': 'partner_address'}"/>
                                     <!--<field name="source_location_name" />-->
                                     <!--<field name="dest_location_name" />-->
                                     <field name="picking_id" />
                                 </tree>
                                 <form string="Asset Moves" col="4" >
                                     <field name="date" colspan="4" />
-                                    <field name="source_location" colspan="2" />
-                                    <field name="dest_location" colspan="2" />
+                                    <field name="source_location" colspan="2" context="{'contact_display': 'partner_address'}"/>
+                                    <field name="dest_location" colspan="2" context="{'contact_display': 'partner_address'}"/>
                                     <!--<field name="source_location_name" colspan="2" />-->
                                     <!--<field name="dest_location_name" colspan="2" />-->
                                     <separator string="" colspan="4" />
@@ -654,7 +654,7 @@
                 <form string="Asset Move">
                     <field name="name" readonly="True" />
                     <!--<field name="source_location"/>-->
-                    <field name="dest_location" readonly="True" />
+                    <field name="dest_location" readonly="True" context="{'contact_display': 'partner_address'}"/>
                     <!--<field name="datetime" readonly="True" />-->
                     <field name="date_done" readonly="True" />
                     <field name="user_id" readonly="True" />
@@ -720,8 +720,8 @@
                     <field name="date_done"/>
                     <!--<field name="source_location_name"/>-->
                     <!--<field name="dest_location_name"/>-->
-                    <field name="source_location"/>
-                    <field name="dest_location"/>
+                    <field name="source_location" context="{'contact_display': 'partner_address'}"/>
+                    <field name="dest_location" context="{'contact_display': 'partner_address'}"/>
                     <field name="user_id" />
                 </tree>
             </field>

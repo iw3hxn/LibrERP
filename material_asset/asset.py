@@ -35,6 +35,7 @@ _logger.setLevel(logging.DEBUG)
 
 
 def _get_locations(self, cr, uid, context=None):
+    context = context or self.pool['res.users'].context_get(cr, uid)
     context['contact_display'] = 'partner_address'
     return self.pool['asset.location.property'].get_locations(cr, uid, context=context)
 
@@ -58,37 +59,11 @@ COLOR_SELECTION = [
 def get_relational_value(self, cr, uid, ids, field_name, arg, context=None):
     if not len(ids):
         return []
-    res = []
-
-    for record in self.browse(cr, uid, ids, context=context):
-        if record[arg['field_name']]:
-            try:
-                (model_name, obj_id) = record[arg['field_name']].split(',')
-                if model_name and obj_id:
-                    obj_id = int(obj_id)
-                    model = self.pool[model_name]
-                    context['contact_display'] = 'partner_address'
-                    model_obj = model.name_get(cr, uid, [obj_id], context)
-                    if isinstance(model_obj, list):
-                        obj_name = model_obj[0]
-                    elif isinstance(model_obj, dict):
-                        obj_name = (obj_id, model_obj[obj_id])
-                    else:
-                        obj_name = ('', 'Unknown record type')
-
-                    if obj_name and len(obj_name) > 1:
-                        res.append((record['id'], obj_name[1]))
-                    else:
-                        res.append((record['id'], ''))
-                else:
-                    res.append((record['id'], ''))
-            except:
-                _logger.error(repr(traceback.extract_tb(sys.exc_traceback)))
-                res.append((record['id'], ''))
-        else:
-            res.append((record['id'], ''))
-
-    return dict(res)
+    value = {}
+    context['contact_display'] = 'partner_address'
+    for record in self.browse(cr, uid, ids, context):
+        value[record.id] = record[arg['field_name']].name_get()[0][1]
+    return value
 
 
 def search_location(self, cr, uid, obj, name, args, context):
@@ -146,7 +121,7 @@ def search_location(self, cr, uid, obj, name, args, context):
             locations += ['{0},{1}'.format(model, r[0]) for r in cr.fetchall()]
 
     for location in locations:
-        res += self.search(cr, uid, [(field_name, '=', '{location}'.format(location=location))])
+        res += self.search(cr, uid, [(field_name, '=', '{location}'.format(location=location))], context=context)
     return [('id', 'in', res)]
 
 
@@ -178,15 +153,18 @@ class AssetLocationProperty(orm.Model):
     _sql_constraints = [('model_uniq', 'unique(model)', 'Model must be unique!')]
 
     def get_locations(self, cr, uid, selectable_only=False, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        context['contact_display'] = 'partner_address'
         if selectable_only:
             domain = [('selectable', '=', True)]
         else:
             domain = []
-        print context
         location_ids = self.search(cr, uid, domain, context=context)
         return [(l.model, l.name) for l in self.browse(cr, uid, location_ids, context)]
 
     def get_location(self, cr, uid, model, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        context['contact_display'] = 'partner_address'
         asset_location_ids = self.search(cr, uid, [('model', '=', model)], context=context)
         if asset_location_ids:
             return self.browse(cr, uid, asset_location_ids[0], context)
@@ -200,13 +178,8 @@ class asset_use(orm.Model):
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
-        uses = self.browse(cr, uid, ids, context)
-        for use in uses:
-            if use.color:
-                value[use.id] = use.color
-            else:
-                value[use.id] = 'black'
-
+        for use in self.browse(cr, uid, ids, context):
+            value[use.id] = use.color or 'black'
         return value
 
     _columns = {
@@ -431,7 +404,7 @@ class asset_asset(orm.Model):
             model_name = self._name
 
         res = {}
-        sim_obj = self.pool.get('res.sim')
+        sim_obj = self.pool['res.sim']
 
         # Get SIMs directly assigned to obj
         for obj_id in ids:
@@ -680,7 +653,7 @@ class asset_asset(orm.Model):
 
         for parent_id in ids:
             asset_ids = self.search(cr, uid, [('location', '=', model_name + ',' + str(parent_id))], context=context)
-            tree = self.get_tree(cr, uid, asset_ids)
+            tree = self.get_tree(cr, uid, asset_ids, context=context)
             res[parent_id] = [leave['ids'] for leave in tree]
 
         return res
