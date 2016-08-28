@@ -39,3 +39,8 @@ class purchase_order(orm.Model):
         if vals.get('name', '/') == '/':
             vals.update({'name': self.pool['ir.sequence'].get(cr, uid, 'purchase.order', context=context)})
         return super(purchase_order, self).create(cr, uid, vals, context=context)
+
+    def wkf_confirm_order(self, cr, uid, ids, context=None):
+        # todo change sequence
+        res = super(purchase_order, self).wkf_confirm_order(cr, uid, ids, context)
+        return res
