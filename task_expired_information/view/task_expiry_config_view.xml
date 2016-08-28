@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="task_expired_config_form">
+            <field name="name">Config Task Information</field>
+            <field name="model">task.expired.config</field>
+            <field name="arch" type="xml">
+                <form string="Config Task">
+                    <group string="Config Task" colspan="9" height="600" width="600" col="2">
+                        <group colspan="6" col="1">
+                            <group col="1">
+                                <field name="without_change"/>
+                                <field name="without_change_tmpl_id"/>
+                                <group colspan='2'>
+                                    <label string='Number of days that a task should have without activities to inform'/>
+                                </group>
+                                <field name="before_expiry"/>
+                                <field name="before_expiry_tmpl_id"/>
+                                <group colspan='2'>
+                                    <label string='Number of days prior to the expiry date for inform'/>
+                                </group>
+                            </group>
+                            <group colspan="1" col="2">
+                                <button name="create_config"
+                                        string="Create"
+                                        type="object"
+                                        icon="gtk-apply"/>
+                                <button string="Exit"
+                                        special="cancel"
+                                        icon="gtk-redo"/>
+                            </group>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="task_expired_config_action" model="ir.actions.act_window">
+            <field name="name">Config Task</field>
+            <field name="res_model">task.expired.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Config Expired Task Info"
+                  id="task_expired_config_main_menu"
+                  parent="project.menu_definitions"
+                  action="task_expired_config_action"
+                  groups="task_expired_information.group_config_task_expiry"/>
+    </data>
+</openerp>

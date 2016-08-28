@@ -1,0 +1,50 @@
+<openerp>
+    <data noupdate="1">
+
+        <record forcecreate="True" id="ir_cron_expired_parts_action" model="ir.cron">
+            <field name="name">Expired Task</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'task.expired.config'" name="model"/>
+            <field eval="False" name="active"/>
+            <field eval="'send_expiration_message'" name="function"/>
+        </record>
+
+        <record id="email_template_task_no_change" model="email.template">
+            <field name="name">Task No Change Mail</field>
+            <field name="email_from">${object.user_id.user_email or object.company_id.email or 'noreply@localhost'}</field>
+            <field name="subject">#${object.task_id} - ${object.name}</field>
+            <field name="email_to">${object.user_id and object.user_id.user_email or object.project_id and object.project_id.user_id and object.project_id.user_id.user_email or ''}</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+
+            ]]></field>
+            <field name="body_text"><![CDATA[**ATTIVITÀ SENZA CAMBIAMENTI** Ciao ${object.user_id and object.user_id.name or 'TASK NON ASSEGNATA'}
+L' attività è invariata da più giorni
+            ]]></field>
+        </record>
+
+        <record id="email_template_task_near_deadline" model="email.template">
+            <field name="name">Task Near Deadline Mail</field>
+            <field name="email_from">${object.user_id.user_email or object.company_id.email or 'noreply@localhost'}</field>
+            <field name="subject">#${object.task_id} - ${object.name}</field>
+            <field name="email_to">${object.user_id and object.user_id.user_email or object.project_id and object.project_id.user_id and object.project_id.user_id.user_email or ''}</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+
+            ]]></field>
+            <field name="body_text"><![CDATA[**ATTIVITÀ SENZA CAMBIAMENTI** Ciao ${object.user_id and object.user_id.name or 'TASK NON ASSEGNATA'}
+L' attività è invariata da più giorni
+            ]]></field>
+        </record>
+
+
+    </data>
+</openerp>
