@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Asset Logistic Management',
-    'version': '3.4.23.11',
+    'version': '3.4.24.11',
     'category': 'Generic Modules/Asset Logistic Management',
     'description': """
         A generic module to manage company asset and its movements.

@@ -39,7 +39,7 @@ class asset_assign_category(orm.TransientModel):
             'has_date_option': False,
             'asset_category_id': category.id,
             'product_product_id': context['product_id'],
-        })
+        }, context)
         
         ## create asset.asset
         self.pool['asset.asset'].create(cr, uid, {
@@ -48,17 +48,10 @@ class asset_assign_category(orm.TransientModel):
             'company_id': context['company_id'],
             'location': context['location'],
             'has_date_option': False,
-        })
-        
-        new_context = {
-            'lang': context['lang'],
-            'tz': context['tz'],
-            'uid': context['uid'],
-            'section_id': context['section_id'],
-            'project_id': context['project_id'],
-            'department_id': context['department_id'],
-            'asset_created': True
-        }
-        self.pool.get('stock.move').action_done(cr, uid, context['move_ids'], new_context)
+        }, context)
+
+        new_context = context.copy()
+        new_context['asset_created'] = True
+        self.pool['stock.move'].action_done(cr, uid, context['move_ids'], new_context)
         
         return {'type': 'ir.actions.act_window_close'}
