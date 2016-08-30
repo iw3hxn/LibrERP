@@ -184,21 +184,30 @@ class sale_order(orm.Model):
         return res
 
     def check_limit(self, cr, uid, ids, context=None):
-        for processed_order in self.browse(cr, uid, ids, context=context):
-            if processed_order.credit_limit < 0 and processed_order.company_id and processed_order.company_id.check_credit_limit:
+        for order in self.browse(cr, uid, ids, context=context):
+            if order.credit_limit < 0 and order.company_id and order.company_id.check_credit_limit:
                 title = _('Credit Over Limit')
                 msg = _('Is not possible to confirm because customer exceed the credit limit. \n Is Possible change the Order Policy \"Pay Before Delivery\" \n on tab \"Other Information\"')
                 raise orm.except_orm(_(title), _(msg))
                 return False
-            if processed_order.visible_minimum and processed_order.sale_order_minimun > processed_order.amount_untaxed:
-                if processed_order.shop_id.user_allow_minimun_id and processed_order.shop_id.user_allow_minimun_id.id == uid:  # if user can validate
+            if order.visible_minimum and order.sale_order_minimun > order.amount_untaxed:
+                if order.shop_id.user_allow_minimun_id and order.shop_id.user_allow_minimun_id.id == uid:  # if user can validate
                     return True
+                # test if on line there are the product
+                if order.shop_id.product_allow_minimun_id:
+                    for line in order.order_line:
+                        if line.product_id and line.product_id == order.shop_id.product_allow_minimun_id:
+                            return True
+
                 title = _('Minimum Amount Billable')
 
-                if processed_order.shop_id.user_allow_minimun_id:
-                    msg = _('Is not possible to confirm because is not reached the minimum billable {amount} {currency} \n Only {user} can do it').format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol, user=processed_order.shop_id.user_allow_minimun_id.name)
+                if order.shop_id.user_allow_minimun_id:
+                    msg = _(u'Is not possible to confirm because is not reached the minimum billable {amount} {currency} \n Only {user} can do it').format(amount=order.sale_order_minimun, currency=order.pricelist_id.currency_id.symbol, user=order.shop_id.user_allow_minimun_id.name)
                 else:
-                    msg = _('Is not possible to confirm because is not reached the minimum billable {amount} {currency}').format(amount=processed_order.sale_order_minimun, currency=processed_order.pricelist_id.currency_id.symbol)
+                    msg = _(u'Is not possible to confirm because is not reached the minimum billable {amount} {currency}').format(amount=order.sale_order_minimun, currency=order.pricelist_id.currency_id.symbol)
+
+                if order.shop_id.product_allow_minimun_id:
+                    msg += _(u'\n\n or add the product \'{product}\'').format(product=order.shop_id.product_allow_minimun_id.name_get()[0][1])
 
                 raise orm.except_orm(_(title), _(msg))
                 return False

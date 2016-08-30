@@ -787,6 +787,11 @@ msgstr "Cliente"
 msgid "User that can validate"
 msgstr "Utente che può comunque validare"
 
+#. module: sale_order_confirm
+#: field:sale.shop,product_allow_minimun_id:0
+msgid "Product that can validate"
+msgstr "Prodotto da Usare per Validare"
+
 #. module: sale
 #: help:sale.order.confirm,partner_shipping_id:0
 msgid "Shipping address for current sales order."
@@ -855,6 +860,12 @@ msgid "Is not possible to confirm because is not reached the minimum billable {a
 " Only {user} can do it"
 msgstr "Non è possibile confermare in quanto non si è raggiunto il minimo fatturabile di {amount} {currency} \n"
 " È possibile farlo validare da {user}"
+
+#. module: sale_order_confirm
+#: code:addons/sale_order_confirm/sale.py:160
+#, python-format
+msgid "\n\n or add the product \'{product}\'"
+msgstr "\n\n O aggiungere il prodotto \'{product}\'"
 
 #. module: sale_order_confirm
 #: model:res.groups,name:sale_order_confirm.credit_modifier

@@ -41,6 +41,8 @@
                                attrs="{'invisible': [('sale_order_have_minimum','!=',True)], 'required': [('sale_order_have_minimum','=',True)]}"/>
                         <field name="user_allow_minimun_id" attrs="{'invisible': [('sale_order_have_minimum','!=',True)]}"
                                colspan="4"/>
+                        <field name="product_allow_minimun_id" attrs="{'invisible': [('sale_order_have_minimum','!=',True)]}"
+                               colspan="4"/>
                         <separator colspan="4" string="User Validation"/>
                         <field name="user_tech_validation_id"/>
                         <field name="user_manager_validation_id"/>
