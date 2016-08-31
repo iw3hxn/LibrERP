@@ -10,7 +10,7 @@
                 	<group colspan="4" >
 						<separator string="Move Information" colspan="4"/>
 						<field name="description" colspan="4" />
-						<field name="dest_location" required="False" on_change="onchange_location(dest_location)" colspan="2" />
+						<field name="dest_location" required="False" on_change="onchange_location(dest_location)" colspan="2" context="{'contact_display': 'partner_address'}"/>
 						<!--<field name="show_location" invisible="True" />-->
 						<!--<field name="location_id" required="False" attrs="{'invisible': [('show_location', '=', False)]}" colspan="1"/>-->
 						<field name="show_address" invisible="True" />

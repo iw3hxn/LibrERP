@@ -901,5 +901,21 @@
 
        <menuitem action="open_module_tree_document" id="menu_asset_document_tree" parent="menu_asset_asset"/>
 
+
+        <record model="ir.ui.view" id="view_res_partner_form_inherit_material_asset">
+            <field name="name">res.partner.form.inherit.material.resource</field>
+            <field name="type">form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                   <page string="Assets" groups="material_asset.group_assets_user">
+                        <field name="asset_ids" nolabel="1" />
+                  </page>
+               </notebook>
+             </field>
+       </record>
+
+
     </data>
 </openerp>
