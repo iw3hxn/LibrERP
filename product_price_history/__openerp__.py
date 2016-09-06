@@ -22,20 +22,20 @@
 ##############################################################################
 
 {
-    "name" : "Product Price History",
-    "version" : "3.1.1.1",
-    "author" : "Zikzakmedia SL",
+    "name": "Product Price History",
+    "version": "3.1.1.2",
+    "author": "Zikzakmedia SL",
     "website": "www.zikzakmedia.com",
-    "license" : "AGPL-3",
-    "category" : "Generic Modules/Inventory Control",
+    "license": "AGPL-3",
+    "category": "Generic Modules/Inventory Control",
     "description": """Historial Price Products. List of historial Sale Price and Cost Price""",
-    "depends" : [
+    "depends": [
         "account",
         "product",
         "product_bom",
         'web_hide_buttons',
     ],
-    "data" : [
+    "data": [
         "security/ir.model.access.csv",
         "product_price_history_view.xml",
         "product_view.xml",

@@ -40,12 +40,25 @@ class product_template(orm.Model):
         for prod_template in self.browse(cr, uid, ids, context=context):
             if ('list_price' in values and prod_template.list_price != values['list_price']) or \
                ('standard_price' in values and prod_template.standard_price != values['standard_price']):
+
                 history_values = {
-                    'list_price': prod_template.list_price,
-                    'standard_price': prod_template.standard_price,
+                    'user_id': uid,
+
                     'product_id': prod_template.id,
                     'date_to': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                 }
+                if values.get('list_price', False):
+                    history_values.update({
+                        'list_price': prod_template.list_price,
+                        'new_list_price': values['list_price'],
+                    })
+                if values.get('standard_price', False):
+                    history_values.update({
+                        'standard_price': prod_template.standard_price,
+                        'new_standard_price': values['standard_price'],
+
+                    })
+
                 self.pool['product.price.history'].create(cr, uid, history_values, context=context)
 
         return super(product_template, self).write(cr, uid, ids, values, context=context)

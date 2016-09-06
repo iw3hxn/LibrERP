@@ -18,13 +18,23 @@ msgstr ""
 
 #. module: product_price_history
 #: field:product.price.history,standard_price:0
-msgid "Cost Price"
-msgstr "Prezzo d'Acquisto"
+msgid "Previous Cost Price"
+msgstr "Dal Prezzo Costo"
+
+#. module: product_price_history
+#: field:product.price.history,new_standard_price:0
+msgid "New Cost Price"
+msgstr "Al Prezzo Costo"
 
 #. module: product_price_history
 #: field:product.price.history,list_price:0
-msgid "Sale Price"
-msgstr "Prezzo di Vendita"
+msgid "Previous Sale Price"
+msgstr "Dal Prezzo di Vendita"
+
+#. module: product_price_history
+#: field:product.price.history,list_price:0
+msgid "New Sale Price"
+msgstr "Al Prezzo di Vendita"
 
 #. module: product_price_history
 #: constraint:product.template:0

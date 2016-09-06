@@ -22,9 +22,10 @@
             <field name="arch" type="xml">
                 <tree string="History">
                     <field name="product_id" />
-                    <field name="date_to" />
                     <field name="list_price" groups="product_bom.group_sell_price"/>
-                    <field name="standard_price" groups="product_bom.group_cost_price"/>
+                    <field name="new_list_price" groups="product_bom.group_sell_price"/>
+                    <field name="standard_price" groups="product_bom.group_cost_price" />
+                    <field name="new_standard_price" groups="product_bom.group_cost_price" />
                 </tree>
             </field>
         </record>
@@ -38,7 +39,9 @@
                     <field name="date_to" />
                     <newline/>
                     <field name="list_price" groups="product_bom.group_sell_price"/>
-                    <field name="standard_price" groups="product_bom.group_cost_price"/>
+                    <field name="new_list_price" groups="product_bom.group_sell_price"/>
+                    <field name="standard_price" groups="product_bom.group_cost_price" />
+                    <field name="new_standard_price" groups="product_bom.group_cost_price" />
                 </form>
             </field>
         </record>
