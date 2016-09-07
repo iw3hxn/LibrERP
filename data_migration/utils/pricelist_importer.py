@@ -225,6 +225,8 @@ class ImportFile(threading.Thread, Utils):
             return False
         else:
             product_ids = self.pool['product.product'].search(cr, uid, [('default_code', '=', product)], context=self.context)
+            if not product_ids:
+                product_ids = self.pool['product.product'].search(cr, uid, [('default_code', '=ilike', '%{product}'.format(product=product))], context=self.context)
 
         if not product_ids:
             error = u'Row {row} => Not Find code: {product}'.format(row=self.processed_lines, product=record.code)
