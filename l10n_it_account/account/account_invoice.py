@@ -60,7 +60,10 @@ class account_invoice(orm.Model):
                     _('Period %s have already a closed vat statement.')
                     % period.name
                 )
-        return super(account_invoice, self).action_cancel(cr, uid, ids, context)
+        super(account_invoice, self).action_cancel(cr, uid, ids, context)
+        self.write(cr, uid, ids, {'period_id': False})
+
+        return True
 
     def _is_direct_invoice(self, cr, uid, ids, filed_name, args, context=None):
         """
