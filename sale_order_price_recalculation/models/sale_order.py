@@ -48,6 +48,7 @@ class sale_order(orm.Model):
                     name=line.name, partner_id=order.partner_id.id, lang=False,
                     update_tax=True, date_order=order.date_order, packaging=False,
                     fiscal_position=order.fiscal_position.id, flag=False)
+                res['value']['discount'] = line.discount
                 line.write(res['value'])
             sale.write({'recalculate_prices': False})
         return True
