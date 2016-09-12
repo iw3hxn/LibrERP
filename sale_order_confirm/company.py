@@ -60,6 +60,7 @@ class res_company(orm.Model):
         'tech_validation_if_no_product': fields.boolean('Technical Review if sale\'s line have no product'),
         'need_manager_validation': fields.boolean('Need Supervisor Verification'),
         'need_supervisor_validation': fields.boolean('Need Supervisor Verification after Customer Confirmation'),
+        'skip_supervisor_validation_onstandard_product': fields.boolean('Skip Supervisor Verification if there are only standard product'),
         'readonly_price_unit': fields.boolean('Read Only Price Unit on Sale Order'),
         'default_property_advance_product_id': fields.property(
             'product.product',

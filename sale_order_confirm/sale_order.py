@@ -41,6 +41,7 @@ class sale_order(orm.Model):
     _inherit = "sale.order"
 
     def service_only(self, cr, uid, ids, values, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         deleted_products = []
         service = True
         if not isinstance(ids, (list, tuple)):
@@ -64,19 +65,17 @@ class sale_order(orm.Model):
         else:
             service = False
 
-        if ids:
-            for order in self.browse(cr, uid, ids, context):
-                if order.order_line:
-                    for order_line in order.order_line:
-                        if order_line.product_id.type != 'service' or order_line.product_id.id in deleted_products:
-                            return False
-                else:
-                    if not service:
+        for order in self.browse(cr, uid, ids, context):
+            if order.order_line:
+                for order_line in order.order_line:
+                    if order_line.product_id.type != 'service' or order_line.product_id.id in deleted_products:
                         return False
+            elif not service:
+                    return False
         return True
 
     def hook_sale_state(self, cr, uid, orders, vals, context):
-        # print vals
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # function call if change state the sale order
         return True
 
@@ -143,8 +142,7 @@ class sale_order(orm.Model):
         return {'value': res}
 
     def onchange_partner_id(self, cr, uid, ids, part, context=None):
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(sale_order, self).onchange_partner_id(cr, uid, ids, part)
         if res.get('value', False) and part:
             if not res['value'].get('property_account_position', False):
@@ -155,6 +153,7 @@ class sale_order(orm.Model):
         return res
 
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, 0.0)
         for order in self.browse(cr, uid, ids, context=context):
 
@@ -184,10 +183,11 @@ class sale_order(orm.Model):
         return res
 
     def check_limit(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context=context):
             if order.credit_limit < 0 and order.company_id and order.company_id.check_credit_limit:
                 title = _('Credit Over Limit')
-                msg = _('Is not possible to confirm because customer exceed the credit limit. \n Is Possible change the Order Policy \"Pay Before Delivery\" \n on tab \"Other Information\"')
+                msg = _(u'Is not possible to confirm because customer exceed the credit limit. \n Is Possible change the Order Policy \"Pay Before Delivery\" \n on tab \"Other Information\"')
                 raise orm.except_orm(_(title), _(msg))
                 return False
             if order.visible_minimum and order.sale_order_minimun > order.amount_untaxed:
@@ -214,6 +214,7 @@ class sale_order(orm.Model):
         return True
 
     def name_get(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not len(ids):
             return []
         res = []
@@ -223,7 +224,7 @@ class sale_order(orm.Model):
         return res
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=10):
-
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not args:
             args = []
         if name:
@@ -287,6 +288,12 @@ class sale_order(orm.Model):
         'customer_validation': fields.boolean("Customer Validated ?", readonly=True),
         # A validation after customer confirmation:
         'required_supervisor_validation': fields.related('company_id', 'need_supervisor_validation', type='boolean', string=_('Required Supervisor Validation'), store=False, readonly=True),
+        'skip_supervisor_validation_onstandard_product': fields.related('company_id', 'skip_supervisor_validation_onstandard_product',
+                                                                        type='boolean',
+                                                                        string=_(
+                                                                            'Skip Supervisor Verification if there are only standard product'),
+                                                                        store=False,
+                                                                        readonly=True),
         'supervisor_validation': fields.boolean(_("Supervisor Validated?"), readonly=True),
         'product_id': fields.related('order_line', 'product_id', type='many2one', relation='product.product', string='Product'),
         'revision_note': fields.char('Reason', size=256, select=True),
@@ -296,6 +303,7 @@ class sale_order(orm.Model):
     _defaults = {
         'need_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
         'need_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
+        'skip_supervisor_validation_onstandard_product': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.skip_supervisor_validation_onstandard_product,
         'required_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
         'required_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
         'required_supervisor_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_supervisor_validation,
@@ -303,6 +311,7 @@ class sale_order(orm.Model):
     }
 
     def action_reopen(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = super(sale_order, self).action_reopen(cr, uid, ids, context=context)
 
         for order in self.browse(cr, uid, ids, context):
@@ -316,6 +325,7 @@ class sale_order(orm.Model):
         return result
 
     def check_direct_order_confirm(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context):
             if order.state == 'draft' and order.pricelist_id and order.pricelist_id.contract:
                 return True
@@ -323,6 +333,7 @@ class sale_order(orm.Model):
                 return False
 
     def check_tech_validation(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context):
             if order.shop_id.user_tech_validation_id:
                 if order.shop_id.user_tech_validation_id.id == uid:
@@ -337,6 +348,7 @@ class sale_order(orm.Model):
                 return True
 
     def check_manager_validation(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context):
             if order.shop_id.user_manager_validation_id:
                 if order.shop_id.user_manager_validation_id.id == uid:
@@ -350,6 +362,7 @@ class sale_order(orm.Model):
                 return True
 
     def check_supervisor_validation(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context):
             if order.shop_id.user_supervisor_validation:
                 if order.shop_id.user_supervisor_validation.id == uid:
@@ -380,6 +393,7 @@ class sale_order(orm.Model):
         return False
 
     def action_validate(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context):
             if not order.partner_id.validate and order.company_id.enable_partner_validation:
                 title = _('Partner To Validate')
@@ -429,20 +443,26 @@ class sale_order(orm.Model):
         return True
 
     def check_validate(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context):
             res = True
-
             if order.need_tech_validation and not order.tech_validation:
                 res = False
             elif order.need_manager_validation and not order.manager_validation:
                 res = False
             elif order.required_supervisor_validation and not order.supervisor_validation:
-                res = False
-
+                if order.skip_supervisor_validation_onstandard_product:
+                    for line in order.order_line:
+                        if line.product_id and line.product_id.is_kit:
+                            return False
+                    res = True
+                else:
+                    res = False
             return res and order.email_sent_validation and order.customer_validation
         return True
 
     def check_direct_confirm(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if self.check_limit(cr, uid, ids, context):
             for order in self.browse(cr, uid, ids, context):
                 values = {
@@ -465,6 +485,7 @@ class sale_order(orm.Model):
             return False
 
     def copy(self, cr, uid, ids, defaults, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         defaults.update(
             {
                 'tech_validation': False,
@@ -482,6 +503,7 @@ class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
 
     def _delivered_qty(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             qty = 0
@@ -497,9 +519,7 @@ class sale_order_line(orm.Model):
         """ Finds the incoming and outgoing quantity of product.
         @return: Dictionary of values
         """
-
-        if not context:
-            context = {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         # if line.order_id:
         #     context['warehouse'] = self.order_id.shop_id.warehouse_id.id

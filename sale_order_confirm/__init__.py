@@ -24,7 +24,7 @@
 
 from . import wizard
 from . import company
-from . import sale
+from . import sale_order
 from . import partner
 from . import sale_shop
 from . import account_invoice

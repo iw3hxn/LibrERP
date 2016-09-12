@@ -29,6 +29,7 @@
                     <field name="tech_validation_if_no_product" />
                     <field name="need_manager_validation"/>
                     <field name="need_supervisor_validation"/>
+                    <field name="skip_supervisor_validation_onstandard_product" attrs="{'invisible': [('need_supervisor_validation','!=',True)]}"/>
                     <!--			<separator name="Sale Order View" colspan="4"/>
                                 <field name="readonly_price_unit" />-->
                 </page>
