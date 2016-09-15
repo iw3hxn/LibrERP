@@ -50,10 +50,14 @@ class product_product(orm.Model):
     _inherit = 'product.product'
 
     def _check_defaultcode_and_variants(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for product in self.browse(cr, uid, ids, context):
-            res = self.search(cr, uid, [('default_code', '=', product.default_code),
-                                        ('variants', '=', product.variants)
-                                        ], context=context)
+            if product.default_code:
+                res = self.search(cr, uid, [('default_code', '=', product.default_code),
+                                            ('variants', '=', product.variants)
+                                            ], context=context)
+            else:
+                res = []
             # Result may contain the current product if it's active: we remove it here.
             if product.id in res:
                 res.remove(product.id)
