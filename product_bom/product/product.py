@@ -85,6 +85,13 @@ class product_product(orm.Model):
                                                qty=sub_product.product_qty,
                                                to_uom_id=sub_product.product_id.uom_po_id.id)
                     price += std_price * qty
+                    # if sub_product.routing_id:
+                    #     for wline in sub_product.routing_id.workcenter_lines:
+                    #         wc = wline.workcenter_id
+                    #         cycle = wline.cycle_nbr
+                    #         # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
+                    #         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
+
                     
                 if sub_products:
                     # Don't use browse when we already have it
@@ -217,7 +224,9 @@ class product_product(orm.Model):
                                                                 line.product_qty,
                                                                 line.product_id.uom_id,
                                                                 context=context)
-                    if bom_qty >= line_product_qty:
+
+                    if line_product_qty and (bom_qty > line_product_qty):
+                        print bom_qty, line_product_qty
                         prod_min_quantity = bom_qty / line_product_qty  # line.product_qty is always > 0
                     else:
                         # if one product has not enough stock,
