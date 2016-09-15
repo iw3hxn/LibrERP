@@ -44,8 +44,7 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <field name="variants" position="after">
-                    <field name="product_brand_id" on_change="onchange_product_brand_id(product_brand_id)"
-                           attrs="{'invisible':[('type','not in',['product', 'consu'])]}" select="1"/>
+                    <field name="product_brand_id" on_change="onchange_product_brand_id(product_brand_id)" select="1"/>
                 </field>
             </field>
         </record>
