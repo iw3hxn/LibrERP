@@ -52,8 +52,8 @@ class product_product(orm.Model):
         '''
         Compute the purchase price, taking into account sub products and routing
         '''
-        
-        context = context or {}
+
+        context = context or self.pool['res.users'].context_get(cr, uid)
         bom_properties = bom_properties or []
         user = self.pool['res.users'].browse(cr, uid, uid, context)
         
@@ -138,10 +138,11 @@ class product_product(orm.Model):
         return res
 
     def get_cost_field(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         return self._cost_price(cr, uid, ids, '', [], context)
 
     def _cost_price(self, cr, uid, ids, field_name, arg, context=None):
-        context = context or {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         product_uom = context.get('product_uom')
         bom_properties = context.get('properties')
         res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties)
@@ -168,7 +169,7 @@ class product_product(orm.Model):
         '''
         Show if have or not a bom
         '''
-        context = context or {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         bom_properties = bom_properties or []
 
         bom_obj = self.pool['mrp.bom']
@@ -176,13 +177,12 @@ class product_product(orm.Model):
         res = {}
         ids = ids or []
 
-        for record in self.browse(cursor, user, ids, context):
-            bom_id = bom_obj._bom_find(cursor, user, record.id, product_uom=None, properties=bom_properties)
-            
+        for product in self.browse(cursor, user, ids, context):
+            bom_id = bom_obj._bom_find(cursor, user, product.id, product_uom=None, properties=bom_properties)
             if not bom_id:
-                res[record.id] = False
+                res[product.id] = False
             else:
-                res[record.id] = True
+                res[product.id] = True
             
         return res
     
@@ -196,6 +196,7 @@ class product_product(orm.Model):
 
     def _compute_bom_stock(self, cr, uid, product,
                            quantities, company, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         bom_obj = self.pool['mrp.bom']
         uom_obj = self.pool['product.uom']
         mapping = self._bom_stock_mapping(cr, uid, context=context)
@@ -226,7 +227,6 @@ class product_product(orm.Model):
                                                                 context=context)
 
                     if line_product_qty and (bom_qty > line_product_qty):
-                        print bom_qty, line_product_qty
                         prod_min_quantity = bom_qty / line_product_qty  # line.product_qty is always > 0
                     else:
                         # if one product has not enough stock,
@@ -253,6 +253,7 @@ class product_product(orm.Model):
         # We need available, virtual or immediately usable
         # quantity which is selected from company to compute Bom stock Value
         # so we add them in the calculation.
+        context = context or self.pool['res.users'].context_get(cr, uid)
         user_obj = self.pool['res.users']
         comp_obj = self.pool['res.company']
         if 'bom_stock' in field_names:
@@ -260,8 +261,7 @@ class product_product(orm.Model):
             field_names.append('immediately_usable_qty')
             field_names.append('virtual_available')
 
-        res = super(product_product, self)._product_available(
-            cr, uid, ids, field_names, arg, context)
+        res = super(product_product, self)._product_available(cr, uid, ids, field_names, arg, context)
 
         if 'bom_stock' in field_names:
             company = user_obj.browse(cr, uid, uid, context=context).company_id
@@ -285,7 +285,7 @@ class product_product(orm.Model):
         return result
     
     def price_get(self, cr, uid, ids, ptype='list_price', context=None):
-        context = context or {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if 'currency_id' in context:
             pricetype_obj = self.pool['product.price.type']
             price_type_id = pricetype_obj.search(cr, uid, [('field', '=', ptype)], context=context)[0]
@@ -420,7 +420,7 @@ class product_product(orm.Model):
 
     def copy(self, cr, uid, product_id, default=None, context=None):
         """Copies the product and the BoM of the product"""
-        context = context or {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         copy_id = super(product_product, self).copy(cr, uid, product_id, default=default, context=context)
 
         bom_obj = self.pool['mrp.bom']
@@ -434,8 +434,7 @@ class product_product(orm.Model):
         """
         This Function is call by scheduler.
         """
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for product in self.browse(cr, uid, ids, context):
             product.write({'standard_price': product.cost_price})
         return True
@@ -444,8 +443,7 @@ class product_product(orm.Model):
         """
         This Function is call by scheduler.
         """
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # search product with kit
         product_ids = self.search(cr, uid, [('is_kit', '=', True)], context=context)
         for product in self.browse(cr, uid, product_ids, context):
