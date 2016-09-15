@@ -21,7 +21,7 @@
 
 {
     "name": "Sale Pricelist Update",
-    "version": "3.0.1.0",
+    "version": "3.0.2.1",
     "depends": ["sale"],
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",

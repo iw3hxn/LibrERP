@@ -30,14 +30,14 @@ class sale_order(orm.Model):
     }
 
     def onchange_pricelist_id(self, cr, uid, ids, pricelist_id, order_lines, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         ret = super(sale_order, self).onchange_pricelist_id(cr, uid, ids, pricelist_id, order_lines, context=context)
         if ret:
             ret.update({'value': {'recalculate_prices': True}})
         return ret
 
     def recalculate_prices(self, cr, uid, ids, context=None):
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for sale in self.browse(cr, uid, ids, context):
             for line in sale.order_line:
                 order = line.order_id
@@ -49,6 +49,22 @@ class sale_order(orm.Model):
                     update_tax=True, date_order=order.date_order, packaging=False,
                     fiscal_position=order.fiscal_position.id, flag=False)
                 res['value']['discount'] = line.discount
+                line.write(res['value'])
+            sale.write({'recalculate_prices': False})
+        return True
+
+    def recalculate_prices_no_discount(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        for sale in self.browse(cr, uid, ids, context):
+            for line in sale.order_line:
+                order = line.order_id
+                res = line.product_id_change(
+                    order.pricelist_id.id, line.product_id.id,
+                    qty=line.product_uom_qty, uom=line.product_uom.id,
+                    qty_uos=line.product_uos_qty, uos=line.product_uos.id,
+                    name=line.name, partner_id=order.partner_id.id, lang=False,
+                    update_tax=True, date_order=order.date_order, packaging=False,
+                    fiscal_position=order.fiscal_position.id, flag=False)
                 line.write(res['value'])
             sale.write({'recalculate_prices': False})
         return True

@@ -10,7 +10,8 @@
 			<field name="arch" type="xml">
 				<field name="pricelist_id" position="after">
                     <field name="recalculate_prices" invisible="1"/>
-                    <button name="recalculate_prices" string="Recalculate prices" type="object" colspan="4" attrs="{'invisible': [('recalculate_prices','!=',True)]}"/>
+                    <button name="recalculate_prices" string="Recalculate prices" type="object" colspan="2" attrs="{'invisible': [('recalculate_prices','!=',True)]}"/>
+					<button name="recalculate_prices_no_discount" string="Recalculate prices No Discount" type="object" colspan="2" attrs="{'invisible': [('recalculate_prices','!=',True)]}"/>
                 </field>
 			</field>
 		</record>
