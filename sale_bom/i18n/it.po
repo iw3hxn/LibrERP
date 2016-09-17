@@ -31,6 +31,11 @@ msgid "Unit of Measure "
 msgstr "Unità di Misura"
 
 #. module: sale_bom
+#: field:sale.order.line.mrp.bom,parent_id:0
+msgid "Parent"
+msgstr "Livello"
+
+#. module: sale_bom
 #: field:sale.order.line,with_bom:0
 msgid "With BOM"
 msgstr "With BOM"
