@@ -55,11 +55,11 @@
     ],
     "data": [
         'security/ir.model.access.csv',
-        'res_company_view.xml',
-        'stock_picking_view.xml',
-        'sale_order_view.xml',
-        'res_request_link.xml',
-        'account_analytic_line_view.xml'
+        'views/res_company_view.xml',
+        'views/stock_picking_view.xml',
+        'views/sale_order_view.xml',
+        'views/res_request_link.xml',
+        'views/account_analytic_line_view.xml'
     ],
     "active": False,
     "installable": True,

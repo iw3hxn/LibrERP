@@ -31,6 +31,7 @@ class project_project(orm.Model):
     _inherit = 'project.project'
 
     def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         project_id = super(project_project, self).create(cr, uid, vals, context)
         project = self.pool['project.project'].browse(cr, uid, project_id, context)
         
@@ -50,8 +51,8 @@ class project_project(orm.Model):
                         'remaining_hours': task.planned_hours,
                         'user_id': task.user_id and task.user_id.id or False,
                     }
-                    task_obj.create(cr, uid, vals, context=context)
-                self.pool['project.project'].write(cr, uid, project_id, {'state': 'open'}, context=context)
+                    task_obj.create(cr, uid, vals, context)
+                self.pool['project.project'].write(cr, uid, project_id, {'state': 'open'}, context)
         return project_id
 
 

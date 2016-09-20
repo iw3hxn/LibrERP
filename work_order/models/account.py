@@ -35,7 +35,7 @@ class account_analytic_line(orm.Model):
     def _get_selection_list(self, cr, uid, context=None):
         #@return a list of tuples. tuples containing model name and name of the record
         model_obj = self.pool['ir.model']
-        ids = model_obj.search(cr, uid, [('name', 'not ilike', '.')])
+        ids = model_obj.search(cr, uid, [('name', 'not ilike', '.')], context=context)
         res = model_obj.read(cr, uid, ids, ['model', 'name'])
         return [(r['model'], r['name']) for r in res] + [('', '')]
     
@@ -49,7 +49,7 @@ class account_analytic_line(orm.Model):
             bom_obj = self.pool['mrp.bom']
             amount = 0.0
             for bom in product.bom_lines:
-                bom_product_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom.id)])
+                bom_product_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom.id)], context=context)
                 bom_products = bom_obj.browse(cr, uid, bom_product_ids)
                 for bom_product in bom_products:
                     if not bom_product.product_id.product_tmpl_id.type == 'service':
@@ -112,7 +112,7 @@ class account_analytic_line(orm.Model):
             line_date = datetime.datetime.strptime(values['date'], DEFAULT_SERVER_DATETIME_FORMAT)
             line_date = datetime.date(year=line_date.year, month=line_date.month, day=line_date.day)
             
-            analytic_line_ids = self.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id))], context)
+            analytic_line_ids = self.search(cr, uid, [('origin_document', '=', '{model}, {document_id}'.format(model=values['origin_document']._name, document_id=values['origin_document'].id))], context=context)
 
             if analytic_line_ids:
                 return self.write(cr, uid, analytic_line_ids, {

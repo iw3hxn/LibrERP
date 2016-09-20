@@ -174,23 +174,37 @@ class sale_order(orm.Model):
                 for order_line in order.order_line:
                     task_number = 1
                     if order_line.product_id and order_line.product_id.is_kit:
-                        # test id module sale_bom is installad
+                        # test if module sale_bom is installad
                         if sale_line_bom_obj:
-                            service_boms = [sale_line_bom for sale_line_bom in order_line.mrp_bom if (sale_line_bom.product_id.type == 'service' and not sale_line_bom.product_id.purchase_ok)]
-                            for bom in service_boms:
-                                if bom.product_uom.id == user.company_id.hour.id:
-                                    planned_hours = bom.product_uom_qty
-                                else:
-                                    planned_hours = self.pool['product.uom']._compute_qty(cr, uid, bom.product_uom.id, bom.product_uom_qty, bom.product_id.uom_id.id)
-                                    task_number = int(bom.product_uom_qty)
-                                task_vals = {
-                                    'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
-                                    'project_id': project_id,
-                                    'planned_hours': int(planned_hours / task_number),
-                                    'remaining_hours': int(planned_hours / task_number),
-                                    'origin': 'sale.order.line, {0}'.format(order_line.id)
-                                }
-                                self.create_task(cr, uid, order_line, task_number, task_vals, context)
+                            product_boms = list(set([sale_line_bom.parent_id and sale_line_bom.parent_id for sale_line_bom in order_line.mrp_bom if (sale_line_bom.parent_id.type == 'service' and sale_line_bom.parent_id.supply_method == 'produce')]))
+                            if product_boms:
+                                for product in product_boms:
+                                    task_vals = {
+                                        'name': u"{0}: {1} - {2}".format(order.project_project.name,
+                                                                         order_line.product_id.name,
+                                                                         product.name),
+                                        'project_id': project_id,
+                                        'planned_hours': 1, #int(planned_hours / task_number),
+                                        'remaining_hours': 1, #int(planned_hours / task_number),
+                                        'origin': 'sale.order.line, {0}'.format(order_line.id)
+                                    }
+                                    self.create_task(cr, uid, order_line, task_number, task_vals, context)
+                            else:
+                                service_boms = [sale_line_bom for sale_line_bom in order_line.mrp_bom if (sale_line_bom.product_id.type == 'service' and not sale_line_bom.product_id.purchase_ok)]
+                                for bom in service_boms:
+                                    if bom.product_uom.id == user.company_id.hour.id:
+                                        planned_hours = bom.product_uom_qty
+                                    else:
+                                        planned_hours = self.pool['product.uom']._compute_qty(cr, uid, bom.product_uom.id, bom.product_uom_qty, bom.product_id.uom_id.id)
+                                        task_number = int(bom.product_uom_qty)
+                                    task_vals = {
+                                        'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
+                                        'project_id': project_id,
+                                        'planned_hours': int(planned_hours / task_number),
+                                        'remaining_hours': int(planned_hours / task_number),
+                                        'origin': 'sale.order.line, {0}'.format(order_line.id)
+                                    }
+                                    self.create_task(cr, uid, order_line, task_number, task_vals, context)
 
                         else:
                             main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)], context=context)
