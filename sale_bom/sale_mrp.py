@@ -72,7 +72,7 @@ class sale_order_line(orm.Model):
                             else:
                                 sequence += 1
                                 line_bom = {
-                                    'parent_id': bom_line.product_id.id,
+                                    'parent_id': False,
                                     'product_id': bom_line.product_id.id,
                                     'product_uom_qty': bom_line.product_qty,
                                     'product_uom': bom_line.product_uom.id,
