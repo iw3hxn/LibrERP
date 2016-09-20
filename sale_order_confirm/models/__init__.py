@@ -22,5 +22,10 @@
 #
 ##############################################################################
 
-from . import models
-from . import wizard
+from . import company
+from . import sale_order
+from . import partner
+from . import sale_shop
+from . import account_invoice
+from . import stock_picking
+

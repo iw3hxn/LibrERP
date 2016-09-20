@@ -201,19 +201,20 @@ class sale_order_confirm(orm.TransientModel):
             
         res = super(sale_order_confirm, self).default_get(cr, uid, fields, context=context)
 
-        sale_order_data = sale_order_obj.browse(cr, uid, context['active_ids'][0], context=context)
+        sale_order = sale_order_obj.browse(cr, uid, context['active_ids'][0], context=context)
 
         res.update({
-            'partner_shipping_id': sale_order_data.partner_shipping_id.id,
-            'order_date': sale_order_data.date_order,
-            'sale_order_id': sale_order_data.id,
-            'pricelist_id': sale_order_data.pricelist_id.id,
-            'partner_id': sale_order_data.partner_id.id,
+            'partner_shipping_id': sale_order.partner_shipping_id.id,
+            'order_date': sale_order.date_order,
+            'sale_order_id': sale_order.id,
+            'pricelist_id': sale_order.pricelist_id.id,
+            'partner_id': sale_order.partner_id.id,
+            'client_order_ref': sale_order.client_order_ref,
             'new_sale_order': False,
         })
         sale_order_confirm_line_list = []
 
-        for sale_order_line in sale_order_data.order_line:
+        for sale_order_line in sale_order.order_line:
             products_price = sale_order_line.price_unit * sale_order_line.product_uom_qty
             discount_price = (sale_order_line.discount or 0.0) * products_price / 100
             
@@ -230,7 +231,7 @@ class sale_order_confirm(orm.TransientModel):
                 sale_order_line_obj.write(cr, uid, sale_order_line.id, {'tax_id': tax_id})
             
             sale_order_confirm_line_list.append({
-                'order_id': sale_order_data.id,
+                'order_id': sale_order.id,
                 'sale_line_id': sale_order_line.id,
                 'name': sale_order_line.name,
                 'product_id': product_id,
