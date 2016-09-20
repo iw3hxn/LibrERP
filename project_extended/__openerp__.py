@@ -33,12 +33,12 @@
         'res_users_helper_functions'
     ],
     "data": [
-        'account/account_analytic_line_view.xml',
-        'project/project_view.xml',
-        'project/project_task_view.xml',
-        'project/project_view_menu.xml',
-        'res_partner/res_partner_view.xml',
         'security/security.xml',
+        'views/account_analytic_line.xml',
+        'views/project.xml',
+        'views/project_task.xml',
+        'views/project_view_menu.xml',
+        'views/res_partner.xml',
     ],
     "active": False,
     "installable": True

@@ -18,5 +18,4 @@
 #
 ##############################################################################
 
-from . import project
-from . import sale
+from . import models
