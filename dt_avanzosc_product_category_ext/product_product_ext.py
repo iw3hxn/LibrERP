@@ -39,7 +39,7 @@ class product_product(orm.Model):
         """
         When category changes, we search for taxes, UOM and product type
         """
-        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
+        context = self.pool['res.users'].context_get(cr, uid, context=context)
 
         res = {}
         warn = False
@@ -74,27 +74,28 @@ class product_product(orm.Model):
             }
         else:
             # Search for the default value on this category
-            category_data = self.pool['product.category'].browse(cr, uid, categ_id, context=context)
+            category = self.pool['product.category'].browse(cr, uid, categ_id, context=context)
             message = []
-            if category_data.property_account_expense_categ:
-                res['property_account_expense'] = category_data.property_account_expense_categ.id
+
+            if category.property_account_expense_categ:
+                res['property_account_expense'] = category.property_account_expense_categ.id
                 if product and product.property_account_expense.id != res['property_account_expense']:
                     message.append(self.fields_get(cr, uid)['property_account_expense']['string'])
 
-            if category_data.property_account_income_categ:
-                res['property_account_income'] = category_data.property_account_income_categ.id
+            if category.property_account_income_categ:
+                res['property_account_income'] = category.property_account_income_categ.id
                 if product and product.property_account_income.id != res['property_account_income']:
                     message.append(self.fields_get(cr, uid)['property_account_income']['string'])
 
-            res['type'] = category_data.provision_type or type
+            res['type'] = category.provision_type or type
 
             if res.get('type', False) and product and product.type != res.get('type'):
                     message.append(self.fields_get(cr, uid)['type']['string'])
 
-            if category_data.procure_method:
-                res['procure_method'] = category_data.procure_method
-            if category_data.supply_method:
-                res['supply_method'] = category_data.supply_method
+            if category.procure_method:
+                res['procure_method'] = category.procure_method
+            if category.supply_method:
+                res['supply_method'] = category.supply_method
 
             if res.get('type', False) == 'service':
                 if purchase_ok and field == 'purchase_ok' or supply_method == 'buy' and field == 'supply_method':
@@ -108,27 +109,27 @@ class product_product(orm.Model):
                     res.update(purchase_ok=True, supply_method='buy')
             print res['type'], res['purchase_ok'], res['supply_method']
 
-            if category_data.sale_taxes_ids:
-                taxes = [x.id for x in category_data.sale_taxes_ids]
+            if category.sale_taxes_ids:
+                taxes = [x.id for x in category.sale_taxes_ids]
                 res['taxes_id'] = [(6, 0, [taxes])]
 
-            if category_data.purchase_taxes_ids:
-                taxes = [x.id for x in category_data.purchase_taxes_ids]
+            if category.purchase_taxes_ids:
+                taxes = [x.id for x in category.purchase_taxes_ids]
                 res['supplier_taxes_id'] = [(6, 0, [taxes])]
 
-            if category_data.uom_id:
-                res['uom_id'] = category_data.uom_id.id
+            if category.uom_id:
+                res['uom_id'] = category.uom_id.id
                 if product and product.uom_id.id != res['uom_id']:
                     message.append(self.fields_get(cr, uid)['uom_id']['string'])
 
-            if category_data.uom_po_id:
-                res['uom_po_id'] = category_data.uom_po_id.id
+            if category.uom_po_id:
+                res['uom_po_id'] = category.uom_po_id.id
                 if product and product.uom_po_id.id != res['uom_po_id']:
                     message.append(self.fields_get(cr, uid)['uom_po_id']['string'])
 
-            if category_data.uos_id:
-                res['uos_id'] = category_data.uos_id.id
-                res['uos_coef'] = category_data.uos_coef
+            if category.uos_id:
+                res['uos_id'] = category.uos_id.id
+                res['uos_coef'] = category.uos_coef
                 if product and product.uos_id.id != res['uos_id']:
                     message.append(self.fields_get(cr, uid)['uos_id']['string'])
                 if product and product.uos_coef.id != res['uos_coef']:
