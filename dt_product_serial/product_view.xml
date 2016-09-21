@@ -8,6 +8,9 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="stock.view_normal_stock_property_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//group[@name='lot']" position="attributes">
+                    <attribute name="groups">stock.group_production_lot</attribute>
+                </xpath>
                 <field name="track_outgoing" position="after">
                     <field name="lot_split_type" />
                 </field>
