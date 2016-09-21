@@ -24,6 +24,7 @@
                     <field name="default_property_payment_term"/>
                     <field name="default_property_advance_product_id" required="1"/>
                     <separator string="Sale Order Validation Params" colspan="4"/>
+                    <field name="auto_order_policy" />
                     <field name="enable_partner_validation" />
                     <field name="need_tech_validation"/>
                     <field name="tech_validation_if_no_product" />

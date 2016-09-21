@@ -71,6 +71,7 @@ class res_company(orm.Model):
             view_load=True,
             domain=[('type', '=', 'service')],
         ),
+        'auto_order_policy': fields.boolean('Auto Order Invoice Policy'),
     }
 
     _defaults = {
@@ -80,4 +81,5 @@ class res_company(orm.Model):
         'default_credit_limit': 0,
         'default_sale_order_validity': 30,
         'default_property_account_position': _getFiscalPosition,
+        'auto_order_policy': True,
     }

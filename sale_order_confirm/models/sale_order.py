@@ -82,9 +82,16 @@ class sale_order(orm.Model):
     def create(self, cr, uid, vals, context=None):
         if not context:
             context = self.pool['res.users'].context_get(cr, uid)
-
+        company = self.pool['res.users'].browse(cr, uid, uid).company_id
         if self.service_only(cr, uid, False, vals, context) and vals.get('order_policy', '') == 'picking':
-            raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
+            if company.auto_order_policy:
+                vals.update({'order_policy': 'manual'})
+            else:
+                raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
+        else:
+            if company.auto_order_policy:
+                default = self.default_get(cr, uid, ['order_policy'], context)
+                vals.update({'order_policy': default.get('order_policy')})
 
         ids = super(sale_order, self).create(cr, uid, vals, context=context)
         if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
@@ -109,8 +116,17 @@ class sale_order(orm.Model):
 
         orders = self.browse(cr, uid, ids, context)
         for order in orders:
+            company = self.pool['res.users'].browse(cr, uid, uid).company_id
             if self.service_only(cr, uid, [order.id], vals, context) and vals.get('order_policy', order.order_policy) == 'picking':
-                raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
+                if company.auto_order_policy:
+                    vals.update({'order_policy': 'manual'})
+                else:
+                    raise orm.except_orm(_('Warning'), _(
+                        "You can't create an order with Invoicing being based on Picking if there are only service products"))
+            else:
+                if company.auto_order_policy:
+                    default = self.default_get(cr, uid, ['order_policy'], context)
+                    vals.update({'order_policy': default.get('order_policy')})
 
         # adaptative function: the system learn
         if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
@@ -129,6 +145,21 @@ class sale_order(orm.Model):
             self.hook_sale_state(cr, uid, orders, vals, context)
 
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
+
+    def copy(self, cr, uid, ids, defaults, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        defaults.update(
+            {
+                'tech_validation': False,
+                'manager_validation': False,
+                'customer_validation': False,
+                'email_sent_validation': False,
+                'supervisor_validation': False
+            }
+        )
+        defaults.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
+        return super(sale_order, self).copy(cr, uid, ids, defaults, context)
+
 
     def onchange_invoice_type_id(self, cr, uid, ids, invoice_type_id, context=None):
         if context is None:
@@ -483,20 +514,6 @@ class sale_order(orm.Model):
             return self.action_validate(cr, uid, ids, context)
         else:
             return False
-
-    def copy(self, cr, uid, ids, defaults, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        defaults.update(
-            {
-                'tech_validation': False,
-                'manager_validation': False,
-                'customer_validation': False,
-                'email_sent_validation': False,
-                'supervisor_validation': False
-            }
-        )
-        defaults.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
-        return super(sale_order, self).copy(cr, uid, ids, defaults, context)
 
 
 class sale_order_line(orm.Model):
