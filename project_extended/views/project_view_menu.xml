@@ -28,6 +28,27 @@
             res_model="account.analytic.line"
             src_model="project.project"/>
 
+        <!--WBS-->
+
+        <record id="project_wbs_form_action" model="ir.actions.act_window">
+            <field name="name">WBS</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mrp.bom</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('bom_id','=',False),('product_id.type','=','service')]</field>
+            <field name="search_view_id" ref="mrp.view_mrp_bom_filter"/>
+        </record>
+
+        <menuitem name="WBS"
+            id="menu_project_wbs"
+            parent="project.menu_definitions"
+            sequence="5" />
+
+        <menuitem
+            action="project_wbs_form_action"
+            id="menu_project_wbs_form_action"
+            parent="menu_project_wbs"
+            sequence="10"/>
 
     </data>
 </openerp>
