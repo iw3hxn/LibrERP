@@ -138,7 +138,7 @@ class product_product(orm.Model):
             if len(ids) == 1 and message and field == 'categ_id':
                 warn = {
                     'title': _('Caution'),
-                    'message': _("The product category has changed, thanks to control : \n %s " % '\n'.join(message)),
+                    'message': _("The product category has changed, thanks to control : \n %s ") % '\n'.join(message),
                 }
 
         return {'value': res, 'warning': warn}
