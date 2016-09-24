@@ -70,7 +70,22 @@ class project_project(orm.Model):
             if task.state != 'done':
                 res[task.project_id.id] += 1
         return res
-    
+
+    def _get_attached_docs(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        attachment = self.pool.get('ir.attachment')
+        task = self.pool.get('project.task')
+        for id in ids:
+            project_attachments = attachment.search(cr, uid,
+                                                    [('res_model', '=', 'project.project'), ('res_id', '=', id)],
+                                                    context=context, count=True)
+            task_ids = task.search(cr, uid, [('project_id', '=', id)], context=context)
+            task_attachments = attachment.search(cr, uid,
+                                                 [('res_model', '=', 'project.task'), ('res_id', 'in', task_ids)],
+                                                 context=context, count=True)
+            res[id] = (project_attachments or 0) + (task_attachments or 0)
+        return res
+
     # def _total_sale(self, cr, uid, ids, field_name, arg, context=None):
     #    if context is None:
     #        context = {}
@@ -305,4 +320,7 @@ class project_project(orm.Model):
                                          multi='sums', string="Invoice Amount", store={
                 'account.analytic.line': (_get_project_account, ['amount'], 80),
             }, ),
+       # 'doc_count': fields.function(
+       #     _get_attached_docs, string="Number of documents attached", type='integer'
+       # )
     }
