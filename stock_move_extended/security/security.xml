@@ -2,26 +2,26 @@
 <openerp>
 <data>
     
-    <record id="stock.module_category_warehouse" model="ir.module.category">
-	    <field name="name">Warehouse</field>
-	    <field name="description">Extend groups for Product</field>
-	    <field name="sequence">30</field>
-	</record>
+    <!--<record id="stock.module_category_warehouse" model="ir.module.category">-->
+	    <!--<field name="name">Warehouse</field>-->
+	    <!--<field name="description">Extend groups for Product</field>-->
+	    <!--<field name="sequence">30</field>-->
+	<!--</record>-->
     
     
     <record id="stock.view_price" model="res.groups">
         <field name="name">View Warehouse Price</field>
-        <field name="category_id" ref="stock.module_category_warehouse"/>
+        <field name="category_id" ref="base.module_category_warehouse_management"/>
     </record>
 
     <record id="stock.view_price_sell" model="res.groups">
         <field name="name">View Sell Order Price</field>
-        <field name="category_id" ref="stock.module_category_warehouse"/>
+        <field name="category_id" ref="base.module_category_warehouse_management"/>
     </record>
 
     <record id="stock.view_qty_warehouse" model="res.groups">
         <field name="name">View Qty on Stock Move</field>
-        <field name="category_id" ref="stock.module_category_warehouse"/>
+        <field name="category_id" ref="base.module_category_warehouse_management"/>
     </record>
     
 </data>
