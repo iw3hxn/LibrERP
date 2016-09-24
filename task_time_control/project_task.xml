@@ -16,7 +16,7 @@
                     <group groups="project.group_project_manager">
                         <separator string="Other User" colspan="4"/>
                         <field name="user_is_working" invisible="True" />
-                        <field name="other_users_ids" nolabel="1" />
+                        <field name="other_users_ids" widget="many2many_tags" nolabel="1" colspan="4"/>
                     </group>
                 </field>
             </field>
