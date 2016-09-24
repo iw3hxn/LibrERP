@@ -1,141 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data>
-    <record model="ir.ui.view" id="product_get_cost_field_form">
-        <field name="name">product.get_cost_field.view.form</field>
-        <field name="type">form</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="stock.view_normal_stock_property_form" />
+    <data>
+        <record model="ir.ui.view" id="product_get_cost_field_form">
+            <field name="name">product.get_cost_field.view.form</field>
+            <field name="type">form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="stock.view_normal_stock_property_form"/>
             <field name="arch" type="xml">
-<!--
-            <field name="supply_method" position="replace">
-                <field name="supply_method" readonly="1"/>
+                <!--
+                            <field name="supply_method" position="replace">
+                                <field name="supply_method" readonly="1"/>
+                            </field>
+                -->
+                <field name="list_price" position="replace">
+                    <field name="list_price" groups="product_bom.group_sell_price"/>
+                    <field name="cost_price" groups="product_bom.group_cost_price"
+                           attrs="{'invisible': [('is_kit', '=', False)]}"/>
+                    <button name="update_product_bom_price" string="Update Price" type="object"
+                            icon="terp-stock_format-scientific" help="This action will recalculate Bom Cost"
+                            attrs="{'invisible':[('is_kit','=', False)]}"/>
+                    <field name="is_kit" invisible="1"/>
+                </field>
+
+                <field name="standard_price" position="replace">
+                    <field name="standard_price" groups="product_bom.group_cost_price"/>
+                </field>
+
+                <field name="qty_available" position="after">
+                    <newline/>
+                    <field name="immediately_usable_qty"/>
+                    <field name="bom_stock"/>
+                </field>
+
+                <notebook position="inside">
+                    <page string="BOM" attrs="{'invisible': [('is_kit', '=', False)]}">
+                        <separator string="BoMs Line" colspan="2"/>
+                        <field name="bom_lines" colspan="4" nolabel="1">
+                            <tree string="BoMs">
+                                <field name="name"/>
+                                <field name="product_qty"/>
+                                <field name="type"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
             </field>
--->                
-            <field name="list_price" position="replace">
-                <field name="list_price" groups="product_bom.group_sell_price"/>
-                <field name="cost_price" groups="product_bom.group_cost_price" attrs="{'invisible': [('is_kit', '=', False)]}"/>
-                <button name="update_product_bom_price" string="Update Price" type="object" icon="terp-stock_format-scientific" help="This action will recalculate Bom Cost" attrs="{'invisible':[('is_kit','=', False)]}" />
-                <field name="is_kit" invisible="1"/>
-            </field>
-
-            <field name="standard_price" position="replace">
-                <field name="standard_price" groups="product_bom.group_cost_price"/>
-            </field>
-
-            <field name="qty_available" position="after">
-                <newline />
-                <field name="immediately_usable_qty" />
-                <field name="bom_stock" />
-            </field> 
- 
-            <notebook position="inside">
-                <page string="BOM" attrs="{'invisible': [('is_kit', '=', False)]}">
-                    <separator string="BoMs Line" colspan="2"/>
-                    <field name="bom_lines" colspan="4" nolabel="1" >
-                        <tree string="BoMs">
-                            <field name="name" />
-                            <field name="product_qty" />
-                            <field name="type" />
-                        </tree>
-                    </field>
-                </page>
-            </notebook>
-        </field>
-    </record>
+        </record>
 
 
-    <record id="procurement.product_normal_form_view" model="ir.ui.view">
+        <record id="procurement.product_normal_form_view" model="ir.ui.view">
             <field name="name">product.normal.form.orderpoint.inherit</field>
             <field name="model">product.product</field>
             <field name="type">form</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
-                  <group name="misc" position="after">
-                      <group col="2" colspan="2" attrs="{'invisible':[('type', '=', 'service')]}" groups="stock.group_stock_user">
-                          <separator string="Minimum Stock Rules" colspan="2"/>
-                          <field name="orderpoint_ids" context="{'default_product_uom': uom_id}" nolabel="1">
-                              <tree string="Minimum Stock Rule" editable="bottom">
-                                  <field name="warehouse_id" on_change="onchange_warehouse_id(warehouse_id)" widget="selection"/>
-                                  <field name="location_id" groups="base.group_extended"/>
-                                  <field name="product_min_qty"/>
-                                  <field name="product_max_qty"/>
-                                  <field name="product_uom" groups="base.group_extended"/>
-                              </tree>
-                          </field>
-                      </group>
-                  </group>
+                <group name="misc" position="after">
+                    <group col="2" colspan="2" attrs="{'invisible':[('type', '=', 'service')]}"
+                           groups="stock.group_stock_user">
+                        <separator string="Minimum Stock Rules" colspan="2"/>
+                        <field name="orderpoint_ids" context="{'default_product_uom': uom_id}" nolabel="1">
+                            <tree string="Minimum Stock Rule" editable="bottom">
+                                <field name="warehouse_id" on_change="onchange_warehouse_id(warehouse_id)"
+                                       widget="selection"/>
+                                <field name="location_id" groups="base.group_extended"/>
+                                <field name="product_min_qty"/>
+                                <field name="product_max_qty"/>
+                                <field name="product_uom" groups="base.group_extended"/>
+                            </tree>
+                        </field>
+                    </group>
+                </group>
             </field>
         </record>
 
 
-    <record model="ir.ui.view" id="product_get_cost_field_tree">
-        <field name="name">product.get_cost_field.view.tree</field>
-        <field name="type">tree</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_product_tree_view" />
+        <record model="ir.ui.view" id="product_get_cost_field_tree">
+            <field name="name">product.get_cost_field.view.tree</field>
+            <field name="type">tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
-            <field name="lst_price" position="replace">
-                <field name="prefered_supplier" groups="product_bom.group_supplier_product" />
-                <field name="lst_price" groups="product_bom.group_sell_price"/>
-            </field>    
-            <field name="standard_price" position="replace">
-                <field name="cost_price" groups="product_bom.group_cost_price"/>
-                <button name="update_product_bom_price" string="Update Price" type="object" icon="terp-stock_format-scientific" help="This action will recalculate Bom Cost" attrs="{'invisible':[('is_kit','=', False)]}" />
+
+                <field name="lst_price" position="replace">
+                    <field name="prefered_supplier" groups="product_bom.group_supplier_product"/>
+                    <field name="lst_price" groups="product_bom.group_sell_price"/>
+                </field>
+
+                <field name="virtual_available" position="attributes">
+                    <attribute name="groups">product_bom.group_view_warehouse</attribute>
+                </field>
+                <field name="qty_available" position="attributes">
+                    <attribute name="groups">product_bom.group_view_warehouse</attribute>
+                </field>
+                <field name="standard_price" position="replace">
+                    <field name="cost_price" groups="product_bom.group_cost_price"/>
+                    <button name="update_product_bom_price" string="Update Price" type="object"
+                            icon="terp-stock_format-scientific" help="This action will recalculate Bom Cost"
+                            attrs="{'invisible':[('is_kit','=', False)]}"/>
+                </field>
+                <field name="state" position="after">
+                    <field name="is_kit" groups="base.group_extended"/>
+                </field>
+
             </field>
-            <field name="state" position="after">
-                <field name="is_kit"/> 
+        </record>
+
+        <record model="ir.ui.view" id="product_warehouse_form">
+            <field name="name">product.warehouse.form</field>
+            <field name="type">form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="stock.view_normal_property_form"/>
+            <field name="arch" type="xml">
+                <group name="store" position="attributes">
+                    <attribute name="groups">product_bom.group_view_warehouse</attribute>
+                </group>
             </field>
- 
-        </field>
-    </record>
-    
-    <record id="product_get_cost_field_search" model="ir.ui.view">
-        <field name="name">product.get_cost_field.view.search</field>
-        <field name="model">product.product</field>
-        <field name="type">search</field>
-        <field name="inherit_id" ref="product.product_search_form_view" />
-        <field name="arch" type="xml">
-            <xpath expr="//search[@string='Product']//filter[@string='Services']" position="before">
-                    <filter name="is_kit" icon="terp-stock_symbol-selection" domain="[('is_kit','=',True)]" string="Kit" />
-            </xpath>
-        </field>
-    </record>
-    
+        </record>
+
+        <record id="product_get_cost_field_search" model="ir.ui.view">
+            <field name="name">product.get_cost_field.view.search</field>
+            <field name="model">product.product</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search[@string='Product']//filter[@string='Services']" position="before">
+                    <filter name="is_kit" icon="terp-stock_symbol-selection" domain="[('is_kit','=',True)]"
+                            string="Kit"/>
+                </xpath>
+            </field>
+        </record>
 
 
-
-<!--OVER WRITE DELLA VISTA PRODOTTI-->
-
+        <!--OVER WRITE DELLA VISTA PRODOTTI-->
 
 
-    <record id="product.product_normal_form_view" model="ir.ui.view">
+        <record id="product.product_normal_form_view" model="ir.ui.view">
             <field name="name">product.normal.form</field>
             <field name="model">product.product</field>
             <field name="type">form</field>
             <field eval="7" name="priority"/>
             <field name="arch" type="xml">
                 <form string="Product">
-                   <group colspan="4" col="8">
-                    <group colspan="4" col="2">
-                        <separator string="Name" colspan="2"/>
-                        <field name="name"/>
-                        <field groups="product.group_product_variant" name="variants" />
+                    <group colspan="4" col="8">
+                        <group colspan="4" col="2">
+                            <separator string="Name" colspan="2"/>
+                            <field name="name"/>
+                            <field groups="product.group_product_variant" name="variants"/>
+                        </group>
+                        <group colspan="1" col="2">
+                            <separator string="Codes" colspan="2"/>
+                            <field name="default_code"/>
+                            <field name="ean13" groups="base.group_extended"/>
+                        </group>
+                        <group colspan="1" col="2">
+                            <separator string="Characteristics" colspan="2"/>
+                            <field name="sale_ok"/>
+                            <field name="purchase_ok"/>
+                        </group>
+                        <group colspan="1" col="1">
+                            <field name="product_image" widget='image' nolabel="1"/>
+                        </group>
                     </group>
-                    <group colspan="1" col="2">
-                        <separator string="Codes" colspan="2"/>
-                        <field name="default_code"/>
-                        <field name="ean13" groups="base.group_extended"/>
-                    </group>
-                    <group colspan="1" col="2">
-                        <separator string="Characteristics" colspan="2"/>
-                        <field name="sale_ok"/>
-                        <field name="purchase_ok"/>
-                    </group>
-                    <group colspan="1" col="1">
-                        <field name="product_image" widget='image' nolabel="1"/>
-                    </group> 
-                   </group>
 
                     <notebook colspan="4">
                         <page string="Information">
@@ -150,22 +175,23 @@
                                 <field name="list_price"/>
                                 <field groups="base.group_extended" name="cost_method"/>
                                 <group groups="product_bom.group_cost_price" colspan="2" col="2">
-                                <field name="standard_price" attrs="{'readonly':[('cost_method','=','average')]}"
-                                    groups="product_bom.group_cost_price"/>
-                                <newline/>
+                                    <field name="standard_price" attrs="{'readonly':[('cost_method','=','average')]}"
+                                           groups="product_bom.group_cost_price"/>
+                                    <newline/>
                                 </group>
                                 <field name="price_margin" groups="product.group_product_variant"/>
                                 <field name="price_extra" groups="product.group_product_variant"/>
                             </group>
 
-                            <group colspan="2" col="2" attrs="{'invisible':[('type','=','service')]}" groups="base.group_extended">
+                            <group colspan="2" col="2" attrs="{'invisible':[('type','=','service')]}"
+                                   groups="base.group_extended">
                                 <separator string="Weights" colspan="2"/>
                                 <field digits="(14, 3)" name="volume" attrs="{'readonly':[('type','=','service')]}"/>
                                 <field name="weight" attrs="{'readonly':[('type','=','service')]}"/>
                                 <field name="weight_net" attrs="{'readonly':[('type','=','service')]}"/>
                             </group>
 
-                            <group colspan="2" col="2" name="status" >
+                            <group colspan="2" col="2" name="status">
                                 <separator string="Status" colspan="2"/>
                                 <field name="categ_id"/>
                                 <field name="state" groups="base.group_extended"/>
@@ -186,7 +212,8 @@
                             </group>
 
                         </page>
-                        <page string="Procurement &amp; Locations" groups="stock.group_stock_user" attrs="{'invisible':[('type','=','service')]}">
+                        <page string="Procurement &amp; Locations" groups="stock.group_stock_user"
+                              attrs="{'invisible':[('type','=','service')]}">
                             <group colspan="2" col="2" name="delay">
                                 <separator string="Delays" colspan="2"/>
                                 <field name="sale_delay" attrs="{'readonly':[('sale_ok','=',0)]}"/>
@@ -195,7 +222,7 @@
                             </group>
                             <group colspan="2" col="2" name="store">
                                 <separator string="Storage Localisation" colspan="2"/>
-                                <field name="loc_rack" attrs="{'readonly':[('type','=','service')]}" />
+                                <field name="loc_rack" attrs="{'readonly':[('type','=','service')]}"/>
                                 <field name="loc_row" attrs="{'readonly':[('type','=','service')]}"/>
                                 <field name="loc_case" attrs="{'readonly':[('type','=','service')]}"/>
                             </group>
@@ -207,7 +234,8 @@
                             </group>
 
                         </page>
-                        <page string="Suppliers"  groups="product_bom.group_supplier_product" attrs="{'invisible':[('supply_method','=','produce')]}">
+                        <page string="Suppliers" groups="product_bom.group_supplier_product"
+                              attrs="{'invisible':[('supply_method','=','produce')]}">
                             <field colspan="4" name="seller_ids" nolabel="1" context="{'uom_id': uom_id}"/>
                         </page>
                         <page string="Descriptions">
@@ -218,7 +246,8 @@
                             <separator string="Purchase Description"/>
                             <field colspan="4" name="description_purchase" nolabel="1"/>
                         </page>
-                        <page groups="base.group_extended" string="Packaging" attrs="{'invisible':[('type','=','service')]}">
+                        <page groups="base.group_extended" string="Packaging"
+                              attrs="{'invisible':[('type','=','service')]}">
                             <field colspan="4" name="packaging" nolabel="1">
                                 <form string="Packaging">
                                     <field name="ean"/>
@@ -243,7 +272,7 @@
                     </notebook>
                 </form>
             </field>
-         </record>
+        </record>
 
         <record id="account.product_normal_form_view" model="ir.ui.view">
             <field name="name">product.normal.form.inherit</field>
@@ -252,24 +281,26 @@
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
                 <notebook position="inside">
-                    <page string="Accounting"  groups="account.group_account_invoice">
-                    <group name="properties" groups="base.group_extended">
-                        <separator string="Sales Properties" colspan="2"/>
-                        <separator string="Purchase Properties" colspan="2"/>
-                        <field name="property_account_income" 
-                        domain="[('type','&lt;&gt;','view'),('type','&lt;&gt;','consolidation'),('user_type.code','&lt;&gt;','expense')]"
-                        attrs="{'readonly':[('sale_ok','=',0)]}"  groups="base.group_extended"/>
-                        <field name="property_account_expense"
-                        domain="[('type','&lt;&gt;','view'),('type','&lt;&gt;','consolidation'),('user_type.code','&lt;&gt;','income')]"
-                        attrs="{'readonly':[('purchase_ok','=',0)]}"  groups="base.group_extended"/>
-                    </group>
-			<newline/>
-                    <group colspan="2">
-                        <separator string="Sale Taxes" colspan="2"/>
-                        <separator string="Purchase Taxes" colspan="2"/>
-                        <field name="taxes_id" nolabel="1" colspan="2" attrs="{'readonly':[('sale_ok','=',0)]}" widget="many2many_tags" />
-                        <field name="supplier_taxes_id" nolabel="1" colspan="2" attrs="{'readonly':[('purchase_ok','=',0)]}" widget="many2many_tags" />
-                    </group>
+                    <page string="Accounting" groups="account.group_account_invoice">
+                        <group name="properties" groups="base.group_extended">
+                            <separator string="Sales Properties" colspan="2"/>
+                            <separator string="Purchase Properties" colspan="2"/>
+                            <field name="property_account_income"
+                                   domain="[('type','&lt;&gt;','view'),('type','&lt;&gt;','consolidation'),('user_type.code','&lt;&gt;','expense')]"
+                                   attrs="{'readonly':[('sale_ok','=',0)]}" groups="base.group_extended"/>
+                            <field name="property_account_expense"
+                                   domain="[('type','&lt;&gt;','view'),('type','&lt;&gt;','consolidation'),('user_type.code','&lt;&gt;','income')]"
+                                   attrs="{'readonly':[('purchase_ok','=',0)]}" groups="base.group_extended"/>
+                        </group>
+                        <newline/>
+                        <group colspan="2">
+                            <separator string="Sale Taxes" colspan="2"/>
+                            <separator string="Purchase Taxes" colspan="2"/>
+                            <field name="taxes_id" nolabel="1" colspan="2" attrs="{'readonly':[('sale_ok','=',0)]}"
+                                   widget="many2many_tags"/>
+                            <field name="supplier_taxes_id" nolabel="1" colspan="2"
+                                   attrs="{'readonly':[('purchase_ok','=',0)]}" widget="many2many_tags"/>
+                        </group>
                     </page>
                 </notebook>
             </field>
@@ -285,21 +316,25 @@
                     <group colspan="2" col="3" attrs="{'invisible': [('type', '=', 'service')]}">
                         <separator string="Stocks" colspan="4"/>
                         <field name="qty_available"/>
-                        <button name="%(stock.action_view_change_product_quantity)d" string="Update" attrs="{'invisible': [('type', '=', 'service')]}"
-                            type="action" icon="gtk-execute" groups="stock.group_stock_manager,stock.group_stock_user"/>
+                        <button name="%(stock.action_view_change_product_quantity)d" string="Update"
+                                attrs="{'invisible': [('type', '=', 'service')]}"
+                                type="action" icon="gtk-execute"
+                                groups="stock.group_stock_manager,stock.group_stock_user"/>
                         <newline/>
                         <field name="virtual_available"/>
                     </group>
-                    <group colspan="2" col="2" name="stock_variations" groups="base.group_extended" attrs="{'invisible': [('type', '=', 'service')]}">
+                    <group colspan="2" col="2" name="stock_variations" groups="base.group_extended"
+                           attrs="{'invisible': [('type', '=', 'service')]}">
                         <separator string="Expected Stock Variations" colspan="2"/>
                         <field name="incoming_qty"/>
                         <field name="outgoing_qty"/>
                     </group>
-                    <group colspan="2" col="2" name="lot" groups="base.group_extended" attrs="{'invisible': [('type', '=', 'service')]}">
+                    <group colspan="2" col="2" name="lot" groups="base.group_extended"
+                           attrs="{'invisible': [('type', '=', 'service')]}">
                         <separator string="Lots" colspan="4"/>
-                        <field name="track_production" />
-                        <field name="track_incoming" />
-                        <field name="track_outgoing" />
+                        <field name="track_production"/>
+                        <field name="track_incoming"/>
+                        <field name="track_outgoing"/>
                     </group>
                 </group>
             </field>
@@ -308,13 +343,13 @@
         <record model="ir.ui.view" id="product_manufacturer.view_product_form_expiry">
             <field name="name">product.normal.form</field>
             <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <notebook position="inside">
                     <page string="Manufacturer" attrs="{'invisible': [('type', '=', 'service')]}">
-                        <separator string="Manufacturer" colspan="4" />
-                        <field name="manufacturer" />
+                        <separator string="Manufacturer" colspan="4"/>
+                        <field name="manufacturer"/>
                         <newline/>
                         <field name="manufacturer_pname"/>
                         <field name="manufacturer_pref"/>
@@ -332,6 +367,5 @@
         </record>
 
 
-
-  </data>
+    </data>
 </openerp>

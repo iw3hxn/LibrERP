@@ -35,7 +35,7 @@
     ],
     "demo_xml": [],
     "update_xml": [
-        "security/product_price.xml",		# always load groups first!
+        "security/security.xml",		# always load groups first!
         "security/ir.model.access.csv",        # load access rights after groups
         "company/company.xml",
         "product/product.xml",
