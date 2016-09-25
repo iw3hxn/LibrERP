@@ -161,6 +161,7 @@ class sale_order(orm.Model):
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
 
         for order in self.browse(cr, uid, ids, context=context):
+            sequence = 10
             if order.project_project and order.company_id.create_task:
                 project_id = order.project_project.id
                 if order.order_policy == 'picking':
@@ -184,10 +185,13 @@ class sale_order(orm.Model):
                                                                          order_line.product_id.name,
                                                                          product.name),
                                         'project_id': project_id,
+                                        'partner_id': order.partner_id.id,
                                         'planned_hours': 1, #int(planned_hours / task_number),
                                         'remaining_hours': 1, #int(planned_hours / task_number),
-                                        'origin': 'sale.order.line, {0}'.format(order_line.id)
+                                        'origin': 'sale.order.line, {0}'.format(order_line.id),
+                                        'sequence': sequence,
                                     }
+                                    sequence += 10
                                     self.create_task(cr, uid, order_line, task_number, task_vals, context)
                             else:
                                 service_boms = [sale_line_bom for sale_line_bom in order_line.mrp_bom if (sale_line_bom.product_id.type == 'service' and not sale_line_bom.product_id.purchase_ok)]
@@ -200,10 +204,13 @@ class sale_order(orm.Model):
                                     task_vals = {
                                         'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
                                         'project_id': project_id,
+                                        'partner_id': order.partner_id.id,
                                         'planned_hours': int(planned_hours / task_number),
                                         'remaining_hours': int(planned_hours / task_number),
-                                        'origin': 'sale.order.line, {0}'.format(order_line.id)
+                                        'origin': 'sale.order.line, {0}'.format(order_line.id),
+                                        'sequence': sequence,
                                     }
+                                    sequence += 10
                                     self.create_task(cr, uid, order_line, task_number, task_vals, context)
 
                         else:
@@ -225,8 +232,10 @@ class sale_order(orm.Model):
                                         'project_id': project_id,
                                         'planned_hours': planned_hours,
                                         'remaining_hours': planned_hours,
-                                        'origin': 'sale.order.line, {0}'.format(order_line.id)
+                                        'origin': 'sale.order.line, {0}'.format(order_line.id),
+                                        'sequence': sequence,
                                     }
+                                    sequence += 10
                                     self.create_task(cr, uid, order_line, task_number, task_vals, context)
                             
                     elif order_line.product_id and order_line.product_id.type == 'service' and not order_line.product_id.purchase_ok:
@@ -245,9 +254,10 @@ class sale_order(orm.Model):
                             'project_id': project_id,
                             'planned_hours': planned_hours,
                             'remaining_hours': planned_hours,
-                            'origin': 'sale.order.line, {0}'.format(order_line.id)
+                            'origin': 'sale.order.line, {0}'.format(order_line.id),
+                            'sequence': sequence,
                         }
-
+                        sequence += 10
                         self.create_task(cr, uid, order_line, task_number, task_vals, context)
 
         return result
