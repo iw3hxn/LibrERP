@@ -122,8 +122,31 @@ class account_invoice(orm.Model):
             if inv.fiscal_position != new_fiscal_position:
                 for line in inv.invoice_line:
                     if line.product_id:
-                        new_taxes = fpos_obj.map_tax(cr, uid, new_fiscal_position, line.product_id.taxes_id)
-                        line.write({'invoice_line_tax_id': [(6, 0, new_taxes)]})
+                        result = {}
+                        if inv.type in ('out_invoice', 'out_refund'):
+                            account_id = line.product_id.product_tmpl_id.property_account_income.id
+                            if not account_id:
+                                account_id = line.product_id.categ_id.property_account_income_categ.id
+                        else:
+                            account_id = line.product_id.product_tmpl_id.property_account_expense.id
+                            if not account_id:
+                                account_id = line.product_id.categ_id.property_account_expense_categ.id
+
+                        account_id = fpos_obj.map_account(cr, uid, new_fiscal_position, account_id)
+
+                        if inv.type in ('out_invoice', 'out_refund'):
+                            taxes = line.product_id.taxes_id and line.product_id.taxes_id or (
+                            account_id and self.pool['account.account'].browse(cr, uid, account_id, context=context).tax_ids or False)
+                        else:
+                            taxes = line.product_id.supplier_taxes_id and line.product_id.supplier_taxes_id or (
+                            account_id and self.pool['account.account'].browse(cr, uid, account_id, context=context).tax_ids or False)
+
+                        new_taxes = fpos_obj.map_tax(cr, uid, new_fiscal_position, taxes)
+                        if new_taxes:
+                            result['invoice_line_tax_id'] = [(6, 0, new_taxes)]
+                        result['account_id'] = fpos_obj.map_account(cr, uid, new_fiscal_position, account_id, context=None)
+
+                        self.pool['account.invoice.line'].write(cr, uid, line.id, result, context=context)
                 inv.button_reset_taxes()
                 warning = {
                     'title': _('Fiscal Position'),
