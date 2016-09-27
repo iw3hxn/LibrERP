@@ -88,6 +88,9 @@ class sale_order(orm.Model):
                 vals.update({'order_policy': 'manual'})
             else:
                 raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
+        elif self.service_only(cr, uid, False, vals, context):
+                if company.auto_order_policy:
+                    vals.update({'order_policy': 'manual'})
         else:
             if company.auto_order_policy:
                 default = self.default_get(cr, uid, ['order_policy'], context)
@@ -123,6 +126,9 @@ class sale_order(orm.Model):
                 else:
                     raise orm.except_orm(_('Warning'), _(
                         "You can't create an order with Invoicing being based on Picking if there are only service products"))
+            elif self.service_only(cr, uid, [order.id], vals, context):
+                if company.auto_order_policy:
+                    vals.update({'order_policy': 'manual'})
             else:
                 if company.auto_order_policy:
                     default = self.default_get(cr, uid, ['order_policy'], context)
