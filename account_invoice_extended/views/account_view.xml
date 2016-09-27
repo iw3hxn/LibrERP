@@ -12,7 +12,7 @@
 			<field name="inherit_id" ref="account.invoice_form"/>
 			<field name="arch" type="xml">
 				<field name="fiscal_position" position="replace">
-                    <field name="fiscal_position" widget="selection" on_change="onchange_fiscal_position(journal_id, fiscal_position, type, context)"/>
+                    <field name="fiscal_position" widget="selection" on_change="onchange_fiscal_position(journal_id, fiscal_position, type, context)" domain="[('customer', '=', True)]"/>
                     <!--<button name="button_change_fiscal_position" states="draft" string="Change"-->
                         <!--type="object" groups="base.group_user" icon="terp-stock_effects-object-colorize"/>-->
 				</field>
@@ -25,7 +25,7 @@
 			<field name="inherit_id" ref="account.invoice_supplier_form"/>
 			<field name="arch" type="xml">
 				<field name="fiscal_position" position="replace">
-                    <field name="fiscal_position" widget="selection" on_change="onchange_fiscal_position(journal_id, fiscal_position, type, context)"/>
+                    <field name="fiscal_position" widget="selection" on_change="onchange_fiscal_position(journal_id, fiscal_position, type, context)" domain="[('supplier', '=' True)]"/>
                     <!--<button name="button_change_fiscal_position" states="draft" string="Change"-->
                         <!--type="object" groups="base.group_user" icon="terp-stock_effects-object-colorize"/>-->
 				</field>
