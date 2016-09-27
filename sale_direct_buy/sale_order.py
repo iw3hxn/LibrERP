@@ -32,6 +32,23 @@ from datetime import datetime
 
 class sale_order(orm.Model):
     _inherit = 'sale.order'
+
+    def _get_purchase_order(self, cr, uid, ids, field_name, model_name, context=None):
+        result = {}
+        purchase_order_obj = self.pool['purchase.order']
+        purchase_requisition_obj = self.pool['purchase.requisition']
+        for order in self.browse(cr, uid, ids, context):
+            name = order.name
+            direct_purchase_order_ids = purchase_order_obj.search(cr, uid, [('origin', 'ilike', name)], context=context)
+            tender_ids = purchase_requisition_obj.search(cr, uid, [('origin', 'ilike', name)], context=context)
+            tender_puchase_order_ids = purchase_order_obj.search(cr, uid, [('requisition_id', 'in', tender_ids)], context=context)
+            result[order.id] = direct_purchase_order_ids + tender_puchase_order_ids
+
+        return result
+
+    _columns = {
+        'purchase_order_ids': fields.function(_get_purchase_order, string=_("Purchase Order"), type='one2many', method=True, relation='purchase.order')
+    }
     
     def action_wait(self, cr, uid, ids, context=None):
         bom_obj = self.pool['mrp.bom']
@@ -134,7 +151,7 @@ class sale_order(orm.Model):
                 if supplier_id == 'no_supplier':
                     # Control if there are requesition requests in state 'draft'. If find any,
                     # use them, if not create new.
-                    requisition_ids = purchase_requisition_obj.search(cr, uid, [('state', '=', 'draft')], context=context)
+                    requisition_ids = purchase_requisition_obj.search(cr, uid, [('state', '=', 'draft'), ('origin', '=', order.name)], context=context)
                     if requisition_ids:
                         for line in order_lines:
                             line['requisition_id'] = requisition_ids[0]

@@ -60,3 +60,8 @@ msgstr "Produttore"
 #: field:sale.order.line,extra_purchase_discount:0
 msgid "Ex. Purchase Discount"
 msgstr "Sconto Extra Acquisto"
+
+#. module: sale_direct_buy
+#: view:sale.order:0
+msgid "Purchase"
+msgstr "Acquisti"

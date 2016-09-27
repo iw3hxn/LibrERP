@@ -41,6 +41,16 @@
                     <field name="margin" />
                 </xpath>
 
+                <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/tree//field[@name='name']"
+                       position="after">
+                    <field name="supplier_id"/>
+                </xpath>
+
+                <field name="picking_ids" position="after" >
+                    <separator colspan="4" string="Purchase"/>
+                            <field colspan="4" name="purchase_order_ids" nolabel="1"/>
+                </field>
+
             </field>
         </record>
     
