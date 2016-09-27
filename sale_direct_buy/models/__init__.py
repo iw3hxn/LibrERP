@@ -22,32 +22,5 @@
 #
 ##############################################################################
 
-{
-    "name": "Set Supplier inside Sale Order",
-    "version": "3.5.20.10",
-    "author": "Didotech SRL",
-    "website": "http://www.didotech.com",
-    "category": 'Sale',
-    "description": """
-       Module gives possibility to select a supplier inside sale order line.
-       When sale order is confirmed purchase order is created if procurement method is "to order".
-       If no supplier is selected purchase requisition is created.
-    """,
-    "depends": [
-        'base',
-        'sale',
-        'sale_order_confirm',
-        'product_bom',
-        'sale_bom',
-        'dt_product_brand',
-        'stock_picking_extended',
-        'purchase_discount',
-        'purchase_requisition_extended'
-    ],
-    "data": [
-        'views/inherit_sale_order.xml',
-        'views/inherit_purchase_order.xml',
-    ],
-    "active": False,
-    "installable": True,
-}
+from . import sale_order
+from . import purchase_order

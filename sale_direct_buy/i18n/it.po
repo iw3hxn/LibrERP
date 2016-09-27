@@ -57,6 +57,11 @@ msgid "Manufacturer"
 msgstr "Produttore"
 
 #. module: sale_direct_buy
+#: field:sale.order,purchase_order_ids:0
+msgid "Purchase Order"
+msgstr "Ordini a Fornitore"
+
+#. module: sale_direct_buy
 #: field:sale.order.line,extra_purchase_discount:0
 msgid "Ex. Purchase Discount"
 msgstr "Sconto Extra Acquisto"
@@ -65,3 +70,8 @@ msgstr "Sconto Extra Acquisto"
 #: view:sale.order:0
 msgid "Purchase"
 msgstr "Acquisti"
+
+#. module: sale_direct_buy
+#: view:purchase.order:0
+msgid "Sale"
+msgstr "Vendite"

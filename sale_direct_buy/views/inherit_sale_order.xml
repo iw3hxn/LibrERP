@@ -47,8 +47,10 @@
                 </xpath>
 
                 <field name="picking_ids" position="after" >
-                    <separator colspan="4" string="Purchase"/>
-                            <field colspan="4" name="purchase_order_ids" nolabel="1"/>
+                    <group groups="purchase.group_purchase_user">
+                        <separator colspan="4" string="Purchase"/>
+                        <field colspan="4" name="purchase_order_ids" nolabel="1"/>
+                    </group>
                 </field>
 
             </field>
