@@ -34,6 +34,7 @@ class sale_order(orm.Model):
     _inherit = 'sale.order'
 
     def _get_purchase_order(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         purchase_order_obj = self.pool['purchase.order']
         purchase_requisition_obj = self.pool['purchase.requisition']
@@ -43,7 +44,6 @@ class sale_order(orm.Model):
             tender_ids = purchase_requisition_obj.search(cr, uid, [('origin', 'ilike', name)], context=context)
             tender_puchase_order_ids = purchase_order_obj.search(cr, uid, [('requisition_id', 'in', tender_ids)], context=context)
             result[order.id] = direct_purchase_order_ids + tender_puchase_order_ids
-
         return result
 
     _columns = {
@@ -51,6 +51,7 @@ class sale_order(orm.Model):
     }
     
     def action_wait(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         bom_obj = self.pool['mrp.bom']
         for order in self.browse(cr, uid, ids, context=context):
             suppliers = {}
@@ -108,7 +109,7 @@ class sale_order(orm.Model):
                         order_line.supplier_id.id, order_line.order_id.date_order, order_line.supplier_id.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
                         order_line.name, purchase_price or standard_price, order_line.notes, context)
 
-                    product_to_buy = res['value'].get('product_qty') - order_line.product_id.virtual_available  # child_bom.product_uom_qty or 1,
+                    product_to_buy = res['value'].get('product_qty') - order_line.product_id.qty_available  # child_bom.product_uom_qty or 1,
 
                     if product_to_buy <= 0:
                         continue
@@ -209,6 +210,7 @@ class sale_order_line(orm.Model):
     }
 
     def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if vals.get('product_id', False):
             product = self.pool['product.product'].browse(cr, uid, vals['product_id'], context=context)
             # onchange_vals = self.pool.get('sale.order.line').product_id_change(cr, uid, [], value['pricelist_id'], linevalue['product_id'], linevalue['product_uom_qty'],False, 0, False, '', value['partner_id'])['value']
@@ -220,8 +222,7 @@ class sale_order_line(orm.Model):
         return super(sale_order_line, self).create(cr, uid, vals, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
-        if not context:
-            context = {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if vals.get('product_id', False):
             product = self.pool['product.product'].browse(cr, uid, vals['product_id'], context)
             if product.manufacturer and product.manufacturer_pref:
@@ -236,7 +237,7 @@ class sale_order_line(orm.Model):
                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
                           lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False,
                           supplier_id=False, extra_purchase_discount=0.0, auto_supplier=True, context=None):
-
+        context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         result_dict = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty,
                                                                      uom, qty_uos, uos, name, partner_id,
