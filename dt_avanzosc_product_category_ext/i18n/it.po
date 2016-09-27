@@ -89,12 +89,12 @@ msgstr "Produrre"
 #. module: dt_avanzosc_product_category_ext
 #: selection:product.category,procure_method:0
 msgid "Make to Order"
-msgstr "Produrre su Ordine"
+msgstr "Approvigiona su Ordine"
 
 #. module: dt_avanzosc_product_category_ext
 #: selection:product.category,procure_method:0
 msgid "Make to Stock"
-msgstr "Produrre per Magazzino"
+msgstr "Approvigiona per Magazzino"
 
 #. module: dt_avanzosc_product_category_ext
 #: help:product.category,uom_id:0
