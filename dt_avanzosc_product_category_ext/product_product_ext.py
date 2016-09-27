@@ -56,6 +56,9 @@ class product_product(orm.Model):
             }
             res['purchase_ok'] = product.purchase_ok
             return {'value': res, 'warning': warn}
+        else:
+            res['purchase_ok'] = True
+            return {'value': res, 'warning': warn}
         if field == 'supply_method' and product and type != 'service':
             warn = {
                     'title': _('Error'),
