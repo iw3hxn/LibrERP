@@ -140,6 +140,15 @@ class FormatTwo():
     # REQUIRED_PRODUCT = ['default_code', 'name']
     # PRODUCT_WARNINGS = ['standard_price']
     # PRODUCT_ERRORS = []
+
+    HEADER_PICKING = (
+        'RtbNumbol', 'RtbDatbol', 'RboCodart', 'RboQuanti'
+    )
+    COLUMNS_PICKING = "origin, date, product, qty"
+    REQUIRED_PICKING = [
+        'origin', 'date', 'product', 'qty'
+    ]
+
     HEADER_INVOICE_ITEM = ('Number', 'Date', 'Customer Name', 'Total Amount')
     COLUMNS_INVOICE_ITEM = "number_invoice, date_invoice, partner_name, total_amount"
     REQUIRED_INVOICE_ITEM = ['number_invoice', 'date_invoice', 'partner_name']

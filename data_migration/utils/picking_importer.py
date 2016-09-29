@@ -97,9 +97,6 @@ class ImportFile(threading.Thread, Utils):
         self.HEADER = Config.HEADER_PICKING
         self.REQUIRED = Config.REQUIRED_PICKING
         
-        # Default values
-        self.PRODUCT_DEFAULTS = Config.PRODUCT_DEFAULTS
-        
         if not len(self.HEADER) == len(Config.COLUMNS_PICKING.split(',')):
             pprint(zip(self.HEADER, Config.COLUMNS_PICKING.split(',')))
             raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')

@@ -229,6 +229,7 @@ class picking_import(filedata_import):
         'format': fields.selection(
             (
                 ('FormatOne', _('Format One')),
+                ('FormatTwo', _('Format Two')),
             ), 'Formato Dati', required=True, readonly=False
         ),
         'address_id': fields.many2one(
