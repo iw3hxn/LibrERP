@@ -94,8 +94,8 @@ msgid ""
 " suppose to happend. In the Debug tab you can find technical information "
 "about the error."
 msgstr ""
-"Questo è un errore non gestito di LibrERP, questo non doveva succedere."
-" Nella scheda Debug è possibile trovare informazioni tecniche sull'errore."
+"Si è rilevato un errore. Nella scheda Debug è possibile trovare informazioni tecniche sull'errore."
+"Contattate il vostro fornitore per una risoluzione dando il più alto numero di informazioni per presentare lo stesso errore"
 
 #. openerp-web
 #: web_support/static/src/xml/base.xml:21
@@ -109,7 +109,7 @@ msgid ""
 "clicking the button \"Send Error\"."
 msgstr ""
 "È possibile inviare tutte le informazioni riguardanti questo errore a noi direttamente "
-"premendo il pulsante \" Send Error \ "."
+"premendo il pulsante \" Send Error \" "
 
 #. openerp-web
 #: /home/damian/Desarrollo/addons/compartidos/web/web_support/static/src/xml/base.xml:34
