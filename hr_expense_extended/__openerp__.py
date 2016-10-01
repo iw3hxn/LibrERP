@@ -24,7 +24,7 @@
 
 {
     "name": "HR Expense Extended",
-    "version": "2.7.14.4",
+    "version": "2.8.15.5",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Human Resources',
@@ -46,14 +46,15 @@
         'task_time_control'
     ],
     "data": [
-        'hr_expense_view.xml',
-        'project_view.xml',
-        'hr_employe_menu.xml',
-        'hr_employe_view.xml',
-        'task_time_control_wizard_view.xml',
-        'reports.xml',
+        'views/hr_expense_view.xml',
+        'views/project_view.xml',
+        'views/hr_employe_menu.xml',
+        'views/hr_employe_view.xml',
+        'views/task_time_control_wizard_view.xml',
+        'report/reports.xml',
         'security/ir.model.access.csv',
-        'security/ir_rule.xml'
+        'security/ir_rule.xml',
+        'wizards/export_project_cost_view.xml',
     ],
     "active": False,
     "installable": True,

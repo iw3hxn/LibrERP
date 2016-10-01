@@ -22,5 +22,7 @@
 #
 ##############################################################################
 
-from . import users_timesheet
-from . import wizards
+from . import inherit_hr_employee
+from . import inherit_hr_expense_expense
+from . import inherit_project_task
+from . import task_time_control_wizard

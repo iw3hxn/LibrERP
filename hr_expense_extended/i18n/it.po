@@ -141,3 +141,34 @@ msgstr "Quantità"
 #: view:project.task:0
 msgid "Total"
 msgstr "Totale"
+
+#. module: hr_expense_extended
+#: field:wizard.export.project.cost,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: hr_expense_extended
+#: field:wizard.export.project.cost,date_to:0
+msgid "Date to"
+msgstr "Al"
+
+#. module: hr_expense_extended
+#: model:ir.actions.act_window,name:hr_expense_extended.action_wizard_export_project_cost
+msgid "Export Project Cost"
+msgstr "Esporta Analisi Costi"
+
+#. module: hr_expense_extended
+#: view:wizard.export.project.cost:0
+msgid "Export done"
+msgstr "Export completato"
+
+#. module: hr_expense_extended
+#: view:wizard.export.project.cost:0
+msgid "Download Project Cost Report"
+msgstr "Scarica Report Costi"
+
+
+#. module: hr_expense_extended
+#: view:wizard.export.project.cost:0
+msgid "Download Report"
+msgstr "Download Report"
