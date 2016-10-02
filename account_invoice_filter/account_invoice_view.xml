@@ -24,6 +24,7 @@
                     />
                     <field name="date_from" filter_domain="[('date_invoice','&gt;=',self)]"/>
                     <field name="date_to" filter_domain="[('date_invoice','&lt;=',self)]"/>
+                    <newline/>
                 </filter>
                 <field name="period_id" position="after">
                     <field name="year" string="Year" />
