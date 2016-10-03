@@ -22,5 +22,6 @@
 #
 ##############################################################################
 
+from . import models
 from . import users_timesheet
 from . import wizards
