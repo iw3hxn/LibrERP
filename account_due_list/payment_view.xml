@@ -112,7 +112,7 @@
         <field name="view_mode">tree,form,calendar</field>
         <field name="view_id" ref="view_payments_tree"/>
         <field name="search_view_id" ref="view_payments_filter"/>
-        <field name="domain">['|','&amp;',('account_id.type','=','payable'),('debit','=',0),'&amp;',('account_id.type','=','receivable'),('credit','=',0)]</field>
+        <field name="domain">[('account_id.type','in',['receivable','payable']),('stored_invoice_id','!=',False)]</field>
         <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
     </record>
     
