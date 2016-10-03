@@ -10,8 +10,8 @@
                         <group col="5" fill="0" height="100" states="choose">
 
                             <group colspan="2">
-                                <field name="date_to" attrs="{'required':[('date_from', '!=', False)]}"/>
                                 <field name="date_from" attrs="{'required':[('date_to', '!=', False)]}"/>
+                                <field name="date_to" attrs="{'required':[('date_from', '!=', False)]}"/>
                             </group>
                             <group colspan="5">
                                 <button special="cancel" icon="gtk-cancel" string="Cancel"/>
