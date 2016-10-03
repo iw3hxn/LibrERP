@@ -163,7 +163,7 @@ class product_product(orm.Model):
                         return [('id', 'in', [])]
         return []
     
-    def _is_kit(self, cursor, user, ids, product_uom=None, bom_properties=None, context=None):
+    def _is_kit(self, cr, uid, ids, product_uom=None, bom_properties=None, context=None):
         if not len(ids):
             return []
         '''
@@ -177,8 +177,8 @@ class product_product(orm.Model):
         res = {}
         ids = ids or []
 
-        for product in self.browse(cursor, user, ids, context):
-            bom_id = bom_obj._bom_find(cursor, user, product.id, product_uom=None, properties=bom_properties)
+        for product in self.browse(cr, uid, ids, context):
+            bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
             if not bom_id:
                 res[product.id] = False
             else:
