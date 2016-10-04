@@ -10789,6 +10789,11 @@ msgstr "Obbliga la Posizione Fiscale in Fattura"
 msgid "Check Payment Term on Invoice"
 msgstr "Obbliga i Termini di Pagamento in Fattura"
 
+#. module: account
+#: field:res.company,stop_invoice_internal_number:0
+msgid "Stop Invoice Validation if invoice with Internal Number"
+msgstr "Anche usando il forza numero, verifica che esiste già una fattura con quel numero"
+
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:212
 #, python-format
