@@ -74,3 +74,15 @@ msgstr "Ultima data vendita"
 #: selection:product.template,cost_method:0
 msgid "Last Purchase Price"
 msgstr "Ultimo Prezzo Acquisto (fattura)"
+
+#. module: product_extended
+#: code:addons/product_extended/models/product_category.py:87
+#, python-format
+msgid "Invalid action !"
+msgstr "Azione non valida !"
+
+#. module: product_extended
+#: code:addons/product_extended/models/product_category.py:88
+#, python-format
+msgid "In order to delete a category {category}, it must be cancelled product!"
+msgstr "Per cancellare la categoria {category} devi prima cancellare tutti i prodotti collegati"

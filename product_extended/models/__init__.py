@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -22,33 +22,8 @@
 #
 ##############################################################################
 
-{
-    "name": "Product Extended",
-    "version": "3.4.8.5",
-    "author": "Didotech SRL",
-    "website": "http://www.didotech.com",
-    'category': 'Sales Management',
-    "description": """
-       Module extends functionality of the product module.
-   
-       Now on category there are a flag for show if exist same product or not. If no product is possible to unlink
-       
-       Module improves search, so product is searchable by more than one word written in any order.
-
-       'inside script directory there are a script for update al database
-    """,
-    "depends": [
-        'base',
-        'product',
-        'product_bom',
-        'purchase',
-        'sale'
-    ],
-    "data": [
-        'views/product_view.xml',
-        'views/product_category_view.xml'
-    ],
-    "active": False,
-    "installable": True,
-    'auto_install': True
-}
+from . import product
+from . import product_category
+from . import account_invoice
+from . import purchase_order
+from . import sale_order
