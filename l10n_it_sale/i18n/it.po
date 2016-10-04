@@ -80,6 +80,11 @@ msgid "This will assign the DDT number"
 msgstr "Questo assegnerà il numero del DDT"
 
 #. module: l10n_it_sale
+#: view:wizard.assign.ddt:0
+msgid "DDT number already exist"
+msgstr "Esiste già un DDT con questo numero"
+
+#. module: l10n_it_sale
 #: model:stock.picking.goods_description,name:l10n_it_sale.goods_description_BAN
 msgid "PALLETS"
 msgstr "PALLETS"

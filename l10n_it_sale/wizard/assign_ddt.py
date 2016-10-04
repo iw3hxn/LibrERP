@@ -22,12 +22,11 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-
+from openerp import SUPERUSER_ID
 import time
 
 
 class wizard_assign_ddt(orm.TransientModel):
-
     _name = "wizard.assign.ddt"
 
     # def _next_ddt(self, cr, uid, ids, context=None):
@@ -48,8 +47,10 @@ class wizard_assign_ddt(orm.TransientModel):
     #     return res
 
     _columns = {
-        'number_method': fields.selection([('force', 'Force'), ('sequence', 'Sequence')], 'Number Method', required=True),
+        'number_method': fields.selection([('force', 'Force'), ('sequence', 'Sequence')], 'Number Method',
+                                          required=True),
         'ddt_number': fields.char('DDT', size=64, help="Keep empty for use sequence"),
+        'ddt_number_already_exist': fields.boolean('DDT Number Exist'),
         'ddt_next_number': fields.char('DDT next Number', size=64),
         'ddt_date': fields.date('DDT date'),
     }
@@ -70,21 +71,24 @@ class wizard_assign_ddt(orm.TransientModel):
 
             ddt_number = self.browse(cr, uid, ids, context=context)[0].ddt_number
             if ddt_number:
-                text = _(u'{picking} has been forced DDT to {ddt_number}').format(picking=picking.name, ddt_number=ddt_number)
+                text = _(u'{picking} has been forced DDT to {ddt_number}').format(picking=picking.name,
+                                                                                  ddt_number=ddt_number)
             else:
                 # Assign ddt from journal's sequence
                 if picking.stock_journal_id.ddt_sequence:
                     ddt_number = self.pool['ir.sequence'].next_by_id(cr, uid, picking.stock_journal_id.ddt_sequence.id)
                 else:
                     ddt_number = self.pool['ir.sequence'].get(cr, uid, 'stock.ddt')
-                text = _(u'{picking} using sequence for DDT to {ddt_number}').format(picking=picking.name, ddt_number=ddt_number)
+                text = _(u'{picking} using sequence for DDT to {ddt_number}').format(picking=picking.name,
+                                                                                     ddt_number=ddt_number)
 
             picking_obj.log(cr, uid, picking.id, text)
             picking_obj.message_append(cr, uid, [picking.id], text, body_text=text, context=context)
 
             vals.update({
                 'ddt_number': ddt_number,
-                'ddt_date': self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                'ddt_date': self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(
+                    DEFAULT_SERVER_DATE_FORMAT),
             })
             picking.write(vals)
 
@@ -94,5 +98,12 @@ class wizard_assign_ddt(orm.TransientModel):
             return {
                 'type': 'ir.actions.act_window_close',
             }
+
+    def onchange_ddt_number(self, cr, uid, ids, ddt_number, context=None):
+        ddt_number_already_exist = False
+        if ddt_number:
+            if self.pool['stock.picking'].search(cr, SUPERUSER_ID, [('ddt_number', '=', ddt_number)], context=context):
+                ddt_number_already_exist = True
+        return {'value': {'ddt_number_already_exist': ddt_number_already_exist}}
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
