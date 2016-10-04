@@ -33,5 +33,5 @@ class sale_shop(orm.Model):
         'product_allow_minimun_id': fields.many2one('product.product', string='Product that can validate', domain=[('type', '=', 'service')]),
         'user_tech_validation_id': fields.many2one('res.users', 'User that can be Tech Validation'),
         'user_manager_validation_id': fields.many2one('res.users', 'User that can be Manager Validation'),
-        'user_supervisor_validation': fields.many2one('res.users', 'User that can be Verification after Customer Confirmation'),
+        'user_supervisor_validation_id': fields.many2one('res.users', 'User that can be Verification after Customer Confirmation', oldname='user_supervisor_validation'),
     }
