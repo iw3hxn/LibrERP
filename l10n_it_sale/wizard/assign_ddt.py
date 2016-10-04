@@ -69,12 +69,18 @@ class wizard_assign_ddt(orm.TransientModel):
                 raise orm.except_orm('Error', _('DTT number already assigned'))
 
             ddt_number = self.browse(cr, uid, ids, context=context)[0].ddt_number
-            if not ddt_number:
+            if ddt_number:
+                text = _(u'{picking} has been forced DDT to {ddt_number}').format(picking=picking.name, ddt_number=ddt_number)
+            else:
                 # Assign ddt from journal's sequence
                 if picking.stock_journal_id.ddt_sequence:
                     ddt_number = self.pool['ir.sequence'].next_by_id(cr, uid, picking.stock_journal_id.ddt_sequence.id)
                 else:
                     ddt_number = self.pool['ir.sequence'].get(cr, uid, 'stock.ddt')
+                text = _(u'{picking} using sequence for DDT to {ddt_number}').format(picking=picking.name, ddt_number=ddt_number)
+
+            picking_obj.log(cr, uid, picking.id, text)
+            picking_obj.message_append(cr, uid, [picking.id], text, body_text=text, context=context)
 
             vals.update({
                 'ddt_number': ddt_number,

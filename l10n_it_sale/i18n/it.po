@@ -177,3 +177,14 @@ msgid "Sequence"
 msgstr "Assegnata Automanticamente"
 
 
+#. module: l10n_it_sale
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:73
+#, python-format
+msgid "{picking} has been forced DDT to {ddt_number}"
+msgstr "{picking}: ha forzato il numero DDT a {ddt_number}"
+
+#. module: l10n_it_sale
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:80
+#, python-format
+msgid "{picking} using sequence for DDT to {ddt_number}"
+msgstr "{picking}: è stata usata la normale sequenza {ddt_number}"
