@@ -294,10 +294,26 @@ class picking_import(filedata_import):
         'state': 'import',
         'progress_indicator': 0,
         # 'address_id': 3,
-        'stock_journal_id': 20,
+        # 'stock_journal_id': 20,
         # 'location_id': 12,
         # 'location_dest_id': 13,
     }
+
+    def onchange_stock_journal_id(self, cr, uid, ids, stock_journal_id, context=None):
+            context = context or self.pool['res.users'].context_get(cr, uid)
+            vals = {}
+            if stock_journal_id:
+                stock_journal = self.pool['stock.journal'].browse(cr, uid, stock_journal_id, context)
+                address_id = stock_journal.warehouse_id and stock_journal.warehouse_id.partner_address_id and stock_journal.warehouse_id.partner_address_id.id
+                if address_id:
+                    vals.update({'address_id': address_id})
+                location_id = stock_journal.lot_input_id and stock_journal.lot_input_id.id
+                if location_id:
+                    vals.update({'location_id': location_id})
+                location_dest_id = stock_journal.lot_output_id and stock_journal.lot_output_id.id
+                if location_dest_id:
+                    vals.update({'location_dest_id': location_dest_id})
+            return {'value': vals}
 
 
 class pricelist_import(filedata_import):

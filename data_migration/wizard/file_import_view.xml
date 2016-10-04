@@ -139,8 +139,8 @@
                         <field name="format" />
                     </group>
                     <group colspan="8" col="8" states="import">
+                        <field name="stock_journal_id" on_change="onchange_stock_journal_id(stock_journal_id, context)" />
                         <field name="address_id"  />
-                        <field name="stock_journal_id"  />
                     </group>
                     <group colspan="8" col="8" states="import">
                         <field name="location_id" />
