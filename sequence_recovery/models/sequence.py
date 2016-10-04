@@ -31,6 +31,8 @@ class ir_sequence_recovery(orm.Model):
         'sequence_id': fields.many2one('ir.sequence', 'Sequence'),
         'sequence': fields.char('Sequence Number', size=32),
         'date': fields.date('Date'),
+        'create_uid': fields.many2one('res.users', 'Creation User'),
+        'write_uid': fields.many2one('res.users', 'Deactivate User'),
     }
 
     _defaults = {

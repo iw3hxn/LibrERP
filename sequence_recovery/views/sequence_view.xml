@@ -6,11 +6,13 @@
             <field name="model">ir.sequence_recovery</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-               <tree string="Sequence Recovery" editable="top">
+                <tree string="Sequence Recovery" editable="top">
                     <field name="name"/>
                     <field name="sequence_id"/>
                     <field name="sequence"/>
                     <field name="date"/>
+                    <field name="create_uid"/>
+                    <field name="write_uid"/>
                 </tree>
             </field>
         </record>
@@ -25,6 +27,7 @@
                     <field name="sequence_id" select="1"/>
                     <field name="sequence" select="1"/>
                     <field name="date" select="1"/>
+                    <filter name="deactive" string="" domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>
@@ -33,18 +36,18 @@
             <field name="name">Sequence Recovery</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ir.sequence_recovery</field>
-            <field name="view_type">tree</field>
+            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="sequence_recovery_tree_view"/>
             <field name="search_view_id" ref="sequence_recovery_search"/>
-            <field name="context">{}</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
         </record>
 
         <menuitem string="Sequence Recovery" action="action_sequence_recovery" id="menu_sequence_recovery"
                   parent="base.next_id_5"/>
 
         <menuitem string="Sequence Recovery" action="action_sequence_recovery" id="menu_account_sequence_recovery"
-                  parent="account.menu_configuration_misc"/>
+                  parent="account.menu_configuration_misc" groups="group_sequence_recovery"/>
 
     </data>
 </openerp>

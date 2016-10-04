@@ -21,6 +21,4 @@
 #
 ##############################################################################
 
-import base
-import account
-import stock
+from . import models

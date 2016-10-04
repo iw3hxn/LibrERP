@@ -22,24 +22,24 @@
 ##############################################################################
 
 {
-	'name': 'Sequence Recovery',
-	'version': '1.3',
-	'category': 'Sequences',
-	'description':
-		"""
-		[ENG] Is useful for sequences recovery eg from a deleted invoice. 
-		[ITA] Modulo per la gestione del recupero dei buchi delle sequence (DDT, Fatture, etc.)
-		È sufficente ereditare l'unlink di una classe con sequence per ottenere la funzionalità di ripristino
-		""",
-	'author': 'www.andreacometa.it',
-	'website': 'http://www.andreacometa.it',
-	'license': 'AGPL-3',
-	"active": False,
-	"installable": True,
-	"depends": ['base', 'c2c_sequence_fy'],
-	"update_xml": [
-		'base/sequence_view.xml',
-		'security/sequence_recovery_security.xml',
-		'security/ir.model.access.csv',
-	],
+    'name': 'Sequence Recovery',
+    'version': '1.4',
+    'category': 'Sequences',
+    'description':
+        """
+        [ENG] Is useful for sequences recovery eg from a deleted invoice.
+        [ITA] Modulo per la gestione del recupero dei buchi delle sequence (DDT, Fatture, etc.)
+        È sufficente ereditare l'unlink di una classe con sequence per ottenere la funzionalità di ripristino
+        """,
+    'author': 'www.andreacometa.it',
+    'website': 'http://www.andreacometa.it',
+    'license': 'AGPL-3',
+    "active": False,
+    "installable": True,
+    "depends": ['base', 'c2c_sequence_fy'],
+    "update_xml": [
+        'security/sequence_recovery_security.xml',
+        'security/ir.model.access.csv',
+        'views/sequence_view.xml',
+    ],
 }

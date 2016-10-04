@@ -3,7 +3,7 @@
 	<data>
 
 		<record id="group_sequence_recovery" model="res.groups">
-			<field name="name">Sequence Recovery/User</field>
+			<field name="name">View Sequence Recovery</field>
 		</record>
 
 	</data>
