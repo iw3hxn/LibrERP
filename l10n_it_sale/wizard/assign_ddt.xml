@@ -21,7 +21,7 @@
                         <!--<field name="ddt_next_number" readonly="1"/>-->
                         <field name="ddt_date" />
                         <separator colspan="2"/>
-                        <group col="2" attrs="{'invisible': [('ddt_number_already_exist', '=', False)]}" >
+                        <group col="2" >
                             <button icon="gtk-cancel" special="cancel" string="Cancel"/>
                             <button icon="gtk-ok" name="assign_ddt" string="Assign" type="object"  />
                         </group>
