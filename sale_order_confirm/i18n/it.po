@@ -989,7 +989,7 @@ msgstr "Utente Validazione Manager"
 #. module: sale_order_confirm
 #: field:sale.shop,user_supervisor_validation_id:0
 msgid "User that can be Verification after Customer Confirmation"
-msgstr "Utente Supervisore"
+msgstr "Utente Supervisore dopo la Conferma del cliente"
 
 #. module: sale_order_confirm
 #: view:sale.shop:0

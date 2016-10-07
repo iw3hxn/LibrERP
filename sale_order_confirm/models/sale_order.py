@@ -401,12 +401,12 @@ class sale_order(orm.Model):
     def check_supervisor_validation(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context):
-            if order.shop_id.user_supervisor_validation:
-                if order.shop_id.user_supervisor_validation.id == uid:
+            if order.shop_id.user_supervisor_validation_id:
+                if order.shop_id.user_supervisor_validation_id.id == uid:
                     return True
                 else:
                     title = _('Supervisor Validation')
-                    msg = _(u"It's not possible to confirm, for shop {shop} only user '{user}' can do it".format(shop=order.shop_id.name, user=order.shop_id.user_supervisor_validation.name))
+                    msg = _(u"It's not possible to confirm, for shop {shop} only user '{user}' can do it".format(shop=order.shop_id.name, user=order.shop_id.user_supervisor_validation_id.name))
                     raise orm.except_orm(_(title), _(msg))
                     return False
             else:

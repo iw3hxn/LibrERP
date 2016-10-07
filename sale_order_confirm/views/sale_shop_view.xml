@@ -46,7 +46,7 @@
                         <separator colspan="4" string="User Validation"/>
                         <field name="user_tech_validation_id"/>
                         <field name="user_manager_validation_id"/>
-                        <field name="user_supervisor_validation"/>
+                        <field name="user_supervisor_validation_id"/>
                     </page>
                 </notebook>
             </field>
