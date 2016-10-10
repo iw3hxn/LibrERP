@@ -182,7 +182,7 @@ class sale_order(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(sale_order, self).onchange_partner_id(cr, uid, ids, part)
         if res.get('value', False) and part:
-            if not res['value'].get('property_account_position', False):
+            if not res['value'].get('fiscal_position', False):
                 company_id = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id.id
                 company = self.pool['res.company'].browse(cr, uid, company_id, context)
                 if company.default_property_account_position:
