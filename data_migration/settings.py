@@ -142,7 +142,7 @@ class FormatTwo():
     # PRODUCT_ERRORS = []
 
     HEADER_PICKING = (
-        'RtbNumbol', 'RtbDatbol', 'RboCodart', 'RboQuanti'
+        'NAME', 'DATE', 'STYLE NUMBER', 'QUANTITY'
     )
     COLUMNS_PICKING = "origin, date, product, qty"
     REQUIRED_PICKING = [
