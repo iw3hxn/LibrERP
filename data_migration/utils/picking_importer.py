@@ -283,7 +283,7 @@ class ImportFile(threading.Thread, Utils):
                 if not product_ids:
                     product_ids = self.product_obj.search(cr, uid, [('name', '=', product)], context=self.context)
                     if not product_ids:
-                        product_ids = self.product_obj.search(cr, uid, [('name', 'ikike', product)], context=self.context)
+                        product_ids = self.product_obj.search(cr, uid, [('name', 'ilike', product)], context=self.context)
                         if not product_ids:
                             product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)], context=self.context)
                 if product_ids:
