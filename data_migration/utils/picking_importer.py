@@ -281,11 +281,13 @@ class ImportFile(threading.Thread, Utils):
             else:
                 product_ids = self.product_obj.search(cr, uid, [('default_code', '=', product)], context=self.context)
                 if not product_ids:
-                    product_ids = self.product_obj.search(cr, uid, [('name', '=', product)], context=self.context)
+                    product_ids = self.product_obj.search(cr, uid, [('default_code', 'ilike', product)], context=self.context)
                     if not product_ids:
-                        product_ids = self.product_obj.search(cr, uid, [('name', 'ilike', product)], context=self.context)
+                        product_ids = self.product_obj.search(cr, uid, [('name', '=', product)], context=self.context)
                         if not product_ids:
-                            product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)], context=self.context)
+                            product_ids = self.product_obj.search(cr, uid, [('name', 'ilike', product)], context=self.context)
+                            if not product_ids:
+                                product_ids = self.product_obj.search(cr, uid, [('ean13', '=', product)], context=self.context)
                 if product_ids:
                     product_id = product_ids[0]
                     self.cache_product[product] = product_id
