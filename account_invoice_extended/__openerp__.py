@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice extended",
-    "version": "3.3.11.11",
+    "version": "3.4.11.11",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules/Accounting",
@@ -41,6 +41,8 @@
         Clear Account Move menu on Customer/Supplier Invoice
 
         Add adaptative function: the system learn.. form invoice to partner form
+
+        Also add on account invoice line the field origin_document that is a reference to the document that have create it
 
     """,
     "depends": [

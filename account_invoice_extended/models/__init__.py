@@ -23,4 +23,5 @@
 ##############################################################################
 
 from . import account_invoice
+from . import account_invoice_line
 from . import fiscal_position
