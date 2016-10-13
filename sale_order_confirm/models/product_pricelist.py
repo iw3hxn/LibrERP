@@ -1,11 +1,9 @@
-# -*- encoding: utf-8 -*-
+# -*- coding:utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#
-#    Copyright (C) 2013-2014 Didotech srl (<http://www.didotech.com>).
-#
-#                       All Rights Reserved
+#    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
+#    Copyraght (c) 2013-2016 Didotech srl (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,12 +20,20 @@
 #
 ##############################################################################
 
-from . import company
-from . import product_pricelist
-from . import sale_order
-from . import sale_order_line
-from . import partner
-from . import sale_shop
-from . import account_invoice
-from . import stock_picking
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+import decimal_precision as dp
+import re
+
+
+class product_pricelist(orm.Model):
+    _inherit = "product.pricelist"
+
+    _columns = {
+        'contract': fields.boolean('Contract', help="Set if this Pricelist not need approve on Sale order")
+    }
+
 

@@ -29,14 +29,6 @@ import decimal_precision as dp
 import re
 
 
-class product_pricelist(orm.Model):
-    _inherit = "product.pricelist"
-
-    _columns = {
-        'contract': fields.boolean('Contract', help="Set if this Pricelist not need approve on Sale order")
-    }
-
-
 class sale_order(orm.Model):
     _inherit = "sale.order"
 
@@ -281,6 +273,22 @@ class sale_order(orm.Model):
         result = self.name_get(cr, uid, ids, context=context)
         return result
 
+    def __init__(self, registry, cr):
+        """
+            Add state "Suspended"
+        """
+        super(sale_order, self).__init__(registry, cr)
+        options = [('wait_technical_validation', _('Technical Validation')),
+                   ('wait_manager_validation', _('Manager Validation')),
+                   ('send_to_customer', _('Send To Customer')),
+                   ('wait_customer_validation', _('Customer Validation')),
+                   ('wait_supervisor_validation', _('Supervisor Validation'))]
+
+        type_selection = self._columns['state'].selection
+        for option in options:
+            if option not in type_selection:
+                type_selection.append(option)
+
     _columns = {
         'create_uid': fields.many2one('res.users', 'Created by', readonly=True),
         'credit_limit': fields.function(_credit_limit, string="Remaining Credit Limit", type='float', readonly=True, method=True),
@@ -288,21 +296,6 @@ class sale_order(orm.Model):
         'visible_minimum': fields.related('shop_id', 'sale_order_have_minimum', type='boolean', string=_('Minimun Amount'), store=False, readonly=True),
         'visible_credit_limit': fields.related('company_id', 'check_credit_limit', type='boolean', string=_('Fido Residuo Visibile'), store=False, readonly=True),
         'validity': fields.date('Validity'),
-        'state': fields.selection([
-            ('draft', _('Quotation')),
-            ('wait_technical_validation', _('Technical Validation')),
-            ('wait_manager_validation', _('Manager Validation')),
-            ('send_to_customer', _('Send To Customer')),
-            ('wait_customer_validation', _('Customer Validation')),
-            ('wait_supervisor_validation', _('Supervisor Validation')),
-            ('waiting_date', _('Waiting Schedule')),
-            ('manual', _('To Invoice')),
-            ('progress', _('In Progress')),
-            ('shipping_except', _('Shipping Exception')),
-            ('invoice_except', _('Invoice Exception')),
-            ('done', _('Done')),
-            ('cancel', _('Cancelled'))
-        ], 'Order State', readonly=True, help="Gives the state of the quotation or sales order. \nThe exception state is automatically set when a cancel operation occurs in the invoice validation (Invoice Exception) or in the picking list process (Shipping Exception). \nThe 'Waiting Schedule' state is set when the invoice is confirmed but waiting for the scheduler to run on the order date.", select=True),
         'order_line': fields.one2many('sale.order.line', 'order_id', 'Order Lines', readonly=True, states={
             'draft': [('readonly', False)],
             'wait_technical_validation': [('readonly', False)],
@@ -522,71 +515,3 @@ class sale_order(orm.Model):
             return False
 
 
-class sale_order_line(orm.Model):
-    _inherit = "sale.order.line"
-
-    def _delivered_qty(self, cr, uid, ids, field_name, arg, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            qty = 0
-
-            for move in line.move_ids:
-                if move.state == 'done':
-                    qty += move.product_qty
-
-            res[line.id] = qty
-        return res
-
-    def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
-        """ Finds the incoming and outgoing quantity of product.
-        @return: Dictionary of values
-        """
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-        # if line.order_id:
-        #     context['warehouse'] = self.order_id.shop_id.warehouse_id.id
-
-        for line in self.browse(cr, uid, ids, context):
-            res[line.id] = {'qty_available': line.product_id and line.product_id.type != 'service' and line.product_id.qty_available or False,
-                            'virtual_available': line.product_id and line.product_id.type != 'service' and line.product_id.virtual_available or False}
-        return res
-
-    # overwrite of a funcion inside sale_margin
-    def product_id_change(self, cr, uid, ids, pricelist, product_id, qty=0,
-                          uom=False, qty_uos=0, uos=False, name='', partner_id=False,
-                          lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False, context=None):
-        res = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty=qty,
-                                                             uom=uom, qty_uos=qty_uos, uos=uos, name=name, partner_id=partner_id,
-                                                             lang=lang, update_tax=update_tax, date_order=date_order, packaging=packaging, fiscal_position=fiscal_position, flag=flag, context=context)
-        if not pricelist:
-            return res
-        frm_cur = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id.id
-        to_cur = self.pool['product.pricelist'].browse(cr, uid, [pricelist], context)[0].currency_id.id
-        if product_id:
-            product = self.pool['product.product'].browse(cr, uid, product_id, context)
-            price = self.pool['res.currency'].compute(cr, uid, frm_cur, to_cur, product.cost_price, round=False)
-            res['value'].update({
-                'purchase_price': price,
-                'product_type': product.type
-            })
-
-        return res
-
-    _columns = {
-        'order_id': fields.many2one('sale.order', 'Order Reference', ondelete='cascade', select=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'readonly_price_unit': fields.related('order_id', 'company_id', 'readonly_price_unit', type='boolean', string=_('Readonly Price Unit'), store=False, readonly=True),
-        'delivered_qty': fields.function(_delivered_qty, digits_compute=dp.get_precision('Product UoM'), string='Delivered Qty'),
-        'qty_available': fields.function(_product_available, multi='qty_available',
-                                         type='float', digits_compute=dp.get_precision('Product UoM'),
-                                         string='Quantity On Hand'),
-        'virtual_available': fields.function(_product_available, multi='qty_available',
-                                             type='float', digits_compute=dp.get_precision('Product UoM'),
-                                             string='Quantity Available'),
-        'product_type': fields.char('Product type', size=64),
-    }
-
-    _defaults = {
-        'readonly_price_unit': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.readonly_price_unit,
-        'order_id': lambda self, cr, uid, context: context.get('default_sale_order', False) or False
-    }

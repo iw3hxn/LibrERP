@@ -29,7 +29,7 @@
 
 {
     "name": "Extend sale_order",
-    "version": "3.28.49.58",
+    "version": "3.28.50.59",
     "category": "Sales Management",
     "description": """This Module, provided user's wizard to confirm/modify sale order.
     It also increases usability on sale order using credit limit amd default payment term
@@ -41,17 +41,18 @@
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "depends": [
-        "base",
-        "res_users_helper_functions",
-        "product_bom",
-        "l10n_it_base",
-        "sale_margin",
-        "sale_journal",
-        "sale_order_version",
-        "web_hide_buttons",
-        "product_bom",
-        "sale_crm",
-        "delivery",
+        'base',
+        'res_users_helper_functions',
+        'product_bom',
+        'l10n_it_base',
+        'sale_margin',
+        'sale_journal',
+        'sale_order_version',
+        'web_hide_buttons',
+        'product_bom',
+        'sale_crm',
+        'delivery',
+        'account_invoice_extended',
     ],
     "data": [
         'security/security.xml',
@@ -64,6 +65,7 @@
         'views/partner_view.xml',
         'views/company_view.xml',
         'views/sale_shop_view.xml',
+        'views/res_request_link.xml',
     ],
     "demo_xml": [],
     "installable": True,
