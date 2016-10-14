@@ -207,8 +207,8 @@ class sale_order_confirm(orm.TransientModel):
             'partner_shipping_id': sale_order.partner_shipping_id.id,
             'order_date': sale_order.date_order,
             'sale_order_id': sale_order.id,
-            'pricelist_id': sale_order.pricelist_id.id,
-            'partner_id': sale_order.partner_id.id,
+            # 'pricelist_id': sale_order.pricelist_id.id,
+            # 'partner_id': sale_order.partner_id.id,
             'client_order_ref': sale_order.client_order_ref,
             'new_sale_order': False,
         })
