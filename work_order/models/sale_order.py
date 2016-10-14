@@ -145,7 +145,7 @@ class sale_order(orm.Model):
                     lst = lst[0]
                 task_vals[matrix_line.task_field_id.name] = lst
 
-        if order_line.order_id.company_id.task_no_user:
+        if order_line.order_id.company_id.task_no_user and not context.get('force_user', False):
             task_vals['user_id'] = False
 
         for task in range(task_number):

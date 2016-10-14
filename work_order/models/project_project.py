@@ -56,9 +56,3 @@ class project_project(orm.Model):
         return project_id
 
 
-class project_task(orm.Model):
-    _inherit = 'project.task'
-
-    _columns = {
-        'origin': fields.reference(_('Reference'), selection=base.res.res_request._links_get, size=None),
-    }
