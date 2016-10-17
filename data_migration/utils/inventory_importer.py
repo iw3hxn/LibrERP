@@ -258,6 +258,8 @@ class ImportFile(threading.Thread, Utils):
         })
 
         inventory_line_id = self.inventory_line_obj.create(cr, uid, vals_inventory_line, self.context)
+        _logger.info(u'Row {row}: Adding product {product}'.format(row=self.processed_lines, product=record.default_code, ))
+        self.uo_new += 1
 
         # extra function on version2
         vals_product = {}
