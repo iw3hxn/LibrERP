@@ -31,6 +31,11 @@ msgid "Service Spent Amount"
 msgstr "Totale Servizi Speso"
 
 #. module: project_extended
+#: field:project.project,task_count:0
+msgid "Open Tasks"
+msgstr "Attività Aperte"
+
+#. module: project_extended
 #: field:project.project,total_sell:0
 msgid "Sell Amount"
 msgstr "Totale Venduto"
