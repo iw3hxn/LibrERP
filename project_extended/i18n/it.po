@@ -36,6 +36,11 @@ msgid "Open Tasks"
 msgstr "Attività Aperte"
 
 #. module: project_extended
+#: field:project.project,planned_end_date:0
+msgid "Planned End Date"
+msgstr "Data Fine Attività"
+
+#. module: project_extended
 #: field:project.project,total_sell:0
 msgid "Sell Amount"
 msgstr "Totale Venduto"

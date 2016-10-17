@@ -52,7 +52,7 @@ class project_project(orm.Model):
             else:
                 value[project.id] = 'red'
 
-            # ore effettive <= previste verde altrimenti rosso
+                # ore effettive <= previste verde altrimenti rosso
         end_time = datetime.now()
         duration_seconds = (end_time - start_time)
         duration = '{sec}'.format(sec=duration_seconds)
@@ -200,19 +200,17 @@ class project_project(orm.Model):
             #     print 'ZZZZZZZZZ'
 
         return res
-    
+
     def name_get(self, cr, uid, ids, context=None):
         if not len(ids):
             return []
         res = []
-        for record in self.browse(cr, uid, ids, context=context):
-            if record.partner_id:
-                name = record.name + ' : ' + record.partner_id.name
+        for project in self.browse(cr, uid, ids, context=context):
+            if project.partner_id:
+                name = project.name + ' : ' + project.partner_id.name
             else:
-                name = record.name
-            if len(name) > 45:
-                name = name[:45] + '...'
-            res.append((record.id, name))
+                name = project.name
+            res.append((project.id, name))
         return res
 
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
@@ -254,6 +252,18 @@ class project_project(orm.Model):
 
         return result
 
+    def _get_planned_end_date(self, cr, uid, ids, field_name, model_name, context=None):
+        res = {}
+        for project in self.browse(cr, uid, ids, context=context):
+            time_list = []
+            for task in project.tasks:
+                if task.state == 'done':
+                    time_list.append(task.date_end[:10])
+                elif task.date_deadline:
+                    time_list.append(task.date_deadline)
+            res[project.id] = time_list and max(time_list) or False
+        return res
+
     def _get_project(self, cr, uid, ids, context=None):
         result = {}
         for line in self.pool['project.task'].browse(cr, uid, ids, context=context):
@@ -264,7 +274,9 @@ class project_project(orm.Model):
         result = {}
         for line in self.pool['account.analytic.line'].browse(cr, uid, ids, context=context):
             if line.account_id:
-                for project in self.pool['project.project'].search(cr, uid, [('analytic_account_id', '=', line.account_id.id)], context=context):
+                for project in self.pool['project.project'].search(cr, uid,
+                                                                   [('analytic_account_id', '=', line.account_id.id)],
+                                                                   context=context):
                     result[project] = True
         return result.keys()
 
@@ -281,16 +293,23 @@ class project_project(orm.Model):
             if order.project_project:
                 result[order.project_project.id] = True
         return result.keys()
-    
+
     _columns = {
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order",
                                           readonly=True, method=True),
-        'purchase_order_ids': fields.function(_get_purchase_order, 'Purchase Order', type='one2many', relation="purchase.order",
-                                          readonly=True, method=True),
+        'purchase_order_ids': fields.function(_get_purchase_order, 'Purchase Order', type='one2many',
+                                              relation="purchase.order",
+                                              readonly=True, method=True),
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks", store={
             'project.task': (_get_project, ['state'], 10),
         }, ),
+        'planned_end_date': fields.function(_get_planned_end_date, type='date', string="Planned End Date", store=False
+                                            # {
+                                            #     'project.task': (_get_project, ['state', 'date_end', 'date_deadline'], 20),
+                                            # }, ),
+                                            ),
+
         # 'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
         # 'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),
         # 'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Spent Amount"),
@@ -320,7 +339,7 @@ class project_project(orm.Model):
                                          multi='sums', string="Invoice Amount", store={
                 'account.analytic.line': (_get_project_account, ['amount'], 80),
             }, ),
-       # 'doc_count': fields.function(
-       #     _get_attached_docs, string="Number of documents attached", type='integer'
-       # )
+        # 'doc_count': fields.function(
+        #     _get_attached_docs, string="Number of documents attached", type='integer'
+        # )
     }

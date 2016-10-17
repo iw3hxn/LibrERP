@@ -62,7 +62,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <field name="date" position="replace">
-                    <field name ="date" />
+                    <field name="date" />
+                    <field name="planned_end_date" />
                     <field name ="parent_id" />
                 </field>
                 <field name="progress_rate" position="replace">
