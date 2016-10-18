@@ -11,12 +11,12 @@
                 <field name="project_id" position="replace">
                     <field name="project_project" context="{'model': 'sale.order', 'name': name, 'partner_id': partner_id}" groups="project.group_project_user" />
                 </field>
-                <field name="picking_ids" position="after" >
+                <xpath expr="//separator[@string='Invoices']"  position="before">
                     <group groups="project.group_project_user" >
                         <separator colspan="4" string="Task" />
                         <field name="project_task_ids" nolabel="1" />
                     </group>
-                </field>
+                </xpath>
             </field>
         </record>
 
