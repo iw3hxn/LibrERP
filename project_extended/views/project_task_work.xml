@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="project_task_work_search_form" model="ir.ui.view">
+            <field name="name">project.task.work.search</field>
+            <field name="model">project.task.work</field>
+            <field name="inherit_id" ref="task_time_control.project_task_work_search"/>
+            <field name="arch" type="xml">
+                <field name="task_id" position="before">
+                    <field name="project_id" />
+                </field>
+            </field>
+        </record>
+        <record id="view_project_task_work_tree_inherit" model="ir.ui.view">
+            <field name="name">project.task.work.tree</field>
+            <field name="model">project.task.work</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="task_time_control.project_task_work"/>
+            <field name="arch" type="xml">
+                <field name="task_id" position="before">
+                    <field name="project_id" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -19,7 +19,7 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.10.16.20',
+    'version': '3.11.16.21',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,
@@ -30,6 +30,7 @@
         'account',
         'project',
         'project_timesheet',
+        'task_time_control',
         'res_users_helper_functions'
     ],
     "data": [
@@ -39,6 +40,7 @@
         'views/project_task.xml',
         'views/project_view_menu.xml',
         'views/res_partner.xml',
+        'views/project_task_work.xml',
     ],
     "active": False,
     "installable": True

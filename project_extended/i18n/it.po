@@ -65,3 +65,7 @@ msgstr "Ordini"
 msgid "Purchase"
 msgstr "Acquisti"
 
+#. module: project
+#: field:project.task.work,project_id:0
+msgid "Project"
+msgstr "Progetto"
