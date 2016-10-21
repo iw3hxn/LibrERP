@@ -79,7 +79,8 @@ class stock_partial_picking(orm.TransientModel):
         if partial.ddt_in_date:
             vals.update({'ddt_in_date': partial.ddt_in_date})
         if vals:
-            self.pool['stock.picking'].write(cr, uid, result['res_id'], vals, context)
+            if result.get('res_id', False) or context.get('active_id', False):
+                self.pool['stock.picking'].write(cr, uid, result.get('res_id', False) or context.get('active_id', False), vals, context)
 
         if result.get('res_id', False) != context.get('active_id', False):
             context.update({
