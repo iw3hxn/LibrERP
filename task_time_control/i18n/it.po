@@ -258,3 +258,8 @@ msgstr "Dal"
 #: field:project.task.work,date_to:0
 msgid "Date to"
 msgstr "Al"
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "Other User"
+msgstr "Altri Utenti al lavoro"
