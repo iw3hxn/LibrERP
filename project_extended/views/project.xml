@@ -8,6 +8,23 @@
             <field name="inherit_id" ref="project.edit_project"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
+                <xpath expr='//page[@string="Members"]' position="replace">
+                    <page string="Members">
+                        <field colspan="4" name="members" nolabel="1" widget="many2many_checkboxes"/>
+                    </page>
+                </xpath>
+
+                <xpath expr='//page[@string="Billing"]' position="replace">
+                    <page string="Billing" groups="account.group_account_invoice">
+                        <field name="partner_id" on_change="onchange_partner_id(partner_id)" select="1"
+                               string="Customer" colspan="4"/>
+                        <field name="contact_id" string="Contact Address" domain="[('partner_id','=',partner_id)]"
+                               options="{&quot;quick_create&quot;: false}" context="{'default_partner_id':partner_id}"/>
+                        <field name="warn_customer" groups="base.group_extended"/>
+                        <field name="currency_id" select="1" groups="base.group_multi_company" required="1"/>
+                    </page>
+                </xpath>
+
                 <xpath expr='//page[@string="Tasks Stages"]' position="before">
                     <page string="Tasks">
                         <field name="tasks" nolabel="1">
@@ -48,9 +65,10 @@
             <field name="arch" type="xml">
                 <field name="name" position="before">
                     <separator orientation="vertical"/>
-                    <filter icon="gtk-justify-left" string="Task" name="Task" domain="[('tasks', '!=',False)]" help="Project with Task"/>
+                    <filter icon="gtk-justify-left" string="Task" name="Task" domain="[('tasks', '!=',False)]"
+                            help="Project with Task"/>
                     <separator orientation="vertical"/>
-                    <field name ="parent_id" />
+                    <field name="parent_id"/>
                 </field>
             </field>
         </record>
@@ -62,21 +80,21 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <field name="date" position="replace">
-                    <field name="date" />
-                    <field name="planned_end_date" />
-                    <field name ="parent_id" />
+                    <field name="date"/>
+                    <field name="planned_end_date"/>
+                    <field name="parent_id"/>
                 </field>
                 <field name="progress_rate" position="replace">
                     <field name="total_sell" groups="project.group_project_manager" sum="Total Sell"/>
                     <field name="total_sell_service" groups="project.group_project_manager" sum="Total Service Sell"/>
-                    <field name="total_spent" groups="project.group_project_manager" sum="Total Spent" />
-                    <field name="total_service_spent" groups="project.group_project_manager" sum="Total Service Spent" />
+                    <field name="total_spent" groups="project.group_project_manager" sum="Total Spent"/>
+                    <field name="total_service_spent" groups="project.group_project_manager" sum="Total Service Spent"/>
                     <field name="total_invoice" groups="project.group_project_manager" sum="Total Invoiced"/>
-                    <field name="analytic_account_id" invisible="1" />
+                    <field name="analytic_account_id" invisible="1"/>
                 </field>
                 <field name="state" position="after">
-                    <field name = "task_count" groups="project.group_project_manager" />
-                    <field name = "row_color"  invisible="1" />
+                    <field name="task_count" groups="project.group_project_manager"/>
+                    <field name="row_color" invisible="1"/>
                 </field>
             </field>
         </record>
@@ -87,7 +105,8 @@
             <field name="type">tree</field>
             <field name="field_parent">child_ids</field>
             <field name="arch" type="xml">
-                <tree string="Projects" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                <tree string="Projects"
+                      colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                     <field name="sequence" invisible="1"/>
                     <field name="date" invisible="1"/>
                     <field name="name" string="Project Name"/>
@@ -108,6 +127,6 @@
             <field name="view_mode">kanban</field>
             <field name="act_window_id" ref="project.action_view_task"/>
         </record>
-        
+
     </data>
 </openerp>
