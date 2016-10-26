@@ -22,10 +22,16 @@
 from openerp.osv import orm, fields
 import decimal_precision as dp
 from datetime import datetime
+import logging
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
 
 class project_project(orm.Model):
     _inherit = 'project.project'
+
+    def color_hook(self, cr, uid, ids, value, context):
+        return value
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         start_time = datetime.now()
@@ -53,11 +59,12 @@ class project_project(orm.Model):
                 value[project.id] = 'red'
 
                 # ore effettive <= previste verde altrimenti rosso
+        res = self.color_hook(cr, uid, ids, value, context) # hook function for possible extention
         end_time = datetime.now()
         duration_seconds = (end_time - start_time)
         duration = '{sec}'.format(sec=duration_seconds)
-        print duration
-        return value
+        _logger.info(u'Project Color get in {duration}'.format(duration=duration))
+        return res
 
     def _task_count(self, cr, uid, ids, field_name, arg, context=None):
         if context is None:
