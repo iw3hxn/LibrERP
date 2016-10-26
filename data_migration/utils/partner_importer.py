@@ -257,7 +257,7 @@ class ImportFile(threading.Thread, Utils):
             if hasattr(record, field + '_' + address_type) and getattr(record, field + '_' + address_type):
                 vals_address[field] = getattr(record, field + '_' + address_type)
 
-        if len(record.fiscalcode) == 16 and not record.person_name:
+        if record.fiscalcode and len(record.fiscalcode) == 16 and not record.person_name:
             vals_address['name'] = ''
 
         # Excel treats all numbers as floats
