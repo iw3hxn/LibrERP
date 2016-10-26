@@ -158,7 +158,6 @@ class sale_order(orm.Model):
         defaults.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
         return super(sale_order, self).copy(cr, uid, ids, defaults, context)
 
-
     def onchange_invoice_type_id(self, cr, uid, ids, invoice_type_id, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
