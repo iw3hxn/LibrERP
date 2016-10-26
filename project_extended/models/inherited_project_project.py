@@ -244,7 +244,7 @@ class project_project(orm.Model):
         result = {}
         sale_order_obj = self.pool['sale.order']
         for project in self.browse(cr, uid, ids, context):
-            name = project.name.split('-')[0]
+            name = project.name.split('-')[0].replace(' ', '')
             result[project.id] = sale_order_obj.search(cr, uid, [('name', 'like', name)], context=context)
 
         return result
