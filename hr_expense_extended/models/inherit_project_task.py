@@ -122,3 +122,10 @@ class project_task(orm.Model):
                     }
                     self.pool['account.analytic.line'].update_or_create_line(cr, uid, analytic_values)
         return result
+    #
+    # def unlink(self, cr, uid, ids, context=None):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     for task in self.browse(cr, uid, ids, context):
+    #         if task.expense_line_ids:
+    #
+    #     return super(project_task, self).unlink(cr, uid, ids, context)

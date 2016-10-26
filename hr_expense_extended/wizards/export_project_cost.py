@@ -163,10 +163,15 @@ class WizardExportProjectCost(orm.TransientModel):
 
     table_layout = collections.OrderedDict({
         0: {'name': 'Commessa', 'width': 4000, 'header': Style.main, 'row': Style.main_cell, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
-        1: {'name': 'km auto', 'width': 2500, 'header': Style.main, 'row': Style.black, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
-        2: {'name': 'ORE Tenico', 'width': 2500, 'header': Style.main, 'row': Style.black, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
-        3: {'name': 'Pernottamenti', 'width': 2500, 'header': Style.main, 'row': Style.black_currency, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
-        4: {'name': 'Pranzi/Cene', 'width': 2500, 'header': Style.main, 'row': Style.black_currency, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
+        1: {'name': 'km auto Prev', 'width': 3500, 'header': Style.main, 'row': Style.black, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
+        2: {'name': 'km auto', 'width': 3500, 'header': Style.main, 'row': Style.black, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
+        3: {'name': 'ORE Tenico Prev', 'width': 3500, 'header': Style.main, 'row': Style.black, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
+        4: {'name': 'ORE Tenico', 'width': 3500, 'header': Style.main, 'row': Style.black, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
+        5: {'name': 'Pernottamenti Prev', 'width': 3500, 'header': Style.main, 'row': Style.black_currency, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
+        6: {'name': 'Pernottamenti', 'width': 3500, 'header': Style.main, 'row': Style.black_currency, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
+        7: {'name': 'Pranzi/Cene Prev', 'width': 3500, 'header': Style.main, 'row': Style.black_currency, 'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
+        8: {'name': 'Pranzi/Cene', 'width': 3500, 'header': Style.main, 'row': Style.black_currency,
+            'kit_header': Style.kit_main_cell_left, 'kit': Style.kit_main_cell_left},
     })
     
     def write_header(self, ws, sale_order):
@@ -206,6 +211,10 @@ class WizardExportProjectCost(orm.TransientModel):
             ws.col(index).width = column['width']
         
         project_ids = context.get('active_ids', False)
+        sale_order_obj = self.pool['sale.order']
+        sale_order_line_obj = self.pool['sale.order.line']
+        sale_order_line_mrp_bom_obj = self.pool['sale.order.line.mrp.bom']
+
         projects = self.pool['project.project'].browse(cr, uid, project_ids, context)
         
         column = 0
@@ -227,6 +236,11 @@ class WizardExportProjectCost(orm.TransientModel):
             ore_tenico = 0
             pernottamenti = 0
             pranzi_cene = 0
+            km_auto_sale = 0
+            ore_tenico_sale = 0
+            pernottamenti_sale = 0
+            pranzi_cene_sale = 0
+
             for line in account_analytic_line_obj.browse(cr, uid, analytic_ids, context):
                 if line.product_id.code == 'KM':
                     km_auto += line.unit_amount
@@ -237,12 +251,30 @@ class WizardExportProjectCost(orm.TransientModel):
                 elif line.product_id.code == 'PRANZI/CENE':
                     pranzi_cene += line.amount
 
+            name = project.name.split('-')[0].replace(' ', '')
+            sale_order_ids = sale_order_obj.search(cr, uid, [('name', 'ilike', name)], context=context)
+            sale_order_line_ids = sale_order_line_obj.search(cr, uid, [('order_id', 'in', sale_order_ids)], context=context)
+            sale_order_line_mrp_bom_ids = sale_order_line_mrp_bom_obj.search(cr, uid, [('order_id', 'in', sale_order_line_ids)], context=context)
+            for line in sale_order_line_mrp_bom_obj.browse(cr, uid, sale_order_line_mrp_bom_ids, context):
+                if line.product_id.code == 'KM':
+                    km_auto_sale += line.product_uom_qty
+                elif line.product_id.code == 'ORE':
+                    ore_tenico_sale += line.product_uom_qty
+                elif line.product_id.code == 'PERNOT':
+                    pernottamenti_sale += line.price_subtotal
+                elif line.product_id.code == 'PRANZI/CENE':
+                    pranzi_cene_sale += line.price_subtotal
+
             xls_line = {
                 0: project.name,
-                1: int(abs(km_auto)),
-                2: int(abs(ore_tenico)),
-                3: abs(pernottamenti),
-                4: abs(pranzi_cene),
+                1: int(abs(km_auto_sale)),
+                2: int(abs(km_auto)),
+                3: int(abs(ore_tenico_sale)),
+                4: int(abs(ore_tenico)),
+                5: abs(pernottamenti_sale),
+                6: abs(pernottamenti),
+                7: abs(pranzi_cene),
+                8: abs(pranzi_cene_sale),
             }
             self.write_row(ws, row, xls_line, 'row')
 
