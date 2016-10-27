@@ -9,33 +9,39 @@
             <field name="arch" type="xml">
                 <form string="Assign DDT">
                     <group col="2">
-                        <field name="number_method" nolabel="1" />
-                        <group col="2" attrs="{'invisible': [('number_method', '=', 'sequence')]}" >
+                        <field name="ddt_to_recovery" invisible="1"/>
+                        <group attrs="{'invisible': [('ddt_to_recovery', '!=', True)]}">
+                            <field name="existing_ddt" nolabel="1" readonly="1"/>
+                            <newline/>
+                        </group>
+                        <field name="number_method" nolabel="1"/>
+                        <group col="2" attrs="{'invisible': [('number_method', '=', 'sequence')]}">
                             <label colspan="2" string="This will assign the DDT number"/>
                             <field name="ddt_number_already_exist" invisible="1"/>
-                            <field name="ddt_number" attrs="{'required': [('number_method', '=', 'force')]}" on_change="onchange_ddt_number(ddt_number)"/>
-                            <group col="2" attrs="{'invisible': [('ddt_number_already_exist', '=', False)]}" >
-                                <label colspan="2" string="DDT number already exist" />
+                            <field name="ddt_number" attrs="{'required': [('number_method', '=', 'force')]}"
+                                   on_change="onchange_ddt_number(ddt_number)"/>
+                            <group col="2" attrs="{'invisible': [('ddt_number_already_exist', '=', False)]}">
+                                <label colspan="2" string="DDT number already exist"/>
                             </group>
                         </group>
                         <!--<field name="ddt_next_number" readonly="1"/>-->
-                        <field name="ddt_date" />
+                        <field name="ddt_date"/>
                         <separator colspan="2"/>
-                        <group col="2" >
+                        <group col="2">
                             <button icon="gtk-cancel" special="cancel" string="Cancel"/>
-                            <button icon="gtk-ok" name="assign_ddt" string="Assign" type="object"  />
+                            <button icon="gtk-ok" name="assign_ddt" string="Assign" type="object"/>
                         </group>
                     </group>
                 </form>
             </field>
         </record>
 
-       <act_window name="Assign DDT"
-            res_model="wizard.assign.ddt"
-            view_mode="form"
-            target="new"
-            key2="client_action_multi"
-            id="action_wizard_assign_ddt"
-            view_id="wizard_assign_ddt"/>
+        <act_window name="Assign DDT"
+                    res_model="wizard.assign.ddt"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="action_wizard_assign_ddt"
+                    view_id="wizard_assign_ddt"/>
     </data>
 </openerp>
