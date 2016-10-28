@@ -10,7 +10,7 @@
                 <form string="Assign DDT">
                     <group col="2">
                         <field name="ddt_to_recovery" invisible="1"/>
-                        <group attrs="{'invisible': [('ddt_to_recovery', '!=', True)]}">
+                        <group attrs="{'invisible': [('ddt_to_recovery', '!=', True)]}" col="2">
                             <field name="existing_ddt" nolabel="1" readonly="1"/>
                             <newline/>
                         </group>
@@ -23,9 +23,9 @@
                             <group col="2" attrs="{'invisible': [('ddt_number_already_exist', '=', False)]}">
                                 <label colspan="2" string="DDT number already exist"/>
                             </group>
+                            <field name="ddt_date"/>
                         </group>
                         <!--<field name="ddt_next_number" readonly="1"/>-->
-                        <field name="ddt_date"/>
                         <separator colspan="2"/>
                         <group col="2">
                             <button icon="gtk-cancel" special="cancel" string="Cancel"/>

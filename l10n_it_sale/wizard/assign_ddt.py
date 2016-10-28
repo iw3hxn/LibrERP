@@ -135,6 +135,12 @@ class wizard_assign_ddt(orm.TransientModel):
             picking_obj.log(cr, uid, picking.id, text)
             picking_obj.message_append(cr, uid, [picking.id], text, body_text=text, context=context)
 
+            recovery_ids = self.pool['ir.sequence_recovery'].search(cr, uid, [('name', '=', 'stock.picking'), ('sequence', '=', ddt_number)], context=context)
+
+            if recovery_ids:
+                recovery_id = recovery_ids[0]
+                self.pool['ir.sequence_recovery'].write(cr, uid, recovery_id, {'active': False}, context)
+
             vals.update({
                 'ddt_number': ddt_number,
                 'ddt_date': self.browse(cr, uid, ids, context=context)[0].ddt_date or time.strftime(
