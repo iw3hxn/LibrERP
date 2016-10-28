@@ -73,6 +73,9 @@
                 <field name = "user_id" position="attributes" >
                     <attribute name="groups">project.group_project_manager</attribute>
                 </field>
+                <field name = "project_id" position="attributes" >
+                    <attribute name="groups">project.group_project_manager</attribute>
+                </field>
                 <field name = "priority" position="attributes" >
                     <attribute name="groups">project.group_project_manager</attribute>
                 </field>

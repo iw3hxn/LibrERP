@@ -61,7 +61,7 @@
             <field name="name">project.project.search.extended</field>
             <field name="model">project.project</field>
             <field name="inherit_id" ref="project.view_project_project_filter"/>
-            <field name="type">tree</field>
+            <field name="type">search</field>
             <field name="arch" type="xml">
                 <field name="name" position="before">
                     <separator orientation="vertical"/>
