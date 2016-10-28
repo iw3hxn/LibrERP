@@ -111,6 +111,15 @@ class stock_picking(orm.Model):
                     partner_vals['goods_description_id'] = vals.get('goods_description_id')
                 if partner_vals:
                     self.pool['res.partner'].write(cr, uid, [picking.partner_id.id], partner_vals, context)
+        if vals.get('ddt_number') and vals['ddt_number'] == '':
+            for picking in self.browse(cr, uid, ids, context):
+                sequence_id = picking.stock_journal_id.ddt_sequence and \
+                              picking.stock_journal_id.ddt_sequence.id or False
+                if not sequence_id:
+                    sequence_ids = self.pool['ir.sequence'].search(cr, uid, [('code', '=', 'stock.ddt')])
+                    sequence_id = sequence_ids[0]
+
+                self.pool['ir.sequence_recovery'].set(cr, uid, [picking.id], 'stock.picking', 'ddt_number', '', sequence_id)
 
         return super(stock_picking, self).write(cr, uid, ids, vals, context=context)
 

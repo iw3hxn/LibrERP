@@ -110,7 +110,6 @@ class wizard_assign_ddt(orm.TransientModel):
             result['existing_ddt'] = '\n'.join(description)
         return result
 
-
     def assign_ddt(self, cr, uid, ids, context=None):
 
         picking_obj = self.pool['stock.picking']
