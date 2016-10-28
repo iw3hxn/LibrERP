@@ -46,6 +46,24 @@ class wizard_assign_ddt(orm.TransientModel):
     #             res[wizard.id].update({'ddt_next_number': ddt_number})
     #     return res
 
+    def _get_existing_ddt(self, cr, uid, ids, prop, unknow_none, context=None):
+        result = {}
+        description = []
+        picking_obj = self.pool['stock.picking']
+        sequence_recovery_obj = self.pool['ir.sequence_recovery']
+        picking = picking_obj.browse(cr, uid, context.get('active_ids', []), context=context)[0]
+        for assign_ddt in self.browse(cr, uid, ids, context=context):
+            sequence_id = picking.stock_journal_id.ddt_sequence and \
+                          picking.stock_journal_id.ddt_sequence.id or False
+            if not sequence_id:
+                sequence_id = self.pool['ir.sequence'].search(cr, uid, [('code', '=', 'stock.ddt')])[0]
+            sequence_recovery_ids = sequence_recovery_obj.search(cr, uid, [('sequence_id', '=', sequence_id)], context=context)
+            for sequence_recovery in sequence_recovery_obj.browse(cr, uid, sequence_recovery_ids, context):
+                description.append(sequence_recovery.name)
+
+            result[assign_ddt.id] = '\n'.join(description)
+        return result
+
     _columns = {
         'number_method': fields.selection([('force', 'Force'), ('sequence', 'Sequence')], 'Number Method',
                                           required=True),
@@ -53,6 +71,8 @@ class wizard_assign_ddt(orm.TransientModel):
         'ddt_number_already_exist': fields.boolean('DDT Number Exist'),
         'ddt_next_number': fields.char('DDT next Number', size=64),
         'ddt_date': fields.date('DDT date'),
+        'existing_ddt': fields.text('DDT Existing', help="If want to recovery this number "),
+        'ddt_to_recovery': fields.boolean('DDT to Recovery'),
     }
 
     _defaults = {
@@ -60,6 +80,36 @@ class wizard_assign_ddt(orm.TransientModel):
         'number_method': 'sequence'
         # 'ddt_next_number': _next_ddt,
     }
+
+    def default_get(self, cr, uid, fields, context=None):
+        """
+        """
+        result = super(wizard_assign_ddt, self).default_get(cr, uid, fields, context=context)
+        result.update({'ddt_to_recovery': False})
+
+        if context and 'active_ids' in context and context['active_ids']:
+            description = []
+            picking_obj = self.pool['stock.picking']
+            sequence_recovery_obj = self.pool['ir.sequence_recovery']
+            picking = picking_obj.browse(cr, uid, context.get('active_ids', []), context=context)[0]
+
+            sequence_id = picking.stock_journal_id.ddt_sequence and \
+                              picking.stock_journal_id.ddt_sequence.id or False
+            if not sequence_id:
+                sequence_id = self.pool['ir.sequence'].search(cr, uid, [('code', '=', 'stock.ddt')])[0]
+            sequence_recovery_ids = sequence_recovery_obj.search(cr, uid, [('sequence_id', '=', sequence_id)],
+                                                                     context=context)
+            for sequence_recovery in sequence_recovery_obj.browse(cr, uid, sequence_recovery_ids, context):
+                date_recovery = sequence_recovery.date
+                description.append(_('{name} of {date}').format(name=sequence_recovery.sequence, date=date_recovery))
+                result.update({'ddt_to_recovery': True,
+                               'number_method': 'sequence'})
+            if description:
+                description.append(_('For Recovery use Automatic Sequence'))
+
+            result['existing_ddt'] = '\n'.join(description)
+        return result
+
 
     def assign_ddt(self, cr, uid, ids, context=None):
 

@@ -193,3 +193,15 @@ msgstr "{picking}: ha forzato il numero DDT a {ddt_number}"
 #, python-format
 msgid "{picking} using sequence for DDT to {ddt_number}"
 msgstr "{picking}: è stata usata la normale sequenza {ddt_number}"
+
+#. module: l10n_it_sale
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:107
+#, python-format
+msgid "For Recovery use Automatic Sequence"
+msgstr "Per utilizzare queste sequenze usare la modalità automatica"
+
+#. module: l10n_it_sale
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:103
+#, python-format
+msgid "{name} of {date}"
+msgstr "{name} del {date}"
