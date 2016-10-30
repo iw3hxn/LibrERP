@@ -37,44 +37,30 @@ class project_task(orm.Model):
     }
     
     def create(self, cr, uid, values, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         task_id = super(project_task, self).create(cr, uid, values, context)
-        task = self.browse(cr, uid, task_id)
+        task = self.browse(cr, uid, task_id, context)
         
         if task.expense_line_ids:
             # add hr_expense_expense
             employee = self.pool['hr.employee'].get_employee(cr, uid, uid)
-             
-            expense_values = {
-                #'note': False, 
-                'employee_id': employee.id, 
-                #'invoice_id': False, 
-                'company_id': values.get('company_id', 1), 
-                'journal_id': False, 
-                #'currency_id': 1, 
-                'user_valid': False, 
-                'date': values.get('date', datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)),
-                #'ref': False, 
-                'department_id': False
-            }
-            hr_expense_id = self.pool['hr.expense.expense'].create(cr, uid, expense_values)
-        
-            line_ids = [expense_line.id for expense_line in task.expense_line_ids]
-            self.pool['hr.expense.line'].write(cr, uid, line_ids, {'expense_id': hr_expense_id})
-        
-        ## We don't need this, as write is called anyway
-        #for expense_line in task.expense_line_ids:
-        #    if expense_line.task_id and expense_line.analytic_account:
-        #        analytic_values = {
-        #            'name': expense_line.name,
-        #            'product': expense_line.product_id,
-        #            'product_qty': expense_line.unit_quantity,
-        #            'account_id': expense_line.analytic_account.id,
-        #            'unit_amount': expense_line.unit_amount,
-        #            'date': expense_line.date_value + ' 00:00:00',
-        #            'ref': task.name,
-        #            'origin_document': expense_line
-        #        }
-        #        self.pool['account.analytic.line'].update_or_create_line(cr, uid, analytic_values)
+            if employee:
+                expense_values = {
+                    # 'note': False,
+                    'employee_id': employee.id,
+                    # 'invoice_id': False,
+                    'company_id': values.get('company_id', 1),
+                    'journal_id': False,
+                    # 'currency_id': 1,
+                    'user_valid': False,
+                    'date': values.get('date', datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)),
+                    # 'ref': False,
+                    'department_id': False
+                }
+
+                hr_expense_id = self.pool['hr.expense.expense'].create(cr, uid, expense_values, context)
+                line_ids = [expense_line.id for expense_line in task.expense_line_ids]
+                self.pool['hr.expense.line'].write(cr, uid, line_ids, {'expense_id': hr_expense_id}, context)
         return task_id
 
     def write(self, cr, uid, ids, values, context=None):
@@ -87,27 +73,27 @@ class project_task(orm.Model):
             if values.get('expense_line_ids', False):
                 # add hr_expense_expense
                 employee = self.pool['hr.employee'].get_employee(cr, uid, uid)
-                 
-                expense_values = {
-                    #'note': False, 
-                    'employee_id': employee.id, 
-                    #'invoice_id': False, 
-                    'company_id': task.company_id.id, 
-                    'journal_id': False, 
-                    #'currency_id': 1, 
-                    'user_valid': False, 
-                    'date': values.get('date', datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)),
-                    #'ref': False, 
-                    'department_id': False
-                }
-            
-                hr_expense_id = self.pool['hr.expense.expense'].create(cr, uid, expense_values)
-                line_ids = [expense_line.id for expense_line in task.expense_line_ids]
-                self.pool['hr.expense.line'].write(cr, uid, line_ids, {'expense_id': hr_expense_id})
+                if employee:
+                    expense_values = {
+                        # 'note': False,
+                        'employee_id': employee.id,
+                        # 'invoice_id': False,
+                        'company_id': task.company_id.id,
+                        'journal_id': False,
+                        # 'currency_id': 1,
+                        'user_valid': False,
+                        'date': values.get('date', datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)),
+                        # 'ref': False,
+                        'department_id': False
+                    }
+
+                    hr_expense_id = self.pool['hr.expense.expense'].create(cr, uid, expense_values, context)
+                    line_ids = [expense_line.id for expense_line in task.expense_line_ids]
+                    self.pool['hr.expense.line'].write(cr, uid, line_ids, {'expense_id': hr_expense_id}, context)
             
             for expense_line in task.expense_line_ids:
                 if values.get('project_id', False):
-                    self.pool['hr.expense.line'].write(cr, uid, [expense_line.id], {'analytic_account': task.project_id.analytic_account_id.id})
+                    self.pool['hr.expense.line'].write(cr, uid, [expense_line.id], {'analytic_account': task.project_id.analytic_account_id.id}, context)
                 
                 if expense_line.task_id and task.project_id:
                     analytic_values = {
@@ -120,7 +106,7 @@ class project_task(orm.Model):
                         'ref': task.name,
                         'origin_document': expense_line
                     }
-                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, analytic_values)
+                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, analytic_values, context)
         return result
     #
     # def unlink(self, cr, uid, ids, context=None):

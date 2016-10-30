@@ -9,7 +9,7 @@
             <!--<field name="type">form</field>-->
             <field name="arch" type="xml">
                 <page string="Extra Info" position="after">
-                    <page string="Expenses" >
+                    <page string="Expenses" groups="base.group_user" >
                         <field name="expense_line_ids" nolabel="1" context="{}">
                             <form string="Expense">
                                 <group colspan="4" col="6">
@@ -44,6 +44,7 @@
         <menuitem action="hr_timesheet.action_hr_timesheet_employee"
                 id="menu_hr_timesheet_employee"
                 parent="project.menu_project_management"
+                groups="base.group_user"
                 sequence="20" icon="STOCK_PRINT"/>
 
         <record id="expense_all" model="ir.actions.act_window">

@@ -74,7 +74,7 @@ class stock_picking(orm.Model):
                         'ref': picking.name,
                         'origin_document': move
                     }
-                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, values)
+                    self.pool['account.analytic.line'].update_or_create_line(cr, uid, values, context)
         return super(stock_picking, self).do_partial(cr, uid, ids, partial_data, context=context)
 
     def action_reopen(self, cr, uid, ids, context=None):

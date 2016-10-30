@@ -7,12 +7,12 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Sequence Recovery" editable="top">
-                    <field name="name"/>
-                    <field name="sequence_id"/>
-                    <field name="sequence"/>
-                    <field name="date"/>
-                    <field name="create_uid"/>
-                    <field name="write_uid"/>
+                    <field name="name" readonly="1"/>
+                    <field name="sequence_id" readonly="1"/>
+                    <field name="sequence" readonly="1"/>
+                    <field name="date" readonly="1"/>
+                    <field name="create_uid" readonly="1"/>
+                    <field name="write_uid" readonly="1"/>
                 </tree>
             </field>
         </record>

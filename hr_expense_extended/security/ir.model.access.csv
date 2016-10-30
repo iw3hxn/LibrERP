@@ -1,2 +1,3 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "access_create_mrp_bom","mrp_bom","mrp.model_mrp_bom","project.group_project_user",1,1,1,0
+"access_create_hr_expense_line","hr.expense.line","hr_expense.model_hr_expense_line","project.group_project_user",1,0,0,0

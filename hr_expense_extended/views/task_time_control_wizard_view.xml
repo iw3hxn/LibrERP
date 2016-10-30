@@ -10,7 +10,7 @@
                 <field name="time" position="after">
                     <field name="user_id" invisible="True" />
                     <newline/>
-                    <field name="expense_line_ids" nolabel="1" colspan="4" context="{'date_value': task_date}" >
+                    <field name="expense_line_ids" nolabel="1" colspan="4" context="{'date_value': task_date}" groups="base.group_user">
 <!--                       <form string="Expense">
                             <group colspan="4" col="6">
                                 <field name="product_id" required="True" on_change="onchange_product_id(product_id, context)" />

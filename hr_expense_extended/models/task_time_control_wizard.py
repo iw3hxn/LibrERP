@@ -107,37 +107,41 @@ class task_time_control_confirm_wizard(orm.TransientModel):
     }
 
     def close_confirm(self, cr, uid, ids, context=None):
-        confirm_wizard = self.browse(cr, uid, ids[0])
-        employee = self.pool['hr.employee'].get_employee(cr, uid, uid)
-        expense_values = {
-            'employee_id': employee.id,
-            'company_id': employee.user_id.company_id.id,
-            'journal_id': False,
-            'user_valid': False,
-            'department_id': False
-        }
-        
-        #if confirm_wizard.task_date:
-        #    force_date = datetime.strptime(confirm_wizard.task_date, DEFAULT_SERVER_DATETIME_FORMAT)
-        #    force_date = force_date.date().strftime(DEFAULT_SERVER_DATE_FORMAT)
-        #else:
-        #    force_date = False
-        
-        for expense_line in confirm_wizard.expense_line_ids:
-            expense_values['date'] = expense_line.date_value
-            hr_expense_id = self.pool['hr.expense.expense'].create(cr, uid, expense_values)
-            
-            values = {
-                'task_id': confirm_wizard.started_task.id,
-                'name': expense_line.name,
-                'date_value': expense_line.date_value,
-                'unit_amount': expense_line.unit_amount,
-                'unit_quantity': expense_line.unit_quantity,
-                'product_id': expense_line.product_id.id,
-                'ref': expense_line.ref,
-                'payer': expense_line.payer,
-                'expense_id': hr_expense_id
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        confirm_wizard = self.browse(cr, uid, ids[0], context)
+        if self.pool['res.groups'].user_in_group(cr, uid, uid, 'base.group_user', context):
+            employee = self.pool['hr.employee'].get_employee(cr, uid, uid)
+            expense_values = {
+                'employee_id': employee.id,
+                'company_id': employee.user_id.company_id.id,
+                'journal_id': False,
+                'user_valid': False,
+                'department_id': False
             }
-            self.pool['hr.expense.line'].create(cr, uid, values)
+
+            #if confirm_wizard.task_date:
+            #    force_date = datetime.strptime(confirm_wizard.task_date, DEFAULT_SERVER_DATETIME_FORMAT)
+            #    force_date = force_date.date().strftime(DEFAULT_SERVER_DATE_FORMAT)
+            #else:
+            #    force_date = False
+
+            for expense_line in confirm_wizard.expense_line_ids:
+                expense_values['date'] = expense_line.date_value
+                hr_expense_id = self.pool['hr.expense.expense'].create(cr, uid, expense_values, context)
+
+                values = {
+                    'task_id': confirm_wizard.started_task.id,
+                    'name': expense_line.name,
+                    'date_value': expense_line.date_value,
+                    'unit_amount': expense_line.unit_amount,
+                    'unit_quantity': expense_line.unit_quantity,
+                    'product_id': expense_line.product_id.id,
+                    'ref': expense_line.ref,
+                    'payer': expense_line.payer,
+                    'expense_id': hr_expense_id
+                }
+                self.pool['hr.expense.line'].create(cr, uid, values, context)
+        else:
+            context['no_analytic_entry'] = True
         
         return super(task_time_control_confirm_wizard, self).close_confirm(cr, uid, ids, context)

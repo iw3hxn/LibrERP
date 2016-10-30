@@ -24,7 +24,7 @@
 
 {
     "name": "HR Expense Extended",
-    "version": "2.8.15.6",
+    "version": "2.8.16.7",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Human Resources',
@@ -43,7 +43,8 @@
         'mrp',
         'work_order',
         'project',
-        'task_time_control'
+        'task_time_control',
+        'res_users_helper_functions',
     ],
     "data": [
         'views/hr_expense_view.xml',

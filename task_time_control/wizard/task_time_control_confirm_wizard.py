@@ -67,6 +67,7 @@ class task_time_control_confirm_wizard(orm.TransientModel):
     }
 
     def close_confirm(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         user_task_obj = self.pool['time.control.user.task']
         project_task_obj = self.pool['project.task']
 
@@ -84,7 +85,7 @@ class task_time_control_confirm_wizard(orm.TransientModel):
             else:
                 end_datetime = datetime.now()
 
-            self.pool["project.task.work"].create(cr, uid, {
+            project_task_work_vals = {
                 'name': wizard.name,
                 'date': wizard.task_date or end_datetime.strftime('%d-%m-%Y %H:%M:%S'),
                 'task_id': started_task.id,
@@ -93,18 +94,20 @@ class task_time_control_confirm_wizard(orm.TransientModel):
                 'company_id': started_task.company_id and started_task.company_id.id or False,
                 'work_start': start_datetime,
                 'work_end': end_datetime
-            })
+            }
 
-            user_task_obj.write(cr, uid, user_task.id, {'work_start': None, 'work_end': None, 'started_task': None})
+            self.pool['project.task.work'].create(cr, uid, project_task_work_vals, context)
 
-            count_other_users_in_task = user_task_obj.search(cr, uid, [('started_task', '=', started_task.id)], count=True)
+            user_task_obj.write(cr, uid, user_task.id, {'work_start': None, 'work_end': None, 'started_task': None}, context)
+
+            count_other_users_in_task = user_task_obj.search(cr, uid, [('started_task', '=', started_task.id)], count=True, context=context)
             if count_other_users_in_task == 0:
-                project_task_obj.write(cr, uid, started_task.id, {'state': 'open'})
+                project_task_obj.write(cr, uid, started_task.id, {'state': 'open'}, context)
 
             if wizard.task_to_start.id:
                 start_id = wizard.task_to_start.id
                 if wizard.task_to_start.state == 'draft':
                     project_task_obj.do_open(cr, uid, start_id, context)
-                project_task_obj.write(cr, uid, start_id, {'state': 'working'})
-                user_task_obj.write(cr, uid, user_task.id, {'work_start': end_datetime, 'started_task': start_id})
+                project_task_obj.write(cr, uid, start_id, {'state': 'working'}, context)
+                user_task_obj.write(cr, uid, user_task.id, {'work_start': end_datetime, 'started_task': start_id}, context)
         return {'type': 'ir.actions.act_window_close'}
