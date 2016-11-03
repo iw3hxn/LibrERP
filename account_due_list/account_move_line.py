@@ -115,11 +115,11 @@ class account_move_line(orm.Model):
         return res
 
     _columns = {
-        'invoice_origin': fields.related('invoice', 'origin', type='char', string='Source Doc', store=False),
-        'invoice_date': fields.related('invoice', 'date_invoice', type='date', string='Invoice Date', store=False),
+        'invoice_origin': fields.related('stored_invoice_id', 'origin', type='char', string='Source Doc', store=False),
+        'invoice_date': fields.related('stored_invoice_id', 'date_invoice', type='date', string='Invoice Date', store=False),
         'partner_ref': fields.related('partner_id', 'ref', type='char', string='Partner Ref', store=False),
-        'payment_term_id': fields.related('invoice', 'payment_term', type='many2one', string='Payment Term', store=False, relation="account.payment.term"),
-        'payment_term_type': fields.related('invoice', 'payment_term', 'type', type="selection", selection=PAYMENT_TERM_TYPE_SELECTION, string="Payment Type", store=False),
+        'payment_term_id': fields.related('stored_invoice_id', 'payment_term', type='many2one', string='Payment Term', store=False, relation="account.payment.term"),
+        'payment_term_type': fields.related('stored_invoice_id', 'payment_term', 'type', type="selection", selection=PAYMENT_TERM_TYPE_SELECTION, string="Payment Type", store=False),
         'bank_id': fields.function(_get_bank, method=True, string="Bank", type="many2one", relation="res.partner.bank",
                                    store=False),
         'stored_invoice_id': fields.function(_get_invoice, method=True, string="Invoice", type="many2one", relation="account.invoice",
