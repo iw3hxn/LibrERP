@@ -85,6 +85,7 @@
                <field name="stored_invoice_id"/>
                <field name="invoice_origin" />
                <field name="partner_id"/>
+               <newline/>
                <field name="payment_term_type" />
                <field name="bank_id" domain="[('state', '=', 'iban')]" context="{'only_iban': True}"/>
                <field name="account_id" />
