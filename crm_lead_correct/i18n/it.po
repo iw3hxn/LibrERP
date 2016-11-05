@@ -410,3 +410,8 @@ msgstr "Storico Meeting"
 #: field:crm.lead,last_meeting_date:0
 msgid "Last Meeting Date"
 msgstr "Ultimo Appuntamento"
+
+#. module: crm
+#: view:crm.lead:0
+msgid "Meeting History"
+msgstr "Storico Meeting"
