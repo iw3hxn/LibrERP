@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_picking_in_form_add_barcode" model="ir.ui.view">
+            <field name="name">stock.picking.in.add.barcode</field>
+            <field name="model">stock.picking</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_picking_in_form"/>
+            <field name="arch" type="xml">
+                <field name="move_lines" position="before">
+                    <field name="product_barcode" placeholder="Product code for auto insert line" colspan="2" on_change="onchange_product_barcode(product_barcode, address_id, type, stock_journal_id, move_lines, context)"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_picking_out_form_add_barcode" model="ir.ui.view">
+            <field name="name">stock.picking.out.add.barcode</field>
+            <field name="model">stock.picking</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+            <field name="arch" type="xml">
+                <field name="move_lines" position="before">
+                    <field name="product_barcode" placeholder="Product code for auto insert line" colspan="2"
+                           on_change="onchange_product_barcode(product_barcode, address_id, type, stock_journal_id, move_lines, context)"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

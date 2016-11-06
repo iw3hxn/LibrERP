@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_stock_partial_picking_form_add_barcode" model="ir.ui.view">
+            <field name="name">stock.partial.picking.add.barcode</field>
+            <field name="model">stock.partial.picking</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.stock_partial_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="move_ids" position="before">
+                    <field name="qty_barcode" placeholder="Product quantity" string="Barcode" />
+                    <field name="product_barcode" placeholder="Product code for auto insert line" nolabel="1"
+                           on_change="onchange_product_barcode(qty_barcode, product_barcode, move_ids, context)"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
