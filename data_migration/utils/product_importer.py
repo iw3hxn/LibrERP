@@ -197,12 +197,11 @@ class ImportFile(threading.Thread, Utils):
                 self.error.append(error)
                 return False
             else:
-                #error = "Row {0}: Category '{1}' is missing in database".format(self.processed_lines, name)
-                #_logger.error(error)
-                #self.error.append(error)
-                #return False
-
-                category_id = category_obj.create(cr, uid, {'name': name, 'parent_id': parent_id}, context=self.context)
+                # error = "Row {0}: Category '{1}' is missing in database".format(self.processed_lines, name)
+                # _logger.error(error)
+                # self.error.append(error)
+                # return False
+                category_id = category_obj.create(cr, uid, {'name': name.strip(), 'parent_id': parent_id}, context=self.context)
                 
                 if categories:
                     return self.get_category(cr, uid, categories, category_id)
