@@ -34,7 +34,8 @@ class account_invoice_line(orm.Model):
     def get_precision_tax():
         def change_digit_tax(cr):
             res = pooler.get_pool(cr.dbname).get('decimal.precision').precision_get(cr, 1, 'Account')
-            return (17, res+3)
+            return (17, res + 3)
+
         return change_digit_tax
 
     _columns = {
@@ -56,15 +57,16 @@ class account_invoice_line(orm.Model):
     def onchange_account_id(self, cr, uid, ids, product_id, partner_id, inv_type, fposition_id, account_id):
         if not account_id:
             return {}
+        context = self.pool['res.users'].context_get(cr, uid)
         unique_tax_ids = []
-        fpos = fposition_id and self.pool.get('account.fiscal.position').browse(cr, uid, fposition_id) or False
-        account = self.pool.get('account.account').browse(cr, uid, account_id)
+        fpos = fposition_id and self.pool['account.fiscal.position'].browse(cr, uid, fposition_id, context) or False
+        account = self.pool['account.account'].browse(cr, uid, account_id, context)
         if not product_id:
             taxes = account.tax_ids
             # se non trovo le tasse nel conto esco
             if not taxes:
                 return {'value': {}}
-            unique_tax_ids = self.pool.get('account.fiscal.position').map_tax(cr, uid, fpos, taxes)
+            unique_tax_ids = self.pool['account.fiscal.position'].map_tax(cr, uid, fpos, taxes)
         else:
             # force user choosen account in context to allow product_id_change()
             # to fallback to the this accounts in case product has no taxes defined.
@@ -92,8 +94,9 @@ class account_invoice_line(orm.Model):
                     taxes = self.pool['product.product'].default_get(cr, uid, ['taxes_id']).get('taxes_id', False)
                     if taxes:
                         taxes = self.pool['account.tax'].browse(cr, uid, taxes, context)
-                    account_id = self.pool['product.product'].default_get(cr, uid, ['property_account_income'])['property_account_income'] or \
-                                 self.pool['product.category'].default_get(cr, uid, ['property_account_income_categ'])['property_account_income_categ']
+                    account_id = self.pool['product.product'].default_get(cr, uid, ['property_account_income'])[
+                                     'property_account_income'] or self.pool['product.category'].default_get(cr, uid, ['property_account_income_categ'])[
+                                     'property_account_income_categ']
 
                     if context.get('fiscal_position', False):
                         fpos = fpos_obj.browse(cr, uid, context['fiscal_position'], context)
@@ -113,11 +116,13 @@ class account_invoice_line(orm.Model):
                         'account_id': account_id,
                     })
                 if context['type'] in ['in_invoice', 'in_refund']:
-                    taxes = self.pool['product.product'].default_get(cr, uid, ['supplier_taxes_id']).get('supplier_taxes_id', False)
+                    taxes = self.pool['product.product'].default_get(cr, uid, ['supplier_taxes_id']).get(
+                        'supplier_taxes_id', False)
                     if taxes:
                         taxes = self.pool['account.tax'].browse(cr, uid, taxes, context)
-                    account_id = self.pool['product.product'].default_get(cr, uid, ['property_account_expense'])['property_account_expense'] or \
-                                 self.pool['product.category'].default_get(cr, uid, ['property_account_expense_categ'])['property_account_expense_categ']
+                    account_id = self.pool['product.product'].default_get(cr, uid, ['property_account_expense'])[
+                                     'property_account_expense'] or self.pool['product.category'].default_get(cr, uid, ['property_account_expense_categ'])[
+                                     'property_account_expense_categ']
 
                     if context.get('fiscal_position', False):
                         fpos = fpos_obj.browse(cr, uid, context['fiscal_position'], context)
