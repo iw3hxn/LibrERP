@@ -238,9 +238,8 @@ class HrAttendance(orm.Model):
             context.get("tz", "UTC") if context else "UTC")
         str_now = datetime.strftime(datetime.now(),
                                     DEFAULT_SERVER_DATETIME_FORMAT)
-        for attendance_id in ids:
+        for attendance in self.browse(cr, uid, ids, context=context):
             duration = 0.0
-            attendance = self.browse(cr, uid, attendance_id, context=context)
             res[attendance.id] = {}
             # 2012.10.16 LF FIX : Attendance in context timezone
             attendance_start = datetime.strptime(
@@ -257,13 +256,19 @@ class HrAttendance(orm.Model):
                 if next_attendance_ids:
                     next_attendance = self.browse(
                         cr, uid, next_attendance_ids[0], context=context)
-                    if next_attendance.action == 'sign_in':
-                        # 2012.10.16 LF FIX : Attendance in context timezone
-                        raise orm.except_orm(
-                            _('Error'),
-                            _('Incongruent data: sign-in %s is followed by '
-                              'another sign-in') % attendance_start)
-                    next_attendance_date = next_attendance.name
+                    # if next_attendance.action == 'sign_in':
+                    #     # 2012.10.16 LF FIX : Attendance in context timezone
+                    #     continue
+                    #     import pdb;pdb.set_trace()
+                    #     raise orm.except_orm(
+                    #         _('Error'),
+                    #         _('Incongruent data: sign-in %s is followed by '
+                    #           'another sign-in') % attendance_start)
+
+                    if next_attendance.action != 'sign_in':
+                        next_attendance_date = next_attendance.name
+                    else:
+                        next_attendance_date = attendance.name
                 # 2012.10.16 LF FIX : Attendance in context timezone
                 attendance_stop = datetime.strptime(
                     next_attendance_date,

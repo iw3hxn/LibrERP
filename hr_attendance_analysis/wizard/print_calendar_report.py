@@ -80,9 +80,9 @@ class wizard_calendar_report(orm.TransientModel):
     def print_calendar(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        attendance_obj = self.pool.get('hr.attendance')
-        holidays_obj = self.pool.get('hr.holidays')
-        precision = self.pool.get('res.users').browse(cr, uid, uid, context=context).company_id.working_time_precision
+        attendance_obj = self.pool['hr.attendance']
+        holidays_obj = self.pool['hr.holidays']
+        precision = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id.working_time_precision
 
         days_by_employee = {}
 
@@ -139,8 +139,7 @@ class wizard_calendar_report(orm.TransientModel):
                     ('action', '=', 'sign_in'),
                 ], context=context)
                 # computing attendance totals
-                for attendance in attendance_obj.browse(
-                        cr, uid, attendance_ids, context=context):
+                for attendance in attendance_obj.browse(cr, uid, attendance_ids, context=context):
                     current_total_attendances = attendance_obj.time_sum(
                         current_total_attendances, attendance.duration)
                     current_total_overtime = attendance_obj.time_sum(
@@ -445,13 +444,17 @@ class wizard_calendar_report(orm.TransientModel):
                 ] = attendance_obj.float_time_convert(
                     totals_by_employee[employee_id]['total_types']
                     [overtime_type])
-        datas = {'ids': employee_ids}
-        datas['model'] = 'hr.employee'
-        datas['form'] = {}
-        datas['form']['days_by_employee'] = days_by_employee
-        datas['form']['totals_by_employee'] = totals_by_employee
-        datas['form']['max_number_of_attendances_per_day'] = \
-            max_number_of_attendances_per_day
+
+        datas = {
+            'ids': employee_ids,
+            'model': 'hr.employee',
+            'form': {
+                'days_by_employee': days_by_employee,
+                'totals_by_employee': totals_by_employee,
+                'max_number_of_attendances_per_day':  max_number_of_attendances_per_day
+            },
+        }
+
         return {
             'type': 'ir.actions.report.xml',
             'report_name': 'attendance_analysis.calendar_report',

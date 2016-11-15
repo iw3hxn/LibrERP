@@ -43,7 +43,8 @@ Several analysis settings can be configured, like:
         'hr_attendance',
         'hr_contract',
         'hr_holidays',
-        'report_webkit'
+        'report_webkit',
+        'hr_attendance_extended',
     ],
     "data": [
         'company_view.xml',
