@@ -24,5 +24,3 @@ def migrate(cr, version):
     # only run at first install
     cr.execute("ALTER TABLE hr_attendance DROP duration, DROP end_datetime, DROP outside_calendar_duration, DROP inside_calendar_duration;")
 
-    import pdb;pdb.set_trace()
-
