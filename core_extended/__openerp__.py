@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.1.16.0",
+    "version": "2.1.16.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
@@ -66,9 +66,8 @@
         'base',
         'account'
     ],
-    "init_xml": [],
-    "update_xml": [
-    ],
+    "data": ['security/security.xml'],
+
     "active": False,
     "installable": True,
     'external_dependencies': {

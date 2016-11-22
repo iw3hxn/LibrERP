@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="res.groups" context="{'noadmin':True}" id="base.group_reporting">
+            <field name="category_id" ref="base.module_category_usability"/>
+            <field name="name">View Reporting</field>
+        </record>
+
+    </data>
+</openerp>
