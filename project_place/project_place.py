@@ -121,8 +121,8 @@ class res_partner_address(orm.Model):
         res = []
         for record in self.browse(cr, uid, ids, context=context):
             name = record.complete_name or record.name or ''
-            if len(name) > 45:
-                name = name[:45] + '...'
+            # if len(name) > 45:
+            #     name = name[:45] + '...'
             res.append((record.id, name))
         return res
     
