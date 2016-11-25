@@ -85,9 +85,9 @@ class ir_sequence(orm.Model):
             recovery_id = recovery_ids[0]
             sequence = recovery_obj.browse(cr, uid, recovery_id, context).sequence
             recovery_obj.write(cr, uid, recovery_ids, {'active': False}, context)
-            return sequence
         else:
-            return super(ir_sequence, self).next_by_id(cr, uid, sequence_id, context)
+            sequence = super(ir_sequence, self).next_by_id(cr, uid, sequence_id, context)
+        return sequence
 
     def next_by_code(self, cr, uid, sequence_code, context=None):
         # import pdb; pdb.set_trace()
@@ -98,6 +98,6 @@ class ir_sequence(orm.Model):
             recovery_id = recovery_ids[0]
             sequence = recovery_obj.browse(cr, uid, recovery_id, context).sequence
             recovery_obj.write(cr, uid, recovery_id, {'active': False}, context)
-            return sequence
         else:
-            return super(ir_sequence, self).next_by_code(cr, uid, sequence_code, context)
+            sequence = super(ir_sequence, self).next_by_code(cr, uid, sequence_code, context)
+        return sequence
