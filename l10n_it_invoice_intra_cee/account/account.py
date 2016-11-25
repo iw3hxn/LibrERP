@@ -225,6 +225,8 @@ class account_invoice(orm.Model):
             'account_id': prop_ar_id,
             'journal_id': fiscal_position.journal_auto_invoice_id.id,
             'date_invoice': invoice.registration_date,
+            'payment_term': '',
+            'date_due': invoice.registration_date,
         })
         new_line = []
         tax_relation = self._get_tax_relation(cr, uid, invoice_id, context)
@@ -468,3 +470,9 @@ class account_invoice(orm.Model):
                 context.update({'amount_tax': amount_tax, 'reverse_charge': True})
         super(account_invoice, self).action_move_create(cr, uid, ids, context=context)
         return True
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        if default is None:
+            default = {}
+        default.update({'transfer_entry_id': '', 'auto_invoice_id': ''})
+        return super(account_invoice, self).copy(cr, uid, id, default, context)
