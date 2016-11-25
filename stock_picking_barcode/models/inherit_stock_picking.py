@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2012 Pexego Sistemas Informáticos. All Rights Reserved
-#    $Alejandro Núñez Liz$
-#    $Omar Castiñeira Saavedra$
-#
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by

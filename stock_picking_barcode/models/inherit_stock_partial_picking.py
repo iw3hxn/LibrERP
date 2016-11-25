@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2012 Pexego Sistemas Informáticos. All Rights Reserved
-#    $Alejandro Núñez Liz$
-#    $Omar Castiñeira Saavedra$
-#
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,7 +19,6 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from tools import ustr
 from tools.translate import _
 
 
@@ -36,9 +31,13 @@ class stock_partial_picking(orm.Model):
         'product_barcode': fields.char('Barcode'),
     }
 
+    _defaults = {
+        'qty_barcode': 1
+    }
+
     def onchange_product_barcode(self, cr, uid, ids, qty_barcode, product_barcode, move_ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-
+        qty_barcode = qty_barcode or 1
         warning = {}
         partial_picking_line_obj = self.pool['stock.partial.picking.line']
         product_obj = self.pool['product.product']
@@ -56,7 +55,7 @@ class stock_partial_picking(orm.Model):
                     # (0, 0,  { values })    link to a new record that needs to be created with the given values dictionary
                     # (1, ID, { values })    update the linked record with id = ID (write *values* on it)
                     if 'product_id' in line[2] and line[2]['quantity'] == product_id:
-                        quantity = line[2]['quantity'] + 1
+                        quantity = line[2]['quantity'] + qty_barcode
                         line[2].update({'product_id': product_id,
                                         'quantity': quantity})
                         find_line = True
@@ -65,7 +64,7 @@ class stock_partial_picking(orm.Model):
                     purchase_order_line = partial_picking_line_obj.browse(cr, uid, line[1], context)
                     if purchase_order_line.product_id.id == product_id:
                         line[0] = 1  # update
-                        line[2] = {'quantity': purchase_order_line.quantity + 1,
+                        line[2] = {'quantity': purchase_order_line.quantity + qty_barcode,
                                    'product_id': product_id}
                         # (1, ID, { values })    update the linked record with id = ID (write *values* on it)
                         find_line = True
