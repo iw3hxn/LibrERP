@@ -5,8 +5,7 @@
 "unlink_project","project.project","project.model_project_project","base.group_sale_salesman",1,1,1,1
 "create_project_all_lead","project.project","project.model_project_project","base.group_sale_salesman_all_leads",1,1,1,0
 "unlink_project_all_lead","project.project","project.model_project_project","base.group_sale_salesman_all_leads",1,1,1,1
-"create_task","project.task","project.model_project_task","base.group_sale_salesman",1,1,1,0
-"unlink_task","project.task","project.model_project_task","base.group_sale_salesman",1,1,1,1
+"project.access_project_task_sale_user","project.task","project.model_project_task","base.group_sale_salesman",1,1,1,1
 "create_task_all_lead","project.task","project.model_project_task","base.group_sale_salesman_all_leads",1,1,1,0
 "unlink_task_all_lead","project.task","project.model_project_task","base.group_sale_salesman_all_leads",1,1,1,1
 "create_task_type","project.task.type","project.model_project_task_type","base.group_sale_salesman",1,1,1,0
