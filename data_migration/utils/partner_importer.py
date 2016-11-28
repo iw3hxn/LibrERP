@@ -274,11 +274,13 @@ class ImportFile(threading.Thread, Utils):
 
             if city_ids:
                 city_data = self.city_obj.browse(cr, uid, city_ids[0], self.context)
-                vals_address['city'] = city_data.name
-                vals_address['zip'] = city_data.zip
-                vals_address['province'] = city_data.province_id.id
-                vals_address['region'] = city_data.province_id.region.id
-                vals_address['country_id'] = city_data.province_id.region.country_id.id
+                vals_address.update({
+                    'city': city_data.name,
+                    'zip': city_data.zip,
+                    'province': city_data.province_id and city_data.province_id.id or False,
+                    'region': city_data.province_id and city_data.province_id.region and city_data.province_id.region.id or False,
+                    'country_id': city_data.province_id and city_data.province_id.region and city_data.province_id.region.country_id and city_data.province_id.region.country_id.id or False,
+                })
 
         if not vals_address.get('province'):
             if hasattr(record, 'province_' + address_type):
