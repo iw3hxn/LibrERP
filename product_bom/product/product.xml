@@ -88,9 +88,11 @@
 
                 <field name="virtual_available" position="attributes">
                     <attribute name="groups">product_bom.group_view_warehouse</attribute>
+                    <attribute name="sum">Total Virtual</attribute>
                 </field>
                 <field name="qty_available" position="attributes">
                     <attribute name="groups">product_bom.group_view_warehouse</attribute>
+                    <attribute name="sum">Total Available</attribute>
                 </field>
                 <field name="standard_price" position="replace">
                     <field name="cost_price" groups="product_bom.group_cost_price"/>

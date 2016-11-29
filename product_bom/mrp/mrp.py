@@ -52,6 +52,8 @@ class mrp_bom(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         boms = self.browse(cr, uid, ids, context)
         for product_old_id in [bom.product_id.id for bom in boms]:
             if vals.get('product_id', False) and not product_old_id == vals['product_id']:
