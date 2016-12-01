@@ -72,6 +72,9 @@
                 <filter name="open" position="after">
                     <filter name="working" string="Working" domain="[('state','=','working')]" help="Tasks in state working" icon="terp-camera_test"/>
                 </filter>
+                <filter string="Pending" position="after">
+                    <filter name="done" string="Done" domain="[('state','=','done')]" help="Tasks done" icon="terp-dialog-close"/>
+                </filter>
                 <field name="project_id" position="replace">
                     <field name="project_id" context="{'project_id':self}" domain="[('state','!=','pending')]" />
                 </field>
