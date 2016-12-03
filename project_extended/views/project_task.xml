@@ -89,11 +89,10 @@
                 <field name="project_id" position="attributes">
                     <attribute name="groups">project.group_project_manager</attribute>
                 </field>
-                <field name="priority" position="attributes">
-                    <attribute name="groups">project.group_project_manager</attribute>
+                <field name="priority" position="replace">
                 </field>
                 <field name="date_deadline" position="after">
-                    <field name="priority" attrs="{'readonly':[('state','in',['done', 'cancelled'])]}"/>
+                    <field name="priority" attrs="{'readonly':[('state','not in',['draft',])]}" groups="project.group_project_manager"/>
                 </field>
             </field>
         </record>
