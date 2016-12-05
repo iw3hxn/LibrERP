@@ -225,7 +225,6 @@ class account_invoice(orm.Model):
             'account_id': prop_ar_id,
             'journal_id': fiscal_position.journal_auto_invoice_id.id,
             'date_invoice': invoice.registration_date,
-            'payment_term': '',
             'date_due': invoice.registration_date,
         })
         new_line = []
