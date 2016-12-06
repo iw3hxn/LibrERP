@@ -31,7 +31,7 @@ class purchase_order(orm.Model):
 
 class sale_order(orm.Model):
     _inherit = "sale.order"
-    _order = 'name desc, id desc'
+    _order = 'date_order desc, name desc'
 
 
 class stock_picking(orm.Model):
