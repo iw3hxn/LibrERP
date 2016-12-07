@@ -30,6 +30,13 @@ class stock_picking(orm.Model):
     def _invoice_hook(self, cr, uid, picking, invoice_id):
         '''Call after the creation of the invoice'''
         res = super(stock_picking, self)._invoice_hook(cr, uid, picking, invoice_id)
+        invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id)
+        if not invoice.fiscal_position:
+            if invoice.partner_id.property_account_position:
+                invoice.write({'fiscal_position': invoice.partner_id.property_account_position.id})
+        if not invoice.payment_term:
+            if invoice.partner_id.property_payment_term:
+                invoice.write({'payment_term': invoice.partner_id.property_payment_term.id})
         if picking.sale_id:
             for invoice in picking.sale_id.invoice_ids:
                 if invoice.advance_order_id:
