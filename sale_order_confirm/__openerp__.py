@@ -29,7 +29,7 @@
 
 {
     "name": "Extend sale_order",
-    "version": "3.28.52.59",
+    "version": "3.28.52.60",
     "category": "Sales Management",
     "description": """This Module, provided user's wizard to confirm/modify sale order.
     It also increases usability on sale order using credit limit amd default payment term
@@ -56,6 +56,7 @@
     ],
     "data": [
         'security/security.xml',
+        'security/ir.model.access.csv',
         'wizard/confirmation_view.xml',
         'wizard/add_order_version_view.xml',
         'wizard/sale_make_invoice_advance.xml',
