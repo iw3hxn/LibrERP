@@ -303,6 +303,7 @@ openerp.web.page = function (openerp) {
         'integer': 'openerp.web.page.FieldCharReadonly',
         'float_time': 'openerp.web.page.FieldCharReadonly',
         'binary': 'openerp.web.page.FieldBinaryFileReadonly',
-        'image': 'openerp.web.page.FieldBinaryImageReaonly'
+        'image': 'openerp.web.page.FieldBinaryImageReaonly',
+        'screen_draw': 'openerp.web.page.FieldBinaryImageReaonly'
     });
 };

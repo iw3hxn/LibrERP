@@ -4201,6 +4201,7 @@ openerp.web.form.widgets = new openerp.web.Registry({
     'float_time': 'openerp.web.form.FieldFloat',
     'progressbar': 'openerp.web.form.FieldProgressBar',
     'image': 'openerp.web.form.FieldBinaryImage',
+    'screen_draw': 'openerp.web.form.FieldBinaryImage',
     'binary': 'openerp.web.form.FieldBinaryFile',
     'statusbar': 'openerp.web.form.FieldStatus',
     'html': 'openerp.web.form.WidgetHtml'
