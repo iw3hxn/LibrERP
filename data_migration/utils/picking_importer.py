@@ -291,7 +291,7 @@ class ImportFile(threading.Thread, Utils):
                 if product_ids:
                     product_id = product_ids[0]
                     self.cache_product[product] = product_id
-                    self.cache_uom_product[product_id] = self.product_obj.read(cr, uid, product_id, ['uom_id'], context=self.context)['uom_id'][0]
+                    self.cache_uom_product[product_id] = self.product_obj.browse(cr, uid, product_id, self.context).uom_id.id
                 else:
                     error = u'Row {row}: Product "{product}" not Found'.format(row=self.processed_lines, product=product)
                     _logger.error(error)
