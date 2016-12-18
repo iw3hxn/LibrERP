@@ -8,7 +8,7 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Journal Items">
-                    <group>
+
                         <filter icon="terp-document-new" string="Unbalanced" domain="[('state','=','draft')]"
                                 help="Unbalanced Journal Items"/>
                         <separator orientation="vertical"/>
@@ -26,7 +26,7 @@
                                 domain="[('reconcile_id','=',False), ('account_id.reconcile','=',True)]"
                                 help="Unreconciled Journal Items"
                                 name="unreconciled"/>
-                        <separator orientation="vertical"/>
+                        <newline/>
                         <field name="move_id" string="Number (Move)"/>
                         <field name="date"/>
                         <field name="account_id"/>
@@ -35,14 +35,14 @@
                                     context="{'next_partner_only': 1}" icon="terp-gtk-jump-to-ltr"
                                     domain="[('account_id.reconcile','=',True),('reconcile_id','=',False)]"/>
                         </field>
-                    </group>
+
 
                     <newline/>
 
-                    <group>
+
                         <field name="journal_id" widget="selection" context="{'journal_id':self}"/>
                         <field name="period_id" context="{'period_id':self}"/>
-                    </group>
+
                     <newline/>
                     <group expand="0" string="Group By...">
                         <filter string="Move" icon="terp-partner" domain="[]" context="{'group_by':'move_id'}"/>

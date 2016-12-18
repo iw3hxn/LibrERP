@@ -44,7 +44,17 @@ class account_invoice(orm.Model):
     #             result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)])
     #     return result
 
+    def name_get(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if not ids:
+            return []
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        return [(x['id'], str(x.number or x.name)) for x in self.browse(cr, uid, ids, context=context)]
+
     def _get_stock_picking(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         stock_picking_obj = self.pool['stock.picking']
 
@@ -81,12 +91,12 @@ class account_invoice(orm.Model):
     }
     
     def copy(self, cr, uid, order_id, defaults, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         defaults['user_id'] = uid
         return super(account_invoice, self).copy(cr, uid, order_id, defaults, context)
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.type == 'out_invoice' and invoice.fiscal_position and invoice.fiscal_position.sale_journal_id and invoice.fiscal_position.sale_journal_id != invoice.journal_id:
                 raise orm.except_orm(_('Fattura Cliente'),
@@ -96,15 +106,15 @@ class account_invoice(orm.Model):
         return True
 
     def invoice_cancel_check(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         return True
 
     def invoice_proforma_check(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         return True
 
     def onchange_fiscal_position(self, cr, uid, ids, journal_id, fiscal_position, ttype, context=None):
-
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not fiscal_position:
             return False
 
@@ -157,8 +167,7 @@ class account_invoice(orm.Model):
         return {'value': {'journal_id': journal_id}, 'warning': warning}
 
     def create(self, cr, uid, vals, context=None):
-        if not context:
-            context = {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # adaptative function: the system learn
         invoice_id = super(account_invoice, self).create(cr, uid, vals, context=context)
         # create function return only 1 id
@@ -178,8 +187,7 @@ class account_invoice(orm.Model):
         return invoice_id
 
     def write(self, cr, uid, ids, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         if not ids:
             return True
@@ -256,6 +264,7 @@ class account_invoice(orm.Model):
         return line
 
     def unlink(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
 
