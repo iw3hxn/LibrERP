@@ -5777,7 +5777,7 @@ msgstr "Importo fissato"
 #. module: account
 #: view:account.subscription:0
 msgid "Valid Up to"
-msgstr "Vaalido fino a"
+msgstr "Valido fino a"
 
 #. module: account
 #: view:account.journal:0
