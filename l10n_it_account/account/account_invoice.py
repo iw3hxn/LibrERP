@@ -344,8 +344,8 @@ class account_invoice(orm.Model):
 
         if isinstance(ids, (int, long)):
             ids = [ids]
+        if 'internal_number' in vals.keys():
 
-        if 'internal_number' in vals.keys() and vals['internal_number']:
             if not vals['internal_number'] or vals['internal_number'].replace(' ', '') == '':
                 if not self.pool['res.groups'].user_in_group(cr, uid, uid, 'account.group_number_account_invoice', context):
                     raise orm.except_orm(_("You don't have Permission!"), _("You must be on group 'Cancel Internal Number'"))
