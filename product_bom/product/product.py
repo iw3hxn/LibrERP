@@ -248,7 +248,7 @@ class product_product(orm.Model):
                 product_qty += produced_qty
         return product_qty
 
-    def _product_available(self, cr, uid, ids, field_names=None,
+    def _product_available(self, cr, uid, ids, field_names=[],
                            arg=False, context=None):
         # We need available, virtual or immediately usable
         # quantity which is selected from company to compute Bom stock Value
