@@ -418,10 +418,10 @@ class product_product(orm.Model):
             multi='qty_available'),
     }
 
-    def copy(self, cr, uid, product_id, default=None, context=None):
+    def copy(self, cr, uid, product_id, defaults=None, context=None):
         """Copies the product and the BoM of the product"""
         context = context or self.pool['res.users'].context_get(cr, uid)
-        copy_id = super(product_product, self).copy(cr, uid, product_id, default=default, context=context)
+        copy_id = super(product_product, self).copy(cr, uid, product_id, defaults=defaults, context=context)
 
         bom_obj = self.pool['mrp.bom']
         bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
