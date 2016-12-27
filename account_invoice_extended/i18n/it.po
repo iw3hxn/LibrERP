@@ -80,3 +80,15 @@ msgstr "É cambiata la Posizione Fiscale da:\n"
 #, python-format
 msgid "Impossibile to valide invoice of {partner} because journal on invoive '{invoice_journal}' is different from journal '{fiscal_position_journal}' set on fiscal position '{invoice_fiscal_position}'"
 msgstr "Non si può validare la fattura di {partner} perchè il registro '{invoice_journal}' è differente dal registro '{fiscal_position_journal}' impostato nella posizione fiscale '{invoice_fiscal_position}'"
+
+#. module: account
+#: code:addons/account/account_move_line.py:582
+#, python-format
+msgid "Journal '{journal}' required date check, but invoice {invoice} have move not on period {period}"
+msgstr "Nel giornale '{journal}' è impostato la verifica della data nel periodo,\n ma la Registrazione Contabile della fattura {invoice} \n non è nel periodo {period}"
+
+#. module: account
+#: code:addons/account/account_move_line.py:582
+#, python-format
+msgid "Error"
+msgstr "Errore"
