@@ -20,7 +20,7 @@
 
 {
     'name': 'report_sales_team_revenue',
-    'version': '3.1.3.1',
+    'version': '3.2.4.1',
     'category': 'Accounting & Finance',
     'description': """
     Export revenue on month basis for selected Sales Team
