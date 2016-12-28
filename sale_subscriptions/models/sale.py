@@ -538,7 +538,7 @@ class sale_order(orm.Model):
                 }
                 new_order_id = self.copy(cr, uid, order.id, values)
                 
-                order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': False}, context)
+                order_obj.write(cr, uid, [order.id], {'automatically_create_new_subscription': True}, context)
                 
                 new_line_ids = line_obj.search(cr, uid, [('order_id', '=', new_order_id)], context=context)
                 new_lines = line_obj.browse(cr, uid, new_line_ids, context)
