@@ -102,7 +102,7 @@ class sale_order(orm.Model):
                         # stock_picking_obj.action_cancel(cr, uid, [pick.id])
 
             # for some reason datas_fname has .pdf.pdf extension
-            report_ids = report_xml_obj.search(cr, uid, [('model', '=', 'sale.order'), ('attachment', '!=', False)], context)
+            report_ids = report_xml_obj.search(cr, uid, [('model', '=', 'sale.order'), ('attachment', '!=', False)], context=context)
             for report in report_xml_obj.browse(cr, uid, report_ids, context):
                 if report.attachment:
                     aname = report.attachment.replace('object', 'order')
