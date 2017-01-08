@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+
+        <record id="project.action_view_task" model="ir.actions.act_window">
+            <field name="context">{"search_default_working": 1, "search_default_draft": 1, "search_default_open":1, "search_default_project_id": project_id}</field>
+        </record>
     
         <record model="ir.ui.view" id="project_task_time_control">
             <field name="name">project.task.time.control.form</field>
@@ -16,7 +20,7 @@
                     <group groups="project.group_project_manager">
                         <separator string="Other User" colspan="4"/>
                         <field name="user_is_working" invisible="True" />
-                        <field name="other_users_ids" widget="many2many_tags" nolabel="1" colspan="4"/>
+                        <field name="working_users"  nolabel="1" colspan="4"/>
                     </group>
                 </field>
             </field>
