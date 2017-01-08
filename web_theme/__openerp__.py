@@ -34,7 +34,13 @@
     'depends': ['base','web'],
     'js': ['static/src/js/theme.js'],
     'init_xml': ['theme_data.xml'],
-    'update_xml': ['company_view.xml'],
-    'images': ['images/company.png','images/schema.png'],
+    'update_xml': [
+        'company_view.xml',
+        'security/ir.model.access.csv',
+    ],
+    'images': [
+        'images/company.png',
+        'images/schema.png'
+    ],
     'installable': True,
 }
