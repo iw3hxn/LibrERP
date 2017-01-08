@@ -394,7 +394,7 @@ msgstr "Unisci con Opportunità già esistenti"
 #: code:crm_lead_correct/crm_lead_correct.py:74
 #, python-format
 msgid "Can't change stage because is connect to a Sale Order"
-msgstr "Non si può cambiare lo Stadio in quanto collegato all'Ordine di Vendita"
+msgstr "Non si può cambiare la Fase in quanto collegato all'Ordine di Vendita"
 
 #. module: crm
 #: view:crm.lead:0
