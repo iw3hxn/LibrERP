@@ -23,7 +23,7 @@
                 <xpath expr="/form/notebook/page[@string='General Informations']" position="after">
                     <page string="Order by Location, Product" position="after">
                         <field colspan="4" name="inventory_line_loc_id" nolabel="1" widget="one2many_list" readonly="1">
-                            <tree string="Products" editable="top" colors="red:product_qty_calc&lt;0 ">
+                            <tree string="Products" editable="top" colors="fuchsia:row_color=='fuchsia';grey:row_color=='grey';blue:row_color=='blue';red:row_color=='red';green:row_color=='green';orange:row_color=='orange'">
                                 <field domain="[('usage','=','internal')]" name="location_id"/>
                                 <field context="{'location':location_id, 'uom':product_uom, 'to_date':parent.date}"
                                        name="product_id"
@@ -37,6 +37,7 @@
                                         string="Split inventory lines" groups="base.group_extended"
                                         type="action" icon="terp-stock_effects-object-colorize" states="draft,confirm"/>
                                 <field name="state" invisible="True"/>
+                                <field name="row_color" invisible="True"/>
                             </tree>
                             <form string="Products ">
                                 <field domain="[('usage','=','internal')]" name="location_id"/>

@@ -22,7 +22,11 @@
 from openerp.osv import fields, orm
 import decimal_precision as dp
 import one2many_sorted
+from datetime import datetime
 import logging
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
+
 
 
 class stock_inventory(orm.Model):
@@ -51,10 +55,35 @@ class stock_inventory(orm.Model):
 
 class stock_inventory_line(orm.Model):
     _inherit = "stock.inventory.line"
-    _columns = \
-        {
-            'product_qty_calc': fields.float('Quantity Calculated', digits_compute=dp.get_precision('Product UoM'), readonly=True)
-        }
+
+    def get_color(self, cr, uid, ids, field_name, arg, context):
+        start_time = datetime.now()
+        value = {}
+        for inventory_line in self.browse(cr, uid, ids, context):
+            if inventory_line.product_qty_calc != inventory_line.product_qty:
+                value[inventory_line.id] = 'red'
+            elif inventory_line.product_qty_calc < 0:
+                value[inventory_line.id] = 'fuchsia'
+            else:
+                value[inventory_line.id] = 'black'
+
+        end_time = datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        _logger.info(u'Inventory Line get in {duration}'.format(duration=duration))
+        return value
+
+    _columns = {
+            'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True,
+                                         store=False),  # not possible to use store=true because function write value in sql
+            'product_qty_calc': fields.float('Quantity Calculated', digits_compute=dp.get_precision('Product UoM'), readonly=False)
+    }
+
+    def on_change_product_id(self, cr, uid, ids, location_id, product, uom=False, to_date=False):
+        res = super(stock_inventory_line, self).on_change_product_id(cr, uid, ids, location_id, product, uom, to_date)
+        if 'product_qty' in res.get('value', []):
+            res['value']['product_qty_calc'] = res['value']['product_qty']
+        return res
 
 
 class stock_fill_inventory(orm.TransientModel):

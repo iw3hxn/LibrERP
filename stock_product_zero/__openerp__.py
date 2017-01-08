@@ -23,7 +23,7 @@
 
 {
     'name': 'Stock suppress all zero lines',
-    'version': '2.0.1.1',
+    'version': '2.0.2.2',
     'category': 'Warehouse Management',
     'description': """
 This module will not print/display products with zero quantity values in many reports and tree lists.
