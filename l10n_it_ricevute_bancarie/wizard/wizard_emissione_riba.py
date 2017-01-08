@@ -79,8 +79,7 @@ class emissione_riba(orm.TransientModel):
         move_line_ids = move_line_obj.search(cr, uid, [('id', 'in', active_ids)], context=context)
         for move_line in move_line_obj.browse(cr, uid, move_line_ids, context=context):
             if move_line.partner_id.group_riba:
-                if not grouped_lines.get(
-                    (move_line.partner_id.id, move_line.date_maturity), False):
+                if not grouped_lines.get((move_line.partner_id.id, move_line.date_maturity), False):
                     grouped_lines[(move_line.partner_id.id, move_line.date_maturity)] = []
                 grouped_lines[(move_line.partner_id.id, move_line.date_maturity)].append(
                     move_line)
