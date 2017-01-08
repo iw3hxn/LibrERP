@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+      <record model="ir.ui.view" id="account_asset_confirm_form">
+        <field name="name">account.asset.confirm.form</field>
+        <field name="model">account.asset.confirm</field>
+        <field name="arch" type="xml">
+          <form string="Confirm or Set Draft Asset" >
+            <separator colspan="4"/>
+            <group>
+              <button string="Confirm Assets" name="confirm" type="object" />
+              <button string="Set Draft Assets" name="set_to_draft" type="object" />
+              <button string="Cancel" special="cancel"/>
+            </group>
+          </form>
+        </field>
+      </record>
+
+       <act_window name="Confirm or set draft asset"
+            res_model="account.asset.confirm"
+            src_model="account.asset.asset"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_wizard_asset_confirm"
+            view_id="account_asset_confirm_form"/>
+
+    </data>
+</openerp>
