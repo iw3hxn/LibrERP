@@ -60,3 +60,25 @@ class project_task(orm.Model):
     _columns = {
         'project_id': fields.many2one('project.project', 'Project', ondelete='set null', select="1", required=True),
     }
+
+    # def fields_get(self, cr, uid, allfields=None, context=None):
+    #     if context is None:
+    #         context = self.pool['res.users'].context_get(cr, uid, context=context)
+    #     # context.update({
+    #     #     'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'
+    #     # })
+    #     ret = super(project_task, self).fields_get(cr, uid, allfields=allfields, context=context)
+    #
+    #     group_obj = self.pool['res.groups']
+    #     is_project_user = group_obj.user_in_group(cr, uid, uid, 'project.group_project_user', context=context)
+    #     is_project_manager = group_obj.user_in_group(cr, uid, uid, 'project.group_project_manager', context=context)
+    #     if is_project_user and not is_project_manager:
+    #         if 'partner_id' in ret:
+    #             ret['partner_id']['readonly'] = 1
+    #         if 'sequence' in ret:
+    #             ret['sequence']['readonly'] = 1
+    #     if 'planned_hours' in ret:
+    #         ret['planned_hours']['readonly'] = 1
+    #     if 'remaining_hours' in ret:
+    #         ret['remaining_hours']['readonly'] = 1
+    #     return ret

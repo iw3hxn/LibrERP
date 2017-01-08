@@ -108,8 +108,7 @@ class project_project(orm.Model):
     #    return res
 
     def _total_account(self, cr, uid, ids, field_name, arg, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for project_id in self.browse(cr, uid, ids, context=context):
             res[project_id.id] = {
@@ -209,6 +208,7 @@ class project_project(orm.Model):
         return res
 
     def name_get(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not len(ids):
             return []
         res = []
@@ -221,7 +221,7 @@ class project_project(orm.Model):
         return res
 
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
-
+        context = context or self.pool['res.users'].context_get(cr, uid)
         project_selection = super(project_project, self).name_search(cr, uid, name, args, operator, context=context,
                                                                      limit=limit)
         if name:
@@ -241,6 +241,7 @@ class project_project(orm.Model):
         return sorted(project_selection, key=lambda x: x[1])
 
     def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         sale_order_obj = self.pool['sale.order']
         for project in self.browse(cr, uid, ids, context):
@@ -250,6 +251,7 @@ class project_project(orm.Model):
         return result
 
     def _get_purchase_order(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         purchase_order_obj = self.pool['purchase.order']
 
@@ -260,6 +262,7 @@ class project_project(orm.Model):
         return result
 
     def _get_planned_end_date(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for project in self.browse(cr, uid, ids, context=context):
             time_list = []
@@ -272,12 +275,14 @@ class project_project(orm.Model):
         return res
 
     def _get_project(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         for line in self.pool['project.task'].browse(cr, uid, ids, context=context):
             result[line.project_id.id] = True
         return result.keys()
 
     def _get_project_account(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         for line in self.pool['account.analytic.line'].browse(cr, uid, ids, context=context):
             if line.account_id:
@@ -288,6 +293,7 @@ class project_project(orm.Model):
         return result.keys()
 
     def _get_project_order_line(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         for line in self.pool['sale.order.line'].browse(cr, uid, ids, context=context):
             if line.order_id.project_project:
@@ -295,6 +301,7 @@ class project_project(orm.Model):
         return result.keys()
 
     def _get_project_order(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         for order in self.pool['sale.order'].browse(cr, uid, ids, context=context):
             if order.project_project:
@@ -311,11 +318,9 @@ class project_project(orm.Model):
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks", store={
             'project.task': (_get_project, ['state'], 10),
         }, ),
-        'planned_end_date': fields.function(_get_planned_end_date, type='date', string="Planned End Date", store=False
-                                            # {
-                                            #     'project.task': (_get_project, ['state', 'date_end', 'date_deadline'], 20),
-                                            # }, ),
-                                            ),
+        'planned_end_date': fields.function(_get_planned_end_date, type='date', string="Planned End Date", store={
+            'project.task': (_get_project, ['state', 'date_end', 'date_deadline'], 20),
+        }, ),
 
         # 'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
         # 'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),
