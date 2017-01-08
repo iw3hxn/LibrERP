@@ -107,6 +107,7 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
+                    <newline/>
                     <field name="client_order_ref" />
                 </field>
             </field>
