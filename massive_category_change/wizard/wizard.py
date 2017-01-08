@@ -20,22 +20,22 @@
 from osv import fields,osv
 from tools.translate import _
 
-class wzd_massive_category_change(osv.osv_memory):
 
+class wzd_massive_category_change(osv.osv_memory):
 	_name = "wzd.massive_category_change"
 
 	_columns = {
-		'name' : fields.many2one('product.category', 'Category'),
-		}
+		'name': fields.many2one('product.category', 'Category'),
+	}
 
 	def change(self, cr, uid, ids, context={}):
 		wzd = self.browse(cr, uid, ids[0], context)
-		res={}
+		res = {}
 		categ = wzd.name
 		res['categ_id'] = categ.id
-		
+
 		if categ.provision_type:
-			res['type'] = categ.provision_type	
+			res['type'] = categ.provision_type
 		if categ.procure_method:
 			res['procure_method'] = categ.procure_method
 		if categ.supply_method:
