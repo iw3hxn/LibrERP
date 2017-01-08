@@ -22,7 +22,7 @@
 
 {
     'name': 'Assets Management',
-    'version': '2.6.12.14',
+    'version': '2.8.16.17',
     'depends': [
         'report_webkit',
         'l10n_it_account',
@@ -78,6 +78,7 @@ Legal report for Italy is available.
         'reports.xml',
         'report/account_asset_report_view.xml',
         'report/print_asset_report.xml',
+        'wizard/wizard_asset_confirm.xml',
     ],
     'auto_install': False,
     'installable': True,

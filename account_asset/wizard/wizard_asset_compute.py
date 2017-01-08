@@ -27,7 +27,11 @@ class asset_depreciation_confirmation_wizard(orm.TransientModel):
     _name = "asset.depreciation.confirmation.wizard"
     _description = "asset.depreciation.confirmation.wizard"
     _columns = {
-       'period_id': fields.many2one('account.period', 'Period', required=True, help="Choose the period for which you want to automatically post the depreciation lines of running assets"),
+       'period_id': fields.many2one('account.period', 'Period', required=False, help="Choose the period for which you want to automatically post the depreciation lines of running assets"),
+       'set_init': fields.boolean('Set init', help='Set depreciation as init for current fiscal year.'),
+       'fy_id': fields.many2one('account.fiscalyear', 'Fiscal Year',
+        domain="[('state', '=', 'draft')]",
+        required=True, help='Calculate depreciation table for asset acquired in this Fiscal Year'),
     }
 
     def _get_period(self, cr, uid, context=None):
@@ -36,9 +40,16 @@ class asset_depreciation_confirmation_wizard(orm.TransientModel):
         if periods:
             return periods[0]
         return False
- 
+
+    def _get_default_fiscalyear(self, cr, uid, context=None):
+        fiscalyear_id = self.pool['account.fiscalyear'].find(cr, uid, exception=False, context=context)
+        if fiscalyear_id:
+            return fiscalyear_id
+        return False
+
     _defaults = {
         'period_id': _get_period,
+        'fy_id': _get_default_fiscalyear,
     }
 
     def asset_compute(self, cr, uid, ids, context):
@@ -53,9 +64,46 @@ class asset_depreciation_confirmation_wizard(orm.TransientModel):
             'view_mode': 'tree,form',
             'res_model': 'account.move',
             'view_id': False,
-            'domain': "[('id','in',[" + ','.join(map(str, created_move_ids)) + "])]",
+            'domain': "[('id','in',["+','.join(map(str,created_move_ids))+"])]",
             'type': 'ir.actions.act_window',
         }
 
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+    def asset_set_init(self, cr, uid, ids, context):
+        ass_obj = self.pool.get('account.asset.asset')
+        data = self.browse(cr, uid, ids, context=context)
+        fy = data[0].fy_id
+        asset_ids = ass_obj.search(cr, uid, [
+            ('state', 'in', ['open', 'draft']),
+            ('type', '=', 'normal'),
+            ('date_start', '>=', fy.date_start),
+            ('date_start', '<=', fy.date_stop)
+            ], context=context)
+        asset_board_obj = self.pool['account.asset.depreciation.line']
+        set_init = data[0].set_init
+        init_move_ids = []
+        for asset in ass_obj.browse(cr, uid, asset_ids, context):
+            asset.compute_depreciation_board()
+            if not asset_board_obj.search(cr, uid, [
+                    ('asset_id', '=', asset.id),
+                    ('move_id', '!=', False),
+                    ('type', '=', 'depreciate')]):
+                asset_board_moves = asset_board_obj.search(cr, uid, [
+                    ('asset_id', '=', asset.id),
+                    ('line_date', '>=', fy.date_start),
+                    ('line_date', '<=', fy.date_stop),
+                    ('move_id', '=', False)])
+                for asset_board in asset_board_obj.browse(
+                        cr, uid, asset_board_moves, context):
+                    if set_init:
+                        asset_board.write({'init_entry': True})
+                    init_move_ids.append(asset_board.id)
+        return {
+            'name': _('Asset Moves Confirmed as Init entry'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'account.asset.depreciation.line',
+            'view_id': False,
+            'domain': "[('id','in',[" + ','.join(
+                map(str, init_move_ids)) + "])]",
+            'type': 'ir.actions.act_window',
+        }

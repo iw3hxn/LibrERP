@@ -46,19 +46,33 @@ class account_asset_remove(orm.TransientModel):
         wiz_data = self.browse(cr, uid, ids[0], context=context)
         asset_id = context['active_id']
         asset = asset_obj.browse(cr, uid, asset_id, context=context)
+        if asset.state in ['close', 'removed']:
+            raise orm.except_orm(_('Error!'),
+                _("The asset is already removed or closed."))
+        if not (asset.category_id.account_min_value_id.id or asset.category_id.account_plus_value_id.id):
+            raise orm.except_orm(_('Error!'),
+                _("Missing plus-value or minus-value account."))
         ctx = dict(context, company_id=asset.company_id.id)
         period_id = wiz_data.period_id and wiz_data.period_id.id or False
         if not period_id:
             ctx.update(account_period_prefer_normal=True)
             period_ids = period_obj.find(cr, uid, wiz_data.date_remove, context=ctx)
             period_id = period_ids[0]
-        dl_ids = asset_line_obj.search(cr, uid,
-            [('asset_id', '=', asset.id), ('type', '=', 'depreciate')],
+        dl_draft_ids = asset_line_obj.search(cr, uid,
+            [('asset_id', '=', asset.id), ('type', '=', 'depreciate'), ('line_date', '<=', wiz_data.date_remove), ('move_id', '=', False), ('init_entry', '=', False)],
             order='line_date desc')
-        last_date = asset_line_obj.browse(cr, uid, dl_ids[0]).line_date
-        if wiz_data.date_remove < last_date:
+        if dl_draft_ids:
             raise orm.except_orm(_('Error!'),
-                _("The removal date must be after the last depreciation date."))
+                _("Post depreciation line before removal date first!"))
+        dl_ids = asset_line_obj.search(cr, uid,
+            [('asset_id', '=', asset.id), ('type', '=', 'depreciate'), ('line_date', '>', wiz_data.date_remove)],
+            order='line_date desc')
+        #last_date = asset_line_obj.browse(cr, uid, dl_ids[0]).line_date
+        #if wiz_data.date_remove < last_date:
+        for asset_line in asset_line_obj.browse(cr, uid, dl_ids):
+            asset_line.unlink()
+            #raise orm.except_orm(_('Error!'),
+            #    _("The removal date must be after the last depreciation date."))
 
         line_name = asset_obj._get_depreciation_entry_name(cr, uid, asset, len(dl_ids) + 1, context=context)
         journal_id = asset.category_id.journal_id.id
@@ -79,26 +93,28 @@ class account_asset_remove(orm.TransientModel):
             'ref': line_name,
             'move_id': move_id,
             'account_id': asset.category_id.account_depreciation_id.id,
-            'debit': asset.asset_value > 0 and asset.asset_value or 0.0,
-            'credit': asset.asset_value < 0 and -asset.asset_value or 0.0,
+            'debit': asset.value_depreciated > 0 and asset.value_depreciated or 0.0,
+            'credit': asset.value_depreciated < 0 and -asset.value_depreciated or 0.0,
             'period_id': period_id,
             'journal_id': journal_id,
             'partner_id': partner_id,
             'date': wiz_data.date_remove,
-            'asset_id': asset.id
+            #'asset_id': asset.id
         }, context={'allow_asset': True})
+        diff = (asset.value_depreciated - asset.asset_value) or 0.0
+
         move_line_obj.create(cr, uid, {
             'name': asset.name,
-            'ref':line_name,
+            'ref': line_name,
             'move_id': move_id,
             'account_id': asset.category_id.account_asset_id.id,
-            'debit': asset.asset_value < 0 and -asset.asset_value or 0.0,
-            'credit': asset.asset_value > 0 and asset.asset_value or 0.0,
+            'debit': asset.value_depreciated < 0 and -asset.value_depreciated or 0.0,
+            'credit': asset.value_depreciated > 0 and asset.value_depreciated or 0.0,
             'period_id': period_id,
             'journal_id': journal_id,
             'partner_id': partner_id,
             'date': wiz_data.date_remove,
-            'asset_id': asset.id
+            #'asset_id': asset.id
         }, context={'allow_asset': True})
 
         # create asset line
@@ -111,6 +127,46 @@ class account_asset_remove(orm.TransientModel):
             'type': 'remove',
         }
         asset_line_id = asset_line_obj.create(cr, uid, asset_line_vals, context=context)
+
+        if diff != 0.0:
+            move_id_depr = move_obj.create(cr, uid, move_vals, context=context)
+            move_line_obj.create(cr, uid, {
+                'name': asset.name,
+                'ref': line_name,
+                'move_id': move_id_depr,
+                'account_id': asset.category_id.account_asset_id.id,
+                'debit': diff > 0 and diff or 0.0,
+                'credit': diff < 0 and -diff or 0.0,
+                'period_id': period_id,
+                'journal_id': journal_id,
+                'partner_id': partner_id,
+                'date': wiz_data.date_remove,
+                #'asset_id': asset.id
+            }, context={'allow_asset': True})
+            move_line_obj.create(cr, uid, {
+                'name': asset.name,
+                'ref': line_name,
+                'move_id': move_id_depr,
+                'account_id': diff > 0 and asset.category_id.account_plus_value_id.id or asset.category_id.account_min_value_id.id,
+                'debit': diff < 0 and -diff or 0.0,
+                'credit': diff > 0 and diff or 0.0,
+                'period_id': period_id,
+                'journal_id': journal_id,
+                'partner_id': partner_id,
+                'date': wiz_data.date_remove,
+                #'asset_id': asset.id
+            }, context={'allow_asset': True})
+            asset_line_vals = {
+                'amount': diff < 0 and -diff or -diff,
+                'asset_id': asset_id,
+                'name': line_name,
+                'line_date': wiz_data.date_remove,
+                'move_id': move_id_depr,
+                'type': 'depreciate',
+            }
+            asset_line_id = asset_line_obj.create(cr, uid, asset_line_vals,
+                                              context=context)
+
         asset.write({'state': 'removed', 'date_remove': wiz_data.date_remove})
 
         return {'type': 'ir.actions.act_window_close'}

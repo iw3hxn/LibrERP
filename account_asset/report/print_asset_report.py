@@ -36,7 +36,8 @@ class wizard_print_asset_report(orm.TransientModel):
         'date_start': fields.date('Date start asset'),
         'state': fields.selection([
             ('draft', 'Draft'),
-            ('open', 'Running'),
+            ('all', 'All (and draft if simulated)'),
+            ('open', 'Running (and draft if simulated)'),
             ('close', 'Close'),
             ('removed', 'Removed'),
             ], 'Status', required=True,
@@ -62,12 +63,17 @@ class wizard_print_asset_report(orm.TransientModel):
         wizard = self.browse(cr, uid, ids)[0]
         asset_obj = self.pool.get('account.asset.asset')
         obj_model_data = self.pool.get('ir.model.data')
+        state = [wizard.state]
+        if state[0] == 'all':
+            state = ['open', 'close', 'removed']
+        if wizard.type == 'simulated' and state[0] == 'open':
+            state.append('draft')
         asset_ids = asset_obj.search(cr, uid, [
             ('category_id', 'in', [j.id for j in wizard.category_ids]),
-            ('state', '=', wizard.state),
-            #('date_start
+            ('state', 'in', state),
+            ('date_start', '<=', wizard.fy_id.date_stop)
             #TODO other conditions
-        ], order='category_id, name')
+        ], order='category_id, date_start')
         if not asset_ids:
             self.write(cr, uid, ids, {'message':
                 _('No documents found in the current selection')})
@@ -95,6 +101,7 @@ class wizard_print_asset_report(orm.TransientModel):
         datas['type'] = wizard.type
         datas['fy_name'] = wizard.fy_id.name
         datas['fy_id'] = [wizard.fy_id.id]
+        datas['state'] = wizard.state
         res = {
             'type': 'ir.actions.report.xml',
             'datas': datas,

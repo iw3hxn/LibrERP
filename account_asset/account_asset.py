@@ -26,7 +26,6 @@ import calendar
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal, ROUND_UP
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 from openerp.osv import fields, orm
 import decimal_precision as dp
@@ -68,6 +67,12 @@ class account_asset_category(orm.Model):
         'account_analytic_id': fields.many2one('account.analytic.account', 'Analytic account'),
         'account_asset_id': fields.many2one('account.account', 'Asset Account', required=True),
         'account_depreciation_id': fields.many2one('account.account', 'Depreciation Account', required=True),
+        'account_plus_value_id': fields.many2one(
+            'account.account', 'Plus-Value Account',
+            domain=[('type', '=', 'other')]),
+        'account_min_value_id': fields.many2one(
+            'account.account', 'Min-Value Account',
+            domain=[('type', '=', 'other')]),
         'account_expense_depreciation_id': fields.many2one('account.account', 'Depr. Expense Account', required=True),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
@@ -217,9 +222,9 @@ class account_asset_asset(orm.Model):
         elif option == 'months':
             return months
         elif option == 'years':
-            fy_date_start = datetime.strptime(fy_vals['date_start'], DEFAULT_SERVER_DATE_FORMAT)
+            fy_date_start = datetime.strptime(fy_vals['date_start'], '%Y-%m-%d')
             fy_year_start = int(fy_vals['date_start'][:4])
-            fy_date_stop = datetime.strptime(fy_vals['date_stop'], DEFAULT_SERVER_DATE_FORMAT)
+            fy_date_stop = datetime.strptime(fy_vals['date_stop'], '%Y-%m-%d')
             fy_year_stop = int(fy_vals['date_stop'][:4])
             year = fy_year_start
             cnt = fy_year_stop - fy_year_start + 1
@@ -245,7 +250,7 @@ class account_asset_asset(orm.Model):
         fy_id = entry['fy_id']
         if asset.prorata:
             if firstyear:
-                depreciation_date_start = datetime.strptime(asset.date_start, DEFAULT_SERVER_DATE_FORMAT)
+                depreciation_date_start = datetime.strptime(asset.date_start, '%Y-%m-%d')
                 fy_date_stop = entry['date_stop']
                 first_fy_asset_days = (fy_date_stop - depreciation_date_start).days + 1
                 if fy_id:
@@ -267,9 +272,9 @@ class account_asset_asset(orm.Model):
         In case of 'Linear': the first month is counted as a full month if the fiscal year starts in the middle of a month.
         """
         if asset.prorata:
-            depreciation_start_date = datetime.strptime(asset.date_start, DEFAULT_SERVER_DATE_FORMAT)
+            depreciation_start_date = datetime.strptime(asset.date_start, '%Y-%m-%d')
         else:
-            fy_date_start = datetime.strptime(fy.date_start, DEFAULT_SERVER_DATE_FORMAT)
+            fy_date_start = datetime.strptime(fy.date_start, '%Y-%m-%d')
             depreciation_start_date = datetime(fy_date_start.year, fy_date_start.month, 1)
         return depreciation_start_date
 
@@ -284,7 +289,7 @@ class account_asset_asset(orm.Model):
             elif asset.method_period == 'year':
                 depreciation_stop_date = depreciation_start_date + relativedelta(years=asset.method_number, days=-1)
         elif asset.method_time == 'end':
-            depreciation_stop_date = datetime.strptime(asset.method_end, DEFAULT_SERVER_DATE_FORMAT)
+            depreciation_stop_date = datetime.strptime(asset.method_end, '%Y-%m-%d')
         elif asset.method_time == 'percent':
             if asset.method_period == 'month':
                 depreciation_stop_date = depreciation_start_date + relativedelta(
@@ -311,7 +316,7 @@ class account_asset_asset(orm.Model):
             elif asset.method_period == 'year':
                 divisor = asset.method_number
         elif asset.method_time == 'end':
-            duration = (datetime.strptime(asset.method_end, DEFAULT_SERVER_DATE_FORMAT) - datetime.strptime(asset.date_start, DEFAULT_SERVER_DATE_FORMAT)).days + 1
+            duration = (datetime.strptime(asset.method_end, '%Y-%m-%d') - datetime.strptime(asset.date_start, '%Y-%m-%d')).days + 1
             divisor = duration / 365.0
         elif asset.method_time == 'percent':
             divisor = False
@@ -327,15 +332,15 @@ class account_asset_asset(orm.Model):
             year_amount_linear = amount_to_depr * percent
 
         if asset.method == 'linear':
-            return year_amount_linear
+            return year_amount_linear, percent and percent or divisor
         year_amount_degressive = residual_amount * asset.method_progress_factor
         if asset.method == 'degressive':
-            return year_amount_degressive
+            return year_amount_degressive, divisor
         if asset.method == 'degr-linear':
             if year_amount_linear > year_amount_degressive:
-                return year_amount_linear
+                return year_amount_linear, divisor
             else:
-                return year_amount_degressive
+                return year_amount_degressive, divisor
         else:
             raise orm.except_orm(_('Programming Error!'),
                 _("Illegal value %s in asset.method.") % asset.method)
@@ -349,8 +354,8 @@ class account_asset_asset(orm.Model):
         try:
             fy_id = fy_obj.find(cr, uid, asset.date_start, context=context)
             fy = fy_obj.browse(cr, uid, fy_id)
-            fy_date_start = datetime.strptime(fy.date_start, DEFAULT_SERVER_DATE_FORMAT)
-            fy_date_stop = datetime.strptime(fy.date_stop, DEFAULT_SERVER_DATE_FORMAT)
+            fy_date_start = datetime.strptime(fy.date_start, '%Y-%m-%d')
+            fy_date_stop = datetime.strptime(fy.date_stop, '%Y-%m-%d')
         except:
             # The following logic is used when no fiscalyear is defined for the asset start date:
             # - We lookup the first fiscal year defined in the system
@@ -358,14 +363,14 @@ class account_asset_asset(orm.Model):
             cr.execute("SELECT id, date_start, date_stop "
                "FROM account_fiscalyear ORDER BY date_stop ASC LIMIT 1")
             first_fy = cr.dictfetchone()
-            first_fy_date_start = datetime.strptime(first_fy['date_start'], DEFAULT_SERVER_DATE_FORMAT)
-            asset_date_start = datetime.strptime(asset.date_start, DEFAULT_SERVER_DATE_FORMAT)
+            first_fy_date_start = datetime.strptime(first_fy['date_start'], '%Y-%m-%d')
+            asset_date_start = datetime.strptime(asset.date_start, '%Y-%m-%d')
             fy_date_start = first_fy_date_start
             while asset_date_start < fy_date_start:
                 fy_date_start = fy_date_start - relativedelta(years=1)
             fy_date_stop = fy_date_start + relativedelta(years=1, days=-1)
             fy_id = False
-            fy = dummy_fy(date_start=fy_date_start.strftime(DEFAULT_SERVER_DATE_FORMAT), date_stop=fy_date_stop.strftime(DEFAULT_SERVER_DATE_FORMAT), id=False, state='done', dummy=True)
+            fy = dummy_fy(date_start=fy_date_start.strftime('%Y-%m-%d'), date_stop=fy_date_stop.strftime('%Y-%m-%d'), id=False, state='done', dummy=True)
             init_flag = True
         lost_year = 0
         fy_half_rata = asset.first_year_half_rata
@@ -387,7 +392,7 @@ class account_asset_asset(orm.Model):
                 fy_id = False
             if fy_id:
                 fy = fy_obj.browse(cr, uid, fy_id)
-                fy_date_stop = datetime.strptime(fy.date_stop, DEFAULT_SERVER_DATE_FORMAT)
+                fy_date_stop = datetime.strptime(fy.date_stop, '%Y-%m-%d')
             else:
                 fy_date_stop = fy_date_stop + relativedelta(years=1)
 
@@ -398,7 +403,7 @@ class account_asset_asset(orm.Model):
         fy_residual_amount = residual_amount
         i_max = len(table) - 1
         for i, entry in enumerate(table):
-            year_amount = self._compute_year_amount(cr, uid, asset, amount_to_depr, fy_residual_amount, context=context)
+            year_amount, factor = self._compute_year_amount(cr, uid, asset, amount_to_depr, fy_residual_amount, context=context)
             if asset.method_period == 'year':
                 period_amount = year_amount
             elif asset.method_period == 'quarter':
@@ -424,6 +429,7 @@ class account_asset_asset(orm.Model):
             entry.update({
                 'period_amount': period_amount,
                 'fy_amount': fy_amount,
+                'fy_factor': fy_half_rata and i == 0 and factor / 2 * 100 or factor * 100,
             })
             fy_residual_amount -= fy_amount
             if round(fy_residual_amount, digits) == 0:
@@ -437,11 +443,12 @@ class account_asset_asset(orm.Model):
         for i, entry in enumerate(table):
             period_amount = entry['period_amount']
             fy_amount = entry['fy_amount']
+            fy_factor = entry['fy_factor']
             period_duration = (asset.method_period == 'year' and 12) or (asset.method_period == 'quarter' and 3) or 1
             if period_duration == 12:
                 if fy_amount > fy_residual_amount:
                     fy_amount = fy_residual_amount
-                lines = [{'date': entry['date_stop'], 'amount': fy_amount}]
+                lines = [{'date': entry['date_stop'], 'amount': fy_amount, 'factor': fy_factor,}]
                 fy_residual_amount -= fy_amount
             elif period_duration in [1, 3]:
                 lines = []
@@ -453,13 +460,13 @@ class account_asset_asset(orm.Model):
                     else:
                         line_date = depreciation_start_date + relativedelta(months=0, day=31)
                 while (line_date <= min(entry['date_stop'], depreciation_stop_date)) and (period_amount < fy_residual_amount):
-                    lines.append({'date': line_date, 'amount': period_amount})
+                    lines.append({'date': line_date, 'amount': period_amount, 'factor': fy_factor,})
                     fy_residual_amount -= period_amount
                     fy_amount_check += period_amount
                     line_date = line_date + relativedelta(months=period_duration, day=31)
                 if i == i_max and (not lines or depreciation_stop_date > lines[-1]['date']):  # last year, last entry
                     period_amount = fy_residual_amount
-                    lines.append({'date': line_date, 'amount': period_amount})
+                    lines.append({'date': line_date, 'amount': period_amount, 'factor': fy_factor,})
                     fy_amount_check += period_amount
                 if round(fy_amount_check - fy_amount, digits) != 0:  # handle rounding and extended/shortened fiscal year deviations
                     diff = fy_amount_check - fy_amount
@@ -486,9 +493,9 @@ class account_asset_asset(orm.Model):
     def compute_depreciation_board(self, cr, uid, ids, context=None):
         if not context:
             context = {}
-        depreciation_lin_obj = self.pool['account.asset.depreciation.line']
-        # fy_obj = self.pool.get('account.fiscalyear')
-        digits = self.pool['decimal.precision'].precision_get(cr, uid, 'Account')
+        depreciation_lin_obj = self.pool.get('account.asset.depreciation.line')
+        #fy_obj = self.pool.get('account.fiscalyear')
+        digits = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
 
         for asset in self.browse(cr, uid, ids, context=context):
             if asset.value_residual == 0.0:
@@ -507,10 +514,10 @@ class account_asset_asset(orm.Model):
             context['company_id'] = asset.company_id.id
 
             table = self._compute_depreciation_table(cr, uid, asset, context=context)
-            # for entry in table: _logger.warn('%s, _compute_depreciation_board, before group lines, entry = \n%s', self._name, entry)  # diagnostics
+            #for entry in table: _logger.warn('%s, _compute_depreciation_board, before group lines, entry = \n%s', self._name, entry)  # diagnostics
 
             # group lines prior to depreciation start period
-            depreciation_start_date = datetime.strptime(asset.date_start, DEFAULT_SERVER_DATE_FORMAT)
+            depreciation_start_date = datetime.strptime(asset.date_start, '%Y-%m-%d')
             lines = table[0]['lines']
             lines1 = []
             lines2 = []
@@ -532,7 +539,7 @@ class account_asset_asset(orm.Model):
 
             # check table with posted entries and recompute in case of deviation
             if (len(posted_depreciation_line_ids) > 0):
-                last_depreciation_date = datetime.strptime(last_depreciation_line.line_date, DEFAULT_SERVER_DATE_FORMAT)
+                last_depreciation_date = datetime.strptime(last_depreciation_line.line_date, '%Y-%m-%d')
                 last_date_in_table = table[-1]['lines'][-1]['date']
                 if last_date_in_table <= last_depreciation_date:
                     raise orm.except_orm(_('Error!'),
@@ -581,11 +588,12 @@ class account_asset_asset(orm.Model):
                 amount_diff = round(residual_amount_table - residual_amount, digits)
                 if amount_diff:
                     # recompute depreciation table extending it
-                    extra_i = round(- amount_diff / table[0]['fy_amount'], 0)
-                    amount_remaining = ((- amount_diff / table[0]['fy_amount']) - int((- amount_diff / table[0]['fy_amount']))) * table[0]['fy_amount']
+                    table_amount = table[-2]['fy_amount']
+                    extra_i = round(- amount_diff / table_amount, 0)
+                    amount_remaining = ((- amount_diff / table_amount) - int(( amount_diff / table_amount))) * table_amount
                     context.update({'lost_year': extra_i})
                     table = self._compute_depreciation_table(cr, uid, asset, context=context)
-                    table[-1]['lines'][0]['amount'] = amount_remaining
+                    table[-1]['lines'][0]['amount'] += amount_remaining
                     # end recompute modify
                     entry = table[table_i_start]
                     if entry['fy_id']:
@@ -614,7 +622,7 @@ class account_asset_asset(orm.Model):
                 table_i_start = 0
                 line_i_start = 0
 
-            # depreciation_lines = []
+            #depreciation_lines = []
             seq = len(posted_depreciation_line_ids)
             depr_line_id = last_depreciation_line and last_depreciation_line.id
             for entry in table[table_i_start:]:
@@ -626,8 +634,9 @@ class account_asset_asset(orm.Model):
                         'amount': line['amount'],
                         'asset_id': asset.id,
                         'name': name,
-                        'line_date': line['date'].strftime(DEFAULT_SERVER_DATE_FORMAT),
+                        'line_date': line['date'].strftime('%Y-%m-%d'),
                         'init_entry': entry['init'],
+                        'factor': line['factor'],
                     }
                     depr_line_id = depreciation_lin_obj.create(cr, uid, vals, context=context)
                 line_i_start = 0
@@ -755,7 +764,7 @@ class account_asset_asset(orm.Model):
             decrease_value = decrease_value or 0.0
             remove_value = remove_value or 0.0
             vals = {'asset_value': purchase_value + increase_value - salvage_value + decrease_value + remove_value}
-            # if vals['asset_value'] < 0.0: # TODO verify if add this check (not in v.2)
+            #if vals['asset_value'] < 0.0: # TODO verify if add this check (not in v.2)
             #    raise orm.except_orm(_('Error!'),
             #         _('It cannot result a negative value in the asset.'
             #         'Purchase or salvage value are incorrect.'))
@@ -791,10 +800,10 @@ class account_asset_asset(orm.Model):
         return asset_ids
 
     def _get_method(self, cr, uid, context=None):
-        return self.pool['account.asset.category']._get_method(cr, uid, context)
+        return self.pool.get('account.asset.category')._get_method(cr, uid, context)
 
     def _get_method_time(self, cr, uid, context=None):
-        return self.pool['account.asset.category']._get_method_time(cr, uid, context)
+        return self.pool.get('account.asset.category')._get_method_time(cr, uid, context)
 
     _columns = {
         'account_move_line_ids': fields.one2many(
@@ -918,7 +927,7 @@ class account_asset_asset(orm.Model):
     }
 
     _defaults = {
-        'date_start': lambda obj, cr, uid, context: time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+        'date_start': lambda obj, cr, uid, context: time.strftime('%Y-%m-%d'),
         'active': True,
         'state': 'draft',
         'method': 'linear',
@@ -1003,11 +1012,11 @@ class account_asset_asset(orm.Model):
         if context is None:
             context = {}
         result = []
-        period_obj = self.pool['account.period']
-        depreciation_obj = self.pool['account.asset.depreciation.line']
+        period_obj = self.pool.get('account.period')
+        depreciation_obj = self.pool.get('account.asset.depreciation.line')
         period = period_obj.browse(cr, uid, period_id, context=context)
         if check_triggers:
-            recompute_obj = self.pool['account.asset.recompute.trigger']
+            recompute_obj = self.pool.get('account.asset.recompute.trigger')
             recompute_ids = recompute_obj.search(cr, SUPERUSER_ID, [('state', '=', 'open')])
             if recompute_ids:
                 recompute_triggers = recompute_obj.read(cr, uid, recompute_ids, ['company_id'])
@@ -1054,6 +1063,26 @@ class account_asset_asset(orm.Model):
 
         return result
 
+    def _compute_asset_value_from_dl(self, cr, uid, ids, context):
+        # asset_value = asset.purchase_value + asset.increase_value - asset.salvage_value + asset.decrease_value + asset.remove_value
+        if context.get('purchase_value', False):
+            res = {'purchase_value': context['purchase_value'], 'increase_value': context['increase_value'],
+                   'decrease_value': context['decrease_value'], 'remove_value': context['remove_value']}
+        else:
+            res = {'purchase_value': 0.0, 'increase_value': 0.0,
+                   'decrease_value': 0.0, 'remove_value': 0.0}
+        for dl in ids:
+            if dl[2].get('type', False):
+                if dl[2]['type'] == 'purchase':
+                    res['increase_value'] += dl[2]['amount']
+                if dl[2]['type'] == 'sale':
+                    res['decrease_value'] -= dl[2]['amount']
+                if dl[2]['type'] == 'remove':
+                    res['remove_value'] += dl[2]['amount']
+                if dl[2]['type'] == 'create':
+                    res['purchase_value'] += dl[2]['amount']
+        return res
+
     def create(self, cr, uid, vals, context=None):
         if not context:
             context = {}
@@ -1066,20 +1095,24 @@ class account_asset_asset(orm.Model):
             self.write(cr, uid, [asset_id], {'salvage_value': 0.0})  # Trigger compute of asset_value
         asset = self.browse(cr, uid, asset_id, context)
         if asset.type == 'normal':
-            # create first asset line
-            asset_line_obj = self.pool.get('account.asset.depreciation.line')
-            line_name = self._get_depreciation_entry_name(cr, uid, asset, 0, context=context)
-            asset_line_vals = {
-                'amount': asset.asset_value,  # and asset.asset_value or context.get('update_asset_value_from_move_line') and context.get('asset_value'),
-                'asset_id': asset_id,
-                'name': line_name,
-                'line_date': asset.date_start,
-                'init_entry': True,
-                'type': 'create',
-            }
-            asset_line_id = asset_line_obj.create(cr, uid, asset_line_vals, context=context)
-            if context.get('create_asset_from_move_line'):
-                asset_line_obj.write(cr, uid, [asset_line_id], {'move_id': context['move_id']})
+            if vals.get('depreciation_line_ids', False):
+                values = self._compute_asset_value_from_dl(cr, uid, vals['depreciation_line_ids'], context)
+                self.write(cr, uid, [asset_id], values)
+            else:
+                # create first asset line
+                asset_line_obj = self.pool.get('account.asset.depreciation.line')
+                line_name = self._get_depreciation_entry_name(cr, uid, asset, 0, context=context)
+                asset_line_vals = {
+                    'amount': asset.asset_value,  # and asset.asset_value or context.get('update_asset_value_from_move_line') and context.get('asset_value'),
+                    'asset_id': asset_id,
+                    'name': line_name,
+                    'line_date': asset.date_start,
+                    'init_entry': True,
+                    'type': 'create',
+                }
+                asset_line_id = asset_line_obj.create(cr, uid, asset_line_vals, context=context)
+                if context.get('create_asset_from_move_line'):
+                    asset_line_obj.write(cr, uid, [asset_line_id], {'move_id': context['move_id']})
         return asset_id
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -1100,23 +1133,36 @@ class account_asset_asset(orm.Model):
                 self.compute_depreciation_board(cr, uid, [asset.id], context=context)
                 self.validate(cr, uid, [asset.id], context=dict(context, asset_validate_from_write=True))
                 # extra context to avoid recursion
-
-            if asset.type == 'normal' and context.get('update_asset_value_from_move_line'):
-                # create asset variation line
-                asset_line_obj = self.pool.get('account.asset.depreciation.line')
-                line_name = self._get_depreciation_entry_name(cr, uid, asset, 0, context=context)
-                asset_line_vals = {
-                    'amount': context.get('asset_value'),
-                    'asset_id': asset.id,
-                    'name': line_name,
-                    'line_date': asset.date_start,
-                    'init_entry': True,
-                    'type': 'create',
-                }
-                asset_line_id = asset_line_obj.create(cr, uid, asset_line_vals, context=context)
-                #if context.get('update_asset_value_from_move_line'):
-                asset_line_obj.write(cr, uid, [asset_line_id], {'move_id': context['move_id']})
-
+            if asset.type == 'normal':
+                if context.get('update_asset_value_from_move_line'):
+                    # create asset variation line
+                    asset_line_obj = self.pool.get('account.asset.depreciation.line')
+                    line_name = self._get_depreciation_entry_name(cr, uid, asset, 0, context=context)
+                    asset_line_vals = {
+                        'amount': context.get('asset_value'),
+                        'asset_id': asset.id,
+                        'name': line_name,
+                        'line_date': asset.date_start,
+                        'init_entry': True,
+                        'type': 'create',
+                    }
+                    asset_line_id = asset_line_obj.create(cr, uid, asset_line_vals, context=context)
+                    #if context.get('update_asset_value_from_move_line'):
+                    asset_line_obj.write(cr, uid, [asset_line_id], {'move_id': context['move_id']})
+                else:
+                    if vals.get('depreciation_line_ids', False):
+                        dl_ids = []
+                        for dl in vals['depreciation_line_ids']:
+                            if dl[2] and dl[2].get('type', False) != 'depreciate':
+                                dl_ids.append(dl)
+                        if dl_ids:
+                            context.update({'increase_value': asset.increase_value,
+                                            'decrease_value': asset.decrease_value,
+                                            'remove_value': asset.remove_value,
+                                            'purchase_value': asset.purchase_value,
+                                            })
+                            values = self._compute_asset_value_from_dl(cr, uid, dl_ids, context)
+                            self.write(cr, uid, [asset.id], values)
         return True
 
     def open_entries(self, cr, uid, ids, context=None):
@@ -1172,7 +1218,7 @@ class account_asset_depreciation_line(orm.Model):
                 depreciated_value = dl.previous_id and (asset_value - dl.previous_id.remaining_value) or 0.0
                 remaining_value = asset_value - depreciated_value - dl.amount
             else:
-                depreciated_value += dl.previous_id.amount
+                depreciated_value += dl.previous_id and dl.previous_id.amount or 0.0
                 remaining_value -= dl.amount
             res[dl.id] = {
                 'depreciated_value': depreciated_value,
@@ -1229,11 +1275,14 @@ class account_asset_depreciation_line(orm.Model):
             ('create', 'Asset Value'),
             ('depreciate', 'Depreciation'),
             ('remove', 'Asset Removal'),
+            ('sale', 'Asset Sale'),
+            ('purchase', 'Asset Purchase'),
             ], 'Type', readonly=False),
         'init_entry': fields.boolean('Initial Balance Entry',
             help="Set this flag for entries of previous fiscal years "
                  "for which OpenERP has not generated accounting entries."),
-        'active': fields.boolean('Active')
+        'active': fields.boolean('Active'),
+        'factor': fields.float('Factor', digits=(8, 4))
     }
     _defaults = {
         'type': 'depreciate',
@@ -1274,7 +1323,7 @@ class account_asset_depreciation_line(orm.Model):
                     raise orm.except_orm(_('Error!'),
                         _("You are not allowed to remove an accounting entry linked to an asset."
                           "\nYou should remove such entries from the asset."))
-            elif dl.move_id and not context.get('allow_asset_line_update'):
+            elif dl.move_id and not context.get('allow_asset_line_update') and dl.type == 'depreciate':
                 raise orm.except_orm(_('Error!'),
                     _("You cannot change a depreciation line with an associated accounting entry."))
         return super(account_asset_depreciation_line, self).write(cr, uid, ids, vals, context)
@@ -1302,11 +1351,11 @@ class account_asset_depreciation_line(orm.Model):
                                     or line.line_date
             else:
                 depreciation_date = context.get('depreciation_date') \
-                                    or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                                    or time.strftime('%Y-%m-%d')
             ctx = dict(context, account_period_prefer_normal=True)
             period_ids = period_obj.find(
                 cr, uid, depreciation_date, context=ctx)
-            # sign = (line.asset_id.category_id.journal_id.type == 'purchase' and 1) or -1
+            #sign = (line.asset_id.category_id.journal_id.type == 'purchase' and 1) or -1
             asset_name = line.asset_id.name
             reference = line.name
             journal_id = line.asset_id.category_id.journal_id.id
@@ -1318,10 +1367,10 @@ class account_asset_depreciation_line(orm.Model):
                 'journal_id': journal_id,
                 }
             move_id = move_obj.create(cr, uid, move_vals, context=context)
-            # partner_id = line.asset_id.partner_id.id
+            #partner_id = line.asset_id.partner_id.id
             if context.get('create_move_from_button', False):
                 ctx = {'allow_asset': True, 'create_move_from_button': True}
-            # TODO in case of create_move not from invoice, deactivate subsequent purchase of asset
+            #TODO in case of create_move not from invoice, deactivate subsequent purchase of asset
             move_line_obj.create(cr, uid, {
                 'name': asset_name,
                 'ref': reference,
@@ -1331,7 +1380,7 @@ class account_asset_depreciation_line(orm.Model):
                 'credit': line.amount > 0 and line.amount or 0.0,
                 'period_id': period_ids and period_ids[0] or False,
                 'journal_id': journal_id,
-                # 'partner_id': partner_id,  # fuorviante
+                #'partner_id': partner_id,  # fuorviante
                 'date': depreciation_date,
                 'asset_id': line.asset_id.id,
                 'subsequent_asset': False,
@@ -1345,7 +1394,7 @@ class account_asset_depreciation_line(orm.Model):
                 'debit': line.amount > 0 and line.amount or 0.0,
                 'period_id': period_ids and period_ids[0] or False,
                 'journal_id': journal_id,
-                # 'partner_id': partner_id,  # fuorviante
+                #'partner_id': partner_id,  # fuorviante
                 'analytic_account_id': line.asset_id.account_analytic_id.id or line.asset_id.category_id.account_analytic_id.id,
                 'date': depreciation_date,
                 'asset_id': line.asset_id.id,
@@ -1444,7 +1493,7 @@ class account_asset_history(orm.Model):  # unused???
     }
     _order = 'date desc'
     _defaults = {
-        'date': lambda *args: time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+        'date': lambda *args: time.strftime('%Y-%m-%d'),
         'user_id': lambda self, cr, uid, ctx: uid
     }
 

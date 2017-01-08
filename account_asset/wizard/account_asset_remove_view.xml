@@ -25,5 +25,14 @@
         </field>
       </record>
 
+       <act_window name="Remove asset"
+            res_model="account.asset.remove"
+            src_model="account.asset.asset"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_wizard_asset_remove"
+            view_id="account_asset_remove_form"/>
+
     </data>
 </openerp>

@@ -6,9 +6,17 @@
             <field name="model">asset.depreciation.confirmation.wizard</field>
             <field name="arch" type="xml">
                 <form string="Compute Asset" >
-                    <group>
-                        <field name="period_id"/>
-                        <button string="Compute" name="asset_compute" type="object" context="{'create_move_from_button':True}"/>
+                    <group colspan="2" col="2">
+                        <field name="fy_id"/>
+                        <separator colspan="2"/>
+                        <field name="set_init"/>
+                    </group>
+                    <group colspan="2" col="1">
+                        <separator />
+                        <button string="Compute and do not create account moves" name="asset_set_init" type="object"/>
+                        <separator />
+                        <button string="Compute and create account moves" name="asset_compute" type="object" context="{'create_move_from_button':True}"/>
+                        <separator />
                         <button string="Cancel" />
                     </group>
                 </form>

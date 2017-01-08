@@ -1,6 +1,22 @@
 <openerp>
   <data>
 
+    <!--Asset depreciation lines-->
+    <record model="ir.ui.view" id="view_account_asset_depreciation_line_tree">
+      <field name="name">account.asset.depreciation.line.tree</field>
+      <field name="model">account.asset.depreciation.line</field>
+      <field name="arch" type="xml">
+        <tree string="Assets Depreciation Lines" colors="blue:(move_id != False)">
+          <field name="name"/>
+          <field name="init_entry"/>
+          <field name="move_id"/>
+          <field name="amount"/>
+          <field name="factor"/>
+          <field name="asset_id"/>
+        </tree>
+      </field>
+    </record>
+
     <!-- Asset Category -->
 
     <record model="ir.ui.view" id="view_account_asset_category_form">
@@ -22,6 +38,8 @@
               <field name="account_asset_id"/>
               <field name="account_depreciation_id"/>
               <field name="account_expense_depreciation_id"/>
+              <field name="account_plus_value_id"/>
+              <field name="account_min_value_id"/>
             </group>
             <newline />
             <group string="Depreciation Dates">
@@ -99,7 +117,7 @@
             </group>
             <group>
             <button name="validate" states="draft" string="Confirm Asset" type="object" />
-            <button name="set_to_draft" states="open,close" string="Set to Draft" type="object" groups="account.group_account_manager"/>
+            <button name="set_to_draft" states="open,close,removed" string="Set to Draft" type="object" groups="account.group_account_manager"/>
             <!-- <button name="set_to_close" states="open" string="Set to Close" type="object" /> -->
             <button name="remove" string="Set to Removed" type="object" groups="account.group_account_manager"
                     attrs="{'invisible':['|',('method_time','!=','year'),('state','!=','close')]}"
@@ -168,6 +186,7 @@
                     <field name="line_date"/>
                     <field name="depreciated_value" readonly="1"/>
                     <field name="amount"/>
+                    <field name="factor"/>
                     <field name="remaining_value" readonly="1"/>
                     <field name="init_entry" string="Init"/>
                     <field name="move_check"/>
@@ -189,8 +208,9 @@
                         <field name="name"/>
                         <field name="amount" attrs="{'readonly':[('move_check','=',True)]}"
                                on_change="onchange_amount(type, asset_value, amount, depreciated_value)"/>
+                        <field name="factor"/>
                         <field name="init_entry" attrs="{'readonly':[('move_check','=',True)]}"/>
-                        <field name="move_id"/>
+                        <field name="move_id" attrs="{'readonly':[('move_check','=',True)]}"/>
                         <field name="move_check"/>
                       </group>
                       <group>
@@ -367,8 +387,7 @@
       <field name="view_id" ref="view_account_asset_asset_hierarchy_tree"/>
     </record>
 
-    <menuitem id="menu_finance_assets" name="Assets" parent="account.menu_finance" sequence="9" groups="account.group_account_user" />
-
+    <menuitem id="menu_finance_assets" name="Assets" parent="account.menu_finance" sequence="9"/>
     <menuitem parent="menu_finance_assets" id="menu_action_account_asset_asset_tree"
         sequence="100"
         action="action_account_asset_asset_tree"/>

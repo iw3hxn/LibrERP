@@ -38,8 +38,6 @@ class Parser(report_sxw.rml_parse):
         for move_line in asset.account_move_line_ids:
             if move_line.asset_category_id:
                 if move_line.invoice:
-                    #if invoice and invoice.id != move_line.invoice.id:
-                    #    raise Exception(_("Move %s contains different invoices") % asset.name)
                     invoice = move_line.invoice
                 account_item = {
                     'amount': move_line.tax_amount,
@@ -52,13 +50,16 @@ class Parser(report_sxw.rml_parse):
                 res.append(account_item)
         return res
 
-    def _get_asset_fy_depreciation_sum(self, asset):
-        asset_fy_depreciation_amount = 0.0
+    def _get_asset_fy_increase_decrease_amount(self, asset):
+        res = False
+        depreciation_line_obj = self.pool['account.asset.depreciation.line']
         fy = self.pool['account.fiscalyear'].browse(self.cr, self.uid, self.localcontext['fy_id'])[0]
-        for asset_dl in asset.depreciation_line_ids:
-            if asset_dl.line_date <= fy.date_stop and asset_dl.line_date >= fy.date_start and asset_dl.type == 'depreciate':
-                asset_fy_depreciation_amount += asset_dl.amount
-        return asset_fy_depreciation_amount
+        line_ids = depreciation_line_obj.search(self.cr, self.uid, [('asset_id', '=', asset.id), ('line_date', '<=', fy.date_stop), ('type', '=', 'create')])
+        if line_ids:
+            for line in depreciation_line_obj.browse(self.cr, self.uid, line_ids):
+                res += line.amount
+            res -= asset.purchase_value
+        return res
 
     def _get_asset_start_year(self, asset):
         res = False
@@ -67,12 +68,97 @@ class Parser(report_sxw.rml_parse):
             res = str(date_start.year)
         return res
 
+    def _get_asset_remove_amount(self, asset):
+        res = False
+        depreciation_line_obj = self.pool['account.asset.depreciation.line']
+        fy = self.pool['account.fiscalyear'].browse(self.cr, self.uid, self.localcontext['fy_id'])[0]
+        line_ids = depreciation_line_obj.search(self.cr, self.uid, [('asset_id', '=', asset.id), ('line_date', '<=', fy.date_stop), ('type', '=', 'remove')])
+        if line_ids:
+            for line in depreciation_line_obj.browse(self.cr, self.uid, line_ids):
+                res += line.amount
+        return res
+
+    def _get_asset_depreciation_amount(self, asset):
+        res = {}
+        depreciation_line_obj = self.pool['account.asset.depreciation.line']
+        fy = self.pool['account.fiscalyear'].browse(self.cr, self.uid, self.localcontext['fy_id'])[0]
+        line_ids = depreciation_line_obj.search(self.cr, self.uid, [('asset_id', '=', asset.id), ('line_date', '<=', fy.date_stop), ('line_date', '>=', fy.date_start), ('type', '=', 'depreciate')])
+        res.update({
+                asset.id: {
+                    'amount': 0.0,
+                    'depreciated_value': 0.0,
+                    'factor': 0.0,
+                    'remaining_value': 0.0,
+                }
+            })
+        if line_ids:
+            for line in depreciation_line_obj.browse(self.cr, self.uid, line_ids):
+                res[asset.id]['amount'] += line.amount
+                res[asset.id]['depreciated_value'] += line.depreciated_value
+                res[asset.id]['factor'] += line.factor
+                res[asset.id]['remaining_value'] += line.remaining_value
+        return res
+
+    def _get_ctg_total(self, category_ids):
+        res = {}
+        asset_obj = self.pool['account.asset.asset']
+        state = [self.localcontext['state']]
+        if state[0] == 'all':
+            state = ['open', 'close', 'removed']
+        if self.localcontext['type'] == 'simulated' and state[0] == 'open':
+            state.append('draft')
+        res.update({
+            'total': {
+                'name': 'Totale',
+                'purchase_value': 0.0,
+                'increase_decrease_value': 0.0,
+                'remove_value': 0.0,
+                'value_depreciated': 0.0,
+                'value_depreciation': 0.0,
+                'value_residual': 0.0
+            }
+        })
+        for ctg in self.pool['account.asset.category'].browse(self.cr, self.uid, category_ids):
+            asset_ids = asset_obj.search(self.cr, self.uid, [('category_id', '=', ctg.id), ('state', 'in', state)])
+            res.update({
+                ctg.id: {
+                    'name': ctg.name,
+                    'purchase_value': 0.0,
+                    'increase_decrease_value': 0.0,
+                    'remove_value': 0.0,
+                    'value_depreciated': 0.0,
+                    'value_depreciation': 0.0,
+                    'value_residual': 0.0
+                }
+            })
+            if asset_ids:
+                for asset in asset_obj.browse(self.cr, self.uid, asset_ids):
+                    depr_amount = self._get_asset_depreciation_amount(asset)
+                    incr_amount = self._get_asset_fy_increase_decrease_amount(asset)
+                    remove_amount = self._get_asset_remove_amount(asset)
+                    res[ctg.id]['purchase_value'] += asset.purchase_value
+                    res['total']['purchase_value'] += asset.purchase_value
+                    res[ctg.id]['increase_decrease_value'] += incr_amount
+                    res['total']['increase_decrease_value'] += incr_amount
+                    res[ctg.id]['remove_value'] += remove_amount
+                    res['total']['remove_value'] += remove_amount
+                    res[ctg.id]['value_depreciated'] += depr_amount[asset.id]['depreciated_value']
+                    res['total']['value_depreciated'] += depr_amount[asset.id]['depreciated_value']
+                    res[ctg.id]['value_depreciation'] += depr_amount[asset.id]['amount']
+                    res['total']['value_depreciation'] += depr_amount[asset.id]['amount']
+                    res[ctg.id]['value_residual'] += depr_amount[asset.id]['remaining_value']
+                    res['total']['value_residual'] += depr_amount[asset.id]['remaining_value']
+        return res
+
     def __init__(self, cr, uid, name, context):
         super(Parser, self).__init__(cr, uid, name, context)
         self.localcontext.update({
             'invoiced_asset_lines': self._get_invoiced_account_move_lines,
             'asset_start_year': self._get_asset_start_year,
-            'asset_fy_depreciation_amount': self._get_asset_fy_depreciation_sum,
+            'asset_fy_increase_decrease_amount': self._get_asset_fy_increase_decrease_amount,
+            'ctg_total': self._get_ctg_total,
+            'asset_depreciation_amount': self._get_asset_depreciation_amount,
+            'asset_remove_amount': self._get_asset_remove_amount,
         })
 
     def set_context(self, objects, data, ids, report_type=None):
@@ -82,6 +168,8 @@ class Parser(report_sxw.rml_parse):
             'fy_name': data.get('fy_name'),
             'type': data.get('type'),
             'fy_id': data.get('fy_id'),
+            'state': data.get('state'),
+            'category_ids': data.get('category_ids'),
         })
         return super(Parser, self).set_context(objects, data, ids, report_type=report_type)
 

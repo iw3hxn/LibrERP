@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-09 19:16+0000\n"
-"PO-Revision-Date: 2014-11-09 19:16+0000\n"
+"POT-Creation-Date: 2016-10-31 22:38+0000\n"
+"PO-Revision-Date: 2016-10-31 22:38+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,18 +20,6 @@ msgstr ""
 #: field:asset.modify,method_end:0
 msgid "Ending date"
 msgstr "Data finale"
-
-#. module: account_asset
-#: help:account.asset.asset,state:0
-#: help:wizard.print.asset.report,state:0
-msgid "When an asset is created, the status is 'Draft'.\n"
-"If the asset is confirmed, the status goes in 'Running' and the depreciation lines can be posted to the accounting.\n"
-"If the last depreciation line is posted, the asset goes into the 'Close' status.\n"
-"When the removal entries are generated, the asset goes into the 'Removed' status."
-msgstr "Quando l'immbilizzazione viene create lo stato è 'Bozza'.\n"
-"Quando l'immobilizzazione viene confermata, lo stato và in 'corso' e le righe dell'ammortamento vengono pubblicate\n"
-"Quando l'ultima riga dell'ammortamento viene chiusa lo stato diventa 'Chiuso'.\n"
-"Quando l'immobilizzazione viene Venduta lo stato diventa 'Venduto'"
 
 #. module: account_asset
 #: field:account.asset.asset,value_residual:0
@@ -54,11 +42,9 @@ msgid "Asset Lines"
 msgstr "Righe Immobilizzazioni"
 
 #. module: account_asset
-#: selection:account.asset.history,method_time:0
-#: code:addons/account_asset/account_asset.py:58
-#, python-format
-msgid "Number of Years"
-msgstr "Numero di Anni"
+#: constraint:account.move:0
+msgid "You can not create more than one move per period on centralized journal"
+msgstr "Non è possibile creare più di un movimento per periodo su un sezionale centralizzato"
 
 #. module: account_asset
 #: help:account.asset.asset,method_number_percent:0
@@ -90,12 +76,6 @@ msgid "View"
 msgstr "Vista"
 
 #. module: account_asset
-#: code:addons/account_asset/asset_report.py:42
-#, python-format
-msgid "Move %s contains different invoices"
-msgstr "Riga contabile %s contiene più fatture"
-
-#. module: account_asset
 #: help:account.account,asset_category_id:0
 msgid "Default Asset Category when creating invoice lines with this account."
 msgstr "Categoria Immobilizzazione di Default per la creazione di righe fattura con questo conto."
@@ -111,8 +91,8 @@ msgstr "wizard.print.asset.report"
 #: view:asset.asset.report:0
 #: selection:asset.asset.report,state:0
 #: selection:wizard.print.asset.report,state:0
-msgid "Running"
-msgstr "In corso"
+msgid "Running (and draft if simulated)"
+msgstr "In corso (e in bozza se simulato)"
 
 #. module: account_asset
 #: constraint:account.move.line:0
@@ -135,11 +115,6 @@ msgid "Company"
 msgstr "Azienda"
 
 #. module: account_asset
-#: view:asset.modify:0
-msgid "Modify"
-msgstr "Modifica"
-
-#. module: account_asset
 #: field:account.asset.depreciation.line,depreciated_value:0
 msgid "Amount Already Depreciated"
 msgstr "Importo Già Ammortizzato"
@@ -150,10 +125,9 @@ msgid "Category of Asset"
 msgstr "Categoria dell'Immobilizzazione"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:340
-#, python-format
-msgid "Illegal value %s in asset.method."
-msgstr "Valore %s illegale in asset.method."
+#: field:account.asset.category,account_min_value_id:0
+msgid "Min-Value Account"
+msgstr "Conto Minusvalenza"
 
 #. module: account_asset
 #: view:asset.asset.report:0
@@ -162,14 +136,6 @@ msgstr "Valore %s illegale in asset.method."
 #: model:ir.ui.menu,name:account_asset.menu_action_asset_asset_report
 msgid "Assets Analysis"
 msgstr "Analisi Immobilizzazioni"
-
-#. module: account_asset
-#: code:addons/account_asset/account_asset.py:666
-#, python-format
-msgid "You cannot remove an asset which has not been fully depreciated.\n"
-"Please create the remaining depreciation entry via the Depreciation Board."
-msgstr "Non puoi eliminare un Immobilizzazione che non è stata totalmente ammortizzata\n"
-"Creare le rimanente righe di ammortamento dalla Scheda Ammortamento."
 
 #. module: account_asset
 #: field:account.asset.category,method_number_percent:0
@@ -203,6 +169,12 @@ msgstr "Righe Ammortamento"
 #: help:account.asset.asset,date_start:0
 msgid "You should manually add depreciation lines with the depreciations            of previous fiscal years if the Depreciation Start Date is             different from the date for which OpenERP needs to generate             accounting entries."
 msgstr "You should manually add depreciation lines with the depreciations            of previous fiscal years if the Depreciation Start Date is             different from the date for which LibrERP needs to generate             accounting entries."
+
+#. module: account_asset
+#: view:account.asset.asset:0
+#: field:account.asset.asset,history_ids:0
+msgid "History"
+msgstr "Storico"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -251,17 +223,14 @@ msgstr "Immobilizzazioni in Bozza"
 #: view:account.asset.history:0
 #: view:account.asset.remove:0
 #: field:account.asset.remove,note:0
-#: view:asset.modify:0
 #: field:asset.modify,note:0
 msgid "Notes"
 msgstr "Note"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:657
-#: code:addons/account_asset/account_asset.py:665
-#, python-format
-msgid "Operation not allowed!"
-msgstr "Operazione non permessa!"
+#: field:account.asset.asset,purchase_value:0
+msgid "Purchase Value"
+msgstr "Valore Acquisto"
 
 #. module: account_asset
 #: field:account.asset.depreciation.line,move_id:0
@@ -279,25 +248,6 @@ msgid "Total Debit"
 msgstr "Totale Dare"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:184
-#: code:addons/account_asset/account_asset.py:537
-#: code:addons/account_asset/account_asset.py:758
-#: code:addons/account_asset/account_asset.py:967
-#: code:addons/account_asset/account_asset.py:1024
-#: code:addons/account_asset/account_asset.py:1248
-#: code:addons/account_asset/account_asset.py:1251
-#: code:addons/account_asset/account_asset.py:1270
-#: code:addons/account_asset/account_asset.py:1274
-#: code:addons/account_asset/account_move.py:41
-#: code:addons/account_asset/account_move.py:56
-#: code:addons/account_asset/account_move.py:105
-#: code:addons/account_asset/account_move.py:159
-#: code:addons/account_asset/wizard/account_asset_remove.py:60
-#, python-format
-msgid "Error!"
-msgstr "Errore!"
-
-#. module: account_asset
 #: field:account.asset.depreciation.line,amount:0
 msgid "Amount"
 msgstr "Importo"
@@ -308,9 +258,9 @@ msgid "State"
 msgstr "Stato"
 
 #. module: account_asset
-#: sql_constraint:account.move.line:0
-msgid "Wrong credit or debit value in accounting entry !"
-msgstr "Valore di credito o debito errato nella registrazione contabile !"
+#: view:account.asset.confirm:0
+msgid "Set Draft Assets"
+msgstr "Imposta a Bozza"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -327,12 +277,6 @@ msgid "Quarter"
 msgstr "Trimestre"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:53
-#, python-format
-msgid "Degressive-Linear"
-msgstr "Deprezzamento-Lineare"
-
-#. module: account_asset
 #: field:asset.asset.report,nbr:0
 msgid "# of Depreciation Lines"
 msgstr "# di Righe Ammortamento"
@@ -340,8 +284,6 @@ msgstr "# di Righe Ammortamento"
 #. module: account_asset
 #: field:account.asset.asset,method_end:0
 #: selection:account.asset.history,method_time:0
-#: code:addons/account_asset/account_asset.py:60
-#, python-format
 msgid "Ending Date"
 msgstr "Data finale"
 
@@ -402,36 +344,21 @@ msgid "Partner"
 msgstr "Partner"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:968
-#, python-format
-msgid "You cannot change the category of an asset with accounting entries."
-msgstr "You cannot change the category of an asset with accounting entries."
-
-#. module: account_asset
-#: code:addons/account_asset/account_asset.py:1361
-#, python-format
-msgid "Journal Entry"
-msgstr "Registrazione Giornale"
-
-#. module: account_asset
 #: field:account.asset.asset,increase_value:0
 msgid "Increase Value"
 msgstr "Incrementi di Valore"
 
 #. module: account_asset
+#: field:account.asset.asset,active:0
+#: field:account.asset.category,active:0
+#: field:account.asset.depreciation.line,active:0
+msgid "Active"
+msgstr "Attivo"
+
+#. module: account_asset
 #: help:account.asset.asset,method_number:0
 msgid "The number of depreciations/years needed to depreciateyour asset in method Number or Year."
 msgstr "Il numero di ammortamenti/anno necessari per l'ammortamento dell'immobilizzazione con il metodo 'Numero o Anni'"
-
-#. module: account_asset
-#: view:account.asset.asset:0
-msgid "Change Duration"
-msgstr "Modifica Durata"
-
-#. module: account_asset
-#: field:account.asset.asset,remove_value:0
-msgid "Remove Value"
-msgstr "Valore Residuo"
 
 #. module: account_asset
 #: field:account.asset.remove,period_id:0
@@ -445,8 +372,6 @@ msgstr "Il codice del conto deve essere unico per ogni azienda!"
 
 #. module: account_asset
 #: selection:account.asset.history,method_time:0
-#: code:addons/account_asset/account_asset.py:61
-#, python-format
 msgid "Percent"
 msgstr "Percentuale"
 
@@ -483,6 +408,11 @@ msgid "Assets in Running State"
 msgstr "Immobilizzazioni in corso"
 
 #. module: account_asset
+#: field:account.asset.depreciation.line,factor:0
+msgid "Factor"
+msgstr "Percentuale"
+
+#. module: account_asset
 #: field:account.asset.asset,method_number:0
 #: field:account.asset.asset,method_number_percent:0
 msgid "Number of Depreciations/Years - method Number or Year. \n"
@@ -494,11 +424,6 @@ msgstr "Numero di Ammortamenti/Anno - metodo Numero o Anni. \n"
 #: help:account.asset.asset,prorata:0
 msgid "Indicates that the first depreciation entry for this asset have to be done from the depreciation start date instead of the first day of the fiscal year."
 msgstr "Indica che la prima riga di ammortamento per questa immobilizzazione verrà calcolata dalla data di acquisizione invece che dal primo giorno dell'anno fiscale."
-
-#. module: account_asset
-#: field:account.asset.asset,purchase_value:0
-msgid "Purchase Value"
-msgstr "Valore Acquisto"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -532,7 +457,7 @@ msgstr "Errore non puoi creare Asset ricorsivi."
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_asset_recompute_trigger
 msgid "Asset table recompute triggers"
-msgstr "Asset table recompute triggers"
+msgstr "Ricalcolo tabella ammortamento"
 
 #. module: account_asset
 #: view:asset.asset.report:0
@@ -565,7 +490,12 @@ msgstr "Categorie"
 #. module: account_asset
 #: field:account.move.line,subsequent_asset:0
 msgid "Subsequent Purchase of Asset"
-msgstr "Subsequent Purchase of Asset"
+msgstr "Acquisto successivo Cespiti"
+
+#. module: account_asset
+#: view:asset.depreciation.confirmation.wizard:0
+msgid "Compute and do not create account moves"
+msgstr "Calcola solo (non crea le registrazioni contabili che vengono inserite a mano)"
 
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_invoice
@@ -575,12 +505,12 @@ msgstr "Fattura"
 #. module: account_asset
 #: field:account.asset.depreciation.line,previous_id:0
 msgid "Previous Depreciation Line"
-msgstr "Previous Depreciation Line"
+msgstr "Precedente riga di Ammortamento"
 
 #. module: account_asset
 #: field:wizard.print.asset.report,fiscal_page_base:0
 msgid "Last printed page"
-msgstr "Last printed page"
+msgstr "Ultima pagina stampata"
 
 #. module: account_asset
 #: field:account.asset.recompute.trigger,reason:0
@@ -589,10 +519,20 @@ msgid "Reason"
 msgstr "Causale"
 
 #. module: account_asset
+#: selection:account.asset.depreciation.line,type:0
+msgid "Asset Purchase"
+msgstr "Acquisto Cespite"
+
+#. module: account_asset
 #: field:account.asset.asset,first_year_half_rata:0
 #: field:account.asset.category,first_year_half_rata:0
 msgid "First Year Half Rata"
 msgstr "Primo anno 50%"
+
+#. module: account_asset
+#: field:account.asset.category,account_plus_value_id:0
+msgid "Plus-Value Account"
+msgstr "Conto Plusvalenza"
 
 #. module: account_asset
 #: field:account.asset.asset,parent_id:0
@@ -613,7 +553,7 @@ msgstr "Ricerca Categoria Immobilizzazioni"
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "View Account Move"
-msgstr "View Account Move"
+msgstr "Visualizza Registrazione Contabile"
 
 #. module: account_asset
 #: help:account.asset.asset,method_period:0
@@ -622,13 +562,6 @@ msgstr "View Account Move"
 #: help:asset.modify,method_period:0
 msgid "Period length for the depreciation accounting entries"
 msgstr "Period length for the depreciation accounting entries"
-
-#. module: account_asset
-#: code:addons/account_asset/account_asset.py:339
-#: code:addons/account_asset/account_asset.py:471
-#, python-format
-msgid "Programming Error!"
-msgstr "Programming Error!"
 
 #. module: account_asset
 #: field:account.asset.category,method_number:0
@@ -643,10 +576,8 @@ msgstr "Riga fattura"
 
 #. module: account_asset
 #: view:account.asset.asset:0
-#: code:addons/account_asset/account_asset.py:1128
-#, python-format
 msgid "Journal Entries"
-msgstr "Journal Entries"
+msgstr "Registrazioni Contabili"
 
 #. module: account_asset
 #: selection:account.asset.asset,method_period:0
@@ -682,7 +613,7 @@ msgstr "Choose the method to use to compute the dates and number of depreciation
 #. module: account_asset
 #: selection:account.asset.depreciation.line,type:0
 msgid "Asset Removal"
-msgstr "Asset Removal"
+msgstr "Rimozione Cespite"
 
 #. module: account_asset
 #: constraint:account.account:0
@@ -699,38 +630,24 @@ msgid "Time Method"
 msgstr "Metodo Temporale"
 
 #. module: account_asset
-#: view:account.asset.asset:0
-#: selection:account.asset.asset,state:0
-#: view:asset.asset.report:0
-#: selection:wizard.print.asset.report,state:0
-msgid "Removed"
-msgstr "Eliminato"
-
-#. module: account_asset
 #: help:account.asset.asset,purchase_value:0
 msgid "This amount represent the initial value of the asset."
 msgstr "This amount represent the initial value of the asset."
 
 #. module: account_asset
-#: code:addons/account_asset/account_move.py:106
-#: code:addons/account_asset/account_move.py:160
-#, python-format
-msgid "You are not allowed to link an accounting entry to an asset.\"\n"
-"        #          \"\n"
-"You should generate such entries from the asset."
-msgstr "You are not allowed to link an accounting entry to an asset.\"\n"
-"        #          \"\n"
-"You should generate such entries from the asset."
+#: model:ir.actions.act_window,name:account_asset.action_wizard_asset_confirm
+msgid "Confirm or set draft asset"
+msgstr "Conferma o metti in Bozza il Cespite"
 
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Category"
-msgstr "Category"
+msgstr "Categoria"
 
 #. module: account_asset
-#: field:account.invoice.line,asset_id:0
-msgid "Linked Asset"
-msgstr "Linked Asset"
+#: selection:account.asset.history,method_time:0
+msgid "Number of Years"
+msgstr "Numero di Anni"
 
 #. module: account_asset
 #: help:account.asset.asset,asset_value:0
@@ -740,10 +657,16 @@ msgstr "Il Valore dell'Immobilizzazione:\n"
 "Valore Acquisto - Valore già Ammortizzato."
 
 #. module: account_asset
-#: code:addons/account_asset/report/print_asset_report.py:73
-#, python-format
-msgid "No documents found in the current selection"
-msgstr "No documents found in the current selection"
+#: help:account.asset.asset,state:0
+#: help:wizard.print.asset.report,state:0
+msgid "When an asset is created, the status is 'Draft'.\n"
+"If the asset is confirmed, the status goes in 'Running' and the depreciation lines can be posted to the accounting.\n"
+"If the last depreciation line is posted, the asset goes into the 'Close' status.\n"
+"When the removal entries are generated, the asset goes into the 'Removed' status."
+msgstr "Quando l'immbilizzazione viene create lo stato è 'Bozza'.\n"
+"Quando l'immobilizzazione viene confermata, lo stato và in 'corso' e le righe dell'ammortamento vengono pubblicate\n"
+"Quando l'ultima riga dell'ammortamento viene chiusa lo stato diventa 'Chiuso'.\n"
+"Quando l'immobilizzazione viene Venduta lo stato diventa 'Venduto'"
 
 #. module: account_asset
 #: constraint:account.move.line:0
@@ -772,25 +695,9 @@ msgid "Set to Draft"
 msgstr "Imposta come Bozza"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:759
-#, python-format
-msgid "It cannot result a negative value in the asset.'\n"
-"            #         'Purchase or salvage value are incorrect."
-msgstr "It cannot result a negative value in the asset.'\n"
-"            #         'Purchase or salvage value are incorrect."
-
-#. module: account_asset
 #: view:account.asset.asset:0
 msgid "Are you sure ?"
-msgstr "Are you sure ?"
-
-#. module: account_asset
-#: code:addons/account_asset/account_asset.py:1025
-#, python-format
-msgid "Asset {asset} contains unposted {line}lines prior to the selected period.\n"
-"Please post these entries first !"
-msgstr "Asset {asset} contains unposted {line}lines prior to the selected period.\n"
-"Please post these entries first !"
+msgstr "Sei sicuro ?"
 
 #. module: account_asset
 #: field:account.asset.asset,state:0
@@ -828,14 +735,14 @@ msgid "Error! The start date of the fiscal year must be before his end date."
 msgstr "Errore! La data di partenza dell'anno fiscale deve essere antecedente la data di fine."
 
 #. module: account_asset
-#: constraint:account.move.line:0
-msgid "Company must be the same for its related account and period."
-msgstr "Company must be the same for its related account and period."
+#: field:account.invoice.line,asset_id:0
+msgid "Linked Asset"
+msgstr "Cespite Collegato"
 
 #. module: account_asset
 #: selection:wizard.print.asset.report,type:0
 msgid "Posted Asset Report"
-msgstr "Posted Asset Report"
+msgstr "Report Cespiti"
 
 #. module: account_asset
 #: view:asset.asset.report:0
@@ -864,14 +771,15 @@ msgid "User"
 msgstr "Utente"
 
 #. module: account_asset
-#: field:account.asset.category,account_asset_id:0
-msgid "Asset Account"
-msgstr "Conto Immo bilizzazione"
+#: field:account.asset.depreciation.line,line_date:0
+#: field:account.asset.history,date:0
+msgid "Date"
+msgstr "Data"
 
 #. module: account_asset
 #: field:account.asset.asset,child_ids:0
 msgid "Child Assets"
-msgstr "Child Assets"
+msgstr "Cespiti Figli"
 
 #. module: account_asset
 #: constraint:account.move.line:0
@@ -891,7 +799,6 @@ msgstr "Degressive-Linear is only supported for Time Method = Year."
 
 #. module: account_asset
 #: view:account.asset.asset:0
-#: view:asset.depreciation.confirmation.wizard:0
 msgid "Compute"
 msgstr "Calcola"
 
@@ -901,15 +808,14 @@ msgid "Asset History"
 msgstr "Storico Immobilizzazione"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:538
-#, python-format
-msgid "The duration change of the asset conflicts with the generated accounting entry dates."
-msgstr "The duration change of the asset conflicts with the generated accounting entry dates."
-
-#. module: account_asset
 #: field:account.asset.depreciation.line,init_entry:0
 msgid "Initial Balance Entry"
-msgstr "Initial Balance Entry"
+msgstr "Saldo Iniziale"
+
+#. module: account_asset
+#: view:account.asset.depreciation.line:0
+msgid "Assets Depreciation Lines"
+msgstr "Righe di ammortamento"
 
 #. module: account_asset
 #: help:account.asset.history,method_number:0
@@ -917,21 +823,14 @@ msgid "The number of depreciations/years needed to depreciate your asset in meth
 msgstr "Il numero di ammortamenti/anno necessari per l'ammortamento dell'immobilizzazione con il metodo 'Numero o Anni'"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1252
-#, python-format
-msgid "You cannot delete a depreciation line with an associated accounting entry."
-msgstr "You cannot delete a depreciation line with an associated accounting entry."
-
-#. module: account_asset
 #: help:asset.depreciation.confirmation.wizard,period_id:0
 msgid "Choose the period for which you want to automatically post the depreciation lines of running assets"
 msgstr "Selezionare il periodo per il quale saranno create automaticamente le righe d'ammortamento delle immobilizzazioni attive."
 
 #. module: account_asset
-#: field:account.asset.asset,active:0
-#: field:account.asset.category,active:0
-msgid "Active"
-msgstr "Attivo"
+#: field:account.asset.category,account_asset_id:0
+msgid "Asset Account"
+msgstr "Conto Immobilizzazione"
 
 #. module: account_asset
 #: sql_constraint:account.invoice:0
@@ -949,19 +848,9 @@ msgid "Decrease Value"
 msgstr "Valore Ammortamento"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1271
-#: code:addons/account_asset/account_move.py:42
-#, python-format
-msgid "You are not allowed to remove an accounting entry linked to an asset.\n"
-"You should remove such entries from the asset."
-msgstr "You are not allowed to remove an accounting entry linked to an asset.\n"
-"You should remove such entries from the asset."
-
-#. module: account_asset
-#: view:account.asset.asset:0
-#: field:account.asset.asset,history_ids:0
-msgid "History"
-msgstr "Storico"
+#: view:asset.depreciation.confirmation.wizard:0
+msgid "Compute and create account moves"
+msgstr "Calcola e create le registrazioni contabili"
 
 #. module: account_asset
 #: view:asset.depreciation.confirmation.wizard:0
@@ -969,10 +858,17 @@ msgid "Compute Asset"
 msgstr "Calcola Ammortamenti"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:669
-#, python-format
-msgid "Generate Asset Removal entries"
-msgstr "Generate Asset Removal entries"
+#: view:account.asset.asset:0
+#: selection:account.asset.asset,state:0
+#: view:asset.asset.report:0
+#: selection:wizard.print.asset.report,state:0
+msgid "Removed"
+msgstr "Eliminato"
+
+#. module: account_asset
+#: selection:wizard.print.asset.report,state:0
+msgid "All (and draft if simulated)"
+msgstr "Tutti (e in bozza se simulato)"
 
 #. module: account_asset
 #: constraint:account.account:0
@@ -983,7 +879,7 @@ msgstr "The Asset Account defined in the Asset Category must be equal to the acc
 #: view:account.asset.remove:0
 #: model:ir.model,name:account_asset.model_account_asset_remove
 msgid "Remove Asset"
-msgstr "Remove Asset"
+msgstr "Rimuovi Cespite"
 
 #. module: account_asset
 #: constraint:account.account:0
@@ -1020,7 +916,6 @@ msgstr "Completato"
 
 #. module: account_asset
 #: field:account.account,asset_category_id:0
-#: field:account.asset.asset,category_id:0
 #: view:account.asset.category:0
 #: field:account.invoice.line,asset_category_id:0
 #: field:account.move.line,asset_category_id:0
@@ -1038,9 +933,9 @@ msgid "Year"
 msgstr "Anno"
 
 #. module: account_asset
+#: view:account.asset.confirm:0
 #: view:account.asset.remove:0
 #: view:asset.depreciation.confirmation.wizard:0
-#: view:asset.modify:0
 #: view:wizard.print.asset.report:0
 msgid "Cancel"
 msgstr "Annulla"
@@ -1072,11 +967,6 @@ msgid "Journal Items"
 msgstr "Voci Giornale"
 
 #. module: account_asset
-#: view:asset.modify:0
-msgid "Asset Durations to Modify"
-msgstr "Durate Immobilizzazione da Modificare"
-
-#. module: account_asset
 #: field:account.asset.recompute.trigger,date_completed:0
 msgid "Completion Date"
 msgstr "Data completamento"
@@ -1087,10 +977,14 @@ msgid "Keep empty to use the period of the removal ate."
 msgstr "Keep empty to use the period of the removal ate."
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:52
-#, python-format
-msgid "Degressive"
-msgstr "Degressive"
+#: constraint:account.move.line:0
+msgid "Company must be the same for its related account and period."
+msgstr "Company must be the same for its related account and period."
+
+#. module: account_asset
+#: help:account.asset.category,method_number:0
+msgid "The number of depreciations/years needed to depreciate your asset"
+msgstr "Il numero degli ammortameti/anni necessari per l'ammortamneto dell'Immobilizzazione"
 
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_account
@@ -1098,10 +992,9 @@ msgid "Account"
 msgstr "Conto"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:472
-#, python-format
-msgid "Illegal value %s in asset.method_period."
-msgstr "Illegal value %s in asset.method_period."
+#: field:account.asset.asset,remove_value:0
+msgid "Remove Value"
+msgstr "Valore Residuo"
 
 #. module: account_asset
 #: field:wizard.print.asset.report,date_start:0
@@ -1116,13 +1009,7 @@ msgstr "Stampa"
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Init"
-msgstr "Init"
-
-#. module: account_asset
-#: code:addons/account_asset/report/print_asset_report.py:80
-#, python-format
-msgid "No documents"
-msgstr "No documents"
+msgstr "Iniziale"
 
 #. module: account_asset
 #: view:account.asset.asset:0
@@ -1138,7 +1025,7 @@ msgstr "Selezione la categoria dell'Immobilizzazione"
 #. module: account_asset
 #: view:account.asset.remove:0
 msgid "Specify the asset removal date"
-msgstr "Specify the asset removal date"
+msgstr "Specifica la data di rimozione del cespite"
 
 #. module: account_asset
 #: field:account.asset.asset,name:0
@@ -1173,20 +1060,14 @@ msgid "Depreciation Dates"
 msgstr "Date Ammortamento"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1249
-#, python-format
-msgid "You cannot remove an asset line of type 'Asset Value'."
-msgstr "Non si può eliminare una riga d'Ammortamentodi tipo 'Valore Immobilizzazione'."
-
-#. module: account_asset
 #: field:account.asset.category,journal_id:0
 msgid "Journal"
 msgstr "Sezionale"
 
 #. module: account_asset
-#: field:account.asset.history,name:0
-msgid "History name"
-msgstr "Nome Storico"
+#: view:account.asset.confirm:0
+msgid "Confirm Assets"
+msgstr "Conferma Cespiti"
 
 #. module: account_asset
 #: help:account.asset.asset,salvage_value:0
@@ -1201,6 +1082,11 @@ msgid "Company Currency"
 msgstr "Company Currency"
 
 #. module: account_asset
+#: selection:account.asset.depreciation.line,type:0
+msgid "Asset Sale"
+msgstr "Vendita Cespite"
+
+#. module: account_asset
 #: help:account.asset.recompute.trigger,date_trigger:0
 msgid "Date of the event triggering the need to recompute the Asset Tables."
 msgstr "Date of the event triggering the need to recompute the Asset Tables."
@@ -1209,13 +1095,12 @@ msgstr "Date of the event triggering the need to recompute the Asset Tables."
 #: model:ir.actions.act_window,name:account_asset.action_print_asset_report
 #: model:ir.actions.report.xml,name:account_asset.account_asset_report_id
 msgid "Account Asset Report"
-msgstr "Account Asset Report"
+msgstr "Report Cespiti"
 
 #. module: account_asset
-#: code:addons/account_asset/account_move.py:57
-#, python-format
-msgid "You cannot change an accounting entry linked to an asset depreciation line."
-msgstr "You cannot change an accounting entry linked to an asset depreciation line."
+#: sql_constraint:account.move.line:0
+msgid "Wrong date maturity in accounting entry !"
+msgstr "Wrong date maturity in accounting entry !"
 
 #. module: account_asset
 #: field:account.asset.depreciation.line,move_check:0
@@ -1240,6 +1125,11 @@ msgstr "Choose the method to use to compute the dates and number of depreciation
 "The 'Number of Years' method is for Financial Assets whereas  you should use the 'Number of Depreciations' and 'Ending Date' for Deferred Expenses or Deferred Income purposes."
 
 #. module: account_asset
+#: model:ir.model,name:account_asset.model_account_asset_confirm
+msgid "account.asset.confirm"
+msgstr "account.asset.confirm"
+
+#. module: account_asset
 #: field:account.asset.category,name:0
 #: field:wizard.print.asset.report,name:0
 msgid "Name"
@@ -1249,7 +1139,7 @@ msgstr "Nome"
 #: view:account.asset.asset:0
 #: view:asset.asset.report:0
 msgid "Assets in Close State"
-msgstr "Assets in Close State"
+msgstr "Cespiti in stato Chiuso"
 
 #. module: account_asset
 #: help:account.asset.category,open_asset:0
@@ -1260,12 +1150,6 @@ msgstr "Selezionare per confermare automaticamento le immobilizzazioni di questa
 #: field:asset.asset.report,unposted_value:0
 msgid "Unposted Amount"
 msgstr "Importi Non Pubblicati"
-
-#. module: account_asset
-#: code:addons/account_asset/account_asset.py:51
-#, python-format
-msgid "Linear"
-msgstr "Lineare"
 
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_fiscalyear
@@ -1279,6 +1163,7 @@ msgid "Asset depreciation line"
 msgstr "Riga ammortamento immobilizzazione"
 
 #. module: account_asset
+#: field:account.asset.asset,category_id:0
 #: view:account.asset.category:0
 #: field:asset.asset.report,asset_category_id:0
 #: model:ir.model,name:account_asset.model_account_asset_category
@@ -1291,32 +1176,16 @@ msgid "Depreciation"
 msgstr "Ammortamento"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:1275
-#, python-format
-msgid "You cannot change a depreciation line with an associated accounting entry."
-msgstr "You cannot change a depreciation line with an associated accounting entry."
-
-#. module: account_asset
-#: code:addons/account_asset/wizard/account_asset_remove.py:61
-#, python-format
-msgid "The removal date must be after the last depreciation date."
-msgstr "The removal date must be after the last depreciation date."
-
-#. module: account_asset
 #: field:asset.asset.report,depreciation_value:0
 msgid "Amount of Depreciation Lines"
 msgstr "Importo delle Righe d'Ammortamento"
 
 #. module: account_asset
-#: code:addons/account_asset/wizard/wizard_asset_compute.py:49
-#: code:addons/account_asset/wizard/wizard_asset_compute.py:51
-#, python-format
-msgid "Created Asset Moves"
-msgstr "Movimenti Immobilizzazioni Creati"
+#: view:account.asset.confirm:0
+msgid "Confirm or Set Draft Asset"
+msgstr "Conferma o imposta a Bozza il Cespite"
 
 #. module: account_asset
-#: view:asset.modify:0
-#: model:ir.actions.act_window,name:account_asset.action_asset_modify
 #: model:ir.model,name:account_asset.model_asset_modify
 msgid "Modify Asset"
 msgstr "Modifica Immobilizzazione"
@@ -1332,22 +1201,9 @@ msgid "Account Entry"
 msgstr "Registrazione Contabile"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:658
-#, python-format
-msgid "You cannot close an asset which has not been fully depreciated.\n"
-"Please create the remaining depreciation entry via the Depreciation Board."
-msgstr "You cannot close an asset which has not been fully depreciated.\n"
-"Please create the remaining depreciation entry via the Depreciation Board."
-
-#. module: account_asset
-#: constraint:account.move:0
-msgid "You can not create more than one move per period on centralized journal"
-msgstr "Non è possibile creare più di un movimento per periodo su un sezionale centralizzato"
-
-#. module: account_asset
-#: help:account.asset.category,method_number:0
-msgid "The number of depreciations/years needed to depreciate your asset"
-msgstr "Il numero degli ammortameti/anni necessari per l'ammortamneto dell'Immobilizzazione"
+#: field:account.asset.history,name:0
+msgid "History name"
+msgstr "Nome Storico"
 
 #. module: account_asset
 #: selection:wizard.print.asset.report,type:0
@@ -1355,15 +1211,12 @@ msgid "Simulated Asset Report"
 msgstr "Report simulato Immobilizzazioni"
 
 #. module: account_asset
-#: field:account.asset.depreciation.line,line_date:0
-#: field:account.asset.history,date:0
-msgid "Date"
-msgstr "Data"
+#: model:ir.actions.act_window,name:account_asset.action_wizard_asset_remove
+msgid "Remove asset"
+msgstr "Remove asset"
 
 #. module: account_asset
 #: selection:account.asset.history,method_time:0
-#: code:addons/account_asset/account_asset.py:59
-#, python-format
 msgid "Number of Depreciations"
 msgstr "Numero di Ammortamenti"
 
@@ -1373,10 +1226,9 @@ msgid "Create Move"
 msgstr "Crea Movimento"
 
 #. module: account_asset
-#: code:addons/account_asset/account_asset.py:185
-#, python-format
-msgid "You cannot delete an asset that contains posted depreciation lines. You must Deactivate"
-msgstr "Non puoi cancellare l'asset che contiene degli ammortamenti. Bisogna disattivarlo."
+#: sql_constraint:account.move.line:0
+msgid "Wrong credit or debit value in accounting entry !"
+msgstr "Valore di credito o debito errato nella registrazione contabile !"
 
 #. module: account_asset
 #: field:account.asset.recompute.trigger,date_trigger:0
