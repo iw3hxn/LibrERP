@@ -64,7 +64,7 @@ msgstr "Mostra righe a zero"
 #. module: stock_product_zero
 #: field:stock.inventory.line,product_qty_calc:0
 msgid "Quantity Calculated"
-msgstr "Quantità Calcolata"
+msgstr "Quantità a Sistema"
 
 #. module: stock_product_zero
 #: code:addons/stock_product_zero/stock.py:36
@@ -178,3 +178,12 @@ msgstr "Inventari"
 msgid "Unit"
 msgstr "Unità"
 
+#. module: stock_product_zero
+#: field:stock.inventory,total_count:0
+msgid "Total Count"
+msgstr "Pezzi Contati"
+
+#. module: stock_product_zero
+#: field:stock.inventory,total_qty_calc:0
+msgid "Total Calculated"
+msgstr "Pezzi Da Sistema"

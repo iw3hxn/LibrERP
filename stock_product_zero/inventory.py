@@ -31,6 +31,44 @@ _logger.setLevel(logging.DEBUG)
 
 class stock_inventory(orm.Model):
     _inherit = "stock.inventory"
+
+    def _total_account(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for inventory in self.browse(cr, uid, ids, context=context):
+            res[inventory.id] = {
+                'total_count': 0.0,
+                'total_qty_calc': 0.0,
+            }
+            inventory_line_ids = self.pool['stock.inventory.line'].search(cr, uid, [('inventory_id', '=', inventory.id)], context=context)
+
+            if inventory_line_ids:
+                cr.execute("""
+                    SELECT COALESCE(SUM(product_qty))
+                    FROM stock_inventory_line
+                    WHERE id IN ({inventory_line_ids})
+                """.format(inventory_line_ids=', '.join([str(line_id) for line_id in inventory_line_ids])))
+                total_count = cr.fetchone()[0] or 0.0
+                res[inventory.id]['total_count'] = total_count
+
+                cr.execute("""
+                    SELECT COALESCE(SUM(product_qty_calc))
+                    FROM stock_inventory_line
+                    WHERE id IN ({inventory_line_ids})
+                """.format(inventory_line_ids=', '.join([str(line_id) for line_id in inventory_line_ids])))
+                total_qty_calc = cr.fetchone()[0] or 0.0
+                res[inventory.id]['total_qty_calc'] = total_qty_calc
+
+        return res
+
+    def _get_inventory(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        for line in self.pool['stock.inventory.line'].browse(cr, uid, ids, context=context):
+            if line.inventory_id:
+                result[line.inventory_id.id] = True
+        return result.keys()
+
     _columns = {
         # 'inventory_line_id': fields.one2many('stock.inventory.line', 'inventory_id', 'Inventories', states={'done': [('readonly', True)]}),
         'inventory_line_id': one2many_sorted.one2many_sorted
@@ -48,8 +86,16 @@ class stock_inventory(orm.Model):
 
         'move_ids': one2many_sorted.many2many_sorted('stock.move', 'stock_inventory_move_rel', 'inventory_id',
                                                      'move_id', 'Created Moves',
-                                                     order='product_id.name, prodlot_id.prefix, prodlot_id.name')
-    }
+                                                     order='product_id.name, prodlot_id.prefix, prodlot_id.name'),
+        'total_count': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
+                                       multi='sums', string="Total Count", store={
+                'stock.inventory.line': (_get_inventory, ['product_qty'], 60),
+            }, ),
+        'total_qty_calc': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
+                                       multi='sums', string="Total Calculated", store={
+                'stock.inventory.line': (_get_inventory, ['product_qty_calc'], 40),
+            }, ),
+        }
     _order = 'date desc'
 
 
@@ -60,10 +106,12 @@ class stock_inventory_line(orm.Model):
         start_time = datetime.now()
         value = {}
         for inventory_line in self.browse(cr, uid, ids, context):
-            if inventory_line.product_qty_calc != inventory_line.product_qty:
-                value[inventory_line.id] = 'red'
-            elif inventory_line.product_qty_calc < 0:
+            if inventory_line.product_qty_calc < 0:
                 value[inventory_line.id] = 'fuchsia'
+            elif inventory_line.product_qty_calc > inventory_line.product_qty:
+                value[inventory_line.id] = 'red'
+            elif inventory_line.product_qty_calc < inventory_line.product_qty:
+                value[inventory_line.id] = 'orange'
             else:
                 value[inventory_line.id] = 'black'
 

@@ -14,12 +14,36 @@
                 </field>
             </field>
         </record>
+
+        <record id="stock_inventory_tree" model="ir.ui.view">
+            <field name="name">stock.inventory.tree</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_tree"/>
+            <field name="arch" type="xml">
+                <field name="date" position="after">
+                    <field name="total_count" />
+                    <field name="total_qty_calc" />
+                </field>
+            </field>
+        </record>
+
         <record id="view_inventory_sorted_form" model="ir.ui.view">
             <field name="name">stock.inventory.sorted.form</field>
             <field name="model">stock.inventory</field>
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
+                <field name="date" position="after">
+                    <field name="total_count" />
+                    <field name="total_qty_calc" />
+                </field>
+                <xpath expr="/form/notebook/page/field[@name='inventory_line_id']/tree[@string='Products']" position="attributes">
+                    <attribute name="colors">fuchsia:row_color=='fuchsia';grey:row_color=='grey';blue:row_color=='blue';red:row_color=='red';green:row_color=='green';orange:row_color=='orange'</attribute>
+                </xpath>
+                <field name="product_qty" position="after">
+                    <field context="{'location':location_id, 'uom':product_uom, 'to_date':parent.date}" name="product_qty_calc" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)" />
+                    <field name="row_color" invisible="1" />
+                </field>
                 <xpath expr="/form/notebook/page[@string='General Informations']" position="after">
                     <page string="Order by Location, Product" position="after">
                         <field colspan="4" name="inventory_line_loc_id" nolabel="1" widget="one2many_list" readonly="1">
@@ -61,5 +85,30 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="view_inventory_line_calc_form" model="ir.ui.view">
+            <field name="name">stock.inventory.line.calc.form</field>
+            <field name="model">stock.inventory.line</field>
+            <field name="inherit_id" ref="stock.view_inventory_line_form"/>
+            <field name="arch" type="xml">
+                <field name="product_qty" position="after">
+                    <field name="product_qty_calc"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="stock_inventory_line_calc_tree" model="ir.ui.view">
+            <field name="name">stock.inventory.line.calc.tree</field>
+            <field name="model">stock.inventory.line</field>
+            <field name="inherit_id" ref="stock.stock_inventory_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="product_qty" position="after">
+                    <field context="{'location':location_id, 'uom':product_uom, 'to_date':parent.date}" name="product_qty_calc" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)" />
+                </field>
+            </field>
+        </record>
+
+
+
     </data>
 </openerp>
