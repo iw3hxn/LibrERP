@@ -22,7 +22,8 @@
 from openerp.osv import fields, orm
 import decimal_precision as dp
 import one2many_sorted
-from datetime import datetime
+import datetime
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -69,8 +70,40 @@ class stock_inventory(orm.Model):
                 result[line.inventory_id.id] = True
         return result.keys()
 
+    def _get_inventory_years(self, cr, uid, fields, context=None):
+        result = []
+        first_inventory_id = self.search(cr, uid, [('date', '!=', False)], order='date asc', limit=1, context=context)
+        if first_inventory_id:
+            first_inventory = self.browse(cr, uid, first_inventory_id[0], context)
+            first_year = datetime.datetime.strptime(first_inventory.date, DEFAULT_SERVER_DATETIME_FORMAT).year
+        else:
+            first_year = datetime.date.today().year
+
+        for year in range(int(first_year), int(datetime.date.today().year) + 1):
+            result.append((str(year), str(year)))
+        return result
+
+    def _get_inventory_year(self, cr, uid, ids, field_name, arg, context):
+        inventories = self.browse(cr, uid, ids, context)
+
+        result = {}
+        for inventory in inventories:
+            if inventory.date:
+                result[inventory.id] = datetime.datetime.strptime(inventory.date,
+                                                                      DEFAULT_SERVER_DATETIME_FORMAT).year
+            else:
+                result[inventory.id] = False
+        return result
+
     _columns = {
         # 'inventory_line_id': fields.one2many('stock.inventory.line', 'inventory_id', 'Inventories', states={'done': [('readonly', True)]}),
+        'year': fields.function(_get_inventory_year, 'Year', type='selection', selection=_get_inventory_years,
+                                method=True, help="Select year"),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+
+        'product_id': fields.related('inventory_line_id', 'product_id', type='many2one', relation='product.product',
+                                     string='Product'),
         'inventory_line_id': one2many_sorted.one2many_sorted
         ('stock.inventory.line'
          , 'inventory_id'
@@ -95,15 +128,33 @@ class stock_inventory(orm.Model):
                                        multi='sums', string="Total Calculated", store={
                 'stock.inventory.line': (_get_inventory, ['product_qty_calc'], 40),
             }, ),
-        }
+        'user_id': fields.many2one('res.users', 'User'),
+    }
+
+    _defaults = {
+        'user_id': lambda obj, cr, uid, context: uid,
+    }
+
     _order = 'date desc'
+
+    def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
+        new_args = []
+        for arg in args:
+            if arg[0] == 'year':
+                new_args.append(('date', '>=', '{year}-01-01'.format(year=arg[2])))
+                new_args.append(('date', '<=', '{year}-12-31'.format(year=arg[2])))
+            else:
+                new_args.append(arg)
+
+        return super(stock_inventory, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order,
+                                                 context=context, count=count)
 
 
 class stock_inventory_line(orm.Model):
     _inherit = "stock.inventory.line"
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
-        start_time = datetime.now()
+        start_time = datetime.datetime.now()
         value = {}
         for inventory_line in self.browse(cr, uid, ids, context):
             if inventory_line.product_qty_calc < 0:
@@ -115,7 +166,7 @@ class stock_inventory_line(orm.Model):
             else:
                 value[inventory_line.id] = 'black'
 
-        end_time = datetime.now()
+        end_time = datetime.datetime.now()
         duration_seconds = (end_time - start_time)
         duration = '{sec}'.format(sec=duration_seconds)
         _logger.info(u'Inventory Line get in {duration}'.format(duration=duration))

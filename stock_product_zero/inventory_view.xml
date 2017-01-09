@@ -15,11 +15,46 @@
             </field>
         </record>
 
+        <record id="view_stock_inventory_enhanced_filter" model="ir.ui.view">
+            <field name="name">stock.inventory.enhanced.filter</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="user_id" />
+                </field>
+                <field name="date" position="after">
+                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    <filter icon="terp-go-month"
+                        string="Last Month"
+                        name="last_month"
+                        help="Inventory of the last month"
+                        domain="[('date', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
+                    />
+                    <filter icon="terp-go-month"
+                        string="Current Month"
+                        name="current_month"
+                        help="Inventory of the current month"
+                        domain="[('date', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
+                    />
+
+                    <field name="year" string="Year" />
+                    <separator orientation="vertical"/>
+                    <field name="product_id"/>
+                </field>
+            </field>
+        </record>
+
         <record id="stock_inventory_tree" model="ir.ui.view">
             <field name="name">stock.inventory.tree</field>
             <field name="model">stock.inventory</field>
             <field name="inherit_id" ref="stock.view_inventory_tree"/>
             <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="user_id" />
+                </field>
                 <field name="date" position="after">
                     <field name="total_count" />
                     <field name="total_qty_calc" />

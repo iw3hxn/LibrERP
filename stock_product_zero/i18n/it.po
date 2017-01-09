@@ -187,3 +187,53 @@ msgstr "Pezzi Contati"
 #: field:stock.inventory,total_qty_calc:0
 msgid "Total Calculated"
 msgstr "Pezzi Da Sistema"
+
+#. module: stock_product_zero
+#: field:stock.inventory,user_id:0
+msgid "User"
+msgstr "Utente"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Last Month"
+msgstr "Mese Precedente"
+
+#. module: stock_product_zero
+#: help:stock.inventory,year:0
+msgid "Select year"
+msgstr "Scegli l'Anno"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Current Month"
+msgstr "Mese Corrente"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Year"
+msgstr "Anno"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Inventory of the last month"
+msgstr "Inventari del mese precedente"
+
+#. module: stock_product_zero
+#: view:stock.inventory:0
+msgid "Inventory of the current month"
+msgstr "Movimenti del mese corrente"
+
+#. module: stock_product_zero
+#: field:stock.inventory,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: stock_product_zero
+#: field:stock.inventory,date_to:0
+msgid "Date to"
+msgstr "Al"
+
+#. module: stock_product_zero
+#: field:stock.inventory,product_id:0
+msgid "Product"
+msgstr "Prodotto"
