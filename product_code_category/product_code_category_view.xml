@@ -32,7 +32,7 @@
             <field name="inherit_id" ref="product.product_category_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/field[@name='sequence']" position="after">
-                    <field name="product_sequence_id" widget="selection"/>
+                    <field name="product_sequence_id" />
                 </xpath>
             </field>
         </record>
