@@ -154,17 +154,19 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         partner_vat = self.pool['res.partner'].search(cr, uid, [('vat', '=', vat)], context=context)
         if partner_vat:
             partner = self.pool['res.partner'].browse(cr, uid, partner_vat, context)[0]
-            return {'value': {
-                'partner_name': partner.name,
-                'vat': partner.vat,
-                'partner_id': partner.id,
-                'street': partner.address and partner.address[0].street or '',
-                'zip': partner.address and partner.address[0].zip or '',
-                'city': partner.address and partner.address[0].city or '',
-                'province': partner.address and partner.address[0].province and partner.address[0].province.id or '',
-                'region': partner.address and partner.address[0].region and partner.address[0].region.id or '',
-                'country_id': partner.address and partner.address[0].country_id and partner.address[0].country_id.id or '',
-            }}
+            return {
+                'value': {
+                    'partner_name': partner.name,
+                    'vat': partner.vat,
+                    'partner_id': partner.id,
+                    'street': partner.address and partner.address[0].street or '',
+                    'zip': partner.address and partner.address[0].zip or '',
+                    'city': partner.address and partner.address[0].city or '',
+                    'province': partner.address and partner.address[0].province and partner.address[0].province.id or '',
+                    'region': partner.address and partner.address[0].region and partner.address[0].region.id or '',
+                    'country_id': partner.address and partner.address[0].country_id and partner.address[0].country_id.id or '',
+                }
+            }
         else:
             partner_vat_all = self.pool['res.partner'].search(cr, SUPERUSER_ID, [('vat', '=', vat)], context=context)
             if partner_vat_all:
@@ -172,6 +174,23 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
                 raise orm.except_orm('Errore!',
                     "Cliente {partner} con P.Iva {vat} già presente ed assegnato all'utente {user}!".format(vat=vat, partner=partner.name, user=partner.user_id.name or ''))
                 return False
+            else:
+                vat_change = self.pool['res.partner'].vat_change(cr, uid, ids, vat, context)
+                vat_value = vat_change.get('value', False)
+                if vat_value:
+                    address = vat_value.get('address', False) and vat_value['address'][0][2] or {}
+                    return {
+                        'value': {
+                            'partner_name': vat_value.get('name', ''),
+                            'vat': vat,
+                            'street': address.get('street', ''),
+                            'zip': address.get('zip', ''),
+                            'city': address.get('city', ''),
+                            'province': address.get('province', False),
+                            'region': address.get('region', False),
+                            'country_id': address.get('country_id', False),
+                        }
+                    }
 
         return {'value': {}}
 
