@@ -642,8 +642,8 @@ label.error {
     border: 1px transparent;
     border-right-color: black;
     border-bottom-color: black;
-    background: #f7f7f7;
 /*
+    background: #f7f7f7;
     background: -moz-linear-gradient(top, #FAFAFA 0%, #f7f7f7 60%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FAFAFA), color-stop(60%,#f7f7f7));
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FAFAFA', endColorstr='#f7f7f7',GradientType=0 );
@@ -1510,7 +1510,7 @@ label.error {
 }
 
 .openerp table.oe_frame .oe-listview-content td {
-    color: inherit;
+    /*color: inherit;*/
 }
 
 .blockUI.blockOverlay {
