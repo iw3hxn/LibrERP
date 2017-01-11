@@ -1510,7 +1510,7 @@ label.error {
 }
 
 .openerp table.oe_frame .oe-listview-content td {
-    /*color: inherit;*/
+    color: inherit;
 }
 
 .blockUI.blockOverlay {
