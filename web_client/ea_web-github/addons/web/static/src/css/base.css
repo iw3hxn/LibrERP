@@ -37,7 +37,7 @@ body.openerp {
 .openerp button, 
 .openerp .ui-widget {
 
-    font-family: Helvetica, Arial, sans-serif
+    font-family: Helvetica, Arial, sans-serif;
     font-size:90%;
     border: 0px;
 
@@ -748,6 +748,7 @@ label.error {
 .openerp div.oe_footer {
     overflow: hidden;
     position: relative;
+    background: #e9ebee;
 }
 .openerp div.oe_footer p.oe_footer_powered {
     left: 50%;
@@ -1005,7 +1006,7 @@ label.error {
 .openerp .oe-listview thead table {
     width: 100%;
     border:  none;
-    background: #FFF none repeat scroll 0% 0%;
+    background: #d1d1d1 none repeat scroll 0% 0%;
 }
 .openerp .oe-listview tr.odd {
     /*background-color: #f0f0f0;*/
@@ -1159,7 +1160,7 @@ label.error {
 .openerp .oe-list-pager .oe-pager-state {
     cursor: pointer;
     font-size: small;
-    color: #555;
+    color: #000;
 }
 
 .openerp .oe_button.oe_button_pager,
@@ -1177,6 +1178,7 @@ label.error {
     padding: 0 3px 0 3px;
     margin: 0;
     height: 19px;
+    border: 0px solid #00a3da;
 }
 .openerp .oe-listview .oe-group-name {
     padding-right: 1em;
@@ -1192,7 +1194,7 @@ label.error {
 .openerp .oe-listview .oe-list-footer {
     text-align: center;
     white-space: nowrap;
-    color: black;
+    color: #FFF;
     font-size: small;
     border-top: 1px solid #333;
 }
@@ -1246,7 +1248,7 @@ label.error {
 
 .openerp .oe_form_notebook ul.ui-tabs-nav {
     padding-left: 0;
-    background: none;
+    background: #FAFAFA;
     border-width: 0;
     border-radius: 0;
     height: 20px;
@@ -1634,6 +1636,7 @@ label.error {
 .openerp .oe_forms select,
 .openerp .oe_forms .oe_button {
     height: 25px;
+    border-radius: 3px;
     /*max-width: 250px;*/
 }
 
@@ -1742,7 +1745,7 @@ label.error {
 .openerp td.required select,
 .openerp td.required textarea,
 .openerp td.required table.oe-listview-content {
-    background-color: #D2D2FF !important;
+    background-color: #ECF0F7 !important;
 }
 .openerp td.invalid input, .openerp td.invalid select, .openerp td.invalid textarea {
     background-color: #F66 !important;
@@ -1993,7 +1996,7 @@ label.error {
     padding-right: 21px;
     padding-top: 3px;
     height: 22px;
-    border-top: 1px solid #00a3da;
+    border-top: 1px solid #d6d7da;
   /*   background: #f7f7f7;
     border: 1px solid #CECECE;
     border-radius: 12px; */
@@ -2484,7 +2487,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
     color: black;
     font-weight: bold;
     background: #e3e3e3;
-    border: 1px solid #00a3da;
+    border: 1px solid #c9c9c9;
     border-radius: 3px;
         font-size: medium;
 }
