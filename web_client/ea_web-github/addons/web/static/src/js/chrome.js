@@ -1098,15 +1098,15 @@ openerp.web.WebClient = openerp.web.OldWidget.extend(/** @lends openerp.web.WebC
     },
     _get_version_label: function() {
         if (this.session.openerp_entreprise) {
-            return 'OpenERP';
+            return 'LibrERP';
         } else {
-            return _t("OpenERP - Unsupported/Community Version");
+            return _t("LibrERP - Unsupported/Community Version");
         }
     },
     set_title: function(title) {
         title = _.str.clean(title);
         var sep = _.isEmpty(title) ? '' : ' - ';
-        document.title = title + sep + 'OpenERP';
+        document.title = title + sep + 'LibrERP';
     },
     start: function() {
         var self = this;

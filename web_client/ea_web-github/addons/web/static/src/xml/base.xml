@@ -402,12 +402,13 @@
     <div class="header_corner">
         <ul class="block">
             
-            <li class="request">
-                <a href="javascript:void(0)" title="Request" class="request"><img t-att-src='_s + "/web/static/src/img/header-requests.png"' width="16" height="16" border="0"/></a>
-            </li>
-            <li>
-                <a t-att-href="'/' + widget.qs" title="Home" class="home"><img t-att-src='_s + "/web/static/src/img/header-home.png"' width="16" height="16" border="0"/></a>
-            </li>
+            <!--<li class="request">-->
+                <!--<a href="javascript:void(0)" title="Request" class="request"><img t-att-src='_s + "/web/static/src/img/header-requests.png"' width="16" height="16" border="0"/></a>-->
+            <!--</li>-->
+
+            <!--<li>-->
+                <!--<a t-att-href="'/' + widget.qs" title="Home" class="home"><img t-att-src='_s + "/web/static/src/img/header-home.png"' width="16" height="16" border="0"/></a>-->
+            <!--</li>-->
             <li class="preferences">
                 <a href="javascript:void(0)" title="Preferences" class="preferences"><img t-att-src='_s + "/web/static/src/img/header-preferences.png"' width="16" height="16" border="0"/></a>
             </li>
@@ -1194,6 +1195,18 @@
         <t t-set="i" t-value="i + 1"/>
     </t>
 </t>
+<t t-name="FieldMany2ManyTag.readonly">
+    <div class="oe_form_field oe_tags" t-att-style="widget.node.attrs.style">
+        <t t-set="i" t-value="0"/>
+        <t t-foreach="elements" t-as="el">
+            <span class="oe_tag" t-att-data-index="i">
+                <t t-esc="el[1]"/>
+            </span>
+            <t t-set="i" t-value="i + 1"/>
+        </t>
+    </div>
+</t>
+
 <t t-name="FieldMany2ManyTags.readonly">
     <div class="oe_form_field oe_tags" t-att-style="widget.node.attrs.style">
         <t t-set="i" t-value="0"/>
