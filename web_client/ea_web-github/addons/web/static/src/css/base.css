@@ -1654,7 +1654,7 @@ label.error {
     /*min-width: 100%;*/
     width: 100%;
     height: 100%;
-    border: 1px solid #00a3da;
+    /*border: 1px solid #00a3da;*/
     /* border-color: #E30000; */
 }
 @-moz-document url-prefix() {
@@ -1812,6 +1812,7 @@ label.error {
     border: 0px;
 /*#    background: transparent url("/web/static/src/img/form_sheetbg.png") repeat scroll 0% 0%;*/
     background-color: #3b5998;
+    color: #FFF;
 }
 /* progress bars */
 .openerp .ui-progressbar .ui-widget-header {
