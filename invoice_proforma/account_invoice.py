@@ -41,6 +41,8 @@ class account_invoice(orm.Model):
             states={'draft': [('readonly', False)]},
             select=True, help="Keep empty to use the current date",
             ),
+        'date_invoice': fields.date('Invoice Date', readonly=True, states={'draft': [('readonly', False)], 'proforma2': [('readonly', False)]}, select=True,
+                                    help="Keep empty to use the current date"),
     }
 
     def action_proforma(self, cr, uid, ids, context=None):

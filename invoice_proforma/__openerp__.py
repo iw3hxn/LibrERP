@@ -21,7 +21,7 @@
 
 {
     'name': 'Proforma Invoice',
-    'version': '3.0.1.0',
+    'version': '3.1.1.1',
     'category': 'Account',
     'description': """
     This module covers some requirements regarding the proforma invoice.

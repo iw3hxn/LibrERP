@@ -10,8 +10,8 @@
                 <field name="number" position="after">
                     <field name="proforma_number" states="proforma2"/>
                 </field> 
-                <field name="date_invoice" position="replace">
-                    <field name="date_invoice" attrs="{'invisible':[('state','=','proforma2')]}"/>
+                <field name="date_invoice" position="after">
+                    <!--<field name="date_invoice" attrs="{'invisible':[('state','=','proforma2')]}"/>-->
                     <field name="date_proforma" attrs="{'invisible':[('state','!=','proforma2')]}"/>
                 </field>     
             </field>
