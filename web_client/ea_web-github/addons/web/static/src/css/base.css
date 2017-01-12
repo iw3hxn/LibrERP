@@ -671,7 +671,7 @@ label.error {
 }
 /* User name header */
 .openerp .header_title small {
-    color: #6e6e6e;
+    color: #000;
     font-size: small;
     font-weight: normal;
 }
@@ -1194,8 +1194,9 @@ label.error {
 .openerp .oe-listview .oe-list-footer {
     text-align: center;
     white-space: nowrap;
-    color: #FFF;
+    color: #000;
     font-size: small;
+    font-weight: bold;
     border-top: 1px solid #333;
 }
 .openerp .oe-listview .oe-list-footer span {
