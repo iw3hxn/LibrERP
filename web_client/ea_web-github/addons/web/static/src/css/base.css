@@ -1181,7 +1181,7 @@ label.error {
     padding: 0 3px 0 3px;
     margin: 0;
     height: 19px;
-    border: 0px solid #00a3da;
+    border: 1px solid #c9c9c9;
 }
 .openerp .oe-listview .oe-group-name {
     padding-right: 1em;
@@ -1458,7 +1458,7 @@ label.error {
     /*white-space: nowrap;*/
     /*font-weight: normal;*/
     color: #000;
-    /*font-weight: bold;*/
+    font-weight: bold;
     text-align: left !important;
     padding-left: 6px;
     white-space: normal;
