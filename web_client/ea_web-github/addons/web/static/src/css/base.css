@@ -2669,3 +2669,7 @@ padding-top: 0;
 button.oe_button_small {
     background-color: #fff;
 }
+
+.ui-dialog-content.ui-widget-content {
+    background: #e9ebee;
+}
