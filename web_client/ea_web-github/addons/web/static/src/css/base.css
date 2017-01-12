@@ -1260,7 +1260,7 @@ label.error {
 
 .openerp .oe_form_notebook .ui-tabs-panel {
     background: #FAFAFA;
-    border-top-color: #d6d7da;
+    border-top-color: #000;
     border-top-style: solid;
     border-top-width: 1px;
     border-radius: 3px;
@@ -1283,7 +1283,7 @@ label.error {
 .openerp .oe_form_notebook ul.ui-tabs-nav li {
     font-weight: normal;
     padding: 0px 10px 0px;
-    border-color: #d6d7da;
+    border-color: #000;
 }
 
 .openerp .oe_form_notebook .ui-tabs-selected {
