@@ -9,6 +9,20 @@
   font-style: normal;
 }*/
 
+button.oe_button_small {
+    background-color: #fff;
+}
+
+.ui-dialog-content.ui-widget-content {
+    background: #e9ebee;
+}
+
+.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-draggable.ui-resizable {
+    border: 1px solid;
+    border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+    border-radius: 3px;
+}
+
 td, th {
     display: table-cell;
     /*vertical-align: inherit;*/
@@ -175,7 +189,7 @@ body.openerp {
     width: 252px;
     font-size: 14px;
     font-family: Helvetica, Arial, sans-serif
-    border: 1px solid #999999;
+    border: 1px solid #d6d7da;
     background: whitesmoke;
 /*
     -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3);
@@ -1119,7 +1133,7 @@ label.error {
     font-size: small;
     width: auto;
     word-wrap: break-word;
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid #e1e2e3;
 }
 .openerp .oe-listview .oe-field-cell progress {
     width: 100%;
@@ -1246,8 +1260,10 @@ label.error {
 
 .openerp .oe_form_notebook .ui-tabs-panel {
     background: #FAFAFA;
-    border-width: 1px 0px 0px 0px;
-    border-color: #999999;
+    border-top-color: #d6d7da;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-radius: 3px;
 }
 
 .openerp .oe_form_notebook ul.ui-tabs-nav {
@@ -1267,7 +1283,7 @@ label.error {
 .openerp .oe_form_notebook ul.ui-tabs-nav li {
     font-weight: normal;
     padding: 0px 10px 0px;
-    border-color: #999999;
+    border-color: #d6d7da;
 }
 
 .openerp .oe_form_notebook .ui-tabs-selected {
@@ -1362,17 +1378,20 @@ label.error {
 }
 .openerp .oe_frame.oe_forms {
     clear: both;
+    background: #FFF;
 }
 .openerp table.oe_frame {
     color: #4c4c4c;
 }
 .openerp fieldset.oe_group_box {
-
-    background: #F9F9F9;
+    border-radius: 3px;
+    /*background: #F9F9F9;*/
     padding: 4px;
+    border: 1px solid #c9c9c9;
 }
 .openerp fieldset.oe_group_box legend {
     font-weight: bold;
+    color: #000;
 }
 .openerp td.oe_form_frame_cell {
     padding: 2px;
@@ -2122,6 +2141,15 @@ label.error {
 }
 .openerp ul[role="listbox"] li a {
     font-size:80%;
+    color: #000;
+    background: #FFF;
+    border-radius: 0px;
+    border: 0px;
+}
+
+.openerp ul[role="listbox"] li a:hover {
+    font-size:80%;
+    background: #00a3da none repeat scroll 0% 0%;
 }
 .parent_top {
     vertical-align: text-top;
@@ -2666,10 +2694,3 @@ padding-top: 0;
     border-radius: 0px;
 }
 
-button.oe_button_small {
-    background-color: #fff;
-}
-
-.ui-dialog-content.ui-widget-content {
-    background: #e9ebee;
-}
