@@ -1009,7 +1009,7 @@ label.error {
 .openerp .oe-listview thead table {
     width: 100%;
     border:  none;
-    background: #d1d1d1 none repeat scroll 0% 0%;
+    /*background: #d1d1d1 none repeat scroll 0% 0%; */
 }
 .openerp .oe-listview tr.odd {
     /*background-color: #f0f0f0;*/
@@ -1223,7 +1223,7 @@ label.error {
     /*border: 1px solid #CCCCCC;*/
 }
 .openerp .oe-listview table.oe-listview-content thead tr:first-child th:last-child {
-
+    background: #e9ebee;
 }
 .openerp .oe-listview table.oe-listview-content tfoot tr:last-child th:first-child,
 .openerp .oe-listview table.oe-listview-content tfoot tr:last-child td:first-child,
@@ -1329,9 +1329,8 @@ label.error {
     overflow: auto;
     padding: 3px 0 3px 2px;
     margin: 3px 0 3px 2px;
-    background: #f5f5f5;
-    border-color: #999999;
-    border: 1px solid;
+    background: #e9ebee;
+    border: 1px solid #d6d7da;
     border-radius: 3px;
 }
 
@@ -1500,7 +1499,8 @@ label.error {
 .openerp .oe_form_field_one2many_list .oe-actions h3.oe_view_title{
     display: inline;
     margin: 0 0.5em 0 0;
-    font-size: 12px
+    font-size: 12px;
+    color: #000;
 }
 .openerp .oe_form_field_one2many .oe-listview .oe-edit-row-save,
 .openerp .oe_form_field_one2many_list .oe-listview .oe-edit-row-save {
@@ -2642,6 +2642,12 @@ padding-top: 0;
 .ui-tabs .ui-tabs-nav li.ui-state-disabled a, 
 .ui-tabs .ui-tabs-nav li.ui-state-processing a {
     color: #333;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
+.ui-tabs .ui-tabs-nav li.ui-state-processing a:hover {
+    color: #00a3da;
 }
 
 .ui-state-default, 
