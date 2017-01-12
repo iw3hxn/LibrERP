@@ -719,7 +719,7 @@
             <th t-if="options.deletable" width="1"/>
         </tr>
     </thead>
-    <tfoot class="ui-widget-header">
+    <tfoot class="ui-widget-footer">
         <tr>
             <td t-if="options.selectable"/>
 
