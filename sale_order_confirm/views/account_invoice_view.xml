@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_account_invoice_print" model="ir.ui.view">
+            <field name="name">Invoice Print visible</field>
+            <field name="model">account.invoice</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <button name="print_invoice" string="Print" type="object" icon="gtk-print" invisible="not context.get('show_type')"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -2,6 +2,18 @@
 <openerp>
     <data>
 
+        <record id="purchase_order_tree_print_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.tree.print.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <button name="print_purchase" string="Print" type="object" icon="gtk-print" invisible="not context.get('view_print')"/>
+                </field>
+            </field>
+        </record>
+
         <record id="view_purchase_order_form_inherit" model="ir.ui.view">
             <field name="name">purchase.order.direct.buy.form</field>
             <field name="model">purchase.order</field>
@@ -10,7 +22,7 @@
             <field name="arch" type="xml">
                 <notebook position="inside">
                 <page string="Sale" groups="base.group_sale_salesman_all_leads">
-                    <field colspan="4" name="sale_order_ids" nolabel="1"/>
+                    <field colspan="4" name="sale_order_ids" nolabel="1" context="{'view_print': True}"/>
                 </page>
                 </notebook>
             </field>

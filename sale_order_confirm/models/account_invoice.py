@@ -25,6 +25,31 @@ from openerp.osv import orm, fields
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
+    def print_report(self, cr, uid, ids, xml_id, context):
+        def id_from_xml_id():
+            report_obj = self.pool['ir.actions.report.xml']
+            report_all = report_obj.search(cr, uid, [], context=context)
+            report_xml_ids = report_obj.get_xml_id(cr, uid, report_all, context=context)
+
+            for key in report_xml_ids.keys():
+                xml_id_it = report_xml_ids[key]
+                if xml_id_it == xml_id:
+                    return key
+            return False
+
+        report_id = id_from_xml_id()
+        report = self.pool['ir.actions.report.xml'].browse(cr, uid, report_id, context)
+        data = {'model': report.model, 'ids': ids, 'id': ids[0]}
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': report.report_name,
+            'datas': data,
+            'context': context
+        }
+
+    def print_invoice(self, cr, uid, ids, context):
+        return self.print_report(cr, uid, ids, 'account.account_invoices', context)
+
     _columns = {
         'advance_order_id': fields.many2one('sale.order', 'Order Reference', readonly=True, states={'draft': [('readonly', False)]}),
     }

@@ -33,6 +33,9 @@ from datetime import datetime
 class purchase_order(orm.Model):
     _inherit = 'purchase.order'
 
+    def print_purchase(self, cr, uid, ids, context):
+        return self.pool['account.invoice'].print_report(cr, uid, ids, 'purchase.report_purchase_order', context)
+
     def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}

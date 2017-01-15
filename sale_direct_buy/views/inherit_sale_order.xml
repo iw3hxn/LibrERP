@@ -1,6 +1,18 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
+
+        <record id="sale_order_tree_print_inherit" model="ir.ui.view">
+            <field name="name">sale.order.tree.print.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <button name="print_sale" string="Print" type="object" icon="gtk-print" invisible="not context.get('view_print')"/>
+                </field>
+            </field>
+        </record>
     
         <record id="view_order_form_inherit" model="ir.ui.view">
             <field name="name">sale.order.direct.buy.form</field>
@@ -48,7 +60,7 @@
 
                 <xpath expr="//separator[@string='Invoices']"  position="before">
                     <separator colspan="4" string="Purchase"/>
-                    <field colspan="4" name="purchase_order_ids" nolabel="1"/>
+                    <field colspan="4" name="purchase_order_ids" nolabel="1" context="{'view_print': True}"/>
                 </xpath>
 
             </field>

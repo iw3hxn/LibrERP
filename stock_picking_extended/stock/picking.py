@@ -70,7 +70,9 @@ class stock_picking_transportation_condition(orm.Model):
 
 
 class stock_picking(orm.Model):
+
     _inherit = "stock.picking"
+
     _columns = {
         'carriage_condition_id': fields.many2one(
             'stock.picking.carriage_condition', 'Carriage condition'),
@@ -98,6 +100,9 @@ class stock_picking(orm.Model):
         # 'weight': fields.float('Gross weight', digits_compute=dp.get_precision('Stock Weight'), help="The gross weight in Kg."),
         # 'weight_net': fields.float('Net weight', digits_compute=dp.get_precision('Stock Weight'), help="The net weight in Kg."),
     }
+
+    def print_picking(self, cr, uid, ids, context):
+        return self.pool['account.invoice'].print_report(cr, uid, ids, 'delivery.report_shipping', context)
     
     def onchange_stock_journal(
             self, cr, uid, ids, stock_journal_id=None, state=None, context=None):
