@@ -92,17 +92,20 @@
                 <field name="picking_id" position="after">
                     <button name="picking_open" type="object" icon="STOCK_INDEX" attrs=""/>
                 </field>
+                <field name="origin" position="after">
+                    <button name="origin_open" type="object" icon="STOCK_INDEX" attrs=""/>
+                    <field name="origin_date" groups="stock.view_origin_date" />
+                </field>
                 <field name="product_id" position="after">
+                    <field name="price_unit" groups="stock.view_price" />
+                    <field name="sell_price" groups="stock.view_price_sell"/>
                     <field name="note" />
                 </field>
                 <field name="product_qty" position="replace">
                     <field name="product_qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)" sum="Product SUM"/>
                     <field name="direction" />
                 </field>
-                <field name="product_id" position="after" >
-                    <field name="price_unit" groups="stock.view_price" />
-                    <field name="sell_price" groups="stock.view_price_sell"/>
-                </field>
+
             </field>
         </record>
     
@@ -137,6 +140,7 @@
                 <field name="location_id" position="replace">
                 </field>
                 <field name="prodlot_id" position="after">
+                    <newline/>
                     <field name="location_id" />
                     <field name="location_dest_id" />
                 </field>

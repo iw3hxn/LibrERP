@@ -23,6 +23,11 @@
         <field name="name">View Qty on Stock Move</field>
         <field name="category_id" ref="base.module_category_warehouse_management"/>
     </record>
+
+    <record id="stock.view_origin_date" model="res.groups">
+        <field name="name">View Date of Origin</field>
+        <field name="category_id" ref="base.module_category_warehouse_management"/>
+    </record>
     
 </data>
 </openerp>

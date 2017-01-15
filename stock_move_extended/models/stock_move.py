@@ -44,6 +44,34 @@ class stock_move(orm.Model):
                 res[move.id] = []
         return res
 
+    def _get_origin_id(self, cr, uid, res_model, origin, context):
+        sale_order_obj = self.pool.get(res_model)
+        sale_order_id = False
+        if sale_order_obj:
+            sale_order_id = sale_order_obj.search(cr, uid, [('name', '=', origin.split(':')[0])], limit=1,
+                                                  context=context)
+        return sale_order_id
+
+    def _get_origin_date(self, cr, uid, ids, field_name, arg, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for move in self.browse(cr, uid, ids, context=context):
+            origin = move.origin or ''
+
+            # SALE ORDER
+            res_model = 'sale.order'
+            sale_order_id = self._get_origin_id(cr, uid, res_model, origin, context)
+            if sale_order_id:
+                res[move.id] = self.pool[res_model].browse(cr, uid, sale_order_id[0]).date_order
+            else:
+                # PURCHASE ORDER
+                res_model = 'purchase.order'
+                purchase_order_id = self._get_origin_id(cr, uid, res_model, origin, context)
+                if purchase_order_id:
+                    res[move.id] = self.pool[res_model].browse(cr, uid, purchase_order_id[0]).date_order
+        return res
+
     def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
         """ Finds the incoming and outgoing quantity of product.
         @return: Dictionary of values
@@ -108,11 +136,100 @@ class stock_move(orm.Model):
             'target': 'current',
             'res_id': doc_id,
         }
+
+    def origin_open(self, cr, uid, ids, context=None):
+
+        def return_value():
+            return {
+                'name': name,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': [view_id],
+                'res_model': res_model,
+                'context': ctx,
+                'type': 'ir.actions.act_window',
+                'nodestroy': False,
+                'target': 'current',
+                'res_id': doc_id,
+            }
+
+        """
+        @description  Open document (invoice or payment) related to the
+                      unapplied payment or outstanding balance on this line
+        """
+
+        if not context:
+            context = {}
+        active_id = context.get('active_id')
+        models = self.pool['ir.model.data']
+        # Get this line's invoice id
+        move = self.browse(cr, uid, ids[0], context)
+        name = False
+        origin = move.origin or ''
+
+        # search SALE ORDER
+        res_model = 'sale.order'
+        sale_order_id = self._get_origin_id(cr, uid, res_model, origin, context)
+
+        if sale_order_id:
+            view = models.get_object_reference(cr, uid, 'sale', 'view_order_form')
+            view_id = view and view[1] or False
+            name = _('Sale Order')
+            ctx = "{}"
+            doc_id = sale_order_id[0]
+            return return_value()
+
+        # search PURCHASE ORDER
+        res_model = 'purchase.order'
+        purchase_order_id = self._get_origin_id(cr, uid, res_model, origin, context)
+        if purchase_order_id:
+            view = models.get_object_reference(cr, uid, 'purchase', 'purchase_order_form')
+            view_id = view and view[1] or False
+            name = _('Purchase Order')
+            ctx = "{}"
+            doc_id = purchase_order_id[0]
+            return return_value()
+
+        # search POS ORDER
+        res_model = 'pos.order'
+        pos_order_id = self._get_origin_id(cr, uid, res_model, origin, context)
+        if pos_order_id:
+            view = models.get_object_reference(cr, uid, 'point_of_sale', 'view_pos_pos_form')
+            view_id = view and view[1] or False
+            name = _('Pos Order')
+            ctx = "{}"
+            doc_id = pos_order_id[0]
+            return return_value()
+
+        return {}
+
+    def _get_sale_order(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        for order in self.pool['sale.order'].browse(cr, uid, ids, context=context):
+            if order.origin:
+                stock_move_ids = self.pool['stock.move'].search(cr, uid, [('origin', 'like', order.origin)], limit=1, context=context)
+                for move_id in stock_move_ids:
+                    result[move_id] = True
+        return result.keys()
+
+    def _get_purchase_order(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        for order in self.pool['purchase.order'].browse(cr, uid, ids, context=context):
+            if order.origin:
+                stock_move_ids = self.pool['stock.move'].search(cr, uid, [('origin', 'like', order.origin)], limit=1, context=context)
+                for move_id in stock_move_ids:
+                    result[move_id] = True
+        return result.keys()
     
     _columns = {
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
-        'direction': fields.function(_get_direction, method=True, type='char', string='Dir', readonly=True),
+        'direction': fields.function(_get_direction, method=True, type='char', string='Dir', readonly=True, store={
+            'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['location_id', 'location_dest_id'], 20)
+        }),
+        'origin_date': fields.function(_get_origin_date, method=True, type='date', string='Origin Date', readonly=True, store=False),
         'sell_price': fields.related('sale_line_id', 'price_unit', type='float', relation='sale.order.line', string='Sell Price Unit', readonly=True),
         'qty_available': fields.function(_product_available, multi='qty_available',
                                          type='float', digits_compute=dp.get_precision('Product UoM'),

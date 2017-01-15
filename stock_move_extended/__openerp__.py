@@ -1,8 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Avanzosc - Avanced Open Source Consulting
-#    Copyright (C) 2011 - 2013 Avanzosc <http://www.avanzosc.com>
+#    Copyright (C) 2017 Avanzosc <http://www.avanzosc.com>
 #    Copyright (c) 2013 Andrei Levin (andrei.levin at didotech.com)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,7 +20,7 @@
 ##############################################################################
 {
     "name": "Stock Move Extended",
-    "version": "3.2.3.9",
+    "version": "3.3.4.10",
     "depends": ["stock"],
     "author": "Didotech SRL",
     "category": "Custom Modules",
@@ -32,7 +31,7 @@
     'depends': ['stock'],
     'data': [
             'security/security.xml',
-            'stock_move_view.xml',
+            'views/stock_move_view.xml',
     ],
     'demo_xml': [],
     'installable': True,

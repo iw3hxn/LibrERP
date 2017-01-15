@@ -36,14 +36,25 @@ msgid "Dir"
 msgstr "Dir"
 
 #. module: stock_move_extended
+#: field:stock.move,origin_date:0
+msgid "Origin Date"
+msgstr "Data Origine"
+
+#. module: stock_move_extended
 #: model:ir.model,name:stock_move_extended.model_stock_move
 msgid "Stock Move"
-msgstr ""
+msgstr "Movimenti Magazzino"
 
 #. module: stock
 #: model:res.groups,name:stock.view_price
 msgid "View Warehouse Price"
 msgstr "Vedere Prezzo di Magazzino"
+
+#. module: stock
+#: model:res.groups,name:stock.view_origin_date
+msgid "View Date of Origin"
+msgstr "Vedere Data Documento Origine"
+
 
 #. module: stock
 #: model:ir.module.category,name:stock.module_category_warehouse
