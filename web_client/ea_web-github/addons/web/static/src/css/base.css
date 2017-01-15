@@ -21,6 +21,7 @@ button.oe_button_small {
     border: 1px solid;
     border-color: #e5e6e9 #dfe0e4 #d0d1d5;
     border-radius: 3px;
+    background: #e9ebee;
 }
 
 td, th {
@@ -28,7 +29,6 @@ td, th {
     /*vertical-align: inherit;*/
     vertical-align: middle;
 }
-
 
 body.openerp {
     padding: 0;
@@ -254,7 +254,7 @@ body.openerp {
     text-align: left;
 /*#    -moz-border-radius: 8px;*/
 /*#    -webkit-border-radius: 8px;*/
-/*#    border-radius: 8px;*/
+    border-radius: 8px;
 /*
     -moz-box-shadow: 0 0 18px rgba(0, 0, 0, 0.9);
     -webkit-box-shadow: 0 0 18px rgba(0, 0, 0, 0.9);
@@ -874,7 +874,7 @@ label.error {
 .openerp .filter_label {
     font-weight: normal;
     text-transform: uppercase;
-    color: #8e8e8e;
+    /*color: #8e8e8e;*/
     white-space: nowrap;
     min-height: 40px;
     min-width: 75px;
@@ -1369,7 +1369,7 @@ label.error {
 }
 
 .openerp table.oe_frame td {
-    color: #4c4c4c;
+    color: #000;
     border: 0px;
 }
 .openerp td.oe_form_frame_cell {
@@ -1582,6 +1582,8 @@ label.error {
 .openerp .oe_form_readonly .oe_form_field_text div.field_text,
 .openerp .oe_form_readonly .oe_form_field_text_html div.field_text_html {
     white-space: pre-wrap;
+    border: 1px solid #c9c9c9;
+    border-radius: 3px;
 }
 .openerp .oe_form_readonly .oe_form_frame_cell .field_text  {
     min-height:100px;
@@ -2356,6 +2358,7 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 /* Dialog traceback cases */
 .openerp .oe_error_detail{
     display: block;
+    background: #FFF;
 }
 .openerp .oe_error_send{
     display:block;
@@ -2569,8 +2572,9 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 .openerp .oe_button.oe_button_small {
     padding: 3px 3px;
     margin: 2px 2px;
-    height: 24px;
+    /*height: 24px;*/
     /*width: 70px;*/
+    border: 2px solid #FFF;
 }
 .openerp select.oe_search-view-filters-management {
     cursor: text;
@@ -2635,7 +2639,7 @@ padding-top: 0;
   border-radius: 3px;
   background: #f0f0fa;
   color: #4c4c4c;
-  display: inline_block;
+  display: inline-block;
 }
 .openerp .oe_tag_dark {
   background: #F44336;
@@ -2675,6 +2679,7 @@ padding-top: 0;
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
 .ui-tabs .ui-tabs-nav li.ui-state-disabled a,
 .ui-tabs .ui-tabs-nav li.ui-state-processing a:hover {
+    font-weight: normal;
     color: #00a3da;
 }
 
@@ -2690,7 +2695,7 @@ padding-top: 0;
 .openerp select {
     border: solid;
     border-width: 1px;
-    border-color: #ccc;
+    border-color: #d1d1d1;
     border-radius: 0px;
 }
 
