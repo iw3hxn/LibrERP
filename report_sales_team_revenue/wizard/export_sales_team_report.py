@@ -48,7 +48,7 @@ class ExportSalesTeamReport(orm.TransientModel):
         sale_orders = cr.fetchall()
         years_order = [(str(int(year[0])), str(int(year[0]))) for year in sale_orders]
 
-        cr.execute("""SELECT EXTRACT(YEAR FROM date_order) as year
+        cr.execute("""SELECT EXTRACT(YEAR FROM date_invoice) as year
                     FROM account_invoice
                     GROUP BY year
                     ORDER BY year
