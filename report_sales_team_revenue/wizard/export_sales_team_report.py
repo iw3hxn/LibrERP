@@ -45,8 +45,18 @@ class ExportSalesTeamReport(orm.TransientModel):
             GROUP BY year
             ORDER BY year
         """)
-        years = cr.fetchall()
-        return [(str(int(year[0])), str(int(year[0]))) for year in years]
+        sale_orders = cr.fetchall()
+        years_order = [(str(int(year[0])), str(int(year[0]))) for year in sale_orders]
+
+        cr.execute("""SELECT EXTRACT(YEAR FROM date_order) as year
+                    FROM account_invoice
+                    GROUP BY year
+                    ORDER BY year
+                """)
+        invoices = cr.fetchall()
+        years_invoice = [(str(int(year[0])), str(int(year[0]))) for year in invoices]
+
+        return list(set(years_order).union(years_invoice))
 
     _columns = {
         'data': fields.binary("File", readonly=True),
