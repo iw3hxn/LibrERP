@@ -70,6 +70,8 @@ class stock_move(orm.Model):
                 purchase_order_id = self._get_origin_id(cr, uid, res_model, origin, context)
                 if purchase_order_id:
                     res[move.id] = self.pool[res_model].browse(cr, uid, purchase_order_id[0]).date_order
+                else:
+                    res[move.id] = False
         return res
 
     def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
