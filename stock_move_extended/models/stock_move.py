@@ -27,12 +27,10 @@ class stock_move(orm.Model):
     _inherit = "stock.move"
            
     def _get_direction(self, cr, uid, ids, field_name, arg, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for move in self.browse(cr, uid, ids, context=context):
-
-            if move.location_id.usage == 'internal' and move.location_dest_id.usage == 'customer':
+            if move.location_id.usage == 'internal' and move.location_dest_id.usage in ['supplier', 'customer']:
                 res[move.id] = '-'
             elif move.location_id.usage in ['supplier', 'customer'] and move.location_dest_id.usage == 'internal':
                 res[move.id] = '+'
@@ -41,20 +39,19 @@ class stock_move(orm.Model):
             elif move.location_id.usage in ['inventory', 'procurement', 'production'] and move.location_dest_id.usage == 'internal':
                 res[move.id] = '<>'
             else:
-                res[move.id] = []
+                res[move.id] = ''
         return res
 
     def _get_origin_id(self, cr, uid, res_model, origin, context):
-        sale_order_obj = self.pool.get(res_model)
-        sale_order_id = False
-        if sale_order_obj:
-            sale_order_id = sale_order_obj.search(cr, uid, [('name', '=', origin.split(':')[0])], limit=1,
+        order_obj = self.pool.get(res_model)
+        order_id = False
+        if order_obj:
+            order_id = order_obj.search(cr, uid, [('name', '=', origin.split(':')[0])], limit=1,
                                                   context=context)
-        return sale_order_id
+        return order_id
 
     def _get_origin_date(self, cr, uid, ids, field_name, arg, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for move in self.browse(cr, uid, ids, context=context):
             origin = move.origin or ''
@@ -79,8 +76,7 @@ class stock_move(orm.Model):
         @return: Dictionary of values
         """
 
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         # if line.order_id:
         #     context['warehouse'] = self.order_id.shop_id.warehouse_id.id
@@ -100,8 +96,7 @@ class stock_move(orm.Model):
                       unapplied payment or outstanding balance on this line
         """
 
-        if not context:
-            context = {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         active_id = context.get('active_id')
         models = self.pool['ir.model.data']
         # Get this line's invoice id
@@ -160,8 +155,7 @@ class stock_move(orm.Model):
                       unapplied payment or outstanding balance on this line
         """
 
-        if not context:
-            context = {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         active_id = context.get('active_id')
         models = self.pool['ir.model.data']
         # Get this line's invoice id
@@ -224,14 +218,29 @@ class stock_move(orm.Model):
                 for move_id in stock_move_ids:
                     result[move_id] = True
         return result.keys()
+
+    def _get_stock_location(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        for location in self.pool['stock.location'].browse(cr, uid, ids, context=context):
+            stock_move_ids = self.pool['stock.move'].search(cr, uid, ['|', ('location_id', '=', location.id), ('location_dest_id', '=', location.id)], context=context)
+            for move_id in stock_move_ids:
+                result[move_id] = True
+        return result.keys()
     
     _columns = {
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'direction': fields.function(_get_direction, method=True, type='char', string='Dir', readonly=True, store={
-            'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['location_id', 'location_dest_id'], 20)
+            'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['location_id', 'location_dest_id'], 20),
+            'stock.location': (_get_stock_location, ['usage'], 20),
         }),
-        'origin_date': fields.function(_get_origin_date, method=True, type='date', string='Origin Date', readonly=True, store=False),
+        'origin_date': fields.function(_get_origin_date, method=True, type='date', string='Origin Date', readonly=True,
+                                       store=False),
+        # 'origin_date': fields.function(_get_origin_date, method=True, type='date', string='Origin Date', readonly=True, store={
+        #     'sale.order': (_get_sale_order, ['date_order'], 20),
+        #     'purchase.order': (_get_purchase_order, ['date_order'], 20),
+        # }),
         'sell_price': fields.related('sale_line_id', 'price_unit', type='float', relation='sale.order.line', string='Sell Price Unit', readonly=True),
         'qty_available': fields.function(_product_available, multi='qty_available',
                                          type='float', digits_compute=dp.get_precision('Product UoM'),
@@ -239,8 +248,7 @@ class stock_move(orm.Model):
     }
 
     def write(self, cr, uid, ids, values, context=None):  # check if when change unit of sale is the same category of product
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if values.get('product_uos', False):
             to_unit = self.pool['product.uom'].browse(cr, uid, values.get('product_uos'), context)
             for move in self.browse(cr, uid, ids, context):
