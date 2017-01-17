@@ -26,8 +26,8 @@ button.oe_button_small {
 
 td, th {
     display: table-cell;
-    /*vertical-align: inherit;*/
-    vertical-align: middle;
+    vertical-align: inherit;
+    /*vertical-align: middle;*/
 }
 
 body.openerp {
