@@ -52,9 +52,8 @@ class purchase_order_line(orm.Model):
             if rule_id:
                 item_base = item_obj.read(cr, uid, [rule_id], ['base'])[0]['base']
                 if item_base > 0:
-                    field_name = price_type_obj.browse(cr, uid, item_base).field
-                    product_read = product_obj.read(cr, uid, product_id, [field_name], context=context)
-                    price = product_read[field_name]
+                    field_name = price_type_obj.browse(cr, uid, item_base, context).field
+                    price = product[field_name]
                 elif item_base == -2:
                     _logger.debug('Checking item base is -2')
                     price = product.seller_ids[0].pricelist_ids[0].price
@@ -108,10 +107,9 @@ class purchase_order_line(orm.Model):
                     result['discount'] = discount
         return res
 
-
     def _amount_line(self, cr, uid, ids, prop, unknow_none, unknow_dict):
         res = {}
-        cur_obj = self.pool.get('res.currency')
+        cur_obj = self.pool['res.currency']
         for line in self.browse(cr, uid, ids):
             cur = line.order_id.pricelist_id.currency_id
             res[line.id] = cur_obj.round(cr, uid, cur,
