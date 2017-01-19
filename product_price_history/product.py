@@ -43,7 +43,6 @@ class product_template(orm.Model):
 
                 history_values = {
                     'user_id': uid,
-
                     'product_id': prod_template.id,
                     'date_to': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                 }
@@ -67,10 +66,10 @@ class product_template(orm.Model):
 class product_product(orm.Model):
     _inherit = 'product.product'
 
-    def copy(self, cr, uid, ids, default, context=None):
-        if not default:
-            default = {}
-        default.update({
+    def copy(self, cr, uid, ids, defaults, context=None):
+        if not defaults:
+            defaults = {}
+        defaults.update({
             'product_history': []
         })
-        return super(product_product, self).copy(cr, uid, ids, default, context=context)
+        return super(product_product, self).copy(cr, uid, ids, defaults, context=context)
