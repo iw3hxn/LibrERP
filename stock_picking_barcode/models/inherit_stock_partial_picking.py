@@ -22,7 +22,7 @@ from openerp.osv import orm, fields
 from tools.translate import _
 
 
-class stock_partial_picking(orm.Model):
+class stock_partial_picking(orm.TransientModel):
 
     _inherit = "stock.partial.picking"
 
