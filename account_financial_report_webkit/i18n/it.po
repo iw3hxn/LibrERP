@@ -34,7 +34,7 @@ msgstr "Please set a valid time filter"
 #: view:open.invoices.webkit:0
 #: view:partners.ledger.webkit:0
 msgid "Layout Options"
-msgstr "Layout Options"
+msgstr "Optioni di stampa"
 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:209
@@ -66,7 +66,7 @@ msgstr "Misc."
 #: report:addons/account_financial_report_webkit/report/templates/account_report_partner_balance.mako:95
 #: report:addons/account_financial_report_webkit/report/templates/account_report_trial_balance.mako:102
 msgid "Periods Filter:"
-msgstr "Periods Filter:"
+msgstr "Filtro Periodi:"
 
 #. module: account_financial_report_webkit
 #: code:addons/account_financial_report_webkit/report/webkit_parser_header_fix.py:181
@@ -360,7 +360,7 @@ msgstr "Filtro Temporale"
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_partners_ledger.mako:226
 msgid "Cumulated Balance on Partner"
-msgstr "Cumulated Balance on Partner"
+msgstr "Saldo Partner"
 
 #. module: account_financial_report_webkit
 #: code:addons/account_financial_report_webkit/report/common_reports.py:353
@@ -394,7 +394,7 @@ msgstr "The clearance date is essentially a tool used for debtors provisionning 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_open_invoices.mako:42
 msgid "Clearance Date"
-msgstr "Clearance Date"
+msgstr "Data Liquidazione"
 
 #. module: account_financial_report_webkit
 #: view:partners.ledger.webkit:0
@@ -417,12 +417,12 @@ msgstr "The Asset Account defined in the Asset Category must be equal to the acc
 #: report:addons/account_financial_report_webkit/report/templates/account_report_partner_balance.mako:97
 #: report:addons/account_financial_report_webkit/report/templates/account_report_trial_balance.mako:104
 msgid "Fiscal Year :"
-msgstr "Fiscal Year :"
+msgstr "Anno Fiscale :"
 
 #. module: account_financial_report_webkit
 #: view:open.invoices.webkit:0
 msgid "This report allows you to print or generate a pdf of your open invoices per partner with details of all your payable/receivable account. Exclude full reconciled journal items."
-msgstr "This report allows you to print or generate a pdf of your open invoices per partner with details of all your payable/receivable account. Exclude full reconciled journal items."
+msgstr "Consente di stampare o di generare un PDF delle tue fatture aperte per partner con i dettagli del debito / credito. Esclusione di fatture riconciliate totalmente."
 
 #. module: account_financial_report_webkit
 #: code:addons/account_financial_report_webkit/report/common_reports.py:423
@@ -537,7 +537,7 @@ msgstr "L'anno fiscale, periodi o piano dei conti scelti devono appartenere alla
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:111
 #: report:addons/account_financial_report_webkit/report/templates/account_report_partners_ledger.mako:118
 msgid "Cumul. Bal."
-msgstr "Cumul. Bal."
+msgstr "Saldo"
 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:22
@@ -550,7 +550,7 @@ msgstr "Calcolato"
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:105
 msgid "Due date"
-msgstr "Due date"
+msgstr "Data Scadenza"
 
 #. module: account_financial_report_webkit
 #: code:addons/account_financial_report_webkit/report/general_ledger.py:64
@@ -562,7 +562,7 @@ msgstr "Due date"
 #: code:addons/account_financial_report_webkit/report/webkit_parser_header_fix.py:68
 #, python-format
 msgid "of"
-msgstr "of"
+msgstr "del"
 
 #. module: account_financial_report_webkit
 #: code:addons/account_financial_report_webkit/report/common_reports.py:73
@@ -580,7 +580,7 @@ msgstr "Conti di Debito"
 #: model:ir.model,name:account_financial_report_webkit.model_open_invoices_webkit
 #, python-format
 msgid "Open Invoices Report"
-msgstr "Open Invoices Report"
+msgstr "Report Fatture Aperte"
 
 #. module: account_financial_report_webkit
 #: field:account.account,centralized:0
@@ -630,13 +630,13 @@ msgstr "Opening Entries"
 #: code:addons/account_financial_report_webkit/report/general_ledger.py:40
 #, python-format
 msgid "GENERAL LEDGER"
-msgstr "GENERAL LEDGER"
+msgstr "LIBRO MASTRO GENERALE"
 
 #. module: account_financial_report_webkit
 #: code:addons/account_financial_report_webkit/wizard/profit_loss_wizard.py:129
 #, python-format
 msgid "Level %s"
-msgstr "Level %s"
+msgstr "Livello %s"
 
 #. module: account_financial_report_webkit
 #: help:account.account,centralized:0
@@ -646,7 +646,7 @@ msgstr "If flagged, no details will be displayed in the General Ledger report (t
 #. module: account_financial_report_webkit
 #: field:open.invoices.webkit,group_by_currency:0
 msgid "Group Partner by currency"
-msgstr "Group Partner by currency"
+msgstr "Raggruppa Partner per valuta"
 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:22
@@ -809,7 +809,7 @@ msgstr "Il codice del conto deve essere unico per ogni azienda!"
 #: model:ir.ui.menu,name:account_financial_report_webkit.menu_account_open_invoices
 #: view:open.invoices.webkit:0
 msgid "Open Invoices"
-msgstr "Open Invoices"
+msgstr "Fatture Aperte"
 
 #. module: account_financial_report_webkit
 #: selection:account.common.balance.report,target_move:0
@@ -1266,7 +1266,7 @@ msgstr "No Partner"
 #: code:addons/account_financial_report_webkit/report/open_invoices.py:53
 #, python-format
 msgid "OPEN INVOICES REPORT"
-msgstr "OPEN INVOICES REPORT"
+msgstr "REPORT Fatture Aperte"
 
 #. module: account_financial_report_webkit
 #: code:addons/account_financial_report_webkit/report/partners_ledger.py:41
