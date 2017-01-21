@@ -137,8 +137,8 @@ class riba_distinta(osv.osv):
         'date_created': fields.date.context_today,
         'date_accepted': fields.date.context_today,
         'date_accreditation': fields.date.context_today,
-        'name': lambda self, cr, uid, context: self.pool.get('ir.sequence').get(cr, uid, 'seq.riba.distinta'),
-        'company_id': lambda self, cr, uid, c: self.pool.get('res.company')._company_default_get(cr, uid,
+        'name': lambda self, cr, uid, context: self.pool['ir.sequence'].get(cr, uid, 'seq.riba.distinta'),
+        'company_id': lambda self, cr, uid, c: self.pool['res.company']._company_default_get(cr, uid,
                                                                                                  'seq.riba.distinta',
                                                                                                  context=c),
     }
@@ -146,7 +146,7 @@ class riba_distinta(osv.osv):
     def unlink(self, cr, uid, ids, context=None):
         for distinta in self.browse(cr, uid, ids, context=context):
             if distinta.state not in ('draft',  'cancel'):
-                raise osv.except_osv(_('Error'),_('Distinta %s is in state %s. You can only delete documents in state draft or canceled') % (distinta.name, distinta.state))
+                raise osv.except_osv(_('Error'), _('Distinta %s is in state %s. You can only delete documents in state draft or canceled') % (distinta.name, distinta.state))
         osv.osv.unlink(self, cr, uid, ids, context=context)
         return True
 
@@ -178,7 +178,7 @@ class riba_distinta(osv.osv):
         return True
     
     def riba_accepted(self, cr, uid, ids, context=None):
-        for distinta in self.browse(cr, uid, ids):
+        for distinta in self.browse(cr, uid, ids, context):
             self.write(cr, uid, ids, {
                 'state': 'accepted',
                 'date_accepted': distinta.date_accepted or fields.date.context_today(cr,uid,context),
@@ -186,7 +186,7 @@ class riba_distinta(osv.osv):
         return True
     
     def riba_accredited(self, cr, uid, ids, context=None):
-        for distinta in self.browse(cr, uid, ids):
+        for distinta in self.browse(cr, uid, ids, context):
             self.write(cr, uid, ids, {
                 'state': 'accredited',
                 'date_accreditation': distinta.date_accreditation or fields.date.context_today(cr,uid,context),
@@ -196,14 +196,14 @@ class riba_distinta(osv.osv):
     def riba_paid(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {
             'state': 'paid',
-            'date_paid': fields.date.context_today(cr,uid,context),
+            'date_paid': fields.date.context_today(cr, uid, context),
             }, context=context)
         return True
     
     def riba_unsolved(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {
             'state': 'unsolved',
-            'date_unsolved': fields.date.context_today(cr,uid,context),
+            'date_unsolved': fields.date.context_today(cr, uid, context),
             }, context=context)
         return True
         
@@ -221,15 +221,15 @@ class riba_distinta(osv.osv):
                     return False
         return True
         
-    def test_paid(self, cr, uid, ids, *args):
-        for distinta in self.browse(cr, uid, ids):
+    def test_paid(self, cr, uid, ids, context=None):
+        for distinta in self.browse(cr, uid, ids, context):
             for line in distinta.line_ids:
                 if line.state != 'paid':
                     return False
         return True
         
     def action_cancel_draft(self, cr, uid, ids, *args):
-        self.write(cr, uid, ids, {'state':'draft'})
+        self.write(cr, uid, ids, {'state': 'draft'})
         wf_service = netsvc.LocalService("workflow")
         for distinta_id in ids:
             wf_service.trg_delete(uid, 'riba.distinta', distinta_id, cr)
@@ -276,12 +276,12 @@ class riba_distinta_line(osv.osv):
         wf_service = netsvc.LocalService("workflow")
         res = {}
         for id in ids:
-            res[id] = self.test_paid(cr, uid, [id])
+            res[id] = self.test_paid(cr, uid, [id], context)
             if res[id]:
                 self.write(cr, uid, id, {'state': 'paid'}, context=context)
                 wf_service.trg_validate(
                     uid, 'riba.distinta',
-                    self.browse(cr, uid, id).distinta_id.id, 'paid', cr)
+                    self.browse(cr, uid, id, context).distinta_id.id, 'paid', cr)
         return res
 
     def move_line_id_payment_gets(self, cr, uid, ids, *args):
@@ -295,24 +295,25 @@ class riba_distinta_line(osv.osv):
                    (tuple(ids),))
         for r in cr.fetchall():
             res.setdefault(r[0], [])
-            res[r[0]].append( r[1] )
+            res[r[0]].append(r[1])
         return res
 
     # return the ids of the move lines which has the same account than the statement
     # whose id is in ids
     def move_line_id_payment_get(self, cr, uid, ids, *args):
-        if not ids: return []
+        if not ids:
+            return []
         result = self.move_line_id_payment_gets(cr, uid, ids, *args)
         return result.get(ids[0], [])
 
-    def test_paid(self, cr, uid, ids, *args):
+    def test_paid(self, cr, uid, ids, context=None):
         res = self.move_line_id_payment_get(cr, uid, ids)
         if not res:
             return False
         ok = True
         for id in res:
             cr.execute('select reconcile_id from account_move_line where id=%s', (id,))
-            ok = ok and  bool(cr.fetchone()[0])
+            ok = ok and bool(cr.fetchone()[0])
         return ok
 
     def _get_riba_line_from_move_line(self, cr, uid, ids, context=None):
@@ -406,8 +407,8 @@ class riba_distinta_line(osv.osv):
     }
     
     def confirm(self, cr, uid, ids, context=None):
-        move_pool = self.pool.get('account.move')
-        move_line_pool = self.pool.get('account.move.line')
+        move_pool = self.pool['account.move']
+        move_line_pool = self.pool['account.move.line']
         wf_service = netsvc.LocalService("workflow")
         for line in self.browse(cr, uid, ids, context=context):
             journal = line.distinta_id.config.acceptance_journal_id
@@ -450,7 +451,7 @@ class riba_distinta_line(osv.osv):
             move_line_pool.create(cr, uid, {
                 'name': 'Ri.Ba. %s-%s Rif. %s - %s' % (line.distinta_id.name, line.sequence, riba_move_line_name, line.partner_id.name),
                 'account_id': line.acceptance_account_id.id,
-                #'partner_id': line.partner_id.id,
+                # 'partner_id': line.partner_id.id,
                 'date_maturity': line.due_date,
                 'credit': 0.0,
                 'debit': total_credit,
@@ -480,4 +481,3 @@ class riba_distinta_move_line(osv.osv):
         'move_line_id': fields.many2one('account.move.line', 'Credit move line'),
         'riba_line_id': fields.many2one('riba.distinta.line', 'Distinta line', ondelete='cascade'),
     }
-

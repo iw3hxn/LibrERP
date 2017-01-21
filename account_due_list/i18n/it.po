@@ -18,7 +18,7 @@ msgstr ""
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Receivable"
-msgstr "Crediti"
+msgstr "Entrate"
 
 #. module: account_due_list
 #: view:account.move.line:0
@@ -32,6 +32,11 @@ msgstr "Mese Prossimo"
 
 #. module: account_due_list
 #: field:account.move.line,payment_term_type:0
+msgid "Payment Type"
+msgstr "Tipo di Pagamento"
+
+#. module: account_due_list
+#: view:account.move.line:0
 msgid "Payment Type"
 msgstr "Tipo di Pagamento"
 
@@ -87,10 +92,28 @@ msgid "Source Doc"
 msgstr "Documento di origine"
 
 #. module: account_due_list
-#: model:ir.ui.menu,name:account_due_list.menu_action_invoice_payments
 #: model:ir.ui.menu,name:account_due_list.schedule
 msgid "Schedule"
-msgstr "Scadenzario"
+msgstr "Scadenzario Pagamenti"
+
+#. module: account_due_list
+#: model:ir.ui.menu,name:account_due_list.menu_action_invoice_payments
+msgid "All Payment"
+msgstr "Tutti"
+
+#. module: account_due_list
+#: view:account.move.line:0
+#: model:ir.actions.act_window,name:account_due_list.action_invoice_receivable
+#: model:ir.ui.menu,name:account_due_list.menu_action_invoice_receivable
+msgid "Receivable"
+msgstr "Entrate"
+
+#. module: account_due_list
+#: view:account.move.line:0
+#: model:ir.actions.act_window,name:account_due_list.action_invoice_payable
+#: model:ir.ui.menu,name:account_due_list.menu_action_invoice_payable
+msgid "Payable"
+msgstr "Uscite"
 
 #. module: account_due_list
 #: field:account.move.line,invoice_date:0
@@ -105,7 +128,7 @@ msgstr "Credito Totale"
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Payable"
-msgstr "Debiti"
+msgstr "Uscite"
 
 #. module: account_due_list
 #: selection:account.move.line,payment_term_type:0
@@ -165,8 +188,8 @@ msgstr "Valore di credito o debito errato nella registrazione contabile !"
 #. module: account_due_list
 #: view:account.move.line:0
 #: model:ir.actions.act_window,name:account_due_list.action_invoice_payments
-msgid "Payments"
-msgstr "Pagamenti"
+msgid "All Payments"
+msgstr "Tutti"
 
 #. module: account_due_list
 #: view:account.move.line:0

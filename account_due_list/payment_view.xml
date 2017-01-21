@@ -1,218 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-<data>
+    <data>
 
-    <!--****************************** PAYMENTS ***********************************-->
-    <record id="view_payments_tree" model="ir.ui.view">
-        <field name="name">Payments</field>
-        <field name="model">account.move.line</field>
-        <field name="field_parent">partner_id</field>
-        <field name="type">tree</field>
-        <field name="priority" eval="20"/>
-        <field name="arch" type="xml">
-            <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
-                <field name="stored_invoice_id" readonly="1"/>
-                <field name="invoice_date" readonly="1"/>
-                <!--<field name="invoice_origin" readonly="1"/>-->
-                <field name="partner_id" string="Partner" readonly="1"/>
-                <field name="partner_ref" readonly="1"/>
-                <field name="payment_term_id" readonly="1"/>
-                <field name="payment_term_type" readonly="1"/>
-                <field name="bank_id" readonly="1" />
-                <field name="account_id" readonly="1"/>
-                <field name="debit" readonly="1" sum="Total Debit"/>
-                <field name="credit" readonly="1" sum="Total Credit"/>
-                <field name="residual" sum="Total Residual"/>
-                <field name="date_maturity"/>
-                <field name="move_id" readonly="1"/>
-                <field name="reconcile_id" readonly="1"/>
-                <field name="reconcile_partial_id" readonly="1"/>
-                <field name="day" invisible="1"/>
-                <field name="company_id" invisible="1"/>
+        <!--****************************** PAYMENTS ***********************************-->
+        <record id="view_payments_tree" model="ir.ui.view">
+            <field name="name">Payments</field>
+            <field name="model">account.move.line</field>
+            <field name="field_parent">partner_id</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
+                    <field name="stored_invoice_id" readonly="1"/>
+                    <field name="invoice_date" readonly="1"/>
+                    <!--<field name="invoice_origin" readonly="1"/>-->
+                    <field name="partner_id" string="Partner" readonly="1"/>
+                    <field name="partner_ref" readonly="1"/>
+                    <field name="payment_term_id" readonly="1"/>
+                    <field name="payment_term_type" readonly="1"/>
+                    <field name="bank_id" readonly="1"/>
+                    <field name="account_id" readonly="1"/>
+                    <field name="debit" readonly="1" sum="Total Debit" invisible="not context.get('payment_filter', False)"/>
+                    <field name="credit" readonly="1" sum="Total Credit" invisible="not context.get('payment_filter', False)"/>
+                    <field name="residual" sum="Total Residual"/>
+                    <field name="date_maturity"/>
+                    <field name="move_id" readonly="1" invisible="context.get('reconciled',False)"/>
+                    <field name="reconcile_id" readonly="1" invisible="context.get('reconciled',False)"/>
+                    <field name="reconcile_partial_id" readonly="1" invisible="context.get('reconciled',False)"/>
+                    <field name="day" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
 
-            </tree>
-        </field>
-    </record>
-    
-    
-    <record id="view_payments_calendar" model="ir.ui.view">
-        <field name="name">Payments Calendar</field>
-        <field name="model">account.move.line</field>
-        <field name="type">calendar</field>
-        <field name="priority" eval="20"/>
-        <field name="arch" type="xml">
-            <calendar string="Sales Orders" color="direction" date_start="date_maturity">
-                <field name="partner_id"/>
-                <field name="invoice_date"/>
-                <field name="residual"/>
-            </calendar>
-        </field>
-    </record>
 
-    <record id="view_payments_filter" model="ir.ui.view">
-        <field name="name">Payments Select</field>
-        <field name="model">account.move.line</field>
-        <field name="type">search</field>
-        <field name="priority" eval="20"/>
-        <field name="arch" type="xml">
-            <search string="Search Payments">
-               <group col='10' colspan='4'>
-                    <filter icon="terp-sale" string="Receivable" domain="[('account_id.type','=','receivable')]" help="Receivable payments"/>
-                    <filter icon="terp-purchase" string="Payable" domain="[('account_id.type','=','payable')]" help="Payable payments"/>
-                    <separator orientation="vertical"/>
-                    <filter icon="terp-dolar_ok!" string="Unreconciled" name="unreconciled" domain="[('reconcile_id','=',False)]" help="Unreconciled payments"/>
-                   <!--
-                   <filter icon="terp-dolar_ok!" string="Maturity Date" name="maturitydate" domain="[('date_maturity', '!=', False)]" help="Payment without Maturity Date"/>
-                   # caution, this filter not work!!!!
-                   -->
-                   <separator orientation="vertical"/>
-                    <filter icon="terp-go-today" string="Overdue" domain="[('date_maturity','&lt;',time.strftime('%%Y-%%m-%%d'))]" help="Overdue payments" name="overdue"/>
-                    <separator orientation="vertical"/>
-               </group>
-               <filter icon="terp-go-month" string="Last Month" name="last_month"
-                        domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
-               />
-               <filter icon="terp-go-month" string="Month" name="month"
+        <record id="view_payments_calendar" model="ir.ui.view">
+            <field name="name">Payments Calendar</field>
+            <field name="model">account.move.line</field>
+            <field name="type">calendar</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <calendar string="Sales Orders" color="direction" date_start="date_maturity">
+                    <field name="partner_id"/>
+                    <field name="invoice_date"/>
+                    <field name="residual"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="view_payments_filter" model="ir.ui.view">
+            <field name="name">Payments Select</field>
+            <field name="model">account.move.line</field>
+            <field name="type">search</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <search string="Search Payments">
+                    <group col='10' colspan='4'>
+                        <filter icon="terp-sale" string="Receivable" domain="[('account_id.type','=','receivable')]"
+                                help="Receivable payments" invisible="not context.get('payment_filter', False)"/>
+                        <filter icon="terp-purchase" string="Payable" domain="[('account_id.type','=','payable')]"
+                                help="Payable payments" invisible="not context.get('payment_filter', False)"/>
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-dolar_ok!" string="Unreconciled" name="unreconciled"
+                                domain="[('reconcile_id','=',False)]" help="Unreconciled payments"
+                                context="{'reconciled': True}"/>
+                        <!--
+                        <filter icon="terp-dolar_ok!" string="Maturity Date" name="maturitydate" domain="[('date_maturity', '!=', False)]" help="Payment without Maturity Date"/>
+                        # caution, this filter not work!!!!
+                        -->
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-go-today" string="Overdue"
+                                domain="[('date_maturity','&lt;',time.strftime('%%Y-%%m-%%d'))]" help="Overdue payments"
+                                name="overdue"/>
+                        <separator orientation="vertical"/>
+                    </group>
+                    <filter icon="terp-go-month" string="Last Month" name="last_month"
+                            domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
+                    />
+                    <filter icon="terp-go-month" string="Month" name="month"
                             domain="[('date_maturity', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
-               />
-               <filter icon="terp-go-month" string="Next Month" name="next_month"
-                        domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
-               />
-               <newline/>
-               <field name="date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
-               <field name="date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
+                    />
+                    <filter icon="terp-go-month" string="Next Month" name="next_month"
+                            domain="[('date_maturity', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_maturity', '&gt;=', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
+                    />
+                    <newline/>
+                    <field name="date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
 
-               <field name="stored_invoice_id"/>
-               <field name="invoice_origin" />
-               <field name="partner_id"/>
-               <newline/>
-               <field name="payment_term_type" />
-               <field name="bank_id" domain="[('state', '=', 'iban')]" context="{'only_iban': True}"/>
-               <field name="account_id" />
-               <field name="date_maturity"/>
+                    <field name="stored_invoice_id"/>
+                    <field name="invoice_origin"/>
+                    <field name="partner_id"/>
+                    <newline/>
+                    <field name="payment_term_type"/>
+                    <field name="bank_id" domain="[('state', '=', 'iban')]" context="{'only_iban': True}"/>
+                    <field name="account_id"/>
+                    <field name="date_maturity"/>
 
-               <newline/>
-               <separator orientation="vertical"/>
+                    <newline/>
+                    <separator orientation="vertical"/>
 
-                <group expand="0" string="Group By...">
-                    <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
-                    <filter string="Invoice" icon="terp-folder-orange" domain="[]" context="{'group_by':'stored_invoice_id'}"/>
-                    <filter string="Due date" icon="terp-go-today" domain="[]" context="{'group_by':'day'}"/>
-                    <filter string="Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_maturity'}"/>
-               </group>
+                    <group expand="0" string="Group By...">
+                        <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Invoice" icon="terp-folder-orange" domain="[]" context="{'group_by':'stored_invoice_id'}"/>
+                        <filter string="Due date" icon="terp-go-today" domain="[]" context="{'group_by':'day'}"/>
+                        <filter string="Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_maturity'}"/>
+                    </group>
 
-           </search>
-        </field>
-    </record>
+                </search>
+            </field>
+        </record>
 
-    <!-- Invoice Payments -->
-    <record id="action_invoice_payments" model="ir.actions.act_window" >
-        <field name="name">Payments</field>
-        <field name="res_model">account.move.line</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form,calendar</field>
-        <field name="view_id" ref="view_payments_tree"/>
-        <field name="search_view_id" ref="view_payments_filter"/>
-        <field name="domain">[('account_id.type','in',['receivable','payable']),('stored_invoice_id','!=',False)]</field>
-        <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
-    </record>
-    
-    <!--<menuitem name="Payments" parent="account.menu_finance_entries" action="action_invoice_payments" id="menu_action_invoice_payments" sequence="5"/>-->
-    <menuitem name="Schedule" parent="account.menu_finance" id="schedule" sequence="5" groups="account.group_account_user,account.group_account_manager"/>
-    <menuitem name="Schedule" parent="schedule" action="action_invoice_payments" id="menu_action_invoice_payments" sequence="5"/>
+        <!-- Invoice Payments -->
+        <record id="action_invoice_payments" model="ir.actions.act_window">
+            <field name="name">All Payments</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="view_id" ref="view_payments_tree"/>
+            <field name="search_view_id" ref="view_payments_filter"/>
+            <field name="domain">[('account_id.type','in',['receivable','payable']),('stored_invoice_id','!=',False)]</field>
+            <field name="context">{'payment_filter': 1, 'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
+        </record>
 
-    
-    <!--
-    THIS NEED FOR CREATE FIELD ON VIEW
-    -->
-    
-         <record id="journal_col13" model="account.journal.column">
+        <record id="action_invoice_receivable" model="ir.actions.act_window">
+            <field name="name">Receivable</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="view_id" ref="view_payments_tree"/>
+            <field name="search_view_id" ref="view_payments_filter"/>
+            <field name="domain">[('account_id.type','in',['receivable']),('stored_invoice_id','!=',False)]</field>
+            <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
+        </record>
+
+        <record id="action_invoice_payable" model="ir.actions.act_window">
+            <field name="name">Payable</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="view_id" ref="view_payments_tree"/>
+            <field name="search_view_id" ref="view_payments_filter"/>
+            <field name="domain">[('account_id.type','in',['payable']),('stored_invoice_id','!=',False)]</field>
+            <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
+        </record>
+
+        <!--<menuitem name="Payments" parent="account.menu_finance_entries" action="action_invoice_payments" id="menu_action_invoice_payments" sequence="5"/>-->
+        <menuitem name="Schedule" parent="account.menu_finance" id="schedule" sequence="5"
+                  groups="account.group_account_user,account.group_account_manager"/>
+
+        <menuitem name="All Payment" parent="schedule" action="action_invoice_payments"
+                  id="menu_action_invoice_payments" sequence="5"/>
+        <menuitem name="Receivable" parent="schedule" action="action_invoice_receivable"
+                  id="menu_action_invoice_receivable" sequence="6"/>
+        <menuitem name="Payable" parent="schedule" action="action_invoice_payable" id="menu_action_invoice_payable"
+                  sequence="7"/>
+
+
+        <!--
+        THIS NEED FOR CREATE FIELD ON VIEW
+        -->
+
+        <record id="journal_col13" model="account.journal.column">
             <field name="view_id" ref="account.account_journal_view"/>
             <field name="name">Residual</field>
             <field name="field">residual</field>
             <field eval="13" name="sequence"/>
         </record>
-    
-    
+
+
         <record id="sp_journal_col13" model="account.journal.column">
             <field name="view_id" ref="account.account_sp_journal_view"/>
             <field name="name">Residual</field>
             <field name="field">residual</field>
             <field eval="13" name="sequence"/>
         </record>
-    
+
         <record id="sp_refund_journal_col13" model="account.journal.column">
             <field name="view_id" ref="account.account_sp_refund_journal_view"/>
             <field name="name">Residual</field>
             <field name="field">residual</field>
             <field eval="13" name="sequence"/>
         </record>
-    
-    
-    
-    <!--****************************** ACCOUNT LEDGER ORDERED ***********************************-->
-    <record id="view_account_ordered_tree" model="ir.ui.view">
-        <field name="name">Account Ledger</field>
-        <field name="model">account.move.line</field>
-        <field name="type">tree</field>
-        <field name="priority" eval="20"/>
-        <field name="arch" type="xml">
-            <tree string="Account Ledger">
-                <field name="account_id" readonly="1"/>
-                <field name="stored_invoice_id" readonly="1"/>
-                <field name="invoice_date" readonly="1"/>
-                <field name="invoice_origin" readonly="1"/>
-                <field name="payment_term_id" readonly="1"/>
-                <field name="payment_term_type" readonly="1"/>
-                <field name="date"/>
-                <field name="debit" readonly="1" sum="Total Debit"/>
-                <field name="credit" readonly="1" sum="Total Credit"/>
-                <field name="balance"/>
-                <field name="date_maturity"/>
-                <field name="move_id" readonly="1"/>
-                <field name="reconcile_id" readonly="1"/>
-                <field name="reconcile_partial_id" readonly="1"/>
-                <field name="day" invisible="1"/>
-            </tree>
-        </field>
-    </record>
 
-    <record id="view_account_ordered_filter" model="ir.ui.view">
-        <field name="name">Account Ledger Select</field>
-        <field name="model">account.move.line</field>
-        <field name="type">search</field>
-        <field name="priority" eval="20"/>
-        <field name="arch" type="xml">
-            <search string="Account Ledger">
-                <group>
-                    <field name="account_id"/>
-                    <separator orientation="vertical"/>
-                    <filter icon="terp-go-today" string="From Start Current Year" domain="[('date','&gt;=',time.strftime('%%Y-01-01'))]" help="Start Date" name="start_year"/>
-                    <separator orientation="vertical"/>
-                    <filter icon="terp-go-today" string="From Start Current Month" domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date" name="start_month"/>
-                    <separator orientation="vertical"/>
-                    <field string="Invoice from" name="date_from" filter_domain="[('invoice_date','&gt;=',self)]"/>
-                    <field string="Invoice to" name="date_to" filter_domain="[('invoice_date','&lt;=',self)]"/>
-                    <separator orientation="vertical"/>
-                    <field string="Due from" name="date_from" filter_domain="[('date','&gt;=',self)]"/>
-                    <field string="Due to" name="date_to" filter_domain="[('date','&lt;=',self)]"/>
-                </group>
-           </search>
-        </field>
-    </record>
 
-    <!-- Account Ledger -->
-    <record id="action_account_ordered" model="ir.actions.act_window" >
-        <field name="name">Account Ledger</field>
-        <field name="res_model">account.move.line</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="view_account_ordered_tree"/>
-        <field name="search_view_id" ref="view_account_ordered_filter"/>
-        <field name="context">{'search_default_start_year': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
-    </record>
-    
-    <menuitem name="Account Ledger" parent="account.menu_finance_entries" action="action_account_ordered" id="menu_action_account_ledger" sequence="5"/>
+        <!--****************************** ACCOUNT LEDGER ORDERED ***********************************-->
+        <record id="view_account_ordered_tree" model="ir.ui.view">
+            <field name="name">Account Ledger</field>
+            <field name="model">account.move.line</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <tree string="Account Ledger">
+                    <field name="account_id" readonly="1"/>
+                    <field name="stored_invoice_id" readonly="1"/>
+                    <field name="invoice_date" readonly="1"/>
+                    <field name="invoice_origin" readonly="1"/>
+                    <field name="payment_term_id" readonly="1"/>
+                    <field name="payment_term_type" readonly="1"/>
+                    <field name="date"/>
+                    <field name="debit" readonly="1" sum="Total Debit"/>
+                    <field name="credit" readonly="1" sum="Total Credit"/>
+                    <field name="balance"/>
+                    <field name="date_maturity"/>
+                    <field name="move_id" readonly="1"/>
+                    <field name="reconcile_id" readonly="1"/>
+                    <field name="reconcile_partial_id" readonly="1"/>
+                    <field name="day" invisible="1"/>
+                </tree>
+            </field>
+        </record>
 
-</data>
+        <record id="view_account_ordered_filter" model="ir.ui.view">
+            <field name="name">Account Ledger Select</field>
+            <field name="model">account.move.line</field>
+            <field name="type">search</field>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <search string="Account Ledger">
+                    <group>
+                        <field name="account_id"/>
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-go-today" string="From Start Current Year"
+                                domain="[('date','&gt;=',time.strftime('%%Y-01-01'))]" help="Start Date"
+                                name="start_year"/>
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-go-today" string="From Start Current Month"
+                                domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date"
+                                name="start_month"/>
+                        <separator orientation="vertical"/>
+                        <field string="Invoice from" name="date_from" filter_domain="[('invoice_date','&gt;=',self)]"/>
+                        <field string="Invoice to" name="date_to" filter_domain="[('invoice_date','&lt;=',self)]"/>
+                        <separator orientation="vertical"/>
+                        <field string="Due from" name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                        <field string="Due to" name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Account Ledger -->
+        <record id="action_account_ordered" model="ir.actions.act_window">
+            <field name="name">Account Ledger</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_account_ordered_tree"/>
+            <field name="search_view_id" ref="view_account_ordered_filter"/>
+            <field name="context">{'search_default_start_year': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}
+            </field>
+        </record>
+
+        <menuitem name="Account Ledger" parent="account.menu_finance_entries" action="action_account_ordered"
+                  id="menu_action_account_ledger" sequence="5"/>
+
+    </data>
 </openerp>
