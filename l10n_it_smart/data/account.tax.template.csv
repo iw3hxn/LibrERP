@@ -1,4 +1,4 @@
 id,description,chart_template_id:id,name,sequence,amount,parent_id:id,child_depend,type,account_collected_id:id,account_paid_id:id,type_tax_use,base_code_id:id,tax_code_id:id,ref_base_code_id:id,ref_tax_code_id:id,ref_base_sign,ref_tax_sign,price_include,base_sign,tax_sign
-22v,22v,l10n_it_chart_template_generic,Iva 22 vendite,,0.22,,False,percent,2601,2601,sale,template_b_iva_vendite_22,template_t_iva_vendite_22,template_b_iva_vendite_22,template_t_iva_vendite_22,-1,-1,False,,
-22a,22a,l10n_it_chart_template_generic,Iva 22 acquisti,,0.22,,False,percent,2605,2605,purchase,template_b_iva_acquisti_22,template_t_iva_acquisti_22,template_b_iva_acquisti_22,template_t_iva_acquisti_22,,,False,-1,-1
-20r,20r,l10n_it_chart_template_generic,Rit 20 acquisti,,-0.2,,False,percent,2672,2672,purchase,template_rit_20_b,template_rit_20_t,template_rit_20_b,template_rit_20_t,,,False,-1,-1
+v22,T-IVA-E-22,l10n_it_chart_template_generic,Iva 22 vendite,20,"0.22",,FALSO,percent,2601,2601,sale,template_b_iva_vendite_22,template_t_iva_vendite_22,template_b_iva_vendite_22,template_t_iva_vendite_22,-1,-1,FALSO,,
+a22,T-IVA-F-22,l10n_it_chart_template_generic,Iva 22 acquisti,10,"0.22",,FALSO,percent,2605,2605,purchase,template_b_iva_acquisti_22,template_t_iva_acquisti_22,template_b_iva_acquisti_22,template_t_iva_acquisti_22,,,FALSO,-1,-1
+w20,W-RIT-20,l10n_it_chart_template_generic,Rit 20 acquisti,90,"-0.2",,FALSO,percent,2672,2672,purchase,template_rit_20_b,template_rit_20_t,template_rit_20_b,template_rit_20_t,,,FALSO,-1,-1

@@ -2,7 +2,15 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2016 Didotech SRL
+#    Copyright (C) 2010
+#    OpenERP Italian Community (<http://www.openerp-italia.org>)
+#    Servabit srl
+#    Agile Business Group sagl
+#    Domsense srl
+#    Albatos srl
+#
+#    Copyright (C) 2011-2012
+#    Associazione OpenERP Italia (<http://www.openerp-italia.org>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,9 +28,10 @@
 ##############################################################################
 
 {
-    "name": "Italy - Accounting SMART",
-    "version": "0.1",
-    "author": "OpenERP Italian Community",
+    "name" : "Italy - Accounting Smart",
+    "version" : "0.1",
+    "depends" : ['base_vat','account_chart','base_iban'],
+    "author" : "OpenERP Italian Community",
     "description": """
 Piano dei conti italiano di un'impresa generica.
 ================================================
@@ -30,18 +39,22 @@ Piano dei conti italiano di un'impresa generica.
 Italian accounting chart and localization.
     """,
     "license": "AGPL-3",
-    "category": "Localization/Account Charts",
+    "category" : "Localization/Account Charts",
     'website': 'http://www.openerp-italia.org/',
-    'depends': ['base_vat', 'account_chart', 'base_iban'],
-    'data': [
+    'init_xml': [
+        ],
+    'update_xml': [
         'data/account.account.template.csv',
         'data/account.tax.code.template.csv',
         'account_chart.xml',
         'data/account.tax.template.csv',
         'data/account.fiscal.position.template.csv',
         'l10n_chart_it_generic.xml',
-    ],
+        ],
+    'demo_xml': [
+        ],
     'installable': True,
     'auto_install': False,
-    'images': ['images/config_chart_l10n_it.jpeg', 'images/l10n_it_chart.jpeg'],
+    'certificate' : '00926677190009155165',
+    'images': ['images/config_chart_l10n_it.jpeg','images/l10n_it_chart.jpeg'],
 }
