@@ -19,13 +19,23 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import orm, fields
 
-class account_fiscalyear(osv.osv):
-    _inherit = "account.fiscalyear"
+
+class ir_sequence_type(orm.Model):
+    _inherit = 'ir.sequence.type'
+    _selection = [('none', 'No creation'), ('create', 'Create'), ('create_fy', 'Create per Fiscal Year'),
+                  ('create_period', 'Create per Period (Month)')]
+
     _columns = {
-        'sequence_code': fields.char('Sequence Code', size=6,
-                                     help="""This code will be used to format the start date of the fiscalyear for the placeholder 'fy' defined for sequences as prefix and suffix.
-Example: a fiscal year starting on March 1st with a sequence code %Ya will generate 2011a.
-This allows to handle multiple fiscal years per calendar year and fiscal years not matching calendar years easily""")
+        'prefix_pattern': fields.char('Prefix Pattern', size=64, help="Prefix pattern for the sequence"),
+        'suffix_pattern': fields.char('Suffix Pattern', size=64, help="Suffix pattern for the sequence"),
+        'create_sequence': fields.selection(_selection, 'Create Sequence', required="True",
+            help="""Sequence will be created on the fly using the code of the journal and for fy the fy prefix to compose the prefix"""
+        )
     }
+
+    _defaults = {
+        'create_sequence': lambda *a: 'create'
+    }
+

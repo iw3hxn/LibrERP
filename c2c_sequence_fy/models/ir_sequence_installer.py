@@ -19,23 +19,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import orm, fields
 
 
-class ir_sequence_type(osv.osv):
-    _inherit = 'ir.sequence.type'
-    _selection = [('none', 'No creation'), ('create', 'Create'), ('create_fy', 'Create per Fiscal Year'),
-                  ('create_period', 'Create per Period (Month)')]
+class ir_sequence_installer(orm.TransientModel):
+    _name = 'ir.sequence.installer'
+    _inherit = 'res.config.installer'
 
-    _columns = {
-        'prefix_pattern': fields.char('Prefix Pattern', size=64, help="Prefix pattern for the sequence"),
-        'suffix_pattern': fields.char('Suffix Pattern', size=64, help="Suffix pattern for the sequence"),
-        'create_sequence': fields.selection(_selection, 'Create Sequence', required="True",
-            help="""Sequence will be created on the fly using the code of the journal and for fy the fy prefix to compose the prefix"""
-        )
-    }
-
-    _defaults = {
-        'create_sequence': lambda *a: 'create'
-    }
-
+    def execute(self, cr, uid, ids, context=None):
+        cr.execute \
+            ("""UPDATE ir_sequence
+                 SET prefix = replace(prefix, '(year)', '(fy)'),
+                     suffix = replace(suffix, '(year)', '(fy)') 
+               WHERE (prefix LIKE '%(year)%' OR  suffix LIKE '%(year)%') 
+                 AND id IN (SELECT sequence_main_id FROM account_sequence_fiscalyear);""" 
+            )

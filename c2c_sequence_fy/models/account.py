@@ -19,9 +19,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import orm, fields
 
-class account_journal(osv.osv):
+
+class account_journal(orm.Model):
     _inherit = "account.journal"
     _selection = [('none', 'No creation'), ('create', 'Create'), ('create_fy', 'Create per Fiscal Year'), ('create_period', 'Create per Period')]
     _columns = {
@@ -36,10 +37,10 @@ class account_journal(osv.osv):
     }
 
     def create_sequence(self, cr, uid, vals, context=None):
-       res = super(account_journal, self).create_sequence(cr, uid, vals, context)
-       seq_obj = self.pool.get('ir.sequence')
-       for seq in seq_obj.browse(cr, uid, [res], context):
-           # FIXME - include the new parameters like fy,etc and uset the prefix_pattern
-           prefix = seq.prefix.replace('/%(year)s/', '%(fy)s/')
-           seq_obj.write(cr, uid, res, {'prefix': prefix}, context)
-       return res
+        res = super(account_journal, self).create_sequence(cr, uid, vals, context)
+        seq_obj = self.pool['ir.sequence']
+        for seq in seq_obj.browse(cr, uid, [res], context):
+            # FIXME - include the new parameters like fy,etc and uset the prefix_pattern
+            prefix = seq.prefix.replace('/%(year)s/', '%(fy)s/')
+            seq_obj.write(cr, uid, res, {'prefix': prefix}, context)
+        return res

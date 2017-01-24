@@ -26,6 +26,14 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="base.sequence_view"/>
             <field name="arch" type="xml">
+                <field name="implementation" position="after">
+                    <group col="4" string="Auto Reset" attrs="{'invisible': [('implementation','!=', 'standard')]}">
+                        <field name="auto_reset"/>
+                        <newline/>
+                        <field name="reset_period"/>
+                        <field name="reset_init_number"/>
+                    </group>
+                </field>
                 <page position="after">
                     <page string="Periods" groups="base.group_extended">
                         <field name="period_ids" nolabel="1" colspan="4">

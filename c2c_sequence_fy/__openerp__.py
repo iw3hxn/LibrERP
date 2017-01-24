@@ -22,7 +22,7 @@
 
 {
     'name': 'Sequence Financial Year Extension fy (for v61 and above',
-    'version': '2.0.3.0',
+    'version': '3.0.4.0',
     'category': 'Accounting & Finance',
     'description': """
 This module adds 
@@ -64,11 +64,11 @@ using '(fy)' instead of hard coding.
         'account'
     ],
     'update_xml': [
-        'ir_sequence_view.xml',
-        'account_fiscalyear_view.xml',
-        'ir_sequence_type_view.xml',
-        'ir_sequence_installer_view.xml',
-        'account_view.xml',
+        'views/ir_sequence_view.xml',
+        'views/account_fiscalyear_view.xml',
+        'views/ir_sequence_type_view.xml',
+        'views/ir_sequence_installer_view.xml',
+        'views/account_view.xml',
         'security/ir.model.access.csv'
     ],
     'demo_xml': [],

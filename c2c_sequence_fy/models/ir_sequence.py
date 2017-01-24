@@ -21,13 +21,13 @@
 ##############################################################################
 
 import time
-from osv import fields, osv
+from openerp.osv import orm, fields
 from tools.translate import _
 import logging
 from openerp import SUPERUSER_ID
 
 
-class ir_sequence_period(osv.osv):
+class ir_sequence_period(orm.Model):
     _name = 'account.sequence.period'
     _rec_name = "sequence_main_id"
     _columns = {
@@ -45,12 +45,26 @@ class ir_sequence_period(osv.osv):
     ]
 
 
-class ir_sequence(osv.osv):
+class ir_sequence(orm.Model):
     _inherit = 'ir.sequence'
     _logger = logging.getLogger(__name__)
+
     _columns = {
+        'auto_reset': fields.boolean('Auto Reset'),
+        'reset_period': fields.selection(
+            [('year', 'Every Year'), ('month', 'Every Month'), ('woy', 'Every Week'), ('day', 'Every Day'),
+             ('h24', 'Every Hour'), ('min', 'Every Minute'), ('sec', 'Every Second')],
+            'Reset Period', required=True),
+        'reset_time': fields.char('Name', size=64, help=""),
+        'reset_init_number': fields.integer('Reset Number', required=True, help="Reset number of this sequence"),
         'period_ids': fields.one2many('account.sequence.period',
-                                      'sequence_main_id', 'Sequences')
+                                      'sequence_main_id', 'Sequences'),
+    }
+
+    _defaults = {
+        'auto_reset': False,
+        'reset_period': 'month',
+        'reset_init_number': 1,
     }
     
     def _abbrev(self, name, separator):
@@ -116,12 +130,18 @@ class ir_sequence(osv.osv):
                             if journal_ids:
                                 journal = journal_obj.browse(cr, uid, journal_ids[0], context)
                             else:
-                                raise osv.except_osv(_('No journal found'), '')
+                                raise orm.except_orm(_('No journal found'), '')
                         # prefix = journal.sequence_id.prefix + fy.code +'-' # removed (result as a duplication) but it make a bug for old installation #
                         if journal.sequence_id.prefix:
-                            prefix = journal.sequence_id.prefix.replace('/%(year)s/', '').replace('%(fy)s', '') + '/' + fy.code + '/'
+                            if fy.code:
+                                prefix = journal.sequence_id.prefix.replace('/%(year)s/', '').replace('%(fy)s', fy.code)
+                            else:
+                                prefix = journal.sequence_id.prefix.replace('/%(year)s/', '').replace('%(fy)s', '') + '/'
                         else:
-                            prefix = fy.code + '/'
+                            if fy.code:
+                                prefix = fy.code + '/'
+                            else:
+                                prefix = ''
 
                     sequence_code = journal.sequence_id.code
                     vals = {
@@ -148,8 +168,8 @@ class ir_sequence(osv.osv):
         if context and ('fiscalyear_id' in context) and context.get('fiscalyear_id', False):
             fy_id = context.get('fiscalyear_id', False)
             if fy_id:
-                fiscalyear_obj = self.pool.get('account.fiscalyear')
-                fy = fiscalyear_obj.browse(cr, uid, fy_id)
+                fiscalyear_obj = self.pool['account.fiscalyear']
+                fy = fiscalyear_obj.browse(cr, uid, fy_id, context)
                 return fy.sequence_code or fy.date_start[0:4]
         else:
             return time.strftime('%Y')
@@ -159,8 +179,8 @@ class ir_sequence(osv.osv):
         if context and ('period_id' in context) and context.get('period_id', False):
             period_id = context.get('period_id', False)
             if period_id:
-                period_obj = self.pool.get('account.period')
-                period = period_obj.browse(cr, uid, period_id)
+                period_obj = self.pool['account.period']
+                period = period_obj.browse(cr, uid, period_id, context)
                 # we assume that period code is YYYYMM
                 # if FY starts with april then this should return YYMM
                 return period.code[2]
@@ -171,7 +191,7 @@ class ir_sequence(osv.osv):
     def name_get(self, cr, uid, ids, context=None):
         if not ids:
             return []
-        reads = self.read(cr, uid, ids, ['name', 'code'], context=context)
+        reads = self.browse(cr, uid, ids, context=context)
         res = []
         for record in reads:
             name = record['name']
@@ -186,49 +206,55 @@ class ir_sequence(osv.osv):
         return res
     # end def name_get
 
-    def _journal(self, cr, uid, seq):
-        journal_obj = self.pool.get('account.journal')
-        jou = journal_obj.browse(cr, uid, journal_obj.search(cr, uid, [('sequence_id', '=', seq.id)]))
+    def _journal(self, cr, uid, seq, context=None):
+        journal_obj = self.pool['account.journal']
+        jou = journal_obj.browse(cr, uid, journal_obj.search(cr, uid, [('sequence_id', '=', seq.id)], context=context), context)
         if jou:
             return jou[0]
         else:
             return False
     # end def _journal
     
-    def _journal_name(self, cr, uid, seq):
-        jou = self._journal(cr, uid, seq)
+    def _journal_name(self, cr, uid, seq, context=None):
+        jou = self._journal(cr, uid, seq, context)
         if jou:
             return self._abbrev(jou.name, ' ')
         else:
             return ''
     # end def _journal_name
     
-    def _seq_type(self, cr, uid, seq):
+    def _seq_type(self, cr, uid, seq, context):
         seq_type_obj = self.pool['ir.sequence.type']
-        ids = seq_type_obj.search(cr, uid, [('code', '=', seq.code)])
+        ids = seq_type_obj.search(cr, uid, [('code', '=', seq.code)], context=context)
         if ids:
-            return seq_type_obj.browse(cr, uid, ids[0])
+            return seq_type_obj.browse(cr, uid, ids[0], context)
         else:
             return False
     # end def _seq_type
     
-    def _seq_type_name(self, cr, uid, seq):
-        ty = self._seq_type(cr, uid, seq)
+    def _seq_type_name(self, cr, uid, seq, context):
+        ty = self._seq_type(cr, uid, seq, context)
         return self._abbrev(ty.name, ' ')
     # end def _seq_type_name
     
-    def _seq_type_code(self, cr, uid, seq):
-        ty = self._seq_type(cr, uid, seq)
+    def _seq_type_code(self, cr, uid, seq, context):
+        ty = self._seq_type(cr, uid, seq, context)
         return self._abbrev(ty.code, '.')
     # end def _seq_type_code
     
-    def _next_seq(self, cr, uid, id):
-        seq = self.browse(cr, uid, id)
+    def _next_seq(self, cr, uid, ids, context):
+        seq = self.browse(cr, uid, ids, context)
         if isinstance(seq, list):
-            seq = self.browse(cr, uid, id)[0]
+            seq = self.browse(cr, uid, ids, context)[0]
         
         self._logger.debug('_next_seq `%s`', seq)
         if seq.implementation == 'standard':
+            current_time = ':'.join([seq.reset_period, self._interpolation_dict().get(seq.reset_period)])
+            if seq['auto_reset'] and current_time != seq['reset_time']:
+                cr.execute("UPDATE ir_sequence SET reset_time=%s WHERE id=%s ", (current_time, seq.id))
+                self._alter_sequence(cr, seq.id, seq.number_increment, seq.reset_init_number)
+                cr.commit()
+
             cr.execute("SELECT nextval('%s_%03d')" % (self._table, seq.id))
             seq.number_next = cr.fetchone()
         else:
@@ -242,11 +268,11 @@ class ir_sequence(osv.osv):
         d = self._interpolation_dict(context)
         d['fy'] = self._fy_code(cr, uid, context)
         d['pe'] = self._month_code(cr, uid, context)
-        if self._seq_type(cr, uid, seq):
-            d['stn'] = self._seq_type_name(cr, uid, seq)
-            d['stc'] = self._seq_type_code(cr, uid, seq)
-        d['jn'] = self._journal_name(cr, uid, seq)
-        ty = self._seq_type(cr, uid, seq)
+        if self._seq_type(cr, uid, seq, context):
+            d['stn'] = self._seq_type_name(cr, uid, seq, context)
+            d['stc'] = self._seq_type_code(cr, uid, seq, context)
+        d['jn'] = self._journal_name(cr, uid, seq, context)
+        ty = self._seq_type(cr, uid, seq, context)
         if seq.prefix:
             _prefix = self._interpolate(seq.prefix, d)
         elif ty and ty.prefix_pattern:
@@ -265,7 +291,7 @@ class ir_sequence(osv.osv):
     def _next(self, cr, uid, seq_ids, context=None):
         if not seq_ids:
             return False
-        seq = self._next_seq(cr, uid, seq_ids)
+        seq = self._next_seq(cr, uid, seq_ids, context)
         return self._format(cr, uid, seq, context)
     # end def _next
 
@@ -283,13 +309,13 @@ class ir_sequence(osv.osv):
             seq_type_obj = self.pool['ir.sequence.type']
             seq_type_ids = seq_type_obj.search(cr, uid, [('code', '=', sequence_code)], context=context)
             if not seq_type_ids:
-                raise osv.except_osv(
+                raise orm.except_orm(
                     _('Integrity Error !'),
                     _('Missing sequence-code %s') % sequence_code
                 )
             seq_type = seq_type_obj.browse(cr, uid, seq_type_ids[0], context)
             if seq_type.create_sequence == 'none':
-                raise osv.except_osv(
+                raise orm.except_orm(
                     _('Integrity Error !'),
                     _('Automatic creation not allowed for sequence-code %s with %s')
                     % (sequence_code, seq_type.create_sequence)
