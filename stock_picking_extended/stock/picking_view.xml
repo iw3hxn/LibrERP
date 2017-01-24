@@ -61,6 +61,8 @@
                 <field name="stock_journal_id" position="replace">
                     <field name="stock_journal_id" required="1"
                     on_change="onchange_stock_journal(stock_journal_id,state)" widget="selection"/>
+                    <field name="credit_limit" attrs="{'invisible': [('visible_credit_limit','!=',True)]}"/>
+                    <field name="visible_credit_limit" invisible="1"/>
                 </field>
             </field>
         </record>

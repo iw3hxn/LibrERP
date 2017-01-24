@@ -22,6 +22,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
 # import decimal_precision as dp
 
 
@@ -73,6 +74,24 @@ class stock_picking(orm.Model):
 
     _inherit = "stock.picking"
 
+    def _credit_limit(self, cr, uid, ids, field_name, arg, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = dict.fromkeys(ids, 0.0)
+        for picking in self.browse(cr, uid, ids, context=context):
+
+            partner = picking.address_id.partner_id
+            credit = partner.credit
+            # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
+
+            invoice_obj = self.pool['account.invoice']
+            invoice_ids = invoice_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', 'in', ['draft', 'open'])], context=context)
+            invoices_amount = 0.0
+            for invoice in invoice_obj.browse(cr, uid, invoice_ids, context=context):
+                invoices_amount += invoice.amount_total
+            available_credit = partner.credit_limit - invoices_amount
+            res[picking.id] = available_credit
+        return res
+
     _columns = {
         'carriage_condition_id': fields.many2one(
             'stock.picking.carriage_condition', 'Carriage condition'),
@@ -97,17 +116,35 @@ class stock_picking(orm.Model):
         'client_order_ref': fields.related(
             'sale_id', 'client_order_ref', type='char',
             string='Customer Reference'),
+        'credit_limit': fields.function(_credit_limit, string="Remaining Credit Limit", type='float', readonly=True,
+                                        method=True),
+        'visible_credit_limit': fields.related('company_id', 'check_credit_limit', type='boolean',
+                                               string=_('Fido Residuo Visibile'), store=False, readonly=True),
         # 'weight': fields.float('Gross weight', digits_compute=dp.get_precision('Stock Weight'), help="The gross weight in Kg."),
         # 'weight_net': fields.float('Net weight', digits_compute=dp.get_precision('Stock Weight'), help="The net weight in Kg."),
     }
 
+    def check_limit(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        for picking in self.browse(cr, uid, ids, context=context):
+            if picking.credit_limit < 0 and picking.company_id and picking.company_id.check_credit_limit and picking.type == 'out':
+                title = _('Credit Over Limit')
+                msg = _(u'Is not possible to confirm because customer exceed the credit limit.')
+                raise orm.except_orm(_(title), _(msg))
+                return False
+        return True
+
+    def action_process(self, cr, uid, ids, context=None):
+        if self.check_limit(cr, uid, ids, context):
+            return super(stock_picking, self).action_process(cr, uid, ids, context=context)
+        else:
+            return False
+
     def print_picking(self, cr, uid, ids, context):
         return self.pool['account.invoice'].print_report(cr, uid, ids, 'delivery.report_shipping', context)
     
-    def onchange_stock_journal(
-            self, cr, uid, ids, stock_journal_id=None, state=None, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+    def onchange_stock_journal(self, cr, uid, ids, stock_journal_id=None, state=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if state != 'draft':
             return {'value': {}}
         
@@ -120,8 +157,7 @@ class stock_picking(orm.Model):
         return {'value': {'invoice_state': default_invoice_state or 'none'}}
     
     def onchange_partner_in(self, cr, uid, ids, address_id=None, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         partner_address_obj = self.pool['res.partner.address']
         delivery_ids = []
         partner_id = None
@@ -189,10 +225,8 @@ class stock_picking(orm.Model):
                 self.pool['res.partner'].write(cr, uid, [picking.partner_id.id], partner_vals, context)
         return ids
 
-    def _prepare_invoice_line(self, cr, uid, group, picking, move_line, invoice_id,
-        invoice_vals, context=None):
-        res = super(stock_picking, self)._prepare_invoice_line(cr, uid, group, picking, move_line, invoice_id,
-            invoice_vals, context=None)
+    def _prepare_invoice_line(self, cr, uid, group, picking, move_line, invoice_id, invoice_vals, context=None):
+        res = super(stock_picking, self)._prepare_invoice_line(cr, uid, group, picking, move_line, invoice_id, invoice_vals, context=context)
         """ Update dict with correct shipped qty
         """
         res['quantity'] = move_line.product_qty or move_line.product_uos_qty
@@ -212,8 +246,9 @@ class stock_picking(orm.Model):
         return res
 
     def _invoice_line_hook(self, cr, uid, move_line, invoice_line_id):
+        context = self.pool['res.users'].context_get(cr, uid)
         company_id = self.pool['res.users'].get_current_company(cr, uid)[0][0]
-        company = self.pool['res.company'].browse(cr, uid, company_id)
+        company = self.pool['res.company'].browse(cr, uid, company_id, context)
         if company.note_on_invoice_line:
-            self.pool['account.invoice.line'].write(cr, uid, invoice_line_id, {'note': move_line.note})
+            self.pool['account.invoice.line'].write(cr, uid, invoice_line_id, {'note': move_line.note}, context)
         return super( stock_picking, self)._invoice_line_hook(cr, uid, move_line, invoice_line_id)

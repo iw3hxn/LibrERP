@@ -360,3 +360,21 @@ msgstr "Il peso lordo in kg."
 #: help:stock.picking,weight:0
 msgid "The net weight in Kg."
 msgstr "Il peso netto in kg."
+
+#. module: stock_move_extended
+#: field:stock.picking,credit_limit:0
+msgid "Remaining Credit Limit"
+msgstr "Fido Residuo"
+
+#. module: sale_ordstock_move_extendeder_confirm
+#: code:addons/stock_picking_extended/stock/picking.py:146
+#, python-format
+msgid "Credit Over Limit"
+msgstr "Fido Superato"
+
+#. module: sale_ordstock_move_extendeder_confirm
+#: code:addons/stock_picking_extended/stock/picking.py:146
+#, python-format
+msgid "Is not possible to confirm because customer exceed the credit limit."
+msgstr "Non è possibile confermare perchè il cliente ha superato il limite"
+
