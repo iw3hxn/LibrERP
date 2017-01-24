@@ -41,7 +41,7 @@ Functionalities:
         'sale_journal',
         'account', 
         'delivery',
-        'sequence_restart',      # ricomincia da 0 le sequenze ogni anno
+        'c2c_sequence_fy',       # ricomincia da 0 le sequenze ogni anno
         'invoice_immediate',     # fattura accompagnatoria
         'sale_order_confirm',
         'core_extended',
