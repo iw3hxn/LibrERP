@@ -112,9 +112,8 @@ class ir_sequence(osv.osv):
         interpolated_suffix = self._interpolate(seq['suffix'], d)
         return interpolated_prefix + '%%0%sd' % seq['padding'] % seq['number_next'] + interpolated_suffix
 
-    def on_change_restart_on_next_year(self, cr, uid, ids, code, context=None):
-        if not code in self.TABLE_TO_FIELD_MAP:
-            return {'values': {'restart_on_next_year': False}, 'warning': {'title': _('Warning!'), 'message': _('Date field is not defined for "{code}" table. Please contact support for upgrade'.format(code=code))}}            
-        else:
-            return {'values': {}}
-            
+    # def on_change_restart_on_next_year(self, cr, uid, ids, code, context=None):
+    #     if not code in self.TABLE_TO_FIELD_MAP:
+    #         return {'values': {'restart_on_next_year': False}, 'warning': {'title': _('Warning!'), 'message': _('Date field is not defined for "{code}" table. Please contact support for upgrade'.format(code=code))}}
+    #     else:
+    #         return {'values': {}}
