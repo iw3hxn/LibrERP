@@ -129,7 +129,7 @@
             <field name="view_mode">tree,form,calendar</field>
             <field name="view_id" ref="view_payments_tree"/>
             <field name="search_view_id" ref="view_payments_filter"/>
-            <field name="domain">[('account_id.type','in',['receivable']),('stored_invoice_id','!=',False)]</field>
+            <field name="domain">[('account_id.type','in',['receivable']),('stored_invoice_id','!=',False),('credit','=', 0)]</field>
             <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
         </record>
 
@@ -140,7 +140,7 @@
             <field name="view_mode">tree,form,calendar</field>
             <field name="view_id" ref="view_payments_tree"/>
             <field name="search_view_id" ref="view_payments_filter"/>
-            <field name="domain">[('account_id.type','in',['payable']),('stored_invoice_id','!=',False)]</field>
+            <field name="domain">[('account_id.type','in',['payable']),('stored_invoice_id','!=',False),('debit','=', 0)]</field>
             <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
         </record>
 
