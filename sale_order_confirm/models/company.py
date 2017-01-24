@@ -35,6 +35,8 @@ class res_company(orm.Model):
     _columns = {
         'check_credit_limit': fields.boolean('Enable Credit Limit Check'),
         'default_credit_limit': fields.float(string='Default Limit'),
+        'check_overdue': fields.boolean('Enable Overdue Check'),
+        'date_max_overdue': fields.integer('Overdue days'),
         'enable_margin_validation': fields.boolean('Enable Margin Verify'),
         'enable_discount_validation': fields.boolean('Enable Discount Verify'),
         'enable_partner_validation': fields.boolean('Enable Partner Validation'),

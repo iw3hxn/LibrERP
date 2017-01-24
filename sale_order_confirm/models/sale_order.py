@@ -206,18 +206,35 @@ class sale_order(orm.Model):
             for invoice in invoice_obj.browse(cr, uid, draft_invoices_ids, context=context):
                 draft_invoices_amount += invoice.amount_total
             available_credit = partner.credit_limit - credit - approved_invoices_amount - draft_invoices_amount
-
             res[order.id] = available_credit - order.amount_total
         return res
+
+    def partner_overdue_check(self, cr, uid, company, partner, context):
+        # return True if there are same overdue payment
+        account_move_line_obj = self.pool['account.move.line']
+        overdue_date = (datetime.today() - relativedelta(days=company.date_max_overdue or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+
+        account_move_ids = account_move_line_obj.search(cr, uid, [
+            ('partner_id', '=', partner.id),
+            ('account_id.type', 'in', ['receivable', 'payable']),
+            ('stored_invoice_id', '!=', False),
+            ('reconcile_id', '=', False),
+            ('date_maturity', '<', overdue_date)], context=context)
+
+        if account_move_ids:
+            return True
+
+        return False
 
     def check_limit(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context=context):
             if order.credit_limit < 0 and order.company_id and order.company_id.check_credit_limit:
-                title = _('Credit Over Limit')
+                title = _(u'Credit Over Limit')
                 msg = _(u'Is not possible to confirm because customer exceed the credit limit. \n Is Possible change the Order Policy \"Pay Before Delivery\" \n on tab \"Other Information\"')
                 raise orm.except_orm(_(title), _(msg))
                 return False
+
             if order.visible_minimum and order.sale_order_minimun > order.amount_untaxed:
                 if order.shop_id.user_allow_minimun_id and order.shop_id.user_allow_minimun_id.id == uid:  # if user can validate
                     return True
@@ -227,8 +244,7 @@ class sale_order(orm.Model):
                         if line.product_id and line.product_id == order.shop_id.product_allow_minimun_id:
                             return True
 
-                title = _('Minimum Amount Billable')
-
+                title = _(u'Minimum Amount Billable')
                 if order.shop_id.user_allow_minimun_id:
                     msg = _(u'Is not possible to confirm because is not reached the minimum billable {amount} {currency} \n Only {user} can do it').format(amount=order.sale_order_minimun, currency=order.pricelist_id.currency_id.symbol, user=order.shop_id.user_allow_minimun_id.name)
                 else:
@@ -238,6 +254,13 @@ class sale_order(orm.Model):
                     msg += _(u'\n\n or add the product \'{product}\'').format(product=order.shop_id.product_allow_minimun_id.name_get()[0][1])
 
                 raise orm.except_orm(_(title), _(msg))
+                return False
+
+            if order.company_id and order.company_id.check_overdue:
+                if self.partner_overdue_check(cr, uid, order.company_id, order.partner_id, context):
+                    title = _(u'Overdue Limit')
+                    msg = _(u'Is not possible to confirm because customer have a overdue payment')
+                    raise orm.except_orm(_(title), _(msg))
                 return False
         return True
 

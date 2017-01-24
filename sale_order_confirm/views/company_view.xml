@@ -12,6 +12,8 @@
                     <separator string="Gestione Fido" colspan="4"/>
                     <field name="check_credit_limit"/>
                     <field name="default_credit_limit"/>
+                    <field name="check_overdue"/>
+                    <field name="date_max_overdue"/>
                     <separator string="Manage Validity on Sale Order" colspan="4"/>
                     <field name="default_sale_order_validity"/>
                     <separator string="Margin Manager" colspan="4"/>

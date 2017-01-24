@@ -378,3 +378,15 @@ msgstr "Fido Superato"
 msgid "Is not possible to confirm because customer exceed the credit limit."
 msgstr "Non è possibile confermare perchè il cliente ha superato il limite"
 
+#. module: sale_ordstock_move_extendeder_confirm
+#: code:addons/stock_picking_extended/stock/picking.py:146
+#, python-format
+msgid "Overdue Limit"
+msgstr "Limite sullo scaduto"
+
+#. module: sale_ordstock_move_extendeder_confirm
+#: code:addons/stock_picking_extended/stock/picking.py:146
+#, python-format
+msgid "Is not possible to confirm because customer have a overdue payment."
+msgstr "Non è possibile confermare perchè il cliente uno scaduto"
+

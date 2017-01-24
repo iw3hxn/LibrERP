@@ -173,12 +173,22 @@ msgstr "Annulla Ordine"
 #. module: sale_order_confirm
 #: field:res.company,check_credit_limit:0
 msgid "Enable Credit Limit Check"
-msgstr "Abilita gestione fido"
+msgstr "Abilita Gestione Fido"
 
 #. module: sale_order_confirm
 #: field:res.company,default_credit_limit:0
 msgid "Default Limit"
 msgstr "Fido di default"
+
+#. module: sale_order_confirm
+#: field:res.company,check_overdue:0
+msgid "Enable Overdue Check"
+msgstr "Abilita blocco su scaduto"
+
+#. module: sale_order_confirm
+#: field:res.company,date_max_overdue:0
+msgid "Overdue days"
+msgstr "Giorni dallo scaduto per attivazione blocco"
 
 #. module: sale_order_confirm
 #: view:sale.order:0
