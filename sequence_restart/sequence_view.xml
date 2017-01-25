@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="base.sequence_view"/>
 			<field name="arch" type="xml">
                 <field name="implementation" position="after">
-                    <field name='restart_on_next_year' on_change="on_change_restart_on_next_year(code)" />
+                    <field name='restart_on_next_year' />
                 </field>
             </field>
         </record>
