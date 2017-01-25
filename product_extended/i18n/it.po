@@ -86,3 +86,13 @@ msgstr "Azione non valida !"
 #, python-format
 msgid "In order to delete a category {category}, it must be cancelled product!"
 msgstr "Per cancellare la categoria {category} devi prima cancellare tutti i prodotti collegati"
+
+#. module: product_extended
+#: field:product.product,supplier_id:0
+msgid "Supplier"
+msgstr "Fornitore"
+
+#. module: product_extended
+#: view:product.product:0
+msgid "Show Category"
+msgstr "Visualizza Categoria"

@@ -1,48 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-    		<record model="ir.ui.view" id="product_inh_new_fields_form_view">
-                <field name="name">product.inh.new.fields.form</field>
-                <field name="model">product.product</field>
-                <field name="type">form</field>
-                <field name="inherit_id" ref="product.product_normal_form_view"/>
-                <field name="arch" type="xml">
-                    <xpath expr="/form/notebook/page/group[2]" position="after">
-                    	<group colspan="4" col="4" groups="product_bom.group_supplier_product,product_bom.group_sell_price,product_bom.group_cost_price">
-                    		<separator string="Extra information" colspan="4"/>
-                    		<group colspan="2" col="2">
-	                    		<field name="last_customer_id" groups="product_bom.group_sell_price"/>
-	                    		<field name="last_sale_price" groups="product_bom.group_sell_price"/>
-	                    		<field name="last_sale_date" groups="product_bom.group_sell_price"/>
-                                <field name="last_sale_order_id" groups="base.group_sale_salesman"/>
-                                <field name="last_customer_invoice_id" groups="base.group_sale_salesman" context="{'type':'out_invoice', 'journal_type':'sale', 'form_view_ref':'account.invoice_form'}"/>
-                    		</group>
-                            <group colspan="2" col="2">
-	                    		<field name="last_supplier_id" groups="product_bom.group_supplier_product"/>
-                                <field name="last_purchase_price" groups="product_bom.group_cost_price"/>
-	                    		<field name="last_purchase_date" groups="product_bom.group_cost_price"/>
-                                <field name="last_purchase_order_id" groups="purchase.group_purchase_user,stock.group_stock_user"/>
-                                <field name="last_supplier_invoice_id" groups="purchase.group_purchase_user" context="{'type':'in_invoice', 'journal_type':'purchase'}"/>
-                    		</group>
-                    	</group>  
-                    	<newline/>
-                    </xpath>                   
+
+        <record model="ir.ui.view" id="product_extended_filter">
+            <field name="name">product.product.extended.filter</field>
+            <field name="model">product.product</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="after" >
+                    <field name="supplier_id" domain="[('supplier', '=', True)]"/>
                 </field>
-            </record>
-            
-            <record model="ir.ui.view" id="product_inh_new_fields_tree_view">
-                <field name="name">product.inh.new.fields.tree</field>
-                <field name="model">product.product</field>
-                <field name="type">tree</field>
-                <field name="inherit_id" ref="product.product_product_tree_view"/>
-                <field name="arch" type="xml">
-                    <field name="type" position="after">
-                   		<field name="last_purchase_price" groups="product_bom.group_cost_price"/>
-                   		<field name="last_purchase_date" groups="product_bom.group_cost_price"/>
-                   		<field name="last_sale_price" groups="product_bom.group_sell_price"/>
-                   		<field name="last_sale_date" groups="product_bom.group_sell_price"/>
-                    </field>                   
+                <field name="pricelist_id" position="before">
+                    <filter icon="terp-purchase" string="Show Category" domain="[]" context="{'show_categ': True}"/>
                 </field>
-            </record>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_extended_tree">
+            <field name="name">product.product.extended.tree</field>
+            <field name="model">product.product</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="replace" >
+                    <field name="categ_id" invisible="not context.get('show_categ', False)"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_inh_new_fields_form_view">
+            <field name="name">product.inh.new.fields.form</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page/group[2]" position="after">
+                    <group colspan="4" col="4"
+                           groups="product_bom.group_supplier_product,product_bom.group_sell_price,product_bom.group_cost_price">
+                        <separator string="Extra information" colspan="4"/>
+                        <group colspan="2" col="2">
+                            <field name="last_customer_id" groups="product_bom.group_sell_price"/>
+                            <field name="last_sale_price" groups="product_bom.group_sell_price"/>
+                            <field name="last_sale_date" groups="product_bom.group_sell_price"/>
+                            <field name="last_sale_order_id" groups="base.group_sale_salesman"/>
+                            <field name="last_customer_invoice_id" groups="base.group_sale_salesman"
+                                   context="{'type':'out_invoice', 'journal_type':'sale', 'form_view_ref':'account.invoice_form'}"/>
+                        </group>
+                        <group colspan="2" col="2">
+                            <field name="last_supplier_id" groups="product_bom.group_supplier_product"/>
+                            <field name="last_purchase_price" groups="product_bom.group_cost_price"/>
+                            <field name="last_purchase_date" groups="product_bom.group_cost_price"/>
+                            <field name="last_purchase_order_id"
+                                   groups="purchase.group_purchase_user,stock.group_stock_user"/>
+                            <field name="last_supplier_invoice_id" groups="purchase.group_purchase_user"
+                                   context="{'type':'in_invoice', 'journal_type':'purchase'}"/>
+                        </group>
+                    </group>
+                    <newline/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_inh_new_fields_tree_view">
+            <field name="name">product.inh.new.fields.tree</field>
+            <field name="model">product.product</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+                    <field name="last_purchase_price" groups="product_bom.group_cost_price"/>
+                    <field name="last_purchase_date" groups="product_bom.group_cost_price"/>
+                    <field name="last_sale_price" groups="product_bom.group_sell_price"/>
+                    <field name="last_sale_date" groups="product_bom.group_sell_price"/>
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>
