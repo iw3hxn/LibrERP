@@ -78,17 +78,17 @@ class stock_picking(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, 0.0)
         for picking in self.browse(cr, uid, ids, context=context):
-
+            res[picking.id] = False
             partner = picking.address_id.partner_id
-            # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
-
-            invoice_obj = self.pool['account.invoice']
-            invoice_ids = invoice_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', 'in', ['draft', 'open'])], context=context)
-            invoices_amount = 0.0
-            for invoice in invoice_obj.browse(cr, uid, invoice_ids, context=context):
-                invoices_amount += invoice.amount_total
-            available_credit = partner.credit_limit - invoices_amount
-            res[picking.id] = available_credit
+            if partner:
+                # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
+                invoice_obj = self.pool['account.invoice']
+                invoice_ids = invoice_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', 'in', ['draft', 'open'])], context=context)
+                invoices_amount = 0.0
+                for invoice in invoice_obj.browse(cr, uid, invoice_ids, context=context):
+                    invoices_amount += invoice.amount_total
+                available_credit = partner.credit_limit - invoices_amount
+                res[picking.id] = available_credit
         return res
 
     _columns = {
