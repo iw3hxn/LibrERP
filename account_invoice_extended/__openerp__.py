@@ -49,7 +49,8 @@
         'base',
         'account',
         'web_hide_buttons',
-        'account_due_list'
+        'account_due_list',
+        'stock_picking_extended',
     ],
     "data": [
         'security/account_security.xml',
