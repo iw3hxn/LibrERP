@@ -35,7 +35,8 @@
         'l10n_it_account',
         'report_aeroo_ooo',
         'report_webkit',
-        'core_extended'
+        'core_extended',
+        'invoice_proforma',
     ],
     "data": [
         'reports.xml',
