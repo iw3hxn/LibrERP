@@ -87,8 +87,6 @@ class ExcelExportView(ExcelExport):
                     cell_value = None
                 worksheet.write(row_index + 1, cell_index, cell_value, style)
 
-
-
         fp = StringIO()
         workbook.save(fp)
         fp.seek(0)
@@ -106,14 +104,16 @@ class ExcelExportView(ExcelExport):
         context = req.session.eval_context(req.context)
         lang = context.get('lang', 'en_US')
         Model = req.session.model('res.lang')
-        ids = Model.search([['code', '=', lang]], context=context)
-        record = Model.read(ids, ['decimal_point', 'thousands_sep', 'date_format'])
-
+        Object = req.session.model('ir.model')
+        lang_ids = Model.search([['code', '=', lang]], context=context)
+        record = Model.read(lang_ids, ['decimal_point', 'thousands_sep', 'date_format'], context)
+        object_ids = Object.search([['model', '=', model]], context=context)
+        if object_ids:
+            model = Object.read(object_ids[0], ['name'], context)['name'].replace(' ', '_')
         return req.make_response(
             self.from_data(columns_headers, rows, record[0]),
             headers=[
-                ('Content-Disposition', 'attachment; filename="%s"'
-                    % self.filename(model)),
+                ('Content-Disposition', 'attachment; filename="%s"' % self.filename(model)),
                 ('Content-Type', self.content_type)
             ],
             cookies={'fileToken': int(token)})
