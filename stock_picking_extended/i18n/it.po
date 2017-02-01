@@ -349,7 +349,7 @@ msgstr "Q.tà A Mag"
 #. module: stock_move_extended
 #: field:stock.picking,client_order_ref:0
 msgid "Customer Reference"
-msgstr "Riferimento cliente"
+msgstr "Numero Ordine Cliente"
 
 #. module: stock_move_extended
 #: help:stock.picking,weight:0
