@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="position_hr_attendance" model="ir.ui.view">
+            <field name="name">hr.attendance.position.inherit</field>
+            <field name="model">hr.attendance</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="hr_attendance.view_attendance_who"/>
+            <field name="arch" type="xml">
+                <field name="day" position="before">
+                    <field name="latitude"/>
+                    <field name="longitude"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+
+</openerp>

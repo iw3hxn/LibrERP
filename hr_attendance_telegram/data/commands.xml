@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="telegram.command" id="sing_in_command">
+            <field name="name">/signin</field>
+            <field name="description">Sign IN</field>
+            <field name="sequence" eval="1000"/>
+            <field name="response_code">
+
+position = pool['res.users'].get_position(cr, uid, cancel_data=False, context=context)
+if position != (0, 0):
+    all_commands = pool['hr.employee'].telegram_sign_in(cr, uid, context)
+    data = {'all_commands': all_commands, 'model': 'hr.employee'}
+else:
+    data = {'error': 'no_position'}
+
+            </field>
+            <field name="response_template"><![CDATA[
+Ciao ${user.name}
+
+% if data.get('error'):
+Questo comando ha bisogno della tua posizione per funzionare.
+<b>Mandaci la tua posizione usando il pulsante "graffetta" e poi "posizione"</b>
+% else:
+Ingresso effettuato
+% endif
+
+]]>
+            </field>
+            <field name="group_ids" eval="[]"/>
+        </record>
+
+        <record model="telegram.command" id="sing_out_command">
+            <field name="name">/signout</field>
+            <field name="description">Sing Out</field>
+            <field name="sequence" eval="1000"/>
+            <field name="response_code">
+
+position = pool['res.users'].get_position(cr, uid, cancel_data=False, context=context)
+if position != (0, 0):
+    all_commands = pool['hr.employee'].telegram_sign_out(cr, uid, context)
+    data = {'all_commands': all_commands, 'model': 'hr.employee'}
+else:
+    data = {'error': 'no_position'}
+
+            </field>
+            <field name="response_template"><![CDATA[
+
+Ciao ${user.name}
+
+% if data.get('error'):
+Questo comando ha bisogno della tua posizione per funzionare.
+<b>Mandaci la tua posizione usando il pulsante "graffetta" e poi "posizione"</b>
+% else:
+Ingresso effettuato
+% endif
+]]>
+            </field>
+            <field name="group_ids" eval="[]"/>
+        </record>
+
+    </data>
+</openerp>
