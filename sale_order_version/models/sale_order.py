@@ -27,28 +27,6 @@ from tools import ustr
 from tools.translate import _
 
 
-class sale_order_line(orm.Model):
-    _inherit = "sale.order.line"
-    _columns = {
-        # 'active': fields.related('order_id', 'active', type='boolean', string='Active', store=False),
-        'sale_line_copy_id': fields.many2one('sale.order.line', 'Orig version', required=False, readonly=False),
-    }
-
-    def copy_data(self, cr, uid, line_id, defaults=None, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-        defaults = defaults or {}
-        defaults['sale_line_copy_id'] = line_id
-        return super(sale_order_line, self).copy_data(cr, uid, line_id, defaults, context)
-
-    def copy(self, cr, uid, line_id, defaults, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-        defaults = defaults or {}
-        defaults['sale_line_copy_id'] = line_id
-        return super(sale_order_line, self).copy(cr, uid, line_id, defaults, context)
-
-
 class sale_order(orm.Model):
     """ Modificaciones de sale order para añadir la posibilidad de versionar el pedido de venta. """
     _inherit = "sale.order"
@@ -161,37 +139,27 @@ class sale_order(orm.Model):
 
         return super(sale_order, self).create(cr, uid, vals, context)
 
+    def print_report(self, cr, uid, ids, xml_id, context):
+        def id_from_xml_id():
+            report_obj = self.pool['ir.actions.report.xml']
+            report_all = report_obj.search(cr, uid, [], context=context)
+            report_xml_ids = report_obj.get_xml_id(cr, uid, report_all, context=context)
 
-class sale_shop(orm.Model):
-    _inherit = 'sale.shop'
+            for key in report_xml_ids.keys():
+                xml_id_it = report_xml_ids[key]
+                if xml_id_it == xml_id:
+                    return key
+            return False
 
-    _columns = {
-        'sequence_id': fields.many2one('ir.sequence', 'Entry Sequence',
-                                       help="This field contains the information related to the numbering of the Sale Orders.",
-                                       domain="[('code', '=', 'sale.order')]"),
-        'sale_order_sequence_id': fields.many2one('ir.sequence', 'Entry Sequence Confirmed',
-                                                  help="This field contains the information related to the numbering of the Sale Orders Confirmed by Customer",
-                                                  domain="[('code', '=', 'sale.order')]"),
-    }
+        report_id = id_from_xml_id()
+        report = self.pool['ir.actions.report.xml'].browse(cr, uid, report_id, context)
+        data = {'model': report.model, 'ids': ids, 'id': ids[0]}
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': report.report_name,
+            'datas': data,
+            'context': context
+        }
 
-    def write(self, cr, uid, ids, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        if vals.get('sequence_id', False) and vals.get('sale_order_sequence_id', False):
-            if vals.get('sequence_id', False) == vals.get('sale_order_sequence_id', False):
-                raise orm.except_orm(_('Error!'),
-                                     _("In not possible to have same sequence"))
-
-        return super(sale_shop, self).write(cr, uid, ids, vals, context=context)
-
-    def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-        if vals.get('sequence_id', False) and vals.get('sale_order_sequence_id', False):
-            if vals.get('sequence_id', False) == vals.get('sale_order_sequence_id', False):
-                raise orm.except_orm(_('Error!'),
-                                     _("In not possible to have same sequence"))
-
-        return super(sale_shop, self).create(cr, uid, vals, context=context)
+    def print_order(self, cr, uid, ids, context):
+        return self.print_report(cr, uid, ids, 'sale.report_sale_order', context)

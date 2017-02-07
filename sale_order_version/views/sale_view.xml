@@ -38,6 +38,7 @@
                                 <field name="state"/>
                                 <field name="sale_version_id"/>
                                 <field name="revision_note"/>
+                                <button name="print_order" string="Print" type="object" icon="gtk-print" />
                             </tree>
                         </field>
                     </page>

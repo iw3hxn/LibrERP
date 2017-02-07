@@ -22,5 +22,24 @@
 #
 ##############################################################################
 
-from . import models
-from . import report
+from openerp.addons.sale.sale import sale_order
+
+
+def monkey_copy(self, cr, uid, origin_id, default=None, context=None):
+    if not default:
+        default = {}
+
+    context = context or self.pool['res.users'].context_get(cr, uid)
+
+    default.update({
+        'state': 'draft',
+        'shipped': False,
+        'invoice_ids': [],
+        'picking_ids': [],
+        'date_confirm': False,
+        'name': default.get('name', '/'),
+    })
+    return super(sale_order, self).copy(cr, uid, origin_id, default, context=context)
+
+
+sale_order.copy = monkey_copy
