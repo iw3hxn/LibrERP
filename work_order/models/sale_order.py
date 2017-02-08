@@ -201,17 +201,18 @@ class sale_order(orm.Model):
                                     else:
                                         planned_hours = self.pool['product.uom']._compute_qty(cr, uid, bom.product_uom.id, bom.product_uom_qty, bom.product_id.uom_id.id)
                                         task_number = int(bom.product_uom_qty)
-                                    task_vals = {
-                                        'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
-                                        'project_id': project_id,
-                                        'partner_id': order.partner_id.id,
-                                        'planned_hours': int(planned_hours / task_number),
-                                        'remaining_hours': int(planned_hours / task_number),
-                                        'origin': 'sale.order.line, {0}'.format(order_line.id),
-                                        'sequence': sequence,
-                                    }
-                                    sequence += 10
-                                    self.create_task(cr, uid, order_line, task_number, task_vals, context)
+                                    if task_number:
+                                        task_vals = {
+                                            'name': u"{0}: {1} - {2}".format(order.project_project.name, order_line.product_id.name, bom.product_id.name),
+                                            'project_id': project_id,
+                                            'partner_id': order.partner_id.id,
+                                            'planned_hours': int(planned_hours / task_number),
+                                            'remaining_hours': int(planned_hours / task_number),
+                                            'origin': 'sale.order.line, {0}'.format(order_line.id),
+                                            'sequence': sequence,
+                                        }
+                                        sequence += 10
+                                        self.create_task(cr, uid, order_line, task_number, task_vals, context)
 
                         else:
                             main_bom_ids = bom_obj.search(cr, uid, [('product_id', '=', order_line.product_id.id), ('bom_id', '=', False)], context=context)
