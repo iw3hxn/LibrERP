@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="telegram.command" id="my_task_command">
+            <field name="name">/mytask</field>
+            <field name="description">My Task</field>
+            <field name="sequence" eval="1000"/>
+            <field name="response_code">
+
+project_task_obj = pool['project.task']
+
+project_task_ids = project_task_obj.search(cr, uid, [('state', 'in', ['open', 'working']), ('user_id', '=', uid)], context=context)
+
+data['task'] = False
+
+if project_task_ids:
+    data['task'] = project_task_obj.browse(cr, uid, project_task_ids, context)
+
+            </field>
+            <field name="response_template"><![CDATA[
+Le mie task aperte e in lavorazione sono:
+
+%if data['task']:
+% for task in data['task']:
+*<b>${task.name}</b> - ${task.remaining_hours}
+%endfor
+%endif
+
+]]>
+            </field>
+            <field name="group_ids" eval="[]"/>
+        </record>
+
+        <record model="telegram.command" id="my_project">
+            <field name="name">/myproject</field>
+            <field name="description">Sing Out</field>
+            <field name="sequence" eval="1000"/>
+            <field name="response_code">
+
+project_project_obj = pool['project.project']
+
+project_project_ids = project_project_obj.search(cr, uid, [('state', '=', 'open'), ('user_id', '=', uid)], context=context)
+data['project'] = False
+if project_project_ids:
+    data['project'] = project_project_obj.browse(cr, uid, project_project_ids, context)
+
+            </field>
+            <field name="response_template"><![CDATA[
+I miei progetti con le task aperte sono:
+
+% if data['project']:
+% for progetto in data['project']:
+* <b>${progetto.name}</b> - ${progetto.task_count}
+% endfor
+% endif
+
+]]>
+            </field>
+            <field name="group_ids" eval="[]"/>
+        </record>
+
+    </data>
+</openerp>
