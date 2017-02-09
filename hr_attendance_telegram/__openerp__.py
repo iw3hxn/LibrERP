@@ -30,7 +30,10 @@
     "author": "Didotech SRL",
     "website": "https://www.didotech.com",
     "description": """
-
+        Add function for sign in / out:
+        * get_coordinates_distance
+        * telegram_sign_in
+        * telegram_sign_out
     """,
     "depends": [
         "telegram",
