@@ -9,23 +9,32 @@
             <field name="response_code">
 
 project_task_obj = pool['project.task']
-
 project_task_ids = project_task_obj.search(cr, uid, [('state', 'in', ['open', 'working']), ('user_id', '=', uid)], context=context)
+projects = {}
 
-data['task'] = False
+for task in project_task_obj.browse(cr, uid, project_task_ids, context):
+    if task.project_id in projects:
+        projects[task.project_id].append(task)
+    else:
+        projects[task.project_id] = [task]
+data['projects'] = projects
 
-if project_task_ids:
-    data['task'] = project_task_obj.browse(cr, uid, project_task_ids, context)
 
             </field>
             <field name="response_template"><![CDATA[
-Le mie task aperte e in lavorazione sono:
 
-%if data['task']:
-% for task in data['task']:
-*<b>${task.name}</b> - ${task.remaining_hours}
-%endfor
-%endif
+Attività aperte o in lavorazione:
+
+% if not data['projects']:
+Non ci sono progetti da mostrare.
+% else:
+% for project in data['projects']:
+- Progetto <b>${project.name}</b>:
+% for task in data['projects'][project]:
+* ${task.name}
+% endfor
+% endfor
+% endif
 
 ]]>
             </field>

@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2017 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
