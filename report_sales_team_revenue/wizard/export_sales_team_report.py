@@ -70,7 +70,8 @@ class ExportSalesTeamReport(orm.TransientModel):
         'model': fields.selection(
             (
                 ('sale.order', _('Sale')),
-                ('account.invoice', _('Invoice'))
+                ('account.invoice', _('Invoice')),
+                ('account.move.line', _('Paid'))
             ), _('Base model'), required=True
         )
     }
@@ -87,7 +88,7 @@ class ExportSalesTeamReport(orm.TransientModel):
 
     def get_query(self, date_start, date_end, section_id, model='sale.order'):
         if model == 'sale.order':
-            return """SELECT partner_id, SUM(amount_total)
+            return """SELECT partner_id, SUM(amount_untaxed)
                     FROM sale_order
                     WHERE date_order >= '{date_start}'
                     AND date_order <= '{date_end}'
@@ -96,10 +97,10 @@ class ExportSalesTeamReport(orm.TransientModel):
                     GROUP BY partner_id""".format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   section_id=section_id)
-        else:
+        elif model == 'account.invoice':
             return """SELECT partner_id,
-                    SUM(CASE WHEN type='out_invoice' THEN amount_total
-                        WHEN type='out_refund' THEN -1 * amount_total
+                    SUM(CASE WHEN type='out_invoice' THEN amount_untaxed
+                        WHEN type='out_refund' THEN -1 * amount_untaxed
                     END) AS amount_total
                     FROM account_invoice
                     WHERE date_invoice >= '{date_start}'
@@ -108,6 +109,23 @@ class ExportSalesTeamReport(orm.TransientModel):
                     AND type in ('out_invoice', 'out_refund')
                     AND section_id = {section_id}
                     GROUP BY partner_id""".format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                                                  date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                                                  section_id=section_id)
+        else:
+            return """SELECT rp.id AS partner_id, (SUM(aml.credit) - SUM(aml.debit)) AS amount_total
+                        FROM account_move_line AS aml
+                        JOIN res_partner AS rp
+                          ON aml.partner_id = rp.id
+                        JOIN account_journal AS aj
+                          ON aml.journal_id = aj.id
+                       WHERE aml.date >= '{date_start}'
+                         AND aml.date <= '{date_end}'
+                         AND aml.state = 'valid'
+                         AND aml.reconcile_id IS NOT NULL
+                         AND aj.type IN ('cash', 'bank')
+                         AND rp.section_id = {section_id}
+                    GROUP BY rp.id;
+            """.format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   section_id=section_id)
 
@@ -126,6 +144,25 @@ class ExportSalesTeamReport(orm.TransientModel):
 
         return ws
 
+    def write_body1(self, ws, row, values, year):
+        ws.write(row, 0, values['name'])
+        ws.write(row, 1, year)
+        ws.write(row, 2, values['total_amount'], Style.currency)
+
+        for month in range(1, 13):
+            ws.write(row, month + 2, values.get(month, 0), Style.currency)
+
+    def write_body2(self, ws, row, first_row):
+        row += 1
+        last_row = row
+
+        for month in range(1, 14):
+            column = month + 1
+            ws.write(row, column,
+                     Formula("SUM({column}{start}:{column}{end})".format(column=LETTER[column], start=first_row + 1,
+                                                                         end=last_row)),
+                     Style.currency_bold)
+
     def action_team_report(self, cr, uid, ids, context):
         wizard = self.browse(cr, uid, ids[0], context)
         year = int(wizard.year)
@@ -135,7 +172,7 @@ class ExportSalesTeamReport(orm.TransientModel):
         book = Workbook(encoding='utf-8')
 
         for section in self.pool['crm.case.section'].browse(cr, uid, context['active_ids'], context):
-            #ws = book.add_sheet(name, cell_overwrite_ok=True)
+            # ws = book.add_sheet(name, cell_overwrite_ok=True)
             ws = book.add_sheet(section.name)
 
             query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, wizard.model)
@@ -161,8 +198,10 @@ class ExportSalesTeamReport(orm.TransientModel):
 
             if wizard.model == 'sale.order':
                 ws.write(0, 5, 'Ordinato Mensile Clienti', Style.bold_header)
-            else:
+            elif wizard.model == 'account.invoice':
                 ws.write(0, 5, 'Fatturato Mensile Clienti', Style.bold_header)
+            else:
+                ws.write(0, 5, 'Incassato Mensile Clienti', Style.bold_header)
 
             now = datetime.now()
             ws.write(1, 0, 'DATA: {}'.format(now.strftime('%d/%m/%Y')))
@@ -175,26 +214,19 @@ class ExportSalesTeamReport(orm.TransientModel):
             Style.currency_bold = easyxf('font: bold on; align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
 
             ws = self.write_header(ws, 4)
-
             first_row = 5
-            for row, item in enumerate(report.items(), first_row):
-                partner_id, values = item
 
-                ws.write(row, 0, values['name'])
-                ws.write(row, 1, year)
-                ws.write(row, 2, values['total_amount'], Style.currency)
+            if report:
+                for row, item in enumerate(report.items(), first_row):
+                    partner_id, values = item
+                    self.write_body1(ws, row, values, year)
 
-                for month in range(1, 13):
-                    ws.write(row, month + 2, values.get(month, 0), Style.currency)
-
-            row += 1
-            last_row = row
-
-            for month in range(1, 14):
-                column = month + 1
-                ws.write(row, column,
-                         Formula("SUM({column}{start}:{column}{end})".format(column=LETTER[column], start=first_row + 1, end=last_row)),
-                         Style.currency_bold)
+                self.write_body2(ws, row, first_row)
+            else:
+                row = first_row
+                values = {'name': '', 'total_amount': 0}
+                self.write_body1(ws, row, values, year)
+                self.write_body2(ws, row, first_row)
 
         """PARSING DATA AS STRING """
         file_data = StringIO()
