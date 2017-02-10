@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2017 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -22,11 +22,23 @@
 #
 ##############################################################################
 
-from . import res_company
-from . import stock_picking
-from . import sale_order
-from . import sale_shop
-from . import project_project
-from . import project_task
-from . import account_analytic_line
-
+{
+    "name": "Job Order management",
+    "version": "3.0.0.0",
+    "author": "Didotech SRL",
+    "website": "http://www.didotech.com",
+    "category": "Sales Management",
+    "description": """
+        This module if installed with sale_bom and work_order show on sale order line if will be created task.
+    """,
+    "depends": [
+        'sale_bom',
+        'work_order',
+    ],
+    "data": [
+        'views/sale_order_view.xml',
+    ],
+    "active": False,
+    "installable": True,
+    "auto_install": True,
+}

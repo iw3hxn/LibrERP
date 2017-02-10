@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="sale_bom_sale_order_line">
+            <field name="name">sale.order.line.bom.view.task_create.form</field>
+            <field name="type">form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_bom.sale_bom_sale_order_line" />
+            <field name="priority">1100</field>
+            <field name="arch" type="xml">
+                <field name="price_subtotal" position="after">
+                    <field name="create_task"  />
+                </field>
+            </field>
+        </record>
+    
+    </data>
+</openerp>

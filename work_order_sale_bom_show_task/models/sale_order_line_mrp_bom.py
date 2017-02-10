@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2017 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -22,11 +22,21 @@
 #
 ##############################################################################
 
-from . import res_company
-from . import stock_picking
-from . import sale_order
-from . import sale_shop
-from . import project_project
-from . import project_task
-from . import account_analytic_line
+from openerp.osv import orm, fields
+
+
+class sale_order_line_mrp_bom(orm.Model):
+    _inherit = 'sale.order.line.mrp.bom'
+
+    def _will_create_task(self, cr, uid, ids, field_name, args, context):
+        result = {}
+        for sale_line_bom in self.browse(cr, uid, ids, context):
+            result[sale_line_bom.id] = False
+            if sale_line_bom.parent_id and sale_line_bom.parent_id.type == 'service' and sale_line_bom.parent_id.supply_method == 'produce':
+                result[sale_line_bom.id] = True
+        return result
+
+    _columns = {
+        'create_task': fields.function(_will_create_task, string='Will Create Task', method=True, type='boolean'),
+    }
 

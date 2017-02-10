@@ -22,11 +22,21 @@
 #
 ##############################################################################
 
-from . import res_company
-from . import stock_picking
-from . import sale_order
-from . import sale_shop
-from . import project_project
-from . import project_task
-from . import account_analytic_line
+from openerp.osv import orm, fields
+from tools.translate import _
+import logging
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
+
+class sale_shop(orm.Model):
+    _inherit = 'sale.shop'
+    
+    _columns = {
+        'project_required': fields.boolean(_('Require a Project')),
+        'project_manager_id': fields.many2one('res.users', 'Project Manager')
+    }
+    
+    _defaults = {
+        'project_required': True
+    }

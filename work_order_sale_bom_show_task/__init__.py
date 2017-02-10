@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2017 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -22,11 +22,4 @@
 #
 ##############################################################################
 
-from . import res_company
-from . import stock_picking
-from . import sale_order
-from . import sale_shop
-from . import project_project
-from . import project_task
-from . import account_analytic_line
-
+from . import models
