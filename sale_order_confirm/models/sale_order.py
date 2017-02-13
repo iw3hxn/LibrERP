@@ -146,7 +146,7 @@ class sale_order(orm.Model):
 
     def copy(self, cr, uid, ids, default, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        defaults.update(
+        default.update(
             {
                 'tech_validation': False,
                 'manager_validation': False,
