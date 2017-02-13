@@ -33,10 +33,12 @@ class sale_order_line_mrp_bom(orm.Model):
         for sale_line_bom in self.browse(cr, uid, ids, context):
             result[sale_line_bom.id] = False
             if sale_line_bom.parent_id and sale_line_bom.parent_id.type == 'service' and sale_line_bom.parent_id.supply_method == 'produce':
-                result[sale_line_bom.id] = True
+                result[sale_line_bom.id] = 'P'
+            elif sale_line_bom.product_id.type == 'service' and not sale_line_bom.product_id.purchase_ok:
+                result[sale_line_bom.id] = 'S'
         return result
 
     _columns = {
-        'create_task': fields.function(_will_create_task, string='Will Create Task', method=True, type='boolean'),
+        'create_task': fields.function(_will_create_task, string='Will Create Task', method=True, type='char'),
     }
 
