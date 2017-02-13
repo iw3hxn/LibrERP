@@ -54,14 +54,26 @@ msgstr "Righe Fattura"
 #. module: account_invoice_merge
 #: code:addons/account_invoice_merge/invoice.py:41
 #, python-format
-msgid "Can not merge invoice(s) on different partners or states !."
-msgstr "Non è possibile raggruppare fatture di differenti partner o stati !."
+msgid "Can not merge invoice(s) on different partners or states !. %s different from %s"
+msgstr "Non è possibile raggruppare fatture di differenti partner o stati !. %s differisce da %s"
 
 #. module: account_invoice_merge
 #: code:addons/account_invoice_merge/invoice.py:41
 #, python-format
 msgid "Partners don't match!"
 msgstr "I partner non sono uguali!"
+
+#. module: account_invoice_merge
+#: code:addons/account_invoice_merge/invoice.py:41
+#, python-format
+msgid "Payment don't match!"
+msgstr "Termini di pagamento non uguali!"
+
+#. module: account_invoice_merge
+#: code:addons/account_invoice_merge/invoice.py:41
+#, python-format
+msgid "Can not merge invoice(s) on different payment !. %s different from %s"
+msgstr "non è possibile unire fatture con pagamenti diversi. %s differisce da %s"
 
 #. module: account_invoice_merge
 #: model:ir.actions.act_window,name:account_invoice_merge.action_invoice_merge
