@@ -142,7 +142,7 @@ class riba_file_export(osv.osv_memory):
 
     def act_getfile(self, cr, uid, ids, context=None):
         active_ids = context and context.get('active_ids', [])
-        order_obj = self.pool.get('riba.distinta').browse(cr, uid, active_ids, context=context)[0]
+        order_obj = self.pool['riba.distinta'].browse(cr, uid, active_ids, context=context)[0]
         credit_bank = order_obj.config.bank_id
         name_company = order_obj.config.company_id.partner_id.name
         if not credit_bank.iban:
@@ -188,7 +188,7 @@ class riba_file_export(osv.osv_memory):
             debit_cab = False
             if line.bank_riba_id:
                 debit_riba_bank = line.bank_riba_id
-                if (debit_riba_bank.abi and debit_riba_bank.cab):
+                if debit_riba_bank.abi and debit_riba_bank.cab:
                     debit_abi = debit_riba_bank.abi
                     debit_cab = debit_riba_bank.cab
                     if not debit_abi or not debit_cab:
@@ -254,18 +254,18 @@ class riba_file_export(osv.osv_memory):
                         debitor_province,
                         debit_abi,
                         debit_cab,
-                        debit_bank_name, #.bank and debit_bank.bank.name or debit_bank.bank_name,
+                        debit_bank_name, # .bank and debit_bank.bank.name or debit_bank.bank_name,
                         line.partner_id.ref or '',
-                        #line.move_line_id.name,
+                        # line.move_line_id.name,
                         line.invoice_number,
-                        #datetime.strptime(line.distinta_id.date_created, '%Y-%m-%d').strftime("%d/%m/%Y"),
+                        # datetime.strptime(line.distinta_id.date_created, '%Y-%m-%d').strftime("%d/%m/%Y"),
                         line.invoice_date,
                         cup,
                         cig,
                     ]
             arrayRiba.append(Riba)
 
-        out = base64.encodestring(self._creaFile(array_testata, arrayRiba).encode("utf8"))
+        out = base64.encodestring(self._creaFile(array_testata, arrayRiba).encode("iso-8859-1"))
 
         return self.write(cr, uid, ids, {'state': 'get', 'riba_.txt': out}, context=context)
 

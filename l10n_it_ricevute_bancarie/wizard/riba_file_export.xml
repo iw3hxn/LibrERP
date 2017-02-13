@@ -9,11 +9,12 @@
             <field name="arch" type="xml">
                 <form string="Export Ri.Ba. file">
                     <group col="4">
-                        <group colspan="4" >
+                        <field name="state" invisible="1"/>
+                        <group colspan="4" states="choose">
                             <button icon="gtk-cancel" special="cancel" string="Cancel"/>
                             <button icon="gtk-ok" name="act_getfile" string="Export" type="object"/>
                         </group>
-                        <group colspan="4">
+                        <group colspan="4" states="get">
                             <field name="riba_.txt" readonly="1"/>
                         </group>
                     </group>
