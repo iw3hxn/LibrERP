@@ -144,7 +144,7 @@ class sale_order(orm.Model):
 
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
 
-    def copy(self, cr, uid, ids, defaults, context=None):
+    def copy(self, cr, uid, ids, default, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         defaults.update(
             {
@@ -155,8 +155,8 @@ class sale_order(orm.Model):
                 'supervisor_validation': False
             }
         )
-        defaults.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
-        return super(sale_order, self).copy(cr, uid, ids, defaults, context)
+        default.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
+        return super(sale_order, self).copy(cr, uid, ids, default, context)
 
     def onchange_invoice_type_id(self, cr, uid, ids, invoice_type_id, context=None):
         if context is None:
