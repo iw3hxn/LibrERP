@@ -10,7 +10,7 @@
             <field name="search_view_id" ref="view_subscription_search"/>
             <field name="view_id" ref="view_subscription_tree"/>
             <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
-            <field name="domain">[('subscription', '=', True), ('state', '=', 'confirmed')]</field>
+            <field name="domain">[('subscription', '=', True), ('state', 'in', ['confirmed', 'done']), ('order_end_date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d'))]</field>
         </record>
         <menuitem action="action_view_subscriptions" id="menu_subscriptions" parent="base.menu_sales" sequence="10" />
 
