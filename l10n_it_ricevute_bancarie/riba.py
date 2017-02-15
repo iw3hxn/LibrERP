@@ -99,7 +99,7 @@ class riba_distinta(osv.osv):
 
     _columns = {
         'name': fields.char('Reference', size=128, required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'config': fields.many2one('riba.configurazione', 'Configuration', 
+        'config': fields.many2one('riba.configurazione', 'Configuration',
             select=True, required=True, readonly=True, states={'draft': [('readonly', False)]}, 
             help='Riba configuration to be used'),
         'state': fields.selection([
@@ -128,6 +128,7 @@ class riba_distinta(osv.osv):
         'unsolved_move_ids': fields.function(_get_unsolved_move_ids, type='many2many', relation='account.move', method=True, string="Unsolved Entries"),
         'type': fields.related('config', 'tipo', type='char', size=32, string='Type', readonly=True),
         'total': fields.function(_get_total, method=True, string="Total amount of distinta"),
+        'partner_id': fields.related('line_ids', 'partner_id', type='many2one', relation='res.partner', string='Partner'),
     }
 
     _order = 'name desc'
@@ -151,7 +152,7 @@ class riba_distinta(osv.osv):
         return True
 
     def confirm(self, cr, uid, ids, context=None):
-        line_pool = self.pool.get('riba.distinta.line')
+        line_pool = self.pool['riba.distinta.line']
         for distinta in self.browse(cr, uid, ids, context=context):
             line_pool.confirm(cr, uid, [line.id for line in distinta.line_ids], context=context)
         return True
@@ -404,6 +405,8 @@ class riba_distinta_line(osv.osv):
         'tobeaccredited': fields.boolean('To be accredited'),
         'cig': fields.function(_get_line_values, string="Cig", type='char', size=64, method=True, multi="line"),
         'cup': fields.function(_get_line_values, string="Cup", type='char', size=64, method=True, multi="line"),
+        'abi': fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
+        'cab': fields.related('partner_id', 'bank_riba_id', 'cab', type='char', string='CAB', store=False),
     }
     
     def confirm(self, cr, uid, ids, context=None):

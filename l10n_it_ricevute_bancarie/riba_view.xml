@@ -22,6 +22,7 @@
                     <field name="config" />
                     <field name="date_accepted" />
                     <field name="date_paid" />
+                    <field name="partner_id" />
                </search>
             </field>
         </record>
@@ -67,6 +68,8 @@
                                     <field name="invoice_date"/>
                                     <field name="partner_id"/>
                                     <field name="iban"/>
+                                    <field name="abi"/>
+                                    <field name="cab"/>
                                     <field name="amount" sum="Amount"/>
                                     <field name="due_date"/>
                                     <field name="state"/>
@@ -200,6 +203,8 @@
                     <field name="invoice_number"/>
                     <field name="invoice_date"/>
                     <field name="partner_id"/>
+                    <field name="abi" readonly="1"/>
+                    <field name="cab" readonly="1"/>
                     <field name="iban"/>
                     <field name="amount" sum="Amount"/>
                     <field name="due_date"/>
