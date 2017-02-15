@@ -92,7 +92,6 @@ class product_product(orm.Model):
                     #         # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
                     #         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
 
-                    
                 if sub_products:
                     # Don't use browse when we already have it
                     bom = sub_products[0].bom_id
@@ -421,7 +420,7 @@ class product_product(orm.Model):
     def copy(self, cr, uid, product_id, default=None, context=None):
         """Copies the product and the BoM of the product"""
         context = context or self.pool['res.users'].context_get(cr, uid)
-        copy_id = super(product_product, self).copy(cr, uid, product_id, default=default, context=context)
+        copy_id = super(product_product, self).copy(cr, uid, product_id, default, context)
 
         bom_obj = self.pool['mrp.bom']
         bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)

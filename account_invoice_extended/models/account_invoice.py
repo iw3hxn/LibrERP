@@ -90,10 +90,12 @@ class account_invoice(orm.Model):
         'stock_picking_ids': fields.function(_get_stock_picking, 'Stock Picking', type='one2many', relation="stock.picking", readonly=True, method=True),
     }
     
-    def copy(self, cr, uid, order_id, defaults, context=None):
+    def copy(self, cr, uid, order_id, default, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        defaults['user_id'] = uid
-        return super(account_invoice, self).copy(cr, uid, order_id, defaults, context)
+        if not default:
+            default = {}
+        default['user_id'] = uid
+        return super(account_invoice, self).copy(cr, uid, order_id, default, context)
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)

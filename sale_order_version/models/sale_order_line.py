@@ -41,11 +41,11 @@ class sale_order_line(orm.Model):
         defaults['sale_line_copy_id'] = line_id
         return super(sale_order_line, self).copy_data(cr, uid, line_id, defaults, context)
 
-    def copy(self, cr, uid, line_id, defaults, context=None):
+    def copy(self, cr, uid, line_id, default, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
-        defaults = defaults or {}
-        defaults['sale_line_copy_id'] = line_id
-        return super(sale_order_line, self).copy(cr, uid, line_id, defaults, context)
+        default = default or {}
+        default['sale_line_copy_id'] = line_id
+        return super(sale_order_line, self).copy(cr, uid, line_id, default, context)
 
 

@@ -408,13 +408,13 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
         return result
 
-    def copy(self, cr, uid, ids, defaults, context=None):
-        if defaults is None:
-            defaults = {}
+    def copy(self, cr, uid, ids, default, context=None):
+        if default is None:
+            default = {}
         if context is None:
             context = {}
-        defaults.update({'name': '/', 'sale_order': False})
-        return super(crm_lead_correct, self).copy(cr, uid, ids, defaults, context)
+        default.update({'name': '/', 'sale_order': False})
+        return super(crm_lead_correct, self).copy(cr, uid, ids, default, context)
 
 
 class crm_phonecall(orm.Model):
