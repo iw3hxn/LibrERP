@@ -19,7 +19,7 @@
 <body>
     Fatture Ricevute dal <strong>${formatLang(start_date(),date=True)| entity}</strong> al <strong>${formatLang(end_date(),date=True)| entity}</strong>
     <% setLang(objects[0].company_id.partner_id.lang or "en_US") %>
-    <table style="width:100%; font-size: xx-small;" cellspacing="0">
+    <table style="width:100%; font-size: small;" cellspacing="0">
         <thead>
         <tr>
             <th class="left_without_line">Data registrazione</th>
@@ -32,7 +32,6 @@
             <th class="right_without_line">Totale fattura</th>
             <th class="right_without_line">Imposta</th>
             <th class="right_without_line">Importo</th>
-            <th class="right_without_line">Imponibile</th>
             <th></th>
         </tr>
         </thead>
@@ -103,7 +102,7 @@
                     </td><td class="right_without_line">
                 %endif
                 %if line['index']==0:
-                    ${ formatLang(line['amount_total'])| entity}
+                    ${ formatLang(invoice_total(object)) | entity}
                 %endif
                 </td>
                 %if line['index']==0:
@@ -115,11 +114,6 @@
                     <td class="right_with_line">${ formatLang(line['amount'])| entity}</td>
                 %else:
                     <td class="right_without_line">${ formatLang(line['amount'])| entity}</td>
-                %endif
-                %if line['index']==0:
-                    <td class="right_with_line">${ formatLang(line['base_amount'])| entity}</td>
-                %else:
-                    <td class="right_without_line">${ formatLang(line['base_amount'])| entity}</td>
                 %endif
                 </tr>
             %endfor

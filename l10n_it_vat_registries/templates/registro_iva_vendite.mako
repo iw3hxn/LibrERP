@@ -31,7 +31,6 @@
             <th class="right_without_line">Totale fattura</th>
             <th class="right_without_line">Imposta</th>
             <th class="right_without_line">Importo</th>
-            <th class="right_without_line">Imponibile</th>
             <th></th>
         </tr>
         </thead>
@@ -94,7 +93,7 @@
                     </td><td class="right_without_line">
                 %endif
                 %if line['index']==0:
-                    ${ formatLang(line['amount_total'])| entity}
+                    ${ formatLang(invoice_total(object)) | entity}
                 %endif
                 </td>
                 %if line['index']==0:
@@ -107,11 +106,6 @@
                 %else:
                     <td class="right_without_line">${ formatLang(line['amount'])| entity}</td>
                 %endif
-                %if line['index']==0:
-                    <td class="right_with_line">${ formatLang(line['base_amount'])| entity}</td>
-                %else:
-                    <td class="right_without_line">${ formatLang(line['base_amount'])| entity}</td>
-                %endif
                 </tr>
             %endfor
         %endfor
@@ -122,7 +116,7 @@
         <% tax_code_list = tax_codes() %>
         <% tax_code_totals_list = tax_codes_totals() %>
         <table style="width:100%;  " border="1">
-            <tr style="border-style:ridge; border-width:5px">
+            <tr style="border-style:ridge;border-width:5px">
                 <td colspan="3" style="padding:10; ">Periodo di stampa dal <strong>${formatLang(start_date(),date=True)| entity}</strong> al <strong>${formatLang(end_date(),date=True)| entity}</strong></td>
             </tr>
             <tr>
