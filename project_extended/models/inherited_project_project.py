@@ -292,6 +292,18 @@ class project_project(orm.Model):
                     result[project] = True
         return result.keys()
 
+    def _get_project_account_invoice(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        print "_get_project_account_invoice"
+        result = {}
+        for line in self.pool['account.analytic.line'].browse(cr, uid, ids, context=context):
+            if line.account_id:
+                for project in self.pool['project.project'].search(cr, uid,
+                                                                   [('analytic_account_id', '=', line.account_id.id)],
+                                                                   context=context):
+                    result[project] = True
+        return result.keys()
+
     def _get_project_order_line(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
@@ -349,7 +361,7 @@ class project_project(orm.Model):
             }, ),
         'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                          multi='sums', string="Invoice Amount", store={
-                'account.analytic.line': (_get_project_account, ['amount'], 80),
+                'account.analytic.line': (_get_project_account_invoice, ['amount'], 80),
             }, ),
         # 'doc_count': fields.function(
         #     _get_attached_docs, string="Number of documents attached", type='integer'
