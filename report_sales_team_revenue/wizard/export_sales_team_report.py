@@ -28,11 +28,11 @@ from xlwt import Workbook, easyxf, Formula
 from cStringIO import StringIO
 import collections
 
-LETTER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
+LETTER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', ]
 
 class Style:
-    bold_header = easyxf('font: bold on; align: horiz center')
-
+    bold_header = easyxf('font: bold on; align: horiz center;')
+    title = easyxf('font: bold on; borders: left thin, top thin, right thin; align: horiz center;')
 
 class ExportSalesTeamReport(orm.TransientModel):
     _name = 'export.sales.team.report'
@@ -71,7 +71,8 @@ class ExportSalesTeamReport(orm.TransientModel):
             (
                 ('sale.order', _('Sale')),
                 ('account.invoice', _('Invoice')),
-                ('account.move.line', _('Paid'))
+                ('account.move.line', _('Paid')),
+                ('invoice.paid', _('Invoice/Paid'))
             ), _('Base model'), required=True
         )
     }
@@ -111,7 +112,7 @@ class ExportSalesTeamReport(orm.TransientModel):
                     GROUP BY partner_id""".format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   section_id=section_id)
-        else:
+        elif model == 'account.move.line':
             return """SELECT rp.id AS partner_id, (SUM(aml.credit) - SUM(aml.debit)) AS amount_total
                         FROM account_move_line AS aml
                         JOIN res_partner AS rp
@@ -144,7 +145,29 @@ class ExportSalesTeamReport(orm.TransientModel):
 
         return ws
 
-    def write_body1(self, ws, row, values, year):
+    def write_header_invoice_paid(self, ws, row):
+        for column, layout in self.table_layout.items():
+            if layout['name'] == 'totale':
+                ws.write_merge(r1 = 4, c1 = 2, r2 = 4, c2 = 3, label = layout['name'], style = Style.title)
+            else:
+                ws.write(row, column, layout['name'], Style.bold_header)
+                ws.col(column).width = layout['width']
+
+        col = 4
+
+        for month in range(1, 13):
+            ws.write_merge(r1 = 4, c1 = col, r2 = 4, c2 = col + 1, label = date(2000, month, 1).strftime('%B'), style = Style.title)
+            col += 2
+
+        # for month in range(1, 13):
+        #     if col % 2 == 0:
+        #         ws.write(row, col, date(2000, month, 1).strftime('%B'), Style.bold_header)
+        #         ws.write(row, col + 1, '', Style.bold_header)
+        #         col += 2
+
+        return ws
+
+    def write_table(self, ws, row, values, year):
         ws.write(row, 0, values['name'])
         ws.write(row, 1, year)
         ws.write(row, 2, values['total_amount'], Style.currency)
@@ -152,16 +175,69 @@ class ExportSalesTeamReport(orm.TransientModel):
         for month in range(1, 13):
             ws.write(row, month + 2, values.get(month, 0), Style.currency)
 
-    def write_body2(self, ws, row, first_row):
+    def write_total(self, ws, row, first_row):
         row += 1
         last_row = row
 
         for month in range(1, 14):
             column = month + 1
             ws.write(row, column,
-                     Formula("SUM({column}{start}:{column}{end})".format(column=LETTER[column], start=first_row + 1,
+                     Formula("SUM({column}{start}:{column}{end})".format(column=LETTER[column],
+                                                                         start=first_row + 1,
                                                                          end=last_row)),
                      Style.currency_bold)
+
+    def write_table_invoice_paid(self, ws, row, values, year):
+        if 'total_amount_invoice' in values:
+            if 'total_amount_paid' in values:
+                value_i = values['total_amount_invoice']
+                value_p = values['total_amount_paid']
+            else:
+                value_i = values['total_amount_invoice']
+                value_p = 0
+        else:
+            value_i = 0
+            value_p = values['total_amount_paid']
+
+        ws.write(row, 0, values['name'])
+        ws.write(row, 1, year)
+        ws.write(row, 2, value_i, Style.currency_border_left)
+        ws.write(row, 3, value_p, Style.currency)
+
+        col = 4
+        style_currency = Style.currency
+
+        for month in range(1, 13):
+            if month == 12:
+                style_currency = Style.last_col_currency_border
+
+            month_i = str(month) + 'i'
+            month_p = str(month) + 'p'
+            ws.write(row, col, values.get(month_i, 0), Style.currency_border_left)
+            ws.write(row, col + 1, values.get(month_p, 0), style_currency)
+            col += 2
+
+    def write_total_invoice_paid(self, ws, row, first_row):
+        row += 1
+        last_row = row
+        column = 2
+        LETTER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB']
+
+        for i in range(1, 27):
+            if column % 2 == 0:
+                border_currency = Style.last_col_currency_border_left
+            else:
+                border_currency = Style.currency_bold
+
+            if i == 26:
+                border_currency = Style.last_col_currency_border_bold
+
+            ws.write(row, column,
+                     Formula("SUM({column}{start}:{column}{end})".format(column=LETTER[column],
+                                                                         start=first_row + 1,
+                                                                         end=last_row)),
+                     border_currency)
+            column += 1
 
     def action_team_report(self, cr, uid, ids, context):
         wizard = self.browse(cr, uid, ids[0], context)
@@ -175,58 +251,144 @@ class ExportSalesTeamReport(orm.TransientModel):
             # ws = book.add_sheet(name, cell_overwrite_ok=True)
             ws = book.add_sheet(section.name)
 
-            query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, wizard.model)
-            cr.execute(query)
-            results = cr.fetchall()
-            results = dict(results)
-            report = {}
-
-            for partner in self.pool['res.partner'].browse(cr, uid, results.keys(), context=context):
-                report[partner.id] = {
-                    'name': partner.name,
-                    'total_amount': results[partner.id]
-                }
-
-            for month in range(1, 13):
-                date_start, date_end = self.get_period(year, month)
-                query = self.get_query(date_start, date_end, section.id, wizard.model)
+            if wizard.model == 'invoice.paid':
+                query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, 'account.invoice')
                 cr.execute(query)
                 results = cr.fetchall()
+                results = dict(results)
 
-                for key, value in results:
-                    report[key].update({month: value})
+                query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, 'account.move.line')
+                cr.execute(query)
+                results2 = cr.fetchall()
+                results2 = dict(results2)
 
-            if wizard.model == 'sale.order':
-                ws.write(0, 5, 'Ordinato Mensile Clienti', Style.bold_header)
-            elif wizard.model == 'account.invoice':
-                ws.write(0, 5, 'Fatturato Mensile Clienti', Style.bold_header)
+                report = {}
+
+                for partner in self.pool['res.partner'].browse(cr, uid, results.keys(), context=context):
+                    report[partner.id] = {
+                        'name': partner.name,
+                        'total_amount_invoice': results[partner.id]
+                    }
+
+                for partner in self.pool['res.partner'].browse(cr, uid, results2.keys(), context=context):
+                    if partner.id in report:
+                        report[partner.id].update({'total_amount_paid': results2[partner.id]})
+                    else:
+                        report[partner.id] = {
+                            'name': partner.name,
+                            'total_amount_paid': results2[partner.id]
+                        }
+
+                for month in range(1, 13):
+                    date_start, date_end = self.get_period(year, month)
+                    query = self.get_query(date_start, date_end, section.id, 'account.invoice')
+                    cr.execute(query)
+                    results = cr.fetchall()
+
+                    query = self.get_query(date_start, date_end, section.id, 'account.move.line')
+                    cr.execute(query)
+                    results2 = cr.fetchall()
+
+                    for key, value in results:
+                        month_i = str(month) + 'i'
+                        report[key].update({month_i: value})
+
+                    for key, value in results2:
+                        month_p = str(month) + 'p'
+                        report[key].update({month_p: value})
+
+                ws.write(0, 5, 'Fatturato/Incassato Mensile Clienti', Style.bold_header)
+
+                now = datetime.now()
+                ws.write(1, 0, 'DATA: {}'.format(now.strftime('%d/%m/%Y')))
+                ws.write(1, 2, 'ORA: {}'.format(now.strftime('%H:%M')))
+
+                currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id
+                ws.write(2, 0, 'Divisa: {}'.format(currency.name))
+
+                Style.currency = easyxf('align: horiz right;',
+                                        num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+                Style.currency_bold = easyxf('font: bold on; align: horiz right',
+                                             num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+                Style.currency_border_left = easyxf('align: horiz right; borders: left thin;',
+                                                    num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+                Style.last_col_currency_border_left = easyxf('align: horiz right; borders: left thin; font: bold on;',
+                                                    num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+                Style.last_col_currency_border = easyxf('align: horiz right; borders: right thin;',
+                                                        num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+                Style.last_col_currency_border_bold = easyxf('align: horiz right; borders: right thin; font: bold on;',
+                                                             num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+
+                ws = self.write_header_invoice_paid(ws, 4)
+                first_row = 5
+
+                if report:
+                    for row, item in enumerate(report.items(), first_row):
+                        partner_id, values = item
+                        self.write_table_invoice_paid(ws, row, values, year)
+
+                    self.write_total_invoice_paid(ws, row, first_row)
+                else:
+                    row = first_row
+                    values = {'name': '', 'total_amount_invoice': 0, 'total_amount_paid': 0}
+                    self.write_table_invoice_paid(ws, row, values, year)
+                    self.write_total_invoice_paid(ws, row, first_row)
             else:
-                ws.write(0, 5, 'Incassato Mensile Clienti', Style.bold_header)
+                query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, wizard.model)
+                cr.execute(query)
+                results = cr.fetchall()
+                results = dict(results)
 
-            now = datetime.now()
-            ws.write(1, 0, 'DATA: {}'.format(now.strftime('%d/%m/%Y')))
-            ws.write(1, 2, 'ORA: {}'.format(now.strftime('%H:%M')))
+                report = {}
 
-            currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id
-            ws.write(2, 0, 'Divisa: {}'.format(currency.name))
+                for partner in self.pool['res.partner'].browse(cr, uid, results.keys(), context=context):
+                    report[partner.id] = {
+                        'name': partner.name,
+                        'total_amount': results[partner.id]
+                    }
 
-            Style.currency = easyxf('align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
-            Style.currency_bold = easyxf('font: bold on; align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+                for month in range(1, 13):
+                    date_start, date_end = self.get_period(year, month)
+                    query = self.get_query(date_start, date_end, section.id, wizard.model)
+                    cr.execute(query)
+                    results = cr.fetchall()
 
-            ws = self.write_header(ws, 4)
-            first_row = 5
+                    for key, value in results:
+                        report[key].update({month: value})
 
-            if report:
-                for row, item in enumerate(report.items(), first_row):
-                    partner_id, values = item
-                    self.write_body1(ws, row, values, year)
+                if wizard.model == 'sale.order':
+                    ws.write(0, 5, 'Ordinato Mensile Clienti', Style.bold_header)
+                elif wizard.model == 'account.invoice':
+                    ws.write(0, 5, 'Fatturato Mensile Clienti', Style.bold_header)
+                elif wizard.model == 'account.move.line':
+                    ws.write(0, 5, 'Incassato Mensile Clienti', Style.bold_header)
+                else:
+                    ws.write(0, 5, 'Fatturato/Incassato Mensile Clienti', Style.bold_header)
 
-                self.write_body2(ws, row, first_row)
-            else:
-                row = first_row
-                values = {'name': '', 'total_amount': 0}
-                self.write_body1(ws, row, values, year)
-                self.write_body2(ws, row, first_row)
+                now = datetime.now()
+                ws.write(1, 0, 'DATA: {}'.format(now.strftime('%d/%m/%Y')))
+                ws.write(1, 2, 'ORA: {}'.format(now.strftime('%H:%M')))
+
+                currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id
+                ws.write(2, 0, 'Divisa: {}'.format(currency.name))
+
+                Style.currency = easyxf('align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+                Style.currency_bold = easyxf('font: bold on; align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
+
+                ws = self.write_header(ws, 4)
+                first_row = 5
+
+                if report:
+                    for row, item in enumerate(report.items(), first_row):
+                        partner_id, values = item
+                        self.write_table(ws, row, values, year)
+
+                    self.write_total(ws, row, first_row)
+                else:
+                    row = first_row
+                    values = {'name': '', 'total_amount': 0}
+                    self.write_table(ws, row, values, year)
+                    self.write_total(ws, row, first_row)
 
         """PARSING DATA AS STRING """
         file_data = StringIO()
