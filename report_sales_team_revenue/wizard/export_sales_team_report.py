@@ -148,7 +148,7 @@ class ExportSalesTeamReport(orm.TransientModel):
     def write_header_invoice_paid(self, ws, row):
         for column, layout in self.table_layout.items():
             if layout['name'] == 'totale':
-                ws.write_merge(r1 = 4, c1 = 2, r2 = 4, c2 = 3, label = layout['name'], style = Style.title)
+                ws.write_merge(r1=4, c1=2, r2=4, c2=3, label=layout['name'], style=Style.title)
             else:
                 ws.write(row, column, layout['name'], Style.bold_header)
                 ws.col(column).width = layout['width']
@@ -156,7 +156,7 @@ class ExportSalesTeamReport(orm.TransientModel):
         col = 4
 
         for month in range(1, 13):
-            ws.write_merge(r1 = 4, c1 = col, r2 = 4, c2 = col + 1, label = date(2000, month, 1).strftime('%B'), style = Style.title)
+            ws.write_merge(r1=4, c1=col, r2=4, c2=col + 1, label=date(2000, month, 1).strftime('%B'), style=Style.title)
             col += 2
 
         # for month in range(1, 13):
