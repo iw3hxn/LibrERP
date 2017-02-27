@@ -36,7 +36,6 @@ class account_document_template(orm.Model):
         'name': fields.char('Name', size=64, required=True),
     }
 
-
     def _input_lines(self, cr, uid, template):
         count = 0
         for line in template.template_line_ids:
@@ -122,6 +121,8 @@ class account_document_template_line(orm.Model):
         ),
         'python_code': fields.text('Python Code'),
     }
+
+    _order = 'sequence'
 
     def on_change_python(self, cr, uid, ids, python_code):
 
