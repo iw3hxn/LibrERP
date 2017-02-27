@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record id="product_normal_form_view_excclude_commisions" model="ir.ui.view">
+            <field name="name">product.normal.form.exclude_commissions</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="commission_exent"/>
+                </field>
+
+                <!--<xpath expr="/form/notebook/page[@string='Procurement &amp; Locations']/group[3]" position="after">-->
+                    <!--<group colspan="2" col="2">-->
+                        <!--<separator colspan="2" string="Agents/Commissions"/>-->
+                        <!--<field name="product_agent_ids" nolabel="1" mode="tree,form">-->
+                            <!--<tree string="Agents and Products" editable="top">-->
+                                <!--&lt;!&ndash;  <field name="agent_ids" on_change="onchange_agent_id(agent_id)"/>-->
+                                 <!--<field name="commission_id" on_change="onchange_commission_id(agent_id,commission_id)"/> &ndash;&gt;-->
+                                <!--<field name="agent_ids">-->
+                                    <!--<tree>-->
+                                        <!--<field name="name"/>-->
+                                    <!--</tree>-->
+                                <!--</field>-->
+                                <!--<field name="commission_id"/>-->
+                            <!--</tree>-->
+                            <!--<form>-->
+                                <!--<field name="commission_id"/>-->
+                                <!--<separator colspan="4" string="Agents/Commissions"/>-->
+                                <!--<field name="agent_ids" colspan="4" nolabel="1"/>-->
+
+                            <!--</form>-->
+                        <!--</field>-->
+                    <!--</group>-->
+                <!--</xpath>-->
+            </field>
+        </record>
+
+    </data>
+</openerp>
