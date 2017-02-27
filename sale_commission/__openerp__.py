@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Sales commissions',
-    'version': '1.0.d',
+    'version': '1.0.e',
     'author': 'Pexego',
     "category": "Generic Modules/Sales & Purchases",
     'depends': [
@@ -34,23 +34,21 @@
         'sale_crm'
     ],
     'description': 'Sales commissions',
-    'init_xml': [],
-    'update_xml': [
-        'security/ir.model.access.csv',
-        'security/security.xml',
-        'saleagent_view.xml',
-        'partner_agent_view.xml',
-        'wizard/wizard_invoice.xml',
-        'partner_view.xml',
-        'settled_view.xml',
-        'invoice_view.xml',
-        'sale_order_view.xml',
-        'product_view.xml',
-        'stock_picking_view.xml',
-        'cc_commission_report.xml',
+    'data': [
+        # 'security/ir.model.access.csv',
+        # 'security/security.xml',
+        # 'views/saleagent_view.xml',
+        # 'views/partner_agent_view.xml',
+        # 'wizard/wizard_invoice.xml',
+        # 'views/partner_view.xml',
+        # 'views/settled_view.xml',
+        # 'views/invoice_view.xml',
+        # 'views/sale_order_view.xml',
+        # 'views/product_view.xml',
+        # 'views/stock_picking_view.xml',
+        # 'report/cc_commission_report.xml',
     ],
-    'demo_xml': [
-    ],
+
     'active': False,
     'installable': True
 }

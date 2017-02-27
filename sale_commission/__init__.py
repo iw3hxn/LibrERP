@@ -20,15 +20,10 @@
 #
 ##############################################################################
 
-from . import saleagent
-from . import invoice
-from . import partner_agent
-from . import partner
+
 from . import settled
-from . import sale_order
-from . import stock_picking
 from . import wizard
-from . import product
+from . import models
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

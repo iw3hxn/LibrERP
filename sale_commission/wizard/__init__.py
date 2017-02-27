@@ -20,4 +20,5 @@
 #
 ##############################################################################
 
-import wizard_invoice
+from . import wizard_invoice
+from . import settled_wizard
