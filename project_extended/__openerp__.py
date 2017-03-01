@@ -29,6 +29,7 @@
     "depends": [
         'account',
         'project',
+        'sale',
         'project_timesheet',
         'task_time_control',
         'res_users_helper_functions'
