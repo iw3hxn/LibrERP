@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2016 Didotech srl (http://www.didotech.com)
+# Copyright (c) 2016-2017 Didotech srl (http://www.didotech.com)
 #
 # This program is Free Software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,12 +27,43 @@ from dateutil.relativedelta import relativedelta
 from xlwt import Workbook, easyxf, Formula
 from cStringIO import StringIO
 import collections
+import string
 
-LETTER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', ]
+
+class ColumnName(dict):
+    """
+        Numeration starts from 0
+        0 - A
+        1 - B
+        etc
+    """
+    def __init__(self):
+        super(ColumnName, self).__init__()
+        self.alphabet = string.uppercase
+        self.alphabet_size = len(self.alphabet)
+
+    def __missing__(self, column_number):
+        ret = self[column_number] = self.get_column_name(column_number)
+        return ret
+
+    def get_column_name(self, column_number):
+        # print column_number
+        column_number += 1
+
+        if column_number <= self.alphabet_size:
+            return self.alphabet[column_number - 1]
+        else:
+            return self.alphabet[((column_number - 1) / self.alphabet_size) - 1] + self.alphabet[
+                ((column_number - 1) % self.alphabet_size)]
+
+
+COLUMN_NAMES = ColumnName()
+
 
 class Style:
     bold_header = easyxf('font: bold on; align: horiz center;')
     title = easyxf('font: bold on; borders: left thin, top thin, right thin; align: horiz center;')
+
 
 class ExportSalesTeamReport(orm.TransientModel):
     _name = 'export.sales.team.report'
@@ -87,7 +118,8 @@ class ExportSalesTeamReport(orm.TransientModel):
         2: {'name': 'totale', 'width': 3000}
     })
 
-    def get_query(self, date_start, date_end, section_id, model='sale.order'):
+    @staticmethod
+    def get_query(date_start, date_end, section_id, model='sale.order'):
         if model == 'sale.order':
             return """SELECT partner_id, SUM(amount_untaxed)
                     FROM sale_order
@@ -130,10 +162,18 @@ class ExportSalesTeamReport(orm.TransientModel):
                                                   date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                                   section_id=section_id)
 
-    def get_period(self, year, month):
+    @staticmethod
+    def get_period(year, month):
         start_date = date(year, month, 1)
         end_date = start_date + relativedelta(months=1) - relativedelta(days=1)
         return start_date, end_date
+
+    @staticmethod
+    def write_header_info(ws, currency):
+        now = datetime.now()
+        ws.write(1, 0, 'DATA: {}'.format(now.strftime('%d/%m/%Y')))
+        ws.write(1, 2, 'ORA: {}'.format(now.strftime('%H:%M')))
+        ws.write(2, 0, 'Divisa: {}'.format(currency.name))
 
     def write_header(self, ws, row):
         for column, layout in self.table_layout.items():
@@ -156,8 +196,8 @@ class ExportSalesTeamReport(orm.TransientModel):
         col = 4
 
         for month in range(1, 13):
-            ws.write_merge(r1=4, c1=col, r2=4, c2=col + 1, label=date(2000, month, 1).strftime('%B'), style=Style.title)
-            col += 2
+            ws.write_merge(r1=4, c1=col, r2=4, c2=col + 4, label=date(2000, month, 1).strftime('%B'), style=Style.title)
+            col += 5
 
         # for month in range(1, 13):
         #     if col % 2 == 0:
@@ -165,9 +205,21 @@ class ExportSalesTeamReport(orm.TransientModel):
         #         ws.write(row, col + 1, '', Style.bold_header)
         #         col += 2
 
-        return ws
+        col = 4
+        row += 1
 
-    def write_table(self, ws, row, values, year):
+        for month in range(1, 13):
+            ws.write(row, col, 'Fatt', Style.bold_header)
+            ws.write(row, col + 1, 'Incass', Style.bold_header)
+            ws.write(row, col + 2, 'Provv. su ft', Style.bold_header)
+            ws.write(row, col + 3, 'Provv. su inc.', Style.bold_header)
+            ws.write(row, col + 4, 'Provv. resid', Style.bold_header)
+            col += 5
+
+        return ws, row
+
+    @staticmethod
+    def write_table(ws, row, values, year):
         ws.write(row, 0, values['name'])
         ws.write(row, 1, year)
         ws.write(row, 2, values['total_amount'], Style.currency)
@@ -175,19 +227,21 @@ class ExportSalesTeamReport(orm.TransientModel):
         for month in range(1, 13):
             ws.write(row, month + 2, values.get(month, 0), Style.currency)
 
-    def write_total(self, ws, row, first_row):
+    @staticmethod
+    def write_total(ws, row, first_row):
         row += 1
         last_row = row
 
-        for month in range(1, 14):
+        for month in range(2, 15):
             column = month + 1
             ws.write(row, column,
-                     Formula("SUM({column}{start}:{column}{end})".format(column=LETTER[column],
+                     Formula("SUM({column}{start}:{column}{end})".format(column=COLUMN_NAMES[column],
                                                                          start=first_row + 1,
                                                                          end=last_row)),
                      Style.currency_bold)
 
-    def write_table_invoice_paid(self, ws, row, values, year):
+    @staticmethod
+    def write_table_invoice_paid(ws, row, values, year, commission):
         if 'total_amount_invoice' in values:
             if 'total_amount_paid' in values:
                 value_i = values['total_amount_invoice']
@@ -215,13 +269,35 @@ class ExportSalesTeamReport(orm.TransientModel):
             month_p = str(month) + 'p'
             ws.write(row, col, values.get(month_i, 0), Style.currency_border_left)
             ws.write(row, col + 1, values.get(month_p, 0), style_currency)
-            col += 2
+            ws.write(
+                row, col + 2,
+                Formula("{column}{row}*{commission}".format(
+                    column=COLUMN_NAMES[col], row=row + 1, commission=commission)
+                ),
+                Style.currency
+            )
+            ws.write(
+                row, col + 3,
+                Formula("{column}{row}*{commission}".format(
+                    column=COLUMN_NAMES[col + 1], row=row + 1, commission=commission)
+                ),
+                Style.currency
+            )
+            ws.write(
+                row, col + 4,
+                Formula("{invoiced_column}{row}-{column}{row}".format(
+                    invoiced_column=COLUMN_NAMES[col + 2], column=COLUMN_NAMES[col + 3], row=row + 1, commission=0.08)
+                ),
+                Style.currency
+            )
 
-    def write_total_invoice_paid(self, ws, row, first_row):
+            col += 5
+
+    @staticmethod
+    def write_total_invoice_paid(ws, row, first_row):
         row += 1
         last_row = row
         column = 2
-        LETTER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB']
 
         for i in range(1, 27):
             if column % 2 == 0:
@@ -233,7 +309,7 @@ class ExportSalesTeamReport(orm.TransientModel):
                 border_currency = Style.last_col_currency_border_bold
 
             ws.write(row, column,
-                     Formula("SUM({column}{start}:{column}{end})".format(column=LETTER[column],
+                     Formula("SUM({column}{start}:{column}{end})".format(column=COLUMN_NAMES[column],
                                                                          start=first_row + 1,
                                                                          end=last_row)),
                      border_currency)
@@ -242,6 +318,7 @@ class ExportSalesTeamReport(orm.TransientModel):
     def action_team_report(self, cr, uid, ids, context):
         wizard = self.browse(cr, uid, ids[0], context)
         year = int(wizard.year)
+        currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id
 
         file_name = 'Sales_Team_{model}_{year}.xls'.format(model=wizard.model, year=year)
 
@@ -289,22 +366,18 @@ class ExportSalesTeamReport(orm.TransientModel):
                     cr.execute(query)
                     results2 = cr.fetchall()
 
+                    month_i = str(month) + 'i'
+                    month_p = str(month) + 'p'
+
                     for key, value in results:
-                        month_i = str(month) + 'i'
                         report[key].update({month_i: value})
 
                     for key, value in results2:
-                        month_p = str(month) + 'p'
                         report[key].update({month_p: value})
 
                 ws.write(0, 5, 'Fatturato/Incassato Mensile Clienti', Style.bold_header)
 
-                now = datetime.now()
-                ws.write(1, 0, 'DATA: {}'.format(now.strftime('%d/%m/%Y')))
-                ws.write(1, 2, 'ORA: {}'.format(now.strftime('%H:%M')))
-
-                currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id
-                ws.write(2, 0, 'Divisa: {}'.format(currency.name))
+                self.write_header_info(ws, currency)
 
                 Style.currency = easyxf('align: horiz right;',
                                         num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
@@ -319,20 +392,32 @@ class ExportSalesTeamReport(orm.TransientModel):
                 Style.last_col_currency_border_bold = easyxf('align: horiz right; borders: right thin; font: bold on;',
                                                              num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
 
-                ws = self.write_header_invoice_paid(ws, 4)
-                first_row = 5
+                row = 4
+
+                ws, row = self.write_header_invoice_paid(ws, row)
+
+                first_row = row + 1
+
+                # commission_value = 0.08
 
                 if report:
                     for row, item in enumerate(report.items(), first_row):
                         partner_id, values = item
-                        self.write_table_invoice_paid(ws, row, values, year)
-
-                    self.write_total_invoice_paid(ws, row, first_row)
+                        if section.sale_agent_id and section.sale_agent_id.commission:
+                            commission_value = section.sale_agent_id.commission.get_commission(partner_id) * 0.01
+                        else:
+                            commission_value = 0.0
+                        self.write_table_invoice_paid(ws, row, values, year, commission_value)
                 else:
                     row = first_row
                     values = {'name': '', 'total_amount_invoice': 0, 'total_amount_paid': 0}
-                    self.write_table_invoice_paid(ws, row, values, year)
-                    self.write_total_invoice_paid(ws, row, first_row)
+                    if section.sale_agent_id and section.sale_agent_id.commission:
+                        commission_value = section.sale_agent_id.commission.get_commission() * 0.01
+                    else:
+                        commission_value = 0.0
+                    self.write_table_invoice_paid(ws, row, values, year, commission_value)
+
+                self.write_total_invoice_paid(ws, row, first_row)
             else:
                 query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, wizard.model)
                 cr.execute(query)
@@ -365,12 +450,7 @@ class ExportSalesTeamReport(orm.TransientModel):
                 else:
                     ws.write(0, 5, 'Fatturato/Incassato Mensile Clienti', Style.bold_header)
 
-                now = datetime.now()
-                ws.write(1, 0, 'DATA: {}'.format(now.strftime('%d/%m/%Y')))
-                ws.write(1, 2, 'ORA: {}'.format(now.strftime('%H:%M')))
-
-                currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id
-                ws.write(2, 0, 'Divisa: {}'.format(currency.name))
+                self.write_header_info(ws, currency)
 
                 Style.currency = easyxf('align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))
                 Style.currency_bold = easyxf('font: bold on; align: horiz right', num_format_str=u'{symbol}#,##0.00'.format(symbol=currency.symbol))

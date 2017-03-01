@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Didotech SRL
+#    Copyright (C) 2016-2017 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +20,7 @@
 
 {
     'name': 'report_sales_team_revenue',
-    'version': '3.2.4.1',
+    'version': '3.2.5.1',
     'category': 'Accounting & Finance',
     'description': """
     Export revenue on month basis for selected Sales Team
