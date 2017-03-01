@@ -182,7 +182,7 @@ class ImportFile(threading.Thread, Utils):
                             })
                         self.picking_obj.force_assign(self.cr, self.uid, [sale_order.picking_ids[0].id])
                 except Exception as e:
-                    error = "Sale Order {0}: Impossibile da validare {1}".format(sale_order.name, e)
+                    error = "Sale Order {0}: Impossibile da validare {1}".format(self.cache[order], e)
                     _logger.debug(error)
                     self.error.append(error)
 
