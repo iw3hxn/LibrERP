@@ -1,29 +1,12 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-# OpenERP, Open Source Management Solution
-# Copyright (C) 2011 Pexego Sistemas Informáticos (<http://www.pexego.es>). All Rights Reserved
-# $Id$
-#
-# This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# -*- encoding: utf-8 -*-
+# =============================================================================
+# For copyright and license notices, see __openerp__.py file in root directory
+# =============================================================================
 
 from openerp.osv import orm, fields
 
 
-class commission(orm.Model):
+class Commission(orm.Model):
     """Objeto comisión"""
 
     _name = "commission"
@@ -51,5 +34,19 @@ class commission(orm.Model):
                 return res
         return 0.0
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
+    def get_commission(self, cr, uid, commission_ids, customer_id=None, context=None):
+        if len(commission_ids) == 1:
+            commission = self.browse(cr, uid, commission_ids[0], context)
+            if commission.type == 'fix':
+                if customer_id:
+                    customers = {
+                        agent_commission.customer_id.id: agent_commission.commission_percent
+                        for agent_commission in commission.commission_ids
+                    }
+                    return customers.get(customer_id, commission.fix_qty)
+                else:
+                    return commission.fix_qty
+            else:
+                raise orm.except_orm(_('Error'), _('Commission by section is not yet implemented'))
+        else:
+            raise orm.except_orm(_('Error'), _('get_commission() takes exactly one commission_id'))
