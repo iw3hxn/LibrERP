@@ -536,4 +536,15 @@ class sale_order(orm.Model):
         else:
             return False
 
-
+    def copy(self, cr, uid, ids, default={}, context=None):
+        default = default or {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        default.update({
+            'validity': (datetime.today() + relativedelta(days=self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_sale_order_validity or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
+            'tech_validation': False,
+            'manager_validation': False,
+            'customer_validation': False,
+            'email_sent_validation': False,
+            'supervisor_validation': False
+        })
+        return super(sale_order, self).copy(cr, uid, ids, default, context=context)

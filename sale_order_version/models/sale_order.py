@@ -47,11 +47,8 @@ class sale_order(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
 
-        if not default:
-            default = {}
-
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        default = default or {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         attachment_obj = self.pool['ir.attachment']
 
@@ -59,6 +56,7 @@ class sale_order(orm.Model):
         for order in self.browse(cr, uid, ids, context=context):
             vals = {
                 'version': (order.version and order.version or 1) + 1,
+                'date_order': fields.date.context_today(cr, uid, context),
             }
 
             if not order.sale_version_id:
@@ -72,8 +70,8 @@ class sale_order(orm.Model):
             attachment_ids = attachment_obj.search(cr, uid,
                                                    [('res_model', '=', 'sale.order'), ('res_id', '=', order.id)], context=context)
             if attachment_ids:
-                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']},
-                                     context)
+                attachment_obj.write(cr, uid, attachment_ids, {'res_id': new_order_id, 'res_name': vals['name']}, context)
+
             order.write({'active': False})
             order_ids.append(new_order_id)
 
@@ -82,7 +80,7 @@ class sale_order(orm.Model):
         res_id = res and res[1] or False,
 
         return {
-            'name': 'Sale Order',
+            'name': _('Sale Order'),
             'view_type': 'form',
             'view_mode': 'form',
             'view_id': res_id,
