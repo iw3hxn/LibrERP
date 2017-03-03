@@ -37,7 +37,6 @@ class hr_employee(orm.Model):
                 last_att = last_att[0]
 
             cond = not last_att or last_att.action == 'sign_out'
-            import pdb; pdb.set_trace()
             if cond:
                 position = self.pool['res.users'].get_position(cr, uid, cancel_data=True, context=context)
                 self._telegram_attendance_action(cr, uid, position, emp_id, 'sign_in', context)
