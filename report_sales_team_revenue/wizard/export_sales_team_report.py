@@ -188,12 +188,13 @@ class ExportSalesTeamReport(orm.TransientModel):
     def write_header_invoice_paid(self, ws, row):
         for column, layout in self.table_layout.items():
             if layout['name'] == 'totale':
-                ws.write_merge(r1=4, c1=2, r2=4, c2=3, label=layout['name'], style=Style.title)
+                ws.write_merge(r1=4, c1=2, r2=4, c2=6, label=layout['name'], style=Style.title)
+
             else:
                 ws.write(row, column, layout['name'], Style.bold_header)
                 ws.col(column).width = layout['width']
 
-        col = 4
+        col = 7
 
         for month in range(1, 13):
             ws.write_merge(r1=4, c1=col, r2=4, c2=col + 4, label=date(2000, month, 1).strftime('%B'), style=Style.title)
@@ -205,10 +206,10 @@ class ExportSalesTeamReport(orm.TransientModel):
         #         ws.write(row, col + 1, '', Style.bold_header)
         #         col += 2
 
-        col = 4
+        col = 2
         row += 1
 
-        for month in range(1, 13):
+        for month in range(1, 14):
             ws.write(row, col, 'Fatt', Style.bold_header)
             ws.write(row, col + 1, 'Incass', Style.bold_header)
             ws.write(row, col + 2, 'Provv. su ft', Style.bold_header)
@@ -256,9 +257,33 @@ class ExportSalesTeamReport(orm.TransientModel):
         ws.write(row, 0, values['name'])
         ws.write(row, 1, year)
         ws.write(row, 2, value_i, Style.currency_border_left)
+        col = 2
         ws.write(row, 3, value_p, Style.currency)
+        ws.write(
+            row, 4,
+            Formula("{column}{row}*{commission}".format(
+                column=COLUMN_NAMES[col], row=row + 1, commission=commission)
+            ),
+            Style.currency_border_left
+        )
 
-        col = 4
+        ws.write(
+            row, 5,
+            Formula("{column}{row}*{commission}".format(
+                column=COLUMN_NAMES[col + 1], row=row + 1, commission=commission)
+            ),
+            Style.currency
+        )
+        col = 2
+        ws.write(
+            row, 6,
+            Formula("{invoiced_column}{row}-{column}{row}".format(
+                invoiced_column=COLUMN_NAMES[col + 2], column=COLUMN_NAMES[col + 3], row=row + 1)
+            ),
+            Style.currency
+        )
+
+        col = 7
         style_currency = Style.currency
 
         for month in range(1, 13):
@@ -286,7 +311,7 @@ class ExportSalesTeamReport(orm.TransientModel):
             ws.write(
                 row, col + 4,
                 Formula("{invoiced_column}{row}-{column}{row}".format(
-                    invoiced_column=COLUMN_NAMES[col + 2], column=COLUMN_NAMES[col + 3], row=row + 1, commission=0.08)
+                    invoiced_column=COLUMN_NAMES[col + 2], column=COLUMN_NAMES[col + 3], row=row + 1)
                 ),
                 Style.currency
             )
@@ -299,7 +324,9 @@ class ExportSalesTeamReport(orm.TransientModel):
         last_row = row
         column = 2
 
-        for i in range(1, 27):
+        last_column = 1 + 13 * 5
+
+        for i in range(1, last_column):
             if column % 2 == 0:
                 border_currency = Style.last_col_currency_border_left
             else:
@@ -397,8 +424,6 @@ class ExportSalesTeamReport(orm.TransientModel):
                 ws, row = self.write_header_invoice_paid(ws, row)
 
                 first_row = row + 1
-
-                # commission_value = 0.08
 
                 if report:
                     for row, item in enumerate(report.items(), first_row):
