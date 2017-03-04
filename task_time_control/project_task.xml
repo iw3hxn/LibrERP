@@ -133,7 +133,7 @@
                     <field name="name"/>
                     <field name="task_id" required="1"
                            domain="['|', '|', ('user_id','=', False), ('user_id','=',uid), ('other_users_ids','in',uid), ('state','in',['open','working'])]"/>
-                    <field name="hours" widget="float_time"/>
+                    <field name="hours" widget="float_time" sum="Hours"/>
                     <field name="remaining_hours" readonly="1" widget="float_time"/>
                 </tree>
             </field>
@@ -155,6 +155,7 @@
                         <separator orientation="vertical"/>
                         <field name="task_id"/>
                         <field name="user_id" groups="project.group_project_manager"/>
+                        <filter domain="[('user_id','=',uid)]" help="My Tasks" icon="terp-personal"/>
                     </group>
                     <newline/>
                     <group expand="0" string="Group By..." >
