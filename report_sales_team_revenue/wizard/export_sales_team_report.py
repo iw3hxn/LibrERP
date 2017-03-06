@@ -233,13 +233,38 @@ class ExportSalesTeamReport(orm.TransientModel):
         row += 1
         last_row = row
 
-        for month in range(2, 15):
-            column = month + 1
+        last_column = 1 + 13 * 1
+
+        for column in range(2, last_column + 1):
             ws.write(row, column,
                      Formula("SUM({column}{start}:{column}{end})".format(column=COLUMN_NAMES[column],
                                                                          start=first_row + 1,
                                                                          end=last_row)),
                      Style.currency_bold)
+
+    @staticmethod
+    def write_total_invoice_paid(ws, row, first_row):
+        row += 1
+        last_row = row
+        column = 2
+
+        last_column = 1 + 13 * 5
+
+        for i in range(1, last_column):
+            if column % 2 == 0:
+                border_currency = Style.last_col_currency_border_left
+            else:
+                border_currency = Style.currency_bold
+
+            if i == last_column:
+                border_currency = Style.last_col_currency_border_bold
+
+            ws.write(row, column,
+                     Formula("SUM({column}{start}:{column}{end})".format(column=COLUMN_NAMES[column],
+                                                                         start=first_row + 1,
+                                                                         end=last_row)),
+                     border_currency)
+            column += 1
 
     @staticmethod
     def write_table_invoice_paid(ws, row, values, year, commission):
@@ -317,30 +342,6 @@ class ExportSalesTeamReport(orm.TransientModel):
             )
 
             col += 5
-
-    @staticmethod
-    def write_total_invoice_paid(ws, row, first_row):
-        row += 1
-        last_row = row
-        column = 2
-
-        last_column = 1 + 13 * 5
-
-        for i in range(1, last_column):
-            if column % 2 == 0:
-                border_currency = Style.last_col_currency_border_left
-            else:
-                border_currency = Style.currency_bold
-
-            if i == 26:
-                border_currency = Style.last_col_currency_border_bold
-
-            ws.write(row, column,
-                     Formula("SUM({column}{start}:{column}{end})".format(column=COLUMN_NAMES[column],
-                                                                         start=first_row + 1,
-                                                                         end=last_row)),
-                     border_currency)
-            column += 1
 
     def action_team_report(self, cr, uid, ids, context):
         wizard = self.browse(cr, uid, ids[0], context)
