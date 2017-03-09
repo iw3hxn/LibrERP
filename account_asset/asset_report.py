@@ -72,10 +72,10 @@ class Parser(report_sxw.rml_parse):
         res = False
         depreciation_line_obj = self.pool['account.asset.depreciation.line']
         fy = self.pool['account.fiscalyear'].browse(self.cr, self.uid, self.localcontext['fy_id'])[0]
-        line_ids = depreciation_line_obj.search(self.cr, self.uid, [('asset_id', '=', asset.id), ('line_date', '<=', fy.date_stop), ('type', '=', 'remove')])
+        line_ids = depreciation_line_obj.search(self.cr, self.uid, [('asset_id', '=', asset.id), ('line_date', '<=', fy.date_stop), ('type', 'in', ['remove', 'sale'])])
         if line_ids:
             for line in depreciation_line_obj.browse(self.cr, self.uid, line_ids):
-                res += line.amount
+                res -= line.amount
         return res
 
     def _get_asset_depreciation_amount(self, asset):
@@ -118,8 +118,17 @@ class Parser(report_sxw.rml_parse):
                 'value_residual': 0.0
             }
         })
+        fy = self.pool['account.fiscalyear'].browse(self.cr, self.uid,
+                                                    self.localcontext[
+                                                        'fy_id'])[0]
         for ctg in self.pool['account.asset.category'].browse(self.cr, self.uid, category_ids):
-            asset_ids = asset_obj.search(self.cr, self.uid, [('category_id', '=', ctg.id), ('state', 'in', state)])
+            asset_ids = asset_obj.search(self.cr, self.uid, [
+                ('category_id', '=', ctg.id), ('state', 'in', state),
+                ('date_start', '<=', fy.date_stop),
+                '|',
+                ('date_remove', '>', fy.date_start),
+                ('date_remove', '=', False),
+            ])
             res.update({
                 ctg.id: {
                     'name': ctg.name,

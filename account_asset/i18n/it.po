@@ -455,6 +455,11 @@ msgid "Error ! You can not create recursive assets."
 msgstr "Errore non puoi creare Asset ricorsivi."
 
 #. module: account_asset
+#: help:asset.depreciation.confirmation.wizard,set_init:0
+msgid "Set depreciation as init for current fiscal year."
+msgstr "Imposta l'ammortamento come manuale per l'anno fiscale selezionato."
+
+#. module: account_asset
 #: model:ir.model,name:account_asset.model_account_asset_recompute_trigger
 msgid "Asset table recompute triggers"
 msgstr "Ricalcolo tabella ammortamento"
@@ -792,6 +797,16 @@ msgid "Extended Filters..."
 msgstr "Filtri Estesi..."
 
 #. module: account_asset
+#: view:account.asset.remove:0
+msgid "Set to removed without generating Removal entries"
+msgstr "Imposta ad eliminato senza generare scritture contabili"
+
+#. module: account_asset
+#: help:asset.depreciation.confirmation.wizard,fy_id:0
+msgid "Calculate depreciation table for asset acquired in this Fiscal Year"
+msgstr "Calcula la tabella di ammortamento per i cespiti acquisiti nell'anno fiscale selezionato"
+
+#. module: account_asset
 #: constraint:account.asset.asset:0
 #: constraint:account.asset.category:0
 msgid "Degressive-Linear is only supported for Time Method = Year."
@@ -845,7 +860,7 @@ msgstr "Stato dell'Immobilizzazione"
 #. module: account_asset
 #: field:account.asset.asset,decrease_value:0
 msgid "Decrease Value"
-msgstr "Valore Ammortamento"
+msgstr "Valore Rimozioni/Vendite"
 
 #. module: account_asset
 #: view:asset.depreciation.confirmation.wizard:0
@@ -984,7 +999,7 @@ msgstr "Company must be the same for its related account and period."
 #. module: account_asset
 #: help:account.asset.category,method_number:0
 msgid "The number of depreciations/years needed to depreciate your asset"
-msgstr "Il numero degli ammortameti/anni necessari per l'ammortamneto dell'Immobilizzazione"
+msgstr "Il numero degli ammortameti/anni necessari per l'ammortamento dell'Immobilizzazione"
 
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_account
@@ -1101,6 +1116,11 @@ msgstr "Report Cespiti"
 #: sql_constraint:account.move.line:0
 msgid "Wrong date maturity in accounting entry !"
 msgstr "Wrong date maturity in accounting entry !"
+
+#. module: account_asset
+#: field:asset.depreciation.confirmation.wizard,set_init:0
+msgid "Set init"
+msgstr "Manuale"
 
 #. module: account_asset
 #: field:account.asset.depreciation.line,move_check:0

@@ -71,9 +71,12 @@ class wizard_print_asset_report(orm.TransientModel):
         asset_ids = asset_obj.search(cr, uid, [
             ('category_id', 'in', [j.id for j in wizard.category_ids]),
             ('state', 'in', state),
-            ('date_start', '<=', wizard.fy_id.date_stop)
+            ('date_start', '<=', wizard.fy_id.date_stop),
+            '|',
+                ('date_remove', '>', wizard.fy_id.date_start),
+                ('date_remove', '=', False),
             #TODO other conditions
-        ], order='category_id, date_start')
+        ], order='category_id, date_start, code')
         if not asset_ids:
             self.write(cr, uid, ids, {'message':
                 _('No documents found in the current selection')})

@@ -18,7 +18,7 @@
             <separator colspan="4"/>
             <group>
               <button string="Generate Removal entries" name="remove" type="object" />
-              
+              <button string="Set to removed without generating Removal entries" name="set_to_removed" type="object" />
               <button string="Cancel" special="cancel"/>
             </group>
           </form>

@@ -75,28 +75,36 @@ class asset_depreciation_confirmation_wizard(orm.TransientModel):
         asset_ids = ass_obj.search(cr, uid, [
             ('state', 'in', ['open', 'draft']),
             ('type', '=', 'normal'),
-            ('date_start', '>=', fy.date_start),
+            # ('date_start', '>=', fy.date_start),
             ('date_start', '<=', fy.date_stop)
             ], context=context)
         asset_board_obj = self.pool['account.asset.depreciation.line']
         set_init = data[0].set_init
         init_move_ids = []
         for asset in ass_obj.browse(cr, uid, asset_ids, context):
-            asset.compute_depreciation_board()
+
             if not asset_board_obj.search(cr, uid, [
                     ('asset_id', '=', asset.id),
                     ('move_id', '!=', False),
                     ('type', '=', 'depreciate')]):
-                asset_board_moves = asset_board_obj.search(cr, uid, [
+                if not asset_board_obj.search(cr, uid, [
                     ('asset_id', '=', asset.id),
                     ('line_date', '>=', fy.date_start),
                     ('line_date', '<=', fy.date_stop),
-                    ('move_id', '=', False)])
-                for asset_board in asset_board_obj.browse(
-                        cr, uid, asset_board_moves, context):
-                    if set_init:
-                        asset_board.write({'init_entry': True})
-                    init_move_ids.append(asset_board.id)
+                    ('move_id', '=', False),
+                    ('init_entry', '=', True)
+                ]):
+                    asset.compute_depreciation_board()
+                    asset_board_moves = asset_board_obj.search(cr, uid, [
+                        ('asset_id', '=', asset.id),
+                        ('line_date', '>=', fy.date_start),
+                        ('line_date', '<=', fy.date_stop),
+                        ('move_id', '=', False)])
+                    for asset_board in asset_board_obj.browse(
+                            cr, uid, asset_board_moves, context):
+                        if set_init:
+                            asset_board.write({'init_entry': True})
+                        init_move_ids.append(asset_board.id)
         return {
             'name': _('Asset Moves Confirmed as Init entry'),
             'view_type': 'form',

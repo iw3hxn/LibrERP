@@ -36,6 +36,14 @@ class account_asset_remove(orm.TransientModel):
         'note': fields.text('Notes'),
     }
 
+    def set_to_removed(self, cr, uid, ids, context=None):
+        wiz_data = self.browse(cr, uid, ids[0], context=context)
+        asset_obj = self.pool.get('account.asset.asset')
+        asset_id = context['active_id']
+        asset = asset_obj.browse(cr, uid, asset_id, context=context)
+        asset.write({'state': 'removed', 'date_remove': wiz_data.date_remove})
+        return {'type': 'ir.actions.act_window_close'}
+
     def remove(self, cr, uid, ids, context=None):
         asset_obj = self.pool.get('account.asset.asset')
         asset_line_obj = self.pool.get('account.asset.depreciation.line')

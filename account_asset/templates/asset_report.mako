@@ -35,7 +35,7 @@
             <th class="left_without_line">Supplier Invoice</th>
             <th class="right_without_line">Costo storico di acquisto</th>
             <th class="right_without_line">Rivalutazioni o svalutazioni</th>
-            <th class="right_without_line">Eliminazione</th>
+            <th class="right_without_line">Eliminazione / Vendita</th>
             <th class="right_without_line">Fondo di amm.to fine esercizio precedente</th>
             <th class="right_without_line">Coefficiente di ammortamento</th>
             <th class="right_without_line">Quota annuale di ammortamento</th>
@@ -72,14 +72,16 @@
                 %endfor
             </td>
             <td class="right_with_line">
-            ${object.asset_value or ''| entity}
+            ${object.purchase_value or ''| entity}
             </td>
             <td class="right_with_line">
             ${formatLang(asset_fy_increase_decrease_amount(object)) or ''| entity} <br/>
             </td>
             <td class="right_with_line">
             ${formatLang(asset_remove_amount(object)) or ''| entity}
+            %if object.date_remove[:4] <= fy_name:
             ${object.date_remove or ''| entity}
+            %endif
             </td>
             <td class="right_with_line">
             ${formatLang(depr_amount[object.id]['depreciated_value']) or ''| entity}

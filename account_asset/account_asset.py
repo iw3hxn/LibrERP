@@ -496,7 +496,7 @@ class account_asset_asset(orm.Model):
         depreciation_lin_obj = self.pool.get('account.asset.depreciation.line')
         #fy_obj = self.pool.get('account.fiscalyear')
         digits = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
-
+        asset_malformed = []
         for asset in self.browse(cr, uid, ids, context=context):
             if asset.value_residual == 0.0:
                 continue
@@ -543,7 +543,8 @@ class account_asset_asset(orm.Model):
                 last_date_in_table = table[-1]['lines'][-1]['date']
                 if last_date_in_table <= last_depreciation_date:
                     raise orm.except_orm(_('Error!'),
-                        _("The duration change of the asset conflicts with the generated accounting entry dates."))
+                        _("The duration change of the asset %s conflicts with "
+                          "the generated accounting entry dates.") % asset.name)
 
                 for table_i, entry in enumerate(table):
                     residual_amount_table = entry['lines'][-1]['remaining_value']
@@ -595,6 +596,9 @@ class account_asset_asset(orm.Model):
                     table = self._compute_depreciation_table(cr, uid, asset, context=context)
                     table[-1]['lines'][0]['amount'] += amount_remaining
                     # end recompute modify
+                    if len(table) <= table_i_start:
+                        asset_malformed.append(asset.code)
+                        continue
                     entry = table[table_i_start]
                     if entry['fy_id']:
                         cr.execute("SELECT coalesce(sum(aml.debit)-sum(aml.credit),0.0) AS depreciated_value "
@@ -640,7 +644,9 @@ class account_asset_asset(orm.Model):
                     }
                     depr_line_id = depreciation_lin_obj.create(cr, uid, vals, context=context)
                 line_i_start = 0
-
+        if asset_malformed:
+            raise orm.except_orm(_('Error'), _(
+                'Asset %s table is malformed.') % asset_malformed)
         return True
 
     def validate(self, cr, uid, ids, context=None):
@@ -863,7 +869,7 @@ class account_asset_asset(orm.Model):
             of previous fiscal years if the Depreciation Start Date is \
             different from the date for which OpenERP needs to generate \
             accounting entries."),
-        'date_remove': fields.date('Asset Removal Date', readonly=True),
+        'date_remove': fields.date('Asset Removal Date', readonly=False),
         'state': fields.selection([
             ('draft', 'Draft'),
             ('open', 'Running'),

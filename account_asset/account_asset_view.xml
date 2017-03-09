@@ -118,7 +118,7 @@
             <group>
             <button name="validate" states="draft" string="Confirm Asset" type="object" />
             <button name="set_to_draft" states="open,close,removed" string="Set to Draft" type="object" groups="account.group_account_manager"/>
-            <!-- <button name="set_to_close" states="open" string="Set to Close" type="object" /> -->
+            <button name="set_to_close" states="open" string="Set to Close" type="object" />
             <button name="remove" string="Set to Removed" type="object" groups="account.group_account_manager"
                     attrs="{'invisible':['|',('method_time','!=','year'),('state','!=','close')]}"
                     help="Generate the removal entries for a fully depreciated asset."/>
