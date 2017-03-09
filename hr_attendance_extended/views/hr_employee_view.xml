@@ -5,6 +5,7 @@
         <record id="hr_employee_extended_tree" model="ir.ui.view">
             <field name="name">hr.employee.tree</field>
             <field name="model">hr.employee</field>
+            <field name="type">tree</field>
             <field name="inherit_id" ref="hr.view_employee_tree"/>
             <field name="arch" type="xml">
                 <field name="coach_id" position="after">
