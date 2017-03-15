@@ -39,7 +39,7 @@ class product_product(orm.Model):
         """
         When category changes, we search for taxes, UOM and product type
         """
-        context = self.pool['res.users'].context_get(cr, uid, context=context)
+        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
 
         res = {}
         warn = False
@@ -58,7 +58,7 @@ class product_product(orm.Model):
             return {'value': res, 'warning': warn}
         else:
             res['purchase_ok'] = True
-            return {'value': res, 'warning': warn}
+
         if field == 'supply_method' and product and type != 'service':
             warn = {
                     'title': _('Error'),
