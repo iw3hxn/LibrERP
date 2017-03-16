@@ -35,7 +35,7 @@ class product_product(orm.Model):
     #
     ### SI CAMBIAN LA CATEGORIA DEL PRODUCTO
     #
-    def onchange_categ_id(self, cr, uid, ids, field, categ_id, purchase_ok=None, supply_method=False, type=False, is_kit=False, context=False):
+    def onchange_categ_id(self, cr, uid, ids, field, categ_id, purchase_ok=None, supply_method=False, product_type=False, is_kit=False, context=False):
         """
         When category changes, we search for taxes, UOM and product type
         """
@@ -49,7 +49,7 @@ class product_product(orm.Model):
         else:
             product = False
 
-        if field == 'purchase_ok' and product and type != 'service' and not purchase_ok and not is_kit:
+        if field == 'purchase_ok' and product and product_type != 'service' and not purchase_ok and not is_kit:
             warn = {
                     'title': _('Error'),
                     'message': _("For change you need to create BOM"),
@@ -59,7 +59,7 @@ class product_product(orm.Model):
         else:
             res['purchase_ok'] = True
 
-        if field == 'supply_method' and product and type != 'service':
+        if field == 'supply_method' and product and product_type != 'service':
             warn = {
                     'title': _('Error'),
                     'message': _("For change you need to create BOM"),
@@ -90,7 +90,7 @@ class product_product(orm.Model):
                 if product and product.property_account_income.id != res['property_account_income']:
                     message.append(self.fields_get(cr, uid)['property_account_income']['string'])
 
-            res['type'] = category.provision_type or type
+            res['type'] = category.provision_type or product_type
 
             if res.get('type', False) and product and product.type != res.get('type'):
                     message.append(self.fields_get(cr, uid)['type']['string'])
