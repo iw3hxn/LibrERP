@@ -605,15 +605,6 @@ msgid "Invoice"
 msgstr "Invoice"
 
 #. module: sale_commission
-#: view:account.invoice.line:0
-#: field:account.invoice.line,commission_ids:0
-#: view:commission:0
-#: model:ir.ui.menu,name:sale_commission.menu_sale_commissions
-#: model:ir.ui.menu,name:sale_commission.menu_sale_commissions_conf
-msgid "Commissions"
-msgstr "Commissions"
-
-#. module: sale_commission
 #: view:recalculate.commission.wizard:0
 #: view:settled.wizard:0
 #: view:settlement:0
