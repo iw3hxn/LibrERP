@@ -4,6 +4,7 @@
 # =============================================================================
 
 from openerp.osv import orm, fields
+from tools.translate import _
 
 
 class Commission(orm.Model):
