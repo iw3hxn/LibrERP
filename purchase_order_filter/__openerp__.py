@@ -35,10 +35,9 @@
             - search by sales team includes children
     """,
     "depends": [
-        'sale',
+        'purchase',
     ],
-    "init_xml": [],
-    "update_xml": [
+    "data": [
         'purchase_order_view.xml'
     ],
     "active": False,
