@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014-2016 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -22,25 +22,4 @@
 #
 ##############################################################################
 
-{
-    "name": "Purchase Order Filter",
-    "version": "3.1.1.1",
-    "author": "Didotech SRL",
-    "website": "http://www.didotech.com",
-    "category": 'Purchase',
-    "description": """
-        Module adds extra functionality to purchase_order:
-            - possibility to filter order by year
-            - possibility to see sale of last or current month
-            - search by sales team includes children
-    """,
-    "depends": [
-        'purchase',
-    ],
-    "data": [
-        'view/purchase_order_view.xml'
-    ],
-    "active": False,
-    "installable": True,
-    'auto_install': True,
-}
+from . import purchase_order

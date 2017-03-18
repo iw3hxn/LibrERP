@@ -32,9 +32,9 @@ class purchase_order(orm.Model):
     
     def _get_order_years(self, cr, uid, fields, context=None):
         result = []
-        first_order_id = self.search(cr, uid, [('date_order', '!=', False)], order='date_order asc', limit=1)
+        first_order_id = self.search(cr, uid, [('date_order', '!=', False)], order='date_order asc', limit=1, context=context)
         if first_order_id:
-            first_order = self.browse(cr, uid, first_order_id[0])
+            first_order = self.browse(cr, uid, first_order_id[0], context)
             first_year = datetime.strptime(first_order.date_order, '%Y-%m-%d').year
         else:
             first_year = datetime.today().year
@@ -45,10 +45,8 @@ class purchase_order(orm.Model):
         return result
         
     def _get_order_year(self, cr, uid, ids, field_name, arg, context):
-        orders = self.browse(cr, uid, ids)
-        
+        orders = self.browse(cr, uid, ids, context)
         result = {}
-        
         for order in orders:
             if order.date_order:
                 result[order.id] = datetime.strptime(order.date_order, '%Y-%m-%d').year
