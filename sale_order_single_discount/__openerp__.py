@@ -20,18 +20,17 @@
 ##############################################################################
 
 {
-    "name": "Sale Pricelist Update",
+    "name": "Sale Discount Update",
     "version": "3.0.2.1",
+
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Custom Modules",
     "description": """
     This module provide :
-        * An update system for sale order lines' unit price when the pricelist is changed.
+        * Single update for a single discount on all line of sale order
     """,
-    "depends": [
-        'sale',
-    ],
+    "depends": ["sale_margin"],
     'data': [
         "views/sale_order_view.xml"
     ],

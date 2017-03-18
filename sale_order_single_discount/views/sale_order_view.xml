@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="sale_order_discount_form_view_inh">
+			<field name="name">sale.order.discount.form.inh</field>
+			<field name="model">sale.order</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="sale_margin.sale_margin_sale_order" />
+			<field name="arch" type="xml">
+				<field name="margin" position="before">
+                <group col="4" colspan="2">
+                    <field name="recalculate_discount" invisible="1"/>
+                    <field name="discount_rate" on_change="onchange_discount_rate(discount_rate)"/>
+                    <button name="recalculate_discount" string="Apply" type="object" colspan="2" attrs="{'invisible': [('recalculate_discount','!=',True)]}" icon="gtk-apply"/>
+                </group>
+            </field>
+			</field>
+		</record>
+
+	</data>
+</openerp>

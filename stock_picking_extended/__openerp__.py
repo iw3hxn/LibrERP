@@ -32,7 +32,7 @@ Functionalities:
     - add user for stock_journal
 """,
 
-    'author': 'Didotech srl',
+    'author': 'Didotech SRL',
     'website': 'http://www.didotech.com',
     'license': 'AGPL-3',
     "depends": [
