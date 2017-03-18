@@ -27,7 +27,7 @@
     "version": "3.1.1.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
-    "category": 'Accounting & Finance',
+    "category": 'Purchase',
     "description": """
         Module adds extra functionality to purchase_order:
             - possibility to filter order by year
