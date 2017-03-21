@@ -61,6 +61,8 @@
             'ods' - requires odf
             'csv' - uses module csv included in standard Python distribution
 
+        create group - View Reporting
+
     """,
     "depends": [
         'base',

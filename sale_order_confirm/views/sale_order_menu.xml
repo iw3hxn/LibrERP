@@ -125,6 +125,10 @@
             <field name="context">{'search_default_uninvoiced': 1, 'nodelete': '1', 'nocreate': '1'}</field>
         </record>
 
+        <record id="base.next_id_64" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_reporting')])]" />
+        </record>
+
     </data>
 </openerp>
 
