@@ -38,7 +38,7 @@
     ],
     "init_xml": [],
     "data": [
-        'view/purchase_order_view.xml'
+        'view/purchase_order_view.xml',
         'view/purchase_order_menu.xml'
     ],
     "active": False,
