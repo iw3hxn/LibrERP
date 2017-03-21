@@ -24,7 +24,7 @@
 
 {
     "name": "Purchase Order Extended",
-    "version": "3.1.1.1",
+    "version": "3.1.1.2",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Purchase',
@@ -34,10 +34,12 @@
     """,
     "depends": [
         'purchase',
+        'core_extended'
     ],
     "init_xml": [],
     "data": [
         'view/purchase_order_view.xml'
+        'view/purchase_order_menu.xml'
     ],
     "active": False,
     "installable": True,
