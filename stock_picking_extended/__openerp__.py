@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.25.22.29',
+    'version': '3.25.22.30',
     'category': 'Others',
     'description': """LibrERP - Stock picking extension
 
@@ -44,6 +44,7 @@ Functionalities:
         'c2c_sequence_fy',     # ricomincia da 0 le sequenze ogni anno
         'sale_margin',
         'purchase',
+        'core_extended'
     ],
     "data": [
         'security/ir.model.access.csv',
@@ -52,6 +53,7 @@ Functionalities:
         'stock/carriage_condition_view.xml',
         'stock/transportation_condition_view.xml',
         'stock/goods_description_view.xml',
+        'stock/stock_picking_menu.xml',
         'sale/sale_view.xml',
         'sale/sale_data.xml',
         'partner/partner_view.xml',
