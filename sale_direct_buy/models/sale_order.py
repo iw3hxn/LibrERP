@@ -71,6 +71,8 @@ class sale_order(orm.Model):
                                     for child_bom in order_line.bom_ids:
                                         # At the moment we use main supplier:
                                         supplierinfo = self.pool['product.template']._get_main_product_supplier(cr, uid, child_bom.product_id, context)
+                                        if not supplierinfo:
+                                            continue
                                         res = self.pool['purchase.order.line'].onchange_product_id(cr, uid, ids, supplierinfo.name.property_product_pricelist_purchase.id, child_bom.product_id.id, child_bom.product_uom_qty or 1, child_bom.product_uom.id,
                                             supplierinfo.name.id, order_line.order_id.date_order, supplierinfo.name.property_account_position.id, date_planned.strftime(DEFAULT_SERVER_DATE_FORMAT),
                                             child_bom.product_id.name or '', False, False, context)
