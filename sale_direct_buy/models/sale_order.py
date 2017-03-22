@@ -185,6 +185,7 @@ class sale_order(orm.Model):
 
                     purchase_id = purchase_order_obj.create(cr, uid, {
                         'origin': order.name,
+                        'shop_id': order.shop_id and order.shop_id.id,
                         'partner_id': supplier_id,
                         'partner_address_id': purchase_order_values['partner_address_id'],
                         'pricelist_id': purchase_order_values['pricelist_id'],

@@ -24,7 +24,7 @@
 
 {
     "name": "Set Supplier inside Sale Order",
-    "version": "3.5.22.12",
+    "version": "3.5.23.12",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Sale',
@@ -41,6 +41,7 @@
         'sale_bom',
         'dt_product_brand',
         'stock_picking_extended',
+        'purchase_no_gap',
         'purchase_discount',
         'purchase_requisition_extended'
     ],
