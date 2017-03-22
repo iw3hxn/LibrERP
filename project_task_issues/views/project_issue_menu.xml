@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.actions.act_window" id="project_issue.project_issue_categ_act0">
+
+            <field name="context">{"search_default_draft": 1,"search_default_todo": 1,
+                "search_default_project_id":project_id}
+            </field>
+        </record>
+
+    </data>
+</openerp>

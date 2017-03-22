@@ -3,7 +3,6 @@
 #    
 #    Copyright (C) 2011 Agile Business Group sagl (<http://www.agilebg.com>)
 #    Copyright (C) 2011 Domsense srl (<http://www.domsense.com>)
-#    Copyright (C) 2014 Matmoz d.o.o. (<http://www.matmoz.si>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -19,23 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'Project Task Issues',
-    'version': '3.0.1.4',
-    'category': 'Generic Modules/Projects & Services',
-    'description': """Issues list associated to task. In the task form, you can see the issues related to that task
-		Create issues from tasks.""",
-    'author': 'Agile Business Group, Didotech SRL',
-    'website': 'http://www.agilebg.com',
-    'license': 'AGPL-3',
-    "depends": [
-        'project_issue',
-    ],
-    "data": [
-        'views/project_issue_menu.xml',
-        'views/project_view.xml',
-        'views/project_issue_view.xml'
-    ],
-    "active": False,
-    "installable": True
-}
+
+from openerp.osv import orm, fields
+
+
+class roject_task(orm.Model):
+    _inherit = "project.task"
+    
+    _columns = {
+        'issue_ids': fields.one2many('project.issue', 'task_id', 'Issues', readonly=False),
+    }
+
+

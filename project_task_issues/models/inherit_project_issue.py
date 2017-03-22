@@ -22,22 +22,6 @@
 from openerp.osv import orm, fields
 
 
-class project_task(orm.Model):
-    _inherit = "project.task"
-    
-    _columns = {
-        'issue_ids': fields.one2many('project.issue', 'task_id', 'Issues', readonly=False),
-    }
-
-
-class project_task_work(orm.Model):
-    _inherit = "project.task.work"
-
-    _columns = {
-        'issue_id': fields.many2one('project.issue', 'Issue'),
-    }
-
-
 class project_issue(orm.Model):
 
     _inherit = "project.issue"
@@ -56,7 +40,7 @@ class project_issue(orm.Model):
         project = self.pool['project.project'].browse(cr, uid, project_id, context=context)
 
         task_ids = self.pool['project.task'].search(cr, uid, [('project_id', '=', project_id), ('state', 'in', ['open', 'working'])], context=context, limit=1)
-        if task_ids:
+        if task_ids and len(task_ids) == 1:
             task_id = task_ids[0]
         else:
             task_id = False
@@ -71,5 +55,18 @@ class project_issue(orm.Model):
         'work_ids': fields.one2many('project.task.work', 'issue_id', 'Work done'),
         'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
     }
+
+    def case_close(self, cr, uid, ids, *args):
+        """
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of case's Ids
+        @param *args: Give Tuple Value
+        """
+
+        res = super(project_issue, self).case_close(cr, uid, ids, *args)
+        import pdb;pdb.set_trace()
+        return res
 
 
