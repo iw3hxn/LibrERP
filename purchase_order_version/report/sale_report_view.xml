@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_order_product_tree_add_active" model="ir.ui.view">
+            <field name="name">sale.report.tree.add_active</field>
+            <field name="model">sale.report</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="sale.view_order_product_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='state']" position="after">
+                    <field name="active" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_order_product_search_add_version" model="ir.ui.view">
+            <field name="name">sale.report.search.add_version</field>
+            <field name="model">sale.report</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.view_order_product_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[2]/field[@name='company_id']" position="after">
+                    <field name="active"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

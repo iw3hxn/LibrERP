@@ -2,8 +2,8 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
-#    Copyright (C) 2012-2012 Camptocamp Austria (<http://www.camptocamp.at>)
+#    Copyright (C) 2004-2012 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2004-2012 Camptocamp Austria (<http://camptocamp.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,27 +20,6 @@
 #
 ##############################################################################
 
+from . import inherit_purchase_order
+from . import inherit_sale_shop
 
-from openerp.osv import orm
-
-
-class purchase_order(orm.Model):
-    _inherit = "purchase.order"
-
-    _defaults = {
-        'name': '/',
-    }
-
-    def create(self, cr, uid, vals, context=None):
-        if not context:
-            context = {}
-        if vals.get('date_order', False):
-            context.update({'date': vals.get('date_order')})
-        if vals.get('name', '/') == '/':
-            vals.update({'name': self.pool['ir.sequence'].get(cr, uid, 'purchase.order', context=context)})
-        return super(purchase_order, self).create(cr, uid, vals, context=context)
-
-    def wkf_confirm_order(self, cr, uid, ids, context=None):
-        # todo change sequence
-        res = super(purchase_order, self).wkf_confirm_order(cr, uid, ids, context)
-        return res

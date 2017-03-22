@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        Resource: sale.shop
+        -->
+        <record id="sale.shop" model="sale.shop">
+            <field name="purchase_sequence_id" ref="purchase.seq_purchase_order"/>
+        </record>
+
+        <function eval="('default', False, 'shop_id', [('purchase.order', False)], ref('sale.shop'), True, False, False, False, True)" id="purchase_default_set" model="ir.values" name="set"/>
+
+    </data>
+</openerp>

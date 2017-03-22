@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_shop_sequence_form" model="ir.ui.view">
+            <field name="name">sale.shop</field>
+            <field name="model">sale.shop</field>
+            <field name="inherit_id" ref="sale.view_shop_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="warehouse_id" position="before">
+                    <separator colspan="4" string="Sale Order"/>
+                    <field name="sequence_id" context="{'code': 'sale.order'}"/>
+                    <field name="sale_order_sequence_id" context="{'code': 'sale.order'}"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

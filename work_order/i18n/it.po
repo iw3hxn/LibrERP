@@ -110,7 +110,7 @@ msgstr "Riga di Vendita"
 #. module: work_order
 #: model:ir.model,name:work_order.model_sale_shop
 msgid "Sales Shop"
-msgstr "Negozio"
+msgstr "Business Unit"
 
 #. module: work_order
 #: constraint:project.project:0

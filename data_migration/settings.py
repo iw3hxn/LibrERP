@@ -56,7 +56,7 @@ class FormatOne():
     # Default values
     PRODUCT_DEFAULTS = {
         'supply_method': 'buy',
-        'uom': 'PCE',
+        'uom_id': 'PCE',
         # 'type': 'consu',
         'type': 'product',
         'procure_method': 'make_to_stock',

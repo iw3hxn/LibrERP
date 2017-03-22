@@ -48,7 +48,7 @@ msgid "This field contains the information related to the numbering of the Sale 
 msgstr "Questo campo contiene le informazioni relative al numero dell'Ordine di Vendita"
 
 #. module: sale_order_version
-#: help:sale.shop,sequence_id:0
+#: help:sale.shop,sale_order_sequence_id:0
 msgid "This field contains the information related to the numbering of the Sale Orders Confirmed by Customer"
 msgstr "Questo campo contiene le informazioni relative al numero dell'Ordine di Vendita confermato dal Cliente"
 
@@ -73,14 +73,9 @@ msgid "Total Tax Excluded"
 msgstr "Totale non tassato"
 
 #. module: sale_order_version
-#: field:sale.shop,sequence_id:0
-msgid "Entry Sequence"
-msgstr "Entry Sequence"
-
-#. module: sale_order_version
 #: model:ir.model,name:sale_order_version.model_sale_shop
 msgid "Sales Shop"
-msgstr "Negozio"
+msgstr "Business Unit"
 
 #. module: sale_order_version
 #: model:ir.model,name:sale_order_version.model_sale_report
@@ -114,7 +109,17 @@ msgstr "Indica che l'Ordine di Vendita è attivo"
 msgid "Create version"
 msgstr "Crea Nuova Revisione"
 
-#. modules: account, sale_order_version
+#. module: sale_order_version
 #: field:sale.shop,sequence_id:0
 msgid "Entry Sequence"
-msgstr "Sequenza Numeratore"
+msgstr "Sequenza Preventivo"
+
+#. module: sale_order_version
+#: field:sale.shop,sale_order_sequence_id:0
+msgid "Entry Sequence Confirmed"
+msgstr "Sequenza Ordine Confermato"
+
+#. module: sale_order_version
+#: view:sale.shop:0
+msgid "Sale Order"
+msgstr "Ordini di Vendita"

@@ -20,9 +20,9 @@
 ##############################################################################
 
 {
-    "name" : "Purchase No Gap",
-    "version" : "2.0.0.1",
-    "author" : "Camptocamp Austria, Didotech srl",
+    "name": "Purchase No Gap",
+    "version": "2.1.1.2",
+    "author": "Camptocamp Austria, Didotech srl",
     "category": 'Purchase Management',
     'complexity': "easy",
     "description": """
@@ -31,10 +31,12 @@ Purchase orders no gap and use of order date for sequence
 
     """,
     'website': 'http://www.didotech.com',
-    "depends" : ["purchase"],
+    "depends": ["purchase", "sale"],
     'data': [
-         'purchase_view.xml',
-         ],
+        'views/purchase_view.xml',
+        'views/sale_shop_view.xml',
+        'data/purchase_data.xml',
+    ],
     'demo': [],
     'installable': True,
     'auto_install': True,
