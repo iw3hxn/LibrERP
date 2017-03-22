@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_purchase_order_form_add_versions" model="ir.ui.view">
+            <field name="name">purchase.order.form.add_versions</field>
+            <field name="model">purchase.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_ref" position="after">
+                    <group col="4">
+                        <field name="purchase_version_id" attrs="{'invisible':[('purchase_version_id','=',False)], 'readonly': True}"/>
+                        <field name="revision_note" attrs="{'invisible':[('purchase_version_id','=',False)]}"/>
+                        <field name="active" invisible="1"/>
+                        <button
+                                name="action_previous_version"
+                                string="Create reversion"
+                                type="object"
+                                icon="gtk-go-forward"
+                                colspan="2"
+                                states="draft"
+                        />
+                    </group>
+                </field>
+                <page string="Delivery &amp; Invoicing" position="after">
+                    <page string="Versions" attrs="{'invisible':[('purchase_version_id','=',False)]}">
+                        <field name="version_ids" colspan="4" nolabel="1" readonly="1">
+                            <tree string="">
+                                <field name="name"/>
+                                <field name="date_order"/>
+                                <field name="user_id"/>
+                                <field name="amount_untaxed" sum="Total Tax Excluded"/>
+                                <field name="amount_total" sum="Total Tax Included"/>
+                                <field name="state"/>
+                                <field name="purchase_version_id"/>
+                                <field name="revision_note"/>
+                                <button name="print_order" string="Print" type="object" icon="gtk-print"/>
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+        <record id="view_purchase_order_filter_edit" model="ir.ui.view">
+            <field name="name">purchase.order.list.select_edit</field>
+            <field name="model">purchase.order</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="arch" type="xml">
+                <filter string="Order Date" position="after">
+                    <filter string="Orig. Version" icon="terp-accessories-archiver" domain="[]"
+                            context="{'group_by':'purchase_version_id'}"/>
+                </filter>
+            </field>
+        </record>
+
+    </data>
+</openerp>
