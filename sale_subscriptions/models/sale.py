@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2011 Domsense s.r.l. (<http://www.domsense.com>).
-#    Copyright (C) 2012-2016 Didotech (<http://www.didotech.com>).
+#    Copyright (C) 2012-2017 Didotech (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -85,7 +85,7 @@ class sale_order_line(orm.Model):
 
         super(sale_order_line, self).__init__(registry, cr)
 
-#        self._columns['margin']._fnct = self._product_margin
+        # self._columns['margin']._fnct = self._product_margin
 
     _columns = {
         'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute=dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
@@ -174,10 +174,11 @@ class sale_order_line(orm.Model):
         invoice_line_obj = self.pool['account.invoice.line']
         invoice_obj = self.pool['account.invoice']
         order_to_suspend = []
-        all_invoices = []
+
         suspend_date = datetime.datetime.now()
         updated_invoice_ids = []
-        for line in self.browse(cr, uid, line_ids, context=context):
+        lines = self.browse(cr, uid, line_ids, context=context)
+        for line in lines:
             active_order_line_count = 0
             for oline in line.order_id.order_line:
                 if not oline.suspended:
@@ -186,7 +187,8 @@ class sale_order_line(orm.Model):
             if active_order_line_count == 1:
                 order_to_suspend.append(line.order_id.id)
             else:
-                self.pool['sale.order.line'].write(cr, uid, line_ids, {'suspended': True}, context)
+                line_2_suspend_ids = [line_2_suspend.id for line_2_suspend in lines if line_2_suspend.product_id.subscription]
+                self.pool['sale.order.line'].write(cr, uid, line_2_suspend_ids, {'suspended': True}, context)
                 invoice_lines = line.invoice_lines
                 for invoice_line in invoice_lines:
                     invoice = invoice_line.invoice_id
@@ -197,6 +199,7 @@ class sale_order_line(orm.Model):
                     if invoice.state == 'draft' and invoice_date.date() >= suspend_date.date():
                         updated_invoice_ids.append(invoice_line.invoice_id.id)
                         invoice_line_obj.unlink(cr, uid, invoice_line.id, context)
+
         # for invoice where a unlink line recalculate
         unlink_invoice_ids = []
         for invoice in invoice_obj.browse(cr, uid, updated_invoice_ids, context):
@@ -210,19 +213,6 @@ class sale_order_line(orm.Model):
 
         if order_to_suspend:
             self.pool['sale.order'].suspend(cr, uid, order_to_suspend, context=context)
-
-        #     invoice_line_ids = invoice_line_obj.search(cr, uid, [('origin_document', '=', 'sale.order.line, {}'.format(line_id))], context=context)
-        #     if invoice_line_ids:
-        #         for invoice_line in invoice_line_obj.browse(cr, uid, invoice_line_ids, context):
-        #             if invoice_line.invoice_id.state == 'draft':
-        #                 all_invoices.append(invoice_line.invoice_id)
-        #                 invoice_line_obj.unlink(cr, uid, invoice_line.id, context)
-        #
-        # all_invoices = list(set(all_invoices))
-        #
-        # for invoice in all_invoices:
-        #     if not invoice.invoice_line:
-        #         self.pool['account.invoice'].unlink(cr, uid, invoice.id, context)
 
         return True
 
