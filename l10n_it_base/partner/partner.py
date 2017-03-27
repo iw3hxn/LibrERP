@@ -59,10 +59,10 @@ class res_city(orm.Model):
 
         cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
                    (self._index_name,))
-        
+
         if not cr.fetchone():
             cr.execute('CREATE INDEX {name} ON res_city (name)'.format(name=self._index_name))
-        
+
         cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
                    (self._index_zip,))
 
@@ -87,6 +87,7 @@ class res_partner_address(orm.Model):
     _inherit = 'res.partner.address'
 
     def _check_unique_default_type(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         addresses = self.browse(cr, uid, ids, context)
         for address in addresses:
             if address.partner_id and address.type in ('default', 'invoice'):
@@ -105,13 +106,14 @@ class res_partner_address(orm.Model):
         return True
 
     def check_category(self, cr, uid, ids, field_names, arg, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         country_obj = self.pool['res.country']
 
         for indirizzo in self.browse(cr, uid, ids, context):
             country_ids = country_obj.search(cr, uid, [('name', '=', indirizzo.country_id.name)], context=context)
             if country_ids:
-                countries = country_obj.browse(cr, uid, country_ids)
+                countries = country_obj.browse(cr, uid, country_ids, context)
                 for country in countries:
                     for field_name in field_names:
                         if indirizzo.id not in result:
@@ -150,18 +152,19 @@ class res_partner_address(orm.Model):
         (_check_unique_default_type, _('\n There are just an address of type default'), ['type', 'partner_id']),
     ]
 
-    def on_change_zip(self, cr, uid, ids, zip_code):
+    def on_change_zip(self, cr, uid, ids, zip_code=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {'value': {}}
-
         if zip_code and len(zip_code) > 3:
             city_obj = self.pool['res.city']
-            city_ids = city_obj.search(cr, uid, [('zip', '=ilike', zip_code)])
+            city_ids = city_obj.search(cr, uid, [('zip', '=ilike', zip_code)], context=context)
             if not city_ids:
-                city_ids = city_obj.search(cr, uid, [('zip', '=ilike', zip_code[:3] + 'xx')])
+                city_ids = city_obj.search(cr, uid, [('zip', '=ilike', zip_code[:3] + 'xx')], context=context)
 
             if len(city_ids) == 1:
-                city_obj = self.pool['res.city'].browse(cr, uid, city_ids[0])
+                city_obj = self.pool['res.city'].browse(cr, uid, city_ids[0], context)
                 res = {'value': {
+                    'zip': zip_code,
                     'province': city_obj.province_id and city_obj.province_id.id or False,
                     'region': city_obj.region and city_obj.region.id or False,
                     'country_id': city_obj.region.country_id and city_obj.region.country_id.id or False,
@@ -170,13 +173,14 @@ class res_partner_address(orm.Model):
                 }}
         return res
 
-    def on_change_city(self, cr, uid, ids, city, zip_code=None):
+    def on_change_city(self, cr, uid, ids, city, zip_code=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {'value': {'find_city': False}}
         if city:
             city_obj = self.pool['res.city']
-            city_ids = city_obj.search(cr, uid, [('name', '=ilike', city.title())])
+            city_ids = city_obj.search(cr, uid, [('name', '=ilike', city.title())], context=context)
             if city_ids:
-                city_row = city_obj.browse(cr, uid, city_ids[0])
+                city_row = city_obj.browse(cr, uid, city_ids[0], context)
                 if zip_code:
                     zip_code = zip_code
                 else:
@@ -188,41 +192,47 @@ class res_partner_address(orm.Model):
                     'zip': zip_code,
 
                     'country_id': city_row.region and
-                    city_row.region.country_id and
-                    city_row.region.country_id.id
-                    or False,
+                                  city_row.region.country_id and
+                                  city_row.region.country_id.id
+                                  or False,
 
                     'city': city.title(),
                     'find_city': True,
                 }}
         return res
 
-    def on_change_province(self, cr, uid, ids, province):
+    def on_change_province(self, cr, uid, ids, province, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {'value': {}}
         if province:
-            province_obj = self.pool['res.province'].browse(cr, uid, province)
+            province = self.pool['res.province'].browse(cr, uid, province, context)
             res = {'value': {
-                'region': province_obj.region and province_obj.region.id or False,
+                'province': province.id,
+                'region': province.region and province.region.id or False,
+                'country_id': province.region and province.region.country_id and province.region.country_id.id or False
             }}
         return res
 
-    def on_change_region(self, cr, uid, ids, region):
+    def on_change_region(self, cr, uid, ids, region, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {'value': {}}
         if region:
-            region_obj = self.pool['res.region'].browse(cr, uid, region)
+            region_obj = self.pool['res.region'].browse(cr, uid, region, context)
             res = {'value': {
+                'region': region,
                 'country_id': region_obj.country_id and region_obj.country_id.id or False
             }}
         return res
 
     def _set_vals_city_data(self, cr, uid, vals, context=None):
-        if 'city' in vals and not 'province' in vals and not 'region' in vals:
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if 'city' in vals and 'province' not in vals and 'region' not in vals:
             if vals['city']:
                 city_obj = self.pool['res.city']
                 city_ids = city_obj.search(cr, uid, [('name', '=ilike', vals['city'].title())], context=context)
                 if city_ids:
                     city = city_obj.browse(cr, uid, city_ids[0], context)
-                    if not 'zip' in vals:
+                    if 'zip' not in vals:
                         vals['zip'] = city.zip
                     if city.province_id:
                         vals['province'] = city.province_id.id
@@ -233,9 +243,11 @@ class res_partner_address(orm.Model):
         return vals
 
     def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         vals = self._set_vals_city_data(cr, uid, vals, context)
         return super(res_partner_address, self).create(cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         vals = self._set_vals_city_data(cr, uid, vals, context)
         return super(res_partner_address, self).write(cr, uid, ids, vals, context)
