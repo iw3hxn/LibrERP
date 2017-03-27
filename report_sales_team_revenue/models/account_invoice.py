@@ -33,7 +33,7 @@ class account_invoice(orm.Model):
 
     _columns = {
         'section_id': fields.many2one('crm.case.section', 'Sales Team', states={'draft': [('readonly', False)]},
-                                      required=[('type', 'in', ['out_invoice'])]),
+                                      required=[('type', 'in', ['out_invoice', 'out_refund'])]),
     }
 
     def create(self, cr, uid, vals, context):
