@@ -104,6 +104,8 @@ class sale_order_line(orm.Model):
             (365, '1 year'),
             (730, '2 years'),
             (1095, '3 years'),
+            (1460, '4 years'),
+            (1825, '5 years')
         ]),
         'product_duration': fields.related('product_id', 'order_duration', type='selection', string=_('Duration'), selection=[
             (30, '1 month'),
@@ -114,6 +116,8 @@ class sale_order_line(orm.Model):
             (365, '1 year'),
             (730, '2 years'),
             (1095, '3 years'),
+            (1460, '4 years'),
+            (1825, '5 years')
         ]),
         'order_end_date': fields.related('order_id', 'order_end_date', type='date', string=_('Order End'), store=True),
         'user_id': fields.related('order_id', 'user_id', 'name', type='char', string=_('Salesman'), store=True),
@@ -417,6 +421,8 @@ class sale_order(orm.Model):
                 (365, '1 year'),
                 (730, '2 years'),
                 (1095, '3 years'),
+                (1460, '4 years'),
+                (1825, '5 years')
             ],
             'Subscription Duration',
             help='Subscription duration in days',
@@ -435,6 +441,8 @@ class sale_order(orm.Model):
                 (365, 'Annual'),
                 (730, 'Biennial'),
                 (1095, 'Triennial'),
+                (1460, 'Quadrennial'),
+                (1825, 'Quinquennial')
             ], 'Invoice Period',
             help='Invoice Period',
             states={
@@ -594,13 +602,15 @@ class sale_order(orm.Model):
     @staticmethod
     def get_duration_in_months(duration_in_days):
         duration = {
+            1825: 60,
+            1460: 48,
             1095: 36,
             730: 24,
             365: 12,
             180: 6,
             90: 3,
             60: 2,
-            30: 1,
+            30: 1
         }
         return duration[duration_in_days]
 
