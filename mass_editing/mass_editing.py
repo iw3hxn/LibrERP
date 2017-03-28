@@ -37,7 +37,8 @@ class mass_object(orm.Model):
                                                  "of the related document model"),
         'ref_ir_value': fields.many2one('ir.values', 'Sidebar button', readonly=True,
                                        help="Sidebar button to open the sidebar action"),
-        'model_ids': fields.many2many('ir.model', string='Model List')
+        'model_ids': fields.many2many('ir.model', string='Model List'),
+        'group_id': fields.many2many('res.groups', string='Group'),
     }
 
     def onchange_model(self, cr, uid, ids, model_id, context=None):
@@ -71,7 +72,8 @@ class mass_object(orm.Model):
                 'context': "{'mass_editing_object' : %d}" % data.id,
                 'view_mode': 'form,tree',
                 'target': 'new',
-                'auto_refresh': 1
+                'auto_refresh': 1,
+                'groups_id': [[6, 0, [group.id for group in data.group_id]]],
             }, context)
             vals['ref_ir_value'] = self.pool['ir.values'].create(cr, uid, {
                 'name': button_name,
