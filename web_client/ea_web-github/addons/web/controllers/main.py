@@ -699,10 +699,10 @@ def clean_action(req, action, do_not_eval=False):
     if not do_not_eval:
         # values come from the server, we can just eval them
         if action.get('context', False) and isinstance(action.get('context'), basestring):
-            action['context'] = eval(action['context'].replace('\n', ''), eval_ctx) or {}
+            action['context'] = eval(action.get('context', '').replace('\n', ''), eval_ctx) or {}
 
         if action.get('domain', False) and isinstance(action.get('domain'), basestring):
-            action['domain'] = eval(action['domain'], eval_ctx) or []
+            action['domain'] = eval(action.get('domain', ''), eval_ctx) or []
     else:
         if 'context' in action:
             action['context'] = parse_context(action['context'], req.session)
