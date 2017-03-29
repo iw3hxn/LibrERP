@@ -50,11 +50,11 @@ class product_pricelist(orm.Model):
         date = date[0:10]
 
         products = map(lambda x: x[0], products_by_qty_by_partner)
-        currency_obj = self.pool.get('res.currency')
-        product_obj = self.pool.get('product.template')
-        product_uom_obj = self.pool.get('product.uom')
-        supplierinfo_obj = self.pool.get('product.supplierinfo')
-        price_type_obj = self.pool.get('product.price.type')
+        currency_obj = self.pool['res.currency']
+        product_obj = self.pool['product.template']
+        product_uom_obj = self.pool['product.uom']
+        supplierinfo_obj = self.pool['product.supplierinfo']
+        price_type_obj = self.pool['product.price.type']
 
         if not products:
             return {}
@@ -65,7 +65,7 @@ class product_pricelist(orm.Model):
                 version = v
                 break
         if not version:
-            raise orm.except_orm(_('Warning!'), _("At least one pricelist has no active version !\nPlease create or activate one."))
+            raise orm.except_orm(_(u'Warning!'), _(u"At least one pricelist has no active version !\nPlease create or activate one."))
         categ_ids = {}
         for p in products:
             categ = p.categ_id
@@ -96,7 +96,7 @@ class product_pricelist(orm.Model):
             (prod_tmpl_ids, prod_ids, categ_ids, version.id))
 
         item_ids = [x[0] for x in cr.fetchall()]
-        items = self.pool.get('product.pricelist.item').browse(cr, uid, item_ids, context=context)
+        items = self.pool['product.pricelist.item'].browse(cr, uid, item_ids, context=context)
 
         price_types = {}
 
@@ -191,9 +191,9 @@ class product_pricelist(orm.Model):
                             product_obj._price_get(cr, uid, [product], price_type.field, context=context)[product.id],
                             round=False, context=context)
 
-                if price is not False:
+                if not price:
                     price_limit = price
-                    price = price * (1.0+(rule.price_discount or 0.0))
+                    price = price * (1.0 + (rule.price_discount or 0.0))
                     if rule.price_round:
                         price = tools.float_round(price, precision_rounding=rule.price_round)
 

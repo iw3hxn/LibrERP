@@ -20,9 +20,9 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-import decimal_precision as dp
 from openerp.tools.translate import _
 from openerp import tools
+from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
 
@@ -32,6 +32,7 @@ import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
+ENABLE_CACHE = True
 
 class product_product(orm.Model):
     """
@@ -44,6 +45,10 @@ class product_product(orm.Model):
     #     for line in self.browse(cr, uid, ids, context):
     #         res[line.id] = line.seller_ids and line.seller_ids[0].name.id or False
     #     return res
+
+    def __init__(self, cr, uid):
+        super(product_product, self).__init__(cr, uid)
+        self.product_cost_cache = {}
 
     def _compute_purchase_price(self, cr, uid, ids,
                                 product_uom=None,
@@ -79,7 +84,15 @@ class product_product(orm.Model):
                         continue
                         
                     # std_price = sub_product.standard_price
-                    std_price = sub_product.product_id.cost_price
+                    if ENABLE_CACHE:
+                        if sub_product.product_id.id in self.product_cost_cache:
+                            std_price = self.product_cost_cache[sub_product.product_id.id]
+                        else:
+                            std_price = sub_product.product_id.cost_price
+                            self.product_cost_cache[sub_product.product_id.id] = std_price
+                    else:
+                        std_price = sub_product.product_id.cost_price
+
                     qty = uom_obj._compute_qty(cr, uid,
                                                from_uom_id=sub_product.product_uom.id,
                                                qty=sub_product.product_qty,
@@ -110,8 +123,13 @@ class product_product(orm.Model):
             else:
                 # no BoM: use standard_price
                 # use standard_price if no supplier indicated
+
+                if product.id in self.product_cost_cache and ENABLE_CACHE:
+                    res[product.id] = self.product_cost_cache[product.id]
+                    continue
+
                 if product.prefered_supplier:
-                    pricelist = product.prefered_supplier.property_product_pricelist_purchase  or False
+                    pricelist = product.prefered_supplier.property_product_pricelist_purchase or False
                     ctx = {
                         'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                     }
@@ -132,19 +150,35 @@ class product_product(orm.Model):
                     res[product.id] = price_subtotal or price
                 else:
                     res[product.id] = product.standard_price
+
+                if ENABLE_CACHE:
+                    self.product_cost_cache[product.id] = res[product.id]
                 continue
         
         return res
 
     def get_cost_field(self, cr, uid, ids, context=None):
+        start_time = datetime.now()
         context = context or self.pool['res.users'].context_get(cr, uid)
-        return self._cost_price(cr, uid, ids, '', [], context)
+        end_time = datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        _logger.info(u'get_cost_field get in {duration} for {id}'.format(duration=duration, id=ids))
+        res = self._cost_price(cr, uid, ids, '', [], context)
+        return res
 
     def _cost_price(self, cr, uid, ids, field_name, arg, context=None):
+        start_time = datetime.now()
+        # _logger.error(
+        #     u'START _cost_price for {ids} and {field}'.format(ids=ids, field=field_name))
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_uom = context.get('product_uom')
         bom_properties = context.get('properties')
-        res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties)
+        res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties, context)
+        end_time = datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        _logger.info(u'_cost_price get in {duration}'.format(duration=duration))
         return res
 
     def _kit_filter(self, cr, uid, obj, name, args, context):
@@ -168,6 +202,7 @@ class product_product(orm.Model):
         '''
         Show if have or not a bom
         '''
+        start_time = datetime.now()
         context = context or self.pool['res.users'].context_get(cr, uid)
         bom_properties = bom_properties or []
 
@@ -178,11 +213,16 @@ class product_product(orm.Model):
 
         for product in self.browse(cr, uid, ids, context):
             bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
+            # cr.execute("""SELECT id FROM mrp_bom WHERE product_id={product_id}""".format(product_id=product.id))
+            # bom_id = cr.fetchall()
             if not bom_id:
                 res[product.id] = False
             else:
                 res[product.id] = True
-            
+        end_time = datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        _logger.info(u'IS KIT get in {duration}'.format(duration=duration))
         return res
     
     """
@@ -253,6 +293,7 @@ class product_product(orm.Model):
         # quantity which is selected from company to compute Bom stock Value
         # so we add them in the calculation.
         context = context or self.pool['res.users'].context_get(cr, uid)
+        start_time = datetime.now()
         user_obj = self.pool['res.users']
         comp_obj = self.pool['res.company']
         if 'bom_stock' in field_names:
@@ -270,9 +311,11 @@ class product_product(orm.Model):
 
             for product_id, stock_qty in res.iteritems():
                 product = self.browse(cr, uid, product_id, context=context)
-                res[product_id]['bom_stock'] = \
-                    self._compute_bom_stock(
-                        cr, uid, product, stock_qty, company, context=context)
+                res[product_id]['bom_stock'] = self._compute_bom_stock(cr, uid, product, stock_qty, company, context=context)
+        end_time = datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        _logger.info(u'_product_available get in {duration} for {id}'.format(duration=duration, id=ids))
         return res
     
     def _get_boms(self, cr, uid, ids, field_name, arg, context):
@@ -284,6 +327,7 @@ class product_product(orm.Model):
         return result
     
     def price_get(self, cr, uid, ids, ptype='list_price', context=None):
+        start_time = datetime.now()
         context = context or self.pool['res.users'].context_get(cr, uid)
         if 'currency_id' in context:
             pricetype_obj = self.pool['product.price.type']
@@ -310,6 +354,10 @@ class product_product(orm.Model):
                 # This is right cause a field cannot be in more than one currency
                 res[product.id] = self.pool['res.currency'].compute(cr, uid, price_type_currency_id,
                                                                         context['currency_id'], res[product.id], context=context)
+        end_time = datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        _logger.info(u'price_get get in {duration} for {id} and {field}'.format(duration=duration, id=ids))
         return res
         
     _columns = {
@@ -428,6 +476,28 @@ class product_product(orm.Model):
         for bom_id in bom_ids:
             bom_obj.copy(cr, uid, bom_id, {'product_id': copy_id}, context=context)
         return copy_id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
+        res = super(product_product, self).write(cr, uid, ids, vals, context)
+        if 'standard_price' in vals:
+            changed_product = ids
+            bom_obj = self.pool['mrp.bom']
+            bom_ids = bom_obj.search(cr, uid, [('product_id', 'in', ids)], context=context)
+            for bom in bom_obj.browse(cr, uid, bom_ids, context):
+                bom_parent = bom.bom_id
+                while bom_parent:
+                    changed_product.append(bom_parent.product_id.id)
+                    bom_parent = bom_parent.bom_id
+
+            for product_id in changed_product:
+                if product_id in self.product_cost_cache:
+                    del self.product_cost_cache[product_id]
+        return res
 
     def update_product_bom_price(self, cr, uid, ids, context=None):
         """
