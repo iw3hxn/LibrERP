@@ -315,7 +315,7 @@ class product_product(orm.Model):
         end_time = datetime.now()
         duration_seconds = (end_time - start_time)
         duration = '{sec}'.format(sec=duration_seconds)
-        _logger.info(u'_product_available get in {duration} for {id}'.format(duration=duration, id=ids))
+        _logger.info(u'_product_available get in {duration}'.format(duration=duration))
         return res
     
     def _get_boms(self, cr, uid, ids, field_name, arg, context):
@@ -357,7 +357,7 @@ class product_product(orm.Model):
         end_time = datetime.now()
         duration_seconds = (end_time - start_time)
         duration = '{sec}'.format(sec=duration_seconds)
-        _logger.info(u'price_get get in {duration} for {id} and {field}'.format(duration=duration, id=ids))
+        _logger.info(u'price_get get in {duration}'.format(duration=duration))
         return res
         
     _columns = {
@@ -477,28 +477,6 @@ class product_product(orm.Model):
             bom_obj.copy(cr, uid, bom_id, {'product_id': copy_id}, context=context)
         return copy_id
 
-    def write(self, cr, uid, ids, vals, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-
-        if not isinstance(ids, (list, tuple)):
-            ids = [ids]
-
-        res = super(product_product, self).write(cr, uid, ids, vals, context)
-        if 'standard_price' in vals:
-            changed_product = ids
-            bom_obj = self.pool['mrp.bom']
-            bom_ids = bom_obj.search(cr, uid, [('product_id', 'in', ids)], context=context)
-            for bom in bom_obj.browse(cr, uid, bom_ids, context):
-                bom_parent = bom.bom_id
-                while bom_parent:
-                    changed_product.append(bom_parent.product_id.id)
-                    bom_parent = bom_parent.bom_id
-
-            for product_id in changed_product:
-                if product_id in self.product_cost_cache:
-                    del self.product_cost_cache[product_id]
-        return res
-
     def update_product_bom_price(self, cr, uid, ids, context=None):
         """
         This Function is call by scheduler.
@@ -518,3 +496,69 @@ class product_product(orm.Model):
         for product in self.browse(cr, uid, product_ids, context):
             product.write({'standard_price': product.cost_price})
         return True
+
+    def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
+        res = super(product_product, self).write(cr, uid, ids, vals, context)
+
+        if ENABLE_CACHE:
+            if 'standard_price' in vals:
+                changed_product = ids
+                bom_obj = self.pool['mrp.bom']
+                bom_ids = bom_obj.search(cr, uid, [('product_id', 'in', ids)], context=context)
+                for bom in bom_obj.browse(cr, uid, bom_ids, context):
+                    bom_parent = bom.bom_id
+                    while bom_parent:
+                        changed_product.append(bom_parent.product_id.id)
+                        bom_parent = bom_parent.bom_id
+
+                for product_id in changed_product:
+                    if product_id in self.product_cost_cache:
+                        del self.product_cost_cache[product_id]
+        return res
+
+# CANCEL CACHE IF SOMETHING CHANGE ON PRICELIST
+
+
+class product_pricelist_item(orm.Model):
+
+    _inherit = 'product.pricelist.item'
+
+    def create(self, cr, uid, vals, context):
+        res = super(product_pricelist_item, self).create(cr, uid, vals, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache = {}
+        return res
+
+    def write(self, cr, uid, ids, vals, context):
+        res = super(product_pricelist_item, self).write(cr, uid, ids, vals, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache = {}
+        return res
+
+    def unlink(self, cr, uid, ids, context):
+        res = super(product_pricelist_item, self).unlink(cr, uid, ids, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache = {}
+        return res
+
+
+class res_partner(orm.Model):
+
+    _inherit = 'product.pricelist.item'
+
+    def create(self, cr, uid, vals, context):
+        res = super(res_partner, self).create(cr, uid, vals, context)
+        if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
+            self.pool['product.product'].product_cost_cache = {}
+        return res
+
+    def write(self, cr, uid, ids, vals, context):
+        res = super(res_partner, self).write(cr, uid, ids, vals, context)
+        if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
+            self.pool['product.product'].product_cost_cache = {}
+        return res
