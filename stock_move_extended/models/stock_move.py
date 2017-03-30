@@ -245,6 +245,7 @@ class stock_move(orm.Model):
         'qty_available': fields.function(_product_available, multi='qty_available',
                                          type='float', digits_compute=dp.get_precision('Product UoM'),
                                          string='Quantity On Hand'),
+        'default_code': fields.related('product_id', 'default_code',  type='char', string='Product Reference')
     }
 
     def write(self, cr, uid, ids, values, context=None):  # check if when change unit of sale is the same category of product
