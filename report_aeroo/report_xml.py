@@ -508,7 +508,7 @@ class report_xml(osv.osv):
                     vals['report_sxw_content_data'] = False
         if type(ids) == list:
             ids = ids[0]
-        record = self.browse(cr, user, ids)
+        record = self.browse(cr, user, ids, context)
         # if context and 'model' in vals and not self.pool.get('ir.model').search(cr, user, [('model','=',vals['model'])]):
         #    raise osv.except_osv(_('Object model is not correct !'),_('Please check "Object" field !') )
         if vals.get('report_type', record.report_type) == 'aeroo':
