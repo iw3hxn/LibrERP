@@ -191,7 +191,7 @@ class product_pricelist(orm.Model):
                             product_obj._price_get(cr, uid, [product], price_type.field, context=context)[product.id],
                             round=False, context=context)
 
-                if not price:
+                if price is not False:
                     price_limit = price
                     price = price * (1.0 + (rule.price_discount or 0.0))
                     if rule.price_round:
