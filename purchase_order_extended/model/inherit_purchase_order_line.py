@@ -38,7 +38,17 @@ class purchase_order_line(orm.Model):
             result[line.id] = line.order_id.order_line.index(line) + 1
         return result
 
+    def _get_purchase_line(self, cr, uid, ids, context=None):
+        result = {}
+        for purchase in self.pool['purchase.order'].browse(cr, uid, ids, context=context):
+            for purchase_order_line in purchase.order_line:
+                result[purchase_order_line.id] = True
+        return result.keys()
+
     _columns = {
         'sequence': fields.function(_get_order_line_sequence, string='Line #', type='integer', method=True),
+        'date_order': fields.related('order_id', 'date_order', string='Order Date', readonly=True, type="date", store={
+                'purchase.order': (_get_purchase_line, ['date_order'], 10),
+        },)
     }
 
