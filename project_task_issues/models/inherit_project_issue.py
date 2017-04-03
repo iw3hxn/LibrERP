@@ -66,7 +66,7 @@ class project_issue(orm.Model):
         """
 
         res = super(project_issue, self).case_close(cr, uid, ids, *args)
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         return res
 
 
