@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <!--
+        ANALYTIC ACCOUNT
+        -->
+        <record id="analytic_journal_purchase" model="account.analytic.journal">
+            <field name="name">Purchase</field>
+            <field name="type">purchase</field>
+        </record>
+
+        <record id="analytic_journal_ddt" model="account.analytic.journal">
+            <field name="name">DDT</field>
+            <field name="type">purchase</field>
+        </record>
+
+        <record id="base.main_company" model="res.company">
+            <field name="delivery_note_journal_id" ref="analytic_journal_ddt"/>
+            <field name="expense_journal_id" ref="analytic_journal_purchase"/>
+        </record>
+
+    </data>
+</openerp>

@@ -59,7 +59,8 @@
         'views/stock_picking_view.xml',
         'views/sale_order_view.xml',
         'views/res_request_link.xml',
-        'views/account_analytic_line_view.xml'
+        'views/account_analytic_line_view.xml',
+        'data/company_data.xml',
     ],
     "active": False,
     "installable": True,
