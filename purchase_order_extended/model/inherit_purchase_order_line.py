@@ -23,7 +23,6 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from datetime import datetime
 
 
 class purchase_order_line(orm.Model):

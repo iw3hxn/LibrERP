@@ -21,5 +21,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+from . import inherit_purchase_order
 from . import inherit_purchase_order_line

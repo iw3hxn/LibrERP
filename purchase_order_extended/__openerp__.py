@@ -24,13 +24,14 @@
 
 {
     "name": "Purchase Order Extended",
-    "version": "3.2.1.2",
+    "version": "3.2.21.2",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Purchase',
     "description": """
         Module adds extra functionality to purchase_order:
             - on purchase order line add the sequence number
+            - auto change of
     """,
     "depends": [
         'purchase',
