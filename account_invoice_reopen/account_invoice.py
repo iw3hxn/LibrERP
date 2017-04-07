@@ -169,6 +169,7 @@ class account_invoice(orm.Model):
     #        move_obj.write(cr, uid, move_ids, {'state':'posted'})
 
     def action_number(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for inv in self.browse(cr, uid, ids, context=context):
             if not inv.internal_number:
                 super(account_invoice, self).action_number(cr, uid, ids, context)
