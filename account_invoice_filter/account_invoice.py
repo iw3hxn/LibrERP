@@ -31,9 +31,9 @@ class account_invoice(orm.Model):
     
     def _get_invoice_years(self, cr, uid, fields, context=None):
         result = []
-        first_invoice_id = self.search(cr, uid, [('date_invoice', '!=', False)], order='date_invoice asc', limit=1)
+        first_invoice_id = self.search(cr, uid, [('date_invoice', '!=', False)], order='date_invoice asc', limit=1, context=context)
         if first_invoice_id:
-            first_invoice = self.browse(cr, uid, first_invoice_id[0])
+            first_invoice = self.browse(cr, uid, first_invoice_id[0], context)
             first_year = datetime.datetime.strptime(first_invoice.date_invoice, '%Y-%m-%d').year
         else:
             first_year = datetime.date.today().year
@@ -44,7 +44,7 @@ class account_invoice(orm.Model):
         return result
         
     def _get_invoice_year(self, cr, uid, ids, field_name, arg, context):
-        invoices = self.browse(cr, uid, ids)
+        invoices = self.browse(cr, uid, ids, context)
         
         result = {}
         
