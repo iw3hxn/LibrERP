@@ -98,7 +98,7 @@ class account_invoice(orm.Model):
         if not context:
             context = self.pool['res.users'].context_get(cr, uid)
         super(account_invoice, self).action_move_create(cr, uid, ids, context=context)
-        for invoice in self.browse(cr, uid, ids):
+        for invoice in self.browse(cr, uid, ids, context):
             date_invoice = invoice.date_invoice
             reg_date = invoice.registration_date
             if not invoice.registration_date:
