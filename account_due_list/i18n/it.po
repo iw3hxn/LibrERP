@@ -315,5 +315,28 @@ msgstr "Errore"
 msgid "Account Ledger"
 msgstr "Schede Contabili"
 
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Invoice from"
+msgstr "Fattura dal"
 
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Invoice to"
+msgstr "Fattura al"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Due from"
+msgstr "Dal"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Due to"
+msgstr "Al"
+
+#. module: account_due_list
+#: view:account.move.line:0
+msgid "Open Invoice"
+msgstr "Apri Fattura"
 

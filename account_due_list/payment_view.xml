@@ -12,6 +12,7 @@
             <field name="arch" type="xml">
                 <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
                     <field name="stored_invoice_id" readonly="1"/>
+                    <button name="action_view_invoice" string="Open Invoice" type="object" icon="gtk-print"/>
                     <field name="invoice_date" readonly="1"/>
                     <!--<field name="invoice_origin" readonly="1"/>-->
                     <field name="partner_id" string="Partner" readonly="1"/>
@@ -233,6 +234,8 @@
                         <separator orientation="vertical"/>
                         <field string="Due from" name="date_from" filter_domain="[('date','&gt;=',self)]"/>
                         <field string="Due to" name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                        <newline/>
+                        <field name="partner_id"/>
                     </group>
                 </search>
             </field>
