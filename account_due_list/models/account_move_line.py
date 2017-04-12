@@ -145,9 +145,9 @@ class account_move_line(orm.Model):
     # ]
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
-        view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(
-            cr, uid, 'account_due_list', 'view_payments_tree')
-        if view_id == view_payments_tree_id[1]:
+        view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(cr, uid, 'account_due_list', 'view_payments_tree')
+        view_payments_tree2_id = self.pool['ir.model.data'].get_object_reference(cr, uid, 'account_due_list', 'view_account_ledger_tree')
+        if view_id == view_payments_tree_id[1] or view_id == view_payments_tree2_id[1]:
             # Use due list
             result = super(orm.Model, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
         else:
