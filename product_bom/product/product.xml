@@ -129,6 +129,9 @@
                     <filter name="is_kit" icon="terp-stock_symbol-selection" domain="[('is_kit','=',True)]"
                             string="Kit"/>
                 </xpath>
+                <field name="pricelist_id" position="before">
+                    <field name="date_inventory" context="{'to_date': self, 'states': 'done'}"/>
+                </field>
             </field>
         </record>
 

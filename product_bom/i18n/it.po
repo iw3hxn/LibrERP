@@ -191,7 +191,7 @@ msgstr "Errore: codice EAN non valido"
 #. module: product_bom
 #: field:product.product,bom_lines:0
 msgid "Boms"
-msgstr "Boms"
+msgstr "Distinte Basi"
 
 #. module: product_bom
 #: help:product.product,cost_price:0
@@ -212,3 +212,8 @@ msgstr "Fornitore Preferenziale"
 #: model:res.groups,name:product_bom.group_view_warehouse
 msgid "Product / View Warehouse availability"
 msgstr "Prodotto / Può vedere le disponibilità"
+
+#. module: product_bom
+#: field:product.product,date_inventory:0
+msgid "Date Inventory"
+msgstr "Disponibilità al"

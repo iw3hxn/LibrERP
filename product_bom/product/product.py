@@ -361,6 +361,7 @@ class product_product(orm.Model):
         return res
         
     _columns = {
+        'date_inventory': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date Inventory"),
         'cost_price': fields.function(_cost_price,
                                       method=True,
                                       string=_('Cost Price (incl. BoM)'),
