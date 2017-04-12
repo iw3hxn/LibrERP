@@ -64,10 +64,10 @@ class stock_picking(orm.Model):
                         find_line = True
                         continue
                 elif line[0] == 4 and line[1]:
-                    purchase_order_line = stock_move_obj.browse(cr, uid, line[1], context)
-                    if purchase_order_line.product_id.id == product_id:
+                    stock_move = stock_move_obj.browse(cr, uid, line[1], context)
+                    if stock_move.product_id.id == product_id:
                         line[0] = 1  # update
-                        line[2] = {'product_qty': purchase_order_line.product_qty + 1,
+                        line[2] = {'product_qty': stock_move.product_qty + 1,
                                    'product_id': product_id}
                         # (1, ID, { values })    update the linked record with id = ID (write *values* on it)
                         find_line = True
@@ -92,6 +92,12 @@ class stock_picking(orm.Model):
                 line_values.update(product_change_value.get('value'))
                 line_values.update({'product_id': product_id,
                                     'product_qty': product_qty})
+                if 'name' not in line_values:
+                    line_values.update(
+                        {
+                            'name': self.pool['product.product'].browse(cr, uid, product_id, context).name
+                        }
+                    )
                 move_lines.append([0, False, line_values])
         else:
             title = _('Error')
