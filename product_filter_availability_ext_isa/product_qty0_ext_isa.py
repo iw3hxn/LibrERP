@@ -42,7 +42,7 @@ class product_qty0_ext_isa(orm.Model):
             return super(product_qty0_ext_isa, self).search(cr, uid, args, offset, limit,
                                                             order, context=context, count=count)
         
-    def _search_available(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False, access_rights_uid=None, sign='>'):
+    def _search_available(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False, access_rights_uid=None, sign='>'):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
 
@@ -63,22 +63,22 @@ class product_qty0_ext_isa(orm.Model):
             if isinstance(context['location'], int):
                 location_ids = [context['location']]
             elif type(context['location']) in (type(''), type(u'')):
-                location_ids = self.pool['stock.location'].search(cr, user, [('name', 'ilike', context['location'])], context=context)
+                location_ids = self.pool['stock.location'].search(cr, uid, [('name', 'ilike', context['location'])], context=context)
             else:
                 location_ids = context['location']
         else:
-            w_ids = self.pool['stock.warehouse'].search(cr, user, [], context=context)
-            location_ids = [w.lot_stock_id.id for w in self.pool['stock.warehouse'].browse(cr, user, w_ids, context=context)]
+            w_ids = self.pool['stock.warehouse'].search(cr, uid, [], context=context)
+            location_ids = [w.lot_stock_id.id for w in self.pool['stock.warehouse'].browse(cr, uid, w_ids, context=context)]
 
         # build the list of ids of children of the location given by id
         if context.get('compute_child', True):
-            child_location_ids = self.pool['stock.location'].search(cr, user, [('location_id', 'child_of', location_ids)])
+            child_location_ids = self.pool['stock.location'].search(cr, uid, [('location_id', 'child_of', location_ids)], context=context)
             location_ids = child_location_ids or location_ids
 
         # self.pool.get('ir.model.access').check(cr, access_rights_uid or user, self._name, 'read', context=context)
 
         # Virtually available
-        states = "'confirmed', 'waiting', 'assigned', 'done'"
+        states = context.get('states', "'confirmed', 'waiting', 'assigned', 'done'")
 
         # Quantity available
         # states = "'done'"
@@ -126,9 +126,9 @@ class product_qty0_ext_isa(orm.Model):
                     GROUP BY stock_move.product_id, stock_move.product_uom
                 """
 
-        query = self._where_calc(cr, user, args, context=context)
+        query = self._where_calc(cr, uid, args, context=context)
         # TODO: verificare
-        self._apply_ir_rules(cr, user, query, 'read', context=context)
+        self._apply_ir_rules(cr, uid, query, 'read', context=context)
         # il _generate_order_by va prima del get_sql altrimenti non aggiorna la from_clause
         if location_ids:
             locations = reduce(lambda x, y: x + ', ' + str(y), location_ids[1:], str(location_ids[0]))
