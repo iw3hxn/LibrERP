@@ -79,6 +79,8 @@ class product_qty0_ext_isa(orm.Model):
 
         # Virtually available
         states = context.get('states', "'confirmed', 'waiting', 'assigned', 'done'")
+        if states == 'done':
+            states = "'done'"
 
         # Quantity available
         # states = "'done'"
