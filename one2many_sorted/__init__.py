@@ -62,43 +62,45 @@ class one2many_sorted(fields.one2many):
             self._search = args['search']
         if 'set' in args:
             self._set = args['set']
-        (fields.one2many).__init__(self, obj, fields_id, string=string, limit=limit, **args)
+        fields.one2many.__init__(self, obj, fields_id, string=string, limit=limit, **args)
 
     # end def __init__
 
-    def property_value(self, cr, user, obj, name):
+    def property_value(self, cr, uid, obj, name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         property_obj = obj.pool.get('ir.property')
-        prop_id = property_obj.search \
-            (cr, user
-             , [('name', '=', name)
-                 , ('type', '=', 'text')
-                 , ('company_id', '=', obj.pool.get('res.company')._company_default_get(cr, user))
-                ]
-             )
+        prop_id = property_obj.search(cr, uid
+                                      , [('name', '=', name)
+                                          , ('type', '=', 'text')
+                                          ,
+                                         ('company_id', '=', obj.pool.get('res.company')._company_default_get(cr, uid))
+                                         ],
+                                      context=context
+                                      )
         if prop_id:
-            return property_obj.browse(cr, user, prop_id[0]).value_text
+            return property_obj.browse(cr, uid, prop_id[0], context).value_text
         return False
         # end def property_value
 
-    def selected(self, cr, user, obj, ids, context=None):
+    def selected(self, cr, uid, obj, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         _obj = obj.pool.get(self._obj)
-        return _obj.search \
-            (cr, user
-             , [(self._fields_id, 'in', ids)] + self._search
-             , limit=self._limit
-             , context=context
-             )
+        return _obj.search(cr, uid
+                           , [(self._fields_id, 'in', ids)] + self._search
+                           , limit=self._limit
+                           , context=context
+                           )
 
     # end def selected
 
     def get(self, cr, obj, ids, name, user=None, offset=0, context=None, values={}):
         _obj = obj.pool.get(self._obj)
         if context and 'one2many_sorted_order' in context:
-            prop = self.property_value(cr, user, obj, context['one2many_sorted_order'])
+            prop = self.property_value(cr, user, obj, context['one2many_sorted_order'], context=context)
             if prop:
                 order = self.parse_order(prop)
         else:
-            prop = self.property_value(cr, user, obj, "%s.%s.order" % (self._obj, self._fields_id))
+            prop = self.property_value(cr, user, obj, "%s.%s.order" % (self._obj, self._fields_id), context=context)
             if prop:
                 order = self.parse_order(prop)
             else:
@@ -132,7 +134,7 @@ class one2many_sorted(fields.one2many):
             if act[0] == 0:  # "create"
                 for k, v in self._set.iteritems():
                     act[2][k] = v
-        return (fields.one2many).set(self, cr, obj, id, field, values, user, context)
+        return fields.one2many.set(self, cr, obj, id, field, values, user, context)
         # end def set
 
 
@@ -166,17 +168,17 @@ class many2many_sorted(fields.many2many):
 
     # end def __init__
 
-    def property_value(self, cr, user, obj, name):
+    def property_value(self, cr, uid, obj, name):
         property_obj = obj.pool.get('ir.property')
         prop_id = property_obj.search \
-            (cr, user
+            (cr, uid
              , [('name', '=', name)
                  , ('type', '=', 'text')
-                 , ('company_id', '=', obj.pool.get('res.company')._company_default_get(cr, user))
+                 , ('company_id', '=', obj.pool.get('res.company')._company_default_get(cr, uid))
                 ]
              )
         if prop_id:
-            return property_obj.browse(cr, user, prop_id[0]).value_text
+            return property_obj.browse(cr, uid, prop_id[0]).value_text
         return False
         # end def property_value
 
@@ -196,7 +198,7 @@ class many2many_sorted(fields.many2many):
         res = {}
         for id in ids:
             res[id] = []
-        got = (fields.many2many).get(self, cr, obj, ids, name, user=user, offset=offset, context=context, values=values)
+        got = fields.many2many.get(self, cr, obj, ids, name, user=user, offset=offset, context=context, values=values)
         for k, ids2 in got.iteritems():
             sortable = []
             for r in _obj.browse(cr, user, ids2, context=context):
