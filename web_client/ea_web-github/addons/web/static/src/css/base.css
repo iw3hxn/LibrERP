@@ -27,7 +27,7 @@ button.oe_button_small {
 td, th {
     display: table-cell;
     vertical-align: inherit;
-    /*vertical-align: middle;*/
+    vertical-align: middle;
 }
 
 body.openerp {
@@ -2153,6 +2153,12 @@ label.error {
     font-size:80%;
     background: #00a3da none repeat scroll 0% 0%;
 }
+
+.openerp ul[role="listbox"] li a:visited {
+    font-size:80%;
+    background: #00a3da none repeat scroll 0% 0%;
+}
+
 .parent_top {
     vertical-align: text-top;
 }
