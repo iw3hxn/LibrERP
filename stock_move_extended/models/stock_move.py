@@ -21,6 +21,8 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 import decimal_precision as dp
+from datetime import datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class stock_move(orm.Model):
@@ -42,12 +44,51 @@ class stock_move(orm.Model):
                 res[move.id] = ''
         return res
 
+    def _get_running_balance(self, cr, uid, ids, name, args, context):
+        res = {}
+        balance = {}
+        location_ids = self.pool['stock.location'].search(cr, uid, ([('complete_name', 'ilike', context.get('own_values', {}).get('self', ''))]), limit=1, context=context)
+        if location_ids:
+            location_id = location_ids[0]
+        ordered_ids = self.search(cr, uid, ([('id', 'in', ids)]), order='date ASC', context=context)
+        for line in self.browse(cr, uid, ordered_ids, context=context):
+            line_balance = 0
+            if line.state == 'done':
+                if line.product_id.id not in balance:
+                    if location_ids:
+                        inv_date = datetime.strptime(line.date, DEFAULT_SERVER_DATETIME_FORMAT) - timedelta(1)
+                        inventory_date = '{0}-{1}-{2} 23:59:59'.format(inv_date.year, inv_date.month, inv_date.day)
+                        context_product = context.copy()
+                        context_product.update(
+                            {
+                                'states': ('done',),
+                                'what': ('in', 'out'),
+                                'location': location_id,
+                                'to_date': inventory_date,
+                            })
+                        balance[line.product_id.id] = self.pool['product.product'].browse(cr, uid, line.product_id.id, context=context_product).qty_available
+                    else:
+                        balance[line.product_id.id] = 0
+                #
+                # if line.direction == '+':
+                #     balance[line.product_id.id] += line.product_qty
+                # elif line.direction == '-':
+                #     balance[line.product_id.id] += line.product_qty
+                if location_ids:
+                    if line.location_dest_id.id == location_id:
+                        balance[line.product_id.id] += line.product_qty
+                    elif line.location_id.id == location_id:
+                        balance[line.product_id.id] -= line.product_qty
+
+                line_balance = balance[line.product_id.id]
+            res[line.id] = line_balance
+        return res
+
     def _get_origin_id(self, cr, uid, res_model, origin, context):
         order_obj = self.pool.get(res_model)
         order_id = False
         if order_obj:
-            order_id = order_obj.search(cr, uid, [('name', '=', origin.split(':')[0])], limit=1,
-                                                  context=context)
+            order_id = order_obj.search(cr, uid, [('name', '=', origin.split(':')[0])], limit=1, context=context)
         return order_id
 
     def _get_origin_date(self, cr, uid, ids, field_name, arg, context=None):
@@ -245,7 +286,8 @@ class stock_move(orm.Model):
         'qty_available': fields.function(_product_available, multi='qty_available',
                                          type='float', digits_compute=dp.get_precision('Product UoM'),
                                          string='Quantity On Hand'),
-        'default_code': fields.related('product_id', 'default_code',  type='char', string='Product Reference')
+        'default_code': fields.related('product_id', 'default_code',  type='char', string='Product Reference'),
+        'running_balance': fields.function(_get_running_balance, method=True, string="Running Balance"),
     }
 
     def write(self, cr, uid, ids, values, context=None):  # check if when change unit of sale is the same category of product
@@ -258,4 +300,10 @@ class stock_move(orm.Model):
                                          _('Conversion from Product UoM %s to Default UoM %s is not possible as they both belong to different Category!.') % (move.product_uos.category_id.name, to_unit.category_id.name))
         return super(stock_move, self).write(cr, uid, ids, values, context)
     
-
+    def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
+        new_order = order
+        for domain in args:
+            if domain[0] == 'date' and domain[1] == '>=':
+                new_order = 'date ASC'
+        res = super(stock_move, self).search(cr, uid, args, offset=offset, limit=limit, order=new_order, context=context, count=count)
+        return res
