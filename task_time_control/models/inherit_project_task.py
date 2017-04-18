@@ -27,30 +27,6 @@ from openerp.tools.translate import _
 from openerp.osv import orm, fields
 
 
-class project_task_history(orm.Model):
-    _inherit = "project.task.history"
-    _columns = {
-        'state': fields.selection([
-            ('draft', 'New'),
-            ('open', 'In Progress'),
-            ('pending', 'Pending'),
-            ('done', 'Done'),
-            ('working', 'Working'),
-            ('cancelled', 'Cancelled')
-        ], 'State', readonly=True, required=True)
-    }
-
-
-class time_control_user_task(orm.Model):
-    _name = 'time.control.user.task'
-    _columns = {
-        'user': fields.many2one('res.users', 'user'),
-        'work_start': fields.datetime('Work start'),
-        'work_end': fields.datetime('Work end'),
-        'started_task': fields.many2one('project.task', 'Started task')
-    }
-
-
 class project_task(orm.Model):
     _inherit = "project.task"
 
@@ -175,15 +151,3 @@ class project_task(orm.Model):
         return True
 
 
-class project_task_work(orm.Model):
-    _inherit = "project.task.work"
-    
-    _columns = {
-        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
-        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
-        'work_start': fields.datetime('Work start'),
-        'work_end': fields.datetime('Work end'),
-        'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
-        'issue_id': fields.many2one('project.issue', 'Issue'),
-        'partner_id': fields.related('task_id', 'project_id', 'analytic_account_id', 'partner_id', relation='res.partner', type='many2one', string='Partner'),
-    }

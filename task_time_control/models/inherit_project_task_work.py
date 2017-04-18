@@ -2,9 +2,9 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-TODAY
 #    Pexego Sistemas Informáticos (http://www.pexego.es) All Rights Reserved
 #    $Jesús Ventosinos Mayor$
+#    $Javier Colmenero Fernández$
 #    Copyright (c) 2014 Didotech srl (info at didotech.com)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -22,32 +22,18 @@
 #
 ##############################################################################
 
-{
-    'name': 'Project task time control',
-    'version': '3.5.10.18',
-    'category': 'Project Management',
-    "sequence": 30,
-    'complexity': "easy",
-    'description': """
-        Manages tasks, allowing you  start or stop time counter from the tasks list view.
-        When you stop  a task the total working time is stored on it.
-    """,
-    'author': 'Pexego',
-    'website': 'http://www.pexego.es',
-    'images': [],
-    'depends': [
-        'project',
-        'project_issue',
-    ],
-    'init_xml': [],
-    'update_xml': [
-        'views/project_task.xml',
-        'wizard/task_time_control_confirm_wizard.xml',
-        'security/ir.model.access.csv',
-        'security/project_security.xml'
-    ],
-    'demo_xml': [],
-    'installable': True,
-    'auto_install': False,
-    'application': True,
-}
+from openerp.osv import orm, fields
+
+
+class project_task_work(orm.Model):
+    _inherit = "project.task.work"
+    
+    _columns = {
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'work_start': fields.datetime('Work start'),
+        'work_end': fields.datetime('Work end'),
+        'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
+        'issue_id': fields.many2one('project.issue', 'Issue'),
+        'partner_id': fields.related('task_id', 'project_id', 'analytic_account_id', 'partner_id', relation='res.partner', type='many2one', string='Partner'),
+    }

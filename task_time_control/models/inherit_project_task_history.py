@@ -2,9 +2,9 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-TODAY
 #    Pexego Sistemas Informáticos (http://www.pexego.es) All Rights Reserved
 #    $Jesús Ventosinos Mayor$
+#    $Javier Colmenero Fernández$
 #    Copyright (c) 2014 Didotech srl (info at didotech.com)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -22,32 +22,20 @@
 #
 ##############################################################################
 
-{
-    'name': 'Project task time control',
-    'version': '3.5.10.18',
-    'category': 'Project Management',
-    "sequence": 30,
-    'complexity': "easy",
-    'description': """
-        Manages tasks, allowing you  start or stop time counter from the tasks list view.
-        When you stop  a task the total working time is stored on it.
-    """,
-    'author': 'Pexego',
-    'website': 'http://www.pexego.es',
-    'images': [],
-    'depends': [
-        'project',
-        'project_issue',
-    ],
-    'init_xml': [],
-    'update_xml': [
-        'views/project_task.xml',
-        'wizard/task_time_control_confirm_wizard.xml',
-        'security/ir.model.access.csv',
-        'security/project_security.xml'
-    ],
-    'demo_xml': [],
-    'installable': True,
-    'auto_install': False,
-    'application': True,
-}
+from openerp.osv import orm, fields
+
+
+class project_task_history(orm.Model):
+    _inherit = "project.task.history"
+    _columns = {
+        'state': fields.selection([
+            ('draft', 'New'),
+            ('open', 'In Progress'),
+            ('pending', 'Pending'),
+            ('done', 'Done'),
+            ('working', 'Working'),
+            ('cancelled', 'Cancelled')
+        ], 'State', readonly=True, required=True)
+    }
+
+

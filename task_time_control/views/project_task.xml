@@ -16,6 +16,11 @@
                     <button name="work_start_btn" type="object" string="Start" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'open', 'working']), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', True)]}" icon="gtk-apply"/>
                     <button name="work_end_btn" attrs="{'invisible': ['|', ('state', 'not in', ['working', ]), '&amp;', ('state', '=', 'working'), ('user_is_working', '=', False)]}" type="object" string="Stop" icon="gtk-cancel" context="{'default_task_id': active_id}" />
                 </field>
+                <page string="Information" position="after">
+                    <page string="Allow Users" position="after" groups="project.group_project_manager">
+                        <field name="other_users_ids" widget="many2many_checkboxes" nolabel="1"/>
+                    </page>
+                </page>
                 <field name="notes" position="after">
                     <group groups="project.group_project_manager">
                         <separator string="Other User" colspan="4"/>

@@ -21,6 +21,6 @@
 #
 ##############################################################################
 
-import project_task
-import wizard 
+from . import models
+from . import wizard
 

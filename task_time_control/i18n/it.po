@@ -263,3 +263,8 @@ msgstr "Al"
 #: view:project.task:0
 msgid "Other User"
 msgstr "Altri Utenti al lavoro"
+
+#. module: task_time_control
+#: view:project.task:0
+msgid "Allow Users"
+msgstr "Utenti Autorizzati"
