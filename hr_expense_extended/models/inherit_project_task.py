@@ -43,7 +43,7 @@ class project_task(orm.Model):
         
         if task.expense_line_ids:
             # add hr_expense_expense
-            employee = self.pool['hr.employee'].get_employee(cr, uid, uid)
+            employee = self.pool['hr.employee'].get_employee(cr, uid, uid, context)
             if employee:
                 expense_values = {
                     # 'note': False,
@@ -64,15 +64,16 @@ class project_task(orm.Model):
         return task_id
 
     def write(self, cr, uid, ids, values, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
         
         result = super(project_task, self).write(cr, uid, ids, values, context)
         
-        for task in self.browse(cr, uid, ids):
+        for task in self.browse(cr, uid, ids, context):
             if values.get('expense_line_ids', False):
                 # add hr_expense_expense
-                employee = self.pool['hr.employee'].get_employee(cr, uid, uid)
+                employee = self.pool['hr.employee'].get_employee(cr, uid, uid, context)
                 if employee:
                     expense_values = {
                         # 'note': False,

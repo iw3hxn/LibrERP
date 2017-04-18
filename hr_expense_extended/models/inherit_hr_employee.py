@@ -29,10 +29,11 @@ from openerp.tools.translate import _
 class hr_employee(orm.Model):
     _inherit = "hr.employee"
     
-    def get_employee(self, cr, uid, user_id):
-        employee_ids = self.search(cr, uid, [('user_id', '=', user_id)])
+    def get_employee(self, cr, uid, user_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        employee_ids = self.search(cr, uid, [('user_id', '=', user_id)], context=context)
         if employee_ids:
-            return self.browse(cr, uid, employee_ids[0])
+            return self.browse(cr, uid, employee_ids[0], context)
         else:
             raise orm.except_orm('Error', _('No Employee is associated with this user'))
 
