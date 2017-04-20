@@ -72,10 +72,11 @@ class project_project(orm.Model):
         res = dict.fromkeys(ids, 0)
         ctx = context.copy()
         ctx['active_test'] = False
-        task_ids = self.pool['project.task'].search(cr, uid, [('project_id', 'in', ids)], context=ctx)
+        # task_ids = self.pool['project.task'].search(cr, uid, [('project_id', 'in', ids)], context=ctx)
+        task_ids = self.pool['project.task'].search(cr, uid, [('project_id', 'in', ids), ('state', 'not in', ['done', 'cancelled'])], context=ctx)
         for task in self.pool['project.task'].browse(cr, uid, task_ids, context):
-            if task.state != 'done':
-                res[task.project_id.id] += 1
+            # if task.state != 'done':
+            res[task.project_id.id] += 1
         return res
 
     def _get_attached_docs(self, cr, uid, ids, field_name, arg, context):
@@ -328,9 +329,11 @@ class project_project(orm.Model):
                                               relation="purchase.order",
                                               readonly=True, method=True),
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks", store={
+            'project.project': (lambda self, cr, uid, ids, c={}: ids, ['tasks'], 50),
             'project.task': (_get_project, ['state'], 10),
         }, ),
         'planned_end_date': fields.function(_get_planned_end_date, type='date', string="Planned End Date", store={
+            'project.project': (lambda self, cr, uid, ids, c={}: ids, ['tasks'], 50),
             'project.task': (_get_project, ['state', 'date_end', 'date_deadline'], 20),
         }, ),
 
