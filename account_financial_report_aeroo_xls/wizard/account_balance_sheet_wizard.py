@@ -61,7 +61,7 @@ class account_balance_sheet_report(orm.TransientModel):
         data['form']['account_report_id'] = (report_id, report_name)
 
         for field in ['fiscalyear', 'chart_account_id', 'period_from', 'period_to']:
-            if isinstance(data['form']['used_context'][field], tuple):
+            if data['form']['used_context'].get(field, False) and isinstance(data['form']['used_context'][field], tuple):
                 data['form']['used_context'][field] = data['form']['used_context'][field][0]
 
         return self._print_report_excel(cr, uid, ids, data, context=context)
