@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="balance_sheet" model="ir.actions.report.xml">
+            <field name="name">Balance Sheet</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">account.pl.report</field>
+            <field name="report_name">account_balance_sheet_exel</field>
+            <field name="report_type">aeroo</field>
+            <field name="in_format">oo-ods</field>
+            <field name="parser_loc">account_financial_report_aeroo_xls/report/account_balance_sheet.py</field>
+            <field name="report_rml">account_financial_report_aeroo_xls/report/account_balance_sheet.ods</field>
+            <field name="parser_state">loc</field>
+            <field name="tml_source">file</field>
+        </record>
+
+        <!--<ir_set>-->
+            <!--<field eval="'action'" name="key" />-->
+            <!--<field eval="'client_print_multi'" name="key2" />-->
+            <!--<field eval="['account.account']" name="models" />-->
+            <!--<field name="name">balance_sheet</field>-->
+            <!--<field eval="'ir.actions.report.xml,'+str(balance_sheet)"-->
+                <!--name="value" />-->
+            <!--<field eval="True" name="isobject" />-->
+            <!--<field eval="True" name="replace" />-->
+        <!--</ir_set>-->
+		<!---->
+	</data>
+</openerp>   
