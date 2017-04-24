@@ -468,7 +468,13 @@ class ImportFile(threading.Thread, Utils):
                 self.error.append(error)
         
         if hasattr(record, 'list_price') and record.list_price:
-            vals_product['list_price'] = float(record.list_price)
+            try:
+                vals_product['list_price'] = float(record.list_price)
+            except Exception as e:
+                error = u"Row {0}: Price not valid {1}: {2}".format(self.processed_lines, record.list_price, e)
+                _logger.error(error)
+                self.warning.append(error)
+                vals_product['list_price'] = 0
         else:
             if 'list_price' in self.PRODUCT_WARNINGS:
                 warning = u"Row {0}: No list price for product {1}".format(self.processed_lines, vals_product['name'])
