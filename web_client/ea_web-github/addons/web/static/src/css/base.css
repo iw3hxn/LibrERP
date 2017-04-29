@@ -18,8 +18,8 @@ button.oe_button_small {
 }
 
 .ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-draggable.ui-resizable {
-    border: 1px solid;
-    border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+    border: 1px solid #000;
+    /*border-color: #e5e6e9 #dfe0e4 #d0d1d5;*/
     border-radius: 3px;
     background: #e9ebee;
 }
@@ -1247,7 +1247,8 @@ label.error {
 .openerp .oe-listview table.oe-listview-content tfoot tr:last-child th:last-child,
 .openerp .oe-listview table.oe-listview-content tfoot tr:last-child td:last-child,
 .openerp .oe-listview table.oe-listview-content tbody:last-child tr:last-child td:last-child {
-
+    text-align: right;
+    white-space: nowrap;
 }
 
 /* Notebook */
