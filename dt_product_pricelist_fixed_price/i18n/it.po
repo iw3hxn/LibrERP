@@ -63,3 +63,15 @@ msgstr "Oggetto Listino"
 #, python-format
 msgid "Fixed Price"
 msgstr "Prezzo fisso"
+
+#. module: dt_product_pricelist_fixed_price
+#: field:product.pricelist.item,string_discount:0
+#, python-format
+msgid "String Discount"
+msgstr "Sconto Composto"
+
+#. module: dt_product_pricelist_fixed_price
+#: help:product.pricelist.item,string_discount:0
+msgid "Insert the multiple discount like: 50+10+5"
+msgstr "Inserire lo sconto composto come: 50+10+5"
+
