@@ -1150,7 +1150,7 @@
         <span class="oe-m2o-drop-down-button">
             <img src="/web/static/src/img/down-arrow.png" /></span>
         <span class="oe-m2o-cm-button" t-att-id="widget.name + '_open'">
-            <img src="/web/static/src/img/icons/gtk-index.png"/></span>
+            <img src="/web/static/src/img/icons/gtk-find.png"/></span>
         <div t-att-id="widget.cm_id" class="contextMenu" style="display:none">
         </div>
     </div>
