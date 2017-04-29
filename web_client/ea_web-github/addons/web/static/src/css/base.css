@@ -1670,9 +1670,9 @@ label.error {
     min-width: 11em;
 }
 
-.openerp .oe_forms input.field_date{
-    max-width: 100px;
-}
+/*.openerp .oe_forms input.field_date{*/
+    /*max-width: 100px;*/
+/*}*/
 
 .openerp .oe_forms .oe_form_button .oe_button {
     /* color: #4c4c4c; */
@@ -2127,21 +2127,26 @@ label.error {
     border-color: #828282;
 }
 
-.openerp .oe-m2o-drop-down-button {
-    margin-left: -24px;
+.openerp .oe-m2o {
+    padding-right: 20px;
+    white-space: nowrap;
 }
-.openerp .oe-m2o-drop-down-button img {
+.openerp .oe_forms .oe-m2o input[type="text"] {
+    padding-right: 20px;
+    padding-top: 2px;
+}
+.openerp .oe-m2o-drop-down-button {
+    margin-left: -23px;
+}
+.openerp .oe-m2o-drop-down-button img,
+.openerp .oe-m2o-cm-button img {
     margin-bottom: -4px;
     cursor: pointer;
-}
-.openerp .oe-m2o input  {
-    border-right: none;
-    margin-right: 0px !important;
-    padding-bottom: 2px !important;
 }
 .openerp .oe-m2o-disabled-cm {
     color: grey;
 }
+
 .openerp ul[role="listbox"] li a {
     font-size:80%;
     color: #000;
