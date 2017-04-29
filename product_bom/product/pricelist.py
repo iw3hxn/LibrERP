@@ -145,7 +145,7 @@ class product_pricelist(orm.Model):
                         cat = cat.parent_id
                     if not cat:
                         continue
-
+                print "rule base", rule.base
                 if rule.base == -1:
                     if rule.base_pricelist_id:
                         price_tmp = self._price_get_multi(cr, uid,
@@ -175,7 +175,7 @@ class product_pricelist(orm.Model):
                             if line.min_quantity <= qty_in_seller_uom:
                                 price = line.price
 
-                if rule.base == -3:
+                elif rule.base == -3:
                     if rule.price_version_id:
                         price = rule.fixed_price
 
