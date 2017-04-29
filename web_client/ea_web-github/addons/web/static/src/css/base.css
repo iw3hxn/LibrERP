@@ -40,7 +40,7 @@ body.openerp {
     margin: 0;
     height: 100%;
     font-size: small;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 .openerp, 
@@ -51,7 +51,7 @@ body.openerp {
 .openerp button, 
 .openerp .ui-widget {
 
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size:90%;
     border: 0px;
 
@@ -145,7 +145,7 @@ body.openerp {
 .login {
     padding: 0;
     margin: 0;
-    font-family: Helvetica, Arial, sans-serif
+    font-family: 'Roboto', sans-serif;
     color: #eee;
     font-size: 12px;
     height: 100%;
@@ -174,7 +174,7 @@ body.openerp {
     cursor: pointer;
     padding: 6px 16px;
     font-size: 13px;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-weight: bold;
     color: white;
     margin: 0;
@@ -188,7 +188,7 @@ body.openerp {
 .login input, .login select {
     width: 252px;
     font-size: 14px;
-    font-family: Helvetica, Arial, sans-serif
+    font-family: 'Roboto', sans-serif;
     border: 1px solid #d6d7da;
     background: whitesmoke;
 /*
@@ -303,7 +303,7 @@ body.openerp {
 
 .login .openerp {
     font-weight: bold;
-    font-family: Helvetica, Arial, serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 16px;
 }
 
@@ -1107,14 +1107,13 @@ label.error {
     vertical-align: middle;
 }
 
-
 .openerp .oe-listview td.oe-actions {
     border-bottom:none;
     width: 90%;
 }
 
 .openerp .oe-listview .oe-record-selector, .openerp .oe-listview .oe-record-edit-link {
-#    border-bottom: 1px solid #E3E3E3;
+   /*border-bottom: 1px solid #E3E3E3;*/
 }
 
 .openerp .oe-listview .oe-record-selector, .openerp .oe-listview .oe-record-edit-link {
