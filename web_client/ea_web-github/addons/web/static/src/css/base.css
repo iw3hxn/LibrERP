@@ -27,7 +27,7 @@ button.oe_button_small {
 td, th {
     display: table-cell;
     vertical-align: inherit;
-    vertical-align: middle;
+    /*vertical-align: middle;*/
 }
 
 body.openerp {
@@ -1435,7 +1435,7 @@ label.error {
 .openerp .oe_forms select,
 /* .openerp .oe_forms .oe_button, */
 .openerp .oe_forms textarea {
-/*    font-size: 90%; */
+    font-size: 95%;
     font-weight: normal;
 }
 
