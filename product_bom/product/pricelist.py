@@ -175,6 +175,10 @@ class product_pricelist(orm.Model):
                             if line.min_quantity <= qty_in_seller_uom:
                                 price = line.price
 
+                if rule.base == -3:
+                    if rule.price_version_id:
+                        price = rule.fixed_price
+
                 elif rule.base == -4:
                     price = product.cost_price
 
@@ -191,9 +195,9 @@ class product_pricelist(orm.Model):
                             product_obj._price_get(cr, uid, [product], price_type.field, context=context)[product.id],
                             round=False, context=context)
 
-                if price is not False:
+                if price is not False and rule.base != -3:
                     price_limit = price
-                    price = price * (1.0 + (rule.price_discount or 0.0))
+                    price *= (1.0 + (rule.price_discount or 0.0))
                     if rule.price_round:
                         price = tools.float_round(price, precision_rounding=rule.price_round)
 

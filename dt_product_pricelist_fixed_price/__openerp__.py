@@ -22,15 +22,15 @@
 
 {
     "name": "Price List Fixed Price",
-    "version": "1.0.2",
+    "version": "3.1.0.2",
     'category': 'Generic Modules/Inventory Control',
     "depends": ["product"],
     "author": "Agile Business Group & Domsense",
     "description": """This module allows to specify a fixed price for price list rules. So, if the rule is based on 'fixed price', this price will be used without any computation""",
     'website': 'http://www.agilebg.com',
     'init_xml': [],
-    'update_xml': [
-        'pricelist_view.xml',
+    'data': [
+        'views/pricelist_view.xml',
         ],
     'demo_xml': [],
     'installable': True,

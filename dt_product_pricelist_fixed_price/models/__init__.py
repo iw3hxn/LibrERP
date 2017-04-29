@@ -19,4 +19,6 @@
 #
 ##############################################################################
 
-from . import models
+from . import inherit_product_pricelist
+from . import inherit_product_pricelist_item
+
