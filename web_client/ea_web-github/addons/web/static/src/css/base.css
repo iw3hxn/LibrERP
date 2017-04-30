@@ -198,16 +198,19 @@ body.openerp {
     display: inline-block;
     cursor: pointer;
     padding: 6px 16px;
-    font-size: 13px;
+    /* font-size: 13px; */
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
     color: white;
     margin: 0;
     background: #00a3da;
-
-    /*-moz-border-radius: 4px;*/
-    /*-webkit-border-radius: 4px;*/
-    border-radius: 4px;
+    /* -moz-border-radius: 4px; */
+    /* -webkit-border-radius: 4px; */
+    border-radius: 1.25em;
+    border: 1px solid #409FFF;
+    height: 2.5em;
+    font-size: 1em;
+    width: 9.75em;
 }
 
 .login input, .login select {
@@ -347,11 +350,12 @@ body.openerp {
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 */
-    color: #eee;
+    .openerp .oe_button.oe-list-addcolor: white;
     font-size: 14px;
     padding: 14px 18px;
     margin-top: 15px;
     text-align: center;
+    border-radius: 10px;
 }
 
 .openerp .login.login_invalid .login_error_message {
@@ -2553,13 +2557,13 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 .openerp .oe_button:visited,
 .openerp .oe_button {
     display: inline-block;
-    padding: 5px 10px;
+    /*padding: 5px 10px;*/
     min-height: 25px;
     margin: 5px;
     color: black;
     font-weight: bold;
     background: #e3e3e3;
-    border: 1px solid #c9c9c9;
+    border: 1px solid #00a3da;
     border-radius: 3px;
         font-size: medium;
 }
@@ -2580,12 +2584,16 @@ ul.oe-arrow-list li.oe-arrow-list-selected .oe-arrow-list-after {
 }
 
 .openerp .oe_button.oe-list-add {
+    border-radius: 1.25em;
+    box-sizing: border-box;
     background: #00a3da;
+    border: 1px solid #409FFF;
     color: white;
 }
 
 .openerp .oe_button.oe-list-add:hover {
-
+    background-color: #0073e5;
+    border-color: #0073e5;
 }
 
 .openerp .oe_button.disabled,
