@@ -8,8 +8,12 @@
             <field name="type">tree</field>
             <field name="inherit_id" ref="hr.view_employee_tree"/>
             <field name="arch" type="xml">
+                <tree string="Employees" position="attributes" >
+                    <attribute name="colors">green:state == ('present');black:state != ('present')</attribute>
+                </tree>
                 <field name="coach_id" position="after">
                     <field name="state" />
+                    <field name="last_sign" invisible="not context.get('view_last_sign', False)" />
                 </field>
             </field>
         </record>
@@ -17,6 +21,18 @@
         <record id="hr.open_view_employee_list_my_kanban" model="ir.actions.act_window.view">
             <field name="sequence" eval="10"/>
             <field name="view_mode">kanban</field>
+        </record>
+
+        <record id="hr_employee_extended_filter" model="ir.ui.view">
+            <field name="name">hr.employee.tree</field>
+            <field name="model">hr.employee</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <filter icon="terp-personal" domain="[('state','=', 'present')]" string="Present" context="{'view_last_sign': True}"/>
+                </field>
+            </field>
         </record>
 
     </data>

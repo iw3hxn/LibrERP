@@ -24,7 +24,7 @@
 
 {
     "name": "HR Expense Extended",
-    "version": "3.0.0.1",
+    "version": "3.0.0.2",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Human Resources',
