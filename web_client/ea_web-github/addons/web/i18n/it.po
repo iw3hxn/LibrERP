@@ -236,7 +236,7 @@ msgstr "*Dei campi richiesti non sono compilati :"
 #: code:addons/web/static/src/js/formats.js:184
 #, python-format
 msgid "(%d records)"
-msgstr "(%d records)"
+msgstr "(%d righe)"
 
 #. module: web
 #. openerp-web
