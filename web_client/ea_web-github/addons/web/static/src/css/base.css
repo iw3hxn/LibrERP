@@ -511,7 +511,7 @@ label.error {
     margin-top: 0px;
     margin-left: 200px;
     background-color: #3b5998;
-    border-bottom: 1px solid #29487d;
+    /*border-bottom: 1px solid #29487d;*/
     color: #fff;
 }
 .openerp .menu td {
@@ -531,9 +531,9 @@ label.error {
     line-height: 20px;
     font-weight: bold;
     font-size: small;
-    border: 1px solid #FFF;
+    /*border: 1px solid #FFF;*/
     white-space: nowrap;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 .openerp .menu a:hover,
