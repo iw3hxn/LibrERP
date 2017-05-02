@@ -112,7 +112,7 @@ def extend_trans_generate(lang, modules, cr):
                         }
 
                         # export fields
-                        if not result.has_key('fields'):
+                        if 'fields' not in result:
                             logger.warning("res has no fields: %r", result)
                             continue
                         for field_name, field_def in result['fields'].iteritems():
