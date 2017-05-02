@@ -125,7 +125,9 @@ body.openerp {
 }
 .oe-listview-header-columns {
 
-    background: #d1d1d1; /* Old browsers */
+    border-bottom: 2px solid #cacaca;
+    background: #eeeeee;
+    vertical-align: top;
 }
 
 .openerp .oe_hide {
@@ -1052,24 +1054,27 @@ label.error {
 .openerp .oe-listview thead table {
     width: 100%;
     border:  none;
+    background: #f9f9f9;
     /*background: #d1d1d1 none repeat scroll 0% 0%; */
 }
 .openerp .oe-listview tr.odd {
     /*background-color: #f0f0f0;*/
+    background-image: linear-gradient(to bottom, #f0f0fa, #eeeef6);
 }
 
-.openerp .oe-listview tr.odd.selected {
-    background-color: #73B0FF;
-}
-.openerp .oe-listview tr.even.selected {
-    background-color: #9CC7FF;
-}
-.openerp .oe-listview tr.selected:hover {
-    background-color: #529DFF;
-}
-.openerp .oe-listview tbody tr:hover {
-    background-color: #ecebf2;
-}
+/*.openerp .oe-listview tr.odd.selected {*/
+    /*!*background-color: #73B0FF;*!*/
+/*}*/
+/*.openerp .oe-listview tr.even.selected {*/
+    /*!*background-color: #9CC7FF;*!*/
+/*}*/
+/*.openerp .oe-listview tr.selected:hover {*/
+    /*!*background-color: #529DFF;*!*/
+/*}*/
+/*!*.openerp .oe-listview tbody tr:hover {*!*/
+    /*!*!*background-color: #ecebf2;*!*!*/
+/*!*}*!*/
+
 .openerp .oe-listview tbody tr:hover {
     background-color: #eae9f0;
 }
@@ -1119,15 +1124,18 @@ label.error {
 }
 .openerp .oe-listview th.oe-sortable {
     cursor: pointer;
-    font-size: 75%;
-    text-transform: uppercase;
+    /*font-size: 75%;*/
+    /*text-transform: uppercase;*/
     padding: 0;
     margin: 0;
     padding-left: 3px;
     color: #333;
     text-align: center;
-    border-left: 1px solid #FAFAFA;
+    /*border-left: 1px solid #FAFAFA;*/
+    border-left: 1px solid #dfdfdf;
+    vertical-align: middle;
     height: 30px;
+    text-align: left;
 }
 .openerp .oe-listview th.oe-sortable .ui-icon {
     margin: -4px 0 0;
@@ -1265,7 +1273,7 @@ label.error {
     /*border: 1px solid #CCCCCC;*/
 }
 .openerp .oe-listview table.oe-listview-content thead tr:first-child th:last-child {
-    background: #e9ebee;
+    background: #f9f9f9;
 }
 .openerp .oe-listview table.oe-listview-content tfoot tr:last-child th:first-child,
 .openerp .oe-listview table.oe-listview-content tfoot tr:last-child td:first-child,
