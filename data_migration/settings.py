@@ -81,8 +81,7 @@ class FormatOne():
         'RboCodart', 'RboUnimis', 'RboQuanti'
     )
     COLUMNS_PICKING = "doc, origin, date, product, product_uom, qty"
-    REQUIRED_PICKING = [
-        'doc', 'origin', 'date',
+    REQUIRED_PICKING = ['origin', 'date',
         'product', 'product_uom', 'qty'
     ]
 
