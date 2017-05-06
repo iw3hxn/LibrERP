@@ -1169,7 +1169,7 @@ label.error {
     font-size: small;
     width: auto;
     word-wrap: break-word;
-    border-bottom: 1px solid #e1e2e3;
+    /*border-bottom: 1px solid #e1e2e3;*/
 }
 .openerp .oe-listview .oe-field-cell progress {
     width: 100%;
