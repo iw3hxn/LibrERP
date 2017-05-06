@@ -49,7 +49,14 @@ class purchase_order(orm.Model):
         if vals.get('date_order', False):
             context.update({'date': vals.get('date_order')})
         if vals.get('name', '/') == '/':
-            shop = self.pool['sale.shop'].browse(cr, uid, vals['shop_id'], context=context)
+            sale_shop_obj = self.pool['sale.shop']
+            shop_id = vals.get('shop_id', False)
+            if not shop_id:
+                warehouse_id = vals.get('warehouse_id', False)
+                shop_ids = sale_shop_obj.search(cr, uid, [('warehouse_id', '=', warehouse_id)], limit=1, context=context)
+                if shop_ids:
+                    shop_id = shop_ids[0]
+            shop = sale_shop_obj.browse(cr, uid, shop_id, context=context)
             if shop and shop.purchase_sequence_id:
                 sequence = self.pool['ir.sequence'].next_by_id(cr, uid, shop.purchase_sequence_id.id)
             else:
