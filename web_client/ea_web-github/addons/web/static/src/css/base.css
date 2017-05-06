@@ -690,7 +690,7 @@ label.error {
     border: 1px transparent;
     border-right-color: black;
     border-bottom-color: black;
-    background: #f7f7f7;
+    background: #fff;
 /*
     background: -moz-linear-gradient(top, #FAFAFA 0%, #f7f7f7 60%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FAFAFA), color-stop(60%,#f7f7f7));
@@ -1526,8 +1526,8 @@ label.error {
 }
 
 .openerp label.oe_label_help span {
-    font-size: small;
-    color: darkgreen;
+    font-size: xx-small;
+    color: deepskyblue;
     /*vertical-align:top;*/
     /*position: relative;*/
     top: -4px;
@@ -1714,7 +1714,7 @@ label.error {
     /* color: #4c4c4c; */
     /*white-space: nowrap;*/
     /*min-width: 100%;*/
-    width: 100%;
+    width: 98%;
     height: 100%;
     /*border: 1px solid #00a3da;*/
     /* border-color: #E30000; */
