@@ -678,7 +678,7 @@ label.error {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FAFAFA', endColorstr='#f7f7f7',GradientType=0 );
 */
     background-color: #3b5998;
-    /*border-bottom: 1px solid #29487d;*/
+    border-bottom: 1px solid #e1e2e3;
     color: #fff;
     letter-spacing: 0.5px;
 }
@@ -690,8 +690,8 @@ label.error {
     border: 1px transparent;
     border-right-color: black;
     border-bottom-color: black;
-/*
     background: #f7f7f7;
+/*
     background: -moz-linear-gradient(top, #FAFAFA 0%, #f7f7f7 60%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FAFAFA), color-stop(60%,#f7f7f7));
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FAFAFA', endColorstr='#f7f7f7',GradientType=0 );
@@ -1305,7 +1305,7 @@ label.error {
 
 .openerp .oe_form_notebook ul.ui-tabs-nav {
     padding-left: 0;
-    background: #FAFAFA;
+    background: #FFF;
     border-width: 0;
     border-radius: 0;
     height: 20px;
