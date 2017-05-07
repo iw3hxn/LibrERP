@@ -228,6 +228,8 @@ class ImportFile(threading.Thread, Utils):
             'N.': 'PCE',
             'LT': 'Litre',
             'Mt.': 'PCE',
+            'pz': 'PCE',
+            'copp': 'PCE',
         }
 
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':
@@ -239,7 +241,11 @@ class ImportFile(threading.Thread, Utils):
             _logger.error(error)
             self.error.append(error)
             return False
-
+        if uom_name not in translate:
+            warning = "Row {0}: Can't find valid UOM {1}".format(self.processed_lines, name)
+            _logger.warning(warning)
+            self.warning.append(warning)
+            return self.pool['product.product'].default_get(cr, uid, ['uom_id'], context=self.context)['uom_id']
         uom_ids = self.pool['product.uom'].search(cr, uid, [('name', '=ilike', translate[uom_name])], context=self.context)
         if len(uom_ids) == 1:
             return uom_ids[0]
@@ -278,7 +284,7 @@ class ImportFile(threading.Thread, Utils):
         
         for name in names:
             name = name.strip()
-            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)])
+            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)], context=self.context)
             
             if len(partner_ids) == 1:
                 supplier_ids += partner_ids
@@ -482,7 +488,17 @@ class ImportFile(threading.Thread, Utils):
                 self.warning.append(warning)
         
         if hasattr(record, 'supplier') and record.supplier:
-            partner_ids = self.get_suppliers(cr, uid, record.supplier)
+            if isinstance(record.supplier, unicode):
+                supplier = record.supplier
+            else:
+                supplier = unicode(record.supplier, 'utf-8')
+            try:
+                partner_ids = self.get_suppliers(cr, uid, supplier)
+            except Exception as e:
+                error = u"Row {0}: Supplier not valid {1}: {2}".format(self.processed_lines, record.supplier, e)
+                _logger.error(error)
+                self.warning.append(error)
+                partner_ids = False
         else:
             partner_ids = False
         
@@ -582,7 +598,7 @@ class ImportFile(threading.Thread, Utils):
         # Get the product_tempalte ID
         
         # Retrive the record associated with the product id
-        productObject = self.pool.get('product.product').browse(self.cr, self.uid, product_id, self.context)
+        productObject = self.pool['product.product'].browse(self.cr, self.uid, product_id, self.context)
         
         # Retrive the template id
         product_template_id = productObject.product_tmpl_id.id
