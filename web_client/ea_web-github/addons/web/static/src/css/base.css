@@ -1769,7 +1769,7 @@ label.error {
  * http://stackoverflow.com/questions/2855589/replace-input-type-file-by-an-image
  */
 .openerp .oe-binary-file-set {
-    overflow: hidden;
+   /* overflow: hidden;*/
     position: relative;
 }
 .openerp input.oe-binary-file {
