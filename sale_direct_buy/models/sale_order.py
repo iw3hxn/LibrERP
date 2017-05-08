@@ -22,12 +22,13 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import time
-from dateutil.relativedelta import relativedelta
 from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
+from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools.translate import _
 
 
 class sale_order(orm.Model):
@@ -200,6 +201,10 @@ class sale_order(orm.Model):
                         self.log(cr, uid, order.id, message)
 
         return super(sale_order, self).action_wait(cr, uid, ids, context)
+
+    def _create_pickings_and_procurements(self, cr, uid, order, order_lines, picking_id=False, context=None):
+        context.update(stop_procurement=True)
+        return super(sale_order, self)._create_pickings_and_procurements(cr, uid, order, order_lines, picking_id, context)
 
 
 class sale_order_line(orm.Model):
