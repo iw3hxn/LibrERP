@@ -1,4 +1,4 @@
-from osv import fields, osv
+from openerp.osv import orm, fields
 import xmlrpclib
 import socket
 import os
@@ -14,6 +14,42 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
+def ftp_login(ept_ftp_host, ept_ftp_username, ept_ftp_password):
+    import pdb;pdb.set_trace()
+    ftp = ftplib.FTP()
+    server = ept_ftp_host.split(':')
+    ftp_host = server[0]
+    if len(server) == 2:
+        ftp_port = ept_ftp_host.split(':')[1]
+        if ftp_port:
+            ftp_port = int(ftp_port)
+    else:
+        ftp_port = 21
+    ftp.connect(ftp_host, ftp_port)
+    ftp.login(ept_ftp_username, ept_ftp_password)
+    return ftp
+
+
+def ftp_connect(ept_ftp_host, ept_ftp_username, ept_ftp_password, to_ept_location):
+    s = None
+    try:
+        s = ftp_login(ept_ftp_host, ept_ftp_username, ept_ftp_password)
+    except Exception, e:
+        raise orm.except_orm(_('FTP Authentication Fail!'), _(
+            'Please check the account setting for Auto FTP backup. Some details may be missing/Incorrect.'))
+    if s:
+        dir = ''
+        try:
+            dir = s.cwd(to_ept_location)
+        except Exception, ex:
+            raise orm.except_orm(_(''), _('FTP Connection test successfully. But Specified directory is not locate.'))
+
+        if "250 CWD" in dir:
+            return True
+
+    return False
+
+
 def execute(connector, method, *args):
     res = False
     try:
@@ -25,7 +61,7 @@ def execute(connector, method, *args):
 addons_path = tools.config['addons_path'] + '/db_backup_ept/DBbackups'
 
 
-class db_backup_ept(osv.osv):
+class db_backup_ept(orm.Model):
     _name = 'db.autobackup.ept'
   
     def get_db_list(self, cr, user, ids, host='localhost', port='8069', context={}):
@@ -87,7 +123,7 @@ class db_backup_ept(osv.osv):
                         os.makedirs(rec.backup_dir)
                 except:
                     raise
-                self.ept_backup(cr, user, [rec.id], rec.name, rec.backup_dir, True, rec.ftp_enable, rec.FTP_id, rec, rec.keep_backup_local)
+                self.ept_backup(cr, user, [rec.id], rec.name, rec.backup_dir, True, rec.ftp_enable, rec.FTP_id, rec, rec.keep_backup_local, context)
                 # self.hv_backup(cr, user,[Bak conf ID], db_name, db_bkp_dir,AUTO,FTP)
         return True
 
@@ -104,7 +140,8 @@ class db_backup_ept(osv.osv):
         #if os.name == 'nt' and self._pg_psw_env_var_is_set:
         os.environ['PGPASSWORD'] = ''
     
-    def ept_backup(self, cr, uid, ids, db_name, bkup_dir, automatic, ftp_enable, FTP_id, bak_conf, keep_backup_local):
+    def ept_backup(self, cr, uid, ids, db_name, bkup_dir, automatic, ftp_enable, FTP_id, bak_conf, keep_backup_local, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         self._set_pg_psw_env_var()
         bkp_file = '%s_%s.sql' % (db_name, time.strftime('%Y%m%d_%H_%M_%S'))
         tar_file_name = '%s_%s.tar.gz' % (db_name, time.strftime('%Y%m%d_%H_%M_%S'))
@@ -133,11 +170,11 @@ class db_backup_ept(osv.osv):
         backup_status = ''
         if not automatic:
             user_id = uid
-            user_name = self.pool.get('res.users').browse(cr, uid, uid, context=None).name
+            user_name = self.pool['res.users'].browse(cr, uid, uid, context=context).name
         if res:
             _logger.error(u"DUMP DB: %s failed\n%s" % (db_name, data))
-            for obj in self.browse(cr, uid, ids):
-                self.pool.get('db.backup.line').create(cr, uid, {
+            for obj in self.browse(cr, uid, ids, context):
+                self.pool['db.backup.line'].create(cr, uid, {
                     'backup_id': obj.id,
                     'name': obj.name,
                     'date_time': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -150,36 +187,36 @@ class db_backup_ept(osv.osv):
             return False
         else:
             _logger.info(u"DUMP DB: %s" % (db_name))
-            context = {}
             if ftp_enable:
                 if FTP_id:
-                    ftpbackup_obj = self.pool.get('ept.ftpbackup')
+                    ftpbackup_obj = self.pool['ept.ftpbackup']
                     ept_ftp = ftpbackup_obj.browse(cr, uid, FTP_id.id, context)
                     if not ept_ftp.ept_ftp_host or not ept_ftp.ept_ftp_username or \
                             not ept_ftp.ept_ftp_password or not ept_ftp.to_ept_location:
                         for obj in self.browse(cr, uid, ids):
-                            self.pool.get('db.backup.line').create(cr, uid, {
+                            self.pool['db.backup.line'].create(cr, uid, {
                                 'backup_id': obj.id,
                                 'name': tar_file_name,
                                 'date_time': time.strftime('%Y-%m-%d %H:%M:%S'),
                                 'done_by': uid,
                                 'message': 'Could not create back up of database. Backup Failed. Invalid FTP Credentials',
                                 'automatic': automatic,
-                            })
+                            }, context)
                         backup_status = 'Could not create back up of database. Backup Failed. Invalid FTP Credentials'
                         os.remove(file_path)
                         return True
                     try:
                         if ept_ftp.is_ftp_active:
-                            s = ftplib.FTP(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)  # Connect
+                            s = ftp_login(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)
+                            # s = ftplib.FTP(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)  # Connect
                             f = open(tar_file_path, 'rb')                # file to send
                             remote_file_path = os.path.join(ept_ftp.to_ept_location, tar_file_name)
                             s.storbinary('STOR ' + remote_file_path, f)         # Send the file
                             f.close()                                # Close file and FTP
                             s.quit()
-                            for obj in self.browse(cr, uid, ids):
+                            for obj in self.browse(cr, uid, ids, context):
                                 backup_status = 'Backup completed successfully at Remote FTP path : %s/%s.' % (ept_ftp.to_ept_location, tar_file_name)
-                                self.pool.get('db.backup.line').create(cr, uid, {
+                                self.pool['db.backup.line'].create(cr, uid, {
                                     'backup_id': obj.id,
                                     'name': obj.name,
                                     'date_time': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -188,25 +225,25 @@ class db_backup_ept(osv.osv):
                                     'done_by': user_id,
                                     'path': tar_file_path,
                                     'file_size': str(os.path.getsize(tar_file_path)),
-                                })
+                                }, context)
                     except Exception, e:
-                        for obj in self.browse(cr, uid, ids):
+                        for obj in self.browse(cr, uid, ids, context):
                             backup_status = 'Could not create back up of database at Remote FTP path: %s/%s. Backup Failed. Exception: %s' % (e, ept_ftp.to_ept_location, tar_file_name)
-                            self.pool.get('db.backup.line').create(cr, uid, {
+                            self.pool['db.backup.line'].create(cr, uid, {
                                 'backup_id': obj.id,
                                 'name': tar_file_name,
                                 'date_time': time.strftime('%Y-%m-%d %H:%M:%S'),
                                 'done_by': uid,
                                 'message': backup_status,
                                 'automatic': automatic,
-                            })
+                            }, context)
                                       
                 if not keep_backup_local:
                     os.remove(tar_file_path)
             else:
-                for obj in self.browse(cr, uid, ids):
+                for obj in self.browse(cr, uid, ids, context):
                     backup_status = 'Backup completed successfully at path: %s ' % (tar_file_path)
-                    self.pool.get('db.backup.line').create(cr, uid, {
+                    self.pool['db.backup.line'].create(cr, uid, {
                         'backup_id': obj.id,
                         'name': obj.name,
                         'date_time': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -215,18 +252,18 @@ class db_backup_ept(osv.osv):
                         'done_by': user_id,
                         'path': tar_file_path,
                         'file_size': str(os.path.getsize(tar_file_path)),
-                    })
+                    }, context)
         self._unset_pg_psw_env_var()
         if bak_conf and bak_conf.ept_enable_email_notification:
-            email_from_ids = self.pool.get('ir.config_parameter').search(cr, uid, [('key', '=', 'auto_backup_from_email_Id')])
+            email_from_ids = self.pool['ir.config_parameter'].search(cr, uid, [('key', '=', 'auto_backup_from_email_Id')], context=context)
             
             to_user_email_ids = ''
             to_email_ids = bak_conf.email_ids
-            #users = self.browse(cr, uid, bak_conf.user_ids )
+            # users = self.browse(cr, uid, bak_conf.user_ids )
             user_ids = []
             if bak_conf.user_ids:
                 user_ids = [x['id'] for x in bak_conf.user_ids]
-            for users in self.pool.get('res.users').browse(cr, uid, user_ids or [], context):
+            for users in self.pool['res.users'].browse(cr, uid, user_ids or [], context):
                 if users.user_email:
                     to_user_email_ids = to_user_email_ids + users.user_email + ','
             if to_email_ids and to_email_ids.endswith(','):
@@ -236,8 +273,8 @@ class db_backup_ept(osv.osv):
             else:
                 to_email_ids = to_user_email_ids
             if email_from_ids:
-                email_from = self.pool.get('ir.config_parameter').browse(cr, uid, email_from_ids[0], context)
-                #email_to = to_email_ids
+                email_from = self.pool['ir.config_parameter'].browse(cr, uid, email_from_ids[0], context)
+                # email_to = to_email_ids
                 email_subject = """Database backup notification at ERP server"""
                 report_body = """Hello, <br/><br/>"""
                 report_body += """<b> '%s'</b> Database backup was taken""" % (db_name)
@@ -257,12 +294,12 @@ class db_backup_ept(osv.osv):
                     for email in to_email_ids.split(","):
                         email_to = email
                         if email_to:
-                            self.pool.get('mail.message').schedule_with_attach(cr, uid, email_from.value or '', [email_to], email_subject, report_body, model=model, subtype='html')
+                            self.pool['mail.message'].schedule_with_attach(cr, uid, email_from.value or '', [email_to], email_subject, report_body, model=model, subtype='html')
         os.remove(file_path)
         return True
 
 
-class db_backup_line(osv.osv):
+class db_backup_line(orm.Model):
     _name = 'db.backup.line'
     _columns = {
         'backup_id': fields.many2one('db.autobackup.ept', 'Backup'),
@@ -276,7 +313,7 @@ class db_backup_line(osv.osv):
     }
   
 
-class Eptftpbackup(osv.osv):
+class Eptftpbackup(orm.Model):
     """
     This will add four fields for ftp_server(host), ftp_username, ftp_password.
     """
@@ -299,41 +336,20 @@ class Eptftpbackup(osv.osv):
     }
     
     def btn_confirm(self, cr, uid, ids, context=None):
-        ftpbackup_obj = self.pool.get('ept.ftpbackup')
+        ftpbackup_obj = self.pool['ept.ftpbackup']
         ept_ftp = ftpbackup_obj.browse(cr, uid, ids[0], context)
-        s = None
-        try:
-            s = ftplib.FTP(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)
-        except Exception, e:
-            raise osv.except_osv(_('FTP Authentication Fail!'), _('Please check the account setting for Auto FTP backup. Some details may be missing/Incorrect.'))
-        if s:
-            dir = ''
-            try:
-                dir = s.cwd(ept_ftp.to_ept_location)
-            except Exception, ex:
-                raise osv.except_osv(_(''), _('FTP Connection test successfully. But Specified directory is not locate.'))
-            if "250 CWD" in dir:
-                self.write(cr, uid, ids, {'state': 'confirmed'}, context=None)
+        if ftp_connect(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password, ept_ftp.to_ept_location):
+            self.write(cr, uid, ids, {'state': 'confirmed'}, context=context)
         return True
     
     def btn_draft(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'draft'}, context=None)
+        self.write(cr, uid, ids, {'state': 'draft'}, context=context)
         return True
     
     def testConnection(self, cr, uid, ids, context=None):
-        ftpbackup_obj = self.pool.get('ept.ftpbackup')
+        ftpbackup_obj = self.pool['ept.ftpbackup']
         ept_ftp = ftpbackup_obj.browse(cr, uid, ids[0], context)
-        s = None
-        try:
-            s = ftplib.FTP(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)
-        except Exception, e:
-            raise osv.except_osv(_('FTP Authentication Fail!'), _('Please check the account setting for Auto FTP backup. Some details may be missing/Incorrect.'))
-        if s:
-            dir = ''
-            try:
-                dir = s.cwd(ept_ftp.to_ept_location)
-            except Exception, ex:
-                raise osv.except_osv(_(''), _('FTP Connection test successfully. But Specified directory is not locate.'))
-            
-            if "250 CWD" in dir:
-                raise osv.except_osv(_(''), _('FTP Connection test successfully.'))
+        if ftp_connect(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password, ept_ftp.to_ept_location):
+            raise orm.except_orm(_(''), _('FTP Connection test successfully.'))
+        return True
+
