@@ -463,7 +463,7 @@ msgstr "Gestisci Viste (%s)"
 #: code:addons/web/static/src/xml/base.xml:1385
 #, python-format
 msgid "Create"
-msgstr "Crea"
+msgstr "CREA"
 
 #. module: web
 #. openerp-web
@@ -484,7 +484,7 @@ msgstr "Crea un nuovo elemento"
 #: code:addons/web/static/src/xml/base.xml:1187
 #, python-format
 msgid "Edit"
-msgstr "Modifica"
+msgstr "MODIFICA"
 
 #. module: web
 #. openerp-web
@@ -1458,7 +1458,7 @@ msgstr "Campo"
 #: code:addons/web/static/src/xml/base.xml:1762
 #, python-format
 msgid "Delete"
-msgstr "Elimina"
+msgstr "ELIMINA"
 
 #. module: web
 #. openerp-web
@@ -1467,7 +1467,7 @@ msgstr "Elimina"
 #: code:addons/web/static/src/xml/base.xml:307
 #, python-format
 msgid "Duplicate"
-msgstr "Duplica"
+msgstr "DUPLICA"
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:780
