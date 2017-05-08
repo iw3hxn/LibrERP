@@ -719,7 +719,7 @@ msgstr "Questa risorsa è vuota"
 #: code:addons/web/static/src/xml/base.xml:1241
 #, python-format
 msgid "Clear"
-msgstr "Pulisci"
+msgstr "PULISCI"
 
 #. openerp-web
 #: addons/web/static/src/js/view_form.js:1624
@@ -882,7 +882,7 @@ msgstr "Crea: "
 #: code:addons/web/static/src/xml/base.xml:1703
 #, python-format
 msgid "Add"
-msgstr "Aggiungi"
+msgstr "AGGIUNGI"
 
 #. module: web
 #. openerp-web
@@ -1719,7 +1719,7 @@ msgstr "Action ID:"
 #: code:addons/web/static/src/xml/base.xml:1438
 #, python-format
 msgid "Search"
-msgstr "Cerca"
+msgstr "CERCA"
 
 #. module: web
 #. openerp-web
