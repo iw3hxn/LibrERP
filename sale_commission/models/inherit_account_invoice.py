@@ -32,7 +32,7 @@ class account_invoice(orm.Model):
     _inherit = "account.invoice"
 
     _columns = {
-        'section_id': fields.many2one('crm.case.section', 'Sales Team', domain=[('sale_agent', '!=', False)], states={'draft': [('readonly', False)]}),
+        'section_id': fields.many2one('crm.case.section', 'Sales Team', domain=[('sale_agent_id', '!=', False)], states={'draft': [('readonly', False)]}),
         'agent_id': fields.related('section_id', 'sale_agent_id', type='many2one', relation='sale.agent',
                                    string='Agent'),
         'sale_order_ids': fields.many2many(
