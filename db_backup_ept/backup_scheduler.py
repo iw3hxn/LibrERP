@@ -15,7 +15,6 @@ _logger.setLevel(logging.DEBUG)
 
 
 def ftp_login(ept_ftp_host, ept_ftp_username, ept_ftp_password):
-    import pdb;pdb.set_trace()
     ftp = ftplib.FTP()
     server = ept_ftp_host.split(':')
     ftp_host = server[0]
@@ -207,13 +206,14 @@ class db_backup_ept(orm.Model):
                         return True
                     try:
                         if ept_ftp.is_ftp_active:
-                            s = ftp_login(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)
+                            ftp = ftp_login(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)
                             # s = ftplib.FTP(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)  # Connect
                             f = open(tar_file_path, 'rb')                # file to send
+                            # import pdb;pdb.set_trace()
                             remote_file_path = os.path.join(ept_ftp.to_ept_location, tar_file_name)
-                            s.storbinary('STOR ' + remote_file_path, f)         # Send the file
+                            ftp.storbinary('STOR ' + remote_file_path, f)         # Send the file
                             f.close()                                # Close file and FTP
-                            s.quit()
+                            ftp.quit()
                             for obj in self.browse(cr, uid, ids, context):
                                 backup_status = 'Backup completed successfully at Remote FTP path : %s/%s.' % (ept_ftp.to_ept_location, tar_file_name)
                                 self.pool['db.backup.line'].create(cr, uid, {
