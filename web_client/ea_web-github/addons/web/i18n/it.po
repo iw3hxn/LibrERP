@@ -115,7 +115,7 @@ msgstr "Preferenze"
 #: code:addons/web/static/src/xml/base.xml:1858
 #, python-format
 msgid "Cancel"
-msgstr "Annulla"
+msgstr "ANNULLA"
 
 #. openerp-web
 #: addons/web/static/src/js/chrome.js:763
@@ -130,7 +130,7 @@ msgstr "Cambia password"
 #: code:addons/web/static/src/xml/base.xml:1610
 #, python-format
 msgid "Save"
-msgstr "Salva"
+msgstr "SALVA"
 
 #. module: web
 #. openerp-web
