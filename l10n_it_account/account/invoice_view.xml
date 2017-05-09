@@ -56,6 +56,12 @@
                     <xpath expr="/form/notebook/page[@string='Invoice']/group/group/button[@string='Print Invoice']" position="replace">
                         <button name="%(account.account_invoices)d" string="Print Invoice" type="action" icon="gtk-print"/>
                     </xpath>
+                    <button name="invoice_open" position="attributes">
+                        <attribute name="invisible">True</attribute>
+                    </button>
+                    <button name="invoice_open" position="after">
+                        <button name="create_form_validate_check" states="draft,proforma2" string="Validate" icon="gtk-go-forward" type="object" />
+                    </button>
                 </data>
             </field>
         </record>

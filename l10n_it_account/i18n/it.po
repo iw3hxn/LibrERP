@@ -10833,3 +10833,28 @@ msgstr "Può eliminare il numero interno della fattura"
 #: constraint:res.partner:0
 msgid "The fiscal code doesn't seem to be correct."
 msgstr "Il codice fiscale inserito sembra non essere corretto"
+
+#. module: l10n_it_account
+#: field:check.account.invoice,property_account_position_id:0
+msgid "Fiscal Position"
+msgstr "Posizione Fiscale"
+
+#. module: l10n_it_account
+#: field:check.account.invoice,payment_term:0
+msgid "Payment Term"
+msgstr "Termini di Pagamento"
+
+#. module: l10n_it_account
+#: field:check.account.invoice,supplier_invoice_number:0
+msgid "Supplier invoice nr"
+msgstr "Fattura Fornitore nr"
+
+#. module: l10n_it_account
+#: field:check.account.invoice,vat:0
+msgid "Vat"
+msgstr "P.IVA"
+
+#. module: l10n_it_account
+#: view:check.account.invoice:0
+msgid "Mandatory field for validate invoice"
+msgstr "Campi obbligatori per l'emissione della fattura"

@@ -19,16 +19,19 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, orm
-from openerp.tools.translate import _
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import datetime
+
+from openerp import netsvc
+from openerp.osv import fields, orm
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools.translate import _
 
 
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
     def get_total_tax_fiscal(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         invoice = self.browse(cr, uid, ids[0], context)
         amount_withholding = 0.0
         for line in invoice.tax_line:
@@ -39,6 +42,7 @@ class account_invoice(orm.Model):
         return invoice.amount_tax
 
     def get_total_fiscal(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         invoice = self.browse(cr, uid, ids[0], context)
         amount_withholding = 0.0
         for line in invoice.tax_line:
@@ -49,6 +53,7 @@ class account_invoice(orm.Model):
         return invoice.amount_total
 
     def action_cancel(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for invoice in self.browse(cr, uid, ids, context):
             period = invoice.period_id
             vat_statement = self.pool['account.vat.period.end.statement'].search(
@@ -72,6 +77,7 @@ class account_invoice(orm.Model):
         u'IN/00266:PO00350:SO154'
 
         """
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
 
         for invoice in self.browse(cr, uid, ids, context):
@@ -95,8 +101,7 @@ class account_invoice(orm.Model):
         return result
 
     def action_number(self, cr, uid, ids, context=None):
-        if not context:
-            context = {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         result = super(account_invoice, self).action_number(cr, uid, ids, context)
 
@@ -185,11 +190,12 @@ class account_invoice(orm.Model):
         return result
 
     def onchange_partner_id(self, cr, uid, ids, i_type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         result = super(account_invoice, self).onchange_partner_id(
             cr, uid, ids, i_type, partner_id, date_invoice, payment_term, partner_bank_id, company_id)
         fp_result = self.onchange_check_fiscal_position(cr, uid, ids, date_invoice, partner_id)
         if fp_result['value']:
-            result['value']['fiscal_position'] = fp_result['value']['fiscal_position']
+            result['value']['fiscal_position'] = fp_result['value'].get('fiscal_position', False)
         # set company payment if missing payment_term
         company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
         company = self.pool['res.company'].browse(cr, uid, company_id, context)
@@ -200,6 +206,7 @@ class account_invoice(orm.Model):
         return result
 
     def onchange_check_fiscal_position(self, cr, uid, ids, date_invoice, partner_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if partner_id:
             if not date_invoice:
                 date_invoice = datetime.datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
@@ -212,13 +219,74 @@ class account_invoice(orm.Model):
                 partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
                 return {
                     'value': {
-                        'fiscal_position': partner.property_account_position and partner.property_account_position.id or False
+                        'Impossible to Validate, need to set on Partner': partner.property_account_position and partner.property_account_position.id or False
                     }
                 }
 
         return {'value': {}}
 
+    def create_form_validate_check(self, cr, uid, ids, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        context.update(no_except=True)
+
+        if self.invoice_validate_check(cr, uid, ids, context):
+            wf_service = netsvc.LocalService('workflow')
+            for id in ids:
+                wf_service.trg_validate(uid, 'account.invoice', id, 'invoice_open', cr)
+            return True
+        elif len(ids) == 1:
+            context = context.update(active_ids=ids, active_model=self._name)
+            form_vals = {}
+            invoice = self.browse(cr, uid, ids[0], context)
+            if invoice.type in ['out_invoice', 'out_refund']:
+                form_vals.update({
+                    'check_invoice_payment_term': invoice.company_id.check_invoice_payment_term and not invoice.payment_term,
+                    'check_invoice_fiscal_position': invoice.company_id.check_invoice_fiscal_position and not invoice.fiscal_position,
+                })
+                if self.required_vat(cr, uid, invoice, context):
+                    form_vals.update({
+                        'required_vat': True
+                    })
+            elif not invoice.supplier_invoice_number:
+                form_vals.update({
+                    'check_supplier_invoice_number': True,
+                })
+
+            invoice_check_id = self.pool['check.account.invoice'].create(cr, uid, form_vals, context=context)
+            return {
+                'name': _("Value to Complete"),
+                'view_mode': 'form',
+                'view_id': False,
+                'view_type': 'form',
+                'res_model': 'check.account.invoice',
+                'res_id': invoice_check_id,
+                'type': 'ir.actions.act_window',
+                'nodestroy': True,
+                'target': 'new',
+                'domain': '[]',
+                'context': context,
+            }
+        else:
+            False
+
+    def required_vat(self, cr, uid, invoice, context):
+        if invoice.fiscal_position and not invoice.fiscal_position.no_check_vat:
+            vat_on_parent = False
+            vat_on_partner = False
+
+            if invoice.partner_id.parent_id:
+                if invoice.partner_id.parent_id.vat or invoice.partner_id.parent_id.cf:
+                    vat_on_parent = True
+
+            elif invoice.partner_id.vat or invoice.partner_id.cf:
+                vat_on_partner = True
+
+            if not (vat_on_parent or vat_on_partner):
+                return True
+            return False
+
     def invoice_validate_check(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(account_invoice, self).invoice_validate_check(cr, uid, ids, context)
         if not res:
             return res
@@ -230,23 +298,32 @@ class account_invoice(orm.Model):
                                                       ('journal_id', '=', invoice.journal_id.id), ('state', '=', 'draft')],
                                               context=context)
                     for invoice_old in self.browse(cr, 1, [x for x in invoice_ids if x not in ids], context):
-                        raise orm.except_orm(_('Invoice'),
+                        if not context.get('no_except', False):
+                            raise orm.except_orm(_('Invoice'),
                                              _(
                                                  'Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}').format(
                                                  partner=invoice_old.partner_id.name,
                                                  invoice_number=invoice_old.internal_number))
+                        else:
+                            return False
 
                 if not invoice.payment_term and invoice.company_id.check_invoice_payment_term:
-                    raise orm.except_orm(_('Invoice'),
+                    if not context.get('no_except', False):
+                        raise orm.except_orm(_('Invoice'),
                                          _(
                                              'Impossible to Validate, need to set Payment Term on invoice of {partner}').format(
                                              partner=invoice.partner_id.name))
+                    else:
+                        return False
 
                 if not invoice.fiscal_position and invoice.company_id.check_invoice_fiscal_position:
-                    raise orm.except_orm(_('Invoice'),
+                    if not context.get('no_except', False):
+                        raise orm.except_orm(_('Invoice'),
                                          _(
                                              'Impossible to Validate, need to set Fiscal Position on invoice of {partner}').format(
                                              partner=invoice.partner_id.name))
+                    else:
+                        return False
 
                 elif invoice.fiscal_position.required_tax:
                     if invoice.type in ['out_invoice', 'out_refund']:
@@ -256,28 +333,23 @@ class account_invoice(orm.Model):
                                                  _(
                                                      'Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(
                                                      partner=invoice.partner_id.name))
+                        else:
+                            return False
 
-                if invoice.fiscal_position and not invoice.fiscal_position.no_check_vat:
-                    vat_on_parent = False
-                    vat_on_partner = False
-
-                    if invoice.partner_id.parent_id:
-                        if invoice.partner_id.parent_id.vat or invoice.partner_id.parent_id.cf:
-                            vat_on_parent = True
-
-                    elif invoice.partner_id.vat or invoice.partner_id.cf:
-                        vat_on_partner = True
-
-                    if not (vat_on_parent or vat_on_partner):
+                if self.required_vat(cr, uid, invoice, context):
+                    if not context.get('no_except', False):
                         raise orm.except_orm(_('Invoice'),
-                                             _('Impossible to Validate, need to set on Partner {partner} VAT').format(
-                                                 partner=invoice.partner_id.name))
+                                         _('Impossible to Validate, need to set on Partner {partner} VAT').format(
+                                             partner=invoice.partner_id.name))
+                    else:
                         return False
 
             elif not invoice.supplier_invoice_number:
-                raise orm.except_orm(_('Supplier Invoice'),
+                if not context.get('no_except', False):
+                    raise orm.except_orm(_('Supplier Invoice'),
                                      _('Impossible to Validate, need to set Supplier invoice nr'))
-                return False
+                else:
+                    return False
 
             # check if internal number is on recovery sequence
             if invoice.internal_number:

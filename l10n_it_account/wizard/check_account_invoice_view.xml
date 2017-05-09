@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="view_check_account_invoice_form" model="ir.ui.view">
+            <field name="name">check.account.invoice.form</field>
+            <field name="model">check.account.invoice</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <label string="Mandatory field for validate invoice" colspan="2"/>
+                    <group colspan="3" col="2">
+                        <field name="check_invoice_fiscal_position" invisible="1"/>
+                        <field name="property_account_position_id" attrs="{'invisible':[('check_invoice_fiscal_position', '=', False)], 'required':[('check_invoice_fiscal_position', '=', True)]}"/>
+                        <field name="check_invoice_payment_term" invisible="1"/>
+                        <field name="payment_term" attrs="{'invisible':[('check_invoice_payment_term', '=', False)], 'required':[('check_invoice_payment_term', '=', True)]}"/>
+                        <field name="required_vat" invisible="1"/>
+                        <field name="vat" attrs="{'invisible':[('required_vat', '=', False)], 'required':[('required_vat', '=', True)]}"/>
+                        <field name="check_supplier_invoice_number" invisible="1"/>
+                        <field name="supplier_invoice_number" attrs="{'invisible':[('check_supplier_invoice_number', '=', False)], 'required':[('check_supplier_invoice_number', '=', True)]}"/>
+                    </group>
+                    <group colspan="3" col="2">
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button type="object" name="action_invoice_validate" string="Ok" icon="gtk-ok"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>
