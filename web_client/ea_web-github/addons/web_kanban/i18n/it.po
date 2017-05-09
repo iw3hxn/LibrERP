@@ -41,7 +41,7 @@ msgstr "Sicuro di voler eliminare questo record?"
 #. openerp-web
 #: addons/web_kanban/static/src/xml/web_kanban.xml:5
 msgid "Create"
-msgstr "Crea"
+msgstr "CREA"
 
 #. module: web_kanban
 #. openerp-web

@@ -1178,7 +1178,7 @@ msgstr "Password principale"
 #: code:addons/web/static/src/xml/base.xml:308
 #, python-format
 msgid "Drop"
-msgstr "Elimina"
+msgstr "ELIMINA"
 
 #. openerp-web
 #: addons/web/static/src/xml/base.xml:143

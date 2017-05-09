@@ -71,7 +71,7 @@ msgstr "&nbsp;"
 #. openerp-web
 #: addons/web_dashboard/static/src/xml/web_dashboard.xml:28
 msgid "Create"
-msgstr "Crea"
+msgstr "CREA"
 
 #. openerp-web
 #: addons/web_dashboard/static/src/xml/web_dashboard.xml:39

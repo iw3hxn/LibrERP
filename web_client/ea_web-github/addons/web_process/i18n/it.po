@@ -20,12 +20,12 @@ msgstr ""
 #. openerp-web
 #: addons/web_process/static/src/js/process.js:261
 msgid "Cancel"
-msgstr "Annulla"
+msgstr "ANNULLA"
 
 #. openerp-web
 #: addons/web_process/static/src/js/process.js:262
 msgid "Save"
-msgstr "Salva"
+msgstr "SALVA"
 
 #. openerp-web
 #: addons/web_process/static/src/xml/web_process.xml:6

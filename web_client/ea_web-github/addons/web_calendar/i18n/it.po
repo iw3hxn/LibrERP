@@ -78,7 +78,7 @@ msgstr "Salva"
 #: code:addons/web_calendar/static/src/js/calendar.js:155
 #, python-format
 msgid "Cancel"
-msgstr "Annulla"
+msgstr "ANNULLA"
 
 #. module: web_calendar
 #. openerp-web
@@ -92,14 +92,14 @@ msgstr "Dettagli"
 #: code:addons/web_calendar/static/src/js/calendar.js:157
 #, python-format
 msgid "Edit"
-msgstr "Modifica"
+msgstr "MODIFICA"
 
 #. module: web_calendar
 #. openerp-web
 #: code:addons/web_calendar/static/src/js/calendar.js:158
 #, python-format
 msgid "Delete"
-msgstr "Elimina"
+msgstr "ELIMINA"
 
 #. module: web_calendar
 #. openerp-web
