@@ -410,6 +410,8 @@ class ImportFile(threading.Thread, Utils):
             vat = record.vat
             if vat and len(vat) == 10 and country_code[:2] == 'IT':
                 vat = '0' + vat
+            if vat and len(vat) == 9 and country_code[:2] == 'IT':
+                vat = '00' + vat
             if not country_code == record.vat[:2]:
                 vals_partner['vat'] = country_code + vat
             else:
