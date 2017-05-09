@@ -2,33 +2,33 @@
 <openerp>
     <data>
 
-        <record id="view_tax_form_type" model="ir.ui.view">
-            <field name="name">account.tax.form.type</field>
-            <field name="model">account.tax</field>
-            <field name="inherit_id" ref="account.view_tax_form"/>
-            <field name="arch" type="xml">
-                <data>
-                    <xpath expr="/form/group/field[@name='type_tax_use']" position="replace">
-                        <field name="type_tax_use" on_change="onchange_tax_sign(type_tax_use)"/>
-                    </xpath>
-                    <xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='amount']" position="after">
-                        <field name="account_tax_code_id" domain="[('is_base','=',False),('parent_id.parent_id','=',False),]"/>
-                        <field name="account_base_tax_code_id" domain="[('is_base','=',True),('parent_id.parent_id','=',False),]"/>
-                    </xpath>
-                    <xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='base_sign']" position="attributes">
-                        <attribute name="readonly">False</attribute>
-                    </xpath>
-                    <xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='tax_sign']" position="attributes">
-                        <attribute name="readonly">False</attribute>
-                    </xpath>
-                    <xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='ref_base_sign']" position="attributes">
-                        <attribute name="readonly">False</attribute>
-                    </xpath>
-                    <xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='ref_tax_sign']" position="attributes">
-                        <attribute name="readonly">False</attribute>
-                    </xpath>
-                </data>
-            </field>
-        </record>
+        <!--<record id="view_tax_form_type" model="ir.ui.view">-->
+            <!--<field name="name">account.tax.form.type</field>-->
+            <!--<field name="model">account.tax</field>-->
+            <!--<field name="inherit_id" ref="account.view_tax_form"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<data>-->
+                    <!--<xpath expr="/form/group/field[@name='type_tax_use']" position="replace">-->
+                        <!--<field name="type_tax_use" on_change="onchange_tax_sign(type_tax_use)"/>-->
+                    <!--</xpath>-->
+                    <!--<xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='amount']" position="after">-->
+                        <!--<field name="account_tax_code_id" domain="[('is_base','=',False),('parent_id.parent_id','=',False),]"/>-->
+                        <!--<field name="account_base_tax_code_id" domain="[('is_base','=',True),('parent_id.parent_id','=',False),]"/>-->
+                    <!--</xpath>-->
+                    <!--<xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='base_sign']" position="attributes">-->
+                        <!--<attribute name="readonly">False</attribute>-->
+                    <!--</xpath>-->
+                    <!--<xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='tax_sign']" position="attributes">-->
+                        <!--<attribute name="readonly">False</attribute>-->
+                    <!--</xpath>-->
+                    <!--<xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='ref_base_sign']" position="attributes">-->
+                        <!--<attribute name="readonly">False</attribute>-->
+                    <!--</xpath>-->
+                    <!--<xpath expr="/form/notebook/page[@string='Tax Definition']/group/field[@name='ref_tax_sign']" position="attributes">-->
+                        <!--<attribute name="readonly">False</attribute>-->
+                    <!--</xpath>-->
+                <!--</data>-->
+            <!--</field>-->
+        <!--</record>-->
     </data>
 </openerp>
