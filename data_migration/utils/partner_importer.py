@@ -402,10 +402,18 @@ class ImportFile(threading.Thread, Utils):
             vals_partner['vat_subjected'] = True
             vals_partner['individual'] = False
 
-            if not country_code == record.vat[:2]:
-                vals_partner['vat'] = country_code + record.vat
+            if country_code:
+                country_code = country_code[:2]
             else:
-                vals_partner['vat'] = record.vat
+                country_code = ''
+
+            vat = record.vat
+            if vat and len(vat) == 10 and country_code[:2] == 'IT':
+                vat = '0' + vat
+            if not country_code == record.vat[:2]:
+                vals_partner['vat'] = country_code + vat
+            else:
+                vals_partner['vat'] = vat
 
             vals_partner['vat'] = vals_partner['vat'].replace(' ', '')
             # if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
