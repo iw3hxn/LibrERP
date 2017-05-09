@@ -168,50 +168,42 @@ class account_invoice(orm.Model):
 
         return {'value': {'journal_id': journal_id}, 'warning': warning}
 
+    def _invoice_adaptative_function(self, invoice, vals):
+        partner_vals = {}
+        if set(vals.keys()).intersection(['fiscal_position', 'carriage_condition_id', 'goods_description_id', 'payment_term']):
+            if not invoice.partner_id.carriage_condition_id and vals.get('carriage_condition_id', False):
+                partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
+            if not invoice.partner_id.goods_description_id and vals.get('goods_description_id', False):
+                partner_vals['goods_description_id'] = vals.get('goods_description_id')
+            if not invoice.partner_id.property_payment_term and vals.get('payment_term', False):
+                partner_vals['property_payment_term'] = vals.get('payment_term')
+            if not invoice.partner_id.property_account_position and vals.get('fiscal_position', False):
+                partner_vals['property_account_position'] = vals.get('fiscal_position')
+
+            if partner_vals:
+                invoice.partner_id.write(partner_vals)
+        return True
+
     def create(self, cr, uid, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         # adaptative function: the system learn
         invoice_id = super(account_invoice, self).create(cr, uid, vals, context=context)
         # create function return only 1 id
-
-        if set(vals.keys()).intersection(['carriage_condition_id', 'goods_description_id', 'payment_term']):
-            invoice = self.browse(cr, uid, invoice_id, context)
-            partner_vals = {}
-            if not invoice.partner_id.carriage_condition_id:
-                partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
-            if not invoice.partner_id.goods_description_id:
-                partner_vals['goods_description_id'] = vals.get('goods_description_id')
-            if not invoice.partner_id.property_payment_term:
-                partner_vals['property_payment_term'] = vals.get('payment_term')
-            if partner_vals:
-                invoice.partner_id.write(partner_vals)
-
+        invoice = self.browse(cr, uid, invoice_id, context)
+        self._invoice_adaptative_function(invoice, vals)
         return invoice_id
 
     def write(self, cr, uid, ids, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-
         if not ids:
             return True
-
-        res = super(account_invoice, self).write(cr, uid, ids, vals, context=context)
-
         if isinstance(ids, (int, long)):
             ids = [ids]
+        res = super(account_invoice, self).write(cr, uid, ids, vals, context=context)
 
         for invoice in self.browse(cr, uid, ids, context=context):
             # adaptative function: the system learn
-            if set(vals.keys()).intersection(['carriage_condition_id', 'goods_description_id', 'payment_term']):
-                partner_vals = {}
-                if not invoice.partner_id.carriage_condition_id:
-                    partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
-                if not invoice.partner_id.goods_description_id:
-                    partner_vals['goods_description_id'] = vals.get('goods_description_id')
-                if not invoice.partner_id.property_payment_term:
-                    partner_vals['property_payment_term'] = vals.get('payment_term')
-                if partner_vals:
-                    invoice.partner_id.write(partner_vals)
-
+            self._invoice_adaptative_function(invoice, vals)
         return res
 
     # def button_change_fiscal_position(self, cr, uid, ids, context=None):
