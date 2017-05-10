@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-<!--re-create customer invoice line to hide expense accounts and add notebook for better use in other modules-->
+        <!--re-create customer invoice line to hide expense accounts and add notebook for better use in other modules-->
         <record id="view_invoice_line_form_customer" model="ir.ui.view">
             <field name="name">account.invoice.line.form</field>
             <field name="model">account.invoice.line</field>
@@ -49,7 +49,7 @@
                         <field name="cig" />
                         <field name="cup" />
                     </field>
-<!--insert in the customer invoice the new line invoice created with 'form_view_ref' tag-->
+                    <!--insert in the customer invoice the new line invoice created with 'form_view_ref' tag-->
                     <xpath expr="/form/notebook/page[@string='Invoice']/field[@name='invoice_line']" position="attributes">
                         <attribute name="context">{'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_customer', 'fiscal_position': fiscal_position}</attribute>
                     </xpath>
@@ -66,7 +66,7 @@
             </field>
         </record>
 
-<!--re-create invoice line for supplier invoice-->
+        <!--re-create invoice line for supplier invoice-->
         <record id="view_invoice_line_form_supplier" model="ir.ui.view">
             <field name="name">account.invoice.line.form</field>
             <field name="model">account.invoice.line</field>
@@ -104,9 +104,21 @@
                 <xpath expr="/form/notebook/page[@string='Invoice']/field[@name='invoice_line']/tree/field[@name='account_id']" position="replace">
                     <field domain="[('company_id', '=', parent.company_id), ('journal_id', '=', parent.journal_id), ('type', '&lt;&gt;', 'view'), ('user_type.code','&lt;&gt;','income')]" name="account_id" on_change="onchange_account_id(product_id,parent.partner_id,parent.type,parent.fiscal_position,account_id)"/>
                 </xpath>
-<!--insert in the supplier invoice the new line invoice created with 'form_view_ref' tag-->
+                <!--insert in the supplier invoice the new line invoice created with 'form_view_ref' tag-->
                 <field name="invoice_line" position="replace">
                     <field colspan="4" context="{'address_invoice_id': address_invoice_id, 'partner_id': partner_id, 'price_type': 'price_type' in dir() and price_type or False, 'type': type, 'form_view_ref' : 'l10n_it_account.view_invoice_line_form_supplier', 'fiscal_position': fiscal_position}" name="invoice_line" nolabel="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_invoice_cig_filter" model="ir.ui.view">
+            <field name="name">account.invoice.cig.filter</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="cig" />
                 </field>
             </field>
         </record>

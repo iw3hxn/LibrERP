@@ -425,3 +425,31 @@ class account_invoice(orm.Model):
                     self.pool['ir.sequence_recovery'].set(cr, uid, [invoice.id], 'account.invoice', 'internal_number', '', invoice.journal_id.sequence_id.id)
 
         return super(account_invoice, self).write(cr, uid, ids, vals, context)
+
+    def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
+        """
+        Known problems:
+        This function is not completely correct, because order can be wrong after the union of two arrays,
+        it also can produce a result which is longer then limit
+
+        """
+        sale_order_obj = self.pool['sale.order']
+        invoice_ids = []
+        for condition in args:
+            # Control cig is in sale.order (module l10n_it_sale is installed)
+            if len(condition) == 3 and condition[0] == 'cig' and 'cig' in sale_order_obj._columns:
+                order_ids = sale_order_obj.search(cr, uid, [condition], order=order, context=context)
+                if order_ids:
+                    for sale_order in sale_order_obj.browse(cr, uid, order_ids, context):
+                        invoice_ids += [invoice.id for invoice in sale_order.invoice_ids]
+
+        invoice_ids = super(account_invoice, self).search(
+            cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=False
+        ) + invoice_ids
+
+        invoice_ids = list(set(invoice_ids))
+
+        if count:
+            return len(invoice_ids)
+        else:
+            return invoice_ids
