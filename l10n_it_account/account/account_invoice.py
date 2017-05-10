@@ -194,8 +194,8 @@ class account_invoice(orm.Model):
         result = super(account_invoice, self).onchange_partner_id(
             cr, uid, ids, i_type, partner_id, date_invoice, payment_term, partner_bank_id, company_id)
         fp_result = self.onchange_check_fiscal_position(cr, uid, ids, date_invoice, partner_id)
-        if fp_result['value']:
-            result['value']['fiscal_position'] = fp_result['value'].get('fiscal_position', False)
+        if fp_result.get('value', False):
+            result['value']['fiscal_position'] = fp_result['value'].get('property_account_position', False)
         # set company payment if missing payment_term
         company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
         company = self.pool['res.company'].browse(cr, uid, company_id, context)
@@ -212,13 +212,13 @@ class account_invoice(orm.Model):
                 date_invoice = datetime.datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
             fiscal_position_ids = self.pool['account.fiscal.position'].search(cr, uid, [
                 ('partner_id', '=', partner_id), ('end_validity', '>=', date_invoice), '|', ('date', '<=', date_invoice), ('date', '=', False)
-            ])
+            ], context=context)
             if fiscal_position_ids:
                 return {'value': {'fiscal_position': fiscal_position_ids[0]}}
             else:
                 partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
                 return {
-                    'value': {
+                    'warning': {
                         'Impossible to Validate, need to set on Partner': partner.property_account_position and partner.property_account_position.id or False
                     }
                 }

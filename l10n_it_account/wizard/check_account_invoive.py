@@ -69,7 +69,6 @@ class check_account_invoice(orm.TransientModel):
             self.pool['res.partner'].write(cr, uid, partner_id, {'vat': wizard.vat}, context)
 
         wf_service = netsvc.LocalService('workflow')
-        import pdb;pdb.set_trace()
         wf_service.trg_validate(uid, 'account.invoice', context['active_id'], 'invoice_open', cr)
 
         return {'type': 'ir.actions.act_window_close'}
