@@ -463,4 +463,6 @@ class account_invoice(orm.Model):
         if count:
             return len(invoice_ids)
         else:
-            return invoice_ids
+            return super(account_invoice, self).search(
+                cr, uid, [('id', 'in', invoice_ids)], offset=offset, limit=limit, order=order, context=context, count=False
+            )
