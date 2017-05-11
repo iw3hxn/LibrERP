@@ -335,7 +335,7 @@ class account_invoice(orm.Model):
                                                      'Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(
                                                      partner=invoice.partner_id.name))
                         else:
-                            return False
+                            return True
 
                 if self.required_vat(cr, uid, invoice, context):
                     if not context.get('no_except', False):
