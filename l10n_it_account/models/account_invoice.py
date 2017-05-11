@@ -25,6 +25,7 @@ from openerp import netsvc
 from openerp.osv import fields, orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
+from copy import deepcopy
 
 
 class account_invoice(orm.Model):
@@ -435,13 +436,23 @@ class account_invoice(orm.Model):
         """
         sale_order_obj = self.pool['sale.order']
         invoice_ids = []
-        for condition in args:
+        sale_order_args = deepcopy(args)
+
+        for condition in sale_order_args:
             # Control cig is in sale.order (module l10n_it_sale is installed)
             if len(condition) == 3 and condition[0] == 'cig' and 'cig' in sale_order_obj._columns:
                 order_ids = sale_order_obj.search(cr, uid, [condition], order=order, context=context)
                 if order_ids:
                     for sale_order in sale_order_obj.browse(cr, uid, order_ids, context):
                         invoice_ids += [invoice.id for invoice in sale_order.invoice_ids]
+
+                    condition[0] = 'id'
+                    condition[1] = 'in'
+                    condition[2] = invoice_ids
+                    invoice_ids = super(account_invoice, self).search(
+                        cr, uid, sale_order_args, offset=offset, limit=limit, order=order, context=context, count=False
+                    )
+                    break
 
         invoice_ids = super(account_invoice, self).search(
             cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=False
