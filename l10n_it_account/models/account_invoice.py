@@ -428,12 +428,6 @@ class account_invoice(orm.Model):
         return super(account_invoice, self).write(cr, uid, ids, vals, context)
 
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
-        """
-        Known problems:
-        This function is not completely correct, because order can be wrong after the union of two arrays,
-        it also can produce a result which is longer then limit
-
-        """
         sale_order_obj = self.pool['sale.order']
         invoice_ids = []
         sale_order_args = deepcopy(args)
