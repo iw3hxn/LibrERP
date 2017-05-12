@@ -119,7 +119,7 @@ class ExportSalesTeamReport(orm.TransientModel):
     })
 
     @staticmethod
-    def get_query(date_start, date_end, section_id, model='sale.order'):
+    def get_query(date_start, date_end, section_id, model='sale.order', account_ids=''):
         if model == 'sale.order':
             return """SELECT partner_id, SUM(amount_untaxed)
                     FROM sale_order
@@ -154,13 +154,14 @@ class ExportSalesTeamReport(orm.TransientModel):
                        WHERE aml.date >= '{date_start}'
                          AND aml.date <= '{date_end}'
                          AND aml.state = 'valid'
-                         AND aml.reconcile_id IS NOT NULL
+                         AND aml.account_id IN ({account_ids})
                          AND aj.type IN ('cash', 'bank')
                          AND rp.section_id = {section_id}
                     GROUP BY rp.id;
             """.format(date_start=date_start.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                                                  date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                                                  section_id=section_id)
+                       date_end=date_end.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                       account_ids=account_ids,
+                       section_id=section_id)
 
     @staticmethod
     def get_period(year, month):
@@ -347,6 +348,7 @@ class ExportSalesTeamReport(orm.TransientModel):
         wizard = self.browse(cr, uid, ids[0], context)
         year = int(wizard.year)
         currency = self.pool['res.users'].browse(cr, uid, uid, context).company_id.currency_id
+        partner_obj = self.pool['res.partner']
 
         file_name = 'Sales_Team_{model}_{year}.xls'.format(model=wizard.model, year=year)
 
@@ -362,13 +364,23 @@ class ExportSalesTeamReport(orm.TransientModel):
                 results = cr.fetchall()
                 results = dict(results)
 
-                query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, 'account.move.line')
-                cr.execute(query)
-                results2 = cr.fetchall()
-                results2 = dict(results2)
+                partner_ids = partner_obj.search(cr, uid, [('section_id', '=', section.id)], context=context)
+                account_ids = []
+                for partner in partner_obj.browse(cr, uid, partner_ids, context=context):
+                    if partner.property_account_receivable:
+                        if not str(partner.property_account_receivable.id) in account_ids:
+                            account_ids.append(str(partner.property_account_receivable.id))
+                account_ids = ','.join(account_ids)
+
+                if account_ids:
+                    query = self.get_query(date(year, 1, 1), date(year, 12, 31), section.id, 'account.move.line', account_ids)
+                    cr.execute(query)
+                    results2 = cr.fetchall()
+                    results2 = dict(results2)
+                else:
+                    results2 = {}
 
                 report = {}
-
                 for partner in self.pool['res.partner'].browse(cr, uid, results.keys(), context=context):
                     report[partner.id] = {
                         'name': partner.name,
@@ -390,9 +402,12 @@ class ExportSalesTeamReport(orm.TransientModel):
                     cr.execute(query)
                     results = cr.fetchall()
 
-                    query = self.get_query(date_start, date_end, section.id, 'account.move.line')
-                    cr.execute(query)
-                    results2 = cr.fetchall()
+                    if account_ids:
+                        query = self.get_query(date_start, date_end, section.id, 'account.move.line', account_ids)
+                        cr.execute(query)
+                        results2 = cr.fetchall()
+                    else:
+                        results2 = {}
 
                     month_i = str(month) + 'i'
                     month_p = str(month) + 'p'
