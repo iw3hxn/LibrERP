@@ -327,7 +327,7 @@ class sale_order_confirm(orm.TransientModel):
                     'discount': sale_order_confirm_line_data.discount,
                     'sequence': sequence,
                     'order_id': int(new_order_id),
-                    'delay': 7.0,
+                    'delay': sale_order_confirm_line_data.product_id.sale_delay,
                     'tax_id': [(6, 0, tax_ids)],
                     'sale_line_copy_id': sale_order_confirm_line_data.sale_line_id.id or None
                 }, context=context)
