@@ -70,6 +70,6 @@ class mrp_bom(osv.Model):
         date = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
         pricelist_id = 2 #todo listen CORTEM for have better specific
         price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist_id], product_id, product_qty or 1.0, None, {'uom': product_uom, 'date': date})[pricelist_id]
-        res = super(mrp_bom, self).onchange_product_id(cr, uid, ids, product_id, name, context=None)
+        res = super(mrp_bom, self).onchange_product_id(cr, uid, ids, product_id, name, context=context)
         res['value']['list_price'] = price
         return res

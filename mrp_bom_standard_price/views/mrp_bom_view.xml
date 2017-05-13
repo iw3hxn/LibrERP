@@ -8,6 +8,9 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="standard_price" groups="product_bom.group_cost_price" />
+                </xpath>
                 <xpath expr="//field[@name='bom_lines']//tree//field[@name='product_id']" position="replace">
                     <field name="product_id" on_change="onchange_product_id2(product_id, name, product_qty, product_uom)" select="1"/>
                     <field name="list_price" groups="product_bom.group_sell_price"/>
@@ -15,6 +18,17 @@
                 </xpath>
             </field>
         </record>
-        
+
+        <record id="view_mrp_bom_tree_inh" model="ir.ui.view">
+            <field name="name">mrp.bom.inh</field>
+            <field name="model">mrp.bom</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_stop']" position="after">
+                    <field name="standard_price" groups="product_bom.group_cost_price" />
+                </xpath>
+            </field>
+        </record>
     </data>
 </openerp>
