@@ -22,10 +22,10 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
 from openerp import pooler
-from openerp.tools.translate import _
 from openerp.addons import base
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class account_invoice_line(orm.Model):

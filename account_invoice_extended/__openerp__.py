@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice extended",
-    "version": "3.4.11.13",
+    "version": "3.5.12.14",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules/Accounting",
@@ -43,6 +43,8 @@
         Add adaptative function: the system learn.. form invoice to partner form
 
         Also add on account invoice line the field origin_document that is a reference to the document that have create it
+        
+        add sequence on journal
 
     """,
     "depends": [
@@ -60,6 +62,7 @@
         'views/account_move_journal_view.xml',
         'views/account_menu_clear.xml',
         'views/fiscal_position_view.xml',
+        'views/account_journal_view.xml',
         'workflows/account_invoice_workflow.xml',
     ],
     "active": False,

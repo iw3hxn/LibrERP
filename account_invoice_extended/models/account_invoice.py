@@ -23,7 +23,6 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from openerp import pooler
 from openerp.tools.translate import _
 
 
