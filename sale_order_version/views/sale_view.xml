@@ -11,7 +11,7 @@
                     <field name="name" readonly="1"/>
                 </xpath>
                 <xpath expr="//form/group[1]/group[1]/field[@name='client_order_ref']" position="after">
-                    <field name="sale_version_id" attrs="{'invisible':[('sale_version_id','=',False)]}, 'readonly': True"/>
+                    <field name="sale_version_id" attrs="{'invisible':[('sale_version_id','=',False)]}" readonly="1"/>
                     <field name="revision_note" attrs="{'invisible':[('sale_version_id','=',False)]}"/>
                     <field name="active" invisible="1"/>
                 </xpath>
