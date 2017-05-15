@@ -27,10 +27,10 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
 import decimal_precision as dp
 import netsvc
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 from tools import ustr
 
 
@@ -95,11 +95,11 @@ class sale_order_confirm_line(orm.TransientModel):
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
         if product.default_code:
             result = {
-                'name': '[%s] %s' % (product.default_code, product.name)
+                'name': '[{default_code}] {name}'.format(default_code=product.default_code, name=product.name)
             }
         else:
             result = {
-                'name': '%s' % product.name
+                'name': '{name}'.format(name=product.name)
             }
         
         if sale_order.pricelist_id:
@@ -191,6 +191,15 @@ class sale_order_confirm(orm.TransientModel):
                 'cost_price': price,
             }, context)
 
+    def get_sale_order_confirm_line_vals(self, cr, uid, sale_order_line, context=None):
+
+        return {
+            'sequence': sale_order_line.sequence,
+            'price_unit': sale_order_line.price_unit,
+            'quantity': sale_order_line.product_uom_qty,
+            'product_uom': sale_order_line.product_uom.id,
+            'discount': sale_order_line.discount, }
+
     def default_get(self, cr, uid, fields, context=None):
         sale_order_obj = self.pool['sale.order']
         sale_order_line_obj = self.pool['sale.order.line']
@@ -229,21 +238,19 @@ class sale_order_confirm(orm.TransientModel):
                 product = self.pool['product.product'].browse(cr, uid, product_id, context)
                 tax_id = [(6, 0, [tax_id.id for tax_id in product.taxes_id])]
                 sale_order_line_obj.write(cr, uid, sale_order_line.id, {'tax_id': tax_id})
-            
-            sale_order_confirm_line_list.append({
+
+            sale_order_confirm_line_vals = {
                 'order_id': sale_order.id,
+                'product_id': product_id,
                 'sale_line_id': sale_order_line.id,
                 'name': sale_order_line.name,
-                'product_id': product_id,
-                'sequence': sale_order_line.sequence,
-                'price_unit': sale_order_line.price_unit,
-                'quantity': sale_order_line.product_uom_qty,
-                'product_uom': sale_order_line.product_uom.id,
-                'discount': sale_order_line.discount,
                 'changed': False,
                 'tax_id': tax_id,
                 'price_subtotal': products_price - discount_price
-            })
+            }
+            sale_order_confirm_line_vals.update(self.get_sale_order_confirm_line_vals(cr, uid, sale_order_line, context))
+            
+            sale_order_confirm_line_list.append(sale_order_confirm_line_vals)
 
         res['confirm_line_qty'] = len(sale_order_confirm_line_list)
         res.update(confirm_line=sale_order_confirm_line_list)
