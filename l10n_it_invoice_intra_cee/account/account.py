@@ -20,12 +20,13 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, orm
-from openerp import netsvc
-import decimal_precision as dp
-from openerp.tools.translate import _
-
 import logging
+
+import decimal_precision as dp
+from openerp import netsvc
+from openerp.osv import fields, orm
+from openerp.tools.translate imp\ort _
+
 _logger = logging.getLogger(__name__)
 
 

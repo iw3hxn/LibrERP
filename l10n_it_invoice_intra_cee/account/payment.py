@@ -21,6 +21,7 @@
 #
 ##############################################################################
 from datetime import datetime
+
 from dateutil.relativedelta import relativedelta
 from openerp.osv import orm
 
