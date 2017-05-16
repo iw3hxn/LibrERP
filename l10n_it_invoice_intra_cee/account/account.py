@@ -25,7 +25,7 @@ import logging
 import decimal_precision as dp
 from openerp import netsvc
 from openerp.osv import fields, orm
-from openerp.tools.translate imp\ort _
+from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
