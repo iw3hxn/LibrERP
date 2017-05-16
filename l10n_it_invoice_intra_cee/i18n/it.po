@@ -195,3 +195,9 @@ msgstr "account.tax"
 msgid "Transfer Entry Journal"
 msgstr "Sezionale Giroconto"
 
+#. module: l10n_it_invoice_intra_cee
+#: code:addons/l10n_it_invoice_intra_cee/account/account.py:459
+#, python-format
+msgid "You cannot create an invoice where tax {tax} have not set auto invoice tax"
+msgstr "Non è possibile creare l'autofattura perchè non è impostata nella tassa {tax} la voce della tassa per l'autofattura"
+

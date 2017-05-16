@@ -300,7 +300,10 @@ class account_invoice(orm.Model):
                 continue
 
             for line in inv.invoice_line:
-                if not line.invoice_line_tax_id and line.invoice_line_tax_id[0].auto_invoice_tax_id:
+                if not (line.invoice_line_tax_id and line.invoice_line_tax_id[0].auto_invoice_tax_id):
+                    raise orm.except_orm(
+                        _('Error!'),
+                        _('You cannot create an invoice where tax {tax} have not set auto invoice tax').format(tax=line.invoice_line_tax_id[0].description))
                     continue
 
             # ----- Get actual invoice copy based on fiscal position flag
