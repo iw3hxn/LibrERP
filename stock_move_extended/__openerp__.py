@@ -20,12 +20,13 @@
 ##############################################################################
 {
     "name": "Stock Move Extended",
-    "version": "3.6.6.12",
+    "version": "3.6.6.13",
     "depends": ["stock"],
     "author": "Didotech SRL",
     "category": "Custom Modules",
     "description": """
         Custom Modules. This module displays the unit price on the input stock move line, and also +/- based on direction
+        Create new menu under "Products Move"
 
     """,
     'depends': ['stock'],

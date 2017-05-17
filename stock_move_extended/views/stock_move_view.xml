@@ -159,6 +159,8 @@
                 </field>
             </field>
         </record>
+
+        <menuitem action="stock.action_move_form2" id="menu_action_move_form2" parent="stock.menu_stock_products_moves" sequence="3"/>
         
     </data>
 </openerp>
