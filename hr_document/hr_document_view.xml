@@ -27,7 +27,7 @@
             <field name="model">hr.document.type</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Document Type">
+                <tree string="Document Type" editable="top">
                     <field name="name" select="1"/>
                     <field name="code"/>
                     <field name="has_date_option"/>
