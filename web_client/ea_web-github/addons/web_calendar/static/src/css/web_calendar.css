@@ -9,7 +9,8 @@
 }
 .openerp .dhx_cal_container, .openerp .dhx_cal_event {
     background-position:0 24px;
-    font-family: Helvetica Neue, Helvetica, sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-size: smaller;
     position:relative;
     overflow:hidden;
 }
@@ -317,10 +318,10 @@ background-color:#ECECEC;
     border-left:0px;
 }
 
-.openerp .dhtmlxLayoutPolyContainer_dhx_skyblue .dhx_cal_container{background-color:none;}
+.openerp .dhtmlxLayoutPolyContainer_dhx_skyblue .dhx_cal_container{background-color: #fff;}
 
 .openerp .dhx_cal_event div{
-    font-family: Ubuntu, Helvetica, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color:#FFE763;
     border:1px solid #a73636;
     color:#887A2E;
@@ -393,7 +394,7 @@ The old one
 }*/
 
 .openerp .dhx_cal_event_clear, .openerp .dhx_cal_event_line{
-    font-family:Ubuntu, Helvetica, sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size:95%;
     height:15px;
     line-height:15px;
