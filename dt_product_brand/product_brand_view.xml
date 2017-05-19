@@ -61,6 +61,18 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="product_brand_filter">
+            <field name="name">product.product.extended.filter</field>
+            <field name="model">product.product</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="after" >
+                    <field name="product_brand_id"/>
+                </field>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="action_product_brand">
             <field name="name">Brand</field>
             <field name="res_model">product.brand</field>
