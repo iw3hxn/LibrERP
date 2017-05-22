@@ -43,8 +43,8 @@ class account_invoice(orm.Model):
                 raise orm.except_orm(_("Partners don't match!"), _("Can not merge invoice(s) on different partners or states !. %s different from %s") % parent.partner_id.name, invoice.partner_id.name)
             if parent.payment_term != invoice.payment_term:
                 raise orm.except_orm(_("Payment don't match!"), _(
-                    "Can not merge invoice(s) on different payment !. %s different from %s") % parent.payment_term.name,
-                                     invoice.payment_term.name)
+                    "Can not merge invoice(s) on different payment !. %s different from %s") % parent.payment_term and parent.payment_term.name or 'no',
+                                     invoice.payment_term.name and invoice.payment_term.name or 'no')
             if invoice.state != 'draft':
                 raise orm.except_orm(_("Invalid action !"), _("You can merge only invoices in draft state."))
 

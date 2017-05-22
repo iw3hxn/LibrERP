@@ -18,7 +18,7 @@
 #################################################################################
 {
     'name': 'Invoice Merge',
-    'version': '1.1',
+    'version': '1.2',
     'category': 'Accounting Modules',
     'description': """
         Merge draft invoices from the same partner
