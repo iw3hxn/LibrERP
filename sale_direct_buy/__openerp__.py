@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2017 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -24,7 +24,7 @@
 
 {
     "name": "Set Supplier inside Sale Order",
-    "version": "3.5.24.12",
+    "version": "3.5.25.12",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Sale',

@@ -203,6 +203,7 @@ class sale_order(orm.Model):
         return super(sale_order, self).action_wait(cr, uid, ids, context)
 
     def _create_pickings_and_procurements(self, cr, uid, order, order_lines, picking_id=False, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         context.update(stop_procurement=True)
         return super(sale_order, self)._create_pickings_and_procurements(cr, uid, order, order_lines, picking_id, context)
 
