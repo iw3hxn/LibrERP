@@ -72,8 +72,8 @@ msgstr "Termini di pagamento non uguali!"
 #. module: account_invoice_merge
 #: code:addons/account_invoice_merge/invoice.py:41
 #, python-format
-msgid "Can not merge invoice(s) on different payment !. %s different from %s"
-msgstr "non è possibile unire fatture con pagamenti diversi. %s differisce da %s"
+msgid "Can not merge invoice(s) on different payment !. {0} different from {1}"
+msgstr "non è possibile unire fatture con pagamenti diversi. {0} differisce da {1}"
 
 #. module: account_invoice_merge
 #: model:ir.actions.act_window,name:account_invoice_merge.action_invoice_merge
