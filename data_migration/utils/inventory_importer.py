@@ -20,19 +20,21 @@
 #
 ###############################################################################
 
-import pooler
-import threading
-from tools.translate import _
-from openerp.osv import orm
-import math
-from product.product import check_ean
-import data_migration.settings as settings
-from collections import namedtuple
-from pprint import pprint
-from utils import Utils
-from openerp.addons.core_extended.file_manipulation import import_sheet
-from datetime import datetime
 import logging
+import math
+import threading
+from collections import namedtuple
+from datetime import datetime
+from pprint import pprint
+
+import pooler
+from openerp.addons.core_extended.file_manipulation import import_sheet
+from tools.translate import _
+
+import data_migration.settings as settings
+from openerp.osv import orm
+from utils import Utils
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
@@ -256,9 +258,11 @@ class ImportFile(threading.Thread, Utils):
             'product_qty': record.product_qty or 0.0,
             'product_uom': self.product_obj.browse(cr, uid, product_id, self.context).uom_id.id
         })
+        if hasattr(record, 'average_cost') and record.average_cost:
+            vals_inventory_line.update({'average_cost': record.average_cost})
 
         inventory_line_id = self.inventory_line_obj.create(cr, uid, vals_inventory_line, self.context)
-        _logger.info(u'Row {row}: Adding product {product}'.format(row=self.processed_lines, product=record.default_code, ))
+        _logger.info(u'Row {row}: Adding product {product}'.format(row=self.processed_lines, product=record.default_code))
         self.uo_new += 1
 
         # extra function on version2

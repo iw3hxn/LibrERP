@@ -19,18 +19,19 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+import base64
+
+from tools.translate import _
+
+from data_migration.utils import crm_importer
+from data_migration.utils import inventory_importer
+from data_migration.utils import invoice_importer
 from data_migration.utils import partner_importer
-from data_migration.utils import product_importer
 from data_migration.utils import picking_importer
 from data_migration.utils import pricelist_importer
+from data_migration.utils import product_importer
 from data_migration.utils import sales_importer
-from data_migration.utils import invoice_importer
-from data_migration.utils import inventory_importer
-from data_migration.utils import crm_importer
-
-import base64
-from tools.translate import _
+from openerp.osv import orm, fields
 
 
 class filedata_import(orm.TransientModel):
@@ -520,6 +521,7 @@ class inventory_import(filedata_import):
             (
                 ('FormatOne', _('Format One')),
                 ('FormatTwo', _('Format Two')),
+                ('FormatThree', _('Format Three')),
             ), 'Formato Dati', required=True, readonly=False
         ),
         'content_base64': fields.binary(

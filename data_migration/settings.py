@@ -207,6 +207,11 @@ class FormatThree():
         'sale_ok': True
     }
 
+    HEADER_INVENTORY_ITEM = ('Articolo', 'Quantità', 'Prezzo')
+    COLUMNS_INVENTORY_ITEM = "default_code, product_qty, average_cost"
+    REQUIRED_INVENTORY_ITEM = ['default_code']
+    INVENTORY_PRODUCT_SEARCH = ['default_code']
+
 
 class FormatFour():
     # TP Extended (differs only for product import)

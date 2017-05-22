@@ -20,11 +20,14 @@
 #
 ###############################################################################
 
-from tools.translate import _
-from datetime import datetime
-import re
 import logging
+import re
+from datetime import datetime
+
+from tools.translate import _
+
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 

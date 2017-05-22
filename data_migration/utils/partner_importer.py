@@ -20,19 +20,22 @@
 #
 ##############################################################################
 
-import pooler
-import threading
-from tools.translate import _
-import math
-import data_migration.settings as settings
-from collections import namedtuple
-from pprint import pprint
-from utils import Utils
-from openerp.osv import orm
-import vatnumber
-import sys
-from datetime import datetime
 import logging
+import math
+import sys
+import threading
+from collections import namedtuple
+from datetime import datetime
+from pprint import pprint
+
+import pooler
+import vatnumber
+from tools.translate import _
+
+import data_migration.settings as settings
+from openerp.osv import orm
+from utils import Utils
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 

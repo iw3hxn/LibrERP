@@ -20,20 +20,24 @@
 #
 ###############################################################################
 
-import pooler
-import threading
-from tools.translate import _
-from openerp.osv import orm
-import math
-from product.product import check_ean
-import data_migration.settings as settings
-from collections import namedtuple
-from pprint import pprint
-from utils import Utils
-from openerp.addons.core_extended.file_manipulation import import_sheet
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-from datetime import datetime
 import logging
+import math
+import threading
+from collections import namedtuple
+from datetime import datetime
+from pprint import pprint
+
+import pooler
+from openerp.addons.core_extended.file_manipulation import import_sheet
+from tools.translate import _
+
+# import data_migration.settings as settings
+from openerp.addons.data_migration import settings
+from openerp.osv import orm
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from product.product import check_ean
+from utils import Utils
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
