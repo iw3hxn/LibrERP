@@ -67,7 +67,7 @@ class one2many_sorted(fields.one2many):
     # end def __init__
 
     def property_value(self, cr, uid, obj, name, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
+        context = context or obj.pool['res.users'].context_get(cr, uid)
         property_obj = obj.pool.get('ir.property')
         prop_id = property_obj.search(cr, uid
                                       , [('name', '=', name)
@@ -83,7 +83,7 @@ class one2many_sorted(fields.one2many):
         # end def property_value
 
     def selected(self, cr, uid, obj, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
+        context = context or obj.pool['res.users'].context_get(cr, uid)
         _obj = obj.pool.get(self._obj)
         return _obj.search(cr, uid
                            , [(self._fields_id, 'in', ids)] + self._search
