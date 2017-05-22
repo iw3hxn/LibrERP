@@ -5733,7 +5733,7 @@ msgstr "Apri conti"
 #. module: account
 #: view:account.fiscalyear.close.state:0
 msgid "If no additional entries should be recorded on a fiscal year, you can close it from here. It will close all opened periods in this year that will make impossible any new entry record. Close a fiscal year when you need to finalize your end of year results definitive "
-msgstr "Se non devono esere introdotte ulteriori registrazioni per un anno fiscale, l'anno puo' essere chiuso da qui. Verranno chiusi tutti i periodi fiscali aperti e questo rendera' impossibili nuove registrazioni. Un anno fiscale va chiuso solo quando si vogliono rendere definitive le scritture dell'anno. "
+msgstr "Se non devono essere introdotte ulteriori registrazioni per un anno fiscale, l'anno puo' essere chiuso da qui. Verranno chiusi tutti i periodi fiscali aperti e questo rendera' impossibili nuove registrazioni. Un anno fiscale va chiuso solo quando si vogliono rendere definitive le scritture dell'anno. "
 
 #. module: account
 #: field:account.central.journal,amount_currency:0
@@ -10430,7 +10430,7 @@ msgstr "Corrispondenza dei conti"
 #: code:addons/account/account_invoicexxx.py:431
 #, python-format
 msgid "Invoice '%s' is waiting for validation."
-msgstr "La fattura '%s'  aspetta di esere validata"
+msgstr "La fattura '%s'  aspetta di essere validata"
 
 #. module: account
 #: selection:account.entries.report,month:0
