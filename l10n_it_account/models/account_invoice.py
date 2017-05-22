@@ -244,6 +244,11 @@ class account_invoice(orm.Model):
                     'check_invoice_payment_term': invoice.company_id.check_invoice_payment_term and not invoice.payment_term,
                     'check_invoice_fiscal_position': invoice.company_id.check_invoice_fiscal_position and not invoice.fiscal_position,
                 })
+                if invoice.company_id.check_invoice_payment_term and not invoice.payment_term and invoice.partner_id.property_payment_term:
+                    form_vals.update({
+                        'payment_term': invoice.partner_id.property_payment_term.id
+                    })
+
                 if self.required_vat(cr, uid, invoice, context):
                     form_vals.update({
                         'required_vat': True
