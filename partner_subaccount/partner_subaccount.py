@@ -158,20 +158,23 @@ class res_partner(orm.Model):
     def unlink(self, cr, uid, ids, context=None):
         if not context:
             context = self.pool['res.users'].context_get(cr, uid)
+
+        company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+        enable_partner_subaccount = company.enable_partner_subaccount
         ids_account_payable = []
         ids_account_receivable = []
-        for partner in self.browse(cr, uid, ids, context):
-            
-            if partner.property_account_payable and partner.property_account_payable.type != 'view':
-                if partner.property_account_payable.balance == 0.0:
-                    ids_account_payable.append(partner.property_account_payable.id)
-                else:
-                    ids.remove(partner.id)
-            if partner.property_account_receivable and partner.property_account_receivable.type != 'view':
-                if partner.property_account_receivable.balance == 0.0:
-                    ids_account_receivable.append(partner.property_account_receivable.id)
-                else:
-                    ids.remove(partner.id)
+        if enable_partner_subaccount:
+            for partner in self.browse(cr, uid, ids, context):
+                if partner.property_account_payable and partner.property_account_payable.type != 'view':
+                    if partner.property_account_payable.balance == 0.0:
+                        ids_account_payable.append(partner.property_account_payable.id)
+                    else:
+                        ids.remove(partner.id)
+                if partner.property_account_receivable and partner.property_account_receivable.type != 'view':
+                    if partner.property_account_receivable.balance == 0.0:
+                        ids_account_receivable.append(partner.property_account_receivable.id)
+                    else:
+                        ids.remove(partner.id)
                     
         res = super(res_partner, self).unlink(cr, uid, ids, context)
         ids_account = list(set(ids_account_payable + ids_account_receivable))
