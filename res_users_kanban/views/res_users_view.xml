@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+       <!---->
+        <!--&lt;!&ndash; Partner Kanban View  &ndash;&gt;-->
+
+    <!--<record model="ir.ui.view" id="partner_kanban_view">-->
+        <!--<field name="name">Partner Kanban</field>-->
+        <!--<field name="model">res.partner</field>-->
+        <!--<field name="type">kanban</field>-->
+        <!--<field name="arch" type="xml">-->
+            <!--<kanban>-->
+                <!--<templates>-->
+                    <!--<t t-name="kanban-box">-->
+                        <!--<div class="oe_partner_vignette">-->
+                            <!--<div class="oe_partner_image">-->
+                                <!--<a type="edit"><img t-att-src="kanban_image('res.partner', 'partner_logo', record.id.value)" class="oe_partner_picture"/></a>-->
+                            <!--</div>-->
+                            <!--<div class="oe_partner_details">-->
+                                <!--<h4><a type="edit"><field name="name"/></a></h4>-->
+                                <!--<ul>-->
+                                    <!--<li t-if="record.city.raw_value"><field name="city"/></li>-->
+                                    <!--<li t-if="record.country.raw_value"><field name="country"/></li>-->
+                                    <!--<li t-if="record.phone.raw_value">Tel: <field name="phone"/></li>-->
+                                    <!--<li t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></li>-->
+                                    <!--<li t-if="record.email.raw_value"><a t-attf-href="mailto:#{record.email.value}"><field name="email"/></a></li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<script>-->
+                            <!--$('.oe_partner_picture').load(function() { if($(this).width() > $(this).height()) { $(this).addClass('oe_partner_picture_wide') } });-->
+                        <!--</script>-->
+                    <!--</t>	-->
+                <!--</templates>-->
+            <!--</kanban>-->
+        <!--</field>-->
+    <!--</record>-->
+    
+    <record id="res_users_logo_inherit_form" model="ir.ui.view">
+        <field name="name">res.users.logo.inherit.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">                
+                <field name="name" position="before">
+					<field name="image" widget="image" nolabel="1" />
+                    <newline/>
+
+			</field>
+    	</field>
+    </record>
+
+    </data>
+</openerp>
