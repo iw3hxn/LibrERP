@@ -227,6 +227,14 @@
 <!--        <menuitem id="menu_localisation" name="Localisation" parent="base.menu_base_config"/>-->
         <menuitem action="action_province" id="menu_province_partner" parent="base.menu_localisation"/>
 
+       <record id="action_regioni" model="ir.actions.act_window">
+            <field name="name">Regions</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.region</field>
+            <field name="view_type">form</field>
+        </record>
+        <menuitem action="action_regioni" id="menu_regioni_partner" parent="base.menu_localisation"/>
+
  <!--
 	City
  -->
