@@ -70,6 +70,10 @@ class Utils():
                                 return unicode(value)
 
                         value = value.replace(',', '.')
+
+                        if value in ['.', ',']:
+                            return 0
+
                         value = float(value)
                     else:
                         value = int(value)

@@ -269,6 +269,25 @@ class FormatFour():
 
 class FormatFive():
     # TP Extended (differs only for product import)
+    HEADER_CUSTOMER = (
+        u'#', u'Codice BP', u'Nome BP', u'Via (destinatario consegna)', u'CAP (destinatario consegna)',
+        u'Località (destinatario fattura)', u'Stato federato (destinatario consegna)', u'Telefono 1', u'Numero di fax',
+        u'E-mail', u'Via (destinatario fattura)', u'CAP (destinatario fattura)', u'Località (destinatario fattura)',
+        u'Stato federato (destinatario fattura)', u'Partita IVA', u'Partita IVA', u'Partita IVA unica',
+        u'N. ID supplementare', u'Tipo di gruppo', u'Area', u'Soggetto tratt. fonte', u'Codice ritenuta d\'acconto',
+        u'Gruppo trattenute ritenuta d\'acconto', u'Gruppo d\'imposta', u'Nome gruppo per cond. di pag.', u'Limite fido'
+    )
+    COLUMNS = "index, code, name, street_default, zip_default, "\
+              "city_default, province_default, phone_default, fax_default, "\
+              "email_default, street_invoice, zip_invoice, city_invoice, "\
+              "province_invoice, vat, vat2, fiscalcode, "\
+              "additional_id, group_type, area, sbj_retention_source, down_payment_code, "\
+              "down_payment_group, tax_group, payment_term, credit_limit"
+    REQUIRED = ('name',)
+    ADDRESS_TYPE = ('default', 'invoice',)
+    # Unique fields to be used to look for partner in database
+    PARTNER_SEARCH = ['code', 'vat', 'name']
+
     HEADER_PRODUCT = (
         "pruduct_id", "product_name", "product_description", "product_price",
         "price_min", "product_position", "payment_periodicity", "category_path",

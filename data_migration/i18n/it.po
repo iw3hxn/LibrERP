@@ -101,6 +101,15 @@ msgid "Format One"
 msgstr "Formato UNO"
 
 #. module: data_migration
+#: code:addons/data_migration/wizard/file_import.py:84
+#: code:addons/data_migration/wizard/file_import.py:117
+#: code:addons/data_migration/wizard/file_import.py:160
+#: selection:partner.import,format:0
+#, python-format
+msgid "Format Five"
+msgstr "CINQUE"
+
+#. module: data_migration
 #: field:picking.import,preview_text_original:0
 #: field:product.import,preview_text_original:0
 msgid "Preview text original"

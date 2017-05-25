@@ -102,6 +102,7 @@ class partner_import(filedata_import):
                 ('FormatTwo', _('Format Two')),
                 ('FormatThree', _('Format Three')),
                 ('FormatFour', _('Format Four')),
+                ('FormatFive', _('Format Five')),
             ), 'Formato Dati', required=True, readonly=False
         ),
         # file name of import

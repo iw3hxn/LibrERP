@@ -28,6 +28,7 @@ from collections import namedtuple
 from datetime import datetime
 from pprint import pprint
 
+import codicefiscale
 import pooler
 import vatnumber
 from tools.translate import _
@@ -53,6 +54,9 @@ PROPERTY_REF_MAP = {
 }
 
 DONT_STOP_ON_WRONG_VAT = True
+
+VAT_CODES = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'EL', 'HU', 'IE', 'LV', 'LT', 'LU', 'MT',
+             'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB']
 
 
 class ImportFile(threading.Thread, Utils):
@@ -258,9 +262,12 @@ class ImportFile(threading.Thread, Utils):
 
         for field in ('street', 'street2', 'city', 'zip', 'email', 'phone', 'fax'):
             if hasattr(record, field + '_' + address_type) and getattr(record, field + '_' + address_type):
-                vals_address[field] = getattr(record, field + '_' + address_type)
+                vals_address[field] = getattr(record, field + '_' + address_type).title()
 
-        if record.fiscalcode and len(record.fiscalcode) == 16 and not record.person_name:
+        if hasattr(record, 'person_name'):
+            if record.fiscalcode and len(record.fiscalcode) == 16 and not record.person_name:
+                vals_address['name'] = ''
+        else:
             vals_address['name'] = ''
 
         # Excel treats all numbers as floats
@@ -278,7 +285,7 @@ class ImportFile(threading.Thread, Utils):
             if city_ids:
                 city_data = self.city_obj.browse(cr, uid, city_ids[0], self.context)
                 vals_address.update({
-                    'city': city_data.name,
+                    'city': city_data.name.title(),
                     'zip': city_data.zip,
                     'province': city_data.province_id and city_data.province_id.id or False,
                     'region': city_data.province_id and city_data.province_id.region and city_data.province_id.region.id or False,
@@ -298,7 +305,7 @@ class ImportFile(threading.Thread, Utils):
                     if state_ids:
                         vals_address['state_id'] = state_ids[0]
 
-        if record.country_code and not vals_address.get('country_id'):
+        if hasattr(record, 'country_code') and not vals_address.get('country_id'):
             vals_address['country_id'] = self._contry_by_code(cr, uid, country_code)
 
         if DEBUG:
@@ -325,6 +332,7 @@ class ImportFile(threading.Thread, Utils):
             # pprint(row_list)
             row_str_list = [self.simple_string(value) for value in row_list]
             pprint(zip(self.HEADER, row_str_list))
+
 
         record = self.Record._make([self.toStr(value) for value in row_list])
 
@@ -368,7 +376,13 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'person_name') and record.person_name:
             vals_partner['name'] += ' {0}'.format(record.person_name)
 
-        country_code = COUNTRY_CODES.get(record.country_code, record.country_code)
+        if hasattr(record, 'country_code'):
+            country_code = COUNTRY_CODES.get(record.country_code, record.country_code)
+        else:
+            if hasattr(record, 'vat') and record.vat and record.vat[:2] in VAT_CODES:
+                country_code = record.vat[:2]
+            else:
+                country_code = ''
 
         if country_code:
             country_id = self._contry_by_code(cr, uid, country_code)
@@ -400,6 +414,9 @@ class ImportFile(threading.Thread, Utils):
                 vals_partner['property_payment_term'] = vals_payment['property_payment_term']
             if vals_payment.get('company_bank_id', False):
                 vals_partner['company_bank_id'] = vals_payment['company_bank_id']
+
+        if hasattr(record, 'credit_limit') and record.credit_limit:
+            vals_partner['credit_limit'] = record.credit_limit
 
         if record.vat and len(record.vat) > 3:
             vals_partner['vat_subjected'] = True
@@ -502,6 +519,9 @@ class ImportFile(threading.Thread, Utils):
         partner_id = self._find_partner(cr, uid, vals_partner)
 
         if partner_id and partner_id > 0:
+            if 'fiscalcode' in vals_partner and vals_partner['fiscalcode'] and (
+                    len(vals_partner['fiscalcode']) != 16 or not codicefiscale.isvalid(vals_partner['fiscalcode'])):
+                vals_partner['fiscalcode'] = False
             self.partner_obj.write(cr, uid, partner_id, vals_partner, self.context)
             self.updated += 1
         elif partner_id and partner_id < 0:
