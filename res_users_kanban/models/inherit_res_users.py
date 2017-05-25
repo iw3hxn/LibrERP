@@ -19,7 +19,7 @@ class res_users(orm.Model):
     _inherit = "res.users"
 
     def _get_photo(self, cr, uid, context=None):
-        photo_path = ddons.get_module_resource('user_kanban', 'static/src/img', 'default_image.png')
+        photo_path = ddons.get_module_resource('res_users_kanban', 'static/src/img', 'default_image.png')
         return open(photo_path, 'rb').read().encode('base64')
 
     def _get_image(self, cr, uid, ids, name, args, context=None):
@@ -38,7 +38,7 @@ class res_users(orm.Model):
         return result
 
     def _get_default_image(self, cr, uid, context=None):
-        image_path = addons.get_module_resource('user_kanban', 'static/src/img', 'default_image.png')
+        image_path = addons.get_module_resource('res_users_kanban', 'static/src/img', 'default_image.png')
         return tools.image_resize_image_big(open(image_path, 'rb').read().encode('base64'))
 
     _columns = {
