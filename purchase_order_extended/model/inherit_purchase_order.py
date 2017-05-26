@@ -87,7 +87,9 @@ class purchase_order(orm.Model):
 
         ids = super(purchase_order, self).create(cr, uid, vals, context=context)
         if vals.get('carrier_id', False) or vals.get('payment_term', False):
-            order = self.browse(cr, uid, ids, context)
+            if not isinstance(ids, (list, tuple)):
+                order_ids = [ids]
+            order = self.browse(cr, uid, order_ids, context)[0]
             partner_vals = {}
             if not order.partner_id.property_delivery_carrier:
                 partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
@@ -119,16 +121,15 @@ class purchase_order(orm.Model):
                     default = self.default_get(cr, uid, ['invoice_method'], context)
                     vals.update({'invoice_method': default.get('invoice_method', 'manual')})
 
-        # adaptative function: the system learn
-        if vals.get('carrier_id', False) or vals.get('payment_term', False):
-            order = self.browse(cr, uid, ids, context)
-            partner_vals = {}
-            if not order.partner_id.property_delivery_carrier:
-                partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
-            if not order.partner_id.property_payment_term:
-                partner_vals['property_payment_term'] = vals.get('payment_term')
-            if partner_vals:
-                self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
+            # adaptative function: the system learn
+            if vals.get('carrier_id', False) or vals.get('payment_term', False):
+                partner_vals = {}
+                if not order.partner_id.property_delivery_carrier:
+                    partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
+                if not order.partner_id.property_payment_term:
+                    partner_vals['property_payment_term'] = vals.get('payment_term')
+                if partner_vals:
+                    self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
 
         if vals.get('state', False):
             self.hook_sale_state(cr, uid, ids, vals, context)
