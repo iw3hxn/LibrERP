@@ -82,3 +82,13 @@ msgstr "Dal"
 #: field:stock.move,date_to:0
 msgid "Date to"
 msgstr "Al"
+
+#. module: stock_move_extended
+#: model:ir.ui.menu,name:stock_move_extended.menu_action_move_form2
+msgid "Stock Moves"
+msgstr "Movimenti di Magazzino"
+
+#. module: stock_move_extended
+#: field:stock.move,default_code:0
+msgid "Product Reference"
+msgstr "Codice"
