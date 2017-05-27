@@ -184,7 +184,7 @@ Employee
                                                               </group>
                                 -->
                             </form>
-                            <tree colors="red:valid_end_date and (valid_end_date&lt;current_date)">
+                            <tree colors="red:valid_end_date and (valid_end_date&lt;current_date)" editable="top">
                                 <field name="name"/>
                                 <field name="document_type_id"/>
                                 <field name="valid_start_date"/>
