@@ -19,7 +19,7 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.13.17.28',
+    'version': '3.13.17.29',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,
@@ -34,6 +34,7 @@
         'task_time_control',
         'res_users_helper_functions',
         'core_extended',
+        'res_users_kanban'
     ],
     "data": [
         'security/security.xml',
