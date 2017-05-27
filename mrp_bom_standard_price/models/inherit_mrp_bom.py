@@ -53,7 +53,9 @@ class mrp_bom(osv.Model):
             string="Purchase Pricelist",
             view_load=True,
             help="This pricelist will be used, instead of the default one, for purchases from the current partner"),
-        'list_price': fields.function(_compute_list_price, string='List Price', type='float'),
+        # 'list_price': fields.function(_compute_list_price, string='List Price', type='float'),
+        'list_price': fields.related('product_id', 'list_price',
+                                         type='float', relation='product.product', string='List Price', readonly=True),
         'standard_price': fields.related('product_id', 'standard_price',
             type='float', relation='product.product', string='Cost price', readonly=True),
     }

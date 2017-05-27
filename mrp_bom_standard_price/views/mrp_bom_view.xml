@@ -23,11 +23,12 @@
             <field name="name">mrp.bom.inh</field>
             <field name="model">mrp.bom</field>
             <field name="type">tree</field>
-            <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+            <field name="inherit_id" ref="mrp.mrp_bom_component_tree_view"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='date_stop']" position="after">
+                <field name="date_stop" position="after">
+                    <field name="list_price" groups="product_bom.group_sell_price"/>
                     <field name="standard_price" groups="product_bom.group_cost_price" />
-                </xpath>
+                </field>
             </field>
         </record>
     </data>
