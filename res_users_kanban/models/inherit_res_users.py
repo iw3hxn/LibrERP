@@ -19,7 +19,7 @@ class res_users(orm.Model):
     _inherit = "res.users"
 
     def _get_photo(self, cr, uid, context=None):
-        photo_path = ddons.get_module_resource('res_users_kanban', 'static/src/img', 'default_image.png')
+        photo_path = addons.get_module_resource('res_users_kanban', 'static/src/img', 'default_image.png')
         return open(photo_path, 'rb').read().encode('base64')
 
     def _get_image(self, cr, uid, ids, name, args, context=None):
