@@ -111,6 +111,7 @@ class project_project(orm.Model):
     def _total_account(self, cr, uid, ids, field_name, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
+        print ids
         for project_id in self.browse(cr, uid, ids, context=context):
             res[project_id.id] = {
                 'total_spent': 0.0,
@@ -120,35 +121,35 @@ class project_project(orm.Model):
                 'total_service_spent': 0.0,
             }
             # import pdb; pdb.set_trace()
-            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('invoice_id', '!=', False)], context=context)
-
+            account_id = project_id.analytic_account_id.id
+            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', account_id), ('invoice_id', '!=', False)], context=context)
             if account_ids:
+                print account_ids
                 cr.execute("""
                     SELECT COALESCE(SUM(amount))
                     FROM account_analytic_line
                     WHERE account_analytic_line.id IN ({account_ids})
-                """.format(account_ids=', '.join([str(account_id) for account_id in account_ids])))
+                """.format(account_ids=', '.join([str(account) for account in account_ids])))
                 total_invoice = cr.fetchone()[0] or 0.0
                 res[project_id.id]['total_invoice'] = total_invoice
 
-            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('invoice_id', '=', False)],
-                                                                        context=context)
+            account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', account_id), ('invoice_id', '=', False)], context=context)
             if account_ids:
                 cr.execute("""
                     SELECT ABS(COALESCE(SUM(amount)))
                     FROM account_analytic_line
                     WHERE account_analytic_line.id IN ({account_ids}) AND account_analytic_line.amount < 0
-                """.format(account_ids=', '.join([str(account_id) for account_id in account_ids])))
+                """.format(account_ids=', '.join([str(account) for account in account_ids])))
                 total_spent = cr.fetchone()[0] or 0.0
                 res[project_id.id]['total_spent'] = total_spent
 
-                account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', project_id.analytic_account_id.id), ('product_id.type', '=', 'service'), ('invoice_id', '=', False)], context=context)
+                account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', account_id), ('product_id.type', '=', 'service'), ('invoice_id', '=', False)], context=context)
                 if account_ids:
                     cr.execute("""
                         SELECT ABS(COALESCE(SUM(amount)))
                         FROM account_analytic_line
                         WHERE account_analytic_line.id IN ({account_ids}) AND account_analytic_line.amount < 0
-                    """.format(account_ids=', '.join([str(account_id) for account_id in account_ids])))
+                    """.format(account_ids=', '.join([str(account) for account in account_ids])))
                     total_service_spent = cr.fetchone()[0] or 0.0
                     res[project_id.id]['total_service_spent'] = total_service_spent
 
@@ -165,7 +166,9 @@ class project_project(orm.Model):
 
             sale_ids = self.pool['sale.order'].search(cr, uid, [
                 ('project_id', '=', project_id.analytic_account_id.id),
-                ('state', 'not in', ['draft'])
+                ('state', 'not in',
+                 ['draft', 'wait_technical_validation', 'wait_manager_validation', 'send_to_customer',
+                  'wait_customer_validation', 'wait_supervisor_validation', 'cancel'])
             ], context=context)
 
             if sale_ids:
@@ -287,23 +290,22 @@ class project_project(orm.Model):
         result = {}
         for line in self.pool['account.analytic.line'].browse(cr, uid, ids, context=context):
             if line.account_id:
-                for project in self.pool['project.project'].search(cr, uid,
-                                                                   [('analytic_account_id', '=', line.account_id.id)],
-                                                                   context=context):
-                    result[project] = True
+                for project_id in self.pool['project.project'].search(cr, uid, [('analytic_account_id', '=', line.account_id.id)],  context=context):
+                    result[project_id] = True
         return result.keys()
 
-    def _get_project_account_invoice(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        print "_get_project_account_invoice"
-        result = {}
-        for line in self.pool['account.analytic.line'].browse(cr, uid, ids, context=context):
-            if line.account_id:
-                for project in self.pool['project.project'].search(cr, uid,
-                                                                   [('analytic_account_id', '=', line.account_id.id)],
-                                                                   context=context):
-                    result[project] = True
-        return result.keys()
+    # def _get_project_account_invoice(self, cr, uid, ids, context=None):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     print "_get_project_account_invoice"
+    #     result = {}
+    #     for line in self.pool['account.analytic.line'].browse(cr, uid, ids, context=context):
+    #         if line.account_id:
+    #             for project in self.pool['project.project'].search(cr, uid,
+    #                                                                [('analytic_account_id', '=', line.account_id.id)],
+    #                                                                context=context):
+    #                 result[project] = True
+    #     import pdb;pdb.set_trace()
+    #     return result.keys()
 
     def _get_project_order_line(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -364,7 +366,7 @@ class project_project(orm.Model):
             }, ),
         'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                          multi='sums', string="Invoice Amount", store={
-                'account.analytic.line': (_get_project_account_invoice, ['amount'], 80),
+                'account.analytic.line': (_get_project_account, ['amount', 'invoice_id'], 80),
             }, ),
         # 'doc_count': fields.function(
         #     _get_attached_docs, string="Number of documents attached", type='integer'
