@@ -269,6 +269,29 @@ class sale_order_confirm(orm.TransientModel):
 
         return {'value': result}
 
+    def get_sale_order_line_vals(self, cr, uid, order_id, sale_order_line_data, context):
+        if sale_order_line_data.product_uom:
+            product_uom = sale_order_line_data.product_uom.id
+        else:
+            product_uom = False
+
+        tax_ids = [tax.id for tax in sale_order_line_data.tax_id]
+
+        return {
+            'product_id': sale_order_line_data.product_id.id,
+            'name': sale_order_line_data.name or sale_order_line_data.product_id.name_get()[0][1],
+            'product_uom_qty': sale_order_line_data.quantity,
+            'product_uom': product_uom,
+            'price_unit': sale_order_line_data.price_unit,
+            'discount': sale_order_line_data.discount,
+            'sequence': sale_order_line_data.sequence,
+            'order_id': int(order_id),
+            'delay': sale_order_line_data.product_id.sale_delay,
+            'tax_id': [(6, 0, tax_ids)],
+            'sale_line_copy_id': sale_order_line_data.sale_line_id.id or None
+        }
+
+
     def sale_order_confirmated(self, cr, uid, ids, context=None):
         sale_order_obj = self.pool['sale.order']
         sale_order_line_obj = self.pool['sale.order.line']
@@ -314,32 +337,12 @@ class sale_order_confirm(orm.TransientModel):
             context['versioning'] = True
             new_order_id = sale_order_obj.create(cr, uid, new_sale_order, context=context)
 
-            sequence = 10
+            # sequence = 10
             for sale_order_confirm_line_id in sale_order_confirm_data['confirm_line']:
                 sale_order_confirm_line_data = sale_order_confirm_line_obj.browse(cr, uid, sale_order_confirm_line_id)
+                sale_order_line_vals = self.get_sale_order_line_vals(cr, uid, new_order_id, sale_order_confirm_line_data, context)
+                sale_order_line_obj.create(cr, uid, sale_order_line_vals, context=context)
 
-                if sale_order_confirm_line_data.product_uom:
-                    product_uom = sale_order_confirm_line_data.product_uom.id
-                else:
-                    product_uom = False
-                
-                tax_ids = [tax.id for tax in sale_order_confirm_line_data.tax_id]
-
-                sale_order_line_obj.create(cr, uid, {
-                    'product_id': sale_order_confirm_line_data.product_id.id,
-                    'name': sale_order_confirm_line_data.name or sale_order_confirm_line_data.product_id.name_get()[0][1],
-                    'product_uom_qty': sale_order_confirm_line_data.quantity,
-                    'product_uom': product_uom,
-                    'price_unit': sale_order_confirm_line_data.price_unit,
-                    'discount': sale_order_confirm_line_data.discount,
-                    'sequence': sequence,
-                    'order_id': int(new_order_id),
-                    'delay': sale_order_confirm_line_data.product_id.sale_delay,
-                    'tax_id': [(6, 0, tax_ids)],
-                    'sale_line_copy_id': sale_order_confirm_line_data.sale_line_id.id or None
-                }, context=context)
-                
-                sequence += 1
             wf_service.trg_validate(uid, 'sale.order', new_order_id, 'order_confirm', cr)
             # wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'cancel', cr)
             sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {'active': False})
