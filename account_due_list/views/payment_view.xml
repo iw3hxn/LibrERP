@@ -235,6 +235,7 @@
                         <field string="Due from" name="date_from" filter_domain="[('date','&gt;=',self)]"/>
                         <field string="Due to" name="date_to" filter_domain="[('date','&lt;=',self)]"/>
                         <newline/>
+                        <field name="journal_id" context="{'filter_journal_id': True}"/>
                         <field name="partner_id"/>
                     </group>
                 </search>
@@ -261,7 +262,7 @@
                     <field name="account_id" domain="[('journal_id', '=', journal_id),('type','!=','view'), ('type','!=','closed')]" on_change="onchange_account_id(account_id, partner_id)"/>
                     <field name="name" />
                     <field name="date_maturity" />
-                    <field name="journal_id" context="{'journal_id': journal_id}"/>
+                    <field name="journal_id" context="{'journal_id': journal_id}" invisible="context.get('filter_journal_id', False)"/>
                     <field name="debit" sum="Total debit" />
                     <field name="credit" sum="Total credit" />
                     <field name="account_tax_id" domain="[('parent_id', '=' ,False)]"
