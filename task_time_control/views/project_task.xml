@@ -151,6 +151,19 @@
             <field name="arch" type="xml">
                 <search string="Hours on Task">
                     <group>
+                        <!--<separator orientation="vertical"/>-->
+                        <!--<filter icon="terp-go-month"-->
+                            <!--string="Last Month"-->
+                            <!--name="last_month"-->
+                            <!--help="Invoices of the last month"-->
+                            <!--domain="[('date', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"-->
+                        <!--/>-->
+                        <!--<filter icon="terp-go-month"-->
+                            <!--string="Current Month"-->
+                            <!--name="current_month"-->
+                            <!--help="Invoices of the current month"-->
+                            <!--domain="[('date', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"-->
+                        <!--/>-->
                         <filter name="today" icon="terp-go-today" string="Today" domain="[('date','&gt;=',datetime.date.today().strftime('%%Y-%%m-%%d 00:00:00')),('date','&lt;=',datetime.date.today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
                         <filter icon="gtk-go-forward" string="Yesterday" domain="[('date','&lt;',datetime.date.today().strftime('%%Y-%%m-%%d 00:00:00')),('date','&gt;=',(datetime.date.today() - relativedelta(days=1)).strftime('%%Y-%%m-%%d 00:00:00'))]"/>
                         <separator orientation="vertical"/>

@@ -268,3 +268,8 @@ msgstr "Altri Utenti al lavoro"
 #: view:project.task:0
 msgid "Allow Users"
 msgstr "Utenti Autorizzati"
+
+#. module: task_time_control
+#: field:task.time.control.confirm.wizard,issue_id:0
+msgid "Issue"
+msgstr "Ticket Assistenza"
