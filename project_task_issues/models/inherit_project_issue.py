@@ -68,10 +68,10 @@ class project_issue(orm.Model):
                     contact_ids = contact_obj.search(cr, uid, [('email', '=', email)], context=context)
                     if contact_ids:
                         partner_id = contact_obj.browse(cr, uid, contact_ids, context)[0].partner_id.id
-                        project_ids = project_obj.search(cr, uid, [('partner_id', '=', partner_id), ('state', 'in', ['open'])])
+                        project_ids = project_obj.search(cr, uid, [('partner_id', '=', partner_id), ('state', 'in', ['open'])], context=context)
                         if project_ids and len(project_ids) == 1:
                             task_ids = task_obj.search(cr, uid, [('project_id', '=', project_ids[0]), ('state', 'in', ['open', 'working'])],
-                                                                        context=context, limit=1)
+                                                                        context=context)
                             if task_ids and len(task_ids) == 1:
                                 task_id = task_ids[0]
                                 user = task_obj.browse(cr, uid, [task_id], context)[0].user_id
@@ -79,6 +79,13 @@ class project_issue(orm.Model):
                                     'partner_id': partner_id,
                                     'project_id': project_ids[0],
                                     'task_id': task_id,
+                                    'user_id': user and user.id or False
+                                })
+                            else:
+                                user = project_obj.browse(cr, uid, project_ids, context)[0].user_id
+                                vals.update({
+                                    'partner_id': partner_id,
+                                    'project_id': project_ids[0],
                                     'user_id': user and user.id or False
                                 })
 
