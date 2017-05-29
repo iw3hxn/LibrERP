@@ -48,3 +48,8 @@ msgstr "Errore ! Non è possibile creare attività ricorsive."
 #: view:project.task:0 field:project.task,issue_ids:0
 msgid "Issues"
 msgstr "Ticket"
+
+#. module: project_task_issues
+#: view:project.task:0 field:project.task,open_issue:0
+msgid "Open Ticket"
+msgstr "Ticket Aperti"
