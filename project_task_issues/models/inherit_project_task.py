@@ -24,9 +24,29 @@ from openerp.osv import orm, fields
 
 class roject_task(orm.Model):
     _inherit = "project.task"
+
+    def _open_ticket(self, cr, uid, ids, field_name, arg, context=None):
+        if not len(ids):
+            return []
+        '''
+        Show if have or not a bom
+        '''
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
+        project_issue_obj = self.pool['project.issue']
+
+        res = {}
+        ids = ids or []
+
+        for task in self.browse(cr, uid, ids, context):
+            task_ids = project_issue_obj.search(cr, uid, [('task_id', '=', task.id), ('state', 'not in', ['done', 'cancel'])], context=context)
+            res[task.id] = len(task_ids)
+
+        return res
     
     _columns = {
         'issue_ids': fields.one2many('project.issue', 'task_id', 'Issues', readonly=False),
+        'open_issue': fields.function(_open_ticket, method=True, type="integer", string="Open Ticket"),
     }
 
 

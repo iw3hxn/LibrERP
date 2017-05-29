@@ -18,17 +18,49 @@
                                 <field name="partner_id" invisible="1"/>
                                 <field name="project_id" invisible="1"/>
                                 <field name="priority" string="Priority"/>
-                                <field name="type_id"  string="Stages"/>
-                                <field name="version_id" />
+                                <field name="type_id" string="Stages"/>
+                                <field name="version_id"/>
                                 <field name="user_id"/>
                                 <field name="state"/>
                                 <field name="categ_id" invisible="1"/>
-                                <field name="task_id" />
+                                <field name="task_id"/>
                             </tree>
                         </field>
                     </page>
                 </page>
             </field>
         </record>
+
+        <record id="view_task_tree_issue_inherit" model="ir.ui.view">
+            <field name="name">project.task.tree.issue</field>
+            <field name="model">project.task</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="project.view_task_tree2"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="open_issue"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="inherit_project_image_kanban_view">
+            <field name="inherit_id" ref="project.view_task_kanban"/>
+            <field name="model">project.task</field>
+            <field name="name">project.task.image.kanban</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="name"]' position="before">
+                    <ul class="oe_tag" t-if="record.open_issue.raw_value">
+                                <li><b>Issue:</b> <field name="open_issue"/></li>
+                            </ul>
+
+                    <!--<td align="left" valign="middle" class="" >-->
+                        <!--<field name="open_issue"/>-->
+                    <!--</td>-->
+                </xpath>
+
+            </field>
+        </record>
+
     </data>
 </openerp>
