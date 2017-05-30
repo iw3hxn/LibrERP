@@ -34,7 +34,10 @@ class purchase_order_line(orm.Model):
 
         result = {}
         for line in purchase_order_line:
-            result[line.id] = line.order_id.order_line.index(line) + 1
+            if line.order_id:
+                result[line.id] = line.order_id.order_line.index(line) + 1
+            else:
+                result[line.id] = 0
         return result
 
     def _get_purchase_line(self, cr, uid, ids, context=None):

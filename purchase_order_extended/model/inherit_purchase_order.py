@@ -64,7 +64,7 @@ class purchase_order(orm.Model):
                     return False
         return True
 
-    def hook_sale_state(self, cr, uid, ids, vals, context):
+    def hook_purchase_state(self, cr, uid, ids, vals, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         # function call if change state the purchase order
         return True
@@ -132,6 +132,6 @@ class purchase_order(orm.Model):
                     self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
 
         if vals.get('state', False):
-            self.hook_sale_state(cr, uid, ids, vals, context)
+            self.hook_purchase_state(cr, uid, ids, vals, context)
 
         return super(purchase_order, self).write(cr, uid, ids, vals, context=context)
