@@ -25,7 +25,7 @@ class purchase_order_line(orm.Model):
     _inherit = "purchase.order.line"
     _columns = {
         # 'active': fields.related('order_id', 'active', type='boolean', string='Active', store=False),
-        'purchase_line_copy_id': fields.many2one('sale.order.line', 'Orig version', required=False, readonly=False),
+        'purchase_line_copy_id': fields.many2one('purchase.order.line', 'Orig version', required=False, readonly=False),
     }
 
     def copy_data(self, cr, uid, line_id, defaults=None, context=None):
@@ -37,7 +37,8 @@ class purchase_order_line(orm.Model):
     def copy(self, cr, uid, line_id, default, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         default = default or {}
-        default['purchase_line_copy_id'] = line_id
+        if context.get('versioning') == True:
+            default['purchase_line_copy_id'] = line_id
         return super(purchase_order_line, self).copy(cr, uid, line_id, default, context)
 
 
