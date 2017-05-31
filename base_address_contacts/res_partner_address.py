@@ -60,7 +60,7 @@ class res_partner_address_contact(orm.Model):
         for rec in self.browse(cr, uid, ids, context=context):
             name = u"{name} {surname}".format(name=rec.last_name or '', surname=rec.first_name or '')
             if rec.title:
-                name = rec.title.name + name
+                name = u"{title} {name}".format(title=rec.title.name, name=name)
             result[rec.id] = name
         return result
 
