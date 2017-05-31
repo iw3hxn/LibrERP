@@ -31,6 +31,30 @@ class res_bank(osv.osv):
         'province': fields.many2one('res.province', string='Provincia', ondelete='restrict'),
     }
 
+    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=None):
+        if not args:
+            args = []
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if name:
+            abi_cab = name.split(' ')
+            if len(abi_cab) == 2 and abi_cab[0].isdigit() and abi_cab[1].isdigit():
+                ids = self.search(cr, uid, [('abi', '=', abi_cab[0]), ('cab', '=', abi_cab[1])], limit=limit, context=context)
+            else:
+                ids = self.search(cr, uid, ['|', '|', ('abi', '=', name), ('cab', '=', name), ('name', 'like', name)] + args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, uid, args, limit=limit, context=context)
+        return self.name_get(cr, uid, ids, context=context)
+
+    def name_get(self, cr, uid, ids, context=None):
+        res = []
+        for bank in self.browse(cr, uid, ids, context=context):
+            if bank.abi and bank.cab:
+                name = u"[{abi} {cab}] {name}".format(abi=bank.abi, cab=bank.cab, name=bank.name)
+            else:
+                name = bank.name
+            res.append((bank.id, name))
+        return res
+
 
 class res_partner_bank(osv.osv):
     _inherit = "res.partner.bank"
