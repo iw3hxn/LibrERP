@@ -30,27 +30,26 @@ class purchase_order_line(orm.Model):
     _inherit = 'purchase.order.line'
 
     def _get_order_line_sequence(self, cr, uid, ids, field_name, arg, context):
-        purchase_order_line = self.browse(cr, uid, ids, context)
-
         result = {}
-        for line in purchase_order_line:
+        for line in self.browse(cr, uid, ids, context):
             if line.order_id:
                 result[line.id] = line.order_id.order_line.index(line) + 1
             else:
                 result[line.id] = 0
         return result
 
-    def _get_purchase_line(self, cr, uid, ids, context=None):
-        result = {}
-        for purchase in self.pool['purchase.order'].browse(cr, uid, ids, context=context):
-            for purchase_order_line in purchase.order_line:
-                result[purchase_order_line.id] = True
-        return result.keys()
+    # def _get_purchase_line_date(self, cr, uid, ids, context=None):
+    #     result = {}
+    #     for line_id in self.pool['purchase.order.line'].search(cr, uid, [('order_id', 'in', ids)], context=context):
+    #         result[line_id] = True
+    #     return result.keys()
 
     _columns = {
         'sequence': fields.function(_get_order_line_sequence, string='Line #', type='integer', method=True),
-        'date_order': fields.related('order_id', 'date_order', string='Order Date', readonly=True, type="date", store={
-                'purchase.order': (_get_purchase_line, ['date_order'], 10),
-        },)
+        'date_order': fields.related('order_id', 'date_order', type='date', string='Order Date', readonly=True, store=
+        # {
+        #         'purchase.order': (_get_purchase_line_date, ['date_order'], 100),
+        # }
+        False)
     }
 
