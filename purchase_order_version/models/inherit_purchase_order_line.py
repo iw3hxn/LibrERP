@@ -31,7 +31,8 @@ class purchase_order_line(orm.Model):
     def copy_data(self, cr, uid, line_id, defaults=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         defaults = defaults or {}
-        defaults['purchase_line_copy_id'] = line_id
+        if context.get('versioning', False):
+            defaults['purchase_line_copy_id'] = line_id
         return super(purchase_order_line, self).copy_data(cr, uid, line_id, defaults, context)
 
     def copy(self, cr, uid, line_id, default, context=None):
