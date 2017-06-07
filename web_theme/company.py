@@ -25,7 +25,7 @@ from osv import osv, fields
 class company(osv.osv):
     _inherit = 'res.company'
     _columns = {
-        'logo_web': fields.binary('Logo Header', filters='*.png,*.gif,*.jpg,*.jpeg',help="Image file for company logo at header of web client. Ideally, a 200x63 png with transparent background."),
+        'logo_web': fields.binary('Logo Header', filters='*.png,*.gif,*.jpg,*.jpeg',help="Image file for company logo at header of web client. Ideally, a 200x55 png with transparent background."),
         'color_set': fields.many2one('res.company.color', string='Color schema', help="Set of colors to display on Web client"),
         'color_top': fields.related('color_set','color_top', readonly=True, type='char'),
         'color_mid': fields.related('color_set','color_mid', readonly=True, type='char'),

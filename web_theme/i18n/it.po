@@ -82,8 +82,8 @@ msgstr "Low gradient"
 
 #. module: web_theme
 #: help:res.company,logo_web:0
-msgid "Image file for company logo at header of web client. Ideally, a 200x63 png with transparent background."
-msgstr "Immagine per logo aziendale. File png di 200x63 e trasparente"
+msgid "Image file for company logo at header of web client. Ideally, a 200x55 png with transparent background."
+msgstr "Immagine per logo aziendale. File png di 200x55 e trasparente"
 
 #. module: web_theme
 #: view:res.company.color:0

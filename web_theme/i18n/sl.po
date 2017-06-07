@@ -161,11 +161,11 @@ msgstr "Predloge"
 #. module: web_theme
 #: help:res.company,logo_web:0
 msgid ""
-"Image file for company logo at header of web client. Ideally, a 200x63 png "
+"Image file for company logo at header of web client. Ideally, a 200x55 png "
 "with transparent background."
 msgstr ""
 "Slikovna datoteka logotipa podjetja v glavi spletnega odjemalca. Idealno "
-"200x63 png datoteka s prozornim ozadjem."
+"200x55 png datoteka s prozornim ozadjem."
 
 #. module: web_theme
 #: field:res.company,color_set:0
