@@ -19,8 +19,12 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
 import re
+import time
+from datetime import datetime
+
+from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class project_issue(orm.Model):
@@ -57,6 +61,38 @@ class project_issue(orm.Model):
         'work_ids': fields.one2many('project.task.work', 'issue_id', 'Work done'),
         'remaining_hours': fields.related('task_id', 'remaining_hours', type='float', string='Ore rimanenti'),
     }
+
+    def case_close(self, cr, uid, ids, *args):
+        """
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of case's Ids
+        @param *args: Give Tuple Value
+
+        """
+        res = super(project_issue, self).case_close(cr, uid, ids, *args)
+        context = self.pool['res.users'].context_get(cr, uid)
+        for issue in self.browse(cr, uid, ids, context):
+            if issue.project_id and issue.user_id and issue.task_id:
+                if issue.date_open != issue.date_closed:
+                    start_datetime = datetime.strptime(issue.date_open, DEFAULT_SERVER_DATETIME_FORMAT)
+                    end_datetime = datetime.strptime(issue.date_closed, DEFAULT_SERVER_DATETIME_FORMAT)
+                    end_seconds = time.mktime(end_datetime.timetuple())
+                    start_seconds = time.mktime(start_datetime.timetuple())
+                    diff_hours = (end_seconds - start_seconds) / 60 / 60
+                else:
+                    diff_hours = 0.16
+                task_vals = {
+                    'date': issue.date_closed,
+                    'task_id': issue.task_id.id,
+                    'hours': diff_hours,
+                    'user_id': issue.user_id.id,
+                    'name': u'[{issue_id}] Ticket {name}'.format(issue_id=issue.id, name=issue.name),
+                    'issue_id': issue.id
+                }
+                self.pool['project.task.work'].create(cr, uid, task_vals, context)
+        return res
 
     def create(self, cr, uid, vals, context):
         if not vals.get('project_id', False):
