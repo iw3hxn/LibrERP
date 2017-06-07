@@ -34,7 +34,7 @@ class project_issue(orm.Model):
     #         ids = [ids]
     #     return [(x['id'], str(x.id)) for x in self.browse(cr, uid, ids, context=context)]
 
-    def on_change_project(self, cr, uid, ids, project_id, context=None):
+    def on_change_project(self, cr, uid, ids, project_id, email_from, context=None):
         if not project_id:
             return {'value': {}}
 
@@ -49,6 +49,7 @@ class project_issue(orm.Model):
             'value': {
                 'partner_id': project.partner_id and project.partner_id.id,
                 'task_id': task_id,
+                'analytic_account_id': project.analytic_account_id.id,
             }
         }
 
