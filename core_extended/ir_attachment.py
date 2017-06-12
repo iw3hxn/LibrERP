@@ -22,10 +22,12 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from cStringIO import StringIO
-import zipfile
 import logging
+import zipfile
+from cStringIO import StringIO
+
+from openerp.osv import orm
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 

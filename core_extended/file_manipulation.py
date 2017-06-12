@@ -20,8 +20,12 @@
 #
 ###############################################################################
 
+import logging
+
 from openerp.osv import orm
 from tools.translate import _
+
+_logger = logging.getLogger(__name__)
 
 
 def import_sheet(filename, content):
@@ -52,7 +56,10 @@ def import_sheet(filename, content):
 #            print table
         number_of_lines = sh.nrows
     elif file_type in ('xlsx', 'xlsm', 'xltx', 'xltm'):
-        import openpyxl
+        try:
+            import openpyxl
+        except ImportError:
+            _logger.debug('Cannot `import openpyxl`.')
         import StringIO
 
         ## Create virtual File:
