@@ -34,6 +34,7 @@ _logger.setLevel(logging.DEBUG)
 
 ENABLE_CACHE = True
 
+
 class product_product(orm.Model):
     """
     Inherit Product in order to add an "Bom Stock" field
@@ -146,8 +147,7 @@ class product_product(orm.Model):
                             from_amount=price,
                             context=context
                         )
-
-                    res[product.id] = price_subtotal or price
+                    res[product.id] = price_subtotal or price or product.standard_price
                 else:
                     res[product.id] = product.standard_price
 
@@ -182,6 +182,9 @@ class product_product(orm.Model):
         return res
 
     def _kit_filter(self, cr, uid, obj, name, args, context):
+        start_time = datetime.now()
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
         if not args:
             return []
         bom_obj = self.pool['mrp.bom']
@@ -194,6 +197,10 @@ class product_product(orm.Model):
                         return [('id', 'in', res)]
                     else:
                         return [('id', 'in', [])]
+        end_time = datetime.now()
+        duration_seconds = (end_time - start_time)
+        duration = '{sec}'.format(sec=duration_seconds)
+        _logger.info(u'KIT filter get in {duration}'.format(duration=duration))
         return []
     
     def _is_kit(self, cr, uid, ids, product_uom=None, bom_properties=None, context=None):
@@ -516,7 +523,8 @@ class product_product(orm.Model):
                     while bom_parent:
                         changed_product.append(bom_parent.product_id.id)
                         bom_parent = bom_parent.bom_id
-
+            if 'seller_ids' in vals:
+                changed_product = ids
                 for product_id in changed_product:
                     if product_id in self.product_cost_cache:
                         del self.product_cost_cache[product_id]
