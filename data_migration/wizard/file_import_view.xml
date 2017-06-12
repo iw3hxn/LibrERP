@@ -508,6 +508,66 @@
         <menuitem action="crm_file_import" id="menu_crm_file_import" name="Import Crm" parent="data_migration_menu"/>
 
 
+        <record id="view_bom_import_form" model="ir.ui.view">
+            <field name="name">bom.import.form</field>
+            <field name="model">bom.import</field>
+            <field name="arch" type="xml">
+                <form string="BOM import">
+                    <!-- Invisible field used for hiding and showing widgets based on state value and accessing preview text -->
+                    <field name="state" invisible="1"/>
+                    <field name="preview_text_original" invisible="1"/>
+                    <!-- Items visibles in state "import" -->
+                    <group colspan="8" col="8" states="import">
+                        <field name="file_name" invisible="1" />
+                        <field name="content_base64" filename="file_name" required="True" />
+                        <field name="format" />
+                        <!--<field name="update_product_name" />-->
+                    </group>
+
+                    <!-- Items per lo stato end -->
+                    <group colspan="8" col="8" states="end">
+                        <label string="Importing BOM. You will be notified with a message when the import process is finished"/>
+                        <!-- <label string="Import file. Verra segnalata la fine del'importazione, nelle 'Richieste' (Configurazione -> Personalizzazione -> Oggetti Basso Livello -> Richieste -> Richieste)."/> -->
+                    </group>
+
+                    <!-- Separatore -->
+                    <group colspan="8" col="8">
+                        <separator string="" colspan="8"/>
+                        <!--<label colspan="6" width="220"/>-->
+                    </group>
+
+                    <!-- Pulsanti per lo stato "import" -->
+                    <group colspan="8" col="8" states="import">
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button type="object" name="actionCheckEncoding" string="Start import" icon="gtk-ok"/>
+                    </group>
+
+                    <!-- Pulsanti per lo stato "preview" -->
+                    <group colspan="8" col="8" states="preview">
+                        <separator string="" colspan="8"/>
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button type="object" name="actionStartImport" string="Start import" icon="gtk-ok"/>
+                    </group>
+
+                    <!-- Items visibles in state "end" -->
+                    <group colspan="8" col="8" states="end">
+                        <button icon="gtk-ok" special="cancel" string="Close"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="bom_file_import" model="ir.actions.act_window">
+            <field name="name">Import BOM in .xls format</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bom.import</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_bom_import_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="bom_file_import" id="menu_bom_file_import" name="Import BOM" parent="data_migration_menu"/>
 
     </data>
 </openerp>

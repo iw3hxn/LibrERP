@@ -31,6 +31,7 @@ from data_migration.utils import picking_importer
 from data_migration.utils import pricelist_importer
 from data_migration.utils import product_importer
 from data_migration.utils import sales_importer
+from data_migration.utils import bom_importer
 from openerp.osv import orm, fields
 
 
@@ -159,7 +160,7 @@ class product_import(filedata_import):
         'format': fields.selection(
             (
                 ('FormatOne', _('Format One')),
-                # ('FormatTwo', _('Format Two')),
+                ('FormatTwo', _('Format Two')),
                 ('FormatThree', _('Format Three')),
                 ('FormatFour', _('Format Four')),
                 ('FormatFive', _('Format Five')),
@@ -607,6 +608,74 @@ class crm_import(filedata_import):
             'Progress import ', size=3, translate=False, readonly=True
         ),
 
+    }
+    # default value for data fields of object
+    _defaults = {
+        # 'text_encoding': ISO_8859_15_CODE,
+        'state': 'import',
+        'progress_indicator': 0,
+    }
+
+
+class bom_import(filedata_import):
+    _name = "bom.import"
+    _description = "Import bom from file in .xls format."
+
+    importer = bom_importer
+
+    # data fields on DB table
+    _columns = {
+        # State of this wizard
+        'state': fields.selection(
+            (
+                ('import', 'import'),
+                ('preview', 'preview'),
+                ('end', 'end')
+            ), 'state', required=True, translate=False, readonly=True
+        ),
+        'format': fields.selection(
+            (
+                ('FormatOne', _('Format One')),
+            ), 'Formato Dati', required=True, readonly=False
+        ),
+        # Data of file, in code BASE64
+        'content_base64': fields.binary(
+            'BOM file path', required=False, translate=False
+        ),
+        'file_name': fields.char('File Name', size=256),
+        # Data of file, in code text
+        'content_text': fields.binary(
+            'File Partner', required=False, translate=False
+        ),
+        # Codecs
+        # 'text_encoding': fields.selection(
+        #     [
+        #         (ASCII_CODE, 'ascii'),
+        #         (ISO_8859_15_CODE, 'iso-8859-15'),
+        #         ('utf-8',  'Unicode 8')
+        #     ], 'Text encoding', required=True, translate=False
+        # ),
+        # problem's row of product. original code
+        'preview_text_original': fields.binary(
+            'Preview text original', required=False,
+            translate=False, readonly=True
+        ),
+        # problem's row of product. decoded
+        'preview_text_decoded': fields.text(
+            'Preview text decoded', required=False,
+            translate=False, readonly=True
+        ),
+        # Supplier
+        # 'supplier': fields.many2one(
+        #    'res.partner', 'Seller', required=True, translate=False
+        # ),
+        'progress_indicator': fields.integer(
+            'Progress import ', size=3, translate=False, readonly=True
+        ),
+        # 'file_path': fields.char('Percorso file', size=256)
+        'update_product_name': fields.boolean(
+            'Update Product Name', help="If set, overwrite product name"
+        )
     }
     # default value for data fields of object
     _defaults = {

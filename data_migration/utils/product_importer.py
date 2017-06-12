@@ -51,7 +51,7 @@ class ImportFile(threading.Thread, Utils):
     def __init__(self, cr, uid, ids, context):
         # Inizializzazione superclasse
         threading.Thread.__init__(self)
-        
+
         # Inizializzazione classe ImportPricelist
         self.uid = uid
         self.start_time = datetime.now()
@@ -59,20 +59,20 @@ class ImportFile(threading.Thread, Utils):
         self.pool = pooler.get_pool(cr.dbname)
         self.product_obj = self.pool['product.product']
         self.supplierinfo_obj = self.pool['product.supplierinfo']
-        
+
         # Necessario creare un nuovo cursor per il thread,
         # quello fornito dal metodo chiamante viene chiuso
         # alla fine del metodo e diventa inutilizzabile
         # all'interno del thread.
         self.cr = pooler.get_db(self.dbname).cursor()
-        
+
         self.productImportID = ids[0]
-        
+
         self.context = context
         self.error = []
         self.warning = []
         self.first_row = True
-        
+
         # Contatori dei nuovi prodotti inseriti e dei prodotti aggiornati,
         # vengono utilizzati per compilare il rapporto alla terminazione
         # del processo di import
@@ -80,7 +80,7 @@ class ImportFile(threading.Thread, Utils):
         self.updated = 0
         self.problems = 0
         self.cache = []
-    
+
     def run(self):
         # Recupera il record dal database
         self.filedata_obj = self.pool['product.import']
@@ -88,7 +88,7 @@ class ImportFile(threading.Thread, Utils):
         self.file_name = self.productImportRecord.file_name.split('\\')[-1]
 
         self.update_product_name = self.productImportRecord.update_product_name
-        
+
         # ===================================================
         Config = getattr(settings, self.productImportRecord.format)
 
@@ -97,14 +97,14 @@ class ImportFile(threading.Thread, Utils):
         self.PRODUCT_SEARCH = Config.PRODUCT_SEARCH
         self.PRODUCT_WARNINGS = Config.PRODUCT_WARNINGS
         self.PRODUCT_ERRORS = Config.PRODUCT_ERRORS
-        
+
         # Default values
         self.PRODUCT_DEFAULTS = Config.PRODUCT_DEFAULTS
-        
+
         if not len(self.HEADER) == len(Config.COLUMNS_PRODUCT.split(',')):
             pprint(zip(self.HEADER, Config.COLUMNS_PRODUCT.split(',')))
             raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
-        
+
         self.RecordProduct = namedtuple('RecordProduct', Config.COLUMNS_PRODUCT)
 
         # ===================================================
@@ -127,7 +127,7 @@ class ImportFile(threading.Thread, Utils):
         if DEBUG:
             # Importa il listino
             self.process(self.cr, self.uid, table)
-            
+
             # Genera il report sull'importazione
             self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
         else:
@@ -135,49 +135,49 @@ class ImportFile(threading.Thread, Utils):
             try:
                 # Importa il listino
                 self.process(self.cr, self.uid, table)
-                
+
                 # Genera il report sull'importazione
                 self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
                 self.cr.commit()
-                
+
                 title = "Import failed"
                 message = "Errore alla linea %s" % str(self.processed_lines) + "\nDettaglio:\n\n" + str(e)
-                
+
                 if DEBUG:
                     ### Debug
                     _logger.debug(message)
                     pdb.set_trace()
-                
+
                 self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
 
     def process(self, cr, uid, table):
         self.message_title = _("Importazione prodotti")
         self.progressIndicator = 0
-        
+
         notifyProgressStep = (self.numberOfLines / 100) + 1     # NB: divisione tra interi da sempre un numero intero!
                                                                 # NB: il + 1 alla fine serve ad evitare divisioni per zero
-        
+
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
         for self.processed_lines, row_list in enumerate(table, start=1):
             if not self.import_row(cr, uid, row_list):
                 self.problems += 1
-                
+
             if (self.processed_lines % notifyProgressStep) == 0:
                 cr.commit()
                 completedQuota = float(self.processed_lines) / float(self.numberOfLines)
                 completedPercentage = math.trunc(completedQuota * 100)
                 self.progressIndicator = completedPercentage
                 self.updateProgressIndicator(cr, uid, self.productImportID)
-        
+
         self.progressIndicator = 100
         self.updateProgressIndicator(cr, uid, self.productImportID)
-        
+
         return True
-        
+
     def get_category(self, cr, uid, categories, parent_id=False):
 
         if isinstance(categories, (unicode, str)):
@@ -206,34 +206,47 @@ class ImportFile(threading.Thread, Utils):
                 # self.error.append(error)
                 # return False
                 category_id = category_obj.create(cr, uid, {'name': name.strip(), 'parent_id': parent_id}, context=self.context)
-                
+
                 if categories:
                     return self.get_category(cr, uid, categories, category_id)
                 else:
                     return category_id
-                
+
         return False
-            
+
     def get_uom(self, cr, uid, name):
         translate = {
             'm': 'm',
             'kgm': 'kg',
             'unit': 'Unit(s)',
             'litre': 'Liter(s)',
+            'LT': 'Litre',
+            'lt': 'Litre',
+            '20 lt': 'Litre',
             'PCE': 'PCE',
             'Pz.': 'PCE',
             'Pa.': 'PCE',  # Paia
+            'Paia': 'PCE',  # Paia
             'PZ': 'PCE',
+            'Pz': 'PCE',
             'CF': 'PCE',
-            'HH': 'Hour',
-            'M': 'm',
-            'M2': 'PCE',
-            'ML.': 'm',
             'N.': 'PCE',
-            'LT': 'Litre',
             'Mt.': 'PCE',
             'pz': 'PCE',
             'copp': 'PCE',
+            'conf': 'PCE',
+            'Kit': 'PCE',
+            'Pacco': 'PCE',
+            'scat': 'PCE',
+            'pac': 'PCE',
+            'HH': 'Hour',
+            'M': 'm',
+            'ML.': 'm',
+            'mc': 'm',
+            'M2': 'mq',
+            'mq': 'mq',
+            'Kg': 'kg',
+            'kg': 'kg'
         }
 
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':
@@ -263,12 +276,12 @@ class ImportFile(threading.Thread, Utils):
             _logger.error(error)
             self.error.append(error)
             return False
-        
+
     def get_taxes(self, cr, uid, description):
         tax_obj = self.pool['account.tax']
-        
+
         tax_ids = tax_obj.search(cr, uid, [('description', '=', description)], context=self.context)
-        
+
         if len(tax_ids) == 1:
             return tax_ids
         elif len(tax_ids) > 1:
@@ -281,15 +294,15 @@ class ImportFile(threading.Thread, Utils):
             _logger.error(error)
             self.error.append(error)
             return False
-        
+
     def get_suppliers(self, cr, uid, names):
         names = names.split(',')
         supplier_ids = []
-        
+
         for name in names:
             name = name.strip()
             partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)], context=self.context)
-            
+
             if len(partner_ids) == 1:
                 supplier_ids += partner_ids
             elif len(supplier_ids) > 1:
@@ -302,13 +315,13 @@ class ImportFile(threading.Thread, Utils):
                 _logger.warning(warning)
                 self.warning.append(warning)
                 return False
-        
+
         return supplier_ids
-    
+
     def get_brand(self, cr, uid, name):
         brand_obj = self.pool['product.brand']
         brand_ids = brand_obj.search(cr, uid, [('name', '=ilike', name)], context=self.context)
-        
+
         if len(brand_ids) == 1:
             return brand_ids[0]
         elif len(brand_ids) > 1:
@@ -344,6 +357,7 @@ class ImportFile(threading.Thread, Utils):
     def import_row(self, cr, uid, row_list):
         if self.first_row:
             row_str_list = [self.toStr(value) for value in row_list]
+
             for column in row_str_list:
                 # print column
                 if column in self.HEADER:
@@ -372,7 +386,7 @@ class ImportFile(threading.Thread, Utils):
             # pprint(row_list)
             row_str_list = [self.toStr(value) for value in row_list]
             pprint(zip(self.HEADER, row_str_list))
-        
+
         # Sometime value is only numeric and we don't want string to be treated as Float
         record = self.RecordProduct._make([self.toStr(value) for value in row_list])
         print record
@@ -381,7 +395,7 @@ class ImportFile(threading.Thread, Utils):
             # return False
         elif record.default_code:
             self.cache.append(record.default_code)
-        
+
         for field in self.REQUIRED:
             if not getattr(record, field):
                 error = "Riga {0}: Manca il valore della {1}. La riga viene ignorata.".format(self.processed_lines, field)
@@ -415,7 +429,7 @@ class ImportFile(threading.Thread, Utils):
             _logger.error(error)
             self.error.append(error)
             return False
-        
+
         if hasattr(record, 'category') and record.category:
             if '\\' in record.category:
                 categories = record.category.split('\\')
@@ -431,26 +445,40 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'order_duration') and record.order_duration:
             subscription = self.get_order_duration(cr, uid, record.order_duration)
             vals_product.update(subscription)
-        
+
         if hasattr(record, 'description_sale') and record.description_sale:
             if isinstance(record.description_sale, unicode):
                 description_sale = record.description_sale
             else:
                 description_sale = unicode(record.description_sale, 'utf-8')
             vals_product['description_sale'] = description_sale
-        
+
         if hasattr(record, 'uom') and record.uom:
             vals_product['uom_id'] = self.get_uom(cr, uid, record.uom)
             vals_product['uom_po_id'] = vals_product['uom_id']
+        # else:
+        #     if hasattr(record, 'uom_po_id') and record.uom_po_id:
+        #         vals_product['uom_po_id'] = self.get_uom(cr, uid, record.uom_po_id)
+        #         vals_product['uom_po_id'] = record.uom_po_id
 
         if hasattr(record, 'active') and record.active:
             if record.active == 'FALSE':
+                vals_product['active'] = False
+
+            if record.active == 'Y':
+                vals_product['active'] = True
+            elif record.active == 'N':
                 vals_product['active'] = False
 
         if hasattr(record, 'procure_method') and record.procure_method:
             if record.procure_method.lower() == 'make to stock':
                 vals_product['procure_method'] = 'make_to_stock'
             if record.procure_method.lower() == 'make to order':
+                vals_product['procure_method'] = 'make_to_order'
+
+            if record.procure_method.upper() == 'M':
+                vals_product['procure_method'] = 'make_to_stock'
+            if record.procure_method.upper() == 'B':
                 vals_product['procure_method'] = 'make_to_order'
 
         if hasattr(record, 'cost_method') and record.cost_method:
@@ -467,7 +495,7 @@ class ImportFile(threading.Thread, Utils):
                 error = "Row {0}: Can't find tax for specified Codice Iva".format(self.processed_lines)
                 _logger.error(error)
                 self.error.append(error)
-        
+
         if hasattr(record, 'tax_in') and record.tax_in:
             supplier_taxes_ids = self.get_taxes(cr, uid, record.tax_in)
             if supplier_taxes_ids:
@@ -476,7 +504,7 @@ class ImportFile(threading.Thread, Utils):
                 error = "Row {0}: Can't find tax for specified Codice Iva {1}".format(self.processed_lines, record.tax_in)
                 _logger.error(error)
                 self.error.append(error)
-        
+
         if hasattr(record, 'list_price') and record.list_price:
             try:
                 vals_product['list_price'] = float(record.list_price)
@@ -490,7 +518,7 @@ class ImportFile(threading.Thread, Utils):
                 warning = u"Row {0}: No list price for product {1}".format(self.processed_lines, vals_product['name'])
                 _logger.warning(warning)
                 self.warning.append(warning)
-        
+
         if hasattr(record, 'supplier') and record.supplier:
             if isinstance(record.supplier, unicode):
                 supplier = record.supplier
@@ -505,12 +533,12 @@ class ImportFile(threading.Thread, Utils):
                 partner_ids = False
         else:
             partner_ids = False
-        
+
         if hasattr(record, 'supplier_product_code') and record.supplier_product_code:
             product_code = record.supplier_product_code
         else:
             product_code = False
-                    
+
         if hasattr(record, 'standard_price') and record.standard_price:
             vals_product['standard_price'] = float(self.toStr(record.standard_price))
         else:
@@ -518,19 +546,19 @@ class ImportFile(threading.Thread, Utils):
                 warning = u"Row {0}: No standard price for product {1}".format(self.processed_lines, vals_product['name'])
                 _logger.warning(warning)
                 self.warning.append(warning)
-        
+
         if hasattr(record, 'available_in_pos') and record.available_in_pos:
             if record.available_in_pos.lower() == 'true':
                 vals_product['available_in_pos'] = True
             else:
                 vals_product['available_in_pos'] = False
-        
+
         if hasattr(record, 'sale_ok') and record.sale_ok:
             if record.sale_ok.lower() == 'true':
                 vals_product['sale_ok'] = True
             else:
                 vals_product['sale_ok'] = False
-        
+
         if hasattr(record, 'ean13') and record.ean13:
             if check_ean(record.ean13):
                 vals_product['ean13'] = record.ean13
@@ -540,13 +568,30 @@ class ImportFile(threading.Thread, Utils):
                     _logger.error(error)
                     self.error.append(error)
                     return False
-        
+
         if hasattr(record, 'weight_net') and record.weight_net:
             vals_product['weight_net'] = record.weight_net
+
+        if hasattr(record, 'measures') and record.measures:
+            vals_product['measures'] = record.measures
+
+        if hasattr(record, 'drop_height') and record.drop_height:
+            vals_product['drop_height'] = record.drop_height
+
+        if hasattr(record, 'user_age') and record.user_age:
+            vals_product['user_age'] = record.user_age
 
         vals_product['listprice_update_date'] = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
 
         product_ids = self.product_obj.search(cr, uid, [(field, '=ilike', vals_product[field].replace('\\', '\\\\'))], context=self.context)
+
+        if not product_ids:
+            product_ids = self.product_obj.search(
+                cr, uid,
+                [(field, '=ilike', vals_product[field].replace('\\', '\\\\')), ('active', '=', False)],
+                context=self.context
+            )
+
         if product_ids:
             _logger.info(u'Row {row}: Updating product {product}...'.format(row=self.processed_lines, product=vals_product[field]))
             product_id = product_ids[0]
@@ -569,12 +614,12 @@ class ImportFile(threading.Thread, Utils):
 
             product_id = self.product_obj.create(cr, uid, default_vals_product, self.context)
             self.uo_new += 1
-        
+
         if partner_ids and product_id:
             for partner_id in partner_ids:
                 supplierinfo_ids = self.supplierinfo_obj.search(cr, uid, [('product_id', '=', product_id), ('name', '=', partner_id)], context=self.context)
                 if supplierinfo_ids:
-                    _logger.info(u'{0}: Updating supplierinfo for product {1}'.format(self.processed_lines, vals_product['name']))
+                    _logger.info(u'{0}: Updating supplier info for product {1}'.format(self.processed_lines, vals_product['name']))
                     self.supplierinfo_obj.write(cr, uid, supplierinfo_ids[0], {
                         'name': partner_id,
                         'product_name': vals_product['name'],
@@ -595,17 +640,17 @@ class ImportFile(threading.Thread, Utils):
                     }, context=self.context)
         else:
             _logger.warning(u'{0}: No supplier for product {1}'.format(self.processed_lines, vals_product['name']))
-        
+
         return product_id
-            
+
     def getProductTemplateID(self, product_id):
         # Get the product_tempalte ID
-        
+
         # Retrive the record associated with the product id
         productObject = self.pool['product.product'].browse(self.cr, self.uid, product_id, self.context)
-        
+
         # Retrive the template id
         product_template_id = productObject.product_tmpl_id.id
-        
+
         # Return the template id
         return product_template_id

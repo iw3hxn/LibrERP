@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2016 Didotech srl (info at didotech.com)
+# Copyright (c) 2013-2017 Didotech srl (info at didotech.com)
 #
 # This program is Free Software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -41,6 +41,7 @@ class FormatOne():
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ('name', 'vat')
+    PARTNER_UNIQUE_OFFICE_CODE = False
 
     HEADER_PRODUCT = (
         'Codice', 'Descrizione', 'UMC', 'UMT',
@@ -102,6 +103,29 @@ class FormatOne():
     REQUIRED_INVENTORY_ITEM = ['default_code']
     INVENTORY_PRODUCT_SEARCH = ['default_code']
 
+    HEADER_BOM = (
+        '#', 'Articolo superiore', 'Numero dell\'elemento subordinato', 'Articolo subordinato', 'Quantità', 'Magazzino',
+        'Prezzo', 'Divisa', 'Listino prezzi', 'Prezzo nuovo', 'Divisa originale', 'Modalità prelievo',
+        'Unità di misura magazzino', 'Osservazione', 'Istanza registro', 'Oggetto', 'Regola di distribuzione',
+        'Regola di distribuzione 2', 'Regola di distribuzione 3', 'Regola di distribuzione 4',
+        'Regola di distribuzione 5', 'Input principale', 'Codice progetto', 'Misure', 'Codice alternativo',
+        'Dimensione', 'Materiale'
+    )
+    COLUMNS_BOM = "index, default_code, sub_elem_number, sub_item, product_qty, wharehouse, " \
+                  "price, divisa, listino_prezzi, prezzo_nuovo, divisa_originale, modalita_prelievo, " \
+                  "uom_maga, position, ist_reg, object, rdd, " \
+                  "rdd2, rdd3, rdd4, " \
+                  "rdd5, input_principale, codice_progetto, measures, codice_alternativo, " \
+                  "dimension, materials"
+    BOM_SEARCH = ['sub_item']
+    REQUIRED_BOM = ['sub_item']
+    BOM_WARNINGS = ['standard_price']
+    BOM_ERRORS = []
+
+    # Default values
+    BOM_DEFAULTS = {
+    }
+
 
 class FormatTwo():
     # IB.
@@ -128,6 +152,7 @@ class FormatTwo():
     ADDRESS_TYPE = ('invoice', 'delivery')
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['name', 'vat']
+    PARTNER_UNIQUE_OFFICE_CODE = False
 
     # HEADER_PRODUCT = (
     #     'Codice', 'Descrizione', 'UMC', 'UMT', 'PesoN',
@@ -139,6 +164,36 @@ class FormatTwo():
     # REQUIRED_PRODUCT = ['default_code', 'name']
     # PRODUCT_WARNINGS = ['standard_price']
     # PRODUCT_ERRORS = []
+
+    # HEADER_PRODUCT = (
+    #     'Codice articolo', 'Descrizione articolo', 'Gruppo articoli', 'Descrizione articolo',
+    #     'Descrizione in lingua straniera', 'Unità di misura acquisto', 'Definizione IVA acquisti',
+    #     'Codice IVA (fornitori)', 'Codice a barre', 'Nome BP', 'Ultimo prezzo d\'acquisto', 'Attivo',
+    #     'Metodo di approvvigionamento'
+    # )
+
+    HEADER_PRODUCT = (
+        'COD.', 'DESCR.1', 'Descrizione Commerciale', 'descrizione inglese', 'misure',
+        'Altezza di caduta', 'età utente', 'Unità di misura acquisto', 'categoria', 'Ultimo prezzo d\'acquisto',
+        'Attivo', 'Metodo di approvvigionamento'
+    )
+    COLUMNS_PRODUCT = "default_code, name, description_sale, eng_description_sale, measures, " \
+                      "drop_height, user_age, uom, category, standard_price, " \
+                      "active, procure_method"
+    PRODUCT_SEARCH = ('default_code', 'name')
+    REQUIRED_PRODUCT = ['default_code', 'name']
+    PRODUCT_WARNINGS = []
+    PRODUCT_ERRORS = []
+    # Default values
+    PRODUCT_DEFAULTS = {
+        'supply_method': 'buy',
+        # 'uom': 'PCE',
+        # 'type': 'consu',
+        'type': 'product',
+        'procure_method': 'make_to_order',
+        'cost_method': 'standard',
+        'sale_ok': True,
+    }
 
     HEADER_PICKING = (
         'NAME', 'DATE', 'STYLE NUMBER', 'QUANTITY'
@@ -179,6 +234,7 @@ class FormatThree():
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['name', 'vat']
+    PARTNER_UNIQUE_OFFICE_CODE = False
 
     HEADER_PRODUCT = (
         'Codice', 'Nome', 'Categoria', 'UoM', 'codiva_acq', 'codiva_cen',
@@ -238,6 +294,7 @@ class FormatFour():
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['vat', 'name']
+    PARTNER_UNIQUE_OFFICE_CODE = False
 
     HEADER_PRODUCT = (
         'codice', 'nome', 'categoria', 'brand', 'descrizione vendita', 'uom_i',
@@ -287,6 +344,7 @@ class FormatFive():
     ADDRESS_TYPE = ('default', 'invoice',)
     # Unique fields to be used to look for partner in database
     PARTNER_SEARCH = ['code', 'vat', 'name']
+    PARTNER_UNIQUE_OFFICE_CODE = True
 
     HEADER_PRODUCT = (
         "pruduct_id", "product_name", "product_description", "product_price",

@@ -110,6 +110,7 @@ class ImportFile(threading.Thread, Utils):
         self.REQUIRED = Config.REQUIRED
         self.PARTNER_SEARCH = Config.PARTNER_SEARCH
         self.ADDRESS_TYPE = Config.ADDRESS_TYPE
+        self.PARTNER_UNIQUE_OFFICE_CODE = Config.PARTNER_UNIQUE_OFFICE_CODE
 
         if not len(self.HEADER) == len(Config.COLUMNS.split(',')):
             pprint(zip(self.HEADER, Config.COLUMNS.split(',')))
@@ -367,6 +368,18 @@ class ImportFile(threading.Thread, Utils):
             self.partner_type: True
         }
 
+        if self.PARTNER_UNIQUE_OFFICE_CODE:
+            if hasattr(record, 'fiscalcode') and record.fiscalcode:
+                if len(vals_partner['fiscalcode']) == 6:
+                    vals_partner['unique_office_code'] = vals_partner['fiscalcode']
+
+                    if hasattr(record, 'additiona_id') and record.additional_id:
+                        vals_partner['fiscalcode'] = vals_partner['additional_id']
+                    else:
+                        vals_partner['fiscalcode'] = False
+            else:
+                vals_partner['fiscalcode'] = False
+
         if 'supplier' in vals_partner:
             vals_partner.update({
                 'customer': False,
@@ -519,9 +532,6 @@ class ImportFile(threading.Thread, Utils):
         partner_id = self._find_partner(cr, uid, vals_partner)
 
         if partner_id and partner_id > 0:
-            if 'fiscalcode' in vals_partner and vals_partner['fiscalcode'] and (
-                    len(vals_partner['fiscalcode']) != 16 or not codicefiscale.isvalid(vals_partner['fiscalcode'])):
-                vals_partner['fiscalcode'] = False
             self.partner_obj.write(cr, uid, partner_id, vals_partner, self.context)
             self.updated += 1
         elif partner_id and partner_id < 0:
@@ -532,8 +542,9 @@ class ImportFile(threading.Thread, Utils):
                 partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)
                 self.uo_new += 1
             # except ValidateError as e:
-            except:
-                e = sys.exc_info()[0]
+            except Exception as e:
+                # e = sys.exc_info()[0]
+                e = e[1].split(':')[1]
                 error = u"Riga {0}: Partner '{1} {2}'. I dati non corretti. (Error: {3}) La riga viene ignorata.".format(self.processed_lines, record_code, vals_partner['name'], e)
                 _logger.debug(error)
                 self.error.append(error)
