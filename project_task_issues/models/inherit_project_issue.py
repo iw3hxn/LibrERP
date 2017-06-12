@@ -74,7 +74,7 @@ class project_issue(orm.Model):
         res = super(project_issue, self).case_close(cr, uid, ids, *args)
         context = self.pool['res.users'].context_get(cr, uid)
         for issue in self.browse(cr, uid, ids, context):
-            if issue.project_id and issue.user_id and issue.task_id and not issue.work_ids:
+            if issue.project_id and issue.user_id and issue.task_id:
                 if issue.date_open != issue.date_closed:
                     start_datetime = datetime.strptime(issue.date_open, DEFAULT_SERVER_DATETIME_FORMAT)
                     end_datetime = datetime.strptime(issue.date_closed, DEFAULT_SERVER_DATETIME_FORMAT)
