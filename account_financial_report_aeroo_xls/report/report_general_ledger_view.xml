@@ -6,11 +6,26 @@
             <field name="name">Balance Sheet</field>
             <field name="type">ir.actions.report.xml</field>
             <field name="model">account.pl.report</field>
-            <field name="report_name">account_balance_sheet_exel</field>
+            <field name="report_name">account_balance_sheet_excel</field>
             <field name="report_type">aeroo</field>
             <field name="in_format">oo-ods</field>
+            <field name="out_format" ref="report_aeroo_ooo.report_mimetypes_xls_odt"/>
             <field name="parser_loc">account_financial_report_aeroo_xls/report/account_balance_sheet.py</field>
             <field name="report_rml">account_financial_report_aeroo_xls/report/account_balance_sheet.ods</field>
+            <field name="parser_state">loc</field>
+            <field name="tml_source">file</field>
+        </record>
+
+        <record id="profit_loss" model="ir.actions.report.xml">
+            <field name="name">Profit Loss</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">account.pl.report</field>
+            <field name="report_name">account_profit_loss_excel</field>
+            <field name="report_type">aeroo</field>
+            <field name="in_format">oo-ods</field>
+            <field name="out_format" ref="report_aeroo_ooo.report_mimetypes_xls_odt"/>
+            <field name="parser_loc">account_financial_report_aeroo_xls/report/account_profit_loss.py</field>
+            <field name="report_rml">account_financial_report_aeroo_xls/report/account_profit_loss.ods</field>
             <field name="parser_state">loc</field>
             <field name="tml_source">file</field>
         </record>

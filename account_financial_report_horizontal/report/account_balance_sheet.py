@@ -68,14 +68,12 @@ class report_balancesheet_horizontal(
 
     def set_context(self, objects, data, ids, report_type=None):
         new_ids = ids
-        if (data['model'] == 'ir.ui.menu'):
+        if data['model'] == 'ir.ui.menu':
             new_ids = 'chart_account_id' in data['form'] \
                 and data['form']['chart_account_id'] \
                 and [data['form']['chart_account_id'][0]] or []
-            objects = self.pool.get('account.account').browse(
-                self.cr, self.uid, new_ids)
-            lang_dict = self.pool.get('res.users').read(
-                self.cr, self.uid, self.uid, ['context_lang'])
+            objects = self.pool['account.account'].browse(self.cr, self.uid, new_ids, self.context)
+            lang_dict = self.pool['res.users'].read(self.cr, self.uid, self.uid, ['context_lang'])
             data['lang'] = lang_dict.get('context_lang') or False
         return super(
             report_balancesheet_horizontal, self
@@ -256,6 +254,7 @@ class report_balancesheet_horizontal(
         return None
 
     def get_lines(self):
+        import pdb;pdb.set_trace()
         return self.result_temp
 
     def get_lines_another(self, group):

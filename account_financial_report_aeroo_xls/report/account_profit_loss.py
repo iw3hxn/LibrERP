@@ -2,11 +2,8 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    This module copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>),
-#    Copyright (C) 2012 Therp BV (<http://therp.nl>),
-#    Copyright (C) 2013 Agile Business Group sagl
-#    (<http://www.agilebg.com>) (<lorenzo.battistini@agilebg.com>)
-#
+#    Copyright (C) BrowseInfo (http://browseinfo.in)
+#    Copyright (C) Didotech SRL
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
 #    published by the Free Software Foundation, either version 3 of the
@@ -23,16 +20,21 @@
 ##############################################################################
 
 import time
+
+from openerp.addons.account_financial_report_horizontal.report import (
+    account_profit_loss
+)
 from openerp.report import report_sxw
-from .common_report_header import common_report_header
 from openerp.tools.translate import _
 
+from common_report_header import common_report_header
 
-class report_pl_account_horizontal(report_sxw.rml_parse, common_report_header):
+
+class Parser(report_sxw.rml_parse, common_report_header):
 
     def __init__(self, cr, uid, name, context=None):
-        super(report_pl_account_horizontal, self).__init__(
-            cr, uid, name, context=context)
+        super(Parser, self).__init__(cr, uid, name, context=context)
+        self.obj_pl = account_profit_loss.report_pl_account_horizontal(cr, uid, name, context=context)
         self.result_sum_dr = 0.0
         self.result_sum_cr = 0.0
         self.res_pl = {}
@@ -70,8 +72,7 @@ class report_pl_account_horizontal(report_sxw.rml_parse, common_report_header):
             lang_dict = self.pool['res.users'].read(
                 self.cr, self.uid, self.uid, ['context_lang'])
             data['lang'] = lang_dict.get('context_lang') or False
-        return super(report_pl_account_horizontal, self).set_context(
-            objects, data, new_ids, report_type=report_type)
+        return super(Parser, self).set_context(objects, data, new_ids, report_type=report_type)
 
     def final_result(self):
         return self.res_pl
@@ -234,14 +235,12 @@ class report_pl_account_horizontal(report_sxw.rml_parse, common_report_header):
     def get_lines_another(self, group):
         return self.result.get(group, [])
 
-report_sxw.report_sxw(
-    'report.account.profit_horizontal', 'account.account',
-    'addons/account_financial_report_horizontal/report/'
-    'account_profit_horizontal.rml',
-    parser=report_pl_account_horizontal, header='internal landscape')
+    def compute_currency(self, to_currency, from_currency, amt):
+        currency_obj = self.pool['res.currency']
+        curr_current = from_currency
+        if to_currency:
+            curr_current = to_currency[0]
+        amount = currency_obj.compute(self.cr, self.uid, curr_current, from_currency, amt)
+        return '{amount}'.format(amount=abs(amount)).replace('.', ',')
 
-report_sxw.report_sxw(
-    'report.account.profit_loss', 'account.account',
-    'addons/account_financial_report_horizontal/report/'
-    'account_profit_loss.rml',
-    parser=report_pl_account_horizontal, header='internal')
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

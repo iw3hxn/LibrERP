@@ -32,8 +32,14 @@ class account_common_report(orm.TransientModel):
     _name = "account_financial_report_horizontal.common.report"
     _description = "Account Common Report"
 
+    def name_get(self, cr, uid, ids, context=None):
+        result = {}
+        for report_id in ids:
+            result[report_id] = u'Pippo' #'{0} - {1}'.format(self._name.replace('.', '_'), report_id)
+        return result
+
     _columns = {
-        'name': fields.char("Name", size=16),
+        'name': fields.function(name_get, string="Name", type='char', size=16),
         'chart_account_id': fields.many2one(
             'account.account', 'Chart of account',
             help='Select Charts of Accounts',
@@ -51,12 +57,14 @@ class account_common_report(orm.TransientModel):
         'date_from': fields.date("Start Date"),
         'date_to': fields.date("End Date"),
         'target_move': fields.selection([
-                                        ('posted', 'All Posted Entries'),
-                                        ('all', 'All Entries'),
-                                        ], 'Target Moves', required=True
-                                        ),
+            ('posted', 'All Posted Entries'),
+            ('all', 'All Entries'),
+        ], 'Target Moves', required=True
+        ),
 
-        }
+    }
+
+
 
     def fields_view_get(
         self, cr, uid, view_id=None, view_type='form', context=None,
@@ -85,7 +93,7 @@ class account_common_report(orm.TransientModel):
             res['value'] = {'period_from': False, 'period_to': False, 'date_from': False, 'date_to': False}
         if filter == 'filter_date':
             if fiscalyear_id:
-                fyear = self.pool.get('account.fiscalyear').browse(cr, uid, fiscalyear_id, context=context)
+                fyear = self.pool['account.fiscalyear'].browse(cr, uid, fiscalyear_id, context=context)
                 date_from = fyear.date_start
                 date_to = fyear.date_stop > time.strftime('%Y-%m-%d') and time.strftime('%Y-%m-%d') or fyear.date_stop
             else:
@@ -119,15 +127,15 @@ class account_common_report(orm.TransientModel):
         return res
 
     def _get_account(self, cr, uid, context=None):
-        accounts = self.pool.get('account.account').search(
-            cr, uid, [('parent_id', '=', False)], limit=1)
+        accounts = self.pool['account.account'].search(
+            cr, uid, [('parent_id', '=', False)], limit=1, context=context)
         return accounts and accounts[0] or False
 
     def _get_fiscalyear(self, cr, uid, context=None):
         now = time.strftime('%Y-%m-%d')
-        fiscalyears = self.pool.get('account.fiscalyear').search(
+        fiscalyears = self.pool['account.fiscalyear'].search(
             cr, uid, [('date_start', '<', now), (
-                'date_stop', '>', now)], limit=1)
+                'date_stop', '>', now)], limit=1, context=context)
         return fiscalyears and fiscalyears[0] or False
 
     _defaults = {
@@ -161,7 +169,7 @@ class account_common_report(orm.TransientModel):
                 'form']['period_from'][0] or False
             period_to = data['form'].get('period_to', False) and data[
                 'form']['period_to'][0] or False
-            period_obj = self.pool.get('account.period')
+            period_obj = self.pool['account.period']
             result['periods'] = period_obj.build_ctx_periods(
                 cr, uid, period_from, period_to)
 

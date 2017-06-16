@@ -29,7 +29,6 @@ class account_common_account_report(orm.TransientModel):
     _description = 'Account Common Account Report'
     _inherit = "account_financial_report_horizontal.common.report"
     _columns = {
-        'name': fields.char("Name", size=16),
         'display_account': fields.selection([
             ('bal_all', 'All'), ('bal_movement', 'With movements'),
             ('bal_solde', 'With balance is not equal to 0'),
@@ -43,8 +42,6 @@ class account_common_account_report(orm.TransientModel):
     def pre_print_report(self, cr, uid, ids, data, context=None):
         if context is None:
             context = {}
-        data['form'].update(self.read(
-            cr, uid, ids, ['display_account'], context=context)[0])
-        data['form']['lang'] = self.pool.get('res.users').browse(
-            cr, uid, uid, context).context_lang #.lang in 7.0
+        data['form'].update(self.read(cr, uid, ids, ['display_account'], context=context)[0])
+        data['form']['lang'] = self.pool['res.users'].browse(cr, uid, uid, context).context_lang
         return data

@@ -20,7 +20,7 @@
 ##############################################################################
 {
     'name': 'Accounting Financial Reports Horizontal XLS Reports',
-    'version': '3.0.0.0',
+    'version': '3.0.1.1',
     'category': 'Accounting',
     'description': """
 
