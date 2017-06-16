@@ -254,7 +254,6 @@ class report_balancesheet_horizontal(
         return None
 
     def get_lines(self):
-        import pdb;pdb.set_trace()
         return self.result_temp
 
     def get_lines_another(self, group):
