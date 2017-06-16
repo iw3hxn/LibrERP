@@ -33,7 +33,6 @@ class account_pl_report(orm.TransientModel):
     _name = "account.pl.report"
     _description = "Account Profit And Loss Report"
     _columns = {
-        'name': fields.char("Name", size=16),
         'display_type': fields.boolean("Landscape Mode"),
     }
 

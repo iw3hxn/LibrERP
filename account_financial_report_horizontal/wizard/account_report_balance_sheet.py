@@ -35,7 +35,6 @@ class account_bs_report(orm.TransientModel):
     _description = 'Account Balance Sheet Report'
 
     _columns = {
-        'name': fields.char("Name", size=16),
         'display_type': fields.boolean("Landscape Mode"),
     }
 

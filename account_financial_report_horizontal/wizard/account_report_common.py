@@ -32,14 +32,14 @@ class account_common_report(orm.TransientModel):
     _name = "account_financial_report_horizontal.common.report"
     _description = "Account Common Report"
 
-    def name_get(self, cr, uid, ids, context=None):
-        result = {}
-        for report_id in ids:
-            result[report_id] = u'Pippo' #'{0} - {1}'.format(self._name.replace('.', '_'), report_id)
-        return result
+    # def name_get(self, cr, uid, ids, context=None):
+    #     result = {}
+    #     for report_id in ids:
+    #         result[report_id] = u'Pippo' #'{0} - {1}'.format(self._name.replace('.', '_'), report_id)
+    #     return result
 
     _columns = {
-        'name': fields.function(name_get, string="Name", type='char', size=16),
+        'name': fields.char(string="Name", size=16),
         'chart_account_id': fields.many2one(
             'account.account', 'Chart of account',
             help='Select Charts of Accounts',
@@ -64,7 +64,9 @@ class account_common_report(orm.TransientModel):
 
     }
 
-
+    _defaults = {
+        'name': lambda *a: 'Report',
+    }
 
     def fields_view_get(
         self, cr, uid, view_id=None, view_type='form', context=None,
