@@ -454,7 +454,10 @@ class ImportFile(threading.Thread, Utils):
             # if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
             if vatnumber.check_vat(vals_partner['vat']):
                 if record.vat == record.fiscalcode:
-                    vals_partner['fiscalcode'] = vals_partner['vat']
+                    if codicefiscale.isvalid(record.vat):
+                        vals_partner['fiscalcode'] = vals_partner['vat']
+                    else:
+                        vals_partner['fiscalcode'] = False
             else:
                 error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: <strong>'{vat}'</strong>".format(line=self.processed_lines, record=record, vat=vals_partner['vat'])
                 _logger.debug(error)
