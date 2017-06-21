@@ -3,13 +3,14 @@
     <data>
 
         <record id="autosplit_company" model="ir.ui.view">
-            <field name="name">res.company.autosplit.config</field>
+            <field name="name">res.company.note.config</field>
             <field name="model">res.company</field>
             <field name="type">form</field>
             <field name="inherit_id" ref="base.view_company_form"/>
           	<field name="arch" type="xml">
                 <page string="Configuration" position="inside">
                    	<separator string="Product Note of Picking" colspan="4"/>
+                    <field name="note_on_stock_move"/>
                    	<field name="note_on_invoice_line"/>
                    	<newline/>
                 </page>

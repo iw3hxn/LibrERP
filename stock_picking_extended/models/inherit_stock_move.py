@@ -29,6 +29,7 @@ class stock_move(orm.Model):
         """ Gets default address of partner for source location
         @return: Address id or False
         """
+        context = context or self.pool['res.users'].context_get(cr, uid)
         picking_type = context.get('picking_type', False)
         stock_journal_id = context.get('stock_journal_id', False)
         res = []
@@ -43,6 +44,7 @@ class stock_move(orm.Model):
         """ Gets default address of partner for source location
         @return: Address id or False
         """
+        context = context or self.pool['res.users'].context_get(cr, uid)
         picking_type = context.get('picking_type', False)
         stock_journal_id = context.get('stock_journal_id', False)
         res = []

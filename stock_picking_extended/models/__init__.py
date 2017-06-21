@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #    
-#    Copyright (C) 2014 Didotech srl
-#    (<http://www.didotech.com>).
+#    Copyright (C) 2010 Associazione OpenERP Italia
+#    (<http://www.openerp-italia.org>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -19,5 +19,18 @@
 #
 ##############################################################################
 
-from . import purchase
-
+from . import inherit_account_invoice
+from . import inherit_account_invoice_line
+from . import inherit_product_product
+from . import inherit_purchase_order
+from . import inherit_res_company
+from . import inherit_res_partner
+from . import inherit_res_partner_address
+from . import inherit_sale_order
+from . import inherit_stock_journal
+from . import inherit_stock_location
+from . import inherit_stock_move
+from . import inherit_stock_picking
+from . import stock_picking_carriage_condition
+from . import stock_picking_goods_description
+from . import stock_picking_transportation_condition

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
+#
+#    Copyright (C) 2010-2012 Associazione OpenERP Italia
+#    (<http://www.openerp-italia.org>).
 #    Copyright (C) 2014 Didotech srl
 #    (<http://www.didotech.com>).
 #
@@ -19,4 +21,22 @@
 #
 ##############################################################################
 
-from . import models
+from openerp.osv import orm, fields
+
+
+# import decimal_precision as dp
+
+
+class stock_picking_transportation_condition(orm.Model):
+    """
+    Transportation Condition
+    """
+    _name = "stock.picking.transportation_condition"
+    _description = "Transportation Condition"
+
+    _columns = {
+        'name': fields.char(
+            'Transportation Condition', size=64, required=True, readonly=False,
+            translate=True),
+        'note': fields.text('Note'),
+    }

@@ -23,55 +23,12 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+
+
 # import decimal_precision as dp
 
 
-class stock_picking_carriage_condition(orm.Model):
-    """
-    Carriage condition
-    """
-    _name = "stock.picking.carriage_condition"
-    _description = "Carriage Condition"
-    _columns = {
-        'name': fields.char(
-            'Carriage Condition', size=64, required=True, readonly=False,
-            translate=True),
-        'note': fields.text('Note'),
-    }
-
-
-class stock_picking_goods_description(orm.Model):
-    """
-    Description of Goods
-    """
-    _name = 'stock.picking.goods_description'
-    _description = "Description of Goods"
-
-    _columns = {
-        'name': fields.char(
-            'Description of Goods', size=64, required=True, readonly=False,
-            translate=True),
-        'note': fields.text('Note'),
-    }
-
-
-class stock_picking_transportation_condition(orm.Model):
-    """
-    Transportation Condition
-    """
-    _name = "stock.picking.transportation_condition"
-    _description = "Transportation Condition"
-
-    _columns = {
-        'name': fields.char(
-            'Transportation Condition', size=64, required=True, readonly=False,
-            translate=True),
-        'note': fields.text('Note'),
-    }
-
-
 class stock_picking(orm.Model):
-
     _inherit = "stock.picking"
 
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
@@ -83,7 +40,9 @@ class stock_picking(orm.Model):
             if partner:
                 # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
                 invoice_obj = self.pool['account.invoice']
-                invoice_ids = invoice_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', 'in', ['draft', 'open'])], context=context)
+                invoice_ids = invoice_obj.search(cr, uid,
+                                                 [('partner_id', '=', partner.id), ('state', 'in', ['draft', 'open'])],
+                                                 context=context)
                 invoices_amount = 0.0
                 for invoice in invoice_obj.browse(cr, uid, invoice_ids, context=context):
                     invoices_amount += invoice.amount_total
@@ -132,7 +91,9 @@ class stock_picking(orm.Model):
                     msg = _(u'Is not possible to confirm because customer exceed the credit limit.')
                     raise orm.except_orm(_(title), _(msg))
                     return False
-                if picking.company_id and picking.company_id.check_overdue and self.pool['sale.order'].partner_overdue_check(cr, uid, picking.company_id, picking.address_id.partner_id, context):
+                if picking.company_id and picking.company_id.check_overdue and self.pool[
+                    'sale.order'].partner_overdue_check(cr, uid, picking.company_id, picking.address_id.partner_id,
+                                                        context):
                     title = _(u'Overdue Limit')
                     msg = _(u'Is not possible to confirm because customer have a overdue payment.')
                     raise orm.except_orm(_(title), _(msg))
@@ -140,6 +101,7 @@ class stock_picking(orm.Model):
         return True
 
     def action_process(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if self.check_limit(cr, uid, ids, context):
             return super(stock_picking, self).action_process(cr, uid, ids, context=context)
         else:
@@ -147,20 +109,20 @@ class stock_picking(orm.Model):
 
     def print_picking(self, cr, uid, ids, context):
         return self.pool['account.invoice'].print_report(cr, uid, ids, 'delivery.report_shipping', context)
-    
+
     def onchange_stock_journal(self, cr, uid, ids, stock_journal_id=None, state=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if state != 'draft':
             return {'value': {}}
-        
+
         stock_journal_obj = self.pool['stock.journal']
         default_invoice_state = False
         if stock_journal_id:
             default_invoice_state = stock_journal_obj.browse(
                 cr, uid, stock_journal_id, context).default_invoice_state
-        
+
         return {'value': {'invoice_state': default_invoice_state or 'none'}}
-    
+
     def onchange_partner_in(self, cr, uid, ids, address_id=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         partner_address_obj = self.pool['res.partner.address']
@@ -175,7 +137,7 @@ class stock_picking(orm.Model):
                     'default_delivery_partner_address', '=', True)],
                 context=context
             )
-            
+
             if not delivery_ids:
                 delivery_ids = partner_address_obj.search(
                     cr, uid, [('partner_id', '=', partner_id.id), (
@@ -189,25 +151,28 @@ class stock_picking(orm.Model):
                     )
 
         if delivery_ids:
-            return {'value': {'address_delivery_id': delivery_ids[0]}} 
+            return {'value': {'address_delivery_id': delivery_ids[0]}}
         else:
             return {'value': {}}
-    
+
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         new_args = []
-        
+
         for arg in args:
             # if arg and len(arg)==3 and arg[0] in field_to_sql.keys() and arg[1]=='ilike':
             if arg and len(arg) == 3 and arg[1] == 'ilike':
                 values = arg[2].split(',')
                 if values > 1:
-                    new_args += ['|' for x in range(len(values) - 1)] + [(arg[0], arg[1], value.strip()) for value in values]
+                    new_args += ['|' for x in range(len(values) - 1)] + [(arg[0], arg[1], value.strip()) for value in
+                                                                         values]
             else:
                 new_args.append(arg)
-        
-        return super(stock_picking, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order, context=context, count=count)
-    
+
+        return super(stock_picking, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order,
+                                                 context=context, count=count)
+
     def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if ('name' not in vals) or (vals.get('name') == '/'):
             if 'type' in vals.keys() and vals['type'] == 'out':
                 vals['name'] = self.pool['ir.sequence'].next_by_code(cr, uid, 'stock.picking.out')
@@ -231,7 +196,8 @@ class stock_picking(orm.Model):
         return ids
 
     def _prepare_invoice_line(self, cr, uid, group, picking, move_line, invoice_id, invoice_vals, context=None):
-        res = super(stock_picking, self)._prepare_invoice_line(cr, uid, group, picking, move_line, invoice_id, invoice_vals, context=context)
+        res = super(stock_picking, self)._prepare_invoice_line(cr, uid, group, picking, move_line, invoice_id,
+                                                               invoice_vals, context=context)
         """ Update dict with correct shipped qty
         """
         res['quantity'] = move_line.product_qty or move_line.product_uos_qty
@@ -241,7 +207,7 @@ class stock_picking(orm.Model):
                               group=False, type='out_invoice', context=None):
         res = super(stock_picking, self).action_invoice_create(cr, user, ids, journal_id,
                                                                group, type, context)
-        # import pdb; pdb.set_trace()
+
         for picking in self.browse(cr, user, ids, context=context):
             self.pool['account.invoice'].write(cr, user, res[picking.id], {
                 'carriage_condition_id': picking.carriage_condition_id.id,
@@ -256,4 +222,4 @@ class stock_picking(orm.Model):
         company = self.pool['res.company'].browse(cr, uid, company_id, context)
         if company.note_on_invoice_line:
             self.pool['account.invoice.line'].write(cr, uid, invoice_line_id, {'note': move_line.note}, context)
-        return super( stock_picking, self)._invoice_line_hook(cr, uid, move_line, invoice_line_id)
+        return super(stock_picking, self)._invoice_line_hook(cr, uid, move_line, invoice_line_id)

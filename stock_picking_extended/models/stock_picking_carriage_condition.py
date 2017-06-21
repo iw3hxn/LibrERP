@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
-#    Copyright (C) 2010 Associazione OpenERP Italia
+#
+#    Copyright (C) 2010-2012 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
+#    Copyright (C) 2014 Didotech srl
+#    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -19,6 +21,22 @@
 #
 ##############################################################################
 
-from . import picking
-from . import stock_journal
-from . import stock_move
+from openerp.osv import orm, fields
+
+
+# import decimal_precision as dp
+
+
+class stock_picking_carriage_condition(orm.Model):
+    """
+    Carriage condition
+    """
+    _name = "stock.picking.carriage_condition"
+    _description = "Carriage Condition"
+    _columns = {
+        'name': fields.char(
+            'Carriage Condition', size=64, required=True, readonly=False,
+            translate=True),
+        'note': fields.text('Note'),
+    }
+

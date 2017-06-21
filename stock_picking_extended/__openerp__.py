@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.25.22.30',
+    'version': '3.27.24.32',
     'category': 'Others',
     'description': """LibrERP - Stock picking extension
 
@@ -49,18 +49,21 @@ Functionalities:
     "data": [
         'security/ir.model.access.csv',
         'security/journal_security.xml',
-        'stock/picking_view.xml',
-        'stock/carriage_condition_view.xml',
-        'stock/transportation_condition_view.xml',
-        'stock/goods_description_view.xml',
-        'stock/stock_picking_menu.xml',
-        'sale/sale_view.xml',
-        'sale/sale_data.xml',
-        'partner/partner_view.xml',
-        'stock/stock.journal.csv',
-        'stock/stock_journal_view.xml',
-        'purchase/purchase_view.xml',
-        'company/company_view.xml',
+        'views/picking_view.xml',
+        'views/carriage_condition_view.xml',
+        'views/transportation_condition_view.xml',
+        'views/goods_description_view.xml',
+        'views/stock_picking_menu.xml',
+        'views/stock_journal_view.xml',
+        'views/stock_location_view.xml',
+        'views/company_view.xml',
+        'views/res_partner_view.xml',
+        'views/res_partner_address_view.xml',
+        'views/purchase_order_view.xml',
+        'views/sale_order_view.xml',
+        'data/sale_data.xml',
+        'data/stock.journal.csv',
+        'data/crontab_data.xml'
     ],
     "demo": [],
     "test": [

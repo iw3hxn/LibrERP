@@ -22,13 +22,12 @@
 #
 ##############################################################################
 
-import time
-from openerp.osv import orm, fields
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-import decimal_precision as dp
 from datetime import datetime, timedelta
+
+import decimal_precision as dp
 from dateutil.relativedelta import relativedelta
-from tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, float_compare
+from openerp.osv import orm, fields
+from tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class sale_order_line(orm.Model):
@@ -77,25 +76,27 @@ class sale_order(orm.Model):
 
     def action_ship_create(self, cr, uid, ids, *args):
         super(sale_order, self).action_ship_create(cr, uid, ids, *args)
-        for order in self.browse(cr, uid, ids, context={}):
+        context = self.pool['res.users'].context_get(cr, uid)
+        for order in self.browse(cr, uid, ids, context=context):
             # partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id)
             picking_obj = self.pool['stock.picking']
-            picking_ids = picking_obj.search(cr, uid, [('sale_id', '=', order.id)])
+            picking_ids = picking_obj.search(cr, uid, [('sale_id', '=', order.id)], context=context)
             for picking_id in picking_ids:
                 picking_obj.write(cr, uid, picking_id, {
                     # 'order_id': order.id,
                     'carriage_condition_id': order.carriage_condition_id.id,
                     'goods_description_id': order.goods_description_id.id,
                     # 'transportation_reason_id': partner.transportation_reason_id.id,
-                    })
+                    }, context=context)
         return True
 
-    '''
-    address_id is overridden with partner_invoice_id because it's used 2binvoiced
-    address_delivery_id is a new field for delivery address
-    '''
-           # 'date': order_line.date_planned,
-           # 'date_expected': order_line.date_planned,
+    def _prepare_order_line_move(self, cr, uid, order, line, picking_id, date_planned, context=None):
+        res = super(sale_order, self)._prepare_order_line_move(cr, uid, order, line, picking_id, date_planned, context)
+        company = order.company_id
+        if company.note_on_stock_move:
+            if 'note' in res:
+                del res['note']
+        return res
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
         pick_name = self.pool['ir.sequence'].get(cr, uid, 'stock.picking.out')
@@ -142,8 +143,7 @@ class sale_order(orm.Model):
     #     return inv_id
 
     def write(self, cr, uid, ids, vals, context=None):
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # adaptative function: the system learn
 
         if not isinstance(ids, (list, tuple)):
@@ -162,8 +162,7 @@ class sale_order(orm.Model):
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
 
     def create(self, cr, uid, vals, context=None):
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # adaptative function: the system learn
         sale_order_id = super(sale_order, self).create(cr, uid, vals, context=context)
         # create function return only 1 id
@@ -176,5 +175,4 @@ class sale_order(orm.Model):
                 partner_vals['goods_description_id'] = vals.get('goods_description_id')
             if partner_vals:
                 self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
-
         return sale_order_id

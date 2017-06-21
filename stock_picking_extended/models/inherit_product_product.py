@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
-#    Copyright (C) 2010 Associazione OpenERP Italia
+#
+#    Copyright (C) 2010-2012 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
+#    Copyright (C) 2014 Didotech srl
+#    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -19,5 +21,13 @@
 #
 ##############################################################################
 
-from . import partner
-from . import partner_address
+from openerp import SUPERUSER_ID
+from openerp.osv import orm, fields
+
+
+class product_product(orm.Model):
+    _inherit = "product.product"
+
+    _columns = {
+        'date_product_by_location_update': fields.datetime('Date Product Qty Update')
+    }

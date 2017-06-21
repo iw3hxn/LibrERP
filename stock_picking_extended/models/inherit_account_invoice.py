@@ -29,18 +29,3 @@ class account_invoice(orm.Model):
     _columns = {
         'origin': fields.char('Source Document', size=256, help="Reference of the document that produced this invoice.", readonly=True, states={'draft': [('readonly', False)]}),
     }
-
-
-
-class account_invoice_line(orm.Model):
-    _inherit = "account.invoice.line"
-    _columns = {
-        # 'advance_id': fields.many2one('account.invoice', 'Advance invoice'),
-        'sequence': fields.integer('Number'),
-    }
-
-    _default = {
-        'sequence': 10
-    }
-
-    _order = 'sequence, id'

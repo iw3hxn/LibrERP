@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
+#
+#    Copyright (C) 2010-2012 Associazione OpenERP Italia
+#    (<http://www.openerp-italia.org>).
 #    Copyright (C) 2014 Didotech srl
 #    (<http://www.didotech.com>).
 #
@@ -19,5 +21,24 @@
 #
 ##############################################################################
 
-from . import sale
+from openerp.osv import orm, fields
+
+
+# import decimal_precision as dp
+
+
+
+class stock_picking_goods_description(orm.Model):
+    """
+    Description of Goods
+    """
+    _name = 'stock.picking.goods_description'
+    _description = "Description of Goods"
+
+    _columns = {
+        'name': fields.char(
+            'Description of Goods', size=64, required=True, readonly=False,
+            translate=True),
+        'note': fields.text('Note'),
+    }
 

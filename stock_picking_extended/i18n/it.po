@@ -390,3 +390,27 @@ msgstr "Limite sullo scaduto"
 msgid "Is not possible to confirm because customer have a overdue payment."
 msgstr "Non è possibile confermare perchè il cliente uno scaduto"
 
+#. module: stock_move_extended
+#: field:res.company,note_on_invoice_line:0
+msgid "Copy Note on Invoice"
+msgstr "Riporta le note in fattura"
+
+#. module: stock_picking_extended
+#: help:res.company,note_on_invoice_line:0
+msgid "Copy on account invoice line the note of picking"
+msgstr "Riporta nelle righe della fattura le note riportate nelle righe"
+
+#. module: stock_move_extended
+#: field:res.company,note_on_stock_move:0
+msgid "Copy Note on Move"
+msgstr "Riporta le note nei movimenti di Magazzino"
+
+#. module: stock_picking_extended
+#: help:res.company,note_on_stock_move:0
+msgid "Copy on stock move the note of sale order line"
+msgstr "Riporta nei movimenti di magazzino le note delle righe ordine di vendita"
+
+#. module: stock_picking_extended
+#: view:res.company:0
+msgid "Product Note of Picking"
+msgstr "Gestione delle note nei movimenti di magazzino"

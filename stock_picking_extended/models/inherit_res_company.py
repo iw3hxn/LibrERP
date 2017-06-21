@@ -26,6 +26,9 @@ class company(orm.Model):
     _inherit = 'res.company'
 
     _columns = {
-        'note_on_invoice_line': fields.boolean('Copy Note on Invoice ', help="Copy on account invoice line the note of picking"),
+        'note_on_stock_move': fields.boolean('Copy Note on Move',
+                                               help="Copy on stock move the note of sale order line"),
+        'note_on_invoice_line': fields.boolean('Copy Note on Invoice', help="Copy on account invoice line the note of picking"),
     }
+
 

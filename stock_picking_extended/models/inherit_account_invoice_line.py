@@ -19,5 +19,18 @@
 #
 ##############################################################################
 
-from . import invoice 
+from openerp.osv import orm, fields
 
+
+class account_invoice_line(orm.Model):
+    _inherit = "account.invoice.line"
+    _columns = {
+        # 'advance_id': fields.many2one('account.invoice', 'Advance invoice'),
+        'sequence': fields.integer('Number'),
+    }
+
+    _default = {
+        'sequence': 10
+    }
+
+    _order = 'sequence, id'
