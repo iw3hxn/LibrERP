@@ -113,7 +113,7 @@ class FormatOne():
     )
     COLUMNS_BOM = "index, default_code, sub_elem_number, sub_item, product_qty, wharehouse, " \
                   "price, divisa, listino_prezzi, prezzo_nuovo, divisa_originale, modalita_prelievo, " \
-                  "uom_maga, position, ist_reg, object, rdd, " \
+                  "uom_maga, observation, ist_reg, object, rdd, " \
                   "rdd2, rdd3, rdd4, " \
                   "rdd5, input_principale, codice_progetto, measures, codice_alternativo, " \
                   "dimension, materials"
@@ -222,8 +222,8 @@ class FormatTwo():
     )
     COLUMNS_BOM = "default_code, name, sub_elem_number, " \
                   "sub_item, product_qty, default_code2, sub_elem_number2, " \
-                  "sub_item2, product_qty2, wharehouse, price, divisa, listino_prezzi, prezzo_nuovo, " \
-                  "divisa_originale, modalita_prelievo,  uom_maga, position, ist_reg, " \
+                  "sub_item2, product_qty2, wharehouse, standard_price, divisa, listino_prezzi, prezzo_nuovo, " \
+                  "divisa_originale, modalita_prelievo, uom_maga, observation, ist_reg, " \
                   "object, rdd, rdd2, rdd3, " \
                   "rdd4, rdd5, input_principale, codice_progetto, measures, " \
                   "codice_alternativo, dimension, materials"
