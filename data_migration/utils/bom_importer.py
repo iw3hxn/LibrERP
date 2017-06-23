@@ -290,7 +290,7 @@ class ImportFile(threading.Thread, Utils):
 
             if product_flag:
                 product_vals.update({
-                    'sale_ok': False,
+                    'sale_ok': True,
                     'purchase_ok': False
                 })
         else:

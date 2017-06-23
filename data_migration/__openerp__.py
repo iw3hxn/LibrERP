@@ -21,7 +21,7 @@
 
 {
     'name': 'Data migration import',
-    'version': '3.12.59.20',
+    'version': '3.12.60.20',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import products and partners
