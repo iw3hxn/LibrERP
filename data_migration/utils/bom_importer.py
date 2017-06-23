@@ -179,27 +179,49 @@ class ImportFile(threading.Thread, Utils):
             if hasattr(record, 'product_qty') and record.product_qty:
                 bom_lines['product_qty'] = record.product_qty
 
-            if hasattr(record, 'position') and record.position:
-                bom_lines['position'] = record.position
+            if hasattr(record, 'observation') and record.observation:
+                bom_lines['position'] = record.observation
 
-            product_bom_ids = self.bom_obj.search(cr, uid, [('product_id', '=', product.id), ('bom_id', '=', None)],
-                                                  context=self.context)
+            product_bom_ids = self.bom_obj.search(cr, uid, [('product_id', '=', product.id), ('bom_id', '=', None)], context=self.context)
+
             if product_bom_ids:
                 product_bom_id = product_bom_ids[0]
                 self.bom_obj.write(cr, uid, product_bom_id, product_vals_bom, self.context)
+                self.updated += 1
 
                 sub_item_bom_ids = self.bom_obj.search(cr, uid, [('product_id', '=', sub_item.id),
                                                                  ('bom_id', '=', product_bom_id)], context=self.context)
                 bom_lines.update({'bom_id': product_bom_id})
                 if sub_item_bom_ids:
-                    sub_item_bom_id = sub_item_bom_ids[0]
-                    self.bom_obj.write(cr, uid, sub_item_bom_id, bom_lines, self.context)
+                    if hasattr(record, 'name') and record.name:
+                        sub_item_boms = self.bom_obj.browse(cr, uid, sub_item_bom_ids, context=self.context)
+                        if hasattr(record, 'observation') and record.observation:
+                            ins_bom = True
+                            for sub_item_bom in sub_item_boms:
+                                if record.observation == sub_item_bom.position:
+                                    bom_lines_copy = bom_lines.copy()
+                                    bom_lines_copy.update({})
+                                    self.bom_obj.write(cr, uid, sub_item_bom.id, bom_lines_copy, self.context)
+                                    self.updated += 1
+                                    ins_bom = False
+
+                            if ins_bom:
+                                bom_lines.update({'position': record.observation})
+                                sub_item_bom_id = self.bom_obj.create(cr, uid, bom_lines, self.context)
+                                self.uo_new += 1
+                    else:
+                        sub_item_bom_id = sub_item_bom_ids[0]
+                        self.bom_obj.write(cr, uid, sub_item_bom_id, bom_lines, self.context)
+                        self.updated += 1
                 else:
                     sub_item_bom_id = self.bom_obj.create(cr, uid, bom_lines, self.context)
+                    self.uo_new += 1
             else:
                 product_bom_id = self.bom_obj.create(cr, uid, product_vals_bom, self.context)
+                self.uo_new += 1
                 bom_lines.update({'bom_id': product_bom_id})
                 sub_item_bom_id = self.bom_obj.create(cr, uid, bom_lines, self.context)
+                self.uo_new += 1
             # return True
         else:
             error = 'Prodotto: {code} non presente nel DB.'.format(code=record.sub_item)
@@ -253,17 +275,84 @@ class ImportFile(threading.Thread, Utils):
                 return False
 
         product_vals_bom = self.bom_obj.default_get(cr, uid, ['product_qty', 'type', 'company_id', 'sequence', 'product_rounding', 'active', 'product_efficiency'], self.context)
+
+        product_flag = True
+        product_vals = {}
         product_ids = self.product_obj.search(cr, uid, [('default_code', '=', record.default_code)], context=self.context)
 
-        if not product_ids:
-            if hasattr(record, 'name') and record.name:
-                product_vals = {
-                    'name': record.name,
-                    'default_code': record.default_code,
+        if hasattr(record, 'name') and record.name:
+            product_vals.update({'name': record.name})
+
+            if hasattr(record, 'default_code') and record.default_code:
+                product_vals.update({'default_code': record.default_code})
+            else:
+                product_flag = False
+
+            if product_flag:
+                product_vals.update({
                     'sale_ok': False,
                     'purchase_ok': False
-                }
+                })
+        else:
+            product_flag = False
+
+        if product_ids:
+            if product_flag:
+                self.product_obj.write(cr, uid, product_ids[0], product_vals, self.context)
+                self.updated += 1
+        else:
+            if product_flag:
                 product_ids = [self.product_obj.create(cr, uid, product_vals, self.context)]
+                self.uo_new += 1
+            else:
+                error = 'Errore linea: {line}. Manca il nome o il codice del prodotto.'.format(line=self.processed_lines)
+                if error not in self.error:
+                    _logger.debug(error)
+                    self.error.append(error)
+                return False
+
+        sub_item_flag = True
+        product_vals = {}
+        sub_product_ids = self.product_obj.search(cr, uid, [('default_code', '=', record.sub_item)], context=self.context)
+
+        if hasattr(record, 'name') and record.name:
+            if hasattr(record, 'sub_item') and record.sub_item:
+                product_vals.update({'default_code': record.sub_item})
+            else:
+                sub_item_flag = False
+
+            if hasattr(record, 'standard_price') and record.standard_price:
+                product_vals.update({'standard_price': record.standard_price})
+            else:
+                product_vals.update({'standard_price': 0})
+
+            if sub_item_flag:
+                product_vals.update({
+                    'sale_ok': False,
+                    'purchase_ok': False,
+                })
+        else:
+            sub_item_flag = False
+
+        if sub_product_ids:
+            if sub_item_flag:
+                self.product_obj.write(cr, uid, sub_product_ids[0], product_vals, self.context)
+                self.updated += 1
+        else:
+            if hasattr(record, 'observation') and record.observation:
+                product_vals.update({'name': record.observation})
+            else:
+                sub_item_flag = False
+
+            if sub_item_flag:
+                sub_product_ids = [self.product_obj.create(cr, uid, product_vals, self.context)]
+                self.uo_new += 1
+            else:
+                error = 'Errore linea: {line}. Manca il nome, il codice del prodotto.'.format(line=self.processed_lines)
+                if error not in self.error:
+                    _logger.debug(error)
+                    self.error.append(error)
+                return False
 
         if product_ids:
             self.create_bom(cr, uid, product_ids, product_vals_bom, record)
