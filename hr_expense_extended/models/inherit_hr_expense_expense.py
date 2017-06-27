@@ -79,12 +79,12 @@ class hr_expense_expense(orm.Model):
                 values['currency_id'] = user.company_id.currency_id.id
             
             hr_expense_id = super(hr_expense_expense, self).create(cr, uid, values, context)
-            
-        if values.get('line_ids', False):
-            for expense_line in values['line_ids']:
-                line_values = expense_line[2]
-                line_values['expense_id'] = hr_expense_id
-                self.pool['hr.expense.line'].create(cr, uid, line_values)
+        #
+        # if values.get('line_ids', False):
+        #     for expense_line in values['line_ids']:
+        #         line_values = expense_line[2]
+        #         line_values['expense_id'] = hr_expense_id
+        #         self.pool['hr.expense.line'].create(cr, uid, line_values)
 
         hr_expense = self.browse(cr, uid, hr_expense_id, context)
         
