@@ -34,7 +34,8 @@
         'task_time_control',
         'res_users_helper_functions',
         'core_extended',
-        'res_users_kanban'
+        'res_users_kanban',
+        'mrp',
     ],
     "data": [
         'security/security.xml',
