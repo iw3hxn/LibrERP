@@ -21,10 +21,10 @@
 
 import time
 
+from openerp.report import report_sxw
 from openerp.addons.account_financial_report_horizontal.report import (
     account_profit_loss
 )
-from openerp.report import report_sxw
 from openerp.tools.translate import _
 
 from common_report_header import common_report_header
@@ -67,6 +67,8 @@ class Parser(report_sxw.rml_parse, common_report_header):
                 and data['form']['chart_account_id'] \
                 and [data['form']['chart_account_id'][0]] or []
             objects = self.pool['account.account'].browse(self.cr, self.uid, new_ids, self.context)
+            lang_dict = self.pool['res.users'].read(self.cr, self.uid, self.uid, ['context_lang'])
+            data['lang'] = lang_dict.get('context_lang') or False
         return super(Parser, self).set_context(objects, data, new_ids, report_type=report_type)
 
     def sum_dr(self):

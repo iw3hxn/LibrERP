@@ -5,7 +5,7 @@
 		<record id="balance_sheet" model="ir.actions.report.xml">
             <field name="name">Balance Sheet</field>
             <field name="type">ir.actions.report.xml</field>
-            <field name="model">account.pl.report</field>
+            <field name="model">account.bs.report</field>
             <field name="report_name">account_balance_sheet_excel</field>
             <field name="report_type">aeroo</field>
             <field name="in_format">oo-ods</field>
