@@ -20,38 +20,60 @@
 ##############################################################################
 
 import datetime
+from copy import deepcopy
 
+import decimal_precision as dp
 from openerp import netsvc
 from openerp.osv import fields, orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
-from copy import deepcopy
 
 
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
-    def get_total_tax_fiscal(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        invoice = self.browse(cr, uid, ids[0], context)
-        amount_withholding = 0.0
-        for line in invoice.tax_line:
-            if line.tax_code_id.notprintable:
-                amount_withholding += line.tax_amount
-        if amount_withholding != 0.0:
-            return invoice.amount_tax - amount_withholding
-        return invoice.amount_tax
+    # copy from account/account_invoice.py
+    def _get_invoice_line(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool['account.invoice.line'].browse(cr, uid, ids, context=context):
+            result[line.invoice_id.id] = True
+        return result.keys()
 
-    def get_total_fiscal(self, cr, uid, ids, context=None):
+    def _get_invoice_tax(self, cr, uid, ids, context=None):
+        result = {}
+        for tax in self.pool['account.invoice.tax'].browse(cr, uid, ids, context=context):
+            result[tax.invoice_id.id] = True
+        return result.keys()
+
+    def get_total_tax_fiscal(self, cr, uid, ids, filed_name=None, args=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        invoice = self.browse(cr, uid, ids[0], context)
-        amount_withholding = 0.0
-        for line in invoice.tax_line:
-            if line.tax_code_id.notprintable:
-                amount_withholding += line.tax_amount
-        if amount_withholding != 0.0:
-            return invoice.amount_total - amount_withholding
-        return invoice.amount_total
+        result = {}
+        if isinstance(ids, (long, int)):
+            ids = [ids]
+        for invoice in self.browse(cr, uid, ids, context):
+            amount_withholding = 0.0
+            result[invoice.id] = invoice.amount_tax
+            for line in invoice.tax_line:
+                if line.tax_code_id.notprintable:
+                    amount_withholding += line.tax_amount
+            if amount_withholding != 0.0:
+                result[invoice.id] = invoice.amount_tax - amount_withholding
+        return result
+
+    def get_total_fiscal(self, cr, uid, ids, filed_name=None, args=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        if isinstance(ids, (long, int)):
+            ids = [ids]
+        for invoice in self.browse(cr, uid, ids, context):
+            amount_withholding = 0.0
+            result[invoice.id] = invoice.amount_total
+            for line in invoice.tax_line:
+                if line.tax_code_id.notprintable:
+                    amount_withholding += line.tax_amount
+            if amount_withholding != 0.0:
+                result[invoice.id] = invoice.amount_total - amount_withholding
+        return result
 
     def action_cancel(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -162,7 +184,7 @@ class account_invoice(orm.Model):
 
             period_ids = self.pool['account.period'].search(
                 cr, uid, [('fiscalyear_id', '=', fy_id), ('company_id', '=', invoice.company_id.id)], context=context)
-            
+
             if inv_type in ['out_invoice', 'out_refund']:
 
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '>', date_invoice),
@@ -394,6 +416,13 @@ class account_invoice(orm.Model):
 
     _columns = {
         'supplier_invoice_number': fields.char('Supplier invoice nr', size=16),
+        'totale_documento': fields.function(get_total_fiscal, digits_compute=dp.get_precision('Account'), string='Totale Documento', type='float', method=True, store=
+             {
+                 'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                 'account.invoice.tax': (_get_invoice_tax, None, 20),
+                 'account.invoice.line': (_get_invoice_line, ['price_unit', 'invoice_line_tax_id', 'quantity', 'discount', 'invoice_id'], 20),
+             }
+                                            ,),
         'direct_invoice': fields.function(_is_direct_invoice, string='Direct Invoice', type='boolean', method=True),
         'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
         'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")

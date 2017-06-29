@@ -19,9 +19,10 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, orm
 import datetime
+
 from codicefiscale import build, isvalid
+from openerp.osv import fields, orm
 
 
 class res_partner(orm.Model):

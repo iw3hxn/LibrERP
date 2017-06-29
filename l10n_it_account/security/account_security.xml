@@ -8,5 +8,10 @@
             <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
         </record>
 
+        <record id="account.group_total_invoice_account_invoice" model="res.groups">
+            <field name="name">Totale Documento</field>
+            <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+        </record>
+
     </data>
 </openerp>

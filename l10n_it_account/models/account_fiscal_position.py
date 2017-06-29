@@ -19,8 +19,8 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, orm
 import decimal_precision as dp
+from openerp.osv import fields, orm
 
 
 class account_fiscal_position(orm.Model):

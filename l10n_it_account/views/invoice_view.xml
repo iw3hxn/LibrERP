@@ -123,5 +123,17 @@
             </field>
         </record>
 
+        <record id="view_account_invoice_total_tree" model="ir.ui.view">
+            <field name="name">account.invoice.total.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="amount_total" position="after">
+                    <field name="totale_documento" sum="somma" groups="account.group_total_invoice_account_invoice"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>
