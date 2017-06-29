@@ -64,7 +64,7 @@ class ExcelExportView(ExcelExport):
                     if number_pattern.match(cell_value):
                         cell_value = float(
                             cell_value.replace(
-                                separators['thousands_sep'], ''
+                                separators.get('thousands_sep', '')
                             ).replace(
                                 separators['decimal_point'], '.'
                             ) or 0.00
