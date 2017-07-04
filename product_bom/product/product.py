@@ -512,7 +512,7 @@ class product_product(orm.Model):
             ids = [ids]
 
         res = super(product_product, self).write(cr, uid, ids, vals, context)
-
+        changed_product = []
         if ENABLE_CACHE:
             if 'standard_price' in vals:
                 changed_product = ids
@@ -525,9 +525,10 @@ class product_product(orm.Model):
                         bom_parent = bom_parent.bom_id
             if 'seller_ids' in vals:
                 changed_product = ids
-                for product_id in changed_product:
-                    if product_id in self.product_cost_cache:
-                        del self.product_cost_cache[product_id]
+            for product_id in changed_product:
+                if product_id in self.product_cost_cache:
+                    del self.product_cost_cache[product_id]
+
         return res
 
 # CANCEL CACHE IF SOMETHING CHANGE ON PRICELIST
