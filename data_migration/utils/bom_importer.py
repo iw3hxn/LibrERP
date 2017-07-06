@@ -22,20 +22,17 @@
 
 import logging
 import math
-import sys
 import threading
 from collections import namedtuple
 from datetime import datetime
 from pprint import pprint
 
-import codicefiscale
 import pooler
 from openerp.addons.core_extended.file_manipulation import import_sheet
-import vatnumber
+from openerp.osv import orm
 from tools.translate import _
 
 import data_migration.settings as settings
-from openerp.osv import orm
 from utils import Utils
 
 _logger = logging.getLogger(__name__)
@@ -177,7 +174,7 @@ class ImportFile(threading.Thread, Utils):
             })
 
             if hasattr(record, 'product_qty') and record.product_qty:
-                bom_lines['product_qty'] = record.product_qty
+                bom_lines['product_qty'] = abs(float(record.product_qty))
 
             if hasattr(record, 'observation') and record.observation:
                 bom_lines['position'] = record.observation
@@ -265,7 +262,6 @@ class ImportFile(threading.Thread, Utils):
 
         # Sometime value is only numeric and we don't want string to be treated as Float
         record = self.RecordBom._make([self.toStr(value) for value in row_list])
-        print record
 
         for field in self.REQUIRED:
             if not getattr(record, field):
@@ -336,13 +332,22 @@ class ImportFile(threading.Thread, Utils):
 
         if sub_product_ids:
             if sub_item_flag:
+                if hasattr(record, 'sub_description') and record.sub_description:
+                    product_vals.update({'name': record.sub_description})
+                if hasattr(record, 'sub_dimension') and record.sub_dimension:
+                    product_vals.update({'measures': record.sub_dimension})
+
                 self.product_obj.write(cr, uid, sub_product_ids[0], product_vals, self.context)
                 self.updated += 1
         else:
-            if hasattr(record, 'observation') and record.observation:
-                product_vals.update({'name': record.observation})
+            if hasattr(record, 'sub_description') and record.sub_description:
+                sub_item_flag = True
+                product_vals.update({'name': record.sub_description})
             else:
+                import pdb;pdb.set_trace()
                 sub_item_flag = False
+            if hasattr(record, 'sub_dimension') and record.sub_dimension:
+                product_vals.update({'measures': record.sub_dimension})
 
             if sub_item_flag:
                 sub_product_ids = [self.product_obj.create(cr, uid, product_vals, self.context)]

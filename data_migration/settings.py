@@ -104,19 +104,21 @@ class FormatOne():
     INVENTORY_PRODUCT_SEARCH = ['default_code']
 
     HEADER_BOM = (
-        '#', 'Articolo superiore', 'Numero dell\'elemento subordinato', 'Articolo subordinato', 'Quantità', 'Magazzino',
+        'Articolo superiore', 'Numero dell elemento subordinato', 'Articolo subordinato', 'Quantità', 'Magazzino',
         'Prezzo', 'Divisa', 'Listino prezzi', 'Prezzo nuovo', 'Divisa originale', 'Modalità prelievo',
-        'Unità di misura magazzino', 'Osservazione', 'Istanza registro', 'Oggetto', 'Regola di distribuzione',
-        'Regola di distribuzione 2', 'Regola di distribuzione 3', 'Regola di distribuzione 4',
+        'Unità di misura magazzino', 'Osservazione', 'Istanza registro', 'Oggetto', 'Descrizione articolo subordinato',
+        'Misure articolo subordinato', 'Regola di distribuzione 3', 'Regola di distribuzione 4',
         'Regola di distribuzione 5', 'Input principale', 'Codice progetto', 'Misure', 'Codice alternativo',
         'Dimensione', 'Materiale'
     )
-    COLUMNS_BOM = "index, default_code, sub_elem_number, sub_item, product_qty, wharehouse, " \
+
+    COLUMNS_BOM = "default_code, sub_elem_number, sub_item, product_qty, wharehouse, " \
                   "price, divisa, listino_prezzi, prezzo_nuovo, divisa_originale, modalita_prelievo, " \
-                  "uom_maga, observation, ist_reg, object, rdd, " \
-                  "rdd2, rdd3, rdd4, " \
+                  "uom_maga, observation, ist_reg, object, sub_description, " \
+                  "sub_dimension, rdd3, rdd4, " \
                   "rdd5, input_principale, codice_progetto, measures, codice_alternativo, " \
                   "dimension, materials"
+
     BOM_SEARCH = ['sub_item']
     REQUIRED_BOM = ['sub_item']
     BOM_WARNINGS = ['standard_price']
@@ -216,7 +218,7 @@ class FormatTwo():
         'Articolo subordinato', 'Quantità', 'Articolo superiore', 'Numero dell\'elemento subordinato',
         'Articolo subordinato', 'Quantità', 'Magazzino', 'Prezzo', 'Divisa', 'Listino prezzi', 'Prezzo nuovo',
         'Divisa originale', 'Modalità prelievo', 'Unità di misura magazzino', 'Osservazione', 'Istanza registro',
-        'Oggetto', 'Regola di distribuzione', 'Regola di distribuzione 2', 'Regola di distribuzione 3',
+        'Oggetto', 'Descrizione Articolo Subordinato', 'Misure articolo Subordinato', 'Regola di distribuzione 3',
         'Regola di distribuzione 4', 'Regola di distribuzione 5', 'Input principale', 'Codice progetto', 'Misure',
         'Codice alternativo', 'Dimensione', 'Materiale'
     )
@@ -224,7 +226,7 @@ class FormatTwo():
                   "sub_item, product_qty, default_code2, sub_elem_number2, " \
                   "sub_item2, product_qty2, wharehouse, standard_price, divisa, listino_prezzi, prezzo_nuovo, " \
                   "divisa_originale, modalita_prelievo, uom_maga, observation, ist_reg, " \
-                  "object, rdd, rdd2, rdd3, " \
+                  "object, sub_description, sub_dimension, rdd3, " \
                   "rdd4, rdd5, input_principale, codice_progetto, measures, " \
                   "codice_alternativo, dimension, materials"
     BOM_SEARCH = ['sub_item']
