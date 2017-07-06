@@ -84,7 +84,7 @@ tr {
         </tr>
     %endfor
     <tr >
-        <td style="text-align:left"></td>
+        <td style="text-align:left"><strong>${ _('Totals')}</strong></td>
         <td style="text-align:right"><strong>${ formatLang(debit_total_base)|entity }</strong></td>
         <td style="text-align:right"><strong>${ formatLang(debit_total_vat)|entity }</strong></td>
     </tr>
@@ -131,7 +131,7 @@ tr {
         </tr>
     %endfor
     <tr >
-        <td style="text-align:left"></td>
+        <td style="text-align:left"><strong>${ _('Totals')}</strong></td>
         <td style="text-align:right"><strong>${ formatLang(credit_total_base)|entity }</strong></td>
         <td style="text-align:right"><strong>${ formatLang(credit_total_vat)|entity }</strong></td>
     </tr>
@@ -142,7 +142,7 @@ tr {
         <th  colspan="3">${_("Summary")}</th>
     </tr>
     <tr>
-        <th width="60%"></th>
+        <th width="60%"> ${ _('Description') }</th>
         <th width="20%"> ${ _('Debit') }</th>
         <th width="20%"> ${ _('Credit') }</th>
     </tr>
@@ -166,12 +166,13 @@ tr {
             <td>${ formatLang(credit_line.amount)|entity }</td>
         </tr>
     %endfor
-    <!--
-    <tr >
-        <td>${_("Total")}</td>
-        <td>${ statement.deductible_vat_amount|entity }</td>
+    
+    <tr>
+        <td><strong>${_("Total")}</strong></td>
+        <td><strong>${ statement.payable_vat_amount|entity }</td>
+        <td><strong>${ statement.deductible_vat_amount|entity }</strong></td>
     </tr>
-    -->
+
     <tr >
         <td>${_("Previous Credits VAT")}</td>
         <td></td>
@@ -189,24 +190,9 @@ tr {
             <td>${ generic_line.amount > 0 and formatLang(generic_line.amount) or ''|entity }</td>
         </tr>
     %endfor
-    %if statement.interest_amount > 0.0 :
     <tr >
-        <td><strong>${_("Amount")}</strong></td>
-        <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.authority_vat_amount)|entity }</strong></td>
-    </tr>
-    <tr >
-        <td><strong>${_("Interest amount")}</strong></td>
-        <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.interest_amount)|entity }</strong></td>
-    </tr>
-    %endif
-    <tr >
-        %if statement.authority_vat_amount > 0.0 :
         <td><strong>${_("Amount to pay")}</strong></td>
-        <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.authority_vat_amount + statement.interest_amount)|entity }</strong></td>
-        %else :
-        <td><strong>${_("Amount of credit")}</strong></td>
-        <td colspan="2" style="text-align:center"><strong>${ formatLang(- statement.authority_vat_amount)|entity }</strong></td>
-        %endif
+        <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.authority_vat_amount)|entity }</strong></td>
     </tr>
 </table>
 %endfor
