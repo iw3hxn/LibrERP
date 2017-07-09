@@ -31,6 +31,7 @@ import pooler
 from openerp.addons.core_extended.file_manipulation import import_sheet
 from openerp.osv import orm
 from tools.translate import _
+from . import product_importer
 
 import data_migration.settings as settings
 from utils import Utils
@@ -148,6 +149,69 @@ class ImportFile(threading.Thread, Utils):
                     pdb.set_trace()
 
                 self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.bomImportRecord)
+
+    def get_uom(self, cr, uid, name):
+        translate = {
+            'm': 'm',
+            'kgm': 'kg',
+            'unit': 'Unit(s)',
+            'litre': 'Liter(s)',
+            'LT': 'Litre',
+            'lt': 'Litre',
+            '20 lt': 'Litre',
+            'PCE': 'PCE',
+            'Pz.': 'PCE',
+            'Pa.': 'PCE',  # Paia
+            'Paia': 'PCE',  # Paia
+            'PZ': 'PCE',
+            'Pz': 'PCE',
+            'CF': 'PCE',
+            'N.': 'PCE',
+            'Mt.': 'PCE',
+            'pz': 'PCE',
+            'copp': 'PCE',
+            'conf': 'PCE',
+            'Kit': 'PCE',
+            'Pacco': 'PCE',
+            'scat': 'PCE',
+            'pac': 'PCE',
+            'HH': 'Hour',
+            'M': 'm',
+            'ML.': 'm',
+            'mc': 'mq',
+            'M2': 'mq',
+            'mq': 'mq',
+            'Kg': 'kg',
+            'kg': 'kg'
+        }
+
+        if name and len(name) > 20 and name[:20] == 'product.product_uom_':
+            uom_name = name[20:]
+        elif name:
+            uom_name = name
+        else:
+            error = "Row {0}: Can't find valid UOM".format(self.processed_lines)
+            _logger.error(error)
+            self.error.append(error)
+            return False
+        if uom_name not in translate:
+            warning = "Row {0}: Can't find valid UOM {1}".format(self.processed_lines, name)
+            _logger.warning(warning)
+            self.warning.append(warning)
+            return self.pool['product.product'].default_get(cr, uid, ['uom_id'], context=self.context)['uom_id']
+        uom_ids = self.pool['product.uom'].search(cr, uid, [('name', '=ilike', translate[uom_name])], context=self.context)
+        if len(uom_ids) == 1:
+            return uom_ids[0]
+        elif len(uom_ids) > 1:
+            error = "Row {0}: Abnormal situation. More than one UOM '{1}' found".format(self.processed_lines, uom_name)
+            _logger.error(error)
+            self.error.append(error)
+            return False
+        else:
+            error = "Row {0}: UOM '{1}' is missing in database".format(self.processed_lines, uom_name)
+            _logger.error(error)
+            self.error.append(error)
+            return False
 
     def create_bom(self, cr, uid, product_ids, product_vals_bom, record):
         product = self.product_obj.browse(cr, uid, product_ids[0], context=self.context)
@@ -289,6 +353,9 @@ class ImportFile(threading.Thread, Utils):
                     'sale_ok': True,
                     'purchase_ok': False
                 })
+            if hasattr(record, 'uom_maga') and record.uom_maga:
+                product_vals['uom_id'] = self.get_uom(cr, uid, record.uom_maga) #todo better, is on product_importer
+                product_vals['uom_po_id'] = product_vals['uom_id']
         else:
             product_flag = False
 
