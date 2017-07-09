@@ -216,7 +216,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
 
         # choose the view_mode accordingly
         if len(sale_ids) > 1:
-            result['domain'] = "[('id','in',[" + ','.join(map(str, sale_ids)) + "])]"
+            result['domain'] = "[('id','in'," + str(tuple(sale_ids)) + ")]"
         else:
             res = mod_obj.get_object_reference(cr, uid, 'sale', 'view_order_form')
             result['views'] = [(res and res[1] or False, 'form')]
