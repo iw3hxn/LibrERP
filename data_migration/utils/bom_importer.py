@@ -353,9 +353,6 @@ class ImportFile(threading.Thread, Utils):
                     'sale_ok': True,
                     'purchase_ok': False
                 })
-            if hasattr(record, 'uom_maga') and record.uom_maga:
-                product_vals['uom_id'] = self.get_uom(cr, uid, record.uom_maga) #todo better, is on product_importer
-                product_vals['uom_po_id'] = product_vals['uom_id']
         else:
             product_flag = False
 
@@ -403,6 +400,10 @@ class ImportFile(threading.Thread, Utils):
                     product_vals.update({'name': record.sub_description})
                 if hasattr(record, 'sub_dimension') and record.sub_dimension:
                     product_vals.update({'measures': record.sub_dimension})
+                if hasattr(record, 'uom_maga') and record.uom_maga:
+                    product_vals['uom_id'] = self.get_uom(cr, uid,
+                                                          record.uom_maga)  # todo better, is on product_importer
+                    product_vals['uom_po_id'] = product_vals['uom_id']
 
                 self.product_obj.write(cr, uid, sub_product_ids[0], product_vals, self.context)
                 self.updated += 1
@@ -411,7 +412,6 @@ class ImportFile(threading.Thread, Utils):
                 sub_item_flag = True
                 product_vals.update({'name': record.sub_description})
             else:
-                import pdb;pdb.set_trace()
                 sub_item_flag = False
             if hasattr(record, 'sub_dimension') and record.sub_dimension:
                 product_vals.update({'measures': record.sub_dimension})
