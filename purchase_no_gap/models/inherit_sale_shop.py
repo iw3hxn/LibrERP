@@ -33,10 +33,10 @@ class sale_shop(orm.Model):
     _columns = {
         'purchase_sequence_id': fields.many2one('ir.sequence', 'Purchase Entry Sequence',
                                        help="This field contains the information related to the numbering of the Purchase Orders.",
-                                       domain="[('code', '=', 'sale.order')]"),
+                                       domain="[('code', '=', 'purchase.order')]"),
         'purchase_confirmed_sequence_id': fields.many2one('ir.sequence', 'Purchase Entry Sequence Confirmed',
                                                   help="This field contains the information related to the numbering of the Purchase Orders Confirmed",
-                                                  domain="[('code', '=', 'sale.order')]"),
+                                                  domain="[('code', '=', 'purchase.order')]"),
     }
 
     def write(self, cr, uid, ids, vals, context=None):
