@@ -28,8 +28,8 @@ msgstr "Riporta in Richiesta Preventivo"
 #. module: purchase_order_reopen
 #: code:addons/purchase_order_reopen/purchase.py:55
 #, python-format
-msgid "You cannot reset this Sale Order to draft, because picking [ %s %s ] is not in state draft or cancel "
-msgstr "Non puoi riportare questa richiesta d'acquisto, perchè la presa [ %s %s ] non è in stato Bozza o Cancellato!"
+msgid "You cannot reset this Purchase Order to draft, because picking [ {name} {state} ] is not in state draft or cancel"
+msgstr "Non puoi riportare questa richiesta d'acquisto, perchè la presa [ {name} {state} ] non è in stato Bozza o Cancellato!"
 
 #. module: purchase_order_reopen
 #: code:addons/purchase_order_reopen/purchase.py:83

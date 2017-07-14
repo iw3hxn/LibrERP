@@ -80,8 +80,8 @@ class purchase_order(orm.Model):
                 for pick in order.picking_ids:
                     stock_picking_obj.allow_reopen(cr, uid, [pick.id])
 
-                    #if pick.state not in ['draft','cancel','confirmed']: # very restrictive
-                    #    raise osv.except_osv(_('Error'), _('You cannot reset this Sale Order to draft, because picking [ %s %s ] is not in state draft or cancel ')% (pick.name, pick.state))
+                    if pick.state not in ['draft', 'cancel', 'confirmed']:  # very restrictive
+                        raise orm.except_orm(_('Error'), _(u'You cannot reset this Purchase Order to draft, because picking [ {name} {state} ] is not in state draft or cancel').format(name=pick.name, state=pick.state))
 
             if order.invoice_ids:
                 for inv in order.invoice_ids:
@@ -90,7 +90,6 @@ class purchase_order(orm.Model):
                                          inv.name, inv.state))
 
         return True
-
 
     def action_reopen(self, cr, uid, ids, context=None):
         """ Changes SO from to draft.
