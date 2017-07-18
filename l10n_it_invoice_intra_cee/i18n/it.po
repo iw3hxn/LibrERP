@@ -96,6 +96,11 @@ msgid "Auto Invoice Tax"
 msgstr "Aliquota Auto Fattura"
 
 #. module: l10n_it_invoice_intra_cee
+#: field:account.tax,auto_invoice_amount_tax:0
+msgid "Auto Invoice Tax"
+msgstr "Aliquota Auto Fattura"
+
+#. module: l10n_it_invoice_intra_cee
 #: field:account.fiscal.position,use_same_partner:0
 msgid "Use the same partner of purchase invoice             for auto invoice"
 msgstr "Usa lo stesso partner della fattura di acquisto             per l'autofattura"
