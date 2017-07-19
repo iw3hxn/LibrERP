@@ -319,7 +319,7 @@ class project_project(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         for order in self.pool['sale.order'].browse(cr, uid, ids, context=context):
-            if order.project_project:
+            if hasattr(order, 'project_project') and order.project_project:
                 result[order.project_project.id] = True
         return result.keys()
 
