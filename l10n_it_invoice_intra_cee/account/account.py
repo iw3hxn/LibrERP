@@ -257,7 +257,6 @@ class account_invoice(orm.Model):
                 new_line.append((0, 0, vals))
             if not line_reverse_charge:
                 del new_inv['invoice_line'][new_inv['invoice_line'].index(line)]
-        import pdb;pdb.set_trace()
         new_inv['invoice_line'] = new_line
         return new_inv
 
