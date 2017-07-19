@@ -2943,9 +2943,9 @@ openerp.web.form.One2ManyList = openerp.web.ListView.List.extend({
                     delete self.__return_blur;
                     return;
                 }
-                if (!self.edition_form.widget_is_stopped) {
+//                if (!self.edition_form.widget_is_stopped) {
                     self.view.ensure_saved();
-                }
+//                }
             });
         });
     },
