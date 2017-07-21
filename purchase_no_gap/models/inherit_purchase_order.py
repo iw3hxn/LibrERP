@@ -28,6 +28,7 @@ class purchase_order(orm.Model):
     _inherit = "purchase.order"
 
     _columns = {
+        'purchase_order_request': fields.char('Purchase Order Request'),
         'shop_id': fields.many2one('sale.shop', 'Shop', required=True, readonly=True,
                                    states={'draft': [('readonly', False)]}),
     }
@@ -68,7 +69,8 @@ class purchase_order(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         for purchase in self.browse(cr, uid, ids, context):
             if purchase.shop_id and purchase.shop_id.purchase_confirmed_sequence_id:
+                purchase_order_request = purchase.name
                 sequence = self.pool['ir.sequence'].next_by_id(cr, uid, purchase.shop_id.purchase_confirmed_sequence_id.id)
-                self.write(cr, uid, purchase.id, {'name': sequence}, context)
+                self.write(cr, uid, purchase.id, {'name': sequence, 'purchase_order_request': purchase_order_request}, context)
         res = super(purchase_order, self).wkf_confirm_order(cr, uid, ids, context)
         return res
