@@ -21,6 +21,7 @@
 #
 ##############################################################################
 
+from openerp import netsvc
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
 
@@ -48,7 +49,6 @@ class RibaUnsolved(orm.TransientModel):
         if not res:
             res = self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'acceptance_account_id', context=context)
         return res
-
 
     def _get_overdue_effects_account_id(self, cr, uid, context=None):
         return self.pool.get('riba.configurazione').get_default_value_by_distinta_line(cr, uid, 'overdue_effects_account_id', context=context)
