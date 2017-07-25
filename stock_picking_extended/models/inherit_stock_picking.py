@@ -203,17 +203,26 @@ class stock_picking(orm.Model):
         res['quantity'] = move_line.product_qty or move_line.product_uos_qty
         return res
 
-    def action_invoice_create(self, cr, user, ids, journal_id=False,
+    def action_invoice_create(self, cr, uid, ids, journal_id=False,
                               group=False, type='out_invoice', context=None):
-        res = super(stock_picking, self).action_invoice_create(cr, user, ids, journal_id,
+        res = super(stock_picking, self).action_invoice_create(cr, uid, ids, journal_id,
                                                                group, type, context)
 
-        for picking in self.browse(cr, user, ids, context=context):
-            self.pool['account.invoice'].write(cr, user, res[picking.id], {
+        for picking in self.browse(cr, uid, ids, context=context):
+            self.pool['account.invoice'].write(cr, uid, res[picking.id], {
                 'carriage_condition_id': picking.carriage_condition_id.id,
                 'goods_description_id': picking.goods_description_id.id,
                 'transportation_condition_id': picking.transportation_condition_id.id,
             }, context)
+
+            for order_line in picking.sale_id.order_line:
+                if not order_line.invoiced:
+                    break
+            else:
+                sale_order = self.pool['sale.order'].browse(cr, uid, picking.sale_id.id, context)
+                if sale_order.state == 'manual':
+                    sale_order.write({'state': 'progress'})
+
         return res
 
     def _invoice_line_hook(self, cr, uid, move_line, invoice_line_id):
