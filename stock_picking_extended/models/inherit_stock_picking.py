@@ -214,14 +214,14 @@ class stock_picking(orm.Model):
                 'goods_description_id': picking.goods_description_id.id,
                 'transportation_condition_id': picking.transportation_condition_id.id,
             }, context)
-
-            for order_line in picking.sale_id.order_line:
-                if not order_line.invoiced:
-                    break
-            else:
-                sale_order = self.pool['sale.order'].browse(cr, uid, picking.sale_id.id, context)
-                if sale_order.state == 'manual':
-                    sale_order.write({'state': 'progress'})
+            if picking.sale_id:
+                for order_line in picking.sale_id.order_line:
+                    if not order_line.invoiced:
+                        break
+                else:
+                    sale_order = self.pool['sale.order'].browse(cr, uid, picking.sale_id.id, context)
+                    if sale_order.state == 'manual':
+                        sale_order.write({'state': 'progress'})
 
         return res
 
