@@ -226,6 +226,8 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         return result
 
     _columns = {
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Dal"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Al"),
         'partner_address_id': fields.many2one('res.partner.address', 'Partner Contact'),
         'province': fields.many2one('res.province', string='Province', ondelete='restrict'),
         'region': fields.many2one('res.region', string='Region', ondelete='restrict'),

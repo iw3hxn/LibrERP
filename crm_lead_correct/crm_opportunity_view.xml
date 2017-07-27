@@ -52,8 +52,8 @@
                     <field name="probability"/>
                     <field name="date_deadline"/>
 
-                    <button name="action_makeMeeting" type="object"
-                    string="Schedule Meeting" icon="gtk-redo" />
+                    <!--<button name="action_makeMeeting" type="object"-->
+                    <!--string="Schedule Meeting" icon="gtk-redo" />-->
                     <newline/>
                     <field name="date_action"/>
                     <field name="title_action"/>
@@ -296,7 +296,9 @@
         <field name="arch" type="xml">
         <field name="name" position="after">
             <filter name="today" icon="terp-go-today" domain="[('date_action', '=', time.strftime('%%Y-%%m-%%d'))]" string="Today"/>
-                        <!--<filter icon="terp-go-month"
+            <field name="date_from" filter_domain="[('date_action','&gt;=',self)]"/>
+            <field name="date_to" filter_domain="[('date_action','&lt;=',self)]"/>
+            <!--<filter icon="terp-go-month"
                         string="Current Week"
                         name="current_week"
                         help="Action of Current Week"
