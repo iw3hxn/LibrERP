@@ -68,12 +68,14 @@ class hr_expense_expense(orm.Model):
             return False
     
     def create(self, cr, uid, values, context=None):
+        employee_obj = self.pool['hr.employee']
         expense_date = datetime.strptime(values.get('date', datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)), DEFAULT_SERVER_DATE_FORMAT)
-        employee = self.pool['hr.employee'].get_employee(cr, uid, uid)
-        hr_expense_id = self.get_hr_expense(cr, uid, employee.id, expense_date)
-        
+        employee = employee_obj.get_employee(cr, uid, uid)
+        employee_id = values.get('employee_id', employee.id)
+        hr_expense_id = self.get_hr_expense(cr, uid, employee_id, expense_date)
+        real_employee = employee_obj.browse(cr, uid, employee_id, context)
         if not hr_expense_id:
-            values['name'] = u"{month:0>2d} - {name}".format(month=expense_date.month, name=employee.name)
+            values['name'] = u"{month:0>2d} - {name}".format(month=expense_date.month, name=real_employee.name)
             if not values.get('currency_id', False):
                 user = self.pool['res.users'].browse(cr, uid, uid)
                 values['currency_id'] = user.company_id.currency_id.id
@@ -136,6 +138,10 @@ class hr_expense_line(orm.Model):
             ('other', _('Other')),
         ), _('Payer'), required=True),
         # 'user_id': fields.related('expense_id', 'user_id', type='many2one', relation='res.user', string='User'),
+    }
+
+    _defaults = {
+        'payer': 'employee',
     }
     
     def write(self, cr, uid, ids, values, context=None):

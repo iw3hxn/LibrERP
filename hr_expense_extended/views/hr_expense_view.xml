@@ -29,10 +29,10 @@
                         <tree editable="top" string="Expense Lines">
                             <field name="sequence" invisible="1"/>
                             <field name="date_value"/>
-                            <field name="task_id"/>
+                            <field name="task_id" groups="project.group_project_user"/>
+                            <field name="product_id" on_change="onchange_product_id(product_id, uom_id, parent.employee_id, context)" required="1"/>
                             <field name="name" />
                             <field name="ref"/>
-                            <field name="product_id" on_change="onchange_product_id(product_id, uom_id, parent.employee_id, context)" required="1"/>
                             <field name="payer" />
                             <field name="unit_quantity"/>
                             <field name="uom_id" on_change="onchange_product_id(product_id, uom_id, parent.employee_id, context)"/>
