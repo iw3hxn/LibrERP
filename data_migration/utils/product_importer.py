@@ -390,11 +390,11 @@ class ImportFile(threading.Thread, Utils):
         # Sometime value is only numeric and we don't want string to be treated as Float
         record = self.RecordProduct._make([self.toStr(value) for value in row_list])
         print record
-        if record.default_code and record.default_code in self.cache:
-            _logger.warning(u'Code {0} already processed'.format(record.default_code))
+        if record.default_code and record.default_code.strip() in self.cache:
+            _logger.warning(u'Code {0} already processed'.format(record.default_code.strip()))
             # return False
         elif record.default_code:
-            self.cache.append(record.default_code)
+            self.cache.append(record.default_code.strip())
 
         for field in self.REQUIRED:
             if not getattr(record, field):
@@ -589,6 +589,13 @@ class ImportFile(threading.Thread, Utils):
             product_ids = self.product_obj.search(
                 cr, uid,
                 [(field, '=ilike', vals_product[field].replace('\\', '\\\\')), ('active', '=', False)],
+                context=self.context
+            )
+
+        if not product_ids:
+            product_ids = self.product_obj.search(
+                cr, uid,
+                [('default_code', '=', vals_product['default_code'].replace('\\', '\\\\').strip())],
                 context=self.context
             )
 
