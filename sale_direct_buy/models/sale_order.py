@@ -68,8 +68,8 @@ class sale_order(orm.Model):
                         boms = bom_obj.browse(cr, uid, bom_ids, context)
                         for bom in boms:
                             if bom.type == 'phantom':
-                                if order_line.bom_ids:
-                                    for child_bom in order_line.bom_ids:
+                                if order_line.mrp_bom:
+                                    for child_bom in order_line.mrp_bom:
                                         # At the moment we use main supplier:
                                         supplierinfo = self.pool['product.template']._get_main_product_supplier(cr, uid, child_bom.product_id, context)
                                         if not supplierinfo:
@@ -99,7 +99,7 @@ class sale_order(orm.Model):
                                             'taxes_id': [(6, 0, res['value'].get('taxes_id'))],
                                         }
 
-                                        if order_line.supplier_id.id in suppliers:
+                                        if supplierinfo.name.id in suppliers:
                                             suppliers[supplierinfo.name.id].append(line_values)
                                         else:
                                             suppliers[supplierinfo.name.id] = [line_values]
