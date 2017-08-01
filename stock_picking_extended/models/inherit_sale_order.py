@@ -93,7 +93,7 @@ class sale_order(orm.Model):
     def _prepare_order_line_move(self, cr, uid, order, line, picking_id, date_planned, context=None):
         res = super(sale_order, self)._prepare_order_line_move(cr, uid, order, line, picking_id, date_planned, context)
         company = order.company_id
-        if company.note_on_stock_move:
+        if not company.note_on_stock_move:
             if 'note' in res:
                 del res['note']
         return res
