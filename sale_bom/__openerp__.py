@@ -35,7 +35,7 @@ This module adds the 'BOM' on sales order.
     "demo_xml": [],
     "update_xml": [
         "security/ir.model.access.csv",
-        "sale_mrp.xml"
+        "views/inherit_sale_order.xml"
     ],
     "auto_install": False,
     "installable": True,

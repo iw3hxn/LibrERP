@@ -21,5 +21,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-from . import models
+from . import inherit_sale_order_line
+from . import inherit_stock_move
+from . import inherit_stock_picking
+from . import sale_order_line_mrp_bom

@@ -17,7 +17,7 @@
                         <!--
                         comment on 8 / 6 / 2015 for error   <field colspan="4" name="mrp_bom" nolabel="1" on_change="onchange_mrp_bom(mrp_bom, product_id)" context="{'default_sale_order_line': active_id}"  default_get="{'default_sale_order_line': active_id or False}">
                         -->
-                        <field colspan="4" name="mrp_bom" nolabel="1" on_change="onchange_mrp_bom(mrp_bom)" context="{'default_sale_order_line': active_id}"  default_get="{'default_sale_order_line': active_id or False}">
+                        <field colspan="4" name="mrp_bom" nolabel="1" on_change="onchange_mrp_bom(mrp_bom)" context="{'default_sale_order_line': active_id}" default_get="{'default_sale_order_line': active_id or False}">
                             <tree string="Bom Line" editable="bottom" >
                                 <field name="order_id" invisible="1" />
                                 <field name="parent_id" readonly="1" />

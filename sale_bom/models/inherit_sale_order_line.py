@@ -57,13 +57,17 @@ class sale_order_line(orm.Model):
                             if bom_line.product_id.bom_lines:
                                 for bom_sub_line in bom_line.product_id.bom_lines[0].bom_lines:
                                     sequence += 1
+                                    price_unit = self.pool['product.uom']._compute_price(cr, uid,
+                                                                                         bom_sub_line.product_id.uom_id.id,
+                                                                                         bom_sub_line.product_id.cost_price,
+                                                                                         bom_sub_line.product_uom.id)
                                     line_bom = {
                                         'parent_id': bom_line.product_id.id,
                                         'product_id': bom_sub_line.product_id.id,
                                         'product_uom_qty': bom_sub_line.product_qty,
                                         'product_uom': bom_sub_line.product_uom.id,
-                                        'price_unit': bom_sub_line.product_id.cost_price,
-                                        'price_subtotal': bom_sub_line.product_qty * bom_sub_line.product_id.cost_price,
+                                        'price_unit': price_unit,
+                                        'price_subtotal': bom_sub_line.product_qty * price_unit,
                                         'sequence': sequence,
                                     }
                                     if ids and len(ids) == 1:
@@ -71,13 +75,14 @@ class sale_order_line(orm.Model):
                                     result['value']['mrp_bom'].append(line_bom)
                             else:
                                 sequence += 1
+                                price_unit = self.pool['product.uom']._compute_price(cr, uid, bom_line.product_id.uom_id.id, bom_line.product_id.cost_price, bom_line.product_uom.id)
                                 line_bom = {
                                     'parent_id': False,
                                     'product_id': bom_line.product_id.id,
                                     'product_uom_qty': bom_line.product_qty,
                                     'product_uom': bom_line.product_uom.id,
-                                    'price_unit': bom_line.product_id.cost_price,
-                                    'price_subtotal': bom_line.product_qty * bom_line.product_id.cost_price,
+                                    'price_unit': price_unit,
+                                    'price_subtotal': bom_line.product_qty * price_unit,
                                     'sequence': sequence,
                                 }
                                 if ids and len(ids) == 1:
@@ -105,43 +110,3 @@ class sale_order_line(orm.Model):
 
         return {'value': {'purchase_price': price}}
 
-
-class sale_order_line_mrp_bom(orm.Model):
-    _name = 'sale.order.line.mrp.bom'
-    _description = 'Sales Order Bom Line'
-    
-    _columns = {
-        'name': fields.char('Note', size=256, select=True),
-        'order_id': fields.many2one('sale.order.line', 'Order Reference', ondelete='cascade', select=True),
-        'parent_id': fields.many2one('product.product', 'Parent', change_default=True),
-        'product_id': fields.many2one('product.product', 'Product', change_default=True),
-        'product_uom_qty': fields.float('Quantity (UoM)', digits_compute=dp.get_precision('Product UoS'), required=True),
-        'product_uom': fields.many2one('product.uom', 'Unit of Measure ', required=True),
-        'sequence': fields.integer('Sequence', help="Gives the sequence order when displaying a list of sales order lines."),
-        'price_unit': fields.float('Unit Price', required=True, digits_compute=dp.get_precision('Sale Price')),
-        'price_subtotal': fields.float('Subtotal', required=True, digits_compute=dp.get_precision('Sale Price')),
-    }
-    
-    _order = 'sequence, id'
-
-    _defaults = {
-        'product_uom_qty': 1,
-        'sequence': 10,
-        'price_unit': 0.0,
-        'order_id': lambda self, cr, uid, context: context.get('default_sale_order_line', False) or False
-    }
-
-    def bom_product_id_change(self, cr, uid, ids, product_id, uom_id, product_qty, price_unit, context=None):
-        if product_id:
-            product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
-            # qty = self.pool['product.uom']._compute_qty(cr, uid,
-            #                           from_uom_id=uom_id,
-            #                           qty=product_qty,
-            #                           to_uom_id=uom_id)
-            return {'value': {
-                'price_unit': price_unit or product.cost_price,
-                'product_uom': uom_id or product.uom_id.id,
-                'price_subtotal': price_unit * product_qty,
-            }}
-        else:
-            return {'value': {}}
