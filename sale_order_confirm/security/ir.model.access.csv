@@ -5,3 +5,9 @@ access_account_fiscal_position_tax,account.fiscal.position.tax all,account.model
 access_account_fiscal_position_account,account.fiscal.position all,account.model_account_fiscal_position_account,base.group_sale_salesman,1,0,0,0
 access_res_partner_bank_user,res.partner.bank,base.model_res_partner_bank,base.group_sale_salesman,1,0,0,0
 access_account_payment_term_line_partner_manager,account.payment.term.line partner manager,account.model_account_payment_term_line,base.group_sale_salesman,1,0,0,0
+access_mrp_property,procurement.model_mrp_property,procurement.model_mrp_property,base.group_sale_salesman,1,0,0,0
+access_product_pricelist_type_user,product.pricelist.type.user,product.model_product_pricelist_type,base.group_sale_salesman,1,0,0,0
+access_product_pricelist_user,product.pricelist.user,product.model_product_pricelist,base.group_sale_salesman,1,0,0,0
+access_product_pricelist_version_user,product.pricelist.version.user,product.model_product_pricelist_version,base.group_sale_salesman,1,0,0,0
+access_product_pricelist_item_user,product.pricelist.item.user,product.model_product_pricelist_item,base.group_sale_salesman,1,0,0,0
+access_product_price_type_user,product.price.type.user,product.model_product_price_type,base.group_sale_salesman,1,0,0,0

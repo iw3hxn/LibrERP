@@ -152,7 +152,8 @@ class sale_order(orm.Model):
                 'manager_validation': False,
                 'customer_validation': False,
                 'email_sent_validation': False,
-                'supervisor_validation': False
+                'supervisor_validation': False,
+                'date_order': fields.date.context_today,
             }
         )
         default.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))

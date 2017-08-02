@@ -27,6 +27,7 @@ class sale_shop(orm.Model):
     _inherit = 'sale.shop'
 
     _columns = {
+        'sequence': fields.integer('Sequence', required=True),
         'sale_order_have_minimum': fields.boolean('Minimum Amount', help='The Sale Order of this shop have a Minimun Amount'),
         'sale_order_minimun': fields.float('Minimum Amount of Sale Order', digits_compute=dp.get_precision('Sale Price')),
         'user_allow_minimun_id': fields.many2one('res.users', 'User that can validate'),
@@ -34,4 +35,10 @@ class sale_shop(orm.Model):
         'user_tech_validation_id': fields.many2one('res.users', 'User that can be Tech Validation'),
         'user_manager_validation_id': fields.many2one('res.users', 'User that can be Manager Validation'),
         'user_supervisor_validation_id': fields.many2one('res.users', 'User that can be Verification after Customer Confirmation', oldname='user_supervisor_validation'),
+    }
+
+    _order = 'sequence'
+
+    _defaults = {
+        'sequence': 10
     }

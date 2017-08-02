@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_order_sales,purchase.order.sales,purchase.model_purchase_order,base.group_sale_salesman,1,1,1,1
+access_purchase_order_line_sales,purchase.order.line.sales,purchase.model_purchase_order_line,base.group_sale_salesman,1,1,1,1
+access_purchase_requisition_sales,purchase.requisition.sales,purchase_requisition.model_purchase_requisition,base.group_sale_salesman,1,1,1,1
+access_purchase_requisition_line_sales,purchase.requisition.line.sales,purchase_requisition.model_purchase_requisition_line,base.group_sale_salesman,1,1,1,1

@@ -24,7 +24,7 @@
 
 {
     "name": "Set Supplier inside Sale Order",
-    "version": "3.5.25.12",
+    "version": "3.5.25.13",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Sale',
@@ -46,6 +46,7 @@
         'purchase_requisition_extended'
     ],
     "data": [
+        'security/ir.model.access.csv',
         'views/inherit_sale_order.xml',
         'views/inherit_purchase_order.xml',
     ],

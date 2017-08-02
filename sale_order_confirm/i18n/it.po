@@ -777,6 +777,11 @@ msgid "Minimum Amount"
 msgstr "Importo Minimo?"
 
 #. module: sale_order_confirm
+#: field:sale.shop,sequence:0
+msgid "Sequence"
+msgstr "Sequenza"
+
+#. module: sale_order_confirm
 #: help:sale.shop,sale_order_have_minimum:0
 msgid "The Sale Order of this shop have a Minimun Amount"
 msgstr "L'ordine di vendita di questa Business Unit avrà un importo minimo"
