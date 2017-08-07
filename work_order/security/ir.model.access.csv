@@ -12,4 +12,4 @@
 "access_account_analytic_line","warehous_user","account.model_account_analytic_line","stock.group_stock_user",1,1,1,1
 "access_account_analytic_line","sale_user","account.model_account_analytic_line","base.group_sale_salesman",1,1,1,1
 "access_project_task_history","project.task.history project","project.model_project_task_history","base.group_sale_salesman",1,1,1,0
-"access_hr_expense_line_employee","hr.expense.line.employee","hr_expense.model_hr_expense_line","base.group_sale_salesman",1,1,1,1
+
