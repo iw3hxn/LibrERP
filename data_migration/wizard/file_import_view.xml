@@ -321,7 +321,7 @@
 
         <record id="view_invoice_import_form" model="ir.ui.view">
             <field name="name">invoice.import.form</field>
-            <field name="model">sales.invoice</field>
+            <field name="model">invoice.import</field>
             <field name="arch" type="xml">
                 <form string="Import Invoice from file">
                     <group>
@@ -337,8 +337,8 @@
                         </group>
 
                         <group colspan="4" col="4" states="import">
-                            <field name="type" />
-                            <field name="journal_id" widget="selection"/>
+                            <field name="type" on_change="on_change_type(type, context)" />
+                            <field name="journal_id" attrs="{'readonly': [('type', '=', False)]}"/>
                             <field name="origin" />
                             <field name="partner_id" attrs="{'required': [('format', '=', 'FormatOne')], 'invisible': [('format', '=', 'FormatTwo')]}"/>
                             <field name="date_invoice" attrs="{'required': [('format', '=', 'FormatOne')], 'invisible': [('format', '=', 'FormatTwo')]}" />

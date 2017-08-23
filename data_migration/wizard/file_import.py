@@ -501,6 +501,22 @@ class invoice_import(filedata_import):
         'progress_indicator': 0,
     }
 
+    def on_change_type(self, cr, uid, ids, type, context):
+        result = {}
+        warning = {}
+        matrix = {
+            'out_invoice': 'sale',
+            'in_invoice': 'purchase',
+            'out_refund': 'sale_refund',
+            'in_refund': 'purchase_refund',
+        }
+
+        domain = {
+            'journal_id': [('type', '=', matrix.get(type))]
+        }
+
+        return {'value': result, 'domain': domain, 'warning': warning}
+
 
 class inventory_import(filedata_import):
     _name = "inventory.import"
