@@ -22,25 +22,38 @@
 
 import logging
 import math
-import sys
 import threading
 from collections import namedtuple
 from datetime import datetime
 from pprint import pprint
 
-import codicefiscale
-import pooler
-import vatnumber
-from tools.translate import _
-
-import data_migration.settings as settings
-from openerp.osv import orm
-from utils import Utils
-
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
-import xlrd
+from openerp.addons.data_migration import settings
+from openerp.osv import orm
+from tools.translate import _
+
+from utils import Utils
+
+try:
+    import codicefiscale
+except ImportError:
+    _logger.debug('Cannot import codicefiscale')
+
+try:
+    import pooler
+except ImportError:
+    _logger.debug('Cannot import pooler')
+
+try:
+    import vatnumber
+except ImportError:
+    _logger.debug('Cannot import vatnumber')
+try:
+    import xlrd
+except ImportError:
+    _logger.debug('Cannot import xlrd')
 
 COUNTRY_CODES = settings.COUNTRY_CODES
 DEBUG = settings.DEBUG

@@ -31,11 +31,11 @@ from pprint import pprint
 import pooler
 import xlrd
 from openerp.addons.core_extended.file_manipulation import import_sheet
-from tools.translate import _
-
-import data_migration.settings as settings
+from openerp.addons.data_migration import settings
 from openerp.osv import orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from tools.translate import _
+
 from utils import Utils
 
 _logger = logging.getLogger(__name__)
@@ -279,7 +279,9 @@ class ImportFile(threading.Thread, Utils):
                 # i need to create invoice
                 # so need to create one
 
-                vals_invoice = {}
+                vals_invoice = {
+                    'type': self.type
+                }
                 vals_invoice.update(self.account_invoice_obj.onchange_journal_id(cr, uid, [], self.journal_id.id, self.context).get('value'))
                 vals_invoice.update(self.account_invoice_obj.onchange_partner_id(cr, uid, [], self.type, self.partner_id.id, date_invoice=self.date_invoice).get('value'))
                 vals_invoice.update({

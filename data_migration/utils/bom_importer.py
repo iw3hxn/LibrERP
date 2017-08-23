@@ -29,11 +29,10 @@ from pprint import pprint
 
 import pooler
 from openerp.addons.core_extended.file_manipulation import import_sheet
+from openerp.addons.data_migration import settings
 from openerp.osv import orm
 from tools.translate import _
-from . import product_importer
 
-import data_migration.settings as settings
 from utils import Utils
 
 _logger = logging.getLogger(__name__)

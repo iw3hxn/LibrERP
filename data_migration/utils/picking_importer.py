@@ -32,7 +32,7 @@ import xlrd
 from openerp.addons.core_extended.file_manipulation import import_sheet
 from tools.translate import _
 
-import data_migration.settings as settings
+from openerp.addons.data_migration import settings
 from openerp.osv import orm
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from utils import Utils

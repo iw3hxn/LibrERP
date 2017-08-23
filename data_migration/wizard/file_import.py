@@ -21,18 +21,17 @@
 
 import base64
 
-from tools.translate import _
-
-from data_migration.utils import crm_importer
-from data_migration.utils import inventory_importer
-from data_migration.utils import invoice_importer
-from data_migration.utils import partner_importer
-from data_migration.utils import picking_importer
-from data_migration.utils import pricelist_importer
-from data_migration.utils import product_importer
-from data_migration.utils import sales_importer
-from data_migration.utils import bom_importer
+from openerp.addons.data_migration.utils import bom_importer
+from openerp.addons.data_migration.utils import crm_importer
+from openerp.addons.data_migration.utils import inventory_importer
+from openerp.addons.data_migration.utils import invoice_importer
+from openerp.addons.data_migration.utils import partner_importer
+from openerp.addons.data_migration.utils import picking_importer
+from openerp.addons.data_migration.utils import pricelist_importer
+from openerp.addons.data_migration.utils import product_importer
+from openerp.addons.data_migration.utils import sales_importer
 from openerp.osv import orm, fields
+from tools.translate import _
 
 
 class filedata_import(orm.TransientModel):
