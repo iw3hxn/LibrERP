@@ -111,7 +111,7 @@ class stock_picking(orm.Model):
                     partner_vals['goods_description_id'] = vals.get('goods_description_id')
                 if partner_vals:
                     self.pool['res.partner'].write(cr, uid, [picking.partner_id.id], partner_vals, context)
-        if vals.get('ddt_number') and vals['ddt_number'] == '':
+        if vals.get('ddt_number') and vals['ddt_number'] == '' and not context.get('no_recovery', False):
             for picking in self.browse(cr, uid, ids, context):
                 sequence_id = picking.stock_journal_id.ddt_sequence and \
                               picking.stock_journal_id.ddt_sequence.id or False
