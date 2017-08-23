@@ -314,6 +314,15 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             contact_partner_address_obj.create(cr, uid, vals, context)
         return address_id
 
+    def onchange_partner_id(self, cr, uid, ids, part, email=False, context=None):
+        res = super(crm_lead_correct, self).onchange_partner_id(cr, uid, ids, part, email, context)
+        domain = {'contact_id': []}
+        if part:
+            domain = {'contact_id': [('partner_id', '=', part)]}
+        res['domain'] = domain
+        print domain
+        return res
+
     def onchange_contact_id(self, cr, uid, ids, contact_id):
         """This function returns value of partner email based on Partner Address
         :param ids: List of case IDs
