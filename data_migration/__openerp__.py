@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2015 Didotech srl (http://www.didotech.com)
+# Copyright (c) 2015-2017 Didotech srl (http://www.didotech.com)
 #
 # This program is Free Software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@
 
 {
     'name': 'Data migration import',
-    'version': '3.12.61.21',
+    'version': '3.12.62.21',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import products and partners

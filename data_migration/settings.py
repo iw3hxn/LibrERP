@@ -400,6 +400,52 @@ class FormatFive():
     }
 
 
+class FormatOmnitron(object):
+    """
+    SELECT CodiceProdotto,DescrizioneProdotto,DescrizioneProdottoInLingua,AMagazzino,IDValuta,PrezzoInValuta,Cambio,ListinoFornitore,Sconto,PrezzoAcquisto,ValoreMedio,Commento,IDIva,CodiceFornitore2,QtaMagazzino,GGConsegna,GestMaga,SpeseTrasporto,
+    StatoProdotto,ValoreMedioConSpese,DistintaBaseProduzione,KgMetro
+    FROM `bm`.`prodotti`
+    WHERE Cancellato=0
+    AND DistintaBase=0
+    AND StatoProdotto LIKE 'PRODOTTO ATTIVO'
+    ORDER BY CodiceProdotto
+    INTO OUTFILE 'prodotti_filteredRV.csv'
+    FIELDS TERMINATED BY ','
+        OPTIONALLY ENCLOSED BY '#'
+    LINES TERMINATED BY '\n';
+    """
+    HEADER_PRODUCT = (
+        "CodiceProdotto", "DescrizioneProdotto", "DescrizioneProdottoInLingua", "AMagazzino",
+        "IDValuta", "PrezzoInValuta", "Cambio",
+        "ListinoFornitore", "Sconto", "PrezzoAcquisto", "ValoreMedio",
+        "Commento", "IDIva", "CodiceFornitore2", "QtaMagazzino",
+        "GGConsegna", "GestMaga", "SpeseTrasporto",
+        "StatoProdotto", "ValoreMedioConSpese", "DistintaBaseProduzione", "KgMetro"
+    )
+
+    COLUMNS_PRODUCT = "old_code, description, description_english, omnitron_procurement, " \
+                      "none, none1, none2, " \
+                      "list_price, none4, standard_price, none5, " \
+                      "sale_line_warn_msg, none6, none7, qty_available, " \
+                      "omnitron_produce_delay, omnitron_type, omnitron_delivery_cost, " \
+                      "none8, none9, none10, omnitron_weight_per_meter"
+
+    PRODUCT_SEARCH = ['old_code']
+    REQUIRED_PRODUCT = ['old_code', 'description']
+    PRODUCT_WARNINGS = []
+    PRODUCT_ERRORS = []
+
+    # Default values
+    PRODUCT_DEFAULTS = {
+        'supply_method': 'buy',
+        'uom': 'PCE',
+        #'type': 'service',
+        #'procure_method': 'make_to_order',
+        'cost_method': 'average',
+        'sale_ok': True
+    }
+
+
 class Inventory(object):
     TABLE = OrderedDict((
         ('default_code', 'Product Code'),
