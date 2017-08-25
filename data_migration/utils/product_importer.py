@@ -35,7 +35,7 @@ from openerp.osv import orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from product.product import check_ean
 from tools.translate import _
-
+from tools import ustr
 from utils import Utils
 
 _logger = logging.getLogger(__name__)
@@ -91,7 +91,7 @@ class ImportFile(threading.Thread, Utils):
 
         # ===================================================
         Config = getattr(settings, self.productImportRecord.format)
-
+        self.FORMAT = self.productImportRecord.format
         self.HEADER = Config.HEADER_PRODUCT
         self.REQUIRED = Config.REQUIRED_PRODUCT
         self.PRODUCT_SEARCH = Config.PRODUCT_SEARCH
@@ -354,6 +354,55 @@ class ImportFile(threading.Thread, Utils):
             }
         return res
 
+    def set_product_qty(self, cr, uid, product_id, new_quantity, context=None):
+        """
+        This function is adopted from stock wizard stock.change.product.qty
+
+        Changes the Product Quantity by making a Physical Inventory.
+        @param self: The object pointer.
+        @param cr: A database cursor
+        @param uid: ID of the user currently logged in
+        @param product_id: Product
+        @param new_quantity
+        @param context: A standard dictionary
+        @return:
+        """
+        if context is None:
+            context = {}
+
+        inventry_obj = self.pool['stock.inventory']
+        inventry_line_obj = self.pool['stock.inventory.line']
+        product_obj = self.pool['product.product']
+        location_obj = self.pool['stock.location']
+
+        product = product_obj.browse(cr, uid, product_id, context=context)
+
+        if new_quantity < 0:
+            warning = _('Quantity cannot be negative.')
+            _logger.warning(warning)
+            self.warning.append(warning)
+            return False
+        else:
+            location_ids = location_obj.search(cr, uid, [('name', '=', 'Stock')])
+
+            inventory_id = inventry_obj.create(
+                cr, uid, {'name': _('INV: %s') % ustr(product.name)}, context=context
+            )
+            line_data = {
+                'inventory_id': inventory_id,
+                'product_qty': new_quantity,
+                'location_id': location_ids and location_ids[0],
+                'product_id': product_id,
+                'product_uom': product.uom_id.id,
+                # 'prod_lot_id': data.prodlot_id.id
+            }
+            inventry_line_obj.create(cr, uid, line_data, context=context)
+
+            inventry_obj.action_confirm(cr, uid, [inventory_id], context=context)
+            inventry_obj.action_done(cr, uid, [inventory_id], context=context)
+
+            return True
+
     def import_row(self, cr, uid, row_list):
         if self.first_row:
             row_str_list = [self.toStr(value) for value in row_list]
@@ -390,11 +439,23 @@ class ImportFile(threading.Thread, Utils):
         # Sometime value is only numeric and we don't want string to be treated as Float
         record = self.RecordProduct._make([self.toStr(value) for value in row_list])
         print record
-        if record.default_code and record.default_code.strip() in self.cache:
-            _logger.warning(u'Code {0} already processed'.format(record.default_code.strip()))
+
+        identifier_field = self.PRODUCT_SEARCH[0]
+        identifier = getattr(record, identifier_field).strip()
+
+        # # Look for duplicated default code
+        # if record.default_code and record.default_code.strip() in self.cache:
+        #     _logger.warning(u'Code {0} already processed'.format(record.default_code.strip()))
+        #     # return False
+        # elif record.default_code:
+        #     self.cache.append(record.default_code.strip())
+
+        # Look for duplicated default code
+        if identifier and identifier in self.cache:
+            _logger.warning(u'Code {0} already processed'.format(identifier))
             # return False
-        elif record.default_code:
-            self.cache.append(record.default_code.strip())
+        elif identifier:
+            self.cache.append(identifier)
 
         for field in self.REQUIRED:
             if not getattr(record, field):
@@ -404,21 +465,56 @@ class ImportFile(threading.Thread, Utils):
                 return False
 
         # print '>>>>>>>', record.name
-        vals_product = self.product_obj.default_get(cr, uid, ['taxes_id', 'supplier_taxes_id', 'property_account_income', 'property_account_expense'], self.context)
+        vals_product = self.product_obj.default_get(cr, uid, [
+            'taxes_id',
+            'supplier_taxes_id',
+            'property_account_income',
+            'property_account_expense'
+        ], self.context)
 
         if vals_product.get('taxes_id'):
             vals_product['taxes_id'] = [(6, 0, vals_product.get('taxes_id'))]
         if vals_product.get('supplier_taxes_id'):
             vals_product['supplier_taxes_id'] = [(6, 0, vals_product.get('supplier_taxes_id'))]
 
-        if isinstance(record.name, unicode):
-            name = record.name
-        else:
-            name = unicode(record.name, 'utf-8')
+        # Check if there are fields that require special treatment:
+        if self.FORMAT == 'FormatOmnitron':
+            # TODO: description_english
 
-        vals_product.update({
-            'name': name
-        })
+            if record.omnitron_procurement == 'PRODOTTO NON DI MAGAZZINO':
+                vals_product.update({
+                    'type': 'product',
+                    'procure_method': 'make_to_order'
+                })
+            elif record.omnitron_procurement == 'PRODOTTO NORMALMENTE A MAGAZZINO':
+                vals_product.update({
+                    'type': 'product',
+                    'procure_method': 'make_to_stock'
+                })
+            elif record.omnitron_procurement == 'PRODOTTO NOT GESTITO A MAGAZZINO':
+                vals_product.update({
+                    'type': 'service',
+                    'procure_method': 'make_to_order'
+                })
+
+            if not record.omnitron_produce_delay == '\N':
+                produce_delay = {
+                    '3 Day': 3,
+                    '7 Days': 7,
+                    '20 Days': 20
+                }
+                vals_product['produce_delay'] = produce_delay[record.omnitron_produce_delay]
+
+            vals_product.update({
+                'name': record.description.split('\\')[0],
+                'old_code': record.old_code,
+                'delivery_cost': record.omnitron_delivery_cost or 0.0,
+                'weight_per_meter': record.omnitron_weight_per_meter
+            })
+        elif isinstance(record.name, unicode):
+            vals_product['name'] = record.name
+        else:
+            vals_product['name'] = unicode(record.name, 'utf-8')
 
         for field in self.PRODUCT_SEARCH:
             if hasattr(record, field) and getattr(record, field):
@@ -445,6 +541,13 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'order_duration') and record.order_duration:
             subscription = self.get_order_duration(cr, uid, record.order_duration)
             vals_product.update(subscription)
+
+        if hasattr(record, 'description') and record.description:
+            if isinstance(record.description, unicode):
+                description = record.description
+            else:
+                description = unicode(record.description, 'utf-8')
+            vals_product['description'] = description
 
         if hasattr(record, 'description_sale') and record.description_sale:
             if isinstance(record.description_sale, unicode):
@@ -581,6 +684,12 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'user_age') and record.user_age:
             vals_product['user_age'] = record.user_age
 
+        if hasattr(record, 'sale_line_warn_msg') and record.sale_line_warn_msg:
+            vals_product.update({
+                'sale_line_warn': 'warning',
+                'sale_line_warn_msg': record.sale_line_warn_msg
+            })
+
         vals_product['listprice_update_date'] = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
 
         product_ids = self.product_obj.search(cr, uid, [(field, '=ilike', vals_product[field].replace('\\', '\\\\'))], context=self.context)
@@ -592,7 +701,7 @@ class ImportFile(threading.Thread, Utils):
                 context=self.context
             )
 
-        if not product_ids:
+        if not product_ids and vals_product.get('default_code', False):
             product_ids = self.product_obj.search(
                 cr, uid,
                 [('default_code', '=', vals_product['default_code'].replace('\\', '\\\\').strip())],
@@ -618,7 +727,7 @@ class ImportFile(threading.Thread, Utils):
                 vals_product['uom_po_id'] = vals_product['uom_id']
 
             default_vals_product.update(vals_product)
-
+            pprint(default_vals_product)
             product_id = self.product_obj.create(cr, uid, default_vals_product, self.context)
             self.uo_new += 1
 
@@ -647,6 +756,9 @@ class ImportFile(threading.Thread, Utils):
                     }, context=self.context)
         else:
             _logger.warning(u'{0}: No supplier for product {1}'.format(self.processed_lines, vals_product['name']))
+
+        if hasattr(record, 'qty_available') and record.qty_available:
+            self.set_product_qty(cr, uid, product_id, record.qty_available)
 
         return product_id
 

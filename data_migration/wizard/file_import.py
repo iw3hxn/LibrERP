@@ -163,6 +163,7 @@ class product_import(filedata_import):
                 ('FormatThree', _('Format Three')),
                 ('FormatFour', _('Format Four')),
                 ('FormatFive', _('Format Five')),
+                ('FormatOmnitron', _('Format Omnitron')),
             ), 'Formato Dati', required=True, readonly=False
         ),
         # Data of file, in code BASE64
