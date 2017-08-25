@@ -47,6 +47,9 @@
                             </tree>
                         </field>
                     </page>
+                    <page string="Project Task Work">
+                        <field name="project_task_work_ids" nolabel="1" readonly="1"/>
+                    </page>
                     <page string="Order" groups="base.group_sale_salesman">
                         <field name="sale_order_ids" nolabel="1" readonly="1"/>
                     </page>

@@ -19,7 +19,7 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.13.17.29',
+    'version': '3.14.18.30',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,
@@ -36,6 +36,7 @@
         'core_extended',
         'res_users_kanban',
         'mrp',
+        'hr_timesheet_invoice',
     ],
     "data": [
         'security/security.xml',

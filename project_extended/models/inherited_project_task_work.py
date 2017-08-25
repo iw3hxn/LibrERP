@@ -27,6 +27,18 @@ from datetime import datetime
 class project_task_work(orm.Model):
     _inherit = 'project.task.work'
 
+    def _get_project_task(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        task_work_ids = self.pool['project.task.work'].search(cr, uid, [('task_id', 'in', ids)], context=context)
+        for task_work_id in task_work_ids:
+            result[task_work_id] = True
+        return result.keys()
+
     _columns = {
-        'project_id': fields.related('task_id', 'project_id', type='many2one', relation='project.project', string="Project"),
+        'project_id': fields.related('task_id', 'project_id', type='many2one', relation='project.project', string="Project", store={
+            'project.task.work': (lambda self, cr, uid, ids, c={}: ids, ['task_id'], 50),
+            'project.task': (_get_project_task, ['project_id'], 20),
+        }),
+        'to_invoice': fields.related('task_id', 'project_id', 'to_invoice', type='many2one', relation='hr_timesheet_invoice.factor', string='Timesheet Invoicing Ratio')
     }

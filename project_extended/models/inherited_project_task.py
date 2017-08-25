@@ -20,6 +20,7 @@
 ##############################################################################.
 
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class project_task(orm.Model):
@@ -45,7 +46,7 @@ class project_task(orm.Model):
 
         task_selection = super(project_task, self).name_search(cr, uid, name, args, operator, context=context, limit=limit)
         if name:
-            project_ids = self.pool['project.project'].search(cr, uid, [('name', 'ilike', name)])
+            project_ids = self.pool['project.project'].search(cr, uid, [('name', 'ilike', name)], context=context)
             if project_ids:
                 if args:
                     relative_tasks = self.name_search(cr, uid, '', args + [('project_id', 'in', project_ids)], operator, context=context, limit=limit)
@@ -60,6 +61,23 @@ class project_task(orm.Model):
     _columns = {
         'project_id': fields.many2one('project.project', 'Project', ondelete='set null', select="1", required=True),
     }
+
+    def do_open(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
+        for task in self.browse(cr, uid, ids, context):
+            for parent_task in task.parent_ids:
+                if parent_task.state != 'done':
+                    raise orm.except_orm(_('Error!'), _("You can start only task with closed delegated"))
+        return super(project_task, self).do_open(cr, uid, ids, context)
+
+    def onchange_project(self, cr, uid, id, project_id):
+        context = self.pool['res.users'].context_get(cr, uid)
+        res = super(project_task, self).onchange_project(cr, uid, id, project_id)
+        if project_id:
+            project = self.pool['project.project'].browse(cr, uid, project_id, context)
+            user_id = [x.id for x in project.members]
+            res['value'].update({'other_users_ids': [(6, 0, user_id)]})
+        return res
 
     # def fields_get(self, cr, uid, allfields=None, context=None):
     #     if context is None:

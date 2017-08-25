@@ -338,6 +338,7 @@ class project_project(orm.Model):
             'project.project': (lambda self, cr, uid, ids, c={}: ids, ['tasks'], 50),
             'project.task': (_get_project, ['state', 'date_end', 'date_deadline'], 20),
         }, ),
+        'project_task_work_ids': fields.one2many('project.task.work', 'project_id', 'Project Task Work'),
 
         # 'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Sell Amount"),
         # 'total_sell_service': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'), multi='sums', string="Service Sell Amount"),

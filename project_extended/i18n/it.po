@@ -69,3 +69,14 @@ msgstr "Acquisti"
 #: field:project.task.work,project_id:0
 msgid "Project"
 msgstr "Progetto"
+
+#. module: project_extended
+#: field:project.task.work,to_invoice:0
+msgid "Invoice Task Work"
+msgstr "Rifatturazione al Cliente"
+
+#. modules: project_extended
+#: view:project.project:0
+#: field:project.project,project_task_work_ids:0
+msgid "Project Task Work"
+msgstr "Rapportini Ore"
