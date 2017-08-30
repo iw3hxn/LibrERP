@@ -332,11 +332,11 @@ class project_project(orm.Model):
                                               readonly=True, method=True),
         'task_count': fields.function(_task_count, type='integer', string="Open Tasks", store={
             'project.project': (lambda self, cr, uid, ids, c={}: ids, ['tasks'], 50),
-            'project.task': (_get_project, ['state'], 10),
+            'project.task': (_get_project, ['state', 'project_id'], 10),
         }, ),
         'planned_end_date': fields.function(_get_planned_end_date, type='date', string="Planned End Date", store={
             'project.project': (lambda self, cr, uid, ids, c={}: ids, ['tasks'], 50),
-            'project.task': (_get_project, ['state', 'date_end', 'date_deadline'], 20),
+            'project.task': (_get_project, ['state', 'date_end', 'date_deadline', 'project_id'], 20),
         }, ),
         'project_task_work_ids': fields.one2many('project.task.work', 'project_id', 'Project Task Work'),
 
@@ -358,16 +358,16 @@ class project_project(orm.Model):
             }, ),
         'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                        multi='sums', string="Spent Amount", store={
-                'account.analytic.line': (_get_project_account, ['amount'], 60),
+                'account.analytic.line': (_get_project_account, ['amount', 'account_id'], 60),
             }, ),
         'total_service_spent': fields.function(_total_account, type='float',
                                                digits_compute=dp.get_precision('Sale Price'), multi='sums',
                                                string="Service Spent Amount", store={
-                'account.analytic.line': (_get_project_account, ['amount'], 70),
+                'account.analytic.line': (_get_project_account, ['amount', 'account_id'], 70),
             }, ),
         'total_invoice': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                          multi='sums', string="Invoice Amount", store={
-                'account.analytic.line': (_get_project_account, ['amount', 'invoice_id'], 80),
+                'account.analytic.line': (_get_project_account, ['amount', 'invoice_id', 'account_id'], 80),
             }, ),
         # 'doc_count': fields.function(
         #     _get_attached_docs, string="Number of documents attached", type='integer'
