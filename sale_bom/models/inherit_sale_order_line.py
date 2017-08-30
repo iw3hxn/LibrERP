@@ -42,7 +42,8 @@ class sale_order_line(orm.Model):
 
         result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty, uom, qty_uos, uos, name, partner_id,
                                                                 lang, update_tax, date_order, packaging, fiscal_position, flag, context)
-
+        # if not isinstance(ids, list):
+        #     ids = [ids]
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
             sequence = 0
@@ -90,6 +91,7 @@ class sale_order_line(orm.Model):
                                 result['value']['mrp_bom'].append(line_bom)
             else:
                 result['value']['with_bom'] = False
+            result['value']['with_bom'] = True
         # {'value': result, 'domain': domain, 'warning': warning}
         return result
 
