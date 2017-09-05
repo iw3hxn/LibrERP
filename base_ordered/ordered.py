@@ -26,7 +26,7 @@ from openerp.osv import orm
 
 class purchase_order(orm.Model):
     _inherit = "purchase.order"
-    _order = 'name desc, date_order desc, id desc'
+    _order = 'date_order desc, name desc, id desc'
 
 
 class sale_order(orm.Model):
@@ -41,7 +41,6 @@ class stock_picking(orm.Model):
 
 class stock_move(orm.Model):
     _inherit = "stock.move"
-    #_order = 'date desc, id desc'
     _order = 'date desc, product_id, id'
 
 

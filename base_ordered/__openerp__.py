@@ -22,8 +22,8 @@
 #
 
 {
-    'name': 'Order by date decending',
-    'version': '3.0.0.1',
+    'name': 'Order by date descending',
+    'version': '3.1.0.1',
     'category': 'Base',
     'description': """
 This module orders the following tables by date desc
