@@ -491,7 +491,7 @@ class ImportFile(threading.Thread, Utils):
                     'type': 'product',
                     'procure_method': 'make_to_stock'
                 })
-            elif record.omnitron_procurement == 'PRODOTTO NOT GESTITO A MAGAZZINO':
+            elif record.omnitron_procurement == 'PRODOTTO NON GESTITO A MAGAZZINO':
                 vals_product.update({
                     'type': 'service',
                     'procure_method': 'make_to_order'
