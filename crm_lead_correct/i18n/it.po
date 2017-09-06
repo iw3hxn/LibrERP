@@ -415,3 +415,9 @@ msgstr "Ultimo Appuntamento"
 #: view:crm.lead:0
 msgid "Meeting History"
 msgstr "Storico Meeting"
+
+#. module: crm_lead_correct
+#: code:addons/crm_lead_correct/wizard/crm_lead_to_opportunity.py:119
+#, python-format
+msgid "Missing Contact Name"
+msgstr "Manca il Nome del Contatto"

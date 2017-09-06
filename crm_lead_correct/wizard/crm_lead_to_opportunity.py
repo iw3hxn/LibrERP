@@ -102,17 +102,19 @@ class crm_lead2opportunity_partner(orm.TransientModel):
             for lead in lead_obj.browse(cr, uid, rec_ids, context=context):
                 if data.action == 'create':
                     if lead.partner_address_id:
-                        contact_id = contact_obj.create(cr, uid, {
-                            'last_name': lead.contact_name[0:lead.contact_name.find(' ')],
-                            'first_name': lead.contact_name[lead.contact_name.find(' '):],
-                            'title': lead.title.id,
-                            'email': lead.email_from,
-                            'website': lead.website,
-                            'address_id': lead.partner_address_id.id,
-                            'function_id': lead.function_id and lead.function_id.id or False,
-                            'mobile': lead.mobile or lead.phone,
-                        })
                         lead.partner_address_id.write({'name': False})
-                        lead.write({'contact_id': contact_id})
-
+                        if lead.contact_name:
+                            contact_id = contact_obj.create(cr, uid, {
+                                'last_name': lead.contact_name[0:lead.contact_name.find(' ')],
+                                'first_name': lead.contact_name[lead.contact_name.find(' '):],
+                                'title': lead.title.id,
+                                'email': lead.email_from,
+                                'website': lead.website,
+                                'address_id': lead.partner_address_id.id,
+                                'function_id': lead.function_id and lead.function_id.id or False,
+                                'mobile': lead.mobile or lead.phone,
+                            })
+                            lead.write({'contact_id': contact_id})
+                        else:
+                            raise orm.except_orm(_('Error!'), _("Missing Contact Name"))
         return partner_ids
