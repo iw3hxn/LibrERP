@@ -19,10 +19,12 @@
 #
 ##############################################################################.
 
-from openerp.osv import orm, fields
-import decimal_precision as dp
-from datetime import datetime
 import logging
+from datetime import datetime
+
+import decimal_precision as dp
+from openerp.osv import orm, fields
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 

@@ -19,9 +19,8 @@
 #
 ##############################################################################.
 
-from openerp.osv import orm, fields
 import decimal_precision as dp
-from datetime import datetime
+from openerp.osv import orm, fields
 
 
 class sale_order_line(orm.Model):

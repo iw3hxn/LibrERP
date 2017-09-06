@@ -20,8 +20,6 @@
 ##############################################################################.
 
 from openerp.osv import orm, fields
-import decimal_precision as dp
-from datetime import datetime
 
 
 class project_task_work(orm.Model):

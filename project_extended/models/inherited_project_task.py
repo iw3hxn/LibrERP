@@ -76,7 +76,8 @@ class project_task(orm.Model):
         if project_id:
             project = self.pool['project.project'].browse(cr, uid, project_id, context)
             user_id = [x.id for x in project.members]
-            res['value'].update({'other_users_ids': [(6, 0, user_id)]})
+            if res.get('value', False):
+                res['value'].update({'other_users_ids': [(6, 0, user_id)]})
         return res
 
     # def fields_get(self, cr, uid, allfields=None, context=None):
