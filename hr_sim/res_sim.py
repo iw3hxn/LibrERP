@@ -366,7 +366,7 @@ class res_sim(orm.Model):
     _columns = {
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Name'),
         'not_available': fields.boolean("Not Available"),
-        'imei': fields.char("ICCID Number", size=13, required=True),
+        'imei': fields.char("ICCID Number", size=19, required=True),
         'sim_internal_number': fields.char('Number', size=32, help="Internal Number", required=True),
         'prefix_number': fields.char("Prefix Phone Number", size=4,required=True ),
         'number': fields.char("Phone Number", size=256, required=True),
