@@ -9,15 +9,19 @@
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
+import logging
 import math
 
-import codicefiscale
 import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
-
-#from tndb import tndb
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
+try:
+    from codicefiscale import build, isvalid
+except (ImportError, IOError) as err:
+    _logger.error(err)
 
 
 class account_vat_period_end_statement(orm.Model):

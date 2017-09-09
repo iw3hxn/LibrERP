@@ -20,9 +20,16 @@
 ##############################################################################
 
 import datetime
+import logging
 
-from codicefiscale import build, isvalid
 from openerp.osv import fields, orm
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
+try:
+    from codicefiscale import build, isvalid
+except (ImportError, IOError) as err:
+    _logger.error(err)
 
 
 class res_partner(orm.Model):
