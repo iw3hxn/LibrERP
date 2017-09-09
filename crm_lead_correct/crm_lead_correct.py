@@ -27,16 +27,14 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
+from datetime import datetime
+
 import crm
 from mail.mail_message import to_email
-from tools.translate import _
 from openerp import SUPERUSER_ID
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-import time
+from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
-
+from tools.translate import _
 
 COLOR_SELECTION = [
     ('aqua', u"Aqua"),
@@ -320,7 +318,6 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         if part:
             domain = {'contact_id': [('partner_id', '=', part)]}
         res['domain'] = domain
-        print domain
         return res
 
     def onchange_contact_id(self, cr, uid, ids, contact_id):
