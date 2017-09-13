@@ -652,7 +652,8 @@ class bom_import(filedata_import):
         'format': fields.selection(
             (
                 ('FormatOne', _('Format One')),
-                ('FormatTwo', _('Format Two'))
+                ('FormatTwo', _('Format Two')),
+                ('FormatOmnitron', _('Format Omnitron'))
             ), 'Formato Dati', required=True, readonly=False
         ),
         # Data of file, in code BASE64

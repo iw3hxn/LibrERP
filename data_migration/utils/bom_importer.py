@@ -90,9 +90,10 @@ class ImportFile(threading.Thread, Utils):
 
         self.HEADER = Config.HEADER_BOM
         self.REQUIRED = Config.REQUIRED_BOM
+        self.BOM_PRODUCT_SEARCH = Config.BOM_PRODUCT_SEARCH
         self.BOM_SEARCH = Config.BOM_SEARCH
-        self.BOM_WARNINGS = Config.BOM_WARNINGS
-        self.BOM_ERRORS = Config.BOM_ERRORS
+        # self.BOM_WARNINGS = Config.BOM_WARNINGS
+        # self.BOM_ERRORS = Config.BOM_ERRORS
 
         # Default values
         self.BOM_DEFAULTS = Config.BOM_DEFAULTS
@@ -160,10 +161,9 @@ class ImportFile(threading.Thread, Utils):
             '20 lt': 'Litre',
             'PCE': 'PCE',
             'Pz.': 'PCE',
+            'PZ': 'PCE',
             'Pa.': 'PCE',  # Paia
             'Paia': 'PCE',  # Paia
-            'PZ': 'PCE',
-            'Pz': 'PCE',
             'CF': 'PCE',
             'N.': 'PCE',
             'Mt.': 'PCE',
@@ -212,8 +212,8 @@ class ImportFile(threading.Thread, Utils):
             self.error.append(error)
             return False
 
-    def create_bom(self, cr, uid, product_ids, product_vals_bom, record):
-        product = self.product_obj.browse(cr, uid, product_ids[0], context=self.context)
+    def create_bom(self, cr, uid, product_id, product_vals_bom, record):
+        product = self.product_obj.browse(cr, uid, product_id, context=self.context)
         product_onchange = self.bom_obj.onchange_product_id(cr, uid, self.bomImportID, product.id, product.name,
                                                             context=self.context).get('value')
         product_vals_bom.update({
@@ -222,18 +222,30 @@ class ImportFile(threading.Thread, Utils):
             'product_uom': product_onchange['product_uom']
         })
 
-        sub_item_ids = self.product_obj.search(cr, uid, [('default_code', '=', record.sub_item)], context=self.context)
+        if hasattr(record, 'bom_code'):
+            product_vals_bom['code'] = getattr(record, 'bom_code')
+
+        sub_item_ids = self.product_obj.search(cr, uid, [
+            (self.BOM_PRODUCT_SEARCH, '=', record.sub_item_code)
+        ], context=self.context)
         if sub_item_ids:
-            bom_lines = self.bom_obj.default_get(cr, uid,
-                                                 ['product_qty', 'type', 'company_id', 'sequence', 'product_rounding',
-                                                  'active', 'product_efficiency'], self.context)
+            bom_lines = self.bom_obj.default_get(
+                cr, uid,
+                [
+                    'product_qty', 'type', 'company_id', 'sequence', 'product_rounding',
+                    'active', 'product_efficiency'
+                ], self.context
+            )
             sub_item = self.product_obj.browse(cr, uid, sub_item_ids[0], context=self.context)
-            sub_item_onchange = self.bom_obj.onchange_product_id(cr, uid, self.bomImportID, sub_item.id, sub_item.name,
-                                                                 context=self.context).get('value')
+            # sub_item_onchange = self.bom_obj.onchange_product_id(cr, uid, self.bomImportID, sub_item.id, sub_item.name,
+            #                                                      context=self.context).get('value')
             bom_lines.update({
                 'product_id': sub_item.id,
-                'name': sub_item_onchange['name'],
-                'product_uom': sub_item_onchange['product_uom']
+                # 'name': sub_item_onchange['name'],
+                'name': sub_item.name,
+                # 'product_uom': sub_item_onchange['product_uom']
+                'product_uom': sub_item.uom_id.id,
+                'code': getattr(record, 'bom_code', False)
             })
 
             if hasattr(record, 'product_qty') and record.product_qty:
@@ -242,7 +254,15 @@ class ImportFile(threading.Thread, Utils):
             if hasattr(record, 'observation') and record.observation:
                 bom_lines['position'] = record.observation
 
-            product_bom_ids = self.bom_obj.search(cr, uid, [('product_id', '=', product.id), ('bom_id', '=', None)], context=self.context)
+            domain = [
+                ('product_id', '=', product.id),
+                ('bom_id', '=', None)
+            ]
+
+            if bom_lines.get('code', False):
+                domain.append(('code', '=', bom_lines['code']))
+
+            product_bom_ids = self.bom_obj.search(cr, uid, domain, context=self.context)
 
             if product_bom_ids:
                 product_bom_id = product_bom_ids[0]
@@ -284,7 +304,7 @@ class ImportFile(threading.Thread, Utils):
                 self.uo_new += 1
             # return True
         else:
-            error = 'Prodotto: {code} non presente nel DB.'.format(code=record.sub_item)
+            error = 'Product: {code} is not present in DB.'.format(code=record.sub_item_code)
             if error not in self.error:
                 _logger.debug(error)
                 self.error.append(error)
@@ -333,17 +353,19 @@ class ImportFile(threading.Thread, Utils):
                 self.error.append(error)
                 return False
 
-        product_vals_bom = self.bom_obj.default_get(cr, uid, ['product_qty', 'type', 'company_id', 'sequence', 'product_rounding', 'active', 'product_efficiency'], self.context)
-
+        # Start values collection
+        # ------------------------------------------------------------------------
         product_flag = True
         product_vals = {}
-        product_ids = self.product_obj.search(cr, uid, [('default_code', '=', record.default_code)], context=self.context)
+
+        if hasattr(record, 'old_code') and record.old_code:
+            product_vals['old_code'] = record.old_code
 
         if hasattr(record, 'name') and record.name:
-            product_vals.update({'name': record.name})
+            product_vals['name'] = record.name
 
             if hasattr(record, 'default_code') and record.default_code:
-                product_vals.update({'default_code': record.default_code})
+                product_vals['default_code'] = record.default_code
             else:
                 product_flag = False
 
@@ -355,16 +377,23 @@ class ImportFile(threading.Thread, Utils):
         else:
             product_flag = False
 
+        product_ids = self.product_obj.search(cr, uid, [
+            (self.BOM_PRODUCT_SEARCH, '=', getattr(record, self.BOM_PRODUCT_SEARCH))
+        ], context=self.context)
         if product_ids:
+            product_id = product_ids[0]
             if product_flag:
-                self.product_obj.write(cr, uid, product_ids[0], product_vals, self.context)
+                self.product_obj.write(cr, uid, product_id, product_vals, self.context)
                 self.updated += 1
         else:
             if product_flag:
-                product_ids = [self.product_obj.create(cr, uid, product_vals, self.context)]
+                product_id = self.product_obj.create(cr, uid, product_vals, self.context)
                 self.uo_new += 1
             else:
-                error = 'Errore linea: {line}. Manca il nome o il codice del prodotto.'.format(line=self.processed_lines)
+                error = 'Errore linea: {line}. Manca il nome o il codice del prodotto identificato da {code}'.format(
+                    line=self.processed_lines,
+                    code=getattr(record, self.BOM_PRODUCT_SEARCH)
+                )
                 if error not in self.error:
                     _logger.debug(error)
                     self.error.append(error)
@@ -372,11 +401,14 @@ class ImportFile(threading.Thread, Utils):
 
         sub_item_flag = True
         product_vals = {}
-        sub_product_ids = self.product_obj.search(cr, uid, [('default_code', '=', record.sub_item)], context=self.context)
+
+        sub_product_ids = self.product_obj.search(cr, uid, [
+            (self.BOM_PRODUCT_SEARCH, '=', record.sub_item_code)
+        ], context=self.context)
 
         if hasattr(record, 'name') and record.name:
-            if hasattr(record, 'sub_item') and record.sub_item:
-                product_vals.update({'default_code': record.sub_item})
+            if hasattr(record, 'sub_item_code') and record.sub_item_code:
+                product_vals.update({self.BOM_PRODUCT_SEARCH: record.sub_item_code})
             else:
                 sub_item_flag = False
 
@@ -419,20 +451,30 @@ class ImportFile(threading.Thread, Utils):
                 sub_product_ids = [self.product_obj.create(cr, uid, product_vals, self.context)]
                 self.uo_new += 1
             else:
-                error = 'Errore linea: {line}. Manca il nome, il codice del prodotto.'.format(line=self.processed_lines)
+                error = 'Errore linea: {line}. Manca il nome, il codice del (sub) prodotto identificato da {code}'.format(
+                    line=self.processed_lines,
+                    code=record.sub_item_code
+                )
                 if error not in self.error:
                     _logger.debug(error)
                     self.error.append(error)
                 return False
 
-        if product_ids:
-            self.create_bom(cr, uid, product_ids, product_vals_bom, record)
-        else:
-            error = 'Prodotto: {code} non presente nel DB.'.format(code=record.default_code)
-            if error not in self.error:
-                _logger.debug(error)
-                self.error.append(error)
-            return False
+        product_vals_bom = self.bom_obj.default_get(
+            cr, uid, [
+                'product_qty', 'type', 'company_id', 'sequence', 'product_rounding', 'active', 'product_efficiency'
+            ],
+            self.context
+        )
+
+        # if product_id:
+        self.create_bom(cr, uid, product_id, product_vals_bom, record)
+        # else:
+        #     error = 'Prodotto: {code} non presente nel DB.'.format(code=record.default_code)
+        #     if error not in self.error:
+        #         _logger.debug(error)
+        #         self.error.append(error)
+        #     return False
         return True
 
     def process(self, cr, uid, table):
