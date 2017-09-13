@@ -506,7 +506,8 @@ class ImportFile(threading.Thread, Utils):
                 vals_product['produce_delay'] = produce_delay[record.omnitron_produce_delay]
 
             vals_product.update({
-                'name': record.description.split('\\')[0],
+                # 'name': record.description.split('\\')[0],
+                'name': record.description.replace('\\', ' / '),
                 'old_code': record.old_code,
                 'delivery_cost': record.omnitron_delivery_cost or 0.0,
                 'weight_per_meter': record.omnitron_weight_per_meter
@@ -711,8 +712,9 @@ class ImportFile(threading.Thread, Utils):
         if product_ids:
             _logger.info(u'Row {row}: Updating product {product}...'.format(row=self.processed_lines, product=vals_product[field]))
             product_id = product_ids[0]
-            if self.update_product_name:
-                vals_product['name'] = self.product_obj.browse(cr, uid, product_id, self.context).name
+            if not self.update_product_name and 'name' in vals_product:
+                # vals_product['name'] = self.product_obj.browse(cr, uid, product_id, self.context).name
+                del vals_product['name']
             self.product_obj.write(cr, uid, product_id, vals_product, self.context)
             self.updated += 1
         else:

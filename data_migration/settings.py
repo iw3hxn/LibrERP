@@ -119,10 +119,13 @@ class FormatOne():
                   "rdd5, input_principale, codice_progetto, measures, codice_alternativo, " \
                   "dimension, materials"
 
-    BOM_SEARCH = ['sub_item']
+    # BOM_SEARCH = ['sub_item']
+    # Corrected by Andrei:
+    BOM_BASE_PRODUCT_SEARCH = ['default_code']
+    BOM_SEARCH = ['default_code']
     REQUIRED_BOM = ['sub_item']
-    BOM_WARNINGS = ['standard_price']
-    BOM_ERRORS = []
+    # BOM_WARNINGS = ['standard_price']
+    # BOM_ERRORS = []
     # Default values
     BOM_DEFAULTS = {
     }
@@ -402,7 +405,12 @@ class FormatFive():
 
 class FormatOmnitron(object):
     """
-    SELECT CodiceProdotto,DescrizioneProdotto,DescrizioneProdottoInLingua,AMagazzino,IDValuta,PrezzoInValuta,Cambio,ListinoFornitore,Sconto,PrezzoAcquisto,ValoreMedio,Commento,IDIva,CodiceFornitore2,QtaMagazzino,GGConsegna,GestMaga,SpeseTrasporto,
+    SELECT CodiceProdotto,DescrizioneProdotto,CodiceFornitore,
+    DescrizioneProdottoInLingua,AMagazzino,
+    IDValuta,PrezzoInValuta,Cambio,
+    ListinoFornitore,Sconto,PrezzoAcquisto,ValoreMedio,
+    Commento,IDIva,CodiceFornitore2,QtaMagazzino,
+    GGConsegna,GestMaga,SpeseTrasporto,
     StatoProdotto,ValoreMedioConSpese,DistintaBaseProduzione,KgMetro
     FROM `bm`.`prodotti`
     WHERE Cancellato=0
@@ -415,18 +423,20 @@ class FormatOmnitron(object):
     LINES TERMINATED BY '\n';
     """
     HEADER_PRODUCT = (
-        "CodiceProdotto", "DescrizioneProdotto", "DescrizioneProdottoInLingua", "AMagazzino",
+        "CodiceProdotto", "DescrizioneProdotto", "Codice Fornitore",
+        "DescrizioneProdottoInLingua", "AMagazzino",
         "IDValuta", "PrezzoInValuta", "Cambio",
         "ListinoFornitore", "Sconto", "PrezzoAcquisto", "ValoreMedio",
-        "Commento", "IDIva", "CodiceFornitore2", "QtaMagazzino",
+        "Commento", "IDIva", "QtaMagazzino",
         "GGConsegna", "GestMaga", "SpeseTrasporto",
         "StatoProdotto", "ValoreMedioConSpese", "DistintaBaseProduzione", "KgMetro"
     )
 
-    COLUMNS_PRODUCT = "old_code, description, description_english, omnitron_procurement, " \
+    COLUMNS_PRODUCT = "old_code, description, supplier, " \
+                      "description_english, omnitron_procurement, " \
                       "none, none1, none2, " \
                       "list_price, none4, standard_price, none5, " \
-                      "sale_line_warn_msg, none6, none7, qty_available, " \
+                      "sale_line_warn_msg, none6, qty_available, " \
                       "omnitron_produce_delay, omnitron_type, omnitron_delivery_cost, " \
                       "none8, none9, none10, omnitron_weight_per_meter"
 
@@ -439,11 +449,64 @@ class FormatOmnitron(object):
     PRODUCT_DEFAULTS = {
         'supply_method': 'buy',
         'uom': 'PCE',
-        #'type': 'service',
-        #'procure_method': 'make_to_order',
+        # 'type': 'service',
+        # 'procure_method': 'make_to_order',
         'cost_method': 'average',
         'sale_ok': True
     }
+
+    HEADER_BOM = (
+        "CodiceProdotto", "DescrizioneProdotto", "IDProdottoBase",
+        "IDProdottoDB", "CodiceProdottoDB", "DescrizioneProdottoDB",
+        "IDDistintaBase", "QuantitaNecessaria", "PrezzoAcquisto", "PrezzoVendita",
+        "Ordine", "Disponibilita"
+    )
+
+    # TODO: controllare product_qty
+    COLUMNS_BOM = """old_code, none0, none1,
+        none2, sub_item_code, sub_name,
+        bom_code, product_qty, none3, none4,
+        sequence, none5
+    """
+    BOM_PRODUCT_SEARCH = 'old_code'
+    BOM_SEARCH = 'bom_code'
+
+    REQUIRED_BOM = ['sub_item_code']
+    # BOM_WARNINGS = ['standard_price']
+    # BOM_ERRORS = []
+
+    # Default values
+    BOM_DEFAULTS = {
+    }
+
+    # HEADER_CUSTOMER = (
+    #     u'Codice', u'Denominazione / Cognome', u'Nome',
+    #     u'Sede legale: indirizzo', u'SL: CAP', u'SL: località', u'SL: Prov.',
+    #     u'Telefono', u'Fax', u'e-mail', u'Sede amministrativa: indirizzo 1',
+    #     u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località',
+    #     u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category'
+    # )
+    #
+    # HEADER_CUSTOMER = (
+    #     'IDContatto', 'CodiceContatto', 'RagioneSociale',
+    #     'IndirizzoSedeLegale', 'CAPSedeLegale', 'LocalitaSedeLegale', 'ProvinciaSedeLegale',
+    #     'RagioneSocialeOperativo', 'IndirizzoOperativo', 'CAPOperativo',
+    #     'LocalitaOperativo', 'ProvinciaOperativo',
+    #     'Telefono', 'Fax', 'Email', 'Web', 'Cellulare',
+    #     'PartitaIVA', 'CodiceFiscale', 'IDPagamento',
+    #     'Pagamento', 'BancaAppoggio', 'ABI', 'CAB',
+    #     'ContoCorrente', 'IDCorriere', 'Corriere', 'IDTrasporto', 'Trasporto',
+    #     'CodiceMerceologico', 'CodiceDivisione',
+    #     'Commenti', 'IDNazione', 'IDRegione', 'IDRespAgente', 'IDTipoCliente',
+    #     'ClienteSiNo', 'ClienteFornitore', 'Appartenenza',
+    #     'IVAAna', 'AnnoAna', 'IBAN', 'EMailFatture', 'AnagraficaObsoleta'
+    # )
+    #
+    # COLUMNS = "code, name, person_name, street_default, zip_default, "\
+    #           "city_default, province_default, phone_default, fax_default, "\
+    #           "email_default, street_invoice, street2_invoice, zip_invoice, "\
+    #           "city_invoice, province_invoice, country_code, vat, "\
+    #           "fiscalcode, category"
 
 
 class Inventory(object):
