@@ -7,10 +7,10 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <field name="company_id" position="after">
-                    <group colspan="2" col="2" >
-                        <separator string="Fatturazione PA" />
-                        <field name="cig" />
-                        <field name="cup" />
+                    <group colspan="2" col="2">
+                        <separator string="Fatturazione PA"/>
+                        <field name="cig"/>
+                        <field name="cup"/>
                     </group>
                 </field>
             </field>

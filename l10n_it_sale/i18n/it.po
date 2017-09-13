@@ -205,3 +205,15 @@ msgstr "Per utilizzare queste sequenze usare la modalità automatica"
 #, python-format
 msgid "{name} of {date}"
 msgstr "{name} del {date}"
+
+#. modules: l10n_it_sale
+#: view:delivery.grid:0
+#: field:delivery.grid,province_ids:0
+msgid "Province"
+msgstr "Provincie"
+
+#. modules: l10n_it_sale
+#: view:delivery.grid:0
+#: field:delivery.grid,province_ids:0
+msgid "Region"
+msgstr "Regioni"

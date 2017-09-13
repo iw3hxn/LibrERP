@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #    
-#    Copyright (C) 2010 Associazione OpenERP Italia
+#    Copyright (C) 2017 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -19,5 +19,8 @@
 #
 ##############################################################################
 
-from . import sale_order
-
+from . import inherit_delivery_carrier
+from . import inherit_delivery_grid
+from . import inherit_sale_order
+from . import inherit_stock_journal
+from . import inherit_stock_picking

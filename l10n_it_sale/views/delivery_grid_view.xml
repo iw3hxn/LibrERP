@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_delivery_grid_italian">
+            <field name="name">delivery.grid.italian</field>
+            <field name="model">delivery.grid</field>
+            <field name="inherit_id" ref="delivery.view_delivery_grid_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="state_ids" position="after">
+                    <separator colspan="4" string="Province"/>
+                    <field colspan="4" name="province_ids" nolabel="1" widget="many2many_tags"/>
+                    <separator colspan="4" string="Region"/>
+                    <field colspan="4" name="region_ids" nolabel="1" widget="many2many_tags"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
