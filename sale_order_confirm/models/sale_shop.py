@@ -37,7 +37,7 @@ class sale_shop(orm.Model):
         'user_supervisor_validation_id': fields.many2one('res.users', 'User that can be Verification after Customer Confirmation', oldname='user_supervisor_validation'),
     }
 
-    _order = 'sequence'
+    _order = 'sequence, name'
 
     _defaults = {
         'sequence': 10
