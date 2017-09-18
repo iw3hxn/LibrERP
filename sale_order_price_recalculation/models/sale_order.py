@@ -48,8 +48,12 @@ class sale_order(orm.Model):
                     name=line.name, partner_id=order.partner_id.id, lang=False,
                     update_tax=True, date_order=order.date_order, packaging=False,
                     fiscal_position=order.fiscal_position.id, flag=False)
-                res['value']['discount'] = line.discount
-                line.write(res['value'])
+                line_value = {
+                    'discount': line.discount,
+                    'price_unit': res['value'].get('price_unit', False),
+                    'purchase_price': res['value'].get('purchase_price', False),
+                }
+                line.write(line_value)
             sale.write({'recalculate_prices': False})
         return True
 
@@ -65,6 +69,11 @@ class sale_order(orm.Model):
                     name=line.name, partner_id=order.partner_id.id, lang=False,
                     update_tax=True, date_order=order.date_order, packaging=False,
                     fiscal_position=order.fiscal_position.id, flag=False)
-                line.write(res['value'])
+                line_value = {
+                    'discount': res['value'].get('discount', False),
+                    'price_unit': res['value'].get('price_unit', False),
+                    'purchase_price': res['value'].get('purchase_price', False),
+                }
+                line.write(line_value)
             sale.write({'recalculate_prices': False})
         return True
