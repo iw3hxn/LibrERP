@@ -479,8 +479,6 @@ class ImportFile(threading.Thread, Utils):
 
         # Check if there are fields that require special treatment:
         if self.FORMAT == 'FormatOmnitron':
-            # TODO: description_english
-
             if record.omnitron_procurement == 'PRODOTTO NON DI MAGAZZINO':
                 vals_product.update({
                     'type': 'product',
@@ -508,6 +506,7 @@ class ImportFile(threading.Thread, Utils):
             vals_product.update({
                 # 'name': record.description.split('\\')[0],
                 'name': record.description.replace('\\', ' / '),
+                'description': record.description,
                 'old_code': record.old_code,
                 'delivery_cost': record.omnitron_delivery_cost or 0.0,
                 'weight_per_meter': record.omnitron_weight_per_meter
@@ -732,6 +731,11 @@ class ImportFile(threading.Thread, Utils):
             pprint(default_vals_product)
             product_id = self.product_obj.create(cr, uid, default_vals_product, self.context)
             self.uo_new += 1
+
+        if hasattr(record, 'description_english') and record.description_english:
+            self.product_obj.write(
+                cr, uid, product_id, {'description': record.description_english}, context={'lang': 'en_US'}
+            )
 
         if partner_ids and product_id:
             for partner_id in partner_ids:
