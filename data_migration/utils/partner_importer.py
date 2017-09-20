@@ -26,6 +26,7 @@ import threading
 from collections import namedtuple
 from datetime import datetime
 from pprint import pprint
+from openerp.addons.core_extended.file_manipulation import import_sheet
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -118,7 +119,7 @@ class ImportFile(threading.Thread, Utils):
         self.partner_template_id = self.partnerImportRecord.partner_template_id
         #===================================================
         Config = getattr(settings, self.partnerImportRecord.format)
-
+        self.FORMAT = self.partnerImportRecord.format
         self.HEADER = Config.HEADER_CUSTOMER
         self.REQUIRED = Config.REQUIRED
         self.PARTNER_SEARCH = Config.PARTNER_SEARCH
@@ -134,29 +135,47 @@ class ImportFile(threading.Thread, Utils):
 
         self.partner_type = self.partnerImportRecord.partner_type
 
-        for encoding in ('utf-8', 'latin-1', 'cp1252'):
-            try:
-                book = xlrd.open_workbook(file_contents=self.partnerImportRecord.content_text, encoding_override=encoding)
-                break
-            except:
-                pass
-        else:
-            raise orm.except_orm('Error', _('Unknown encoding'))
+        # for encoding in ('utf-8', 'latin-1', 'cp1252'):
+        #     try:
+        #         book = xlrd.open_workbook(file_contents=self.partnerImportRecord.content_text, encoding_override=encoding)
+        #         break
+        #     except:
+        #         pass
+        # else:
+        #     raise orm.except_orm('Error', _('Unknown encoding'))
 
-        sheet = []
-        sh = book.sheet_by_index(0)
 
-        for rx in range(sh.nrows):
-            row = []
-            for cx in range(sh.ncols):
-                row.append(sh.cell_value(rowx=rx, colx=cx))
-            sheet.append(row)
+        # sheet = []
+        # sh = book.sheet_by_index(0)
+        #
+        # for rx in range(sh.nrows):
+        #     row = []
+        #     for cx in range(sh.ncols):
+        #         row.append(sh.cell_value(rowx=rx, colx=cx))
+        #     sheet.append(row)
+        #
+        # self.numberOfLines = sh.nrows
 
-        self.numberOfLines = sh.nrows
+        try:
+            table, self.numberOfLines = import_sheet(self.file_name, self.partnerImportRecord.content_text)
+        except Exception as e:
+            # Annulla le modifiche fatte
+            self.cr.rollback()
+            self.cr.commit()
+
+            title = "Import failed"
+            message = "Errore nell'importazione del file %s" % self.file_name + "\nDettaglio:\n\n" + str(e)
+
+            if DEBUG:
+                ### Debug
+                _logger.debug(message)
+                pdb.set_trace()
+            self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
 
         if DEBUG:
             # Importa i partner
-            self.process(self.cr, self.uid, sheet, book.datemode)
+            # self.process(self.cr, self.uid, sheet, book.datemode)
+            self.process(self.cr, self.uid, table)
 
             # Genera il report sull'importazione
             self.notify_import_result(self.cr, self.uid, 'Importazione partner', record=self.partnerImportRecord)
@@ -164,7 +183,8 @@ class ImportFile(threading.Thread, Utils):
             # Elaborazione del Partner
             try:
                 # Import partner
-                self.process(self.cr, self.uid, sheet, book.datemode)
+                # self.process(self.cr, self.uid, sheet, book.datemode)
+                self.process(self.cr, self.uid, table)
 
                 # Genera il report sull'importazione
                 self.notify_import_result(self.cr, self.uid, 'Importazione partner', record=self.partnerImportRecord)
@@ -182,7 +202,7 @@ class ImportFile(threading.Thread, Utils):
                     pdb.set_trace()
                 self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.partnerImportRecord)
 
-    def process(self, cr, uid, table, book_datemode):
+    def process(self, cr, uid, table, book_datemode=False):
         self.progressIndicator = 0
 
         notifyProgressStep = (self.numberOfLines / 100) + 1
@@ -256,7 +276,7 @@ class ImportFile(threading.Thread, Utils):
             return -1
         return False
 
-    def _contry_by_code(self, cr, uid, code):
+    def _country_by_code(self, cr, uid, code):
         country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
         if country_ids:
             return country_ids[0]
@@ -320,7 +340,7 @@ class ImportFile(threading.Thread, Utils):
                         vals_address['state_id'] = state_ids[0]
 
         if hasattr(record, 'country_code') and not vals_address.get('country_id'):
-            vals_address['country_id'] = self._contry_by_code(cr, uid, country_code)
+            vals_address['country_id'] = self._country_by_code(cr, uid, country_code)
 
         if DEBUG:
             pprint(vals_address)
@@ -337,9 +357,25 @@ class ImportFile(threading.Thread, Utils):
 
     def import_row(self, cr, uid, row_list, book_datemode):
         if not len(row_list) == len(self.HEADER):
-            error = u'Riga {0} non importata. Colonne non corrsipondono al Header definito'.format(self.processed_lines)
-            _logger.debug(error)
-            self.error.append(error)
+            row_str_list = [self.toStr(value) for value in row_list]
+            if DEBUG:
+                if len(row_list) > len(self.HEADER):
+                    pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
+                else:
+                    pprint(zip(self.HEADER[:len(row_list)], row_str_list))
+
+            error = u"""Row {row}: Row_list is {row_len} long. We expect it to be {expected} long, with this columns:
+                            {keys}
+                            Instead of this we got this:
+                            {header}
+                            """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER),
+                                       keys=self.HEADER, header=', '.join(map(lambda s: s or '', row_str_list)))
+
+            _logger.error(str(row_list))
+            _logger.error(error)
+            # error = u'Riga {0} non importata. Colonne non corrsipondono al Header definito'.format(self.processed_lines)
+            # _logger.debug(error)
+            # self.error.append(error)
             return False
 
         if DEBUG:
@@ -399,6 +435,19 @@ class ImportFile(threading.Thread, Utils):
                 'supplier': True
             })
 
+        if self.FORMAT == 'FormatOmnitron':
+            if 'customer' in vals_partner:
+                del vals_partner['customer']
+
+            if record.client_supplier == u'1':
+                vals_partner.update({
+                    'supplier': True
+                })
+            else:
+                vals_partner.update({
+                    'customer': True
+                })
+
         if hasattr(record, 'person_name') and record.person_name:
             vals_partner['name'] += ' {0}'.format(record.person_name)
 
@@ -411,7 +460,7 @@ class ImportFile(threading.Thread, Utils):
                 country_code = ''
 
         if country_code:
-            country_id = self._contry_by_code(cr, uid, country_code)
+            country_id = self._country_by_code(cr, uid, country_code)
             if country_id:
                 country = self.pool['res.country'].browse(cr, uid, country_id, self.context)
 

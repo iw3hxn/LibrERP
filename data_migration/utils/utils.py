@@ -48,7 +48,7 @@ class Utils():
         _logger.info('Import status: %d %s (%d lines processed)' % (self.progress_indicator, '%', self.processed_lines))
 
     def toStr(self, value):
-        if value:
+        if value and not value == '\\N':
             if isinstance(value, (str, unicode)) and value.lower() == 'null':
                 return False
 

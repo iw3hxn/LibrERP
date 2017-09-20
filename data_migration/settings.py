@@ -19,8 +19,8 @@
 #
 ##############################################################################
 
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 from collections import OrderedDict
 
@@ -462,7 +462,7 @@ class FormatOmnitron(object):
         "Ordine", "Disponibilita"
     )
 
-    # TODO: controllare product_qty
+    # TODO: control product_qty
     COLUMNS_BOM = """old_code, none0, none1,
         none2, sub_item_code, sub_name,
         bom_code, product_qty, none3, none4,
@@ -487,26 +487,47 @@ class FormatOmnitron(object):
     #     u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category'
     # )
     #
-    # HEADER_CUSTOMER = (
-    #     'IDContatto', 'CodiceContatto', 'RagioneSociale',
-    #     'IndirizzoSedeLegale', 'CAPSedeLegale', 'LocalitaSedeLegale', 'ProvinciaSedeLegale',
-    #     'RagioneSocialeOperativo', 'IndirizzoOperativo', 'CAPOperativo',
-    #     'LocalitaOperativo', 'ProvinciaOperativo',
-    #     'Telefono', 'Fax', 'Email', 'Web', 'Cellulare',
-    #     'PartitaIVA', 'CodiceFiscale', 'IDPagamento',
-    #     'Pagamento', 'BancaAppoggio', 'ABI', 'CAB',
-    #     'ContoCorrente', 'IDCorriere', 'Corriere', 'IDTrasporto', 'Trasporto',
-    #     'CodiceMerceologico', 'CodiceDivisione',
-    #     'Commenti', 'IDNazione', 'IDRegione', 'IDRespAgente', 'IDTipoCliente',
-    #     'ClienteSiNo', 'ClienteFornitore', 'Appartenenza',
-    #     'IVAAna', 'AnnoAna', 'IBAN', 'EMailFatture', 'AnagraficaObsoleta'
-    # )
-    #
+    HEADER_CUSTOMER = (
+        'IDContatto', 'CodiceContatto',
+        'RagioneSociale',
+        'IndirizzoSedeLegale', 'CAPSedeLegale', 'LocalitaSedeLegale', 'ProvinciaSedeLegale',
+        'RagioneSocialeOperativo',
+        'IndirizzoOperativo', 'CAPOperativo', 'LocalitaOperativo', 'ProvinciaOperativo',
+        'Telefono', 'Fax', 'Email', 'Web', 'Cellulare',
+        'PartitaIVA', 'CodiceFiscale', 'IDPagamento',
+        'Pagamento', 'BancaAppoggio', 'ABI', 'CAB', 'ContoCorrente',
+        'IDCorriere', 'Corriere', 'IDTrasporto', 'Trasporto',
+        'CodiceMerceologico', 'CodiceDivisione',
+        'Commenti', 'IDNazione', 'IDRegione', 'IDRespAgente', 'IDTipoCliente',
+        'ClienteFornitore', 'Appartenenza',
+        'IVAAna', 'AnnoAna', 'IBAN', 'EMailFatture', 'Nazione', 'Valuta'
+    )
+
     # COLUMNS = "code, name, person_name, street_default, zip_default, "\
     #           "city_default, province_default, phone_default, fax_default, "\
     #           "email_default, street_invoice, street2_invoice, zip_invoice, "\
     #           "city_invoice, province_invoice, country_code, vat, "\
     #           "fiscalcode, category"
+
+    COLUMNS = """
+        none, code, 
+        name,
+        street_default, zip_default, city_default, province_default,
+        name_delivery,
+        street_delivery, zip_delivery, city_delivery, province_delivery,
+        phone_default, fax_default, email_default, web_default, mobile_default,
+        vat, fiscalcode, none2,
+        none3, bank, abi, cab, account,
+        none4, none5, none6, none7, 
+        none8, none9, 
+        comment, none10, none11, none12, none13,
+        client_supplier, none14,
+        none15, none16, iban, email_invoice, country_code, currency
+    """
+    ADDRESS_TYPE = ('default', 'delivery')
+    REQUIRED = ['name',]
+    PARTNER_SEARCH = ['vat', 'code', 'name']
+    PARTNER_UNIQUE_OFFICE_CODE = True
 
 
 class Inventory(object):
