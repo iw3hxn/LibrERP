@@ -54,19 +54,18 @@ class wizard_registro_iva(osv.osv_memory):
     }
 
     def print_registro(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        wizard = self.browse(cr, uid, ids)[0]
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        wizard = self.browse(cr, uid, ids, context)[0]
         move_obj = self.pool.get('account.move')
         obj_model_data = self.pool.get('ir.model.data')
         move_ids = move_obj.search(cr, uid, [
             ('journal_id', 'in', [j.id for j in wizard.journal_ids]),
             ('period_id', 'in', [p.id for p in wizard.period_ids]),
             ('state', '=', 'posted'),
-        ], order='date, name')
+        ], order='date, name', context=context)
         if not move_ids:
-            self.write(cr, uid, ids, {'message': _('No documents found in the current selection')})
-            model_data_ids = obj_model_data.search(cr, uid, [('model', '=', 'ir.ui.view'), ('name', '=', 'wizard_registro_iva')])
+            self.write(cr, uid, ids, {'message': _('No documents found in the current selection')}, context)
+            model_data_ids = obj_model_data.search(cr, uid, [('model', '=', 'ir.ui.view'), ('name', '=', 'wizard_registro_iva')], context=context)
             resource_id = obj_model_data.read(cr, uid, model_data_ids, fields=['res_id'])[0]['res_id']
             return {
                 'name': _('No documents'),
@@ -79,12 +78,16 @@ class wizard_registro_iva(osv.osv_memory):
                 'type': 'ir.actions.act_window',
                 'target': 'new',
             }
-        datas = {'ids': move_ids}
-        datas['model'] = 'account.move'
-        datas['fiscal_page_base'] = wizard.fiscal_page_base
-        datas['period_ids'] = [p.id for p in wizard.period_ids]
-        datas['layout'] = wizard['type']
-        datas['tax_sign'] = wizard['tax_sign']
+
+        datas = {
+            'ids': move_ids,
+            'model': 'account.move',
+            'fiscal_page_base': wizard.fiscal_page_base,
+            'period_ids': [p.id for p in wizard.period_ids],
+            'layout': wizard['type'],
+            'tax_sign': wizard['tax_sign'],
+        }
+
         res = {
             'type': 'ir.actions.report.xml',
             'datas': datas,
@@ -105,11 +108,11 @@ class wizard_registro_iva(osv.osv_memory):
         journal_obj = self.pool['account.journal']
         res = []
         if j_type == 'supplier':
-            res = journal_obj.search(cr, uid, [('type', 'in', ['purchase', 'purchase_refund'])])
+            res = journal_obj.search(cr, uid, [('type', 'in', ['purchase', 'purchase_refund'])], context=context)
         elif j_type == 'customer' or j_type == 'corrispettivi':
-            res = journal_obj.search(cr, uid, [('type', 'in', ['sale', 'sale_refund'])])
+            res = journal_obj.search(cr, uid, [('type', 'in', ['sale', 'sale_refund'])], context=context)
         else:
-            res = journal_obj.search(cr, uid, [('type', 'in', ['sale', 'sale_refund', 'purchase', 'purchase_refund'])])
+            res = journal_obj.search(cr, uid, [('type', 'in', ['sale', 'sale_refund', 'purchase', 'purchase_refund'])], context=context)
         return res
 
     def on_type_changed(self, cr, uid, ids, j_type, context=None):
