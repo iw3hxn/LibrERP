@@ -19,7 +19,7 @@ from openerp.tools.translate import _
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 try:
-    from codicefiscale import build, isvalid
+    from codicefiscale import codicefiscale
 except (ImportError, IOError) as err:
     _logger.error(err)
 
