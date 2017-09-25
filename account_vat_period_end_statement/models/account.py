@@ -195,12 +195,12 @@ class account_vat_period_end_statement(orm.Model):
         return result
 
     def _get_default_interest(self, cr, uid, context=None):
-        user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
         company = user.company_id
         return company.of_account_end_vat_statement_interest
 
     def _get_default_interest_percent(self, cr, uid, context=None):
-        user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
         company = user.company_id
         if not company.of_account_end_vat_statement_interest:
             return 0
@@ -380,7 +380,7 @@ class account_vat_period_end_statement(orm.Model):
         'interest_percent': _get_default_interest_percent,
         'fiscal_page_base': 1,
         'company_id': lambda self, cr, uid, c:
-            self.pool.get('res.company')._company_default_get(
+            self.pool['res.company']._company_default_get(
                 cr, uid, 'account.vat.period.end.statement', context=c),
         'show_zero': False,
     }
@@ -389,7 +389,7 @@ class account_vat_period_end_statement(orm.Model):
         if not context:
             context = {}
         context['period_id'] = period_id
-        return self.pool.get('account.tax.code').browse(
+        return self.pool['account.tax.code'].browse(
             cr, uid, tax_code_id, context)._sum_period(
             None, None, context)[tax_code_id]
 
@@ -422,10 +422,10 @@ class account_vat_period_end_statement(orm.Model):
         self.write(cr, uid, ids, {'state': 'paid'})
 
     def create_move(self, cr, uid, ids, context=None):
-        move_obj = self.pool.get('account.move')
-        term_pool = self.pool.get('account.payment.term')
-        line_obj = self.pool.get('account.move.line')
-        period_obj = self.pool.get('account.period')
+        move_obj = self.pool['account.move']
+        term_pool = self.pool['account.payment.term']
+        line_obj = self.pool['account.move.line']
+        period_obj = self.pool['account.period']
         for statement in self.browse(cr, uid, ids, context):
             period_ids = period_obj.find(
                 cr, uid, dt=statement.date, context=context)
@@ -593,7 +593,7 @@ class account_vat_period_end_statement(orm.Model):
         - left is id of account.tax.code record
         """
         context = {} if context is None else context
-        tax_pool = self.pool.get('account.tax')
+        tax_pool = self.pool['account.tax']
         tax_ids = tax_pool.search(
             cr, uid, [('company_id', '=', company_id)])
         tax_tree = {}
@@ -627,7 +627,7 @@ class account_vat_period_end_statement(orm.Model):
         context = {} if context is None else context
         if show_zero is None:
             show_zero = statement.show_zero
-        tax_code_pool = self.pool.get('account.tax.code')
+        tax_code_pool = self.pool['account.tax.code']
         dbt_crd_line_ids = []
         dbt_crd_tax_code_ids = tax_code_pool.search(cr, uid, [
             ('exclude_from_registries', '=', False),
@@ -730,19 +730,17 @@ class account_vat_period_end_statement(orm.Model):
 
     def compute_amounts(self, cr, uid, ids, context=None):
         context = {} if context is None else context
-        statement_generic_account_line_obj = self.pool[
-            'statement.generic.account.line']
+        statement_generic_account_line_obj = self.pool['statement.generic.account.line']
         decimal_precision_obj = self.pool['decimal.precision']
-        company_id = self.pool.get(
-            'res.users').browse(cr, uid, uid, context).company_id.id
-        debit_line_pool = self.pool.get('statement.debit.account.line')
-        credit_line_pool = self.pool.get('statement.credit.account.line')
+        company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
+        debit_line_pool = self.pool['statement.debit.account.line']
+        credit_line_pool = self.pool['statement.credit.account.line']
         tax_tree = self.build_tax_tree(cr, uid, company_id, context)
         for statement in self.browse(cr, uid, ids, context):
             company_id = statement.company_id.id
             statement.write({'previous_debit_vat_amount': 0.0})
             prev_statement_ids = self.search(cr, uid, [(
-                'date', '<', statement.date)], order='date')
+                'date', '<', statement.date)], order='date', context=context)
             if prev_statement_ids:
                 prev_statement = self.browse(
                     cr, uid, prev_statement_ids[len(prev_statement_ids) - 1],
@@ -787,9 +785,9 @@ class account_vat_period_end_statement(orm.Model):
                 ('statement_id', '=', statement.id),
             ]
             line_ids = statement_generic_account_line_obj.search(
-                cr, uid, domain)
+                cr, uid, domain, context=context)
             if line_ids:
-                statement_generic_account_line_obj.unlink(cr, uid, line_ids)
+                statement_generic_account_line_obj.unlink(cr, uid, line_ids, context)
 
             # Compute interest
             if statement.interest and statement.authority_vat_amount > 0:
@@ -804,12 +802,11 @@ class account_vat_period_end_statement(orm.Model):
                     'account_id': acc_id,
                     'amount': interest_amount,
                 }
-                statement_generic_account_line_obj.create(cr, uid, val)
+                statement_generic_account_line_obj.create(cr, uid, val, context)
         return True
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        partner = self.pool.get('res.partner').browse(
-            cr, uid, partner_id, context)
+        partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
         return {
             'value': {
                 'authority_vat_account_id': partner.property_account_payable.id
@@ -820,7 +817,7 @@ class account_vat_period_end_statement(orm.Model):
         res = {}
         if not ids:
             return res
-        user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
         company = user.company_id
 
         res = {'value': {
@@ -832,22 +829,22 @@ class account_vat_period_end_statement(orm.Model):
     def onchange_fiscalcode(self, cr, uid, ids, fiscalcode, name,
                             context=None):
         if len(fiscalcode) != 16:
-            return {'value':{name: False},
-                   'warning': {'title':'Invalid len!',
-                               'message':'Fiscal code len must be 16'}
-            }
+            return {'value': {name: False},
+                    'warning': {'title': 'Invalid len!',
+                                'message': 'Fiscal code len must be 16'}
+                    }
         chk = codicefiscale.control_code(fiscalcode[0:15])
         if chk != fiscalcode[15]:
             value = fiscalcode[0:15] + chk
-            return {'value':{name: value},
-                   'warning': {'title':'Invalid fiscalcode!',
-                               'message':
+            return {'value': {name: value},
+                    'warning': {'title': 'Invalid fiscalcode!',
+                                'message':
                                     'Fiscal code could be %s' % (value)}
-            }
-        return {'value':{name: fiscalcode}}
+                    }
+        return {'value': {name: fiscalcode}}
 
     def get_account_interest(self, cr, uid, ids, context=None):
-        user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
         company = user.company_id
         if (
             company.of_account_end_vat_statement_interest or
@@ -868,7 +865,7 @@ class account_vat_period_end_statement(orm.Model):
                     _('You should delete VAT Settlement before'
                       ' deleting Vat Period End Statement')
                 )
-        return super(AccountVatPeriodEndStatement, self).action_cancel(cr, uid, ids, context)
+        return super(account_vat_period_end_statement, self).action_cancel(cr, uid, ids, context)
 
 
 class statement_debit_account_line(orm.Model):
@@ -927,11 +924,12 @@ class statement_generic_account_line(orm.Model):
     def on_change_vat_account_id(
         self, cr, uid, ids, vat_account_id=False, context=None
     ):
-        res = {}
-        res['value'] = {}
+        res = {
+            'value': {}
+        }
         if not vat_account_id:
             return res
-        res['value']['amount'] = self.pool.get('account.account').browse(
+        res['value']['amount'] = self.pool['account.account'].browse(
             cr, uid, vat_account_id, context).balance
         return res
 
