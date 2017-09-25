@@ -19,8 +19,8 @@
 #
 ##############################################################################
 
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
 from collections import OrderedDict
 
@@ -479,14 +479,6 @@ class FormatOmnitron(object):
     BOM_DEFAULTS = {
     }
 
-    # HEADER_CUSTOMER = (
-    #     u'Codice', u'Denominazione / Cognome', u'Nome',
-    #     u'Sede legale: indirizzo', u'SL: CAP', u'SL: località', u'SL: Prov.',
-    #     u'Telefono', u'Fax', u'e-mail', u'Sede amministrativa: indirizzo 1',
-    #     u'Sede amministrativa: indirizzo 2', u'SA: CAP', u'SA: località',
-    #     u'SA: Prov.', u'Nazione', u'PI', u'CF', u'category'
-    # )
-    #
     HEADER_CUSTOMER = (
         'IDContatto', 'CodiceContatto',
         'RagioneSociale',
@@ -502,12 +494,6 @@ class FormatOmnitron(object):
         'ClienteFornitore', 'Appartenenza',
         'IVAAna', 'AnnoAna', 'IBAN', 'EMailFatture', 'Nazione', 'Valuta'
     )
-
-    # COLUMNS = "code, name, person_name, street_default, zip_default, "\
-    #           "city_default, province_default, phone_default, fax_default, "\
-    #           "email_default, street_invoice, street2_invoice, zip_invoice, "\
-    #           "city_invoice, province_invoice, country_code, vat, "\
-    #           "fiscalcode, category"
 
     COLUMNS = """
         none, code, 
@@ -525,7 +511,7 @@ class FormatOmnitron(object):
         none15, none16, iban, email_invoice, country_code, currency
     """
     ADDRESS_TYPE = ('default', 'delivery')
-    REQUIRED = ['name',]
+    REQUIRED = ['name']
     PARTNER_SEARCH = ['vat', 'code', 'name']
     PARTNER_UNIQUE_OFFICE_CODE = True
 

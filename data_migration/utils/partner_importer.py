@@ -27,6 +27,8 @@ from collections import namedtuple
 from datetime import datetime
 from pprint import pprint
 from openerp.addons.core_extended.file_manipulation import import_sheet
+from openerp.addons.base_iban.base_iban import _format_iban as format_iban
+from openerp.addons.base_iban.base_iban import _pretty_iban as pretty_iban
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -69,8 +71,12 @@ PROPERTY_REF_MAP = {
 
 DONT_STOP_ON_WRONG_VAT = True
 
-VAT_CODES = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'EL', 'HU', 'IE', 'LV', 'LT', 'LU', 'MT',
-             'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB']
+VAT_CODES = [
+    'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI',
+    'FR', 'DE', 'EL', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
+    'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
+    'GB'
+]
 
 
 class ImportFile(threading.Thread, Utils):
@@ -282,6 +288,41 @@ class ImportFile(threading.Thread, Utils):
             return country_ids[0]
         else:
             return False
+
+    def get_or_create_bank(self, cr, uid, iban, partner_id, context=None):
+        bank_obj = self.pool['res.partner.bank']
+        partner_obj = self.pool['res.partner']
+
+        if bank_obj.is_iban_valid(cr, uid, iban, context):
+            formatted_iban = format_iban(iban)
+            formatted_iban = pretty_iban(formatted_iban)
+            bank_ids = bank_obj.search(cr, uid, [('acc_number', '=', formatted_iban), ('state', '=', 'iban')])
+
+            if bank_ids:
+                return bank_ids
+            else:
+                partner = partner_obj.browse(cr, uid, partner_id, context)
+                address_id = partner_obj.address_get(cr, uid, [partner_id])['default']
+                address = self.pool['res.partner.address'].browse(cr, uid, address_id, context)
+                user = self.pool['res.user'].browse(cr, uid, uid, context)
+
+                bank_id = bank_obj.create(cr, uid, {
+                    'acc_number': iban,
+                    'state': 'iban',
+                    'partner_id': partner.id,
+                    'owner_name': partner.name,
+                    'street': address.street,
+                    'zip': address.zip,
+                    'city': address.city,
+                    'state_id': address.state_id and address.state_id.id,
+                    'country_id': address.country_id and address.country_id.id,
+                    'company_id': user.company_id.id
+                }, context)
+                return [bank_id]
+        else:
+            error = u"Riga {0}: IBAN {iban} is not valid. IBAN viene ignorato.".format(self.processed_lines, iban=iban)
+            _logger.debug(error)
+            self.warning.append(error)
 
     def write_address(self, cr, uid, address_type, partner_id, record, vals_partner, country_code, force_default=False):
         vals_address = {
@@ -615,6 +656,9 @@ class ImportFile(threading.Thread, Utils):
                 self.error.append(error)
                 return False
 
+        if hasattr(record, 'iban') and record.iban:
+            self.get_or_create_bank(cr, uid, record.iban, partner_id, self.context)
+
         address_type_1 = self.ADDRESS_TYPE[0]
         address_type_2 = self.ADDRESS_TYPE[1]
 
@@ -635,5 +679,9 @@ class ImportFile(threading.Thread, Utils):
             self.write_address(cr, uid, address_type_1, partner_id, record, vals_partner, country_code, force_default=True)
         elif second_address:
             self.write_address(cr, uid, address_type_2, partner_id, record, vals_partner, country_code, force_default=True)
+
+        if self.FORMAT == 'FormatOmnitron':
+            if hasattr(record, 'email_invoice') and record.email_invoice:
+                self.write_address(cr, uid, 'invoice', partner_id, record, vals_partner, country_code)
 
         return partner_id
