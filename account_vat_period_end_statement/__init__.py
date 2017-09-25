@@ -13,6 +13,6 @@
 # [2012: agilebg] Various enhancements
 # [2013: openerp-italia] Various enhancements
 # [2017: odoo-italia] Electronic VAT statement
-from . import models
 from . import report
 from . import wizard
+from . import models

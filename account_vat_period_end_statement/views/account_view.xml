@@ -17,11 +17,10 @@
                         -->
                 <field name="move_id" select="1"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-                <field name="payment_term_id" select="1"/>
                 <field name="interest" on_change="onchange_interest(interest)"/>
                 <field name="interest_percent"
                        attrs="{'invisible': [('interest', '=', False)], 'required': [('interest', '=', True)]}"/>
-
+                <field name="payment_term_id" select="1"/>
                 <notebook colspan="4">
                     <page string="Periods">
                         <button type='action' name="%(action_add_period)d" string="Add period" colspan="2" attrs="{'readonly': [('state', 'in', ('confirmed', 'paid'))]}"></button>
@@ -102,10 +101,16 @@
                         </group>
                         <group colspan="4" string="Legal Notice">
                             <field name="soggetto_codice_fiscale"
-                             on_change="onchange_fiscalcode(soggetto_codice_fiscale,
-                                                            'soggetto_codice_fiscale')"/>
-                             <field name="progressivo_telematico"
-                                    readonly="1"/>
+                                   on_change="onchange_fiscalcode(soggetto_codice_fiscale,
+                                   'soggetto_codice_fiscale')" />
+                            <field name="codice_carica" />
+                            <field name="incaricato_trasmissione_codice_fiscale"
+                                   on_change="onchange_fiscalcode(incaricato_trasmissione_codice_fiscale,
+                                   'incaricato_trasmissione_codice_fiscale')" />
+                            <field name="incaricato_trasmissione_numero_CAF" />
+                            <field name="incaricato_trasmissione_data_impegno" />
+                            <field name="progressivo_telematico"
+                                   readonly="1"/>
                         </group>
                     </page>
                 </notebook>
@@ -140,7 +145,38 @@
     <menuitem id="menu_account_vat_period_end_statement" action="action_account_vat_period_end_statement"
               name="VAT statements" parent="account.menu_account_end_year_treatments"/>
 
+
+    <!-- tax -->
+    <record id="view_tax_tree_ip17" model="ir.ui.view">
+        <field name="name">account.tax.tree.ip17</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_tree"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <tree string="Account Tax">
+                <field name="type_tax_use"/>
+                <field name="base_sign"/>
+                <field name="tax_sign"/>
+                <field name="ref_base_sign"/>
+                <field name="ref_tax_sign"/>
+            </tree>
+        </field>
+    </record>
+
+
     <!-- tax code -->
+    <record id="view_tax_code_tree_ip17" model="ir.ui.view">
+        <field name="name">account.tax.code.tree.ip17</field>
+        <field name="model">account.tax.code</field>
+        <field name="inherit_id" ref="account.view_tax_code_tree"/>
+        <field name="arch" type="xml">
+            <tree string="Account Tax Code" toolbar="1">
+                <field name="vat_statement_account_id"/>
+                <field name="vat_statement_type"/>
+                <field name="vat_statement_sign"/>
+            </tree>
+        </field>
+    </record>
 
     <record id="view_tax_code_form" model="ir.ui.view">
         <field name="name">account.tax.code.form</field>
@@ -158,6 +194,7 @@
             </separator>
         </field>
     </record>
+
 
     <!-- Attachment -->
     <record id="view_vat_settlement_attachment_form" model="ir.ui.view">

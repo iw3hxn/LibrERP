@@ -43,14 +43,14 @@ tr {
 <h1 style="text-align: center;">${_("VAT Statement Summary")} </h1>
 <h2 style="text-align: center;">${_("Date")}: ${formatLang(statement.date, date=True)|entity} </h2>
 
-<table width="100%"  class="tax_codes" cellspacing="0">
+<table width="100%"  class="tax_codes">
     <tr >
         <th  colspan="3">${ _('Sales') }</th>
     </tr>
     <tr >
-        <th width="60%">${ _('Tax Code') }</th>
-        <th width="20%">${ _('Base') }</th>
-        <th width="20%">${ _('VAT') }</th>
+        <th >${ _('Tax Code') }</th>
+        <th >${ _('Base') }</th>
+        <th >${ _('VAT') }</th>
     </tr>
     <% debit_total_base = 0.0 %>
     <% debit_total_vat = 0.0 %>
@@ -84,20 +84,20 @@ tr {
         </tr>
     %endfor
     <tr >
-        <td style="text-align:left"><strong>${ _('Totals')}</strong></td>
+        <td style="text-align:left"></td>
         <td style="text-align:right"><strong>${ formatLang(debit_total_base)|entity }</strong></td>
         <td style="text-align:right"><strong>${ formatLang(debit_total_vat)|entity }</strong></td>
     </tr>
 </table>
 <br/><br/>
-<table width="100%"  class="tax_codes" cellspacing="0">
+<table width="100%"  class="tax_codes">
     <tr >
         <th  colspan="3">${ _('Purchases') }</th>
     </tr>
     <tr >
-        <th width="60%">${ _('Tax Code') }</th>
-        <th width="20%">${ _('Base') }</th>
-        <th width="20%" >${ _('VAT') }</th>
+        <th >${ _('Tax Code') }</th>
+        <th >${ _('Base') }</th>
+        <th >${ _('VAT') }</th>
     </tr>
     <% credit_total_base = 0.0 %>
     <% credit_total_vat = 0.0 %>
@@ -131,20 +131,20 @@ tr {
         </tr>
     %endfor
     <tr >
-        <td style="text-align:left"><strong>${ _('Totals')}</strong></td>
+        <td style="text-align:left"></td>
         <td style="text-align:right"><strong>${ formatLang(credit_total_base)|entity }</strong></td>
         <td style="text-align:right"><strong>${ formatLang(credit_total_vat)|entity }</strong></td>
     </tr>
 </table>
 <br/><br/>
-<table class="tax_codes"  width="100%" cellspacing="0">
+<table class="tax_codes"  width="100%" >
     <tr >
         <th  colspan="3">${_("Summary")}</th>
     </tr>
     <tr>
-        <th width="60%"> ${ _('Description') }</th>
-        <th width="20%"> ${ _('Debit') }</th>
-        <th width="20%"> ${ _('Credit') }</th>
+        <th></th>
+        <th> ${ _('Debit') }</th>
+        <th> ${ _('Credit') }</th>
     </tr>
     %for debit_line in statement.debit_vat_account_line_ids :
         <tr >
@@ -166,13 +166,12 @@ tr {
             <td>${ formatLang(credit_line.amount)|entity }</td>
         </tr>
     %endfor
-    
-    <tr>
-        <td><strong>${_("Total")}</strong></td>
-        <td><strong>${ statement.payable_vat_amount|entity }</td>
-        <td><strong>${ statement.deductible_vat_amount|entity }</strong></td>
+    <!--
+    <tr >
+        <td>${_("Total")}</td>
+        <td>${ statement.deductible_vat_amount|entity }</td>
     </tr>
-
+    -->
     <tr >
         <td>${_("Previous Credits VAT")}</td>
         <td></td>

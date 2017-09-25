@@ -15,7 +15,7 @@
 # [2017: odoo-italia] Electronic VAT statement
 {
     "name": "Period End VAT Statement",
-    "version": "7.0.2.1.6",
+    "version": "7.0.4.0.0",
     'category': 'Generic Modules/Accounting',
     'license': 'AGPL-3',
     "depends": ["base",
@@ -26,42 +26,59 @@
     "author": "Agile Business Group, "
               " Odoo Italia Associazione",
     'maintainer': 'Antonio Maria Vigliotti <antoniomaria.vigliotti@gmail.com>',
-    "description": """
+    "description": """(en)
 
-This module helps to register the VAT statement of period end.
-    
-In order to load correct amount from tax code, the tax code has to be associated to account involved in statement, through tax code form.
+Period End VAT Statement
+========================
 
-In order to load correct amount from tax code, the tax code has to be
-associated to account involved in statement, through tax code form.
+This module evaluates VAT to pay (or on credit) and generates the electronic
+VAT closeout statement as VAT Authority
+http://www.agenziaentrate.gov.it/wps/content/nsilib/nsi/documentazione/normativa+e+prassi/provvedimenti/2017/marzo+2017+provvedimenti/provvedimento+27+marzo+2017+liquidazioni+periodiche+iva
 
 The 'VAT statement' object allows to specify every amount and relative account
 used by the statement.
 By default, amounts of debit and credit taxes are automatically loaded
 from tax codes of selected periods.
+
 Previous debit or credit is loaded from previous VAT statement, according
 to its payments status.
-Confirming the statement, the 'account.move' is created. If you select
-a payment term, the due date(s) will be set.
 
-The 'tax authority' tab contains information about payment(s).
-You can see statement's result ('authority VAT amount') and residual
-amount to pay ('Balance').
-The statement can be paid like every other debit: by voucher or 'move.line'
-reconciliation.
+https://www.zeroincombenze.it/liquidazione-iva-elettronica-ip17
 
-Specification:
-https://www.zeroincombenze.it/liquidazione-iva-elettronica-ip17/
+
+(it)
+
+Liquidazione IVA periodica
+==========================
+
+Questo modulo calcola l'IVA da pagare (o a credito) sia per i contribuenti
+mensili che trimestrali e permette di generare il file della comunicazione
+elettronica come da normativa del 2017 dell'Agenzia delle Entrate
+http://www.agenziaentrate.gov.it/wps/content/nsilib/nsi/documentazione/normativa+e+prassi/provvedimenti/2017/marzo+2017+provvedimenti/provvedimento+27+marzo+2017+liquidazioni+periodiche+iva
+
+La liquidazione è calcolata sommando i totali di periodo dei conti imposte.
+
+L'utente può aggiungere l'eventuale credito/debito del periodo precedente e
+calcolare gli interessi; può anche registrare l'utilizzo del credito in
+compensazione.
+
+
+https://www.zeroincombenze.it/liquidazione-iva-elettronica-ip17
 """,
-    'website': 'http://www.didotech.com',
-    'data': ['wizard/add_period.xml',
-             'wizard/remove_period.xml',
-             'views/account_view.xml',
-             'views/company_view.xml',
-             'statement_workflow.xml',
-             'security/ir.model.access.csv',
-             'reports.xml', ],
+    'website': 'https://odoo-italia.org',
+    'data': [
+        'wizard/add_period.xml',
+        'wizard/remove_period.xml',
+#        'wizard/vat_settlement.xml',
+        'statement_workflow.xml',
+        'security/ir.model.access.csv',
+        'reports.xml',
+        'views/account_view.xml',
+        'views/company_view.xml',
+    ],
+    'external_dependencies': {
+        'python': ['pyxb'],
+    },
     'demo': [],
     'installable': True,
-    'active': False,
 }

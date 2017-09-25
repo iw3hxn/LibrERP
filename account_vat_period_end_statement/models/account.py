@@ -365,14 +365,43 @@ class account_vat_period_end_statement(orm.Model):
             'account.vat.settlement.attachment',
             'VAT Settlement Export File',
             readonly=True),
-        'show_zero': fields.boolean('Show only VAT structure'),
+        'show_zero': fields.boolean('Show zero amount lines'),
         'soggetto_codice_fiscale':
-            fields.char('Codice fiscale soggetto obbligato',
+            fields.char('Codice fiscale dichiarante',
                         size=16, required=True,
-                        help="Soggetto che presenta la comunicazione"),
+                        help="CF del soggetto che presenta la comunicazione "
+                            "se PF o DI o con la specifica carica"),
+        'codice_carica': fields.selection([
+            ('0', 'Azienda PF (Ditta indivisuale/Professionista/eccetera)'),
+            ('1', 'Legale rappresentante, socio amministratore'),
+            ('2', 'Rappresentante di minore,interdetto,eccetera'),
+            ('3', 'Curatore fallimentare'),
+            ('4', 'Commissario liquidatore'),
+            ('5', 'Custode giudiziario'),
+            ('6', 'Rappresentante fiscale di soggetto non residente'),
+            ('7', 'Erede'),
+            ('8', 'Liquidatore'),
+            ('9', 'Obbligato di soggetto estinto'),
+            ('10', 'Rappresentante fiscale art. 44c3 DLgs 331/93'),
+            ('11', 'Tutore di minore'),
+            ('12', 'Liquidatore di DI'),
+            ('13', 'Amministratore di condominio'),
+            ('14', 'Pubblica Amministrazione'),
+            ('15', 'Commissario PA'),],
+            'Codice carica',),
         'progressivo_telematico':
             fields.integer('Progressivo telematico', readonly=True),
-    }
+        'incaricato_trasmissione_codice_fiscale':
+            fields.char('Codice Fiscale Incaricato',
+                        size=16,
+                        help="CF intermediario "
+                             "che effettua la trasmissione telematica"),
+        'incaricato_trasmissione_numero_CAF':
+            fields.integer('Numero CAF intermediario',
+                           size=5,
+                           help="Eventuale numero iscrizione albo del C.A.F."),
+        'incaricato_trasmissione_data_impegno':
+            fields.date('Data data impegno')    }
 
     _defaults = {
         'date': fields.date.context_today,
@@ -623,7 +652,6 @@ class account_vat_period_end_statement(orm.Model):
 
     def compute_amount_dbt_crd(self, cr, uid, statement, company_id,
                                tax_tree, show_zero=None, context=None):
-        # tndb.wlog('compute_amount_dbt_crd(', statement, company_id, tax_tree, ')')
         context = {} if context is None else context
         if show_zero is None:
             show_zero = statement.show_zero
@@ -634,14 +662,12 @@ class account_vat_period_end_statement(orm.Model):
             ('company_id', '=', company_id),
         ], context=context)
         for dbt_crd_tax_code_id in dbt_crd_tax_code_ids:
-            # tndb.wlog('tax.code.id', dbt_crd_tax_code_id)
             if tax_code_pool.search(cr, uid, [('parent_id',
                                                '=',
                                                dbt_crd_tax_code_id)]):
                 continue
             dbt_crd_tax_code = tax_code_pool.browse(
                 cr, uid, dbt_crd_tax_code_id, context)
-            # tndb.wlog('tax.code', dbt_crd_tax_code_id, dbt_crd_tax_code.code, dbt_crd_tax_code.name)
             total = 0.0
             for period in statement.period_ids:
                 ctx = context.copy()
@@ -828,20 +854,33 @@ class account_vat_period_end_statement(orm.Model):
 
     def onchange_fiscalcode(self, cr, uid, ids, fiscalcode, name,
                             context=None):
-        if len(fiscalcode) != 16:
-            return {'value': {name: False},
-                    'warning': {'title': 'Invalid len!',
-                                'message': 'Fiscal code len must be 16'}
+        if fiscalcode:
+            if len(fiscalcode) == 11:
+                res_partner_pool = self.pool.get('res.partner')
+                chk = res_partner_pool.simple_vat_check(
+                    cr, uid, 'it', fiscalcode)
+                if not chk:
+                    return {'value':{name: False},
+                           'warning': {'title':'Invalid fiscalcode!',
+                                       'message':
+                                            'Invalid vat number'}
                     }
-        chk = codicefiscale.control_code(fiscalcode[0:15])
-        if chk != fiscalcode[15]:
-            value = fiscalcode[0:15] + chk
-            return {'value': {name: value},
-                    'warning': {'title': 'Invalid fiscalcode!',
-                                'message':
-                                    'Fiscal code could be %s' % (value)}
-                    }
-        return {'value': {name: fiscalcode}}
+            elif len(fiscalcode) != 16:
+                return {'value':{name: False},
+                       'warning': {'title':'Invalid len!',
+                                   'message':'Fiscal code len must be 11 or 16'}
+                }
+            else:
+                chk = codicefiscale.control_code(fiscalcode[0:15])
+                if chk != fiscalcode[15]:
+                    value = fiscalcode[0:15] + chk
+                    return {'value':{name: value},
+                            'warning': {'title':'Invalid fiscalcode!',
+                                        'message':
+                                             'Fiscal code could be %s' % (value)}
+                     }
+            return {'value':{name: fiscalcode}}
+        return {}
 
     def get_account_interest(self, cr, uid, ids, context=None):
         user = self.pool['res.users'].browse(cr, uid, uid, context)
