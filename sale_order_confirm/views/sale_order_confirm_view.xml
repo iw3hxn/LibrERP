@@ -16,15 +16,8 @@
                             <field name="shop_id" on_change="onchange_shop_id(shop_id)" widget="selection"
                                    groups="base.group_extended"/>
                             <field name="client_order_ref"/>
-                            <field name="sale_version_id" readonly="1"/>
-                            <button
-                                    name="sale_order_version.action_previous_version"
-                                    string="Create version"
-                                    type="object"
-                                    icon="gtk-go-forward"
-                                    colspan="2"
-                                    states="draft"
-                                    />
+                            <field name="sale_version_id" attrs="{'invisible':[('sale_version_id','=',False)]}" readonly="1"/>
+                            <field name="revision_note" attrs="{'invisible':[('sale_version_id','=',False)]}"/>
                         </group>
                         <group col="2" colspan="2">
                             <field name="invoiced"/>
@@ -107,7 +100,7 @@
                                     <field name="discount"/>
 
                                     <field name="price_unit"/>
-                                    <field name="price_subtotal"/>
+                                    <field name="price_subtotal" sum="Sum"/>
                                 </tree>
                             </field>
                             <newline/>
