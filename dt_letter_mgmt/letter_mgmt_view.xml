@@ -3,47 +3,47 @@
 <openerp>
 	<data>
 
-	
+
 		<record model="ir.ui.view" id="res_letter_in_search_view">
 			<field name="name">res.letter.search</field>
 			<field name="model">res.letter</field>
 			<field name="type">search</field>
 			<field name="arch" type="xml">
 				<search string="Letters" >
-					
+
 					<filter name="action_rec_draft"
 							domain="[('state','=','draft')]"
-							icon="terp-document-new" 
+							icon="terp-document-new"
 							string="Draft"/>
-					
+
 					<filter name="action_rec_ret"
 							domain="[('state','=','rec')]"
-							icon="STOCK_OK" 
+							icon="STOCK_OK"
 							string="Received"/>
-					
+
 					<filter name="action_rec_ret"
 							domain="[('state','=','rec_ret')]"
-							icon="STOCK_UNDO" 
+							icon="STOCK_UNDO"
 							string="Received but Returned"/>
-					
+
 					<filter name="action_rec_bad"
 							domain="[('state','=','rec_bad')]"
-							icon="STOCK_DIALOG_WARNING" 
+							icon="STOCK_DIALOG_WARNING"
 							string="Received Damage"/>
-					
+
 					<filter name="action_rec_cancel"
 							domain="[('state','=','cancel')]"
-							icon="STOCK_CANCEL" 
+							icon="STOCK_CANCEL"
 							string="Cancel"/>
-					
+
 					<separator orientation="vertical"/>
-										
+
 					<field name="name" />
 					<field name="number" />
 					<field name="move" invisible="1"/>
 					<field name="type" widget="selection"/>
-					<field name="class" widget="selection"/>
-					<newline />
+					<field name="class" widget="selection" groups="dt_letter_mgmt.group_letter_extended"/>
+					<newline/>
 					<field name="date" />
 					<field name="partner_id" widget="many2one"/>
 					<field name="user_id" widget="selection"/>
@@ -53,7 +53,7 @@
 				</search>
 			</field>
 		</record>
-	
+
 		<record model="ir.ui.view" id="res_letter_in_tree_view">
 			<field name="name">res.letter.tree</field>
 			<field name="model">res.letter</field>
@@ -72,7 +72,7 @@
 					<field name="state" />
 					<field name="active" invisible="1"/>
 					<field name="channel_id" />
-					<field name="company_id" />
+					<field name="company_id" groups="base.group_multi_company"/>
 					<field name="row_color" invisible="1"/>
 				</tree>
 			</field>
@@ -87,10 +87,10 @@
 					<group col="4" colspan="2">
 						<field name="number" select="1" readonly="1" />
 						<field name="move" select="1" invisible="1" />
-					</group>
-					<group col="6" colspan="3">
 						<field name="name" select="1" />
-						<field name="partner_id" select="1" />
+					</group>
+					<group col="4" colspan="3">
+						<field name="partner_id" select="1" on_change="onchange_partner_id(partner_id, address_id, context)"/>
 						<field name="address_id" domain="[('partner_id','=',partner_id)]"/>
 					</group>
 					<group col="4" colspan="2">
@@ -115,27 +115,16 @@
 						<field name="user_id" select="2" string="Receiver"/>
 						<field name="snd_rec_id" select="2"
 							string="Received For" />
-						
+
 					</group>
                     <newline/>
 					<notebook>
-						<page string="Letter Line(s)">
-							<field name="child_line" colspan="4"
+                        <page string="Note">
+							<separator string="Note" />
+							<field name="note" select="2" colspan="4"
 								nolabel="1" />
 						</page>
-						<page string="History">
-							<field name="history_line" colspan="4"
-								nolabel="1" >
-								<tree editable="top"> 				
-									<field name="register_id" widget="selection" />
-									<field name="name" />
-									<field name="date" />
-									<field name="user_id" widget="selection"/>
-								</tree> 
-                    
-							</field>
-						</page>
-						<page string="Extra Info.">
+						<page string="Extra Info." groups="base.group_multi_company">
 							<field name="company_id" select="2"
 								widget="selection" />
 							<field name="active" select="2" />
@@ -151,9 +140,23 @@
 									</form>
 								</field>
 							</group>
-							<separator string="Note" />
-							<field name="note" select="2" colspan="4"
+
+						</page>
+						<page string="Letter Line(s)" groups="dt_letter_mgmt.group_letter_extended">
+							<field name="child_line" colspan="4"
 								nolabel="1" />
+						</page>
+						<page string="History" groups="dt_letter_mgmt.group_letter_extended">
+							<field name="history_line" colspan="4"
+								nolabel="1" >
+								<tree editable="top">
+									<field name="register_id" widget="selection" />
+									<field name="name" />
+									<field name="date" />
+									<field name="user_id" widget="selection"/>
+								</tree>
+
+							</field>
 						</page>
 					</notebook>
 					<newline />
@@ -233,32 +236,32 @@
 		<menuitem id="res_letter_in_menu" name="Inbound Letters"
 			parent="res_letter_menu" action="action_res_letter_in_tree_view" />
 
-		
-		
-		
+
+
+
 		<record model="ir.ui.view" id="res_letter_out_search_view">
 			<field name="name">res.letter.search</field>
 			<field name="model">res.letter</field>
 			<field name="type">search</field>
 			<field name="arch" type="xml">
 				<search string="Letters" >
-					
+
 					<filter name="action_rec_draft"
 							domain="[('state','=','draft')]"
-							icon="terp-document-new" 
+							icon="terp-document-new"
 							string="Draft"/>
-					
+
 					<filter name="action_rec_ret"
 							domain="[('state','=','sent')]"
-							icon="STOCK_EXECUTE" 
+							icon="STOCK_EXECUTE"
 							string="Sent"/>
-					
+
 
 					<filter name="action_rec_cancel"
 							domain="[('state','=','cancel')]"
-							icon="STOCK_CANCEL" 
+							icon="STOCK_CANCEL"
 							string="Cancel"/>
-					
+
 					<separator orientation="vertical"/>
 					<field name="name" />
 					<field name="number" />
@@ -270,7 +273,7 @@
 					<field name="partner_id" widget="many2one"/>
 					<field name="user_id" widget="selection"/>
 					<field name="channel_id" widget="selection"/>
-					<field name="company_id" widget="selection"/>
+					<field name="company_id" widget="selection" groups="base.group_multi_company"/>
 					<field name="row_color" invisible="1"/>
 				</search>
 			</field>
@@ -295,7 +298,7 @@
 					<field name="state" />
 					<field name="active" invisible="1"/>
 					<field name="channel_id" />
-					<field name="company_id" />
+					<field name="company_id" groups="base.group_multi_company"/>
 					<field name="row_color" invisible="1"/>
 				</tree>
 			</field>
@@ -330,7 +333,7 @@
 							string="Outbound Source" widget="selection" />
 						<field name="ref_data" select="2" />
 					</group>
-					<group col="4" colspan="2">
+					<group col="4" colspan="2" groups="dt_letter_mgmt.group_letter_extended">
 						<field name="weight" />
 						<field name="size" />
 					</group>
@@ -338,7 +341,7 @@
 						<field name="user_id" select="2" />
 						<field name="snd_rec_id" select="2"
 							string="Send By" />
-						
+
 					</group>
 					<newline/>
 					<notebook>
@@ -349,18 +352,18 @@
 						<page string="History">
 							<field name="history_line" colspan="4"
 								nolabel="1" >
-								<tree editable="top"> 				
+								<tree editable="top">
 									<field name="register_id" widget="selection" />
 									<field name="name" />
 									<field name="date" />
 									<field name="user_id" widget="selection"/>
-								</tree> 
-                    
+								</tree>
+
 							</field>
 						</page>
 						<page string="Extra Info.">
 							<field name="company_id" select="2"
-								widget="selection" />
+								widget="selection" groups="base.group_multi_company"/>
 							<field name="active" select="2" />
 							<group col="4" colspan="4">
 								<separator colspan="4" string="Reference"/>
