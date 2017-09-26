@@ -36,7 +36,7 @@
     "init_xml": [],
     'depends': [
         "hr"
-     ],
+    ],
     'update_xml': [
         "security/letter_security.xml",
         "security/ir.model.access.csv",
@@ -44,10 +44,10 @@
         "letter_mgmt_view.xml",
         "letter_sequence.xml",
         "letter_demo.xml",
-        #'wizard/add_letter_type.xml'
+        # 'wizard/add_letter_type.xml'
     ],
- #   'demo_xml': ["letter_demo.xml"],
+    # 'demo_xml': ["letter_demo.xml"],
     'installable': True,
     'active': False,
-#    'certificate': 'certificate',
+    # 'certificate': 'certificate',
 }

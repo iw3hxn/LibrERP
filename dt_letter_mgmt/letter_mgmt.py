@@ -319,20 +319,11 @@ class letter_ref(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if not len(ids):
             return []
-        reads = self.read(cr, uid, ids, ['id', 'int_ref'], context=context)
         res = []
-        for record in reads:
-            try:
-                (model_name, obj_id) = record['int_ref'].split(',')
-                if model_name and obj_id:
-                    obj_id = int(obj_id)
-                    model = self.pool.get(model_name)
-                    obj_name = model.name_get(cr, uid, [obj_id])[0]
-                    if obj_name and len(obj_name) > 1:
-                        import pdb;pdb.set_trace()
-                        res.append((record['id'], obj_name[1]))
-            except:
-                print repr(traceback.extract_tb(sys.exc_traceback))
+        for record in self.browse(cr, uid, ids, context=context):
+            name = record.int_ref.name_get()[0]
+            res.append((record.id, name[1]))
+
         return dict(res)
         
     _columns = {
