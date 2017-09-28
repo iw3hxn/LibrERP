@@ -12,3 +12,5 @@
 "access_letter_channel_user","letter_channel_user","model_letter_channel","group_letter_user",1,0,0,0
 "access_letter_channel_manager","letter_channel_manager","model_letter_channel","group_letter_manager",1,1,1,1
 "access_letter_channel_system","letter_channel_system","model_letter_channel","base.group_system",1,1,1,1
+"access_letter_ref","letter_ref_user_user","model_letter_ref","group_letter_user",1,1,1,1
+
