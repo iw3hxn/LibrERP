@@ -99,10 +99,10 @@
 					</group>
 					<group col="4" colspan="2">
 						<field name="type" select="1"
-							widget="selection"
-                                                        domain="[('move','=','in')]" />
+							   widget="selection"
+							   domain="[('move','=','in')]"/>
 						<field name="class" select="1"
-							widget="selection"  />
+							   widget="selection"/>
 					</group>
 					<group col="6" colspan="3">
 						<field name="date" select="1"
@@ -111,7 +111,7 @@
 							widget="selection" string="Inbound Source" />
 						<field name="ref_data" select="2" />
 					</group>
-					<group col="4" colspan="2">
+					<group col="4" colspan="2" groups="dt_letter_mgmt.group_letter_extended">
 						<field name="weight" />
 						<field name="size" />
 					</group>
@@ -127,9 +127,9 @@
 							<field name="note" select="2" colspan="4"
 								nolabel="1" />
 						</page>
-						<page string="Extra Info." groups="base.group_multi_company">
+						<page string="Extra Info." groups="dt_letter_mgmt.group_letter_extended">
 							<field name="company_id" select="2"
-								widget="selection" />
+								widget="selection" groups="base.group_multi_company" />
 							<field name="active" select="2" />
 							<group col="4" colspan="4">
 								<separator colspan="4" string="Reference"/>
@@ -352,25 +352,14 @@
 					</group>
 					<newline/>
 					<notebook>
-						<page string="Letter Line(s)">
-							<field name="child_line" colspan="4"
+                        <page string="Note">
+							<separator string="Note" />
+							<field name="note" select="2" colspan="4"
 								nolabel="1" />
 						</page>
-						<page string="History">
-							<field name="history_line" colspan="4"
-								nolabel="1" >
-								<tree editable="top">
-									<field name="register_id" widget="selection" />
-									<field name="name" />
-									<field name="date" />
-									<field name="user_id" widget="selection"/>
-								</tree>
-
-							</field>
-						</page>
-						<page string="Extra Info.">
-							<field name="company_id" select="2"
-								widget="selection" groups="base.group_multi_company"/>
+						<page string="Extra Info." groups="dt_letter_mgmt.group_letter_extended">
+							<field name="company_id" select="2" groups="base.group_multi_company"
+								widget="selection" />
 							<field name="active" select="2" />
 							<group col="4" colspan="4">
 								<separator colspan="4" string="Reference"/>
@@ -384,9 +373,23 @@
 									</form>
 								</field>
 							</group>
-							<separator string="Note" />
-							<field name="note" select="2" colspan="4"
+
+						</page>
+						<page string="Letter Line(s)" groups="dt_letter_mgmt.group_letter_extended">
+							<field name="child_line" colspan="4"
 								nolabel="1" />
+						</page>
+						<page string="History" groups="dt_letter_mgmt.group_letter_extended">
+							<field name="history_line" colspan="4"
+								nolabel="1" >
+								<tree editable="top">
+									<field name="register_id" widget="selection" />
+									<field name="name" />
+									<field name="date" />
+									<field name="user_id" widget="selection"/>
+								</tree>
+
+							</field>
 						</page>
 					</notebook>
 					<newline />
