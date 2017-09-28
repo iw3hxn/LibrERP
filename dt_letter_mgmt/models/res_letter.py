@@ -22,9 +22,7 @@
 ##############################################################################
 
 import logging
-import sys
 import time
-import traceback
 
 from openerp.osv import orm, fields
 from tools.translate import _
@@ -52,93 +50,6 @@ DIRECTIONS = [
     ('in', 'IN'),
     ('out', 'OUT')
 ]
-
-
-class letter_type(orm.Model):
-    """Class to define various types for letters like: envelope, parcel, etc."""
-    
-    _name = 'letter.type'
-    _description = "types for letters like: envelope, parcel, etc."
-    
-    def get_color(self, cr, uid, ids, field_name, arg, context):
-        value = {}
-        for use in self.browse(cr, uid, ids, context):
-            if use.color:
-                value[use.id] = use.color
-            else:
-                value[use.id] = 'black'
-        return value
-
-    _columns = {
-        'name': fields.char('Type', size=32, required=True),
-        'code': fields.char('Code', size=8, required=True),
-        'active': fields.boolean('Active'),
-        'move': fields.selection(DIRECTIONS, 'Move', help="Incoming or Outgoing Letter"),
-        'color': fields.selection(COLOR_SELECTION, 'Color'),
-        'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True),
-        'model': fields.many2one('ir.model', 'Model', required=False),
-    }
-    
-    _defaults = {
-        'active': True,  
-    }
-    
-    _order = "code"
-    _sql_constraints = [
-        ('code_uniq', 'unique(code)', 'Code must be unique!'),
-    ]
-        
-    def get_letter_type(self, cr, uid, model, context=None):
-        type_id = self.search(cr, uid, [('model', '=', model)], context=context)
-        if type_id:
-            return type_id[0]
-        else:
-            raise orm.except_orm('Warning', _('Please create letter type for model {0}').format(model,))
-
-
-class letter_class(orm.Model):
-    """ Class to define the classification of letter like: classified, confidential, personal, etc. """ 
-    
-    _name = 'letter.class'    
-    _description = "letter like: classified, confidential, personal, etc."
-
-    _columns = {
-        'name': fields.char('Type', size=32, required=True),
-        'active': fields.boolean('Active'),
-    }
-    
-    _defaults = { 
-        'active': True,  
-    }
-    
-    _order = "name"
-    
-
-class letter_channel(orm.Model):
-    """ Class to define various channels using which letters can be sent or received like: post, fax, email. """
-
-    _name = 'letter.channel'
-    ## Description can't be longer 64 chars
-    _description = "channels using which letters can be sent/received like: post,fax"
-
-    _columns = {
-        'name': fields.char('Type', size=32, required=True),
-        'active': fields.boolean('Active'),
-    }
-
-    _defaults = {  
-        'active': True,  
-    }
-    
-    _order = "name"
-    
-
-def _links_get(self, cr, uid, context=None):
-    context = context or self.pool['res.users'].context_get(cr, uid)
-    obj = self.pool['res.request.link']
-    ids = obj.search(cr, uid, [], context=context)
-    res = obj.browse(cr, uid, ids, context)
-    return [(r.object, r.name) for r in res]
 
 
 class res_letter(orm.Model):
@@ -240,6 +151,7 @@ class res_letter(orm.Model):
         'ref_ids': fields.one2many('letter.ref', 'letter_id', 'Reference'),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,),
         'letter_text': fields.text('Letter Text'),
+        'contact_id': fields.many2one('res.partner.address.contact', 'Contact'),
     }
     
     _defaults = {
@@ -310,72 +222,3 @@ class res_letter(orm.Model):
         self.write(cr, uid, ids, {'state': 'draft'}, context)
         self.history(cr, uid, ids, context={'translated_keyword': _('Set To Draft')}, keyword=_('Set To Draft'))
         return True
-        
-
-class letter_ref(orm.Model):
-    _name = 'letter.ref'
-    
-    def _name_get_intref(self, cr, uid, ids, prop, unknow_none, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        if not len(ids):
-            return []
-        res = []
-        for record in self.browse(cr, uid, ids, context=context):
-            name = record.int_ref.name_get()[0]
-            res.append((record.id, name[1]))
-
-        return dict(res)
-        
-    _columns = {
-        'name': fields.char('Name', size=128, help="Subject of letter"),
-        'int_ref': fields.reference('Reference', selection=_links_get, size=128),
-        'ref_name': fields.function(_name_get_intref, method=True, type="char", string="Letter Reference"),
-        'letter_id': fields.many2one('res.letter', "Letter"),
-    }
-    _defaults = {
-        'name': lambda self, cr, uid, context: self.pool['ir.sequence'].get(cr, uid, 'letter.ref'),
-    }
-
-
-class hr_employee(orm.Model):
-    _description = "Employee"
-    _inherit = 'hr.employee'
-
-    def _get_assigned_letters(self, cr, uid, ids, prop, unknow_none, context=None):
-        if not len(ids):
-            return {}
-        model_name = super(hr_employee, self)._name
-        res = []
-        try:
-            for id in ids:
-                letter_ids = []
-                ref_ids = self.pool['letter.ref'].search(cr, uid, [('int_ref', '=', model_name + ',' + str(id))], context=context)
-                if ref_ids:
-                    for ref in self.pool['letter.ref'].read(cr, uid, ref_ids, context=context):
-                        letter_ids.append(ref['letter_id'][0])
-                res.append((id, letter_ids))
-        except:
-            print repr(traceback.extract_tb(sys.exc_traceback))
-
-        return dict(res)
-    
-    _columns = {
-        'letter_ids': fields.function(_get_assigned_letters, method=True, string='Letter', type='one2many', relation="res.letter"),
-    }
-
-
-class letter_history(orm.Model):
-    _name = "letter.history"
-    _description = "Letter Communication History"
-    _order = "id desc"
-
-    _columns = {
-        'register_id': fields.many2one('res.letter', 'Register'),
-        'name': fields.char('Action', size=64),
-        'date': fields.datetime('Date'),
-        'user_id': fields.many2one('res.users', 'User Responsible', readonly=True),
-    }
-
-    _defaults = {
-        'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
-    }

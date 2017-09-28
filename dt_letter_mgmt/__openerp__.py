@@ -23,7 +23,7 @@
 
 {
     "name": "Letter Management",
-    "version": "2.0.6",
+    "version": "3.2.0.6",
     "depends": [
         "base"
     ],
@@ -35,13 +35,14 @@
     """,
     "init_xml": [],
     'depends': [
-        "hr"
+        'hr',
+        'base_address_contacts'
     ],
     'update_xml': [
         "security/letter_security.xml",
         "security/ir.model.access.csv",
-        "letter_mgmt_config_view.xml",
-        "letter_mgmt_view.xml",
+        "views/letter_mgmt_config_view.xml",
+        "views/letter_mgmt_view.xml",
         "letter_sequence.xml",
         "letter_demo.xml",
         # 'wizard/add_letter_type.xml'

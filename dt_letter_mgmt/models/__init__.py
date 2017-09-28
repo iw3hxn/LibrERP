@@ -21,4 +21,10 @@
 #
 ##############################################################################
 
-from . import models
+from . import inherit_hr_employeel
+from . import letter_channel
+from . import letter_class
+from . import letter_history
+from . import letter_ref
+from . import letter_type
+from . import res_letter

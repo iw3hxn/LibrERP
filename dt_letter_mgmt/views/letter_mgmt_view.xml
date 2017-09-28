@@ -90,8 +90,12 @@
 						<field name="name" select="1" />
 					</group>
 					<group col="4" colspan="3">
-						<field name="partner_id" select="1" on_change="onchange_partner_id(partner_id, address_id, context)"/>
+						<field name="partner_id" select="1"
+							   on_change="onchange_partner_id(partner_id, address_id, context)"/>
 						<field name="address_id" domain="[('partner_id','=',partner_id)]"/>
+						<field name="contact_id" context="{'address_id': address_id}"
+							   domain="[('address_id', '=', address_id)]"
+						/>
 					</group>
 					<group col="4" colspan="2">
 						<field name="type" select="1"
@@ -115,7 +119,6 @@
 						<field name="user_id" select="2" string="Receiver"/>
 						<field name="snd_rec_id" select="2"
 							string="Received For" />
-
 					</group>
                     <newline/>
 					<notebook>
@@ -312,19 +315,23 @@
 				<form string="Letter">
 					<group col="4" colspan="2">
 						<field name="number" select="1" readonly="1" />
-						<field name="move" select="1" invisible="1"/>
-					</group>
-					<group col="6" colspan="3">
+						<field name="move" select="1" invisible="1" />
 						<field name="name" select="1" />
-						<field name="partner_id" select="1" />
+					</group>
+					<group col="4" colspan="3">
+						<field name="partner_id" select="1"
+							   on_change="onchange_partner_id(partner_id, address_id, context)"/>
 						<field name="address_id" domain="[('partner_id','=',partner_id)]"/>
+						<field name="contact_id" context="{'address_id': address_id}"
+							   domain="[('address_id', '=', address_id)]"
+						/>
 					</group>
 					<group col="4" colspan="2">
 						<field name="type" select="1"
-							widget="selection"
-                                                        domain="[('move','=','out')]" />
+							   widget="selection"
+							   domain="[('move','=','out')]"/>
 						<field name="class" select="1"
-							widget="selection" />
+							   widget="selection"/>
 					</group>
 					<group col="6" colspan="3">
 						<field name="date" select="1"
