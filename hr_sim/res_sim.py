@@ -416,12 +416,12 @@ class res_sim(orm.Model):
     _order = "prefix_number asc, number asc, prefix_fax_number asc, fax_number asc, prefix_data_number asc, data_number asc" 
 
     def set_default_phone(self, cr, uid, ids, context=None):
-        for sim in self.read(cr, uid, ids, context=context):
-            if sim['employee_id']:
-                sim_ids = self.search(cr, uid, [('employee_id', '=', sim['employee_id'][0])], context=context)
-                self.pool['hr.employee'].write(cr, uid, [sim['employee_id'][0]], {'work_phone': sim['prefix_number'] + sim['number']}, context=context)
+        for sim in self.browse(cr, uid, ids, context=context):
+            if sim.employee_id:
+                sim_ids = self.search(cr, uid, [('employee_id', '=', sim.employee_id.id)], context=context)
+                self.pool['hr.employee'].write(cr, uid, [sim.employee_id.id], {'work_phone': sim.prefix_number + sim.number}, context=context)
                 self.write(cr, uid, sim_ids, {'default': False}, context=context)
-                self.write(cr, uid, [sim['id']], {'default': True}, context=context)
+                self.write(cr, uid, [sim.id], {'default': True}, context=context)
         return True
 
     def _check_dates(self, cr, uid, ids, context=None):

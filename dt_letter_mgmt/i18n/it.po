@@ -533,3 +533,8 @@ msgstr "Documenti"
 #: view:res.letter:0
 msgid "Received but Returned"
 msgstr "Ricevuto ma Respinto"
+
+#. module: dt_letter_mgmt
+#: field:res.letter,contact_id:0
+msgid "Contact"
+msgstr "Contatto"

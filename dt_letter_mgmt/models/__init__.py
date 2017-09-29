@@ -21,34 +21,10 @@
 #
 ##############################################################################
 
-{
-    "name": "Letter Management",
-    "version": "3.3.0.7",
-    "depends": [
-        "base"
-    ],
-    "author": "Parthiv Patel, Tech Receptives, Didotech SRL",
-    "category": "Generic",
-    "description": """
-        Using this module you can track Incoming / Outgoing letters, parcels, registered documents
-        or any other paper documents that are important for company to keep track of.
-    """,
-    "init_xml": [],
-    'depends': [
-        'hr',
-        'base_address_contacts'
-    ],
-    'update_xml': [
-        "security/letter_security.xml",
-        "security/ir.model.access.csv",
-        "views/letter_mgmt_config_view.xml",
-        "views/letter_mgmt_view.xml",
-        "letter_sequence.xml",
-        "letter_demo.xml",
-        # 'wizard/add_letter_type.xml'
-    ],
-    # 'demo_xml': ["letter_demo.xml"],
-    'installable': True,
-    'active': False,
-    # 'certificate': 'certificate',
-}
+from . import inherit_hr_employeel
+from . import letter_channel
+from . import letter_class
+from . import letter_history
+from . import letter_ref
+from . import letter_type
+from . import res_letter

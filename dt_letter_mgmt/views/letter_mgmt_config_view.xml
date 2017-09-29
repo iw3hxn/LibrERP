@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <menuitem id="letter_log_menu" name="Letter(s)" web_icon="images/letter.png"
+                  web_icon_hover="images/letter-hover.png" sequence="3" icon="STOCK_PREFERENCES"/>
+
+        <menuitem id="letter_log_config_menu" name="Configuration"
+                  parent="letter_log_menu" groups="group_letter_manager"
+                  sequence="11"/>
+
+        <menuitem id="res_letter_menu" name="Letter(s)"
+                  parent="letter_log_menu"
+                  sequence="1"/>
+
+        <record model="ir.ui.view" id="letter_type_tree_view">
+            <field name="name">letter.type.tree</field>
+            <field name="model">letter.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Letter Type" editable="top"
+                      colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="name"/>
+                    <field name="move"/>
+                    <field name="code"/>
+                    <field name="color"/>
+                    <field name="active"/>
+                    <field name="row_color" invisible="1"/>
+                    <field name="model"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="letter_type_form_view">
+            <field name="name">letter.type.form</field>
+            <field name="model">letter.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Letter Type">
+                    <field name="name" select="1"/>
+                    <field name="move" select="1"/>
+                    <field name="code" select="1"/>
+                    <field name="active" select="2"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window"
+                id="action_letter_type_tree_view">
+            <field name="name">Letter Type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">letter.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="letter_type_tree_view"/>
+        </record>
+
+        <menuitem id="letter_type_menu" name="Letter Type"
+                  parent="letter_log_config_menu"
+                  action="action_letter_type_tree_view"/>
+
+
+        <record model="ir.ui.view" id="letter_class_tree_view">
+            <field name="name">letter.class.tree</field>
+            <field name="model">letter.class</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Letter Class" editable="top">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="letter_class_form_view">
+            <field name="name">letter.class.form</field>
+            <field name="model">letter.class</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Letter Class">
+                    <field name="name" select="1"/>
+                    <field name="active" select="1"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window"
+                id="action_letter_class_tree_view">
+            <field name="name">Letter Class</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">letter.class</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="letter_class_tree_view"/>
+        </record>
+
+        <menuitem id="letter_class_menu" name="Letter Class"
+                  parent="letter_log_config_menu"
+                  action="action_letter_class_tree_view"/>
+
+        <record model="ir.ui.view" id="letter_channel_tree_view">
+            <field name="name">letter.channel.tree</field>
+            <field name="model">letter.channel</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Letter Channel" editable="top">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="letter_channel_form_view">
+            <field name="name">letter.channel.form</field>
+            <field name="model">letter.channel</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Letter Channel">
+                    <field name="name" select="1"/>
+                    <field name="active" select="2"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window"
+                id="action_letter_channel_tree_view">
+            <field name="name">Letter Channel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">letter.channel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="letter_channel_tree_view"/>
+        </record>
+
+        <menuitem id="letter_channel_menu" name="Letter Channel"
+                  parent="letter_log_config_menu"
+                  action="action_letter_channel_tree_view"/>
+
+
+        <record model="ir.ui.view" id="letter_history_tree_view">
+            <field name="name">letter.history.tree</field>
+            <field name="model">letter.history</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="History">
+                    <field name="name"/>
+                    <field name="register_id"/>
+                    <field name="date"/>
+                    <field name="user_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="letter_history_form_view">
+            <field name="name">letter.history.form</field>
+            <field name="model">letter.history</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="History">
+                    <field name="name" select="1"/>
+                    <field name="register_id" select="1"/>
+                    <field name="date" select="1"/>
+                    <field name="user_id" select="1"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window"
+                id="action_letter_history_tree_view">
+            <field name="name">Letter History</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">letter.history</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="letter_history_tree_view"/>
+        </record>
+
+    </data>
+</openerp>

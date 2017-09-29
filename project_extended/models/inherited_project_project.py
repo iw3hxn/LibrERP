@@ -113,7 +113,6 @@ class project_project(orm.Model):
     def _total_account(self, cr, uid, ids, field_name, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
-        print ids
         for project_id in self.browse(cr, uid, ids, context=context):
             res[project_id.id] = {
                 'total_spent': 0.0,
@@ -126,7 +125,6 @@ class project_project(orm.Model):
             account_id = project_id.analytic_account_id.id
             account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', account_id), ('invoice_id', '!=', False)], context=context)
             if account_ids:
-                print account_ids
                 cr.execute("""
                     SELECT COALESCE(SUM(amount))
                     FROM account_analytic_line
