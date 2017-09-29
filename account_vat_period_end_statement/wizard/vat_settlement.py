@@ -26,7 +26,7 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 codice_fornitura = 'IVP17'
-identificativo_software = 'Odoo.7.0.4.0.0'
+identificativo_software = 'Odoo.6.1.4.0.0'
 
 
 class WizardVatSettlement(orm.TransientModel):
@@ -212,7 +212,7 @@ class WizardVatSettlement(orm.TransientModel):
             # modulo_period_end = datetime.datetime.strptime(statement.date,
             #                                                DEFAULT_SERVER_DATE_FORMAT)
             modulo = CTD_ANON()
-            # <<<<< quarter_vat_period non esite nella 7.0 >>>>>
+            # <<<<< quarter_vat_period non esiste nella 7.0 >>>>>
             # if statement.period_ids[0].fiscalyear_id.quarter_vat_period:
             #     # trimestrale
             #     modulo.Trimestre = trimestre[str(modulo_period_end.month)]
@@ -305,7 +305,7 @@ class WizardVatSettlement(orm.TransientModel):
             vat_settlement_xml = settlement.toDOM().toprettyxml(encoding="latin1")
 
             # fn_name = 'LiquidazioneIVA-%05d.xml' % progressivo_telematico
-            fn_name = 'IT%s_LI_%05d.xml'  % (vat, progressivo_telematico)
+            fn_name = 'IT%s_LI_%05d.xml' % (vat, progressivo_telematico)
             attach_vals = {
                 'name': fn_name,
                 'datas_fname': fn_name,
