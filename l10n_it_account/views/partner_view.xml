@@ -8,13 +8,19 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <data>
+                    <field name="name" position="attributes">
+                        <attribute name="on_change">onchange_name(splitmode, name)</attribute>
+                    </field>
                     <xpath expr="/form/notebook/page[@string='Notes']" position="after">
                          <page string="Fiscal Code"  attrs="{'invisible': [('individual', '=', False)]}">
                             <separator colspan="4"/>
-                            <field name="fiscalcode"/>
+                            <field name="fiscalcode" on_change="onchange_fiscalcode(fiscalcode)"/>
                             <newline/>
                             <group colspan="4">
                                 <separator string="Compute Fiscal Code" colspan="4"/>
+                                <field name="splitmode"
+                               on_change="onchange_split_mode(splitmode, name)" />
+                                <newline/>
                                 <field name="fiscalcode_surname"/>
                                 <field name="fiscalcode_firstname"/>
                                 <field name="birth_date"/>

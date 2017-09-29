@@ -3,6 +3,8 @@
 #
 #    Copyright (C) 2010-2013 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
+#    Copyright (C) 2017    SHS-AV s.r.l. <https://www.zeroincombenze.it>
+#    Copyright (C) 2017    Didotech srl <http://www.didotech.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -59,14 +61,104 @@ class res_partner(orm.Model):
             result[partner.id] = partner.fiscalcode
 
         return result
+
+    def _split_last_first_name(self, cr, uid, partner=None,
+                               name=None, splitmode=None):
+        if partner:
+            # if not partner.individual and partner.is_company:
+            if not partner.individual:
+                return '', ''
+            f = partner.name.split(' ')
+            if not splitmode:
+                if hasattr(partner, 'splitmode'):
+                    splitmode = partner.splitmode
+                else:
+                    splitmode = self._default_split_mode(cr, uid)
+        else:
+            if not name:
+                return '', ''
+            if not splitmode:
+                splitmode = self._default_split_mode(cr, uid)
+            f = name.split(' ')
+        if len(f) == 1:
+            if splitmode[0] == 'F':
+                return '', f[0]
+            elif splitmode[0] == 'L':
+                return f[0], ''
+        elif len(f) == 2:
+            if splitmode[0] == 'F':
+                return f[1], f[0]
+            elif splitmode[0] == 'L':
+                return f[0], f[1]
+        elif len(f) == 3:
+            if splitmode in ('LFM', 'LF', 'L2FM'):
+                return f[2], '%s %s' % (f[0], f[1])
+            elif splitmode in ('FML', 'FL', 'FML2'):
+                return '%s %s' % (f[0], f[1]), f[2]
+            elif splitmode == 'L2F':
+                return '%s %s' % (f[0], f[1]), f[2]
+            elif splitmode == 'FL2':
+                return '%s %s' % (f[1], f[2]), f[0]
+        else:
+            if splitmode[0] == 'F':
+                return '%s %s' % (f[2], f[3]), '%s %s' % (f[0], f[1])
+            elif splitmode[0] == 'L':
+                return '%s %s' % (f[0], f[1]), '%s %s' % (f[2], f[3])
+        return '', ''
+
+    def _split_name(self, cr, uid, ids, fname, arg, context=None):
+        res = {}
+        for partner in self.browse(cr, uid, ids, context=context):
+            fiscalcode_surname, fiscalcode_firstname = self._split_last_first_name(
+                cr, uid, partner=partner)
+            res[partner.id] = {
+                'fiscalcode_firstname': fiscalcode_firstname,
+                'fiscalcode_surname': fiscalcode_surname
+            }
+        return res
+
+    def _set_last_first_name(self, cr, uid, partner_id, name, value, arg,
+                             context=None):
+        return True
         
     _columns = {
         'pec': fields.related('address', 'pec', type='char', size=64, string='PEC'),
         'cf': fields.function(_get_fiscalcode, fnct_inv=_set_fiscalcode, string='Codice Fiscale', type='char', method=True),
-        'individual': fields.boolean('Persona Fisica'),
+        'individual': fields.boolean('Persona Fisica',
+                                     help="If checked the C.F. is referred to a Individual Person"),
         'fiscalcode': fields.char('Fiscal Code', size=16, help="Italian Fiscal Code"),
-        'fiscalcode_surname': fields.char('Surname', size=64),
-        'fiscalcode_firstname': fields.char('First name', size=64),
+        # 'fiscalcode_surname': fields.char('Surname', size=64),
+        # 'fiscalcode_firstname': fields.char('First name', size=64),
+        'fiscalcode_firstname': fields.function(
+            _split_name,
+            string="First Name",
+            type="char",
+            store=True,
+            select=True,
+            readonly=True,
+            fnct_inv=_set_last_first_name,
+            multi=True
+        ),
+        'fiscalcode_surname': fields.function(
+            _split_name,
+            string="Last Name",
+            type="char",
+            store=True,
+            select=True,
+            readonly=True,
+            fnct_inv=_set_last_first_name,
+            multi=True
+        ),
+        'splitmode': fields.selection([
+            ('LF', 'Last/First'),
+            ('FL', 'First/Last'),
+            ('LFM', 'Last/First Middle'),
+            ('L2F', 'Last last/First'),
+            ('L2FM', 'Last last/First Middle'),
+            ('FML', 'First middle/Last'),
+            ('FL2', 'First/Last last'),
+            ('FML2', 'First Middle/Last last')
+        ], "First Last format"),
         'birth_date': fields.date('Date of birth'),
         'birth_city': fields.many2one('res.city', 'City of birth'),
         'sex': fields.selection([
@@ -89,6 +181,11 @@ class res_partner(orm.Model):
     _sql_constraints = [
         ('vat_uniq', 'unique (vat)', ('Error! Specified VAT Number already exists for any other registered partner.'))
     ]
+
+    _defaults = {
+        'individual': False,
+        'splitmode': 'LF'
+    }
 
     def compute_fiscal_code(self, cr, uid, ids, context):
         partners = self.browse(cr, uid, ids, context)
@@ -117,6 +214,57 @@ class res_partner(orm.Model):
             'domain': '[]',
             'context': dict({}),
         }
+
+    def onchange_fiscalcode(self, cr, uid, ids, fiscalcode, context=None):
+        name = 'fiscalcode'
+        if fiscalcode:
+            if len(fiscalcode) == 11:
+                res_partner_pool = self.pool.get('res.partner')
+                chk = res_partner_pool.simple_vat_check(
+                    cr, uid, 'it', fiscalcode)
+                if not chk:
+                    return {'value': {name: False},
+                            'warning': {
+                        'title': 'Invalid fiscalcode!',
+                        'message': 'Invalid vat number'}
+                    }
+                individual = False
+            elif len(fiscalcode) != 16:
+                return {'value': {name: False},
+                        'warning': {
+                    'title': 'Invalid len!',
+                    'message': 'Fiscal code len must be 11 or 16'}
+                }
+            else:
+                fiscalcode = fiscalcode.upper()
+                chk = codicefiscale.control_code(fiscalcode[0:15])
+                if chk != fiscalcode[15]:
+                    value = fiscalcode[0:15] + chk
+                    return {'value': {name: value},
+                            'warning': {
+                                'title': 'Invalid fiscalcode!',
+                                'message': 'Fiscal code could be %s' % (value)}
+                            }
+                individual = True
+            return {'value': {name: fiscalcode,
+                              'individual': individual}}
+        return {'value': {'individual': False}}
+
+    def onchange_name(self, cr, uid, ids, name, splitmode, context=None):
+        return self.onchange_split_mode(cr, uid, ids, splitmode, name, context)
+
+    def onchange_split_mode(self, cr, uid, ids, splitmode, name, context=None):
+        lastname, firstname = self._split_last_first_name(
+            cr, uid, name=name, splitmode=splitmode)
+        return {
+            'value': {
+                'fiscalcode_firstname': firstname,
+                'fiscalcode_surname': lastname
+            }
+        }
+
+    def _default_split_mode(self, cr, uid, partner=None, context=None):
+        return self._defaults['splitmode']
 
 
 class res_partner_address(orm.Model):
