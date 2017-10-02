@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record id="view_account_vat_communication" model="ir.ui.view">
+        <field name="name">account.vat.communication.form</field>
+        <field name="model">account.vat.communication</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Vat Communication">
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" select="1"/>
+                <notebook colspan="4">
+                    <page string="Header">
+                        <field name="progressivo_telematico" readonly="1"/>
+                        <newline/>
+                        <field name="soggetto_codice_fiscale"
+                               on_change="onchange_fiscalcode(soggetto_codice_fiscale,
+                                                              'soggetto_codice_fiscale')" />
+                        <field name="codice_carica" />
+                    </page>
+                    <page string="Periods">
+                        <button type='action' name="%(action_add_period)d" string="Add period" colspan="2" attrs="{'readonly': [('state', 'in', ('confirmed',))]}"></button>
+                        <button type='action' name="%(action_remove_period)d" string="Remove period" colspan="2" attrs="{'readonly': [('state', 'in', ('confirmed',))]}"></button>
+                        <button type="object" name="compute_amounts" string="Recompute amounts" colspan="2" attrs="{'readonly': [('state', 'in', ('confirmed',))]}"></button>
+                        <field name="period_ids" colspan="4" nolabel="1" readonly="1"/>
+                    </page>
+                    <page string="Sale invoices">
+                         <field name="account_vat_communication_dte_line_ids" nolabel="1">
+                             <tree editable="bottom" string="Sale invoice Lines">
+                                  <field name="invoice_id" />
+                                  <field name="tax_id" />
+                                  <field name="partner_id" />
+                                  <field name="xml_IdPaese" />
+                                  <field name="xml_IdCodice" />
+                                  <field name="xml_CodiceFiscale" />
+                                  <field name="amount_total" />
+                                  <field name="amount_taxable" />
+                                  <field name="amount_tax" />
+                                  <field name="tax_rate" />
+                                  <field name="tax_type" />
+                             </tree>
+                             <form>
+                                  <field name="invoice_id" />
+                                  <field name="tax_id" />
+                                  <field name="partner_id" />
+                                  <field name="xml_IdPaese" readonly="1" />
+                                  <field name="xml_IdCodice" readonly="1" />
+                                  <field name="xml_CodiceFiscale" readonly="1" />
+                                  <field name="amount_total" />
+                                  <field name="amount_taxable" />
+                                  <field name="amount_tax" />
+                                  <field name="tax_rate" />
+                                  <field name="tax_type" />
+                             </form>
+                         </field>
+                    </page>
+                    <page string="Purchase invoices">
+                         <field name="account_vat_communication_dtr_line_ids" nolabel="1">
+                             <tree editable="bottom" string="Purchase invoice Lines">
+                                  <field name="invoice_id" />
+                                  <field name="tax_id" />
+                                  <field name="partner_id" />
+                                  <field name="xml_IdPaese" />
+                                  <field name="xml_IdCodice" />
+                                  <field name="xml_CodiceFiscale" />
+                                  <field name="amount_total" />
+                                  <field name="amount_taxable" />
+                                  <field name="amount_tax" />
+                                  <field name="tax_rate" />
+                                  <field name="tax_type" />
+                             </tree>
+                             <form>
+                                  <field name="invoice_id" />
+                                  <field name="tax_id" />
+                                  <field name="partner_id" />
+                                  <field name="xml_IdPaese" readonly="1" />
+                                  <field name="xml_IdCodice" readonly="1" />
+                                  <field name="xml_CodiceFiscale" readonly="1" />
+                                  <field name="amount_total" />
+                                  <field name="amount_taxable" />
+                                  <field name="amount_tax" />
+                                  <field name="tax_rate" />
+                                  <field name="tax_type" />
+                             </form>
+                         </field>
+                    </page>
+                </notebook>
+                <button name="set_draft" states="confirmed,open" string="Set to draft" colspan="2"/>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_account_vat_communication_tree" model="ir.ui.view">
+        <field name="name">account.vat.communication.tree</field>
+        <field name="model">account.vat.communication</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Vat Communication">
+                <field name="progressivo_telematico" />
+                <field name="soggetto_codice_fiscale" />
+                <field name="codice_carica" />
+                <field name="state" />
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="action_account_vat_communication" model="ir.actions.act_window">
+        <field name="name">Vat Communication</field>
+        <field name="res_model">account.vat.communication</field>
+    </record>
+
+    <menuitem id="menu_account_vat_communication" action="action_account_vat_communication"
+              name="VAT communications" parent="account.menu_account_end_year_treatments"/>
+
+</data>
+</openerp>
