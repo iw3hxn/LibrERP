@@ -33,7 +33,10 @@ def import_sheet(filename, content):
 
     if file_type in ('xls', 'xlsb'):
         # "Excel"
-        import xlrd
+        try:
+            import xlrd
+        except ImportError:
+            _logger.debug('Cannot `import xlrd`.')
 
         for encoding in ('utf-8', 'latin-1', 'cp1252'):
             try:

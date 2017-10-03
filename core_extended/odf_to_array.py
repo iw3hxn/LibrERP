@@ -18,16 +18,18 @@
 # https://github.com/marcoconti83/read-ods-with-odfpy/blob/master/odf-to-array.py
 #
 
-from openerp.osv import orm
-from tools.translate import _
+import logging
+
+_logger = logging.getLogger(__name__)
+
 try:
     import odf.opendocument
+    from odf.table import *
+    from odf.text import P
 except:
-    raise orm.except_orm('Warning', _('To be able to use OpenOffice documents please install "odfpy"'))
-from collections import OrderedDict
+    _logger.debug('Cannot `import odf`')
 
-from odf.table import *
-from odf.text import P
+from collections import OrderedDict
 
 
 class ODSReader(OrderedDict):
