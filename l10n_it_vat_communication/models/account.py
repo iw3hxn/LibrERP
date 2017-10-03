@@ -179,10 +179,10 @@ class AccountVatCommunication(orm.Model):
             address = partner
         code = partner.vat and partner.vat[0:2]
         if not code:
-            if release.major_version == '6.1':
-                raise orm.except_orm(
-                    'Warning',
-                    _('Missed country code in partner {0}'.format(partner.name)))
+            # if release.major_version == '6.1':
+            #     raise orm.except_orm(
+            #         'Warning',
+            #         _('Missed country code in partner {0}'.format(partner.name)))
             code = 'IT'
         return address.country_id.code or code
 
@@ -203,6 +203,8 @@ class AccountVatCommunication(orm.Model):
                 tax_rate = 0.0
                 tax_nodet_rate = 0.0
                 if invoice_tax.tax_code_id:
+                    if invoice_tax.tax_code_id.notprintable:
+                        continue
                     taxbase_id = invoice_tax.tax_code_id.id
                     tax_vat_id = False
                     # for tax in invoice_tax.tax_code_id.tax_ids:
@@ -272,8 +274,14 @@ class AccountVatCommunication(orm.Model):
     def load_DTE_DTR(self, cr, uid, commitment, commitment_line_model,
                      dte_dtr_id, context=None):
         journal_model = self.pool['account.journal']
+        fiscal_position_model = self.pool['account.fiscal.position']
         exclude_journal_ids = journal_model.search(
             cr, uid, [('rev_charge', '=', True)])
+
+        fiscal_position_ids = fiscal_position_model.search(cr, uid, [('journal_auto_invoice_id', '!=', False)], context=context)
+        for fiscal_position in fiscal_position_model.browse(cr, uid, fiscal_position_ids, context):
+            exclude_journal_ids.append(fiscal_position.sale_journal_id.id)
+
         period_ids = [x.id for x in commitment.period_ids]
         company_id = commitment.company_id.id
         # tax_tree = self.build_tax_tree(cr, uid, company_id, context)
