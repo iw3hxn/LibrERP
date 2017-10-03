@@ -33,7 +33,11 @@ class mrp_bom(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         if not vals.get('bom_id', False):
-            self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False})
+            self.pool['product.product'].write(
+                cr, uid, vals['product_id'],
+                {'supply_method': 'produce', 'purchase_ok': False},
+                context
+            )
         return super(mrp_bom, self).create(cr, uid, vals, context=context)
     
     def unlink(self, cr, uid, ids, context=None):
