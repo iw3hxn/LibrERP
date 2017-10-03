@@ -296,7 +296,10 @@ class ImportFile(threading.Thread, Utils):
         if bank_obj.is_iban_valid(cr, uid, iban, context):
             formatted_iban = format_iban(iban)
             formatted_iban = pretty_iban(formatted_iban)
-            bank_ids = bank_obj.search(cr, uid, [('acc_number', '=', formatted_iban), ('state', '=', 'iban')])
+            bank_ids = bank_obj.search(cr, uid, [
+                ('acc_number', '=', formatted_iban),
+                ('state', '=', 'iban')
+            ])
 
             if bank_ids:
                 return bank_ids
@@ -316,7 +319,7 @@ class ImportFile(threading.Thread, Utils):
                     'city': address.city,
                     'state_id': address.state_id and address.state_id.id,
                     'country_id': address.country_id and address.country_id.id,
-                    'company_id': user.company_id.id
+                    # 'company_id': user.company_id.id
                 }, context)
                 return [bank_id]
         else:

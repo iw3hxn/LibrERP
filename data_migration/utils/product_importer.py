@@ -303,6 +303,8 @@ class ImportFile(threading.Thread, Utils):
             name = name.strip()
             partner_ids = self.pool['res.partner'].search(cr, uid, [
                 '|',
+                '|',
+                ('property_customer_ref', '=ilike', name),
                 ('property_supplier_ref', '=ilike', name),
                 ('name', '=ilike', name),
                 ('supplier', '=', True)
