@@ -182,7 +182,7 @@ class AccountVatCommunication(orm.Model):
             if release.major_version == '6.1':
                 raise orm.except_orm(
                     'Warning',
-                    _('Missed country code in partner'))
+                    _('Missed country code in partner {0}'.format(partner.name)))
             code = 'IT'
         return address.country_id.code or code
 

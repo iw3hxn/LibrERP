@@ -267,8 +267,8 @@ msgstr "Azienda senza partita IVA"
 #. module: l10n_it_vat_communication
 #: code:addons/l10n_it_vat_communication/models/account.py:185
 #, python-format
-msgid "Missed country code in partner"
-msgstr "Manca codice nazione in partner"
+msgid "Missed country code in partner {0}"
+msgstr "Manca codice nazione in partner {0}"
 
 #. module: l10n_it_vat_communication
 #: code:addons/l10n_it_vat_communication/wizard/wizard_export.py:115
