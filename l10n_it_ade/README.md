@@ -16,13 +16,6 @@ This module has no any specific function for End-user. It is base for modules
 generate xml file like FatturaPA o VAT settlement.
 
 
-Info
-====
-
-To recreate libs required by VAT Settlement:
-
-    pyxbgen -u fornituraIvp_2017_v1.xsd -m vat_settlement_v_1_0 --binding-root=../../bindings
-
 
 [![it](https://github.com/zeroincombenze/grymb/blob/master/flags/it_IT.png)](https://www.facebook.com/groups/openerp.italia/)
 
@@ -64,124 +57,56 @@ Per aggiungere nuovi schemi o modificare o aggiornare gli schemi gestiti:
 Installation
 ------------
 
-
-
-
-
-
-
-
-This module requires PyXB 1.2.4
-http://pyxb.sourceforge.net/
+* git clone https://github.com/zeroincombenze/l10n-italy
+* pip install PyXB==1.2.4
+* do something like -> service odoo-server restart -u l10n_it_ade -d MYDB
 
 
 Configuration
 -------------
 
-
-
-
-
+:mute:
 
 
 Usage
 -----
 
------
-
------
-
------
-
------
-
------
-
------
-
------
-
------
-
------
+For furthermore information, please visit http://wiki.zeroincombenze.org/it/Odoo/7.0/man/FI
 
 Known issues / Roadmap
 ----------------------
 
+:ticket: This module replace OCA module; PR will be issued
+In order to use this module you have to use:
 
-
-
-
-
-
-
-Incompatibile con moduli OCA fatturaPA e liquidazione IVA
+* [account_vat_period_end_statement](account_vat_period_end_statement/) replaces OCA module
+* [l10n_it_fatturapa](l10n_it_fatturapa/) replaces OCA module
+* [l10n_it_fatturapa_out](l10n_it_fatturapa_out/) replaces OCA module
 
 
 Bug Tracker
 -----------
 
-
-
-
-
-
+Have a bug? Please visit https://odoo-italia.org/index.php/kunena/home
 
 Credits
 -------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Contributors
 
-
-
-
-
-
-
--   Antonio M. Vigliotti <antoniomaria.vigliotti@gmail.com>
--   Andrei Levin <andrei.levin@didotech.com>
-
+* Antonio M. Vigliotti <antoniomaria.vigliotti@gmail.com>
+* Andrei Levin <andrei.levin@didotech.com>
 
 ### Funders
+
+This module has been financially supported by
+
+* SHS-AV s.r.l. <https://www.zeroincombenze.it/>
+* Didotech srl <http://www.didotech.com>
+
 ### Maintainer
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Questo modulo è stato sviluppato con il contributo di SHS-AV s.r.l. <https://www.zeroincombenze.it/>
-
-
-
-This module is maintained by Odoo Italia Associazione
+[![Odoo Italia Associazione](https://www.odoo-italia.org/images/Immagini/Odoo%20Italia%20-%20126x56.png)](https://odoo-italia.org)
 
 Odoo Italia is a nonprofit organization whose develops Italian Localization for
 Odoo.
