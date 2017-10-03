@@ -696,7 +696,7 @@ class ImportFile(threading.Thread, Utils):
             if hasattr(record, 'email_invoice') and record.email_invoice:
                 self.write_address(cr, uid, 'invoice', partner_id, record, vals_partner, country_code)
 
-        if hasattr(record, 'iban') and record.iban:
-            self.get_or_create_bank(cr, uid, record.iban, partner_id, self.context)
+        # if hasattr(record, 'iban') and record.iban:
+        #     self.get_or_create_bank(cr, uid, record.iban, partner_id, self.context)
 
         return partner_id
