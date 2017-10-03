@@ -304,14 +304,14 @@ class ImportFile(threading.Thread, Utils):
                 partner = partner_obj.browse(cr, uid, partner_id, context)
                 address_id = partner_obj.address_get(cr, uid, [partner_id])['default']
                 address = self.pool['res.partner.address'].browse(cr, uid, address_id, context)
-                user = self.pool['res.user'].browse(cr, uid, uid, context)
+                user = self.pool['res.users'].browse(cr, uid, uid, context)
 
                 bank_id = bank_obj.create(cr, uid, {
                     'acc_number': iban,
                     'state': 'iban',
                     'partner_id': partner.id,
                     'owner_name': partner.name,
-                    'street': address.street,
+                    'street': address.street or '',
                     'zip': address.zip,
                     'city': address.city,
                     'state_id': address.state_id and address.state_id.id,
@@ -396,6 +396,13 @@ class ImportFile(threading.Thread, Utils):
 
         return True
 
+    def is_fiscalcode(self, code):
+        if not code:
+            return True
+        if code.isdigit() or code[2:].isdigit():
+            return True
+        return codicefiscale.isvalid(code.upper())
+
     def import_row(self, cr, uid, row_list, book_datemode):
         if not len(row_list) == len(self.HEADER):
             row_str_list = [self.toStr(value) for value in row_list]
@@ -457,6 +464,14 @@ class ImportFile(threading.Thread, Utils):
             'fiscalcode': record.fiscalcode,
             self.partner_type: True
         }
+
+        if self.is_fiscalcode(record.fiscalcode):
+            vals_partner['fiscalcode'] = record.fiscalcode
+        else:
+            error = u"Riga {0}: Fiscalcode {1} is not valid".format(self.processed_lines, record.fiscalcode)
+            _logger.debug(error)
+            self.error.append(error)
+            vals_partner['fiscalcode'] = ''
 
         if self.PARTNER_UNIQUE_OFFICE_CODE:
             if hasattr(record, 'fiscalcode') and record.fiscalcode:
@@ -656,9 +671,6 @@ class ImportFile(threading.Thread, Utils):
                 self.error.append(error)
                 return False
 
-        if hasattr(record, 'iban') and record.iban:
-            self.get_or_create_bank(cr, uid, record.iban, partner_id, self.context)
-
         address_type_1 = self.ADDRESS_TYPE[0]
         address_type_2 = self.ADDRESS_TYPE[1]
 
@@ -683,5 +695,8 @@ class ImportFile(threading.Thread, Utils):
         if self.FORMAT == 'FormatOmnitron':
             if hasattr(record, 'email_invoice') and record.email_invoice:
                 self.write_address(cr, uid, 'invoice', partner_id, record, vals_partner, country_code)
+
+        if hasattr(record, 'iban') and record.iban:
+            self.get_or_create_bank(cr, uid, record.iban, partner_id, self.context)
 
         return partner_id

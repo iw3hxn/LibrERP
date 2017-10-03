@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2015 Andrei Levin (andrei.levin at didotech.com)
+# Copyright (c) 2013-2017 Andrei Levin (andrei.levin at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -301,7 +301,12 @@ class ImportFile(threading.Thread, Utils):
 
         for name in names:
             name = name.strip()
-            partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=ilike', name), ('supplier', '=', True)], context=self.context)
+            partner_ids = self.pool['res.partner'].search(cr, uid, [
+                '|',
+                ('property_supplier_ref', '=ilike', name),
+                ('name', '=ilike', name),
+                ('supplier', '=', True)
+            ], context=self.context)
 
             if len(partner_ids) == 1:
                 supplier_ids += partner_ids
@@ -495,7 +500,7 @@ class ImportFile(threading.Thread, Utils):
                     'procure_method': 'make_to_order'
                 })
 
-            if not record.omnitron_produce_delay == '\N':
+            if record.omnitron_produce_delay:
                 produce_delay = {
                     '3 Day': 3,
                     '7 Days': 7,
@@ -761,7 +766,10 @@ class ImportFile(threading.Thread, Utils):
                         # 'company_id':
                     }, context=self.context)
         else:
-            _logger.warning(u'{0}: No supplier for product {1}'.format(self.processed_lines, vals_product['name']))
+            _logger.warning(
+                u'{0}: No supplier for product {1}'.format(
+                    self.processed_lines,
+                    vals_product.get('name') or vals_product.get('description')))
 
         if hasattr(record, 'qty_available') and record.qty_available:
             self.set_product_qty(cr, uid, product_id, record.qty_available)
