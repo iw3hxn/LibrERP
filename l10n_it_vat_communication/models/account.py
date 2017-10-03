@@ -203,7 +203,9 @@ class AccountVatCommunication(orm.Model):
                 tax_rate = 0.0
                 tax_nodet_rate = 0.0
                 if invoice_tax.tax_code_id:
-                    if invoice_tax.tax_code_id.notprintable:
+                    if release.major_version == '6.1' and invoice_tax.tax_code_id.notprintable:
+                        continue
+                    if release.major_version == '6.1' and invoice_tax.tax_code_id.exclude_from_registries:
                         continue
                     taxbase_id = invoice_tax.tax_code_id.id
                     tax_vat_id = False
@@ -217,11 +219,11 @@ class AccountVatCommunication(orm.Model):
                             if tax.payability:
                                 tax_payability = tax.payability
                         else:
-                            taxbase_id = tax.parent_id.id
+                            tax = tax.parent_id
                             if tax.type == 'percent' and \
                                     tax.amount > tax_nodet_rate:
                                 tax_nodet_rate = tax.amount
-                            tax = account_tax_model.browse(cr, uid, taxbase_id)
+                            # tax = account_tax_model.browse(cr, uid, taxbase_id)
                             if tax.amount > tax_rate:
                                 tax_rate = tax.amount
                 else:
@@ -274,13 +276,14 @@ class AccountVatCommunication(orm.Model):
     def load_DTE_DTR(self, cr, uid, commitment, commitment_line_model,
                      dte_dtr_id, context=None):
         journal_model = self.pool['account.journal']
-        fiscal_position_model = self.pool['account.fiscal.position']
         exclude_journal_ids = journal_model.search(
             cr, uid, [('rev_charge', '=', True)])
 
-        fiscal_position_ids = fiscal_position_model.search(cr, uid, [('journal_auto_invoice_id', '!=', False)], context=context)
-        for fiscal_position in fiscal_position_model.browse(cr, uid, fiscal_position_ids, context):
-            exclude_journal_ids.append(fiscal_position.sale_journal_id.id)
+        if release.major_version == '6.1':
+            fiscal_position_model = self.pool['account.fiscal.position']
+            fiscal_position_ids = fiscal_position_model.search(cr, uid, [('journal_auto_invoice_id', '!=', False)], context=context)
+            for fiscal_position in fiscal_position_model.browse(cr, uid, fiscal_position_ids, context):
+                exclude_journal_ids.append(fiscal_position.sale_journal_id.id)
 
         period_ids = [x.id for x in commitment.period_ids]
         company_id = commitment.company_id.id
