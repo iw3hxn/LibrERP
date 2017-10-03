@@ -60,6 +60,7 @@ class WizardVatCommunication(orm.TransientModel):
             ('create', 'create'),  # choose
             ('get', 'get'),  # get the file
         )),
+        'target': fields.char('Customers/Suppliers', 4, readonly=True),
     }
 
     _defaults = {
@@ -91,7 +92,7 @@ class WizardVatCommunication(orm.TransientModel):
             else:
                 raise orm.except_orm(
                     _('Error!'),
-                    _('Internal error: invalid parter selector'))
+                    _('Internal error: invalid partner selector'))
         else:
             if selector == 'company':
                 sede = (IndirizzoNoCAPType())
@@ -102,7 +103,7 @@ class WizardVatCommunication(orm.TransientModel):
             else:
                 raise orm.except_orm(
                     _('Error!'),
-                    _('Internal error: invalid parter selector'))
+                    _('Internal error: invalid partner selector'))
 
         sede.Indirizzo = fields['xml_Indirizzo']
         sede.Comune = fields['xml_Comune']
@@ -199,14 +200,16 @@ class WizardVatCommunication(orm.TransientModel):
             if dte_dtr_id == 'DTE':
                 partner.IdentificativiFiscali.IdFiscaleIVA = (IdFiscaleType())
             else:
-                partner.IdentificativiFiscali.IdFiscaleIVA = (IdFiscaleITType())
+                partner.IdentificativiFiscali.IdFiscaleIVA = (
+                    IdFiscaleITType())
 
             partner.IdentificativiFiscali.IdFiscaleIVA.\
                 IdPaese = fields['xml_IdPaese']
             partner.IdentificativiFiscali.IdFiscaleIVA.\
                 IdCodice = fields['xml_IdCodice']
 
-            if fields['xml_IdPaese'] == 'IT' and fields.get('xml_CodiceFiscale'):
+            if fields['xml_IdPaese'] == 'IT' and fields.get(
+                    'xml_CodiceFiscale'):
                 partner.IdentificativiFiscali.\
                     CodiceFiscale = CodiceFiscaleType(
                         fields['xml_CodiceFiscale'])
@@ -219,7 +222,7 @@ class WizardVatCommunication(orm.TransientModel):
         return partner
 
     def get_dte_dtr(self, cr, uid,
-                commitment_model, commitment, dte_dtr_id, context=None):
+                    commitment_model, commitment, dte_dtr_id, context=None):
         context = context or {}
 
         partners = []
@@ -233,11 +236,13 @@ class WizardVatCommunication(orm.TransientModel):
             if 'xml_IdPaese' not in fields and \
                     'xml_CodiceFiscale' not in fields:
                 continue
-            elif 'xml_IdCodice' not in fields and 'xml_CodiceFiscale' not in fields:
+            elif 'xml_IdCodice' not in fields and \
+                    'xml_CodiceFiscale' not in fields:
                 # Corrispettivi
                 continue
-            elif not fields['xml_IdPaese'] == 'IT':
-                continue
+            # [antoniov: da verificare con Adrei]
+            # elif not fields['xml_IdPaese'] == 'IT':
+            #    continue
 
             # TODO: StabileOrganizzazione
             # TODO: RappresentanteFiscale
@@ -293,7 +298,7 @@ class WizardVatCommunication(orm.TransientModel):
                     # riepilogo.EsigibilitaIVA = dte_line.xml_
                     # riepilogo.Detraibile = '0.00'
                     # riepilogo.Deducibile = 'SI'
-                    riepilogo.EsigibilitaIVA = fields['EsigibilitaIVA']
+                    riepilogo.EsigibilitaIVA = fields['xml_EsigibilitaIVA']
                     dati_riepilogo.append(riepilogo)
                 invoice.DatiRiepilogo = dati_riepilogo
             invoices.append(invoice)
@@ -328,8 +333,19 @@ class WizardVatCommunication(orm.TransientModel):
 
             return dtr
 
+    def export_vat_communication_DTE(self, cr, uid, ids, context=None):
+        context = context or {}
+        context['dte_dtr_id'] = 'DTE'
+        return self.export_vat_communication(cr, uid, ids, context)
+
+    def export_vat_communication_DTR(self, cr, uid, ids, context=None):
+        context = context or {}
+        context['dte_dtr_id'] = 'DTR'
+        return self.export_vat_communication(cr, uid, ids, context)
+
     def export_vat_communication(self, cr, uid, ids, context=None):
         context = context or {}
+        dte_dtr_id = context.get('dte_dtr_id', 'DTE')
         commitment_model = self.pool['account.vat.communication']
         commitment_ids = context.get('active_ids', False)
         if commitment_ids:
@@ -341,15 +357,24 @@ class WizardVatCommunication(orm.TransientModel):
                 communication.DatiFatturaHeader = self.get_dati_fattura_header(
                     cr, uid, commitment_model, commitment)
 
-                # communication.DTE = self.get_dte_dtr(
-                #     cr, uid, commitment_model, commitment, 'DTE', context)
-
-                communication.DTR = self.get_dte_dtr(
-                    cr, uid, commitment_model, commitment, 'DTR', context)
-
-                file_name = 'Comunicazine_IVA-{}.xml'.format(
-                    commitment.progressivo_telematico)
-
+                if dte_dtr_id == 'DTE':
+                    communication.DTE = self.get_dte_dtr(
+                        cr, uid, commitment_model, commitment, dte_dtr_id,
+                        context)
+                elif dte_dtr_id == 'DTR':
+                    communication.DTR = self.get_dte_dtr(
+                        cr, uid, commitment_model, commitment, dte_dtr_id,
+                        context)
+                else:
+                    raise orm.except_orm(
+                        _('Error!'),
+                        _('Internal error: invalid partner selector'))
+                # file_name = 'Comunicazine_IVA-{}.xml'.format(
+                #     commitment.progressivo_telematico)
+                progr_invio = commitment_model.set_progressivo_telematico(
+                    cr, uid, commitment, context)
+                file_name = 'IT%sDF%s' % (commitment.soggetto_codice_fiscale,
+                                          progr_invio)
                 vat_communication_xml = communication.toDOM().toprettyxml(
                     encoding="latin1")
 
@@ -361,7 +386,7 @@ class WizardVatCommunication(orm.TransientModel):
                     'datas': out,
                     'res_model': 'account.vat.communication',
                     'res_id': commitment.id,
-                    'type': 'binary'
+                    'type': 'binary',
                 }
 
                 self.pool['ir.attachment'].create(cr, uid, attach_vals)
@@ -370,6 +395,7 @@ class WizardVatCommunication(orm.TransientModel):
                     cr, uid, ids, {
                         'state': 'get',
                         'data': out,
-                        'name': file_name
+                        'name': file_name,
+                        'target': dte_dtr_id,
                     }, context=context
                 )

@@ -6,7 +6,7 @@
 # [2017: SHS-AV s.r.l.] First version
 {
     "name": "Comunicazione periodica IVA",
-    "version": "6.1.0.1.0",
+    "version": "6.1.0.2.0",
     'category': 'Generic Modules/Accounting',
     'license': 'AGPL-3',
     "depends": [

@@ -11,7 +11,8 @@
                     <group col="2" height="500" width="600" states="create">
                         <group col="3" states="create">
                             <button colspan="1" icon="gtk-cancel" special="cancel" string="Cancel"></button>
-                            <button colspan="1" icon="gtk-ok" name="export_vat_communication" string="Start Export" type="object"></button>
+                            <button colspan="1" icon="gtk-ok" name="export_vat_communication_DTE" string="Start Export Customer Invoices" type="object"></button>
+                            <button colspan="1" icon="gtk-ok" name="export_vat_communication_DTR" string="Start Export Supplier Invoices" type="object"></button>
                         </group>
                         <field invisible="1" name="state"/>
                     </group>

@@ -38,7 +38,7 @@
                                   <field name="amount_taxable" />
                                   <field name="amount_tax" />
                                   <field name="tax_rate" />
-                                  <field name="tax_type" />
+                                  <field name="tax_nature" />
                              </tree>
                              <form>
                                   <field name="invoice_id" />
@@ -51,7 +51,7 @@
                                   <field name="amount_taxable" />
                                   <field name="amount_tax" />
                                   <field name="tax_rate" />
-                                  <field name="tax_type" />
+                                  <field name="tax_nature" />
                              </form>
                          </field>
                     </page>
@@ -68,7 +68,7 @@
                                   <field name="amount_taxable" />
                                   <field name="amount_tax" />
                                   <field name="tax_rate" />
-                                  <field name="tax_type" />
+                                  <field name="tax_nature" />
                              </tree>
                              <form>
                                   <field name="invoice_id" />
@@ -81,7 +81,7 @@
                                   <field name="amount_taxable" />
                                   <field name="amount_tax" />
                                   <field name="tax_rate" />
-                                  <field name="tax_type" />
+                                  <field name="tax_nature" />
                              </form>
                          </field>
                     </page>
