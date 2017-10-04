@@ -438,7 +438,7 @@ class account_vat_period_end_statement(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         defaults['vat_settlement_attachment_id'] = False
-        return super(AccountVatPeriodEndStatement, self).copy(
+        return super(account_vat_period_end_statement, self).copy(
             cr, uid, ids, defaults, context)
 
     def statement_draft(self, cr, uid, ids, context=None):
