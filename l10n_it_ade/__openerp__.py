@@ -55,8 +55,13 @@ Il modulo rende disponibili i seguenti schemi:
 * FatturaPA versione 1.2
 """,
     "license": "AGPL-3",
-    "depends": [],
-    # "data": ['views/account_journal.xml'],
+    "depends": [
+        'account'
+    ],
+    "data": [
+        'views/account_tax_view.xml',
+        'views/account_journal.xml',
+    ],
     'installable': True,
     "external_dependencies": {
         "python": ["pyxb"],

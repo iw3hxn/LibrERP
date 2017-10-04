@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ./dati_fattura_v_2_0.py
 # PyXB bindings for NM:c8403c44c9a54a32bd3b5aec75a6504db99822c4
-# Generated 2017-09-22 16:54:15.193895 by PyXB version 1.2.4 using Python 2.7.5.final.0
+# Generated 2017-10-03 10:08:19.850035 by PyXB version 1.2.4 using Python 2.7.5.final.0
 # by Antonio Maria Vigliotti <antoniomaria.vigliotti@gmail.com>
 # Namespace http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v2.0
 from __future__ import unicode_literals
@@ -22,7 +22,7 @@ except ImportError as err:
 
 # Unique identifier for bindings created at the same time
 _GenerationUID = pyxb.utils.utility.UniqueIdentifier(
-    'urn:uuid:dd60366c-9fa5-11e7-a24e-005056ba06a2')
+    'urn:uuid:faf43498-a811-11e7-95f5-005056ba06a2')
 
 # Version of PyXB used to generate the bindings
 _PyXBVersion = '1.2.4'
@@ -31,8 +31,11 @@ if pyxb.__version__ != _PyXBVersion:
     raise pyxb.PyXBVersionError(_PyXBVersion)
 
 # Import bindings for namespaces imported into schema
-import pyxb.binding.datatypes
 from . import _ds as _ImportedBinding__ds
+try:
+    import pyxb.binding.datatypes
+except ImportError as err:
+    _logger.debug(err)
 
 # NOTE: All namespace declarations are reserved within the binding
 Namespace = pyxb.namespace.NamespaceForURI(
@@ -95,7 +98,7 @@ class CodiceFiscaleType (pyxb.binding.datatypes.string):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'CodiceFiscaleType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 290, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 291, 2)
     _Documentation = None
 
 
@@ -115,7 +118,7 @@ class NazioneType (pyxb.binding.datatypes.string):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'NazioneType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 296, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 297, 2)
     _Documentation = None
 
 
@@ -134,18 +137,18 @@ class NazioneITType (pyxb.binding.datatypes.string, pyxb.binding.basis.enumerati
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'NazioneITType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 302, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 303, 2)
     _Documentation = None
 
 
-NazioneITType._CF_length = pyxb.binding.facets.CF_length(
-    value=pyxb.binding.datatypes.nonNegativeInteger(2))
 NazioneITType._CF_enumeration = pyxb.binding.facets.CF_enumeration(
     value_datatype=NazioneITType, enum_prefix=None)
 NazioneITType.IT = NazioneITType._CF_enumeration.addEnumeration(
     unicode_value='IT', tag='IT')
-NazioneITType._InitializeFacetMap(NazioneITType._CF_length,
-                                  NazioneITType._CF_enumeration)
+NazioneITType._CF_length = pyxb.binding.facets.CF_length(
+    value=pyxb.binding.datatypes.nonNegativeInteger(2))
+NazioneITType._InitializeFacetMap(NazioneITType._CF_enumeration,
+                                  NazioneITType._CF_length)
 Namespace.addCategoryObject('typeBinding', 'NazioneITType', NazioneITType)
 
 # Atomic simple type:
@@ -158,7 +161,7 @@ class CodiceType (pyxb.binding.datatypes.string):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'CodiceType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 311, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 312, 2)
     _Documentation = None
 
 
@@ -180,7 +183,7 @@ class CodiceIvaType (pyxb.binding.datatypes.string):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'CodiceIvaType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 318, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 319, 2)
     _Documentation = None
 
 
@@ -202,7 +205,7 @@ class NumeroCivicoType (pyxb.binding.datatypes.normalizedString):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'NumeroCivicoType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 325, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 326, 2)
     _Documentation = None
 
 
@@ -222,7 +225,7 @@ class CAPType (pyxb.binding.datatypes.string):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'CAPType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 331, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 332, 2)
     _Documentation = None
 
 
@@ -241,7 +244,7 @@ class ProvinciaType (pyxb.binding.datatypes.string):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'ProvinciaType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 337, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 338, 2)
     _Documentation = None
 
 
@@ -260,12 +263,10 @@ class TipoDocumentoType (pyxb.binding.datatypes.string, pyxb.binding.basis.enume
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'TipoDocumentoType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 343, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 344, 2)
     _Documentation = None
 
 
-TipoDocumentoType._CF_length = pyxb.binding.facets.CF_length(
-    value=pyxb.binding.datatypes.nonNegativeInteger(4))
 TipoDocumentoType._CF_enumeration = pyxb.binding.facets.CF_enumeration(
     value_datatype=TipoDocumentoType, enum_prefix=None)
 TipoDocumentoType.TD01 = TipoDocumentoType._CF_enumeration.addEnumeration(
@@ -282,8 +283,10 @@ TipoDocumentoType.TD10 = TipoDocumentoType._CF_enumeration.addEnumeration(
     unicode_value='TD10', tag='TD10')
 TipoDocumentoType.TD11 = TipoDocumentoType._CF_enumeration.addEnumeration(
     unicode_value='TD11', tag='TD11')
-TipoDocumentoType._InitializeFacetMap(TipoDocumentoType._CF_length,
-                                      TipoDocumentoType._CF_enumeration)
+TipoDocumentoType._CF_length = pyxb.binding.facets.CF_length(
+    value=pyxb.binding.datatypes.nonNegativeInteger(4))
+TipoDocumentoType._InitializeFacetMap(TipoDocumentoType._CF_enumeration,
+                                      TipoDocumentoType._CF_length)
 Namespace.addCategoryObject(
     'typeBinding', 'TipoDocumentoType', TipoDocumentoType)
 
@@ -297,7 +300,7 @@ class DataFatturaType (pyxb.binding.datatypes.date):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'DataFatturaType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 370, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 371, 2)
     _Documentation = None
 
 
@@ -316,7 +319,7 @@ class PosizioneType (pyxb.binding.datatypes.integer):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'PosizioneType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 376, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 377, 2)
     _Documentation = None
 
 
@@ -338,7 +341,7 @@ class CaricaType (pyxb.binding.datatypes.integer):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'CaricaType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 383, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 384, 2)
     _Documentation = None
 
 
@@ -360,7 +363,7 @@ class String10Type (pyxb.binding.datatypes.normalizedString):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'String10Type')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 391, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 392, 2)
     _Documentation = None
 
 
@@ -379,7 +382,7 @@ class String18Type (pyxb.binding.datatypes.normalizedString):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'String18Type')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 397, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 398, 2)
     _Documentation = None
 
 
@@ -398,7 +401,7 @@ class String20Type (pyxb.binding.datatypes.normalizedString):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'String20Type')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 403, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 404, 2)
     _Documentation = None
 
 
@@ -417,7 +420,7 @@ class String60LatinType (pyxb.binding.datatypes.normalizedString):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'String60LatinType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 409, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 410, 2)
     _Documentation = None
 
 
@@ -438,7 +441,7 @@ class String80LatinType (pyxb.binding.datatypes.normalizedString):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'String80LatinType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 415, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 416, 2)
     _Documentation = None
 
 
@@ -459,18 +462,18 @@ class VersioneType (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeratio
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'VersioneType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 421, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 422, 2)
     _Documentation = None
 
 
-VersioneType._CF_length = pyxb.binding.facets.CF_length(
-    value=pyxb.binding.datatypes.nonNegativeInteger(5))
 VersioneType._CF_enumeration = pyxb.binding.facets.CF_enumeration(
     value_datatype=VersioneType, enum_prefix=None)
 VersioneType.DAT20 = VersioneType._CF_enumeration.addEnumeration(
     unicode_value='DAT20', tag='DAT20')
-VersioneType._InitializeFacetMap(VersioneType._CF_length,
-                                 VersioneType._CF_enumeration)
+VersioneType._CF_length = pyxb.binding.facets.CF_length(
+    value=pyxb.binding.datatypes.nonNegativeInteger(5))
+VersioneType._InitializeFacetMap(VersioneType._CF_enumeration,
+                                 VersioneType._CF_length)
 Namespace.addCategoryObject('typeBinding', 'VersioneType', VersioneType)
 
 # Atomic simple type:
@@ -483,7 +486,7 @@ class NaturaType (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'NaturaType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 430, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 431, 2)
     _Documentation = None
 
 
@@ -516,18 +519,18 @@ class DeducibileType (pyxb.binding.datatypes.string, pyxb.binding.basis.enumerat
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'DeducibileType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 461, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 462, 2)
     _Documentation = None
 
 
-DeducibileType._CF_length = pyxb.binding.facets.CF_length(
-    value=pyxb.binding.datatypes.nonNegativeInteger(2))
 DeducibileType._CF_enumeration = pyxb.binding.facets.CF_enumeration(
     value_datatype=DeducibileType, enum_prefix=None)
 DeducibileType.SI = DeducibileType._CF_enumeration.addEnumeration(
     unicode_value='SI', tag='SI')
-DeducibileType._InitializeFacetMap(DeducibileType._CF_length,
-                                   DeducibileType._CF_enumeration)
+DeducibileType._CF_length = pyxb.binding.facets.CF_length(
+    value=pyxb.binding.datatypes.nonNegativeInteger(2))
+DeducibileType._InitializeFacetMap(DeducibileType._CF_enumeration,
+                                   DeducibileType._CF_length)
 Namespace.addCategoryObject('typeBinding', 'DeducibileType', DeducibileType)
 
 # Atomic simple type:
@@ -541,12 +544,10 @@ class EsigibilitaIVAType (pyxb.binding.datatypes.string, pyxb.binding.basis.enum
     _ExpandedName = pyxb.namespace.ExpandedName(
         Namespace, 'EsigibilitaIVAType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 471, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 472, 2)
     _Documentation = None
 
 
-EsigibilitaIVAType._CF_maxLength = pyxb.binding.facets.CF_maxLength(
-    value=pyxb.binding.datatypes.nonNegativeInteger(1))
 EsigibilitaIVAType._CF_enumeration = pyxb.binding.facets.CF_enumeration(
     value_datatype=EsigibilitaIVAType, enum_prefix=None)
 EsigibilitaIVAType.D = EsigibilitaIVAType._CF_enumeration.addEnumeration(
@@ -555,10 +556,12 @@ EsigibilitaIVAType.I = EsigibilitaIVAType._CF_enumeration.addEnumeration(
     unicode_value='I', tag='I')
 EsigibilitaIVAType.S = EsigibilitaIVAType._CF_enumeration.addEnumeration(
     unicode_value='S', tag='S')
+EsigibilitaIVAType._CF_maxLength = pyxb.binding.facets.CF_maxLength(
+    value=pyxb.binding.datatypes.nonNegativeInteger(1))
 EsigibilitaIVAType._CF_minLength = pyxb.binding.facets.CF_minLength(
     value=pyxb.binding.datatypes.nonNegativeInteger(1))
-EsigibilitaIVAType._InitializeFacetMap(EsigibilitaIVAType._CF_maxLength,
-                                       EsigibilitaIVAType._CF_enumeration,
+EsigibilitaIVAType._InitializeFacetMap(EsigibilitaIVAType._CF_enumeration,
+                                       EsigibilitaIVAType._CF_maxLength,
                                        EsigibilitaIVAType._CF_minLength)
 Namespace.addCategoryObject(
     'typeBinding', 'EsigibilitaIVAType', EsigibilitaIVAType)
@@ -573,15 +576,14 @@ class RateType (pyxb.binding.datatypes.string):
 
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'RateType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 493, 3)
+        '../data/datifatture/DatiFatturav2.0.xsd', 494, 3)
     _Documentation = None
 
 
+# RateType._CF_maxInclusive = pyxb.binding.facets.CF_maxInclusive(value_datatype=RateType, value=pyxb.binding.datatypes.decimal('100.0'))
 RateType._CF_pattern = pyxb.binding.facets.CF_pattern()
 RateType._CF_pattern.addPattern(pattern='[0-9]{1,3}\\.[0-9]{2}')
-# RateType._CF_maxInclusive = pyxb.binding.facets.CF_maxInclusive(value_datatype=RateType, value=pyxb.binding.datatypes.decimal('100.0'))
 RateType._InitializeFacetMap(RateType._CF_pattern)
-#    RateType._CF_maxInclusive)
 Namespace.addCategoryObject('typeBinding', 'RateType', RateType)
 
 # Atomic simple type:
@@ -595,7 +597,7 @@ class Amount2DecimalType (pyxb.binding.datatypes.string):
     _ExpandedName = pyxb.namespace.ExpandedName(
         Namespace, 'Amount2DecimalType')
     _XSDLocation = pyxb.utils.utility.Location(
-        '../data/datifatture/DatiFatturav2.0.xsd', 501, 2)
+        '../data/datifatture/DatiFatturav2.0.xsd', 502, 2)
     _Documentation = None
 
 
