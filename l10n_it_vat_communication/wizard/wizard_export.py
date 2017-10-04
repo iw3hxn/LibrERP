@@ -374,7 +374,7 @@ class WizardVatCommunication(orm.TransientModel):
                 #     commitment.progressivo_telematico)
                 progr_invio = commitment_model.set_progressivo_telematico(
                     cr, uid, commitment, context)
-                file_name = 'IT%sDF%s' % (commitment.soggetto_codice_fiscale,
+                file_name = 'IT%sDF%s.xml' % (commitment.soggetto_codice_fiscale,
                                           progr_invio)
                 vat_communication_xml = communication.toDOM().toprettyxml(
                     encoding="latin1")
