@@ -100,7 +100,7 @@ class CodiceFiscaleType (pyxb.binding.datatypes.string):
 
 
 CodiceFiscaleType._CF_pattern = pyxb.binding.facets.CF_pattern()
-CodiceFiscaleType._CF_pattern.addPattern(pattern='[A-Z0-9]{11,16}')
+CodiceFiscaleType._CF_pattern.addPattern(pattern='[A-Z0-9]{8,16}')
 CodiceFiscaleType._InitializeFacetMap(CodiceFiscaleType._CF_pattern)
 Namespace.addCategoryObject(
     'typeBinding', 'CodiceFiscaleType', CodiceFiscaleType)

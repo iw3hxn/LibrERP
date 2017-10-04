@@ -289,7 +289,7 @@
   
   <xs:simpleType name="CodiceFiscaleType">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[A-Z0-9]{11,16}" />
+      <xs:pattern value="[A-Z0-9]{8,16}" />
     </xs:restriction>
   </xs:simpleType>
   
