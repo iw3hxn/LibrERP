@@ -78,7 +78,6 @@ class WizardVatCommunication(orm.TransientModel):
         if 'xml_CodiceFiscale' in fields:
             header.Dichiarante = (DichiaranteType())
             header.Dichiarante.Carica = fields['xml_Carica']
-            print '0. CF: ' + fields['xml_CodiceFiscale']
             header.Dichiarante.CodiceFiscale = CodiceFiscaleType(
                 fields['xml_CodiceFiscale'])
         return header
@@ -181,7 +180,6 @@ class WizardVatCommunication(orm.TransientModel):
             IdPaese = fields['xml_IdPaese']
         CedentePrestatore.IdentificativiFiscali.IdFiscaleIVA.\
             IdCodice = fields['xml_IdCodice']
-        print '1. CF: ' + fields['xml_CodiceFiscale']
         CedentePrestatore.IdentificativiFiscali.CodiceFiscale = \
             CodiceFiscaleType(fields['xml_CodiceFiscale'])
         CedentePrestatore.AltriDatiIdentificativi = \
@@ -216,12 +214,10 @@ class WizardVatCommunication(orm.TransientModel):
 
             if fields['xml_IdPaese'] == 'IT' and fields.get(
                     'xml_CodiceFiscale'):
-                print '2. CF: ' + fields['xml_CodiceFiscale']
                 partner.IdentificativiFiscali.\
                     CodiceFiscale = CodiceFiscaleType(
                         fields['xml_CodiceFiscale'])
         else:
-            print '3. CF: ' + fields['xml_CodiceFiscale']
             partner.IdentificativiFiscali.CodiceFiscale = CodiceFiscaleType(
                 fields['xml_CodiceFiscale'])
         # row 44: 2.2.2   <AltriDatiIdentificativi>
