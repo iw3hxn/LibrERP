@@ -113,7 +113,7 @@ class WizardVatCommunication(orm.TransientModel):
         elif selector == 'company':
             raise orm.except_orm(
                 _('Error!'),
-                _('Missed zip code'))
+                _('Missed company zip code'))
         if 'xml_Provincia' in fields and fields['xml_Nazione'] == 'IT':
             sede.Provincia = fields['xml_Provincia']
 
@@ -292,6 +292,10 @@ class WizardVatCommunication(orm.TransientModel):
                         fields['xml_Imposta'])
                     riepilogo.DatiIVA.Aliquota = '{:.2f}'.format(
                         fields['xml_Aliquota'])
+                    riepilogo.Detraibile = '{:.2f}'.format(
+                        fields['xml_Detraibile'])
+                    if 'xml_Deducibile' in fields:
+                        riepilogo.Deducibile = fields['xml_Deducibile']
                     if 'xml_Natura' in fields:
                         riepilogo.Natura = fields['xml_Natura']
                     # riepilogo.Detraibile = dte_line.xml_
