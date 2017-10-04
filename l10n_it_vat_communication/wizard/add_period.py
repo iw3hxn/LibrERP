@@ -25,9 +25,9 @@ class AddPeriod(orm.TransientModel):
         wizard = self.browse(cr, uid, ids, context)[0]
         if wizard.period_id.vat_commitment_id:
             raise orm.except_orm(
-                _('Error'), _('Period %s is associated to commitment %s yet') %
-                (wizard.period_id.name,
-                 wizard.period_id.vat_commitment_id.date)
+                _('Error'),
+                _('Period %s is already associated to commitment') %
+                (wizard.period_id.name),
             )
         wizard.period_id.write({'vat_commitment_id': context['active_id']})
         self.pool['account.vat.communication'].compute_amounts(
