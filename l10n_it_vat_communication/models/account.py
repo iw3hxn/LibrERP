@@ -604,7 +604,14 @@ class commitment_line(orm.AbstractModel):
             res['xml_Denominazione'] = partner.name[:80]
 
         res['xml_Nazione'] = address.country_id.code or res[
-            'xml_IdPaese'] or 'IT'
+            'xml_IdPaese']
+
+        if not res['xml_Nazione']:
+            raise orm.except_orm(
+                'Warning',
+                _('Impossible determine country code for partner {}').format(partner.name)
+            )
+
         res['xml_Indirizzo'] = address.street
 
         if res.get('xml_IdPaese', '') == 'IT' and address.zip:
@@ -625,7 +632,7 @@ class commitment_line(orm.AbstractModel):
         res['xml_Imposta'] = abs(line.amount_tax)
         res['xml_Aliquota'] = line.tax_rate * 100
         res['xml_Detraibile'] = 100.0 - line.tax_nodet_rate * 100
-        if (args and args.get('xml', False)):
+        if args and args.get('xml', False):
             # Load data during export xml
             if res['xml_Detraibile'] == 0:
                 res['xml_Deducibile'] = "SI"

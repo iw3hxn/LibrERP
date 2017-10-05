@@ -30,6 +30,7 @@
                              <tree editable="bottom" string="Sale invoice Lines">
                                   <field name="invoice_id" />
                                   <field name="tax_id" />
+                                  <field name="xml_TipoDocumento" />
                                   <field name="partner_id" />
                                   <field name="xml_IdPaese" />
                                   <field name="xml_IdCodice" />
@@ -37,12 +38,15 @@
                                   <field name="amount_total" />
                                   <field name="amount_taxable" />
                                   <field name="amount_tax" />
-                                  <field name="tax_rate" />
+                                  <!--<field name="xml_Aliquota" />-->
+                                  <!--<field name="xml_Detraibile" />-->
                                   <field name="tax_nature" />
+                                  <field name="tax_payability" />
                              </tree>
                              <form>
                                   <field name="invoice_id" />
                                   <field name="tax_id" />
+                                  <field name="xml_TipoDocumento" />
                                   <field name="partner_id" />
                                   <field name="xml_IdPaese" readonly="1" />
                                   <field name="xml_IdCodice" readonly="1" />
@@ -50,8 +54,10 @@
                                   <field name="amount_total" />
                                   <field name="amount_taxable" />
                                   <field name="amount_tax" />
-                                  <field name="tax_rate" />
-                                  <field name="tax_nature" />
+                                  <field name="xml_Aliquota" readonly="1" />
+                                  <field name="xml_Detraibile" readonly="1" />
+                                  <field name="tax_nature"  readonly="1" />
+                                  <field name="tax_payability" />
                              </form>
                          </field>
                     </page>
@@ -60,6 +66,7 @@
                              <tree editable="bottom" string="Purchase invoice Lines">
                                   <field name="invoice_id" />
                                   <field name="tax_id" />
+                                  <field name="xml_TipoDocumento" />
                                   <field name="partner_id" />
                                   <field name="xml_IdPaese" />
                                   <field name="xml_IdCodice" />
@@ -67,12 +74,15 @@
                                   <field name="amount_total" />
                                   <field name="amount_taxable" />
                                   <field name="amount_tax" />
-                                  <field name="tax_rate" />
+                                  <!--<field name="xml_Aliquota" />-->
+                                  <!--<field name="xml_Detraibile" />-->
                                   <field name="tax_nature" />
+                                  <field name="tax_payability" />
                              </tree>
                              <form>
                                   <field name="invoice_id" />
                                   <field name="tax_id" />
+                                  <field name="xml_TipoDocumento" />
                                   <field name="partner_id" />
                                   <field name="xml_IdPaese" readonly="1" />
                                   <field name="xml_IdCodice" readonly="1" />
@@ -80,8 +90,10 @@
                                   <field name="amount_total" />
                                   <field name="amount_taxable" />
                                   <field name="amount_tax" />
-                                  <field name="tax_rate" />
-                                  <field name="tax_nature" />
+                                  <field name="xml_Aliquota" readonly="1" />
+                                  <field name="xml_Detraibile" readonly="1" />
+                                  <field name="tax_nature"  readonly="1" />
+                                  <field name="tax_payability" />
                              </form>
                          </field>
                     </page>
