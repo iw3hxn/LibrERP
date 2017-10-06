@@ -28,14 +28,16 @@
                 <form string="Fiscal Position">
                     <group colspan="4" col="6">
                         <field name="name" select="1"/>
+                        <field name="partner_id_readonly" invisible="1"/>
                         <field name="company_id" widget="selection" groups="base.group_multi_company"/>
                         <field name="active" groups="base.group_extended"/>
                         <field name="is_tax_exemption" invisible="1"/>
-                        <field name="partner_id" attrs="{'required': [('is_tax_exemption', '=', True)]}"/>
+                        <field name="partner_id" attrs="{'readonly':[('partner_id_readonly', '=', True)], 'required': [('is_tax_exemption', '=', True)]}"/>
                         <field name="number"/>
                         <field name="date"/>
                         <field name="end_validity" attrs="{'required': [('is_tax_exemption', '=', True)]}"/>
                         <field name="amount"/>
+                        <field name="invoice_amount"/>
                     </group>
                     <separator string="Mapping" colspan="4"/>
                     <newline/>
@@ -80,6 +82,8 @@
                     <field name="number"/>
                     <field name="date"/>
                     <field name="end_validity"/>
+                    <field name="amount"/>
+                    <field name="invoice_amount"/>
                     <field name="is_tax_exemption" invisible="1"/>
                     <field name="company_id" groups="base.group_multi_company" widget="selection"/>
                     <field name="row_color" invisible="1"/>
