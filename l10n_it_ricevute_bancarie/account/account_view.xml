@@ -13,6 +13,7 @@
             <field name="arch" type="xml">
                 <field name="active" position="after">
                     <field name="riba"/>
+                    <field name="spese_incasso_id"/>
                 </field>
             </field>
         </record>

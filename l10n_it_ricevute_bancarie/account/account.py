@@ -33,10 +33,21 @@ class account_payment_term(orm.Model):
 
     _columns = {
         'riba': fields.boolean('Riba'),
+        'spese_incasso_id':  fields.many2one('product.product', 'Spese Incasso', domain=[('type', '=', 'service')]),
     }
     _defaults = {
         'riba': False,
     }
+
+    def get_product_incasso(self, cr, uid, context):
+        payment_term_obj = self.pool['account.payment.term']
+
+        payment_with_spese_incasso_ids = payment_term_obj.search(cr, uid, [('spese_incasso_id', '!=', False)],
+                                                                 context=context)
+        excluse_product_ids = [payment.spese_incasso_id.id for payment in
+                               payment_term_obj.browse(cr, uid, payment_with_spese_incasso_ids, context)]
+
+        return excluse_product_ids
 
 
 class res_bank_add_field(orm.Model):
@@ -111,7 +122,7 @@ class account_invoice(orm.Model):
             for invoice in self.browse(cr, uid, ids, context):
                 if invoice.payment_term and invoice.payment_term.riba:
                     if not invoice.partner_id.bank_riba_id:
-                        raise orm.except_orm(('Fattura Cliente'),
-                                   ('Impossibile da validare in quanto non è impostata la banca appoggio Riba nel partner {partner}').format(partner=invoice.partner_id.name))
+                        raise orm.except_orm(u'Fattura Cliente',
+                                   u'Impossibile da validare in quanto non è impostata la banca appoggio Riba nel partner {partner}'.format(partner=invoice.partner_id.name))
                         return False
         return True
