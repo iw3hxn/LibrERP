@@ -436,7 +436,7 @@ class FormatOmnitron(object):
                       "description_english, omnitron_procurement, " \
                       "none, none1, none2, " \
                       "list_price, none4, standard_price, none5, " \
-                      "sale_line_warn_msg, none6, qty_available, " \
+                      "sale_line_warn_msg, none6, qty, " \
                       "omnitron_produce_delay, omnitron_type, omnitron_delivery_cost, " \
                       "none8, none9, none10, omnitron_weight_per_meter"
 
