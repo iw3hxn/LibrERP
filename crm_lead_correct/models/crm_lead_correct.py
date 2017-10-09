@@ -29,7 +29,6 @@
 
 from datetime import datetime
 
-import crm
 from mail.mail_message import to_email
 from openerp import SUPERUSER_ID
 from openerp.osv import orm, fields
@@ -52,7 +51,7 @@ COLOR_SELECTION = [
 ]
 
 
-class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
+class crm_lead(orm.Model):
     _inherit = 'crm.lead'
 
     def stage_next(self, cr, uid, ids, context=None):
@@ -93,49 +92,49 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         # crm_lead_obj = self.pool['crm.lead']
         sale_order_obj = self.pool['sale.order']
 
-        for crm_lead in self.browse(cr, uid, ids, context):
-            partner_id = crm_lead.partner_id.id
-            partner_address_id = crm_lead.partner_address_id.id
+        for lead in self.browse(cr, uid, ids, context):
+            partner_id = lead.partner_id.id
+            partner_address_id = lead.partner_address_id.id
             if partner_address_id:
-                result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_order_id', '=', partner_address_id)], context=context)
+                result[lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_order_id', '=', partner_address_id)], context=context)
             else:
-                result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)], context=context)
+                result[lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)], context=context)
 
         return result
     
     def _get_crm_lead(self, cr, uid, ids, field_name, model_name, context=None):
         result = {}
         crm_lead_obj = self.pool['crm.lead']
-        for crm_lead in crm_lead_obj.browse(cr, uid, ids, context):
-            name = crm_lead.name
-            partner_id = crm_lead.partner_id.id
-            contact_id = crm_lead.partner_address_id.id
+        for crm in crm_lead_obj.browse(cr, uid, ids, context):
+            name = crm.name
+            partner_id = crm.partner_id.id
+            contact_id = crm.partner_address_id.id
             if contact_id:
-                result[crm_lead.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_address_id', '=', contact_id), ('name', '!=', name)])
+                result[crm.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('partner_address_id', '=', contact_id), ('name', '!=', name)], context=context)
             else:
-                result[crm_lead.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('name', '!=', name)])
+                result[crm.id] = crm_lead_obj.search(cr, uid, [('partner_id', '=', partner_id), ('name', '!=', name)], context=context)
         return result
 
     def _get_meeting_history(self, cr, uid, ids, field_name, model_name, context=None):
         result = {}
         meeting_history = []
-        for crm_lead in self.browse(cr, uid, ids, context):
-            result[crm_lead.id] = {
+        for crm in self.browse(cr, uid, ids, context):
+            result[crm.id] = {
                 'meeting_smart_history': '',
                 'last_meeting_date': False,
             }
             meeting_date = False
-            for meeting in crm_lead.meeting_ids:
+            for meeting in crm.meeting_ids:
                 meeting_date = datetime.strptime(meeting.date, DEFAULT_SERVER_DATETIME_FORMAT).date()
                 meeting_history.append(meeting_date.strftime(DEFAULT_SERVER_DATE_FORMAT) or '')
                 meeting_history.append(meeting.description or '')
                 # todo write better function
-                last_meeting_date = datetime.strptime(crm_lead.meeting_ids[0].date, DEFAULT_SERVER_DATETIME_FORMAT).date()
+                last_meeting_date = datetime.strptime(crm.meeting_ids[0].date, DEFAULT_SERVER_DATETIME_FORMAT).date()
 
             if meeting_history:
-                result[crm_lead.id]['meeting_smart_history'] = '\n'.join(meeting_history)
+                result[crm.id]['meeting_smart_history'] = '\n'.join(meeting_history)
             if meeting_date:
-                result[crm_lead.id]['last_meeting_date'] = last_meeting_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                result[crm.id]['last_meeting_date'] = last_meeting_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
         return result
 
@@ -169,8 +168,8 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
             partner_vat_all = self.pool['res.partner'].search(cr, SUPERUSER_ID, [('vat', '=', vat)], context=context)
             if partner_vat_all:
                 partner = self.pool['res.partner'].browse(cr, uid, partner_vat_all, context)[0]
-                raise orm.except_orm('Errore!',
-                    "Cliente {partner} con P.Iva {vat} già presente ed assegnato all'utente {user}!".format(vat=vat, partner=partner.name, user=partner.user_id.name or ''))
+                raise orm.except_orm(u'Errore!',
+                    u"Cliente {partner} con P.Iva {vat} già presente ed assegnato all'utente {user}!".format(vat=vat, partner=partner.name, user=partner.user_id.name or ''))
                 return False
             else:
                 vat_change = self.pool['res.partner'].vat_change(cr, uid, ids, vat, context)
@@ -313,7 +312,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         return address_id
 
     def onchange_partner_id(self, cr, uid, ids, part, email=False, context=None):
-        res = super(crm_lead_correct, self).onchange_partner_id(cr, uid, ids, part, email, context)
+        res = super(crm_lead, self).onchange_partner_id(cr, uid, ids, part, email, context)
         domain = {'contact_id': []}
         if part:
             domain = {'contact_id': [('partner_id', '=', part)]}
@@ -376,6 +375,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         return True
 
     def create(self, cr, uid, vals, context=None):
+
         vals = self.pool['res.partner.address']._set_vals_city_data(cr, uid, vals)
 
         if vals.get('name', '/') == '/':
@@ -387,7 +387,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         if vals.get('vat', False):
             vals['vat'] = vals['vat'].upper()
 
-        result = super(crm_lead_correct, self).create(cr, uid, vals, context=context)
+        result = super(crm_lead, self).create(cr, uid, vals, context=context)
 
         if vals.get('email_from', False) or vals.get('phone', False):
             self.check_address(cr, uid, [result], vals)
@@ -407,7 +407,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
                         raise orm.except_orm('Errore!', _("Can't change stage because is connect to a Sale Order"))
                         return False
 
-        result = super(crm_lead_correct, self).write(cr, uid, ids, vals, context=context)
+        result = super(crm_lead, self).write(cr, uid, ids, vals, context=context)
 
         if vals.get('email_from', False) or vals.get('phone', False):
             self.check_address(cr, uid, ids, vals)
@@ -422,7 +422,7 @@ class crm_lead_correct(crm.crm_lead.crm_case, orm.Model):
         if context is None:
             context = {}
         default.update({'name': '/', 'sale_order': False})
-        return super(crm_lead_correct, self).copy(cr, uid, ids, default, context)
+        return super(crm_lead, self).copy(cr, uid, ids, default, context)
 
 
 class crm_phonecall(orm.Model):
