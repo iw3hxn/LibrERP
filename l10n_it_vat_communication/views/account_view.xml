@@ -12,8 +12,6 @@
                 <field name="state" select="1"/>
                 <notebook colspan="4">
                     <page string="Header">
-                        <field name="progressivo_telematico" readonly="1"/>
-                        <newline/>
                         <field name="soggetto_codice_fiscale"
                                on_change="onchange_fiscalcode(soggetto_codice_fiscale,
                                                               'soggetto_codice_fiscale')" />
@@ -110,7 +108,6 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Vat Communication">
-                <field name="progressivo_telematico" />
                 <field name="soggetto_codice_fiscale" />
                 <field name="codice_carica" />
                 <field name="state" />

@@ -39,8 +39,8 @@ class AccountVatCommunication(orm.Model):
     _name = "account.vat.communication"
     _columns = {
         'company_id': fields.many2one('res.company', 'Azienda', required=True),
-        'progressivo_telematico':
-            fields.integer('Progressivo telematico', readonly=True),
+        # 'progressivo_telematico':
+        #     fields.integer('Progressivo telematico', readonly=True),
         'soggetto_codice_fiscale':
             fields.char('Codice fiscale dichiarante',
                         size=16, required=True,
@@ -205,15 +205,25 @@ class AccountVatCommunication(orm.Model):
         """Read all in/out invoices and return amount and fiscal parts"""
         invoice_model = self.pool['account.invoice']
         account_tax_model = self.pool['account.tax']
+        sum_amounts = {}
+        for f in ('total', 'taxable', 'tax', 'ignored'):
+            sum_amounts[f] = 0.0
         for invoice_id in invoice_model.search(cr, uid, where):
             inv_line = {}
             invoice = invoice_model.browse(cr, uid, invoice_id)
             country_code = self.get_country_code(cr, uid, invoice.partner_id)
             if country_code not in EU_COUNTRIES:
+                sum_amounts['ignored'] += invoice.amount_total
                 continue
             if invoice.type in ('out_invoice',
                                 'out_refund') and country_code != 'IT':
+                sum_amounts['ignored'] += invoice.amount_total
                 continue
+
+            if invoice.type == 'in_refund' and country_code != 'IT':
+                _logger.error(u'Skipped invoice {0}'.format(invoice.number))
+                continue
+
             for invoice_tax in invoice.tax_line:
                 tax_nature = False
                 tax_payability = 'I'
@@ -264,6 +274,7 @@ class AccountVatCommunication(orm.Model):
                             if tax.payability:
                                 tax_payability = tax.payability
                 if tax_nature == 'FC':
+                    sum_amounts['ignored'] += invoice.amount_total
                     continue
                 if not invoice_tax.tax_code_id and not tax_nature:
                     raise orm.except_orm(
@@ -297,11 +308,15 @@ class AccountVatCommunication(orm.Model):
                 inv_line[taxcode_base_id]['amount_tax'] += invoice_tax.amount
                 inv_line[taxcode_base_id]['amount_total'] += round(
                     invoice_tax.base + invoice_tax.amount, 2)
+                sum_amounts['taxable'] += invoice_tax.base
+                sum_amounts['tax'] += invoice_tax.amount
+                sum_amounts['total'] += round(
+                    invoice_tax.base + invoice_tax.amount, 2)
             if inv_line:
                 comm_lines[invoice_id] = {}
                 comm_lines[invoice_id]['partner_id'] = invoice.partner_id.id
                 comm_lines[invoice_id]['taxes'] = inv_line
-        return comm_lines
+        return comm_lines, sum_amounts
 
     def load_DTE_DTR(self, cr, uid, commitment, commitment_line_model,
                      dte_dtr_id, context=None):
@@ -331,9 +346,9 @@ class AccountVatCommunication(orm.Model):
         else:
             return
 
-        comm_lines = self.load_invoices(cr, uid,
-                                        commitment, commitment_line_model,
-                                        dte_dtr_id, where, {}, context)
+        comm_lines, sum_amounts = self.load_invoices(
+            cr, uid, commitment, commitment_line_model,
+            dte_dtr_id, where, {}, context)
         if comm_lines:
             for line_id in commitment_line_model.search(
                 cr, uid, [('commitment_id', '=', commitment.id),
@@ -441,12 +456,12 @@ class AccountVatCommunication(orm.Model):
                                context=None):
         """Return DatiFatturaHeader: may be empty"""
         res = {}
-        if not commitment.progressivo_telematico:
-            res['xml_ProgressivoInvio'] = str(self.set_progressivo_telematico(
-                cr, uid, commitment, context))
-        else:
-            res['xml_ProgressivoInvio'] = str(
-                commitment.progressivo_telematico)
+        # if not commitment.progressivo_telematico:
+        #     res['xml_ProgressivoInvio']=str(self.set_progressivo_telematico(
+        #         cr, uid, commitment, context))
+        # else:
+        #     res['xml_ProgressivoInvio'] = str(
+        #         commitment.progressivo_telematico)
         if commitment.codice_carica and commitment.soggetto_codice_fiscale:
             res['xml_CodiceFiscale'] = commitment.soggetto_codice_fiscale
             res['xml_Carica'] = commitment.codice_carica
@@ -581,14 +596,15 @@ class commitment_line(orm.AbstractModel):
         else:
             address = partner
 
-        if partner.individual and partner.fiscalcode:
-            res = {'xml_CodiceFiscale': partner.fiscalcode}
-        else:
-            res = {'xml_CodiceFiscale': partner.vat and partner.vat[2:] or ''}
+        res = {}
         if partner.vat:
             vat = partner.vat
             res['xml_IdPaese'] = vat and vat[0:2] or ''
             res['xml_IdCodice'] = vat and vat[2:] or ''
+        if partner.individual and partner.fiscalcode:
+            res['xml_CodiceFiscale'] = partner.fiscalcode
+        elif res.get('xml_IdPaese', '') == 'IT':
+            res['xml_CodiceFiscale'] = res['xml_IdCodice']
 
         if partner.individual:
             if release.major_version == '6.1':
@@ -611,12 +627,17 @@ class commitment_line(orm.AbstractModel):
                 'Warning',
                 _('Impossible determine country code for partner {}').format(partner.name)
             )
-
-        res['xml_Indirizzo'] = address.street
+        if address.street:
+            res['xml_Indirizzo'] = address.street.replace(u"'", '').replace(u"’", '')
+        else:
+            _logger.error(u'Partner {0} has no street on address'.format(partner.name))
+            res['xml_Indirizzo'] = ' '
 
         if res.get('xml_IdPaese', '') == 'IT' and address.zip:
             res['xml_CAP'] = address.zip.replace('x', '0').replace('%', '0')
-        res['xml_Comune'] = address.city
+        res['xml_Comune'] = address.city or ' '
+        if not address.city:
+            _logger.error(u'Partner {0} has no city on address'.format(partner.name))
         if res['xml_Nazione'] == 'IT':
             if release.major_version == '6.1':
                 res['xml_Provincia'] = address.province.code
@@ -632,7 +653,7 @@ class commitment_line(orm.AbstractModel):
         res['xml_Imposta'] = abs(line.amount_tax)
         res['xml_Aliquota'] = line.tax_rate * 100
         res['xml_Detraibile'] = 100.0 - line.tax_nodet_rate * 100
-        if args and args.get('xml', False):
+        if (args and args.get('xml', False)):
             # Load data during export xml
             if res['xml_Detraibile'] == 0:
                 res['xml_Deducibile'] = "SI"
@@ -659,12 +680,12 @@ class commitment_line(orm.AbstractModel):
                 return 'TD04'
         elif doctype == 'in_invoice':
             return 'TD11'
-        else:
-            raise orm.except_orm(
-                _('Error!'),
-                _('Invalid type %s (%s) for invoice %s') % (doctype,
-                                                            country_code,
-                                                            invoice.number))
+        # else:
+        #     raise orm.except_orm(
+        #         _(u'Error!'),
+        #         _(u'Invalid type %s (%s) for invoice %s') % (doctype,
+        #                                                     country_code,
+        #                                                     invoice.number))
 
 
 class commitment_DTE_line(orm.Model):
@@ -680,8 +701,8 @@ class commitment_DTE_line(orm.Model):
             # if len(fields.get('xml_IdCodice', '')) < 2 and \
             #         not fields.get('xml_CodiceFiscale', ''):
             #     raise orm.except_orm(
-            #         _('Error!'),
-            #         _('Check VAT for partner %s!' % line.partner_id.name))
+            #         _(u'Error!'),
+            #         _(u'Check VAT for partner %s!' % line.partner_id.name))
 
             result = {}
             for f in ('xml_IdPaese', 'xml_IdCodice', 'xml_CodiceFiscale'):

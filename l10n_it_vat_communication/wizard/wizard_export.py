@@ -74,7 +74,7 @@ class WizardVatCommunication(orm.TransientModel):
         fields = commitment_model.get_xml_fattura_header(
             cr, uid, commitment, context)
         header = (DatiFatturaHeaderType())
-        header.ProgressivoInvio = fields['xml_ProgressivoInvio']
+        # header.ProgressivoInvio = fields['xml_ProgressivoInvio']
         if 'xml_CodiceFiscale' in fields:
             header.Dichiarante = (DichiaranteType())
             header.Dichiarante.Carica = fields['xml_Carica']
@@ -134,7 +134,6 @@ class WizardVatCommunication(orm.TransientModel):
             if selector == 'company':
                 AltriDatiIdentificativi = (AltriDatiIdentificativiNoSedeType())
             elif selector == 'customer' or selector == 'supplier':
-                # AltriDatiIdentificativi = (AltriDatiIdentificativiNoSedeType())
                 AltriDatiIdentificativi = (AltriDatiIdentificativiNoCAPType())
             else:
                 raise orm.except_orm(
@@ -180,8 +179,9 @@ class WizardVatCommunication(orm.TransientModel):
             IdPaese = fields['xml_IdPaese']
         CedentePrestatore.IdentificativiFiscali.IdFiscaleIVA.\
             IdCodice = fields['xml_IdCodice']
-        CedentePrestatore.IdentificativiFiscali.CodiceFiscale = \
-            CodiceFiscaleType(fields['xml_CodiceFiscale'])
+        if fields.get('xml_CodiceFiscale'):
+            CedentePrestatore.IdentificativiFiscali.CodiceFiscale = \
+                CodiceFiscaleType(fields['xml_CodiceFiscale'])
         CedentePrestatore.AltriDatiIdentificativi = \
             self.get_name(cr, uid, fields, dte_dtr_id, partner_type, context)
         return CedentePrestatore
@@ -292,17 +292,13 @@ class WizardVatCommunication(orm.TransientModel):
                         fields['xml_Imposta'])
                     riepilogo.DatiIVA.Aliquota = '{:.2f}'.format(
                         fields['xml_Aliquota'])
-                    riepilogo.Detraibile = '{:.2f}'.format(
-                        fields['xml_Detraibile'])
+                    if 'xml_Detraibile' in fields:
+                        riepilogo.Detraibile = '{:.2f}'.format(
+                            fields['xml_Detraibile'])
                     if 'xml_Deducibile' in fields:
                         riepilogo.Deducibile = fields['xml_Deducibile']
                     if 'xml_Natura' in fields:
                         riepilogo.Natura = fields['xml_Natura']
-                    # riepilogo.Detraibile = dte_line.xml_
-                    # riepilogo.Deducibile = dte_line.xml_
-                    # riepilogo.EsigibilitaIVA = dte_line.xml_
-                    # riepilogo.Detraibile = '0.00'
-                    # riepilogo.Deducibile = 'SI'
                     riepilogo.EsigibilitaIVA = fields['xml_EsigibilitaIVA']
                     dati_riepilogo.append(riepilogo)
                 invoice.DatiRiepilogo = dati_riepilogo
@@ -378,8 +374,8 @@ class WizardVatCommunication(orm.TransientModel):
                 #     commitment.progressivo_telematico)
                 progr_invio = commitment_model.set_progressivo_telematico(
                     cr, uid, commitment, context)
-                file_name = 'IT%sDF%s.xml' % (commitment.soggetto_codice_fiscale,
-                                          progr_invio)
+                file_name = 'IT%s_DF_%s.xml' % (
+                    commitment.soggetto_codice_fiscale, progr_invio)
                 vat_communication_xml = communication.toDOM().toprettyxml(
                     encoding="latin1")
 

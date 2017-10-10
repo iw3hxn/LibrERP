@@ -77,7 +77,7 @@ msgstr "Check VAT for partner!"
 #. module: l10n_it_vat_communication
 #: help:account.journal,rev_charge:0
 msgid "Check if reverse charge EU invoices journal"
-msgstr "Check if reverse charge EU invoices journal"
+msgstr "Controlla il sezione delle autofatture"
 
 #. module: l10n_it_vat_communication
 #: field:account.vat.communication,codice_carica:0
