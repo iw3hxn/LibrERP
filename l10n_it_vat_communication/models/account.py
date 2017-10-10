@@ -678,7 +678,7 @@ class commitment_line(orm.AbstractModel):
                     return 'TD04'
             elif doctype in ('out_refund', 'in_refund'):
                 return 'TD04'
-        elif doctype == 'in_invoice':
+        elif doctype in ('in_invoice', 'in_refund'):
             return 'TD11'
         # else:
         #     raise orm.except_orm(
