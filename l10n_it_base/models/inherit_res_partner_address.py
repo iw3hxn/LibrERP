@@ -18,69 +18,13 @@
 #
 ##############################################################################
 
+import logging
+
 from openerp.osv import orm, fields
 from tools.translate import _
-import logging
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
-
-
-class res_region(orm.Model):
-    _name = 'res.region'
-    _description = 'Region'
-    _columns = {
-        'name': fields.char('Region Name', size=64, help='The full name of the region.', required=True),
-        'country_id': fields.many2one('res.country', 'Country', ondelete='restrict'),
-    }
-    _order = "name"
-
-
-class res_province(orm.Model):
-    _name = 'res.province'
-    _description = 'Province'
-    _columns = {
-        'name': fields.char('Province Name', size=64, help='The full name of the province.', required=True),
-        'code': fields.char('Province Code', size=2, help='The province code in two chars.', required=True),
-        'region': fields.many2one('res.region', 'Region', ondelete='restrict'),
-    }
-    _order = "name"
-
-
-class res_city(orm.Model):
-    _name = 'res.city'
-    _description = 'City'
-
-    _index_name = 'res_city_name_index'
-    _index_zip = 'res_city_zip_index'
-
-    def _auto_init(self, cr, context={}):
-        super(res_city, self)._auto_init(cr, context)
-
-        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
-                   (self._index_name,))
-
-        if not cr.fetchone():
-            cr.execute('CREATE INDEX {name} ON res_city (name)'.format(name=self._index_name))
-
-        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
-                   (self._index_zip,))
-
-        if not cr.fetchone():
-            cr.execute('CREATE INDEX {name} ON res_city (zip)'.format(name=self._index_zip))
-
-    _columns = {
-        'name': fields.char('City', size=64, required=True),
-        'province_id': fields.many2one('res.province', 'Province', ondelete='restrict'),
-        'zip': fields.char('ZIP', size=5),
-        'phone_prefix': fields.char('Telephone Prefix', size=16),
-        'istat_code': fields.char('ISTAT code', size=16),
-        'cadaster_code': fields.char('Cadaster Code', size=16),
-        'web_site': fields.char('Web Site', size=64),
-        'region': fields.related(
-            'province_id', 'region', type='many2one', relation='res.region', string='Region', readonly=True),
-    }
-    _order = "name"
 
 
 class res_partner_address(orm.Model):
@@ -242,12 +186,12 @@ class res_partner_address(orm.Model):
                             vals['country_id'] = city.region.country_id.id
         return vals
 
-    # def create(self, cr, uid, vals, context=None):
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     vals = self._set_vals_city_data(cr, uid, vals, context)
-    #     return super(res_partner_address, self).create(cr, uid, vals, context)
-    #
-    # def write(self, cr, uid, ids, vals, context=None):
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     vals = self._set_vals_city_data(cr, uid, vals, context)
-    #     return super(res_partner_address, self).write(cr, uid, ids, vals, context)
+    def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        vals = self._set_vals_city_data(cr, uid, vals, context)
+        return super(res_partner_address, self).create(cr, uid, vals, context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        vals = self._set_vals_city_data(cr, uid, vals, context)
+        return super(res_partner_address, self).write(cr, uid, ids, vals, context)

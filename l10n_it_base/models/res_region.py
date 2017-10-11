@@ -1,8 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2010-2013 OpenERP Italian Community
-#    http://www.openerp-italia.org>
+#    Copyright (C) 2010-2013 OpenERP Italian Community (<http://www.openerp-italia.org>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -18,36 +17,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'Italian Localisation - Base',
-    'version': '3.1.0.3',
-    'category': 'Localisation/Italy',
-    'description': """Italian Localization module - Base version
 
-Funcionalities:
-
-- Comuni italiani
-- res.partner.title italiani
-- Province e regioni
-- Automatistmi su res.partner.address
-- Numeri postali sloveni e norvegesi
-- res.partner.title sloveni
-- Codici ISTAT e Catast. per Slovenia e Norvegia
+from openerp.osv import orm, fields
 
 
-""",
-    'author': 'Didotech',
-    'website': 'http://www.didotech.com',
-    'license': 'AGPL-3',
-    "depends": [
-        'base'
-    ],
-    "init_xml": [],
-    "data": [
-        'views/partner_view.xml',
-        'security/ir.model.access.csv',
-        'data/res.country.csv',
-    ],
-    "active": False,
-    "installable": True
-}
+class res_region(orm.Model):
+    _name = 'res.region'
+    _description = 'Region'
+    _columns = {
+        'name': fields.char('Region Name', size=64, help='The full name of the region.', required=True),
+        'country_id': fields.many2one('res.country', 'Country', ondelete='restrict'),
+    }
+    _order = "name"
+

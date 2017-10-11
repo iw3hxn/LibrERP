@@ -19,5 +19,8 @@
 #
 ##############################################################################
 
-from . import partner
+from . import inherit_res_partner_address
+from . import res_city
 from . import res_country
+from . import res_province
+from . import res_region

@@ -18,12 +18,10 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
-from tools.translate import _
+from openerp.osv import orm, fields
 
 
-class res_country(osv.osv):
+class res_country(orm.Model):
     _inherit = 'res.country'
 
     _columns = {
