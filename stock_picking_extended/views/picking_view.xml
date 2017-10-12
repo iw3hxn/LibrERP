@@ -15,7 +15,7 @@
         </record>
 
         <record id="stock_picking_out_form_inherit" model="ir.ui.view">
-            <field name="name">stock.picking.form.inherit</field>
+            <field name="name">stock.picking.form.inherit.ddt</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
             <field name="priority">1</field>
@@ -25,12 +25,6 @@
                     <field name="goods_description_id" widget="selection"/>
                     <field name="carriage_condition_id" widget="selection"/>
                     <field name="transportation_condition_id" widget="selection"/>
-                </field>
-                <field name="carrier_tracking_ref" position="replace">
-                    <field name="carrier_tracking_ref"/>
-                </field>
-                <field name="number_of_packages" position="replace">
-                    <field name="number_of_packages"/>
                 </field>
             </field>
         </record>
