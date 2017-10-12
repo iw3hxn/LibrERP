@@ -273,3 +273,16 @@ class res_partner_address(orm.Model):
         'pec': fields.char('PEC', size=64),
     }
 
+    # Is correct move from l10n_it_base, there are an error because is call from crm_lead
+
+    def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        vals = self._set_vals_city_data(cr, uid, vals, context)
+        return super(res_partner_address, self).create(cr, uid, vals, context)
+
+
+    def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        vals = self._set_vals_city_data(cr, uid, vals, context)
+        return super(res_partner_address, self).write(cr, uid, ids, vals, context)
+
