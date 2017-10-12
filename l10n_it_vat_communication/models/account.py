@@ -246,6 +246,14 @@ class AccountVatCommunication(orm.Model):
                                 tax_rate = tax.amount
                             if tax.payability:
                                 tax_payability = tax.payability
+                            if tax_rate == 0.0:
+                                if tax.non_taxable_nature:
+                                    tax_nature = tax.non_taxable_nature
+                                else:
+                                    raise orm.except_orm(
+                                        _(u'Error!'),
+                                        _(u'Invalid tax %s nature') % (
+                                            tax.name))
                         else:
                             if release.major_version == '6.1':
                                 tax_rate = 0
@@ -278,8 +286,8 @@ class AccountVatCommunication(orm.Model):
                     continue
                 if not invoice_tax.tax_code_id and not tax_nature:
                     raise orm.except_orm(
-                        _('Error!'),
-                        _('Invalid tax %s nature for invoice %s') % (
+                        _(u'Error!'),
+                        _(u'Invalid tax %s nature for invoice %s') % (
                             invoice_tax.name,
                             invoice.number))
                 if taxcode_base_id not in inv_line:
@@ -619,8 +627,7 @@ class commitment_line(orm.AbstractModel):
         else:
             res['xml_Denominazione'] = partner.name[:80]
 
-        res['xml_Nazione'] = address.country_id.code or res[
-            'xml_IdPaese']
+        res['xml_Nazione'] = address.country_id.code or res.get('xml_IdPaese', False)
 
         if not res['xml_Nazione']:
             raise orm.except_orm(
@@ -843,11 +850,11 @@ class commitment_DTR_line(orm.Model):
             fields = self._dati_partner(cr, uid, line.partner_id, args,
                                         context=context)
 
-            if len(fields.get('xml_IdCodice', '')) < 2 and \
-                    not fields.get('xml_CodiceFiscale', ''):
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('Check VAT for partner %s!') % line.partner_id.name)
+            # if len(fields.get('xml_IdCodice', '')) < 2 and \
+            #         not fields.get('xml_CodiceFiscale', ''):
+            #     raise orm.except_orm(
+            #         _('Error!'),
+            #         _('Check VAT for partner %s!') % line.partner_id.name)
 
             result = {}
             for f in ('xml_IdPaese', 'xml_IdCodice', 'xml_CodiceFiscale'):
