@@ -27,7 +27,7 @@ try:
     from odf.table import *
     from odf.text import P
 except:
-    _logger.debug('Cannot `import odf`')
+    _logger.debug('Cannot `import odfpy`')
 
 from collections import OrderedDict
 
