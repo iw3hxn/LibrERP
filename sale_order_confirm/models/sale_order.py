@@ -32,6 +32,21 @@ import re
 class sale_order(orm.Model):
     _inherit = "sale.order"
 
+    def default_get(self, cr, uid, fields, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        # sale_order_obj = self.pool['sale.order']
+        # sale_order_line_obj = self.pool['sale.order.line']
+        res = super(sale_order, self).default_get(cr, uid, fields, context=context)
+        if not res.get('shop_id', False):
+            shop_ids = self.pool['sale.order'].search(cr, uid, [], limit=1, context=context)
+            if shop_ids:
+                res['shop_id'] = shop_ids[0]
+        if not res.get('section_id', False):
+            section_ids = self.pool['crm.case.section'].search(cr, uid, [('user_id', '=', uid)], context=context)
+            if section_ids:
+                res['section_id'] = section_ids[0]
+        return res
+
     def service_only(self, cr, uid, ids, values, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         deleted_products = []
@@ -71,9 +86,25 @@ class sale_order(orm.Model):
         # function call if change state the sale order
         return True
 
+    def adaptative_function(self, cr, uid, ids, vals, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+        if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
+            for order in self.browse(cr, uid, ids, context):
+                partner_vals = {}
+                if not order.partner_id.section_id:
+                    partner_vals['section_id'] = vals.get('section_id')
+                if not order.partner_id.property_delivery_carrier:
+                    partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
+                if not order.partner_id.property_payment_term:
+                    partner_vals['property_payment_term'] = vals.get('payment_term')
+                if partner_vals:
+                    self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
+        return True
+
     def create(self, cr, uid, vals, context=None):
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         company = self.pool['res.users'].browse(cr, uid, uid).company_id
         if self.service_only(cr, uid, False, vals, context) and vals.get('order_policy', '') == 'picking':
             if company.auto_order_policy:
@@ -89,17 +120,7 @@ class sale_order(orm.Model):
                 vals.update({'order_policy': default.get('order_policy')})
 
         ids = super(sale_order, self).create(cr, uid, vals, context=context)
-        if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
-            order = self.browse(cr, uid, ids, context)
-            partner_vals = {}
-            if not order.partner_id.section_id:
-                partner_vals['section_id'] = vals.get('section_id')
-            if not order.partner_id.property_delivery_carrier:
-                partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
-            if not order.partner_id.property_payment_term:
-                partner_vals['property_payment_term'] = vals.get('payment_term')
-            if partner_vals:
-                self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
+        self.adaptative_function(cr, uid, ids, vals, context)
         return ids
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -126,19 +147,7 @@ class sale_order(orm.Model):
                     default = self.default_get(cr, uid, ['order_policy'], context)
                     vals.update({'order_policy': default.get('order_policy')})
 
-        # adaptative function: the system learn
-        if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
-            for order in self.browse(cr, uid, ids, context):
-                partner_vals = {}
-                if not order.partner_id.section_id:
-                    partner_vals['section_id'] = vals.get('section_id')
-                if not order.partner_id.property_delivery_carrier:
-                    partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
-                if not order.partner_id.property_payment_term:
-                    partner_vals['property_payment_term'] = vals.get('payment_term')
-                if partner_vals:
-                    self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
-
+        self.adaptative_function(cr, uid, ids, vals, context)
         if vals.get('state', False):
             self.hook_sale_state(cr, uid, orders, vals, context)
 
