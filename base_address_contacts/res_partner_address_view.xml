@@ -42,6 +42,7 @@
                 <field name="fisso"/>
                 <field name="mobile"/>
                 <field name="email"/>
+                <field name="opt_out"/>
                 <field name="lang_id"/>
                 <field name="partner_id"/>
             </tree>
@@ -103,6 +104,10 @@
             <search string="Partner Contact">
                 <field name="name" filter_domain="['|', ('last_name','ilike',self), ('first_name','ilike',self)]" string="Surname / Name" />
                 <field name="partner_id" select="1" string="Partner"/>
+                <field name="fisso"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <filter icon="terp-check" string="News Letter" domain="[('opt_out','=', True)]"/>
             </search>
         </field>
     </record>

@@ -86,6 +86,7 @@ class res_partner_address_contact(orm.Model):
         'photo': fields.binary('Photo'),
         'function': fields.char("Function", size=64),
         'function_id': fields.many2one('res.contact.function', 'Function'),
+        'opt_out': fields.related('address_id', 'partner_id', 'opt_out', type='boolean', relation='res.partner', string='News Letter'),
     }
 
     def _get_photo(self, cr, uid, context=None):
@@ -273,5 +274,6 @@ class res_partner(orm.Model):
         return super(res_partner, self).unlink(cr, uid, ids, context)
 
     _columns = {
-        'contact_ids': fields.function(_get_contacts, string=_("Functions and Contacts"), type='one2many', method=True, obj='res.partner.address.contact')
+        'contact_ids': fields.function(_get_contacts, string=_("Functions and Contacts"), type='one2many', method=True, obj='res.partner.address.contact'),
+        'opt_out': fields.boolean('Opt-out'),
     }
