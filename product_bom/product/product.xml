@@ -38,6 +38,7 @@
                         <field name="bom_lines" colspan="4" nolabel="1">
                             <tree string="BoMs">
                                 <field name="name"/>
+                                <field name="code"/>
                                 <field name="product_qty"/>
                                 <field name="type"/>
                             </tree>
