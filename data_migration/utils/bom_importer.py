@@ -97,6 +97,7 @@ class ImportFile(threading.Thread, Utils):
 
         # Default values
         self.BOM_DEFAULTS = Config.BOM_DEFAULTS
+        self.FORMAT = self.bomImportRecord.format
 
         if not len(self.HEADER) == len(Config.COLUMNS_BOM.split(',')):
             pprint(zip(self.HEADER, Config.COLUMNS_BOM.split(',')))
@@ -249,7 +250,10 @@ class ImportFile(threading.Thread, Utils):
             })
 
             if hasattr(record, 'product_qty') and record.product_qty:
-                bom_lines['product_qty'] = abs(float(record.product_qty))
+                if self.FORMAT == 'FormatOmnitron':
+                    bom_lines['product_qty'] = abs(float(record.product_qty)) / 1000
+                else:
+                    bom_lines['product_qty'] = abs(float(record.product_qty))
 
             if hasattr(record, 'observation') and record.observation:
                 bom_lines['position'] = record.observation
@@ -489,6 +493,8 @@ class ImportFile(threading.Thread, Utils):
         for self.processed_lines, row_list in enumerate(table, start=1):
             if not self.import_row(cr, uid, row_list):
                 self.problems += 1
+
+            _logger.debug('>> {}'.format(self.processed_lines))
 
             if (self.processed_lines % notifyProgressStep) == 0:
                 cr.commit()

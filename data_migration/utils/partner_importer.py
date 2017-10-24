@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2014 Didotech srl (info at didotech.com)
+# Copyright (c) 2013-2017 Didotech srl (info at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -580,7 +580,9 @@ class ImportFile(threading.Thread, Utils):
                     else:
                         vals_partner['fiscalcode'] = False
             else:
-                error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: <strong>'{vat}'</strong>".format(line=self.processed_lines, record=record, vat=vals_partner['vat'])
+                error = u"Riga {line}: Partner '{record.code} {record.name}'; Partita IVA errata: <strong>'{vat}'</strong>".format(
+                    line=self.processed_lines, record=record, vat=vals_partner['vat']
+                )
                 _logger.debug(error)
                 self.error.append(error)
                 if DONT_STOP_ON_WRONG_VAT:
