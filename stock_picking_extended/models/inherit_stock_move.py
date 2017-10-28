@@ -19,11 +19,31 @@
 #
 ##############################################################################
 
+# import decimal_precision as dp
+
 from openerp.osv import orm, fields
 
 
 class stock_move(orm.Model):
     _inherit = "stock.move"
+
+    def _line_ready(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for move in self.browse(cr, uid, ids, context=context):
+            res[move.id] = {
+                'goods_ready': False,
+            }
+            if move.state == 'done':
+                res[move.id] = {
+                    'goods_ready': True
+                }
+        return res
+
+    _columns = {
+        'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store={
+                'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['state'], 50),
+        }),
+    }
 
     def _default_journal_location_source(self, cr, uid, context=None):
         """ Gets default address of partner for source location
@@ -54,6 +74,38 @@ class stock_move(orm.Model):
         if not res:
             res = super(stock_move, self)._default_location_destination(cr, uid, context)
         return res
+
+    def action_check_goods_ready(self, cr, uid, move_ids, context):
+        line = self.browse(cr, uid, move_ids, context)[0]
+        return_vals = True
+        line_vals = {'goods_ready': True}
+
+        if line.product_id.track_outgoing and not line.prodlot_id:
+            view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'stock', 'view_split_in_lots')
+            view_id = view and view[1] or False
+            # order_requirement_line_obj = self.pool[context['active_model']]
+            # order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
+            # bom_childs = order_requirement_line.product_id.bom_ids[0].child_complete_ids
+            # self.create_temp_mrp_boms(cr, uid, bom_childs, context)
+            context_copy = context.copy()
+            context_copy['active_id'] = line.id
+            return_vals = {
+                'type': 'ir.actions.act_window',
+                'name': 'Product BOM',
+                'res_model': 'stock.move.split',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': [view_id],
+                'target': 'new',
+                'res_id': False,
+                'context': context_copy,
+            }
+
+        else:
+            line.write(line_vals)
+            self.action_done(cr, uid, [line.id], context)
+
+        return return_vals
 
     _defaults = {
         'location_id': _default_journal_location_source,

@@ -414,3 +414,87 @@ msgstr "Riporta nei movimenti di magazzino le note delle righe ordine di vendita
 #: view:res.company:0
 msgid "Product Note of Picking"
 msgstr "Gestione delle note nei movimenti di magazzino"
+
+#. module: stock_picking_extended
+#: field:stock.picking,order_type:0
+msgid "Order Type"
+msgstr "Tipo Ordine"
+
+#. module: stock_picking_extended
+#: field:stock.picking,order_ready:0
+msgid "Order Ready"
+msgstr "Ordine Pronto"
+
+#. modules: stock_picking_extended
+#: field:order.requirement,customer_id:0
+#: field:stock.picking,customer_id:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: stock_picking_extended
+#: field:stock.picking,order_sent:0
+msgid "Order Sent"
+msgstr "Ordine Spedito"
+
+#. modules: stock_picking_extended
+#: field:order.requirement,state:0
+msgid "Order State"
+msgstr "Stato dell'ordine"
+
+#. module: stock_picking_extended
+#: field:stock.picking,amount_total:0
+msgid "Total Amount (VAT Excluded)"
+msgstr "Totale Ordine (IVA esclusa)"
+
+#. modules: stock_picking_extended
+#: field:stock.picking,city:0
+msgid "City"
+msgstr "Comune"
+
+#. modules: stock_picking_extended
+#: field:stock.picking,street:0
+msgid "Street"
+msgstr "Via"
+
+#. modules: stock_picking_extended
+#: field:stock.picking,province:0
+msgid "Province"
+msgstr "Provincia"
+
+#. modules: stock_picking_extended
+#: field:stock.picking,region:0
+msgid "Region"
+msgstr "Regione"
+
+#. module: stock_picking_extended
+#: field:stock.picking,agent:0
+msgid "Agent"
+msgstr "Agente"
+
+#. module: stock_picking_extended
+#: field:stock.picking,board_date:0
+msgid "Order Board Delivery date"
+msgstr "Data Lavagna cons."
+
+#. module: stock_picking_extended
+#: field:stock.picking,creation_date:0
+msgid "Inserted on"
+msgstr "Inserito il"
+
+#. module: stock_picking_extended
+#: field:stock.picking,goods_ready:0
+#: field:stock.move,goods_ready:0
+msgid "Goods Ready"
+msgstr "Merce Pronta"
+
+#. module: stock_picking_extended
+#: field:stock.picking,week_nbr:0
+msgid "Week Number"
+msgstr "Settimana n."
+
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_view_stock_picking
+#: model:ir.ui.menu,name:stock_picking_extended.menu_view_stock_picking
+#: view:stock.picking:0
+msgid "Order Board"
+msgstr "Lavagna Ordini"

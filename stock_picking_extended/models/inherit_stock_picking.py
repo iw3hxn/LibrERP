@@ -21,11 +21,12 @@
 #
 ##############################################################################
 
+from tools.translate import _
+
+from datetime import date, datetime
+
 from openerp.osv import orm, fields
-from openerp.tools.translate import _
-
-
-# import decimal_precision as dp
+from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 
 
 class stock_picking(orm.Model):
@@ -50,7 +51,40 @@ class stock_picking(orm.Model):
                 res[picking.id] = available_credit
         return res
 
+    def _get_day(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for picking in self.browse(cr, uid, ids, context=context):
+            res[picking.id] = {
+                'week_nbr': False,
+            }
+            if not picking.min_date:
+                continue
+
+            start_date = datetime.strptime(picking.min_date, DEFAULT_SERVER_DATETIME_FORMAT)
+            start_date = date(start_date.year, start_date.month, start_date.day)
+
+            # mese in italiano start_date.strftime('%B').capitalize()
+            res[picking.id] = {
+                'week_nbr': start_date.isocalendar()[1]
+            }
+
+        return res
+
+    def _get_order_type(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for picking in self.browse(cr, uid, ids, context=context):
+            if picking.type == 'internal':
+                order_type = 'internal'
+            else:
+                order_type = 'client'
+            res[picking.id] = order_type
+
+        return res
+
     _columns = {
+        'goods_ready': fields.related('move_lines', 'goods_ready', type='boolean', string='Goods Ready'),
         'carriage_condition_id': fields.many2one(
             'stock.picking.carriage_condition', 'Carriage condition'),
         'goods_description_id': fields.many2one(
@@ -80,6 +114,30 @@ class stock_picking(orm.Model):
                                                string=_('Fido Residuo Visibile'), store=False, readonly=True),
         # 'weight': fields.float('Gross weight', digits_compute=dp.get_precision('Stock Weight'), help="The gross weight in Kg."),
         # 'weight_net': fields.float('Net weight', digits_compute=dp.get_precision('Stock Weight'), help="The net weight in Kg."),
+        'customer_id': fields.related('sale_id', 'partner_id', type='many2one', relation='res.partner',
+                                      string='Customer', store=False, readonly=True),
+        'order_type': fields.function(_get_order_type, string="Order Type", type="selection", selection=[
+            ('client', 'Client'),
+            ('internal', 'Internal'),
+        ], readonly=True),
+        'order_sent': fields.boolean('Order Sent'),
+        'order_ready': fields.boolean('Order Ready'),
+        'creation_date': fields.related('sale_id', 'create_date', type='date', string='Inserted on', store=False,
+                                        readonly=True),
+        'street': fields.related('address_id', 'street', type='char', string='Street', store=False),
+        'city': fields.related('address_id', 'city', type='char', string='City', store=False),
+        'province': fields.related('address_id', 'province', type='many2one', relation='res.province',
+                                   string='Province', store=False, readonly=True),
+        'region': fields.related('address_id', 'region', type='many2one', relation='res.region', string='Region',
+                                 store=False, readonly=True),
+        'agent': fields.related('customer_id', 'section_id', type='many2one', relation='crm.case.section',
+                                string='Agent', store=False, readonly=True),
+        'board_date': fields.date('Order Board Delivery date'),
+        'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
+                                       readonly=True),
+        'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number",
+                                    store={'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['min_date'], 30),
+                                           }),
     }
 
     def check_limit(self, cr, uid, ids, context=None):

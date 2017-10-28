@@ -121,5 +121,133 @@
             </field>
         </record>
 
+        <record id="view_stock_picking_search" model="ir.ui.view">
+            <field name="name">stock.picking.order.board.search</field>
+            <field name="model">stock.picking</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Order Board">
+                    <filter icon="gtk-ok" name="available" string="Goods Ready" domain="[('goods_ready','=', True)]" />
+                    <field name="sale_id" filter_domain="['|',('sale_id','ilike',self),('origin','ilike',self)]"/>
+                    <field name="customer_id"/>
+                    <field name="min_date"/>
+                    <field name="week_nbr" />
+                </search>
+            </field>
+        </record>
+
+        <record id="view_stock_picking_form" model="ir.ui.view">
+            <field name="name">stock.picking.order.board.form</field>
+            <field name="model">stock.picking</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Order Board">
+
+                    <group col="4" colspan="4">
+                        <group col="2" colspan="2">
+                            <field name="sale_id"/>
+                            <field name="customer_id"/>
+                            <field name="note"/>
+                            <field name="creation_date"/>
+                            <field name="carrier_id"/>
+                        </group>
+
+                        <group col="4" colspan="2">
+                            <field name="min_date"/>
+                            <field name="order_type"/>
+                            <field name="order_sent"/>
+                            <field name="order_ready"/>
+                            <field name="street"/>
+                            <newline/>
+                            <field name="city"/>
+                            <newline/>
+                            <field name="province"/>
+                            <newline/>
+                            <field name="region"/>
+                            <newline/>
+                            <field name="agent"/>
+                            <newline />
+                            <field name="board_date"/>
+                            <newline />
+                            <field name="amount_total"/>
+                        </group>
+                    </group>
+                    <group col="1" colspan="4">
+                        <field name="move_lines" nolabel="1">
+                            <tree string="Moves">
+                                <field name="product_id"/>
+                                <field name="product_uom"/>
+                                <field name="product_qty"/>
+                                <!--<field name="measures"/>-->
+                                <field name="note"/>
+                                <field name="prodlot_id" invisible="1"/>
+                                <field name="goods_ready"/>
+                                <field name="state" />
+                                <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok" attrs="{'invisible': [('state', '=', 'done')]}"/>
+                            </tree>
+                            <form string="Move">
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name="state" />
+                                <!--<newline />-->
+                                <!--<group col="2" colspan="4">-->
+                                    <!--<button type="object" name="download_attachment" icon="gtk-go-down" colspan="1" context="{'attach_type':'_ST'}"-->
+                                            <!--string="Download ST Attachments"/>-->
+                                    <!--<button type="object" name="download_attachment" icon="gtk-go-down" colspan="1" context="{'attach_type':'_SI'}"-->
+                                            <!--string="Download SI Attachments"/>-->
+                                <!--</group>-->
+                            </form>
+                        </field>
+
+                    </group>
+                    <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}' invisible="1"/>
+                </form>
+           </field>
+        </record>
+
+        <record id="view_stock_picking_tree" model="ir.ui.view">
+            <field name="name">stock.picking.order.board.tree</field>
+            <field name="model">stock.picking</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Order Board">
+                    <field name="sale_id"/>
+                    <field name="customer_id"/>
+                    <field name="note"/>
+                    <field name="min_date"/>
+                    <field name="week_nbr" />
+                    <field name="order_type" />
+                    <field name="order_sent" />
+                    <field name="order_ready" />
+                    <field name="amount_total" sum="Total"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_stock_picking" model="ir.actions.act_window">
+            <field name="domain">[('sale_id', '!=', False), ('state', 'not in', ('done', 'cancelled')), ('type', 'in', ('internal', 'out'))]</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+            <field name="name">Order Board</field>
+            <field name="res_model">stock.picking</field>
+            <field name="search_view_id" ref="view_stock_picking_search"/>
+            <field name="view_id" ref="view_stock_picking_tree"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_stock_picking_tree1_view1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_stock_picking_tree"/>
+            <field name="act_window_id" ref="action_view_stock_picking"/>
+        </record>
+
+        <record id="action_stock_picking_form1_view1" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_stock_picking_form"/>
+            <field name="act_window_id" ref="action_view_stock_picking"/>
+        </record>
+
     </data>
 </openerp>
