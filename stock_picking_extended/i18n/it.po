@@ -494,7 +494,24 @@ msgstr "Settimana n."
 
 #. module: stock_picking_extended
 #: model:ir.actions.act_window,name:stock_picking_extended.action_view_stock_picking
+#: model:ir.ui.menu,name:stock_picking_extended.menu_order_board
 #: model:ir.ui.menu,name:stock_picking_extended.menu_view_stock_picking
 #: view:stock.picking:0
 msgid "Order Board"
 msgstr "Lavagna Ordini"
+
+#. module: stock_picking_extended
+#: model:res.groups,name:stock_picking_extended.view_order_board
+msgid "View Order Board"
+msgstr "Vede Lavagna Ordini"
+
+#. modules: stock_picking_extended
+#: selection:stock.picking,order_type:0
+msgid "Client"
+msgstr "Cliente"
+
+
+#. modules: stock_picking_extended
+#: selection:stock.picking,order_type:0
+msgid "Internal"
+msgstr "Interno"

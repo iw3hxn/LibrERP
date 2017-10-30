@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.28.26.30',
+    'version': '3.28.26.31',
     'category': 'Others',
     'description': """LibrERP - Stock picking extension
 
@@ -49,6 +49,7 @@ Functionalities:
     "data": [
         'security/ir.model.access.csv',
         'security/journal_security.xml',
+        'security/security.xml',
         'views/picking_view.xml',
         'views/carriage_condition_view.xml',
         'views/transportation_condition_view.xml',

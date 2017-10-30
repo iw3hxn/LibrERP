@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_order_board" model="res.groups">
+            <field name="name">View Order Board</field>
+            <field name="category_id" ref="base.module_category_warehouse_management"/>
+            <field name="implied_ids" eval="[(4, ref('stock.group_stock_user'))]"/>
+        </record>
+
+    </data>
+</openerp>

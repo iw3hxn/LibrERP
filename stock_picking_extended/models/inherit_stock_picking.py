@@ -80,7 +80,16 @@ class stock_picking(orm.Model):
             else:
                 order_type = 'client'
             res[picking.id] = order_type
+        return res
 
+    def _get_order_board_state(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for picking in self.browse(cr, uid, ids, context=context):
+            res[picking.id] = {
+                'order_sent': False,
+                'order_ready': False
+            }
         return res
 
     _columns = {
@@ -120,8 +129,8 @@ class stock_picking(orm.Model):
             ('client', 'Client'),
             ('internal', 'Internal'),
         ], readonly=True),
-        'order_sent': fields.boolean('Order Sent'),
-        'order_ready': fields.boolean('Order Ready'),
+        'order_sent': fields.function(_get_order_board_state, type='boolean',  multi='order_state', string='Order Sent'),
+        'order_ready': fields.function(_get_order_board_state, type='boolean',  multi='order_state', string='Order Ready'),
         'creation_date': fields.related('sale_id', 'create_date', type='date', string='Inserted on', store=False,
                                         readonly=True),
         'street': fields.related('address_id', 'street', type='char', string='Street', store=False),

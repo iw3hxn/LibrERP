@@ -225,7 +225,7 @@
         </record>
 
         <record id="action_view_stock_picking" model="ir.actions.act_window">
-            <field name="domain">[('sale_id', '!=', False), ('state', 'not in', ('done', 'cancelled')), ('type', 'in', ('internal', 'out'))]</field>
+            <field name="domain">[('sale_id', '!=', False), ('state', 'not in', ('done', 'cancel')), ('type', 'in', ('internal', 'out'))]</field>
             <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
             <field name="name">Order Board</field>
             <field name="res_model">stock.picking</field>
