@@ -92,11 +92,9 @@ msgstr "Il nome dell'imposta deve essere unico per azienda!"
 
 #. module: l10n_it_invoice_intra_cee
 #: field:account.invoice,auto_invoice_amount_tax:0
-msgid "Auto Invoice Tax"
-msgstr "Aliquota Auto Fattura"
-
-#. module: l10n_it_invoice_intra_cee
 #: field:account.tax,auto_invoice_amount_tax:0
+#: field:account.invoice,auto_invoice_amount_tax:0
+#: field:account.tax,auto_invoice_tax_id:0
 msgid "Auto Invoice Tax"
 msgstr "Aliquota Auto Fattura"
 
