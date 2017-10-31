@@ -90,6 +90,8 @@ class stock_picking(orm.Model):
                 'order_sent': False,
                 'order_ready': False
             }
+            if picking.state == 'done':
+                res[picking.id]['order_ready'] = True
         return res
 
     _columns = {
