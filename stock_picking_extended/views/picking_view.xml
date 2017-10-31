@@ -169,7 +169,7 @@
                             <newline />
                             <field name="board_date"/>
                             <newline />
-                            <field name="amount_total"/>
+                            <field name="amount_total" groups="base.group_sale_salesman"/>
                         </group>
                     </group>
                     <group col="1" colspan="4">
@@ -186,8 +186,8 @@
                                 <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok" attrs="{'invisible': [('state', '=', 'done')]}"/>
                             </tree>
                             <form string="Move">
-                                <field name="product_id"/>
-                                <field name="product_qty"/>
+                                <field name="product_id" readonly="1"/>
+                                <field name="product_qty" readonly="1"/>
                                 <field name="state" />
                                 <!--<newline />-->
                                 <!--<group col="2" colspan="4">-->
@@ -219,7 +219,7 @@
                     <field name="order_type" />
                     <field name="order_sent" />
                     <field name="order_ready" />
-                    <field name="amount_total" sum="Total"/>
+                    <field name="amount_total" sum="Total" groups="base.group_sale_salesman"/>
                 </tree>
             </field>
         </record>
