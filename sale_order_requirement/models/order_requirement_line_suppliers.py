@@ -115,12 +115,12 @@ class order_requirement_line_suppliers(orm.TransientModel):
 
         return res
 
-    def onchange_product_id(self, cr, uid, ids, product_id, qty=0, supplier_id=False, context=None):
+    def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         result_dict = {'temp_mrp_bom_ids': []}
-        if product_id:
-            product = self.pool['product.product'].browse(cr, uid, product_id, context)
+        if new_product_id:
+            product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
             if not supplier_id:
                 # --find the supplier
                 supplier_info_ids = supplierinfo_obj.search(cr, uid,
@@ -140,11 +140,11 @@ class order_requirement_line_suppliers(orm.TransientModel):
                         'supplier_ids': [],
                     })
 
-            temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+            # temp_mrp_bom_obj = self.pool['temp.mrp.bom']
             order_requirement_line_obj = self.pool[context['active_model']]
             order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
             # Delete current temp_mrp_bom
-            old_temp_mrp_bom_ids = [temp.id for temp in order_requirement_line.temp_mrp_bom_ids]
+            # old_temp_mrp_bom_ids = [temp.id for temp in order_requirement_line.temp_mrp_bom_ids]
 
             # Remove relationship with current bom
             order_requirement_line_obj.write(cr, uid, order_requirement_line.id,
@@ -158,7 +158,12 @@ class order_requirement_line_suppliers(orm.TransientModel):
                 temp_mrp_bom_ids = self.create_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
                 result_dict['temp_mrp_bom_ids'] = temp_mrp_bom_ids
 
-            order_requirement_line_obj.write(cr, uid, order_requirement_line.id, {'new_product_id': product_id}, context)
+            if new_product_id == order_requirement_line.product_id.id:
+                newvalue = False
+            else:
+                newvalue = new_product_id
+            order_requirement_line_obj.write(cr, uid, order_requirement_line.id, {'new_product_id': newvalue}, context)
+
         else:
             result_dict.update({
                 'supplier_id': False,

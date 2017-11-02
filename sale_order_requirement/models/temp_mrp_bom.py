@@ -93,7 +93,6 @@ class temp_mrp_bom(orm.TransientModel):
             # If manufactured, no suppliers must be specified
             self.write(cr, uid, ids[0], {'is_manufactured': True, 'supplier_id': False}, context)
 
-    ### TODO CALL THE ORDER_REQUIREMENT_LINE_SUPPLIERS.onchange_product_id
     def onchange_product_id(self, cr, uid, ids, product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
