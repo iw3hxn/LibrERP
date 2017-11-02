@@ -225,7 +225,7 @@ msgstr "Report Appuntamenti"
 #. module: crm_lead_correct
 #: constraint:crm.lead:0
 msgid "\n"
-" There are just an address of type default"
+" There is already an address of type default"
 msgstr "\n"
 " Esiste già un indirizzo di Tipo Predefinito"
 

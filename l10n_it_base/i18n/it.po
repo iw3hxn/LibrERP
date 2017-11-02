@@ -240,7 +240,7 @@ msgstr "S.r.l."
 #: constraint:res.partner.address:0
 #, python-format
 msgid "\n"
-" There are just an address of type default"
+" There is already an address of type default"
 msgstr "\n"
 " Esiste già una sede legale"
 
