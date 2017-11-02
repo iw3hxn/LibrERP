@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_order_requirement_line_form" model="ir.ui.view">
+            <field name="name">order.requirement.line.form</field>
+            <field name="model">order.requirement.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Order Requirement">
+                    <field name="product_id"/>
+                    <field name="stock_availability"/>
+                    <field name="spare"/>
+                    <field name="order_id" />
+                    <field name="state" />
+                </form>
+           </field>
+        </record>
+
+        <record id="view_order_requirement_line_tree" model="ir.ui.view">
+            <field name="name">order.requirement.line.tree</field>
+            <field name="model">order.requirement.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Order Requirement" editable="top"
+                    colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                    <field name="row_color" invisible="1"/>
+                    <field name="product_id"/>
+                    <field name="qty" />
+                    <field name="stock_availability"/>
+                    <field name="spare"/>
+                    <field name="state" />
+                    <button name="%(action_choose_suppliers)d" icon="gtk-execute" type="action" attrs="{'invisible': [('state','=','done')]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_order_requirement_line" model="ir.actions.act_window">
+            <field name="name">Order Requirement Line</field>
+            <field name="res_model">order.requirement.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</openerp>
