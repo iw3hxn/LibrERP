@@ -1,26 +1,11 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2013 - TODAY Denero Team. (<http://www.deneroteam.com>)
-#    All Rights Reserved
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published
-#    by the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2013 - TODAY Denero Team. (www.deneroteam.com>)
+# © 2017 Didotech srl (www.didotech.com)
+
 from openerp.osv import orm, fields
 from openerp import addons
 from openerp.tools.translate import _
+
 
 class res_partner_title(orm.Model):
     _inherit = "res.partner.title"
@@ -65,7 +50,8 @@ class res_partner_address_contact(orm.Model):
         return result
 
     _columns = {
-        'complete_name': fields.function(_name_get_full, string='Name', size=64, type="char", store=False, select=True),
+        'complete_name': fields.function(
+            _name_get_full, string='Name', size=64, type="char", store=False, select=True),
         'name': fields.char('Name', size=64, ),
         'last_name': fields.char('Last Name', size=64),
         'first_name': fields.char('First Name', size=64),
@@ -86,7 +72,8 @@ class res_partner_address_contact(orm.Model):
         'photo': fields.binary('Photo'),
         'function': fields.char("Function", size=64),
         'function_id': fields.many2one('res.contact.function', 'Function'),
-        'opt_out': fields.related('address_id', 'partner_id', 'opt_out', type='boolean', relation='res.partner', string='News Letter'),
+        'opt_out': fields.related(
+            'address_id', 'partner_id', 'opt_out', type='boolean', relation='res.partner', string='News Letter'),
     }
 
     def _get_photo(self, cr, uid, context=None):
@@ -256,11 +243,27 @@ class res_partner(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         if vals.get('address', False):
+            address_model = self.pool['res.partner.address']
+            default_address = 'unknown'
             for address in vals['address']:
-                if address[0] == 2: # 2 means 'delete'
-                    if self.pool['res.partner.address'].browse(cr, uid, address[1], context).type == 'default':
-                        raise orm.except_orm(_('Error!'),
-                                             _('At least one address of type "Default" is needed!'))
+                if address[0] == 0:   # 0 - create
+                    if address[2].get('type', '') == 'default':
+                        default_address = 'new'
+                elif address[0] == 1:   # 0 - create, 1 - update
+                    if address_model.browse(cr, uid, address[1], context).type == 'default':
+                        default_address = 'setted'
+                elif address[0] == 2:  # 2 means 'delete'
+                    if address_model.browse(cr, uid, address[1], context).type == 'default':
+                        if not default_address in ('new', 'setted'):
+                            default_address = 'deleted'
+            if default_address == 'deleted':
+                raise orm.except_orm(
+                    _('Error!'),
+                    _('At least one address of type "Default" is needed!')
+                )
+
+            # Delete before adding new address, so we will escape a problem with duplicated addresses
+            vals['address'].sort(key=lambda address: address[0], reverse=True)
 
         return super(res_partner, self).write(cr, uid, ids, vals, context)
 
@@ -269,11 +272,16 @@ class res_partner(orm.Model):
             context = self.pool['res.users'].context_get(cr, uid)
         for partner in self.browse(cr, uid, ids, context):
             if partner.address:
-                raise orm.except_orm(_('Error!'),
-                                 _('Before Delete the Partner, you need to delete the Address from menù'))
+                raise orm.except_orm(
+                    _('Error!'),
+                    _('Before Deleting the Partner, you need to delete the Address from menù')
+                )
         return super(res_partner, self).unlink(cr, uid, ids, context)
 
     _columns = {
-        'contact_ids': fields.function(_get_contacts, string=_("Functions and Contacts"), type='one2many', method=True, obj='res.partner.address.contact'),
+        'contact_ids': fields.function(
+            _get_contacts, string=_("Functions and Contacts"),
+            type='one2many', method=True, obj='res.partner.address.contact'
+        ),
         'opt_out': fields.boolean('Opt-out'),
     }
