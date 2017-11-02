@@ -32,15 +32,15 @@ class res_partner_address(orm.Model):
 
     def _check_unique_default_type(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        addresses = self.browse(cr, uid, ids, context)
-        for address in addresses:
+
+        for address in self.browse(cr, uid, ids, context):
             if address.partner_id and address.type in ('default', 'invoice'):
                 address_ids = self.search(cr, uid, [('type', '=', address.type),
                                                     ('partner_id', '=', address.partner_id.id),
                                                     ], context=context)
                 if len(address_ids) > 1:
                     _logger.debug(
-                        u'####### Duplicate Default Address ########')
+                        u'####### Multiple {} Address ########'.format(address.type.capitalize()))
                     return False
                 elif len(address_ids) < 1:
                     _logger.debug(
@@ -54,24 +54,25 @@ class res_partner_address(orm.Model):
         result = {}
         country_obj = self.pool['res.country']
 
-        for indirizzo in self.browse(cr, uid, ids, context):
-            country_ids = country_obj.search(cr, uid, [('name', '=', indirizzo.country_id.name)], context=context)
+        for address in self.browse(cr, uid, ids, context):
+            country_ids = country_obj.search(
+                cr, uid, [('name', '=', address.country_id.name)], context=context)
             if country_ids:
                 countries = country_obj.browse(cr, uid, country_ids, context)
                 for country in countries:
                     for field_name in field_names:
-                        if indirizzo.id not in result:
-                            result[indirizzo.id] = {}
+                        if address.id not in result:
+                            result[address.id] = {}
 
                         if getattr(country, field_name):
-                            result[indirizzo.id][field_name] = False
-                        elif not result[indirizzo.id].get(field_name, False):
-                            result[indirizzo.id][field_name] = True
+                            result[address.id][field_name] = False
+                        elif not result[address.id].get(field_name, False):
+                            result[address.id][field_name] = True
             else:
                 for field_name in field_names:
-                    if indirizzo.id not in result:
-                        result[indirizzo.id] = {}
-                    result[indirizzo.id][field_name] = False
+                    if address.id not in result:
+                        result[address.id] = {}
+                    result[address.id][field_name] = False
         return result
 
     _columns = {
@@ -93,7 +94,7 @@ class res_partner_address(orm.Model):
     }
 
     _constraints = [
-        (_check_unique_default_type, _('\n There are just an address of type default'), ['type', 'partner_id']),
+        (_check_unique_default_type, _('\n There is already an address of type default'), ['type', 'partner_id']),
     ]
 
     def on_change_zip(self, cr, uid, ids, zip_code=None, context=None):
