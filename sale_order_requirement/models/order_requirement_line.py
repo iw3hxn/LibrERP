@@ -58,7 +58,9 @@ class order_requirement_line(orm.Model):
         return res
 
     _columns = {
-        'product_id': fields.many2one('product.product', 'Product', readonly=True, states={'draft': [('readonly', False)]}),
+        'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
+                                          states={'draft': [('readonly', False)]}),
+        'product_id': fields.many2one('product.product', 'Original Product', readonly=True, states={'draft': [('readonly', False)]}),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), states={'draft': [('readonly', False)]}),
         'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Stock Availability', readonly=True),
         'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Spare', readonly=True),

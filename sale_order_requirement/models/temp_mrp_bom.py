@@ -31,6 +31,12 @@ class temp_mrp_bom(orm.TransientModel):
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
+            if not line.order_requirement_line_id:
+                res[line.id] = {
+                    'stock_availability': 0,
+                    'spare': 0,
+                }
+                continue
             spare = 0
             warehouse = line.order_requirement_line_id.order_id.sale_order_id.shop_id.warehouse_id
             order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
