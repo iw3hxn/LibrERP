@@ -61,7 +61,7 @@ class stock_picking(orm.Model):
             if not picking.minimum_planned_date:
                 continue
 
-            start_date = datetime.strptime(picking.minimum_planned_date, DEFAULT_SERVER_DATETIME_FORMAT)
+            start_date = datetime.strptime(picking.minimum_planned_date, DEFAULT_SERVER_DATE_FORMAT)
             start_date = date(start_date.year, start_date.month, start_date.day)
 
             # mese in italiano start_date.strftime('%B').capitalize()
