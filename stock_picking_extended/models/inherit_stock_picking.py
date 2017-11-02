@@ -58,10 +58,10 @@ class stock_picking(orm.Model):
             res[picking.id] = {
                 'week_nbr': False,
             }
-            if not picking.min_date:
+            if not picking.minimum_planned_date:
                 continue
 
-            start_date = datetime.strptime(picking.min_date, DEFAULT_SERVER_DATETIME_FORMAT)
+            start_date = datetime.strptime(picking.minimum_planned_date, DEFAULT_SERVER_DATETIME_FORMAT)
             start_date = date(start_date.year, start_date.month, start_date.day)
 
             # mese in italiano start_date.strftime('%B').capitalize()
@@ -147,8 +147,8 @@ class stock_picking(orm.Model):
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
                                        readonly=True),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number",
-                                    store={'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['min_date'], 30),
-                                           }),
+                                    store={'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['max_date'], 30),}),
+        'minimum_planned_date': fields.related('sale_id', 'minimum_planned_date', type='date', string='Expected Date'),
     }
 
     def check_limit(self, cr, uid, ids, context=None):
