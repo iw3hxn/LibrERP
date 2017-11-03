@@ -26,15 +26,17 @@ from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
 
-
-class order_requirement_line_suppliers(orm.TransientModel):
+class order_requirement_line_suppliers(orm.Model):
 
     _name = 'order.requirement.line.suppliers'
     _rec_name = 'product_id'
 
+    def _get_indented_name(self, cr, uid, ids, context):
+        pass
+
     _columns = {
-        # 'product_id': fields.related('order.requirement.line', 'new_product_id', type='many2one', string='New Product'),
         'product_id': fields.many2one('product.product', 'Product', readonly=True, states={'draft': [('readonly', False)]}),
+        'indented_name': fields.function(_get_indented_name, type='string', string='Complete Name'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True, states={'draft': [('readonly', False)]}),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]", readonly=True, states={'draft': [('readonly', False)]}),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), readonly=True, states={'draft': [('readonly', False)]}),
@@ -44,13 +46,40 @@ class order_requirement_line_suppliers(orm.TransientModel):
             ('cancel', 'Cancelled')
         ], 'State', readonly=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'order_requirement_line_supplier_id', readonly=True),
-        'temp_mrp_bom_ids': fields.related('order_requirement_line_id', 'temp_mrp_bom_ids', relation='temp.mrp.bom', type='many2many'),
+        # 'temp_mrp_bom_ids': fields.related('order_requirement_line_id', 'temp_mrp_bom_ids', relation='temp.mrp.bom', type='many2many'),
+        'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_suppliers_id', 'BOM'),
         'view_bom': fields.boolean('View BOM')
     }
 
-    def create_temp_mrp_bom(self, cr, uid, bom_father, context):
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-        temp_mrp_bom_ids = []
+    def get_children(self, object, level=0):
+        result = []
+
+        def _get_rec(object,level):
+            for l in object:
+                res = {}
+                res['name'] = l.name
+                res['pname'] = l.product_id.name
+                res['pcode'] = l.product_id.default_code
+                res['pqty'] = l.product_qty
+                res['uname'] = l.product_uom.name
+                res['code'] = l.code
+                res['level'] = level
+                result.append(res)
+                if l.child_complete_ids:
+                    if level<6:
+                        level += 1
+                    _get_rec(l.child_complete_ids,level)
+                    if level>0 and level<6:
+                        level -= 1
+            return result
+
+        children = _get_rec(object,level)
+
+        return children
+
+    def get_temp_mrp_bom(self, cr, uid, bom_father, context):
+        # Returns a list of VALS
+        temp_mrp_bom_vals = []
         order_requirement_line_obj = self.pool[context['active_model']]
         order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
         product_id = order_requirement_line.product_id
@@ -61,8 +90,11 @@ class order_requirement_line_suppliers(orm.TransientModel):
         for bom in bom_childs:
             if bom.product_id.type in ('product', 'consu'):
                 newbom_vals = {
+                    'tmp_id': bom.id,
+                    'tmp_parent_id': bom.bom_id,
                     'name': bom.name,
                     'type': bom.type,
+                    'bom_id': bom.bom_id.id,
                     'product_id': bom.product_id.id,
                     'product_qty': bom.product_qty,
                     'product_uom': bom.product_uom.id,
@@ -70,24 +102,9 @@ class order_requirement_line_suppliers(orm.TransientModel):
                     'routing_id': bom.routing_id.id,
                     'company_id': bom.company_id.id
                 }
-                # newbom_vals = mrp_bom_obj.copy_data(cr, uid, bom.id, context=context)
-                new_temp_bom_id = temp_mrp_bom_obj.create(cr, uid, newbom_vals, context)
+                temp_mrp_bom_vals.append(newbom_vals)
 
-                # #DEBUG
-                # new_temp_bom = temp_mrp_bom_obj.browse(cr, uid, new_temp_bom_id, context)
-                # oldchilds = [bom.id for bom in bom.child_complete_ids]
-                # newchilds = [bom.id for bom in new_temp_bom.child_complete_ids]
-                temp_mrp_bom_ids.append(new_temp_bom_id)
-
-        # order_requirement_line_obj.write(cr, uid, order_requirement_line.id,
-        #                                  {'temp_mrp_bom_ids': [(4, temp_bom) for temp_bom in temp_mrp_bom_ids]}, context)
-
-        # This line will REMOVE existing relationship and create a new one
-        old_temp_mrp_bom_ids = [temp.id for temp in order_requirement_line.temp_mrp_bom_ids]
-        order_requirement_line_obj.write(cr, uid, order_requirement_line.id,
-                                         {'temp_mrp_bom_ids': [(6, False, [temp_bom for temp_bom in temp_mrp_bom_ids])]}, context)
-        temp_mrp_bom_obj.unlink(cr, uid, old_temp_mrp_bom_ids, context)
-        return temp_mrp_bom_ids
+        return temp_mrp_bom_vals
 
     def default_get(self, cr, uid, fields, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -101,16 +118,6 @@ class order_requirement_line_suppliers(orm.TransientModel):
             res['product_id'] = order_requirement_line.product_id.id
         res['qty'] = order_requirement_line.qty
         res['state'] = 'draft'
-
-        # NOT HERE: look in onchange_product_id
-        # res['temp_mrp_bom_ids'] = []
-        # Create temp mrp bom structure only if it's not already present
-        # if order_requirement_line.temp_mrp_bom_ids:
-        #     res['temp_mrp_bom_ids'] = [temp_mrp.id for temp_mrp in order_requirement_line.temp_mrp_bom_ids]
-        # elif product_id.bom_ids:
-        #     res['temp_mrp_bom_ids'] = self.create_temp_mrp_bom(cr, uid, product_id.bom_ids[0], context)
-        # res['view_bom'] = len(res['temp_mrp_bom_ids']) > 0
-
         res['view_bom'] = True
 
         return res
@@ -143,20 +150,11 @@ class order_requirement_line_suppliers(orm.TransientModel):
             # temp_mrp_bom_obj = self.pool['temp.mrp.bom']
             order_requirement_line_obj = self.pool[context['active_model']]
             order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
-            # Delete current temp_mrp_bom
-            # old_temp_mrp_bom_ids = [temp.id for temp in order_requirement_line.temp_mrp_bom_ids]
-
-            # Remove relationship with current bom
-            order_requirement_line_obj.write(cr, uid, order_requirement_line.id,
-                                             {'temp_mrp_bom_ids': [(5,)]}, context)
-
-            # Unlink error on mrp.bom during product write (LibrERP/product_bom/mrp/mrp.py line 52)
-            # temp_mrp_bom_obj.unlink(cr, uid, old_temp_mrp_bom_ids, context)
 
             # Update BOM according to new product
             if product.bom_ids:
-                temp_mrp_bom_ids = self.create_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
-                result_dict['temp_mrp_bom_ids'] = temp_mrp_bom_ids
+                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
+                result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
 
             if new_product_id == order_requirement_line.product_id.id:
                 newvalue = False

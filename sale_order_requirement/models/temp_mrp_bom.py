@@ -31,14 +31,12 @@ class temp_mrp_bom(orm.TransientModel):
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            if not line.order_requirement_line_id:
-                res[line.id] = {
-                    'stock_availability': 0,
-                    'spare': 0,
-                }
-                continue
+            res[line.id] = {
+                'stock_availability': 0,
+                'spare': 0,
+            }
             spare = 0
-            warehouse = line.order_requirement_line_id.order_id.sale_order_id.shop_id.warehouse_id
+            warehouse = line.order_requirement_line_suppliers_id.order_requirement_line_id.order_id.sale_order_id.shop_id.warehouse_id
             order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
             if order_point_ids:
                 spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
@@ -58,7 +56,7 @@ class temp_mrp_bom(orm.TransientModel):
         return res
 
     _columns = {
-        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line'),
+        'order_requirement_line_suppliers_id': fields.many2one('order.requirement.line.suppliers', 'Order requirement line'),
         # 'child_complete_ids': fields.function(_child_compute, relation='temp.mrp.bom', string="BoM Hierarchy", type='many2many'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', ondelete='cascade', select=True),
