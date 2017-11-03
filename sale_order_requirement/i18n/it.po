@@ -1,0 +1,22 @@
+#. module: sale_order_requirement
+#: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement_line
+msgid "Order Requirement Line"
+msgstr "Riga Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: field:purchase.order.line,order_requirement_line_ids:0
+msgid "Order requirement lines"
+msgstr "Righe fabbisogno ordine"
+
+#. module: sale_order_requirement
+#: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement
+#: model:ir.ui.menu,name:sale_order_requirement.menu_view_order_requirement
+#: view:order.requirement:0
+#: view:order.requirement.line:0
+msgid "Order Requirement"
+msgstr "Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: field:order.requirement,week_nbr:0
+msgid "Week Number"
+msgstr "Settimana n."
