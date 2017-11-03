@@ -56,6 +56,7 @@ class temp_mrp_bom(orm.TransientModel):
         return res
 
     _columns = {
+        'complete_name': fields.char('Complete name'),
         'order_requirement_line_suppliers_id': fields.many2one('order.requirement.line.suppliers', 'Order requirement line'),
         # 'child_complete_ids': fields.function(_child_compute, relation='temp.mrp.bom', string="BoM Hierarchy", type='many2many'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
@@ -121,3 +122,4 @@ class temp_mrp_bom(orm.TransientModel):
                 'supplier_ids': [],
             })
         return {'value': result_dict}
+

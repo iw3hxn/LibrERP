@@ -26,17 +26,14 @@ from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 import decimal_precision as dp
 
+
 class order_requirement_line_suppliers(orm.Model):
 
     _name = 'order.requirement.line.suppliers'
     _rec_name = 'product_id'
 
-    def _get_indented_name(self, cr, uid, ids, context):
-        pass
-
     _columns = {
         'product_id': fields.many2one('product.product', 'Product', readonly=True, states={'draft': [('readonly', False)]}),
-        'indented_name': fields.function(_get_indented_name, type='string', string='Complete Name'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True, states={'draft': [('readonly', False)]}),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]", readonly=True, states={'draft': [('readonly', False)]}),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), readonly=True, states={'draft': [('readonly', False)]}),
@@ -88,10 +85,12 @@ class order_requirement_line_suppliers(orm.Model):
             return []
         bom_childs = bom_father.child_complete_ids
         for bom in bom_childs:
+            children = self.get_children(bom.bom_lines, 0)
             if bom.product_id.type in ('product', 'consu'):
                 newbom_vals = {
                     'tmp_id': bom.id,
-                    'tmp_parent_id': bom.bom_id,
+                    'tmp_parent_id': bom.bom_id.id,
+                    'complete_name': '&nbsp;&nbsp;', #* children[bom.id].level + bom.name,
                     'name': bom.name,
                     'type': bom.type,
                     'bom_id': bom.bom_id.id,
@@ -119,6 +118,15 @@ class order_requirement_line_suppliers(orm.Model):
         res['qty'] = order_requirement_line.qty
         res['state'] = 'draft'
         res['view_bom'] = True
+
+        # DEBUG
+        product = order_requirement_line.product_id
+        if product.bom_ids:
+            bom = product.bom_ids[0]
+            children = self.get_children(bom.bom_lines, 0)
+
+        temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
+        res['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
 
         return res
 
@@ -152,15 +160,15 @@ class order_requirement_line_suppliers(orm.Model):
             order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
 
             # Update BOM according to new product
-            if product.bom_ids:
-                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
-                result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
-
-            if new_product_id == order_requirement_line.product_id.id:
-                newvalue = False
-            else:
-                newvalue = new_product_id
-            order_requirement_line_obj.write(cr, uid, order_requirement_line.id, {'new_product_id': newvalue}, context)
+            # if product.bom_ids:
+            #     temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
+            #     result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+            #
+            # if new_product_id == order_requirement_line.product_id.id:
+            #     newvalue = False
+            # else:
+            #     newvalue = new_product_id
+            # order_requirement_line_obj.write(cr, uid, order_requirement_line.id, {'new_product_id': newvalue}, context)
 
         else:
             result_dict.update({
@@ -168,7 +176,7 @@ class order_requirement_line_suppliers(orm.Model):
                 'supplier_ids': [],
             })
 
-        result_dict['view_bom'] = len(result_dict['temp_mrp_bom_ids']) > 0
+        # result_dict['view_bom'] = len(result_dict['temp_mrp_bom_ids']) > 0
         return {'value': result_dict}
 
     def confirm_qty_supplier(self, cr, uid, ids, context):
