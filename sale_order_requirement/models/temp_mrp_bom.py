@@ -36,15 +36,18 @@ class temp_mrp_bom(orm.TransientModel):
                 'spare': 0,
             }
             spare = 0
-            warehouse = line.order_requirement_line_suppliers_id.order_requirement_line_id.order_id.sale_order_id.shop_id.warehouse_id
-            order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
-            if order_point_ids:
-                spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
+            try:
+                warehouse = line.sale_order_id.shop_id.warehouse_id
+                order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
+                if order_point_ids:
+                    spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
 
-            res[line.id] = {
-                'stock_availability': line.product_id and line.product_id.type != 'service' and line.product_id.qty_available or False,
-                'spare': spare,
-            }
+                res[line.id] = {
+                    'stock_availability': line.product_id and line.product_id.type != 'service' and line.product_id.qty_available or False,
+                    'spare': spare,
+                }
+            except Exception as e:
+                print e.message
         return res
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
@@ -59,8 +62,10 @@ class temp_mrp_bom(orm.TransientModel):
         'complete_name': fields.char('Complete name'),
         'order_requirement_line_suppliers_id': fields.many2one('order.requirement.line.suppliers', 'Order requirement line'),
         # 'child_complete_ids': fields.function(_child_compute, relation='temp.mrp.bom', string="BoM Hierarchy", type='many2many'),
-        'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
-        'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', ondelete='cascade', select=True),
+        # 'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
+        # 'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True),
+        'tmp_id': fields.integer(),
+        'tmp_parent_id': fields.integer(),
         'product_type': fields.related('product_id', 'type', type='char', string='Product Type', readonly=True, store=False),
         'is_manufactured': fields.boolean('Manufacture'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers'),
@@ -72,7 +77,7 @@ class temp_mrp_bom(orm.TransientModel):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
     }
 
-    _parent_name = 'bom_id'
+    # _parent_name = 'bom_id'
 
     def _check_product(self, cr, uid, ids, context=None):
         # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.

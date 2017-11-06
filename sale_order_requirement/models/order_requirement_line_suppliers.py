@@ -45,7 +45,8 @@ class order_requirement_line_suppliers(orm.Model):
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'order_requirement_line_supplier_id', readonly=True),
         # 'temp_mrp_bom_ids': fields.related('order_requirement_line_id', 'temp_mrp_bom_ids', relation='temp.mrp.bom', type='many2many'),
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_suppliers_id', 'BOM'),
-        'view_bom': fields.boolean('View BOM')
+        'view_bom': fields.boolean('View BOM'),
+        'sale_order_id': fields.related('order_requirement_line_id', 'order_id', 'sale_order_id', relation='sale.order')
     }
 
     # It will work only with a REAL hierarchical structure, but mrp bom is NOT
@@ -76,7 +77,7 @@ class order_requirement_line_suppliers(orm.Model):
 
         return children
 
-    def get_temp_mrp_bom(self, cr, uid, bom_father, context):
+    def get_temp_mrp_bom(self, cr, uid, bom_ids, context):
         # Returns a list of VALS
         temp_mrp_bom_vals = []
         order_requirement_line_obj = self.pool[context['active_model']]
@@ -86,33 +87,36 @@ class order_requirement_line_suppliers(orm.Model):
         if not product_id.bom_ids:
             return []
 
-        children_levels = self.get_children(bom_father.child_complete_ids, 0)
+        for bom_father in bom_ids:
+            children_levels = self.get_children(bom_father.child_complete_ids, 0)
 
-        def _get_rec(bom_rec):
-            bom_children = bom_rec.child_complete_ids
-            if not bom_children:
-                return
-            for bom in bom_children:
-                if bom.product_id.type in ('product', 'consu'):
-                    newbom_vals = {
-                        # 'tmp_id': bom.id,
-                        # 'tmp_parent_id': bom.bom_id.id,
-                        'complete_name': '___' * children_levels[bom.id]['level'] + ' ' + bom.name,
-                        # 'complete_name': 'Level =' + str(children_levels[bom.id]['level']) + '= ' + bom.name,
-                        'name': bom.name,
-                        'type': bom.type,
-                        'bom_id': bom.bom_id.id,
-                        'product_id': bom.product_id.id,
-                        'product_qty': bom.product_qty,
-                        'product_uom': bom.product_uom.id,
-                        'product_efficiency': bom.product_efficiency,
-                        'routing_id': bom.routing_id.id,
-                        'company_id': bom.company_id.id
-                    }
-                    temp_mrp_bom_vals.append(newbom_vals)
-                    _get_rec(bom)
+            def _get_rec(bom_rec):
+                bom_children = bom_rec.child_complete_ids
+                if not bom_children:
+                    return
+                for bom in bom_children:
+                    if bom.product_id.type in ('product', 'consu'):
+                        # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
+                        newbom_vals = {
+                            'tmp_id': bom.id,
+                            'tmp_parent_id': bom_rec.id,
+                            'complete_name': '___' * children_levels[bom.id]['level'] + ' ' + bom.name,
+                            # 'complete_name': '___' * children_levels[bom.id]['level'] + coolname,
+                            # 'complete_name': 'Level =' + str(children_levels[bom.id]['level']) + '= ' + bom.name,
+                            'name': bom.name,
+                            'type': bom.type,
+                            # 'bom_id': bom.bom_id.id,
+                            'product_id': bom.product_id.id,
+                            'product_qty': bom.product_qty,
+                            'product_uom': bom.product_uom.id,
+                            'product_efficiency': bom.product_efficiency,
+                            'routing_id': bom.routing_id.id,
+                            'company_id': bom.company_id.id
+                        }
+                        temp_mrp_bom_vals.append(newbom_vals)
+                        _get_rec(bom)
 
-        _get_rec(bom_father)
+            _get_rec(bom_father)
         return temp_mrp_bom_vals
 
     def default_get(self, cr, uid, fields, context=None):
@@ -128,7 +132,7 @@ class order_requirement_line_suppliers(orm.Model):
         res['qty'] = order_requirement_line.qty
         res['state'] = 'draft'
         res['view_bom'] = True
-        product = order_requirement_line.product_id
+        # product = order_requirement_line.product_id
 
         # DEBUG
         # if product.bom_ids:
@@ -174,9 +178,7 @@ class order_requirement_line_suppliers(orm.Model):
 
             # Update BOM according to new product
             if product.bom_ids:
-                children_levels = self.get_children(product.bom_ids[0].bom_lines, 0)
-
-                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
+                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
                 result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
 
             if new_product_id == order_requirement_line.product_id.id:
