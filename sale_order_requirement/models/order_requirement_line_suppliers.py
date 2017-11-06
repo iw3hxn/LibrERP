@@ -48,6 +48,7 @@ class order_requirement_line_suppliers(orm.Model):
         'view_bom': fields.boolean('View BOM')
     }
 
+    # It will work only with a REAL hierarchical structure, but mrp bom is NOT
     def get_children(self, object, level=0):
         result = {}
 
@@ -85,10 +86,10 @@ class order_requirement_line_suppliers(orm.Model):
         if not product_id.bom_ids:
             return []
         bom_children = bom_father.child_complete_ids
+
         children_levels = self.get_children(bom_father.bom_lines, 0)
-        a = 1
         for bom in bom_children:
-            if bom.product_id.type in ('product', 'consu'):
+            if True or bom.product_id.type in ('product', 'consu'):
                 newbom_vals = {
                     'tmp_id': bom.id,
                     'tmp_parent_id': bom.bom_id.id,
@@ -131,16 +132,16 @@ class order_requirement_line_suppliers(orm.Model):
         #     for c in children:
         #         print '   ' * c['level'] + ' ' + c['name']
 
-        temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
-        res['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+        # temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
+        # res['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
 
         return res
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
-        # result_dict = {'temp_mrp_bom_ids': []}
-        result_dict = {}
+        # result_dict = {}
+        result_dict = {'temp_mrp_bom_ids': []}
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
             if not supplier_id:
@@ -167,12 +168,14 @@ class order_requirement_line_suppliers(orm.Model):
             order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
 
             # Update BOM according to new product
-            # if product.bom_ids:
-            #     temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
-            #     result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
-            #
-            # if new_product_id == order_requirement_line.product_id.id:
-            #     newvalue = False
+            if product.bom_ids:
+                children_levels = self.get_children(product.bom_ids[0].bom_lines, 0)
+
+                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
+                result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+
+            if new_product_id == order_requirement_line.product_id.id:
+                newvalue = False
             # else:
             #     newvalue = new_product_id
             # order_requirement_line_obj.write(cr, uid, order_requirement_line.id, {'new_product_id': newvalue}, context)
@@ -183,8 +186,11 @@ class order_requirement_line_suppliers(orm.Model):
                 'supplier_ids': [],
             })
 
-        # result_dict['view_bom'] = len(result_dict['temp_mrp_bom_ids']) > 0
+        result_dict['view_bom'] = len(result_dict['temp_mrp_bom_ids']) > 0
         return {'value': result_dict}
+
+    def onchange_children_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
+        pass
 
     def confirm_qty_supplier(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)

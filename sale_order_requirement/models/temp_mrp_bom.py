@@ -91,35 +91,3 @@ class temp_mrp_bom(orm.TransientModel):
         else:
             # If manufactured, no suppliers must be specified
             self.write(cr, uid, ids[0], {'is_manufactured': True, 'supplier_id': False}, context)
-
-    def onchange_product_id(self, cr, uid, ids, product_id, qty=0, supplier_id=False, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        supplierinfo_obj = self.pool['product.supplierinfo']
-        result_dict = {}
-        if product_id:
-            product = self.pool['product.product'].browse(cr, uid, product_id, context)
-            if not supplier_id:
-                # --find the supplier
-                supplier_info_ids = supplierinfo_obj.search(cr, uid,
-                                                            [('product_id', '=', product.product_tmpl_id.id)],
-                                                            order="sequence", context=context)
-                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-                seller_ids = [info.name.id for info in supplier_infos]
-
-                if seller_ids:
-                    result_dict.update({
-                        'supplier_id': seller_ids[0],
-                        'supplier_ids': seller_ids,
-                    })
-                else:
-                    result_dict.update({
-                        'supplier_id': False,
-                        'supplier_ids': [],
-                    })
-        else:
-            result_dict.update({
-                'supplier_id': False,
-                'supplier_ids': [],
-            })
-        return {'value': result_dict}
-
