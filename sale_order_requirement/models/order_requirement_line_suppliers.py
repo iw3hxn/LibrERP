@@ -85,29 +85,34 @@ class order_requirement_line_suppliers(orm.Model):
 
         if not product_id.bom_ids:
             return []
-        bom_children = bom_father.child_complete_ids
 
-        children_levels = self.get_children(bom_father.bom_lines, 0)
-        for bom in bom_children:
-            if True or bom.product_id.type in ('product', 'consu'):
-                newbom_vals = {
-                    'tmp_id': bom.id,
-                    'tmp_parent_id': bom.bom_id.id,
-                    # 'complete_name': '&nbsp;&nbsp;&nbsp;' * children_levels[bom.id]['level'] + bom.name,
-                    # 'complete_name': '...' * children_levels[bom.id]['level'] + bom.name,
-                    'complete_name': 'Level =' + str(children_levels[bom.id]['level']) + '= ' + bom.name,
-                    'name': bom.name,
-                    'type': bom.type,
-                    'bom_id': bom.bom_id.id,
-                    'product_id': bom.product_id.id,
-                    'product_qty': bom.product_qty,
-                    'product_uom': bom.product_uom.id,
-                    'product_efficiency': bom.product_efficiency,
-                    'routing_id': bom.routing_id.id,
-                    'company_id': bom.company_id.id
-                }
-                temp_mrp_bom_vals.append(newbom_vals)
+        def _get_rec(bom_rec):
+            bom_children = bom_rec.child_complete_ids
+            if not bom_children:
+                return
+            children_levels = self.get_children(bom_rec.child_complete_ids, 0)
+            for bom in bom_children:
+                if bom.product_id.type in ('product', 'consu'):
+                    newbom_vals = {
+                        'tmp_id': bom.id,
+                        'tmp_parent_id': bom.bom_id.id,
+                        # 'complete_name': '&nbsp;&nbsp;&nbsp;' * children_levels[bom.id]['level'] + bom.name,
+                        'complete_name': '...' * children_levels[bom.id]['level'] + ' ' + bom.name,
+                        # 'complete_name': 'Level =' + str(children_levels[bom.id]['level']) + '= ' + bom.name,
+                        'name': bom.name,
+                        'type': bom.type,
+                        'bom_id': bom.bom_id.id,
+                        'product_id': bom.product_id.id,
+                        'product_qty': bom.product_qty,
+                        'product_uom': bom.product_uom.id,
+                        'product_efficiency': bom.product_efficiency,
+                        'routing_id': bom.routing_id.id,
+                        'company_id': bom.company_id.id
+                    }
+                    temp_mrp_bom_vals.append(newbom_vals)
+                    _get_rec(bom)
 
+        _get_rec(bom_father)
         return temp_mrp_bom_vals
 
     def default_get(self, cr, uid, fields, context=None):
