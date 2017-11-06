@@ -49,28 +49,29 @@ class order_requirement_line_suppliers(orm.Model):
     }
 
     def get_children(self, object, level=0):
-        result = []
+        result = {}
 
-        def _get_rec(object,level):
+        def _get_rec(object, level):
             for l in object:
-                res = {}
-                res['name'] = l.name
-                res['pname'] = l.product_id.name
-                res['pcode'] = l.product_id.default_code
-                res['pqty'] = l.product_qty
-                res['uname'] = l.product_uom.name
-                res['code'] = l.code
-                res['level'] = level
-                result.append(res)
+                res = {'name': l.name,
+                       'pname': l.product_id.name,
+                       'pcode': l.product_id.default_code,
+                       'pqty': l.product_qty,
+                       'uname': l.product_uom.name,
+                       'code': l.code,
+                       'level': level
+                       }
+
+                result[l.id] = res
                 if l.child_complete_ids:
-                    if level<6:
+                    if level < 6:
                         level += 1
-                    _get_rec(l.child_complete_ids,level)
-                    if level>0 and level<6:
+                    _get_rec(l.child_complete_ids, level)
+                    if 0 < level < 6:
                         level -= 1
             return result
 
-        children = _get_rec(object,level)
+        children = _get_rec(object, level)
 
         return children
 
@@ -83,14 +84,17 @@ class order_requirement_line_suppliers(orm.Model):
 
         if not product_id.bom_ids:
             return []
-        bom_childs = bom_father.child_complete_ids
-        for bom in bom_childs:
-            children = self.get_children(bom.bom_lines, 0)
+        bom_children = bom_father.child_complete_ids
+        children_levels = self.get_children(bom_father.bom_lines, 0)
+        a = 1
+        for bom in bom_children:
             if bom.product_id.type in ('product', 'consu'):
                 newbom_vals = {
                     'tmp_id': bom.id,
                     'tmp_parent_id': bom.bom_id.id,
-                    'complete_name': '&nbsp;&nbsp;', #* children[bom.id].level + bom.name,
+                    # 'complete_name': '&nbsp;&nbsp;&nbsp;' * children_levels[bom.id]['level'] + bom.name,
+                    # 'complete_name': '...' * children_levels[bom.id]['level'] + bom.name,
+                    'complete_name': 'Level =' + str(children_levels[bom.id]['level']) + '= ' + bom.name,
                     'name': bom.name,
                     'type': bom.type,
                     'bom_id': bom.bom_id.id,
@@ -118,12 +122,14 @@ class order_requirement_line_suppliers(orm.Model):
         res['qty'] = order_requirement_line.qty
         res['state'] = 'draft'
         res['view_bom'] = True
+        product = order_requirement_line.product_id
 
         # DEBUG
-        product = order_requirement_line.product_id
-        if product.bom_ids:
-            bom = product.bom_ids[0]
-            children = self.get_children(bom.bom_lines, 0)
+        # if product.bom_ids:
+        #     bom = product.bom_ids[0]
+        #     children = self.get_children(bom.bom_lines, 0)
+        #     for c in children:
+        #         print '   ' * c['level'] + ' ' + c['name']
 
         temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
         res['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
@@ -133,7 +139,8 @@ class order_requirement_line_suppliers(orm.Model):
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
-        result_dict = {'temp_mrp_bom_ids': []}
+        # result_dict = {'temp_mrp_bom_ids': []}
+        result_dict = {}
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
             if not supplier_id:
