@@ -79,20 +79,18 @@ class temp_mrp_bom(orm.TransientModel):
 
     # _parent_name = 'bom_id'
 
-    def _check_product(self, cr, uid, ids, context=None):
-        # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.
-        # La position è la descrizione.
-        return True
+    # def _check_product(self, cr, uid, ids, context=None):
+    #     # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.
+    #     # La position è la descrizione.
+    #     return True
+    #
+    # _constraints = [
+    #     (_check_product, 'BoM line product should not be same as BoM product.', ['product_id']),
+    # ]
 
-    _constraints = [
-        (_check_product, 'BoM line product should not be same as BoM product.', ['product_id']),
-    ]
-
+    # Useless?
     def onchange_manufacture(self, cr, uid, ids, context=None):
-        current_temp_mrp_bom = self.browse(cr, uid, ids, context)[0]
-        if current_temp_mrp_bom.is_manufactured:
-            # If yes write False and vice-versa
-            self.write(cr, uid, ids[0], {'is_manufactured': False}, context)
-        else:
-            # If manufactured, no suppliers must be specified
-            self.write(cr, uid, ids[0], {'is_manufactured': True, 'supplier_id': False}, context)
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        # res['supplier_id'] = False
+        return {'value': res}
