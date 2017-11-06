@@ -60,7 +60,11 @@ class order_requirement_line(orm.Model):
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}),
-        'product_id': fields.many2one('product.product', 'Original Product', readonly=True, states={'draft': [('readonly', False)]}),
+        'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
+        'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True,
+                                         states={'draft': [('readonly', False)]}),
+        'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]",
+                                       readonly=True, states={'draft': [('readonly', False)]}),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), states={'draft': [('readonly', False)]}),
         'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Stock Availability', readonly=True),
         'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Spare', readonly=True),
@@ -74,10 +78,166 @@ class order_requirement_line(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BOM'),
-        # 'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BOM'),
+        'view_bom': fields.boolean('View BOM'),
     }
 
     _defaults = {
         'state': 'draft',
         'sequence': 10,
+        'view_bom': True
     }
+
+    def get_children(self, object, level=0):
+        result = {}
+
+        def _get_rec(object, level):
+            for l in object:
+                res = {'name': l.name,
+                       'pname': l.product_id.name,
+                       'pcode': l.product_id.default_code,
+                       'pqty': l.product_qty,
+                       'uname': l.product_uom.name,
+                       'code': l.code,
+                       'level': level
+                       }
+
+                result[l.id] = res
+                if l.child_complete_ids:
+                    if level < 6:
+                        level += 1
+                    _get_rec(l.child_complete_ids, level)
+                    if 0 < level < 6:
+                        level -= 1
+            return result
+
+        children = _get_rec(object, level)
+
+        return children
+
+    def get_temp_mrp_bom(self, cr, uid, bom_ids, context):
+        # Returns a list of VALS
+        temp_mrp_bom_vals = []
+        order_requirement_line_obj = self.pool[context['active_model']]
+        order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
+        product_id = order_requirement_line.product_id
+
+        if not product_id.bom_ids:
+            return []
+
+        for bom_father in bom_ids:
+            children_levels = self.get_children(bom_father.child_complete_ids, 0)
+
+            def _get_rec(bom_rec):
+                bom_children = bom_rec.child_complete_ids
+                if not bom_children:
+                    return
+                for bom in bom_children:
+                    if bom.product_id.type in ('product', 'consu'):
+                        # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
+                        newbom_vals = {
+                            'tmp_id': bom.id,
+                            'tmp_parent_id': bom_rec.id,
+                            'complete_name': '___' * children_levels[bom.id]['level'] + ' ' + bom.name,
+                            # 'complete_name': '___' * children_levels[bom.id]['level'] + coolname,
+                            # 'complete_name': 'Level =' + str(children_levels[bom.id]['level']) + '= ' + bom.name,
+                            'name': bom.name,
+                            'type': bom.type,
+                            # 'bom_id': bom.bom_id.id,
+                            'product_id': bom.product_id.id,
+                            'product_qty': bom.product_qty,
+                            'product_uom': bom.product_uom.id,
+                            'product_efficiency': bom.product_efficiency,
+                            'routing_id': bom.routing_id.id,
+                            'company_id': bom.company_id.id
+                        }
+                        temp_mrp_bom_vals.append(newbom_vals)
+                        _get_rec(bom)
+
+            _get_rec(bom_father)
+        return temp_mrp_bom_vals
+
+    def default_get(self, cr, uid, fields, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = super(order_requirement_line, self).default_get(cr, uid, fields, context=context)
+        line = self.browse(cr, uid, context['active_id'], context)
+
+        if line.new_product_id:
+            product = line.new_product_id
+        elif line.product_id:
+            product = line.product_id
+        res['product_id'] = product.id
+        res['qty'] = line.qty
+
+        temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
+        res['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+        res['view_bom'] = len(res['temp_mrp_bom_ids']) > 0
+
+        return res
+
+    def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        supplierinfo_obj = self.pool['product.supplierinfo']
+        # result_dict = {}
+        result_dict = {'temp_mrp_bom_ids': []}
+        if new_product_id:
+            product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
+            if not supplier_id:
+                # --find the supplier
+                supplier_info_ids = supplierinfo_obj.search(cr, uid,
+                                                            [('product_id', '=', product.product_tmpl_id.id)],
+                                                            order="sequence", context=context)
+                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
+                seller_ids = [info.name.id for info in supplier_infos]
+
+                if seller_ids:
+                    result_dict.update({
+                        'supplier_id': seller_ids[0],
+                        'supplier_ids': seller_ids,
+                    })
+                else:
+                    result_dict.update({
+                        'supplier_id': False,
+                        'supplier_ids': [],
+                    })
+
+            # temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+            order_requirement_line_obj = self.pool[context['active_model']]
+            order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
+
+            # Update BOM according to new product
+            if product.bom_ids:
+                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+                result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+
+            # if new_product_id == order_requirement_line.product_id.id:
+            #     newvalue = False
+            # else:
+            #     newvalue = new_product_id
+            # result_dict['new_product_id'] = newvalue
+            # order_requirement_line_obj.write(cr, uid, order_requirement_line.id, {'new_product_id': newvalue}, context)
+
+        else:
+            result_dict.update({
+                'supplier_id': False,
+                'supplier_ids': [],
+            })
+
+        result_dict['view_bom'] = len(result_dict['temp_mrp_bom_ids']) > 0
+        return {'value': result_dict}
+
+    def action_open_bom(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        line = self.browse(cr, uid, ids, context)[0]
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement', 'view_order_requirement_line_form')
+        view_id = view and view[1] or False
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Product BOM'),
+            'res_model': 'order.requirement.line',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [view_id],
+            # 'domain': [('product_id', '=', line.product_id.id), ('bom_id', '=', False)],
+            'target': 'new',
+            'res_id': line.id
+        }

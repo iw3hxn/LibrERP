@@ -89,8 +89,8 @@ class temp_mrp_bom(orm.TransientModel):
     # ]
 
     # Useless?
-    def onchange_manufacture(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-        # res['supplier_id'] = False
-        return {'value': res}
+    # def onchange_manufacture(self, cr, uid, ids, context=None):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     res = {}
+    #     # res['supplier_id'] = False
+    #     return {'value': res}
