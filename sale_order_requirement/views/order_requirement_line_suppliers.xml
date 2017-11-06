@@ -40,7 +40,6 @@
                             <field name="supplier_id" attrs="{'required': [('is_manufactured', '=', False)], 'readonly': [('is_manufactured', '=', True)]}"/>
                             <field name="supplier_ids" invisible="1"/>
                         </tree>
-
                     </field>
                 </form>
            </field>
