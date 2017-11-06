@@ -86,18 +86,18 @@ class order_requirement_line_suppliers(orm.Model):
         if not product_id.bom_ids:
             return []
 
+        children_levels = self.get_children(bom_father.child_complete_ids, 0)
+
         def _get_rec(bom_rec):
             bom_children = bom_rec.child_complete_ids
             if not bom_children:
                 return
-            children_levels = self.get_children(bom_rec.child_complete_ids, 0)
             for bom in bom_children:
                 if bom.product_id.type in ('product', 'consu'):
                     newbom_vals = {
-                        'tmp_id': bom.id,
-                        'tmp_parent_id': bom.bom_id.id,
-                        # 'complete_name': '&nbsp;&nbsp;&nbsp;' * children_levels[bom.id]['level'] + bom.name,
-                        'complete_name': '...' * children_levels[bom.id]['level'] + ' ' + bom.name,
+                        # 'tmp_id': bom.id,
+                        # 'tmp_parent_id': bom.bom_id.id,
+                        'complete_name': '___' * children_levels[bom.id]['level'] + ' ' + bom.name,
                         # 'complete_name': 'Level =' + str(children_levels[bom.id]['level']) + '= ' + bom.name,
                         'name': bom.name,
                         'type': bom.type,
