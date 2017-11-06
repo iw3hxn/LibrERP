@@ -57,35 +57,6 @@ class order_requirement_line(orm.Model):
                 res[line.id] = 'red'
         return res
 
-    _columns = {
-        'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
-                                          states={'draft': [('readonly', False)]}),
-        'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
-        'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True,
-                                         states={'draft': [('readonly', False)]}),
-        'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]",
-                                       readonly=True, states={'draft': [('readonly', False)]}),
-        'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), states={'draft': [('readonly', False)]}),
-        'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Stock Availability', readonly=True),
-        'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Spare', readonly=True),
-        'order_id': fields.many2one('order.requirement', 'Order Reference', required=True, ondelete='cascade', select=True,
-                                    readonly=True, states={'draft': [('readonly', False)]}),
-        'sequence': fields.integer('Sequence',
-                                   help="Gives the sequence order when displaying a list of sales order lines."),
-        'state': fields.selection(
-            [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, readonly=True,
-        ),
-        'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
-        'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
-        'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BOM'),
-        'view_bom': fields.boolean('View BOM'),
-    }
-
-    _defaults = {
-        'state': 'draft',
-        'sequence': 10,
-        'view_bom': True
-    }
 
     def get_children(self, object, level=0):
         result = {}
@@ -156,23 +127,68 @@ class order_requirement_line(orm.Model):
             _get_rec(bom_father)
         return temp_mrp_bom_vals
 
-    def default_get(self, cr, uid, fields, context=None):
+    # def _get_or_create_temp_mrp(self, cr, uid, context=None):
+    #     line = self.browse(cr, uid, context['active_id'], context)
+    #
+    #     if line.temp_mrp_boms:
+    #         return True
+    #
+    #     if line.new_product_id:
+    #         product = line.new_product_id
+    #     elif line.product_id:
+    #         product = line.product_id
+    #
+    #     temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+    #     temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
+    #
+    #     return temp_mrp_bom_ids
+
+    def fields_get(self, cr, uid, allfields=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        res = super(order_requirement_line, self).default_get(cr, uid, fields, context=context)
-        line = self.browse(cr, uid, context['active_id'], context)
+        ret = super(order_requirement_line, self).fields_get(cr, uid, allfields=allfields, context=context)
 
-        if line.new_product_id:
-            product = line.new_product_id
-        elif line.product_id:
-            product = line.product_id
-        res['product_id'] = product.id
-        res['qty'] = line.qty
+        # if ret['temp_mrp_bom_ids']:
+        #     return ret
 
-        temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids[0], context)
-        res['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
-        res['view_bom'] = len(res['temp_mrp_bom_ids']) > 0
+        # if ret['new_product_id']:
+        #     product = ret['new_product_id']
+        # elif ret['product_id']:
+        #     product = ret['product_id']
+        #
+        # temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+        # ret['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+        ret['temp_mrp_bom_ids']['invisible'] = 'view_bom' not in context or not context['view_bom']
+        return ret
 
-        return res
+    _columns = {
+        'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
+                                          states={'draft': [('readonly', False)]}),
+        'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
+        'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True,
+                                         states={'draft': [('readonly', False)]}),
+        'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]",
+                                       readonly=True, states={'draft': [('readonly', False)]}),
+        'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), states={'draft': [('readonly', False)]}),
+        'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Stock Availability', readonly=True),
+        'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Spare', readonly=True),
+        'order_id': fields.many2one('order.requirement', 'Order Reference', required=True, ondelete='cascade', select=True,
+                                    readonly=True, states={'draft': [('readonly', False)]}),
+        'sequence': fields.integer('Sequence',
+                                   help="Gives the sequence order when displaying a list of sales order lines."),
+        'state': fields.selection(
+            [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, readonly=True,
+        ),
+        'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
+        'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
+        'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BOM'),
+        # '_get_or_create_temp_mrp': fields.function(_get_or_create_temp_mrp),
+        # 'view_bom': fields.boolean('View BOM', store=False),
+    }
+
+    _defaults = {
+        'state': 'draft',
+        'sequence': 10,
+    }
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -239,5 +255,6 @@ class order_requirement_line(orm.Model):
             'view_id': [view_id],
             # 'domain': [('product_id', '=', line.product_id.id), ('bom_id', '=', False)],
             'target': 'new',
+            'context': {'view_bom': True}, # TODO ?
             'res_id': line.id
         }
