@@ -146,13 +146,14 @@ class order_requirement_line(orm.Model):
         return res
 
     def _save_temp_mrp_bom(self, cr, uid, line_id, name, vals, arg, context=None):
-        pass
         # context = context or self.pool['res.users'].context_get(cr, uid)
+        # temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        # temp_mrp_bom_obj.create(cr, uid, vals, context)
+        pass
+
         # line = self.browse(cr, uid, line_id, context)
         # self.write(cr, uid, line.id, {name: vals})
         #
-        # # First, CREATE AGAIN all temp_mrp_bom (I have to be sure they will ALL be saved)
-        # a = 1
         # # Next, update the modified ones
 
     _columns = {
