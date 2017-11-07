@@ -79,14 +79,14 @@ class temp_mrp_bom(orm.TransientModel):
 
     # _parent_name = 'bom_id'
 
-    # def _check_product(self, cr, uid, ids, context=None):
-    #     # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.
-    #     # La position è la descrizione.
-    #     return True
-    #
-    # _constraints = [
-    #     (_check_product, 'BoM line product should not be same as BoM product.', ['product_id']),
-    # ]
+    def _check_product(self, cr, uid, ids, context=None):
+        # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.
+        # La position è la descrizione.
+        return True
+
+    _constraints = [
+        (_check_product, 'BoM line product should not be same as BoM product.', ['product_id']),
+    ]
 
     # Useless?
     # def onchange_manufacture(self, cr, uid, ids, context=None):

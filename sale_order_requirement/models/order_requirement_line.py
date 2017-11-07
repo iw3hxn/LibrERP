@@ -38,7 +38,7 @@ class order_requirement_line(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             spare = 0
-            warehouse = line.order_id.sale_order_id.shop_id.warehouse_id
+            warehouse = line.sale_order_id.shop_id.warehouse_id
             order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
             if order_point_ids:
                 spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
@@ -87,12 +87,10 @@ class order_requirement_line(orm.Model):
 
     def get_temp_mrp_bom(self, cr, uid, bom_ids, context):
         # Returns a list of VALS
+        context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_vals = []
-        order_requirement_line_obj = self.pool[context['active_model']]
-        order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
-        product_id = order_requirement_line.product_id
 
-        if not product_id.bom_ids:
+        if not bom_ids:
             return []
 
         for bom_father in bom_ids:
@@ -143,23 +141,6 @@ class order_requirement_line(orm.Model):
     #
     #     return temp_mrp_bom_ids
 
-    def fields_get(self, cr, uid, allfields=None, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        ret = super(order_requirement_line, self).fields_get(cr, uid, allfields=allfields, context=context)
-
-        # if ret['temp_mrp_bom_ids']:
-        #     return ret
-
-        # if ret['new_product_id']:
-        #     product = ret['new_product_id']
-        # elif ret['product_id']:
-        #     product = ret['product_id']
-        #
-        # temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-        # ret['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
-        ret['temp_mrp_bom_ids']['invisible'] = 'view_bom' not in context or not context['view_bom']
-        return ret
-
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}),
@@ -171,8 +152,8 @@ class order_requirement_line(orm.Model):
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), states={'draft': [('readonly', False)]}),
         'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Stock Availability', readonly=True),
         'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Spare', readonly=True),
-        'order_id': fields.many2one('order.requirement', 'Order Reference', required=True, ondelete='cascade', select=True,
-                                    readonly=True, states={'draft': [('readonly', False)]}),
+        'order_requirement_id': fields.many2one('order.requirement', 'Order Reference', required=True, ondelete='cascade', select=True),
+        'sale_order_id': fields.related('order_requirement_id', 'sale_order_id', string='Sale Order', relation='sale.order', type='many2one', readonly=True),
         'sequence': fields.integer('Sequence',
                                    help="Gives the sequence order when displaying a list of sales order lines."),
         'state': fields.selection(
@@ -189,6 +170,38 @@ class order_requirement_line(orm.Model):
         'state': 'draft',
         'sequence': 10,
     }
+
+    def fields_get(self, cr, uid, allfields=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ret = super(order_requirement_line, self).fields_get(cr, uid, allfields=allfields, context=context)
+        view_bom = 'view_bom' in context and context['view_bom']
+        ret['temp_mrp_bom_ids']['invisible'] = not view_bom
+        # ret['confirm_qty_supplier']['invisible'] = not view_bom
+
+        return ret
+
+    def fields_view_get(self, cr, uid, view_id=False, view_type='tree', context=None, toolbar=False, submenu=False):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        actualView = super(order_requirement_line, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
+        return actualView
+        if view_type == 'tree':
+            return actualView
+
+        import pdb; pdb.set_trace()
+        line = self.browse(cr, uid, context['active_ids'], context)[0]
+
+        # If I don't have retrieved the temp bom yet, I do it now
+        if not line.temp_mrp_bom_ids:
+            if line.new_product_id:
+                product = line.new_product_id
+            elif line.product_id:
+                product = line.product_id
+
+            temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+            temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
+            # actualView['fields'].update({'temp_mrp_bom_ids': temp_mrp_bom_ids})
+
+        return actualView
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -244,6 +257,7 @@ class order_requirement_line(orm.Model):
     def action_open_bom(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
+
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement', 'view_order_requirement_line_form')
         view_id = view and view[1] or False
         return {
@@ -253,8 +267,121 @@ class order_requirement_line(orm.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'view_id': [view_id],
-            # 'domain': [('product_id', '=', line.product_id.id), ('bom_id', '=', False)],
             'target': 'new',
-            'context': {'view_bom': True}, # TODO ?
+            'context': {'view_bom': True},
             'res_id': line.id
         }
+
+    def confirm_qty_supplier(self, cr, uid, ids, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        purchase_order_obj = self.pool['purchase.order']
+        purchase_order_line_obj = self.pool['purchase.order.line']
+        order_requirement_line_obj = self.pool[context['active_model']]
+        line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
+
+        orls = self.browse(cr, uid, ids[0], context)
+        supplier_id = orls.supplier_id.id
+        product_id = orls.product_id.id
+        qty = orls.qty
+        shop = line.order_id.sale_order_id.shop_id
+        shop_id = shop.id
+
+        purchase_order_ids = purchase_order_obj.search(cr, uid, [('partner_id', '=', supplier_id),
+                                                                 ('shop_id', '=', shop_id),
+                                                                 ('state', '=', 'draft')], limit=1, context=context)
+        if not supplier_id:
+            raise orm.except_orm(_(u'Error !'),
+                                 _(u'There are no suppliers defined for product {0}'.format(orls.product_id.name)))
+
+        if not purchase_order_ids:
+            # Adding if no "similar" orders are presents
+            purchase_order_values = purchase_order_obj.onchange_partner_id(cr, uid, [], supplier_id)['value']
+            location_id = shop.warehouse_id.lot_stock_id.id
+
+            order_line_values = purchase_order_line_obj.onchange_product_id(cr, uid, [], purchase_order_values['pricelist_id'],
+                                                                            product_id, qty, uom_id=False, partner_id=supplier_id, date_order=False,
+                                                                            fiscal_position_id=purchase_order_values['fiscal_position'],
+                                                                            date_planned=False, price_unit=False, notes=False, context=context)['value']
+            # First create order
+
+            purchase_id = purchase_order_obj.create(cr, uid, {
+                'shop_id': shop_id,
+                'partner_id': supplier_id,
+                'partner_address_id': purchase_order_values['partner_address_id'],
+                'pricelist_id': purchase_order_values['pricelist_id'],
+                'fiscal_position': purchase_order_values['fiscal_position'],
+                'invoice_method': 'manual',
+                'location_id': location_id,
+                'payment_term': purchase_order_values['payment_term'],
+            }, context=context)
+
+            order_line_values['product_id'] = product_id
+            order_line_values['order_id'] = purchase_id
+            order_line_values['order_requirement_line_ids'] = [(4, line.id)]
+
+            # Create order line and relationship with order_requirement_line
+            purchase_order_line_obj.create(cr, uid, order_line_values, context)
+
+        else:
+            # Extending order if I have found orders to same supplier for the same shop
+
+            # Take first order
+            present_order_id = purchase_order_ids[0]
+            present_order = purchase_order_obj.browse(cr, uid, present_order_id, context)
+
+            # Search for same product in Product lines
+            purchase_order_line_ids = purchase_order_line_obj.search(cr, uid, [('order_id', 'in', purchase_order_ids),
+                                                                               ('product_id', '=', product_id)], context=context)
+            if not purchase_order_line_ids:
+                # Line must be created
+                order_line_values = purchase_order_line_obj.onchange_product_id(cr, uid, [], present_order.pricelist_id.id,
+                                                                                product_id, qty, uom_id=False, partner_id=supplier_id, date_order=False,
+                                                                                fiscal_position_id=False, date_planned=False, price_unit=False, notes=False, context=context)['value']
+                order_line_values['product_id'] = product_id
+                order_line_values['order_id'] = present_order_id
+                # Creating a new line and link to many2many field
+                order_requirement_line_obj.write(cr, uid, line.id, {'purchase_order_line_ids': [(0, 0, order_line_values)]}, context)
+            else:
+                # Add qty to existing line
+                order_line_id = purchase_order_line_ids[0]
+                line = purchase_order_line_obj.browse(cr, uid, order_line_id, context)
+                newqty = qty + line.product_qty
+                purchase_order_line_obj.write(cr, uid, order_line_id, {'product_qty': newqty}, context)
+                # Create a new relationship (? only if not already present?)
+                order_requirement_line_obj.write(cr, uid, line.id, {'purchase_order_line_ids': [(4, order_line_id)]}, context)
+
+                # Now order_line_id is the created or update purchase order line
+
+        order_requirement_line_obj.write(cr, uid, line.id, {'state': 'done'}, context)
+
+        # Counting lines in Draft state, for current order requirement
+        lines_draft = len(order_requirement_line_obj.search(cr, uid, [('order_id', '=', line.order_id.id),
+                                                                      ('state', '=ilike', 'draft')], context=context))
+        if lines_draft == 0:
+            # No more draft lefts
+            order_requirement_obj = self.pool['order.requirement']
+            order_requirement_obj.write(cr, uid, line.order_id.id, {'state': 'done'}, context)
+
+        return {
+            'type': 'ir.actions.act_window_close'
+        }
+
+        # def action_open_bom(self, cr, uid, ids, context = None):
+        #     line_supplier = self.browse(cr, uid, ids, context)[0]
+        #     view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'profile_legnolandia', 'view_order_requirement_bom_tree')
+        #     view_id = view and view[1] or False
+        #
+        #     # bom_childs = line_supplier.product_id.bom_ids[0].child_complete_ids
+        #     # self.create_temp_mrp_boms(cr, uid, bom_childs, context)
+        #
+        #     return {
+        #         'type': 'ir.actions.act_window',
+        #         'name': _('Product BOM'),
+        #         'res_model': 'temp.mrp.bom',
+        #         'view_type': 'tree',
+        #         'view_mode': 'tree',
+        #         'view_id': [view_id],
+        #         'domain': [('bom_id', '=', False), ('product_id', '=', line_supplier.product_id.id)],
+        #         'target': 'new',
+        #         'res_id': False
+        #     }

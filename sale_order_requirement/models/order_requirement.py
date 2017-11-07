@@ -69,7 +69,7 @@ class order_requirement(orm.Model):
             ('done', 'Confirmed'),
             ('cancel', 'Cancelled')
         ], 'Order State', readonly=True),
-        'order_requirement_line_ids': fields.one2many('order.requirement.line', 'order_id', 'Order Lines', readonly=True,
+        'order_requirement_line_ids': fields.one2many('order.requirement.line', 'order_requirement_id', 'Order Lines', readonly=True,
                                       states={'draft': [('readonly', False)]}),
         'note': fields.text('Note')
     }
