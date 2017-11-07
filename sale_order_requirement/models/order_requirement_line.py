@@ -166,7 +166,7 @@ class order_requirement_line(orm.Model):
         ),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
-        '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
+        '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy', readonly=False),
         'temp_mrp_bom_ids': fields.function(_get_or_create_temp_mrp, relation='temp.mrp.bom', string="BoM Hierarchy", method=True, type='one2many'),
     }
 
@@ -306,9 +306,8 @@ class order_requirement_line(orm.Model):
                 self.write(cr, uid, line.id, {'purchase_order_line_ids': [(4, order_line_id)]}, context)
                 # Now order_line_id is the created or update purchase order line
 
-    def _manufacture(cr, uid, line, context):
+    def _manufacture(self, cr, uid, line, context):
         pass
-
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
