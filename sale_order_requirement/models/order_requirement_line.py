@@ -125,21 +125,27 @@ class order_requirement_line(orm.Model):
             _get_rec(bom_father)
         return temp_mrp_bom_vals
 
-    # def _get_or_create_temp_mrp(self, cr, uid, context=None):
-    #     line = self.browse(cr, uid, context['active_id'], context)
-    #
-    #     if line.temp_mrp_boms:
-    #         return True
-    #
-    #     if line.new_product_id:
-    #         product = line.new_product_id
-    #     elif line.product_id:
-    #         product = line.product_id
-    #
-    #     temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-    #     temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
-    #
-    #     return temp_mrp_bom_ids
+    def _get_or_create_temp_mrp(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        view_bom = 'view_bom' in context and context['view_bom']
+        if not view_bom:
+            return {}
+
+        line = self.browse(cr, uid, context['active_id'], context)
+
+        if line._temp_mrp_bom_ids:
+            return line._temp_mrp_bom_ids
+
+        if line.new_product_id:
+            product = line.new_product_id
+        elif line.product_id:
+            product = line.product_id
+
+        temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+        # temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
+        temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
+
+        return temp_mrp_bom_ids
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
@@ -161,9 +167,9 @@ class order_requirement_line(orm.Model):
         ),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
-        'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BOM'),
-        # '_get_or_create_temp_mrp': fields.function(_get_or_create_temp_mrp),
-        # 'view_bom': fields.boolean('View BOM', store=False),
+        '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
+        'temp_mrp_bom_ids': fields.function(_get_or_create_temp_mrp, relation='temp.mrp.bom', string="BoM Hierarchy", method=True, type='one2many'),
+        # 'temp_mrp_bom_ids': fields.function(_get_or_create_temp_mrp, string="BoM Hierarchy", method=True, type='one2many')
     }
 
     _defaults = {
@@ -180,28 +186,28 @@ class order_requirement_line(orm.Model):
 
         return ret
 
-    def fields_view_get(self, cr, uid, view_id=False, view_type='tree', context=None, toolbar=False, submenu=False):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        actualView = super(order_requirement_line, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
-        return actualView
-        if view_type == 'tree':
-            return actualView
-
-        import pdb; pdb.set_trace()
-        line = self.browse(cr, uid, context['active_ids'], context)[0]
-
-        # If I don't have retrieved the temp bom yet, I do it now
-        if not line.temp_mrp_bom_ids:
-            if line.new_product_id:
-                product = line.new_product_id
-            elif line.product_id:
-                product = line.product_id
-
-            temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-            temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
-            # actualView['fields'].update({'temp_mrp_bom_ids': temp_mrp_bom_ids})
-
-        return actualView
+    # def fields_view_get(self, cr, uid, view_id=False, view_type='tree', context=None, toolbar=False, submenu=False):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     actualView = super(order_requirement_line, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
+    #     return actualView
+    #     if view_type == 'tree':
+    #         return actualView
+    #
+    #     import pdb; pdb.set_trace()
+    #     line = self.browse(cr, uid, context['active_ids'], context)[0]
+    #
+    #     # If I don't have retrieved the temp bom yet, I do it now
+    #     if not line.temp_mrp_bom_ids:
+    #         if line.new_product_id:
+    #             product = line.new_product_id
+    #         elif line.product_id:
+    #             product = line.product_id
+    #
+    #         temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+    #         temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
+    #         # actualView['fields'].update({'temp_mrp_bom_ids': temp_mrp_bom_ids})
+    #
+    #     return actualView
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -238,13 +244,6 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
                 result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
 
-            # if new_product_id == order_requirement_line.product_id.id:
-            #     newvalue = False
-            # else:
-            #     newvalue = new_product_id
-            # result_dict['new_product_id'] = newvalue
-            # order_requirement_line_obj.write(cr, uid, order_requirement_line.id, {'new_product_id': newvalue}, context)
-
         else:
             result_dict.update({
                 'supplier_id': False,
@@ -258,6 +257,20 @@ class order_requirement_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
 
+        # # If I don't have retrieved the temp bom yet, I do it now
+        # if not line.temp_mrp_bom_ids:
+        #     if line.new_product_id:
+        #         product = line.new_product_id
+        #     elif line.product_id:
+        #         product = line.product_id
+        #
+        #     self.onchange_product_id(cr, uid, ids, product.id)
+        #
+        #
+        #     temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+        #     temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
+        #     view_bom = len(temp_mrp_bom_ids) > 0
+
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement', 'view_order_requirement_line_form')
         view_id = view and view[1] or False
         return {
@@ -269,6 +282,7 @@ class order_requirement_line(orm.Model):
             'view_id': [view_id],
             'target': 'new',
             'context': {'view_bom': True},
+            # 'context': {'view_bom': view_bom, 'default_temp_mrp_bom_ids': temp_mrp_bom_ids, 'default_qty': 1256},
             'res_id': line.id
         }
 
