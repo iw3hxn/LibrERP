@@ -142,7 +142,8 @@ class order_requirement_line(orm.Model):
                 elif line.product_id:
                     product = line.product_id
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-                res[line.id] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+                # res[line.id] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+                res[line.id] = temp_mrp_bom_vals
         return res
 
     def _save_temp_mrp_bom(self, cr, uid, line_id, name, vals, arg, context=None):
@@ -363,5 +364,5 @@ class order_requirement_line(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        super(order_requirement_line, self).write(cr, uid, ids, vals, context)
+        return super(order_requirement_line, self).write(cr, uid, ids, vals, context)
 
