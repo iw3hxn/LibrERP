@@ -59,14 +59,13 @@ class temp_mrp_bom(orm.TransientModel):
         return res
 
     _columns = {
-        'complete_name': fields.char('Complete name'),
+        'complete_name': fields.char('Complete name', readonly=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line'),
         # 'child_complete_ids': fields.function(_child_compute, relation='temp.mrp.bom', string="BoM Hierarchy", type='many2many'),
         # 'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         # 'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True),
         'tmp_id': fields.integer(),
         'tmp_parent_id': fields.integer(),
-        'product_type': fields.related('product_id', 'type', type='char', string='Product Type', readonly=True, store=False),
         'is_manufactured': fields.boolean('Manufacture'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers'),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]"),
@@ -88,9 +87,42 @@ class temp_mrp_bom(orm.TransientModel):
         (_check_product, 'BoM line product should not be same as BoM product.', ['product_id']),
     ]
 
-    # Useless?
-    # def onchange_manufacture(self, cr, uid, ids, context=None):
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     res = {}
-    #     # res['supplier_id'] = False
-    #     return {'value': res}
+    # Does not really change (only for a sec)
+    def onchange_manufacture(self, cr, uid, ids, is_manufactured, context=None):
+        res = {}
+        if is_manufactured:
+            res['supplier_id'] = False
+        return {'value': res}
+
+    def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        supplierinfo_obj = self.pool['product.supplierinfo']
+        result_dict = {}
+        if new_product_id:
+            product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
+            if not supplier_id:
+                # --find the supplier
+                supplier_info_ids = supplierinfo_obj.search(cr, uid,
+                                                            [('product_id', '=', product.product_tmpl_id.id)],
+                                                            order="sequence", context=context)
+                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
+                seller_ids = [info.name.id for info in supplier_infos]
+
+                if seller_ids:
+                    result_dict.update({
+                        'supplier_id': seller_ids[0],
+                        'supplier_ids': seller_ids,
+                    })
+                else:
+                    result_dict.update({
+                        'supplier_id': False,
+                        'supplier_ids': [],
+                    })
+
+        else:
+            result_dict.update({
+                'supplier_id': False,
+                'supplier_ids': [],
+            })
+
+        return {'value': result_dict}

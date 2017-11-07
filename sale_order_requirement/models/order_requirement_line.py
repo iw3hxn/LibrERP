@@ -145,14 +145,21 @@ class order_requirement_line(orm.Model):
                 res[line.id] = [(0, False, temp) for temp in temp_mrp_bom_vals]
         return res
 
-    def _save_temp_mrp_bom(self, cr, uid, ids, name, args, context=None):
+    def _save_temp_mrp_bom(self, cr, uid, line_id, name, vals, arg, context=None):
         pass
+        # context = context or self.pool['res.users'].context_get(cr, uid)
+        # line = self.browse(cr, uid, line_id, context)
+        # self.write(cr, uid, line.id, {name: vals})
+        #
+        # # First, CREATE AGAIN all temp_mrp_bom (I have to be sure they will ALL be saved)
+        # a = 1
+        # # Next, update the modified ones
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}),
         'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
-        'is_manufactured': fields.boolean('Manufacture'),
+        'is_manufactured': fields.boolean('Manufacture', help='If checked product is manufactured. If not, BOM is read-only'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True,
                                          states={'draft': [('readonly', False)]}),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]",
@@ -171,7 +178,7 @@ class order_requirement_line(orm.Model):
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy', readonly=False),
         'temp_mrp_bom_ids': fields.function(_get_or_create_temp_mrp, relation='temp.mrp.bom', string="BoM Hierarchy",
-                                            method=True, type='one2many', fnct_inv= _save_temp_mrp_bom),
+                                            method=True, type='one2many', fnct_inv=_save_temp_mrp_bom),
     }
 
     _defaults = {
@@ -184,7 +191,7 @@ class order_requirement_line(orm.Model):
         ret = super(order_requirement_line, self).fields_get(cr, uid, allfields=allfields, context=context)
         view_bom = 'view_bom' in context and context['view_bom']
         ret['temp_mrp_bom_ids']['invisible'] = not view_bom
-        # ret['confirm_qty_supplier']['invisible'] = not view_bom
+        # ret['confirm_suppliers']['invisible'] = not view_bom
 
         return ret
 
@@ -228,7 +235,6 @@ class order_requirement_line(orm.Model):
         result_dict['view_bom'] = len(result_dict['temp_mrp_bom_ids']) > 0
         return {'value': result_dict}
 
-
     def _purchase(self, cr, uid, line, context):
         purchase_order_obj = self.pool['purchase.order']
         purchase_order_line_obj = self.pool['purchase.order.line']
@@ -259,7 +265,6 @@ class order_requirement_line(orm.Model):
                                                         date_planned=False, price_unit=False, notes=False,
                                                         context=context)['value']
             # First create order
-
             purchase_id = purchase_order_obj.create(cr, uid, {
                 'shop_id': shop_id,
                 'partner_id': supplier_id,
@@ -325,8 +330,8 @@ class order_requirement_line(orm.Model):
             self.write(cr, uid, line.id, {'state': 'done'}, context)
 
             # Counting lines in Draft state, for current order requirement
-            lines_draft = len(self.search(cr, uid, [('order_id', '=', line.order_id.id),
-                                                                          ('state', '=ilike', 'draft')], context=context))
+            lines_draft = len(self.search(cr, uid, [('sale_order_id', '=', line.sale_order_id.id),
+                                                    ('state', '=ilike', 'draft')], context=context))
             if lines_draft == 0:
                 # No more draft lefts
                 order_requirement_obj = self.pool['order.requirement']
@@ -340,7 +345,8 @@ class order_requirement_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
 
-        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement', 'view_order_requirement_line_form')
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
+                                                               'view_order_requirement_line_form')
         view_id = view and view[1] or False
         return {
             'type': 'ir.actions.act_window',
@@ -353,3 +359,8 @@ class order_requirement_line(orm.Model):
             'context': {'view_bom': True},
             'res_id': line.id
         }
+
+    def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        super(order_requirement_line, self).write(cr, uid, ids, vals, context)
+
