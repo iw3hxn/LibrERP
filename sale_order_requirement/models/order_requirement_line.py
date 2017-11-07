@@ -130,22 +130,21 @@ class order_requirement_line(orm.Model):
         view_bom = 'view_bom' in context and context['view_bom']
         if not view_bom:
             return {}
-
-        line = self.browse(cr, uid, context['active_id'], context)
-
-        if line._temp_mrp_bom_ids:
-            return line._temp_mrp_bom_ids
-
-        if line.new_product_id:
-            product = line.new_product_id
-        elif line.product_id:
-            product = line.product_id
-
-        temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-        # temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
-        temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
-
-        return temp_mrp_bom_ids
+        res = {}
+        for line in self.browse(cr, uid, ids, context):
+            if line._temp_mrp_bom_ids:
+                # for t in line._temp_mrp_bom_ids:
+                #     res[t.id] = self.read(cr, uid, t.id, None, context)
+                res[line.id] = [t.id for t in line._temp_mrp_bom_ids]
+            else:
+                if line.new_product_id:
+                    product = line.new_product_id
+                elif line.product_id:
+                    product = line.product_id
+                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+                # temp_mrp_bom_ids = [(0, False, temp) for temp in temp_mrp_bom_vals]
+                res[line.id] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+        return res
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
@@ -234,10 +233,6 @@ class order_requirement_line(orm.Model):
                         'supplier_id': False,
                         'supplier_ids': [],
                     })
-
-            # temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-            order_requirement_line_obj = self.pool[context['active_model']]
-            order_requirement_line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
 
             # Update BOM according to new product
             if product.bom_ids:
