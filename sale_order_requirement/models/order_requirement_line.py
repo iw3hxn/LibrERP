@@ -152,16 +152,12 @@ class order_requirement_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
+        if not temp_mrp_bom_vals:
+            return
+
         # If the first record is [5, False, False] I am creating
         is_creation = temp_mrp_bom_vals[0][0] == 5
         if is_creation:
-            # line = self.browse(cr, uid, line_id, context)
-            # try:
-            #     pass
-            #     # temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
-            # except:
-            #     pass # No problem if already deleted
-
             # IF I am creating, start cycle from second item (first is shown above)
             for val in temp_mrp_bom_vals[1:]:
                 if val:
@@ -177,32 +173,26 @@ class order_requirement_line(orm.Model):
                     temp_vals = val[2]
                     temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
 
-        # for val in temp_mrp_bom_vals:
-        #     temp_id = val[0]
-        #     if temp_id == 0:
-        #         # I am creating
-        #         temp_vals = val[2]
-        #         temp_vals['order_requirement_line_id'] = line_id
-        #         temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
-        #     elif temp_id == 4:
-        #         # I am updating
-        #         temp_vals = val[1]
-        #         temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
-
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}),
         'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
-        'is_manufactured': fields.boolean('Manufacture', help='If checked product is manufactured. If not, BOM is read-only'),
+        'is_manufactured': fields.boolean('Manufacture', readonly=True, states={'draft': [('readonly', False)]},
+                                          help='If checked product is manufactured. If not, BOM is read-only'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True,
                                          states={'draft': [('readonly', False)]}),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]",
                                        readonly=True, states={'draft': [('readonly', False)]}),
-        'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), states={'draft': [('readonly', False)]}),
-        'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Stock Availability', readonly=True),
-        'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float', string='Spare', readonly=True),
-        'order_requirement_id': fields.many2one('order.requirement', 'Order Reference', required=True, ondelete='cascade', select=True),
-        'sale_order_id': fields.related('order_requirement_id', 'sale_order_id', string='Sale Order', relation='sale.order', type='many2one', readonly=True),
+        'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product UoS'), readonly=True,
+                            states={'draft': [('readonly', False)]}),
+        'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability',
+                                              type='float', string='Stock Availability', readonly=True),
+        'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float',
+                                 string='Spare', readonly=True),
+        'order_requirement_id': fields.many2one('order.requirement', 'Order Reference', required=True,
+                                                ondelete='cascade', select=True),
+        'sale_order_id': fields.related('order_requirement_id', 'sale_order_id', string='Sale Order',
+                                        relation='sale.order', type='many2one', readonly=True),
         'sequence': fields.integer('Sequence',
                                    help="Gives the sequence order when displaying a list of sales order lines."),
         'state': fields.selection(
@@ -283,17 +273,29 @@ class order_requirement_line(orm.Model):
 
         return {'value': result_dict}
 
-    def _purchase(self, cr, uid, line, context):
+    def _purchase(self, cr, uid, obj, is_temp_bom, context):
         purchase_order_obj = self.pool['purchase.order']
         purchase_order_line_obj = self.pool['purchase.order.line']
 
-        supplier_id = line.supplier_id.id
+        supplier_id = obj.supplier_id.id
+
         if not supplier_id:
             raise orm.except_orm(_(u'Error !'),
-                                 _(u'There are no suppliers defined for product {0}'.format(line.product_id.name)))
-        product_id = line.product_id.id
-        qty = line.qty
-        shop = line.sale_order_id.shop_id
+                                 _(u'There are no suppliers defined for product {0}'.format(obj.product_id.name)))
+
+        if obj.new_product_id:
+            product_id = obj.new_product_id.id
+        else:
+            product_id = obj.product_id.id
+
+        if is_temp_bom:
+            qty = obj.product_qty
+            line_id = obj.order_requirement_line_id.id
+        else:
+            qty = obj.qty
+            line_id = obj.id
+
+        shop = obj.sale_order_id.shop_id
         shop_id = shop.id
 
         purchase_order_ids = purchase_order_obj.search(cr, uid, [('partner_id', '=', supplier_id),
@@ -326,7 +328,7 @@ class order_requirement_line(orm.Model):
 
             order_line_values['product_id'] = product_id
             order_line_values['order_id'] = purchase_id
-            order_line_values['order_requirement_line_ids'] = [(4, line.id)]
+            order_line_values['order_requirement_line_ids'] = [(4, line_id)]
 
             # Create order line and relationship with order_requirement_line
             purchase_order_line_obj.create(cr, uid, order_line_values, context)
@@ -352,19 +354,18 @@ class order_requirement_line(orm.Model):
                 order_line_values['product_id'] = product_id
                 order_line_values['order_id'] = present_order_id
                 # Creating a new line and link to many2many field
-                self.write(cr, uid, line.id, {'purchase_order_line_ids': [(0, 0, order_line_values)]}, context)
+                self.write(cr, uid, obj.id, {'purchase_order_line_ids': [(0, 0, order_line_values)]}, context)
             else:
                 # Add qty to existing line
                 order_line_id = purchase_order_line_ids[0]
                 line = purchase_order_line_obj.browse(cr, uid, order_line_id, context)
                 newqty = qty + line.product_qty
                 purchase_order_line_obj.write(cr, uid, order_line_id, {'product_qty': newqty}, context)
-                # Create a new relationship (? only if not already present?)
-                self.write(cr, uid, line.id, {'purchase_order_line_ids': [(4, order_line_id)]}, context)
-                # Now order_line_id is the created or update purchase order line
 
     def _manufacture(self, cr, uid, line, context):
-        pass
+        for temp in line._temp_mrp_bom_ids:
+            if not temp.is_manufactured:
+                self._purchase(cr, uid, temp, True, context)
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -373,7 +374,7 @@ class order_requirement_line(orm.Model):
             if line.is_manufactured:
                 self._manufacture(cr, uid, line, context)
             else:
-                self._purchase(cr, uid, line, context)
+                self._purchase(cr, uid, line, False, context)
 
             self.write(cr, uid, line.id, {'state': 'done'}, context)
 
@@ -409,5 +410,6 @@ class order_requirement_line(orm.Model):
         }
 
     def save_suppliers(self, cr, uid, ids, context=None):
+        # Dummy save function
         return True
 

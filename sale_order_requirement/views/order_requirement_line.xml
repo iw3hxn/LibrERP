@@ -17,7 +17,7 @@
                     <field name="new_product_id" on_change="onchange_product_id(new_product_id,qty,supplier_id,context)"/>
                     <field name="qty"/>
                     <field name="is_manufactured"/>
-                    <field name="supplier_id" attrs="{'required': [('is_manufactured', '=', False)], 'readonly': [('is_manufactured', '=', True)]}"/>
+                    <field name="supplier_id" attrs="{'required': [('is_manufactured', '=', False)], 'readonly': [('is_manufactured', '=', True),('state','!=','draft')]}"/>
                     <field name="supplier_ids" invisible="1"/>
                     <group colspan="8" col="8" states="draft">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
@@ -25,13 +25,13 @@
                     </group>
 
                     <field name="temp_mrp_bom_ids" type="xml" nolabel="1" colspan="4"
-                           attrs="{'invisible': [('temp_mrp_bom_ids','=',False)], 'readonly':['|',('state','=','done'),('is_manufactured','=',False)]}">
+                           attrs="{'invisible': [('temp_mrp_bom_ids','=',False)], 'readonly':['|',('state','!=','draft'),('is_manufactured','=',False)]}">
                         <tree string="BoM Structure" editable="top" create="false"
                             colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                             <field name="row_color" invisible="1"/>
                             <!--<field name="sequence" invisible="1"/>-->
                             <field name="complete_name"/>
-                            <field name="product_id" on_change="onchange_product_id(product_id,product_qty,supplier_id)"/>
+                            <field name="product_id" context="" on_change="onchange_product_id(product_id,product_qty,supplier_id,context)"/>
                             <field name="product_qty" readonly="1"/>
                             <field name="product_uom" readonly="1"/>
                             <field name="stock_availability"/>

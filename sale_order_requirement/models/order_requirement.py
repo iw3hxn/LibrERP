@@ -82,5 +82,5 @@ class order_requirement(orm.Model):
 
     def set_state_done(self, cr, uid, ids, context):
         # TODO
-
-        self.write(cr, uid, ids, {'state': 'done'})
+        pass
+        # self.write(cr, uid, ids, {'state': 'done'})
