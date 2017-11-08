@@ -155,9 +155,12 @@ class order_requirement_line(orm.Model):
         # If the first record is [5, False, False] I am creating
         is_creation = temp_mrp_bom_vals[0][0] == 5
         if is_creation:
-            # IF I am creating, remove old items
-            line = self.browse(cr, uid, line_id, context)
-            temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
+            # line = self.browse(cr, uid, line_id, context)
+            # try:
+            #     pass
+            #     # temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
+            # except:
+            #     pass # No problem if already deleted
 
             # IF I am creating, start cycle from second item (first is shown above)
             for val in temp_mrp_bom_vals[1:]:
@@ -254,6 +257,13 @@ class order_requirement_line(orm.Model):
                     })
 
             # Update BOM according to new product
+            # Removing existing temp mrp bom
+            line = self.browse(cr, uid, ids, context)[0]
+            if line._temp_mrp_bom_ids:
+                temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+                temp_mrp_bom_ids = [t.id for t in line._temp_mrp_bom_ids]
+                temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
+
             if product.bom_ids:
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
                 # result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
