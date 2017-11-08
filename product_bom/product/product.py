@@ -219,9 +219,9 @@ class product_product(orm.Model):
         ids = ids or []
 
         for product in self.browse(cr, uid, ids, context):
-            bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
-            # cr.execute("""SELECT id FROM mrp_bom WHERE product_id={product_id}""".format(product_id=product.id))
-            # bom_id = cr.fetchall()
+            # bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
+            cr.execute("""SELECT id FROM mrp_bom WHERE product_id={product_id} and bom_id is null""".format(product_id=product.id))
+            bom_id = cr.fetchall()
             if not bom_id:
                 res[product.id] = False
             else:
