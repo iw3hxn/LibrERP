@@ -20,10 +20,10 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+import decimal_precision as dp
 
 
-class temp_mrp_bom(orm.TransientModel):
-    _inherit = 'mrp.bom'
+class temp_mrp_bom(orm.Model):
     _name = 'temp.mrp.bom'
 
     def _stock_availability(self, cr, uid, ids, name, args, context=None):
@@ -63,6 +63,15 @@ class temp_mrp_bom(orm.TransientModel):
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True),
+
+        'product_id': fields.many2one('product.product', 'Product', required=True),
+        'product_uos_qty': fields.float('Product UOS Qty'),
+        'product_uos': fields.many2one('product.uom', 'Product UOS',
+                                       help="Product UOS (Unit of Sale) is the unit of measurement for the invoicing and promotion of stock."),
+        'product_qty': fields.float('Product Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
+        'product_uom': fields.many2one('product.uom', 'Product UOM', required=True,
+                                       help="UoM (Unit of Measure) is the unit of measurement for the inventory control"),
+
         'tmp_id': fields.integer(),
         'tmp_parent_id': fields.integer(),
         'is_manufactured': fields.boolean('Manufacture'),
