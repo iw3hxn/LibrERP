@@ -55,6 +55,8 @@ class order_requirement_line(orm.Model):
             res[line.id] = 'black'
             if line.stock_availability < line.spare:
                 res[line.id] = 'red'
+            if line.state == 'done':
+                res[line.id] = 'green'
         return res
 
 
@@ -146,16 +148,43 @@ class order_requirement_line(orm.Model):
                 res[line.id] = temp_mrp_bom_vals
         return res
 
-    def _save_temp_mrp_bom(self, cr, uid, line_id, name, vals, arg, context=None):
-        # context = context or self.pool['res.users'].context_get(cr, uid)
-        # temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-        # temp_mrp_bom_obj.create(cr, uid, vals, context)
-        pass
+    def _save_temp_mrp_bom(self, cr, uid, line_id, name, temp_mrp_bom_vals, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
-        # line = self.browse(cr, uid, line_id, context)
-        # self.write(cr, uid, line.id, {name: vals})
-        #
-        # # Next, update the modified ones
+        # If the first record is [5, False, False] I am creating
+        is_creation = temp_mrp_bom_vals[0][0] == 5
+        if is_creation:
+            # IF I am creating, remove old items
+            line = self.browse(cr, uid, line_id, context)
+            temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
+
+            # IF I am creating, start cycle from second item (first is shown above)
+            for val in temp_mrp_bom_vals[1:]:
+                if val:
+                    temp_vals = val[2]
+                    temp_vals['order_requirement_line_id'] = line_id
+                    temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
+        else:
+            # I am updating
+            for val in temp_mrp_bom_vals:
+                if val[0] == 1:
+                    # Only items in this form are updating: [1,ID,{values}]
+                    temp_id = val[1]
+                    temp_vals = val[2]
+                    temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
+
+        # for val in temp_mrp_bom_vals:
+        #     temp_id = val[0]
+        #     if temp_id == 0:
+        #         # I am creating
+        #         temp_vals = val[2]
+        #         temp_vals['order_requirement_line_id'] = line_id
+        #         temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
+        #     elif temp_id == 4:
+        #         # I am updating
+        #         temp_vals = val[1]
+        #         temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
@@ -178,9 +207,10 @@ class order_requirement_line(orm.Model):
         ),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
-        '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy', readonly=False),
+        '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_ids': fields.function(_get_or_create_temp_mrp, relation='temp.mrp.bom', string="BoM Hierarchy",
-                                            method=True, type='one2many', fnct_inv=_save_temp_mrp_bom),
+                                            method=True, type='one2many', fnct_inv=_save_temp_mrp_bom,
+                                            readonly=True, states={'draft': [('readonly', False)]}),
     }
 
     _defaults = {
@@ -226,7 +256,14 @@ class order_requirement_line(orm.Model):
             # Update BOM according to new product
             if product.bom_ids:
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-                result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+                # result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
+                result_dict.update({
+                    'temp_mrp_bom_ids': temp_mrp_bom_vals,
+                    'view_bom': True,
+                    'is_manufactured': True
+                })
+            else:
+                result_dict['view_bom'] = False
 
         else:
             result_dict.update({
@@ -234,7 +271,6 @@ class order_requirement_line(orm.Model):
                 'supplier_ids': [],
             })
 
-        result_dict['view_bom'] = len(result_dict['temp_mrp_bom_ids']) > 0
         return {'value': result_dict}
 
     def _purchase(self, cr, uid, line, context):
@@ -362,7 +398,6 @@ class order_requirement_line(orm.Model):
             'res_id': line.id
         }
 
-    def write(self, cr, uid, ids, vals, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        return super(order_requirement_line, self).write(cr, uid, ids, vals, context)
+    def save_suppliers(self, cr, uid, ids, context=None):
+        return True
 
