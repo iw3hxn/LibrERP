@@ -1,23 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2017 Didotech SRL
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
 import datetime
 
@@ -75,10 +57,10 @@ class order_requirement_line(orm.Model):
                        }
 
                 result[l.id] = res
-                if l.child_complete_ids:
+                if l.child_buy_and_produce_ids:
                     if level < 6:
                         level += 1
-                    _get_rec(l.child_complete_ids, level)
+                    _get_rec(l.child_buy_and_produce_ids, level)
                     if 0 < level < 6:
                         level -= 1
             return result
@@ -96,21 +78,20 @@ class order_requirement_line(orm.Model):
             return []
 
         for bom_father in bom_ids:
-            children_levels = self.get_children(bom_father.child_complete_ids, 0)
+            children_levels = self.get_children(bom_father.child_buy_and_produce_ids, 0)
 
             def _get_rec(bom_rec):
-                bom_children = bom_rec.child_complete_ids
+                bom_children = bom_rec.child_buy_and_produce_ids
                 if not bom_children:
                     return
                 for bom in bom_children:
                     if bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         newbom_vals = {
+                            # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
                             'complete_name': '___' * children_levels[bom.id]['level'] + ' ' + bom.name,
-                            # 'complete_name': '___' * children_levels[bom.id]['level'] + coolname,
-                            # 'complete_name': 'Level =' + str(children_levels[bom.id]['level']) + '= ' + bom.name,
                             'name': bom.name,
                             'type': bom.type,
                             # 'bom_id': bom.bom_id.id,
@@ -212,6 +193,7 @@ class order_requirement_line(orm.Model):
     }
 
     def fields_get(self, cr, uid, allfields=None, context=None):
+        # Useful for showing bom only if the button is pressed, not the click on the line
         context = context or self.pool['res.users'].context_get(cr, uid)
         ret = super(order_requirement_line, self).fields_get(cr, uid, allfields=allfields, context=context)
         view_bom = 'view_bom' in context and context['view_bom']
@@ -220,7 +202,7 @@ class order_requirement_line(orm.Model):
 
         return ret
 
-    def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
+    def onchange_product_id(self, cr, uid, ids, temp_mrp_bom_ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         # result_dict = {}
@@ -248,10 +230,8 @@ class order_requirement_line(orm.Model):
 
             # Update BOM according to new product
             # Removing existing temp mrp bom
-            line = self.browse(cr, uid, ids, context)[0]
-            if line._temp_mrp_bom_ids:
+            if temp_mrp_bom_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-                temp_mrp_bom_ids = [t.id for t in line._temp_mrp_bom_ids]
                 temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
 
             if product.bom_ids:
@@ -274,6 +254,8 @@ class order_requirement_line(orm.Model):
         return {'value': result_dict}
 
     def _purchase(self, cr, uid, obj, is_temp_bom, context):
+        # obj can be a order_requirement_line or temp_mrp_bom
+        # Set is_temp_bom to True if obj is a temp_mrp_bom
         purchase_order_obj = self.pool['purchase.order']
         purchase_order_line_obj = self.pool['purchase.order.line']
 
@@ -362,17 +344,76 @@ class order_requirement_line(orm.Model):
                 newqty = qty + line.product_qty
                 purchase_order_line_obj.write(cr, uid, order_line_id, {'product_qty': newqty}, context)
 
-    def _manufacture(self, cr, uid, line, context):
+    def _manufacture_main_product(self, cr, uid, line, context):
+        mrp_production_obj = self.pool['mrp.production']
+
+        if line.new_product_id:
+            product = line.new_product_id
+        else:
+            product = line.product_id
+
+        mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', product.id),
+                                                                 ('state', '=', 'draft')])
+        if not mrp_production_ids:
+            # Adding if no "similar" manufacturing orders are presents
+            mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
+
+            # Create manufacturing order
+            mrp_production_values['product_id'] = product.id
+            mrp_proudction_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
+
+    def _manufacture_bom(self, cr, uid, line, bom, context):
+        # TODO: this will do one at a time, enhance!
+        mrp_production_obj = self.pool['mrp.production']
+        stock_move_obj = self.pool['stock.move']
+
+        if line.new_product_id:
+            main_product_id = line.new_product_id.id
+        else:
+            main_product_id = line.product_id.id
+
+        mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', main_product_id),
+                                                                 ('state', '=', 'draft')])
+        if not mrp_production_ids:
+            # todo ERROR
+            return
+
+        # Adding lines if main product manufacturing order is present
+
+        # Take first
+        mrp_production_id = mrp_production_ids[0]
+        # Create move line
+        shop = line.sale_order_id.shop_id
+        location = shop.warehouse_id.lot_stock_id
+
+        stock_move_vals = {
+            'product_id': bom.product_id.id,
+            'product_qty': bom.product_qty,
+            'product_uom': bom.product_uom.id,
+            'location_id': location.id,
+        }
+        # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
+
+        mrp_production_obj.write(cr, uid, mrp_production_id,
+                                 {'move_lines': [(0, False, stock_move_vals)]}, context=context)
+
+    def _manufacture_all(self, cr, uid, line, context):
+        # First set main product to manufacture
+        self._manufacture_main_product(cr, uid, line, context)
+        # Then set all bom lines product to manufacture (or buy)
         for temp in line._temp_mrp_bom_ids:
-            if not temp.is_manufactured:
-                self._purchase(cr, uid, temp, True, context)
+            if False and temp.is_manufactured:
+                self._manufacture_bom(cr, uid, line, temp, context)
+            else:
+                #self._purchase(cr, uid, temp, True, context)
+                pass
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
         for line in self.browse(cr, uid, ids, context):
             if line.is_manufactured:
-                self._manufacture(cr, uid, line, context)
+                self._manufacture_all(cr, uid, line, context)
             else:
                 self._purchase(cr, uid, line, False, context)
 
