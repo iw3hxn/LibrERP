@@ -41,7 +41,6 @@ class order_requirement_line(orm.Model):
                 res[line.id] = 'green'
         return res
 
-
     def get_children(self, object, level=0):
         result = {}
 
@@ -352,34 +351,31 @@ class order_requirement_line(orm.Model):
         else:
             product = line.product_id
 
-        mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', product.id),
-                                                                 ('state', '=', 'draft')])
-        if not mrp_production_ids:
-            # Adding if no "similar" manufacturing orders are presents
-            mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
+        # mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', product.id),
+        #                                                          ('state', '=', 'draft')])
+        # Always add manufacturing orders, same products can have different boms
+        mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
-            # Create manufacturing order
-            mrp_production_values['product_id'] = product.id
-            mrp_proudction_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
+        # Create manufacturing order
+        mrp_production_values['product_id'] = product.id
+        mrp_proudction_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
 
     def _manufacture_bom(self, cr, uid, line, bom, context):
         # TODO: this will do one at a time, enhance!
         mrp_production_obj = self.pool['mrp.production']
-        stock_move_obj = self.pool['stock.move']
 
         if line.new_product_id:
-            main_product_id = line.new_product_id.id
+            main_product = line.new_product_id
         else:
-            main_product_id = line.product_id.id
+            main_product = line.product_id
 
-        mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', main_product_id),
+        mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', main_product.id),
                                                                  ('state', '=', 'draft')])
         if not mrp_production_ids:
-            # todo ERROR
-            return
+            raise orm.except_orm(_(u'Error !'),
+                                 _(u'Main product order is missing for product {0}'.format(main_product.name)))
 
         # Adding lines if main product manufacturing order is present
-
         # Take first
         mrp_production_id = mrp_production_ids[0]
         # Create move line
@@ -391,9 +387,11 @@ class order_requirement_line(orm.Model):
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
             'location_id': location.id,
+            'location_dest_id': 1,
+            # todo ask
         }
         # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
-
+        # Create in relationship with mrp.production
         mrp_production_obj.write(cr, uid, mrp_production_id,
                                  {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
@@ -402,9 +400,10 @@ class order_requirement_line(orm.Model):
         self._manufacture_main_product(cr, uid, line, context)
         # Then set all bom lines product to manufacture (or buy)
         for temp in line._temp_mrp_bom_ids:
-            if False and temp.is_manufactured:
+            if temp.is_manufactured:
                 self._manufacture_bom(cr, uid, line, temp, context)
             else:
+                # This is OK, it works, uncomment
                 #self._purchase(cr, uid, temp, True, context)
                 pass
 
