@@ -1020,3 +1020,9 @@ msgstr "Validazione"
 #: field:res.company,enable_discount_validation:0
 msgid "Enable Discount Verify"
 msgstr "Abilita verifica sullo sconto"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.action_order_form_supervisor
+#: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_supervisor
+msgid "Quotation Supervisor Review"
+msgstr "Verifica Ordine Cliente"
