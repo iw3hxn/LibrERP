@@ -39,3 +39,15 @@ msgstr "Errore! Non è possibile creare categorie ricorsive."
 #: model:ir.model,name:product_code_category.model_product_category
 msgid "Product Category"
 msgstr "Categoria Prodotto"
+
+#. module: product_code_category
+#: code:addons/product_code_category/product_code_category.py:69
+#, python-format
+msgid "Exist other product with code '{code}' and variants'{variants}'"
+msgstr "Esiste già un prodotto con codice '{code}' e variante '{variants}'"
+
+#. module: product_code_category
+#: code:addons/product_code_category/product_code_category.py:72
+#, python-format
+msgid "Exist other product with code '{code}'"
+msgstr "Esiste già un prodotto con codice '{code}'"
