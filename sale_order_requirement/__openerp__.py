@@ -16,7 +16,7 @@ and choose if manufacture or buy products from suppliers.
         "mrp",
     ],
     'data': [
-        'views/order_requirement_line_suppliers.xml',
+        # 'views/order_requirement_line_suppliers.xml',
         'views/order_requirement.xml',
         'views/order_requirement_line.xml'
     ],
