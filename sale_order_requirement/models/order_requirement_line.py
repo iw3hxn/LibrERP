@@ -104,7 +104,8 @@ class order_requirement_line(orm.Model):
                             'is_leaf': not bool(bom.child_buy_and_produce_ids)
                         }
                         temp_mrp_bom_vals.append(newbom_vals)
-                        _get_rec(bom)
+                    # Even if not product I must check all children
+                    _get_rec(bom)
 
             _get_rec(bom_father)
         return temp_mrp_bom_vals
@@ -203,7 +204,7 @@ class order_requirement_line(orm.Model):
 
         return ret
 
-    def onchange_product_id(self, cr, uid, ids, temp_mrp_bom_ids, new_product_id, qty=0, supplier_id=False, context=None):
+    def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         # result_dict = {}
@@ -231,9 +232,10 @@ class order_requirement_line(orm.Model):
 
             # Update BOM according to new product
             # Removing existing temp mrp bom
-            if temp_mrp_bom_ids:
+            line = self.browse(cr, uid, ids, context)[0]
+            if line._temp_mrp_bom_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-                temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
+                temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
 
             if product.bom_ids:
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
