@@ -1,15 +1,90 @@
 code,id,name,parent_id:id
-,vat_code_chart_root,Tassazione,
-B-IVA-E,template_b_iva_vendite,Imponibile Vendite,vat_code_chart_root
-B-IVA-F,template_b_iva_acquisti,Imponibile Acquisti,vat_code_chart_root
-B-PRE,template_b_previdenza,Imponibile Previdenza,vat_code_chart_root
-B-RIT,template_b_ritenute,Imponibile Ritenute,vat_code_chart_root
-T-IVA-E,template_t_iva_vendite,IVA vendite,vat_code_chart_root
-T-IVA-F,template_t_iva_acquisti,IVA acquisti,vat_code_chart_root
-T-IVA-E-22,template_t_iva_vendite_22,IVA vendite 22,template_t_iva_vendite
-B-IVA-E-22,template_b_iva_vendite_22,Imponibile IVA vendite 22,template_b_iva_vendite
-T-IVA-F-22,template_t_iva_acquisti_22,IVA acquisti 22,template_t_iva_acquisti
-B-IVA-F-22,template_b_iva_acquisti_22,Imponibile IVA acquisti 22,template_b_iva_acquisti
+,vat_code_chart_root,"Imposte Italia (V1.00)",
+F-ITC0V,template_ivacode_pagata,"IVA a credito",vat_code_chart_root
+F-ITC0D,template_impcode_pagata,"Imponibile IVA a credito",vat_code_chart_root
+E-ITD0V,template_ivacode_riscossa,"IVA a debito",vat_code_chart_root
+E-ITD0D,template_impcode_riscossa,"Imponibile IVA a debito",vat_code_chart_root
+F-ITC0X,template_ivacode_pagata_ind,"IVA indetraibile",vat_code_chart_root
+ITC22V,template_ivacode_pagata_22,"IVA 22% da acquisti",template_ivacode_pagata
+ITC22D,template_impcode_pagata_22,"Imponibile IVA 22% da acquisti",template_impcode_pagata
+ITD22V,template_ivacode_riscossa_22,"IVA 22% su vendite",template_ivacode_riscossa
+ITD22V,template_ivacode_riscossa_22_pa,"IVA 22% su vendite PA",template_ivacode_riscossa
+ITD22D,template_impcode_riscossa_22,"Imponibile IVA 22% su vendite",template_impcode_riscossa
+ITD22DPA,template_impcode_riscossa_22_pa,"Imponibile IVA 22% su vendite PA",template_impcode_riscossa
+ITC22N,template_ivacode_pagata_22i,"IVA 22% (100% indetraibile)",template_ivacode_pagata_ind
+ITC22I,template_impcode_pagata_22i,"Imponibile IVA 22% indetraibile",template_impcode_pagata
+ITC22d20N,template_ivacode_pagata_22i80,"IVA 22% (quota 80% indet.)",template_ivacode_pagata_ind
+ITC22d20V,template_ivacode_pagata_22d20,"IVA 22% (quota 20% detr.)",template_ivacode_pagata
+ITC22d50N,template_ivacode_pagata_22i50,"IVA 22% (quota 50% indet.)",template_ivacode_pagata_ind
+ITC22d50V,template_ivacode_pagata_22d50,"IVA 22% (quota 50% detr.)",template_ivacode_pagata
+ITC22d70N,template_ivacode_pagata_22i30,"IVA 22% (quota 30% indet.)",template_ivacode_pagata_ind
+ITC22d70V,template_ivacode_pagata_22d70,"IVA 22% (quota 70% detr.)",template_ivacode_pagata
+ITC22d80N,template_ivacode_pagata_22i20,"IVA 22% (quota 20% indet.)",template_ivacode_pagata_ind
+ITC22d80V,template_ivacode_pagata_22d80,"IVA 22% (quota 80% detr.)",template_ivacode_pagata
+ITC4V,template_ivacode_pagata_4,"IVA 4% da acquisti",template_ivacode_pagata
+ITC4D,template_impcode_pagata_4,"Imponibile IVA 4% da acquisti",template_impcode_pagata
+ITD4V,template_ivacode_riscossa_4,"IVA 4% su vendite",template_ivacode_riscossa
+ITD4D,template_impcode_riscossa_4,"Imponibile IVA 4% su vendite",template_impcode_riscossa
+ITC4N,template_ivacode_pagata_4i,"IVA 4% (100% indetraibile)",template_ivacode_pagata_ind
+ITC4I,template_impcode_pagata_4i,"Imponibile IVA 4% indetraibile",template_impcode_pagata
+ITC4d50N,template_ivacode_pagata_4i50,"IVA 4% (quota 50% indet.)",template_ivacode_pagata_ind
+ITC4d50V,template_ivacode_pagata_4d50,"IVA 4% (quota 50% detr.)",template_ivacode_pagata
+ITC4d50D,template_impcode_pagata_4d50,"Imponibile IVA 4% (50% detr.)",template_impcode_pagata
+ITC10V,template_ivacode_pagata_10,"IVA 10% da acquisti",template_ivacode_pagata
+ITC10D,template_impcode_pagata_10,"Imponibile IVA 10% da acquisti",template_impcode_pagata
+ITD10V,template_ivacode_riscossa_10,"IVA 10% su vendite",template_ivacode_riscossa
+ITD10D,template_impcode_riscossa_10,"Imponibile IVA 10% su vendite",template_impcode_riscossa
+ITC10N,template_ivacode_pagata_10i,"IVA 10% (100% indetraibile)",template_ivacode_pagata_ind
+ITC10I,template_impcode_pagata_10i,"Imponibile IVA 10% indetraibile",template_impcode_pagata
+ITC10d50N,template_ivacode_pagata_10i50,"IVA 10% (quota 50% indet.)",template_ivacode_pagata_ind
+ITC10d50V,template_ivacode_pagata_10d50,"IVA 10% (quota 50% detr.)",template_ivacode_pagata
+ITC10d50D,template_impcode_pagata_10d50,"Imponibile IVA 10% (50% detr.)",template_impcode_pagata
+ITCa1D,template_impcode_pagata_a1,"Acq.fuori campo IVA (art.1 DPR633)",template_impcode_pagata
+ITDa1D,template_impcode_riscossa_a1,"Vend.fuori campo IVA (art.1 DPR633)",template_impcode_riscossa
+ITCa2D,template_impcode_pagata_a2,"Acq.Escluso IVA (art.2 DPR633)",template_impcode_pagata
+ITDa2D,template_impcode_riscossa_a2,"Vend.Escluso IVA (art.2 DPR633)",template_impcode_riscossa
+ITCa7D,template_impcode_pagata_a7,"Acq.N.I. art.7 DPR633",template_impcode_pagata
+ITDa7D,template_impcode_riscossa_a7,"Vend.N.I. art.7 DPR633",template_impcode_riscossa
+ITCa7tD,template_impcode_pagata_a7t,"Acq.NI art.7ter DPR633 (servizi xUE)",template_impcode_pagata
+ITDa7tD,template_impcode_riscossa_a7t,"Vend.NI art.7ter DPR633 (servizi xUE)",template_impcode_riscossa
+ITCa8aD,template_impcode_pagata_a8a,"Acq.N.I. art.8a DPR633 (Dogana)",template_impcode_pagata
+ITDa8aD,template_impcode_riscossa_a8a,"Vend.N.I. art.8a DPR633 (Dogana)",template_impcode_riscossa
+ITCa8c2D,template_impcode_pagata_a8c2,"Acq.N.I. art.8c2 DPR633 (lett.Intento)",template_impcode_pagata
+ITDa8c2D,template_impcode_riscossa_a8c2,"Vend.N.I. art.8c2 DPR633 (lett.Intento)",template_impcode_riscossa
+ITCa9D,template_impcode_pagata_a9,"Acq.N.I. art.9 DPR633",template_impcode_pagata
+ITDa9D,template_impcode_riscossa_a9,"Vend.N.I. art.9 DPR633",template_impcode_riscossa
+ITCa10D,template_impcode_pagata_a10,"Acq.esente art.10 DPR633",template_impcode_pagata
+ITDa10D,template_impcode_riscossa_a10,"Vend.esente art.10 DPR633",template_impcode_riscossa
+ITCa10c5D,template_impcode_pagata_a10c5,"Acq.esente art.10n27-quinques DPR633",template_impcode_pagata
+ITDa10c5D,template_impcode_riscossa_a10c5,"Vend.esente art.10n27-quinques DPR633",template_impcode_riscossa
+ITCa13D,template_impcode_pagata_a13,"Acq.escluso art.13 DPR633",template_impcode_pagata
+ITDa13D,template_impcode_riscossa_a13,"Vend.escluso art.13 DPR633",template_impcode_riscossa
+ITCa15D,template_impcode_pagata_a15,"Acq.escluso art.15 DPR633",template_impcode_pagata
+ITDa15D,template_impcode_riscossa_a15,"Vend.escluso art.15 DPR633",template_impcode_riscossa
+ITCa17D,template_impcode_pagata_a17,"Acq.FC IVA Art.17 DPR633",template_impcode_pagata
+ITDa17D,template_impcode_riscossa_a17,"Vend.FC IVA Art.17 DPR633",template_impcode_riscossa
+ITCa17c2V,template_ivacode_pagata_a17c2,"IVA N.I. art.17c2 DPR633",template_ivacode_pagata
+ITCa17c2D,template_impcode_pagata_a17c2,"N.I. art.17c2 DPR633",template_impcode_pagata
+ITDa17c2V,template_ivacode_riscossa_a17c2,"IVA Rev. charge art.17c2 DPR633",template_ivacode_riscossa
+ITDa17c2D,template_impcode_riscossa_a17c2,"Rev. charge art.17c2 DPR633",template_impcode_riscossa
+ITCa17c6V,template_ivacode_pagata_a17c6,"IVA N.I. art.17c6 DPR633",template_ivacode_pagata
+ITCa17c6D,template_impcode_pagata_a17c6,"N.I. art.17c6 DPR633",template_impcode_pagata
+ITDa17c6V,template_ivacode_riscossa_a17c6,"IVA Rev. charge art.17c6 DPR633",template_ivacode_riscossa
+ITDa17c6D,template_impcode_riscossa_a17c6,"Rev. charge art.17c6 DPR633",template_impcode_riscossa
+ITCl41a36D,template_impcode_pagata_a36,"Acq.N.Sogg. reg.Marg. (art.36 L41/95)",template_impcode_pagata
+ITDl41a36D,template_impcode_riscossa_a36,"Vend.N.Sogg. reg.Marg. (art.36 L41/95)",template_impcode_riscossa
+ITCl41a37D,template_impcode_pagata_a37,"Acq.Op.UE reg.Margine (art.37 L41/95)",template_impcode_pagata
+ITDl41a37D,template_impcode_riscossa_a37,"Vend.Op.UE reg.Margine (art.37 L41/95)",template_impcode_riscossa
+ITCa38V,template_ivacode_pagata_a38,"IVA N.I. art.38 L.427/93",template_ivacode_pagata
+ITCa38D,template_impcode_pagata_a38,"N.I. art.38 L.427/93",template_impcode_pagata
+ITDa38V,template_ivacode_riscossa_a38,"IVA Rev. charge art.38 L.427/93",template_ivacode_riscossa
+ITDa38D,template_impcode_riscossa_a38,"Rev. charge art.38 L.427/93",template_impcode_riscossa
+ITCa41D,template_impcode_pagata_a41,"Acq.N.I. art.41 L.427/93",template_impcode_pagata
+ITDa41D,template_impcode_riscossa_a41,"Vend.N.I. art.41 L.427/93",template_impcode_riscossa
+ITCl244D,template_impcode_pagata_l244,"Acq.art.1c96-117 L.244/07 (reg.Minimo)",template_impcode_pagata
+ITDl244D,template_impcode_riscossa_l244,"Vend.art.1c96-117 L.244/07 (reg.Minimo)",template_impcode_riscossa
+ITCl98a27D,template_impcode_pagata_l98,"Acq.senza IVA art.27 L.98/11",template_impcode_pagata
+ITDl98a27D,template_impcode_riscossa_l98,"Vend.senza IVA art.27 L.98/11",template_impcode_riscossa
 W,template_rit,Ritenute d acconto,vat_code_chart_root
 T-RIT-20,template_rit_20_t,Ritenuta d acconto 20,template_rit
 W-RIT-20,template_rit_20_b,Imponibile ritenuta 20 acquisti,template_rit

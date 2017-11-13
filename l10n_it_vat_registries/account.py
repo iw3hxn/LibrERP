@@ -29,3 +29,28 @@ class account_tax_code(orm.Model):
         'is_base': fields.boolean('Is base', help="This tax code is used for base amounts (field used by VAT registries)"),
         'exclude_from_registries': fields.boolean('Exclude from VAT registries'),
     }
+
+
+class account_tax(orm.Model):
+    _inherit = "account.tax"
+
+    def _set_is_base(self, cr, uid, vals, context):
+        if vals.get('base_code_id', False) or vals.get('ref_base_code_id', False):
+            account_tax_code_ids = []
+            if vals.get('base_code_id'):
+                account_tax_code_ids.append(vals.get('base_code_id'))
+            if vals.get('ref_base_code_id'):
+                account_tax_code_ids.append(vals.get('ref_base_code_id'))
+            self.pool['account.tax.code'].write(cr, uid, account_tax_code_ids, {'is_base': True}, context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = super(account_tax, self).write(cr, uid, ids, vals, context)
+        self._set_is_base(cr, uid, vals, context)
+        return res
+
+    def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = super(account_tax, self).create(cr, uid, vals, context)
+        self._set_is_base(cr, uid, vals, context)
+        return res
