@@ -99,7 +99,7 @@ class order_requirement_line(orm.Model):
                             # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
-                            'complete_name': '___' * children_levels[bom.id]['level'] + ' ' + bom.name,
+                            'complete_name': '---' * children_levels[bom.id]['level'] + '> ' + bom.name,
                             'name': bom.name,
                             'type': bom.type,
                             # 'bom_id': bom.bom_id.id,
