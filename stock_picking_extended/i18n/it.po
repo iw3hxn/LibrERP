@@ -366,34 +366,51 @@ msgstr "Il peso netto in kg."
 msgid "Remaining Credit Limit"
 msgstr "Fido Residuo"
 
-#. module: sale_ordstock_move_extendeder_confirm
+#. module: stock_picking_extended
 #: code:addons/stock_picking_extended/stock/picking.py:146
 #, python-format
 msgid "Credit Over Limit"
 msgstr "Fido Superato"
 
-#. module: sale_ordstock_move_extendeder_confirm
+#. module: stock_picking_extended
 #: code:addons/stock_picking_extended/stock/picking.py:146
 #, python-format
 msgid "Is not possible to confirm because customer exceed the credit limit."
 msgstr "Non è possibile confermare perchè il cliente ha superato il limite"
 
-#. module: sale_ordstock_move_extendeder_confirm
+#. module: stock_picking_extended
 #: code:addons/stock_picking_extended/stock/picking.py:146
 #, python-format
 msgid "Overdue Limit"
 msgstr "Limite sullo scaduto"
 
-#. module: sale_ordstock_move_extendeder_confirm
+#. module: stock_picking_extended
 #: code:addons/stock_picking_extended/stock/picking.py:146
 #, python-format
-msgid "Is not possible to confirm because customer have a overdue payment."
-msgstr "Non è possibile confermare perchè il cliente uno scaduto"
+msgid "Overdue Limit"
+msgstr "Limite sullo scaduto"
+
+#. module: stock_picking_extended
+#: code:addons/stock_picking_extended/models/inherit_sale_order.py:83
+#, python-format
+msgid "Error"
+msgstr "Errore"
+
+#. module: stock_picking_extended
+#: code:addons/stock_picking_extended/models/inherit_sale_order.py:83
+#, python-format
+msgid "Is not possible to confirm because order {order} have no Minimum Planned Date"
+msgstr "Non è possibile confermarlo perchè l'ordine {order} non ha una Data di Consegna Minima"
 
 #. module: stock_move_extended
 #: field:res.company,note_on_invoice_line:0
 msgid "Copy Note on Invoice"
 msgstr "Riporta le note in fattura"
+
+#. module: stock_move_extended
+#: field:res.company,required_minimum_planned_date:0
+msgid "Required Expected Date on Sale Order"
+msgstr "Richiede la data di consegna sull'Ordine di Vendita"
 
 #. module: stock_picking_extended
 #: help:res.company,note_on_invoice_line:0

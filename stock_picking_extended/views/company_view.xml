@@ -13,6 +13,9 @@
                     <field name="note_on_stock_move"/>
                    	<field name="note_on_invoice_line"/>
                    	<newline/>
+                    <separator string="Order Board" colspan="4" />
+                    <field name="required_minimum_planned_date"/>
+                    <newline/>
                 </page>
             </field>
         </record>
