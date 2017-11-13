@@ -14,7 +14,7 @@ class order_requirement_line(orm.Model):
 
     _rec_name = 'product_id'
 
-    def _get_choosen_product(self, cr, uid, ids, name = None, args = None, context=None):
+    def _get_actual_product(self, cr, uid, ids, name = None, args = None, context=None):
         line = self.browse(cr, uid, ids, context)[0]
         if line.new_product_id:
             return line.new_product_id
@@ -28,11 +28,7 @@ class order_requirement_line(orm.Model):
         for line in self.browse(cr, uid, ids, context=context):
             spare = 0
             warehouse = line.sale_order_id.shop_id.warehouse_id
-            # if line.new_product_id:
-            #     product = line.new_product_id
-            # else:
-            #     product = line.product_id
-            product = self._get_choosen_product(cr, uid, ids)
+            product = self._get_actual_product(cr, uid, ids)
             order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product.id),
                                                                          ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
             if order_point_ids:
@@ -131,18 +127,15 @@ class order_requirement_line(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context):
             if line._temp_mrp_bom_ids:
-                # for t in line._temp_mrp_bom_ids:
-                #     res[t.id] = self.read(cr, uid, t.id, None, context)
                 res[line.id] = [t.id for t in line._temp_mrp_bom_ids]
             else:
                 # does not work here
-                # product = line.choosen_product
+                # product = line.actual_product
                 if line.new_product_id:
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-                # res[line.id] = [(0, False, temp) for temp in temp_mrp_bom_vals]
                 res[line.id] = temp_mrp_bom_vals
         return res
 
@@ -175,7 +168,7 @@ class order_requirement_line(orm.Model):
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}),
         'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
-        'choosen_product': fields.function(_get_choosen_product),
+        'actual_product': fields.function(_get_actual_product, store=False),
         'is_manufactured': fields.boolean('Manufacture', readonly=True, states={'draft': [('readonly', False)]},
                                           help='If checked product is manufactured. If not, BOM is read-only'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True,
@@ -255,7 +248,6 @@ class order_requirement_line(orm.Model):
 
             if product.bom_ids:
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-                # result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
                 result_dict.update({
                     'temp_mrp_bom_ids': temp_mrp_bom_vals,
                     'view_bom': True,
@@ -366,14 +358,8 @@ class order_requirement_line(orm.Model):
     def _manufacture_main_product(self, cr, uid, line, context):
         mrp_production_obj = self.pool['mrp.production']
 
-        product = line.choosen_product
-        # if line.new_product_id:
-        #     product = line.new_product_id
-        # else:
-        #     product = line.product_id
+        product = line.actual_product
 
-        # mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', product.id),
-        #                                                          ('state', '=', 'draft')])
         # Always add manufacturing orders, same products can have different boms
         mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
@@ -385,11 +371,7 @@ class order_requirement_line(orm.Model):
         # TODO: this will do one at a time, enhance!
         mrp_production_obj = self.pool['mrp.production']
 
-        main_product = line.choosen_product
-        # if line.new_product_id:
-        #     main_product = line.new_product_id
-        # else:
-        #     main_product = line.product_id
+        main_product = line.actual_product
 
         mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', main_product.id),
                                                                  ('state', '=', 'draft')])
