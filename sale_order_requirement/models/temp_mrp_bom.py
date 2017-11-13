@@ -65,6 +65,8 @@ class temp_mrp_bom(orm.Model):
                                               type='float', string='Stock Availability', readonly=True),
         'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float',
                                  string='Spare', readonly=True),
+        'is_leaf': fields.boolean('Leaf'),
+        'position': fields.char('Internal Reference', size=64, help="Reference to a position in an external plan."),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
     }
 

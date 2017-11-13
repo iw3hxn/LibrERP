@@ -99,7 +99,9 @@ class order_requirement_line(orm.Model):
                             'product_uom': bom.product_uom.id,
                             'product_efficiency': bom.product_efficiency,
                             'routing_id': bom.routing_id.id,
-                            'company_id': bom.company_id.id
+                            'company_id': bom.company_id.id,
+                            'position': bom.position,
+                            'is_leaf': not bool(bom.child_buy_and_produce_ids)
                         }
                         temp_mrp_bom_vals.append(newbom_vals)
                         _get_rec(bom)
@@ -404,7 +406,7 @@ class order_requirement_line(orm.Model):
                 self._manufacture_bom(cr, uid, line, temp, context)
             else:
                 # This is OK, it works, uncomment
-                #self._purchase(cr, uid, temp, True, context)
+                self._purchase(cr, uid, temp, True, context)
                 pass
 
     def confirm_suppliers(self, cr, uid, ids, context):
