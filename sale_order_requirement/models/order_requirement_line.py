@@ -95,12 +95,15 @@ class order_requirement_line(orm.Model):
                 for bom in bom_children:
                     if bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
+                        level = children_levels[bom.id]['level']
+                        complete_name = bom.name,
+                        if level > 0:
+                            complete_name = '|' + '===' * level + '> ' + complete_name,
                         newbom_vals = {
                             # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
-                            #'complete_name': '---' * children_levels[bom.id]['level'] + '> ' + bom.name,
-                            'complete_name': 'oooo' * children_levels[bom.id]['level'],
+                            'complete_name': complete_name,
                             'name': bom.name,
                             'type': bom.type,
                             # 'bom_id': bom.bom_id.id,
@@ -150,12 +153,24 @@ class order_requirement_line(orm.Model):
         # If the first record is [5, False, False] I am creating
         is_creation = temp_mrp_bom_vals[0][0] == 5
         if is_creation:
+            bom_map = {}
             # IF I am creating, start cycle from second item (first is shown above)
             for val in temp_mrp_bom_vals[1:]:
                 if val:
                     temp_vals = val[2]
                     temp_vals['order_requirement_line_id'] = line_id
-                    temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
+                    new_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
+                    temp_vals['id'] = new_id
+                    # map[ old ID ] => vals
+                    bom_map[temp_vals['tmp_id']] = temp_vals
+            # Now creating hierarchy
+            for old_id in bom_map:
+                bom = bom_map[old_id]
+                old_parent_id = bom['tmp_parent_id']
+                new_parent_id = bom_map[old_parent_id]['id']
+                bom['parent_id'] = new_parent_id
+                temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
+
         else:
             # I am updating
             for val in temp_mrp_bom_vals:

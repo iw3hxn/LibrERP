@@ -58,6 +58,7 @@ class temp_mrp_bom(orm.Model):
                                         string='Sale Order', relation='sale.order', type='many2one', readonly=True),
         'tmp_id': fields.integer(),
         'tmp_parent_id': fields.integer(),
+        'parent_id': fields.many2one('temp.mrp.bom', 'Parent'),
         'is_manufactured': fields.boolean('Manufacture'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers'),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]"),
