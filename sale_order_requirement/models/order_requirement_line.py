@@ -515,10 +515,10 @@ class order_requirement_line(orm.Model):
                     # Am I a sub-bom and does my father exist? If so, add to return dict
                     # If not, a "father" is being removed, so will be its children
                     parent_id = vals['tmp_parent_id']
-                    children_ids = [t[2] for t in temp_mrp_bom_ids_valid if t[2]['tmp_id'] == parent_id]
-                    temp_mrp_bom_vals = [t[2] for t in temp_mrp_bom_ids_valid]
+                    father_ids = [t[2] for t in temp_mrp_bom_ids_valid if t[2]['tmp_id'] == parent_id]
+                    # temp_mrp_bom_vals = [t[2] for t in temp_mrp_bom_ids_valid]
                     # children_ids = self._get_all_children_ids(parent_id, temp_mrp_bom_ids_valid)
-                    if children_ids:
+                    if father_ids:
                         new_temp_mrp_bom_ids.append(temp)
                 pass
         else:
