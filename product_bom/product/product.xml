@@ -37,6 +37,7 @@
                         <separator string="BoMs Line" colspan="2"/>
                         <field name="bom_lines" colspan="4" nolabel="1">
                             <tree string="BoMs">
+                                <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" />
                                 <field name="name"/>
                                 <field name="code"/>
                                 <field name="product_qty"/>
