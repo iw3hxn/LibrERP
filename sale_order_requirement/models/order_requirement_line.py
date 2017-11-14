@@ -94,14 +94,20 @@ class order_requirement_line(orm.Model):
                 bom_children = bom_rec.child_buy_and_produce_ids
                 if not bom_children:
                     return
+                colors = ['black', 'blue', 'cadetblue', 'grey']
                 for bom in bom_children:
-                    if True or bom.product_id.type == 'product':
+                    if bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
                         complete_name = bom.name
+                        try:
+                            row_color = colors[level]
+                        except KeyError:
+                            row_color = 'grey'
                         if level > 0:
                             complete_name = '---' * level + '> ' + complete_name
                         newbom_vals = {
+                            'name': bom.name,
                             # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
@@ -116,7 +122,8 @@ class order_requirement_line(orm.Model):
                             'routing_id': bom.routing_id.id,
                             'company_id': bom.company_id.id,
                             'position': bom.position,
-                            'is_leaf': not bool(bom.child_buy_and_produce_ids)
+                            'is_leaf': not bool(bom.child_buy_and_produce_ids),
+                            'row_color': row_color
                         }
                         temp_mrp_bom_vals.append(newbom_vals)
                     # Even if not product I must check all children
@@ -173,12 +180,11 @@ class order_requirement_line(orm.Model):
                     new_parent_id = bom_map[old_parent_id]['id']
                     bom['parent_id'] = new_parent_id
                     temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
-                except KeyError:
-                    pass
+                except KeyError as e:
+                    print e.message
 
             for b in bom_map:
-                print bom_map[b]['id']
-                print bom_map[b]['tmp_parent_id']
+                print bom_map[b]['id'], bom_map[b]['tmp_parent_id']
 
         else:
             # I am updating

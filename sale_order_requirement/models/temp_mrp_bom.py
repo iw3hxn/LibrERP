@@ -41,6 +41,7 @@ class temp_mrp_bom(orm.Model):
         return res
 
     _columns = {
+        'name': fields.char('Name', size=160, readonly=True),
         'complete_name': fields.char('Complete name', readonly=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
