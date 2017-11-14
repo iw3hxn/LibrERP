@@ -486,6 +486,11 @@ class order_requirement_line(orm.Model):
             'res_id': line.id
         }
 
+    def onchange_tree(self, cr, uid, ids, temp_mrp_bom_ids, context):
+        # for line in self.browse(cr, uid, ids, context):
+
+        a = 1
+
     def save_suppliers(self, cr, uid, ids, context=None):
         # Dummy save function
         return True

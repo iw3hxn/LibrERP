@@ -29,6 +29,7 @@
                     <notebook colspan="4" >
                         <page string="BOM">
                             <field name="temp_mrp_bom_ids" type="xml" nolabel="1" colspan="4"
+                                   on_change="onchange_tree(temp_mrp_bom_ids, context)"
                                    attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
                                    ('is_manufactured','=',False)],
                                    'readonly':['|',('state','!=','draft'),('is_manufactured','=',False)]}">
