@@ -46,8 +46,10 @@ class order_requirement_line(orm.Model):
             res[line.id] = 'black'
             if line.stock_availability < line.spare:
                 res[line.id] = 'red'
-            if line.state == 'done':
+            elif line.state == 'done':
                 res[line.id] = 'green'
+            elif line._temp_mrp_bom_ids:
+                res[line.id] = 'cadetblue'
         return res
 
     def get_children(self, object, level=0):
@@ -93,24 +95,24 @@ class order_requirement_line(orm.Model):
                 if not bom_children:
                     return
                 for bom in bom_children:
-                    if bom.product_id.type == 'product':
+                    if True or bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
                         complete_name = bom.name
                         if level > 0:
-                            complete_name = '---' * level + '> ' + complete_name,
+                            complete_name = '---' * level + '> ' + complete_name
                         newbom_vals = {
                             # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
                             'complete_name': complete_name,
                             'name': bom.name,
-                            'type': bom.type,
                             # 'bom_id': bom.bom_id.id,
                             'product_id': bom.product_id.id,
                             'product_qty': bom.product_qty,
                             'product_uom': bom.product_uom.id,
                             'product_efficiency': bom.product_efficiency,
+                            'product_type': bom.product_id.type,
                             'routing_id': bom.routing_id.id,
                             'company_id': bom.company_id.id,
                             'position': bom.position,
@@ -174,6 +176,10 @@ class order_requirement_line(orm.Model):
                 except KeyError:
                     pass
 
+            for b in bom_map:
+                print bom_map[b]['id']
+                print bom_map[b]['tmp_parent_id']
+
         else:
             # I am updating
             for val in temp_mrp_bom_vals:
@@ -182,6 +188,7 @@ class order_requirement_line(orm.Model):
                     temp_id = val[1]
                     temp_vals = val[2]
                     temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
+        a = 1
         return
 
     _columns = {
@@ -388,7 +395,7 @@ class order_requirement_line(orm.Model):
         mrp_proudction_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
 
     def _manufacture_bom(self, cr, uid, line, bom, context):
-        # TODO: this will do one at a time, enhance!
+        # TODO: this will do one at a time, maybe can be enhanced!
         mrp_production_obj = self.pool['mrp.production']
 
         main_product = line.actual_product
