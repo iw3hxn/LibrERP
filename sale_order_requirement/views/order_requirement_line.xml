@@ -28,26 +28,30 @@
 
                     <notebook colspan="4" >
                         <page string="BOM">
-                            <field name="temp_mrp_bom_ids" type="xml" nolabel="1" colspan="4"
-                                   on_change="onchange_tree(temp_mrp_bom_ids, context)"
+                            <field name="temp_mrp_bom_ids" type="xml" nolabel="1" colspan="4" context=""
+                                   on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
                                    attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
-                                   ('is_manufactured','=',False)],
+                                                             ('is_manufactured','=',False)],
                                    'readonly':['|',('state','!=','draft'),('is_manufactured','=',False)]}">
                                 <tree string="BoM Structure" editable="top" create="false"
                                     colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                                     <field name="row_color" invisible="1"/>
                                     <field name="is_leaf"/>
+                                    <field name="tmp_id"/>
+                                    <field name="tmp_parent_id"/>
                                     <!--<field name="product_type"/>-->
                                     <field name="complete_name"/>
-                                    <field name="product_id" context="" on_change="onchange_product_id(product_id,product_qty,supplier_id,context)"/>
-                                    <field name="product_qty" readonly="1"/>
+                                    <field name="product_id" context="" on_change="onchange_product_id(product_id,product_qty,supplier_id,context)"
+                                           attrs="{'readonly': [('product_type','!=','product')]}"/>
+                                    <field name="product_type"/>
+                                    <field name="product_qty" attrs="{'readonly': [('product_type','!=','product')]}"/>
                                     <field name="product_uom" readonly="1"/>
                                     <field name="stock_availability"/>
                                     <field name="spare"/>
                                     <field name="position"/>
                                     <field name="is_manufactured" on_change="onchange_manufacture(is_manufactured)"/>
                                     <field name="supplier_id" attrs="{'required': [('is_manufactured', '=', False)],
-                                                'readonly': [('is_manufactured', '=', True)]}"/>
+                                                'readonly': ['|',('is_manufactured', '=', True),('product_type','!=','product')]}"/>
                                     <field name="supplier_ids" invisible="1"/>
                                 </tree>
                             </field>

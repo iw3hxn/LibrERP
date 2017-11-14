@@ -96,7 +96,7 @@ class order_requirement_line(orm.Model):
                     return
                 colors = ['black', 'blue', 'cadetblue', 'grey']
                 for bom in bom_children:
-                    if bom.product_id.type == 'product':
+                    if True: #bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
                         complete_name = bom.name
@@ -123,6 +123,7 @@ class order_requirement_line(orm.Model):
                             'company_id': bom.company_id.id,
                             'position': bom.position,
                             'is_leaf': not bool(bom.child_buy_and_produce_ids),
+                            'level': level,
                             'row_color': row_color
                         }
                         temp_mrp_bom_vals.append(newbom_vals)
@@ -482,14 +483,47 @@ class order_requirement_line(orm.Model):
             'view_mode': 'form',
             'view_id': [view_id],
             'target': 'new',
-            'context': {'view_bom': True},
+            'context': {'view_bom': True, 'trunk_product': True},
             'res_id': line.id
         }
 
-    def onchange_tree(self, cr, uid, ids, temp_mrp_bom_ids, context):
-        # for line in self.browse(cr, uid, ids, context):
+    def _get_all_children_ids(self, father_id, temp_mrp_bom_ids):
+        # temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
+        res = []
+        children = [t for t in temp_mrp_bom_ids if t[2]['tmp_id'] == father_id]
+        if not children:
+            return []
+        for child in children:
+            vals = child[2]
+            res = self._get_all_children_ids(vals['tmp_id'], children)
+        return res
 
-        a = 1
+    def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        line = self.browse(cr, uid, ids, context)[0]
+        # If in presence of a new unsaved set of mrp boms, list will start with [5,0,False]
+        is_new_set = temp_mrp_bom_ids[0][0] == 5
+        new_temp_mrp_bom_ids = []
+        if is_new_set:
+            # Cycle through all (skipping first, the one [5,0,False])
+            temp_mrp_bom_ids_valid = temp_mrp_bom_ids[1:]
+            for temp in temp_mrp_bom_ids_valid:
+                vals = temp[2]
+                if vals['level'] == 0:
+                    new_temp_mrp_bom_ids.append(temp)
+                else:
+                    # Am I a sub-bom and does my father exist? If so, add to return dict
+                    # If not, a "father" is being removed, so will be its children
+                    parent_id = vals['tmp_parent_id']
+                    # children_ids = [t[2] for t in temp_mrp_bom_ids_valid if t[2]['tmp_id'] == parent_id]
+                    # temp_mrp_bom_vals = [t[2] for t in temp_mrp_bom_ids_valid]
+                    children_ids = self._get_all_children_ids(parent_id, temp_mrp_bom_ids_valid)
+                    if children_ids:
+                        new_temp_mrp_bom_ids.append(temp)
+                pass
+        else:
+            to_be_deleted_ids = [t[1] for t in temp_mrp_bom_ids if t[0] == 2]
+        return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
 
     def save_suppliers(self, cr, uid, ids, context=None):
         # Dummy save function

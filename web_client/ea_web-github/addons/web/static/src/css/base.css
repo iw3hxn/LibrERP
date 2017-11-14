@@ -2757,3 +2757,11 @@ div#ui-datepicker-div {
     background: #fff;
     border: 1px #000 solid;
 }
+
+th[data-id=product_id] {
+    max-width: 200px
+}
+
+th[data-id=complete_name] {
+    min-width: 400px
+}
