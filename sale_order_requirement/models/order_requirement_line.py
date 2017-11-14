@@ -96,9 +96,9 @@ class order_requirement_line(orm.Model):
                     if bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
-                        complete_name = bom.name,
+                        complete_name = bom.name
                         if level > 0:
-                            complete_name = '|' + '===' * level + '> ' + complete_name,
+                            complete_name = '---' * level + '> ' + complete_name,
                         newbom_vals = {
                             # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
@@ -167,9 +167,12 @@ class order_requirement_line(orm.Model):
             for old_id in bom_map:
                 bom = bom_map[old_id]
                 old_parent_id = bom['tmp_parent_id']
-                new_parent_id = bom_map[old_parent_id]['id']
-                bom['parent_id'] = new_parent_id
-                temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
+                try:
+                    new_parent_id = bom_map[old_parent_id]['id']
+                    bom['parent_id'] = new_parent_id
+                    temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
+                except KeyError:
+                    pass
 
         else:
             # I am updating
@@ -179,6 +182,7 @@ class order_requirement_line(orm.Model):
                     temp_id = val[1]
                     temp_vals = val[2]
                     temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
+        return
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
