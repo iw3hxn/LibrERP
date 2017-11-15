@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
-import datetime
+from tools.translate import _
 
 import decimal_precision as dp
+from mrp import mrp_bom
 from openerp.osv import orm, fields
+from temp_mrp_bom import temp_mrp_bom
 
-from tools.translate import _
-from . import temp_mrp_bom
 
 class order_requirement_line(orm.Model):
 
@@ -53,33 +53,6 @@ class order_requirement_line(orm.Model):
                 res[line.id] = 'cadetblue'
         return res
 
-    def get_children(self, object, level=0):
-        result = {}
-
-        def _get_rec(object, level):
-            for l in object:
-                res = {'name': l.name,
-                       'pname': l.product_id.name,
-                       'pcode': l.product_id.default_code,
-                       'pqty': l.product_qty,
-                       'uname': l.product_uom.name,
-                       'code': l.code,
-                       'level': level
-                       }
-
-                result[l.id] = res
-                if l.child_buy_and_produce_ids:
-                    if level < 6:
-                        level += 1
-                    _get_rec(l.child_buy_and_produce_ids, level)
-                    if 0 < level < 6:
-                        level -= 1
-            return result
-
-        children = _get_rec(object, level)
-
-        return children
-
     def get_temp_mrp_bom(self, cr, uid, bom_ids, context):
         # Returns a list of VALS
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -89,7 +62,7 @@ class order_requirement_line(orm.Model):
             return []
 
         for bom_father in bom_ids:
-            children_levels = self.get_children(bom_father.child_buy_and_produce_ids, 0)
+            children_levels = mrp_bom.get_all_mrp_bom_children(bom_father.child_buy_and_produce_ids, 0)
 
             def _get_rec(bom_rec):
                 bom_children = bom_rec.child_buy_and_produce_ids
@@ -97,7 +70,7 @@ class order_requirement_line(orm.Model):
                     return
                 colors = ['black', 'blue', 'cadetblue', 'grey']
                 for bom in bom_children:
-                    if bom.product_id.type == 'product':
+                    if True: # bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
                         complete_name = bom.name
@@ -134,7 +107,7 @@ class order_requirement_line(orm.Model):
             _get_rec(bom_father)
         return temp_mrp_bom_vals
 
-    def _get_or_create_temp_mrp(self, cr, uid, ids, name, args, context=None):
+    def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         view_bom = 'view_bom' in context and context['view_bom']
         if not view_bom:
@@ -228,7 +201,7 @@ class order_requirement_line(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
-        'temp_mrp_bom_ids': fields.function(_get_or_create_temp_mrp, relation='temp.mrp.bom', string="BoM Hierarchy",
+        'temp_mrp_bom_ids': fields.function(_get_or_create_temp_bom, relation='temp.mrp.bom', string="BoM Hierarchy",
                                             method=True, type='one2many', fnct_inv=_save_temp_mrp_bom,
                                             readonly=True, states={'draft': [('readonly', False)]}),
     }
@@ -492,10 +465,11 @@ class order_requirement_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
         # If in presence of a new unsaved set of mrp boms, list will start with [5,0,False]
+        # and all items in list will be [4,id,False]
         is_new_set = temp_mrp_bom_ids[0][0] == 5
         new_temp_mrp_bom_ids = []
         for t in temp_mrp_bom_ids:
-            ta = temp_mrp_bom.get_all_children_ids(t[2], temp_mrp_bom_ids)
+            ta = temp_mrp_bom.get_all_temp_bom_children_ids(t[2], temp_mrp_bom_ids)
             a = ta
         if True or is_new_set:
             # Cycle through all

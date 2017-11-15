@@ -41,3 +41,31 @@ class mrp_bom(osv.osv):
         'child_buy_and_produce_ids': fields.function(_child_compute_buy_and_produce, relation='mrp.bom',
                                                      string="BoM Hierarchy", type='many2many'),
     }
+
+    @staticmethod
+    def get_all_mrp_bom_children(obj, level=0):
+        result = {}
+
+        def _get_rec(obj, level):
+            for l in obj:
+                res = {'name': l.name,
+                       'pname': l.product_id.name,
+                       'pcode': l.product_id.default_code,
+                       'pqty': l.product_qty,
+                       'uname': l.product_uom.name,
+                       'code': l.code,
+                       'level': level
+                       }
+
+                result[l.id] = res
+                if l.child_buy_and_produce_ids:
+                    if level < 6:
+                        level += 1
+                    _get_rec(l.child_buy_and_produce_ids, level)
+                    if 0 < level < 6:
+                        level -= 1
+            return result
+
+        children = _get_rec(obj, level)
+
+        return children

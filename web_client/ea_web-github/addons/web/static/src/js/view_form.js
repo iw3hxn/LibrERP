@@ -2902,6 +2902,7 @@ openerp.web.form.One2ManyListView = openerp.web.ListView.extend({
         });
     },
     reload_record: function (record) {
+        console.warn(record);
         // Evict record.id from cache to ensure it will be reloaded correctly
         this.dataset.evict_from_cache(record.get('id'));
 
