@@ -1,24 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-# Copyright (c) 2017 Didotech srl (info at didotech.com)
-#
-#                    All Rights Reserved.
-#
-# This program is Free Software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2017 Didotech srl (www.didotech.com)
 
 import logging
 import math
@@ -251,7 +232,10 @@ class ImportFile(threading.Thread, Utils):
 
             if hasattr(record, 'product_qty') and record.product_qty:
                 if self.FORMAT == 'FormatOmnitron':
-                    bom_lines['product_qty'] = abs(float(record.product_qty)) / 1000
+                    if sub_item.weight_per_meter:
+                        bom_lines['product_qty'] = abs(float(record.product_qty)) * 1000
+                    else:
+                        bom_lines['product_qty'] = abs(float(record.product_qty))
                 else:
                     bom_lines['product_qty'] = abs(float(record.product_qty))
 
@@ -313,6 +297,39 @@ class ImportFile(threading.Thread, Utils):
                 _logger.debug(error)
                 self.error.append(error)
             return False
+
+    def get_product_ids(self, cr, uid, record):
+        """For Omnitron format Only!"""
+        omnicode = '{:0>9d}'.format(int(getattr(record, self.BOM_PRODUCT_SEARCH)))
+        product_ids = self.product_obj.search(cr, uid, [
+            (self.BOM_PRODUCT_SEARCH, '=', omnicode)
+        ], context=self.context)
+        if product_ids:
+            self.product_obj.write(
+                cr, uid, product_ids, {
+                    'old_code': '{}:{}'.format(omnicode, record.bom_code)
+                },
+                context=self.context
+            )
+        else:
+            product_ids = self.product_obj.search(cr, uid, [
+                (self.BOM_PRODUCT_SEARCH, '=', '{}:{}'.format(omnicode, record.bom_code))
+            ], context=self.context)
+
+            if not product_ids:
+                product_ids = self.product_obj.search(cr, uid, [
+                    (self.BOM_PRODUCT_SEARCH, '=ilike', '{}%'.format(omnicode))
+                ], context=self.context)
+                if product_ids:
+                    product_id = self.product_obj.copy(cr, uid, product_ids[0], {
+                        'name': record.product_description,
+                        'old_code': '{}:{}'.format(omnicode, record.bom_code),
+                        'bom_ids': []
+                    })
+                    product_ids = [product_id]
+                else:
+                    product_ids = False
+        return product_ids
 
     def import_row(self, cr, uid, row_list):
         if self.first_row:
@@ -381,9 +398,13 @@ class ImportFile(threading.Thread, Utils):
         else:
             product_flag = False
 
-        product_ids = self.product_obj.search(cr, uid, [
-            (self.BOM_PRODUCT_SEARCH, '=', getattr(record, self.BOM_PRODUCT_SEARCH))
-        ], context=self.context)
+        if self.FORMAT == 'FormatOmnitron':
+            product_ids = self.get_product_ids(cr, uid, record)
+        else:
+            product_ids = self.product_obj.search(cr, uid, [
+                (self.BOM_PRODUCT_SEARCH, '=', getattr(record, self.BOM_PRODUCT_SEARCH))
+            ], context=self.context)
+
         if product_ids:
             product_id = product_ids[0]
             if product_flag:
@@ -472,7 +493,13 @@ class ImportFile(threading.Thread, Utils):
         )
 
         # if product_id:
+
+        # if self.FORMAT == 'FormatOmnitron':
+        #
+        #     self.create_omnitron_bom(cr, uid, product_id, product_vals_bom, record)
+        # else:
         self.create_bom(cr, uid, product_id, product_vals_bom, record)
+
         # else:
         #     error = 'Prodotto: {code} non presente nel DB.'.format(code=record.default_code)
         #     if error not in self.error:

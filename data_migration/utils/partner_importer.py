@@ -670,8 +670,11 @@ class ImportFile(threading.Thread, Utils):
             # except ValidateError as e:
             except Exception as e:
                 # e = sys.exc_info()[0]
-                e = e[1].split(':')[1]
-                error = u"Riga {0}: Partner '{1} {2}'. I dati non corretti. (Error: {3}) La riga viene ignorata.".format(self.processed_lines, record_code, vals_partner['name'], e)
+                e = e[1].split(':')
+                if len(e) > 1:
+                    e = e[1]
+                error = u"Riga {0}: Partner '{1} {2}'. I dati non corretti. (Error: {3}) La riga viene ignorata.".format(
+                    self.processed_lines, record_code, vals_partner['name'], e)
                 _logger.debug(error)
                 self.error.append(error)
                 return False

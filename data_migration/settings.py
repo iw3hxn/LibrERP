@@ -1,23 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-# Copyright (c) 2013-2017 Didotech srl (info at didotech.com)
-#
-# This program is Free Software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#
-##############################################################################
+# © 2013 - 2017 Didotech srl (www.didotech.com)
 
 # DEBUG = True
 DEBUG = False
@@ -456,16 +438,18 @@ class FormatOmnitron(object):
     }
 
     HEADER_BOM = (
-        "CodiceProdotto", "DescrizioneProdotto", "IDProdottoBase",
+        "IDDistintaBase", "IDProdottoBase",
+        "DescrizioneProdotto", "DescrizioneProdottoInLingua",
         "IDProdottoDB", "CodiceProdottoDB", "DescrizioneProdottoDB",
-        "IDDistintaBase", "QuantitaNecessaria", "PrezzoAcquisto", "PrezzoVendita",
+         "QuantitaNecessaria", "PrezzoAcquisto", "PrezzoVendita",
         "Ordine", "Disponibilita"
     )
 
     # TODO: control product_qty
-    COLUMNS_BOM = """old_code, none0, none1,
+    COLUMNS_BOM = """bom_code, old_code,
+        product_description, product_description_en,
         none2, sub_item_code, sub_name,
-        bom_code, product_qty, none3, none4,
+        product_qty, none3, none4,
         sequence, none5
     """
     BOM_PRODUCT_SEARCH = 'old_code'
@@ -503,7 +487,7 @@ class FormatOmnitron(object):
         street_delivery, zip_delivery, city_delivery, province_delivery,
         phone_default, fax_default, email_default, web_default, mobile_default,
         vat, fiscalcode, none2,
-        none3, bank, abi, cab, account,
+        payment_term, bank, abi, cab, account,
         none4, none5, none6, none7, 
         none8, none9, 
         comment, none10, none11, none12, none13,
