@@ -490,10 +490,10 @@ class order_requirement_line(orm.Model):
     def _get_all_children_ids(self, father, temp_mrp_bom_ids):
         # temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
         try:
-            father_id = father['id']
-        except KeyError:
-            father_id = 0
-        children = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_id' in t[2] and t[2]['tmp_id'] == father_id]
+            father_id = father['tmp_id']
+        except (KeyError, TypeError):
+            return []
+        children = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_parent_id' in t[2] and t[2]['tmp_parent_id'] == father_id]
         res = children
         for child in children:
             vals = child[2]
@@ -528,8 +528,9 @@ class order_requirement_line(orm.Model):
         is_new_set = temp_mrp_bom_ids[0][0] == 5
         new_temp_mrp_bom_ids = []
         deleted_fathers_ids = []
-        # for t in temp_mrp_bom_ids
-        #    c = self._get_all_children_ids(temp_mrp_bom_ids[1][2], temp_mrp_bom_ids)
+        for t in temp_mrp_bom_ids:
+            ta = self._get_all_children_ids(t[2], temp_mrp_bom_ids)
+            a = ta
         if True or is_new_set:
             # Cycle through all (skipping first, the one [5,0,False])
             temp_mrp_bom_ids_valid = temp_mrp_bom_ids[1:]
