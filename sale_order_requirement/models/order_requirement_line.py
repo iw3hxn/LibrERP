@@ -53,60 +53,6 @@ class order_requirement_line(orm.Model):
                 res[line.id] = 'cadetblue'
         return res
 
-    def get_temp_mrp_bom(self, cr, uid, bom_ids, context):
-        # Returns a list of VALS
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        temp_mrp_bom_vals = []
-
-        if not bom_ids:
-            return []
-
-        for bom_father in bom_ids:
-            children_levels = mrp_bom.get_all_mrp_bom_children(bom_father.child_buy_and_produce_ids, 0)
-
-            def _get_rec(bom_rec):
-                bom_children = bom_rec.child_buy_and_produce_ids
-                if not bom_children:
-                    return
-                colors = ['black', 'blue', 'cadetblue', 'grey']
-                for bom in bom_children:
-                    if True: # bom.product_id.type == 'product':
-                        # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
-                        level = children_levels[bom.id]['level']
-                        complete_name = bom.name
-                        try:
-                            row_color = colors[level]
-                        except KeyError:
-                            row_color = 'grey'
-                        if level > 0:
-                            complete_name = '-----' * level + '> ' + complete_name
-                        newbom_vals = {
-                            'name': bom.name,
-                            # tmp_* Could be useful for reconstructing hierarchy
-                            'tmp_id': bom.id,
-                            'tmp_parent_id': bom_rec.id,
-                            'complete_name': complete_name,
-                            'name': bom.name,
-                            # 'bom_id': bom.bom_id.id,
-                            'product_id': bom.product_id.id,
-                            'product_qty': bom.product_qty,
-                            'product_uom': bom.product_uom.id,
-                            'product_efficiency': bom.product_efficiency,
-                            'product_type': bom.product_id.type,
-                            'routing_id': bom.routing_id.id,
-                            'company_id': bom.company_id.id,
-                            'position': bom.position,
-                            'is_leaf': not bool(bom.child_buy_and_produce_ids),
-                            'level': level,
-                            'row_color': row_color
-                        }
-                        temp_mrp_bom_vals.append(newbom_vals)
-                    # Even if not product I must check all children
-                    _get_rec(bom)
-
-            _get_rec(bom_father)
-        return temp_mrp_bom_vals
-
     def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         view_bom = 'view_bom' in context and context['view_bom']
@@ -123,7 +69,7 @@ class order_requirement_line(orm.Model):
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
-                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+                temp_mrp_bom_vals = temp_mrp_bom.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
                 res[line.id] = temp_mrp_bom_vals
         return res
 
@@ -255,7 +201,7 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
 
             if product.bom_ids:
-                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+                temp_mrp_bom_vals = temp_mrp_bom.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
                 result_dict.update({
                     'temp_mrp_bom_ids': temp_mrp_bom_vals,
                     'view_bom': True,
@@ -366,7 +312,10 @@ class order_requirement_line(orm.Model):
     def _manufacture_main_product(self, cr, uid, line, context):
         mrp_production_obj = self.pool['mrp.production']
 
-        product = line.actual_product
+        if line.new_product_id:
+            product = line.new_product_id
+        else:
+            product = line.product_id
 
         # Always add manufacturing orders, same products can have different boms
         mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
@@ -436,7 +385,7 @@ class order_requirement_line(orm.Model):
             if lines_draft == 0:
                 # No more draft lefts
                 order_requirement_obj = self.pool['order.requirement']
-                order_requirement_obj.write(cr, uid, line.order_id.id, {'state': 'done'}, context)
+                order_requirement_obj.write(cr, uid, line.order_requirement_id.id, {'state': 'done'}, context)
 
         return {
             'type': 'ir.actions.act_window_close'
@@ -466,12 +415,12 @@ class order_requirement_line(orm.Model):
         line = self.browse(cr, uid, ids, context)[0]
         # If in presence of a new unsaved set of mrp boms, list will start with [5,0,False]
         # and all items in list will be [4,id,False]
-        is_new_set = temp_mrp_bom_ids[0][0] == 5
+        is_new_set = not temp_mrp_bom_ids or temp_mrp_bom_ids[0][0] == 5
         new_temp_mrp_bom_ids = []
-        for t in temp_mrp_bom_ids:
-            ta = temp_mrp_bom.get_all_temp_bom_children_ids(t[2], temp_mrp_bom_ids)
-            a = ta
-        if True or is_new_set:
+        # for t in temp_mrp_bom_ids:
+        #    ta = temp_mrp_bom.get_all_temp_bom_children_ids(t[2], temp_mrp_bom_ids)
+        #    a = ta
+        if is_new_set:
             # Cycle through all
             for temp in temp_mrp_bom_ids:
                 vals = temp[2]

@@ -3,6 +3,7 @@
 
 from openerp.osv import orm, fields
 import decimal_precision as dp
+from mrp import mrp_bom
 
 
 class temp_mrp_bom(orm.Model):
@@ -34,10 +35,16 @@ class temp_mrp_bom(orm.Model):
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
+        colors = ['black', 'blue', 'cadetblue', 'grey']
         for line in self.browse(cr, uid, ids, context):
-            res[line.id] = 'black'
+            try:
+                row_color = colors[line.level]
+            except KeyError:
+                row_color = 'grey'
+
             if line.stock_availability < line.spare:
-                res[line.id] = 'red'
+                row_color = 'red'
+            res[line.id] = row_color
         return res
 
     _columns = {
@@ -130,13 +137,62 @@ class temp_mrp_bom(orm.Model):
                 return True
         return False
 
+    @staticmethod
+    def get_temp_mrp_bom(cr, uid, bom_ids, context):
+        # Returns a list of VALS
+        temp_mrp_bom_vals = []
+
+        if not bom_ids:
+            return []
+
+        for bom_father in bom_ids:
+            children_levels = mrp_bom.get_all_mrp_bom_children(bom_father.child_buy_and_produce_ids, 0)
+
+            def _get_rec(bom_rec):
+                bom_children = bom_rec.child_buy_and_produce_ids
+                if not bom_children:
+                    return
+                for bom in bom_children:
+                    if True: # bom.product_id.type == 'product':
+                        # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
+                        level = children_levels[bom.id]['level']
+                        complete_name = bom.name
+                        if level > 0:
+                            complete_name = '-----' * level + '> ' + complete_name
+                        newbom_vals = {
+                            'name': bom.name,
+                            # tmp_* Could be useful for reconstructing hierarchy
+                            'tmp_id': bom.id,
+                            'tmp_parent_id': bom_rec.id,
+                            'complete_name': complete_name,
+                            'name': bom.name,
+                            # 'bom_id': bom.bom_id.id,
+                            'product_id': bom.product_id.id,
+                            'product_qty': bom.product_qty,
+                            'product_uom': bom.product_uom.id,
+                            'product_efficiency': bom.product_efficiency,
+                            'product_type': bom.product_id.type,
+                            'routing_id': bom.routing_id.id,
+                            'company_id': bom.company_id.id,
+                            'position': bom.position,
+                            'is_leaf': not bool(bom.child_buy_and_produce_ids),
+                            'level': level,
+                            'row_color': row_color
+                        }
+                        temp_mrp_bom_vals.append(newbom_vals)
+                    # Even if not product I must check all children
+                    _get_rec(bom)
+
+            _get_rec(bom_father)
+        return temp_mrp_bom_vals
+
     def onchange_manufacture(self, cr, uid, ids, is_manufactured, context=None):
         res = {}
         if is_manufactured:
             res['supplier_id'] = False
         return {'value': res}
 
-    def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
+    def get_suppliers(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         result_dict = {}
@@ -167,4 +223,15 @@ class temp_mrp_bom(orm.Model):
                 'supplier_ids': [],
             })
 
-        return {'value': result_dict}
+        return result_dict
+
+    def onchange_temp_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
+        ret = {}
+        suppliers = self.get_suppliers(cr, uid, ids, new_product_id, qty, supplier_id, context)
+        ret.update(suppliers)
+        product_obj = self.pool['product.product']
+        product = product_obj.browse(cr, uid, new_product_id, context)
+        temp_mrp_bom_ids = temp_mrp_bom.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+        # mrp_bom.
+        return {'value': ret}
+

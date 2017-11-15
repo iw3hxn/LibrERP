@@ -22,7 +22,7 @@
                                 'readonly': [('state','!=','draft')]}"/>
                     <field name="supplier_ids" invisible="1"/>
                     <group colspan="8" col="8" states="draft">
-                        <!-- <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/> -->
+                        <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
                         <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"/>
                     </group>
 
@@ -37,11 +37,12 @@
                                     colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                                     <field name="row_color" invisible="1"/>
                                     <field name="is_leaf"/>
+                                    <field name="id" invisible="1"/>
                                     <field name="tmp_id"/>
                                     <field name="tmp_parent_id"/>
                                     <field name="product_type" invisible="1"/>
                                     <field name="complete_name"/>
-                                    <field name="product_id" context="" on_change="onchange_product_id(product_id,product_qty,supplier_id,context)"
+                                    <field name="product_id" context="" on_change="onchange_temp_product_id(product_id,product_qty,supplier_id,context)"
                                            attrs="{'readonly': [('product_type','!=','product')]}"/>
                                     <field name="product_qty" attrs="{'readonly': [('product_type','!=','product')]}"/>
                                     <field name="product_uom" readonly="1"/>
