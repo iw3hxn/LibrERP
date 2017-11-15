@@ -105,7 +105,7 @@ class order_requirement_line(orm.Model):
                         except KeyError:
                             row_color = 'grey'
                         if level > 0:
-                            complete_name = '---' * level + '> ' + complete_name
+                            complete_name = '-----' * level + '> ' + complete_name
                         newbom_vals = {
                             'name': bom.name,
                             # tmp_* Could be useful for reconstructing hierarchy
@@ -487,16 +487,39 @@ class order_requirement_line(orm.Model):
             'res_id': line.id
         }
 
-    def _get_all_children_ids(self, father_id, temp_mrp_bom_ids):
+    def _get_all_children_ids(self, father, temp_mrp_bom_ids):
         # temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
-        res = []
-        children = [t for t in temp_mrp_bom_ids if t[2]['tmp_id'] == father_id]
-        if not children:
-            return []
+        try:
+            father_id = father['id']
+        except KeyError:
+            father_id = 0
+        children = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_id' in t[2] and t[2]['tmp_id'] == father_id]
+        res = children
         for child in children:
             vals = child[2]
-            res = self._get_all_children_ids(vals['tmp_id'], children)
+            res.extend(self._get_all_children_ids(vals['tmp_id'], temp_mrp_bom_ids))
         return res
+
+    def _check_parents(self, temp, temp_mrp_bom_ids):
+        # Return True if all the parents are present up to level 0
+        # If I am at level 0 => True (no need for parents)
+        # temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
+        try:
+            level = temp['level']
+        except (KeyError, TypeError):
+            return False
+        if level == 0:
+            return True
+        # Direct fathers
+        father_id = temp['tmp_parent_id']
+        parents_ids = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_id' in t[2] and t[2]['tmp_id'] == father_id]
+        if level == 1:
+            return bool(parents_ids)
+        for parent in parents_ids:
+            vals = parent[2]
+            if self._check_parents(vals, temp_mrp_bom_ids):
+                return True
+        return False
 
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -504,23 +527,30 @@ class order_requirement_line(orm.Model):
         # If in presence of a new unsaved set of mrp boms, list will start with [5,0,False]
         is_new_set = temp_mrp_bom_ids[0][0] == 5
         new_temp_mrp_bom_ids = []
-        if is_new_set:
+        deleted_fathers_ids = []
+        # for t in temp_mrp_bom_ids
+        #    c = self._get_all_children_ids(temp_mrp_bom_ids[1][2], temp_mrp_bom_ids)
+        if True or is_new_set:
             # Cycle through all (skipping first, the one [5,0,False])
             temp_mrp_bom_ids_valid = temp_mrp_bom_ids[1:]
-            for temp in temp_mrp_bom_ids_valid:
+            for temp in temp_mrp_bom_ids:
                 vals = temp[2]
-                if vals['level'] == 0:
-                    new_temp_mrp_bom_ids.append(temp)
-                else:
+                if self._check_parents(vals, temp_mrp_bom_ids):
+                    new_temp_mrp_bom_ids.append(vals)
+                    # if vals['level'] == 0:
+                    #    new_temp_mrp_bom_ids.append(temp)
+                    # else:
                     # Am I a sub-bom and does my father exist? If so, add to return dict
                     # If not, a "father" is being removed, so will be its children
-                    parent_id = vals['tmp_parent_id']
-                    father_ids = [t[2] for t in temp_mrp_bom_ids_valid if t[2]['tmp_id'] == parent_id]
+                    # parent_id = vals['tmp_parent_id']
+                    # father_ids = [t[2] for t in temp_mrp_bom_ids_valid if t[2]['tmp_id'] == parent_id]
                     # temp_mrp_bom_vals = [t[2] for t in temp_mrp_bom_ids_valid]
                     # children_ids = self._get_all_children_ids(parent_id, temp_mrp_bom_ids_valid)
-                    if father_ids:
-                        new_temp_mrp_bom_ids.append(temp)
-                pass
+                    # father_ids = self._check_parents(parent_id, temp_mrp_bom_ids_valid)
+                    # if father_ids:
+                    #    new_temp_mrp_bom_ids.append(temp)
+                    # else:
+                    #    deleted_fathers_ids.append(temp)
         else:
             to_be_deleted_ids = [t[1] for t in temp_mrp_bom_ids if t[0] == 2]
         return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}

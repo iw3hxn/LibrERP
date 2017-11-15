@@ -37,13 +37,12 @@
                                     colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                                     <field name="row_color" invisible="1"/>
                                     <field name="is_leaf"/>
-                                    <field name="tmp_id"/>
+                                    <!-- <field name="tmp_id"/>
                                     <field name="tmp_parent_id"/>
-                                    <!--<field name="product_type"/>-->
+                                    <field name="product_type"/>-->
                                     <field name="complete_name"/>
                                     <field name="product_id" context="" on_change="onchange_product_id(product_id,product_qty,supplier_id,context)"
                                            attrs="{'readonly': [('product_type','!=','product')]}"/>
-                                    <field name="product_type"/>
                                     <field name="product_qty" attrs="{'readonly': [('product_type','!=','product')]}"/>
                                     <field name="product_uom" readonly="1"/>
                                     <field name="stock_availability"/>
