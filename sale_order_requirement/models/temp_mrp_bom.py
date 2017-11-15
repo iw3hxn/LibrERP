@@ -131,3 +131,40 @@ class temp_mrp_bom(orm.Model):
             })
 
         return {'value': result_dict}
+
+    @staticmethod
+    def get_all_children_ids(father, temp_mrp_bom_ids):
+        # Retrieve recursively all children
+        # father is a dict of vals, temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
+        try:
+            father_id = father['tmp_id']
+        except (KeyError, TypeError):
+            return []
+        children = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_parent_id' in t[2] and t[2]['tmp_parent_id'] == father_id]
+        res = children
+        for child in children:
+            vals = child[2]
+            res.extend(temp_mrp_bom.get_all_children_ids(vals['tmp_id'], temp_mrp_bom_ids))
+        return res
+
+    @staticmethod
+    def check_parents(temp, temp_mrp_bom_ids):
+        # Return True if all the parents are present up to level 0
+        # temp is a dict of vals, temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
+        try:
+            level = temp['level']
+        except (KeyError, TypeError):
+            return False
+        # If I am at level 0 => True (no need for lookup parents)
+        if level == 0:
+            return True
+        # Direct fathers
+        father_id = temp['tmp_parent_id']
+        parents_ids = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_id' in t[2] and t[2]['tmp_id'] == father_id]
+        if level == 1:
+            return bool(parents_ids)
+        for parent in parents_ids:
+            vals = parent[2]
+            if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
+                return True
+        return False

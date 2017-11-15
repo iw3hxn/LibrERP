@@ -7,6 +7,7 @@ import decimal_precision as dp
 from openerp.osv import orm, fields
 
 from tools.translate import _
+from . import temp_mrp_bom
 
 class order_requirement_line(orm.Model):
 
@@ -96,7 +97,7 @@ class order_requirement_line(orm.Model):
                     return
                 colors = ['black', 'blue', 'cadetblue', 'grey']
                 for bom in bom_children:
-                    if True: #bom.product_id.type == 'product':
+                    if bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
                         complete_name = bom.name
@@ -174,15 +175,15 @@ class order_requirement_line(orm.Model):
                     # map[ old ID ] => vals
                     bom_map[temp_vals['tmp_id']] = temp_vals
             # Now creating hierarchy
-            for old_id in bom_map:
-                bom = bom_map[old_id]
-                old_parent_id = bom['tmp_parent_id']
-                try:
-                    new_parent_id = bom_map[old_parent_id]['id']
-                    bom['parent_id'] = new_parent_id
-                    temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
-                except KeyError as e:
-                    print e.message
+            # for old_id in bom_map:
+            #     bom = bom_map[old_id]
+            #     old_parent_id = bom['tmp_parent_id']
+            #     try:
+            #         new_parent_id = bom_map[old_parent_id]['id']
+            #         bom['parent_id'] = new_parent_id
+            #         temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
+            #     except KeyError as e:
+            #         print e.message
 
             for b in bom_map:
                 print bom_map[b]['id'], bom_map[b]['tmp_parent_id']
@@ -487,73 +488,22 @@ class order_requirement_line(orm.Model):
             'res_id': line.id
         }
 
-    def _get_all_children_ids(self, father, temp_mrp_bom_ids):
-        # temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
-        try:
-            father_id = father['tmp_id']
-        except (KeyError, TypeError):
-            return []
-        children = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_parent_id' in t[2] and t[2]['tmp_parent_id'] == father_id]
-        res = children
-        for child in children:
-            vals = child[2]
-            res.extend(self._get_all_children_ids(vals['tmp_id'], temp_mrp_bom_ids))
-        return res
-
-    def _check_parents(self, temp, temp_mrp_bom_ids):
-        # Return True if all the parents are present up to level 0
-        # If I am at level 0 => True (no need for parents)
-        # temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
-        try:
-            level = temp['level']
-        except (KeyError, TypeError):
-            return False
-        if level == 0:
-            return True
-        # Direct fathers
-        father_id = temp['tmp_parent_id']
-        parents_ids = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_id' in t[2] and t[2]['tmp_id'] == father_id]
-        if level == 1:
-            return bool(parents_ids)
-        for parent in parents_ids:
-            vals = parent[2]
-            if self._check_parents(vals, temp_mrp_bom_ids):
-                return True
-        return False
-
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
         # If in presence of a new unsaved set of mrp boms, list will start with [5,0,False]
         is_new_set = temp_mrp_bom_ids[0][0] == 5
         new_temp_mrp_bom_ids = []
-        deleted_fathers_ids = []
         for t in temp_mrp_bom_ids:
-            ta = self._get_all_children_ids(t[2], temp_mrp_bom_ids)
+            ta = temp_mrp_bom.get_all_children_ids(t[2], temp_mrp_bom_ids)
             a = ta
         if True or is_new_set:
-            # Cycle through all (skipping first, the one [5,0,False])
-            temp_mrp_bom_ids_valid = temp_mrp_bom_ids[1:]
+            # Cycle through all
             for temp in temp_mrp_bom_ids:
                 vals = temp[2]
-                if self._check_parents(vals, temp_mrp_bom_ids):
+                if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
                     new_temp_mrp_bom_ids.append(vals)
-                    # if vals['level'] == 0:
-                    #    new_temp_mrp_bom_ids.append(temp)
-                    # else:
-                    # Am I a sub-bom and does my father exist? If so, add to return dict
-                    # If not, a "father" is being removed, so will be its children
-                    # parent_id = vals['tmp_parent_id']
-                    # father_ids = [t[2] for t in temp_mrp_bom_ids_valid if t[2]['tmp_id'] == parent_id]
-                    # temp_mrp_bom_vals = [t[2] for t in temp_mrp_bom_ids_valid]
-                    # children_ids = self._get_all_children_ids(parent_id, temp_mrp_bom_ids_valid)
-                    # father_ids = self._check_parents(parent_id, temp_mrp_bom_ids_valid)
-                    # if father_ids:
-                    #    new_temp_mrp_bom_ids.append(temp)
-                    # else:
-                    #    deleted_fathers_ids.append(temp)
-        else:
-            to_be_deleted_ids = [t[1] for t in temp_mrp_bom_ids if t[0] == 2]
+
         return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
 
     def save_suppliers(self, cr, uid, ids, context=None):
