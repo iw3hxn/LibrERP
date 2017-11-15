@@ -307,9 +307,11 @@ class FormatFour():
     PARTNER_UNIQUE_OFFICE_CODE = False
 
     HEADER_PRODUCT = (
-        'codice', 'nome', 'categoria', 'brand', 'descrizione vendita', 'uom_i',
-        'codiva_acq', 'codiva_cen', 'list_price', 'ean13', 'fornitore',
-        'cod__prod__forn_', 'prezzo_forn_', 'active', 'available_in_pos',
+        'codice', 'nome', 'categoria', 'brand',
+        'descrizione vendita', 'uom_i',
+        'codiva_acq', 'codiva_cen', 'list_price',
+        'ean13', 'fornitore', 'cod__prod__forn_',
+        'prezzo_forn_', 'active', 'available_in_pos',
         'sale_ok', 'assupply_method', 'type', 'procure_method', 'cost_method'
     )
     COLUMNS_PRODUCT = "default_code, name, category, brand, "\
@@ -417,7 +419,7 @@ class FormatOmnitron(object):
     COLUMNS_PRODUCT = "old_code, description, supplier, " \
                       "description_english, omnitron_procurement, " \
                       "none, none1, none2, " \
-                      "list_price, none4, standard_price, none5, " \
+                      "standard_price, discount, discounted_price, none5, " \
                       "sale_line_warn_msg, none6, qty, " \
                       "omnitron_produce_delay, omnitron_type, omnitron_delivery_cost, " \
                       "none8, none9, none10, omnitron_weight_per_meter"
