@@ -151,24 +151,23 @@ class temp_mrp_bom(orm.Model):
         result_dict = {}
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
-            if not supplier_id:
-                # --find the supplier
-                supplier_info_ids = supplierinfo_obj.search(cr, uid,
-                                                            [('product_id', '=', product.product_tmpl_id.id)],
-                                                            order="sequence", context=context)
-                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-                seller_ids = [info.name.id for info in supplier_infos]
+            # --find the supplier
+            supplier_info_ids = supplierinfo_obj.search(cr, uid,
+                                                        [('product_id', '=', product.product_tmpl_id.id)],
+                                                        order="sequence", context=context)
+            supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
+            seller_ids = [info.name.id for info in supplier_infos]
 
-                if seller_ids:
-                    result_dict.update({
-                        'supplier_id': seller_ids[0],
-                        'supplier_ids': seller_ids,
-                    })
-                else:
-                    result_dict.update({
-                        'supplier_id': False,
-                        'supplier_ids': [],
-                    })
+            if seller_ids:
+                result_dict.update({
+                    'supplier_id': seller_ids[0],
+                    'supplier_ids': seller_ids,
+                })
+            else:
+                result_dict.update({
+                    'supplier_id': False,
+                    'supplier_ids': [],
+                })
 
         else:
             result_dict.update({
@@ -183,8 +182,10 @@ class temp_mrp_bom(orm.Model):
         suppliers = self.get_suppliers(cr, uid, ids, new_product_id, qty, supplier_id, context)
         ret.update(suppliers)
         product_obj = self.pool['product.product']
+        order_requirement_line_obj = self.pool['order.requirement.line']
         product = product_obj.browse(cr, uid, new_product_id, context)
-        temp_mrp_bom_ids = temp_mrp_bom.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+        line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
+        temp_mrp_bom_ids = line.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
         # mrp_bom.
         return {'value': ret}
 

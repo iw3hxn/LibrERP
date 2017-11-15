@@ -63,24 +63,23 @@ class order_requirement_line(orm.Model):
         result_dict = {}
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
-            if not supplier_id:
-                # --find the supplier
-                supplier_info_ids = supplierinfo_obj.search(cr, uid,
-                                                            [('product_id', '=', product.product_tmpl_id.id)],
-                                                            order="sequence", context=context)
-                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-                seller_ids = [info.name.id for info in supplier_infos]
+            # --find the supplier
+            supplier_info_ids = supplierinfo_obj.search(cr, uid,
+                                                        [('product_id', '=', product.product_tmpl_id.id)],
+                                                        order="sequence", context=context)
+            supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
+            seller_ids = [info.name.id for info in supplier_infos]
 
-                if seller_ids:
-                    result_dict.update({
-                        'supplier_id': seller_ids[0],
-                        'supplier_ids': seller_ids,
-                    })
-                else:
-                    result_dict.update({
-                        'supplier_id': False,
-                        'supplier_ids': [],
-                    })
+            if seller_ids:
+                result_dict.update({
+                    'supplier_id': seller_ids[0],
+                    'supplier_ids': seller_ids,
+                })
+            else:
+                result_dict.update({
+                    'supplier_id': False,
+                    'supplier_ids': [],
+                })
 
         else:
             result_dict.update({
@@ -262,29 +261,10 @@ class order_requirement_line(orm.Model):
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        supplierinfo_obj = self.pool['product.supplierinfo']
-        # result_dict = {}
-        result_dict = {'temp_mrp_bom_ids': []}
+        result_dict = self.get_suppliers(cr, uid, ids, new_product_id, qty, supplier_id, context)
+
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
-            if not supplier_id:
-                # --find the supplier
-                supplier_info_ids = supplierinfo_obj.search(cr, uid,
-                                                            [('product_id', '=', product.product_tmpl_id.id)],
-                                                            order="sequence", context=context)
-                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-                seller_ids = [info.name.id for info in supplier_infos]
-
-                if seller_ids:
-                    result_dict.update({
-                        'supplier_id': seller_ids[0],
-                        'supplier_ids': seller_ids,
-                    })
-                else:
-                    result_dict.update({
-                        'supplier_id': False,
-                        'supplier_ids': [],
-                    })
 
             # Update BOM according to new product
             # Removing existing temp mrp bom
@@ -300,15 +280,8 @@ class order_requirement_line(orm.Model):
                     'view_bom': True,
                     'is_manufactured': True
                 })
-            else:
-                result_dict['view_bom'] = False
-
         else:
-            result_dict.update({
-                'supplier_id': False,
-                'supplier_ids': [],
-            })
-
+            result_dict['view_bom'] = False
         return {'value': result_dict}
 
     def _purchase(self, cr, uid, obj, is_temp_bom, context):
