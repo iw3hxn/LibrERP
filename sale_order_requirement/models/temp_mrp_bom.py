@@ -9,7 +9,34 @@ from mrp import mrp_bom
 class temp_mrp_bom(orm.Model):
     _name = 'temp.mrp.bom'
 
+    # TODO Duplicated, same as order_requirement_line
+    def generic_stock_availability(self, cr, uid, product, warehouse_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
+        spare = 0
+        # product = self._get_actual_product(cr, uid, ids)
+        order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product.id),
+                                                                     ('warehouse_id', '=', warehouse_id)], context=context, limit=1)
+        if order_point_ids:
+            spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
+
+        res = {
+            'stock_availability': product.id and product.type != 'service' and product.qty_available or False,
+            'spare': spare,
+        }
+        return res
+
     def _stock_availability(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            product = line.product_id
+            warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
+            res[line.id] = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
+        return res
+
+    # TODO: evaluate if keeping it
+    def _stock_availabilityOLD(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
         res = {}
@@ -38,7 +65,7 @@ class temp_mrp_bom(orm.Model):
         colors = ['black', 'blue', 'cadetblue', 'grey']
         try:
             row_color = colors[level]
-        except KeyError:
+        except IndexError:
             row_color = 'grey'
         return row_color
 
@@ -145,49 +172,46 @@ class temp_mrp_bom(orm.Model):
             res['supplier_id'] = False
         return {'value': res}
 
-    def get_suppliers(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
+    def update_temp_mrp_data(self, cr, uid, temp, context):
+        # TODO DUPLICATED -> move into order_requirement_line and use in creation?
         context = context or self.pool['res.users'].context_get(cr, uid)
-        supplierinfo_obj = self.pool['product.supplierinfo']
-        result_dict = {}
-        if new_product_id:
-            product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
-            # --find the supplier
-            supplier_info_ids = supplierinfo_obj.search(cr, uid,
-                                                        [('product_id', '=', product.product_tmpl_id.id)],
-                                                        order="sequence", context=context)
-            supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-            seller_ids = [info.name.id for info in supplier_infos]
-
-            if seller_ids:
-                result_dict.update({
-                    'supplier_id': seller_ids[0],
-                    'supplier_ids': seller_ids,
-                })
-            else:
-                result_dict.update({
-                    'supplier_id': False,
-                    'supplier_ids': [],
-                })
-
-        else:
-            result_dict.update({
-                'supplier_id': False,
-                'supplier_ids': [],
-            })
-
-        return result_dict
-
-    def onchange_temp_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
-        ret = {}
-        suppliers = self.get_suppliers(cr, uid, ids, new_product_id, qty, supplier_id, context)
-        ret.update(suppliers)
         product_obj = self.pool['product.product']
-        product = product_obj.browse(cr, uid, new_product_id, context)
-        # ret['product_id'] = product.id
-        # No, they are in memory
-        # temp = self.browse(cr, uid, ids, context)[0]
-        # line = temp.order_requirement_line_id
-        # temp_mrp_bom_ids = line.get_temp_mrp_bom(line, product.bom_ids, context)
-        # mrp_bom.
+        order_requirement_line_obj = self.pool['order.requirement.line']
+
+        line_id = temp['order_requirement_line_id']
+        product_id = temp['product_id']
+        level = temp['level']
+        qty = temp['product_qty']
+        line = order_requirement_line_obj.browse(cr, uid, line_id, context)
+        product = product_obj.browse(cr, uid, product_id, context)
+
+        row_color = temp_mrp_bom._get_color_bylevel(level)
+        complete_name = product.name
+        if level > 0:
+            complete_name = '-----' * level + '> ' + complete_name
+
+        suppliers = line.get_suppliers(product_id, qty, context=context)
+        warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
+        stock_spare = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
+        if stock_spare['stock_availability'] < stock_spare['spare']:
+            row_color = 'red'
+        return {
+            'row_color': row_color,
+            'complete_name': complete_name,
+            'stock_availability': stock_spare['stock_availability'],
+            'spare': stock_spare['spare'],
+            'supplier_id': suppliers['supplier_id'],
+            'supplier_ids': suppliers['supplier_ids'],
+        }
+
+    def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty=0, context=None):
+        line_id = context['line_id']
+        temp = {
+            'level': level,
+            'product_id': new_product_id,
+            'product_qty': qty,
+            'order_requirement_line_id': line_id
+        }
+        ret = self.update_temp_mrp_data(cr, uid, temp, context)
         return {'value': ret}
 

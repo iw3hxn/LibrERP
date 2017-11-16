@@ -118,7 +118,7 @@ class order_requirement_line(orm.Model):
                         if level > 0:
                             complete_name = '-----' * level + '> ' + complete_name
 
-                        suppliers = self.get_suppliers(cr, uid, [], bom.product_id.id, bom.product_qty, False, context)
+                        suppliers = self.get_suppliers(cr, uid, [], bom.product_id.id, bom.product_qty, context)
                         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
                         stock_spare = self.generic_stock_availability(cr, uid, bom.product_id, warehouse_id, context)
                         if stock_spare['stock_availability'] < stock_spare['spare']:
@@ -130,7 +130,6 @@ class order_requirement_line(orm.Model):
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
                             'complete_name': complete_name,
-                            'name': bom.name,
                             # 'bom_id': bom.bom_id.id,
                             'product_id': bom.product_id.id,
                             'product_qty': bom.product_qty,
@@ -140,6 +139,8 @@ class order_requirement_line(orm.Model):
                             'stock_availability': stock_spare['stock_availability'],
                             'spare': stock_spare['spare'],
                             'is_manufactured': True,
+                            'stock_availability': stock_spare['stock_availability'],
+                            'spare': stock_spare['spare'],
                             'supplier_id': suppliers['supplier_id'],
                             'supplier_ids': suppliers['supplier_ids'],
                             'routing_id': bom.routing_id.id,
