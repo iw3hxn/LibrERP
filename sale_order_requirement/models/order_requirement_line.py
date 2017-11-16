@@ -22,27 +22,32 @@ class order_requirement_line(orm.Model):
     #     else:
     #         return line.product_id
 
-    def _stock_availability(self, cr, uid, ids, name, args, context=None):
+    def generic_stock_availability(self, cr, uid, product, warehouse_id, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
+        spare = 0
+        # product = self._get_actual_product(cr, uid, ids)
+        order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product.id),
+                                                                     ('warehouse_id', '=', warehouse_id)], context=context, limit=1)
+        if order_point_ids:
+            spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
+
+        res = {
+            'stock_availability': product.id and product.type != 'service' and product.qty_available or False,
+            'spare': spare,
+        }
+        return res
+
+    def _stock_availability(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            spare = 0
-            warehouse = line.sale_order_id.shop_id.warehouse_id
-            # product = self._get_actual_product(cr, uid, ids)
             if line.new_product_id:
                 product = line.new_product_id
             else:
                 product = line.product_id
-            order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product.id),
-                                                                         ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
-            if order_point_ids:
-                spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
-
-            res[line.id] = {
-                'stock_availability': product.id and product.type != 'service' and product.qty_available or False,
-                'spare': spare,
-            }
+            warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
+            res[line.id] = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
         return res
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
@@ -89,7 +94,7 @@ class order_requirement_line(orm.Model):
 
         return result_dict
 
-    def get_temp_mrp_bom(self, cr, uid, bom_ids, context):
+    def get_temp_mrp_bom(self, cr, uid, line, bom_ids, context):
         # Returns a list of VALS
         temp_mrp_bom_vals = []
 
@@ -113,6 +118,10 @@ class order_requirement_line(orm.Model):
                             complete_name = '-----' * level + '> ' + complete_name
 
                         suppliers = self.get_suppliers(cr, uid, [], bom.product_id.id, bom.product_qty, False, context)
+                        warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
+                        stock_spare = self.generic_stock_availability(cr, uid, bom.product_id, warehouse_id, context)
+                        if stock_spare['stock_availability'] < stock_spare['spare']:
+                            row_color = 'red'
 
                         newbom_vals = {
                             'name': bom.name,
@@ -127,6 +136,8 @@ class order_requirement_line(orm.Model):
                             'product_uom': bom.product_uom.id,
                             'product_efficiency': bom.product_efficiency,
                             'product_type': bom.product_id.type,
+                            'stock_availability': stock_spare['stock_availability'],
+                            'spare': stock_spare['spare'],
                             'is_manufactured': True,
                             'supplier_id': suppliers['supplier_id'],
                             'supplier_ids': suppliers['supplier_ids'],
@@ -160,7 +171,7 @@ class order_requirement_line(orm.Model):
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
-                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, line, product.bom_ids, context)
                 res[line.id] = temp_mrp_bom_vals
         return res
 
@@ -274,7 +285,7 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
 
             if product.bom_ids:
-                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, line, product.bom_ids, context)
                 result_dict.update({
                     'temp_mrp_bom_ids': temp_mrp_bom_vals,
                     'view_bom': True,
@@ -496,6 +507,9 @@ class order_requirement_line(orm.Model):
                 vals = temp[2]
                 if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
                     new_temp_mrp_bom_ids.append(vals)
+        else:
+            # TODO temporary: temp_mrp_bom_ids unchanged
+            new_temp_mrp_bom_ids = temp_mrp_bom_ids
 
         return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
 

@@ -182,10 +182,10 @@ class temp_mrp_bom(orm.Model):
         suppliers = self.get_suppliers(cr, uid, ids, new_product_id, qty, supplier_id, context)
         ret.update(suppliers)
         product_obj = self.pool['product.product']
-        order_requirement_line_obj = self.pool['order.requirement.line']
         product = product_obj.browse(cr, uid, new_product_id, context)
-        line = order_requirement_line_obj.browse(cr, uid, context['active_id'], context)
-        temp_mrp_bom_ids = line.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
+        temp = self.browse(cr, uid, ids, context)[0]
+        line = temp.order_requirement_line_id
+        temp_mrp_bom_ids = line.get_temp_mrp_bom(line, product.bom_ids, context)
         # mrp_bom.
         return {'value': ret}
 
