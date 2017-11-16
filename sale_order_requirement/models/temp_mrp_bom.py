@@ -177,7 +177,7 @@ class temp_mrp_bom(orm.Model):
         res = {}
         return {'value': res}
 
-    def update_temp_mrp_data(self, cr, uid, temp, context):
+    def update_temp_mrp_data000(self, cr, uid, temp, context):
         # TODO DUPLICATED -> move into order_requirement_line and use in creation?
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
@@ -208,13 +208,15 @@ class temp_mrp_bom(orm.Model):
         }
 
     def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty=0, context=None):
+        order_requirement_line_obj = self.pool['order.requirement.line']
         line_id = context['line_id']
+        line = order_requirement_line_obj.browse(cr, uid, line_id, context)
         temp = {
             'level': level,
             'product_id': new_product_id,
             'product_qty': qty,
             'order_requirement_line_id': line_id
         }
-        ret = self.update_temp_mrp_data(cr, uid, temp, context)
+        ret = line.update_temp_mrp_data(cr, uid, temp=temp, context=context)
         return {'value': ret}
 
