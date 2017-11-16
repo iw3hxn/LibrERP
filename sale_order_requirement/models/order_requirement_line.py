@@ -94,7 +94,7 @@ class order_requirement_line(orm.Model):
 
         return result_dict
 
-    def update_temp_mrp_data(self, cr, uid, temp, context):
+    def update_temp_mrp_data(self, cr, uid, ids, temp, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
 
@@ -160,7 +160,7 @@ class order_requirement_line(orm.Model):
                             'level': level,
                             'order_requirement_line_id': line.id
                         }
-                        temp_additional_data = self.update_temp_mrp_data(cr, uid, temp_vals, context)
+                        temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
                         temp_vals.update(temp_additional_data)
                         temp_mrp_bom_vals.append(temp_vals)
                     # Even if not product I must check all children
