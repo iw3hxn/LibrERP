@@ -69,8 +69,8 @@ class order_requirement_line(orm.Model):
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
             # --find the supplier
-            supplier_info_ids = supplierinfo_obj.search(cr, uid,
-                                                        [('product_id', '=', product.product_tmpl_id.id)],
+            supplier_info_ids = supplierinfo_obj.search(cr, uid, [], limit=20,
+                                                        #[('product_id', '=', product.product_tmpl_id.id)],
                                                         order="sequence", context=context)
             supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
             seller_ids = list(set([info.name.id for info in supplier_infos]))

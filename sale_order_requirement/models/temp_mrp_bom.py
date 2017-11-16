@@ -216,5 +216,5 @@ class temp_mrp_bom(orm.Model):
             'order_requirement_line_id': line_id
         }
         ret = self.update_temp_mrp_data(cr, uid, temp, context)
-        return {'value': ret}
+        return {'value': {}}
 
