@@ -80,18 +80,18 @@ class temp_mrp_bom(orm.Model):
 
     _columns = {
         'name': fields.char('Name', size=160, readonly=True),
-        'complete_name': fields.char('Complete name', readonly=True),
+        'level_name': fields.char('Level', readonly=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True),
-
         'product_id': fields.many2one('product.product', 'Product', required=True),
         'product_uos_qty': fields.float('Product UOS Qty'),
         'product_uos': fields.many2one('product.uom', 'Product UOS',
                                        help="Product UOS (Unit of Sale) is the unit of measurement for the invoicing and promotion of stock."),
-        'product_qty': fields.float('Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
+        'product_qty': fields.float('Product Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
         'product_uom': fields.many2one('product.uom', 'UOM', required=True,
                                        help="UoM (Unit of Measure) is the unit of measurement for the inventory control"),
+        'cost': fields.float('Cost'),
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
         'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id',
                                         string='Sale Order', relation='sale.order', type='many2one', readonly=True),
@@ -166,10 +166,15 @@ class temp_mrp_bom(orm.Model):
                 return True
         return False
 
-    def onchange_manufacture(self, cr, uid, ids, is_manufactured, context=None):
+    def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured, context=None):
         res = {}
         if is_manufactured:
             res['supplier_id'] = False
+        return {'value': res}
+
+    def onchange_temp_supplier_id(self, cr, uid, ids, supplier_id, product_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
         return {'value': res}
 
     def update_temp_mrp_data(self, cr, uid, temp, context):
@@ -186,18 +191,16 @@ class temp_mrp_bom(orm.Model):
         product = product_obj.browse(cr, uid, product_id, context)
 
         row_color = temp_mrp_bom._get_color_bylevel(level)
-        complete_name = product.name
-        if level > 0:
-            complete_name = '-----' * level + '> ' + complete_name
+        level_name = '- {} {} >'.format(str(level), ' -----' * level)
 
         suppliers = line.get_suppliers(product_id, qty, context=context)
         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
         stock_spare = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
-        if stock_spare['stock_availability'] < stock_spare['spare']:
+        if level > 0 and stock_spare['stock_availability'] < stock_spare['spare']:
             row_color = 'red'
         return {
             'row_color': row_color,
-            'complete_name': complete_name,
+            'level_name': level_name,
             'stock_availability': stock_spare['stock_availability'],
             'spare': stock_spare['spare'],
             'supplier_id': suppliers['supplier_id'],

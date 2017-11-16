@@ -2759,9 +2759,9 @@ div#ui-datepicker-div {
 }
 
 th[data-id=product_id] {
-    max-width: 200px
+    max-width: 200px;
 }
 
-th[data-id=complete_name] {
-    min-width: 450px
+th[data-id=level_name] {
+    min-width: 90px
 }

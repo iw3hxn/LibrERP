@@ -73,7 +73,7 @@ class order_requirement_line(orm.Model):
                                                         [('product_id', '=', product.product_tmpl_id.id)],
                                                         order="sequence", context=context)
             supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-            seller_ids = [info.name.id for info in supplier_infos]
+            seller_ids = list(set([info.name.id for info in supplier_infos]))
 
             if seller_ids:
                 result_dict.update({
@@ -113,15 +113,12 @@ class order_requirement_line(orm.Model):
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
 
-                        row_color = temp_mrp_bom._get_color_bylevel(level)
-                        complete_name = bom.name
-                        if level > 0:
-                            complete_name = '-----' * level + '> ' + complete_name
-
+                        level_name = '- {} {} >'.format(str(level), ' -----' * level)
                         suppliers = self.get_suppliers(cr, uid, [], bom.product_id.id, bom.product_qty, context)
                         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
                         stock_spare = self.generic_stock_availability(cr, uid, bom.product_id, warehouse_id, context)
-                        if stock_spare['stock_availability'] < stock_spare['spare']:
+                        row_color = temp_mrp_bom._get_color_bylevel(level)
+                        if level > 0 and stock_spare['stock_availability'] < stock_spare['spare']:
                             row_color = 'red'
 
                         newbom_vals = {
@@ -129,7 +126,7 @@ class order_requirement_line(orm.Model):
                             # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
-                            'complete_name': complete_name,
+                            'level_name': level_name,
                             # 'bom_id': bom.bom_id.id,
                             'product_id': bom.product_id.id,
                             'product_qty': bom.product_qty,
@@ -139,8 +136,6 @@ class order_requirement_line(orm.Model):
                             'stock_availability': stock_spare['stock_availability'],
                             'spare': stock_spare['spare'],
                             'is_manufactured': True,
-                            'stock_availability': stock_spare['stock_availability'],
-                            'spare': stock_spare['spare'],
                             'supplier_id': suppliers['supplier_id'],
                             'supplier_ids': suppliers['supplier_ids'],
                             'routing_id': bom.routing_id.id,
