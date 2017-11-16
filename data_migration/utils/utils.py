@@ -1,24 +1,5 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
-#
-# Copyright (c) 2013-2015 Andrei Levin (andrei.levin at didotech.com)
-#
-#                          All Rights Reserved.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-###############################################################################
+# -*- coding: utf-8 -*-
+# © 2013 - 2017 Andrei Levin - Didotech srl (www.didotech.com)
 
 import logging
 import re
@@ -47,12 +28,13 @@ class Utils():
         self.filedata_obj.write(cr, uid, ids, vals={'progress_indicator': self.progress_indicator}, context=self.context)
         _logger.info('Import status: %d %s (%d lines processed)' % (self.progress_indicator, '%', self.processed_lines))
 
-    def toStr(self, value):
+    @staticmethod
+    def toStr(value):
         if value and not value == '\\N':
             if isinstance(value, (str, unicode)) and value.lower() == 'null':
                 return False
 
-            number = re.compile(r'^(?!0)[0-9.,]+$')
+            number = re.compile(r'^(?!0[0-9])[0-9.,]+$')
             number_with_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
             number_with_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
             if isinstance(value, (unicode, str)):
@@ -63,7 +45,7 @@ class Utils():
                         elif number_with_thousands_separator.match(value):
                             value = value.replace(',', '')
                         else:
-                            if value[0] in ('0', '+'):
+                            if value[0] == '+':
                                 return unicode(value)
                             elif value.count('.') > 1:
                                 # not a number

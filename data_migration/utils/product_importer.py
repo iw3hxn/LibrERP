@@ -246,7 +246,8 @@ class ImportFile(threading.Thread, Utils):
             'M2': 'mq',
             'mq': 'mq',
             'Kg': 'kg',
-            'kg': 'kg'
+            'kg': 'kg',
+            'mm': 'mm'
         }
 
         if name and len(name) > 20 and name[:20] == 'product.product_uom_':
@@ -566,7 +567,12 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'uom') and record.uom:
             vals_product['uom_id'] = self.get_uom(cr, uid, record.uom)
             vals_product['uom_po_id'] = vals_product['uom_id']
-        # else:
+        else:
+            if self.FORMAT == 'FormatOmnitron':
+                if float(record.omnitron_weight_per_meter):
+                    vals_product['uom_id'] = self.get_uom(cr, uid, 'mm')
+                    vals_product['uom_po_id'] = self.get_uom(cr, uid, 'mm')
+
         #     if hasattr(record, 'uom_po_id') and record.uom_po_id:
         #         vals_product['uom_po_id'] = self.get_uom(cr, uid, record.uom_po_id)
         #         vals_product['uom_po_id'] = record.uom_po_id
