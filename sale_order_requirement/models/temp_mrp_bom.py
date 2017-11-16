@@ -177,44 +177,16 @@ class temp_mrp_bom(orm.Model):
         res = {}
         return {'value': res}
 
-    def update_temp_mrp_data(self, cr, uid, temp, context):
-        # TODO DUPLICATED -> move into order_requirement_line and use in creation?
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        product_obj = self.pool['product.product']
-        order_requirement_line_obj = self.pool['order.requirement.line']
-
-        line_id = temp['order_requirement_line_id']
-        product_id = temp['product_id']
-        level = temp['level']
-        qty = temp['product_qty']
-        line = order_requirement_line_obj.browse(cr, uid, line_id, context)
-        product = product_obj.browse(cr, uid, product_id, context)
-
-        row_color = temp_mrp_bom._get_color_bylevel(level)
-        level_name = '- {} {} >'.format(str(level), ' -----' * level)
-
-        suppliers = line.get_suppliers(product_id, qty, context=context)
-        warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-        stock_spare = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
-        if level > 0 and stock_spare['stock_availability'] < stock_spare['spare']:
-            row_color = 'red'
-        return {
-            'row_color': row_color,
-            'level_name': level_name,
-            'stock_availability': stock_spare['stock_availability'],
-            'spare': stock_spare['spare'],
-            'supplier_id': suppliers['supplier_id'],
-            'supplier_ids': suppliers['supplier_ids'],
-        }
-
     def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty=0, context=None):
+        order_requirement_line_obj = self.pool['order.requirement.line']
         line_id = context['line_id']
+        line = order_requirement_line_obj.browse(cr, uid, line_id, context)
         temp = {
             'level': level,
             'product_id': new_product_id,
             'product_qty': qty,
             'order_requirement_line_id': line_id
         }
-        ret = self.update_temp_mrp_data(cr, uid, temp, context)
+        ret = line.update_temp_mrp_data(temp=temp, context=context)
         return {'value': ret}
 

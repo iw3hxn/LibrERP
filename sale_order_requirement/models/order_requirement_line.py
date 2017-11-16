@@ -94,6 +94,34 @@ class order_requirement_line(orm.Model):
 
         return result_dict
 
+    def update_temp_mrp_data(self, cr, uid, ids, temp, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        product_obj = self.pool['product.product']
+
+        line_id = temp['order_requirement_line_id']
+        product_id = temp['product_id']
+        level = temp['level']
+        qty = temp['product_qty']
+        line = self.browse(cr, uid, line_id, context)
+        product = product_obj.browse(cr, uid, product_id, context)
+
+        row_color = temp_mrp_bom._get_color_bylevel(level)
+        level_name = '- {} {} >'.format(str(level), ' -----' * level)
+
+        suppliers = line.get_suppliers(product_id, qty, context=context)
+        warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
+        stock_spare = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
+        if level > 0 and stock_spare['stock_availability'] < stock_spare['spare']:
+            row_color = 'red'
+        return {
+            'row_color': row_color,
+            'level_name': level_name,
+            'stock_availability': stock_spare['stock_availability'],
+            'spare': stock_spare['spare'],
+            'supplier_id': suppliers['supplier_id'],
+            'supplier_ids': suppliers['supplier_ids'],
+        }
+
     def get_temp_mrp_bom(self, cr, uid, line, bom_ids, context):
         # Returns a list of VALS
         temp_mrp_bom_vals = []
@@ -113,39 +141,28 @@ class order_requirement_line(orm.Model):
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
 
-                        level_name = '- {} {} >'.format(str(level), ' -----' * level)
-                        suppliers = self.get_suppliers(cr, uid, [], bom.product_id.id, bom.product_qty, context)
-                        warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-                        stock_spare = self.generic_stock_availability(cr, uid, bom.product_id, warehouse_id, context)
-                        row_color = temp_mrp_bom._get_color_bylevel(level)
-                        if level > 0 and stock_spare['stock_availability'] < stock_spare['spare']:
-                            row_color = 'red'
-
-                        newbom_vals = {
+                        temp_vals = {
                             'name': bom.name,
                             # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
-                            'level_name': level_name,
                             # 'bom_id': bom.bom_id.id,
                             'product_id': bom.product_id.id,
                             'product_qty': bom.product_qty,
                             'product_uom': bom.product_uom.id,
                             'product_efficiency': bom.product_efficiency,
                             'product_type': bom.product_id.type,
-                            'stock_availability': stock_spare['stock_availability'],
-                            'spare': stock_spare['spare'],
                             'is_manufactured': True,
-                            'supplier_id': suppliers['supplier_id'],
-                            'supplier_ids': suppliers['supplier_ids'],
                             'routing_id': bom.routing_id.id,
                             'company_id': bom.company_id.id,
                             'position': bom.position,
                             'is_leaf': not bool(bom.child_buy_and_produce_ids),
                             'level': level,
-                            'row_color': row_color,
+                            'order_requirement_line_id': line.id
                         }
-                        temp_mrp_bom_vals.append(newbom_vals)
+                        temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
+                        temp_vals.update(temp_additional_data)
+                        temp_mrp_bom_vals.append(temp_vals)
                     # Even if not product I must check all children
                     _get_rec(bom)
 
