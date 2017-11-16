@@ -112,6 +112,7 @@ class order_requirement_line(orm.Model):
                     if True: # bom.product_id.type == 'product':
                         # coolname = u' {1} - {0} {2}'.format(bom.id, bom_rec.id, bom.name)
                         level = children_levels[bom.id]['level']
+
                         row_color = temp_mrp_bom._get_color_bylevel(level)
                         complete_name = bom.name
                         if level > 0:
@@ -195,16 +196,16 @@ class order_requirement_line(orm.Model):
                     temp_vals['id'] = new_id
                     # map[ old ID ] => vals
                     bom_map[temp_vals['tmp_id']] = temp_vals
-            # Now creating hierarchy
-            # for old_id in bom_map:
-            #     bom = bom_map[old_id]
-            #     old_parent_id = bom['tmp_parent_id']
-            #     try:
-            #         new_parent_id = bom_map[old_parent_id]['id']
-            #         bom['parent_id'] = new_parent_id
-            #         temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
-            #     except KeyError as e:
-            #         print e.message
+            # Now creating hierarchy using id and parent_id
+            for old_id in bom_map:
+                bom = bom_map[old_id]
+                old_parent_id = bom['tmp_parent_id']
+                try:
+                    new_parent_id = bom_map[old_parent_id]['id']
+                    bom['parent_id'] = new_parent_id
+                    temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
+                except KeyError as e:
+                    print e.message
 
             for b in bom_map:
                 print bom_map[b]['id'], bom_map[b]['tmp_parent_id']
@@ -498,7 +499,11 @@ class order_requirement_line(orm.Model):
         # and all items in list will be [4,id,False]
         is_new_set = not temp_mrp_bom_ids or temp_mrp_bom_ids[0][0] == 5
         new_temp_mrp_bom_ids = []
-        # for t in temp_mrp_bom_ids:
+        for t in temp_mrp_bom_ids:
+            try:
+                print t[2]['name']
+            except:
+                print
         #    ta = temp_mrp_bom.get_all_temp_bom_children_ids(t[2], temp_mrp_bom_ids)
         #    a = ta
         if is_new_set:

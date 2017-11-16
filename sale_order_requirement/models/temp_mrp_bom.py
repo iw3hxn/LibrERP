@@ -62,8 +62,8 @@ class temp_mrp_bom(orm.Model):
         'product_uos_qty': fields.float('Product UOS Qty'),
         'product_uos': fields.many2one('product.uom', 'Product UOS',
                                        help="Product UOS (Unit of Sale) is the unit of measurement for the invoicing and promotion of stock."),
-        'product_qty': fields.float('Product Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
-        'product_uom': fields.many2one('product.uom', 'Product UOM', required=True,
+        'product_qty': fields.float('Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
+        'product_uom': fields.many2one('product.uom', 'UOM', required=True,
                                        help="UoM (Unit of Measure) is the unit of measurement for the inventory control"),
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
         'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id',
@@ -183,9 +183,11 @@ class temp_mrp_bom(orm.Model):
         ret.update(suppliers)
         product_obj = self.pool['product.product']
         product = product_obj.browse(cr, uid, new_product_id, context)
-        temp = self.browse(cr, uid, ids, context)[0]
-        line = temp.order_requirement_line_id
-        temp_mrp_bom_ids = line.get_temp_mrp_bom(line, product.bom_ids, context)
+        # ret['product_id'] = product.id
+        # No, they are in memory
+        # temp = self.browse(cr, uid, ids, context)[0]
+        # line = temp.order_requirement_line_id
+        # temp_mrp_bom_ids = line.get_temp_mrp_bom(line, product.bom_ids, context)
         # mrp_bom.
         return {'value': ret}
 
