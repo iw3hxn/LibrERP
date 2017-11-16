@@ -95,7 +95,6 @@ class order_requirement_line(orm.Model):
         return result_dict
 
     def update_temp_mrp_data(self, cr, uid, temp, context):
-        # TODO DUPLICATED -> move into order_requirement_line and use in creation?
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
 
