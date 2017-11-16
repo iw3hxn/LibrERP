@@ -40,9 +40,9 @@
                                     <field name="id" invisible="1"/>
                                     <!-- field name="tmp_id"/>
                                     <field name="tmp_parent_id"/>-->
-                                    <field name="product_type" />
+                                    <field name="product_type" invisible="1"/>
                                     <field name="level_name"/>
-                                    <field name="product_id" context="" on_change="onchange_temp_product_id(product_id,product_qty,supplier_id,context)"
+                                    <field name="product_id" context="{'line_id': parent.id}" on_change="onchange_temp_product_id(product_id,product_qty,supplier_id,context)"
                                            attrs="{'readonly': [('product_type','!=','product')]}"/>
                                     <field name="product_qty" attrs="{'readonly': [('product_type','!=','product')]}"/>
                                     <field name="product_uom" readonly="1"/>
