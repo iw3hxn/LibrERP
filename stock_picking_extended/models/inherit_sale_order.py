@@ -28,6 +28,7 @@ import decimal_precision as dp
 from dateutil.relativedelta import relativedelta
 from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from tools.translate import _
 
 
 class sale_order_line(orm.Model):
@@ -78,6 +79,10 @@ class sale_order(orm.Model):
         super(sale_order, self).action_ship_create(cr, uid, ids, *args)
         context = self.pool['res.users'].context_get(cr, uid)
         for order in self.browse(cr, uid, ids, context=context):
+            if order.company_id.required_minimum_planned_date and not order.minimum_planned_date:
+                title = _(u'Error')
+                msg = _(u'Is not possible to confirm because order {order} have no Minimum Planned Date').format(order=order.name)
+                raise orm.except_orm(_(title), _(msg))
             # partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id)
             picking_obj = self.pool['stock.picking']
             picking_ids = picking_obj.search(cr, uid, [('sale_id', '=', order.id)], context=context)

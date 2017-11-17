@@ -14,6 +14,13 @@ class order_requirement_line(orm.Model):
 
     _rec_name = 'product_id'
 
+    def _get_actual_product(self, cr, uid, ids, name = None, args = None, context=None):
+        line = self.browse(cr, uid, ids, context)[0]
+        if line.new_product_id:
+            return line.new_product_id
+        else:
+            return line.product_id
+
     def _stock_availability(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
@@ -21,12 +28,14 @@ class order_requirement_line(orm.Model):
         for line in self.browse(cr, uid, ids, context=context):
             spare = 0
             warehouse = line.sale_order_id.shop_id.warehouse_id
-            order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
+            product = self._get_actual_product(cr, uid, ids)
+            order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product.id),
+                                                                         ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
             if order_point_ids:
                 spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
 
             res[line.id] = {
-                'stock_availability': line.product_id and line.product_id.type != 'service' and line.product_id.qty_available or False,
+                'stock_availability': product.id and product.type != 'service' and product.qty_available or False,
                 'spare': spare,
             }
         return res
@@ -90,7 +99,8 @@ class order_requirement_line(orm.Model):
                             # tmp_* Could be useful for reconstructing hierarchy
                             'tmp_id': bom.id,
                             'tmp_parent_id': bom_rec.id,
-                            'complete_name': '___' * children_levels[bom.id]['level'] + ' ' + bom.name,
+                            #'complete_name': '---' * children_levels[bom.id]['level'] + '> ' + bom.name,
+                            'complete_name': 'oooo' * children_levels[bom.id]['level'],
                             'name': bom.name,
                             'type': bom.type,
                             # 'bom_id': bom.bom_id.id,
@@ -99,10 +109,13 @@ class order_requirement_line(orm.Model):
                             'product_uom': bom.product_uom.id,
                             'product_efficiency': bom.product_efficiency,
                             'routing_id': bom.routing_id.id,
-                            'company_id': bom.company_id.id
+                            'company_id': bom.company_id.id,
+                            'position': bom.position,
+                            'is_leaf': not bool(bom.child_buy_and_produce_ids)
                         }
                         temp_mrp_bom_vals.append(newbom_vals)
-                        _get_rec(bom)
+                    # Even if not product I must check all children
+                    _get_rec(bom)
 
             _get_rec(bom_father)
         return temp_mrp_bom_vals
@@ -115,16 +128,15 @@ class order_requirement_line(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context):
             if line._temp_mrp_bom_ids:
-                # for t in line._temp_mrp_bom_ids:
-                #     res[t.id] = self.read(cr, uid, t.id, None, context)
                 res[line.id] = [t.id for t in line._temp_mrp_bom_ids]
             else:
+                # does not work here
+                # product = line.actual_product
                 if line.new_product_id:
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-                # res[line.id] = [(0, False, temp) for temp in temp_mrp_bom_vals]
                 res[line.id] = temp_mrp_bom_vals
         return res
 
@@ -157,6 +169,7 @@ class order_requirement_line(orm.Model):
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}),
         'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
+        'actual_product': fields.function(_get_actual_product, store=False),
         'is_manufactured': fields.boolean('Manufacture', readonly=True, states={'draft': [('readonly', False)]},
                                           help='If checked product is manufactured. If not, BOM is read-only'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True,
@@ -201,7 +214,7 @@ class order_requirement_line(orm.Model):
 
         return ret
 
-    def onchange_product_id(self, cr, uid, ids, temp_mrp_bom_ids, new_product_id, qty=0, supplier_id=False, context=None):
+    def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         # result_dict = {}
@@ -229,13 +242,13 @@ class order_requirement_line(orm.Model):
 
             # Update BOM according to new product
             # Removing existing temp mrp bom
-            if temp_mrp_bom_ids:
+            line = self.browse(cr, uid, ids, context)[0]
+            if line._temp_mrp_bom_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-                temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
+                temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
 
             if product.bom_ids:
                 temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, product.bom_ids, context)
-                # result_dict['temp_mrp_bom_ids'] = [(0, False, temp) for temp in temp_mrp_bom_vals]
                 result_dict.update({
                     'temp_mrp_bom_ids': temp_mrp_bom_vals,
                     'view_bom': True,
@@ -346,13 +359,8 @@ class order_requirement_line(orm.Model):
     def _manufacture_main_product(self, cr, uid, line, context):
         mrp_production_obj = self.pool['mrp.production']
 
-        if line.new_product_id:
-            product = line.new_product_id
-        else:
-            product = line.product_id
+        product = line.actual_product
 
-        # mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', product.id),
-        #                                                          ('state', '=', 'draft')])
         # Always add manufacturing orders, same products can have different boms
         mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
@@ -364,10 +372,7 @@ class order_requirement_line(orm.Model):
         # TODO: this will do one at a time, enhance!
         mrp_production_obj = self.pool['mrp.production']
 
-        if line.new_product_id:
-            main_product = line.new_product_id
-        else:
-            main_product = line.product_id
+        main_product = line.actual_product
 
         mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', main_product.id),
                                                                  ('state', '=', 'draft')])
@@ -404,7 +409,7 @@ class order_requirement_line(orm.Model):
                 self._manufacture_bom(cr, uid, line, temp, context)
             else:
                 # This is OK, it works, uncomment
-                #self._purchase(cr, uid, temp, True, context)
+                self._purchase(cr, uid, temp, True, context)
                 pass
 
     def confirm_suppliers(self, cr, uid, ids, context):

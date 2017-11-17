@@ -65,6 +65,14 @@ class temp_mrp_bom(orm.Model):
                                               type='float', string='Stock Availability', readonly=True),
         'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float',
                                  string='Spare', readonly=True),
+        'is_leaf': fields.boolean('Leaf', readonly=True),
+        'position': fields.char('Internal Reference', size=64, help="Reference to a position in an external plan.",
+                                readonly=True),
+
+        'routing_id': fields.many2one('mrp.routing', 'Routing',
+                                      help="The list of operations (list of work centers) to produce the finished product. The routing is mainly used to compute work center costs during operations and to plan future loads on work centers based on production planning."),
+        'company_id': fields.many2one('res.company', 'Company', required=True),
+
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
     }
 
