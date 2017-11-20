@@ -156,6 +156,7 @@ class ExtraFunctions(object):
                 self._text_plain('"wikimarkup" format is not supported! Need to be installed "python-mediawiki" package.'),
             'text_markup': self._text_markup,
             '__filter': self.__filter, # Don't use in the report template!
+            'setLang': self._setLang,
         }
 
     def __filter(self, val):
@@ -589,3 +590,20 @@ class ExtraFunctions(object):
             return self._text_rest('\n'.join(lines))
         return text
 
+    def _setLang(self, lang):
+        # call report_sxw.rml_parse.setLang
+        parser = self.context['setCompany'].im_self
+        parser.setLang(lang)
+        # we need to change the reference from the call stack too
+        import inspect
+        frame = inspect.currentframe()
+        while not frame.f_locals.get('ctxt') and frame.f_back:
+            frame = frame.f_back
+        if frame.f_locals.get('ctxt'):
+            data = frame.f_locals['ctxt']
+            data['objects'] = parser.objects
+            if data.get('o'):
+                data['o'] = parser.objects[0]
+        self.context['objects'] = parser.objects
+        if self.context.get('o'):
+            self.context['o'] = parser.objects[0]
