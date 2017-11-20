@@ -9,55 +9,28 @@ from mrp import mrp_bom
 class temp_mrp_bom(orm.Model):
     _name = 'temp.mrp.bom'
 
-    # TODO Duplicated, same as order_requirement_line
-    def generic_stock_availability(self, cr, uid, product, warehouse_id, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
-        spare = 0
-        # product = self._get_actual_product(cr, uid, ids)
-        order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product.id),
-                                                                     ('warehouse_id', '=', warehouse_id)], context=context, limit=1)
-        if order_point_ids:
-            spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
-
-        res = {
-            'stock_availability': product.id and product.type != 'service' and product.qty_available or False,
-            'spare': spare,
-        }
-        return res
-
+    # This is called also when loading saved temp mrp boms,
+    # during creation see get_temp_mrp_bom
     def _stock_availability(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
+        order_requirement_line_obj = self.pool['order.requirement.line']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             product = line.product_id
             warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-            res[line.id] = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
+            ordreqline = order_requirement_line_obj.browse(cr, uid, line.order_requirement_line_id.id, context)
+            res[line.id] = ordreqline.generic_stock_availability(product=product, warehouse_id=warehouse_id, context=context)
         return res
 
-    # TODO: evaluate if keeping it
-    def _stock_availabilityOLD(self, cr, uid, ids, name, args, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
+    # This is called also when loading saved temp mrp boms,
+    # during creation see get_temp_mrp_bom
+    def _get_routing(self, cr, uid, ids, field_name, arg, context):
         res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = {
-                'stock_availability': 0,
-                'spare': 0,
-            }
-            spare = 0
-            try:
-                warehouse = line.sale_order_id.shop_id.warehouse_id
-                order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('warehouse_id', '=', warehouse.id)], context=context, limit=1)
-                if order_point_ids:
-                    spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
-
-                res[line.id] = {
-                    'stock_availability': line.product_id and line.product_id.type != 'service' and line.product_id.qty_available or False,
-                    'spare': spare,
-                }
-            except Exception as e:
-                print e.message
+        mrp_bom_obj = self.pool['mrp.bom']
+        for line in self.browse(cr, uid, ids, context):
+            product_id = line.product_id
+            routing_id = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context)
+            res[line.id] = routing_id
         return res
 
     @staticmethod
@@ -95,12 +68,11 @@ class temp_mrp_bom(orm.Model):
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
         'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id',
                                         string='Sale Order', relation='sale.order', type='many2one', readonly=True),
-        'tmp_id': fields.integer('tmp_id'),
-        'tmp_parent_id': fields.integer('tmp_parent'),
+        'mrp_bom_id': fields.many2one('mrp.bom'),
+        'mrp_bom_parent_id': fields.many2one('mrp.bom'),
+        'routing_id': fields.many2one('mrp.routing', string='Routing', auto_join=True, readonly=True),
         'parent_id': fields.many2one('temp.mrp.bom', 'Parent'),
         'level': fields.integer('Level'),
-        # todo remove parent_id_num
-        'parent_id_num': fields.related('parent_id', 'id', type='integer', string='Parent'),
         'is_manufactured': fields.boolean('Manufacture'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers'),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]"),
@@ -111,11 +83,7 @@ class temp_mrp_bom(orm.Model):
         'is_leaf': fields.boolean('Leaf', readonly=True),
         'position': fields.char('Internal Reference', size=64, help="Reference to a position in an external plan.",
                                 readonly=True),
-
-        'routing_id': fields.many2one('mrp.routing', 'Routing',
-                                      help="The list of operations (list of work centers) to produce the finished product. The routing is mainly used to compute work center costs during operations and to plan future loads on work centers based on production planning."),
         'company_id': fields.many2one('res.company', 'Company', required=True),
-
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
     }
 
@@ -133,15 +101,15 @@ class temp_mrp_bom(orm.Model):
         # Retrieve recursively all children
         # father is a dict of vals, temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
         try:
-            father_id = father['tmp_id']
+            father_id = father['mrp_bom_id']
         except (KeyError, TypeError):
             return []
         children = [t for t in temp_mrp_bom_ids if
-                    t[2] and 'tmp_parent_id' in t[2] and t[2]['tmp_parent_id'] == father_id]
+                    t[2] and 'mrp_bom_parent_id' in t[2] and t[2]['mrp_bom_parent_id'] == father_id]
         res = children
         for child in children:
             vals = child[2]
-            res.extend(temp_mrp_bom.get_all_temp_bom_children_ids(vals['tmp_id'], temp_mrp_bom_ids))
+            res.extend(temp_mrp_bom.get_all_temp_bom_children_ids(vals['mrp_bom_id'], temp_mrp_bom_ids))
         return res
 
     @staticmethod
@@ -156,8 +124,8 @@ class temp_mrp_bom(orm.Model):
         if level == 0:
             return True
         # Direct fathers
-        father_id = temp['tmp_parent_id']
-        parents_ids = [t for t in temp_mrp_bom_ids if t[2] and 'tmp_id' in t[2] and t[2]['tmp_id'] == father_id]
+        father_id = temp['mrp_bom_parent_id']
+        parents_ids = [t for t in temp_mrp_bom_ids if t[2] and 'mrp_bom_id' in t[2] and t[2]['mrp_bom_id'] == father_id]
         if level == 1:
             return bool(parents_ids)
         for parent in parents_ids:
