@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
+import tools
 from tools.translate import _
 
 import decimal_precision as dp
@@ -8,6 +9,12 @@ from mrp import mrp_bom
 from openerp.osv import orm, fields
 from temp_mrp_bom import temp_mrp_bom
 
+
+def rounding(f, r):
+    import math
+    if not r:
+        return f
+    return math.ceil(f / r) * r
 
 class order_requirement_line(orm.Model):
 
@@ -138,14 +145,17 @@ class order_requirement_line(orm.Model):
     def get_temp_mrp_bom(self, cr, uid, line, bom_ids, context):
         # Returns a list of VALS
         temp_mrp_bom_vals = []
+        temp_mrp_routing_vals = []
 
         if not bom_ids:
             return []
 
+        colors = ['black', 'darkblue', 'forestgreen', 'orange', 'blue', 'grey']
+
         for bom_father in bom_ids:
             children_levels = mrp_bom.get_all_mrp_bom_children(bom_father.child_buy_and_produce_ids, 0)
 
-            def _get_rec(bom_rec):
+            def _get_rec(bom_rec, col):
                 bom_children = bom_rec.child_buy_and_produce_ids
                 if not bom_children:
                     return
@@ -156,11 +166,9 @@ class order_requirement_line(orm.Model):
 
                         temp_vals = {
                             'name': bom.name,
-                            # tmp_* Could be useful for reconstructing hierarchy
+                            # mrp_bom_parent_id is VERY useful for reconstructing hierarchy
                             'mrp_bom_id': bom.id,
-                            'tmp_id': bom.id,
                             'mrp_bom_parent_id': bom_rec.id,
-                            # 'bom_id': bom.bom_id.id,
                             'product_id': bom.product_id.id,
                             'product_qty': bom.product_qty,
                             'product_uom': bom.product_uom.id,
@@ -176,11 +184,42 @@ class order_requirement_line(orm.Model):
                         temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
                         temp_vals.update(temp_additional_data)
                         temp_mrp_bom_vals.append(temp_vals)
-                    # Even if not product I must check all children
-                    _get_rec(bom)
 
-            _get_rec(bom_father)
-        return temp_mrp_bom_vals
+                        mrp_routing_workcenter_obj = self.pool['mrp.routing.workcenter']
+                        routing_id = temp_vals['routing_id']
+                        workcenter_lines = mrp_routing_workcenter_obj.search_browse(cr, uid, [('routing_id', '=', routing_id)], context)
+
+                        factor = 1
+                        factor = factor / (bom.product_efficiency or 1.0)
+                        factor = rounding(factor, bom.product_rounding)
+                        if factor < bom.product_rounding:
+                            factor = bom.product_rounding
+                        if workcenter_lines:
+                            row_color = colors[col]
+                            col = (col + 1) % len(colors)
+                            for wcl in workcenter_lines:
+                                wc = wcl.workcenter_id
+                                d, m = divmod(factor, wcl.workcenter_id.capacity_per_cycle)
+                                mult = (d + (m and 1.0 or 0.0))
+                                cycle = mult * wcl.cycle_nbr
+                                routing_vals = {
+                                    'routing_id': routing_id,
+                                    'name': tools.ustr(wcl.name) + ' - ' + tools.ustr(bom.product_id.name),
+                                    'workcenter_id': wc.id,
+                                    'sequence': wcl.sequence,
+                                    'cycle': cycle,
+                                    'hour': float(wcl.hour_nbr * mult + (
+                                        (wc.time_start or 0.0) + (wc.time_stop or 0.0) + cycle * (wc.time_cycle or 0.0)) * (
+                                        wc.time_efficiency or 1.0)),
+                                    'row_color': row_color
+                                }
+                                temp_mrp_routing_vals.append(routing_vals)
+
+                    # Even if not product I must check all children
+                    _get_rec(bom, col)
+
+            _get_rec(bom_father, 0)
+        return temp_mrp_bom_vals, temp_mrp_routing_vals
 
     def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -189,8 +228,12 @@ class order_requirement_line(orm.Model):
             return {}
         res = {}
         for line in self.browse(cr, uid, ids, context):
+            res[line.id] = {
+                'temp_mrp_bom_ids': False,
+                'temp_mrp_bom_routing_ids': False,
+            }
             if line._temp_mrp_bom_ids:
-                res[line.id] = [t.id for t in line._temp_mrp_bom_ids]
+                res[line.id]['temp_mrp_bom_ids'] = [t.id for t in line._temp_mrp_bom_ids]
             else:
                 # does not work here
                 # product = line.actual_product
@@ -198,8 +241,9 @@ class order_requirement_line(orm.Model):
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
-                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, line, product.bom_ids, context)
-                res[line.id] = temp_mrp_bom_vals
+                temp_mrp_bom_vals, temp_mrp_routing_vals = self.get_temp_mrp_bom(cr, uid, line, product.bom_ids, context)
+                res[line.id]['temp_mrp_bom_ids'] = temp_mrp_bom_vals
+                res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
         return res
 
     def _save_temp_mrp_bom(self, cr, uid, line_id, name, temp_mrp_bom_vals, arg, context=None):
@@ -289,10 +333,10 @@ class order_requirement_line(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
-        'temp_mrp_bom_ids': fields.function(_get_or_create_temp_bom, relation='temp.mrp.bom', string="BoM Hierarchy",
+        'temp_mrp_bom_ids': fields.function(_get_or_create_temp_bom, multi='temp_mrp_bom', relation='temp.mrp.bom', string="BoM Hierarchy",
                                             method=True, type='one2many', fnct_inv=_save_temp_mrp_bom,
                                             readonly=True, states={'draft': [('readonly', False)]}),
-        'temp_mrp_bom_routing_ids': fields.function(_get_routing_exploded, relation='mrp.routing.workcenter',
+        'temp_mrp_bom_routing_ids': fields.function(_get_or_create_temp_bom, multi='temp_mrp_bom', relation='mrp.routing.workcenter',
                                                     string="BoM Routing", method=True, type='one2many', readonly=True)
     }
 
@@ -327,7 +371,7 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
 
             if product.bom_ids:
-                temp_mrp_bom_vals = self.get_temp_mrp_bom(cr, uid, line, product.bom_ids, context)
+                temp_mrp_bom_vals, temp_routing_vals = self.get_temp_mrp_bom(cr, uid, line, product.bom_ids, context)
                 result_dict.update({
                     'temp_mrp_bom_ids': temp_mrp_bom_vals,
                     'view_bom': True,
@@ -529,8 +573,28 @@ class order_requirement_line(orm.Model):
             'view_mode': 'form',
             'view_id': [view_id],
             'target': 'new',
-            'context': {'view_bom': True, 'trunk_product': True},
+            'context': {'view_bom': True},
             'res_id': line.id
+        }
+
+    # todo remove
+    def action_open_routing(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        line = self.browse(cr, uid, ids, context)[0]
+
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
+                                                               'view_order_requirement_routing_tree')
+        view_id = view and view[1] or False
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Routing'),
+            'res_model': 'mrp.routing.workcenter',
+            'view_type': 'tree',
+            'view_mode': 'tree',
+            'view_id': [view_id],
+            'target': 'new',
+            'context': {'view_bom': True},
+            'domain': [('routing_id', '=', line.routing_id.id)]
         }
 
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
@@ -558,6 +622,9 @@ class order_requirement_line(orm.Model):
             new_temp_mrp_bom_ids = temp_mrp_bom_ids
 
         return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
+
+    # def onchange_temp_mrp_bom_routing_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
 
     def save_suppliers(self, cr, uid, ids, context=None):
         # Dummy save function
