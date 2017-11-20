@@ -94,6 +94,17 @@ class order_requirement_line(orm.Model):
 
         return result_dict
 
+    def get_routing(self, cr, uid, product_id, context):
+        mrp_bom_obj = self.pool['mrp.bom']
+        mrp_bom_related = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
+        if isinstance(mrp_bom_related, list):
+            if len(mrp_bom_related) == 1:
+                return mrp_bom_related[0].routing_id.id
+            else:
+                return False
+        else:
+            return mrp_bom_related.routing_id.id
+
     def update_temp_mrp_data(self, cr, uid, ids, temp, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
@@ -111,6 +122,7 @@ class order_requirement_line(orm.Model):
         suppliers = line.get_suppliers(product_id, qty, context=context)
         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
         stock_spare = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
+        routing_id = self.get_routing(cr, uid, product_id, context)
         if level > 0 and stock_spare['stock_availability'] < stock_spare['spare']:
             row_color = 'red'
         return {
@@ -120,6 +132,7 @@ class order_requirement_line(orm.Model):
             'spare': stock_spare['spare'],
             'supplier_id': suppliers['supplier_id'],
             'supplier_ids': suppliers['supplier_ids'],
+            'routing_id': routing_id
         }
 
     def get_temp_mrp_bom(self, cr, uid, line, bom_ids, context):
@@ -144,8 +157,9 @@ class order_requirement_line(orm.Model):
                         temp_vals = {
                             'name': bom.name,
                             # tmp_* Could be useful for reconstructing hierarchy
+                            'mrp_bom_id': bom.id,
                             'tmp_id': bom.id,
-                            'tmp_parent_id': bom_rec.id,
+                            'mrp_bom_parent_id': bom_rec.id,
                             # 'bom_id': bom.bom_id.id,
                             'product_id': bom.product_id.id,
                             'product_qty': bom.product_qty,
@@ -153,7 +167,6 @@ class order_requirement_line(orm.Model):
                             'product_efficiency': bom.product_efficiency,
                             'product_type': bom.product_id.type,
                             'is_manufactured': True,
-                            'routing_id': bom.routing_id.id,
                             'company_id': bom.company_id.id,
                             'position': bom.position,
                             'is_leaf': not bool(bom.child_buy_and_produce_ids),
@@ -208,11 +221,11 @@ class order_requirement_line(orm.Model):
                     new_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
                     temp_vals['id'] = new_id
                     # map[ old ID ] => vals
-                    bom_map[temp_vals['tmp_id']] = temp_vals
+                    bom_map[temp_vals['mrp_bom_id']] = temp_vals
             # Now creating hierarchy using id and parent_id
             for old_id in bom_map:
                 bom = bom_map[old_id]
-                old_parent_id = bom['tmp_parent_id']
+                old_parent_id = bom['mrp_bom_parent_id']
                 try:
                     new_parent_id = bom_map[old_parent_id]['id']
                     bom['parent_id'] = new_parent_id
@@ -221,7 +234,7 @@ class order_requirement_line(orm.Model):
                     print e.message
 
             for b in bom_map:
-                print bom_map[b]['id'], bom_map[b]['tmp_parent_id']
+                print bom_map[b]['id'], bom_map[b]['mrp_bom_parent_id']
 
         else:
             # I am updating
@@ -232,6 +245,19 @@ class order_requirement_line(orm.Model):
                     temp_vals = val[2]
                     temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
         a = 1
+        return
+
+    def _get_routing_exploded(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context):
+            if line._temp_mrp_bom_ids:
+                routing_ids = [t.rounting_id for t in line._temp_mrp_bom_ids]
+            else:
+                pass
+
+        return res
+
         return
 
     _columns = {
@@ -266,6 +292,8 @@ class order_requirement_line(orm.Model):
         'temp_mrp_bom_ids': fields.function(_get_or_create_temp_bom, relation='temp.mrp.bom', string="BoM Hierarchy",
                                             method=True, type='one2many', fnct_inv=_save_temp_mrp_bom,
                                             readonly=True, states={'draft': [('readonly', False)]}),
+        'temp_mrp_bom_routing_ids': fields.function(_get_routing_exploded, relation='mrp.routing.workcenter',
+                                                    string="BoM Routing", method=True, type='one2many', readonly=True)
     }
 
     _defaults = {
@@ -514,7 +542,7 @@ class order_requirement_line(orm.Model):
         new_temp_mrp_bom_ids = []
         for t in temp_mrp_bom_ids:
             try:
-                print t[2]['name']
+                print t[2]['name'], t[2]['routing_id']
             except:
                 print
         #    ta = temp_mrp_bom.get_all_temp_bom_children_ids(t[2], temp_mrp_bom_ids)
