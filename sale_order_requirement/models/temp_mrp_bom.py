@@ -18,15 +18,14 @@ class temp_mrp_bom(orm.Model):
         for line in self.browse(cr, uid, ids, context=context):
             product = line.product_id
             warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-            ordreqline = order_requirement_line_obj.browse(cr, uid, line.order_requirement_line_id, context)
-            res[line.id] = ordreqline.generic_stock_availability(cr, uid, product, warehouse_id, context)
+            ordreqline = order_requirement_line_obj.browse(cr, uid, line.order_requirement_line_id.id, context)
+            res[line.id] = ordreqline.generic_stock_availability(product=product, warehouse_id=warehouse_id, context=context)
         return res
 
     # This is called also when loading saved temp mrp boms,
     # during creation see get_temp_mrp_bom
     def _get_routing(self, cr, uid, ids, field_name, arg, context):
         res = {}
-        mrp_routing_obj = self.pool['mrp.routing']
         mrp_bom_obj = self.pool['mrp.bom']
         for line in self.browse(cr, uid, ids, context):
             product_id = line.product_id

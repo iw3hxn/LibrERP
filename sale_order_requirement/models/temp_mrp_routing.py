@@ -7,6 +7,7 @@ from mrp import mrp_bom
 
 
 class temp_mrp_routing(orm.Model):
+    _name = 'temp.mrp.routing'
     _columns = {
         'routing_id': fields.many2one('mrp.routing', string='Routing'),
         'name': fields.char('Name', size=64),

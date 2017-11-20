@@ -2,23 +2,6 @@
 <openerp>
     <data>
 
-        <record id="view_order_requirement_routing_tree" model="ir.ui.view">
-            <field name="name">order.requirement.routing.tree</field>
-            <field name="model">mrp.routing.workcenter</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Order Requirement Routing" editable="top">
-                    <!--colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">-->
-                    <!--<field name="row_color" invisible="1"/>-->
-                    <field name="routing_id"/>
-                    <field name="sequence"/>
-                    <field name="note"/>
-                    <field name="workcenter_id"/>
-                </tree>
-            </field>
-        </record>
-
-
         <record id="view_order_requirement_line_form" model="ir.ui.view">
             <field name="name">order.requirement.line.form</field>
             <field name="model">order.requirement.line</field>
@@ -65,7 +48,6 @@
                                     <field name="product_qty" attrs="{'readonly': [('product_type','!=','product')]}"/>
                                     <field name="product_uom" readonly="1"/>
                                     <field name="routing_id"/>
-                                    <button name="action_open_routing" type="object" icon="gtk-find"/>
                                     <field name="stock_availability"/>
                                     <field name="spare"/>
                                     <field name="cost"/>
