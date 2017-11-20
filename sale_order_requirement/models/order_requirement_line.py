@@ -101,7 +101,7 @@ class order_requirement_line(orm.Model):
 
         return result_dict
 
-    def get_routing(self, cr, uid, product_id, context):
+    def get_routing_id(self, cr, uid, product_id, context):
         mrp_bom_obj = self.pool['mrp.bom']
         mrp_bom_related = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
         if isinstance(mrp_bom_related, list):
@@ -129,7 +129,7 @@ class order_requirement_line(orm.Model):
         suppliers = line.get_suppliers(product_id, qty, context=context)
         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
         stock_spare = self.generic_stock_availability(cr, uid, product, warehouse_id, context)
-        routing_id = self.get_routing(cr, uid, product_id, context)
+        routing_id = self.get_routing_id(cr, uid, product_id, context)
         if level > 0 and stock_spare['stock_availability'] < stock_spare['spare']:
             row_color = 'red'
         return {
@@ -142,6 +142,38 @@ class order_requirement_line(orm.Model):
             'routing_id': routing_id
         }
 
+    def get_routing_lines(self, cr, uid, bom, color, context=None):
+        mrp_routing_workcenter_obj = self.pool['mrp.routing.workcenter']
+        routing_id = self.get_routing_id(cr, uid, bom.product_id.id, context)
+        workcenter_lines = mrp_routing_workcenter_obj.search_browse(cr, uid, [('routing_id', '=', routing_id)], context)
+        ret_vals = []
+
+        # From mrp._bom_explode
+        factor = 1
+        factor = factor / (bom.product_efficiency or 1.0)
+        factor = rounding(factor, bom.product_rounding)
+        if factor < bom.product_rounding:
+            factor = bom.product_rounding
+        if workcenter_lines:
+            for wcl in workcenter_lines:
+                wc = wcl.workcenter_id
+                d, m = divmod(factor, wcl.workcenter_id.capacity_per_cycle)
+                mult = (d + (m and 1.0 or 0.0))
+                cycle = mult * wcl.cycle_nbr
+                routing_vals = {
+                    'routing_id': routing_id,
+                    'name': tools.ustr(wcl.name) + ' - ' + tools.ustr(bom.product_id.name),
+                    'workcenter_id': wc.id,
+                    'sequence': wcl.sequence,
+                    'cycle': cycle,
+                    'hour': float(wcl.hour_nbr * mult + (
+                        (wc.time_start or 0.0) + (wc.time_stop or 0.0) + cycle * (wc.time_cycle or 0.0)) * (
+                                      wc.time_efficiency or 1.0)),
+                    'row_color': color
+                }
+                ret_vals.append(routing_vals)
+        return ret_vals
+
     def get_temp_mrp_bom(self, cr, uid, line, bom_ids, context):
         # Returns a list of VALS
         temp_mrp_bom_vals = []
@@ -150,7 +182,11 @@ class order_requirement_line(orm.Model):
         if not bom_ids:
             return []
 
-        colors = ['black', 'darkblue', 'forestgreen', 'orange', 'blue', 'grey']
+        colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
+
+        # Calculate routing for Father Bom(s)
+        for bom in bom_ids:
+            temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, bom, 'black', context))
 
         for bom_father in bom_ids:
             children_levels = mrp_bom.get_all_mrp_bom_children(bom_father.child_buy_and_produce_ids, 0)
@@ -185,36 +221,9 @@ class order_requirement_line(orm.Model):
                         temp_vals.update(temp_additional_data)
                         temp_mrp_bom_vals.append(temp_vals)
 
-                        mrp_routing_workcenter_obj = self.pool['mrp.routing.workcenter']
-                        routing_id = temp_vals['routing_id']
-                        workcenter_lines = mrp_routing_workcenter_obj.search_browse(cr, uid, [('routing_id', '=', routing_id)], context)
-
-                        factor = 1
-                        factor = factor / (bom.product_efficiency or 1.0)
-                        factor = rounding(factor, bom.product_rounding)
-                        if factor < bom.product_rounding:
-                            factor = bom.product_rounding
-                        if workcenter_lines:
-                            row_color = colors[col]
-                            col = (col + 1) % len(colors)
-                            for wcl in workcenter_lines:
-                                wc = wcl.workcenter_id
-                                d, m = divmod(factor, wcl.workcenter_id.capacity_per_cycle)
-                                mult = (d + (m and 1.0 or 0.0))
-                                cycle = mult * wcl.cycle_nbr
-                                routing_vals = {
-                                    'routing_id': routing_id,
-                                    'name': tools.ustr(wcl.name) + ' - ' + tools.ustr(bom.product_id.name),
-                                    'workcenter_id': wc.id,
-                                    'sequence': wcl.sequence,
-                                    'cycle': cycle,
-                                    'hour': float(wcl.hour_nbr * mult + (
-                                        (wc.time_start or 0.0) + (wc.time_stop or 0.0) + cycle * (wc.time_cycle or 0.0)) * (
-                                        wc.time_efficiency or 1.0)),
-                                    'row_color': row_color
-                                }
-                                temp_mrp_routing_vals.append(routing_vals)
-
+                        if temp_vals['routing_id'] != 0:
+                            temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, bom, colors[col], context))
+                            col = (col+1) % len(colors)
                     # Even if not product I must check all children
                     _get_rec(bom, col)
 
@@ -575,26 +584,6 @@ class order_requirement_line(orm.Model):
             'target': 'new',
             'context': {'view_bom': True},
             'res_id': line.id
-        }
-
-    # todo remove
-    def action_open_routing(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        line = self.browse(cr, uid, ids, context)[0]
-
-        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
-                                                               'view_order_requirement_routing_tree')
-        view_id = view and view[1] or False
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Routing'),
-            'res_model': 'mrp.routing.workcenter',
-            'view_type': 'tree',
-            'view_mode': 'tree',
-            'view_id': [view_id],
-            'target': 'new',
-            'context': {'view_bom': True},
-            'domain': [('routing_id', '=', line.routing_id.id)]
         }
 
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
