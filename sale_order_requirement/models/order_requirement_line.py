@@ -184,9 +184,10 @@ class order_requirement_line(orm.Model):
         if not bom_ids:
             return []
 
-        def _get_temp_vals(bom, bom_parent_id, level):
+        def _get_temp_vals(bom, bom_parent_id, father_id, level):
             return {
                 'name': bom.name,
+                'bom_id': father_id,
                 # mrp_bom_parent_id is VERY useful for reconstructing hierarchy
                 'mrp_bom_id': bom.id,
                 'mrp_bom_parent_id': bom_parent_id,
@@ -203,7 +204,7 @@ class order_requirement_line(orm.Model):
                 'order_requirement_line_id': line.id
             }
 
-        def _get_rec(bom_rec, level, col):
+        def _get_rec(bom_rec, father_id, level, col):
             bom_children = bom_rec.child_buy_and_produce_ids
             if not bom_children:
                 return
@@ -211,7 +212,7 @@ class order_requirement_line(orm.Model):
                 if True: # bom.product_id.type == 'product':
                     # level = children_levels[bom.id]['level']
 
-                    temp_vals = _get_temp_vals(bom, bom_rec.id, level)
+                    temp_vals = _get_temp_vals(bom, bom_rec.id, father_id, level)
                     temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
                     temp_vals.update(temp_additional_data)
                     temp_mrp_bom_vals.append(temp_vals)
@@ -222,8 +223,8 @@ class order_requirement_line(orm.Model):
                         temp_mrp_routing_vals.extend(temp_routing_vals)
                         col = (col+1) % len(routing_colors)
 
-                # Even if not product I must check all children
-                _get_rec(bom, level + 1, col)
+                    # Even if not product I must check all children
+                    _get_rec(bom, temp_id, level + 1, col)
 
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         temp_mrp_routing_obj = self.pool['temp.mrp.routing']
@@ -232,7 +233,7 @@ class order_requirement_line(orm.Model):
             # children_levels = mrp_bom.get_all_mrp_bom_children(bom_father.child_buy_and_produce_ids, 0)
 
             # Main BOMs
-            temp_vals = _get_temp_vals(bom_father, False, 0)
+            temp_vals = _get_temp_vals(bom_father, False, False, 0)
             temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
             temp_vals.update(temp_additional_data)
             temp_mrp_bom_vals.append(temp_vals)
@@ -240,7 +241,7 @@ class order_requirement_line(orm.Model):
             # Calculate routing for Father Bom(s)
             temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, ids, bom_father, temp_id, 'black', context))
 
-            _get_rec(bom_father, 1, 0)
+            _get_rec(bom_father, temp_id, 1, 0)
             for routing_vals in temp_mrp_routing_vals:
                 temp_mrp_routing_obj.create(cr, uid, routing_vals, context)
 
@@ -281,6 +282,7 @@ class order_requirement_line(orm.Model):
 
         # If the first record is [5, False, False] I am creating
         is_creation = temp_mrp_bom_vals[0][0] == 5
+        # TODO CHECK new save first : Useless?
         if is_creation:
             bom_map = {}
             # IF I am creating, start cycle from second item (first is shown above)
@@ -337,6 +339,7 @@ class order_requirement_line(orm.Model):
             #         # map[ old ID ] => vals
             #         bom_map[temp_vals['mrp_bom_id']] = temp_vals
         else:
+            # TODO IMPLEMENT
             # I am updating
             pass
             # for val in temp_mrp_bom_vals:
@@ -554,16 +557,16 @@ class order_requirement_line(orm.Model):
 
     def _manufacture_bom(self, cr, uid, father, bom, context):
         mrp_production_obj = self.pool['mrp.production']
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
         if not father:
-            mrp_production_workcenter_line_obj = self.pool['mrp.production.workcenter.line']
             # I am creating a "main" product
-            # Always add manufacturing orders, same products can have different boms
+            mrp_production_workcenter_line_obj = self.pool['mrp.production.workcenter.line']
             product = bom.product_id
             mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
             mrp_production_values['product_id'] = product.id
-            mrp_production_values['sale_id'] = bom.sale_order_id
+            mrp_production_values['sale_id'] = bom.sale_order_id.id
 
             # Create manufacturing order
             mrp_production_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
@@ -571,20 +574,28 @@ class order_requirement_line(orm.Model):
             for rout in temp_routing_vals:
                 rout['production_id'] = mrp_production_id
                 mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
+            temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production_id})
             return
 
         # I am creating a "sub" product
-        main_product = father.product_id
 
-        mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', main_product.id),
-                                                                 ('state', '=', 'draft')])
-        if not mrp_production_ids:
-            raise orm.except_orm(_(u'Error !'),
-                                 _(u'Main product order is missing for product {0}'.format(main_product.name)))
+        # main_product = father.product_id
+        # mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', main_product.id),
+        #                                                          ('state', '=', 'draft')])
+        # if not mrp_production_ids:
+        #     raise orm.except_orm(_(u'Error !'),
+        #                          _(u'Main product order is missing for product {0}'.format(main_product.name)))
+
+        # # Take first
+        # mrp_production_id = mrp_production_ids[0]
 
         # Adding lines if main product manufacturing order is present
-        # Take first
-        mrp_production_id = mrp_production_ids[0]
+        # Reload browse record pointed by father
+        father = temp_mrp_bom_obj.browse(cr, uid, father.id, context)
+        mrp_production_id = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
+        if not mrp_production_id:
+            raise orm.except_orm(_(u'Error !'),
+                                 _(u'Main product order is missing for product {0}'.format(father.product_id.name)))
         # Create move line
         shop = father.sale_order_id.shop_id
         location = shop.warehouse_id.lot_stock_id
@@ -594,17 +605,28 @@ class order_requirement_line(orm.Model):
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
             'location_id': location.id,
-            'location_dest_id': 1,  # todo ask
+            'location_dest_id': 1,  # todo location_dest_id
         }
         # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
         # Create in relationship with mrp.production
-        mrp_production_obj.write(cr, uid, mrp_production_id,
+        mrp_production_obj.write(cr, uid, mrp_production_id.id,
                                  {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
+    def _manufacture_explode(self, cr, uid, father, temp, context):
+        if temp.is_manufactured:
+            self._manufacture_bom(cr, uid, father, temp, context)
+            if not temp.is_leaf:
+                if temp.level > 0:
+                    self._manufacture_bom(cr, uid, False, temp, context)
+                for child in temp.bom_lines:
+                    self._manufacture_explode(cr, uid, temp, child, context)
+        else:
+            self._purchase(cr, uid, temp, True, context)
 
-    def _manufacture_all(self, cr, uid, line, context):
+    def _manufacture_all(self, cr, uid, ids, line, context):
         # line is a order_requirement_line, not a bom line
-        # TODO: put multi_orders as res.partner flag
+        # TODO: use ids, not line?
+        # TODO: put multi_orders as res.company flag
         multi_orders = True
 
         # if line.new_product_id:
@@ -615,24 +637,21 @@ class order_requirement_line(orm.Model):
         # First set main product to manufacture
         # self._manufacture_main_product(cr, uid, product.bom_ids, context)
 
-        if multi_orders:
-            # Then set all bom lines product to manufacture (or buy)
-            for temp in line._temp_mrp_bom_ids:
-                if temp.is_manufactured:
-                    if not temp.is_leaf:
-                        self._manufacture_bom(cr, uid, False, temp, context)
-                        last_father = temp
-                    else:
-                        self._manufacture_bom(cr, uid, last_father, temp, context)
-                else:
-                    self._purchase(cr, uid, temp, True, context)
+        if not line._temp_mrp_bom_ids:
+            return
 
+        if multi_orders:
+            temp = line._temp_mrp_bom_ids[0]
+            # Explode orders
+            self._manufacture_explode(cr, uid, False, temp, context)
         else:
-            # Then set all bom lines product to manufacture (or buy)
+            # Not multiorder
             for temp in line._temp_mrp_bom_ids:
                 if temp.is_manufactured:
-                    if temp.is_leaf:
-                        self._manufacture_bom(cr, uid, line, temp, context)
+                    pass
+                    # TODO implement
+                    # if temp.is_leaf:
+                    #     self._manufacture_bom(cr, uid, line, temp, context)
                 else:
                     self._purchase(cr, uid, temp, True, context)
 
@@ -641,7 +660,7 @@ class order_requirement_line(orm.Model):
 
         for line in self.browse(cr, uid, ids, context):
             if line.is_manufactured:
-                self._manufacture_all(cr, uid, line, context)
+                self._manufacture_all(cr, uid, ids, line, context)
             else:
                 self._purchase(cr, uid, line, False, context)
 
