@@ -98,21 +98,21 @@ class temp_mrp_bom(orm.Model):
         (_check_product, 'BoM line product should not be same as BoM product.', ['product_id']),
     ]
 
-    @staticmethod
-    def get_all_temp_bom_children_ids(father, temp_mrp_bom_ids):
-        # Retrieve recursively all children
-        # father is a dict of vals, temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
-        try:
-            father_id = father['mrp_bom_id']
-        except (KeyError, TypeError):
-            return []
-        children = [t for t in temp_mrp_bom_ids if
-                    t[2] and 'mrp_bom_parent_id' in t[2] and t[2]['mrp_bom_parent_id'] == father_id]
-        res = children
-        for child in children:
-            vals = child[2]
-            res.extend(temp_mrp_bom.get_all_temp_bom_children_ids(vals['mrp_bom_id'], temp_mrp_bom_ids))
-        return res
+    # @staticmethod
+    # def get_all_temp_bom_children_ids(father, temp_mrp_bom_ids):
+    #     # Retrieve recursively all children
+    #     # father is a dict of vals, temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
+    #     try:
+    #         father_id = father['mrp_bom_id']
+    #     except (KeyError, TypeError):
+    #         return []
+    #     children = [t for t in temp_mrp_bom_ids if
+    #                 t[2] and 'mrp_bom_parent_id' in t[2] and t[2]['mrp_bom_parent_id'] == father_id]
+    #     res = children
+    #     for child in children:
+    #         vals = child[2]
+    #         res.extend(temp_mrp_bom.get_all_temp_bom_children_ids(vals['mrp_bom_id'], temp_mrp_bom_ids))
+    #     return res
 
     @staticmethod
     def check_parents(temp, temp_mrp_bom_ids):
@@ -126,8 +126,8 @@ class temp_mrp_bom(orm.Model):
         if level == 0:
             return True
         # Direct fathers
-        father_id = temp['mrp_bom_parent_id']
-        parents_ids = [t for t in temp_mrp_bom_ids if t[2] and 'mrp_bom_id' in t[2] and t[2]['mrp_bom_id'] == father_id]
+        father_id = temp['bom_id']
+        parents_ids = [t for t in temp_mrp_bom_ids if t[2] and 'id' in t[2] and t[2]['id'] == father_id]
         if level == 1:
             return bool(parents_ids)
         for parent in parents_ids:

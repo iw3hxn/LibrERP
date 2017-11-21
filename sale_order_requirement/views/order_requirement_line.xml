@@ -8,7 +8,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Order Requirement">
-                    <field context="" name="product_id"/>
+                    <field name="product_id"/>
                     <field name="stock_availability"/>
                     <field name="spare"/>
                     <field name="sale_order_id" />
@@ -21,58 +21,59 @@
                                 'required': [('is_manufactured', '=', False)],
                                 'readonly': [('state','!=','draft')]}"/>
                     <field name="supplier_ids" invisible="1"/>
-                    <group colspan="8" col="8" states="draft">
+                    <group colspan="8" col="8" attrs="{'invisible': [('temp_mrp_bom_ids','=',False)]}">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
                         <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"/>
                     </group>
-
-                    <notebook colspan="4" >
-                        <page string="BOM">
-                            <field name="temp_mrp_bom_ids" type="xml" nolabel="1" colspan="4" context=""
-                                   on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
-                                   attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
-                                                             ('is_manufactured','=',False)],
-                                   'readonly':['|',('state','!=','draft'),('is_manufactured','=',False)]}">
-                                <tree string="BoM Structure" editable="top" create="false"
-                                    colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
-                                    <field name="row_color" invisible="1"/>
-                                    <field name="is_leaf"/>
-                                    <field name="level" invisible="1"/>
-                                    <field name="id" invisible="1"/>
-                                    <!-- field name="mrp_bom_id"/>
-                                    <field name="mrp_bom_parent_id"/>-->
-                                    <field name="product_type" invisible="1"/>
-                                    <field name="level_name"/>
-                                    <field name="product_id" context="{'line_id': parent.id}" on_change="onchange_temp_product_id(level,product_id,product_qty,context)"
-                                           attrs="{'readonly': [('product_type','!=','product')]}"/>
-                                    <field name="product_qty" attrs="{'readonly': [('product_type','!=','product')]}"/>
-                                    <field name="product_uom" readonly="1"/>
-                                    <field name="mrp_routing_id"/>
-                                    <field name="stock_availability"/>
-                                    <field name="spare"/>
-                                    <field name="cost"/>
-                                    <field name="is_manufactured" on_change="onchange_temp_manufacture(is_manufactured)"/>
-                                    <field name="supplier_id" on_change="onchange_temp_supplier_id(supplier_id,product_id)"
-                                           attrs="{'required': [('is_manufactured', '=', False)],
-                                                'readonly': ['|',('is_manufactured', '=', True),
-                                                                 ('product_type','!=','product')]}"/>
-                                    <field name="supplier_ids" invisible="1"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Routing">
-                            <field name="temp_mrp_bom_routing_ids" type="xml" nolabel="1" colspan="4" context="">
-                                <tree string="BoM Routing" editable="top" create="false"
-                                    colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
-                                    <field name="row_color" invisible="1"/>
-                                    <field name="mrp_routing_id"/>
-                                    <field name="sequence"/>
-                                    <field name="workcenter_id"/>
-                                    <field name="name"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
+                    <group colspan="8" col="8" attrs="{'invisible': [('temp_mrp_bom_ids','=',False)]}">
+                        <notebook colspan="4">
+                            <page string="BOM">
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context=""
+                                       on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
+                                       attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
+                                                                 ('is_manufactured','=',False)],
+                                       'readonly':['|',('state','!=','draft'),('is_manufactured','=',False)]}">
+                                    <tree string="BoM Structure" editable="top" create="false"
+                                        colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                        <field name="row_color" invisible="1"/>
+                                        <field name="is_leaf"/>
+                                        <field name="level" invisible="1"/>
+                                        <!-- field name="mrp_bom_id"/>
+                                        <field name="mrp_bom_parent_id"/>-->
+                                        <field name="product_type" invisible="1"/>
+                                        <field name="level_name"/>
+                                        <field name="product_id" context="{'line_id': parent.id}" on_change="onchange_temp_product_id(level,product_id,product_qty,context)"
+                                               attrs="{'readonly': [('product_type','!=','product')]}"/>
+                                        <field name="product_qty" attrs="{'readonly': [('product_type','!=','product')]}"/>
+                                        <field name="product_uom" readonly="1"/>
+                                        <field name="mrp_routing_id"/>
+                                        <field name="stock_availability"/>
+                                        <field name="spare"/>
+                                        <field name="cost"/>
+                                        <field name="is_manufactured" on_change="onchange_temp_manufacture(is_manufactured)"/>
+                                        <field name="supplier_id" on_change="onchange_temp_supplier_id(supplier_id,product_id)"
+                                               attrs="{'required': [('is_manufactured', '=', False)],
+                                                    'readonly': ['|',('is_manufactured', '=', True),
+                                                                     ('product_type','!=','product')]}"/>
+                                        <field name="supplier_ids" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Routing">
+                                <field name="temp_mrp_bom_routing_ids" nolabel="1" colspan="4"
+                                    attrs="{'invisible': ['|',('temp_mrp_bom_routing_ids','=',False),('is_manufactured','=',False)]}">
+                                    <tree string="BoM Routing" editable="top"
+                                        colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                        <field name="row_color" invisible="1"/>
+                                        <field name="mrp_routing_id"/>
+                                        <field name="sequence"/>
+                                        <field name="workcenter_id"/>
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </group>
                 </form>
            </field>
         </record>

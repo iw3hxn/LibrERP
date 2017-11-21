@@ -250,14 +250,14 @@ class order_requirement_line(orm.Model):
     def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         view_bom = 'view_bom' in context and context['view_bom']
-        if not view_bom:
-            return {}
         res = {}
         for line in self.browse(cr, uid, ids, context):
             res[line.id] = {
                 'temp_mrp_bom_ids': False,
                 'temp_mrp_bom_routing_ids': False,
             }
+            if not view_bom:
+                continue
             if line._temp_mrp_bom_ids:
                 res[line.id]['temp_mrp_bom_ids'] = [t.id for t in line._temp_mrp_bom_ids]
                 res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line._temp_mrp_routing_ids]
@@ -399,8 +399,8 @@ class order_requirement_line(orm.Model):
         ret = super(order_requirement_line, self).fields_get(cr, uid, allfields=allfields, context=context)
         view_bom = 'view_bom' in context and context['view_bom']
         ret['temp_mrp_bom_ids']['invisible'] = not view_bom
+        ret['temp_mrp_bom_routing_ids']['invisible'] = not view_bom
         # ret['confirm_suppliers']['invisible'] = not view_bom
-
         return ret
 
 
@@ -523,21 +523,6 @@ class order_requirement_line(orm.Model):
                 line = purchase_order_line_obj.browse(cr, uid, order_line_id, context)
                 newqty = qty + line.product_qty
                 purchase_order_line_obj.write(cr, uid, order_line_id, {'product_qty': newqty}, context)
-
-    # def _manufacture_main_product(self, cr, uid, product, context):
-    #     mrp_production_obj = self.pool['mrp.production']
-    #
-    #     # Always add manufacturing orders, same products can have different boms
-    #     mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
-    #
-    #     # temp_routing_id =
-    #     # temp_routing_lines =
-    #
-    #     # Create manufacturing order
-    #     mrp_production_values['product_id'] = product.id
-    #
-    #     mrp_proudction_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
-
 
     def _get_temp_routing(self, bom):
         # Retrieve routing
