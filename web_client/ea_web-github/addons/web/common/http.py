@@ -284,7 +284,7 @@ class HttpRequest(WebRequest):
             if isinstance(r, (werkzeug.wrappers.BaseResponse, werkzeug.exceptions.HTTPException)):
                 _logger.debug('<-- %s', r)
             else:
-                _logger.debug("<-- size: %s", len(r))
+                 _logger.debug("<-- size: %s", len(r))
         return r
 
     def make_response(self, data, headers=None, cookies=None):
