@@ -9,6 +9,7 @@ from mrp import mrp_bom
 from openerp.osv import orm, fields
 from temp_mrp_bom import temp_mrp_bom
 
+routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
 
 def rounding(f, r):
     import math
@@ -217,16 +218,15 @@ class order_requirement_line(orm.Model):
 
                     temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
                     if temp_vals['mrp_routing_id'] != 0:
-                        temp_routing_vals = self.get_routing_lines(cr, uid, ids, bom, temp_id, colors[col], context)
+                        temp_routing_vals = self.get_routing_lines(cr, uid, ids, bom, temp_id, routing_colors[col], context)
                         temp_mrp_routing_vals.extend(temp_routing_vals)
-                        col = (col+1) % len(colors)
+                        col = (col+1) % len(routing_colors)
 
                 # Even if not product I must check all children
                 _get_rec(bom, level + 1, col)
 
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         temp_mrp_routing_obj = self.pool['temp.mrp.routing']
-        colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
 
         for bom_father in bom_ids:
             # children_levels = mrp_bom.get_all_mrp_bom_children(bom_father.child_buy_and_produce_ids, 0)
@@ -543,11 +543,12 @@ class order_requirement_line(orm.Model):
             routing_vals.append({
                 'name': temp_routing.name,
                 'sequence': temp_routing.sequence,
-                'workcenter_id': temp_routing.workcenter_id,
+                'workcenter_id': temp_routing.workcenter_id.id,
                 'cycle': temp_routing.cycle,
                 'hour': temp_routing.hour,
                 'state': 'draft',
-                'product_uom': bom.product_uom
+                'product_id': bom.product_id.id,
+                'product_uom': bom.product_uom.id
             })
         return routing_vals
 
@@ -555,16 +556,15 @@ class order_requirement_line(orm.Model):
         mrp_production_obj = self.pool['mrp.production']
 
         if not father:
-            mrp_production_workcenter_line_obj = self.pool['mrp.production']
+            mrp_production_workcenter_line_obj = self.pool['mrp.production.workcenter.line']
             # I am creating a "main" product
             # Always add manufacturing orders, same products can have different boms
             product = bom.product_id
             mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
             mrp_production_values['product_id'] = product.id
+            mrp_production_values['sale_id'] = bom.sale_order_id
 
-            # mrp_production_values['workcenter_lines'] = [(0, False, vals) for vals in temp_routing_vals]
-            # mrp_production_values['workcenter_lines'] = temp_routing_create_vals
             # Create manufacturing order
             mrp_production_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
             temp_routing_vals = self._get_temp_routing(bom)
@@ -594,8 +594,7 @@ class order_requirement_line(orm.Model):
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
             'location_id': location.id,
-            'location_dest_id': 1,
-            # todo ask
+            'location_dest_id': 1,  # todo ask
         }
         # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
         # Create in relationship with mrp.production
@@ -620,7 +619,7 @@ class order_requirement_line(orm.Model):
             # Then set all bom lines product to manufacture (or buy)
             for temp in line._temp_mrp_bom_ids:
                 if temp.is_manufactured:
-                    if temp.level <= 1:
+                    if not temp.is_leaf:
                         self._manufacture_bom(cr, uid, False, temp, context)
                         last_father = temp
                     else:

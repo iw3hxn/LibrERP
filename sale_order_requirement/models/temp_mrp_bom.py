@@ -5,6 +5,8 @@ from openerp.osv import orm, fields
 import decimal_precision as dp
 from mrp import mrp_bom
 
+default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
+
 
 class temp_mrp_bom(orm.Model):
     _name = 'temp.mrp.bom'
@@ -35,9 +37,8 @@ class temp_mrp_bom(orm.Model):
 
     @staticmethod
     def _get_color_bylevel(level):
-        colors = ['black', 'blue', 'cadetblue', 'grey']
         try:
-            row_color = colors[level]
+            row_color = default_row_colors[level]
         except IndexError:
             row_color = 'grey'
         return row_color
@@ -46,7 +47,7 @@ class temp_mrp_bom(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context):
             row_color = temp_mrp_bom._get_color_bylevel(line.level)
-            if line.stock_availability < line.spare:
+            if line.level > 1 and line.stock_availability < line.spare:
                 row_color = 'red'
             res[line.id] = row_color
         return res
