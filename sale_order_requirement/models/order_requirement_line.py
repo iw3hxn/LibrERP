@@ -177,7 +177,7 @@ class order_requirement_line(orm.Model):
 
     def create_temp_mrp_bom(self, cr, uid, ids, line, bom_ids, context):
         # Returns a list of VALS
-        temp_mrp_bom_ids = []
+        temp_mrp_bom_vals = []
         temp_mrp_routing_vals = []
 
         if not bom_ids:
@@ -214,6 +214,7 @@ class order_requirement_line(orm.Model):
                     temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
                     temp_vals.update(temp_additional_data)
                     temp_mrp_bom_vals.append(temp_vals)
+
                     temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
                     if temp_vals['mrp_routing_id'] != 0:
                         temp_routing_vals = self.get_routing_lines(cr, uid, ids, bom, temp_id, colors[col], context)
@@ -412,7 +413,8 @@ class order_requirement_line(orm.Model):
             line = self.browse(cr, uid, ids, context)[0]
             if line._temp_mrp_bom_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-                temp_mrp_bom_obj.unlink(cr, uid, line._temp_mrp_bom_ids, context)
+                temp_mrp_bom_ids = [temp['id'] for temp in line._temp_mrp_bom_ids]
+                temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
 
             if product.bom_ids:
                 temp_mrp_bom_vals, temp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, line, product.bom_ids, context)
@@ -534,10 +536,26 @@ class order_requirement_line(orm.Model):
     #     mrp_proudction_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
 
 
+    def _get_temp_routing(self, bom):
+        # Retrieve routing
+        routing_vals = []
+        for temp_routing in bom.temp_mrp_routing_lines:
+            routing_vals.append({
+                'name': temp_routing.name,
+                'sequence': temp_routing.sequence,
+                'workcenter_id': temp_routing.workcenter_id,
+                'cycle': temp_routing.cycle,
+                'hour': temp_routing.hour,
+                'state': 'draft',
+                'product_uom': bom.product_uom
+            })
+        return routing_vals
+
     def _manufacture_bom(self, cr, uid, father, bom, context):
         mrp_production_obj = self.pool['mrp.production']
 
         if not father:
+            mrp_production_workcenter_line_obj = self.pool['mrp.production']
             # I am creating a "main" product
             # Always add manufacturing orders, same products can have different boms
             product = bom.product_id
@@ -545,12 +563,14 @@ class order_requirement_line(orm.Model):
 
             mrp_production_values['product_id'] = product.id
 
-            # Retrieve routing
-            # temp_routing_id =
-            # temp_routing_lines =
-
+            # mrp_production_values['workcenter_lines'] = [(0, False, vals) for vals in temp_routing_vals]
+            # mrp_production_values['workcenter_lines'] = temp_routing_create_vals
             # Create manufacturing order
-            mrp_proudction_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
+            mrp_production_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
+            temp_routing_vals = self._get_temp_routing(bom)
+            for rout in temp_routing_vals:
+                rout['production_id'] = mrp_production_id
+                mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
             return
 
         # I am creating a "sub" product
@@ -582,6 +602,7 @@ class order_requirement_line(orm.Model):
         mrp_production_obj.write(cr, uid, mrp_production_id,
                                  {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
+
     def _manufacture_all(self, cr, uid, line, context):
         # line is a order_requirement_line, not a bom line
         # TODO: put multi_orders as res.partner flag
@@ -600,8 +621,8 @@ class order_requirement_line(orm.Model):
             for temp in line._temp_mrp_bom_ids:
                 if temp.is_manufactured:
                     if temp.level <= 1:
+                        self._manufacture_bom(cr, uid, False, temp, context)
                         last_father = temp
-                        self._manufacture_main_product(cr, uid, temp, context)
                     else:
                         self._manufacture_bom(cr, uid, last_father, temp, context)
                 else:

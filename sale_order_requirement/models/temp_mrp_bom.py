@@ -56,7 +56,7 @@ class temp_mrp_bom(orm.Model):
         'level_name': fields.char('Level', readonly=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
-        'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True),
+        'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product', required=True),
         'product_uos_qty': fields.float('Product UOS Qty'),
         'product_uos': fields.many2one('product.uom', 'Product UOS',
