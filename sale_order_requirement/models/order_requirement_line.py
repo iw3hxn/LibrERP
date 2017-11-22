@@ -434,9 +434,16 @@ class order_requirement_line(orm.Model):
 
             if product.bom_ids:
                 self.write(cr, uid, line.id, {'new_product_id': product.id}, context)
-                temp_mrp_bom_vals, temp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, line, product.bom_ids, context)
-                temp_mrp_bom_ids = [t.id for t in temp_mrp_bom_vals]
-                temp_mrp_bom_routing_ids = [t.id for t in temp_routing_vals]
+                temp_mrp_bom_vals, temp_mrp_bom_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, line, product.bom_ids, context)
+                # temp_mrp_bom_ids = [(4, t.id) for t in line._temp_mrp_bom_ids]
+                # temp_mrp_bom_routing_ids = [(4, t.id) for t in line._temp_mrp_routing_ids]
+
+                # temp_mrp_bom_ids = [(6, False, [t.id for t in line._temp_mrp_bom_ids])]
+                # temp_mrp_bom_routing_ids = [(6, False, [t.id for t in line._temp_mrp_routing_ids])]
+
+                temp_mrp_bom_ids = [(0, False, t) for t in temp_mrp_bom_vals]
+                temp_mrp_bom_routing_ids = [(0, False, t) for t in temp_mrp_bom_routing_vals]
+
                 result_dict.update({
                     'temp_mrp_bom_ids': temp_mrp_bom_ids,
                     'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
