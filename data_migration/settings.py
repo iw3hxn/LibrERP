@@ -411,7 +411,7 @@ class FormatOmnitron(object):
         "DescrizioneProdottoInLingua", "AMagazzino",
         "IDValuta", "PrezzoInValuta", "Cambio",
         "ListinoFornitore", "Sconto", "PrezzoAcquisto", "ValoreMedio",
-        "Commento", "IDIva", "QtaMagazzino",
+        "Commento", "K-Prezzo Vendita", "IDIva", "QtaMagazzino",
         "GGConsegna", "GestMaga", "SpeseTrasporto",
         "StatoProdotto", "ValoreMedioConSpese", "DistintaBaseProduzione", "KgMetro"
     )
@@ -420,7 +420,7 @@ class FormatOmnitron(object):
                       "description_english, omnitron_procurement, " \
                       "none, none1, none2, " \
                       "standard_price, discount, discounted_price, none5, " \
-                      "sale_line_warn_msg, none6, qty, " \
+                      "sale_line_warn_msg, k_sale_price, none6, qty, " \
                       "omnitron_produce_delay, omnitron_type, omnitron_delivery_cost, " \
                       "none8, none9, none10, omnitron_weight_per_meter"
 

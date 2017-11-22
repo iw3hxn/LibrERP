@@ -423,20 +423,35 @@ class ImportFile(threading.Thread, Utils):
 
             return True
 
-    def update_pricelist(self, product_id, partner_id, discount):
+    def update_pricelist(self, list_type, product_id, partner_id, discount):
         today = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
         partner = self.partner_model.browse(self.cr, self.uid, partner_id, self.context)
         product = self.product_obj.browse(self.cr, self.uid, product_id, self.context)
 
-        if partner.property_product_pricelist_purchase.id == self.default_purchase_pricelist.id:
-            pricelist_id = self.pool['product.pricelist'].create(self.cr, self.uid, {
-                'name': "{partner_name} Purchase Pricelist".format(partner_name=partner.name),
-                'type': 'purchase'
-            }, self.context)
+        if list_type == 'purchase':
+            list_name = "{partner_name} Purchase Pricelist".format(partner_name=partner.name)
+            if partner.property_product_pricelist_purchase.id == self.default_purchase_pricelist.id:
+                pricelist_id = self.pool['product.pricelist'].create(self.cr, self.uid, {
+                    'name': "{partner_name} Purchase Pricelist".format(partner_name=partner.name),
+                    'type': list_type
+                }, self.context)
 
-            partner.write({'property_product_pricelist_purchase': pricelist_id})
-        else:
-            pricelist_id = partner.property_product_pricelist_purchase.id
+                partner.write({'property_product_pricelist_purchase': pricelist_id})
+            else:
+                pricelist_id = partner.property_product_pricelist_purchase.id
+        else:  # 'sale'
+            # list_name = "{partner_name} Pricelist".format(partner_name=partner.name)
+            # if partner.property_product_pricelist.id == self.default_pricelist.id:
+            #     pricelist_id = self.pool['product.pricelist'].create(self.cr, self.uid, {
+            #         'name': "{partner_name} Purchase Pricelist".format(partner_name=partner.name),
+            #         'type': list_type
+            #     }, self.context)
+            #
+            #     partner.write({'property_product_pricelist': pricelist_id})
+            # else:
+            #     pricelist_id = partner.property_product_pricelist.id
+            pricelist_id = self.default_pricelist.id
+            list_name = self.default_pricelist.name
 
         version_ids = self.pricelist_version_model.search(self.cr, self.uid, [
             '|',
@@ -448,7 +463,7 @@ class ImportFile(threading.Thread, Utils):
             version_id = version_ids[0]
         else:
             version_id = self.pricelist_version_model.create(self.cr, self.uid, {
-                'name': "{partner_name} Purchase Pricelist Version".format(partner_name=partner.name),
+                'name': "{name} Version".format(name=list_name),
                 'pricelist_id': pricelist_id
             }, self.context)
 
@@ -460,13 +475,22 @@ class ImportFile(threading.Thread, Utils):
         if pricelist_item_ids:
             return True
         else:
-            self.pricelist_item_model.create(self.cr, self.uid, {
-                'name': "{partner_name} Purchase Pricelist Line".format(partner_name=partner.name),
-                'categ_id': product.categ_id.id,
-                'price_discount': - discount / 100.0,
-                'price_version_id': version_id,
-                'base': 2  # Cost Price
-            }, self.context)
+            if list_type == 'purchase':
+                self.pricelist_item_model.create(self.cr, self.uid, {
+                    'name': "{name} Line".format(name=list_name),
+                    'categ_id': product.categ_id.id,
+                    'price_discount': - discount / 100.0,
+                    'price_version_id': version_id,
+                    'base': 2  # Cost Price
+                }, self.context)
+            else:
+                self.pricelist_item_model.create(self.cr, self.uid, {
+                    'name': "{name} Line".format(name=list_name),
+                    'categ_id': product.categ_id.id,
+                    'price_discount': discount - 1,
+                    'price_version_id': version_id,
+                    'base': 2  # Cost Price
+                }, self.context)
 
     def import_row(self, cr, uid, row_list):
         if self.first_row:
@@ -844,7 +868,9 @@ class ImportFile(threading.Thread, Utils):
                     }, context=self.context)
 
                 if vals_product.get('categ_id', False) and hasattr(record, 'discount') and record.discount:
-                    self.update_pricelist(product_id, partner_id, float(record.discount))
+                    self.update_pricelist('purchase', product_id, partner_id, float(record.discount))
+                if vals_product.get('categ_id', False) and hasattr(record, 'k_sale_price') and record.k_sale_price:
+                    self.update_pricelist('sale', product_id, partner_id, float(record.k_sale_price))
 
         else:
             _logger.warning(
