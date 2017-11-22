@@ -70,6 +70,7 @@
                                         <field name="sequence"/>
                                         <field name="workcenter_id"/>
                                         <field name="user_id"/>
+                                        <field name="user_ids" invisible="1"/>
                                         <field name="name"/>
                                     </tree>
                                 </field>

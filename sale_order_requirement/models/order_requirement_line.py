@@ -150,9 +150,13 @@ class order_requirement_line(orm.Model):
 
     def get_routing_lines(self, cr, uid, ids, bom, temp_id, color, context=None):
         mrp_routing_workcenter_obj = self.pool['mrp.routing.workcenter']
+        mrp_workcenter_obj = self.pool['mrp.workcenter']
+        users_obj = self.pool['res.users']
+
         routing_id = self.get_routing_id(cr, uid, bom.product_id.id, context)
         workcenter_lines = mrp_routing_workcenter_obj.search_browse(cr, uid, [('routing_id', '=', routing_id)], context)
         ret_vals = []
+
 
         # From mrp._bom_explode
         factor = 1
@@ -163,6 +167,12 @@ class order_requirement_line(orm.Model):
         if workcenter_lines:
             for wcl in workcenter_lines:
                 wc = wcl.workcenter_id
+                if wc.user_ids:
+                    user_id = wc.user_ids[0].id
+                else:
+                    user_id = False
+                user_ids = [u.id for u in wc.user_ids]
+
                 d, m = divmod(factor, wcl.workcenter_id.capacity_per_cycle)
                 mult = (d + (m and 1.0 or 0.0))
                 cycle = mult * wcl.cycle_nbr
@@ -178,6 +188,8 @@ class order_requirement_line(orm.Model):
                     'row_color': color,
                     'temp_mrp_bom_id': temp_id,
                     'order_requirement_line_id': ids[0],
+                    'user_ids': user_ids,
+                    'user_id': user_id,
                 }
                 ret_vals.append(routing_vals)
         return ret_vals
@@ -394,6 +406,7 @@ class order_requirement_line(orm.Model):
         '_temp_mrp_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
         'temp_mrp_bom_routing_ids': fields.function(_get_or_create_temp_bom, multi='temp_mrp_bom', relation='temp.mrp.routing',
                                                     string="BoM Routing", method=True, type='one2many', readonly=True,
+                                                    states={'draft': [('readonly', False)]},
                                                     fnct_inv=_save_temp_mrp_bom_routing)
     }
 
