@@ -564,16 +564,6 @@ class order_requirement_line(orm.Model):
 
         # I am creating a "sub" product
 
-        # main_product = father.product_id
-        # mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', main_product.id),
-        #                                                          ('state', '=', 'draft')])
-        # if not mrp_production_ids:
-        #     raise orm.except_orm(_(u'Error !'),
-        #                          _(u'Main product order is missing for product {0}'.format(main_product.name)))
-
-        # # Take first
-        # mrp_production_id = mrp_production_ids[0]
-
         # Adding lines if main product manufacturing order is present
         # Reload browse record pointed by father
         father = temp_mrp_bom_obj.browse(cr, uid, father.id, context)
@@ -612,15 +602,7 @@ class order_requirement_line(orm.Model):
         # line is a order_requirement_line, not a bom line
         # TODO: use ids, not line?
         # TODO: put multi_orders as res.company flag
-        multi_orders = True
-
-        # if line.new_product_id:
-        #     product = line.new_product_id
-        # else:
-        #     product = line.product_id
-
-        # First set main product to manufacture
-        # self._manufacture_main_product(cr, uid, product.bom_ids, context)
+        multi_orders = False
 
         if not line._temp_mrp_bom_ids:
             return
@@ -630,19 +612,22 @@ class order_requirement_line(orm.Model):
             # Explode orders
             self._manufacture_explode(cr, uid, False, temp, context)
         else:
-            # Not multiorder
-            for temp in line._temp_mrp_bom_ids:
-                if temp.is_manufactured:
-                    pass
-                    # TODO implement
-                    # if temp.is_leaf:
-                    #     self._manufacture_bom(cr, uid, line, temp, context)
-                else:
-                    self._purchase(cr, uid, temp, True, context)
+            # Not multiorder -> First the father
+            father_bom = line._temp_mrp_bom_ids[0]
+            if father_bom.is_manufactured:
+                self._manufacture_bom(cr, uid, False, father_bom, context)
+                for temp in line._temp_mrp_bom_ids[1:]:
+                    if temp.is_manufactured:
+                        if temp.is_leaf:
+                            self._manufacture_bom(cr, uid, father_bom, temp, context)
+                    else:
+                        self._purchase(cr, uid, temp, True, context)
+            else:
+                self._purchase(cr, uid, father_bom, True, context)
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
-
+        # TODO: Now everything is a BOM, no need to "manufacture lines"
         for line in self.browse(cr, uid, ids, context):
             if line.is_manufactured:
                 self._manufacture_all(cr, uid, ids, line, context)
