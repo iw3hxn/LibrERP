@@ -65,7 +65,7 @@ class temp_mrp_bom(orm.Model):
         'product_qty': fields.float('Product Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
         'product_uom': fields.many2one('product.uom', 'UOM', required=True,
                                        help="UoM (Unit of Measure) is the unit of measurement for the inventory control"),
-        'cost': fields.float('Cost'),
+        'cost': fields.float('Cost', readonly=True),
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
         'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id',
                                         string='Sale Order', relation='sale.order', type='many2one', readonly=True),

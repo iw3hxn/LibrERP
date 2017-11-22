@@ -403,6 +403,19 @@ class order_requirement_line(orm.Model):
         # ret['confirm_suppliers']['invisible'] = not view_bom
         return ret
 
+    # def onchange_is_manufactured(self, cr, uid, ids, is_manufactured, temp_mrp_bom_ids, context=None):
+    #     # Synchronize the first BOM line "is_manufactured" flag with the line one
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+    #     for line in self.browse(cr, uid, ids, context):
+    #         try:
+    #             # First line, second item in list is ID
+    #             father_bom_id = temp_mrp_bom_ids[0][2]
+    #             temp_mrp_bom_obj.write(cr, uid, father_bom_id, {'is_manufactured': is_manufactured}, context)
+    #         except IndexError:
+    #             # TODO: Log something
+    #             pass
+    #     return {}
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -413,24 +426,28 @@ class order_requirement_line(orm.Model):
 
             # Update BOM according to new product
             # Removing existing temp mrp bom
-            line = self.browse(cr, uid, ids, context)[0]
+            line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
             if line._temp_mrp_bom_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
                 temp_mrp_bom_ids = [temp['id'] for temp in line._temp_mrp_bom_ids]
                 temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
 
             if product.bom_ids:
+                self.write(cr, uid, line.id, {'new_product_id': product.id}, context)
                 temp_mrp_bom_vals, temp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, line, product.bom_ids, context)
+                temp_mrp_bom_ids = [t.id for t in temp_mrp_bom_vals]
+                temp_mrp_bom_routing_ids = [t.id for t in temp_routing_vals]
                 result_dict.update({
-                    'temp_mrp_bom_ids': temp_mrp_bom_vals,
-                    'view_bom': True,
-                    'is_manufactured': True
+                    'temp_mrp_bom_ids': temp_mrp_bom_ids,
+                    'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
+                    'view_bom': True
+                    # 'is_manufactured': True
                 })
         else:
             result_dict['view_bom'] = False
         return {'value': result_dict}
 
-    def _purchase(self, cr, uid, obj, is_temp_bom, context):
+    def _purchase_bom(self, cr, uid, obj, is_temp_bom, context):
         # obj can be a order_requirement_line or temp_mrp_bom
         # Set is_temp_bom to True if obj is a temp_mrp_bom
         purchase_order_obj = self.pool['purchase.order']
@@ -587,18 +604,18 @@ class order_requirement_line(orm.Model):
         mrp_production_obj.write(cr, uid, mrp_production_id.id,
                                  {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
-    def _manufacture_explode(self, cr, uid, father, temp, context):
+    def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
         if temp.is_manufactured:
             self._manufacture_bom(cr, uid, father, temp, context)
             if not temp.is_leaf:
                 if temp.level > 0:
                     self._manufacture_bom(cr, uid, False, temp, context)
                 for child in temp.bom_lines:
-                    self._manufacture_explode(cr, uid, temp, child, context)
+                    self._manufacture_or_purchase_explode(cr, uid, temp, child, context)
         else:
-            self._purchase(cr, uid, temp, True, context)
+            self._purchase_bom(cr, uid, temp, True, context)
 
-    def _manufacture_all(self, cr, uid, ids, line, context):
+    def _manufacture_or_purchase_all(self, cr, uid, ids, line, context):
         # line is a order_requirement_line, not a bom line
         # TODO: use ids, not line?
         # TODO: put multi_orders as res.company flag
@@ -610,7 +627,7 @@ class order_requirement_line(orm.Model):
         if multi_orders:
             temp = line._temp_mrp_bom_ids[0]
             # Explode orders
-            self._manufacture_explode(cr, uid, False, temp, context)
+            self._manufacture_or_purchase_explode(cr, uid, False, temp, context)
         else:
             # Not multiorder -> First the father
             father_bom = line._temp_mrp_bom_ids[0]
@@ -621,18 +638,19 @@ class order_requirement_line(orm.Model):
                         if temp.is_leaf:
                             self._manufacture_bom(cr, uid, father_bom, temp, context)
                     else:
-                        self._purchase(cr, uid, temp, True, context)
+                        self._purchase_bom(cr, uid, temp, True, context)
             else:
-                self._purchase(cr, uid, father_bom, True, context)
+                self._purchase_bom(cr, uid, father_bom, True, context)
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         # TODO: Now everything is a BOM, no need to "manufacture lines"
         for line in self.browse(cr, uid, ids, context):
+            # line is an order_requirement_line
             if line.is_manufactured:
-                self._manufacture_all(cr, uid, ids, line, context)
+                self._manufacture_or_purchase_all(cr, uid, ids, line, context)
             else:
-                self._purchase(cr, uid, line, False, context)
+                self._purchase_bom(cr, uid, line, False, context)
 
             self.write(cr, uid, line.id, {'state': 'done'}, context)
 
