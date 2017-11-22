@@ -11,7 +11,9 @@ class temp_mrp_routing(orm.Model):
     _columns = {
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing'),
         'name': fields.char('Name', size=64),
-        'workcenter_id': fields.many2one('mrp.workcenter'),
+        'workcenter_id': fields.many2one('mrp.workcenter', string='Workcenter'),
+        'user_ids': fields.many2many('res.users', string='Users'),
+        'user_id': fields.many2one('res.users', 'User', domain="[('id', 'in', user_ids[0][2])]"),
         'sequence': fields.integer('Sequence'),
         'cycle': fields.float('Cycle'),
         'hour': fields.float('Hour'),

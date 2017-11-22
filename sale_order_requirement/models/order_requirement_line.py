@@ -711,10 +711,11 @@ class order_requirement_line(orm.Model):
             # Cycle through all
             for temp in temp_mrp_bom_ids:
                 vals = temp[2]
-                if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
-                    new_temp_vals.append(vals)
-                else:
-                    temp_mrp_bom_obj.unlink(cr, uid, vals['id'], context)
+                if vals:
+                    if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
+                        new_temp_vals.append(vals)
+                    else:
+                        temp_mrp_bom_obj.unlink(cr, uid, vals['id'], context)
         else:
             to_be_deleted_ids = [t[1] for t in temp_mrp_bom_ids if t[0] == 2]
             temp_mrp_bom_obj.unlink(cr, uid, to_be_deleted_ids, context)

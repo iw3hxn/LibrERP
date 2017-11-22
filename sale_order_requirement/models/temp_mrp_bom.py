@@ -151,12 +151,12 @@ class temp_mrp_bom(orm.Model):
         order_requirement_line_obj = self.pool['order.requirement.line']
         line_id = context['line_id']
         line = order_requirement_line_obj.browse(cr, uid, line_id, context)
-        temp = {
+        ret = {
             'level': level,
             'product_id': new_product_id,
             'product_qty': qty,
             'order_requirement_line_id': line_id
         }
-        ret = line.update_temp_mrp_data(temp=temp, context=context)
+        ret.update(line.update_temp_mrp_data(temp=ret, context=context))
         return {'value': ret}
 
