@@ -407,7 +407,7 @@ class FormatOmnitron(object):
     LINES TERMINATED BY '\n';
     """
     HEADER_PRODUCT = (
-        "CodiceProdotto", "DescrizioneProdotto", "Codice Fornitore",
+        "CodiceProdotto", "DescrizioneProdotto", "Categoria", "Codice Fornitore",
         "DescrizioneProdottoInLingua", "AMagazzino",
         "IDValuta", "PrezzoInValuta", "Cambio",
         "ListinoFornitore", "Sconto", "PrezzoAcquisto", "ValoreMedio",
@@ -416,7 +416,7 @@ class FormatOmnitron(object):
         "StatoProdotto", "ValoreMedioConSpese", "DistintaBaseProduzione", "KgMetro"
     )
 
-    COLUMNS_PRODUCT = "old_code, description, supplier, " \
+    COLUMNS_PRODUCT = "old_code, description, category, supplier, " \
                       "description_english, omnitron_procurement, " \
                       "none, none1, none2, " \
                       "standard_price, discount, discounted_price, none5, " \
