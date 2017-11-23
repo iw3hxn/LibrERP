@@ -643,7 +643,7 @@ class order_requirement_line(orm.Model):
         # line is a order_requirement_line, not a bom line
         # TODO: use ids, not line?
         # TODO: put multi_orders as res.company flag
-        multi_orders = False
+        multi_orders = True
 
         if not line._temp_mrp_bom_ids:
             return
