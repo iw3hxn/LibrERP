@@ -35,6 +35,9 @@ class order_requirement_line(orm.Model):
     #     else:
     #         return line.product_id
 
+    # def default_get(self, cr, uid, fields_list, context=None):
+    #     pass
+
     def generic_stock_availability(self, cr, uid, ids, product, warehouse_id, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
@@ -652,6 +655,9 @@ class order_requirement_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         # TODO: Now everything is a BOM, no need to "manufacture lines"
         for line in self.browse(cr, uid, ids, context):
+            if line.state != 'draft':
+                raise orm.except_orm(_(u'Error !'),
+                                     _(u'This manufacturing order has already started'))
             # line is an order_requirement_line
             if line.is_manufactured:
                 self._manufacture_or_purchase_all(cr, uid, ids, line, context)
