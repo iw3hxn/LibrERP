@@ -307,6 +307,7 @@ class ImportFile(threading.Thread, Utils):
         if product_ids:
             self.product_obj.write(
                 cr, uid, product_ids, {
+                    'name': record.product_description,
                     'old_code': '{}:{}'.format(omnicode, record.bom_code)
                 },
                 context=self.context
@@ -316,7 +317,15 @@ class ImportFile(threading.Thread, Utils):
                 (self.BOM_PRODUCT_SEARCH, '=', '{}:{}'.format(omnicode, record.bom_code))
             ], context=self.context)
 
-            if not product_ids:
+            if product_ids:
+                self.product_obj.write(
+                    cr, uid, product_ids, {
+                        'name': record.product_description,
+                        'old_code': '{}:{}'.format(omnicode, record.bom_code)
+                    },
+                    context=self.context
+                )
+            else:
                 product_ids = self.product_obj.search(cr, uid, [
                     (self.BOM_PRODUCT_SEARCH, '=ilike', '{}%'.format(omnicode))
                 ], context=self.context)
@@ -461,6 +470,7 @@ class ImportFile(threading.Thread, Utils):
                                                           record.uom_maga)  # todo better, is on product_importer
                     product_vals['uom_po_id'] = product_vals['uom_id']
 
+                # Update Sub product
                 self.product_obj.write(cr, uid, sub_product_ids[0], product_vals, self.context)
                 self.updated += 1
         else:
