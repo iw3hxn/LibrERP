@@ -47,8 +47,8 @@ class temp_mrp_bom(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context):
             row_color = temp_mrp_bom._get_color_bylevel(line.level)
-            if line.level > 1 and line.stock_availability < line.spare:
-                row_color = 'red'
+            # if line.level > 1 and line.stock_availability < line.spare:
+            #     row_color = 'red'
             res[line.id] = row_color
         return res
 
@@ -59,9 +59,6 @@ class temp_mrp_bom(orm.Model):
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'product_id': fields.many2one('product.product', 'Product', required=True),
-        'product_uos_qty': fields.float('Product UOS Qty'),
-        'product_uos': fields.many2one('product.uom', 'Product UOS',
-                                       help="Product UOS (Unit of Sale) is the unit of measurement for the invoicing and promotion of stock."),
         'product_qty': fields.float('Product Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
         'product_uom': fields.many2one('product.uom', 'UOM', required=True,
                                        help="UoM (Unit of Measure) is the unit of measurement for the inventory control"),
@@ -137,9 +134,11 @@ class temp_mrp_bom(orm.Model):
         return False
 
     def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured, context=None):
+        # TODO: Maybe useless
         res = {}
         if is_manufactured:
             res['supplier_id'] = False
+        res['is_manufactured'] = is_manufactured
         return {'value': res}
 
     def onchange_temp_supplier_id(self, cr, uid, ids, supplier_id, product_id, context=None):
@@ -148,15 +147,19 @@ class temp_mrp_bom(orm.Model):
         return {'value': res}
 
     def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty=0, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         order_requirement_line_obj = self.pool['order.requirement.line']
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+
         line_id = context['line_id']
         line = order_requirement_line_obj.browse(cr, uid, line_id, context)
-        ret = {
+        temp = {
             'level': level,
             'product_id': new_product_id,
             'product_qty': qty,
             'order_requirement_line_id': line_id
         }
-        ret.update(line.update_temp_mrp_data(temp=ret, context=context))
-        return {'value': ret}
+        temp.update(line.update_temp_mrp_data(temp=temp, context=context))
+        temp_mrp_bom_obj.write(cr, uid, temp['id'], temp, context)
+        return {'value': temp}
 

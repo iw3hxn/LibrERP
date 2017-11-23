@@ -35,6 +35,9 @@ class order_requirement_line(orm.Model):
     #     else:
     #         return line.product_id
 
+    # def default_get(self, cr, uid, fields_list, context=None):
+    #     pass
+
     def generic_stock_availability(self, cr, uid, ids, product, warehouse_id, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
@@ -157,7 +160,6 @@ class order_requirement_line(orm.Model):
         workcenter_lines = mrp_routing_workcenter_obj.search_browse(cr, uid, [('routing_id', '=', routing_id)], context)
         ret_vals = []
 
-
         # From mrp._bom_explode
         factor = 1
         factor = factor / (bom.product_efficiency or 1.0)
@@ -269,7 +271,6 @@ class order_requirement_line(orm.Model):
     def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         view_bom = 'view_bom' in context and context['view_bom']
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
         res = {}
         for line in self.browse(cr, uid, ids, context):
@@ -294,52 +295,35 @@ class order_requirement_line(orm.Model):
                 res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
         return res
 
-    def _save_temp_mrp_bom(self, cr, uid, line_id, name, temp_mrp_bom_vals, arg, context=None):
+    def _save_temp_mrp_bom(self, cr, uid, line_id, name, temp_mrp_bom_ids, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-
-        if not temp_mrp_bom_vals:
+        return
+        # TODO MAYBE USELESS
+        if not temp_mrp_bom_ids:
             return
 
-        # If the first record is [5, False, False] I am creating
-        is_creation = temp_mrp_bom_vals[0][0] == 5
-        if is_creation:
-            # TODO USELESS because we save first
-            bom_map = {}
-            # IF I am creating, start cycle from second item (first is shown above)
-            for val in temp_mrp_bom_vals[1:]:
-                if val:
-                    temp_vals = val[2]
-                    temp_vals['order_requirement_line_id'] = line_id
-                    new_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
-                    temp_vals['id'] = new_id
-                    # map[ old ID ] => vals
-                    bom_map[temp_vals['mrp_bom_id']] = temp_vals
-            # Now creating hierarchy using id and bom_id
-            for old_id in bom_map:
-                bom = bom_map[old_id]
-                old_parent_id = bom['mrp_bom_parent_id']
-                try:
-                    new_parent_id = bom_map[old_parent_id]['id']
-                    bom['bom_id'] = new_parent_id
-                    temp_mrp_bom_obj.write(cr, uid, bom['id'], bom, context)
-                except KeyError as e:
-                    print e.message
+        to_be_deleted_ids = [t[1] for t in temp_mrp_bom_ids if t[0] == 2]
+        temp_mrp_bom_obj.unlink(cr, uid, to_be_deleted_ids, context)
 
-            for b in bom_map:
-                print bom_map[b]['id'], bom_map[b]['mrp_bom_parent_id']
-
-        else:
-            # I am updating
-            for val in temp_mrp_bom_vals:
-                if val[0] == 1:
-                    # Only items in this form are updating: [1,ID,{values}]
-                    temp_id = val[1]
-                    temp_vals = val[2]
-                    temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
+        is_new_set = temp_mrp_bom_ids[0][0] == 5
+        # In this case I have to care about removing all children for nested boms
+        new_temp_vals = []
+        if is_new_set:
+            temp_by_line_ids = temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', '=', line_id)], context)
+            temp_mrp_bom_obj.unlink(cr, uid, temp_by_line_ids, context)
+            for temp in temp_mrp_bom_ids:
+                temp_vals = temp[2]
+                if temp_vals:
+                    if temp_mrp_bom.check_parents(temp_vals, temp_mrp_bom_ids):
+                        # new_temp_vals.append(temp_vals)
+                        temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
+                    else:
+                        temp_mrp_bom_obj.unlink(cr, uid, temp_vals['id'], context)
         return
 
     def _save_temp_mrp_bom_routing(self, cr, uid, line_id, name, temp_routing_vals, arg, context=None):
+        # TODO: to be done
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.routing']
 
@@ -671,6 +655,9 @@ class order_requirement_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         # TODO: Now everything is a BOM, no need to "manufacture lines"
         for line in self.browse(cr, uid, ids, context):
+            if line.state != 'draft':
+                raise orm.except_orm(_(u'Error !'),
+                                     _(u'This manufacturing order has already started'))
             # line is an order_requirement_line
             if line.is_manufactured:
                 self._manufacture_or_purchase_all(cr, uid, ids, line, context)
@@ -710,15 +697,35 @@ class order_requirement_line(orm.Model):
             'res_id': line.id
         }
 
+    def onchange_temp_mrp_bom_ids_NO(self, cr, uid, ids, temp_mrp_bom_ids, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        line = self.browse(cr, uid, ids, context)[0]
+        self.write(cr, uid, ids, {'temp_mrp_bom_ids': temp_mrp_bom_ids})
+
+        # Reload list (some related child temp mrp boms could have been deleted)
+        new_temp_vals = []
+        for temp in line._temp_mrp_bom_ids:
+            vals = temp_mrp_bom_obj.read(cr, uid, temp.id, [], context)
+            if vals:
+                fix_fields(vals)
+                new_temp_vals.append(vals)
+
+        new_temp_mrp_bom_ids = [(0, False, t) for t in new_temp_vals]
+
+        return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
+
+
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
-        line = self.browse(cr, uid, ids, context)[0]
         # If in presence of a new unsaved set of mrp boms, list will start with [5,0,False]
         # and all items in list will be [4,id,False]
-        new_temp_vals = []
+        line = self.browse(cr, uid, ids, context)[0]
         is_new_set = not temp_mrp_bom_ids or temp_mrp_bom_ids[0][0] == 5
+        new_temp_vals = []
+
         if is_new_set:
             # When is_new_set is True, I have to check all present boms and remove the missing
             # Cycle through all
@@ -730,19 +737,29 @@ class order_requirement_line(orm.Model):
                     else:
                         temp_mrp_bom_obj.unlink(cr, uid, vals['id'], context)
         else:
-            to_be_deleted_ids = [t[1] for t in temp_mrp_bom_ids if t[0] == 2]
-            temp_mrp_bom_obj.unlink(cr, uid, to_be_deleted_ids, context)
-            # Reload list (some related child temp mrp boms could have been deleted)
-            # temp_mrp_bom_ids = [t.id for t in line._temp_mrp_bom_ids]
-            new_temp_vals = []
-            for temp in line._temp_mrp_bom_ids:
-                vals = temp_mrp_bom_obj.read(cr, uid, temp.id, [], context)
-                if vals:
-                    fix_fields(vals)
-                    new_temp_vals.append(vals)
-            # temp_mrp_bom_ids = [(0, False, t) for t in line._temp_mrp_bom_ids]
-            # temp_mrp_bom_routing_ids = [(0, False, t.id) for t in line._temp_mrp_bom_routing_ids]
+            for temp in temp_mrp_bom_ids:
+                operation = temp[0]
+                temp_id = temp[1]
+                vals = temp[2]
 
+                if temp_id:
+                    if operation == 1:
+                        # Update
+                        temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
+                    elif operation == 2:
+                        # Delete
+                        temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
+                if operation in [1, 4] and vals:
+                    new_temp_vals.append(vals)
+
+                # Reload list (some related child temp mrp boms could have been deleted)
+                # for temp in line._temp_mrp_bom_ids:
+                #     vals = temp_mrp_bom_obj.read(cr, uid, temp.id, [], context)
+                #     if vals:
+                #         fix_fields(vals)
+                #         new_temp_vals.append(vals)
+
+        # TODO: Update routings
         new_temp_mrp_bom_ids = [(0, False, t) for t in new_temp_vals]
 
         return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
