@@ -1,24 +1,5 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
-#
-# Copyright (c) 2013-2017 Andrei Levin (andrei.levin at didotech.com)
-#
-#                          All Rights Reserved.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-###############################################################################
+# -*- coding: utf-8 -*-
+# © 2013-2017 Didotech srl (www.didotech.com)
 
 import logging
 import math
@@ -481,7 +462,7 @@ class ImportFile(threading.Thread, Utils):
                     'categ_id': product.categ_id.id,
                     'price_discount': - discount / 100.0,
                     'price_version_id': version_id,
-                    'base': 2  # Cost Price
+                    'base': 1  # 1 - Public Price, 2 - Cost Price
                 }, self.context)
             else:
                 self.pricelist_item_model.create(self.cr, self.uid, {
@@ -616,7 +597,10 @@ class ImportFile(threading.Thread, Utils):
             return False
 
         if hasattr(record, 'category') and record.category:
-            if '\\' in record.category:
+            # We can't use \ in SQL, so we forced to use \\ which became \\\\
+            if '\\\\' in record.category:
+                categories = record.category.split('\\\\')
+            elif '\\' in record.category:
                 categories = record.category.split('\\')
             elif '/' in record.category:
                 categories = record.category.split('/')
@@ -869,8 +853,8 @@ class ImportFile(threading.Thread, Utils):
 
                 if vals_product.get('categ_id', False) and hasattr(record, 'discount') and record.discount:
                     self.update_pricelist('purchase', product_id, partner_id, float(record.discount))
-                if vals_product.get('categ_id', False) and hasattr(record, 'k_sale_price') and record.k_sale_price:
-                    self.update_pricelist('sale', product_id, partner_id, float(record.k_sale_price))
+                # if vals_product.get('categ_id', False) and hasattr(record, 'k_sale_price') and record.k_sale_price:
+                #     self.update_pricelist('sale', product_id, partner_id, float(record.k_sale_price))
 
         else:
             _logger.warning(

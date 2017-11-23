@@ -419,7 +419,7 @@ class FormatOmnitron(object):
     COLUMNS_PRODUCT = "old_code, description, category, supplier, " \
                       "description_english, omnitron_procurement, " \
                       "none, none1, none2, " \
-                      "standard_price, discount, discounted_price, none5, " \
+                      "list_price, discount, standard_price, none5, " \
                       "sale_line_warn_msg, k_sale_price, none6, qty, " \
                       "omnitron_produce_delay, omnitron_type, omnitron_delivery_cost, " \
                       "none8, none9, none10, omnitron_weight_per_meter"
