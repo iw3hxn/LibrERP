@@ -59,6 +59,7 @@ class ImportFile(threading.Thread, Utils):
         self.pool = pooler.get_pool(cr.dbname)
         self.product_obj = self.pool['product.product']
         self.supplierinfo_obj = self.pool['product.supplierinfo']
+        self.partner_model = self.pool['res.partner']
 
         # Necessario creare un nuovo cursor per il thread,
         # quello fornito dal metodo chiamante viene chiuso
@@ -81,6 +82,9 @@ class ImportFile(threading.Thread, Utils):
         self.problems = 0
         self.cache = []
 
+        self.default_pricelist = False
+        self.default_purchase_pricelist = False
+
     def run(self):
         # Recupera il record dal database
         self.filedata_obj = self.pool['product.import']
@@ -100,6 +104,14 @@ class ImportFile(threading.Thread, Utils):
 
         # Default values
         self.PRODUCT_DEFAULTS = Config.PRODUCT_DEFAULTS
+
+        if self.FORMAT == 'FormatOmnitron':
+            company = self.pool['res.company'].browse(self.cr, self.uid, 1, self.context)
+            self.default_pricelist = company.partner_id.property_product_pricelist
+            self.default_purchase_pricelist = company.partner_id.property_product_pricelist_purchase
+
+            self.pricelist_version_model = self.pool['product.pricelist.version']
+            self.pricelist_item_model = self.pool['product.pricelist.item']
 
         if not len(self.HEADER) == len(Config.COLUMNS_PRODUCT.split(',')):
             pprint(zip(self.HEADER, Config.COLUMNS_PRODUCT.split(',')))
@@ -410,6 +422,75 @@ class ImportFile(threading.Thread, Utils):
             inventry_obj.action_done(cr, uid, [inventory_id], context=context)
 
             return True
+
+    def update_pricelist(self, list_type, product_id, partner_id, discount):
+        today = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        partner = self.partner_model.browse(self.cr, self.uid, partner_id, self.context)
+        product = self.product_obj.browse(self.cr, self.uid, product_id, self.context)
+
+        if list_type == 'purchase':
+            list_name = "{partner_name} Purchase Pricelist".format(partner_name=partner.name)
+            if partner.property_product_pricelist_purchase.id == self.default_purchase_pricelist.id:
+                pricelist_id = self.pool['product.pricelist'].create(self.cr, self.uid, {
+                    'name': "{partner_name} Purchase Pricelist".format(partner_name=partner.name),
+                    'type': list_type
+                }, self.context)
+
+                partner.write({'property_product_pricelist_purchase': pricelist_id})
+            else:
+                pricelist_id = partner.property_product_pricelist_purchase.id
+        else:  # 'sale'
+            # list_name = "{partner_name} Pricelist".format(partner_name=partner.name)
+            # if partner.property_product_pricelist.id == self.default_pricelist.id:
+            #     pricelist_id = self.pool['product.pricelist'].create(self.cr, self.uid, {
+            #         'name': "{partner_name} Purchase Pricelist".format(partner_name=partner.name),
+            #         'type': list_type
+            #     }, self.context)
+            #
+            #     partner.write({'property_product_pricelist': pricelist_id})
+            # else:
+            #     pricelist_id = partner.property_product_pricelist.id
+            pricelist_id = self.default_pricelist.id
+            list_name = self.default_pricelist.name
+
+        version_ids = self.pricelist_version_model.search(self.cr, self.uid, [
+            '|',
+            ('date_end', '=', False),
+            ('date_end', '>', today),
+            ('pricelist_id', '=', pricelist_id)
+        ])
+        if version_ids:
+            version_id = version_ids[0]
+        else:
+            version_id = self.pricelist_version_model.create(self.cr, self.uid, {
+                'name': "{name} Version".format(name=list_name),
+                'pricelist_id': pricelist_id
+            }, self.context)
+
+        pricelist_item_ids = self.pricelist_item_model.search(self.cr, self.uid, [
+            ('price_version_id', '=', version_id),
+            ('categ_id', '=', product.categ_id.id)
+        ], context=self.context)
+
+        if pricelist_item_ids:
+            return True
+        else:
+            if list_type == 'purchase':
+                self.pricelist_item_model.create(self.cr, self.uid, {
+                    'name': "{name} Line".format(name=list_name),
+                    'categ_id': product.categ_id.id,
+                    'price_discount': - discount / 100.0,
+                    'price_version_id': version_id,
+                    'base': 2  # Cost Price
+                }, self.context)
+            else:
+                self.pricelist_item_model.create(self.cr, self.uid, {
+                    'name': "{name} Line".format(name=list_name),
+                    'categ_id': product.categ_id.id,
+                    'price_discount': discount - 1,
+                    'price_version_id': version_id,
+                    'base': 2  # Cost Price
+                }, self.context)
 
     def import_row(self, cr, uid, row_list):
         if self.first_row:
@@ -726,8 +807,13 @@ class ImportFile(threading.Thread, Utils):
             product_id = product_ids[0]
             if not self.update_product_name and 'name' in vals_product:
                 # vals_product['name'] = self.product_obj.browse(cr, uid, product_id, self.context).name
+                name = vals_product['name']
                 del vals_product['name']
+            else:
+                name = 'Unknown'
             self.product_obj.write(cr, uid, product_id, vals_product, self.context)
+            if 'name' not in vals_product:
+                vals_product['name'] = name
             self.updated += 1
         else:
             _logger.info(u'Row {row}: Adding product {product}'.format(row=self.processed_lines, product=vals_product[field]))
@@ -752,9 +838,14 @@ class ImportFile(threading.Thread, Utils):
 
         if partner_ids and product_id:
             for partner_id in partner_ids:
-                supplierinfo_ids = self.supplierinfo_obj.search(cr, uid, [('product_id', '=', product_id), ('name', '=', partner_id)], context=self.context)
+                supplierinfo_ids = self.supplierinfo_obj.search(cr, uid, [
+                    ('product_id', '=', product_id),
+                    ('name', '=', partner_id)
+                ], context=self.context)
                 if supplierinfo_ids:
-                    _logger.info(u'{0}: Updating supplier info for product {1}'.format(self.processed_lines, vals_product['name']))
+                    _logger.info(u'{0}: Updating supplier info for product {1}'.format(
+                        self.processed_lines, vals_product['name']
+                    ))
                     self.supplierinfo_obj.write(cr, uid, supplierinfo_ids[0], {
                         'name': partner_id,
                         'product_name': vals_product['name'],
@@ -764,7 +855,9 @@ class ImportFile(threading.Thread, Utils):
                         # 'company_id':
                     }, context=self.context)
                 else:
-                    _logger.info(u'{0}: Creating supplierinfo for product {1}...'.format(self.processed_lines, vals_product['name']))
+                    _logger.info(u'{0}: Creating supplierinfo for product {1}...'.format(
+                        self.processed_lines, vals_product['name'])
+                    )
                     self.supplierinfo_obj.create(cr, uid, {
                         'name': partner_id,
                         'product_name': vals_product['name'],
@@ -773,6 +866,12 @@ class ImportFile(threading.Thread, Utils):
                         'product_code': product_code
                         # 'company_id':
                     }, context=self.context)
+
+                if vals_product.get('categ_id', False) and hasattr(record, 'discount') and record.discount:
+                    self.update_pricelist('purchase', product_id, partner_id, float(record.discount))
+                if vals_product.get('categ_id', False) and hasattr(record, 'k_sale_price') and record.k_sale_price:
+                    self.update_pricelist('sale', product_id, partner_id, float(record.k_sale_price))
+
         else:
             _logger.warning(
                 u'{0}: No supplier for product {1}'.format(
