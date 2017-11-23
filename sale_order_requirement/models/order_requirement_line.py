@@ -720,33 +720,38 @@ class order_requirement_line(orm.Model):
         is_new_set = not temp_mrp_bom_ids or temp_mrp_bom_ids[0][0] == 5
         new_temp_vals = []
 
-        for temp in temp_mrp_bom_ids:
-            operation = temp[0]
-            temp_id = temp[1]
-            temp_vals = temp[2]
+        if is_new_set:
+            # When is_new_set is True, I have to check all present boms and remove the missing
+            # Cycle through all
+            for temp in temp_mrp_bom_ids:
+                vals = temp[2]
+                if vals:
+                    if temp_mrp_bom.check_parents(vals, temp_mrp_bom_ids):
+                        new_temp_vals.append(vals)
+                    else:
+                        temp_mrp_bom_obj.unlink(cr, uid, vals['id'], context)
+        else:
+            for temp in temp_mrp_bom_ids:
+                operation = temp[0]
+                temp_id = temp[1]
+                vals = temp[2]
 
-            if temp_id:
-                if operation == 1:
-                    # Update
-                    temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
-                elif operation == 2:
-                    # Delete
-                    temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
+                if temp_id:
+                    if operation == 1:
+                        # Update
+                        temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
+                    elif operation == 2:
+                        # Delete
+                        temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
+                if operation in [1, 4] and vals:
+                    new_temp_vals.append(vals)
 
-        # Cycle to remove eventually orphaned children
-        for temp in temp_mrp_bom_ids:
-            temp_vals = temp[2]
-            if temp_vals:
-                if not temp_mrp_bom.check_parents(temp_vals, temp_mrp_bom_ids):
-                    temp_mrp_bom_obj.unlink(cr, uid, temp_vals['id'], context)
-
-        # Reload list (some related child temp mrp boms could have been deleted)
-        new_temp_vals = []
-        for temp in line._temp_mrp_bom_ids:
-            vals = temp_mrp_bom_obj.read(cr, uid, temp.id, [], context)
-            if vals:
-                fix_fields(vals)
-                new_temp_vals.append(vals)
+                # Reload list (some related child temp mrp boms could have been deleted)
+                # for temp in line._temp_mrp_bom_ids:
+                #     vals = temp_mrp_bom_obj.read(cr, uid, temp.id, [], context)
+                #     if vals:
+                #         fix_fields(vals)
+                #         new_temp_vals.append(vals)
 
         # TODO: Update routings
         new_temp_mrp_bom_ids = [(0, False, t) for t in new_temp_vals]

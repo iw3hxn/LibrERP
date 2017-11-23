@@ -47,8 +47,8 @@ class temp_mrp_bom(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context):
             row_color = temp_mrp_bom._get_color_bylevel(line.level)
-            if line.level > 1 and line.stock_availability < line.spare:
-                row_color = 'red'
+            # if line.level > 1 and line.stock_availability < line.spare:
+            #     row_color = 'red'
             res[line.id] = row_color
         return res
 
@@ -134,11 +134,12 @@ class temp_mrp_bom(orm.Model):
         return False
 
     def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        return {}
-        #if is_manufactured:
-        #    res['supplier_id'] = False
-        #return {'value': res}
+        # TODO: Maybe useless
+        res = {}
+        if is_manufactured:
+            res['supplier_id'] = False
+        res['is_manufactured'] = is_manufactured
+        return {'value': res}
 
     def onchange_temp_supplier_id(self, cr, uid, ids, supplier_id, product_id, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
