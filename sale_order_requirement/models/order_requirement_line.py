@@ -737,6 +737,7 @@ class order_requirement_line(orm.Model):
                         new_temp_vals.append(vals)
                     else:
                         temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
+
             # Not finished yet: I have to manually remove all bom not leaf and with no children
             line = self.browse(cr, uid, ids, context)[0]
             for temp in line._temp_mrp_bom_ids:
@@ -751,6 +752,8 @@ class order_requirement_line(orm.Model):
 
                 if operation == 1:
                     # Update
+                    # TODO :::: HERE ==== !!!!! [][][][]
+                    # WHEN changing temp_mrp_bom values I have to recreate it -> unlink and create.
                     temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
                 elif operation == 2:
                     # Delete
