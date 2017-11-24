@@ -18,6 +18,7 @@ def rounding(f, r):
     return math.ceil(f / r) * r
 
 def fix_fields(vals):
+    # TODO CHECK if is good
     if vals:
         for key in vals:
             if isinstance(vals[key], tuple):
@@ -717,12 +718,12 @@ class order_requirement_line(orm.Model):
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        temp_mrp_bom_routing_obj = self.pool['temp.mrp.routing']
 
         # If in presence of a new unsaved set of mrp boms, list will start with [5,0,False]
         # and all items in list will be [4,id,False]
         is_new_set = not temp_mrp_bom_ids or temp_mrp_bom_ids[0][0] == 5
         new_temp_vals = []
-        new_temp_vals_formatted = []
         if is_new_set:
             # When is_new_set is True, I have to check all present boms and remove the missing
             # Cycle through all and remove childs
@@ -760,15 +761,24 @@ class order_requirement_line(orm.Model):
                     fix_fields(vals)
                     new_temp_vals.append(vals)
 
-        # TODO: Update routings
-        # new_temp_mrp_bom_ids = [(5, 0, False)]
         line = self.browse(cr, uid, ids, context)[0]
 
-        if not new_temp_vals_formatted:
-            new_temp_vals_formatted = [(5, 0, False)]
-            new_temp_vals_formatted.extend([(0, t['id'], t) for t in new_temp_vals])
+        new_temp_vals_formatted = [(5, 0, False)]
+        new_temp_vals_formatted.extend([(0, t['id'], t) for t in new_temp_vals])
 
-        return {'value': {'temp_mrp_bom_ids': new_temp_vals_formatted}}
+        # ROUTING
+        new_temp_routing_formatted = []
+        temp_ids = [t['id'] for t in new_temp_vals]
+        routing_ids = temp_mrp_bom_routing_obj.search(cr, uid, [('temp_mrp_bom_id', 'in', temp_ids)], context=context)
+        for rout_id in routing_ids:
+            rout_vals = temp_mrp_bom_routing_obj.read(cr, uid, rout_id, [], context)
+            if rout_vals:
+                fix_fields(rout_vals)
+                new_temp_routing_formatted.append((0, False, rout_vals))
+
+        return {'value': {'temp_mrp_bom_ids': new_temp_vals_formatted,
+                          'temp_mrp_bom_routing_ids': new_temp_routing_formatted}
+               }
 
     # def onchange_temp_mrp_bom_routing_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
     #     context = context or self.pool['res.users'].context_get(cr, uid)
