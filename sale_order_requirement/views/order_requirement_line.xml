@@ -39,6 +39,7 @@
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                                         <field name="row_color" invisible="1"/>
                                         <field name="is_leaf"/>
+                                        <field name="id" invisible="1"/>
                                         <field name="level" invisible="1"/>
                                         <field name="product_type" invisible="1"/>
                                         <field name="level_name"/>

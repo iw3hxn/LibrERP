@@ -36,7 +36,7 @@ class temp_mrp_bom(orm.Model):
         return res
 
     @staticmethod
-    def _get_color_bylevel(level):
+    def get_color_bylevel(level):
         try:
             row_color = default_row_colors[level]
         except IndexError:
@@ -46,16 +46,15 @@ class temp_mrp_bom(orm.Model):
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
         for line in self.browse(cr, uid, ids, context):
-            row_color = temp_mrp_bom._get_color_bylevel(line.level)
-            # if line.level > 1 and line.stock_availability < line.spare:
-            #     row_color = 'red'
+            row_color = temp_mrp_bom.get_color_bylevel(line.level)
             res[line.id] = row_color
         return res
 
     _columns = {
         'name': fields.char('Name', size=160, readonly=True),
         'level_name': fields.char('Level', readonly=True),
-        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True),
+        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True,
+                                                     ondelete='cascade'),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'product_id': fields.many2one('product.product', 'Product', required=True),
@@ -83,7 +82,7 @@ class temp_mrp_bom(orm.Model):
         'position': fields.char('Internal Reference', size=64, help="Reference to a position in an external plan.",
                                 readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
-        'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
+        'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, store=False),
     }
 
     def _check_product(self, cr, uid, ids, context=None):
@@ -110,6 +109,11 @@ class temp_mrp_bom(orm.Model):
     #         vals = child[2]
     #         res.extend(temp_mrp_bom.get_all_temp_bom_children_ids(vals['mrp_bom_id'], temp_mrp_bom_ids))
     #     return res
+
+    @staticmethod
+    def has_children(temp, vals):
+        children_ids = [v for v in vals if v['bom_id'] == temp.id]
+        return bool(children_ids)
 
     @staticmethod
     def check_parents(temp, temp_mrp_bom_ids):
@@ -160,6 +164,6 @@ class temp_mrp_bom(orm.Model):
             'order_requirement_line_id': line_id
         }
         temp.update(line.update_temp_mrp_data(temp=temp, context=context))
-        temp_mrp_bom_obj.write(cr, uid, temp['id'], temp, context)
+        temp_mrp_bom_obj.write(cr, uid, ids, temp, context)
         return {'value': temp}
 
