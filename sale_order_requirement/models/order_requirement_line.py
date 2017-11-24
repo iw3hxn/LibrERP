@@ -35,9 +35,6 @@ class order_requirement_line(orm.Model):
     #     else:
     #         return line.product_id
 
-    # def default_get(self, cr, uid, fields_list, context=None):
-    #     pass
-
     def generic_stock_availability(self, cr, uid, ids, product, warehouse_id, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
@@ -394,10 +391,19 @@ class order_requirement_line(orm.Model):
                                                     fnct_inv=_save_temp_mrp_bom_routing)
     }
 
-    _defaults = {
-        'state': 'draft',
-        'sequence': 10,
-    }
+    # _defaults = {
+    #     'state': 'draft',
+    #     'sequence': 10,
+    # }
+
+    def default_get(self, cr, uid, fields_list, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        # line = self.browse(cr, uid, )
+        return {
+            'state': 'draft',
+            'sequence': 10,
+        }
+
 
     def fields_get(self, cr, uid, allfields=None, context=None):
         # Useful for showing bom only if the button is pressed, not the click on the line
