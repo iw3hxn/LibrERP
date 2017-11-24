@@ -29,6 +29,8 @@ class order_requirement_line(orm.Model):
     _name = 'order.requirement.line'
     _rec_name = 'product_id'
 
+    col = 0
+
     # def _get_actual_product(self, cr, uid, ids, name = None, args = None, context=None):
     #     line = self.browse(cr, uid, ids, context)[0]
     #     if line.new_product_id:
@@ -220,7 +222,8 @@ class order_requirement_line(orm.Model):
                 'order_requirement_line_id': line.id
             }
 
-        def _get_rec(bom_rec, father_id, level, col):
+        def _get_rec(bom_rec, father_id, level):
+
             bom_children = bom_rec.child_buy_and_produce_ids
             if not bom_children:
                 return
@@ -234,13 +237,12 @@ class order_requirement_line(orm.Model):
                     temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
                     temp_vals['id'] = temp_id
                     temp_mrp_bom_vals.append(temp_vals)
-                    if temp_vals['mrp_routing_id'] != 0:
-                        temp_routing_vals = self.get_routing_lines(cr, uid, ids, bom, temp_id, routing_colors[col], context)
+                    if temp_vals['mrp_routing_id']:
+                        temp_routing_vals = self.get_routing_lines(cr, uid, ids, bom, temp_id, routing_colors[self.col], context)
                         temp_mrp_routing_vals.extend(temp_routing_vals)
-                        col = (col+1) % len(routing_colors)
+                        self.col = (self.col+1) % len(routing_colors)
 
-                    # Even if not product I must check all children
-                    _get_rec(bom, temp_id, level + 1, col)
+                    _get_rec(bom, temp_id, level + 1)
 
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         temp_mrp_routing_obj = self.pool['temp.mrp.routing']
@@ -258,7 +260,7 @@ class order_requirement_line(orm.Model):
             # Calculate routing for Father Bom(s)
             temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, ids, bom_father, temp_id, 'black', context))
 
-            _get_rec(bom_father, temp_id, 1, 0)
+            _get_rec(bom_father, temp_id, 1)
             for routing_vals in temp_mrp_routing_vals:
                 temp_mrp_routing_obj.create(cr, uid, routing_vals, context)
 

@@ -150,10 +150,11 @@ class temp_mrp_bom(orm.Model):
         res = {}
         return {'value': res}
 
-    def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty=0, context=None):
+    def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty, temp_id, context=None):
+        return
+        # TODO: MAYBE Useless: all writings in onchange_temp_mrp_bom_ids
         context = context or self.pool['res.users'].context_get(cr, uid)
         order_requirement_line_obj = self.pool['order.requirement.line']
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
         line_id = context['line_id']
         line = order_requirement_line_obj.browse(cr, uid, line_id, context)
@@ -164,6 +165,5 @@ class temp_mrp_bom(orm.Model):
             'order_requirement_line_id': line_id
         }
         temp.update(line.update_temp_mrp_data(temp=temp, context=context))
-        temp_mrp_bom_obj.write(cr, uid, ids, temp, context)
+        # self.write(cr, uid, temp_id, temp, context)
         return {'value': temp}
-
