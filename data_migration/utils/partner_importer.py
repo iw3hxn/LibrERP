@@ -286,6 +286,10 @@ class ImportFile(threading.Thread, Utils):
         country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
         if country_ids:
             return country_ids[0]
+        # search also for name
+        country_ids = self.pool['res.country'].search(cr, uid, [('name', '=ilike', code)], context=self.context)
+        if country_ids:
+            return country_ids[0]
         else:
             return False
 
@@ -618,7 +622,7 @@ class ImportFile(threading.Thread, Utils):
 
         record_code = self.simple_string(record.code, as_integer=True)
 
-        if self.UPDATE_ON_CODE and  PROPERTY_REF_MAP[self.partner_type]:
+        if self.UPDATE_ON_CODE and PROPERTY_REF_MAP[self.partner_type]:
             code_partner_ids = self.partner_obj.search(cr, uid, [(PROPERTY_REF_MAP[self.partner_type], '=', record_code)], context=self.context)
         else:
             code_partner_ids = False
@@ -644,15 +648,16 @@ class ImportFile(threading.Thread, Utils):
                 vals_partner[PROPERTY_REF_MAP[self.partner_type]] = record_code
 
         if hasattr(record, 'category') and record.category:
-            category_ids = self.category_obj.search(cr, uid, [('name', 'ilike', record.category)], context=self.context)
+            category_ids = self.category_obj.search(cr, uid, [('name', '=', record.category)], context=self.context)
 
-            if len(category_ids) == 1:
+            if len(category_ids):
                 vals_partner['category_id'] = [(6, 0, category_ids)]
             else:
-                vals_partner['category_id'] = [(6, 0, [self.category_obj.create(cr, uid, {
+                category_id = self.category_obj.create(cr, uid, {
                     'name': record.category,
                     'active': True
-                }), self.context])]
+                }, self.context)
+                vals_partner['category_id'] = [(6, 0, [category_id])]
 
         # partner_id = self._find_partner(cr, uid, record)
         partner_id = self._find_partner(cr, uid, vals_partner)
