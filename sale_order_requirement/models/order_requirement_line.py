@@ -792,12 +792,12 @@ class order_requirement_line(orm.Model):
             if operation == 1:
                 # Update
                 is_manufactured = 'is_manufactured' not in vals or vals['is_manufactured']
+                temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
+                level = temp_mrp_saved['level']
+                father_temp_id = temp_mrp_saved['bom_id'].id
 
                 if 'product_id' in vals:
                     # When changing product I have to recreate sub bom structure -> unlink and create.
-                    temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
-                    level = temp_mrp_saved['level']
-                    father_temp_id = temp_mrp_saved['bom_id'].id
                     product_id = vals['product_id']
                     temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
 
@@ -806,19 +806,29 @@ class order_requirement_line(orm.Model):
                                                                   ('bom_id', '=', False)], context=context)
                         self.create_temp_mrp_bom(cr, uid, ids, [bom], father_temp_id, level, context)
 
-                elif 'is_manufactured' in vals:
+                if 'is_manufactured' in vals:
                     if is_manufactured:
                         # Must recalculate children
+
                         temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
                         product_id = temp_mrp_saved.product_id.id
 
-                        temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
+                        # Remove current because otherwise it will be duplicated
+                        temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
+
+                        bom = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
+                                                                  ('bom_id', '=', False)], context=context)
+                        temp_ids, temp_rout = self.create_temp_mrp_bom(cr, uid, ids, [bom], father_temp_id, level, context)
+                        # Save edited fields
+                        new_temp_id = temp_ids[0]
+                        temp_mrp_bom_obj.write(cr, uid, new_temp_id, vals, context)
 
                     else:
                         # Must remove children
                         children_ids = temp_mrp_bom_obj.search(cr, uid, [('bom_id', '=', temp_id)], context=context)
                         # ondelete=cascade ensures ALL children will be removed
                         temp_mrp_bom_obj.unlink(cr, uid, children_ids, context)
+
 
             elif operation == 2:
                 # Delete

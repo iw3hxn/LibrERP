@@ -64,10 +64,9 @@ class mrp_production(osv.osv):
         wf_service = netsvc.LocalService("workflow")
         uncompute_ids = filter(lambda x: x, [not x.product_lines and x.id or False for x in
                                              self.browse(cr, uid, ids, context=context)])
-        # TODO Is it needed?
-        # super(mrp_production, self).action_compute(cr, uid, uncompute_ids, context=context)
 
-        # TODO SOMEWHERE IT WILL CREATE "Prodotti Programmati" with original BOM ==> MUST CORRECT
+        # TODO: Serve? Anche se commentato, viene eseguita grazie a workflow ->
+        # self.action_compute(cr, uid, uncompute_ids, context=context)
 
         for production in self.browse(cr, uid, ids, context=context):
 
@@ -114,9 +113,12 @@ class mrp_production(osv.osv):
             results = res[0]
             results2 = res[1]
             for line in results:
+                # TODO => This will create "Prodotti programmati"
                 line['production_id'] = production.id
                 prod_line_obj.create(cr, uid, line)
+
             for line in results2:
+                # TODO -=> DON'T create, we already have it in _manufacture_bom
                 line['production_id'] = production.id
                 workcenter_line_obj.create(cr, uid, line)
         return len(results)
