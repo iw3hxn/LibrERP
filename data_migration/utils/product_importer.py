@@ -651,6 +651,10 @@ class ImportFile(threading.Thread, Utils):
             elif record.active == 'N':
                 vals_product['active'] = False
 
+        if hasattr(record, 'type') and record.type:
+            if record.type.lower() in ['service', 'servizio']:
+                vals_product['type'] = 'service'
+
         if hasattr(record, 'procure_method') and record.procure_method:
             if record.procure_method.lower() == 'make to stock':
                 vals_product['procure_method'] = 'make_to_stock'
