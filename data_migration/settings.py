@@ -258,7 +258,7 @@ class FormatThree():
                       "standard_price, active, null, sale_ok, "\
                       "supply_method, type, procure_method, cost_method"
     PRODUCT_SEARCH = ('default_code', 'name')
-    REQUIRED_PRODUCT = ['default_code', 'name']
+    REQUIRED_PRODUCT = ['name']
     PRODUCT_WARNINGS = []
     PRODUCT_ERRORS = []
 
