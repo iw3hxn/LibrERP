@@ -2,3 +2,23 @@
 th[data-id=level_name] {
     min-width: 90px;
 }
+
+/* RAL 6017 */
+.openerp .header,
+.openerp .main_table,
+.openerp .ui-widget-header,
+.openerp .menu,
+.openerp .menu a:hover,
+.openerp .menu a:focus,
+.openerp .menu a.active,
+.openerp .secondary_menu a.oe_secondary_menu_item
+{
+    background-color: #468641 !important;
+}
+
+.openerp .menu a:hover,
+.openerp .menu a:focus,
+.openerp .menu a.active {
+    color: #FAAB21;
+}
+
