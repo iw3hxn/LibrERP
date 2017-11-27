@@ -17,7 +17,7 @@ and choose if manufacture or buy products from suppliers.
     ],
     'data': [
         'views/order_requirement.xml',
-        'views/order_requirement_line.xml'
+        'views/order_requirement_line.xml',
     ],
     'css': ['static/src/css/style.css'],
     'installable': True,

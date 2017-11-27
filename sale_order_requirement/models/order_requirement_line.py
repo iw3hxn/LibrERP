@@ -564,6 +564,38 @@ class order_requirement_line(orm.Model):
             })
         return routing_vals
 
+    def _make_production_internal_shipment(self, cr, uid, production, context=None):
+        ir_sequence = self.pool.get('ir.sequence')
+        stock_picking = self.pool.get('stock.picking')
+        routing_loc = None
+        pick_type = 'internal'
+        address_id = False
+
+        # TODO: NOT THIS ROUTING but temp_mrp_routing_id
+        # Take routing address as a Shipment Address.
+        # If usage of routing location is a internal, make outgoing shipment otherwise internal shipment
+        if production.bom_id.routing_id and production.bom_id.routing_id.location_id:
+            routing_loc = production.bom_id.routing_id.location_id
+            if routing_loc.usage != 'internal':
+                pick_type = 'out'
+            address_id = routing_loc.address_id and routing_loc.address_id.id or False
+
+        # Take next Sequence number of shipment base on type
+        pick_name = ir_sequence.get(cr, uid, 'stock.picking.' + pick_type)
+
+        picking_id = stock_picking.create(cr, uid, {
+            'name': pick_name,
+            'origin': (production.origin or '').split(':')[0] + ':' + production.name,
+            'type': pick_type,
+            'move_type': 'one',
+            'state': 'auto',
+            'address_id': address_id,
+            'auto_picking': True, # This one returns True ==> self._get_auto_picking(cr, uid, production),
+            'company_id': production.company_id.id,
+        })
+        production.write({'picking_id': picking_id}, context=context)
+        return picking_id
+
     def _manufacture_bom(self, cr, uid, father, bom, context):
         mrp_production_obj = self.pool['mrp.production']
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
@@ -578,12 +610,12 @@ class order_requirement_line(orm.Model):
             mrp_production_values['sale_id'] = bom.sale_order_id.id
 
             # Create manufacturing order
-            mrp_production_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
+            mrp_production = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
             temp_routing_vals = self._get_temp_routing(bom)
             for rout in temp_routing_vals:
-                rout['production_id'] = mrp_production_id
+                rout['production_id'] = mrp_production
                 mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
-            temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production_id})
+            temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production})
             return
 
         # I am creating a "sub" product
@@ -591,24 +623,38 @@ class order_requirement_line(orm.Model):
         # Adding lines if main product manufacturing order is present
         # Reload browse record pointed by father
         father = temp_mrp_bom_obj.browse(cr, uid, father.id, context)
-        mrp_production_id = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
-        if not mrp_production_id:
+        mrp_production = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
+        if not mrp_production:
             raise orm.except_orm(_(u'Error !'),
                                  _(u'Main product order is missing for product {0}'.format(father.product_id.name)))
+
+        # Create stock picking if not already done
+        if mrp_production.picking_id:
+            picking_id = mrp_production.picking_id.id
+        else:
+            picking_id = self._make_production_internal_shipment(cr, uid, mrp_production, context)
+            mrp_production = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
+
         # Create move line
-        shop = father.sale_order_id.shop_id
-        location = shop.warehouse_id.lot_stock_id
+        source_location_id = mrp_production.location_src_id.id
+        destination_location_id = mrp_production.product_id.product_tmpl_id.property_stock_production.id
+        if not source_location_id:
+            source_location_id = mrp_production.location_src_id.id
+
+        # shop = father.sale_order_id.shop_id
+        # source_location_id = shop.warehouse_id.lot_stock_id.id
 
         stock_move_vals = {
+            'picking_id': picking_id,
             'product_id': bom.product_id.id,
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
-            'location_id': location.id,
-            'location_dest_id': 1,  # todo location_dest_id
+            'location_id': source_location_id,
+            'location_dest_id': destination_location_id,  # todo location_dest_id
         }
-        # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
+        # # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
         # Create in relationship with mrp.production
-        mrp_production_obj.write(cr, uid, mrp_production_id.id,
+        mrp_production_obj.write(cr, uid, mrp_production.id,
                                  {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
     def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
@@ -699,23 +745,23 @@ class order_requirement_line(orm.Model):
             'res_id': line.id
         }
 
-    def onchange_temp_mrp_bom_ids_NO(self, cr, uid, ids, temp_mrp_bom_ids, context):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-        line = self.browse(cr, uid, ids, context)[0]
-        self.write(cr, uid, ids, {'temp_mrp_bom_ids': temp_mrp_bom_ids})
-
-        # Reload list (some related child temp mrp boms could have been deleted)
-        new_temp_vals = []
-        for temp in line._temp_mrp_bom_ids:
-            vals = temp_mrp_bom_obj.read(cr, uid, temp.id, [], context)
-            if vals:
-                fix_fields(vals)
-                new_temp_vals.append(vals)
-
-        new_temp_mrp_bom_ids = [(0, False, t) for t in new_temp_vals]
-
-        return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
+    # def onchange_temp_mrp_bom_ids_NO(self, cr, uid, ids, temp_mrp_bom_ids, context):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+    #     line = self.browse(cr, uid, ids, context)[0]
+    #     self.write(cr, uid, ids, {'temp_mrp_bom_ids': temp_mrp_bom_ids})
+    #
+    #     # Reload list (some related child temp mrp boms could have been deleted)
+    #     new_temp_vals = []
+    #     for temp in line._temp_mrp_bom_ids:
+    #         vals = temp_mrp_bom_obj.read(cr, uid, temp.id, [], context)
+    #         if vals:
+    #             fix_fields(vals)
+    #             new_temp_vals.append(vals)
+    #
+    #     new_temp_mrp_bom_ids = [(0, False, t) for t in new_temp_vals]
+    #
+    #     return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
 
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)

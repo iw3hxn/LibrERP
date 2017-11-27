@@ -2,7 +2,16 @@
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
 from osv import osv, fields, orm
-
+from datetime import datetime
+from osv import osv, fields, orm
+import decimal_precision as dp
+from tools import float_compare
+from tools import DEFAULT_SERVER_DATETIME_FORMAT
+from tools.translate import _
+import netsvc
+import time
+import tools
+from operator import attrgetter
 
 class mrp_bom(osv.osv):
     _inherit = 'mrp.bom'
@@ -42,31 +51,72 @@ class mrp_bom(osv.osv):
                                                      string="BoM Hierarchy", type='many2many'),
     }
 
-    # NOT USED ANYMORE
-    # @staticmethod
-    # def get_all_mrp_bom_children(obj, level=0):
-    #     result = {}
-    #
-    #     def _get_rec(obj, level):
-    #         for l in obj:
-    #             res = {'name': l.name,
-    #                    'pname': l.product_id.name,
-    #                    'pcode': l.product_id.default_code,
-    #                    'pqty': l.product_qty,
-    #                    'uname': l.product_uom.name,
-    #                    'code': l.code,
-    #                    'level': level
-    #                    }
-    #
-    #             result[l.id] = res
-    #             if l.child_buy_and_produce_ids:
-    #                 if level < 6:
-    #                     level += 1
-    #                 _get_rec(l.child_buy_and_produce_ids, level)
-    #                 if 0 < level < 6:
-    #                     level -= 1
-    #         return result
-    #
-    #     children = _get_rec(obj, level)
-    #
-    #     return children
+
+class mrp_production(osv.osv):
+
+    _inherit = "mrp.production"
+
+    def action_confirm(self, cr, uid, ids, context=None):
+        """ Confirms production order.
+        @return: Newly generated Shipment Id.
+        """
+        shipment_id = False
+        wf_service = netsvc.LocalService("workflow")
+        uncompute_ids = filter(lambda x: x, [not x.product_lines and x.id or False for x in
+                                             self.browse(cr, uid, ids, context=context)])
+        # TODO Is it needed?
+        # super(mrp_production, self).action_compute(cr, uid, uncompute_ids, context=context)
+
+        # TODO SOMEWHERE IT WILL CREATE "Prodotti Programmati" with original BOM ==> MUST CORRECT
+
+        for production in self.browse(cr, uid, ids, context=context):
+
+            shipment_id = production.picking_id.id
+
+            wf_service.trg_validate(uid, 'stock.picking', shipment_id, 'button_confirm', cr)
+            production.write({'state': 'confirmed'}, context=context)
+            message = _("Manufacturing order '%s' is scheduled for the %s.") % (
+                production.name,
+                datetime.strptime(production.date_planned, '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'),
+            )
+            self.log(cr, uid, production.id, message)
+        return shipment_id
+
+    def action_compute(self, cr, uid, ids, properties=[], context=None):
+        """ Computes bills of material of a product.
+        @param properties: List containing dictionaries of properties.
+        @return: No. of products.
+        """
+        # TODO MUST change from mrp.bom to temp.mrp.bom and from routing_id to temp_routing
+        return 0
+
+        results = []
+        bom_obj = self.pool.get('mrp.bom')
+        uom_obj = self.pool.get('product.uom')
+        prod_line_obj = self.pool.get('mrp.production.product.line')
+        workcenter_line_obj = self.pool.get('mrp.production.workcenter.line')
+        for production in self.browse(cr, uid, ids):
+            cr.execute('delete from mrp_production_product_line where production_id=%s', (production.id,))
+            cr.execute('delete from mrp_production_workcenter_line where production_id=%s', (production.id,))
+            bom_point = production.bom_id
+            bom_id = production.bom_id.id
+            if not bom_point:
+                bom_id = bom_obj._bom_find(cr, uid, production.product_id.id, production.product_uom.id, properties)
+                if bom_id:
+                    bom_point = bom_obj.browse(cr, uid, bom_id)
+                    routing_id = bom_point.routing_id.id or False
+                    self.write(cr, uid, [production.id], {'bom_id': bom_id, 'routing_id': routing_id})
+
+            if not bom_id:
+                raise osv.except_osv(_('Error'), _("Couldn't find a bill of material for this product."))
+            factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
+            res = bom_obj._bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, properties, routing_id=production.routing_id.id)
+            results = res[0]
+            results2 = res[1]
+            for line in results:
+                line['production_id'] = production.id
+                prod_line_obj.create(cr, uid, line)
+            for line in results2:
+                line['production_id'] = production.id
+                workcenter_line_obj.create(cr, uid, line)
+        return len(results)
