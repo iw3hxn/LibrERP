@@ -17,18 +17,41 @@ th[data-id=level_name] {
 
 .openerp .menu a:hover,
 .openerp .menu a:focus,
-.openerp .menu a.active {
+.openerp .menu a.active
+{
     color: #FAAB21;
 }
 
 .openerp a.oe_secondary_submenu_item:hover,
 .openerp a.oe_secondary_submenu_item.leaf.active,
-.openerp .oe_button:hover
+.openerp .oe_button:hover,
+.openerp .oe_button:visited,
+.openerp ul[role=listbox] li a:hover,
+.openerp ul[role=listbox] li a:visited,
+.openerp .oe_button.oe-list-add,
+.openerp .sidebar-main-div a:hover,
+.openerp .sidebar-main-div a:visited,
+.openerp .view-manager-main-sidebar li:hover,
+.openerp .view-manager-main-sidebar li:visited
 {
     background-color: #48A43F;
 }
 
-.openerp .oe_forms .oe_form_button .oe_button {
-    /* border: 1px solid #48A43F; */
-    border: 1px solid darkgreen;
+.openerp .oe_forms .oe_form_button .oe_button,
+.openerp .oe_button.oe-list-add
+{
+    border: 1px solid green;
+}
+
+.openerp .oe_button.oe-list-add:hover {
+    background-color: #53753C;
+}
+
+/* Page (tab) color RAL 6018 */
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
+.ui-tabs .ui-tabs-nav li.ui-state-processing a:hover,
+.openerp .view-manager-main-sidebar h2
+{
+    color:  #48A43F;
 }
