@@ -10,6 +10,7 @@
             <field name="arch" type="xml">
                 <field name="categ_id" position="after" >
                     <field name="supplier_id" domain="[('supplier', '=', True)]"/>
+                    <field name="supplier_code" />
                 </field>
                 <field name="pricelist_id" position="before">
                     <filter icon="terp-purchase" string="Show Category" domain="[]" context="{'show_categ': True}"/>

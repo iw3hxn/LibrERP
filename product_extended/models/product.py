@@ -55,4 +55,5 @@ class product_product(orm.Model):
         'last_supplier_invoice_id': fields.many2one('account.invoice', 'Last Supplier Invoice', readonly=True),
         'supplier_id': fields.related('seller_ids', 'name', type='many2one', relation='res.partner',
                                      string='Supplier'),
+        'supplier_code': fields.related('seller_ids', 'product_code', type='char', string="Supplier Code"),
     }

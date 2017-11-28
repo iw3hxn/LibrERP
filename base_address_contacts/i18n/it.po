@@ -224,3 +224,10 @@ msgstr "per cancellare il Partner devi prima cancellare ogni singolo indirizzo d
 #: view:res.partner.address.contact:0
 msgid "Surname / Name"
 msgstr "Cognome / Nome"
+
+#. module: base_address_contacts
+#: code:addons/base_address_contacts/models/res_partner_address.py:277
+#, python-format
+msgid "Before Deleting the Partner, you need to delete the Address from menù"
+msgstr "Prima di cancellare il Partner, bisogna andare sul menù degli indirizzi e cancellarli tutti"
+

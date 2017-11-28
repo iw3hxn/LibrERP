@@ -66,6 +66,10 @@ class ImportFile(threading.Thread, Utils):
         self.default_pricelist = False
         self.default_purchase_pricelist = False
 
+        product_model_id = self.pool['ir.model'].search(cr, uid, [('model', '=', 'product.product')], context=context)
+        self.ok_supplier_code = self.pool['ir.model.fields'].search(cr, uid, [('model_id', '=', product_model_id),
+                                                                         ('name', '=', 'supplier_code')], context=context)
+
     def run(self):
         # Recupera il record dal database
         self.filedata_obj = self.pool['product.import']
@@ -508,10 +512,12 @@ class ImportFile(threading.Thread, Utils):
 
         # Sometime value is only numeric and we don't want string to be treated as Float
         record = self.RecordProduct._make([self.toStr(value) for value in row_list])
-        print record
+        _logger.debug(record)
 
         identifier_field = self.PRODUCT_SEARCH[0]
-        identifier = getattr(record, identifier_field).strip()
+        identifier = getattr(record, identifier_field)
+        if identifier:
+            identifier = identifier.strip()
 
         # # Look for duplicated default code
         # if record.default_code and record.default_code.strip() in self.cache:
@@ -651,6 +657,10 @@ class ImportFile(threading.Thread, Utils):
             elif record.active == 'N':
                 vals_product['active'] = False
 
+        if hasattr(record, 'type') and record.type:
+            if record.type.lower() in ['service', 'servizio']:
+                vals_product['type'] = 'service'
+
         if hasattr(record, 'procure_method') and record.procure_method:
             if record.procure_method.lower() == 'make to stock':
                 vals_product['procure_method'] = 'make_to_stock'
@@ -785,6 +795,9 @@ class ImportFile(threading.Thread, Utils):
                 [('default_code', '=', vals_product['default_code'].replace('\\', '\\\\').strip())],
                 context=self.context
             )
+        if not product_ids and product_code:
+            if self.ok_supplier_code:
+                product_ids = self.product_obj.search(cr, uid, [('supplier_code', '=', product_code)], context=self.context)
 
         if product_ids:
             _logger.info(u'Row {row}: Updating product {product}...'.format(row=self.processed_lines, product=vals_product[field]))

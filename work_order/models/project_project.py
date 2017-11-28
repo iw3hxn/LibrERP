@@ -55,4 +55,15 @@ class project_project(orm.Model):
                 self.pool['project.project'].write(cr, uid, project_id, {'state': 'open'}, context)
         return project_id
 
+    def _get_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        sale_order_obj = self.pool['sale.order']
+        for project in self.browse(cr, uid, ids, context):
+            result[project.id] = sale_order_obj.search(cr, uid, [('project_id', '=', project.analytic_account_id.id)], context=context)
+        return result
 
+    _columns = {
+        'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order",
+                                      readonly=True, method=True),
+    }

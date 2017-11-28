@@ -96,3 +96,8 @@ msgstr "Fornitore"
 #: view:product.product:0
 msgid "Show Category"
 msgstr "Visualizza Categoria"
+
+#. module: product_extended
+#: field:product.product,supplier_code:0
+msgid "Supplier Code"
+msgstr "Codice Fornitore"
