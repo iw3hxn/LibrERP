@@ -42,7 +42,20 @@ class product_template(orm.Model):
 class product_product(orm.Model):
     _inherit = 'product.product'
 
+    def _get_prefered_supplier(self, cr, uid, ids, field_name, arg, context):
+        result = {}
+        for product in self.browse(cr, uid, ids, context):
+            if context.get('partner_name', False):
+                partner_name = context.get('partner_name')
+                partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
+                result[product.id] = partner_ids[0]
+            else:
+                result[product.id] = product.seller_ids and product.seller_ids[0].name.id or ''
+        return result
+
     _columns = {
+        'prefered_supplier': fields.function(_get_prefered_supplier, type='many2one', relation='res.partner',
+                                             string='Prefered Supplier'),
         'last_purchase_price': fields.float('Last purchase price', readonly=True),
         'last_purchase_date': fields.date('Last purchase date', readonly=True),
         'last_supplier_id': fields.many2one('res.partner', 'Last Supplier', readonly=True),
