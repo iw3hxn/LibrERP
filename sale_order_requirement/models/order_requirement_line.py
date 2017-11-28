@@ -10,6 +10,7 @@ from openerp.osv import orm, fields
 from temp_mrp_bom import temp_mrp_bom
 
 routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
+index = 0
 
 def rounding(f, r):
     import math
@@ -217,6 +218,36 @@ class order_requirement_line(orm.Model):
             'order_requirement_line_id': line_id
         }
 
+    def _temp_mrp_bom_sorted(self, cr, uid, ids, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        # Must be one line
+        line = self.browse(cr, uid, ids, context)[0]
+        # Support dictionary
+        temp_mrp_bom_ids = line._temp_mrp_bom_ids
+        # support = dict((t.id, t) for t in temp_mrp_bom_ids)
+        support = set([t.id for t in temp_mrp_bom_ids])
+        ret = []
+        global index
+        index = 0
+
+        def _sort_rec(temps):
+            global index
+            for temp in temps:
+                if temp.id in support:
+                    # If not => Skip, already added
+                    # Append item and remove from support list
+                    temp_mrp_bom_obj.write(cr, uid, temp.id, {'index': index}, context)
+                    index += 1
+                    ret.append(temp)
+                    support.remove(temp.id)
+                    # Then append all its children
+                    direct_children = [t for t in temps if t.bom_id == temp.id]
+                    _sort_rec(direct_children)
+
+        _sort_rec(temp_mrp_bom_ids)
+        return ret
+
     def create_temp_mrp_bom(self, cr, uid, ids, bom_ids, father_temp_id, start_level, create_father=True, context=None):
         # Returns a list of VALS
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -303,24 +334,6 @@ class order_requirement_line(orm.Model):
 
         return res
 
-    def _temp_mrp_bom_explode(self, cr, uid, ids, context):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        # Must be one line
-        line = self.browse(cr, uid, ids, context)[0]
-        # support = dict((t.id, t) for t in line._temp_mrp_bom_ids)
-
-        def _sort_rec(temp_mrp_bom_ids):
-            ret = []
-            if not temp_mrp_bom_ids:
-                return ret
-            father = temp_mrp_bom_ids[0]
-            ret.append(father)
-            direct_children = [t for t in temp_mrp_bom_ids if t.bom_id == father.id]
-            # for child in direct_children:
-            return ret.extend(_sort_rec(direct_children))
-
-        xplodes = _sort_rec( line._temp_mrp_bom_ids)
-        return xplodes
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
@@ -411,7 +424,7 @@ class order_requirement_line(orm.Model):
 
         # RELOAD
         line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
-        temp_mrp_bom_ids = [t.id for t in line._temp_mrp_bom_ids]
+        temp_mrp_bom_ids = [t.id for t in self._temp_mrp_bom_sorted(cr, uid, ids, context)]
         temp_mrp_bom_routing_ids = [t.id for t in line._temp_mrp_routing_ids]
         # temp_mrp_bom_ids = [(4, t.id, False) for t in line._temp_mrp_bom_ids]
         # temp_mrp_bom_routing_ids = [(4, t.id, False) for t in line._temp_mrp_routing_ids]
@@ -538,7 +551,6 @@ class order_requirement_line(orm.Model):
     def _make_production_internal_shipment(self, cr, uid, production, context=None):
         ir_sequence = self.pool.get('ir.sequence')
         stock_picking = self.pool.get('stock.picking')
-        routing_loc = None
         pick_type = 'internal'
         address_id = False
 
@@ -660,7 +672,7 @@ class order_requirement_line(orm.Model):
             father_bom = line._temp_mrp_bom_ids[0]
             if father_bom.is_manufactured:
                 self._manufacture_bom(cr, uid, False, father_bom, context)
-                for temp in line._temp_mrp_bom_ids[1:]:
+                for temp in self._temp_mrp_bom_sorted(cr, uid, ids, context)[1:]:
                     if temp.is_manufactured:
                         if temp.is_leaf:
                             self._manufacture_bom(cr, uid, father_bom, temp, context)
@@ -792,12 +804,21 @@ class order_requirement_line(orm.Model):
                 # Delete
                 temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
 
+
+        temps = self._temp_mrp_bom_sorted(cr, uid, ids, context)
+        # new_temp_ids_formatted = [t.id for t in temps]
+
         line = self.browse(cr, uid, line_id, context)
-        # new_temp_ids_formatted = [(4, t.id, False) for t in line._temp_mrp_bom_ids]
-        # new_temp_routing_ids_formatted = [(4, t.id, False) for t in line._temp_mrp_routing_ids]
         new_temp_ids_formatted = [t.id for t in line._temp_mrp_bom_ids]
-        # new_temp_ids_formatted = [t.id for t in self._temp_mrp_bom_explode(cr, uid, ids, context)]
         new_temp_routing_ids_formatted = [t.id for t in line._temp_mrp_routing_ids]
+
+        # TODO DEBUG
+        from pprint import pprint
+        print '=============================================================================================='
+        for t in temps:
+            vals = temp_mrp_bom_obj.read(cr, uid, t.id, [], context)
+            pprint(vals)
+        print '=============================================================================================='
 
         return {'value': {'temp_mrp_bom_ids': new_temp_ids_formatted,
                           'temp_mrp_bom_routing_ids': new_temp_routing_ids_formatted}

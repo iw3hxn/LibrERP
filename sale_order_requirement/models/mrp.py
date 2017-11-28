@@ -86,7 +86,8 @@ class mrp_production(osv.osv):
         @param properties: List containing dictionaries of properties.
         @return: No. of products.
         """
-        # TODO MUST change from mrp.bom to temp.mrp.bom and from routing_id to temp_routing
+        # TODO MUST change from mrp.bom to temp.mrp.bom and from routing_id to temp_routing?
+        # TODO return 0 for avoiding creation of "Prodotti programmati"
         return 0
 
         results = []
