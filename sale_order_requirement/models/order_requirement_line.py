@@ -217,8 +217,9 @@ class order_requirement_line(orm.Model):
             'order_requirement_line_id': line_id
         }
 
-    def create_temp_mrp_bom(self, cr, uid, ids, bom_ids, father_temp_id, start_level, context):
+    def create_temp_mrp_bom(self, cr, uid, ids, bom_ids, father_temp_id, start_level, create_father=True, context=None):
         # Returns a list of VALS
+        context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_vals = []
         temp_mrp_routing_vals = []
 
@@ -242,6 +243,7 @@ class order_requirement_line(orm.Model):
                     temp_vals.update(temp_additional_data)
                     temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
                     temp_vals['id'] = temp_id
+                    # Find father_id position
                     temp_mrp_bom_vals.append(temp_vals)
                     if temp_vals['mrp_routing_id']:
                         temp_routing_vals = self.get_routing_lines(cr, uid, ids, bom, temp_id, routing_colors[self.col], context)
@@ -254,22 +256,25 @@ class order_requirement_line(orm.Model):
         temp_mrp_routing_obj = self.pool['temp.mrp.routing']
 
         for bom_father in bom_ids:
-            # children_levels = mrp_bom.get_all_mrp_bom_children(bom_father.child_buy_and_produce_ids, 0)
+            # Main BOMs only if create_father = True
+            if create_father:
+                temp_vals = self._get_temp_vals(cr, uid, ids, bom_father, False, father_temp_id, start_level)
+                temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
+                temp_vals.update(temp_additional_data)
+                temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
+                temp_vals['id'] = temp_id
+                temp_mrp_bom_vals.append(temp_vals)
+                # Calculate routing for Father Bom(s)
+                temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, ids, bom_father, temp_id, 'black', context))
+                _get_rec(bom_father, temp_id, start_level + 1)
+            else:
+                _get_rec(bom_father, father_temp_id, start_level + 1)
 
-            # Main BOMs
-            temp_vals = self._get_temp_vals(cr, uid, ids, bom_father, False, father_temp_id, start_level)
-            temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
-            temp_vals.update(temp_additional_data)
-            temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
-            temp_vals['id'] = temp_id
-            temp_mrp_bom_vals.append(temp_vals)
-            # Calculate routing for Father Bom(s)
-            temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, ids, bom_father, temp_id, 'black', context))
-
-            _get_rec(bom_father, temp_id, start_level + 1)
             for routing_vals in temp_mrp_routing_vals:
                 temp_mrp_routing_obj.create(cr, uid, routing_vals, context)
 
+        # temp_mrp_bom_vals = temp_mrp_bom.smart_sort(temp_mrp_bom_vals)
+        # temp_mrp_routing_vals = temp_mrp_bom.smart_sort(temp_mrp_bom_vals)
         return temp_mrp_bom_vals, temp_mrp_routing_vals
 
     def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
@@ -294,7 +299,7 @@ class order_requirement_line(orm.Model):
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
-                temp_mrp_bom_vals, temp_mrp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, product.bom_ids, False, 0, context)
+                temp_mrp_bom_vals, temp_mrp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, product.bom_ids, False, 0, True, context)
                 # res[line.id]['temp_mrp_bom_ids'] = temp_mrp_bom_vals
                 # res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
                 line_reload = self.browse(cr, uid, line.id, context)
@@ -448,7 +453,7 @@ class order_requirement_line(orm.Model):
 
             if product.bom_ids:
                 self.write(cr, uid, line.id, {'new_product_id': product.id}, context)
-                self.create_temp_mrp_bom(cr, uid, ids, product.bom_ids, False, 0, context)
+                self.create_temp_mrp_bom(cr, uid, ids, product.bom_ids, False, 0, True, context)
         else:
             result_dict['view_bom'] = False
 
@@ -791,7 +796,6 @@ class order_requirement_line(orm.Model):
 
             if operation == 1:
                 # Update
-                is_manufactured = 'is_manufactured' not in vals or vals['is_manufactured']
                 temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
                 level = temp_mrp_saved['level']
                 father_temp_id = temp_mrp_saved['bom_id'].id
@@ -801,34 +805,34 @@ class order_requirement_line(orm.Model):
                     product_id = vals['product_id']
                     temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
 
-                    if is_manufactured:
-                        bom = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
-                                                                  ('bom_id', '=', False)], context=context)
-                        self.create_temp_mrp_bom(cr, uid, ids, [bom], father_temp_id, level, context)
+                    bom = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
+                                                              ('bom_id', '=', False)], context=context)
+                    temp_ids, temp_rout = self.create_temp_mrp_bom(cr, uid, ids, [bom], father_temp_id, level, True, context)
+                    # Must save edited values
+                    # temp_ids[0] is the first created
+                    temp_mrp_bom_obj.write(cr, uid, temp_ids[0]['id'], vals, context)
+
+                    # TODO MUST RELOAD SUPPLIERS
+                    # result_dict = self.get_suppliers(cr, uid, ids, product_id, qty, supplier_id, context)
+
+                else:
+                    # Save current with given vals
+                    temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
 
                 if 'is_manufactured' in vals:
-                    if is_manufactured:
-                        # Must recalculate children
 
+                    if vals['is_manufactured']:
+                        # Must recalculate children
                         temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
                         product_id = temp_mrp_saved.product_id.id
-
-                        # Remove current because otherwise it will be duplicated
-                        temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
-
                         bom = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
                                                                   ('bom_id', '=', False)], context=context)
-                        temp_ids, temp_rout = self.create_temp_mrp_bom(cr, uid, ids, [bom], father_temp_id, level, context)
-                        # Save edited fields
-                        new_temp_id = temp_ids[0]
-                        temp_mrp_bom_obj.write(cr, uid, new_temp_id, vals, context)
-
+                        self.create_temp_mrp_bom(cr, uid, ids, [bom], temp_id, level, False, context)
                     else:
                         # Must remove children
                         children_ids = temp_mrp_bom_obj.search(cr, uid, [('bom_id', '=', temp_id)], context=context)
                         # ondelete=cascade ensures ALL children will be removed
                         temp_mrp_bom_obj.unlink(cr, uid, children_ids, context)
-
 
             elif operation == 2:
                 # Delete
@@ -843,9 +847,6 @@ class order_requirement_line(orm.Model):
         return {'value': {'temp_mrp_bom_ids': new_temp_ids_formatted,
                           'temp_mrp_bom_routing_ids': new_temp_routing_ids_formatted}
                }
-
-    # def onchange_temp_mrp_bom_routing_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
 
     def save_suppliers(self, cr, uid, ids, context=None):
         # Dummy save function

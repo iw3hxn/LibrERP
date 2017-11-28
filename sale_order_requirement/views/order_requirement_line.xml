@@ -16,7 +16,7 @@
                     <newline/>
                     <field name="new_product_id" on_change="onchange_product_id(new_product_id,qty,supplier_id,context)"/>
                     <field name="qty"/>
-                    <field name="is_manufactured"/> <!-- context="" on_change="onchange_is_manufactured(is_manufactured,temp_mrp_bom_ids)"/>-->
+                    <field name="is_manufactured"/>
                     <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True)],
                                 'required': [('is_manufactured', '=', False)],
                                 'readonly': [('state','!=','draft')]}"/>
@@ -46,16 +46,15 @@
                                         <field name="level_name"/>
                                         <field name="product_id"
                                                attrs="{'readonly': ['|',('product_type','!=','product'),('level','=',0)]}"/>
-                                         <!-- context="{'line_id': parent.id}" on_change="onchange_temp_product_id(level,product_id,product_qty,id,context)"-->
                                         <field name="product_qty" attrs="{'readonly': ['|',('product_type','!=','product'),('level','=',0)]}"/>
                                         <field name="product_uom" readonly="1"/>
                                         <field name="mrp_routing_id"/>
                                         <field name="stock_availability"/>
                                         <field name="spare"/>
                                         <field name="cost"/>
-                                        <field name="is_manufactured" on_change="onchange_temp_manufacture(is_manufactured)"
+                                        <field name="is_manufactured"
                                             attrs="{'readonly': [('level','=',0)]}"/>
-                                        <field name="supplier_id" on_change="onchange_temp_supplier_id(supplier_id,product_id)"
+                                        <field name="supplier_id"
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
                                                                      ('product_type','!=','product'),

@@ -137,33 +137,45 @@ class temp_mrp_bom(orm.Model):
                 return True
         return False
 
-    def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured, context=None):
-        # TODO: Maybe useless
-        res = {}
-        if is_manufactured:
-            res['supplier_id'] = False
-        res['is_manufactured'] = is_manufactured
-        return {'value': res}
+    @staticmethod
+    def smart_sort(temp_mrp_bom_ids):
+        support = dict((t['id'], t) for t in temp_mrp_bom_ids)
+        sortedlist = []
 
-    def onchange_temp_supplier_id(self, cr, uid, ids, supplier_id, product_id, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-        return {'value': res}
+        for t in temp_mrp_bom_ids:
+            if not t['id'] in support:
+                continue
 
-    def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty, temp_id, context=None):
-        return
-        # TODO: MAYBE Useless: all writings in onchange_temp_mrp_bom_ids
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        order_requirement_line_obj = self.pool['order.requirement.line']
+            bom_id = t['bom_id']
 
-        line_id = context['line_id']
-        line = order_requirement_line_obj.browse(cr, uid, line_id, context)
-        temp = {
-            'level': level,
-            'product_id': new_product_id,
-            'product_qty': qty,
-            'order_requirement_line_id': line_id
-        }
-        temp.update(line.update_temp_mrp_data(temp=temp, context=context))
-        # self.write(cr, uid, temp_id, temp, context)
-        return {'value': temp}
+        return sortedlist
+
+    # TODO ALL onchange here USELESS
+    # def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured, context=None):
+    #     res = {}
+    #     if is_manufactured:
+    #         res['supplier_id'] = False
+    #     res['is_manufactured'] = is_manufactured
+    #     return {'value': res}
+    #
+    # def onchange_temp_supplier_id(self, cr, uid, ids, supplier_id, product_id, context=None):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     res = {}
+    #     return {'value': res}
+    #
+    # def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty, temp_id, context=None):
+    #     return
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     order_requirement_line_obj = self.pool['order.requirement.line']
+    #
+    #     line_id = context['line_id']
+    #     line = order_requirement_line_obj.browse(cr, uid, line_id, context)
+    #     temp = {
+    #         'level': level,
+    #         'product_id': new_product_id,
+    #         'product_qty': qty,
+    #         'order_requirement_line_id': line_id
+    #     }
+    #     temp.update(line.update_temp_mrp_data(temp=temp, context=context))
+    #     # self.write(cr, uid, temp_id, temp, context)
+    #     return {'value': temp}
