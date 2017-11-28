@@ -628,27 +628,29 @@ class order_requirement_line(orm.Model):
         mrp_production_obj.write(cr, uid, mrp_production.id,
                                  {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
-    # def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
-    #     if temp.is_manufactured:
-    #         self._manufacture_bom(cr, uid, father, temp, context)
-    #         if not temp.is_leaf:
-    #             if temp.level > 0:
-    #                 self._manufacture_bom(cr, uid, False, temp, context)
-    #             for child in temp.bom_lines:
-    #                 self._manufacture_or_purchase_explode(cr, uid, temp, child, context)
-    #     else:
-    #         self._purchase_bom(cr, uid, temp, True, context)
+    def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
+        if temp.is_manufactured:
+            self._manufacture_bom(cr, uid, father, temp, context)
+            if not temp.is_leaf:
+                if temp.level > 0:
+                    self._manufacture_bom(cr, uid, False, temp, context)
+                for child in temp.bom_lines:
+                    self._manufacture_or_purchase_explode(cr, uid, temp, child, context)
+        else:
+            self._purchase_bom(cr, uid, temp, True, context)
 
     def _manufacture_or_purchase_all(self, cr, uid, ids, line, context):
         # line is a order_requirement_line, not a bom line
         # TODO: use ids, not line?
         # TODO: put multi_orders as res.company flag
-        multi_orders = True
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+
+        split_orders = user.company_id.split_mrp_production
 
         if not line._temp_mrp_bom_ids:
             return
 
-        if multi_orders:
+        if split_orders:
             temp = line._temp_mrp_bom_ids[0]
             # Explode orders
             self._manufacture_or_purchase_explode(cr, uid, False, temp, context)
