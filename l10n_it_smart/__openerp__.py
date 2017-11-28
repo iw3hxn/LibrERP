@@ -28,15 +28,14 @@
 ##############################################################################
 
 {
-    "name" : "Italy - Accounting Smart",
-    "version" : "0.1",
-    "depends" : ['base_vat','account_chart','base_iban'],
-    "author" : "OpenERP Italian Community",
+    "name": "Italy - Accounting Smart 01",
+    "version": "0.1",
+    "depends": ['base_vat', 'account_chart', 'base_iban'],
+    "author": "Marco Marchiori",
     "description": """
-Piano dei conti italiano di un'impresa generica.
+Piano dei conti italiano di un'impresa che vende in IVA ordinaria ed acquista in Italia
 ================================================
 
-Italian accounting chart and localization.
     """,
     "license": "AGPL-3",
     "category" : "Localization/Account Charts",
@@ -55,6 +54,6 @@ Italian accounting chart and localization.
         ],
     'installable': True,
     'auto_install': False,
-    'certificate' : '00926677190009155165',
+    'certificate': False,
     'images': ['images/config_chart_l10n_it.jpeg','images/l10n_it_chart.jpeg'],
 }

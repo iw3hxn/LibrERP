@@ -1,78 +1,22 @@
 id,description,chart_template_id:id,name,sequence,amount,parent_id:id,child_depend,type,account_collected_id:id,account_paid_id:id,type_tax_use,base_code_id:id,tax_code_id:id,ref_base_code_id:id,ref_tax_code_id:id,ref_base_sign,ref_tax_sign,price_include,base_sign,tax_sign
-22a,22a,l10n_it_chart_template_generic,IVA 22% da acquisti,1,0.22,,False,percent,153010,153010,purchase,template_impcode_pagata_22,template_ivacode_pagata_22,template_impcode_pagata_22,template_ivacode_pagata_22,1,1,False,-1,-1
-22v,22v,l10n_it_chart_template_generic,IVA 22% su vendite,1,0.22,,False,percent,260010,260010,sale,template_impcode_riscossa_22,template_ivacode_riscossa_22,template_impcode_riscossa_22,template_ivacode_riscossa_22,-1,-1,False,1,1
-22vpa,22vpa,l10n_it_chart_template_generic,IVA 22% su vendite PA,1,-0.22,,False,percent,260010,260010,sale,template_impcode_riscossa_22,template_ivacode_riscossa_22_pa,template_impcode_riscossa_22,template_ivacode_riscossa_22_pa,-1,-1,False,1,1
-22a0,22a0,l10n_it_chart_template_generic,IVA 22% indetraibile,58,0.22,,True,percent,,,purchase,template_impcode_pagata_22i,,template_impcode_pagata_22i,,1,1,False,-1,-1
-22a0a,22a0a,l10n_it_chart_template_generic,IVA 22% (100% indetraibile),100,1,22a0,False,percent,,,purchase,,template_ivacode_pagata_22i,,template_ivacode_pagata_22i,1,1,False,-1,-1
-22a0b,22a0b,l10n_it_chart_template_generic,IVA 22% (quota 0% detr.),200,,22a0,False,balance,153010,153010,purchase,,template_ivacode_pagata_22i,,template_ivacode_pagata_22i,1,1,False,-1,-1
-2220,2220,l10n_it_chart_template_generic,IVA 22% detraibile 20%,58,0.22,,True,percent,,,purchase,,,,,1,1,False,-1,-1
-2220a,2220a,l10n_it_chart_template_generic,IVA 22% (quota 80% indet.),100,0.80,2220,False,percent,,,purchase,,template_ivacode_pagata_22i80,,template_ivacode_pagata_22i80,1,1,False,-1,-1
-2220b,2220b,l10n_it_chart_template_generic,IVA 22% (quota 20% detr.),200,,2220,False,balance,153010,153010,purchase,,template_ivacode_pagata_22d20,,template_ivacode_pagata_22d20,1,1,False,-1,-1
-2250,2250,l10n_it_chart_template_generic,IVA 22% detraibile 50%,58,0.22,,True,percent,,,purchase,,,,,1,1,False,-1,-1
-2250a,2250a,l10n_it_chart_template_generic,IVA 22% (quota 50% indet.),100,0.50,2250,False,percent,,,purchase,,template_ivacode_pagata_22i50,,template_ivacode_pagata_22i50,1,1,False,-1,-1
-2250b,2250b,l10n_it_chart_template_generic,IVA 22% (quota 50% detr.),200,,2250,False,balance,153010,153010,purchase,,template_ivacode_pagata_22d50,,template_ivacode_pagata_22d50,1,1,False,-1,-1
-2270,2270,l10n_it_chart_template_generic,IVA 22% detraibile 70%,58,0.22,,True,percent,,,purchase,,,,,1,1,False,-1,-1
-2270a,2270a,l10n_it_chart_template_generic,IVA 22% (quota 30% indet.),100,0.30,2270,False,percent,,,purchase,,template_ivacode_pagata_22i30,,template_ivacode_pagata_22i30,1,1,False,-1,-1
-2270b,2270b,l10n_it_chart_template_generic,IVA 22% (quota 70% detr.),200,,2270,False,balance,153010,153010,purchase,,template_ivacode_pagata_22d70,,template_ivacode_pagata_22d70,1,1,False,-1,-1
-2280,2280,l10n_it_chart_template_generic,IVA 22% detraibile 80%,58,0.22,,True,percent,,,purchase,,,,,1,1,False,-1,-1
-2280a,2280a,l10n_it_chart_template_generic,IVA 22% (quota 20% indet.),100,0.20,2280,False,percent,,,purchase,,template_ivacode_pagata_22i20,,template_ivacode_pagata_22i20,1,1,False,-1,-1
-2280b,2280b,l10n_it_chart_template_generic,IVA 22% (quota 80% detr.),200,,2280,False,balance,153010,153010,purchase,,template_ivacode_pagata_22d80,,template_ivacode_pagata_22d80,1,1,False,-1,-1
-4a,4a,l10n_it_chart_template_generic,IVA 4% da acquisti,76,0.04,,False,percent,153010,153010,purchase,template_impcode_pagata_4,template_ivacode_pagata_4,template_impcode_pagata_4,template_ivacode_pagata_4,1,1,False,-1,-1
-4v,4v,l10n_it_chart_template_generic,IVA 4% su vendite,76,0.04,,False,percent,260010,260010,sale,template_impcode_riscossa_4,template_ivacode_riscossa_4,template_impcode_riscossa_4,template_ivacode_riscossa_4,-1,-1,False,1,1
-4vINC,4vINC,l10n_it_chart_template_generic,IVA 4% da scorporare,76,0.04,,False,percent,260010,260010,sale,template_impcode_riscossa_4,template_ivacode_riscossa_4,template_impcode_riscossa_4,template_ivacode_riscossa_4,-1,-1,True,1,1
-4a0,4a0,l10n_it_chart_template_generic,IVA 4% indetraibile,76,0.04,,True,percent,,,purchase,template_impcode_pagata_4i,,template_impcode_pagata_4i,,1,1,False,-1,-1
-4a0a,4a0a,l10n_it_chart_template_generic,IVA 4% (100% indetraibile),100,1,4a0,False,percent,,,purchase,,template_ivacode_pagata_4i,,template_ivacode_pagata_4i,1,1,False,-1,-1
-4a0b,4a0b,l10n_it_chart_template_generic,IVA 4% (quota 0% detr.),200,,4a0,False,balance,153010,153010,purchase,,template_ivacode_pagata_4i,,template_ivacode_pagata_4i,1,1,False,-1,-1
-450,450,l10n_it_chart_template_generic,IVA 4% detraibile 50%,76,0.04,,True,percent,,,purchase,template_impcode_pagata_4d50,,template_impcode_pagata_4d50,,1,1,False,-1,-1
-450a,450a,l10n_it_chart_template_generic,IVA 4% (quota 50% indet.),100,0.50,450,False,percent,,,purchase,,template_ivacode_pagata_4i50,,template_ivacode_pagata_4i50,1,1,False,-1,-1
-450b,450b,l10n_it_chart_template_generic,IVA 4% (quota 50% detr.),200,,450,False,balance,153010,153010,purchase,,template_ivacode_pagata_4d50,,template_ivacode_pagata_4d50,1,1,False,-1,-1
-10a,10a,l10n_it_chart_template_generic,IVA 10% da acquisti,70,0.10,,False,percent,153010,153010,purchase,template_impcode_pagata_10,template_ivacode_pagata_10,template_impcode_pagata_10,template_ivacode_pagata_10,1,1,False,-1,-1
-10v,10v,l10n_it_chart_template_generic,IVA 10% su vendite,70,0.10,,False,percent,260010,260010,sale,template_impcode_riscossa_10,template_ivacode_riscossa_10,template_impcode_riscossa_10,template_ivacode_riscossa_10,-1,-1,False,1,1
-10vINC,10vINC,l10n_it_chart_template_generic,IVA 10% da scorporare,70,0.10,,False,percent,260010,260010,sale,template_impcode_riscossa_10,template_ivacode_riscossa_10,template_impcode_riscossa_10,template_ivacode_riscossa_10,-1,-1,True,1,1
-10a0,10a0,l10n_it_chart_template_generic,IVA 10% indetraibile,70,0.10,,True,percent,,,purchase,template_impcode_pagata_10i,,template_impcode_pagata_10i,,1,1,False,-1,-1
-10a0a,10a0a,l10n_it_chart_template_generic,IVA 10% (100% indetraibile),100,1,10a0,False,percent,,,purchase,,template_ivacode_pagata_10i,,template_ivacode_pagata_10i,1,1,False,-1,-1
-10a0b,10a0b,l10n_it_chart_template_generic,IVA 10% (quota 0% detr.),200,,10a0,False,balance,153010,153010,purchase,,template_ivacode_pagata_10i,,template_ivacode_pagata_10i,1,1,False,-1,-1
-1050,1050,l10n_it_chart_template_generic,IVA 10% detraibile 50%,70,0.10,,True,percent,,,purchase,template_impcode_pagata_10d50,,template_impcode_pagata_10d50,,1,1,False,-1,-1
-1050a,1050a,l10n_it_chart_template_generic,IVA 10% (quota 50% indet.),100,0.50,1050,False,percent,,,purchase,,template_ivacode_pagata_10i50,,template_ivacode_pagata_10i50,1,1,False,-1,-1
-1050b,1050b,l10n_it_chart_template_generic,IVA 10% (quota 50% detr.),200,,1050,False,balance,153010,153010,purchase,,template_ivacode_pagata_10d50,,template_ivacode_pagata_10d50,1,1,False,-1,-1
-a1a,a1a,l10n_it_chart_template_generic,Acq.fuori campo IVA (art.1 DPR633),39,,,False,percent,,,purchase,template_impcode_pagata_a1,,template_impcode_pagata_a1,,1,1,False,-1,-1
-a1v,a1v,l10n_it_chart_template_generic,Vend.fuori campo IVA (art.1 DPR633),40,,,False,percent,,,sale,template_impcode_riscossa_a1,,template_impcode_riscossa_a1,,-1,-1,False,1,1
-a2a,a2a,l10n_it_chart_template_generic,Acq.Escluso IVA (art.2 DPR633),41,,,False,percent,,,purchase,template_impcode_pagata_a2,,template_impcode_pagata_a2,,1,1,False,-1,-1
-a2v,a2v,l10n_it_chart_template_generic,Vend.Escluso IVA (art.2 DPR633),42,,,False,percent,,,sale,template_impcode_riscossa_a2,,template_impcode_riscossa_a2,,-1,-1,False,1,1
-a7a,a7a,l10n_it_chart_template_generic,Acq.N.I. art.7 DPR633,43,,,False,percent,,,purchase,template_impcode_pagata_a7,,template_impcode_pagata_a7,,1,1,False,-1,-1
-a7v,a7v,l10n_it_chart_template_generic,Vend.N.I. art.7 DPR633,44,,,False,percent,,,sale,template_impcode_riscossa_a7,,template_impcode_riscossa_a7,,-1,-1,False,1,1
-a7ta,a7ta,l10n_it_chart_template_generic,Acq.NI art.7ter DPR633 (servizi xUE),45,,,False,percent,,,purchase,template_impcode_pagata_a7t,,template_impcode_pagata_a7t,,1,1,False,-1,-1
-a7tv,a7tv,l10n_it_chart_template_generic,Vend.NI art.7ter DPR633 (servizi xUE),46,,,False,percent,,,sale,template_impcode_riscossa_a7t,,template_impcode_riscossa_a7t,,-1,-1,False,1,1
-a8aa,a8aa,l10n_it_chart_template_generic,Acq.N.I. art.8a DPR633 (Dogana),47,,,False,percent,,,purchase,template_impcode_pagata_a8a,,template_impcode_pagata_a8a,,1,1,False,-1,-1
-a8av,a8av,l10n_it_chart_template_generic,Vend.N.I. art.8a DPR633 (Dogana),48,,,False,percent,,,sale,template_impcode_riscossa_a8a,,template_impcode_riscossa_a8a,,-1,-1,False,1,1
-a8c2a,a8c2a,l10n_it_chart_template_generic,Acq.N.I. art.8c2 DPR633 (lett.Intento),49,,,False,percent,,,purchase,template_impcode_pagata_a8c2,,template_impcode_pagata_a8c2,,1,1,False,-1,-1
-a8c2v,a8c2v,l10n_it_chart_template_generic,Vend.N.I. art.8c2 DPR633 (lett.Intento),50,,,False,percent,,,sale,template_impcode_riscossa_a8c2,,template_impcode_riscossa_a8c2,,-1,-1,False,1,1
-a9a,a9a,l10n_it_chart_template_generic,Acq.N.I. art.9 DPR633,51,,,False,percent,,,purchase,template_impcode_pagata_a9,,template_impcode_pagata_a9,,1,1,False,-1,-1
-a9v,a9v,l10n_it_chart_template_generic,Vend.N.I. art.9 DPR633,52,,,False,percent,,,sale,template_impcode_riscossa_a9,,template_impcode_riscossa_a9,,-1,-1,False,1,1
-a10a,a10a,l10n_it_chart_template_generic,Acq.esente art.10 DPR633,53,,,False,percent,,,purchase,template_impcode_pagata_a10,,template_impcode_pagata_a10,,1,1,False,-1,-1
-a10v,a10v,l10n_it_chart_template_generic,Vend.esente art.10 DPR633,54,,,False,percent,,,sale,template_impcode_riscossa_a10,,template_impcode_riscossa_a10,,-1,-1,False,1,1
-a10c5a,a10c5a,l10n_it_chart_template_generic,Acq.esente art.10n27-quinques DPR633,55,,,False,percent,,,purchase,template_impcode_pagata_a10c5,,template_impcode_pagata_a10c5,,1,1,False,-1,-1
-a10c5v,a10c5v,l10n_it_chart_template_generic,Vend.esente art.10n27-quinques DPR633,56,,,False,percent,,,sale,template_impcode_riscossa_a10c5,,template_impcode_riscossa_a10c5,,-1,-1,False,1,1
-a13a,a13a,l10n_it_chart_template_generic,Acq.escluso art.13 DPR633,57,,,False,percent,,,purchase,template_impcode_pagata_a13,,template_impcode_pagata_a13,,1,1,False,-1,-1
-a13v,a13v,l10n_it_chart_template_generic,Vend.escluso art.13 DPR633,58,,,False,percent,,,sale,template_impcode_riscossa_a13,,template_impcode_riscossa_a13,,-1,-1,False,1,1
-a15a,a15a,l10n_it_chart_template_generic,Acq.escluso art.15 DPR633,59,,,False,percent,,,purchase,template_impcode_pagata_a15,,template_impcode_pagata_a15,,1,1,False,-1,-1
-a15v,a15v,l10n_it_chart_template_generic,Vend.escluso art.15 DPR633,60,,,False,percent,,,sale,template_impcode_riscossa_a15,,template_impcode_riscossa_a15,,-1,-1,False,1,1
-a17a,a17a,l10n_it_chart_template_generic,Acq.FC IVA Art.17 DPR633,61,,,False,percent,,,purchase,template_impcode_pagata_a17,,template_impcode_pagata_a17,,1,1,False,-1,-1
-a17v,a17v,l10n_it_chart_template_generic,Vend.FC IVA Art.17 DPR633,62,,,False,percent,,,sale,template_impcode_riscossa_a17,,template_impcode_riscossa_a17,,-1,-1,False,1,1
-a17c2a,a17c2a,l10n_it_chart_template_generic,N.I. art.17c2 DPR633,63,0.22,,False,percent,153010,153010,purchase,template_impcode_pagata_a17c2,template_ivacode_pagata_a17c2,template_impcode_pagata_a17c2,template_ivacode_pagata_a17c2,1,1,False,-1,-1
-a17c2v,a17c2v,l10n_it_chart_template_generic,Rev. charge art.17c2 DPR633,64,0.22,,False,percent,153010,153010,sale,template_impcode_riscossa_a17c2,template_ivacode_riscossa_a17c2,template_impcode_riscossa_a17c2,template_ivacode_riscossa_a17c2,-1,-1,False,1,1
-a17c6a,a17c6a,l10n_it_chart_template_generic,N.I. art.17c6 DPR633,65,0.22,,False,percent,153010,153010,purchase,template_impcode_pagata_a17c6,template_ivacode_pagata_a17c6,template_impcode_pagata_a17c6,template_ivacode_pagata_a17c6,1,1,False,-1,-1
-a17c6v,a17c6v,l10n_it_chart_template_generic,Rev. charge art.17c6 DPR633,66,0.22,,False,percent,153010,153010,sale,template_impcode_riscossa_a17c6,template_ivacode_riscossa_a17c6,template_impcode_riscossa_a17c6,template_ivacode_riscossa_a17c6,-1,-1,False,1,1
-l41a36a,l41a36a,l10n_it_chart_template_generic,Acq.N.Sogg. reg.Marg. (art.36 L41/95),67,,,False,percent,,,purchase,template_impcode_pagata_a36,,template_impcode_pagata_a36,,1,1,False,-1,-1
-l41a36v,l41a36v,l10n_it_chart_template_generic,Vend.N.Sogg. reg.Marg. (art.36 L41/95),68,,,False,percent,,,sale,template_impcode_riscossa_a36,,template_impcode_riscossa_a36,,-1,-1,False,1,1
-l41a37a,l41a37a,l10n_it_chart_template_generic,Acq.Op.UE reg.Margine (art.37 L41/95),69,,,False,percent,,,purchase,template_impcode_pagata_a37,,template_impcode_pagata_a37,,1,1,False,-1,-1
-l41a37v,l41a37v,l10n_it_chart_template_generic,Vend.Op.UE reg.Margine (art.37 L41/95),70,,,False,percent,,,sale,template_impcode_riscossa_a37,,template_impcode_riscossa_a37,,-1,-1,False,1,1
-a38a,a38a,l10n_it_chart_template_generic,N.I. art.38 L.427/93,71,0.22,,False,percent,153010,153010,purchase,template_impcode_pagata_a38,template_ivacode_pagata_a38,template_impcode_pagata_a38,template_ivacode_pagata_a38,1,1,False,-1,-1
-a38v,a38v,l10n_it_chart_template_generic,Rev. charge art.38 L.427/93,72,0.22,,False,percent,153010,153010,sale,template_impcode_riscossa_a38,template_ivacode_riscossa_a38,template_impcode_riscossa_a38,template_ivacode_riscossa_a38,-1,-1,False,1,1
-a41a,a41a,l10n_it_chart_template_generic,Acq.N.I. art.41 L.427/93,73,,,False,percent,,,purchase,template_impcode_pagata_a41,,template_impcode_pagata_a41,,1,1,False,-1,-1
-a41v,a41v,l10n_it_chart_template_generic,Vend.N.I. art.41 L.427/93,74,,,False,percent,,,sale,template_impcode_riscossa_a41,,template_impcode_riscossa_a41,,-1,-1,False,1,1
-l244a,l244a,l10n_it_chart_template_generic,Acq.art.1c96-117 L.244/07 (reg.Minimo),75,,,False,percent,,,purchase,template_impcode_pagata_l244,,template_impcode_pagata_l244,,1,1,False,-1,-1
-l244v,l244v,l10n_it_chart_template_generic,Vend.art.1c96-117 L.244/07 (reg.Minimo),76,,,False,percent,,,sale,template_impcode_riscossa_l244,,template_impcode_riscossa_l244,,-1,-1,False,1,1
-l98a27a,l98a27a,l10n_it_chart_template_generic,Acq.senza IVA art.27 L.98/11,77,,,False,percent,,,purchase,template_impcode_pagata_l98,,template_impcode_pagata_l98,,1,1,False,-1,-1
-l98a27v,l98a27v,l10n_it_chart_template_generic,Vend.senza IVA art.27 L.98/11,78,,,False,percent,,,sale,template_impcode_riscossa_l98,,template_impcode_riscossa_l98,,-1,-1,False,1,1
-w20,W-RIT-20,l10n_it_chart_template_generic,Rit 20 acquisti,90,"-0.2",,FALSO,percent,2672,2672,purchase,template_rit_20_b,template_rit_20_t,template_rit_20_b,template_rit_20_t,,,FALSO,-1,-1
+22a,22a,l10n_it_chart_template_generic,IVA 22% acquisti,10,0.22,,False,percent,153010,153010,purchase,template_bse_acq_22,template_tax_acq_22,template_bse_acq_22,template_tax_acq_22,1,1,False,-1,-1
+22v,22v,l10n_it_chart_template_generic,IVA 22% vendite,20,0.22,,False,percent,260010,260010,sale,template_bse_vnd_22,template_tax_vnd_22,template_bse_vnd_22,template_tax_vnd_22,-1,-1,False,1,1
+22ad50,22ad50,l10n_it_chart_template_generic,IVA 22% detraibile 50%,30,0.22,,True,percent,,,purchase,,,,,1,1,False,-1,-1
+22ad50i,22ad50i,l10n_it_chart_template_generic,IVA 22% (quota 50% indet.),40,0.5,22ad50,False,percent,,,purchase,,template_tax_acq_22_d50_i,,template_tax_acq_22_d50_i,1,1,False,-0.5,-1
+22ad50d,22ad50d,l10n_it_chart_template_generic,IVA 22% (quota 50% detr.),50,,22ad50,False,balance,153010,153010,purchase,template_bse_acq_22_d50_d,template_tax_acq_22_d50_d,template_bse_acq_22_d50_d,template_tax_acq_22_d50_d,1,1,False,-0.5,-1
+22ad40,22ad40,l10n_it_chart_template_generic,IVA 22% detraibile 40%,60,0.22,,True,percent,,,purchase,,,,,1,1,False,-1,-1
+22ad40i,22ad40i,l10n_it_chart_template_generic,IVA 22% (quota 60% indet.),70,0.6,22ad40,False,percent,,,purchase,,template_tax_acq_22_d40_i,,template_tax_acq_22_d40_i,1,1,False,-0.6,-1
+22ad40d,22ad40d,l10n_it_chart_template_generic,IVA 22% (quota 40% detr.),80,0.4,22ad40,False,balance,153010,153010,purchase,template_bse_acq_22_d40_d,template_tax_acq_22_d40_d,template_bse_acq_22_d40_d,template_tax_acq_22_d40_d,1,1,False,-0.4,-1
+04a,04a,l10n_it_chart_template_generic,IVA 4% acquisti,90,0.04,,False,percent,153010,153010,purchase,template_bse_acq_04,template_tax_acq_04,template_bse_acq_04,template_tax_acq_04,1,1,False,-1,-1
+10a,10a,l10n_it_chart_template_generic,IVA 10% acquisti,100,0.1,,False,percent,153010,153010,purchase,template_bse_acq_10,template_tax_acq_10,template_bse_acq_10,template_tax_acq_10,1,1,False,-1,-1
+22aind,22aind,l10n_it_chart_template_generic,IVA 22% indetraibile,110,0.22,,False,percent,,,purchase,template_bse_acq_22_ind,,template_bse_acq_22_ind,,1,1,False,-1,-1
+04aind,04aind,l10n_it_chart_template_generic,IVA 4% indetraibile,120,0.04,,False,percent,,,purchase,template_bse_acq_04_ind,,template_bse_acq_04_ind,,1,1,False,-1,-1
+10aind,10aind,l10n_it_chart_template_generic,IVA 10% indetraibile,130,0.1,,False,percent,,,purchase,template_bse_acq_10_ind,,template_bse_acq_10_ind,,1,1,False,-1,-1
+22arca7c6,22arca7c6,l10n_it_chart_template_generic,IVA 22% Rev ch art.17c6 DPR633,140,1,,True,percent,,,purchase,,,,,1,1,False,-1,-1
+22arca,22arca,l10n_it_chart_template_generic,IVA 22% Rev ch art.17c6 DPR633 a,150,0.22,22arca7c6,False,percent,153010,153010,purchase,template_bse_acq_22_rc,template_tax_acq_22_rc,template_bse_acq_22_rc,template_tax_acq_22_rc,-1,-1,False,1,1
+22arcv,22arcv,l10n_it_chart_template_generic,IVA 22% Rev ch art.17c6 DPR633 v,160,-0.22,22arca7c6,False,percent,260010,260010,purchase,template_bse_acq_22_rc_v,template_tax_acq_22_rc_v,template_bse_acq_22_rc_v,template_tax_acq_22_rc_v,-1,-1,False,-1,-1
+22vpa,22vpa,l10n_it_chart_template_generic,IVA 22% su vendite PA,170,1,,True,percent,260010,260010,sale,,,,,-1,-1,False,1,1
+22vpad,22vpad,l10n_it_chart_template_generic,IVA 22% PA a debito,180,0.22,22vpa,False,percent,153010,153010,sale,template_bse_vnd_22_pa,template_tax_vnd_22_pa,template_bse_vnd_22_pa,template_tax_vnd_22_pa,-1,-1,False,1,1
+22vpac,22vpac,l10n_it_chart_template_generic,IVA 22% PA a credito,190,-0.22,22vpa,False,balance,260010,260010,sale,template_bse_vnd_22_pa_c,template_tax_vnd_22_pa_c,template_bse_vnd_22_pa_c,template_tax_vnd_22_pa_c,-1,-1,False,1,1
+00aesart10,00esart10,l10n_it_chart_template_generic,Acquisti  esenti articolo 10,200,0,,False,percent,153010,153010,purchase,template_bse_acq_00_art10,,template_bse_acq_00_art10,,1,1,False,-1,-1
+00aesart15,00aesart15,l10n_it_chart_template_generic,Acquisti  esclusi articolo 10,210,0,,False,percent,153010,153010,purchase,template_bse_acq_00_art15,,template_bse_acq_00_art15,,1,1,False,-1,-1
