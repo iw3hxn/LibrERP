@@ -280,7 +280,6 @@ class res_partner_address(orm.Model):
         vals = self._set_vals_city_data(cr, uid, vals, context)
         return super(res_partner_address, self).create(cr, uid, vals, context)
 
-
     def write(self, cr, uid, ids, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         vals = self._set_vals_city_data(cr, uid, vals, context)
