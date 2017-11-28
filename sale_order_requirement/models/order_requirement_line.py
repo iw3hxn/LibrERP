@@ -218,7 +218,7 @@ class order_requirement_line(orm.Model):
             'order_requirement_line_id': line_id
         }
 
-    def _temp_mrp_bom_sorted(self, cr, uid, ids, context):
+    def _sort_temp_mrp_bom(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         # Must be one line
@@ -424,7 +424,7 @@ class order_requirement_line(orm.Model):
 
         # RELOAD
         line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
-        temp_mrp_bom_ids = [t.id for t in self._temp_mrp_bom_sorted(cr, uid, ids, context)]
+        temp_mrp_bom_ids = [t.id for t in line._temp_mrp_bom_ids]
         temp_mrp_bom_routing_ids = [t.id for t in line._temp_mrp_routing_ids]
         # temp_mrp_bom_ids = [(4, t.id, False) for t in line._temp_mrp_bom_ids]
         # temp_mrp_bom_routing_ids = [(4, t.id, False) for t in line._temp_mrp_routing_ids]
@@ -672,7 +672,7 @@ class order_requirement_line(orm.Model):
             father_bom = line._temp_mrp_bom_ids[0]
             if father_bom.is_manufactured:
                 self._manufacture_bom(cr, uid, False, father_bom, context)
-                for temp in self._temp_mrp_bom_sorted(cr, uid, ids, context)[1:]:
+                for temp in line._temp_mrp_bom[1:]:
                     if temp.is_manufactured:
                         if temp.is_leaf:
                             self._manufacture_bom(cr, uid, father_bom, temp, context)
@@ -805,8 +805,7 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
 
 
-        temps = self._temp_mrp_bom_sorted(cr, uid, ids, context)
-        # new_temp_ids_formatted = [t.id for t in temps]
+        self._sort_temp_mrp_bom(cr, uid, ids, context)
 
         line = self.browse(cr, uid, line_id, context)
         new_temp_ids_formatted = [t.id for t in line._temp_mrp_bom_ids]
@@ -815,7 +814,7 @@ class order_requirement_line(orm.Model):
         # TODO DEBUG
         from pprint import pprint
         print '=============================================================================================='
-        for t in temps:
+        for t in new_temp_ids_formatted:
             vals = temp_mrp_bom_obj.read(cr, uid, t.id, [], context)
             pprint(vals)
         print '=============================================================================================='
