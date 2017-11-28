@@ -137,19 +137,6 @@ class temp_mrp_bom(orm.Model):
                 return True
         return False
 
-    @staticmethod
-    def smart_sort(temp_mrp_bom_ids):
-        support = dict((t['id'], t) for t in temp_mrp_bom_ids)
-        sortedlist = []
-
-        for t in temp_mrp_bom_ids:
-            if not t['id'] in support:
-                continue
-
-            bom_id = t['bom_id']
-
-        return sortedlist
-
     # TODO ALL onchange here USELESS
     # def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured, context=None):
     #     res = {}

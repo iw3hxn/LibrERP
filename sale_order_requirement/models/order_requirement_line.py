@@ -223,8 +223,6 @@ class order_requirement_line(orm.Model):
         temp_mrp_bom_vals = []
         temp_mrp_routing_vals = []
 
-        line_id = ids[0]
-
         if not bom_ids:
             return temp_mrp_bom_vals, temp_mrp_routing_vals
 
@@ -236,14 +234,11 @@ class order_requirement_line(orm.Model):
             for bom in bom_children:
                 # TODO: Put a flag in res.company?
                 if True: # bom.product_id.type == 'product':
-                    # level = children_levels[bom.id]['level']
-
                     temp_vals = self._get_temp_vals(cr, uid, ids, bom, bom_rec.id, father_id, level)
                     temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
                     temp_vals.update(temp_additional_data)
                     temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
                     temp_vals['id'] = temp_id
-                    # Find father_id position
                     temp_mrp_bom_vals.append(temp_vals)
                     if temp_vals['mrp_routing_id']:
                         temp_routing_vals = self.get_routing_lines(cr, uid, ids, bom, temp_id, routing_colors[self.col], context)
@@ -299,7 +294,7 @@ class order_requirement_line(orm.Model):
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
-                temp_mrp_bom_vals, temp_mrp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, product.bom_ids, False, 0, True, context)
+                temp_mrp_bom_vals, temp_mrp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, product.bom_ids, False, 0, context)
                 # res[line.id]['temp_mrp_bom_ids'] = temp_mrp_bom_vals
                 # res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
                 line_reload = self.browse(cr, uid, line.id, context)
@@ -308,65 +303,24 @@ class order_requirement_line(orm.Model):
 
         return res
 
-    def _save_temp_mrp_bom(self, cr, uid, line_id, name, temp_mrp_bom_ids, arg, context=None):
-        # TODO MAYBE USELESS: all writing in onchange_temp_mrp_bom
-        return
+    def _temp_mrp_bom_explode(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-        # if not temp_mrp_bom_ids:
-        #     return
-        #
-        # to_be_deleted_ids = [t[1] for t in temp_mrp_bom_ids if t[0] == 2]
-        # temp_mrp_bom_obj.unlink(cr, uid, to_be_deleted_ids, context)
-        #
-        # is_new_set = temp_mrp_bom_ids[0][0] == 5
-        # # In this case I have to care about removing all children for nested boms
-        # new_temp_vals = []
-        # if is_new_set:
-        #     temp_by_line_ids = temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', '=', line_id)], context)
-        #     temp_mrp_bom_obj.unlink(cr, uid, temp_by_line_ids, context)
-        #     for temp in temp_mrp_bom_ids:
-        #         temp_vals = temp[2]
-        #         if temp_vals:
-        #             if temp_mrp_bom.check_parents(temp_vals, temp_mrp_bom_ids):
-        #                 # new_temp_vals.append(temp_vals)
-        #                 temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
-        #             else:
-        #                 temp_mrp_bom_obj.unlink(cr, uid, temp_vals['id'], context)
-        # return
+        # Must be one line
+        line = self.browse(cr, uid, ids, context)[0]
+        # support = dict((t.id, t) for t in line._temp_mrp_bom_ids)
 
-    def _save_temp_mrp_bom_routing(self, cr, uid, line_id, name, temp_routing_vals, arg, context=None):
-        # TODO MAYBE USELESS: all writing in onchange_temp_mrp_bom
-        return
-        # context = context or self.pool['res.users'].context_get(cr, uid)
-        # temp_mrp_bom_obj = self.pool['temp.mrp.routing']
-        #
-        # if not temp_routing_vals:
-        #     return
-        #
-        # # If the first record is [5, False, False] I am creating
-        # is_creation = temp_routing_vals[0][0] == 5
-        # if is_creation:
-        #     temp_mrp_bom_obj.write(cr, uid, temp_routing_vals, context)
-        #     # IF I am creating, start cycle from second item (first is shown above)
-        #     # for val in temp_routing_vals[1:]:
-        #     #     if val:
-        #     #         temp_vals = val[2]
-        #     #         temp_vals['order_requirement_line_id'] = line_id
-        #     #         new_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
-        #     #         temp_vals['id'] = new_id
-        #     #         # map[ old ID ] => vals
-        #     #         bom_map[temp_vals['mrp_bom_id']] = temp_vals
-        # else:
-        #     # I am updating
-        #     pass
-        #     # for val in temp_mrp_bom_vals:
-        #     #     if val[0] == 1:
-        #     #         # Only items in this form are updating: [1,ID,{values}]
-        #     #         temp_id = val[1]
-        #     #         temp_vals = val[2]
-        #     #         temp_mrp_bom_obj.write(cr, uid, temp_id, temp_vals, context)
-        # return
+        def _sort_rec(temp_mrp_bom_ids):
+            ret = []
+            if not temp_mrp_bom_ids:
+                return ret
+            father = temp_mrp_bom_ids[0]
+            ret.append(father)
+            direct_children = [t for t in temp_mrp_bom_ids if t.bom_id == father.id]
+            # for child in direct_children:
+            return ret.extend(_sort_rec(direct_children))
+
+        xplodes = _sort_rec( line._temp_mrp_bom_ids)
+        return xplodes
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
@@ -398,13 +352,12 @@ class order_requirement_line(orm.Model):
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         '_temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_ids': fields.function(_get_or_create_temp_bom, multi='temp_mrp_bom', relation='temp.mrp.bom', string="BoM Hierarchy",
-                                            method=True, type='one2many', fnct_inv=_save_temp_mrp_bom,
+                                            method=True, type='one2many',
                                             readonly=True, states={'draft': [('readonly', False)]}),
         '_temp_mrp_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
         'temp_mrp_bom_routing_ids': fields.function(_get_or_create_temp_bom, multi='temp_mrp_bom', relation='temp.mrp.routing',
                                                     string="BoM Routing", method=True, type='one2many', readonly=True,
-                                                    states={'draft': [('readonly', False)]},
-                                                    fnct_inv=_save_temp_mrp_bom_routing)
+                                                    states={'draft': [('readonly', False)]})
     }
 
     _defaults = {
@@ -432,7 +385,6 @@ class order_requirement_line(orm.Model):
     #             father_bom_id = temp_mrp_bom_ids[0][2]
     #             temp_mrp_bom_obj.write(cr, uid, father_bom_id, {'is_manufactured': is_manufactured}, context)
     #         except IndexError:
-    #             # TODO: Log something
     #             pass
     #     return {}
 
@@ -676,16 +628,16 @@ class order_requirement_line(orm.Model):
         mrp_production_obj.write(cr, uid, mrp_production.id,
                                  {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
-    def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
-        if temp.is_manufactured:
-            self._manufacture_bom(cr, uid, father, temp, context)
-            if not temp.is_leaf:
-                if temp.level > 0:
-                    self._manufacture_bom(cr, uid, False, temp, context)
-                for child in temp.bom_lines:
-                    self._manufacture_or_purchase_explode(cr, uid, temp, child, context)
-        else:
-            self._purchase_bom(cr, uid, temp, True, context)
+    # def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
+    #     if temp.is_manufactured:
+    #         self._manufacture_bom(cr, uid, father, temp, context)
+    #         if not temp.is_leaf:
+    #             if temp.level > 0:
+    #                 self._manufacture_bom(cr, uid, False, temp, context)
+    #             for child in temp.bom_lines:
+    #                 self._manufacture_or_purchase_explode(cr, uid, temp, child, context)
+    #     else:
+    #         self._purchase_bom(cr, uid, temp, True, context)
 
     def _manufacture_or_purchase_all(self, cr, uid, ids, line, context):
         # line is a order_requirement_line, not a bom line
@@ -842,6 +794,7 @@ class order_requirement_line(orm.Model):
         # new_temp_ids_formatted = [(4, t.id, False) for t in line._temp_mrp_bom_ids]
         # new_temp_routing_ids_formatted = [(4, t.id, False) for t in line._temp_mrp_routing_ids]
         new_temp_ids_formatted = [t.id for t in line._temp_mrp_bom_ids]
+        # new_temp_ids_formatted = [t.id for t in self._temp_mrp_bom_explode(cr, uid, ids, context)]
         new_temp_routing_ids_formatted = [t.id for t in line._temp_mrp_routing_ids]
 
         return {'value': {'temp_mrp_bom_ids': new_temp_ids_formatted,
