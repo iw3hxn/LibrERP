@@ -490,11 +490,13 @@ class product_product(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         copy_id = super(product_product, self).copy(cr, uid, product_id, default, context)
 
-        bom_obj = self.pool['mrp.bom']
-        bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
-        
-        for bom_id in bom_ids:
-            bom_obj.copy(cr, uid, bom_id, {'product_id': copy_id}, context=context)
+        if not 'bom_ids' in default:
+            bom_obj = self.pool['mrp.bom']
+            bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
+
+            for bom_id in bom_ids:
+                bom_obj.copy(cr, uid, bom_id, {'product_id': copy_id}, context=context)
+
         return copy_id
 
     def update_product_bom_price(self, cr, uid, ids, context=None):
