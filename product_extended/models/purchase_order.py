@@ -35,7 +35,10 @@ class purchase_order(orm.Model):
 
     def update_product(self, cr, uid, ids, context):
         supplierinfo_obj = self.pool['product.supplierinfo']
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        to_currency = user.company_id.currency_id.id
         for order in self.browse(cr, uid, ids, context):
+            from_currency = order.pricelist_id.currency_id.id
             for line in order.order_line:
                 if line.product_id:
                     vals = {
@@ -48,12 +51,30 @@ class purchase_order(orm.Model):
                     self.pool['product.product'].write(cr, SUPERUSER_ID, line.product_id.id, vals, context)
                     supplierinfo_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('name', '=', line.partner_id.id)], context=context)
                     if not supplierinfo_ids:
+                        supplierinfo_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', line.product_id.id)], context=context)
+                        if supplierinfo_ids:
+                            sequence = supplierinfo_obj.browse(cr, uid, supplierinfo_ids[-1], context).sequence + 10
+
+                        price_subtotal = self.pool['res.currency'].compute(
+                            cr, uid,
+                            from_currency_id=from_currency,
+                            to_currency_id=to_currency,
+                            from_amount=line.price_subtotal,
+                            context=context
+                        )
+                        pricelist_vals = {
+                            'min_quantity': 1,
+                            'name': order.name,
+                            'price': price_subtotal / line.product_qty,
+                        }
+
                         supplierinfo_obj.create(cr, uid, {
                             'name': line.partner_id.id,
                             'product_name': line.name,
                             'product_id': line.product_id.id,
                             'min_qty': 1,
                             'product_code': line.product_id.default_code,
-                            'sequence': 10
+                            'pricelist_ids': [(0, 0, pricelist_vals)],
+                            'sequence': sequence
                         }, context)
         return True

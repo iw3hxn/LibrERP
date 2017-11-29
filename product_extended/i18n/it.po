@@ -101,3 +101,14 @@ msgstr "Visualizza Categoria"
 #: field:product.product,supplier_code:0
 msgid "Supplier Code"
 msgstr "Codice Fornitore"
+
+#. module: product_extended
+#: field:product.supplierinfo,list_price:0
+msgid "Price"
+msgstr "Prezzo Listino"
+
+#. module: product_extended
+#: field:product.supplierinfo,cost_price:0
+msgid "Cost Price"
+msgstr "Prezzo Netto"
+

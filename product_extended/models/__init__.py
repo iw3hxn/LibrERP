@@ -22,8 +22,9 @@
 #
 ##############################################################################
 
+from . import account_invoice
 from . import product
 from . import product_category
-from . import account_invoice
+from . import product_supplierinfo
 from . import purchase_order
 from . import sale_order

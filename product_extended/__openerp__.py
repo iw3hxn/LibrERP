@@ -24,7 +24,7 @@
 
 {
     "name": "Product Extended",
-    "version": "3.6.9.8",
+    "version": "3.8.10.9",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     'category': 'Sales Management',
@@ -46,7 +46,8 @@
     ],
     "data": [
         'views/product_view.xml',
-        'views/product_category_view.xml'
+        'views/product_supplierinfo_view.xml',
+        'views/product_category_view.xml',
     ],
     "active": False,
     "installable": True,

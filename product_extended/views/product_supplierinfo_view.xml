@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="product_extended_tree">
+            <field name="name">product.supplierinfo.extended.tree</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="min_qty" position="after" >
+                    <field name="list_price" />
+                    <field name="cost_price" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
