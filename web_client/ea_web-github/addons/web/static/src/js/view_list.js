@@ -492,17 +492,27 @@ openerp.web.ListView = openerp.web.View.extend( /** @lends openerp.web.ListView#
         return this.reload_content();
     },
     reload_record: function (record) {
-        return this.dataset.read_ids(
-            [record.get('id')],
-            _.pluck(_(this.columns).filter(function (r) {
-                    return r.tag === 'field';
-                }), 'name')
-        ).then(function (records) {
-            _(records[0]).each(function (value, key) {
-                record.set(key, value, {silent: true});
+        try {
+            return this.dataset.read_ids(
+                [record.get('id')],
+                _.pluck(_(this.columns).filter(function (r) {
+                        return r.tag === 'field';
+                    }), 'name')
+            ).then(function (records) {
+                _(records[0]).each(function (value, key) {
+                    record.set(key, value, {silent: true});
+                });
+                record.trigger('change', record);
             });
-            record.trigger('change', record);
-        });
+        } catch (err) {
+            console.warn('view_list.js #497: ' + err.message);
+            return function (records) {
+                _(records[0]).each(function (value, key) {
+                    record.set(key, value, {silent: true});
+                });
+                record.trigger('change', record);
+            }
+        }
     },
 
     do_load_state: function(state, warm) {
@@ -999,9 +1009,13 @@ openerp.web.ListView.List = openerp.web.Class.extend( /** @lends openerp.web.Lis
         cells.push('</tr>');
 
         var row = cells.join('');
-        this.$current
-            .children('tr:not([data-id])').remove().end()
-            .append(new Array(count - this.records.length + 1).join(row));
+        try {
+            this.$current
+                .children('tr:not([data-id])').remove().end()
+                .append(new Array(count - this.records.length + 1).join(row));
+        } catch (err) {
+            console.warn('view_list.js #1013',err.message);
+        }
         this.refresh_zebra(this.records.length);
     },
     /**
@@ -1087,13 +1101,17 @@ openerp.web.ListView.List = openerp.web.Class.extend( /** @lends openerp.web.Lis
         from_index = from_index || 0;
         var dom_offset = offset + from_index;
         var sel = dom_offset ? ':gt(' + (dom_offset - 1) + ')' : null;
-        this.$current.children(sel).each(function (i, e) {
-            var index = from_index + i;
-            // reset record-index accelerators on rows and even/odd
-            var even = index%2 === 0;
-            $(e).toggleClass('even', even)
-                .toggleClass('odd', !even);
-        });
+        try {
+            this.$current.children(sel).each(function (i, e) {
+                var index = from_index + i;
+                // reset record-index accelerators on rows and even/odd
+                var even = index%2 === 0;
+                $(e).toggleClass('even', even)
+                    .toggleClass('odd', !even);
+            });
+        } catch (err) {
+            console.warn('view_list.js #1105',err.message);
+        }
     }
 });
 openerp.web.ListView.Groups = openerp.web.Class.extend( /** @lends openerp.web.ListView.Groups# */{
