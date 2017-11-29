@@ -62,7 +62,7 @@ class order_requirement(orm.Model):
         'user_id': lambda obj, cr, uid, context: uid,
     }
 
-    def set_state_done(self, cr, uid, ids, context):
-        # TODO
-        pass
+    # def set_state_done(self, cr, uid, ids, context):
+        # TODO set_state_done, now commented in view
+        # pass
         # self.write(cr, uid, ids, {'state': 'done'})

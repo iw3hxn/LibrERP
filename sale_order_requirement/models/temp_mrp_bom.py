@@ -36,7 +36,7 @@ class temp_mrp_bom(orm.Model):
         return res
 
     @staticmethod
-    def _get_color_bylevel(level):
+    def get_color_bylevel(level):
         try:
             row_color = default_row_colors[level]
         except IndexError:
@@ -46,16 +46,15 @@ class temp_mrp_bom(orm.Model):
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
         for line in self.browse(cr, uid, ids, context):
-            row_color = temp_mrp_bom._get_color_bylevel(line.level)
-            # if line.level > 1 and line.stock_availability < line.spare:
-            #     row_color = 'red'
+            row_color = temp_mrp_bom.get_color_bylevel(line.level)
             res[line.id] = row_color
         return res
 
     _columns = {
         'name': fields.char('Name', size=160, readonly=True),
         'level_name': fields.char('Level', readonly=True),
-        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True),
+        'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True,
+                                                     ondelete='cascade'),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'product_id': fields.many2one('product.product', 'Product', required=True),
@@ -83,8 +82,11 @@ class temp_mrp_bom(orm.Model):
         'position': fields.char('Internal Reference', size=64, help="Reference to a position in an external plan.",
                                 readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
-        'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
+        'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, store=False),
+        'sequence': fields.integer('Sequence index')
     }
+
+    _order = 'sequence'
 
     def _check_product(self, cr, uid, ids, context=None):
         # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.
@@ -112,6 +114,11 @@ class temp_mrp_bom(orm.Model):
     #     return res
 
     @staticmethod
+    def has_children(temp, vals):
+        children_ids = [v for v in vals if v['bom_id'] == temp.id]
+        return bool(children_ids)
+
+    @staticmethod
     def check_parents(temp, temp_mrp_bom_ids):
         # Return True if all the parents are present up to level 0
         # temp is a dict of vals, temp_mrp_bom_ids must be in the form [ [x,x,{}], ... ]
@@ -133,33 +140,32 @@ class temp_mrp_bom(orm.Model):
                 return True
         return False
 
-    def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured, context=None):
-        # TODO: Maybe useless
-        res = {}
-        if is_manufactured:
-            res['supplier_id'] = False
-        res['is_manufactured'] = is_manufactured
-        return {'value': res}
-
-    def onchange_temp_supplier_id(self, cr, uid, ids, supplier_id, product_id, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-        return {'value': res}
-
-    def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty=0, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        order_requirement_line_obj = self.pool['order.requirement.line']
-        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-
-        line_id = context['line_id']
-        line = order_requirement_line_obj.browse(cr, uid, line_id, context)
-        temp = {
-            'level': level,
-            'product_id': new_product_id,
-            'product_qty': qty,
-            'order_requirement_line_id': line_id
-        }
-        temp.update(line.update_temp_mrp_data(temp=temp, context=context))
-        temp_mrp_bom_obj.write(cr, uid, temp['id'], temp, context)
-        return {'value': temp}
-
+    # TODO ALL onchange here USELESS
+    # def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured):
+    #     res = {}
+    #     if is_manufactured:
+    #         res['supplier_id'] = False
+    #     res['is_manufactured'] = is_manufactured
+    #     return {'value': res}
+    #
+    # def onchange_temp_supplier_id(self, cr, uid, ids, supplier_id, product_id, context=None):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     res = {}
+    #     return {'value': res}
+    #
+    # def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty, temp_id, context=None):
+    #     return
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     order_requirement_line_obj = self.pool['order.requirement.line']
+    #
+    #     line_id = context['line_id']
+    #     line = order_requirement_line_obj.browse(cr, uid, line_id, context)
+    #     temp = {
+    #         'level': level,
+    #         'product_id': new_product_id,
+    #         'product_qty': qty,
+    #         'order_requirement_line_id': line_id
+    #     }
+    #     temp.update(line.update_temp_mrp_data(temp=temp, context=context))
+    #     # self.write(cr, uid, temp_id, temp, context)
+    #     return {'value': temp}

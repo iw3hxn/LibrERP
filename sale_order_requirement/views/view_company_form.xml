@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_company_form_inherit" model="ir.ui.view">
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="name">res.company.mrp.config.inherit</field>
+            <field name="model">res.company</field>
+            <field name="arch" type="xml">
+                <field name="security_lead" position="after">
+                    <field name="split_mrp_production"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
