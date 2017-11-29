@@ -79,14 +79,14 @@ class order_requirement_line(orm.Model):
                 res[line.id] = 'cadetblue'
         return res
 
-    def get_suppliers(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
+    def get_suppliers(self, cr, uid, ids, new_product_id, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         result_dict = {}
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
             # --find the supplier
-            supplier_info_ids = supplierinfo_obj.search(cr, uid, #[], limit=20,
+            supplier_info_ids = supplierinfo_obj.search(cr, uid,
                                                         [('product_id', '=', product.product_tmpl_id.id)],
                                                         order="sequence", context=context)
             supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
@@ -136,7 +136,7 @@ class order_requirement_line(orm.Model):
         row_color = temp_mrp_bom.get_color_bylevel(level)
         level_name = '- {} {} >'.format(str(level), ' -----' * level)
 
-        suppliers = line.get_suppliers(product_id, qty, context=context)
+        suppliers = line.get_suppliers(product_id, context=context)
         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
         stock_spare = self.generic_stock_availability(cr, uid, [], product, warehouse_id, context)
         routing_id = self.get_routing_id(cr, uid, product_id, context)
@@ -243,7 +243,7 @@ class order_requirement_line(orm.Model):
         _sort_rec(temp_mrp_bom_ids[0], temp_mrp_bom_ids)
 
     def create_temp_mrp_bom(self, cr, uid, ids, bom_ids, father_temp_id, start_level, create_father=True, context=None):
-        # Returns a list of VALS
+        # Returns 2 list of VALS (probably not needed)
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_vals = []
         temp_mrp_routing_vals = []
@@ -293,8 +293,6 @@ class order_requirement_line(orm.Model):
             for routing_vals in temp_mrp_routing_vals:
                 temp_mrp_routing_obj.create(cr, uid, routing_vals, context)
 
-        # temp_mrp_bom_vals = temp_mrp_bom.smart_sort(temp_mrp_bom_vals)
-        # temp_mrp_routing_vals = temp_mrp_bom.smart_sort(temp_mrp_bom_vals)
         return temp_mrp_bom_vals, temp_mrp_routing_vals
 
     def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
@@ -319,7 +317,7 @@ class order_requirement_line(orm.Model):
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
-                temp_mrp_bom_vals, temp_mrp_routing_vals = self.create_temp_mrp_bom(cr, uid, ids, product.bom_ids, False, 0, context)
+                self.create_temp_mrp_bom(cr, uid, ids, product.bom_ids, False, 0, context)
                 # res[line.id]['temp_mrp_bom_ids'] = temp_mrp_bom_vals
                 # res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
                 line_reload = self.browse(cr, uid, line.id, context)
@@ -397,7 +395,7 @@ class order_requirement_line(orm.Model):
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        result_dict = self.get_suppliers(cr, uid, ids, new_product_id, qty, supplier_id, context)
+        result_dict = self.get_suppliers(cr, uid, ids, new_product_id, context)
 
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
@@ -768,13 +766,12 @@ class order_requirement_line(orm.Model):
 
                     bom = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
                                                               ('bom_id', '=', False)], context=context)
-                    temp_ids, temp_rout = self.create_temp_mrp_bom(cr, uid, ids, [bom], father_temp_id, level, True, context)
+                    temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, [bom], father_temp_id, level, True, context)
+
+                    # NOTE: Saving values, it is *NOT* necessary to manually reload routing and supplier_id
                     # Must save edited values
                     # temp_ids[0] is the first created
                     temp_mrp_bom_obj.write(cr, uid, temp_ids[0]['id'], vals, context)
-
-                    # TODO MUST RELOAD SUPPLIERS
-                    # result_dict = self.get_suppliers(cr, uid, ids, product_id, qty, supplier_id, context)
 
                 else:
                     # Save current with given vals

@@ -141,7 +141,7 @@ class temp_mrp_bom(orm.Model):
         return False
 
     # TODO ALL onchange here USELESS
-    # def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured, context=None):
+    # def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured):
     #     res = {}
     #     if is_manufactured:
     #         res['supplier_id'] = False

@@ -14,7 +14,7 @@
                     <field name="sale_order_id" />
                     <field name="state" />
                     <newline/>
-                    <field name="new_product_id" on_change="onchange_product_id(new_product_id,qty,supplier_id,context)"/>
+                    <field name="new_product_id" on_change="onchange_product_id(new_product_id,qty,context)"/>
                     <field name="qty"/>
                     <field name="is_manufactured"/>
                     <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True)],
