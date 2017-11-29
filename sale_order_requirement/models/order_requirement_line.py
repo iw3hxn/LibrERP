@@ -198,11 +198,13 @@ class order_requirement_line(orm.Model):
     def _get_temp_vals(self, cr, uid, ids, bom, bom_parent_id, temp_father_id, level):
 
         line_id = ids[0]
+        is_leaf = not bool(bom.child_buy_and_produce_ids)
+        is_manufactured = not is_leaf
 
         return {
             'name': bom.name,
             'bom_id': temp_father_id,
-            # mrp_bom_parent_id is VERY useful for reconstructing hierarchy
+            # mrp_bom_parent_id was very useful for reconstructing hierarchy
             'mrp_bom_id': bom.id,
             'mrp_bom_parent_id': bom_parent_id,
             'product_id': bom.product_id.id,
@@ -210,10 +212,10 @@ class order_requirement_line(orm.Model):
             'product_uom': bom.product_uom.id,
             'product_efficiency': bom.product_efficiency,
             'product_type': bom.product_id.type,
-            'is_manufactured': True,
+            'is_manufactured': is_manufactured,
             'company_id': bom.company_id.id,
             'position': bom.position,
-            'is_leaf': not bool(bom.child_buy_and_produce_ids),
+            'is_leaf': is_leaf,
             'level': level,
             'order_requirement_line_id': line_id
         }
