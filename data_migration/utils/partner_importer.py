@@ -454,6 +454,12 @@ class ImportFile(threading.Thread, Utils):
                 self.error.append(error)
                 return False
 
+        if self.FORMAT == 'FormatOmnitron':
+            if record.client_supplier == u'1':
+                self.partner_type = 'supplier'
+            else:
+                self.partner_type = 'customer'
+
         # manage partners
         vals_partner = {
             'name': record.name,
@@ -481,23 +487,24 @@ class ImportFile(threading.Thread, Utils):
             else:
                 vals_partner['fiscalcode'] = False
 
-        if 'supplier' in vals_partner:
-            vals_partner.update({
-                'customer': False,
-                'supplier': True
-            })
-
         if self.FORMAT == 'FormatOmnitron':
             if 'customer' in vals_partner:
                 del vals_partner['customer']
 
             if record.client_supplier == u'1':
                 vals_partner.update({
-                    'supplier': True
+                    'supplier': True,
                 })
             else:
                 vals_partner.update({
                     'customer': True
+                })
+        else:
+            # TODO: Check this code!!!
+            if 'supplier' in vals_partner:
+                vals_partner.update({
+                    'customer': False,
+                    'supplier': True
                 })
 
         if hasattr(record, 'person_name') and record.person_name:
