@@ -31,7 +31,7 @@
                                                                          ('is_manufactured','=',False)]}">
                         <notebook colspan="4">
                             <page string="BOM">
-                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context=""
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context="" widget="one2many_list"
                                        on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
                                        attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
                                                                  ('is_manufactured','=',False)],

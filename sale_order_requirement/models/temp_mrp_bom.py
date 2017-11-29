@@ -83,10 +83,10 @@ class temp_mrp_bom(orm.Model):
                                 readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, store=False),
-        'index': fields.integer('Index')
+        'sequence': fields.integer('Sequence index')
     }
 
-    _order = 'index'
+    _order = 'sequence'
 
     def _check_product(self, cr, uid, ids, context=None):
         # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.

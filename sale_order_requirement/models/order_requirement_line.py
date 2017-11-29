@@ -10,7 +10,7 @@ from openerp.osv import orm, fields
 from temp_mrp_bom import temp_mrp_bom
 
 routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
-index = 0
+sequence = 0
 
 def rounding(f, r):
     import math
@@ -219,34 +219,28 @@ class order_requirement_line(orm.Model):
         }
 
     def _sort_temp_mrp_bom(self, cr, uid, ids, context):
+        # TODO: maybe useless -> put same sequence as father?
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         # Must be one line
         line = self.browse(cr, uid, ids, context)[0]
-        # Support dictionary
         temp_mrp_bom_ids = line._temp_mrp_bom_ids
-        # support = dict((t.id, t) for t in temp_mrp_bom_ids)
-        support = set([t.id for t in temp_mrp_bom_ids])
-        ret = []
-        global index
-        index = 0
+        if not temp_mrp_bom_ids:
+            return
+        global sequence
+        sequence = 0
 
-        def _sort_rec(temps):
-            global index
-            for temp in temps:
-                if temp.id in support:
-                    # If not => Skip, already added
-                    # Append item and remove from support list
-                    temp_mrp_bom_obj.write(cr, uid, temp.id, {'index': index}, context)
-                    index += 1
-                    ret.append(temp)
-                    support.remove(temp.id)
-                    # Then append all its children
-                    direct_children = [t for t in temps if t.bom_id == temp.id]
-                    _sort_rec(direct_children)
+        def _sort_rec(temp, temp_list):
+            global sequence
+            # Set sequence and do the same with children
+            temp_mrp_bom_obj.write(cr, uid, temp.id, {'sequence': sequence}, context)
+            sequence += 1
+            direct_children = [c for c in temp_list if c.bom_id.id == temp.id]
+            for t in direct_children:
+                _sort_rec(t, temp_list)
 
-        _sort_rec(temp_mrp_bom_ids)
-        return ret
+        # Pass the first, recursion will do the rest
+        _sort_rec(temp_mrp_bom_ids[0], temp_mrp_bom_ids)
 
     def create_temp_mrp_bom(self, cr, uid, ids, bom_ids, father_temp_id, start_level, create_father=True, context=None):
         # Returns a list of VALS
@@ -524,7 +518,7 @@ class order_requirement_line(orm.Model):
                 order_line_values['product_id'] = product_id
                 order_line_values['order_id'] = present_order_id
                 # Creating a new line and link to many2many field
-                self.write(cr, uid, obj.id, {'purchase_order_line_ids': [(0, 0, order_line_values)]}, context)
+                self.write(cr, uid, line_id, {'purchase_order_line_ids': [(0, False, order_line_values)]}, context)
             else:
                 # Add qty to existing line
                 order_line_id = purchase_order_line_ids[0]
@@ -651,13 +645,14 @@ class order_requirement_line(orm.Model):
         else:
             self._purchase_bom(cr, uid, temp, True, context)
 
-    def _manufacture_or_purchase_all(self, cr, uid, ids, line, context):
+    def _manufacture_or_purchase_all(self, cr, uid, ids, context):
         # line is a order_requirement_line, not a bom line
-        # TODO: use ids, not line?
-        # TODO: put multi_orders as res.company flag
         user = self.pool['res.users'].browse(cr, uid, uid, context)
 
         split_orders = user.company_id.split_mrp_production
+
+        # TODO: Maybe multi line?
+        line = self.browse(cr, uid, ids, context)[0]
 
         if not line._temp_mrp_bom_ids:
             return
@@ -689,7 +684,7 @@ class order_requirement_line(orm.Model):
                                      _(u'This manufacturing order has already started'))
             # line is an order_requirement_line
             if line.is_manufactured:
-                self._manufacture_or_purchase_all(cr, uid, ids, line, context)
+                self._manufacture_or_purchase_all(cr, uid, ids, context)
             else:
                 self._purchase_bom(cr, uid, line, False, context)
 
@@ -793,7 +788,10 @@ class order_requirement_line(orm.Model):
                         product_id = temp_mrp_saved.product_id.id
                         bom = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
                                                                   ('bom_id', '=', False)], context=context)
-                        self.create_temp_mrp_bom(cr, uid, ids, [bom], temp_id, level, False, context)
+                        if bom:
+                            if not isinstance(bom, list):
+                                bom = [bom]
+                            self.create_temp_mrp_bom(cr, uid, ids, bom, temp_id, level, False, context)
                     else:
                         # Must remove children
                         children_ids = temp_mrp_bom_obj.search(cr, uid, [('bom_id', '=', temp_id)], context=context)
@@ -804,7 +802,6 @@ class order_requirement_line(orm.Model):
                 # Delete
                 temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
 
-
         self._sort_temp_mrp_bom(cr, uid, ids, context)
 
         line = self.browse(cr, uid, line_id, context)
@@ -814,7 +811,7 @@ class order_requirement_line(orm.Model):
         # TODO DEBUG
         from pprint import pprint
         print '=============================================================================================='
-        for t in new_temp_ids_formatted:
+        for t in line._temp_mrp_bom_ids:
             vals = temp_mrp_bom_obj.read(cr, uid, t.id, [], context)
             pprint(vals)
         print '=============================================================================================='
