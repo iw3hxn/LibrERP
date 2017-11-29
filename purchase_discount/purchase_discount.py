@@ -32,7 +32,6 @@ class purchase_order_line(orm.Model):
     _name = "purchase.order.line"
     _inherit = "purchase.order.line"
 
-    
     def onchange_product_id(self, cr, uid, ids, pricelist_id, product_id, qty, uom_id,
             partner_id, date_order=False, fiscal_position_id=False, date_planned=False,
             name=False, price_unit=False, notes=False, context=None):
@@ -55,8 +54,13 @@ class purchase_order_line(orm.Model):
                     field_name = price_type_obj.browse(cr, uid, item_base, context).field
                     price = product[field_name]
                 elif item_base == -2:
-                    _logger.debug('Checking item base is -2')
-                    price = product.seller_ids[0].pricelist_ids[0].price
+                    # _logger.debug('Checking item base is -2')
+                    if context.get('partner_id', False):
+                        for seller in product.seller_ids:
+                            if seller.name.id == context['partner_id']:
+                                price = seller.pricelist_ids[0].price
+                    else:
+                        price = product.seller_ids[0].pricelist_ids[0].price
                     # not supported:
                     # elif item_base == -1:
 
@@ -72,7 +76,6 @@ class purchase_order_line(orm.Model):
         res = super(purchase_order_line, self).onchange_product_id(cr, uid, ids, pricelist_id, product_id, qty, uom_id,
             partner_id, date_order, fiscal_position_id, date_planned,
             name, price_unit, notes, context)
-        
 
         context = {'lang': context.get('lang'), 'partner_id': partner_id}
         result = res['value']
