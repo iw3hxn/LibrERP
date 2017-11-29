@@ -1,24 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-# Copyright (c) 2013-2017 Didotech srl (info at didotech.com)
-#
-#                          All Rights Reserved.
-#
-# This program is Free Software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2013-2017 Didotech srl (www.didotech.com)
 
 import logging
 import math
@@ -283,15 +264,19 @@ class ImportFile(threading.Thread, Utils):
         return False
 
     def _country_by_code(self, cr, uid, code):
+        if code in COUNTRY_CODES:
+            code = COUNTRY_CODES[code]
+
         country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
         if country_ids:
             return country_ids[0]
-        # search also for name
-        country_ids = self.pool['res.country'].search(cr, uid, [('name', '=ilike', code)], context=self.context)
-        if country_ids:
-            return country_ids[0]
         else:
-            return False
+            # search also for name
+            country_ids = self.pool['res.country'].search(cr, uid, [('name', '=ilike', code)], context=self.context)
+            if country_ids:
+                return country_ids[0]
+            else:
+                return False
 
     def get_or_create_bank(self, cr, uid, iban, partner_id, context=None):
         bank_obj = self.pool['res.partner.bank']
@@ -389,6 +374,10 @@ class ImportFile(threading.Thread, Utils):
 
         if hasattr(record, 'country_code') and not vals_address.get('country_id'):
             vals_address['country_id'] = self._country_by_code(cr, uid, country_code)
+        elif getattr(record, 'country_name'):
+            vals_address['country_id'] = self._country_by_code(cr, uid, record.country_name)
+            if not vals_address['country_id']:
+                _logger.error("Can't find country {}".format(record.country_name))
 
         if DEBUG:
             pprint(vals_address)
@@ -517,6 +506,7 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'country_code'):
             country_code = COUNTRY_CODES.get(record.country_code, record.country_code)
         else:
+
             if hasattr(record, 'vat') and record.vat and record.vat[:2] in VAT_CODES:
                 country_code = record.vat[:2]
             else:

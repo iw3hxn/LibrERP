@@ -125,7 +125,7 @@ class product_product(orm.Model):
                 # no BoM: use standard_price
                 # use standard_price if no supplier indicated
 
-                if product.id in self.product_cost_cache and ENABLE_CACHE:
+                if product.id in self.product_cost_cache and ENABLE_CACHE and not context.get('partner_name', False):
                     res[product.id] = self.product_cost_cache[product.id]
                     continue
 
@@ -134,7 +134,13 @@ class product_product(orm.Model):
                     ctx = {
                         'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                     }
-                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, context=ctx)[pricelist.id] or 0
+                    if context.get('partner_name', False):
+                        partner_name = context.get('partner_name')
+                        partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
+                        partner_id = partner_ids[0]
+                    else:
+                        partner_id = False
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, partner_id, context=ctx)[pricelist.id] or 0
 
                     price_subtotal = 0.0
                     if pricelist:
@@ -151,7 +157,7 @@ class product_product(orm.Model):
                 else:
                     res[product.id] = product.standard_price
 
-                if ENABLE_CACHE:
+                if ENABLE_CACHE and not context.get('partner_name', False):
                     self.product_cost_cache[product.id] = res[product.id]
                 continue
         
@@ -332,6 +338,12 @@ class product_product(orm.Model):
             result[product_id] = self.pool['mrp.bom'].search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
         
         return result
+
+    def _get_prefered_supplier(self, cr, uid, ids, field_name, arg, context):
+        result = {}
+        for product in self.browse(cr, uid, ids, context):
+            result[product.id] = product.seller_ids and product.seller_ids[0].name.id or False
+        return result
     
     def price_get(self, cr, uid, ids, ptype='list_price', context=None):
         start_time = datetime.now()
@@ -376,7 +388,7 @@ class product_product(orm.Model):
                                       help="The cost price is the standard price or, if the product has a bom, "
                                       "the sum of all standard price of its components. it take also care of the "
                                       "bom costing like cost per cylce."),
-        'prefered_supplier': fields.related('seller_ids', 'name', type='many2one', relation='res.partner', string='Prefered Supplier'),
+        'prefered_supplier': fields.function(_get_prefered_supplier, type='many2one', relation='res.partner', string='Prefered Supplier'),
         'is_kit': fields.function(_is_kit, fnct_search=_kit_filter, method=True, type="boolean", string="Kit"),
         'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
         'qty_available': fields.function(
@@ -478,11 +490,13 @@ class product_product(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         copy_id = super(product_product, self).copy(cr, uid, product_id, default, context)
 
-        bom_obj = self.pool['mrp.bom']
-        bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
-        
-        for bom_id in bom_ids:
-            bom_obj.copy(cr, uid, bom_id, {'product_id': copy_id}, context=context)
+        if not 'bom_ids' in default:
+            bom_obj = self.pool['mrp.bom']
+            bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
+
+            for bom_id in bom_ids:
+                bom_obj.copy(cr, uid, bom_id, {'product_id': copy_id}, context=context)
+
         return copy_id
 
     def update_product_bom_price(self, cr, uid, ids, context=None):

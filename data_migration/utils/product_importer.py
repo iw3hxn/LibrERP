@@ -40,6 +40,7 @@ class ImportFile(threading.Thread, Utils):
         self.pool = pooler.get_pool(cr.dbname)
         self.product_obj = self.pool['product.product']
         self.supplierinfo_obj = self.pool['product.supplierinfo']
+        self.partnerinfo_model = self.pool['pricelist.partnerinfo']
         self.partner_model = self.pool['res.partner']
 
         # Necessario creare un nuovo cursor per il thread,
@@ -466,7 +467,7 @@ class ImportFile(threading.Thread, Utils):
                     'categ_id': product.categ_id.id,
                     'price_discount': - discount / 100.0,
                     'price_version_id': version_id,
-                    'base': 1  # 1 - Public Price, 2 - Cost Price
+                    'base': -2  # 1 - Public Price, 2 - Cost Price, -2 - Partner section of the product form
                 }, self.context)
             else:
                 self.pricelist_item_model.create(self.cr, self.uid, {
@@ -843,7 +844,8 @@ class ImportFile(threading.Thread, Utils):
                     _logger.info(u'{0}: Updating supplier info for product {1}'.format(
                         self.processed_lines, vals_product['name']
                     ))
-                    self.supplierinfo_obj.write(cr, uid, supplierinfo_ids[0], {
+                    suppinfo_id = supplierinfo_ids[0]
+                    self.supplierinfo_obj.write(cr, uid, suppinfo_id, {
                         'name': partner_id,
                         'product_name': vals_product['name'],
                         'product_id': product_id,
@@ -855,7 +857,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.info(u'{0}: Creating supplierinfo for product {1}...'.format(
                         self.processed_lines, vals_product['name'])
                     )
-                    self.supplierinfo_obj.create(cr, uid, {
+                    suppinfo_id = self.supplierinfo_obj.create(cr, uid, {
                         'name': partner_id,
                         'product_name': vals_product['name'],
                         'product_id': product_id,
@@ -863,6 +865,21 @@ class ImportFile(threading.Thread, Utils):
                         'product_code': product_code
                         # 'company_id':
                     }, context=self.context)
+
+                if hasattr(record, 'supplier_price') and record.supplier_price:
+                    partnerinfo_ids = self.partnerinfo_model.search(cr, uid, [
+                        ('suppinfo_id', '=', suppinfo_id),
+                        ('min_quantity', '=', 1)
+                    ], context=self.context)
+
+                    if partnerinfo_ids:
+                        self.partnerinfo_model.write(cr, uid, partnerinfo_ids[0], {'price': record.supplier_price})
+                    else:
+                        self.partnerinfo_model.create(cr, uid, {
+                            'price': record.supplier_price,
+                            'suppinfo_id': suppinfo_id,
+                            'min_quantity': 1
+                        })
 
                 if vals_product.get('categ_id', False) and hasattr(record, 'discount') and record.discount:
                     self.update_pricelist('purchase', product_id, partner_id, float(record.discount))
