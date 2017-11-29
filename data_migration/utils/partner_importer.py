@@ -574,7 +574,9 @@ class ImportFile(threading.Thread, Utils):
 
             vals_partner['vat'] = vals_partner['vat'].replace(' ', '')
             # if not self.partner_obj.simple_vat_check(cr, uid, country_code.lower(), vals_partner['vat'][2:], None):
-            if vatnumber.check_vat(vals_partner['vat']):
+            if vatnumber.check_vat(vals_partner['vat']) or vatnumber.check_vat('IT' + vals_partner['vat']):
+                if vatnumber.check_vat('IT' + vals_partner['vat']):
+                    vals_partner['vat'] = 'IT' + vals_partner['vat']
                 if record.vat == record.fiscalcode:
                     if codicefiscale.isvalid(record.vat):
                         vals_partner['fiscalcode'] = vals_partner['vat']
