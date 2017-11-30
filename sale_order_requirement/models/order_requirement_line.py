@@ -122,34 +122,6 @@ class order_requirement_line(orm.Model):
         else:
             return mrp_bom_related.routing_id.id
 
-    def update_temp_mrp_data0000(self, cr, uid, ids, temp, context):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        product_obj = self.pool['product.product']
-
-        line_id = temp['order_requirement_line_id']
-        product_id = temp['product_id']
-        level = temp['level']
-        qty = temp['product_qty']
-        line = self.browse(cr, uid, line_id, context)
-        product = product_obj.browse(cr, uid, product_id, context)
-
-        row_color = temp_mrp_bom.get_color_bylevel(level)
-        level_name = '- {} {} >'.format(str(level), ' -----' * level)
-
-        suppliers = line.get_suppliers(product_id, context=context)
-        warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-        stock_spare = self.generic_stock_availability(cr, uid, [], product, warehouse_id, context)
-        routing_id = self.get_routing_id(cr, uid, product_id, context)
-        return {
-            'row_color': row_color,
-            'level_name': level_name,
-            'stock_availability': stock_spare['stock_availability'],
-            'spare': stock_spare['spare'],
-            'supplier_id': suppliers['supplier_id'],
-            'supplier_ids': suppliers['supplier_ids'],
-            'mrp_routing_id': routing_id
-        }
-
     def get_routing_lines(self, cr, uid, ids, bom, temp_id, color, context=None):
         mrp_routing_workcenter_obj = self.pool['mrp.routing.workcenter']
 
@@ -193,7 +165,7 @@ class order_requirement_line(orm.Model):
                 ret_vals.append(routing_vals)
         return ret_vals
 
-    def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, bom_parent_id, temp_father_id, level, context):
+    def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, temp_father_id, level, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
 
@@ -220,7 +192,7 @@ class order_requirement_line(orm.Model):
             'bom_id': temp_father_id,
             # mrp_bom_parent_id was very useful for reconstructing hierarchy
             'mrp_bom_id': bom.id,
-            'mrp_bom_parent_id': bom_parent_id,
+            # 'mrp_bom_parent_id': bom_parent_id,
             'product_id': product_id,
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
@@ -290,6 +262,23 @@ class order_requirement_line(orm.Model):
             'mrp_routing_id': routing_id
         }
 
+    def get_temp_vals(self, cr, uid, ids, product_id, father_temp_id, level, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        product_obj = self.pool['product.product']
+        mrp_bom_obj = self.pool['mrp.bom']
+
+        product = product_obj.browse(cr, uid, product_id, context)
+        bom_ids = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
+                                                      ('bom_id', '=', False)], context=context)
+
+        if bom_ids:
+            # Get by its BOM
+            if not isinstance(bom_ids, list):
+                bom_ids = [bom_ids]
+            return self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_ids[0], father_temp_id, level, context)
+        else:
+            # Get by products
+            return self._get_temp_vals_from_product(cr, uid, ids, product, father_temp_id, level, context)
 
     def _sort_temp_mrp_bom(self, cr, uid, ids, context):
         # TODO: Preserve old order (no unlink and create -> save, or set same level...)
@@ -335,6 +324,7 @@ class order_requirement_line(orm.Model):
 
         if not bom_ids:
             # TODO: NO BOM => must create temp mrp bom based on product only
+            # TODO ==> Maybe use get_temp_vals
             temp_vals = self._get_temp_vals_from_product(cr, uid, ids, product, father_temp_id, start_level, context)
             temp_vals['sequence'] = sequence
             sequence += 1
@@ -355,7 +345,7 @@ class order_requirement_line(orm.Model):
             for bom in bom_children:
                 # TODO: CHECK bom.product_id.type
                 if bom.product_id.type == 'product':
-                    temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, bom_rec.id, father_id, level, context)
+                    temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, father_id, level, context)
                     temp_vals['sequence'] = sequence
                     sequence += 1
                     temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
@@ -376,7 +366,7 @@ class order_requirement_line(orm.Model):
         for bom_father in bom_ids:
             # Main BOMs only if create_father = True
             if create_father:
-                temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_father, False, father_temp_id, start_level, context)
+                temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_father, father_temp_id, start_level, context)
                 temp_vals['sequence'] = sequence
                 sequence += 1
                 temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
@@ -493,6 +483,8 @@ class order_requirement_line(orm.Model):
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result_dict = self.get_suppliers(cr, uid, ids, new_product_id, context)
+
+        # TODO: Must not create BOM if is leaf
 
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
@@ -867,7 +859,25 @@ class order_requirement_line(orm.Model):
             temp_id = temp[1]
             vals = temp[2]
 
-            if operation == 1:
+            if operation == 0:
+                product_id = vals['product_id']
+                # sequences = [t.sequence for t in temp_mrp_bom_ids]
+                # last_sequence = max(sequences)
+                vals['sequence'] = 999
+
+                # temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
+                # Creating ==> Always level 1
+                father_id = temp_mrp_bom_ids[0][1]
+
+                temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product_id, father_id,
+                                                                      1, True, context)
+                if not temp_ids:
+                    product_obj = self.pool['product.product']
+                    product = product_obj.browse(cr, uid, product_id, context)
+                    raise orm.except_orm(_(u'Error !'),
+                                         _(u'Product not found in bom: {0}'.format(product.name)))
+
+            elif operation == 1:
                 # Update
                 temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
                 saved_product_id = temp_mrp_saved.product_id.id
@@ -876,7 +886,6 @@ class order_requirement_line(orm.Model):
                 saved_sequence = temp_mrp_saved.sequence
 
                 if 'product_id' in vals:
-                    pass
                     # When changing product I have to recreate sub bom structure -> unlink and create.
                     product_id = vals['product_id']
                     vals['sequence'] = saved_sequence
@@ -892,6 +901,7 @@ class order_requirement_line(orm.Model):
                         raise orm.except_orm(_(u'Error !'),
                                              _(u'Product not found in bom: {0}'.format(product.name)))
 
+                    # Update with given vals
                     temp_mrp_bom_obj.write(cr, uid, temp_ids[0]['id'], vals, context)
 
                 else:

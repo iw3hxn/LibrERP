@@ -173,15 +173,20 @@ class temp_mrp_bom(orm.Model):
             # TODO: For now use this ONLY WHEN CREATE NEW TEMP MRP BOM
             return
         context = context or self.pool['res.users'].context_get(cr, uid)
+        context['create_flag'] = True
         order_requirement_line_obj = self.pool['order.requirement.line']
 
         line_id = context['line_id']
         line = order_requirement_line_obj.browse(cr, uid, line_id, context)
 
-        temp_ids, temp_routing = line.create_temp_mrp_bom(product_id=new_product_id, father_temp_id=father_temp_id,
-                                                          start_level=level, create_father=True, context=context)
-        ret = {}
-        if temp_ids:
-            ret = temp_ids[0]
+        # temp_ids, temp_routing = line.create_temp_mrp_bom(product_id=new_product_id, father_temp_id=father_temp_id,
+        #                                                   start_level=level, create_father=True, context=context)
 
+        ret = {}
+        ret = line.get_temp_vals(product_id=new_product_id, father_temp_id=father_temp_id, level=level, context=context)
+        # if temp_ids:
+        #     ret = temp_ids[0]
+
+        from pprint import pprint
+        pprint(ret)
         return {'value': ret}
