@@ -815,9 +815,14 @@ class order_requirement_line(orm.Model):
                 if 'is_manufactured' in vals:
 
                     if vals['is_manufactured']:
+                        # Reloading eventually modified
+                        # TODO: NO temp_id => CHECK IT
+                        temp_mrp = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
+                        product_id = temp_mrp.product_id.id
+
                         # Must recalculate children
                         # TODO: Not good when already deleted temp_mrp_saved
-                        bom_ids = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', saved_product_id),
+                        bom_ids = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
                                                                       ('bom_id', '=', False)], context=context)
                         if bom_ids:
                             if not isinstance(bom_ids, list):
