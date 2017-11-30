@@ -170,6 +170,7 @@ class temp_mrp_bom(orm.Model):
     #
     def onchange_temp_product_id(self, cr, uid, ids, temp_id, father_temp_id, level, new_product_id, qty, context=None):
         if temp_id is not False:
+            # TODO: For now use this ONLY WHEN CREATE NEW TEMP MRP BOM
             return
         context = context or self.pool['res.users'].context_get(cr, uid)
         order_requirement_line_obj = self.pool['order.requirement.line']
