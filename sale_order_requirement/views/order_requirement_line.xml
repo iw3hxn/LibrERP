@@ -30,7 +30,7 @@
                                                                          ('is_manufactured','=',False)]}">
                         <notebook colspan="4">
                             <page string="BOM">
-                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context="" widget="one2many_list"
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context=""
                                        on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
                                        attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
                                                                  ('is_manufactured','=',False)],
@@ -43,9 +43,10 @@
                                         <field name="level" invisible="1"/>
                                         <field name="product_type" invisible="1"/>
                                         <field name="level_name"/>
-                                        <field name="product_id"
-                                               attrs="{'readonly': ['|',('product_type','!=','product'),('level','=',0)]}"/>
-                                        <field name="product_qty" attrs="{'readonly': ['|',('product_type','!=','product'),('level','=',0)]}"/>
+                                        <field name="product_id" context="{'line_id':parent.id}"
+                                               on_change="onchange_temp_product_id(id,level,product_id,product_qty,context)"
+                                               attrs="{'readonly': [('level','=',0)]}"/>
+                                        <field name="product_qty"/>
                                         <field name="product_uom" readonly="1"/>
                                         <field name="mrp_routing_id"/>
                                         <field name="stock_availability"/>
