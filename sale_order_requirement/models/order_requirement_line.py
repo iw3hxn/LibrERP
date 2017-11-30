@@ -737,11 +737,11 @@ class order_requirement_line(orm.Model):
             self.write(cr, uid, line.id, {'new_product_id': line.product_id.id,
                                           'is_manufactured': True}, context)
 
+        if line.is_manufactured and not line.temp_mrp_bom_ids:
+            self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, True, context)
+
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
                                                                'view_order_requirement_line_form')
-
-        if line.is_manufactured and not line.temp_mrp_bom_ids:
-            self.create_temp_mrp_bom(cr, uid, ids, line.product_id.bom_ids, False, 0, True, context)
 
         view_id = view and view[1] or False
         return {

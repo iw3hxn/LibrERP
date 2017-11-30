@@ -168,8 +168,8 @@ class temp_mrp_bom(orm.Model):
     #     res = {}
     #     return {'value': res}
     #
-    def onchange_temp_product_id(self, cr, uid, ids, temp_id, level, new_product_id, qty, context=None):
-        if temp_id is False:
+    def onchange_temp_product_id(self, cr, uid, ids, temp_id, father_temp_id, level, new_product_id, qty, context=None):
+        if temp_id is not False:
             return
         context = context or self.pool['res.users'].context_get(cr, uid)
         order_requirement_line_obj = self.pool['order.requirement.line']
@@ -177,7 +177,7 @@ class temp_mrp_bom(orm.Model):
         line_id = context['line_id']
         line = order_requirement_line_obj.browse(cr, uid, line_id, context)
 
-        temp_ids, temp_routing = line.create_temp_mrp_bom(bom_ids=line.product_id.bom_ids, father_temp_id=temp_id,
+        temp_ids, temp_routing = line.create_temp_mrp_bom(product_id=new_product_id, father_temp_id=father_temp_id,
                                                           start_level=level, create_father=True, context=context)
         ret = {}
         if temp_ids:

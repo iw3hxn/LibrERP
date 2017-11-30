@@ -40,11 +40,12 @@
                                         <field name="row_color" invisible="1"/>
                                         <field name="is_leaf"/>
                                         <field name="id" invisible="1"/>
+                                        <field name="bom_id" invisible="1"/>
                                         <field name="level" invisible="1"/>
                                         <field name="product_type" invisible="1"/>
                                         <field name="level_name"/>
                                         <field name="product_id" context="{'line_id':parent.id}"
-                                               on_change="onchange_temp_product_id(id,level,product_id,product_qty,context)"
+                                               on_change="onchange_temp_product_id(id,bom_id,level,product_id,product_qty,context)"
                                                attrs="{'readonly': [('level','=',0)]}"/>
                                         <field name="product_qty"/>
                                         <field name="product_uom" readonly="1"/>
