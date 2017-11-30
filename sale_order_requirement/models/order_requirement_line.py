@@ -793,9 +793,16 @@ class order_requirement_line(orm.Model):
                         if not isinstance(bom_ids, list):
                             bom_ids = [bom_ids]
 
-                    temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, bom_ids, saved_father_id,
-                                                                              saved_level, True, context)
-                    temp_mrp_bom_obj.write(cr, uid, temp_ids[0]['id'], vals, context)
+                        temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, bom_ids, saved_father_id,
+                                                                          saved_level, True, context)
+                        temp_mrp_bom_obj.write(cr, uid, temp_ids[0]['id'], vals, context)
+                    else:
+                        pass
+                        # TODO: CASE WHEN Product has no BOM
+                        # temp_vals = self._get_temp_vals(cr, uid, ids, bom, bom_rec.id, father_id, level)
+                        # temp_additional_data = self.update_temp_mrp_data(cr, uid, [], temp_vals, context)
+                        # temp_vals.update(temp_additional_data)
+                        # temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
 
                     # NOTE: Saving values, it is *NOT* necessary to manually reload routing and supplier_id
                     # Must save edited values
