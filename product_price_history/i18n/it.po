@@ -32,7 +32,7 @@ msgid "Previous Sale Price"
 msgstr "Dal Prezzo di Vendita"
 
 #. module: product_price_history
-#: field:product.price.history,list_price:0
+#: field:product.price.history,new_list_price:0
 msgid "New Sale Price"
 msgstr "Al Prezzo di Vendita"
 
@@ -85,9 +85,3 @@ msgstr "Storico Prezzo"
 #: view:product.price.history:0
 msgid "History"
 msgstr "Storico"
-
-#. module: product_price_history
-#: field:product.price.history,list_price:0
-msgid "Previous Sale Price"
-msgstr "Prezzo di Vendita Precedente"
-

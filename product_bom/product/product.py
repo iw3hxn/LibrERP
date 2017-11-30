@@ -19,20 +19,20 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
-from openerp import tools
-from datetime import datetime
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-import decimal_precision as dp
-
-import time
-
 import logging
+import time
+from datetime import datetime
+
+import decimal_precision as dp
+from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools.config import config
+from openerp.tools.translate import _
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
-ENABLE_CACHE = True
+ENABLE_CACHE = config.get('product_cache', False)
 
 
 class product_product(orm.Model):
@@ -70,14 +70,14 @@ class product_product(orm.Model):
         ids = ids or []
         
         for product in self.browse(cr, uid, ids, context):
-            # print(u'{product.id}: {product.name}'.format(product=product))
+            _logger.debug(u'[{product.default_code}] {product.name}'.format(product=product))
             bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
             if bom_id:
                 sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
                 sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
                 
                 price = 0.
-                
+                _logger.debug(u'[{product.default_code}] Start Explosion ========================'.format(product=product))
                 for sub_product in sub_products:
                     if sub_product.product_id.id == product.id:
                         error = "Product '{product.name}' (id: {product.id}) is referenced to itself".format(product=product)
@@ -98,6 +98,9 @@ class product_product(orm.Model):
                                                from_uom_id=sub_product.product_uom.id,
                                                qty=sub_product.product_qty,
                                                to_uom_id=sub_product.product_id.uom_po_id.id)
+
+                    _logger.debug(u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id, std_price=std_price, qty=qty))
+
                     price += std_price * qty
                     # if sub_product.routing_id:
                     #     for wline in sub_product.routing_id.workcenter_lines:
@@ -120,6 +123,8 @@ class product_product(orm.Model):
                         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
                 price /= bom.product_qty
                 price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
+                _logger.debug(
+                    u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
                 res[product.id] = price
             else:
                 # no BoM: use standard_price
@@ -153,9 +158,13 @@ class product_product(orm.Model):
                             from_amount=price,
                             context=context
                         )
-                    res[product.id] = price_subtotal or price or product.standard_price
+                    cost_price = price_subtotal or price or product.standard_price
                 else:
-                    res[product.id] = product.standard_price
+                    cost_price = product.standard_price
+
+                res[product.id] = cost_price
+                _logger.debug(
+                    u'NO BOM [{product.default_code}] price = {price}'.format(product=product, price=cost_price))
 
                 if ENABLE_CACHE and not context.get('partner_name', False):
                     self.product_cost_cache[product.id] = res[product.id]
