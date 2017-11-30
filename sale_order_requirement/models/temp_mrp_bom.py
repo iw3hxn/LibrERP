@@ -97,7 +97,11 @@ class temp_mrp_bom(orm.Model):
         'sequence': fields.integer('Sequence index')
     }
 
-    _order = 'sequence'
+    _order = 'sequence,level'
+
+    _defaults = {
+        'level': 1  # Useful for insertion of new temp mrp boms
+    }
 
     def _check_product(self, cr, uid, ids, context=None):
         # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.
@@ -164,19 +168,19 @@ class temp_mrp_bom(orm.Model):
     #     res = {}
     #     return {'value': res}
     #
-    # def onchange_temp_product_id(self, cr, uid, ids, level, new_product_id, qty, temp_id, context=None):
-    #     return
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     order_requirement_line_obj = self.pool['order.requirement.line']
-    #
-    #     line_id = context['line_id']
-    #     line = order_requirement_line_obj.browse(cr, uid, line_id, context)
-    #     temp = {
-    #         'level': level,
-    #         'product_id': new_product_id,
-    #         'product_qty': qty,
-    #         'order_requirement_line_id': line_id
-    #     }
-    #     temp.update(line.update_temp_mrp_data(temp=temp, context=context))
-    #     # self.write(cr, uid, temp_id, temp, context)
-    #     return {'value': temp}
+    def onchange_temp_product_id(self, cr, uid, ids, temp_id, level, new_product_id, qty, context=None):
+        if temp_id is False:
+            return
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        order_requirement_line_obj = self.pool['order.requirement.line']
+
+        line_id = context['line_id']
+        line = order_requirement_line_obj.browse(cr, uid, line_id, context)
+
+        temp_ids, temp_routing = line.create_temp_mrp_bom(bom_ids=line.product_id.bom_ids, father_temp_id=temp_id,
+                                                          start_level=level, create_father=True, context=context)
+        ret = {}
+        if temp_ids:
+            ret = temp_ids[0]
+
+        return {'value': ret}
