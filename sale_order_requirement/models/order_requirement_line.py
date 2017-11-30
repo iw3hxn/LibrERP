@@ -18,12 +18,12 @@ def rounding(f, r):
         return f
     return math.ceil(f / r) * r
 
-def fix_fields(vals):
-    # TODO CHECK if is good
-    if vals:
-        for key in vals:
-            if isinstance(vals[key], tuple):
-                vals[key] = vals[key][0]
+# def fix_fields(vals):
+#     # TODO CHECK if is good
+#     if vals:
+#         for key in vals:
+#             if isinstance(vals[key], tuple):
+#                 vals[key] = vals[key][0]
 
 class order_requirement_line(orm.Model):
 
@@ -221,7 +221,7 @@ class order_requirement_line(orm.Model):
         }
 
     def _sort_temp_mrp_bom(self, cr, uid, ids, context):
-        # TODO: maybe useless -> put same sequence as father?
+        # TODO: Preserve old order (no unlink and create -> save, or set same level...)
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         # Must be one line
@@ -435,6 +435,7 @@ class order_requirement_line(orm.Model):
     def _purchase_bom(self, cr, uid, obj, is_temp_bom, context):
         # obj can be a order_requirement_line or temp_mrp_bom
         # Set is_temp_bom to True if obj is a temp_mrp_bom
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         purchase_order_obj = self.pool['purchase.order']
         purchase_order_line_obj = self.pool['purchase.order.line']
 
@@ -472,12 +473,12 @@ class order_requirement_line(orm.Model):
             location_id = shop.warehouse_id.lot_stock_id.id
 
             order_line_values = \
-            purchase_order_line_obj.onchange_product_id(cr, uid, [], purchase_order_values['pricelist_id'],
-                                                        product_id, qty, uom_id=False, partner_id=supplier_id,
-                                                        date_order=False,
-                                                        fiscal_position_id=purchase_order_values['fiscal_position'],
-                                                        date_planned=False, price_unit=False, notes=False,
-                                                        context=context)['value']
+                purchase_order_line_obj.onchange_product_id(cr, uid, [], purchase_order_values['pricelist_id'],
+                                                            product_id, qty, uom_id=False, partner_id=supplier_id,
+                                                            date_order=False,
+                                                            fiscal_position_id=purchase_order_values['fiscal_position'],
+                                                            date_planned=False, price_unit=False, notes=False,
+                                                            context=context)['value']
             # First create order
             purchase_id = purchase_order_obj.create(cr, uid, {
                 'shop_id': shop_id,
@@ -495,8 +496,14 @@ class order_requirement_line(orm.Model):
             order_line_values['order_requirement_line_ids'] = [(4, line_id)]
 
             # Create order line and relationship with order_requirement_line
-            purchase_order_line_obj.create(cr, uid, order_line_values, context)
+            purchase_line_id = purchase_order_line_obj.create(cr, uid, order_line_values, context)
+            # TODO if temp -> associate to purchase_order_line of temp else of line
+            # Add the purchase line to ordreq LINE
+            self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
 
+            if is_temp_bom:
+                # If is a temp mrp bom, associate purchase line also to it
+                temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_line_id': purchase_line_id})
         else:
             # Extending order if I have found orders to same supplier for the same shop
 
@@ -517,14 +524,22 @@ class order_requirement_line(orm.Model):
                                                             price_unit=False, notes=False, context=context)['value']
                 order_line_values['product_id'] = product_id
                 order_line_values['order_id'] = present_order_id
-                # Creating a new line and link to many2many field
-                self.write(cr, uid, line_id, {'purchase_order_line_ids': [(0, False, order_line_values)]}, context)
+                # Creating a new line
+                purchase_line_id = purchase_order_line_obj.create(cr, uid, order_line_values, context)
+                # Link to line many2many field
+                self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
+                if is_temp_bom:
+                    # If is a temp mrp bom, associate purchase line also to it
+                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_line_id': purchase_line_id})
             else:
                 # Add qty to existing line
                 order_line_id = purchase_order_line_ids[0]
                 line = purchase_order_line_obj.browse(cr, uid, order_line_id, context)
                 newqty = qty + line.product_qty
                 purchase_order_line_obj.write(cr, uid, order_line_id, {'product_qty': newqty}, context)
+                if is_temp_bom:
+                    # If is a temp mrp bom, associate purchase line also to it
+                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_line_id': order_line_id})
 
     def _get_temp_routing(self, bom):
         # Retrieve routing
@@ -548,7 +563,7 @@ class order_requirement_line(orm.Model):
         pick_type = 'internal'
         address_id = False
 
-        # TODO: NOT THIS ROUTING but temp_mrp_routing_id
+        # TODO: ASK, if I can change routign -> NOT THIS ROUTING but temp_mrp_routing_id
         # Take routing address as a Shipment Address.
         # If usage of routing location is a internal, make outgoing shipment otherwise internal shipment
         if production.bom_id.routing_id and production.bom_id.routing_id.location_id:
@@ -627,7 +642,7 @@ class order_requirement_line(orm.Model):
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
             'location_id': source_location_id,
-            'location_dest_id': destination_location_id,  # todo location_dest_id
+            'location_dest_id': destination_location_id,
         }
         # # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
         # Create in relationship with mrp.production
@@ -806,14 +821,6 @@ class order_requirement_line(orm.Model):
         line = self.browse(cr, uid, line_id, context)
         new_temp_ids_formatted = [t.id for t in line._temp_mrp_bom_ids]
         new_temp_routing_ids_formatted = [t.id for t in line._temp_mrp_routing_ids]
-
-        # TODO DEBUG
-        from pprint import pprint
-        print '=============================================================================================='
-        for t in line._temp_mrp_bom_ids:
-            vals = temp_mrp_bom_obj.read(cr, uid, t.id, [], context)
-            pprint(vals)
-        print '=============================================================================================='
 
         return {'value': {'temp_mrp_bom_ids': new_temp_ids_formatted,
                           'temp_mrp_bom_routing_ids': new_temp_routing_ids_formatted}

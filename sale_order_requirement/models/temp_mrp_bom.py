@@ -35,6 +35,13 @@ class temp_mrp_bom(orm.Model):
             res[line.id] = routing_id
         return res
 
+    def _is_belowspare(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context):
+            res[line.id] = line.stock_availability < line.spare
+        return res
+
     @staticmethod
     def get_color_bylevel(level):
         try:
@@ -70,6 +77,8 @@ class temp_mrp_bom(orm.Model):
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing', auto_join=True, readonly=True),
         'temp_mrp_routing_lines': fields.one2many('temp.mrp.routing', 'temp_mrp_bom_id', 'Routing Lines'),
         'mrp_production_id': fields.many2one('mrp.production', string='Manufacturing Order'),
+        # TODO define well
+        'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order'),
         'level': fields.integer('Level'),
         'is_manufactured': fields.boolean('Manufacture'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers'),
@@ -78,6 +87,8 @@ class temp_mrp_bom(orm.Model):
                                               type='float', string='Stock Availability', readonly=True),
         'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float',
                                  string='Spare', readonly=True),
+        'is_belowspare': fields.function(_is_belowspare, method=True, type='boolean', string='', store=False),
+        'desired_qty': fields.integer('Desired Qty'),
         'is_leaf': fields.boolean('Leaf', readonly=True),
         'position': fields.char('Internal Reference', size=64, help="Reference to a position in an external plan.",
                                 readonly=True),
