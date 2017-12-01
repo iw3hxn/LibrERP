@@ -76,8 +76,8 @@ class temp_mrp_bom(orm.Model):
         'mrp_bom_parent_id': fields.many2one('mrp.bom'),
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing', auto_join=True, readonly=True),
         'temp_mrp_routing_lines': fields.one2many('temp.mrp.routing', 'temp_mrp_bom_id', 'Routing Lines'),
+        # TODO mrp_production_line_id instead? (or ALSO)
         'mrp_production_id': fields.many2one('mrp.production', string='Manufacturing Order'),
-        # TODO define well
         'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order'),
         'level': fields.integer('Level'),
         'is_manufactured': fields.boolean('Manufacture'),
@@ -97,7 +97,7 @@ class temp_mrp_bom(orm.Model):
         'sequence': fields.integer('Sequence index')
     }
 
-    _order = 'sequence,level'
+    _order = 'sequence,level,id'
 
     _defaults = {
         'is_manufactured': True,
@@ -169,28 +169,30 @@ class temp_mrp_bom(orm.Model):
     #     res = {}
     #     return {'value': res}
     #
-    def onchange_temp_product_id(self, cr, uid, ids, temp_id, father_temp_id, level, new_product_id, qty, context=None):
-        if temp_id is not False:
-            # TODO: For now use this ONLY WHEN CREATE NEW TEMP MRP BOM
-            return
+    def onchange_temp_product_id(self, cr, uid, ids, temp_id, new_product_id, qty, is_manufactured, context=None):
+        # if temp_id is not False:
+        #     # Use this ONLY WHEN CREATE NEW TEMP MRP BOM
+        #     return
         context = context or self.pool['res.users'].context_get(cr, uid)
         context['create_flag'] = True
         order_requirement_line_obj = self.pool['order.requirement.line']
 
         line_id = context['line_id']
         line = order_requirement_line_obj.browse(cr, uid, line_id, context)
-
-        temp_ids, temp_routing = line.create_temp_mrp_bom(product_id=new_product_id, father_temp_id=father_temp_id,
-                                                          start_level=level, start_sequence=9999, create_father=True,
-                                                          context=context)
-        ret = {}
-        if temp_ids:
-            ret = temp_ids
-
+        # When creating, Father is the main father, level is 1
+        father_temp_id = line.temp_mrp_bom_ids[0].id
+        # temp_ids, temp_routing = line.create_temp_mrp_bom(product_id=new_product_id, father_temp_id=father_temp_id,
+        #                                                   start_level=1, start_sequence=9999, create_father=True,
+        #                                                   context=context)
+        # ret = {}
+        # if temp_ids:
+        #     ret = temp_ids
 
         # Only get values version
-        # ret = line.get_temp_vals(product_id=new_product_id, father_temp_id=father_temp_id, level=level, context=context)
+        ret = line.get_temp_vals(product_id=new_product_id, father_temp_id=father_temp_id, level=1, context=context)
+        ret.update({
+            'product_qty': qty,
+            'is_manufactured': is_manufactured
+        })
 
-        from pprint import pprint
-        pprint(ret)
         return {'value': ret}
