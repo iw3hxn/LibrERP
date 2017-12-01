@@ -402,7 +402,7 @@ class order_requirement_line(orm.Model):
                 continue
             if line.temp_mrp_bom_ids:
                 res[line.id]['temp_mrp_bom_ids'] = [t.id for t in line.temp_mrp_bom_ids]
-                res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line._temp_mrp_routing_ids]
+                res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line.temp_mrp_bom_routing_ids]
             else:
                 # does not work here
                 # product = line.actual_product
@@ -415,7 +415,7 @@ class order_requirement_line(orm.Model):
                 # res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
                 line_reload = self.browse(cr, uid, line.id, context)
                 res[line.id]['temp_mrp_bom_ids'] = [t.id for t in line_reload.temp_mrp_bom_ids]
-                res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line_reload._temp_mrp_routing_ids]
+                res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line_reload.temp_mrp_routing_ids]
 
         return res
 
@@ -448,13 +448,7 @@ class order_requirement_line(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
-        # 'temp_mrp_bom_ids': fields.function(_get_or_create_temp_bom, multi='temp_mrp_bom', relation='temp.mrp.bom', string="BoM Hierarchy",
-        #                                     method=True, type='one2many',
-        #                                     readonly=True, states={'draft': [('readonly', False)]}),
-        '_temp_mrp_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
-        'temp_mrp_bom_routing_ids': fields.function(_get_or_create_temp_bom, multi='temp_mrp_bom', relation='temp.mrp.routing',
-                                                    string="BoM Routing", method=True, type='one2many', readonly=True,
-                                                    states={'draft': [('readonly', False)]})
+        'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
     }
 
     _defaults = {
@@ -515,9 +509,9 @@ class order_requirement_line(orm.Model):
         # RELOAD
         line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
         temp_mrp_bom_ids = [t.id for t in line.temp_mrp_bom_ids]
-        temp_mrp_bom_routing_ids = [t.id for t in line._temp_mrp_routing_ids]
+        temp_mrp_bom_routing_ids = [t.id for t in line.temp_mrp_bom_routing_ids]
         # temp_mrp_bom_ids = [(4, t.id, False) for t in line.temp_mrp_bom_ids]
-        # temp_mrp_bom_routing_ids = [(4, t.id, False) for t in line._temp_mrp_routing_ids]
+        # temp_mrp_bom_routing_ids = [(4, t.id, False) for t in line.temp_mrp_bom_routing_ids]
 
         result_dict.update({
             'temp_mrp_bom_ids': temp_mrp_bom_ids,
@@ -939,7 +933,7 @@ class order_requirement_line(orm.Model):
 
         line = self.browse(cr, uid, line_id, context)
         new_temp_ids_formatted = [t.id for t in line.temp_mrp_bom_ids]
-        new_temp_routing_ids_formatted = [t.id for t in line._temp_mrp_routing_ids]
+        new_temp_routing_ids_formatted = [t.id for t in line.temp_mrp_bom_routing_ids]
 
         return {'value': {'temp_mrp_bom_ids': new_temp_ids_formatted,
                           'temp_mrp_bom_routing_ids': new_temp_routing_ids_formatted}
