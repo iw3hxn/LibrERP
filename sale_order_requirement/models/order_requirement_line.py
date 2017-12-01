@@ -466,18 +466,41 @@ class order_requirement_line(orm.Model):
         # ret['confirm_suppliers']['invisible'] = not view_bom
         # return ret
 
-    # def onchange_is_manufactured(self, cr, uid, ids, is_manufactured, temp_mrp_bom_ids, context=None):
-    #     # Synchronize the first BOM line "is_manufactured" flag with the line one
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-    #     for line in self.browse(cr, uid, ids, context):
-    #         try:
-    #             # First line, second item in list is ID
-    #             father_bom_id = temp_mrp_bom_ids[0][2]
-    #             temp_mrp_bom_obj.write(cr, uid, father_bom_id, {'is_manufactured': is_manufactured}, context)
-    #         except IndexError:
-    #             pass
-    #     return {}
+    def onchange_is_manufactured(self, cr, uid, ids, is_manufactured, new_product_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        result_dict = {}
+        new_is_manufactured = is_manufactured
+        # ONE LINE
+        line = self.browse(cr, uid, ids, context)[0]
+        if is_manufactured:
+            temp_mrp_bom_ids, temp_mrp_bom_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, new_product_id, False, 0, 0,
+                                                                  True, True, context)
+            temp = temp_mrp_bom_ids[0]
+            if temp['is_leaf']:
+                # I don't want to see an "empty" bom with the father only
+                temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
+                # Uncheck is_manufacture -> no Bom, no manufacture
+                new_is_manufactured = False
+        else:
+            if line.temp_mrp_bom_ids:
+                father_temp_id = line.temp_mrp_bom_ids[0].id
+                temp_mrp_bom_obj.unlink(cr, uid, father_temp_id, context)
+
+        self.write(cr, uid, line.id, {'is_manufactured': new_is_manufactured})
+
+        # RELOAD
+        line = self.browse(cr, uid, ids, context)[0]
+        temp_mrp_bom_ids = [t.id for t in line.temp_mrp_bom_ids]
+        temp_mrp_bom_routing_ids = [t.id for t in line.temp_mrp_bom_routing_ids]
+
+        result_dict.update({
+            'temp_mrp_bom_ids': temp_mrp_bom_ids,
+            'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
+            'is_manufactured': new_is_manufactured
+        })
+
+        return {'value': result_dict}
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
