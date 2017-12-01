@@ -66,7 +66,7 @@ class temp_mrp_bom(orm.Model):
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'product_id': fields.many2one('product.product', 'Product', required=True),
         'product_qty': fields.float('Product Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
-        'product_uom': fields.many2one('product.uom', 'UOM', required=True,
+        'product_uom': fields.many2one('product.uom', 'UOM', # Removed otherwise is impossible to add required=True,
                                        help="UoM (Unit of Measure) is the unit of measurement for the inventory control"),
         'cost': fields.float('Cost', readonly=True),
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
@@ -100,6 +100,7 @@ class temp_mrp_bom(orm.Model):
     _order = 'sequence,level'
 
     _defaults = {
+        'is_manufactured': True,
         'level': 1  # Useful for insertion of new temp mrp boms
     }
 
@@ -179,13 +180,16 @@ class temp_mrp_bom(orm.Model):
         line_id = context['line_id']
         line = order_requirement_line_obj.browse(cr, uid, line_id, context)
 
-        # temp_ids, temp_routing = line.create_temp_mrp_bom(product_id=new_product_id, father_temp_id=father_temp_id,
-        #                                                   start_level=level, create_father=True, context=context)
-
+        temp_ids, temp_routing = line.create_temp_mrp_bom(product_id=new_product_id, father_temp_id=father_temp_id,
+                                                          start_level=level, start_sequence=9999, create_father=True,
+                                                          context=context)
         ret = {}
-        ret = line.get_temp_vals(product_id=new_product_id, father_temp_id=father_temp_id, level=level, context=context)
-        # if temp_ids:
-        #     ret = temp_ids[0]
+        if temp_ids:
+            ret = temp_ids
+
+
+        # Only get values version
+        # ret = line.get_temp_vals(product_id=new_product_id, father_temp_id=father_temp_id, level=level, context=context)
 
         from pprint import pprint
         pprint(ret)

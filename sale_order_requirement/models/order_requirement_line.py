@@ -304,7 +304,8 @@ class order_requirement_line(orm.Model):
         # Pass the first, recursion will do the rest
         _sort_rec(temp_mrp_bom_ids[0], temp_mrp_bom_ids)
 
-    def create_temp_mrp_bom(self, cr, uid, ids, product_id, father_temp_id, start_level, create_father=True, context=None):
+    def create_temp_mrp_bom(self, cr, uid, ids, product_id, father_temp_id, start_level, start_sequence=0,
+                            create_father=True, context=None):
         # Returns 2 list of VALS (probably not needed)
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
@@ -315,7 +316,7 @@ class order_requirement_line(orm.Model):
         temp_mrp_bom_vals = []
         temp_mrp_routing_vals = []
         global sequence
-        sequence = 0
+        sequence = start_sequence
 
         product = product_obj.browse(cr, uid, product_id, context)
         # bom_ids = product.bom_ids # NO, wrong, duplicates !
@@ -405,7 +406,7 @@ class order_requirement_line(orm.Model):
                     product = line.new_product_id
                 elif line.product_id:
                     product = line.product_id
-                self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, context)
+                self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, 0, True, context)
                 # res[line.id]['temp_mrp_bom_ids'] = temp_mrp_bom_vals
                 # res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
                 line_reload = self.browse(cr, uid, line.id, context)
@@ -499,7 +500,7 @@ class order_requirement_line(orm.Model):
 
             if product.bom_ids:
                 self.write(cr, uid, line.id, {'new_product_id': product.id}, context)
-                self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, True, context)
+                self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, 0, True, context)
         else:
             result_dict['view_bom'] = False
 
@@ -519,25 +520,30 @@ class order_requirement_line(orm.Model):
 
         return {'value': result_dict}
 
-    def _purchase_bom(self, cr, uid, obj, is_temp_bom, context):
+    def _purchase_bom(self, cr, uid, obj, context):
         # obj can be a order_requirement_line or temp_mrp_bom
         # Set is_temp_bom to True if obj is a temp_mrp_bom
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         purchase_order_obj = self.pool['purchase.order']
         purchase_order_line_obj = self.pool['purchase.order.line']
 
+        # Field supplier_id is present in both temp_mrp_bom and ordreq line
         supplier_id = obj.supplier_id.id
 
         if not supplier_id:
             raise orm.except_orm(_(u'Error !'),
                                  _(u'There are no suppliers defined for product {0}'.format(obj.product_id.name)))
+        is_temp_bom = False
 
         try:
+            # Try if it's a ordreq line
             if obj.new_product_id:
                 product_id = obj.new_product_id.id
             else:
                 product_id = obj.product_id.id
-        except:
+        except AttributeError:
+            # If we are here it's a temp_mrp_bom
+            is_temp_bom = True
             product_id = obj.product_id.id
 
         if is_temp_bom:
@@ -745,7 +751,7 @@ class order_requirement_line(orm.Model):
                 for child in temp.bom_lines:
                     self._manufacture_or_purchase_explode(cr, uid, temp, child, context)
         else:
-            self._purchase_bom(cr, uid, temp, True, context)
+            self._purchase_bom(cr, uid, temp, context)
 
     def _manufacture_or_purchase_all(self, cr, uid, ids, context):
         # line is a order_requirement_line, not a bom line
@@ -774,9 +780,9 @@ class order_requirement_line(orm.Model):
                         if temp.is_leaf:
                             self._manufacture_bom(cr, uid, father_bom, temp, context)
                     else:
-                        self._purchase_bom(cr, uid, temp, True, context)
+                        self._purchase_bom(cr, uid, temp, context)
             else:
-                self._purchase_bom(cr, uid, father_bom, True, context)
+                self._purchase_bom(cr, uid, father_bom, context)
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -788,7 +794,7 @@ class order_requirement_line(orm.Model):
             if line.is_manufactured:
                 self._manufacture_or_purchase_all(cr, uid, ids, context)
             else:
-                self._purchase_bom(cr, uid, line, False, context)
+                self._purchase_bom(cr, uid, line, context)
 
             self.write(cr, uid, line.id, {'state': 'done'}, context)
 
@@ -812,7 +818,7 @@ class order_requirement_line(orm.Model):
                                           'is_manufactured': True}, context)
 
         if line.is_manufactured and not line.temp_mrp_bom_ids:
-            self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, True, context)
+            self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, 0, True, context)
 
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
                                                                'view_order_requirement_line_form')
@@ -859,25 +865,26 @@ class order_requirement_line(orm.Model):
             temp_id = temp[1]
             vals = temp[2]
 
-            if operation == 0:
-                product_id = vals['product_id']
-                # sequences = [t.sequence for t in temp_mrp_bom_ids]
-                # last_sequence = max(sequences)
-                vals['sequence'] = 999
+            # if operation == 0:
+            #     product_id = vals['product_id']
+            #     # sequences = [t.sequence for t in temp_mrp_bom_ids]
+            #     # last_sequence = max(sequences)
+            #     # Creating ==> Always level 1
+            #     # TODO CHECK => Can I really trust [0] ?
+            #     father_id = temp_mrp_bom_ids[0][1]
+            #
+            #     temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product_id, father_id,
+            #                                                           1, 9999, True, context)
+            #     if not temp_ids:
+            #         product_obj = self.pool['product.product']
+            #         product = product_obj.browse(cr, uid, product_id, context)
+            #         raise orm.except_orm(_(u'Error !'),
+            #                              _(u'Not created, product error: {0}'.format(product.name)))
+            #     vals['sequence'] = 999
+            #     new_temp_id = temp_ids[0]['id']
+            #     # temp_mrp_bom_obj.write(cr, uid, new_temp_id, vals, context)
 
-                # temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
-                # Creating ==> Always level 1
-                father_id = temp_mrp_bom_ids[0][1]
-
-                temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product_id, father_id,
-                                                                      1, True, context)
-                if not temp_ids:
-                    product_obj = self.pool['product.product']
-                    product = product_obj.browse(cr, uid, product_id, context)
-                    raise orm.except_orm(_(u'Error !'),
-                                         _(u'Product not found in bom: {0}'.format(product.name)))
-
-            elif operation == 1:
+            if operation == 1:
                 # Update
                 temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
                 saved_product_id = temp_mrp_saved.product_id.id
@@ -893,8 +900,9 @@ class order_requirement_line(orm.Model):
                     # temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
                     temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
 
+                    # TODO Check sequence
                     temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product_id, saved_father_id,
-                                                                          saved_level, True, context)
+                                                                          saved_level, saved_sequence, True, context)
                     if not temp_ids:
                         product_obj = self.pool['product.product']
                         product = product_obj.browse(cr, uid, product_id, context)
@@ -902,22 +910,26 @@ class order_requirement_line(orm.Model):
                                              _(u'Product not found in bom: {0}'.format(product.name)))
 
                     # Update with given vals
-                    temp_mrp_bom_obj.write(cr, uid, temp_ids[0]['id'], vals, context)
+                    # NOTE: I am updating temp_id !
+                    temp_id = temp_ids[0]['id']
+                    temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
 
                 else:
                     # Save current with given vals
                     temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
 
                 if 'is_manufactured' in vals:
+                    # I am eventually reloading with new temp_id if changed
+                    temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
 
                     if vals['is_manufactured']:
                         # Reloading eventually modified
-                        # TODO: NO temp_id => CHECK IT
                         temp_mrp = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
+                        saved_sequence = temp_mrp.sequence
                         product_id = temp_mrp.product_id.id
 
                         # Must recalculate children but no father -> create_father=False
-                        self.create_temp_mrp_bom(cr, uid, ids, product_id, temp_id, saved_level, False, context)
+                        self.create_temp_mrp_bom(cr, uid, ids, product_id, temp_id, saved_level, saved_sequence, False, context)
 
                     else:
                         # Must remove children

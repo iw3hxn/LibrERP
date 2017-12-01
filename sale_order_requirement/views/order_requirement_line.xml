@@ -54,7 +54,8 @@
                                         <field name="spare"/>
                                         <field name="cost"/>
                                         <field name="is_manufactured"
-                                            attrs="{'readonly': [('level','=',0)]}"/>
+                                            attrs="{'readonly': ['|',('level','=',0),
+                                                                     ('is_leaf','=',True)]}"/>
                                         <field name="supplier_id"
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
