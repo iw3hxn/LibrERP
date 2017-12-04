@@ -2,7 +2,7 @@
 function find_NaN(ids) {
     for (var i in ids) {
         if (isNaN(ids[i])) {
-            console.log('found NaN:',ids[i])
+            console.warn('found NaN:',ids[i])
             return true;
         }
     }
@@ -307,16 +307,7 @@ openerp.web.DataSet =  openerp.web.OldWidget.extend( /** @lends openerp.web.Data
      */
     read_ids: function (ids, fields, options) {
         var options = options || {};
-        someNaN = false;
-        for (var i in ids) {
-            if (isNaN(ids[i])) {
-                console.log('found NaN:',ids[i])
-                someNaN = true;
-                ids[i] = -999;
-                break;
-            }
-        }
-        if (someNaN) {
+        if (findNaN(ids)) {
             console.warn('data.js #308 ids found NaN:',ids);
 //            ids = null;
         }
@@ -750,13 +741,13 @@ openerp.web.BufferedDataSet = openerp.web.DataSetStatic.extend({
         });
         var completion = $.Deferred();
         var return_records = function() {
-            if (find_NaN(ids)) {
-                console.warn('resolve');
-                completion.resolve();
-                return;
-            }
+
             var records = _.map(ids, function(id) {
-                return _.extend({}, _.detect(self.cache, function(c) {return c.id === id;}).values, {"id": id});
+                try {
+                    return _.extend({}, _.detect(self.cache, function(c) {return c.id === id;}).values, {"id": id});
+                } catch (err) {
+                    console.warn('data.js #749',err.message);
+                }
             });
             if (self.debug_mode) {
                 if (_.include(records, undefined)) {
