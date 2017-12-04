@@ -309,7 +309,7 @@ openerp.web.DataSet =  openerp.web.OldWidget.extend( /** @lends openerp.web.Data
         var options = options || {};
         if (find_NaN(ids)) {
             console.warn('data.js #308 ids found NaN:',ids);
-//            ids = null;
+            ids = null;
         }
         return this.rpc('/web/dataset/get', {
             model: this.model,
