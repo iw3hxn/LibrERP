@@ -134,25 +134,21 @@ openerp.web.list_editable = function (openerp) {
             } else {
                 cancelled = $.when();
             }
-            try {
-                cancelled.then(function () {
-                    self.view.unpad_columns();
-                    if(typeof self.edition_form != 'undefined')
-                    {
-                        // Bugfix 1066703: Fix for bug #1066703: self.edition_form is undefined when switching from a line to another: fixed in revision 2515
-                        if(self.edition_form){
-                            self.edition_form.stop();
-                            self.edition_form.$element.remove();
-                            delete self.edition_form;
-                            }
-                        }
-                    self.dataset.index = null;
-                    delete self.edition_id;
-                    delete self.edition;
-                });
-            } catch (err) {
-                console.warn('view_list_editable.js',err.message);
-            }
+            cancelled.then(function () {
+                self.view.unpad_columns();
+                if(typeof self.edition_form != 'undefined')
+                {
+                	// Bugfix 1066703: Fix for bug #1066703: self.edition_form is undefined when switching from a line to another: fixed in revision 2515
+                	if(self.edition_form){
+                		self.edition_form.stop();
+                		self.edition_form.$element.remove();
+                		delete self.edition_form;
+                		}
+                	}
+                self.dataset.index = null;
+                delete self.edition_id;
+                delete self.edition;
+            });
             this.pad_table_to(5);
             return cancelled;
         },
@@ -197,11 +193,7 @@ openerp.web.list_editable = function (openerp) {
                                     .indexOf(next_record_id);
                         } else {
                             self.dataset.index = 0;
-                            try {
-                                next_record_id = self.records.at(0).get('id');
-                            } catch (err) {
-                                console.warn('view_list_editable.js #200', err.message);
-                            }
+                            next_record_id = self.records.at(0).get('id');
                         }
                         self.edit_record(next_record_id);
                     }, 0);
@@ -240,24 +232,20 @@ openerp.web.list_editable = function (openerp) {
                 if (row) {
                     $new_row.replaceAll(row);
                 } else if (self.options.editable) {
-                    try {
-                        var $last_child = self.$current.children('tr:last');
-                        if (self.records.length) {
-                            if (self.options.editable === 'top') {
-                                $new_row.insertBefore(
-                                    self.$current.children('[data-id]:first'));
-                            } else {
-                                $new_row.insertAfter(
-                                    self.$current.children('[data-id]:last'));
-                            }
+                    var $last_child = self.$current.children('tr:last');
+                    if (self.records.length) {
+                        if (self.options.editable === 'top') {
+                            $new_row.insertBefore(
+                                self.$current.children('[data-id]:first'));
                         } else {
-                            $new_row.prependTo(self.$current);
+                            $new_row.insertAfter(
+                                self.$current.children('[data-id]:last'));
                         }
-                        if ($last_child.is(':not([data-id])')) {
-                            $last_child.remove();
-                        }
-                    } catch (err) {
-                        console.warn('view_list_editable.js #246 self.$current',self.$current);
+                    } else {
+                        $new_row.prependTo(self.$current);
+                    }
+                    if ($last_child.is(':not([data-id])')) {
+                        $last_child.remove();
                     }
                 }
                 self.edition = true;
@@ -347,28 +335,16 @@ openerp.web.list_editable = function (openerp) {
                     }
                     var edited_record = self.records.get(self.edition_id);
 
-                    try {
-                        return $.when(
-                            self.handle_onwrite(self.edition_id),
-                            self.cancel_pending_edition().then(function () {
-                                $(self).trigger('saved', [self.dataset]);
-                            })).pipe(function () {
-                                return {
-                                    created: result.created || false,
-                                    edited_record: edited_record
-                                };
-                            });
-                    } catch (err) {
-                        console.warn('view_list_editable.js #344', err.message);
-                        return $.when(
-                            self.handle_onwrite(self.edition_id)
-                            ).pipe(function () {
-                                return {
-                                    created: result.created || false,
-                                    edited_record: edited_record
-                                };
-                            });
-                    }
+                    return $.when(
+                        self.handle_onwrite(self.edition_id),
+                        self.cancel_pending_edition().then(function () {
+                            $(self).trigger('saved', [self.dataset]);
+                        })).pipe(function () {
+                            return {
+                                created: result.created || false,
+                                edited_record: edited_record
+                            };
+                        });
                 });
         },
         /**
@@ -397,12 +373,8 @@ openerp.web.list_editable = function (openerp) {
          * Edits record currently selected via dataset
          */
         edit_record: function (record_id) {
-            try {
-                this.render_row_as_form(
-                    this.$current.find('[data-id=' + record_id + ']'));
-            } catch (err) {
-                console.warn('view_list_editable.js #398', err.message);
-            }
+            this.render_row_as_form(
+                this.$current.find('[data-id=' + record_id + ']'));
             $(this).trigger(
                 'edit',
                 [record_id, this.dataset]);
