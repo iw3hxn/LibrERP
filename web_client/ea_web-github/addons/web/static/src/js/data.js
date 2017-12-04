@@ -1,4 +1,3 @@
-
 openerp.web.data = function(openerp) {
 
 /**
@@ -297,6 +296,12 @@ openerp.web.DataSet =  openerp.web.OldWidget.extend( /** @lends openerp.web.Data
      */
     read_ids: function (ids, fields, options) {
         var options = options || {};
+        for (var i in ids) {
+            if (isNaN(ids[i])) {
+                console.warn('data.js #308 ids found NaN: ',ids[i],' -> -999');
+                ids[i] = -999;
+            }
+        }
         return this.rpc('/web/dataset/get', {
             model: this.model,
             ids: ids,
@@ -727,14 +732,19 @@ openerp.web.BufferedDataSet = openerp.web.DataSetStatic.extend({
         });
         var completion = $.Deferred();
         var return_records = function() {
+
             var records = _.map(ids, function(id) {
-                return _.extend({}, _.detect(self.cache, function(c) {return c.id === id;}).values, {"id": id});
-            });
-            if (self.debug_mode) {
-                if (_.include(records, undefined)) {
-                    throw "Record not correctly loaded";
+                try {
+                    return _.extend({}, _.detect(self.cache, function(c) {return c.id === id;}).values, {"id": id});
+                } catch (err) {
+                    console.warn('data.js #749',err.message);
                 }
-            }
+            });
+//            if (self.debug_mode) {
+//                if (_.include(records, undefined)) {
+//                    throw "Record not correctly loaded";
+//                }
+//            }
             var sort_fields = self._sort,
                     compare = function (v1, v2) {
                         return (v1 < v2) ? -1

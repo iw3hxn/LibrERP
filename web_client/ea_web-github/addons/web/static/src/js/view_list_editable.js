@@ -240,20 +240,24 @@ openerp.web.list_editable = function (openerp) {
                 if (row) {
                     $new_row.replaceAll(row);
                 } else if (self.options.editable) {
-                    var $last_child = self.$current.children('tr:last');
-                    if (self.records.length) {
-                        if (self.options.editable === 'top') {
-                            $new_row.insertBefore(
-                                self.$current.children('[data-id]:first'));
+                    try {
+                        var $last_child = self.$current.children('tr:last');
+                        if (self.records.length) {
+                            if (self.options.editable === 'top') {
+                                $new_row.insertBefore(
+                                    self.$current.children('[data-id]:first'));
+                            } else {
+                                $new_row.insertAfter(
+                                    self.$current.children('[data-id]:last'));
+                            }
                         } else {
-                            $new_row.insertAfter(
-                                self.$current.children('[data-id]:last'));
+                            $new_row.prependTo(self.$current);
                         }
-                    } else {
-                        $new_row.prependTo(self.$current);
-                    }
-                    if ($last_child.is(':not([data-id])')) {
-                        $last_child.remove();
+                        if ($last_child.is(':not([data-id])')) {
+                            $last_child.remove();
+                        }
+                    } catch (err) {
+                        console.warn('view_list_editable.js #246 self.$current',self.$current);
                     }
                 }
                 self.edition = true;
