@@ -16,7 +16,7 @@
             </field>
         </record>
 
-        <record id="view_stock_picking_commission" model="ir.ui.view">
+        <record id="view_stock_picking_internal" model="ir.ui.view">
             <field name="name">work_order_picking_int_inherit</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>

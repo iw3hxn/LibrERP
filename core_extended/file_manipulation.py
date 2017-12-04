@@ -36,7 +36,7 @@ def import_sheet(filename, content):
         try:
             import xlrd
         except ImportError:
-            _logger.debug('Cannot `import xlrd`.')
+            _logger.error('Cannot `import xlrd`.')
 
         for encoding in ('utf-8', 'latin-1', 'cp1252'):
             try:
@@ -62,7 +62,7 @@ def import_sheet(filename, content):
         try:
             import openpyxl
         except ImportError:
-            _logger.debug('Cannot `import openpyxl`.')
+            _logger.error('Cannot `import openpyxl`.')
         import StringIO
 
         ## Create virtual File:
@@ -85,7 +85,10 @@ def import_sheet(filename, content):
         number_of_lines = sh.max_row
     elif file_type in ('ods', ):
         # "OpenOffice"
-        from openerp.addons.core_extended.odf_to_array import ODSReader
+        try:
+            from openerp.addons.core_extended.odf_to_array import ODSReader
+        except ImportError:
+            _logger.error('Cannot `import OpenOffice`.')
         import StringIO
 
         ## Create virtual File:
