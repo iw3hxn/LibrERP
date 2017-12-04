@@ -751,7 +751,9 @@ openerp.web.BufferedDataSet = openerp.web.DataSetStatic.extend({
         var completion = $.Deferred();
         var return_records = function() {
             if (find_NaN(ids)) {
+                console.warn('resolve');
                 completion.resolve();
+                return;
             }
             var records = _.map(ids, function(id) {
                 return _.extend({}, _.detect(self.cache, function(c) {return c.id === id;}).values, {"id": id});

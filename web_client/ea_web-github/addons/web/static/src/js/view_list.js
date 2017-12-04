@@ -840,8 +840,12 @@ openerp.web.ListView.List = openerp.web.Class.extend( /** @lends openerp.web.Lis
             },
             'reset': function () { return self.on_records_reset(); },
             'change': function (event, record) {
-                var $row = self.$current.find('[data-id=' + record.get('id') + ']');
-                $row.replaceWith(self.render_record(record));
+                try {
+                    var $row = self.$current.find('[data-id=' + record.get('id') + ']');
+                    $row.replaceWith(self.render_record(record));
+                } catch(err) {
+                    console.warn('view_list.js #847',err.message);
+                }
             },
             'add': function (ev, records, record, index) {
                 var $new_row = $('<tr>').attr({
