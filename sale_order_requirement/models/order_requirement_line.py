@@ -847,6 +847,8 @@ class order_requirement_line(orm.Model):
 
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
                                                                'view_order_requirement_line_form')
+        # Reload line
+        line = self.browse(cr, uid, ids, context)[0]
 
         view_id = view and view[1] or False
         return {

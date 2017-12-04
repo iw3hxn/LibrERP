@@ -24,6 +24,13 @@ class temp_mrp_bom(orm.Model):
             res[line.id] = ordreqline.generic_stock_availability(product=product, warehouse_id=warehouse_id, context=context)
         return res
 
+    def _is_out_of_stock(self, cr, uid, ids, name, args, context=None):
+        # Return True if stock is less than spare
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = line.stock_availability < line.spare
+        return res
+
     # This is called also when loading saved temp mrp boms,
     # during creation see get_temp_mrp_bom
     def _get_routing(self, cr, uid, ids, field_name, arg, context):
@@ -94,7 +101,8 @@ class temp_mrp_bom(orm.Model):
                                 readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, store=False),
-        'sequence': fields.integer('Sequence index')
+        'sequence': fields.integer('Sequence index'),
+        'is_out_of_stock': fields.function(_is_out_of_stock, method=True, type='boolean', string='', readonly=True)
     }
 
     _order = 'sequence,level,id'
@@ -196,3 +204,7 @@ class temp_mrp_bom(orm.Model):
         })
 
         return {'value': ret}
+
+    def out_of_stock_button(self, cr, uid, ids, context=None):
+        # Useless, button just for show an icon
+        return
