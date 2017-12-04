@@ -298,9 +298,8 @@ openerp.web.DataSet =  openerp.web.OldWidget.extend( /** @lends openerp.web.Data
         var options = options || {};
         for (var i in ids) {
             if (isNaN(ids[i])) {
-                console.log('found NaN:',ids[i])
+                console.warn('data.js #308 ids found NaN: ',ids[i],' -> -999');
                 ids[i] = -999;
-                console.warn('data.js #308 ids found NaN:',ids);
             }
         }
         return this.rpc('/web/dataset/get', {
@@ -741,11 +740,11 @@ openerp.web.BufferedDataSet = openerp.web.DataSetStatic.extend({
                     console.warn('data.js #749',err.message);
                 }
             });
-            if (self.debug_mode) {
-                if (_.include(records, undefined)) {
-                    throw "Record not correctly loaded";
-                }
-            }
+//            if (self.debug_mode) {
+//                if (_.include(records, undefined)) {
+//                    throw "Record not correctly loaded";
+//                }
+//            }
             var sort_fields = self._sort,
                     compare = function (v1, v2) {
                         return (v1 < v2) ? -1
