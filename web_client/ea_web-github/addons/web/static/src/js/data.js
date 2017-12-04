@@ -1,14 +1,3 @@
-
-function find_NaN(ids) {
-    for (var i in ids) {
-        if (isNaN(ids[i])) {
-            console.warn('found NaN:',ids[i])
-            return true;
-        }
-    }
-    return false;
-}
-
 openerp.web.data = function(openerp) {
 
 /**
@@ -307,9 +296,12 @@ openerp.web.DataSet =  openerp.web.OldWidget.extend( /** @lends openerp.web.Data
      */
     read_ids: function (ids, fields, options) {
         var options = options || {};
-        if (find_NaN(ids)) {
-            console.warn('data.js #308 ids found NaN:',ids);
-            ids = null;
+        for (var i in ids) {
+            if (isNaN(ids[i])) {
+                console.log('found NaN:',ids[i])
+                ids[i] = -999;
+                console.warn('data.js #308 ids found NaN:',ids);
+            }
         }
         return this.rpc('/web/dataset/get', {
             model: this.model,
