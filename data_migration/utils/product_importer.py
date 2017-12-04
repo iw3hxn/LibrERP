@@ -674,7 +674,7 @@ class ImportFile(threading.Thread, Utils):
                 vals_product['procure_method'] = 'make_to_order'
 
         if hasattr(record, 'cost_method') and record.cost_method:
-            if record.cost_method.lower() == 'average price':
+            if record.cost_method.lower() == 'average price' or record.cost_method.lower() == 'average':
                 vals_product['cost_method'] = 'average'
             else:
                 vals_product['cost_method'] = 'standard'
@@ -857,14 +857,22 @@ class ImportFile(threading.Thread, Utils):
                     _logger.info(u'{0}: Creating supplierinfo for product {1}...'.format(
                         self.processed_lines, vals_product['name'])
                     )
-                    suppinfo_id = self.supplierinfo_obj.create(cr, uid, {
+
+                    suppinfo_vals = {
                         'name': partner_id,
                         'product_name': vals_product['name'],
                         'product_id': product_id,
                         'min_qty': 1,
-                        'product_code': product_code
-                        # 'company_id':
-                    }, context=self.context)
+                        'product_code': product_code,
+                    }
+                    if hasattr(record, 'supplier_price') and record.supplier_price or hasattr(record, 'standard_price') and record.standard_price:
+                        price = hasattr(record, 'supplier_price') and record.supplier_price or hasattr(record, 'standard_price') and record.standard_price or 0.0
+                        suppinfo_vals['pricelist_ids'] = [(0, 0, {
+                            'min_quantity': 1,
+                            'price': price
+                        })]
+
+                    suppinfo_id = self.supplierinfo_obj.create(cr, uid, suppinfo_vals, context=self.context)
 
                 if hasattr(record, 'supplier_price') and record.supplier_price:
                     partnerinfo_ids = self.partnerinfo_model.search(cr, uid, [
