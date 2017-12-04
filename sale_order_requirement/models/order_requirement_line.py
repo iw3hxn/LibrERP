@@ -838,11 +838,14 @@ class order_requirement_line(orm.Model):
     def action_open_bom(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         line = self.browse(cr, uid, ids, context)[0]
+
+        is_manufactured = line.is_manufactured
         if not line.new_product_id:
             self.write(cr, uid, line.id, {'new_product_id': line.product_id.id,
                                           'is_manufactured': True}, context)
+            is_manufactured = True
 
-        if line.is_manufactured and not line.temp_mrp_bom_ids:
+        if is_manufactured and not line.temp_mrp_bom_ids:
             self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, 0, True, True, context)
 
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
