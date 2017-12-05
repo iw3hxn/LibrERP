@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_partner_incoterm_form" model="ir.ui.view">
+            <field name="name">res.partner.form.inheritincoterm</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="delivery.view_partner_property_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="property_delivery_carrier" position="after">
+                    <field name="default_incoterm_id" widget="selection"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
