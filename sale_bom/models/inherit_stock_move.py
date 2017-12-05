@@ -38,6 +38,8 @@ class StockMove(orm.Model):
         move_obj = self.pool['stock.move']
         processed_ids = [move.id]
         if move.sale_line_id and move.sale_line_id.with_bom:
+            if move.sale_line_id.product_id.bom_lines[0].type == 'normal':
+                return processed_ids
             factor = move.product_qty
             state = 'confirmed'
             if move.state == 'assigned':
