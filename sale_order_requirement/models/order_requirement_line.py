@@ -844,12 +844,14 @@ class order_requirement_line(orm.Model):
 
         is_manufactured = line.is_manufactured
         if not line.new_product_id:
+            product_id = line.product_id.id
             is_manufactured = True
-
-        line_vals = line.get_suppliers(line.product_id.id, context=context)
-        line_vals.update({'new_product_id': line.product_id.id,
-                         'is_manufactured': is_manufactured})
-        self.write(cr, uid, line.id, line_vals, context)
+            line_vals = line.get_suppliers(product_id, context=context)
+            line_vals.update({'new_product_id': product_id,
+                             'is_manufactured': is_manufactured})
+            self.write(cr, uid, line.id, line_vals, context)
+            # Reload line
+            line = self.browse(cr, uid, ids, context)[0]
 
         if is_manufactured and not line.temp_mrp_bom_ids:
             temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, 0, True, True, context)
