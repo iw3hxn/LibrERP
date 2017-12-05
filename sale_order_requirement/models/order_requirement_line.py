@@ -92,21 +92,22 @@ class order_requirement_line(orm.Model):
             seller_ids = list(set([info.name.id for info in supplier_infos]))
 
             if seller_ids:
-                result_dict.update({
-                    'supplier_id': seller_ids[0],
-                    'supplier_ids': seller_ids,
-                })
+                supplier_id = seller_ids[0]
             else:
-                result_dict.update({
-                    'supplier_id': False,
-                    'supplier_ids': [],
-                })
+                supplier_id = False
+                # If not suppliers found -> returns all of them
+                supplier_info_ids = supplierinfo_obj.search(cr, uid,[], order="sequence", context=context)
+                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
+                seller_ids = list(set([info.name.id for info in supplier_infos]))
 
         else:
-            result_dict.update({
-                'supplier_id': False,
-                'supplier_ids': [],
-            })
+            supplier_id = False
+            seller_ids = []
+
+        result_dict.update({
+            'supplier_id': supplier_id,
+            'supplier_ids': seller_ids,
+        })
 
         return result_dict
 
@@ -477,6 +478,7 @@ class order_requirement_line(orm.Model):
             temp_mrp_bom_ids, temp_mrp_bom_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, new_product_id, False, 0, 0,
                                                                   True, True, context)
             temp = temp_mrp_bom_ids[0]
+            # TODO: maybe in create_temp
             if temp['is_leaf']:
                 # I don't want to see an "empty" bom with the father only
                 temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
@@ -507,18 +509,19 @@ class order_requirement_line(orm.Model):
         result_dict = self.get_suppliers(cr, uid, ids, new_product_id, context)
 
         if new_product_id:
+            temp_mrp_bom_obj = self.pool['temp.mrp.bom']
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
 
             # Update BOM according to new product
             # Removing existing temp mrp bom
             line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
             if line.temp_mrp_bom_ids:
-                temp_mrp_bom_obj = self.pool['temp.mrp.bom']
                 temp_mrp_bom_ids = [temp['id'] for temp in line.temp_mrp_bom_ids]
                 temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
 
             self.write(cr, uid, line.id, {'new_product_id': product.id}, context)
             temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, 0, True, True, context)
+            # TODO: maybe another option create_if_leaf in create_temp_mrp_bom
             temp = temp_ids[0]
             if temp['is_leaf']:
                 # I don't want to see an "empty" bom with the father only
@@ -841,12 +844,24 @@ class order_requirement_line(orm.Model):
 
         is_manufactured = line.is_manufactured
         if not line.new_product_id:
-            self.write(cr, uid, line.id, {'new_product_id': line.product_id.id,
-                                          'is_manufactured': True}, context)
             is_manufactured = True
 
+        line_vals = line.get_suppliers(line.product_id.id, context=context)
+        line_vals.update({'new_product_id': line.product_id.id,
+                         'is_manufactured': is_manufactured})
+        self.write(cr, uid, line.id, line_vals, context)
+
         if is_manufactured and not line.temp_mrp_bom_ids:
-            self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, 0, True, True, context)
+            temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, 0, True, True, context)
+            if temp_ids:
+                temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+                temp = temp_ids[0]
+                # TODO: maybe another option create_if_leaf in create_temp_mrp_bom
+                if temp['is_leaf']:
+                    # I don't want to see an "empty" bom with the father only
+                    temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
+                    # Uncheck is_manufacture -> no Bom, no manufacture
+                    new_is_manufactured = False
 
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
                                                                'view_order_requirement_line_form')
