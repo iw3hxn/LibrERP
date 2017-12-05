@@ -50,10 +50,10 @@
                                         <field name="product_uom" readonly="1"/>
                                         <field name="mrp_routing_id"/>
                                         <field name="stock_availability"/>
-                                        <field name="is_out_of_stock"/>
                                         <field name="spare"/>
+                                        <field name="is_out_of_stock" invisible="1"/>
                                         <button name="out_of_stock_button" type="object" icon="gtk-dialog-error"
-                                               attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
+                                                attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
                                         <field name="is_manufactured"
                                             attrs="{'readonly': ['|',('level','=',0),

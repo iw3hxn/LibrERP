@@ -145,7 +145,9 @@ class order_requirement_line(orm.Model):
                     user_id = wc.user_ids[0].id
                 else:
                     user_id = False
-                user_ids = [u.id for u in wc.user_ids]
+
+                # Prepare for writing
+                user_ids = [(6, False, [u.id for u in wc.user_ids])]
 
                 d, m = divmod(factor, wcl.workcenter_id.capacity_per_cycle)
                 mult = (d + (m and 1.0 or 0.0))
