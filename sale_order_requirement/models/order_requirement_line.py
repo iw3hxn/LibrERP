@@ -279,7 +279,6 @@ class order_requirement_line(orm.Model):
             return self._get_temp_vals_from_product(cr, uid, ids, product, father_temp_id, level, context)
 
     def _sort_temp_mrp_bom(self, cr, uid, ids, context):
-        # TODO: Preserve old order (no unlink and create -> save, or set same level...)
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         # Must be one line
@@ -895,7 +894,6 @@ class order_requirement_line(orm.Model):
             temp_id = temp[1]
             vals = temp[2]
 
-            # TODO Creation, BUG
             if operation == 0:
                 product_id = vals['product_id']
                 # father_id is already get by onchange_temp_product_id
