@@ -129,6 +129,9 @@ class order_requirement_line(orm.Model):
         workcenter_lines = mrp_routing_workcenter_obj.search_browse(cr, uid, [('routing_id', '=', routing_id)], context)
         ret_vals = []
 
+        if not isinstance(workcenter_lines, list):
+            workcenter_lines = [workcenter_lines]
+
         # From mrp._bom_explode
         factor = 1
         factor = factor / (bom.product_efficiency or 1.0)
