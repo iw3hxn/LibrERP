@@ -451,7 +451,9 @@ class order_requirement_line(orm.Model):
             [('cancel', 'Cancelled'), ('draft', 'Draft'), ('done', 'Done')], 'State', required=True, readonly=True,
         ),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
+        'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders'),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
+        'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'),
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
     }
@@ -542,14 +544,11 @@ class order_requirement_line(orm.Model):
         line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
         temp_mrp_bom_ids = [t.id for t in line.temp_mrp_bom_ids]
         temp_mrp_bom_routing_ids = [t.id for t in line.temp_mrp_bom_routing_ids]
-        # temp_mrp_bom_ids = [(4, t.id, False) for t in line.temp_mrp_bom_ids]
-        # temp_mrp_bom_routing_ids = [(4, t.id, False) for t in line.temp_mrp_bom_routing_ids]
 
         result_dict.update({
             'temp_mrp_bom_ids': temp_mrp_bom_ids,
             'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
             'view_bom': True
-            # 'is_manufactured': True
         })
 
         return {'value': result_dict}
@@ -625,11 +624,13 @@ class order_requirement_line(orm.Model):
             # Create order line and relationship with order_requirement_line
             purchase_line_id = purchase_order_line_obj.create(cr, uid, order_line_values, context)
             # Add the purchase line to ordreq LINE
-            self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
+            self.write(cr, uid, line_id, {'purchase_order_ids': [(4, purchase_id)],
+                                          'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
 
             if is_temp_bom:
                 # If is a temp mrp bom, associate purchase line also to it
-                temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_line_id': purchase_line_id})
+                temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': purchase_id,
+                                                         'purchase_order_line_id': purchase_line_id})
         else:
             # Extending order if I have found orders to same supplier for the same shop
 

@@ -86,7 +86,9 @@ class temp_mrp_bom(orm.Model):
         'temp_mrp_routing_lines': fields.one2many('temp.mrp.routing', 'temp_mrp_bom_id', 'Routing Lines'),
         # TODO mrp_production_line_id instead? (or ALSO)
         'mrp_production_id': fields.many2one('mrp.production', string='Manufacturing Order'),
-        'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order'),
+        # 'mrp_production_line_id': fields.many2one('mrp.production.???', string='Manufacturing Order'),
+        'purchase_order_id': fields.many2one('purchase.order', string='Purchase Order'),
+        'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order Line'),
         'level': fields.integer('Level'),
         'is_manufactured': fields.boolean('Manufacture'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', ondelete='cascade'),
@@ -103,7 +105,7 @@ class temp_mrp_bom(orm.Model):
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, store=False),
         'sequence': fields.integer('Sequence index'),
-        'is_out_of_stock': fields.function(_is_out_of_stock, method=True, type='boolean', string='', readonly=True)
+        'is_out_of_stock': fields.function(_is_out_of_stock, method=True, type='boolean', string='Out of Stock', readonly=True)
     }
 
     _order = 'sequence,level,id'
