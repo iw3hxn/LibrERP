@@ -21,8 +21,7 @@
                                 'readonly': [('state','!=','draft')]}"/>
                     <field name="supplier_ids" invisible="1"/>
                     <field name="id" invisible="1"/>
-                    <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
-                                                                         ('state','!=','draft')]}">
+                    <group colspan="8" col="8" attrs="{'invisible': [('state','!=','draft')]}">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
                         <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"/>
                     </group>

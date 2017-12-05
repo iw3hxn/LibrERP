@@ -39,6 +39,7 @@ class temp_mrp_bom(orm.Model):
         for line in self.browse(cr, uid, ids, context):
             product_id = line.product_id
             routing_id = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context)
+            # Here routing_id must be a browse record, not a list
             res[line.id] = routing_id
         return res
 
@@ -88,7 +89,7 @@ class temp_mrp_bom(orm.Model):
         'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order'),
         'level': fields.integer('Level'),
         'is_manufactured': fields.boolean('Manufacture'),
-        'supplier_ids': fields.many2many('res.partner', string='Suppliers'),
+        'supplier_ids': fields.many2many('res.partner', string='Suppliers', ondelete='cascade'),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]"),
         'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability',
                                               type='float', string='Stock Availability', readonly=True),
