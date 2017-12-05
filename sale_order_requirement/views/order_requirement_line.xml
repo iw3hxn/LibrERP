@@ -123,7 +123,7 @@
                                         <field name="product_id" readonly="1"/>
                                         <field name="product_qty" readonly="1"/>
                                         <field name="product_uom" readonly="1"/>
-                                        <field name="mrp_routing_id"/>
+                                        <!--<field name="mrp_routing_id"/>-->
                                         <!--<field name="stock_availability"/>-->
                                         <!--<field name="spare"/>-->
                                         <field name="is_out_of_stock" invisible="1"/>
@@ -144,15 +144,18 @@
                                         <field name="mrp_routing_id" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
                                         <field name="stock_availability"/>
                                         <field name="spare"/>
-                                        <field name="is_out_of_stock" />
-                                        <button name="out_of_stock_button" type="object" icon="gtk-dialog-error"
-                                                attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
-                                        <button name="OK_stock_button" type="object" icon="STOCK_OK"
-                                                attrs="{'invisible': [('is_out_of_stock','!=',False)]}"/>
                                         <field name="cost"/>
+                                        <field name="is_out_of_stock" />
+                                        <!--<button name="out_of_stock_button" type="object" icon="gtk-dialog-error"-->
+                                        <!--attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>-->
+                                        <!--<button name="OK_stock_button" type="object" icon="STOCK_OK"-->
+                                        <!--attrs="{'invisible': [('is_out_of_stock','!=',False)]}"/>-->
                                         <field name="is_manufactured" readonly="1"/>
-                                        <field name="supplier_id"  readonly="1"/>
+                                        <newline/>
+                                        <!--<field name="user_id"/>-->
                                         <field name="purchase_order_id" attrs="{'invisibile': [('purchase_order_id','=',False)]}"/>
+                                        <field name="supplier_id"  readonly="1"/>
+                                        <newline />
                                         <field name="mrp_production_id" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
                                     </form>
                                 </field>
