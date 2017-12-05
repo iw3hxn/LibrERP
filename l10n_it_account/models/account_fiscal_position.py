@@ -95,7 +95,7 @@ class account_fiscal_position(orm.Model):
 
         vals['partner_id_readonly'] = True
         res = super(account_fiscal_position, self).create(cr, uid, vals, context=context)
-        if 'partner_id' in vals:
+        if 'partner_id' in vals and vals.get('partner_id', False):
             self.pool['res.partner'].write(cr, uid, vals.get('partner_id'), {'property_account_position': res}, context)
         return res
 
