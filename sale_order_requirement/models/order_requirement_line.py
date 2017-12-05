@@ -79,14 +79,14 @@ class order_requirement_line(orm.Model):
         return res
 
     def get_suppliers(self, cr, uid, ids, new_product_id, context=None):
+        # Return FORMATTED supplier_ids [(6, False, [ID])] and a choosen supplier_id
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         result_dict = {}
         if new_product_id:
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
             # --find the supplier
-            supplier_info_ids = supplierinfo_obj.search(cr, uid,
-                                                        [('product_id', '=', product.product_tmpl_id.id)],
+            supplier_info_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', product.product_tmpl_id.id)],
                                                         order="sequence", context=context)
             supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
             seller_ids = list(set([info.name.id for info in supplier_infos]))
@@ -106,7 +106,7 @@ class order_requirement_line(orm.Model):
 
         result_dict.update({
             'supplier_id': supplier_id,
-            'supplier_ids': seller_ids,
+            'supplier_ids': [(6, False, [s for s in seller_ids])],
         })
 
         return result_dict
@@ -478,15 +478,16 @@ class order_requirement_line(orm.Model):
         # ONE LINE
         line = self.browse(cr, uid, ids, context)[0]
         if is_manufactured:
-            temp_mrp_bom_ids, temp_mrp_bom_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, new_product_id, False, 0, 0,
-                                                                  True, True, context)
-            temp = temp_mrp_bom_ids[0]
-            # TODO: maybe in create_temp
-            if temp['is_leaf']:
-                # I don't want to see an "empty" bom with the father only
-                temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
-                # Uncheck is_manufacture -> no Bom, no manufacture
-                new_is_manufactured = False
+            if not line.temp_mrp_bom_ids:
+                temp_mrp_bom_ids, temp_mrp_bom_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, new_product_id, False, 0, 0,
+                                                                      True, True, context)
+                temp = temp_mrp_bom_ids[0]
+                # TODO: maybe in create_temp
+                if temp['is_leaf']:
+                    # I don't want to see an "empty" bom with the father only
+                    temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
+                    # Uncheck is_manufacture -> no Bom, no manufacture
+                    new_is_manufactured = False
         else:
             if line.temp_mrp_bom_ids:
                 father_temp_id = line.temp_mrp_bom_ids[0].id
@@ -522,7 +523,8 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_ids = [temp['id'] for temp in line.temp_mrp_bom_ids]
                 temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
 
-            self.write(cr, uid, line.id, {'new_product_id': product.id}, context)
+            supplier_ids_formatted = result_dict['supplier_ids']
+            self.write(cr, uid, line.id, {'new_product_id': product.id, 'supplier_ids': supplier_ids_formatted}, context)
             temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, 0, True, True, context)
             # TODO: maybe another option create_if_leaf in create_temp_mrp_bom
             temp = temp_ids[0]
@@ -850,8 +852,11 @@ class order_requirement_line(orm.Model):
             product_id = line.product_id.id
             is_manufactured = True
             line_vals = line.get_suppliers(product_id, context=context)
+            supplier_ids_formatted = line_vals['supplier_ids']
+
             line_vals.update({'new_product_id': product_id,
-                             'is_manufactured': is_manufactured})
+                             'is_manufactured': is_manufactured,
+                              'supplier_ids': supplier_ids_formatted})
             self.write(cr, uid, line.id, line_vals, context)
             # Reload line
             line = self.browse(cr, uid, ids, context)[0]
