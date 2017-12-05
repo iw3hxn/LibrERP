@@ -462,14 +462,14 @@ class order_requirement_line(orm.Model):
     }
 
     # def fields_get(self, cr, uid, allfields=None, context=None):
-        # Useful for showing bom only if the button is pressed, not the click on the line
-        # context = context or self.pool['res.users'].context_get(cr, uid)
-        # ret = super(order_requirement_line, self).fields_get(cr, uid, allfields=allfields, context=context)
-        # view_bom = 'view_bom' in context and context['view_bom']
-        # ret['temp_mrp_bom_ids']['invisible'] = not view_bom
-        # ret['temp_mrp_bom_routing_ids']['invisible'] = not view_bom
-        # ret['confirm_suppliers']['invisible'] = not view_bom
-        # return ret
+    #     # Trying to show bom only if the button is pressed, not the click on the line
+    #     # BUT the attrs invisible condition in xml overwrite it
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     ret = super(order_requirement_line, self).fields_get(cr, uid, allfields=allfields, context=context)
+    #     view_bom = 'view_bom' in context and context['view_bom']
+    #     ret['temp_mrp_bom_ids']['invisible'] = not view_bom
+    #     ret['temp_mrp_bom_routing_ids']['invisible'] = not view_bom
+    #     return ret
 
     def onchange_is_manufactured(self, cr, uid, ids, is_manufactured, new_product_id, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -624,7 +624,6 @@ class order_requirement_line(orm.Model):
 
             # Create order line and relationship with order_requirement_line
             purchase_line_id = purchase_order_line_obj.create(cr, uid, order_line_values, context)
-            # TODO if temp -> associate to purchase_order_line of temp else of line
             # Add the purchase line to ordreq LINE
             self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
 
@@ -690,7 +689,7 @@ class order_requirement_line(orm.Model):
         pick_type = 'internal'
         address_id = False
 
-        # TODO: ASK, if I can change routign -> NOT THIS ROUTING but temp_mrp_routing_id
+        # TODO: ASK, if I can change routing -> NOT THIS ROUTING but temp_mrp_routing_id
         # Take routing address as a Shipment Address.
         # If usage of routing location is a internal, make outgoing shipment otherwise internal shipment
         if production.bom_id.routing_id and production.bom_id.routing_id.location_id:
@@ -849,6 +848,7 @@ class order_requirement_line(orm.Model):
         line = self.browse(cr, uid, ids, context)[0]
 
         is_manufactured = line.is_manufactured
+
         if not line.new_product_id:
             product_id = line.product_id.id
             is_manufactured = True
@@ -871,8 +871,6 @@ class order_requirement_line(orm.Model):
                 if temp['is_leaf']:
                     # I don't want to see an "empty" bom with the father only
                     temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
-                    # Uncheck is_manufacture -> no Bom, no manufacture
-                    new_is_manufactured = False
 
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
                                                                'view_order_requirement_line_form')
@@ -891,24 +889,6 @@ class order_requirement_line(orm.Model):
             'context': {'view_bom': True},
             'res_id': line.id
         }
-
-    # def onchange_temp_mrp_bom_ids_NO(self, cr, uid, ids, temp_mrp_bom_ids, context):
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     temp_mrp_bom_obj = self.pool['temp.mrp.bom']
-    #     line = self.browse(cr, uid, ids, context)[0]
-    #     self.write(cr, uid, ids, {'temp_mrp_bom_ids': temp_mrp_bom_ids})
-    #
-    #     # Reload list (some related child temp mrp boms could have been deleted)
-    #     new_temp_vals = []
-    #     for temp in line.temp_mrp_bom_ids:
-    #         vals = temp_mrp_bom_obj.read(cr, uid, temp.id, [], context)
-    #         if vals:
-    #             fix_fields(vals)
-    #             new_temp_vals.append(vals)
-    #
-    #     new_temp_mrp_bom_ids = [(0, False, t) for t in new_temp_vals]
-    #
-    #     return {'value': {'temp_mrp_bom_ids': new_temp_mrp_bom_ids}}
 
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)

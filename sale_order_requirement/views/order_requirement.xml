@@ -32,7 +32,7 @@
                     <newline />
                     <field name="note"/>
                     <group col="1" colspan="4">
-                        <field name="order_requirement_line_ids" nolabel="1" />
+                        <field name="order_requirement_line_ids" nolabel="1"/>
                     </group>
                     <!--<button name="set_state_done" string="Mark as done" type="object" icon="gtk-ok"></button>-->
                     <newline />
