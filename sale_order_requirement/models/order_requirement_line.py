@@ -737,7 +737,7 @@ class order_requirement_line(orm.Model):
                 mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
             temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production})
             return
-
+        return
         # I am creating a "sub" product
 
         # Adding lines if main product manufacturing order is present
