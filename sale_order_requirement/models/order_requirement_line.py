@@ -780,6 +780,7 @@ class order_requirement_line(orm.Model):
     def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
         if temp.is_manufactured:
             self._manufacture_bom(cr, uid, father, temp, context)
+            # TODO: CHECK ==> Set as manufacture for ALL products, even leaf
             if not temp.is_leaf:
                 if temp.level > 0:
                     self._manufacture_bom(cr, uid, False, temp, context)
