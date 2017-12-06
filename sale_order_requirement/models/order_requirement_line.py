@@ -553,6 +553,53 @@ class order_requirement_line(orm.Model):
 
         return {'value': result_dict}
 
+    def _get_temp_routing(self, bom):
+        # Retrieve routing
+        routing_vals = []
+        for temp_routing in bom.temp_mrp_routing_lines:
+            routing_vals.append({
+                'name': temp_routing.name,
+                'sequence': temp_routing.sequence,
+                'workcenter_id': temp_routing.workcenter_id.id,
+                'cycle': temp_routing.cycle,
+                'hour': temp_routing.hour,
+                'state': 'draft',
+                'product_id': bom.product_id.id,
+                'product_uom': bom.product_uom.id
+            })
+        return routing_vals
+
+    def _make_production_internal_shipment(self, cr, uid, production, context=None):
+        ir_sequence = self.pool.get('ir.sequence')
+        stock_picking = self.pool.get('stock.picking')
+        pick_type = 'internal'
+        address_id = False
+
+        # TODO: ASK, if I can change routing -> NOT THIS ROUTING but temp_mrp_routing_id
+        # Take routing address as a Shipment Address.
+        # If usage of routing location is a internal, make outgoing shipment otherwise internal shipment
+        if production.bom_id.routing_id and production.bom_id.routing_id.location_id:
+            routing_loc = production.bom_id.routing_id.location_id
+            if routing_loc.usage != 'internal':
+                pick_type = 'out'
+            address_id = routing_loc.address_id and routing_loc.address_id.id or False
+
+        # Take next Sequence number of shipment base on type
+        pick_name = ir_sequence.get(cr, uid, 'stock.picking.' + pick_type)
+
+        picking_id = stock_picking.create(cr, uid, {
+            'name': pick_name,
+            'origin': (production.origin or '').split(':')[0] + ':' + production.name,
+            'type': pick_type,
+            'move_type': 'one',
+            'state': 'auto',
+            'address_id': address_id,
+            'auto_picking': True, # This one returns True ==> self._get_auto_picking(cr, uid, production),
+            'company_id': production.company_id.id,
+        })
+        production.write({'picking_id': picking_id}, context=context)
+        return picking_id
+
     def _purchase_bom(self, cr, uid, obj, context):
         # obj can be a order_requirement_line or temp_mrp_bom
         # Set is_temp_bom to True if obj is a temp_mrp_bom
@@ -645,10 +692,10 @@ class order_requirement_line(orm.Model):
             if not purchase_order_line_ids:
                 # Line must be created
                 order_line_values = purchase_order_line_obj.onchange_product_id(cr, uid, [], present_order.pricelist_id.id,
-                                                            product_id, qty, uom_id=False, partner_id=supplier_id,
-                                                            date_order=False,
-                                                            fiscal_position_id=False, date_planned=False,
-                                                            price_unit=False, notes=False, context=context)['value']
+                                                                                product_id, qty, uom_id=False,
+                                                                                partner_id=supplier_id, date_order=False,
+                                                                                fiscal_position_id=False, date_planned=False,
+                                                                                price_unit=False, notes=False, context=context)['value']
                 order_line_values['product_id'] = product_id
                 order_line_values['order_id'] = present_order_id
                 # Creating a new line
@@ -657,7 +704,8 @@ class order_requirement_line(orm.Model):
                 self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
-                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_line_id': purchase_line_id})
+                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
+                                                             'purchase_order_line_id': purchase_line_id})
             else:
                 # Add qty to existing line
                 order_line_id = purchase_order_line_ids[0]
@@ -667,53 +715,6 @@ class order_requirement_line(orm.Model):
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_line_id': order_line_id})
-
-    def _get_temp_routing(self, bom):
-        # Retrieve routing
-        routing_vals = []
-        for temp_routing in bom.temp_mrp_routing_lines:
-            routing_vals.append({
-                'name': temp_routing.name,
-                'sequence': temp_routing.sequence,
-                'workcenter_id': temp_routing.workcenter_id.id,
-                'cycle': temp_routing.cycle,
-                'hour': temp_routing.hour,
-                'state': 'draft',
-                'product_id': bom.product_id.id,
-                'product_uom': bom.product_uom.id
-            })
-        return routing_vals
-
-    def _make_production_internal_shipment(self, cr, uid, production, context=None):
-        ir_sequence = self.pool.get('ir.sequence')
-        stock_picking = self.pool.get('stock.picking')
-        pick_type = 'internal'
-        address_id = False
-
-        # TODO: ASK, if I can change routing -> NOT THIS ROUTING but temp_mrp_routing_id
-        # Take routing address as a Shipment Address.
-        # If usage of routing location is a internal, make outgoing shipment otherwise internal shipment
-        if production.bom_id.routing_id and production.bom_id.routing_id.location_id:
-            routing_loc = production.bom_id.routing_id.location_id
-            if routing_loc.usage != 'internal':
-                pick_type = 'out'
-            address_id = routing_loc.address_id and routing_loc.address_id.id or False
-
-        # Take next Sequence number of shipment base on type
-        pick_name = ir_sequence.get(cr, uid, 'stock.picking.' + pick_type)
-
-        picking_id = stock_picking.create(cr, uid, {
-            'name': pick_name,
-            'origin': (production.origin or '').split(':')[0] + ':' + production.name,
-            'type': pick_type,
-            'move_type': 'one',
-            'state': 'auto',
-            'address_id': address_id,
-            'auto_picking': True, # This one returns True ==> self._get_auto_picking(cr, uid, production),
-            'company_id': production.company_id.id,
-        })
-        production.write({'picking_id': picking_id}, context=context)
-        return picking_id
 
     def _manufacture_bom(self, cr, uid, father, bom, context):
         mrp_production_obj = self.pool['mrp.production']

@@ -37,7 +37,7 @@ class order_requirement(orm.Model):
 
     _columns = {
         'date': fields.date('Data'),
-        'sale_order_id': fields.many2one('sale.order', 'Order', required=True),
+        'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade'),
         'customer_id': fields.related('sale_order_id', 'partner_id', type='many2one', relation='res.partner', string='Customer', store=False),
         'user_id': fields.many2one('res.users', 'User'),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number", store={
