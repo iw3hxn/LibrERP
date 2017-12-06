@@ -28,7 +28,11 @@
 
                     <filter name="not_have_product" icon="terp-stock_symbol-selection"
                             domain="[('have_product', '=', False)]"
-                            string="Not Have Product"/>
+                            string="Without Product"/>
+
+                    <filter name="no_children" icon="terp-stock_symbol-selection"
+                            domain="[('child_id', '=', False), ('have_product', '=', False)]"
+                            string="Childless and without products"/>
                 </field>
             </field>
         </record>

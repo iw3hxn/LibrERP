@@ -1,26 +1,6 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
-#
-#                       All Rights Reserved
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# -*- coding: utf-8 -*-
+# © 2014 - 2017 Didotech srl (www.didotech.com)
+
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
@@ -32,7 +12,7 @@ class product_category(orm.Model):
         if not len(ids):
             return []
         '''
-        Show if have or not a bom
+        Show if category have or not a bom
         '''
         context = context or self.pool['res.users'].context_get(cr, uid)
 
@@ -43,10 +23,7 @@ class product_category(orm.Model):
 
         for category in self.browse(cr, uid, ids, context):
             bom_id = product_obj.search(cr, uid, [('categ_id', '=', category.id)], context=context)
-            if bom_id:
-                res[category.id] = True
-            else:
-                res[category.id] = False
+            res[category.id] = bom_id and True or False
 
         return res
 
@@ -57,26 +34,25 @@ class product_category(orm.Model):
         product_obj = self.pool['product.template']
         for search in args:
             if search[0] == 'have_product':
-                if search[2]:
-                    product_ids = product_obj.search(cr, uid, [], context=context)
-                    if product_ids:
-                        res = list(set([product.categ_id.id for product in product_obj.browse(cr, uid, product_ids, context)]))
+                product_ids = product_obj.search(cr, uid, [], context=context)
+                if product_ids:
+                    if search[2]:
+                        res = list(
+                            set([product.categ_id.id for product in product_obj.browse(cr, uid, product_ids, context)])
+                        )
                         return [('id', 'in', res)]
                     else:
-                        return [('id', 'in', [])]
-                else:
-                    product_ids = product_obj.search(cr, uid, [], context=context)
-                    if product_ids:
                         categ_ids = self.search(cr, uid, [('type', '!=', 'view')], context=context)
-                        res = list(set([product.categ_id.id for product in product_obj.browse(cr, uid, product_ids, context)]))
-                        return [('id', 'in', list(set(categ_ids)-set(res)))]
-                    else:
-                        return [('id', 'in', [])]
+                        res = set([product.categ_id.id for product in product_obj.browse(cr, uid, product_ids, context)])
+                        return [('id', 'in', list(set(categ_ids) - res))]
+                else:
+                    return [('id', 'in', [])]
 
         return []
 
     _columns = {
-        'have_product': fields.function(_have_product, fnct_search=_product_filter, method=True, type="boolean", string="Have Product"),
+        'have_product': fields.function(
+            _have_product, fnct_search=_product_filter, method=True, type="boolean", string="Have Product")
     }
 
     def unlink(self, cr, uid, ids, context=None):
@@ -85,6 +61,6 @@ class product_category(orm.Model):
             if category.have_product:
                 raise orm.except_orm(
                     _(u'Invalid action !'),
-                    _(u'In order to delete a category {category}, it must be cancelled product!').format(category=category.complete_name))
+                    _(u'In order to delete a category {category}, it should contain no products!').format(category=category.complete_name))
         res = super(product_category, self).unlink(cr, uid, ids, context=context)
         return res
