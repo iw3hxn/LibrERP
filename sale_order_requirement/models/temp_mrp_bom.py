@@ -80,8 +80,10 @@ class temp_mrp_bom(orm.Model):
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
         'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id',
                                         string='Sale Order', relation='sale.order', type='many2one', readonly=True),
+        # mrp_bom_id and mrp_bom_parent_id point to the original mrp bom
         'mrp_bom_id': fields.many2one('mrp.bom'),
         'mrp_bom_parent_id': fields.many2one('mrp.bom'),
+        # mrp_routing_id is a relation with ORIGINAL routing (but we make a copy)
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing', auto_join=True, readonly=True),
         'temp_mrp_routing_lines': fields.one2many('temp.mrp.routing', 'temp_mrp_bom_id', 'Routing Lines'),
         # TODO mrp_production_line_id instead? (or ALSO)
