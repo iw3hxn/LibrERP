@@ -17,13 +17,17 @@ from operator import attrgetter
 class mrp_bom(osv.osv):
     _inherit = 'mrp.bom'
 
-    def _bom_find(self, cr, uid, product_id, product_uom, properties=[]):
+    def _bom_find(self, cr, uid, product_id, product_uom, properties=[], is_from_order_requirement=False):
         """ Finds BoM for particular product and product uom.
         @param product_id: Selected product.
         @param product_uom: Unit of measure of a product.
         @param properties: List of related properties.
         @return: False or BoM id.
+        If Production order was created by order requirement, it will use temp.mrp.bom instead of mrp.bom
         """
+        if not is_from_order_requirement:
+            return super(mrp_bom, self)._bom_find(cr, uid, product_id, product_uom, properties)
+
         domain = [('product_id', '=', product_id), ('bom_id', '=', False),
                   '|', ('date_start', '=', False), ('date_start', '<=', time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)),
                   '|', ('date_stop', '=', False), ('date_stop', '>=', time.strftime(DEFAULT_SERVER_DATETIME_FORMAT))]
@@ -154,19 +158,28 @@ class mrp_production(osv.osv):
         """ Computes bills of material of a product.
         @param properties: List containing dictionaries of properties.
         @return: No. of products.
+        If necessary, redirects to temp.mrp.bom instead of mrp.bom
         """
+
+        productions = self.browse(cr, uid, ids)
+        if not productions:
+            return 0
+        if not productions[0].is_from_order_requirement:
+            return super(mrp_production, self).action_compute(cr, uid, ids, properties, context)
+
+        # If production order was created by order requirement, behaviour is different
         results = []
-        bom_obj = self.pool.get('mrp.bom')
-        uom_obj = self.pool.get('product.uom')
+        bom_obj = self.pool['mrp.bom']
+        uom_obj = self.pool['product.uom']
         prod_line_obj = self.pool.get('mrp.production.product.line')
-        workcenter_line_obj = self.pool.get('mrp.production.workcenter.line')
+        workcenter_line_obj = self.pool['mrp.production.workcenter.line']
         for production in self.browse(cr, uid, ids):
             cr.execute('delete from mrp_production_product_line where production_id=%s', (production.id,))
             cr.execute('delete from mrp_production_workcenter_line where production_id=%s', (production.id,))
             bom_point = production.bom_id
             bom_id = production.bom_id.id
             if not bom_point:
-                bom_id = bom_obj._bom_find(cr, uid, production.product_id.id, production.product_uom.id, properties)
+                bom_id = bom_obj._bom_find(cr, uid, production.product_id.id, production.product_uom.id, properties, True)
                 if bom_id:
                     bom_point = bom_obj.browse(cr, uid, bom_id)
                     routing_id = bom_point.routing_id.id or False
