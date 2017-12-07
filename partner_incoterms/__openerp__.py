@@ -11,7 +11,8 @@
         'base',
         'purchase',
         'sale',
-        'delivery'
+        'delivery',
+        'stock_picking_extened'
     ],
     'category': 'Generic Modules',
     'description': '''
@@ -19,7 +20,6 @@ Adds a default purchase Incoterm to the partner object which will be copied onto
 ''',
     'data': [
         'views/partner_view.xml',
-        # 'views/purchase_view.xml',
     ],
     'active': False,
     'installable': True
