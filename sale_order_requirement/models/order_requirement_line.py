@@ -12,12 +12,6 @@ from temp_mrp_bom import temp_mrp_bom
 routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
 sequence = 0
 
-def rounding(f, r):
-    import math
-    if not r:
-        return f
-    return math.ceil(f / r) * r
-
 # def fix_fields(vals):
 #     if vals:
 #         for key in vals:
@@ -726,8 +720,11 @@ class order_requirement_line(orm.Model):
             product = bom.product_id
             mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
-            mrp_production_values['product_id'] = product.id
-            mrp_production_values['sale_id'] = bom.sale_order_id.id
+            mrp_production_values = {
+                'product_id': product.id,
+                'sale_id': bom.sale_order_id.id,
+                'is_from_order_requirement': True
+            }
 
             # Create manufacturing order
             mrp_production = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
@@ -737,7 +734,11 @@ class order_requirement_line(orm.Model):
                 mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
             temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production})
             return
+
+        # TODO ################
         return
+        # TODO ################
+
         # I am creating a "sub" product
 
         # Adding lines if main product manufacturing order is present
