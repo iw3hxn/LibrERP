@@ -76,6 +76,7 @@
                         <field name="content_base64" filename="file_name" required="True" />
                         <field name="format" />
                         <field name="update_product_name" />
+                        <field name="update_only" />
                     </group>
                     
                     <!-- Items per lo stato end -->

@@ -78,6 +78,7 @@ class ImportFile(threading.Thread, Utils):
         self.file_name = self.productImportRecord.file_name.split('\\')[-1]
 
         self.update_product_name = self.productImportRecord.update_product_name
+        self.update_only = self.productImportRecord.update_only
 
         # ===================================================
         Config = getattr(settings, self.productImportRecord.format)
@@ -813,7 +814,7 @@ class ImportFile(threading.Thread, Utils):
             if 'name' not in vals_product:
                 vals_product['name'] = name
             self.updated += 1
-        else:
+        elif not self.update_only:
             _logger.info(u'Row {row}: Adding product {product}'.format(row=self.processed_lines, product=vals_product[field]))
             default_vals_product = self.PRODUCT_DEFAULTS.copy()
             if not vals_product.get('uom_id') and default_vals_product.get('uom'):
@@ -903,7 +904,10 @@ class ImportFile(threading.Thread, Utils):
         if hasattr(record, 'qty_available') and record.qty_available:
             self.set_product_qty(cr, uid, product_id, record.qty_available)
 
-        return product_id
+        if self.update_only:
+            return True
+        else:
+            return product_id
 
     def getProductTemplateID(self, product_id):
         # Get the product_tempalte ID
