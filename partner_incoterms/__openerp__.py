@@ -12,7 +12,7 @@
         'purchase',
         'sale',
         'delivery',
-        'stock_picking_extened'
+        'stock_picking_extended'
     ],
     'category': 'Generic Modules',
     'description': '''
