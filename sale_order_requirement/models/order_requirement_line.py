@@ -5,18 +5,12 @@ import tools
 from tools.translate import _
 
 import decimal_precision as dp
-from mrp import mrp_bom
 from openerp.osv import orm, fields
 from temp_mrp_bom import temp_mrp_bom
+from ..util import rounding
 
 routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
 sequence = 0
-
-# def fix_fields(vals):
-#     if vals:
-#         for key in vals:
-#             if isinstance(vals[key], tuple):
-#                 vals[key] = vals[key][0]
 
 class order_requirement_line(orm.Model):
 
@@ -191,11 +185,14 @@ class order_requirement_line(orm.Model):
             'bom_id': temp_father_id,
             # mrp_bom_parent_id was very useful for reconstructing hierarchy
             'mrp_bom_id': bom.id,
+            'type': bom.type,
             # 'mrp_bom_parent_id': bom_parent_id,
             'product_id': product_id,
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
+            'product_uos': bom.product_uos.id,
             'product_efficiency': bom.product_efficiency,
+            'product_rounding': bom.product_rounding,
             'product_type': bom.product_id.type,
             'is_manufactured': is_manufactured,
             'company_id': bom.company_id.id,
@@ -237,6 +234,7 @@ class order_requirement_line(orm.Model):
         return {
             'name': product.name,
             'bom_id': temp_father_id,
+            # 'type': bom.type,
             # mrp_bom_parent_id was very useful for reconstructing hierarchy
             'mrp_bom_id': False,
             'mrp_bom_parent_id': False,
@@ -720,18 +718,20 @@ class order_requirement_line(orm.Model):
             product = bom.product_id
             mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
-            mrp_production_values = {
+            mrp_production_values.update({
                 'product_id': product.id,
                 'sale_id': bom.sale_order_id.id,
-                'is_from_order_requirement': True
-            }
+                'is_from_order_requirement': True,
+                'temp_bom_id': bom.id
+            })
 
             # Create manufacturing order
             mrp_production = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
-            temp_routing_vals = self._get_temp_routing(bom)
-            for rout in temp_routing_vals:
-                rout['production_id'] = mrp_production
-                mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
+            # TODO Remove? (routing is created when CONFIRM Production is clicked
+            # temp_routing_vals = self._get_temp_routing(bom)
+            # for rout in temp_routing_vals:
+            #     rout['production_id'] = mrp_production
+            #     mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
             temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production})
             return
 
@@ -807,8 +807,8 @@ class order_requirement_line(orm.Model):
             # Explode orders
             self._manufacture_or_purchase_explode(cr, uid, False, temp, context)
         else:
-            # TODO: Complete the routing with all the bom routing lines
             # Not multiorder -> First the father
+            # TODO: Complete the routing with all the bom routing lines
             father_bom = line.temp_mrp_bom_ids[0]
             if father_bom.is_manufactured:
                 self._manufacture_bom(cr, uid, False, father_bom, context)

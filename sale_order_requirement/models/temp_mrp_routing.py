@@ -13,6 +13,7 @@ class temp_mrp_routing(orm.Model):
         'name': fields.char('Name', size=64),
         # TODO Workcenter readonly SO FAR => Evaluate changeability in the future
         'workcenter_id': fields.many2one('mrp.workcenter', string='Workcenter', readonly=True),
+        # 'workcenter_lines': fields.one2many('mrp.routing.workcenter', 'routing_id', 'Work Centers'),
         'user_ids': fields.many2many('res.users', string='Users', ondelete='cascade'),
         'user_id': fields.many2one('res.users', 'User', domain="[('id', 'in', user_ids[0][2])]"),
         'sequence': fields.integer('Sequence'),

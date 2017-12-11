@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
-from openerp.osv import orm, fields
+import tools
+
 import decimal_precision as dp
 from mrp import mrp_bom
+from openerp.osv import orm, fields
+from ..util import rounding
 
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
-
 
 class temp_mrp_bom(orm.Model):
     _name = 'temp.mrp.bom'
@@ -67,6 +69,10 @@ class temp_mrp_bom(orm.Model):
 
     _columns = {
         'name': fields.char('Name', size=160, readonly=True),
+        'type': fields.selection([('normal', 'Normal BoM'), ('phantom', 'Sets / Phantom')], 'BoM Type', required=True,
+                                 help="If a sub-product is used in several products, it can be useful to create its own BoM. " \
+                                      "Though if you don't want separated production orders for this sub-product, select Set/Phantom as BoM type. " \
+                                      "If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."),
         'level_name': fields.char('Level', readonly=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True,
                                                      ondelete='cascade'),
@@ -76,6 +82,15 @@ class temp_mrp_bom(orm.Model):
         'product_qty': fields.float('Product Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
         'product_uom': fields.many2one('product.uom', 'UOM', # Removed otherwise is impossible to add required=True,
                                        help="UoM (Unit of Measure) is the unit of measurement for the inventory control"),
+        'product_uos': fields.many2one('product.uom', 'Product UOS',
+                                       help="Product UOS (Unit of Sale) is the unit of measurement for the invoicing and promotion of stock."),
+        'product_efficiency': fields.float('Manufacturing Efficiency', required=True,
+                                           help="A factor of 0.9 means a loss of 10% within the production process."),
+        'product_rounding': fields.float('Product Rounding', help="Rounding applied on the product quantity."),
+        'type': fields.selection([('normal','Normal BoM'),('phantom','Sets / Phantom')], 'BoM Type', required=True,
+                                 help= "If a sub-product is used in several products, it can be useful to create its own BoM. "\
+                                 "Though if you don't want separated production orders for this sub-product, select Set/Phantom as BoM type. "\
+                                 "If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."),
         'cost': fields.float('Cost', readonly=True),
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
         'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id',
@@ -213,3 +228,63 @@ class temp_mrp_bom(orm.Model):
     def out_of_stock_button(self, cr, uid, ids, context=None):
         # Useless, button just for show an icon
         return
+
+    def _bom_explode(self, cr, uid, bom, factor, properties=[], addthis=False, level=0, routing_id=False,
+                     is_from_order_requirement=False):
+        """ Finds Products and Work Centers for related BoM for manufacturing order.
+        @param bom: BoM of particular product.
+        @param factor: Factor of product UoM.
+        @param properties: A List of properties Ids.
+        @param addthis: If BoM found then True else False.
+        @param level: Depth level to find BoM lines starts from 10.
+        @return: result: List of dictionaries containing product details.
+                 result2: List of dictionaries containing Work Center details.
+        """
+
+        if not is_from_order_requirement:
+            return bom._bom_explode(bom=bom, factor=factor, properties=[], addthis=False, level=0,
+                                    routing_id=False)
+
+        factor = factor / (bom.product_efficiency or 1.0)
+        factor = rounding(factor, bom.product_rounding)
+        if factor < bom.product_rounding:
+            factor = bom.product_rounding
+        result = []
+        result2 = []
+        phantom = False
+
+        # REMOVED condition: if bom.type == 'phantom' and not bom.bom_lines
+        if not phantom:
+            if addthis and not bom.bom_lines:
+                result.append(
+                    {
+                        'name': bom.product_id.name,
+                        'product_id': bom.product_id.id,
+                        'product_qty': bom.product_qty * factor,
+                        'product_uom': bom.product_uom.id,
+                        'product_uos_qty': bom.product_uos and bom.product_uos_qty * factor or False,
+                        'product_uos': bom.product_uos and bom.product_uos.id or False,
+                    })
+            # routing = (routing_id and routing_obj.browse(cr, uid, routing_id)) or bom.routing_id or False
+            # if routing:
+            for wc_use in bom.temp_mrp_routing_lines:
+                wc = wc_use.workcenter_id
+                d, m = divmod(factor, wc_use.workcenter_id.capacity_per_cycle)
+                mult = (d + (m and 1.0 or 0.0))
+                cycle = mult * wc_use.cycle
+                result2.append({
+                    'name': tools.ustr(wc_use.name) + ' - ' + tools.ustr(bom.product_id.name),
+                    'workcenter_id': wc.id,
+                    'sequence': level + (wc_use.sequence or 0),
+                    'cycle': cycle,
+                    'hour': float(wc_use.hour * mult + (
+                            (wc.time_start or 0.0) + (wc.time_stop or 0.0) + cycle * (wc.time_cycle or 0.0)) * (
+                                          wc.time_efficiency or 1.0)),
+                })
+            for bom2 in bom.bom_lines:
+                res = self._bom_explode(cr, uid, bom2, factor, properties, addthis=True, level=level + 10,
+                                        routing_id=False, is_from_order_requirement=True)
+                result = result + res[0]
+                result2 = result2 + res[1]
+        return result, result2
+
