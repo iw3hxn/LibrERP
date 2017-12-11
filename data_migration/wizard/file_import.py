@@ -204,6 +204,9 @@ class product_import(filedata_import):
         # 'file_path': fields.char('Percorso file', size=256)
         'update_product_name': fields.boolean(
             'Update Product Name', help="If set, overwrite product name"
+        ),
+        'update_only': fields.boolean(
+            'Update Only', help="If set, only existing products will be updated. New products will be not created"
         )
     }
     # default value for data fields of object

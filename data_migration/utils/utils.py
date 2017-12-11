@@ -6,7 +6,6 @@ import re
 from datetime import datetime
 
 from tools.translate import _
-
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 _logger = logging.getLogger(__name__)
@@ -34,7 +33,7 @@ class Utils():
             if isinstance(value, (str, unicode)) and value.lower() == 'null':
                 return False
 
-            number = re.compile(r'^(?!0[0-9])[0-9.,]+$')
+            number = re.compile(r'^(?!0[0-9])[0-9.,]+(?<![.,])$')
             number_with_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
             number_with_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
             if isinstance(value, (unicode, str)):

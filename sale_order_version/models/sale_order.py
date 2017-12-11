@@ -37,7 +37,7 @@ class sale_order(orm.Model):
         for order in self.browse(cr, uid, ids, context):
             if order.shop_id and order.shop_id.sale_order_sequence_id:
                 sequence = self.pool['ir.sequence'].next_by_id(cr, uid, order.shop_id.sale_order_sequence_id.id)
-                order.write({'name': sequence})
+                order.write({'name': sequence, 'original_quotation_name': order.name})
         return res
 
     def action_previous_version(self, cr, uid, ids, default=None, context=None):
@@ -106,6 +106,7 @@ class sale_order(orm.Model):
         return res
 
     _columns = {
+        'original_quotation_name': fields.char(''),
         'sale_version_id': fields.many2one('sale.order', 'Orig version', required=False, readonly=False),
         'version': fields.integer('Version no.', readonly=True),
         'active': fields.boolean('Active', readonly=False, help="It indicates that the sales order is active."),
@@ -136,6 +137,13 @@ class sale_order(orm.Model):
             vals['version'] = 0
 
         return super(sale_order, self).create(cr, uid, vals, context)
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        default.update({
+            'original_quotation_name': False,
+        })
+        return super(sale_order, self).copy(cr, uid, id, default, context)
 
     def print_report(self, cr, uid, ids, xml_id, context):
         def id_from_xml_id():

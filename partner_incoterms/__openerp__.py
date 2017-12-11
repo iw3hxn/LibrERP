@@ -4,14 +4,15 @@
 
 {
     'name': 'Partner Incoterms',
-    'version': '3.0.0.0',
+    'version': '3.0.1.0',
     'author': 'Didotech SRL',
     'website': 'http://www.didotech.com',
     'depends': [
         'base',
         'purchase',
         'sale',
-        'delivery'
+        'delivery',
+        'stock_picking_extended'
     ],
     'category': 'Generic Modules',
     'description': '''
@@ -19,7 +20,6 @@ Adds a default purchase Incoterm to the partner object which will be copied onto
 ''',
     'data': [
         'views/partner_view.xml',
-        'views/purchase_view.xml',
     ],
     'active': False,
     'installable': True

@@ -21,6 +21,9 @@ def test_conversion():
         '00.085': '00.085',
         '02.085': '02.085',
         '02,085': '02,085',
+        '.': '.',
+        ',': ',',
+        'L00df': 'L00df'
     }
 
     for value, result in values.items():
