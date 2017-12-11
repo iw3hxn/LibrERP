@@ -46,7 +46,13 @@ class mrp_bom(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
-        boms = self.browse(cr, uid, ids, context)
+        bom_ids = []
+
+        for bom in self.browse(cr, uid, ids, context):
+            if not bom.bom_id:
+                bom_ids.append(bom.id)
+
+        boms = self.browse(cr, uid, bom_ids, context)
         for product_id in [bom.product_id.id for bom in boms]:
             bom_ids_count = self.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], count=True)
             
