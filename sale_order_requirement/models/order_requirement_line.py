@@ -194,6 +194,7 @@ class order_requirement_line(orm.Model):
             'product_efficiency': bom.product_efficiency,
             'product_rounding': bom.product_rounding,
             'product_type': bom.product_id.type,
+            # TODO: VERSION STANDARD_PRICE
             'partial_cost': bom.product_id.standard_price,
             'cost': 0,
             'is_manufactured': is_manufactured,
@@ -247,6 +248,7 @@ class order_requirement_line(orm.Model):
             # fixed to 0 with a product
             'product_efficiency': 0,
             'product_type': product.type,
+            # TODO: VERSION STANDARD_PRICE
             'partial_cost': product.standard_price,
             'cost': 0,
             'company_id': product.company_id.id,
@@ -309,13 +311,13 @@ class order_requirement_line(orm.Model):
     def _compute_cost(temp, temp_mrp_boms):
         # Simple version -> sum of partial_cost
         # COST: Cost of product itself + cost of all children
-        cost = temp['partial_cost']
+        cost = temp.partial_cost
         # children = [t for t in temp_mrp_boms if t['bom_id'] == temp['id']]
         # for child in children:
         #     cost += order_requirement_line._compute_price(child, temp_mrp_boms)
 
         for t in temp_mrp_boms:
-            if t.bom_id == temp.id:
+            if t.bom_id.id == temp.id:
                 cost += order_requirement_line._compute_cost(t, temp_mrp_boms)
         temp.cost = cost
         return cost
@@ -360,7 +362,6 @@ class order_requirement_line(orm.Model):
                 return
             for bom in bom_children:
                 if bom.product_id.type == 'product':
-                    # TODO ==> Maybe use get_temp_vals
                     temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, father_id, level, context)
                     temp_vals['sequence'] = sequence
                     sequence += 1
@@ -378,7 +379,6 @@ class order_requirement_line(orm.Model):
 
         if not bom_ids:
             # It's a product with no BoM
-            # TODO ==> Maybe unify with below -> use get_temp_vals
             temp_vals = self._get_temp_vals_from_product(cr, uid, ids, product, father_temp_id, start_level, context)
             temp_vals['sequence'] = sequence
             sequence += 1
@@ -417,9 +417,13 @@ class order_requirement_line(orm.Model):
             raise orm.except_orm(_(u'Error !'),
                                  _(u'Not created, product error: {0}'.format(product.name)))
 
+        self._update_cost(cr, uid, ids[0], context)
+
+        # TODO vals not updated
         return temp_mrp_bom_vals, temp_mrp_routing_vals
 
     def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
+        # TODO: CAN BE REMOVED?
         context = context or self.pool['res.users'].context_get(cr, uid)
         view_bom = 'view_bom' in context and context['view_bom']
 
