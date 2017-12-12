@@ -23,7 +23,7 @@ class sale_order(orm.Model):
                     'qty': line.product_uom_qty
                 }
                 order_requirement_obj.write(cr, uid, order_req_id,
-                                            {'order_requirement_line_ids': [(0, 0, ord_req_line_vals)]}, context)
+                                            {'order_requirement_line_ids': [(0, False, ord_req_line_vals)]}, context)
 
         return res
 

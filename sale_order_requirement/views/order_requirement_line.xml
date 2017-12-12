@@ -14,7 +14,7 @@
                     <field name="state" invisible="1"/>
                     <newline/>
                     <field name="new_product_id" on_change="onchange_product_id(new_product_id,qty,context)"/>
-                    <field name="qty"/>
+                    <field name="qty" on_change="onchange_qty(qty)"/>
                     <field name="is_manufactured" on_change="onchange_is_manufactured(is_manufactured,new_product_id)"/>
                     <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True)],
                                 'required': [('is_manufactured', '=', False)],
@@ -47,7 +47,9 @@
                                                on_change="onchange_temp_product_id(id,product_id,product_qty,is_manufactured,context)"
                                                attrs="{'readonly': [('level','=',0)]}"/>
                                         <field name="original_qty"/>
-                                        <field name="product_qty"/>
+                                        <field name="product_qty" attrs="{'readonly': [('level','=',0)]}"
+                                               context="{'line_id':parent.id}"
+                                               on_change="onchange_temp_product_qty(product_qty, context)"/>
                                         <field name="product_uom" readonly="1"/>
                                         <field name="mrp_routing_id"/>
                                         <field name="stock_availability"/>

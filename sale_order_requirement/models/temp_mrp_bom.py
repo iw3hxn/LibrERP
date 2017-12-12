@@ -227,6 +227,13 @@ class temp_mrp_bom(orm.Model):
 
         return {'value': ret}
 
+    def onchange_temp_product_qty(self, cr, uid, ids, qty, context=None):
+        if 'line_id' not in context:
+            return
+        line_id = context['line_id']
+        line = self.browse(cr, uid, line_id, context)
+        return {'value': {'qty': qty}}
+
     def out_of_stock_button(self, cr, uid, ids, context=None):
         # Useless, button just for show an icon
         return
