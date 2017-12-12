@@ -79,6 +79,7 @@ class temp_mrp_bom(orm.Model):
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'product_id': fields.many2one('product.product', 'Product', required=True),
+        'original_qty': fields.float('Original Qty', required=True, digits_compute=dp.get_precision('Product UoM'), readonly=True),
         'product_qty': fields.float('Product Qty', required=True, digits_compute=dp.get_precision('Product UoM')),
         'product_uom': fields.many2one('product.uom', 'UOM', # Removed otherwise is impossible to add required=True,
                                        help="UoM (Unit of Measure) is the unit of measurement for the inventory control"),

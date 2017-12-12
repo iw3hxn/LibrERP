@@ -46,6 +46,7 @@
                                         <field name="product_id" context="{'line_id':parent.id}"
                                                on_change="onchange_temp_product_id(id,product_id,product_qty,is_manufactured,context)"
                                                attrs="{'readonly': [('level','=',0)]}"/>
+                                        <field name="original_qty"/>
                                         <field name="product_qty"/>
                                         <field name="product_uom" readonly="1"/>
                                         <field name="mrp_routing_id"/>

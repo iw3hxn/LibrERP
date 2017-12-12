@@ -188,6 +188,7 @@ class order_requirement_line(orm.Model):
             'type': bom.type,
             # 'mrp_bom_parent_id': bom_parent_id,
             'product_id': product_id,
+            'original_qty': bom.product_qty,
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
             'product_uos': bom.product_uos.id,
@@ -243,6 +244,7 @@ class order_requirement_line(orm.Model):
             'mrp_bom_id': False,
             'mrp_bom_parent_id': False,
             'product_id': product_id,
+            'original_qty': 1,
             'product_qty': 1,
             'product_uom': product.uom_id.id,
             # fixed to 0 with a product
