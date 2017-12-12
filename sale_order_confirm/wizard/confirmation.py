@@ -291,7 +291,6 @@ class sale_order_confirm(orm.TransientModel):
             'sale_line_copy_id': sale_order_line_data.sale_line_id.id or None
         }
 
-
     def sale_order_confirmated(self, cr, uid, ids, context=None):
         sale_order_obj = self.pool['sale.order']
         sale_order_line_obj = self.pool['sale.order.line']

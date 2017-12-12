@@ -112,3 +112,38 @@ class sale_order_line(orm.Model):
                                                                                             context).company_id.readonly_price_unit,
         'order_id': lambda self, cr, uid, context: context.get('default_sale_order', False) or False
     }
+
+    def default_get(self, cr, uid, fields, context=None):
+        """
+        """
+        if not context:
+            context = self.pool['res.users'].context_get(cr, uid)
+        res = super(sale_order_line, self).default_get(cr, uid, fields, context=context)
+        if not res.get('tax_id', False):
+            fpos_obj = self.pool['account.fiscal.position']
+            product_default_get = self.pool['product.product'].default_get(cr, uid, ['taxes_id', 'uom_id'])
+            taxes = product_default_get.get('taxes_id', False)
+            if taxes:
+                taxes = self.pool['account.tax'].browse(cr, uid, taxes, context)
+
+                if context.get('fiscal_position', False):
+                    fpos = fpos_obj.browse(cr, uid, context['fiscal_position'], context)
+                    if taxes:
+                        tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes)
+                    else:
+                        tax_id = []
+                else:
+                    if taxes:
+                        tax_id = [line.id for line in taxes]
+                    else:
+                        tax_id = []
+
+                res.update({
+                    'tax_id': [(6, 0, tax_id)],
+                })
+        uom_id = product_default_get.get('uom_id', False)
+        if uom_id:
+            res.update({
+                    'product_uom': uom_id
+            })
+        return res
