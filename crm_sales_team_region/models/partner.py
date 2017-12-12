@@ -7,6 +7,11 @@ from openerp.osv import orm, fields
 class ResPartner(orm.Model):
     _inherit = 'res.partner'
 
+    _columns = {
+        'region_id': fields.related('address', 'region', type='many2one', relation='res.region',
+                                     string='Region'),
+    }
+
     def create(self, cr, uid, values, context=None):
         city_model = self.pool['res.city']
         if 'address' in values and not values.get('section_id', False):

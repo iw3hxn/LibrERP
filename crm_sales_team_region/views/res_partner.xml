@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_res_region_form" model="ir.ui.view">
+            <field name="name">res.partner.region.search</field>
+            <field name="model">res.partner</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter" />
+            <field name="arch" type="xml">
+                <data>
+                    <field name="country" position="before">
+                        <field name="region_id"/>
+                        <newline/>
+                    </field>
+                </data>
+            </field>
+        </record>
+
+    </data>
+</openerp>

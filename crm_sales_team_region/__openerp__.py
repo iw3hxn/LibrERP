@@ -3,7 +3,7 @@
 
 {
     'name': 'CRM Sales Team Region',
-    'version': '4.0.0.0',
+    'version': '4.1.0.1',
     "author": "Didotech Srl",
     "website": "www.didotech.com",
     'category': 'Customer Relationship Management',
@@ -19,7 +19,8 @@ Module addes possibility to assign a region to a Sales Team and automatically as
         'l10n_it_base'
     ],
     "data": [
-        'views/crm_view.xml'
+        'views/crm_view.xml',
+        'views/res_partner.xml',
     ],
     "demo": [],
     "active": False,
