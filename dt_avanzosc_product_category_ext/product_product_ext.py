@@ -60,6 +60,10 @@ class product_product(orm.Model):
             res['purchase_ok'] = True
 
         if field == 'supply_method' and product and product_type != 'service':
+            if product and supply_method == 'produce':
+                if self.pool['mrp.bom'].search(cr, uid, [('product_id', '=', product.id), ('bom_id', '=', False)], context=context):
+                    res['supply_method'] = 'produce'
+                    return {'value': res}
             warn = {
                     'title': _('Error'),
                     'message': _("For change you need to create BOM"),

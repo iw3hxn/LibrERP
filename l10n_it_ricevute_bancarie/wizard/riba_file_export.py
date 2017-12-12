@@ -138,7 +138,7 @@ class riba_file_export(osv.osv_memory):
         accumulatore += self._RecordEF()
         self._progressivo = 0
         self._totale = 0
-        return accumulatore
+        return accumulatore.replace(u'�', ' ')
 
     def act_getfile(self, cr, uid, ids, context=None):
         active_ids = context and context.get('active_ids', [])
