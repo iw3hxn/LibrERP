@@ -194,6 +194,8 @@ class order_requirement_line(orm.Model):
             'product_efficiency': bom.product_efficiency,
             'product_rounding': bom.product_rounding,
             'product_type': bom.product_id.type,
+            'partial_cost': bom.product_id.standard_price,
+            'cost': 0,
             'is_manufactured': is_manufactured,
             'company_id': bom.company_id.id,
             'position': bom.position,
@@ -245,6 +247,8 @@ class order_requirement_line(orm.Model):
             # fixed to 0 with a product
             'product_efficiency': 0,
             'product_type': product.type,
+            'partial_cost': product.standard_price,
+            'cost': 0,
             'company_id': product.company_id.id,
             # 'position': product.position,
             'level': level,
@@ -300,6 +304,34 @@ class order_requirement_line(orm.Model):
 
         # Pass the first, recursion will do the rest
         _sort_rec(temp_mrp_bom_ids[0], temp_mrp_bom_ids)
+
+    @staticmethod
+    def _compute_cost(temp, temp_mrp_boms):
+        # Simple version -> sum of partial_cost
+        # COST: Cost of product itself + cost of all children
+        cost = temp['partial_cost']
+        # children = [t for t in temp_mrp_boms if t['bom_id'] == temp['id']]
+        # for child in children:
+        #     cost += order_requirement_line._compute_price(child, temp_mrp_boms)
+
+        for t in temp_mrp_boms:
+            if t.bom_id == temp.id:
+                cost += order_requirement_line._compute_cost(t, temp_mrp_boms)
+        temp.cost = cost
+        return cost
+
+    def _update_cost(self, cr, uid, line_id, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        line = self.browse(cr, uid, line_id, context)
+        if not line.temp_mrp_bom_ids:
+            return
+        temp = line.temp_mrp_bom_ids[0]
+        temp_mrp_boms = line.temp_mrp_bom_ids
+
+        order_requirement_line._compute_cost(temp, temp_mrp_boms)
+        for t in temp_mrp_boms:
+            temp_mrp_bom_obj.write(cr, uid, t.id, {'cost': t.cost}, context)
 
     def create_temp_mrp_bom(self, cr, uid, ids, product_id, father_temp_id, start_level, start_sequence=0,
                             create_father=True, create_children=True, context=None):
@@ -966,8 +998,9 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
 
         self._sort_temp_mrp_bom(cr, uid, ids, context)
-
+        self._update_cost(cr, uid, line_id, context)
         line = self.browse(cr, uid, line_id, context)
+
         new_temp_ids_formatted = [t.id for t in line.temp_mrp_bom_ids]
         new_temp_routing_ids_formatted = [t.id for t in line.temp_mrp_bom_routing_ids]
 
