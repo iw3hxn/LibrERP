@@ -234,15 +234,17 @@ class order_requirement_line(orm.Model):
         return {
             'name': product.name,
             'bom_id': temp_father_id,
-            # 'type': bom.type,
+            # Nonsense with a product
+            'type': 'normal',
             # mrp_bom_parent_id was very useful for reconstructing hierarchy
             'mrp_bom_id': False,
             'mrp_bom_parent_id': False,
             'product_id': product_id,
             'product_qty': 1,
             'product_uom': product.uom_id.id,
-            # 'product_efficiency': product.product_efficiency,
-            # 'product_type': product.type,
+            # fixed to 0 with a product
+            'product_efficiency': 0,
+            'product_type': product.type,
             'company_id': product.company_id.id,
             # 'position': product.position,
             'level': level,
@@ -854,13 +856,14 @@ class order_requirement_line(orm.Model):
             supplier_ids_formatted = line_vals['supplier_ids']
 
             line_vals.update({'new_product_id': product_id,
-                             'is_manufactured': is_manufactured,
+                              'is_manufactured': is_manufactured,
                               'supplier_ids': supplier_ids_formatted})
             self.write(cr, uid, line.id, line_vals, context)
             # Reload line
             line = self.browse(cr, uid, ids, context)[0]
 
         if is_manufactured and not line.temp_mrp_bom_ids:
+            # if line.product_id.
             temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, 0, True, True, context)
             if temp_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
@@ -869,6 +872,8 @@ class order_requirement_line(orm.Model):
                 if temp['is_leaf']:
                     # I don't want to see an "empty" bom with the father only
                     temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
+                    # Must purchase
+                    self.write(cr, uid, line.id, {'is_manufactured': False}, context)
 
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
                                                                'view_order_requirement_line_form')
