@@ -64,7 +64,8 @@ class mrp_production(osv.osv):
 
     _columns = {
         'is_from_order_requirement': fields.boolean(),
-        'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material', readonly=True)
+        'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material', readonly=True),
+        'level': fields.integer('Level', required=True)
     }
 
     _defaults = {

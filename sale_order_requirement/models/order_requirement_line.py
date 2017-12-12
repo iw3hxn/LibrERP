@@ -713,7 +713,6 @@ class order_requirement_line(orm.Model):
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
         if not father:
-            # I am creating a "main" product
             mrp_production_workcenter_line_obj = self.pool['mrp.production.workcenter.line']
             product = bom.product_id
             mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
@@ -722,7 +721,8 @@ class order_requirement_line(orm.Model):
                 'product_id': product.id,
                 'sale_id': bom.sale_order_id.id,
                 'is_from_order_requirement': True,
-                'temp_bom_id': bom.id
+                'temp_bom_id': bom.id,
+                'level': bom.level
             })
 
             # Create manufacturing order
@@ -733,55 +733,49 @@ class order_requirement_line(orm.Model):
             #     rout['production_id'] = mrp_production
             #     mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
             temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production})
-            return
-
-        # TODO ################
-        return
-        # TODO ################
-
-        # I am creating a "sub" product
-
-        # Adding lines if main product manufacturing order is present
-        # Reload browse record pointed by father
-        father = temp_mrp_bom_obj.browse(cr, uid, father.id, context)
-        mrp_production = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
-        if not mrp_production:
-            raise orm.except_orm(_(u'Error !'),
-                                 _(u'Main product order is missing for product {0}'.format(father.product_id.name)))
-
-        # Create stock picking if not already done
-        if mrp_production.picking_id:
-            picking_id = mrp_production.picking_id.id
         else:
-            picking_id = self._make_production_internal_shipment(cr, uid, mrp_production, context)
+            # TODO: TEST if father (split_mrp_productions is False)
+            # I am creating a "sub" product => This happens ONLY when res_partner.split_mrp_productions is False
+            # Adding lines if main product manufacturing order is present
+            # Reload browse record pointed by father
+            father = temp_mrp_bom_obj.browse(cr, uid, father.id, context)
             mrp_production = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
+            if not mrp_production:
+                raise orm.except_orm(_(u'Error !'),
+                                     _(u'Main product order is missing for product {0}'.format(father.product_id.name)))
 
-        # Create move line
-        source_location_id = mrp_production.location_src_id.id
-        destination_location_id = mrp_production.product_id.product_tmpl_id.property_stock_production.id
-        if not source_location_id:
+            # Create stock picking if not already done
+            if mrp_production.picking_id:
+                picking_id = mrp_production.picking_id.id
+            else:
+                picking_id = self._make_production_internal_shipment(cr, uid, mrp_production, context)
+                mrp_production = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
+
+            # Create move line
             source_location_id = mrp_production.location_src_id.id
+            destination_location_id = mrp_production.product_id.product_tmpl_id.property_stock_production.id
+            if not source_location_id:
+                source_location_id = mrp_production.location_src_id.id
 
-        # shop = father.sale_order_id.shop_id
-        # source_location_id = shop.warehouse_id.lot_stock_id.id
+            # shop = father.sale_order_id.shop_id
+            # source_location_id = shop.warehouse_id.lot_stock_id.id
 
-        stock_move_vals = {
-            'picking_id': picking_id,
-            'product_id': bom.product_id.id,
-            'product_qty': bom.product_qty,
-            'product_uom': bom.product_uom.id,
-            'location_id': source_location_id,
-            'location_dest_id': destination_location_id,
-        }
-        # # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
-        # Create in relationship with mrp.production
-        mrp_production_obj.write(cr, uid, mrp_production.id,
-                                 {'move_lines': [(0, False, stock_move_vals)]}, context=context)
+            stock_move_vals = {
+                'picking_id': picking_id,
+                'product_id': bom.product_id.id,
+                'product_qty': bom.product_qty,
+                'product_uom': bom.product_uom.id,
+                'location_id': source_location_id,
+                'location_dest_id': destination_location_id,
+            }
+            # # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
+            # Create in relationship with mrp.production
+            mrp_production_obj.write(cr, uid, mrp_production.id,
+                                     {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
     def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
         if temp.is_manufactured:
             self._manufacture_bom(cr, uid, father, temp, context)
-            # TODO: CHECK ==> Set as manufacture for ALL products, even leaf
             if not temp.is_leaf:
                 if temp.level > 0:
                     self._manufacture_bom(cr, uid, False, temp, context)

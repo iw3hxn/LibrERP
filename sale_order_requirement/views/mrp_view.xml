@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_mrp_production_filter_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.select.inherit</field>
+            <field name="inherit_id" ref="mrp.view_mrp_production_filter" />
+            <field name="model">mrp.production</field>
+            <field name="type">search</field>
+
+            <field name="arch" type="xml">
+                <filter name="inprogress" position="after">
+                    <filter icon="terp-product" string="Main Products" name="mainproducts" domain="[('level','=',0)]"
+                   help="Manufacturing Orders related to main products (no children BoM)"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="mrp_production_tree_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.tree.inherit</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view" />
+            <field name="model">mrp.production</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="level"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
