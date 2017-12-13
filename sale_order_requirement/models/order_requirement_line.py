@@ -588,7 +588,7 @@ class order_requirement_line(orm.Model):
         line_id = ids[0]
         line = self.browse(cr, uid, line_id, context)
         for temp in line.temp_mrp_bom_ids:
-            oldqty = temp.product_qty
+            oldqty = temp.original_qty
             temp_mrp_bom_obj.write(cr, uid, temp.id, {'product_qty': oldqty * qty}, context)
         self._update_cost(cr, uid, line_id, context)
         return {'value': {'qty': qty}}
