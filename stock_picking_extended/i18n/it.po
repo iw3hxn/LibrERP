@@ -254,6 +254,9 @@ msgstr "Porto"
 #: view:stock.picking.carriage_condition:0
 #: model:ir.actions.act_window,name:stock_picking_extended.action_carriage_condition_tree
 #: model:ir.ui.menu,name:stock_picking_extended.menu_action_carriage_condition_tree
+#: model:ir.actions.act_window,name:stock_picking_extended.action_carriage_condition_tree
+#: model:ir.ui.menu,name:stock_picking_extended.menu_action_carriage_condition_tree
+#: view:stock.picking.carriage_condition:0
 msgid "Carriage Conditions"
 msgstr "Porto"
 
@@ -527,8 +530,14 @@ msgstr "Vede Lavagna Ordini"
 msgid "Client"
 msgstr "Cliente"
 
-
 #. modules: stock_picking_extended
 #: selection:stock.picking,order_type:0
 msgid "Internal"
 msgstr "Interno"
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_stock_picking_goods_description
+#: view:stock.picking.goods_description:0
+#: field:stock.picking.goods_description,name:0
+msgid "Description of Goods"
+msgstr "Aspetto esteriore dei beni"
