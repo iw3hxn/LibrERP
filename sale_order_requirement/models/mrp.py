@@ -11,6 +11,7 @@ from tools.translate import _
 import netsvc
 import time
 import tools
+
 from operator import attrgetter
 
 class mrp_bom(osv.osv):
@@ -51,75 +52,64 @@ class mrp_bom(osv.osv):
                                                      string="BoM Hierarchy", type='many2many'),
     }
 
+    def _bom_explode(self, cr, uid, ids, bom, factor, properties=[], addthis=False, level=0, routing_id=False):
+        # This def is present only in order to ensure is callable from a bom: bom._bom_explode()
+        # The ids field was missing
+        return super(mrp_bom, self)._bom_explode(cr, uid, bom, factor, properties, addthis, level, routing_id)
+
 
 class mrp_production(osv.osv):
 
     _inherit = "mrp.production"
 
-    def action_confirm(self, cr, uid, ids, context=None):
-        """ Confirms production order.
-        @return: Newly generated Shipment Id.
-        """
-        shipment_id = False
-        wf_service = netsvc.LocalService("workflow")
-        uncompute_ids = filter(lambda x: x, [not x.product_lines and x.id or False for x in
-                                             self.browse(cr, uid, ids, context=context)])
+    _columns = {
+        'is_from_order_requirement': fields.boolean(),
+        'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material', readonly=True),
+        'level': fields.integer('Level', required=True)
+    }
 
-        # TODO: Serve? Anche se commentato, viene eseguita grazie a workflow ->
-        # self.action_compute(cr, uid, uncompute_ids, context=context)
-
-        for production in self.browse(cr, uid, ids, context=context):
-
-            shipment_id = production.picking_id.id
-
-            wf_service.trg_validate(uid, 'stock.picking', shipment_id, 'button_confirm', cr)
-            production.write({'state': 'confirmed'}, context=context)
-            message = _("Manufacturing order '%s' is scheduled for the %s.") % (
-                production.name,
-                datetime.strptime(production.date_planned, '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'),
-            )
-            self.log(cr, uid, production.id, message)
-        return shipment_id
+    _defaults = {
+        'is_from_order_requirement': False
+    }
 
     def action_compute(self, cr, uid, ids, properties=[], context=None):
         """ Computes bills of material of a product.
         @param properties: List containing dictionaries of properties.
         @return: No. of products.
+        If necessary, redirects to temp.mrp.bom instead of mrp.bom
         """
-        # TODO MUST change from mrp.bom to temp.mrp.bom and from routing_id to temp_routing?
-        # TODO return 0 for avoiding creation of "Prodotti programmati"
-        return 0
+        # action_compute is the Entry point for intercepting the mrp production
+        productions = self.browse(cr, uid, ids)
+        if not productions:
+            return 0
+        if not productions[0].is_from_order_requirement:
+            return super(mrp_production, self).action_compute(cr, uid, ids, properties, context)
 
+        # If production order was created by order requirement, behaviour is different
         results = []
-        bom_obj = self.pool.get('mrp.bom')
-        uom_obj = self.pool.get('product.uom')
-        prod_line_obj = self.pool.get('mrp.production.product.line')
-        workcenter_line_obj = self.pool.get('mrp.production.workcenter.line')
+        bom_obj = self.pool['temp.mrp.bom']
+        uom_obj = self.pool['product.uom']
+        prod_line_obj = self.pool['mrp.production.product.line']
+        workcenter_line_obj = self.pool['mrp.production.workcenter.line']
         for production in self.browse(cr, uid, ids):
             cr.execute('delete from mrp_production_product_line where production_id=%s', (production.id,))
             cr.execute('delete from mrp_production_workcenter_line where production_id=%s', (production.id,))
-            bom_point = production.bom_id
-            bom_id = production.bom_id.id
-            if not bom_point:
-                bom_id = bom_obj._bom_find(cr, uid, production.product_id.id, production.product_uom.id, properties)
-                if bom_id:
-                    bom_point = bom_obj.browse(cr, uid, bom_id)
-                    routing_id = bom_point.routing_id.id or False
-                    self.write(cr, uid, [production.id], {'bom_id': bom_id, 'routing_id': routing_id})
 
-            if not bom_id:
+            bom_point = production.temp_bom_id
+            bom_id = production.temp_bom_id.id
+
+            if not (bom_point or bom_id):
                 raise osv.except_osv(_('Error'), _("Couldn't find a bill of material for this product."))
             factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
-            res = bom_obj._bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, properties, routing_id=production.routing_id.id)
+            # Forcing routing_id to False, the lines are linked directly to temp_mrp_bom
+            res = bom_obj._bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, properties, routing_id=False,
+                                       is_from_order_requirement=True)
             results = res[0]
             results2 = res[1]
             for line in results:
-                # TODO => This will create "Prodotti programmati"
                 line['production_id'] = production.id
                 prod_line_obj.create(cr, uid, line)
-
             for line in results2:
-                # TODO -=> DON'T create, we already have it in _manufacture_bom
                 line['production_id'] = production.id
                 workcenter_line_obj.create(cr, uid, line)
         return len(results)

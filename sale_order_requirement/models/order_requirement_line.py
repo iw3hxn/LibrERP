@@ -5,24 +5,12 @@ import tools
 from tools.translate import _
 
 import decimal_precision as dp
-from mrp import mrp_bom
 from openerp.osv import orm, fields
 from temp_mrp_bom import temp_mrp_bom
+from ..util import rounding
 
 routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
 sequence = 0
-
-def rounding(f, r):
-    import math
-    if not r:
-        return f
-    return math.ceil(f / r) * r
-
-# def fix_fields(vals):
-#     if vals:
-#         for key in vals:
-#             if isinstance(vals[key], tuple):
-#                 vals[key] = vals[key][0]
 
 class order_requirement_line(orm.Model):
 
@@ -197,12 +185,19 @@ class order_requirement_line(orm.Model):
             'bom_id': temp_father_id,
             # mrp_bom_parent_id was very useful for reconstructing hierarchy
             'mrp_bom_id': bom.id,
+            'type': bom.type,
             # 'mrp_bom_parent_id': bom_parent_id,
             'product_id': product_id,
+            'original_qty': bom.product_qty,
             'product_qty': bom.product_qty,
             'product_uom': bom.product_uom.id,
+            'product_uos': bom.product_uos.id,
             'product_efficiency': bom.product_efficiency,
+            'product_rounding': bom.product_rounding,
             'product_type': bom.product_id.type,
+            # TODO: VERSION STANDARD_PRICE
+            'partial_cost': bom.product_id.standard_price,
+            'cost': 0,
             'is_manufactured': is_manufactured,
             'company_id': bom.company_id.id,
             'position': bom.position,
@@ -243,14 +238,21 @@ class order_requirement_line(orm.Model):
         return {
             'name': product.name,
             'bom_id': temp_father_id,
+            # Nonsense with a product
+            'type': 'normal',
             # mrp_bom_parent_id was very useful for reconstructing hierarchy
             'mrp_bom_id': False,
             'mrp_bom_parent_id': False,
             'product_id': product_id,
+            'original_qty': 1,
             'product_qty': 1,
             'product_uom': product.uom_id.id,
-            # 'product_efficiency': product.product_efficiency,
-            # 'product_type': product.type,
+            # fixed to 0 with a product
+            'product_efficiency': 0,
+            'product_type': product.type,
+            # TODO: VERSION STANDARD_PRICE
+            'partial_cost': product.standard_price,
+            'cost': 0,
             'company_id': product.company_id.id,
             # 'position': product.position,
             'level': level,
@@ -307,6 +309,32 @@ class order_requirement_line(orm.Model):
         # Pass the first, recursion will do the rest
         _sort_rec(temp_mrp_bom_ids[0], temp_mrp_bom_ids)
 
+    @staticmethod
+    def _compute_cost(temp, temp_mrp_boms):
+        # Simple version -> sum of partial_cost
+        # COST: Cost of product itself + cost of all children
+        cost = temp.partial_cost #* temp.product_qty #TODO VERIFY
+
+        # Children
+        for t in temp_mrp_boms:
+            if t.bom_id.id == temp.id:
+                cost += order_requirement_line._compute_cost(t, temp_mrp_boms)
+        temp.cost = cost
+        return cost
+
+    def _update_cost(self, cr, uid, line_id, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        line = self.browse(cr, uid, line_id, context)
+        if not line.temp_mrp_bom_ids:
+            return
+        temp = line.temp_mrp_bom_ids[0]
+        temp_mrp_boms = line.temp_mrp_bom_ids
+
+        order_requirement_line._compute_cost(temp, temp_mrp_boms)
+        for t in temp_mrp_boms:
+            temp_mrp_bom_obj.write(cr, uid, t.id, {'cost': t.cost}, context)
+
     def create_temp_mrp_bom(self, cr, uid, ids, product_id, father_temp_id, start_level, start_sequence=0,
                             create_father=True, create_children=True, context=None):
         # Returns 2 list of VALS (probably not needed)
@@ -334,7 +362,6 @@ class order_requirement_line(orm.Model):
                 return
             for bom in bom_children:
                 if bom.product_id.type == 'product':
-                    # TODO ==> Maybe use get_temp_vals
                     temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, father_id, level, context)
                     temp_vals['sequence'] = sequence
                     sequence += 1
@@ -352,7 +379,6 @@ class order_requirement_line(orm.Model):
 
         if not bom_ids:
             # It's a product with no BoM
-            # TODO ==> Maybe unify with below -> use get_temp_vals
             temp_vals = self._get_temp_vals_from_product(cr, uid, ids, product, father_temp_id, start_level, context)
             temp_vals['sequence'] = sequence
             sequence += 1
@@ -391,9 +417,13 @@ class order_requirement_line(orm.Model):
             raise orm.except_orm(_(u'Error !'),
                                  _(u'Not created, product error: {0}'.format(product.name)))
 
+        self._update_cost(cr, uid, ids[0], context)
+
+        # TODO vals not updated
         return temp_mrp_bom_vals, temp_mrp_routing_vals
 
     def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
+        # TODO: CAN BE REMOVED?
         context = context or self.pool['res.users'].context_get(cr, uid)
         view_bom = 'view_bom' in context and context['view_bom']
 
@@ -553,6 +583,16 @@ class order_requirement_line(orm.Model):
 
         return {'value': result_dict}
 
+    def onchange_qty(self, cr, uid, ids, qty, context=None):
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        line_id = ids[0]
+        line = self.browse(cr, uid, line_id, context)
+        for temp in line.temp_mrp_bom_ids:
+            oldqty = temp.product_qty
+            temp_mrp_bom_obj.write(cr, uid, temp.id, {'product_qty': oldqty * qty}, context)
+        self._update_cost(cr, uid, line_id, context)
+        return {'value': {'qty': qty}}
+
     def _get_temp_routing(self, bom):
         # Retrieve routing
         routing_vals = []
@@ -569,7 +609,7 @@ class order_requirement_line(orm.Model):
             })
         return routing_vals
 
-    def _make_production_internal_shipment(self, cr, uid, production, context=None):
+    def NO_NO_NO_make_production_internal_shipment(self, cr, uid, production, context=None):
         ir_sequence = self.pool.get('ir.sequence')
         stock_picking = self.pool.get('stock.picking')
         pick_type = 'internal'
@@ -721,66 +761,77 @@ class order_requirement_line(orm.Model):
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
         if not father:
-            # I am creating a "main" product
-            mrp_production_workcenter_line_obj = self.pool['mrp.production.workcenter.line']
             product = bom.product_id
-            mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
-            mrp_production_values['product_id'] = product.id
-            mrp_production_values['sale_id'] = bom.sale_order_id.id
+            # If another production order is present and not started, queue to it
+            mrp_productions = mrp_production_obj.search(cr, uid, [('product_id', '=', product.id),
+                                                                  ('state', '=', 'draft')], context=context)
 
-            # Create manufacturing order
-            mrp_production = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
-            temp_routing_vals = self._get_temp_routing(bom)
-            for rout in temp_routing_vals:
-                rout['production_id'] = mrp_production
-                mrp_production_workcenter_line_obj.create(cr, uid, rout, context)
+            if mrp_productions:
+                mrp_production = mrp_productions[0]
+                mrp_production_obj.write(cr, uid, mrp_production.id,
+                                         {'product_qty': mrp_production.product_qty + bom.product_qty}, context)
+            else:
+                mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
+
+                mrp_production_values.update({
+                    'product_id': product.id,
+                    'product_qty': bom.product_qty,
+                    'sale_id': bom.sale_order_id.id,
+                    'is_from_order_requirement': True,
+                    'temp_bom_id': bom.id,
+                    'level': bom.level
+                })
+
+                # Create manufacturing order
+                mrp_production = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
+
             temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production})
-            return
 
-        # I am creating a "sub" product
-
-        # Adding lines if main product manufacturing order is present
-        # Reload browse record pointed by father
-        father = temp_mrp_bom_obj.browse(cr, uid, father.id, context)
-        mrp_production = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
-        if not mrp_production:
-            raise orm.except_orm(_(u'Error !'),
-                                 _(u'Main product order is missing for product {0}'.format(father.product_id.name)))
-
-        # Create stock picking if not already done
-        if mrp_production.picking_id:
-            picking_id = mrp_production.picking_id.id
         else:
-            picking_id = self._make_production_internal_shipment(cr, uid, mrp_production, context)
+            # TODO: TEST if father (split_mrp_productions is False)
+            return
+            # I am creating a "sub" product => This happens ONLY when res_partner.split_mrp_productions is False
+            # Adding lines if main product manufacturing order is present
+            # Reload browse record pointed by father
+            father = temp_mrp_bom_obj.browse(cr, uid, father.id, context)
             mrp_production = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
+            if not mrp_production:
+                raise orm.except_orm(_(u'Error !'),
+                                     _(u'Main product order is missing for product {0}'.format(father.product_id.name)))
 
-        # Create move line
-        source_location_id = mrp_production.location_src_id.id
-        destination_location_id = mrp_production.product_id.product_tmpl_id.property_stock_production.id
-        if not source_location_id:
+            # Create stock picking if not already done
+            if mrp_production.picking_id:
+                picking_id = mrp_production.picking_id.id
+            else:
+                picking_id = self._make_production_internal_shipment(cr, uid, mrp_production, context)
+                mrp_production = mrp_production_obj.browse(cr, uid, father.mrp_production_id.id, context)
+
+            # Create move line
             source_location_id = mrp_production.location_src_id.id
+            destination_location_id = mrp_production.product_id.product_tmpl_id.property_stock_production.id
+            if not source_location_id:
+                source_location_id = mrp_production.location_src_id.id
 
-        # shop = father.sale_order_id.shop_id
-        # source_location_id = shop.warehouse_id.lot_stock_id.id
+            # shop = father.sale_order_id.shop_id
+            # source_location_id = shop.warehouse_id.lot_stock_id.id
 
-        stock_move_vals = {
-            'picking_id': picking_id,
-            'product_id': bom.product_id.id,
-            'product_qty': bom.product_qty,
-            'product_uom': bom.product_uom.id,
-            'location_id': source_location_id,
-            'location_dest_id': destination_location_id,
-        }
-        # # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
-        # Create in relationship with mrp.production
-        mrp_production_obj.write(cr, uid, mrp_production.id,
-                                 {'move_lines': [(0, False, stock_move_vals)]}, context=context)
+            stock_move_vals = {
+                'picking_id': picking_id,
+                'product_id': bom.product_id.id,
+                'product_qty': bom.product_qty,
+                'product_uom': bom.product_uom.id,
+                'location_id': source_location_id,
+                'location_dest_id': destination_location_id,
+            }
+            # # stock_move_id = stock_move_obj.create(cr, uid, stock_move_vals, context)
+            # Create in relationship with mrp.production
+            mrp_production_obj.write(cr, uid, mrp_production.id,
+                                     {'move_lines': [(0, False, stock_move_vals)]}, context=context)
 
     def _manufacture_or_purchase_explode(self, cr, uid, father, temp, context):
         if temp.is_manufactured:
             self._manufacture_bom(cr, uid, father, temp, context)
-            # TODO: CHECK ==> Set as manufacture for ALL products, even leaf
             if not temp.is_leaf:
                 if temp.level > 0:
                     self._manufacture_bom(cr, uid, False, temp, context)
@@ -806,8 +857,8 @@ class order_requirement_line(orm.Model):
             # Explode orders
             self._manufacture_or_purchase_explode(cr, uid, False, temp, context)
         else:
-            # TODO: Complete the routing with all the bom routing lines
             # Not multiorder -> First the father
+            # TODO: Complete the routing with all the bom routing lines
             father_bom = line.temp_mrp_bom_ids[0]
             if father_bom.is_manufactured:
                 self._manufacture_bom(cr, uid, False, father_bom, context)
@@ -859,13 +910,14 @@ class order_requirement_line(orm.Model):
             supplier_ids_formatted = line_vals['supplier_ids']
 
             line_vals.update({'new_product_id': product_id,
-                             'is_manufactured': is_manufactured,
+                              'is_manufactured': is_manufactured,
                               'supplier_ids': supplier_ids_formatted})
             self.write(cr, uid, line.id, line_vals, context)
             # Reload line
             line = self.browse(cr, uid, ids, context)[0]
 
         if is_manufactured and not line.temp_mrp_bom_ids:
+            # if line.product_id.
             temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, 0, True, True, context)
             if temp_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
@@ -874,6 +926,8 @@ class order_requirement_line(orm.Model):
                 if temp['is_leaf']:
                     # I don't want to see an "empty" bom with the father only
                     temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
+                    # Must purchase
+                    self.write(cr, uid, line.id, {'is_manufactured': False}, context)
 
         view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
                                                                'view_order_requirement_line_form')
@@ -966,8 +1020,9 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
 
         self._sort_temp_mrp_bom(cr, uid, ids, context)
-
+        self._update_cost(cr, uid, line_id, context)
         line = self.browse(cr, uid, line_id, context)
+
         new_temp_ids_formatted = [t.id for t in line.temp_mrp_bom_ids]
         new_temp_routing_ids_formatted = [t.id for t in line.temp_mrp_bom_routing_ids]
 
