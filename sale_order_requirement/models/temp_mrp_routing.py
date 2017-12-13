@@ -24,3 +24,5 @@ class temp_mrp_routing(orm.Model):
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line',
                                                      required=True, ondelete='cascade')
     }
+
+    _order = "sequence,id"

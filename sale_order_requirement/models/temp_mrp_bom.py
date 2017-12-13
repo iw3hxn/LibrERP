@@ -238,8 +238,7 @@ class temp_mrp_bom(orm.Model):
         # Useless, button just for show an icon
         return
 
-    def _bom_explode(self, cr, uid, bom, factor, properties=[], addthis=False, level=0, routing_id=False,
-                     is_from_order_requirement=False):
+    def _bom_explode(self, cr, uid, bom_father, factor, properties=[], addthis=False, level=0, routing_id=False):
         """ Finds Products and Work Centers for related BoM for manufacturing order.
         @param bom: BoM of particular product.
         @param factor: Factor of product UoM.
@@ -249,49 +248,39 @@ class temp_mrp_bom(orm.Model):
         @return: result: List of dictionaries containing product details.
                  result2: List of dictionaries containing Work Center details.
         """
+        # TODO: Remove unused parameters
         # NOTE: MRP.BOM version will find only the first-level children. Not good for temp.mrp.bom
-
-        factor = factor / (bom.product_efficiency or 1.0)
-        factor = rounding(factor, bom.product_rounding)
-        if factor < bom.product_rounding:
-            factor = bom.product_rounding
-        result = []
-        result2 = []
-        phantom = False
         # WARNING: PHANTOM KITS NOT MANAGED
 
-        # REMOVED condition: if bom.type == 'phantom' and not bom.bom_lines
-        if not phantom:
-            if addthis and not bom.bom_lines:
-                result.append(
-                    {
-                        'name': bom.product_id.name,
-                        'product_id': bom.product_id.id,
-                        'product_qty': bom.product_qty * factor,
-                        'product_uom': bom.product_uom.id,
-                        'product_uos_qty': bom.product_uos and bom.product_uos_qty * factor or False,
-                        'product_uos': bom.product_uos and bom.product_uos.id or False,
-                    })
-            # routing = (routing_id and routing_obj.browse(cr, uid, routing_id)) or bom.routing_id or False
-            # if routing:
-            for wc_use in bom.temp_mrp_routing_lines:
-                wc = wc_use.workcenter_id
-                d, m = divmod(factor, wc_use.workcenter_id.capacity_per_cycle)
-                mult = (d + (m and 1.0 or 0.0))
-                cycle = mult * wc_use.cycle
-                result2.append({
-                    'name': tools.ustr(wc_use.name) + ' - ' + tools.ustr(bom.product_id.name),
-                    'workcenter_id': wc.id,
-                    'sequence': level + (wc_use.sequence or 0),
-                    'cycle': cycle,
-                    'hour': float(wc_use.hour * mult + (
-                            (wc.time_start or 0.0) + (wc.time_stop or 0.0) + cycle * (wc.time_cycle or 0.0)) * (
-                                          wc.time_efficiency or 1.0)),
+        result = []
+        result2 = []
+
+        # First level children ONLY
+        for bom in bom_father.bom_lines:
+            factor = factor / (bom.product_efficiency or 1.0)
+            factor = rounding(factor, bom.product_rounding)
+            if factor < bom.product_rounding:
+                factor = bom.product_rounding
+
+            result.append(
+                {
+                    'name': bom.product_id.name,
+                    'product_id': bom.product_id.id,
+                    'product_qty': bom.product_qty * factor,
+                    'product_uom': bom.product_uom.id,
+                    'product_uos_qty': bom.product_uos and bom.product_uos_qty * factor or False,
+                    'product_uos': bom.product_uos and bom.product_uos.id or False,
                 })
-            for bom2 in bom.bom_lines:
-                res = self._bom_explode(cr, uid, bom2, factor, properties, addthis=True, level=level + 10,
-                                        routing_id=False, is_from_order_requirement=True)
-                result = result + res[0]
-                result2 = result2 + res[1]
+
+            # Routing lines directly referenced by temp mrp bom
+            for wc_use in bom.temp_mrp_routing_lines:
+                result2.append({
+                    'name': wc_use.name,
+                    'workcenter_id': wc_use.workcenter_id.id,
+                    'sequence': wc_use.sequence,
+                    'cycle': wc_use.cycle,
+                    'hour': wc_use.hour
+                })
+
         return result, result2
 

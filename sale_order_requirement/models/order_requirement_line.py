@@ -112,6 +112,9 @@ class order_requirement_line(orm.Model):
 
     def get_routing_lines(self, cr, uid, ids, bom, temp_id, color, context=None):
         mrp_routing_workcenter_obj = self.pool['mrp.routing.workcenter']
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+
+        temp = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
 
         routing_id = self.get_routing_id(cr, uid, bom.product_id.id, context)
         workcenter_lines = mrp_routing_workcenter_obj.search_browse(cr, uid, [('routing_id', '=', routing_id)], context)
@@ -140,11 +143,16 @@ class order_requirement_line(orm.Model):
                 d, m = divmod(factor, wcl.workcenter_id.capacity_per_cycle)
                 mult = (d + (m and 1.0 or 0.0))
                 cycle = mult * wcl.cycle_nbr
+                if temp.level == 0:
+                    seqfactor = 10000
+                else:
+                    seqfactor = 20 * temp.sequence
                 routing_vals = {
                     'mrp_routing_id': routing_id,
                     'name': tools.ustr(wcl.name) + ' - ' + tools.ustr(bom.product_id.name),
                     'workcenter_id': wc.id,
-                    'sequence': wcl.sequence,
+                    # TODO: SEQUENCE !!! Here or when producing?
+                    'sequence': seqfactor + wcl.sequence,
                     'cycle': cycle,
                     'hour': float(wcl.hour_nbr * mult + (
                         (wc.time_start or 0.0) + (wc.time_stop or 0.0) + cycle * (wc.time_cycle or 0.0)) * (
