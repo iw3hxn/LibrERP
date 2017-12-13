@@ -764,12 +764,12 @@ class order_requirement_line(orm.Model):
             product = bom.product_id
 
             # If another production order is present and not started, queue to it
-            mrp_productions = mrp_production_obj.search(cr, uid, [('product_id', '=', product.id),
+            mrp_production_ids = mrp_production_obj.search(cr, uid, [('product_id', '=', product.id),
                                                                   ('state', '=', 'draft')], context=context)
 
-            if mrp_productions:
-                mrp_production = mrp_productions[0]
-                mrp_production_obj.write(cr, uid, mrp_production.id,
+            if False and mrp_production_ids:
+                mrp_production_id = mrp_production_ids[0]
+                mrp_production_obj.write(cr, uid, mrp_production_id,
                                          {'product_qty': mrp_production.product_qty + bom.product_qty}, context)
             else:
                 mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
