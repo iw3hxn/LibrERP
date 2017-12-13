@@ -52,11 +52,6 @@ class mrp_bom(osv.osv):
                                                      string="BoM Hierarchy", type='many2many'),
     }
 
-    def _bom_explode(self, cr, uid, ids, bom, factor, properties=[], addthis=False, level=0, routing_id=False):
-        # This def is present only in order to ensure is callable from a bom: bom._bom_explode()
-        # The ids field was missing
-        return super(mrp_bom, self)._bom_explode(cr, uid, bom, factor, properties, addthis, level, routing_id)
-
 
 class mrp_production(osv.osv):
 
@@ -69,7 +64,8 @@ class mrp_production(osv.osv):
     }
 
     _defaults = {
-        'is_from_order_requirement': False
+        'is_from_order_requirement': False,
+        'level': 0
     }
 
     def action_compute(self, cr, uid, ids, properties=[], context=None):

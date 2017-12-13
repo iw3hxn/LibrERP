@@ -249,10 +249,7 @@ class temp_mrp_bom(orm.Model):
         @return: result: List of dictionaries containing product details.
                  result2: List of dictionaries containing Work Center details.
         """
-
-        if not is_from_order_requirement:
-            return bom._bom_explode(bom=bom, factor=factor, properties=[], addthis=False, level=0,
-                                    routing_id=False)
+        # NOTE: MRP.BOM version will find only the first-level children. Not good for temp.mrp.bom
 
         factor = factor / (bom.product_efficiency or 1.0)
         factor = rounding(factor, bom.product_rounding)
@@ -261,6 +258,7 @@ class temp_mrp_bom(orm.Model):
         result = []
         result2 = []
         phantom = False
+        # WARNING: PHANTOM KITS NOT MANAGED
 
         # REMOVED condition: if bom.type == 'phantom' and not bom.bom_lines
         if not phantom:
