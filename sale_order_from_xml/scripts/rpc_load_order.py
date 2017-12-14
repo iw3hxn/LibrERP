@@ -46,7 +46,6 @@ class OpenErpRpc60(object):
 
 if __name__ == "__main__":
     from config_rpc import config
-    path = '/Users/andrei/Programming/lp/LibrERP/sale_order_from_xml/examples'
-    rpc = OpenErpRpc60(config)
 
-    rpc.execute('sale.order', 'load_orders', path)
+    rpc = OpenErpRpc60(config)
+    rpc.execute('sale.order', 'load_orders', False)

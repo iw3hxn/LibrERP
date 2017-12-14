@@ -16,10 +16,13 @@ wf_service = netsvc.LocalService("workflow")
 class SaleOrder(orm.Model):
     _inherit = 'sale.order'
 
-    def load_orders(self, cr, uid, path, context=None):
+    def load_orders(self, cr, uid, path=False, context=None):
         black_list = (
             '.DS_Store',
         )
+
+        company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+        path = path or company.order_import_path
 
         for xml_order_file_name in os.listdir(path):
             if xml_order_file_name not in black_list:
@@ -35,7 +38,8 @@ class SaleOrder(orm.Model):
 
                     if new_order_id:
                         os.rename(xml_order_file, os.path.join(processed_dir, xml_order_file_name))
-                        wf_service.trg_validate(uid, 'sale.order', new_order_id, 'order_confirm', cr)
+                        if company.order_import_auto_confirm:
+                            wf_service.trg_validate(uid, 'sale.order', new_order_id, 'order_confirm', cr)
 
         return True
 
