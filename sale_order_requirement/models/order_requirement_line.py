@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
+import time
+
 import tools
 from tools.translate import _
 
 import decimal_precision as dp
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from temp_mrp_bom import temp_mrp_bom
 from ..util import rounding
 
@@ -151,7 +154,6 @@ class order_requirement_line(orm.Model):
                     'mrp_routing_id': routing_id,
                     'name': tools.ustr(wcl.name) + ' - ' + tools.ustr(bom.product_id.name),
                     'workcenter_id': wc.id,
-                    # TODO: SEQUENCE !!! Here or when producing?
                     'sequence': seqfactor + wcl.sequence,
                     'cycle': cycle,
                     'hour': float(wcl.hour_nbr * mult + (
@@ -165,6 +167,40 @@ class order_requirement_line(orm.Model):
                 }
                 ret_vals.append(routing_vals)
         return ret_vals
+
+    def _compute_supplier_price(self, cr, uid, ids, product, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+
+        if product.prefered_supplier:
+            pricelist = product.prefered_supplier.property_product_pricelist_purchase or False
+            ctx = {
+                'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+            }
+            if context.get('partner_name', False):
+                partner_name = context.get('partner_name')
+                partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
+                partner_id = partner_ids[0]
+            else:
+                partner_id = False
+            price = \
+            self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, partner_id, context=ctx)[
+                pricelist.id] or 0
+
+            price_subtotal = 0.0
+            if pricelist:
+                from_currency = pricelist.currency_id.id
+                to_currency = user.company_id.currency_id.id
+                price_subtotal = self.pool['res.currency'].compute(
+                    cr, uid,
+                    from_currency_id=from_currency,
+                    to_currency_id=to_currency,
+                    from_amount=price,
+                    context=context
+                )
+            return price_subtotal or price or product.standard_price
+        else:
+            return product.standard_price
 
     def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, temp_father_id, level, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -188,6 +224,11 @@ class order_requirement_line(orm.Model):
         stock_spare = self.generic_stock_availability(cr, uid, [], product, warehouse_id, context)
         routing_id = self.get_routing_id(cr, uid, product_id, context)
 
+        # partial_cost = bom.product_id.cost_price
+        partial_cost = 0
+        if is_leaf:
+            partial_cost = self._compute_supplier_price(cr, uid, ids, bom.product_id, context)
+
         return {
             'name': bom.name,
             'bom_id': temp_father_id,
@@ -203,8 +244,7 @@ class order_requirement_line(orm.Model):
             'product_efficiency': bom.product_efficiency,
             'product_rounding': bom.product_rounding,
             'product_type': bom.product_id.type,
-            # TODO: VERSION STANDARD_PRICE
-            'partial_cost': bom.product_id.standard_price,
+            'partial_cost': partial_cost,
             'cost': 0,
             'is_manufactured': is_manufactured,
             'company_id': bom.company_id.id,
@@ -243,6 +283,10 @@ class order_requirement_line(orm.Model):
         stock_spare = self.generic_stock_availability(cr, uid, [], product, warehouse_id, context)
         routing_id = self.get_routing_id(cr, uid, product_id, context)
 
+        partial_cost = 0
+        if is_leaf:
+            partial_cost = self._compute_supplier_price(cr, uid, ids, product, context)
+
         return {
             'name': product.name,
             'bom_id': temp_father_id,
@@ -258,8 +302,7 @@ class order_requirement_line(orm.Model):
             # fixed to 0 with a product
             'product_efficiency': 0,
             'product_type': product.type,
-            # TODO: VERSION STANDARD_PRICE
-            'partial_cost': product.standard_price,
+            'partial_cost': partial_cost,
             'cost': 0,
             'company_id': product.company_id.id,
             # 'position': product.position,
@@ -317,31 +360,56 @@ class order_requirement_line(orm.Model):
         # Pass the first, recursion will do the rest
         _sort_rec(temp_mrp_bom_ids[0], temp_mrp_bom_ids)
 
-    @staticmethod
-    def _compute_cost(temp, temp_mrp_boms):
+    def _compute_cost(self, cr, uid, ids, temp, temp_mrp_boms, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
         # Simple version -> sum of partial_cost
         # COST: Cost of product itself + cost of all children
-        cost = temp.partial_cost #* temp.product_qty #TODO VERIFY
+        # NOTE: Original quantity is what is really matters -> I want cost of a single piece
+        uom_obj = self.pool['product.uom']
+        uom = uom_obj.browse(cr, uid, temp.product_uom.id, context)
+        qty = temp.original_qty
+
+        factor = uom.factor or 1
+
+        amount = qty / factor
+        rounding(amount * factor, uom.rounding)
+
+        cost = temp.partial_cost * amount
 
         # Children
         for t in temp_mrp_boms:
             if t.bom_id.id == temp.id:
-                cost += order_requirement_line._compute_cost(t, temp_mrp_boms)
+                cost += self._compute_cost(cr, uid, ids, t, temp_mrp_boms, context)
         temp.cost = cost
         return cost
 
     def _update_cost(self, cr, uid, line_id, context):
+        # Update all temp mrp cost, returns total cost
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         line = self.browse(cr, uid, line_id, context)
         if not line.temp_mrp_bom_ids:
-            return
+            # TODO: LINE COST (When no BOM is present)
+            total_cost = line.product_id.cost_price
+            line_vals = {'cost': total_cost}
+            if line.original_cost is None:
+                line_vals.update({'original_cost': total_cost})
+            self.write(cr, uid, line_id, line_vals, context)
+            return total_cost
         temp = line.temp_mrp_bom_ids[0]
         temp_mrp_boms = line.temp_mrp_bom_ids
 
-        order_requirement_line._compute_cost(temp, temp_mrp_boms)
+        self._compute_cost(cr, uid, [], temp, temp_mrp_boms, context)
         for t in temp_mrp_boms:
             temp_mrp_bom_obj.write(cr, uid, t.id, {'cost': t.cost}, context)
+
+        total_cost = temp_mrp_boms[0].cost
+        line_vals = {'cost': total_cost}
+        if line.original_cost is None:
+            line_vals.update({'original_cost': total_cost})
+        self.write(cr, uid, line_id, line_vals, context)
+        return total_cost
 
     def create_temp_mrp_bom(self, cr, uid, ids, product_id, father_temp_id, start_level, start_sequence=0,
                             create_father=True, create_children=True, context=None):
@@ -383,7 +451,7 @@ class order_requirement_line(orm.Model):
 
                     _get_rec(bom, temp_id, level + 1)
                 # elif bom.product_id.type == 'service'
-                # TODO => ? Create routing when product type = service
+                # TODO => ROUTING FROM product type = service
 
         if not bom_ids:
             # It's a product with no BoM
@@ -394,7 +462,7 @@ class order_requirement_line(orm.Model):
             temp_vals['id'] = temp_id
             temp_mrp_bom_vals.append(temp_vals)
             # Calculate routing for Father Bom(s)
-            # TODO ROUTING FROM PRODUCT ? EX.: I buy a product and I want to paint it
+            # TODO => ROUTING FROM PRODUCT ? EX.: I buy a product and I want to paint it
             # temp_mrp_routing_vals.extend(self.get_routing_lines(cr, uid, ids, bom, temp_id, 'black', context))
             return temp_mrp_bom_vals, temp_mrp_routing_vals
 
@@ -426,41 +494,40 @@ class order_requirement_line(orm.Model):
                                  _(u'Not created, product error: {0}'.format(product.name)))
 
         self._update_cost(cr, uid, ids[0], context)
-
-        # TODO vals not updated
+        # TODO vals not updated after _update_cost
         return temp_mrp_bom_vals, temp_mrp_routing_vals
 
-    def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
-        # TODO: CAN BE REMOVED?
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        view_bom = 'view_bom' in context and context['view_bom']
-
-        res = {}
-        for line in self.browse(cr, uid, ids, context):
-            res[line.id] = {
-                'temp_mrp_bom_ids': False,
-                'temp_mrp_bom_routing_ids': False,
-            }
-            if not view_bom:
-                continue
-            if line.temp_mrp_bom_ids:
-                res[line.id]['temp_mrp_bom_ids'] = [t.id for t in line.temp_mrp_bom_ids]
-                res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line.temp_mrp_bom_routing_ids]
-            else:
-                # does not work here
-                # product = line.actual_product
-                if line.new_product_id:
-                    product = line.new_product_id
-                elif line.product_id:
-                    product = line.product_id
-                self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, 0, True, True, context)
-                # res[line.id]['temp_mrp_bom_ids'] = temp_mrp_bom_vals
-                # res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
-                line_reload = self.browse(cr, uid, line.id, context)
-                res[line.id]['temp_mrp_bom_ids'] = [t.id for t in line_reload.temp_mrp_bom_ids]
-                res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line_reload.temp_mrp_routing_ids]
-
-        return res
+    # def _get_or_create_temp_bom(self, cr, uid, ids, name, args, context=None):
+    #     # TODO: NOT USED, can it be removed?
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     view_bom = 'view_bom' in context and context['view_bom']
+    #
+    #     res = {}
+    #     for line in self.browse(cr, uid, ids, context):
+    #         res[line.id] = {
+    #             'temp_mrp_bom_ids': False,
+    #             'temp_mrp_bom_routing_ids': False,
+    #         }
+    #         if not view_bom:
+    #             continue
+    #         if line.temp_mrp_bom_ids:
+    #             res[line.id]['temp_mrp_bom_ids'] = [t.id for t in line.temp_mrp_bom_ids]
+    #             res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line.temp_mrp_bom_routing_ids]
+    #         else:
+    #             # does not work here
+    #             # product = line.actual_product
+    #             if line.new_product_id:
+    #                 product = line.new_product_id
+    #             elif line.product_id:
+    #                 product = line.product_id
+    #             self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, 0, True, True, context)
+    #             # res[line.id]['temp_mrp_bom_ids'] = temp_mrp_bom_vals
+    #             # res[line.id]['temp_mrp_bom_routing_ids'] = temp_mrp_routing_vals
+    #             line_reload = self.browse(cr, uid, line.id, context)
+    #             res[line.id]['temp_mrp_bom_ids'] = [t.id for t in line_reload.temp_mrp_bom_ids]
+    #             res[line.id]['temp_mrp_bom_routing_ids'] = [t.id for t in line_reload.temp_mrp_routing_ids]
+    #
+    #     return res
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
@@ -494,6 +561,8 @@ class order_requirement_line(orm.Model):
         'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'),
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
+        'cost': fields.float('Cost', readonly=True),
+        'original_cost': fields.float('Original Cost', readonly=True)
     }
 
     _defaults = {
@@ -544,7 +613,8 @@ class order_requirement_line(orm.Model):
         result_dict.update({
             'temp_mrp_bom_ids': temp_mrp_bom_ids,
             'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
-            'is_manufactured': new_is_manufactured
+            'is_manufactured': new_is_manufactured,
+            'cost': line.cost
         })
 
         return {'value': result_dict}
@@ -586,6 +656,7 @@ class order_requirement_line(orm.Model):
         result_dict.update({
             'temp_mrp_bom_ids': temp_mrp_bom_ids,
             'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
+            'cost': line.cost,
             'view_bom': True
         })
 
@@ -598,8 +669,8 @@ class order_requirement_line(orm.Model):
         for temp in line.temp_mrp_bom_ids:
             oldqty = temp.original_qty
             temp_mrp_bom_obj.write(cr, uid, temp.id, {'product_qty': oldqty * qty}, context)
-        self._update_cost(cr, uid, line_id, context)
-        return {'value': {'qty': qty}}
+        total_cost = self._update_cost(cr, uid, line_id, context)
+        return {'value': {'qty': qty, 'cost': total_cost}}
 
     def _get_temp_routing(self, bom):
         # Retrieve routing
@@ -623,7 +694,6 @@ class order_requirement_line(orm.Model):
         pick_type = 'internal'
         address_id = False
 
-        # TODO: ASK, if I can change routing -> NOT THIS ROUTING but temp_mrp_routing_id
         # Take routing address as a Shipment Address.
         # If usage of routing location is a internal, make outgoing shipment otherwise internal shipment
         if production.bom_id.routing_id and production.bom_id.routing_id.location_id:
@@ -870,7 +940,7 @@ class order_requirement_line(orm.Model):
             self._manufacture_or_purchase_explode(cr, uid, False, temp, context)
         else:
             # Not multiorder -> First the father
-            # TODO: Complete the routing with all the bom routing lines
+            # TODO: IMPLEMENT (is it needed? =>Complete the routing with all the bom routing lines)
             father_bom = line.temp_mrp_bom_ids[0]
             if father_bom.is_manufactured:
                 self._manufacture_bom(cr, uid, False, father_bom, context)
@@ -1039,7 +1109,8 @@ class order_requirement_line(orm.Model):
         new_temp_routing_ids_formatted = [t.id for t in line.temp_mrp_bom_routing_ids]
 
         return {'value': {'temp_mrp_bom_ids': new_temp_ids_formatted,
-                          'temp_mrp_bom_routing_ids': new_temp_routing_ids_formatted}
+                          'temp_mrp_bom_routing_ids': new_temp_routing_ids_formatted,
+                          'cost': line.cost}
                 }
 
     def save_suppliers(self, cr, uid, ids, context=None):

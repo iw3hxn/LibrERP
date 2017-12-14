@@ -272,15 +272,15 @@ class temp_mrp_bom(orm.Model):
                     'product_uos': bom.product_uos and bom.product_uos.id or False,
                 })
 
-            # Routing lines directly referenced by temp mrp bom
-            for wc_use in bom.temp_mrp_routing_lines:
-                result2.append({
-                    'name': wc_use.name,
-                    'workcenter_id': wc_use.workcenter_id.id,
-                    'sequence': wc_use.sequence,
-                    'cycle': wc_use.cycle,
-                    'hour': wc_use.hour
-                })
+        # Routing lines directly referenced by temp mrp bom
+        for wc_use in bom_father.temp_mrp_routing_lines:
+            result2.append({
+                'name': wc_use.name,
+                'workcenter_id': wc_use.workcenter_id.id,
+                'sequence': wc_use.sequence,
+                'cycle': wc_use.cycle,
+                'hour': wc_use.hour
+            })
 
         return result, result2
 
