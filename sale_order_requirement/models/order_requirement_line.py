@@ -385,17 +385,31 @@ class order_requirement_line(orm.Model):
         return cost
 
     def _update_cost(self, cr, uid, line_id, context):
+        # Update all temp mrp cost, returns total cost
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         line = self.browse(cr, uid, line_id, context)
         if not line.temp_mrp_bom_ids:
-            return
+            # TODO: LINE COST (When no BOM is present)
+            total_cost = line.product_id.cost_price
+            line_vals = {'cost': total_cost}
+            if line.original_cost is None:
+                line_vals.update({'original_cost': total_cost})
+            self.write(cr, uid, line_id, line_vals, context)
+            return total_cost
         temp = line.temp_mrp_bom_ids[0]
         temp_mrp_boms = line.temp_mrp_bom_ids
 
         self._compute_cost(cr, uid, [], temp, temp_mrp_boms, context)
         for t in temp_mrp_boms:
             temp_mrp_bom_obj.write(cr, uid, t.id, {'cost': t.cost}, context)
+
+        total_cost = temp_mrp_boms[0].cost
+        line_vals = {'cost': total_cost}
+        if line.original_cost is None:
+            line_vals.update({'original_cost': total_cost})
+        self.write(cr, uid, line_id, line_vals, context)
+        return total_cost
 
     def create_temp_mrp_bom(self, cr, uid, ids, product_id, father_temp_id, start_level, start_sequence=0,
                             create_father=True, create_children=True, context=None):
@@ -547,6 +561,8 @@ class order_requirement_line(orm.Model):
         'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'),
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
+        'cost': fields.float('Cost', readonly=True),
+        'original_cost': fields.float('Original Cost', readonly=True)
     }
 
     _defaults = {
@@ -597,7 +613,8 @@ class order_requirement_line(orm.Model):
         result_dict.update({
             'temp_mrp_bom_ids': temp_mrp_bom_ids,
             'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
-            'is_manufactured': new_is_manufactured
+            'is_manufactured': new_is_manufactured,
+            'cost': line.cost
         })
 
         return {'value': result_dict}
@@ -639,6 +656,7 @@ class order_requirement_line(orm.Model):
         result_dict.update({
             'temp_mrp_bom_ids': temp_mrp_bom_ids,
             'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
+            'cost': line.cost,
             'view_bom': True
         })
 
@@ -651,8 +669,8 @@ class order_requirement_line(orm.Model):
         for temp in line.temp_mrp_bom_ids:
             oldqty = temp.original_qty
             temp_mrp_bom_obj.write(cr, uid, temp.id, {'product_qty': oldqty * qty}, context)
-        self._update_cost(cr, uid, line_id, context)
-        return {'value': {'qty': qty}}
+        total_cost = self._update_cost(cr, uid, line_id, context)
+        return {'value': {'qty': qty, 'cost': total_cost}}
 
     def _get_temp_routing(self, bom):
         # Retrieve routing
@@ -1091,7 +1109,8 @@ class order_requirement_line(orm.Model):
         new_temp_routing_ids_formatted = [t.id for t in line.temp_mrp_bom_routing_ids]
 
         return {'value': {'temp_mrp_bom_ids': new_temp_ids_formatted,
-                          'temp_mrp_bom_routing_ids': new_temp_routing_ids_formatted}
+                          'temp_mrp_bom_routing_ids': new_temp_routing_ids_formatted,
+                          'cost': line.cost}
                 }
 
     def save_suppliers(self, cr, uid, ids, context=None):
