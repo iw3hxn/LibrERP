@@ -15,7 +15,7 @@
 				<field name="categ_id" position="replace">
                 </field>
                 <field name="variants" position="after">
-					<field name="categ_id" on_change="onchange_categ_id('categ_id', categ_id, purchase_ok, supply_method, type, is_kit, context)" />
+					<field name="categ_id"  operator="child_of"  on_change="onchange_categ_id('categ_id', categ_id, purchase_ok, supply_method, type, is_kit, context)" />
 				</field>			
 				
 				<field name="type" position="attributes"> 

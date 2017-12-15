@@ -270,16 +270,13 @@ class sale_order_line(orm.Model):
                     supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
                     seller_ids = [info.name.id for info in supplier_infos]
 
-                    if seller_ids:
-                        result_dict['value'].update({
-                            'supplier_id': seller_ids[0],
-                            'supplier_ids': seller_ids,
-                        })
-                    else:
-                        result_dict['value'].update({
-                            'supplier_id': False,
-                            'supplier_ids': [],
-                        })
+                    if not seller_ids:
+                        seller_ids = self.pool['res.partner'].search(cr, uid, [('supplier', '=', True)], context=context)
+
+                    result_dict['value'].update({
+                        'supplier_id': seller_ids[0],
+                        'supplier_ids': seller_ids,
+                    })
 
                 if supplier_id:
                     supplier = self.pool['res.partner'].browse(cr, uid, supplier_id, context=context)
