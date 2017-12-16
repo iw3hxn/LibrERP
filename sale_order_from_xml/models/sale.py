@@ -44,7 +44,10 @@ class SaleOrder(orm.Model):
         return True
 
     def partner_from_address_data(self, cr, uid, addresses, context):
+
         def get_address_values(cr, uid, address_values, context):
+            context = context or self.pool['res.users'].context_get(cr, uid)
+            context.update({'lang': 'it_IT'})
             address_types = {
                 # 'Billing': 'invoice',
                 'Billing': 'default',
@@ -53,11 +56,11 @@ class SaleOrder(orm.Model):
 
             province_ids = self.pool['res.province'].search(cr, uid, [
                 ('code', '=', address_values['Province'])
-            ], context={'lang': 'it_IT'})
+            ], context=context)
 
             country_ids = self.pool['res.country'].search(cr, uid, [
                 ('name', '=', address_values['Country'])
-            ], context={'lang': 'it_IT'})
+            ], context=context)
 
             return {
                 'type': address_types[address_values['@Type']],
@@ -76,8 +79,7 @@ class SaleOrder(orm.Model):
             addresses = [addresses]
 
         for address in addresses:
-            partner_ids = partner_model.search(cr, uid, [
-                ('external_id', '=', int(address['@UserID']))], context)
+            partner_ids = partner_model.search(cr, uid, [('external_id', '=', int(address['@UserID']))], context=context)
             if partner_ids:
                 return partner_ids[0]
         else:
@@ -94,8 +96,9 @@ class SaleOrder(orm.Model):
             }
         return partner_model.create(cr, uid, partner_values, context)
 
-    def order_lines_from_line_data(self, cr, uid, order_line_values, context):
+    def order_lines_from_line_data(self, cr, uid, partner_id, order_line_values, context):
         product_model = self.pool['product.product']
+        sale_order_line_model = self.pool['sale.order.line']
 
         order_lines = []
 
@@ -105,19 +108,33 @@ class SaleOrder(orm.Model):
         for line_values in order_line_values:
             product_id = product_model.get_create(cr, uid, line_values, context)
             product = product_model.browse(cr, uid, product_id, context)
-            order_lines.append({
+
+            new_line_value = sale_order_line_model.product_id_change(
+                cr, uid, [], [], product_id, qty=0, uom=False, qty_uos=0, uos=False, name='', partner_id=partner_id,
+                                                            lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False,
+                                                            flag=False, supplier_id=False, extra_purchase_discount=0.0, auto_supplier=True, context=context)['value']
+
+            new_line_value.update({
                 'product_id': product_id,
-                'name': product.name,
+                # 'name': product.name,
                 'price_unit': float(Utils.toStr(line_values['Price'])),
                 'product_uom_qty': float(Utils.toStr(line_values['Quantity']))
             })
+            order_lines.append(
+                new_line_value
+            )
 
         return order_lines
 
+    def create_external_hook(self, cr, uid, values, context=None):
+        print values
+        return values
+
     def create_external(self, cr, uid, values, context=None):
-        order_lines = self.order_lines_from_line_data(cr, uid, values['Order']['Items']['Item'], context)
 
         partner_id = self.partner_from_address_data(cr, uid, values['Order']['Address'], context)
+
+        order_lines = self.order_lines_from_line_data(cr, uid, partner_id, values['Order']['Items']['Item'], context)
 
         sale_order_values = self.onchange_partner_id(cr, uid, False, partner_id)['value']
 
@@ -130,9 +147,11 @@ class SaleOrder(orm.Model):
             'order_line': [(0, False, line) for line in order_lines]
         })
 
+        sale_order_values = self.create_external_hook(cr, uid, sale_order_values, context)  # hook function for possible extention
+
         order_ids = self.search(cr, uid, [
             ('name', '=', values['Order']['@Code'])
-        ], context)
+        ], context=context)
 
         if order_ids:
             self.write(cr, uid, order_ids, sale_order_values, context)
