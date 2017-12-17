@@ -47,16 +47,29 @@ class Parser(report_sxw.rml_parse):
             'utente': self._get_utente,
             'raggruppa_sale_line': self._raggruppa_sale_line,
             'righe_sale_line': self._righe_sale_line,
-            'get_description_line': self._get_description_line
+            'get_description_line': self._get_description_line,
+            'get_full_delivery': self._get_full_delivery,
         })
+        self.context = context
+
+    def _get_full_delivery(self, object):
+        stock_picking_obj = self.pool['stock.picking']
+        res = ''
+        if object:
+            picking_ids = stock_picking_obj.search(self.cr, self.uid, [('origin', '=', object.origin), ('state', 'not in', ['cancel'])], order="id", context=self.context)
+            if (len(picking_ids) == 1) or picking_ids[0] == object.id:
+                res = 'Saldo Ordine'
+            else:
+                res = 'Evasione Parziale'
+        return res
 
     def _get_reference(self, order_name):
         order_obj = self.pool['sale.order']
         description = []
         if order_name:
-            order_ids = order_obj.search(self.cr, self.uid, [('name', '=', order_name)])
+            order_ids = order_obj.search(self.cr, self.uid, [('name', '=', order_name)], context=self.context)
             if len(order_ids) == 1:
-                order = order_obj.browse(self.cr, self.uid, order_ids[0])
+                order = order_obj.browse(self.cr, self.uid, order_ids[0], self.context)
                 if order.client_order_ref:
                     order_date = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT)
                     description.append('{client_order} of {customer_order_date}'.format(client_order=order.client_order_ref, customer_order_date=order_date.strftime("%m/%d/%Y")))
@@ -95,10 +108,10 @@ class Parser(report_sxw.rml_parse):
         description = []
 
         if order_name and not self.pool['res.users'].browse(
-                self.cr, self.uid, self.uid).company_id.disable_sale_ref_invoice_report:
-            order_ids = order_obj.search(self.cr, self.uid, [('name', '=', order_name)])
+                self.cr, self.uid, self.uid, self.context).company_id.disable_sale_ref_invoice_report:
+            order_ids = order_obj.search(self.cr, self.uid, [('name', '=', order_name)], context=self.context)
             if len(order_ids) == 1:
-                order = order_obj.browse(self.cr, self.uid, order_ids[0])
+                order = order_obj.browse(self.cr, self.uid, order_ids[0], self.context)
                 order_date = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT)
                 if order.client_order_ref:
                     description.append(u'Rif. Ns. Ordine {order} del {order_date}, Vs. Ordine {client_order}'.format(order=order.name, order_date=order_date.strftime("%d/%m/%Y"), client_order=order.client_order_ref))
