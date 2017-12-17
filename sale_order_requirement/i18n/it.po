@@ -20,3 +20,282 @@ msgstr "Fabbisogno Ordine"
 #: field:order.requirement,week_nbr:0
 msgid "Week Number"
 msgstr "Settimana n."
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement_line.py:1022
+#, python-format
+msgid "Product BOM"
+msgstr "Distinta Base"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,purchase_order_line_id:0
+msgid "Purchase Order Line"
+msgstr "Riga Ordine Acquisto"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,is_leaf:0
+msgid "Leaf"
+msgstr "Foglia"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "Main Products"
+msgstr "Prodotti Principali"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_mrp_production
+#: field:temp.mrp.bom,mrp_production_id:0
+msgid "Manufacturing Order"
+msgstr "Ordine di Produzione"
+
+#. module: sale_order_requirement
+#: constraint:mrp.bom:0
+#: constraint:temp.mrp.bom:0
+msgid "BoM line product should not be same as BoM product."
+msgstr "Il prodotto della riga della BoM non dovrebbe essere lo stesso del prodotto della BoM."
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,order_requirement_line_id:0
+msgid "Order requirement line"
+msgstr "Riga Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,supplier_id:0
+msgid "Supplier"
+msgstr "Fornitore"
+
+#. module: sale_order_requirement
+#: field:res.company,split_mrp_production:0
+msgid "Split Production order from order requirement"
+msgstr "Dividi l'Ordine di Produzione dal Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "BOM"
+msgstr "Distinta Base"
+
+#. module: sale_order_requirement
+#: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement_line
+msgid "Order Requirement Line"
+msgstr "Riga Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,row_color:0
+msgid "Row Color"
+msgstr "Colore Riga"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Save"
+msgstr "Salva"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "BoM Details"
+msgstr "Dettagli Distinta"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,is_manufactured:0
+msgid "Manufacture"
+msgstr "Produci"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,desired_qty:0
+msgid "Desired Qty"
+msgstr "Q.tà Desiderata"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/mrp.py:98
+#, python-format
+msgid "Couldn't find a bill of material for this product."
+msgstr "Non c'è una distinta base per questo prodotto"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,temp_mrp_bom_id:0
+msgid "Temp BoM"
+msgstr "Temp BoM"
+
+#. module: sale_order_requirement
+#: help:order.requirement.line,is_manufactured:0
+msgid "If checked product is manufactured. If not, BOM is read-only"
+msgstr "Se selezionato il prodotto è da produrre altrimenti la distinta è in sola lettura"
+
+#. module: sale_order_requirement
+#: field:mrp.bom,child_buy_and_produce_ids:0
+msgid "BoM Hierarchy"
+msgstr "Gerarchia Distinta"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "Manufacturing Orders related to main products (hide children BoM)"
+msgstr "Ordine di Produzione collegato al Prodotto"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,spare:0
+msgid "Spare"
+msgstr "Giacenza Minima"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,new_product_id:0
+msgid "Choosen Product"
+msgstr "Scegli il Prodotto"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,order_requirement_id:0
+msgid "Order Reference"
+msgstr "Riferimento Ordine"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,original_cost:0
+msgid "Original Cost"
+msgstr "Costo Originale"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,cycle:0
+msgid "Cycle"
+msgstr "Cicli"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+#: field:order.requirement.line,temp_mrp_bom_routing_ids:0
+msgid "BoM Routing"
+msgstr "Routing Distinta"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,hour:0
+msgid "Hour"
+msgstr "Ore"
+
+#. module: sale_order_requirement
+#: field:mrp.production,level:0
+#: field:temp.mrp.bom,level:0
+#: field:temp.mrp.bom,level_name:0
+msgid "Level"
+msgstr "Livello"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,supplier_ids:0
+msgid "Suppliers"
+msgstr "Fornitori"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,sale_order_id:0
+#: field:temp.mrp.bom,sale_order_id:0
+msgid "Sale Order"
+msgstr "Ordine di Vendita"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,temp_mrp_routing_lines:0
+msgid "Routing Lines"
+msgstr "Righe Routing"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,purchase_order_id:0
+msgid "Purchase Order"
+msgstr "Ordine Acquisto"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+#: field:temp.mrp.bom,mrp_routing_id:0
+#: field:temp.mrp.routing,mrp_routing_id:0
+msgid "Routing"
+msgstr "Routing"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_mrp_bom
+#: model:ir.model,name:sale_order_requirement.model_temp_mrp_bom
+#: field:mrp.production,temp_bom_id:0
+msgid "Bill of Material"
+msgstr "Distinta Base"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,workcenter_id:0
+msgid "Workcenter"
+msgstr "Centro di Lavoro"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/mrp.py:98
+#, python-format
+msgid "Error"
+msgstr "Errore"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,user_ids:0
+msgid "Users"
+msgstr "Utenti"
+
+#. module: sale_order_requirement
+#: model:ir.model,name:sale_order_requirement.model_sale_order
+msgid "Sales Order"
+msgstr "Ordine di vendita"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "OK"
+msgstr "OK"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,is_out_of_stock:0
+msgid "Out of Stock"
+msgstr "Out of Stock"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,mrp_production_ids:0
+msgid "Production Orders"
+msgstr "Ordine di Produzione"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,partial_cost:0
+msgid "Partial Cost"
+msgstr "Costo Parziale"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,sequence:0
+msgid "Sequence"
+msgstr "Sequenza"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,stock_availability:0
+msgid "Stock Availability"
+msgstr "Disponibilità Magazzino"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,cost:0
+#: field:temp.mrp.bom,cost:0
+msgid "Cost"
+msgstr "Costo"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.routing,user_id:0
+msgid "User"
+msgstr "Utente"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,row_color:0
+msgid "Row color"
+msgstr "Colore Riga"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "BoM Structure"
+msgstr "Struttura Distinta"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,original_qty:0
+msgid "Original Qty"
+msgstr "Q.tà Originale"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,purchase_order_ids:0
+msgid "Purchase Orders"
+msgstr "Ordini Acquisto"
