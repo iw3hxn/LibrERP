@@ -333,7 +333,9 @@ msgid "Invoiced"
 msgstr "Fatturato"
 
 #. module: purchase
-#: view:sale.order:0 field:sale.order,minimum_planned_date:0
+#: view:sale.order:0
+#: field:sale.order,minimum_planned_date:0
+#: field:stock.picking,minimum_planned_date:0
 #: view:stock.picking:0
 msgid "Expected Date"
 msgstr "Data prevista"
