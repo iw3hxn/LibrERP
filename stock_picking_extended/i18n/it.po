@@ -502,6 +502,7 @@ msgid "Inserted on"
 msgstr "Inserito il"
 
 #. module: stock_picking_extended
+#: view:stock.picking:0
 #: field:stock.picking,goods_ready:0
 #: field:stock.move,goods_ready:0
 msgid "Goods Ready"
@@ -511,6 +512,11 @@ msgstr "Merce Pronta"
 #: field:stock.picking,week_nbr:0
 msgid "Week Number"
 msgstr "Settimana n."
+
+#. module: stock_picking_extended
+#: field:stock.picking,minimun_planned_date:0
+msgid "Expected Date"
+msgstr "Data prevista"
 
 #. module: stock_picking_extended
 #: model:ir.actions.act_window,name:stock_picking_extended.action_view_stock_picking

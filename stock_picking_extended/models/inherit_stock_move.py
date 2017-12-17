@@ -30,19 +30,17 @@ class stock_move(orm.Model):
     def _line_ready(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for move in self.browse(cr, uid, ids, context=context):
-            res[move.id] = {
-                'goods_ready': False,
-            }
+            res[move.id] = False
             if move.state == 'done':
-                res[move.id] = {
-                    'goods_ready': True
-                }
+                res[move.id] = True
         return res
 
     _columns = {
-        'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store={
-                'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['state'], 50),
-        }),
+        'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False
+        # {
+        #         'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['state'], 500),
+        # }
+        ),
     }
 
     def _default_journal_location_source(self, cr, uid, context=None):

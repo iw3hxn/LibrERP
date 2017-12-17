@@ -94,6 +94,15 @@ class stock_picking(orm.Model):
                 res[picking.id]['order_ready'] = True
         return res
 
+    def _get_picking_sale(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        stock_picking_model = self.pool['stock.picking']
+        picking_ids = stock_picking_model.search(cr, uid, [('sale_id', 'in', ids)], context=context)
+        for picking in stock_picking_model.browse(cr, uid, picking_ids, context):
+            result[picking.id] = True
+        return result.keys()
+
     _columns = {
         'goods_ready': fields.related('move_lines', 'goods_ready', type='boolean', string='Goods Ready'),
         'carriage_condition_id': fields.many2one(
@@ -131,8 +140,8 @@ class stock_picking(orm.Model):
             ('client', 'Client'),
             ('internal', 'Internal'),
         ], readonly=True),
-        'order_sent': fields.function(_get_order_board_state, type='boolean',  multi='order_state', string='Order Sent'),
-        'order_ready': fields.function(_get_order_board_state, type='boolean',  multi='order_state', string='Order Ready'),
+        'order_sent': fields.function(_get_order_board_state, type='boolean', multi='order_state', string='Order Sent'),
+        'order_ready': fields.function(_get_order_board_state, type='boolean', multi='order_state', string='Order Ready'),
         'creation_date': fields.related('sale_id', 'create_date', type='date', string='Inserted on', store=False,
                                         readonly=True),
         'street': fields.related('address_id', 'street', type='char', string='Street', store=False),
@@ -147,7 +156,11 @@ class stock_picking(orm.Model):
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
                                        readonly=True),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number",
-                                    store={'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['max_date'], 30),}),
+                                    store={
+                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['max_date'], 300),
+                                        'sale.order': (_get_picking_sale, ['minimum_planned_date'], 200),
+                                        }),
+
         'minimum_planned_date': fields.related('sale_id', 'minimum_planned_date', type='date', string='Expected Date'),
     }
 
