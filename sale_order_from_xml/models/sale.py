@@ -114,6 +114,9 @@ class SaleOrder(orm.Model):
                                                             lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False,
                                                             flag=False, supplier_id=False, extra_purchase_discount=0.0, auto_supplier=True, context=context)['value']
 
+            if new_line_value.get('tax_id', False):
+                new_line_value['tax_id'] = [(6, 0, new_line_value.get('tax_id'))]
+
             new_line_value.update({
                 'product_id': product_id,
                 # 'name': product.name,
@@ -146,6 +149,16 @@ class SaleOrder(orm.Model):
             'partner_id': partner_id,
             'order_line': [(0, False, line) for line in order_lines]
         })
+
+        shop_name = values.get('Order', {}).get('Store', {}).get('Name', False)
+        if shop_name:
+            shop_ids = self.pool['sale.shop'].search(cr, uid, [('name', '=', shop_name)], context=context)
+            if not shop_ids:
+                shop_ids = self.pool['sale.shop'].search(cr, uid, [], context=context)
+            if shop_ids:
+                sale_order_values.update({
+                    'shop_id': shop_ids[0]
+                })
 
         sale_order_values = self.create_external_hook(cr, uid, sale_order_values, context)  # hook function for possible extention
 
