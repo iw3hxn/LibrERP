@@ -729,7 +729,7 @@ class order_requirement_line(orm.Model):
                                                     context=context)['value']
 
         if order_line_values.get('taxes_id', False):
-            order_line_values['taxes_id'] = [(6, 0, order_line_values.get('taxes_id'))]
+            order_line_values['taxes_id'] = [(6, False, order_line_values.get('taxes_id'))]
         order_line_values['product_id'] = product_id
         return order_line_values
 
@@ -789,7 +789,7 @@ class order_requirement_line(orm.Model):
 
             order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_values, qty, supplier_id, context)
             order_line_values['order_id'] = purchase_id
-            # order_line_values['order_requirement_line_ids'] = [(4, line_id)]
+            order_line_values['order_requirement_line_ids'] = [(4, line_id)]  # TODO CHECK
 
             # Create order line and relationship with order_requirement_line
             purchase_line_id = purchase_order_line_obj.create(cr, uid, order_line_values, context)
@@ -831,7 +831,7 @@ class order_requirement_line(orm.Model):
                 self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
-                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
+                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id, # TODO CHECK
                                                              'purchase_order_line_id': purchase_line_id}, context)
             else:
                 # Add qty to existing line
@@ -841,7 +841,8 @@ class order_requirement_line(orm.Model):
                 purchase_order_line_obj.write(cr, uid, order_line_id, {'product_qty': newqty}, context)
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
-                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_line_id': order_line_id}, context)
+                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
+                                                             'purchase_order_line_id': order_line_id}, context)
 
     def _manufacture_bom(self, cr, uid, father, bom, context):
         mrp_production_obj = self.pool['mrp.production']
