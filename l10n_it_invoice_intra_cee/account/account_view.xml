@@ -71,7 +71,7 @@
                 <field name="transfer_entry_id" groups="account.group_account_user"
                     readonly="True"/>
                 <field name="auto_invoice_id" groups="account.group_account_user"
-                    readonly="True"/>
+                    readonly="True" context="{'form_view_ref': 'account.invoice_supplier_form'}"/>
             </field>
         </field>
     </record>
