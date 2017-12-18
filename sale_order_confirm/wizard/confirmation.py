@@ -324,7 +324,7 @@ class sale_order_confirm(orm.TransientModel):
                 old_sale_order_data['version'] = 2
                 new_sale_order['sale_version_id'] = old_sale_order_data['id']
             else:
-                old_sale_order_name = old_sale_order_data['sale_version_id'][1] + u" V." + ustr(old_sale_order_data['version'] + 1)
+                old_sale_order_name = old_sale_order_data['name'].split('V')[0] + u"V." + ustr(old_sale_order_data['version'] + 1)
                 new_sale_order['sale_version_id'] = old_sale_order_data['sale_version_id'][0]
             
             new_sale_order.update({
