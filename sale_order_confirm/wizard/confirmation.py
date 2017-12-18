@@ -93,32 +93,34 @@ class sale_order_confirm_line(orm.TransientModel):
         
         sale_order = self.pool['sale.order'].browse(cr, uid, sale_order_id, context=context)
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
-        if product.default_code:
-            result = {
-                'name': '[{default_code}] {name}'.format(default_code=product.default_code, name=product.name)
-            }
-        else:
-            result = {
-                'name': '{name}'.format(name=product.name)
-            }
-        
-        if sale_order.pricelist_id:
-            result['price_unit'] = self.pool['product.pricelist'].price_get(cr, uid, [sale_order.pricelist_id.id],
-                                                                            product_id, product_qty or 1.0, sale_order.partner_id.id,
-                                                                            dict(
-                                                                                context,
-                                                                                uom=product.uom_id.id,
-                                                                                date=sale_order.date_order,
-                                                                            ))[sale_order.pricelist_id.id]
-        else:
-            result['price_unit'] = product.list_price or 0.0
+        result = {}
+        if product_id:
+            if product.default_code:
+                result = {
+                    'name': u'[{default_code}] {name}'.format(default_code=product.default_code, name=product.name)
+                }
+            else:
+                result = {
+                    'name': u'{name}'.format(name=product.name)
+                }
 
-        result.update({
-            'product_uom': product.uom_id.id,
-            'changed': True,
-            'discount': 0,
-            'tax_id': [(6, 0, [tax_id.id for tax_id in product.taxes_id])],
-        })
+            if sale_order.pricelist_id:
+                result['price_unit'] = self.pool['product.pricelist'].price_get(cr, uid, [sale_order.pricelist_id.id],
+                                                                                product_id, product_qty or 1.0, sale_order.partner_id.id,
+                                                                                dict(
+                                                                                    context,
+                                                                                    uom=product.uom_id.id,
+                                                                                    date=sale_order.date_order,
+                                                                                ))[sale_order.pricelist_id.id]
+            else:
+                result['price_unit'] = product.list_price or 0.0
+
+            result.update({
+                'product_uom': product.uom_id.id,
+                'changed': True,
+                'discount': 0,
+                'tax_id': [(6, 0, [tax_id.id for tax_id in product.taxes_id])],
+            })
         
         return {'value': result}
 
