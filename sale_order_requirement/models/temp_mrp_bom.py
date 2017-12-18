@@ -10,6 +10,7 @@ from ..util import rounding
 
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
 
+
 class temp_mrp_bom(orm.Model):
     _name = 'temp.mrp.bom'
 
