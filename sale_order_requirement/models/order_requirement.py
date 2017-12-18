@@ -44,7 +44,7 @@ class order_requirement(orm.Model):
             'order.requirement': (lambda self, cr, uid, ids, c={}: ids, ['date'], 30),
         }),
         'month': fields.function(_get_day, type='integer', string='Month', method=True, multi='day_of_week', store={
-            'order.requirement': (lambda self, cr, uid, ids, c={}: ids, ['date_start'], 30),
+            'order.requirement': (lambda self, cr, uid, ids, c={}: ids, ['date'], 30),
         }),
         'state': fields.selection([
             ('draft', 'Draft'),
