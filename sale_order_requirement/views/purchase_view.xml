@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="purchase_order_line_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.line.form.inherit</field>
+            <field name="inherit_id" ref="purchase.purchase_order_line_form"/>
+            <field name="model">purchase.order.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Purchase Order Line">
+                    <!-- TODO: CHANGE this, use path maybe -->
+                    <notebook colspan="4" position="inside">
+                        <page string="Sale Order Lines" groups="base.group_extended">
+                            <separator colspan="4" string="Sale Orders"/>
+                            <field colspan="4" name="sale_order_ids" nolabel="1" widget="one2many"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_purchase_order_filter_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.list.select.inherit</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="model">purchase.order</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <!--<field name="sale_order_id"/>-->
+                    <field name="sale_order_ids" string="Sale Order" >
+                        <filter icon="terp-sale"
+                                groups="base.group_extended"
+                                help="Sales Orders"/>
+                    </field>
+                </field>
+
+                <!--<field name="user_id" position="after">-->
+                    <!--<field name="section_id" widget="selection" string="Sales Team" >-->
+                        <!--<filter icon="terp-personal+"-->
+                                <!--domain="[('section_id.user_id','=',uid)]"-->
+                                <!--groups="base.group_extended"-->
+                                <!--help="My Sales Team(s)"/>-->
+                    <!--</field>-->
+                <!--</field>-->
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
