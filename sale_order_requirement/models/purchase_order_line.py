@@ -16,3 +16,4 @@ class purchase_order_line(orm.Model):
         #                                  relation='sale.order', type='many2many', readonly=True, store=False)
     }
 
+   

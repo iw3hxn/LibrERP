@@ -752,13 +752,16 @@ class order_requirement_line(orm.Model):
         try:
             # Try if it's a ordreq line
             if obj.new_product_id:
-                product_id = obj.new_product_id.id
+                product = obj.new_product_id
             else:
-                product_id = obj.product_id.id
+                product = obj.product_id
         except AttributeError:
             # If we are here it's a temp_mrp_bom
             is_temp_bom = True
-            product_id = obj.product_id.id
+            product = obj.product_id
+
+        product_id = product.id
+        uom_id = product.uom_id
 
         if is_temp_bom:
             qty = obj.product_qty
@@ -796,8 +799,9 @@ class order_requirement_line(orm.Model):
             purchase_order_line_values.update({
                 'order_id': purchase_id,
                 'order_requirement_ids': [(4, line.order_requirement_id.id)],
-                'order_requirement_line_ids': [(4, line_id)],  # TODO CHECK
-                'sale_order_ids': [(4, sale_order_id)]
+                'order_requirement_line_ids': [(4, line_id)],
+                'sale_order_ids': [(4, sale_order_id)],
+                'uom_id': uom_id
             })
 
             # Create order line and relationship with order_requirement_line
@@ -831,7 +835,7 @@ class order_requirement_line(orm.Model):
                     'fiscal_position': present_order.fiscal_position and present_order.fiscal_position.id or False,
                     'pricelist_id': present_order.pricelist_id and present_order.pricelist_id.id or False,
                     'order_id': present_order_id,
-                    'order_requirement_line_ids': [(4, line_id)],  # TODO CHECK
+                    'order_requirement_line_ids': [(4, line_id)],
                     'sale_order_ids': [(4, sale_order_id)]
                 }
 
