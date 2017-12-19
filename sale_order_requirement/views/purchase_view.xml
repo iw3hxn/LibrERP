@@ -26,23 +26,12 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <field name="product_id" position="after">
-                    <!--<field name="sale_order_id"/>-->
                     <field name="sale_order_ids" string="Sale Order" >
                         <filter icon="terp-sale"
                                 groups="base.group_extended"
                                 help="Sales Orders"/>
                     </field>
                 </field>
-
-                <!--<field name="user_id" position="after">-->
-                    <!--<field name="section_id" widget="selection" string="Sales Team" >-->
-                        <!--<filter icon="terp-personal+"-->
-                                <!--domain="[('section_id.user_id','=',uid)]"-->
-                                <!--groups="base.group_extended"-->
-                                <!--help="My Sales Team(s)"/>-->
-                    <!--</field>-->
-                <!--</field>-->
-
             </field>
         </record>
 
