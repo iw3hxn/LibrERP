@@ -15,5 +15,3 @@ class purchase_order_line(orm.Model):
         # 'sale_order_ids': fields.related('order_requirement_ids', 'sale_order_id', string='Sale Orders',
         #                                  relation='sale.order', type='many2many', readonly=True, store=False)
     }
-
-   

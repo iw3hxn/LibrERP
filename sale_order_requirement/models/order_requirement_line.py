@@ -732,7 +732,7 @@ class order_requirement_line(orm.Model):
         if order_line_values.get('taxes_id', False):
             order_line_values['taxes_id'] = [(6, False, order_line_values.get('taxes_id'))]
         order_line_values['product_id'] = product_id
-        return order_line_values
+        purchase_order_values.update(order_line_values)
 
     def _purchase_bom(self, cr, uid, obj, context):
         # obj can be a order_requirement_line or temp_mrp_bom
@@ -761,7 +761,7 @@ class order_requirement_line(orm.Model):
             product = obj.product_id
 
         product_id = product.id
-        uom_id = product.uom_id
+        uom_id = product.uom_id.id # TODO => NO
 
         if is_temp_bom:
             qty = obj.product_qty
@@ -795,13 +795,13 @@ class order_requirement_line(orm.Model):
             })
             purchase_id = purchase_order_obj.create(cr, uid, purchase_order_line_values, context=context)
 
-            purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_line_values, qty, supplier_id, context)
+            self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_line_values, qty, supplier_id, context)
             purchase_order_line_values.update({
                 'order_id': purchase_id,
                 'order_requirement_ids': [(4, line.order_requirement_id.id)],
                 'order_requirement_line_ids': [(4, line_id)],
                 'sale_order_ids': [(4, sale_order_id)],
-                'uom_id': uom_id
+                'product_uom': uom_id
             })
 
             # Create order line and relationship with order_requirement_line
@@ -836,11 +836,12 @@ class order_requirement_line(orm.Model):
                     'pricelist_id': present_order.pricelist_id and present_order.pricelist_id.id or False,
                     'order_id': present_order_id,
                     'order_requirement_line_ids': [(4, line_id)],
-                    'sale_order_ids': [(4, sale_order_id)]
+                    'sale_order_ids': [(4, sale_order_id)],
+                    'product_uom': uom_id
                 }
 
-                purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_line_values, qty,
-                                                                        supplier_id, context)
+                self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_line_values, qty,
+                                                    supplier_id, context)
 
                 # Creating a new line
                 purchase_line_id = purchase_order_line_obj.create(cr, uid, purchase_order_line_values, context)
@@ -855,7 +856,7 @@ class order_requirement_line(orm.Model):
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id, # TODO CHECK
                                                              'purchase_order_line_id': purchase_line_id}, context)
             else:
-                # Add qty to existing line
+                # Add qty to existing line # TODO CHECK UOM ! If is the same!
                 order_line_id = purchase_order_line_ids[0]
                 line = purchase_order_line_obj.browse(cr, uid, order_line_id, context)
                 newqty = qty + line.product_qty
