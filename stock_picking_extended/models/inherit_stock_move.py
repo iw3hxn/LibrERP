@@ -41,6 +41,7 @@ class stock_move(orm.Model):
         #         'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['state'], 500),
         # }
         ),
+        'sale_id': fields.related('picking_id', 'sale_id', relation='sale.order', type='many2one', string='Sale Order')
     }
 
     def _default_journal_location_source(self, cr, uid, context=None):

@@ -13,5 +13,8 @@
         <menuitem name="Order Board" action="action_view_stock_picking" id="menu_view_stock_picking"
                   parent="menu_order_board" sequence="1"/>
 
+        <menuitem name="Line Order Board" action="action_view_stock_move" id="menu_view_stock_move"
+                  parent="menu_order_board" sequence="2"/>
+
     </data>
 </openerp>
