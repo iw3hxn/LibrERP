@@ -52,6 +52,7 @@ class purchase_order(orm.Model):
                     supplierinfo_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('name', '=', line.partner_id.id)], context=context)
                     if not supplierinfo_ids:
                         supplierinfo_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', line.product_id.id)], context=context)
+                        sequence = 10
                         if supplierinfo_ids:
                             sequence = supplierinfo_obj.browse(cr, uid, supplierinfo_ids[-1], context).sequence + 10
 
