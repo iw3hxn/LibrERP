@@ -20,6 +20,7 @@ and choose if manufacture or buy products from suppliers.
         'views/order_requirement_line.xml',
         'views/view_company_form.xml',
         'views/mrp_view.xml',
+        'security/ir.model.access.csv'
     ],
     'css': ['static/src/css/style.css'],
     'installable': True,
