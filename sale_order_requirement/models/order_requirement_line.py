@@ -549,6 +549,7 @@ class order_requirement_line(orm.Model):
                                  string='Spare', readonly=True),
         'order_requirement_id': fields.many2one('order.requirement', 'Order Reference', required=True,
                                                 ondelete='cascade', select=True),
+        'sale_order_line_id': fields.many2one('sale.order.line', string='Sale Order Line'),
         'sale_order_id': fields.related('order_requirement_id', 'sale_order_id', string='Sale Order',
                                         relation='sale.order', type='many2one', readonly=True),
         'sequence': fields.integer('Sequence',

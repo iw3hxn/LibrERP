@@ -14,16 +14,25 @@ class sale_order(orm.Model):
         res = super(sale_order, self)._create_pickings_and_procurements(cr, uid, order, order_lines, picking_id, context)
 
         order_requirement_obj = self.pool['order.requirement']
+        order_requirement_line_obj = self.pool['order.requirement.line']
+        sale_order_line_obj = self.pool['sale.order.line']
+
+        # ONE sale.order => ONE order.requirement
         order_req_id = order_requirement_obj.create(cr, uid, {'sale_order_id': order.id}, context)
 
+        # For every sale.order.line => one order.requirement.line
         for line in order.order_line:
             if line.product_id.type != 'service':
                 ord_req_line_vals = {
+                    'sale_order_line_id': line.id,
                     'product_id': line.product_id.id,
-                    'qty': line.product_uom_qty
+                    'qty': line.product_uom_qty,
+                    'order_requirement_id': order_req_id,
                 }
-                order_requirement_obj.write(cr, uid, order_req_id,
-                                            {'order_requirement_line_ids': [(0, False, ord_req_line_vals)]}, context)
+                ordreqline_id = order_requirement_line_obj.create(cr, uid, ord_req_line_vals, context)
+                sale_order_line_obj.write(cr, uid, line.id, {'order_requirement_line_id': ordreqline_id}, context)
+                # order_requirement_obj.write(cr, uid, order_req_id,
+                #                             {'order_requirement_line_ids': [(0, False, ord_req_line_vals)]}, context)
 
         return res
 
