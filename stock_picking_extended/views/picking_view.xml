@@ -172,34 +172,39 @@
                             <field name="amount_total" groups="base.group_sale_salesman"/>
                         </group>
                     </group>
-                    <group col="1" colspan="4">
-                        <field name="move_lines" nolabel="1">
-                            <tree string="Moves">
-                                <field name="product_id"/>
-                                <field name="product_qty"/>
-                                <field name="product_uom"/>
-                                <!--<field name="measures"/>-->
-                                <field name="note"/>
-                                <field name="prodlot_id" invisible="1"/>
-                                <field name="goods_ready"/>
-                                <field name="state" />
-                                <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok" attrs="{'invisible': [('state', '=', 'done')]}"/>
-                            </tree>
-                            <form string="Move">
-                                <field name="product_id" readonly="1"/>
-                                <field name="product_qty" readonly="1"/>
-                                <field name="state" />
-                                <!--<newline />-->
-                                <!--<group col="2" colspan="4">-->
+                    <notebook colspan="4">
+                        <page string="Moves">
+                            <field name="move_lines" nolabel="1">
+                                <tree string="Moves">
+                                    <field name="product_id"/>
+                                    <field name="product_qty" sum="product_sum"/>
+                                    <field name="product_uom"/>
+                                    <!--<field name="measures"/>-->
+                                    <field name="note"/>
+                                    <field name="prodlot_id" invisible="1"/>
+                                    <field name="goods_ready"/>
+                                    <field name="state"/>
+                                    <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok"
+                                            attrs="{'invisible': [('state', '=', 'done')]}"/>
+                                </tree>
+                                <form string="Move">
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="product_qty" readonly="1"/>
+                                    <field name="state"/>
+                                    <!--<newline />-->
+                                    <!--<group col="2" colspan="4">-->
                                     <!--<button type="object" name="download_attachment" icon="gtk-go-down" colspan="1" context="{'attach_type':'_ST'}"-->
-                                            <!--string="Download ST Attachments"/>-->
+                                    <!--string="Download ST Attachments"/>-->
                                     <!--<button type="object" name="download_attachment" icon="gtk-go-down" colspan="1" context="{'attach_type':'_SI'}"-->
-                                            <!--string="Download SI Attachments"/>-->
-                                <!--</group>-->
-                            </form>
-                        </field>
-
-                    </group>
+                                    <!--string="Download SI Attachments"/>-->
+                                    <!--</group>-->
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Info">
+                            <field name="note" nolabel="1"/>
+                        </page>
+                    </notebook>
                     <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}' invisible="1"/>
                 </form>
            </field>
@@ -212,6 +217,7 @@
             <field name="arch" type="xml">
                 <tree string="Order Board" colors="green:order_ready">
                     <field name="sale_id"/>
+                    <field name="client_order_ref"/>
                     <field name="customer_id"/>
                     <field name="note"/>
                     <field name="minimum_planned_date"/>
@@ -220,6 +226,53 @@
                     <field name="order_sent" />
                     <field name="order_ready" />
                     <field name="amount_total" sum="Total" groups="base.group_sale_salesman"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_stock_move_search" model="ir.ui.view">
+            <field name="name">stock.move.order.board.search</field>
+            <field name="model">stock.move</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Line Order Board">
+                    <field name="sale_id" filter_domain="['|',('sale_id','ilike',self),('origin','ilike',self)]"/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_stock_move_form" model="ir.ui.view">
+            <field name="name">stock.move.order.board.form</field>
+            <field name="model">stock.move</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Move">
+                    <field name="product_id" readonly="1"/>
+                    <field name="product_qty" readonly="1"/>
+                    <field name="state"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_stock_move_tree" model="ir.ui.view">
+            <field name="name">stock.move.order.board.tree</field>
+            <field name="model">stock.move</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Line Order Board">
+                    <field name="picking_id" />
+                    <field name="sale_id" />
+                    <field name="partner_id" invisible="1"/>
+                    <field name="product_id"/>
+                    <field name="product_qty" sum="product_sum"/>
+                    <field name="product_uom"/>
+                    <field name="note"/>
+                    <field name="goods_ready"/>
+                    <field name="state"/>
+                    <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok"
+                            attrs="{'invisible': [('state', '=', 'done')]}"/>
                 </tree>
             </field>
         </record>
@@ -247,6 +300,31 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_stock_picking_form"/>
             <field name="act_window_id" ref="action_view_stock_picking"/>
+        </record>
+
+        <record id="action_view_stock_move" model="ir.actions.act_window">
+            <field name="domain">[('picking_id.sale_id', '!=', False), ('picking_id.state', '!=', 'cancel'), ('picking_id.type', 'in', ('internal', 'out')), ('picking_id.ddt_number', '=', False), ('state', '!=', 'done')]</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1', 'order': 'minimum_planned_date desc'}</field>
+            <field name="name">Line Order Board</field>
+            <field name="res_model">stock.move</field>
+            <field name="search_view_id" ref="view_stock_move_search"/>
+            <field name="view_id" ref="view_stock_move_tree"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_stock_move_tree1_view1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_stock_move_tree"/>
+            <field name="act_window_id" ref="action_view_stock_move"/>
+        </record>
+
+        <record id="action_stock_move_form1_view1" model="ir.actions.act_window.view">
+            <field eval="3" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_stock_move_form"/>
+            <field name="act_window_id" ref="action_view_stock_move"/>
         </record>
 
     </data>

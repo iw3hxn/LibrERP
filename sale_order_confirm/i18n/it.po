@@ -1026,3 +1026,8 @@ msgstr "Abilita verifica sullo sconto"
 #: model:ir.ui.menu,name:sale_order_confirm.menu_sale_order_supervisor
 msgid "Quotation Supervisor Review"
 msgstr "Verifica Ordine Cliente"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Confirm Customer Order"
+msgstr "Conferma Ordine Cliente"

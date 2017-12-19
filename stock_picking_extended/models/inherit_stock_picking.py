@@ -157,8 +157,8 @@ class stock_picking(orm.Model):
                                        readonly=True),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number",
                                     store={
-                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['max_date'], 300),
-                                        'sale.order': (_get_picking_sale, ['minimum_planned_date'], 200),
+                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['max_date'], 5000),
+                                        'sale.order': (_get_picking_sale, ['minimum_planned_date'], 5000),
                                         }),
 
         'minimum_planned_date': fields.related('sale_id', 'minimum_planned_date', type='date', string='Expected Date'),
