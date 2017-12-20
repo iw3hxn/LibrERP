@@ -213,6 +213,11 @@ msgid "Account Source"
 msgstr "Conto sorgente"
 
 #. module: account
+#: field:account.fiscal.position.account,invoice_amount:0
+msgid "Invoiced Amount"
+msgstr "Totale Fatturato"
+
+#. module: account
 #: field:account.fiscal.position,no_check_vat:0
 msgid "No required VAT"
 msgstr "Non obbligo P.IVA in emissione fattura"
@@ -10817,6 +10822,14 @@ msgstr "Impossibile da Annullare. Bisogna bisogna prima cancellare il 'FORZA NUM
 #, python-format
 msgid "Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}"
 msgstr "Impossibile da Emettere. C'è gia la fattura del {partner} a cui è forzato il numero {invoice_number} da emettere prima"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:212
+#, python-format
+msgid "Impossible to Validate, fiscal position {fiscal} is overdue"
+msgstr "Impossibile da Emettere. C'è la posizione fiscale {fiscal} scaduta"
+
+
 
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:212

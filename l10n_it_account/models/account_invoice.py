@@ -321,6 +321,21 @@ class account_invoice(orm.Model):
 
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.type in ['out_invoice', 'out_refund']:
+                if invoice.fiscal_position and invoice.fiscal_position.is_tax_exemption:
+                    # i'm on a Lettera intento, so check validity
+                    date_invoice = invoice.date_invoice or datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    if date_invoice > invoice.fiscal_position.end_validity:
+                        raise orm.except_orm(_('Invoice'),
+                                             _('Impossible to Validate, fiscal position {fiscal} is overdue').format(
+                                                 fiscal=invoice.fiscal_position.name))
+                    if invoice.fiscal_position.amount:
+                        plafond_amount = invoice.fiscal_position.amount - invoice.fiscal_position.invoice_amount - invoice.amount_untaxed
+                        if plafond_amount < 0:
+                            raise orm.except_orm(_('Invoice'),
+                                                 _(
+                                                     'Impossible to Validate, fiscal position {fiscal} is overdue').format(
+                                                     fiscal=invoice.fiscal_position.name))
+
                 if invoice.company_id.stop_invoice_internal_number:
                     invoice_ids = self.search(cr, 1, [('internal_number', '!=', True), ('type', '=', 'out_invoice'),
                                                       ('journal_id', '=', invoice.journal_id.id), ('state', '=', 'draft')],
