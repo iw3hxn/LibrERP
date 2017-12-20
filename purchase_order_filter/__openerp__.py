@@ -24,15 +24,14 @@
 
 {
     "name": "Purchase Order Filter",
-    "version": "3.1.1.1",
+    "version": "3.1.2.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Purchase',
     "description": """
         Module adds extra functionality to purchase_order:
             - possibility to filter order by year
-            - possibility to see sale of last or current month
-            - search by sales team includes children
+            - possibility to see purchase of last or current month
     """,
     "depends": [
         'purchase',
