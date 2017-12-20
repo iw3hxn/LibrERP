@@ -111,6 +111,7 @@ class temp_mrp_bom(orm.Model):
         'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order Line'),
         'level': fields.integer('Level'),
         'is_manufactured': fields.boolean('Manufacture'),
+        'buy': fields.boolean('Buy'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', ondelete='cascade'),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]"),
         'stock_availability': fields.function(_stock_availability, method=True, multi='stock_availability',

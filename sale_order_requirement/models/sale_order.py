@@ -22,6 +22,7 @@ class sale_order(orm.Model):
 
         # For every sale.order.line => one order.requirement.line
         for line in order.order_line:
+            # TODO: change it if you want to include services (maybe for creating routings)
             if line.product_id.type != 'service':
                 ord_req_line_vals = {
                     'sale_order_line_id': line.id,
@@ -31,8 +32,6 @@ class sale_order(orm.Model):
                 }
                 ordreqline_id = order_requirement_line_obj.create(cr, uid, ord_req_line_vals, context)
                 sale_order_line_obj.write(cr, uid, line.id, {'order_requirement_line_id': ordreqline_id}, context)
-                # order_requirement_obj.write(cr, uid, order_req_id,
-                #                             {'order_requirement_line_ids': [(0, False, ord_req_line_vals)]}, context)
 
         return res
 

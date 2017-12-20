@@ -211,6 +211,7 @@ class order_requirement_line(orm.Model):
         line_id = ids[0]
         is_leaf = not bool(bom.child_buy_and_produce_ids)
         is_manufactured = not is_leaf
+        buy = not is_manufactured
 
         product_id = bom.product_id.id
 
@@ -248,6 +249,7 @@ class order_requirement_line(orm.Model):
             'partial_cost': partial_cost,
             'cost': 0,
             'is_manufactured': is_manufactured,
+            'buy': buy,
             'company_id': bom.company_id.id,
             'position': bom.position,
             'is_leaf': is_leaf,
@@ -271,7 +273,8 @@ class order_requirement_line(orm.Model):
 
         is_leaf = True
         is_manufactured = False
-
+        buy = True
+        
         product_id = product.id
         line = self.browse(cr, uid, line_id, context)
         product = product_obj.browse(cr, uid, product_id, context)
@@ -310,6 +313,7 @@ class order_requirement_line(orm.Model):
             'level': level,
             'is_leaf': is_leaf,
             'is_manufactured': is_manufactured,
+            'buy': buy,
             'order_requirement_line_id': line_id,
             'row_color': row_color,
             'level_name': level_name,
@@ -452,7 +456,7 @@ class order_requirement_line(orm.Model):
 
                     _get_rec(bom, temp_id, level + 1)
                 # elif bom.product_id.type == 'service'
-                # TODO => ROUTING FROM product type = service
+                # TODO => IDEA: change sale_order and let include service and create ROUTING FROM product type = service
 
         if not bom_ids:
             # It's a product with no BoM
@@ -537,6 +541,8 @@ class order_requirement_line(orm.Model):
         # todo remove 'actual_product': fields.function(_get_actual_product, store=False),
         'is_manufactured': fields.boolean('Manufacture', readonly=True, states={'draft': [('readonly', False)]},
                                           help='If checked product is manufactured. If not, BOM is read-only'),
+        'buy': fields.boolean('Buy', readonly=True, states={'draft': [('readonly', False)]},
+                              help='If checked, product will be bought, otherwise is taken from stock'),
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True,
                                          states={'draft': [('readonly', False)]}),
         'supplier_id': fields.many2one('res.partner', 'Supplier', domain="[('id', 'in', supplier_ids[0][2])]",
@@ -606,6 +612,7 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_obj.unlink(cr, uid, father_temp_id, context)
 
         self.write(cr, uid, line.id, {'is_manufactured': new_is_manufactured}, context)
+        buy = not new_is_manufactured
 
         # RELOAD
         line = self.browse(cr, uid, ids, context)[0]
@@ -616,7 +623,8 @@ class order_requirement_line(orm.Model):
             'temp_mrp_bom_ids': temp_mrp_bom_ids,
             'temp_mrp_bom_routing_ids': temp_mrp_bom_routing_ids,
             'is_manufactured': new_is_manufactured,
-            'cost': line.cost
+            'cost': line.cost,
+            'buy': buy
         })
 
         return {'value': result_dict}
@@ -723,11 +731,11 @@ class order_requirement_line(orm.Model):
     def _get_purchase_order_line_value(self, cr, uid, product_id, purchase_order_values, qty, supplier_id, context):
         purchase_order_line_obj = self.pool['purchase.order.line']
         order_line_values = purchase_order_line_obj.onchange_product_id(cr, uid, [], purchase_order_values['pricelist_id'],
-                                                    product_id, qty, uom_id=False, partner_id=supplier_id,
-                                                    date_order=False,
-                                                    fiscal_position_id=purchase_order_values['fiscal_position'],
-                                                    date_planned=False, price_unit=False, notes=False,
-                                                    context=context)['value']
+                                                                        product_id, qty, uom_id=False, partner_id=supplier_id,
+                                                                        date_order=False,
+                                                                        fiscal_position_id=purchase_order_values['fiscal_position'],
+                                                                        date_planned=False, price_unit=False, notes=False,
+                                                                        context=context)['value']
 
         if order_line_values.get('taxes_id', False):
             order_line_values['taxes_id'] = [(6, False, order_line_values.get('taxes_id'))]
@@ -755,13 +763,15 @@ class order_requirement_line(orm.Model):
                 product = obj.new_product_id
             else:
                 product = obj.product_id
+            # TODO maybe let user change uom in line product
+            uom_id = product.uom_id.id
         except AttributeError:
             # If we are here it's a temp_mrp_bom
             is_temp_bom = True
             product = obj.product_id
+            uom_id = obj.product_uom.id
 
         product_id = product.id
-        uom_id = product.uom_id.id # TODO => NO
 
         if is_temp_bom:
             qty = obj.product_qty
@@ -856,7 +866,7 @@ class order_requirement_line(orm.Model):
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id, # TODO CHECK
                                                              'purchase_order_line_id': purchase_line_id}, context)
             else:
-                # Add qty to existing line # TODO CHECK UOM ! If is the same!
+                # Add qty to existing line # TODO CHECK UOM ! It MUST BE the same!
                 order_line_id = purchase_order_line_ids[0]
                 line = purchase_order_line_obj.browse(cr, uid, order_line_id, context)
                 newqty = qty + line.product_qty
@@ -873,6 +883,15 @@ class order_requirement_line(orm.Model):
                     # If is a temp mrp bom, associate purchase line also to it
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': order_line_id}, context)
+
+    def _stock_move_bom(self, cr, uid, obj, context):
+        pass
+
+    def _purchase_or_stock_move_bom(self, cr, uid, obj, context):
+        if obj.buy:
+            self._purchase_bom(self, cr, uid, obj, context)
+        else:
+            self._stock_move_bom(self, cr, uid, obj, context)
 
     def _manufacture_bom(self, cr, uid, father, bom, context):
         mrp_production_obj = self.pool['mrp.production']
@@ -960,7 +979,7 @@ class order_requirement_line(orm.Model):
                 for child in temp.bom_lines:
                     self._manufacture_or_purchase_explode(cr, uid, temp, child, context)
         else:
-            self._purchase_bom(cr, uid, temp, context)
+            self._purchase_or_stock_move_bom(cr, uid, temp, context)
 
     def _manufacture_or_purchase_all(self, cr, uid, ids, context):
         # line is a order_requirement_line, not a bom line
@@ -989,9 +1008,9 @@ class order_requirement_line(orm.Model):
                         if temp.is_leaf:
                             self._manufacture_bom(cr, uid, father_bom, temp, context)
                     else:
-                        self._purchase_bom(cr, uid, temp, context)
+                        self._purchase_or_stock_move_bom(cr, uid, temp, context)
             else:
-                self._purchase_bom(cr, uid, father_bom, context)
+                self._purchase_or_stock_move_bom(cr, uid, father_bom, context)
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -1003,7 +1022,7 @@ class order_requirement_line(orm.Model):
             if line.is_manufactured:
                 self._manufacture_or_purchase_all(cr, uid, ids, context)
             else:
-                self._purchase_bom(cr, uid, line, context)
+                self._purchase_or_stock_move_bom(cr, uid, line, context)
 
             self.write(cr, uid, line.id, {'state': 'done'}, context)
 
