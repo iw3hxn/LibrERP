@@ -740,11 +740,14 @@ class order_requirement_line(orm.Model):
         if order_line_values.get('taxes_id', False):
             order_line_values['taxes_id'] = [(6, False, order_line_values.get('taxes_id'))]
         order_line_values['product_id'] = product_id
-        purchase_order_values.update(order_line_values)
+        return order_line_values
 
     def _purchase_bom(self, cr, uid, obj, context):
         # obj can be a order_requirement_line or temp_mrp_bom
-        # Set is_temp_bom to True if obj is a temp_mrp_bom
+        # If buy flag is false -> do nothing
+        if not obj.buy:
+            return
+
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         purchase_order_obj = self.pool['purchase.order']
         purchase_order_line_obj = self.pool['purchase.order.line']
@@ -776,9 +779,11 @@ class order_requirement_line(orm.Model):
         if is_temp_bom:
             qty = obj.product_qty
             line_id = obj.order_requirement_line_id.id
+            obj_formatted_id = [(4, obj.id)]
         else:
             qty = obj.qty
             line_id = obj.id
+            obj_formatted_id = False
 
         line = self.browse(cr, uid, line_id, context)
         sale_order_id = line.sale_order_id.id
@@ -792,27 +797,39 @@ class order_requirement_line(orm.Model):
 
         if not purchase_order_ids:
             # Adding if no "similar" orders are presents
-            purchase_order_line_values = purchase_order_obj.onchange_partner_id(cr, uid, [], supplier_id)['value']
+            purchase_order_values = purchase_order_obj.onchange_partner_id(cr, uid, [], supplier_id)['value']
             location_id = shop.warehouse_id.lot_stock_id.id
 
             # First create order
-            purchase_order_line_values.update({
+            purchase_order_values.update({
                 'shop_id': shop_id,
                 'partner_id': supplier_id,
                 'invoice_method': 'manual',
                 'location_id': location_id,
-                'sale_order_ids': [(4, sale_order_id)]
+                'sale_order_ids': [(4, sale_order_id)],
             })
-            purchase_id = purchase_order_obj.create(cr, uid, purchase_order_line_values, context=context)
 
-            self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_line_values, qty, supplier_id, context)
+            if obj_formatted_id:
+                purchase_order_values.update({
+                    'temp_mrp_bom_ids': obj_formatted_id
+                })
+
+            purchase_id = purchase_order_obj.create(cr, uid, purchase_order_values, context=context)
+
+            purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_values,
+                                                                             qty, supplier_id, context)
             purchase_order_line_values.update({
                 'order_id': purchase_id,
                 'order_requirement_ids': [(4, line.order_requirement_id.id)],
                 'order_requirement_line_ids': [(4, line_id)],
-                'sale_order_ids': [(4, sale_order_id)],
+                # 'sale_order_ids': [(4, sale_order_id)],
                 'product_uom': uom_id
             })
+
+            if obj_formatted_id:
+                purchase_order_line_values.update({
+                    'temp_mrp_bom_ids': obj_formatted_id
+                })
 
             # Create order line and relationship with order_requirement_line
             purchase_line_id = purchase_order_line_obj.create(cr, uid, purchase_order_line_values, context)
@@ -850,7 +867,7 @@ class order_requirement_line(orm.Model):
                     'product_uom': uom_id
                 }
 
-                self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_line_values, qty,
+                self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_values, qty,
                                                     supplier_id, context)
 
                 # Creating a new line
@@ -863,7 +880,7 @@ class order_requirement_line(orm.Model):
 
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
-                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id, # TODO CHECK
+                    temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': purchase_line_id}, context)
             else:
                 # Add qty to existing line # TODO CHECK UOM ! It MUST BE the same!
@@ -873,8 +890,12 @@ class order_requirement_line(orm.Model):
                 purchase_order_line_values = {
                     'product_qty': newqty,
                     'order_requirement_line_ids': [(4, line_id)],
-                    'sale_order_ids': [(4, sale_order_id)]
+                    # 'sale_order_ids': [(4, sale_order_id)],
                 }
+                if obj_formatted_id:
+                    purchase_order_line_values.update({
+                        'temp_mrp_bom_ids': obj_formatted_id
+                    })
                 purchase_order_line_obj.write(cr, uid, order_line_id, purchase_order_line_values, context)
                 # Add reference also to purchase order
                 purchase_order_obj.write(cr, uid, present_order_id, {'sale_order_ids': [(4, sale_order_id)]}, context)
@@ -883,15 +904,6 @@ class order_requirement_line(orm.Model):
                     # If is a temp mrp bom, associate purchase line also to it
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': order_line_id}, context)
-
-    def _stock_move_bom(self, cr, uid, obj, context):
-        pass
-
-    def _purchase_or_stock_move_bom(self, cr, uid, obj, context):
-        if obj.buy:
-            self._purchase_bom(self, cr, uid, obj, context)
-        else:
-            self._stock_move_bom(self, cr, uid, obj, context)
 
     def _manufacture_bom(self, cr, uid, father, bom, context):
         mrp_production_obj = self.pool['mrp.production']
@@ -930,8 +942,11 @@ class order_requirement_line(orm.Model):
             temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production}, context)
 
         else:
-            return
-            # TODO: IMPLEMENT if father (split_mrp_productions is False)
+            user = self.pool['res.users'].browse(cr, uid, uid, context)
+            split_mrp_production = user.company_id.split_mrp_production
+            if split_mrp_production:
+                return
+            # TODO: IMPLEMENT if split_mrp_productions is False
             # I am creating a "sub" product => This happens ONLY when res_partner.split_mrp_productions is False
             # Adding lines if main product manufacturing order is present
             # Reload browse record pointed by father
@@ -979,13 +994,13 @@ class order_requirement_line(orm.Model):
                 for child in temp.bom_lines:
                     self._manufacture_or_purchase_explode(cr, uid, temp, child, context)
         else:
-            self._purchase_or_stock_move_bom(cr, uid, temp, context)
+            self._purchase_bom(cr, uid, temp, context)
 
     def _manufacture_or_purchase_all(self, cr, uid, ids, context):
         # line is a order_requirement_line, not a bom line
         user = self.pool['res.users'].browse(cr, uid, uid, context)
 
-        split_orders = user.company_id.split_mrp_production
+        split_mrp_production = user.company_id.split_mrp_production
 
         # TODO: Maybe multi line?
         line = self.browse(cr, uid, ids, context)[0]
@@ -993,7 +1008,7 @@ class order_requirement_line(orm.Model):
         if not line.temp_mrp_bom_ids:
             return
 
-        if split_orders:
+        if split_mrp_production:
             temp = line.temp_mrp_bom_ids[0]
             # Explode orders
             self._manufacture_or_purchase_explode(cr, uid, False, temp, context)
@@ -1008,9 +1023,9 @@ class order_requirement_line(orm.Model):
                         if temp.is_leaf:
                             self._manufacture_bom(cr, uid, father_bom, temp, context)
                     else:
-                        self._purchase_or_stock_move_bom(cr, uid, temp, context)
+                        self._purchase_bom(cr, uid, temp, context)
             else:
-                self._purchase_or_stock_move_bom(cr, uid, father_bom, context)
+                self._purchase_bom(cr, uid, father_bom, context)
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -1022,7 +1037,7 @@ class order_requirement_line(orm.Model):
             if line.is_manufactured:
                 self._manufacture_or_purchase_all(cr, uid, ids, context)
             else:
-                self._purchase_or_stock_move_bom(cr, uid, line, context)
+                self._purchase_bom(cr, uid, line, context)
 
             self.write(cr, uid, line.id, {'state': 'done'}, context)
 
