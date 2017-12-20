@@ -164,6 +164,7 @@ class product_import(filedata_import):
                 ('FormatThree', _('Format Three')),
                 ('FormatFour', _('Format Four')),
                 ('FormatFive', _('Format Five')),
+                ('FormatSix', _('Format Six')),
                 ('FormatOmnitron', _('Format Omnitron')),
             ), 'Formato Dati', required=True, readonly=False
         ),

@@ -387,6 +387,32 @@ class FormatFive():
     }
 
 
+class FormatSix(object):
+
+    HEADER_PRODUCT = (
+        "EAN", "DESCRIZIONE", "CATEORIA", "ALIQUOTA IVA",
+        "UNITA' DI MISURA", "QUANTITA'", "N.PZ.X CONFEZIONE", "MARCA",
+        "PREZZO AL PUBBLICO IVA COMPRESA", "PREZZO PROMOZIONALE IVA COMPRESA", "PREZZO DI COSTO IVA ESCLUSA",
+    )
+
+    COLUMNS_PRODUCT = "ean13, name, category, tax, uom, qty_available, pce_package, brand, list_price, list_price_discount, standard_price"
+
+    PRODUCT_SEARCH = ['ean13', 'name']
+    REQUIRED_PRODUCT = ['ean13', 'name']
+    PRODUCT_WARNINGS = []
+    PRODUCT_ERRORS = []
+
+    # Default values
+    PRODUCT_DEFAULTS = {
+        'supply_method': 'buy',
+        'uom_id': 'PCE',
+        'type': 'consu',
+        'procure_method': 'make_to_order',
+        'cost_method': 'standard',
+        'sale_ok': True
+    }
+
+
 class FormatOmnitron(object):
     """
     SELECT CodiceProdotto,DescrizioneProdotto,CodiceFornitore,
