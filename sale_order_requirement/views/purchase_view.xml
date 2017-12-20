@@ -7,21 +7,25 @@
             <field name="model">purchase.order.line</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Purchase Order Line">
-                    <!-- TODO: CHANGE this, use path maybe -->
-                    <notebook colspan="4" position="inside">
-                        <page string="Sale Order Lines" groups="base.group_extended">
-                            <separator colspan="4" string="Sale Orders"/>
-                            <field colspan="4" name="temp_mrp_bom_ids" nolabel="1">
-                                <tree string="Sale Order lines">
-                                    <field name="sale_order_id" />
-                                    <field name="product_qty"/>
-                                    <field name="product_uom"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                </form>
+                <!-- TODO: CHANGE this, use path maybe -->
+                <notebook position="inside">
+                    <page string="Sale Order Lines">
+                        <!--<field colspan="4" name="temp_mrp_bom_ids" nolabel="1" widget="many2many_tags" readonly="1">-->
+                        <field colspan="4" name="temp_mrp_bom_ids" nolabel="1" readonly="1">
+                            <tree string="Sale Order lines">
+                                <field name="sale_order_id"/>
+                                <field name="product_qty"/>
+                                <field name="product_uom"/>
+                            </tree>
+                            <form string="Sale Order lines">
+                                <field name="sale_order_id"/>
+                                <field name="product_qty"/>
+                                <field name="product_uom"/>
+                            </form>
+
+                        </field>
+                    </page>
+                </notebook>
             </field>
         </record>
 

@@ -14,6 +14,18 @@ default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
 class temp_mrp_bom(orm.Model):
     _name = 'temp.mrp.bom'
 
+    def name_get(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = []
+        if not ids:
+            return res
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        for bom_required in self.browse(cr, uid, ids, context=context):
+            name = u"{}: {} {}".format(bom_required.product_id.name, bom_required.product_qty, bom_required.product_uom.name)
+            res.append((bom_required.id, name))
+        return res
+
     # This is called also when loading saved temp mrp boms,
     # during creation see get_temp_mrp_bom
     def _stock_availability(self, cr, uid, ids, name, args, context=None):
