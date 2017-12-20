@@ -809,11 +809,6 @@ class order_requirement_line(orm.Model):
                 'sale_order_ids': [(4, sale_order_id)],
             })
 
-            if obj_formatted_id:
-                purchase_order_values.update({
-                    'temp_mrp_bom_ids': obj_formatted_id
-                })
-
             purchase_id = purchase_order_obj.create(cr, uid, purchase_order_values, context=context)
 
             purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_values,
@@ -851,32 +846,37 @@ class order_requirement_line(orm.Model):
             present_order_id = purchase_order_ids[0]
             present_order = purchase_order_obj.browse(cr, uid, present_order_id, context)
 
-            # Search for same product in Product lines
+            # Search for same product with same UOM in Product lines
             purchase_order_line_ids = purchase_order_line_obj.search(cr, uid, [('order_id', 'in', purchase_order_ids),
-                                                                               ('product_id', '=', product_id)],
+                                                                               ('product_id', '=', product_id),
+                                                                               ('product_uom', '=', uom_id)],
                                                                      context=context)
             if not purchase_order_line_ids:
                 # Line must be created
-                # ['pricelist_id', 'fiscal_position']
-                purchase_order_line_values = {
+                purchase_order_values = {
                     'fiscal_position': present_order.fiscal_position and present_order.fiscal_position.id or False,
-                    'pricelist_id': present_order.pricelist_id and present_order.pricelist_id.id or False,
+                    'pricelist_id': present_order.pricelist_id and present_order.pricelist_id.id or False
+                }
+                purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id,
+                                                                                 purchase_order_values, qty, supplier_id, context)
+                purchase_order_line_values.update({
                     'order_id': present_order_id,
                     'order_requirement_line_ids': [(4, line_id)],
                     'sale_order_ids': [(4, sale_order_id)],
                     'product_uom': uom_id
-                }
-
-                self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_values, qty,
-                                                    supplier_id, context)
-
+                })
+                if obj_formatted_id:
+                    purchase_order_line_values.update({
+                        'temp_mrp_bom_ids': obj_formatted_id
+                    })
                 # Creating a new line
                 purchase_line_id = purchase_order_line_obj.create(cr, uid, purchase_order_line_values, context)
                 # Link to line many2many field
                 self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
 
-                # Add reference also to purchase order
-                purchase_order_obj.write(cr, uid, present_order_id, {'sale_order_ids': [(4, sale_order_id)]}, context)
+                # Add references also to purchase order
+                refence_values = {'sale_order_ids': [(4, sale_order_id)]}
+                purchase_order_obj.write(cr, uid, present_order_id, refence_values, context)
 
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
@@ -892,13 +892,16 @@ class order_requirement_line(orm.Model):
                     'order_requirement_line_ids': [(4, line_id)],
                     # 'sale_order_ids': [(4, sale_order_id)],
                 }
+
                 if obj_formatted_id:
                     purchase_order_line_values.update({
                         'temp_mrp_bom_ids': obj_formatted_id
                     })
+
                 purchase_order_line_obj.write(cr, uid, order_line_id, purchase_order_line_values, context)
-                # Add reference also to purchase order
-                purchase_order_obj.write(cr, uid, present_order_id, {'sale_order_ids': [(4, sale_order_id)]}, context)
+                # Add references also to purchase order
+                refence_values = {'sale_order_ids': [(4, sale_order_id)]}
+                purchase_order_obj.write(cr, uid, present_order_id, refence_values, context)
 
                 if is_temp_bom:
                     # If is a temp mrp bom, associate purchase line also to it
@@ -912,7 +915,7 @@ class order_requirement_line(orm.Model):
         if not father:
             product = bom.product_id
 
-            # TODO: Maybe add an option/Flag on res.company?
+            # TODO: QUEUE MRP PRODUCTION Maybe add an option/Flag on res.company?
             # If another production order is present and not started, queue to it
             # mrp_productions = mrp_production_obj.search_browse(cr, uid, [('product_id', '=', product.id),
             #                                                              ('state', '=', 'draft')], context=context)

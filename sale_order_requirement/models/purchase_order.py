@@ -9,6 +9,5 @@ class purchase_order(orm.Model):
 
     _columns = {
         'sale_order_ids': fields.many2many('sale.order', string='Sale Orders', readonly=True),
-        'temp_mrp_bom_ids': fields.many2many('temp.mrp.bom', string='Sale Orders', readonly=True),
     }
 
