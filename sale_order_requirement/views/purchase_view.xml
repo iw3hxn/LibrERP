@@ -22,7 +22,6 @@
                                 <field name="product_qty"/>
                                 <field name="product_uom"/>
                             </form>
-
                         </field>
                     </page>
                 </notebook>

@@ -252,7 +252,7 @@ class temp_mrp_bom(orm.Model):
         # Useless, button just for show an icon
         return
 
-    def _bom_explode(self, cr, uid, bom_father, factor, properties=[], addthis=False, level=0, routing_id=False):
+    def _temp_mrp_bom_explode(self, cr, uid, bom_father, bom_factor, context):
         """ Finds Products and Work Centers for related BoM for manufacturing order.
         @param bom: BoM of particular product.
         @param factor: Factor of product UoM.
@@ -266,35 +266,45 @@ class temp_mrp_bom(orm.Model):
         # NOTE: MRP.BOM version will find only the first-level children. Not good for temp.mrp.bom
         # WARNING: PHANTOM KITS NOT MANAGED
 
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        split_mrp_production = user.company_id.split_mrp_production
+
         result = []
         result2 = []
 
-        # First level children ONLY
-        for bom in bom_father.bom_lines:
-            factor = factor / (bom.product_efficiency or 1.0)
-            factor = rounding(factor, bom.product_rounding)
-            if factor < bom.product_rounding:
-                factor = bom.product_rounding
+        def _explode_rec(father, factor):
 
-            result.append(
-                {
-                    'name': bom.product_id.name,
-                    'product_id': bom.product_id.id,
-                    'product_qty': bom.product_qty * factor,
-                    'product_uom': bom.product_uom.id,
-                    'product_uos_qty': bom.product_uos and bom.product_uos_qty * factor or False,
-                    'product_uos': bom.product_uos and bom.product_uos.id or False,
+            for bom in father.bom_lines:
+                factor = factor / (bom.product_efficiency or 1.0)
+                factor = rounding(factor, bom.product_rounding)
+                if factor < bom.product_rounding:
+                    factor = bom.product_rounding
+
+                # When NOT splitting orders, add only leaves
+                if split_mrp_production or bom.is_leaf:
+                    result.append(
+                        {
+                            'name': bom.product_id.name,
+                            'product_id': bom.product_id.id,
+                            'product_qty': bom.product_qty * factor,
+                            'product_uom': bom.product_uom.id,
+                            'product_uos_qty': bom.product_uos and bom.product_uos_qty * factor or False,
+                            'product_uos': bom.product_uos and bom.product_uos.id or False,
+                        })
+                # When splitting orders, explode first level children ONLY, so NO RECURSION
+                if not split_mrp_production:
+                    _explode_rec(bom, bom_factor)
+
+            # Routing lines directly referenced by temp mrp bom
+            for wc_use in bom_father.temp_mrp_routing_lines:
+                result2.append({
+                    'name': wc_use.name,
+                    'workcenter_id': wc_use.workcenter_id.id,
+                    'sequence': wc_use.sequence,
+                    'cycle': wc_use.cycle,
+                    'hour': wc_use.hour
                 })
 
-        # Routing lines directly referenced by temp mrp bom
-        for wc_use in bom_father.temp_mrp_routing_lines:
-            result2.append({
-                'name': wc_use.name,
-                'workcenter_id': wc_use.workcenter_id.id,
-                'sequence': wc_use.sequence,
-                'cycle': wc_use.cycle,
-                'hour': wc_use.hour
-            })
-
+        _explode_rec(bom_father, bom_factor)
         return result, result2
 

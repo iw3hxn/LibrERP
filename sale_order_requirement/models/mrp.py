@@ -60,7 +60,8 @@ class mrp_production(osv.osv):
     _columns = {
         'is_from_order_requirement': fields.boolean(),
         'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material', readonly=True),
-        'level': fields.integer('Level', required=True)
+        'level': fields.integer('Level', required=True),
+        'sale_id': fields.many2one('sale.order','Sale Order', readonly=True)
     }
 
     _defaults = {
@@ -98,7 +99,7 @@ class mrp_production(osv.osv):
                 raise osv.except_osv(_('Error'), _("Couldn't find a bill of material for this product."))
             factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
             # Forcing routing_id to False, the lines are linked directly to temp_mrp_bom
-            res = bom_obj._bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, properties, routing_id=False)
+            res = bom_obj._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)
             results = res[0]
             results2 = res[1]
             for line in results:
