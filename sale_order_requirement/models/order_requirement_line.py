@@ -957,13 +957,12 @@ class order_requirement_line(orm.Model):
 
         def _manufacture_or_purchase_rec(temp, context, is_split):
             if temp.is_manufactured:
-                self._manufacture_bom(cr, uid, temp, context)
-                if not temp.is_leaf:
-                    # When splitting orders, create MRP order for every non-leaf bom (excluding level 0)
-                    if is_split and temp.level > 0:
-                        self._manufacture_bom(cr, uid, temp, context)
-                    for child in temp.bom_lines:
-                        _manufacture_or_purchase_rec(child, context, is_split)
+                # self._manufacture_bom(cr, uid, temp, context)
+                # When splitting orders, create MRP order for every non-leaf bom (excluding level 0)
+                if is_split and temp.level > 0:
+                    self._manufacture_bom(cr, uid, temp, context)
+                for child in temp.bom_lines:
+                    _manufacture_or_purchase_rec(child, context, is_split)
             else:
                 self._purchase_bom(cr, uid, temp, context)
 

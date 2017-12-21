@@ -61,7 +61,6 @@ class mrp_production(osv.osv):
         'is_from_order_requirement': fields.boolean(),
         'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material', readonly=True),
         'level': fields.integer('Level', required=True),
-        'sale_id': fields.many2one('sale.order','Sale Order', readonly=True)
     }
 
     _defaults = {
@@ -76,14 +75,19 @@ class mrp_production(osv.osv):
         If necessary, redirects to temp.mrp.bom instead of mrp.bom
         """
         # action_compute is the Entry point for intercepting the mrp production
-        productions = self.browse(cr, uid, ids)
+        productions = self.browse(cr, uid, ids, context)
+
         if not productions:
             return 0
+
+        # NOTE: SINGLE PRODUCTION (not supported for multiple lines, problems with return len(results) )
+
         if not productions[0].is_from_order_requirement:
             return super(mrp_production, self).action_compute(cr, uid, ids, properties, context)
 
-        # If production order was created by order requirement, behaviour is different
         results = []
+
+        # If production order was created by order requirement, behaviour is different
         bom_obj = self.pool['temp.mrp.bom']
         uom_obj = self.pool['product.uom']
         prod_line_obj = self.pool['mrp.production.product.line']

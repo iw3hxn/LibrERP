@@ -116,7 +116,6 @@ class temp_mrp_bom(orm.Model):
         # mrp_routing_id is a relation with ORIGINAL routing (but we make a copy)
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing', auto_join=True, readonly=True),
         'temp_mrp_routing_lines': fields.one2many('temp.mrp.routing', 'temp_mrp_bom_id', 'Routing Lines'),
-        # TODO mrp_production_line_id instead? (or ALSO)
         'mrp_production_id': fields.many2one('mrp.production', string='Manufacturing Order'),
         # 'mrp_production_line_id': fields.many2one('mrp.production.???', string='Manufacturing Order'),
         'purchase_order_id': fields.many2one('purchase.order', string='Purchase Order'),
@@ -200,19 +199,6 @@ class temp_mrp_bom(orm.Model):
                 return True
         return False
 
-    # TODO ALL onchange here USELESS
-    # def onchange_temp_manufacture(self, cr, uid, ids, is_manufactured):
-    #     res = {}
-    #     if is_manufactured:
-    #         res['supplier_id'] = False
-    #     res['is_manufactured'] = is_manufactured
-    #     return {'value': res}
-    #
-    # def onchange_temp_supplier_id(self, cr, uid, ids, supplier_id, product_id, context=None):
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     res = {}
-    #     return {'value': res}
-    #
     def onchange_temp_product_id(self, cr, uid, ids, temp_id, new_product_id, qty, is_manufactured, context=None):
         # if temp_id is not False:
         #     # Use this ONLY WHEN CREATE NEW TEMP MRP BOM
@@ -262,7 +248,6 @@ class temp_mrp_bom(orm.Model):
         @return: result: List of dictionaries containing product details.
                  result2: List of dictionaries containing Work Center details.
         """
-        # TODO: Remove unused parameters
         # NOTE: MRP.BOM version will find only the first-level children. Not good for temp.mrp.bom
         # WARNING: PHANTOM KITS NOT MANAGED
 
