@@ -203,6 +203,7 @@ class order_requirement_line(orm.Model):
         else:
             return product.standard_price
 
+
     def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, temp_father_id, level, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
@@ -369,6 +370,7 @@ class order_requirement_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
         # Simple version -> sum of partial_cost
+        # TODO: Add to this the PRODUCTION COST (Routing)
         # COST: Cost of product itself + cost of all children
         # NOTE: Original quantity is what is really matters -> I want cost of a single piece
         uom_obj = self.pool['product.uom']
@@ -698,40 +700,10 @@ class order_requirement_line(orm.Model):
             })
         return routing_vals
 
-    def NO_NO_NO_make_production_internal_shipment(self, cr, uid, production, context=None):
-        ir_sequence_obj = self.pool['ir.sequence']
-        stock_picking_obj = self.pool.get['stock.picking']
-        pick_type = 'internal'
-        address_id = False
-
-        # Take routing address as a Shipment Address.
-        # If usage of routing location is a internal, make outgoing shipment otherwise internal shipment
-        if production.bom_id.routing_id and production.bom_id.routing_id.location_id:
-            routing_loc = production.bom_id.routing_id.location_id
-            if routing_loc.usage != 'internal':
-                pick_type = 'out'
-            address_id = routing_loc.address_id and routing_loc.address_id.id or False
-
-        # Take next Sequence number of shipment base on type
-        pick_name = ir_sequence_obj.get(cr, uid, 'stock.picking.' + pick_type)
-
-        picking_id = stock_picking_obj.create(cr, uid, {
-            'name': pick_name,
-            'origin': (production.origin or '').split(':')[0] + ':' + production.name,
-            'type': pick_type,
-            'move_type': 'one',
-            'state': 'auto',
-            'address_id': address_id,
-            'auto_picking': True,  # This one returns True ==> self._get_auto_picking(cr, uid, production),
-            'company_id': production.company_id.id,
-        }, context)
-        production.write({'picking_id': picking_id})
-        return picking_id
-
-    def _get_purchase_order_line_value(self, cr, uid, product_id, purchase_order_values, qty, supplier_id, context):
+    def _get_purchase_order_line_value(self, cr, uid, product_id, uom_id, qty, purchase_order_values, supplier_id, context):
         purchase_order_line_obj = self.pool['purchase.order.line']
         order_line_values = purchase_order_line_obj.onchange_product_id(cr, uid, [], purchase_order_values['pricelist_id'],
-                                                                        product_id, qty, uom_id=False, partner_id=supplier_id,
+                                                                        product_id, qty, uom_id=uom_id, partner_id=supplier_id,
                                                                         date_order=False,
                                                                         fiscal_position_id=purchase_order_values['fiscal_position'],
                                                                         date_planned=False, price_unit=False, notes=False,
@@ -740,6 +712,7 @@ class order_requirement_line(orm.Model):
         if order_line_values.get('taxes_id', False):
             order_line_values['taxes_id'] = [(6, False, order_line_values.get('taxes_id'))]
         order_line_values['product_id'] = product_id
+
         return order_line_values
 
     def _purchase_bom(self, cr, uid, obj, context):
@@ -806,19 +779,20 @@ class order_requirement_line(orm.Model):
                 'partner_id': supplier_id,
                 'invoice_method': 'manual',
                 'location_id': location_id,
+                'product_uom': uom_id,
                 'sale_order_ids': [(4, sale_order_id)],
             })
 
             purchase_id = purchase_order_obj.create(cr, uid, purchase_order_values, context=context)
 
-            purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, purchase_order_values,
-                                                                             qty, supplier_id, context)
+            purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
+                                                                             purchase_order_values, supplier_id, context)
             purchase_order_line_values.update({
+                'product_qty': qty,
                 'order_id': purchase_id,
                 'order_requirement_ids': [(4, line.order_requirement_id.id)],
                 'order_requirement_line_ids': [(4, line_id)],
                 # 'sale_order_ids': [(4, sale_order_id)],
-                'product_uom': uom_id
             })
 
             if obj_formatted_id:
@@ -848,22 +822,23 @@ class order_requirement_line(orm.Model):
 
             # Search for same product with same UOM in Product lines
             purchase_order_line_ids = purchase_order_line_obj.search(cr, uid, [('order_id', 'in', purchase_order_ids),
-                                                                               ('product_id', '=', product_id),
-                                                                               ('product_uom', '=', uom_id)],
+                                                                               ('product_id', '=', product_id)],
                                                                      context=context)
             if not purchase_order_line_ids:
+                # TODO: Can be simplified: if no order present create order and use it below, do not repeat code!
                 # Line must be created
                 purchase_order_values = {
                     'fiscal_position': present_order.fiscal_position and present_order.fiscal_position.id or False,
-                    'pricelist_id': present_order.pricelist_id and present_order.pricelist_id.id or False
+                    'pricelist_id': present_order.pricelist_id and present_order.pricelist_id.id or False,
+                    'product_uom': uom_id
                 }
-                purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id,
-                                                                                 purchase_order_values, qty, supplier_id, context)
+                purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
+                                                                                 purchase_order_values, supplier_id, context)
                 purchase_order_line_values.update({
+                    'product_qty': qty,
                     'order_id': present_order_id,
                     'order_requirement_line_ids': [(4, line_id)],
                     'sale_order_ids': [(4, sale_order_id)],
-                    'product_uom': uom_id
                 })
                 if obj_formatted_id:
                     purchase_order_line_values.update({
@@ -883,10 +858,16 @@ class order_requirement_line(orm.Model):
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': purchase_line_id}, context)
             else:
-                # Add qty to existing line # TODO CHECK UOM ! It MUST BE the same!
+                # Add qty to existing line
+                uom_obj = self.pool['product.uom']
                 order_line_id = purchase_order_line_ids[0]
                 line = purchase_order_line_obj.browse(cr, uid, order_line_id, context)
+
+                # Calculate qty according to UoM
+                qty = uom_obj._compute_qty(cr, uid, uom_id, qty, line.product_uom.id)
+
                 newqty = qty + line.product_qty
+
                 purchase_order_line_values = {
                     'product_qty': newqty,
                     'order_requirement_line_ids': [(4, line_id)],
