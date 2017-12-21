@@ -60,24 +60,32 @@ class Parser(report_sxw.rml_parse):
         result = {}
         # prima creare solo le righe con l'imponibile
         for move_line in move.line_id:
-            if move_line.tax_code_id and not move_line.tax_code_id.exclude_from_registries and move_line.tax_amount:
+            if (
+                move_line.tax_code_id and
+                not move_line.tax_code_id.exclude_from_registries and
+                move_line.tax_amount
+            ):
                 if not res.get(move_line.tax_code_id.id):
                     res[move_line.tax_code_id.id] = 0.0
-                    self.localcontext['used_tax_codes'][move_line.tax_code_id.id] = True
-                res[move_line.tax_code_id.id] += (move_line.tax_amount
-                                                  * self.localcontext['data']['tax_sign'])
+                    self.localcontext['used_tax_codes'][
+                        move_line.tax_code_id.id] = True
+                res[move_line.tax_code_id.id] += (
+                    move_line.tax_amount *
+                    self.localcontext['data']['tax_sign'])
         return res
 
     def _get_tax_lines(self, move):
         res = []
         tax_code_obj = self.pool.get('account.tax.code')
-        # index è usato per non ripetere la stampa dei dati fattura quando ci sono più codici IVA
+        # index è usato per non ripetere la stampa dei dati fattura quando ci
+        # sono più codici IVA
         index = 0
         invoice = False
         for move_line in move.line_id:
             if move_line.invoice:
                 if invoice and invoice.id != move_line.invoice.id:
-                    raise Exception(_("Move %s contains different invoices") % move.name)
+                    raise Exception(
+                        _("Move %s contains different invoices") % move.name)
                 invoice = move_line.invoice
         amounts_by_code = self._tax_amounts_by_code(move)
         for tax_code_id in amounts_by_code:
@@ -86,9 +94,10 @@ class Parser(report_sxw.rml_parse):
                 'tax_code_name': tax_code.name,
                 'amount': amounts_by_code[tax_code_id],
                 'index': index,
-                'invoice_date': (invoice and invoice.date_invoice
-                                 or move.date or ''),
-                'supplier_invoice_number': (invoice and invoice.supplier_invoice_number or '')
+                'invoice_date': (invoice and invoice.date_invoice or
+                                 move.date or ''),
+                'supplier_invoice_number': (
+                    invoice and invoice.supplier_invoice_number or '')
             }
             res.append(tax_item)
             index += 1
@@ -121,17 +130,22 @@ class Parser(report_sxw.rml_parse):
         res_dict = {}
         tax_code_obj = self.pool['account.tax.code']
         for period_id in self.localcontext['data']['period_ids']:
-            for tax_code in tax_code_obj.browse(self.cr, self.uid,
-                                                tax_code_ids, context={
-                        'period_id': period_id,
-                    }):
+            for tax_code in tax_code_obj.browse(
+                self.cr, self.uid,
+                tax_code_ids, context={
+                    'period_id': period_id,
+                }
+            ):
                 if not res_dict.get(tax_code.id):
                     res_dict[tax_code.id] = 0.0
-                res_dict[tax_code.id] += (tax_code.sum_period * self.localcontext['data']['tax_sign'])
+                res_dict[tax_code.id] += (
+                    tax_code.sum_period *
+                    self.localcontext['data']['tax_sign'])
         for tax_code_id in res_dict:
             tax_code = tax_code_obj.browse(self.cr, self.uid, tax_code_id)
             if res_dict[tax_code_id]:
-                res.append((tax_code.name, res_dict[tax_code_id], tax_code.is_base))
+                res.append(
+                    (tax_code.name, res_dict[tax_code_id], tax_code.is_base))
         return res
 
     def _get_tax_codes(self):
@@ -181,22 +195,22 @@ class Parser(report_sxw.rml_parse):
         self.localcontext.update({
             'fiscal_page_base': data.get('fiscal_page_base'),
         })
-        return super(Parser, self).set_context(objects, data, ids, report_type=report_type)
+        return super(Parser, self).set_context(
+            objects, data, ids, report_type=report_type)
 
 
-report_sxw.report_sxw('report.registro_iva_vendite',
-                      'registro_iva_vendite',
-                      'addons/l10n_it_vat_registries/templates/registro_iva_vendite.mako',
-                      parser=Parser)
-report_sxw.report_sxw('report.registro_iva_acquisti',
-                      'registro_iva_acquisti',
-                      'addons/l10n_it_vat_registries/templates/registro_iva_acquisti.mako',
-                      parser=Parser)
-report_sxw.report_sxw('report.registro_iva_corrispettivi',
-                      'registro_iva_corrispettivi',
-                      'addons/l10n_it_vat_registries/templates/registro_iva_corrispettivi.mako',
-                      parser=Parser)
-report_sxw.report_sxw('report.registro_generale',
-                      'registro_generale',
-                      'addons/l10n_it_vat_registries/templates/registro_generale.mako',
-                      parser=Parser)
+report_sxw.report_sxw(
+    'report.registro_iva_vendite',
+    'registro_iva_vendite',
+    'addons/l10n_it_vat_registries/templates/registro_iva_vendite.mako',
+    parser=Parser)
+report_sxw.report_sxw(
+    'report.registro_iva_acquisti',
+    'registro_iva_acquisti',
+    'addons/l10n_it_vat_registries/templates/registro_iva_acquisti.mako',
+    parser=Parser)
+report_sxw.report_sxw(
+    'report.registro_iva_corrispettivi',
+    'registro_iva_corrispettivi',
+    'addons/l10n_it_vat_registries/templates/registro_iva_corrispettivi.mako',
+    parser=Parser)

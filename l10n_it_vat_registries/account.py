@@ -26,8 +26,12 @@ class account_tax_code(orm.Model):
     _inherit = "account.tax.code"
 
     _columns = {
-        'is_base': fields.boolean('Is base', help="This tax code is used for base amounts (field used by VAT registries)"),
-        'exclude_from_registries': fields.boolean('Exclude from VAT registries'),
+        'is_base': fields.boolean(
+            'Is base',
+            help="This tax code is used for base amounts (field used by "
+                 "VAT registries)"),
+        'exclude_from_registries': fields.boolean(
+            'Exclude from VAT registries'),
     }
 
 
