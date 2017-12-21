@@ -10,8 +10,8 @@
                 <!-- TODO: CHANGE this, use path maybe -->
                 <notebook position="inside">
                     <page string="Sale Order Lines">
-                        <!--<field colspan="4" name="temp_mrp_bom_ids" nolabel="1" widget="many2many_tags" readonly="1">-->
-                        <field colspan="4" name="temp_mrp_bom_ids" nolabel="1" readonly="1">
+                        <field colspan="4" name="temp_mrp_bom_ids" nolabel="1" widget="many2many_tags" readonly="1">
+                        <!--<field colspan="4" name="temp_mrp_bom_ids" nolabel="1" readonly="1">-->
                             <tree string="Sale Order lines">
                                 <field name="sale_order_id"/>
                                 <field name="product_qty"/>

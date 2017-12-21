@@ -22,7 +22,7 @@ class temp_mrp_bom(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
         for bom_required in self.browse(cr, uid, ids, context=context):
-            name = u"{}: {} {}".format(bom_required.product_id.name, bom_required.product_qty, bom_required.product_uom.name)
+            name = u"{}: {} {}".format(bom_required.sale_order_id.name, bom_required.product_qty, bom_required.product_uom.name)
             res.append((bom_required.id, name))
         return res
 
