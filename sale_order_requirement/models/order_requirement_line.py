@@ -943,17 +943,6 @@ class order_requirement_line(orm.Model):
 
         temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production}, context)
 
-    def _manufacture_or_purchase_explode(self, cr, uid, temp, context):
-        if temp.is_manufactured:
-            self._manufacture_bom(cr, uid, temp, context)
-            if not temp.is_leaf:
-                if temp.level > 0:
-                    self._manufacture_bom(cr, uid, temp, context)
-                for child in temp.bom_lines:
-                    self._manufacture_or_purchase_explode(cr, uid, child, context)
-        else:
-            self._purchase_bom(cr, uid, temp, context)
-
     def _manufacture_or_purchase_all(self, cr, uid, ids, context):
         # line is a order_requirement_line, not a bom line
         user = self.pool['res.users'].browse(cr, uid, uid, context)
@@ -966,24 +955,26 @@ class order_requirement_line(orm.Model):
         if not line.temp_mrp_bom_ids:
             return
 
-        if split_mrp_production:
-            temp = line.temp_mrp_bom_ids[0]
-            # Explode orders
-            self._manufacture_or_purchase_explode(cr, uid, temp, context)
-        else:
-            # TODO: MAYBE IS THE SAME PROCESS
-            # Not multiorder -> First the father
-            father_bom = line.temp_mrp_bom_ids[0]
-            if father_bom.is_manufactured:
-                self._manufacture_bom(cr, uid, father_bom, context)
-                for temp in line.temp_mrp_bom_ids[1:]:
-                    if temp.is_manufactured:
-                        if temp.is_leaf:
-                            self._manufacture_bom(cr, uid, temp, context)
-                    else:
-                        self._purchase_bom(cr, uid, temp, context)
+        def _manufacture_or_purchase_rec(temp, context, is_split):
+            if temp.is_manufactured:
+                self._manufacture_bom(cr, uid, temp, context)
+                if not temp.is_leaf:
+                    # When splitting orders, create MRP order for every non-leaf bom (excluding level 0)
+                    if is_split and temp.level > 0:
+                        self._manufacture_bom(cr, uid, temp, context)
+                    for child in temp.bom_lines:
+                        _manufacture_or_purchase_rec(child, context, is_split)
             else:
-                self._purchase_bom(cr, uid, father_bom, context)
+                self._purchase_bom(cr, uid, temp, context)
+
+        father_temp = line.temp_mrp_bom_ids[0]
+
+        # When NOT splitting order, must create main bom
+        if not split_mrp_production:
+            self._manufacture_bom(cr, uid, father_temp, context)
+
+        # Explode orders
+        _manufacture_or_purchase_rec(father_temp, context, split_mrp_production)
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)

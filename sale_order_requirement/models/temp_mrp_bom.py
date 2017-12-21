@@ -281,6 +281,7 @@ class temp_mrp_bom(orm.Model):
                     factor = bom.product_rounding
 
                 # When NOT splitting orders, add only leaves
+                # Remove if condition for add all, and not only leaves
                 if split_mrp_production or bom.is_leaf:
                     result.append(
                         {
