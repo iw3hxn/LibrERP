@@ -2,29 +2,51 @@
 # © 2017 Andrei Levin - Didotech srl (www.didotech.com)
 
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
 import datetime
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class MrpBom(orm.Model):
-    _inherit = "mrp.bom"
-
-    _columns = {
-        'deleted_bom_line_ids': fields.one2many(
-            'mrp.bom', 'bom_id', string='Deleted BoMs', domain=[('active', '=', False)], readonly=True)
-    }
+    _name = 'mrp.bom'
+    _inherit = ['mail.thread', "mrp.bom"]
 
     def write(self, cr, uid, ids, values, context):
         if 'bom_lines' in values:
-            today = datetime.datetime.now()
             for line in values['bom_lines']:
                 if line[0] == 0:
-                    if 'date_start' not in line[2] or not line[2]['date_start']:
-                        line[2]['date_start'] = today.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    message = _(u"Product: '{}', quantity: {}").format(
+                        line[2]['name'], line[2]['product_qty'])
+                    title = 'Added'
+                elif line[0] == 1:
+                    bom_line = self.browse(cr, uid, line[1], context)
+                    updated = ["{}: {} -> {}".format(key, getattr(bom_line, key, ''), value) for key, value in line[2].items()]
+                    message = _(u"Product: '{}': {}").format(bom_line.product_id.name,
+                                                                     ', '.join(updated))
+                    title = 'Updated'
                 elif line[0] == 2:
-                    line[0] = 1
-                    line[2] = {
-                        'active': False,
-                        'date_stop': today.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                    }
+                    bom_line = self.browse(cr, uid, line[1], context)
+                    message = _(u"Product: '{}'").format(bom_line.product_id.name)
+                    title = 'Deleted'
+                else:
+                    message = False
+                if message:
+                    for bom_id in ids:
+                        self.mail_post(cr, uid, bom_id, message, title, context)
         return super(MrpBom, self).write(cr, uid, ids, values, context)
+
+    def mail_post(self, cr, uid, bom_id, body, title, context):
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        return self.pool['mail.message'].create(cr, uid, {
+            'subject': title,
+            'date': datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+            'email_from': user.company_id.email or 'BoM update',
+            'email_to': '',
+            'user_id': uid,
+            'body_text': body,
+            'body_html': body,
+            'model': 'mrp.bom',
+            'state': 'outgoing',
+            'subtype': 'html',
+            'res_id': bom_id
+        })

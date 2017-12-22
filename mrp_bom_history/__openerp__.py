@@ -3,7 +3,7 @@
 
 {
     "name": "BoM History",
-    "version": "1.0",
+    "version": "4.0.0.0",
     "depends": [
         "mrp",
         "base",
