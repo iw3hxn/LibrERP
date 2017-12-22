@@ -587,7 +587,7 @@ class ImportFile(threading.Thread, Utils):
                 'description': record.description,
                 'old_code': record.old_code,
                 'delivery_cost': record.omnitron_delivery_cost or 0.0,
-                'weight_per_meter': record.omnitron_weight_per_meter
+                'weight_per_meter': float(record.omnitron_weight_per_meter)
             })
         elif isinstance(record.name, unicode):
             vals_product['name'] = record.name
@@ -829,13 +829,15 @@ class ImportFile(threading.Thread, Utils):
             pprint(default_vals_product)
             product_id = self.product_obj.create(cr, uid, default_vals_product, self.context)
             self.uo_new += 1
-
-        if hasattr(record, 'description_english') and record.description_english:
-            self.product_obj.write(
-                cr, uid, product_id, {'description': record.description_english}, context={'lang': 'en_US'}
-            )
+        else:
+            product_id = False
 
         if partner_ids and product_id:
+            if hasattr(record, 'description_english') and record.description_english:
+                self.product_obj.write(
+                    cr, uid, product_id, {'description': record.description_english}, context={'lang': 'en_US'}
+                )
+
             for partner_id in partner_ids:
                 supplierinfo_ids = self.supplierinfo_obj.search(cr, uid, [
                     ('product_id', '=', product_id),
@@ -901,7 +903,7 @@ class ImportFile(threading.Thread, Utils):
                     self.processed_lines,
                     vals_product.get('name') or vals_product.get('description')))
 
-        if hasattr(record, 'qty_available') and record.qty_available:
+        if product_id and hasattr(record, 'qty_available') and record.qty_available:
             self.set_product_qty(cr, uid, product_id, record.qty_available)
 
         if self.update_only:
