@@ -3,16 +3,24 @@
 
 {
     'name': 'Data migration import',
-    'version': '3.13.87.22',
+    'version': '3.13.88.22',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import products and partners
         from CSV/Excel/OpenOffice formatted files.
-
+        
+        Partner
+        -------
         When option 'strict' is selected, partner will be searched on every
         field in PARTNER_SEARCH and if in doubt nothing will be changed or
         updated. It is usefull to use this mode to be shure that nothing will
         be overwritten.
+        
+        Product
+        -------
+        If you select option 'update_only' only existent products will be updated. 
+        Only fields present in table will be written.
+        
     """,
     "author": "Didotech SRL",
     'website': 'http://www.didotech.com',

@@ -451,7 +451,7 @@ class FormatOmnitron(object):
                       "none8, none9, none10, omnitron_weight_per_meter"
 
     PRODUCT_SEARCH = ['old_code']
-    REQUIRED_PRODUCT = ['old_code', 'description']
+    REQUIRED_PRODUCT = ['old_code']
     PRODUCT_WARNINGS = []
     PRODUCT_ERRORS = []
 

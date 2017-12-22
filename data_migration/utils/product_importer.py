@@ -521,6 +521,17 @@ class ImportFile(threading.Thread, Utils):
         if identifier:
             identifier = identifier.strip()
 
+        for field in self.PRODUCT_SEARCH:
+            if hasattr(record, field) and getattr(record, field):
+                identifier_field = field
+                identifier = getattr(record, identifier_field)
+                break
+        else:
+            error = "Row {0}: Can't find valid product key".format(self.processed_lines)
+            _logger.error(error)
+            self.error.append(error)
+            return False
+
         # # Look for duplicated default code
         # if record.default_code and record.default_code.strip() in self.cache:
         #     _logger.warning(u'Code {0} already processed'.format(record.default_code.strip()))
@@ -543,12 +554,16 @@ class ImportFile(threading.Thread, Utils):
                 return False
 
         # print '>>>>>>>', record.name
-        vals_product = self.product_obj.default_get(cr, uid, [
-            'taxes_id',
-            'supplier_taxes_id',
-            'property_account_income',
-            'property_account_expense'
-        ], self.context)
+        if not self.update_only:
+            vals_product = self.product_obj.default_get(cr, uid, [
+                'taxes_id',
+                'supplier_taxes_id',
+                'property_account_income',
+                'property_account_expense'
+            ], self.context)
+            vals_product[identifier_field] = getattr(record, identifier_field)
+        else:
+            vals_product = {}
 
         if vals_product.get('taxes_id'):
             vals_product['taxes_id'] = [(6, 0, vals_product.get('taxes_id'))]
@@ -581,28 +596,28 @@ class ImportFile(threading.Thread, Utils):
                 }
                 vals_product['produce_delay'] = produce_delay[record.omnitron_produce_delay]
 
-            vals_product.update({
-                # 'name': record.description.split('\\')[0],
-                'name': record.description.replace('\\', ' / '),
-                'description': record.description,
-                'old_code': record.old_code,
-                'delivery_cost': record.omnitron_delivery_cost or 0.0,
-                'weight_per_meter': float(record.omnitron_weight_per_meter)
-            })
+            if record.description:
+                vals_product.update({
+                    'name': record.description.replace('\\', ' / '),
+                    'description': record.description,
+                })
+
+            if not self.update_only:
+                vals_product.update({
+                    'old_code': record.old_code,
+                    'delivery_cost': record.omnitron_delivery_cost or 0.0,
+                    'weight_per_meter': float(record.omnitron_weight_per_meter)
+                })
+            else:
+                if record.omnitron_delivery_cost:
+                    vals_product['delivery_cost'] = record.omnitron_delivery_cost
+                if record.omnitron_weight_per_meter and float(record.omnitron_weight_per_meter):
+                    vals_product['weight_per_meter'] = float(record.omnitron_weight_per_meter)
+
         elif isinstance(record.name, unicode):
             vals_product['name'] = record.name
         else:
             vals_product['name'] = unicode(record.name, 'utf-8')
-
-        for field in self.PRODUCT_SEARCH:
-            if hasattr(record, field) and getattr(record, field):
-                vals_product[field] = getattr(record, field)
-                break
-        else:
-            error = "Row {0}: Can't find valid product key".format(self.processed_lines)
-            _logger.error(error)
-            self.error.append(error)
-            return False
 
         if hasattr(record, 'category') and record.category:
             # We can't use \ in SQL, so we forced to use \\ which became \\\\
@@ -809,14 +824,16 @@ class ImportFile(threading.Thread, Utils):
         if not vals_product.get('default_code', False) and vals_product.get('ean13', False):
             vals_product['default_code'] = vals_product['ean13']
 
-        vals_product['listprice_update_date'] = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        if not self.update_only:
+            vals_product['listprice_update_date'] = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
 
-        product_ids = self.product_obj.search(cr, uid, [(field, '=ilike', vals_product[field].replace('\\', '\\\\'))], context=self.context)
+        product_ids = self.product_obj.search(
+            cr, uid, [(identifier_field, '=ilike', identifier.replace('\\', '\\\\'))], context=self.context)
 
         if not product_ids:
             product_ids = self.product_obj.search(
                 cr, uid,
-                [(field, '=ilike', vals_product[field].replace('\\', '\\\\')), ('active', '=', False)],
+                [(identifier_field, '=ilike', identifier.replace('\\', '\\\\')), ('active', '=', False)],
                 context=self.context
             )
 
@@ -831,7 +848,6 @@ class ImportFile(threading.Thread, Utils):
                 product_ids = self.product_obj.search(cr, uid, [('supplier_code', '=', product_code)], context=self.context)
 
         if product_ids:
-            _logger.info(u'Row {row}: Updating product {product}...'.format(row=self.processed_lines, product=vals_product[field]))
             product_id = product_ids[0]
             if not self.update_product_name and 'name' in vals_product:
                 # vals_product['name'] = self.product_obj.browse(cr, uid, product_id, self.context).name
@@ -839,7 +855,11 @@ class ImportFile(threading.Thread, Utils):
                 del vals_product['name']
             else:
                 name = 'Unknown'
-            self.product_obj.write(cr, uid, product_id, vals_product, self.context)
+            if vals_product:
+                _logger.info(
+                    u'Row {row}: Updating product {product}...'.format(row=self.processed_lines, product=identifier))
+                self.product_obj.write(cr, uid, product_id, vals_product, self.context)
+
             if 'name' not in vals_product:
                 vals_product['name'] = name
             self.updated += 1
