@@ -14,6 +14,7 @@ and choose if manufacture or buy products from suppliers.
     'website': 'www.didotech.com',
     "depends": [
         "mrp",
+        "stock_picking_extended"
     ],
     'data': [
         'views/order_requirement.xml',

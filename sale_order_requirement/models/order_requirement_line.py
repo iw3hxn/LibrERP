@@ -568,7 +568,7 @@ class order_requirement_line(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders'),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
-        'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'),
+        # 'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'), # TODO: needed?
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
         'cost': fields.float('Cost', readonly=True),
@@ -826,6 +826,7 @@ class order_requirement_line(orm.Model):
                                                                      context=context)
             if not purchase_order_line_ids:
                 # TODO: Can be simplified: if no order present create order and use it below, do not repeat code!
+                # TODO: but check purchase_order_id, don't replicate relationship
                 # Line must be created
                 purchase_order_values = {
                     'fiscal_position': present_order.fiscal_position and present_order.fiscal_position.id or False,
@@ -939,7 +940,7 @@ class order_requirement_line(orm.Model):
         def _manufacture_or_purchase_rec(temp, context, is_split):
             if temp.is_manufactured:
                 # self._manufacture_bom(cr, uid, temp, context)
-                # When splitting orders, create MRP order for every non-leaf bom (excluding level 0)
+                # When splitting orders, create MRP order for every non-leaf bom (excluding level 0 already done)
                 if is_split and temp.level > 0:
                     self._manufacture_bom(cr, uid, temp, context)
                 for child in temp.bom_lines:
@@ -949,9 +950,8 @@ class order_requirement_line(orm.Model):
 
         father_temp = line.temp_mrp_bom_ids[0]
 
-        # When NOT splitting order, must create main bom
-        if not split_mrp_production:
-            self._manufacture_bom(cr, uid, father_temp, context)
+        # First create main bom
+        self._manufacture_bom(cr, uid, father_temp, context)
 
         # Explode orders
         _manufacture_or_purchase_rec(father_temp, context, split_mrp_production)
