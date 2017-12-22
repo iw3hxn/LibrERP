@@ -49,8 +49,15 @@ class Parser(report_sxw.rml_parse):
             'righe_sale_line': self._righe_sale_line,
             'get_description_line': self._get_description_line,
             'get_full_delivery': self._get_full_delivery,
+            'today': self._get_today,
+            'raggruppa_righe_prodotto': self._raggruppa_righe_prodotto,
         })
         self.context = context
+        self.product_line = {}
+
+    def _get_today(self):
+        today = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        return today
 
     def _get_full_delivery(self, object):
         stock_picking_obj = self.pool['stock.picking']
@@ -81,6 +88,17 @@ class Parser(report_sxw.rml_parse):
 
     def _desc_nocode(self, string):
         return re.compile('\[.*\]\ ').sub('', string)
+
+    def _raggruppa_righe_prodotto(self, stock_move):
+        if self.product_line:
+            return self.product_line
+        product_line = {}
+        for line in stock_move:
+            if line.product_id not in product_line.keys():
+                product_line[line.product_id] = []
+            product_line[line.product_id].append(line)
+        self.product_line = product_line
+        return product_line
 
     def _raggruppa_sale_line(self, righe_ddt):
         indice_movimenti = {}

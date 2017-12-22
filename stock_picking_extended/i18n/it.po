@@ -521,6 +521,11 @@ msgid "Expected Date"
 msgstr "Data prevista"
 
 #. module: stock_picking_extended
+#: field:stock.move,sale_id:0
+msgid "Sale Order"
+msgstr "Ordine Cliente"
+
+#. module: stock_picking_extended
 #: model:ir.actions.act_window,name:stock_picking_extended.action_view_stock_picking
 #: model:ir.ui.menu,name:stock_picking_extended.menu_order_board
 #: model:ir.ui.menu,name:stock_picking_extended.menu_view_stock_picking
@@ -549,3 +554,10 @@ msgstr "Interno"
 #: field:stock.picking.goods_description,name:0
 msgid "Description of Goods"
 msgstr "Aspetto esteriore dei beni"
+
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_view_stock_move
+#: model:ir.ui.menu,name:stock_picking_extended.menu_view_stock_move
+#: view:stock.move:0
+msgid "Line Order Board"
+msgstr "Righe Lavagna Ordini"

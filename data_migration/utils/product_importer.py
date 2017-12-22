@@ -685,7 +685,7 @@ class ImportFile(threading.Thread, Utils):
             if taxes_ids:
                 vals_product['taxes_id'] = [(6, 0, taxes_ids)]
             else:
-                error = "Row {0}: Can't find tax for specified Codice Iva".format(self.processed_lines)
+                error = "Row {0}: Can't find tax for specified Codice Iva {1}".format(self.processed_lines, record.tax_out)
                 _logger.error(error)
                 self.error.append(error)
 
@@ -695,6 +695,25 @@ class ImportFile(threading.Thread, Utils):
                 vals_product['supplier_taxes_id'] = [(6, 0, supplier_taxes_ids)]
             else:
                 error = "Row {0}: Can't find tax for specified Codice Iva {1}".format(self.processed_lines, record.tax_in)
+                _logger.error(error)
+                self.error.append(error)
+
+        if hasattr(record, 'tax') and record.tax:
+            tax = "{:0>2s}".format(record.tax)
+            taxes_ids = self.get_taxes(cr, uid, tax + 'v')
+            supplier_taxes_ids = self.get_taxes(cr, uid, tax + 'a')
+
+            if taxes_ids:
+                vals_product['taxes_id'] = [(6, 0, taxes_ids)]
+            else:
+                error = "Row {0}: Can't find tax for specified Codice Iva {1}".format(self.processed_lines, record.tax)
+                _logger.error(error)
+                self.error.append(error)
+
+            if supplier_taxes_ids:
+                vals_product['supplier_taxes_id'] = [(6, 0, supplier_taxes_ids)]
+            else:
+                error = "Row {0}: Can't find tax for specified Codice Iva {1}".format(self.processed_lines, record.tax)
                 _logger.error(error)
                 self.error.append(error)
 
@@ -733,7 +752,13 @@ class ImportFile(threading.Thread, Utils):
             product_code = False
 
         if hasattr(record, 'standard_price') and record.standard_price:
-            vals_product['standard_price'] = float(self.toStr(record.standard_price))
+            try:
+                vals_product['standard_price'] = float(self.toStr(record.standard_price))
+            except Exception as e:
+                error = u"Row {0}: Price not valid {1}: {2}".format(self.processed_lines, record.standard_price, e)
+                _logger.error(error)
+                self.warning.append(error)
+                vals_product['standard_price'] = 0
         else:
             if 'standard_price' in self.PRODUCT_WARNINGS:
                 warning = u"Row {0}: No standard price for product {1}".format(self.processed_lines, vals_product['name'])
@@ -753,11 +778,12 @@ class ImportFile(threading.Thread, Utils):
                 vals_product['sale_ok'] = False
 
         if hasattr(record, 'ean13') and record.ean13:
-            if check_ean(record.ean13):
-                vals_product['ean13'] = record.ean13
+            real_ean13 = "{:0>13s}".format(record.ean13)
+            if check_ean(real_ean13):
+                vals_product['ean13'] = real_ean13
             else:
                 if 'ean13' in self.PRODUCT_ERRORS:
-                    error = "Row {0}: '{1}' is not a valid EAN13 code".format(self.processed_lines, vals_product['ean13'])
+                    error = "Row {0}: '{1}' is not a valid EAN13 code".format(self.processed_lines, real_ean13)
                     _logger.error(error)
                     self.error.append(error)
                     return False
@@ -779,6 +805,9 @@ class ImportFile(threading.Thread, Utils):
                 'sale_line_warn': 'warning',
                 'sale_line_warn_msg': record.sale_line_warn_msg
             })
+
+        if not vals_product.get('default_code', False) and vals_product.get('ean13', False):
+            vals_product['default_code'] = vals_product['ean13']
 
         vals_product['listprice_update_date'] = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
 

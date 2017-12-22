@@ -36,12 +36,6 @@ msgid "Discount Restriction"
 msgstr "Restrizioni Scontistica"
 
 #. module: dt_price_security
-#: code:addons/dt_price_security/res_users.py:54
-#, python-format
-msgid "Discount out of range"
-msgstr "Discount out of range"
-
-#. module: dt_price_security
 #: field:account.invoice.line,price_unit_copy:0
 #: field:sale.order.line,price_unit_copy:0
 msgid "Unit Price"
@@ -165,3 +159,15 @@ msgstr "Ordine di vendita"
 #: model:ir.model,name:dt_price_security.model_sale_order_line
 msgid "Sales Order Line"
 msgstr "Linea d'ordine di vendita"
+
+#. module: price_security
+#: code:addons/price_security/res_users.py:54
+#, python-format
+msgid "Discount out of range"
+msgstr "Sconto non consentito"
+
+#. module: price_security
+#: view:res.users:0
+#: field:res.users,discount_restriction_ids:0
+msgid "Discount Restrictions"
+msgstr "Restrizione Sconto"

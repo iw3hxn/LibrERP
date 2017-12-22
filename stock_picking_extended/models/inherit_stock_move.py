@@ -41,6 +41,7 @@ class stock_move(orm.Model):
         #         'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['state'], 500),
         # }
         ),
+        'sale_id': fields.related('picking_id', 'sale_id', relation='sale.order', type='many2one', string='Sale Order')
     }
 
     def _default_journal_location_source(self, cr, uid, context=None):
@@ -73,6 +74,9 @@ class stock_move(orm.Model):
             res = super(stock_move, self)._default_location_destination(cr, uid, context)
         return res
 
+    def _action_check_goods_ready_hook(self, cr, uid, ids, context):
+        return True
+
     def action_check_goods_ready(self, cr, uid, move_ids, context):
         line = self.browse(cr, uid, move_ids, context)[0]
         return_vals = True
@@ -102,6 +106,7 @@ class stock_move(orm.Model):
         else:
             line.write(line_vals)
             self.action_done(cr, uid, [line.id], context)
+            self._action_check_goods_ready_hook(cr, uid, [line.id], context)
 
         return return_vals
 

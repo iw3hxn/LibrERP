@@ -18,6 +18,7 @@
                     <field name="original_cost"/>
                     <field name="cost"/>
                     <field name="is_manufactured" on_change="onchange_is_manufactured(is_manufactured,new_product_id)"/>
+                    <field name="buy" attrs="{'readonly': ['|', ('is_manufactured','=',True)]}"/>
                     <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True)],
                                 'required': [('is_manufactured', '=', False)],
                                 'readonly': [('state','!=','draft')]}"/>
@@ -25,7 +26,8 @@
                     <field name="id" invisible="1"/>
                     <group colspan="8" col="8" attrs="{'invisible': [('state','!=','draft')]}">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
-                        <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"/>
+                        <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"
+                                confirm="Are you sure you want to do this?"/>
                     </group>
                     <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
                                                                          ('is_manufactured','=',False)]}">
@@ -63,6 +65,8 @@
                                         <field name="is_manufactured"
                                             attrs="{'readonly': ['|',('level','=',0),
                                                                      ('is_leaf','=',True)]}"/>
+                                        <field name="buy" attrs="{'readonly': ['|',('level','=',0),
+                                                                                   ('is_manufactured','=',True)]}"/>
                                         <field name="supplier_id"
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
@@ -136,6 +140,7 @@
                                                 attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
                                         <field name="is_manufactured" readonly="1"/>
+                                        <field name="buy" readonly="1"/>
                                         <field name="supplier_id"  readonly="1"/>
                                         <field name="purchase_order_id" />
                                         <field name="mrp_production_id" />

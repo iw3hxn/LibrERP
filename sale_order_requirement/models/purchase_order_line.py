@@ -8,7 +8,10 @@ class purchase_order_line(orm.Model):
     _inherit = 'purchase.order.line'
 
     _columns = {
-        'order_requirement_line_ids': fields.one2many('temp.mrp.bom', 'purchase_order_line_id', 'Order Lines', readonly=True,
-                                      states={'draft': [('readonly', False)]}),
+        'order_requirement_ids': fields.many2many('order.requirement', string='Order Requirements', readonly=True),
+        'order_requirement_line_ids': fields.many2many('order.requirement.line', string='Order Requirement Lines', readonly=True),
+        'temp_mrp_bom_ids': fields.many2many('temp.mrp.bom', string='Sale Orders', readonly=True),
+        # NOT possible to have related many2many => unsupported in OpenERP 6.1
+        # 'sale_order_ids': fields.related('order_requirement_ids', 'sale_order_id', string='Sale Orders',
+        #                                  relation='sale.order', type='many2many', readonly=True, store=False)
     }
-

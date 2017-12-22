@@ -32,16 +32,25 @@ class wizard_registro_iva(osv.osv_memory):
 
     _name = "wizard.registro.iva"
     _columns = {
-        'period_ids': fields.many2many('account.period', 'registro_iva_periods_rel', 'period_id', 'registro_id', 'Periods', help='Select periods you want retrieve documents from', required=True),
+        'period_ids': fields.many2many(
+            'account.period', 'registro_iva_periods_rel', 'period_id',
+            'registro_id', 'Periods',
+            help='Select periods you want retrieve documents from',
+            required=True),
         'type': fields.selection([
             ('customer', 'Customer Invoices'),
             ('supplier', 'Supplier Invoices'),
             ('corrispettivi', 'Corrispettivi'),
-        #    ('generale', 'Registro generale'),
         ], 'Layout', required=True),
-        'journal_ids': fields.many2many('account.journal', 'registro_iva_journals_rel', 'journal_id', 'registro_id', 'Journals', help='Select journals you want retrieve documents from', required=True),
-        'tax_sign': fields.float('Tax amount sign',
-                                 help="Use -1 you have negative tax amounts and you want to print them prositive"),
+        'journal_ids': fields.many2many(
+            'account.journal', 'registro_iva_journals_rel', 'journal_id',
+            'registro_id', 'Journals',
+            help='Select journals you want retrieve documents from',
+            required=True),
+        'tax_sign': fields.float(
+            'Tax amount sign',
+            help="Use -1 you have negative tax amounts and you want to print "
+                 "them prositive"),
         'message': fields.char('Message', size=64, readonly=True),
         'fiscal_page_base': fields.integer('Last printed page', required=True),
         'name': fields.char('Name', size=16),
