@@ -60,7 +60,7 @@ class mrp_production(osv.osv):
     _columns = {
         'is_from_order_requirement': fields.boolean(),
         'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material', readonly=True),
-        'level': fields.integer('Level', required=True)
+        'level': fields.integer('Level', required=True),
     }
 
     _defaults = {
@@ -75,14 +75,19 @@ class mrp_production(osv.osv):
         If necessary, redirects to temp.mrp.bom instead of mrp.bom
         """
         # action_compute is the Entry point for intercepting the mrp production
-        productions = self.browse(cr, uid, ids)
+        productions = self.browse(cr, uid, ids, context)
+
         if not productions:
             return 0
+
+        # NOTE: SINGLE PRODUCTION (not supported for multiple lines, problems with return len(results) )
+
         if not productions[0].is_from_order_requirement:
             return super(mrp_production, self).action_compute(cr, uid, ids, properties, context)
 
-        # If production order was created by order requirement, behaviour is different
         results = []
+
+        # If production order was created by order requirement, behaviour is different
         bom_obj = self.pool['temp.mrp.bom']
         uom_obj = self.pool['product.uom']
         prod_line_obj = self.pool['mrp.production.product.line']
@@ -98,7 +103,7 @@ class mrp_production(osv.osv):
                 raise osv.except_osv(_('Error'), _("Couldn't find a bill of material for this product."))
             factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
             # Forcing routing_id to False, the lines are linked directly to temp_mrp_bom
-            res = bom_obj._bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, properties, routing_id=False)
+            res = bom_obj._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)
             results = res[0]
             results2 = res[1]
             for line in results:
