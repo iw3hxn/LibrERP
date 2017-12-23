@@ -890,40 +890,44 @@ class order_requirement_line(orm.Model):
                     temp_mrp_bom_obj.write(cr, uid, obj.id, {'purchase_order_id': present_order_id,
                                                              'purchase_order_line_id': order_line_id}, context)
 
-    def _manufacture_bom(self, cr, uid, bom, context):
+    def _manufacture_bom(self, cr, uid, temp, context):
         mrp_production_obj = self.pool['mrp.production']
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
-        product = bom.product_id
+        product = temp.product_id
 
         # TODO: QUEUE MRP PRODUCTION Maybe add an option/Flag on res.company?
-        # If another production order is present and not started, queue to it
-        # mrp_productions = mrp_production_obj.search_browse(cr, uid, [('product_id', '=', product.id),
-        #                                                              ('state', '=', 'draft')], context=context)
-        # if not isinstance(mrp_productions, list):
-        #     mrp_productions = [mrp_productions]
-        #
-        # if mrp_productions:
-        #     # Take first
-        #     mrp_production = mrp_productions[0]
-        #     mrp_production_obj.write(cr, uid, mrp_production.id,
-        #                              {'product_qty': mrp_production.product_qty + bom.product_qty}, context)
-        # else:
-        mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
+        # If another production order for the same sale order is present and not started, queue to it
+        mrp_productions = mrp_production_obj.search_browse(cr, uid, [('product_id', '=', product.id),
+                                                                     ('sale_id', '=', temp.sale_order_id.id),
+                                                                     ('state', '=', 'draft')], context=context)
+        if not isinstance(mrp_productions, list):
+            mrp_productions = [mrp_productions]
 
-        mrp_production_values.update({
-            'product_id': product.id,
-            'product_qty': bom.product_qty,
-            'sale_id': bom.sale_order_id.id,
-            'is_from_order_requirement': True,
-            'temp_bom_id': bom.id,
-            'level': bom.level
-        })
+        if mrp_productions:
+            # Take first
+            mrp_production = mrp_productions[0]
+            mrp_production_id = mrp_production.id
+            # TODO MAYBE: DOES NOT CHECK UoM
+            mrp_production_obj.write(cr, uid, mrp_production_id,
+                                     {'product_qty': mrp_production.product_qty + temp.product_qty}, context)
+        else:
+            # Create new
+            mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
-        # Create manufacturing order
-        mrp_production = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
+            mrp_production_values.update({
+                'product_id': product.id,
+                'product_qty': temp.product_qty,
+                'sale_id': temp.sale_order_id.id,
+                'is_from_order_requirement': True,
+                'temp_bom_id': temp.id,
+                'level': temp.level
+            })
 
-        temp_mrp_bom_obj.write(cr, uid, bom.id, {'mrp_production_id': mrp_production}, context)
+            # Create manufacturing order
+            mrp_production_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
+
+        temp_mrp_bom_obj.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
 
     def _manufacture_or_purchase_all(self, cr, uid, ids, context):
         # line is a order_requirement_line, not a bom line
