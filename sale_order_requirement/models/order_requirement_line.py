@@ -893,10 +893,10 @@ class order_requirement_line(orm.Model):
     def _manufacture_bom(self, cr, uid, temp, context):
         mrp_production_obj = self.pool['mrp.production']
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        uom_obj = self.pool['product.uom']
 
         product = temp.product_id
 
-        # TODO: QUEUE MRP PRODUCTION Maybe add an option/Flag on res.company?
         # If another production order for the same sale order is present and not started, queue to it
         mrp_productions = mrp_production_obj.search_browse(cr, uid, [('product_id', '=', product.id),
                                                                      ('sale_id', '=', temp.sale_order_id.id),
@@ -908,9 +908,13 @@ class order_requirement_line(orm.Model):
             # Take first
             mrp_production = mrp_productions[0]
             mrp_production_id = mrp_production.id
-            # TODO MAYBE: DOES NOT CHECK UoM
+            # Calculate qty according to UoM
+            qty = uom_obj._compute_qty(cr, uid, temp.product_uom.id, temp.product_qty, mrp_production.product_uom.id)
+
+            newqty = mrp_production.product_qty + qty
+
             mrp_production_obj.write(cr, uid, mrp_production_id,
-                                     {'product_qty': mrp_production.product_qty + temp.product_qty}, context)
+                                     {'product_qty': newqty}, context)
         else:
             # Create new
             mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
