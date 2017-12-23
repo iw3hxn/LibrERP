@@ -204,7 +204,7 @@ class order_requirement_line(orm.Model):
             return product.standard_price
 
 
-    def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, temp_father_id, level, context):
+    def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, qty_mult, temp_father_id, level, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
 
@@ -241,7 +241,7 @@ class order_requirement_line(orm.Model):
             # 'mrp_bom_parent_id': bom_parent_id,
             'product_id': product_id,
             'original_qty': bom.product_qty,
-            'product_qty': bom.product_qty,
+            'product_qty': bom.product_qty * qty_mult,
             'product_uom': bom.product_uom.id,
             'product_uos': bom.product_uos.id,
             'product_efficiency': bom.product_efficiency,
@@ -265,7 +265,7 @@ class order_requirement_line(orm.Model):
             'mrp_routing_id': routing_id
         }
 
-    def _get_temp_vals_from_product(self, cr, uid, ids, product, temp_father_id, level, context):
+    def _get_temp_vals_from_product(self, cr, uid, ids, product, qty_mult, temp_father_id, level, context):
         # Set temp values by product => LEAF
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
@@ -302,7 +302,7 @@ class order_requirement_line(orm.Model):
             'mrp_bom_parent_id': False,
             'product_id': product_id,
             'original_qty': 1,
-            'product_qty': 1,
+            'product_qty': qty_mult,
             'product_uom': product.uom_id.id,
             # fixed to 0 with a product
             'product_efficiency': 0,
@@ -325,7 +325,7 @@ class order_requirement_line(orm.Model):
             'mrp_routing_id': routing_id
         }
 
-    def get_temp_vals(self, cr, uid, ids, product_id, father_temp_id, level, context):
+    def get_temp_vals(self, cr, uid, ids, product_id, qty_mult, father_temp_id, level, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
         mrp_bom_obj = self.pool['mrp.bom']
@@ -338,10 +338,10 @@ class order_requirement_line(orm.Model):
             # Get by its BOM
             if not isinstance(bom_ids, list):
                 bom_ids = [bom_ids]
-            return self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_ids[0], father_temp_id, level, context)
+            return self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_ids[0], qty_mult, father_temp_id, level, context)
         else:
             # Get by products
-            return self._get_temp_vals_from_product(cr, uid, ids, product, father_temp_id, level, context)
+            return self._get_temp_vals_from_product(cr, uid, ids, product, qty_mult, father_temp_id, level, context)
 
     def _sort_temp_mrp_bom(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -418,7 +418,7 @@ class order_requirement_line(orm.Model):
         self.write(cr, uid, line_id, line_vals, context)
         return total_cost
 
-    def create_temp_mrp_bom(self, cr, uid, ids, product_id, father_temp_id, start_level, start_sequence=0,
+    def create_temp_mrp_bom(self, cr, uid, ids, product_id, qty_mult, father_temp_id, start_level, start_sequence=0,
                             create_father=True, create_children=True, context=None):
         # Returns 2 list of VALS (probably not needed)
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -445,7 +445,7 @@ class order_requirement_line(orm.Model):
                 return
             for bom in bom_children:
                 if bom.product_id.type == 'product':
-                    temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, father_id, level, context)
+                    temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, qty_mult, father_id, level, context)
                     temp_vals['sequence'] = sequence
                     sequence += 1
                     temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
@@ -462,7 +462,7 @@ class order_requirement_line(orm.Model):
 
         if not bom_ids:
             # It's a product with no BoM
-            temp_vals = self._get_temp_vals_from_product(cr, uid, ids, product, father_temp_id, start_level, context)
+            temp_vals = self._get_temp_vals_from_product(cr, uid, ids, product, qty_mult, father_temp_id, start_level, context)
             temp_vals['sequence'] = sequence
             sequence += 1
             temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
@@ -479,7 +479,7 @@ class order_requirement_line(orm.Model):
         for bom_father in bom_ids:
             # Main BOMs only if create_father = True
             if create_father:
-                temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_father, father_temp_id, start_level, context)
+                temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_father, qty_mult, father_temp_id, start_level, context)
                 temp_vals['sequence'] = sequence
                 sequence += 1
                 temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
@@ -590,7 +590,7 @@ class order_requirement_line(orm.Model):
     #     ret['temp_mrp_bom_routing_ids']['invisible'] = not view_bom
     #     return ret
 
-    def onchange_is_manufactured(self, cr, uid, ids, is_manufactured, new_product_id, context=None):
+    def onchange_is_manufactured(self, cr, uid, ids, is_manufactured, new_product_id, qty, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         result_dict = {}
@@ -599,8 +599,8 @@ class order_requirement_line(orm.Model):
         line = self.browse(cr, uid, ids, context)[0]
         if is_manufactured:
             if not line.temp_mrp_bom_ids:
-                temp_mrp_bom_ids, temp_mrp_bom_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, new_product_id, False, 0, 0,
-                                                                      True, True, context)
+                temp_mrp_bom_ids, temp_mrp_bom_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, new_product_id, qty,
+                                                                                      False, 0, 0, True, True, context)
                 temp = temp_mrp_bom_ids[0]
                 # TODO: maybe in create_temp
                 if temp['is_leaf']:
@@ -648,8 +648,8 @@ class order_requirement_line(orm.Model):
 
             supplier_ids_formatted = result_dict['supplier_ids']
             self.write(cr, uid, line.id, {'new_product_id': product.id, 'supplier_ids': supplier_ids_formatted}, context)
-            temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product.id, False, 0, 0, True, True, context)
-            # TODO: maybe another option create_if_leaf in create_temp_mrp_bom
+            temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product.id, qty, False, 0, 0, True, True, context)
+            # TODO: maybe another option create_if_leaf in create temp mrp bom
             temp = temp_ids[0]
             if temp['is_leaf']:
                 # I don't want to see an "empty" bom with the father only
@@ -987,6 +987,7 @@ class order_requirement_line(orm.Model):
         line = self.browse(cr, uid, ids, context)[0]
 
         is_manufactured = line.is_manufactured
+        qty_mult = line.qty
 
         if not line.new_product_id:
             product_id = line.product_id.id
@@ -1014,11 +1015,11 @@ class order_requirement_line(orm.Model):
 
         if is_manufactured and not line.temp_mrp_bom_ids:
             # if line.product_id.
-            temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, False, 0, 0, True, True, context)
+            temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, qty_mult, False, 0, 0, True, True, context)
             if temp_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
                 temp = temp_ids[0]
-                # TODO: maybe another option create_if_leaf in create_temp_mrp_bom
+                # TODO: maybe another option create_if_leaf in create temp_mrp_bom
                 if temp['is_leaf']:
                     # I don't want to see an "empty" bom with the father only
                     temp_mrp_bom_obj.unlink(cr, uid, temp['id'], context)
@@ -1055,19 +1056,22 @@ class order_requirement_line(orm.Model):
             vals = temp[2]
 
             if operation == 0:
+                # Adding
                 product_id = vals['product_id']
                 # father_id is already get by onchange_temp_product_id
                 father_id = vals['bom_id']
+                qty = vals['product_qty']
 
                 create_children = 'is_manufactured' not in vals or vals['is_manufactured']
 
                 # Creating ==> Always level 1
-                self.create_temp_mrp_bom(cr, uid, ids, product_id, father_id, 1, 9999, True, create_children, context)
+                self.create_temp_mrp_bom(cr, uid, ids, product_id, qty, father_id, 1, 9999, True, create_children, context)
 
             elif operation == 1:
                 # Update
                 temp_mrp_saved = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
                 saved_product_id = temp_mrp_saved.product_id.id
+                saved_qty = temp_mrp_saved.product_qty
                 saved_level = temp_mrp_saved.level
                 saved_father_id = temp_mrp_saved.bom_id.id
                 saved_sequence = temp_mrp_saved.sequence
@@ -1080,8 +1084,7 @@ class order_requirement_line(orm.Model):
 
                     # temp_mrp_bom_obj.write(cr, uid, temp_id, vals, context)
                     temp_mrp_bom_obj.unlink(cr, uid, temp_id, context)
-
-                    temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product_id, saved_father_id,
+                    temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product_id, saved_qty, saved_father_id,
                                                                           saved_level, saved_sequence, True, create_children,
                                                                           context)
                     # Update with given vals
@@ -1103,7 +1106,7 @@ class order_requirement_line(orm.Model):
                             product_id = temp_mrp.product_id.id
 
                             # Must recalculate children but no father -> create_father=False
-                            self.create_temp_mrp_bom(cr, uid, ids, product_id, temp_id, saved_level, saved_sequence, False,
+                            self.create_temp_mrp_bom(cr, uid, ids, product_id, saved_qty, temp_id, saved_level, saved_sequence, False,
                                                      True, context)
                         else:
                             # Must remove children

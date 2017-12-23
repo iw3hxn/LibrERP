@@ -219,7 +219,7 @@ class temp_mrp_bom(orm.Model):
         #     ret = temp_ids
 
         # Only get values version
-        ret = line.get_temp_vals(product_id=new_product_id, father_temp_id=father_temp_id, level=1, context=context)
+        ret = line.get_temp_vals(product_id=new_product_id, qty_mult=qty, father_temp_id=father_temp_id, level=1, context=context)
         ret.update({
             'product_qty': qty,
             'is_manufactured': is_manufactured
