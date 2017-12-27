@@ -181,3 +181,11 @@ class sale_order(orm.Model):
             if partner_vals:
                 self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
         return sale_order_id
+
+    def copy(self, cr, uid, ids, default, context=None):
+        if not default:
+            default = {}
+        default.update({
+            'minimum_planned_date': False,
+        })
+        return super(sale_order, self).copy(cr, uid, ids, default, context=context)
