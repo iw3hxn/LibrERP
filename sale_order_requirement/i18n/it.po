@@ -60,11 +60,6 @@ msgid "Order requirement line"
 msgstr "Riga Fabbisogno Ordine"
 
 #. module: sale_order_requirement
-#: field:order.requirement.line,supplier_id:0
-msgid "Supplier"
-msgstr "Fornitore"
-
-#. module: sale_order_requirement
 #: field:res.company,split_mrp_production:0
 msgid "Split Production order from order requirement"
 msgstr "Dividi l'Ordine di Produzione dal Fabbisogno Ordine"
@@ -93,11 +88,6 @@ msgstr "Salva"
 #: view:order.requirement.line:0
 msgid "BoM Details"
 msgstr "Dettagli Distinta"
-
-#. module: sale_order_requirement
-#: field:order.requirement.line,is_manufactured:0
-msgid "Manufacture"
-msgstr "Produci"
 
 #. module: sale_order_requirement
 #: field:temp.mrp.bom,desired_qty:0
@@ -131,14 +121,9 @@ msgid "Manufacturing Orders related to main products (hide children BoM)"
 msgstr "Ordine di Produzione collegato al Prodotto"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.bom,spare:0
-msgid "Spare"
-msgstr "Giacenza Minima"
-
-#. module: sale_order_requirement
 #: field:order.requirement.line,new_product_id:0
 msgid "Choosen Product"
-msgstr "Scegli il Prodotto"
+msgstr "Prodotto Scelto"
 
 #. module: sale_order_requirement
 #: field:order.requirement.line,order_requirement_id:0
@@ -265,11 +250,6 @@ msgid "Sequence"
 msgstr "Sequenza"
 
 #. module: sale_order_requirement
-#: field:temp.mrp.bom,stock_availability:0
-msgid "Stock Availability"
-msgstr "Disponibilità Magazzino"
-
-#. module: sale_order_requirement
 #: field:order.requirement.line,cost:0
 #: field:temp.mrp.bom,cost:0
 msgid "Cost"
@@ -299,3 +279,95 @@ msgstr "Q.tà Originale"
 #: field:order.requirement.line,purchase_order_ids:0
 msgid "Purchase Orders"
 msgstr "Ordini Acquisto"
+
+#. module: sale_order_requirement
+#: field:order.requirement,month:0
+msgid "Month"
+msgstr "Mese"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,product_id:0
+msgid "Original Product"
+msgstr "Prodotto Originale"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,stock_availability:0
+#: field:temp.mrp.bom,stock_availability:0
+msgid "Stock Availability"
+msgstr "Disponibilità Magazzino"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,spare:0
+#: field:temp.mrp.bom,spare:0
+msgid "Spare"
+msgstr "Giacenza Minima"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,qty:0
+msgid "Quantity"
+msgstr "Q.tà"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "Return to Draft"
+msgstr "Ritorna a Bozza"
+
+#. module: sale_order_requirement
+#: selection:order.requirement,state:0
+#: selection:order.requirement.line,state:0
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,buy:0
+#: field:temp.mrp.bom,buy:0
+msgid "Buy"
+msgstr "Acquista"
+
+#. module: sale_order_requirement
+#: selection:order.requirement.line,state:0
+msgid "Done"
+msgstr "Fatto"
+
+#. module: sale_order_requirement
+#: field:purchase.order,sale_order_ids:0
+#: field:purchase.order.line,temp_mrp_bom_ids:0
+msgid "Sale Orders"
+msgstr "Ordini di Vendita"
+
+#. module: sale_order_requirement
+#: help:temp.mrp.bom,product_uom:0
+msgid "UoM (Unit of Measure) is the unit of measurement for the inventory control"
+msgstr "UdM (Unità di Misura) è l'unità di misura per l'inventario"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,product_rounding:0
+msgid "Product Rounding"
+msgstr "Product Rounding"
+
+#. module: sale_order_requirement
+#: field:order.requirement,sale_order_id:0
+msgid "Order"
+msgstr "Ordine Cliente"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,product_qty:0
+msgid "Product Qty"
+msgstr "Q.tà Necessaria"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,is_manufactured:0
+#: field:temp.mrp.bom,is_manufactured:0
+msgid "Manufacture"
+msgstr "Produci"
+
+#. module: sale_order_requirement
+#: field:temp.mrp.bom,product_id:0
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: sale_order_requirement
+#: field:order.requirement.line,supplier_id:0
+#: field:temp.mrp.bom,supplier_id:0
+msgid "Supplier"
+msgstr "Fornitore"
