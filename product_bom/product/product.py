@@ -70,14 +70,16 @@ class product_product(orm.Model):
         ids = ids or []
         
         for product in self.browse(cr, uid, ids, context):
-            _logger.debug(u'[{product.default_code}] {product.name}'.format(product=product))
+            if ENABLE_CACHE:
+                _logger.debug(u'[{product.default_code}] {product.name}'.format(product=product))
             bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
             if bom_id:
                 sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
                 sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
                 
                 price = 0.
-                _logger.debug(u'[{product.default_code}] Start Explosion ========================'.format(product=product))
+                if ENABLE_CACHE:
+                    _logger.debug(u'[{product.default_code}] Start Explosion ========================'.format(product=product))
                 for sub_product in sub_products:
                     if sub_product.product_id.id == product.id:
                         error = "Product '{product.name}' (id: {product.id}) is referenced to itself".format(product=product)
@@ -98,8 +100,8 @@ class product_product(orm.Model):
                                                from_uom_id=sub_product.product_uom.id,
                                                qty=sub_product.product_qty,
                                                to_uom_id=sub_product.product_id.uom_po_id.id)
-
-                    _logger.debug(u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id, std_price=std_price, qty=qty))
+                    if ENABLE_CACHE:
+                        _logger.debug(u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id, std_price=std_price, qty=qty))
 
                     price += std_price * qty
                     # if sub_product.routing_id:
@@ -123,8 +125,9 @@ class product_product(orm.Model):
                         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
                 price /= bom.product_qty
                 price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
-                _logger.debug(
-                    u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
+                if ENABLE_CACHE:
+                    _logger.debug(
+                        u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
                 res[product.id] = price
             else:
                 # no BoM: use standard_price
@@ -163,8 +166,9 @@ class product_product(orm.Model):
                     cost_price = product.standard_price
 
                 res[product.id] = cost_price
-                _logger.debug(
-                    u'NO BOM [{product.default_code}] price = {price}'.format(product=product, price=cost_price))
+                if ENABLE_CACHE:
+                    _logger.debug(
+                        u'NO BOM [{product.default_code}] price = {price}'.format(product=product, price=cost_price))
 
                 if ENABLE_CACHE and not context.get('partner_name', False):
                     self.product_cost_cache[product.id] = res[product.id]
@@ -494,12 +498,24 @@ class product_product(orm.Model):
             multi='qty_available'),
     }
 
+    def unlink(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if self.pool['sale.order.line'].search(cr, uid, [('product_id', 'in', ids)], context=context):
+            raise orm.except_orm(
+                _("Error"),
+                _("The product is used on same Sale Order, deactivate it"))
+        if self.pool['mrp.bom'].serach(cr, uid, [('product_id', 'in', ids)], context=context):
+            raise orm.except_orm(
+                _("Error"),
+                _("The product is used on same BOM, deactivate it"))
+        return super(product_product, self).unlink(cr, uid, ids, context)
+
     def copy(self, cr, uid, product_id, default=None, context=None):
         """Copies the product and the BoM of the product"""
         context = context or self.pool['res.users'].context_get(cr, uid)
         copy_id = super(product_product, self).copy(cr, uid, product_id, default, context)
 
-        if not 'bom_ids' in default:
+        if 'bom_ids' not in default:
             bom_obj = self.pool['mrp.bom']
             bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
 
@@ -525,7 +541,7 @@ class product_product(orm.Model):
         # search product with kit
         product_ids = self.search(cr, uid, [('is_kit', '=', True)], context=context)
         for product in self.browse(cr, uid, product_ids, context):
-            product.write({'standard_price': product.cost_price})
+            self.write(cr, uid, product.id, {'standard_price': product.cost_price}, context)
         return True
 
     def write(self, cr, uid, ids, vals, context=None):
