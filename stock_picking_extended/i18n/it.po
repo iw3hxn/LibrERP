@@ -561,3 +561,8 @@ msgstr "Aspetto esteriore dei beni"
 #: view:stock.move:0
 msgid "Line Order Board"
 msgstr "Righe Lavagna Ordini"
+
+#. module: stock_picking_extended
+#: view:stock.picking:0
+msgid "Moves"
+msgstr "Prodotti Richiesti"
