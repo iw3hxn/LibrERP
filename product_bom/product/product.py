@@ -51,6 +51,9 @@ class product_product(orm.Model):
         super(product_product, self).__init__(cr, uid)
         self.product_cost_cache = {}
 
+    def _hook_compute_purchase_price_no_supplier(self, product):
+        return product.standard_price
+
     def _compute_purchase_price(self, cr, uid, ids,
                                 product_uom=None,
                                 bom_properties=None,
@@ -163,7 +166,7 @@ class product_product(orm.Model):
                         )
                     cost_price = price_subtotal or price or product.standard_price
                 else:
-                    cost_price = product.standard_price
+                    cost_price = self._hook_compute_purchase_price_no_supplier(product)
 
                 res[product.id] = cost_price
                 if ENABLE_CACHE:
