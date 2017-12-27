@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
-import tools
-
 import decimal_precision as dp
-from mrp import mrp_bom
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
+
 from ..util import rounding
 
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
@@ -294,3 +293,42 @@ class temp_mrp_bom(orm.Model):
         _explode_rec(bom_father, bom_factor)
         return result, result2
 
+    def action_view_purchase_order(self, cr, uid, ids, context=None):
+        line = self.browse(cr, uid, ids, context)[0]
+
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'purchase', 'purchase_order_form')
+        view_id = view and view[1] or False
+
+        if not line.purchase_order_id:
+            raise orm.except_orm(_('Error!'), _("Not exist a Purchase Order for this line"))
+
+        return {
+            'context': context,
+            'type': 'ir.actions.act_window',
+            'name': _('Purchase Order'),
+            'res_model': 'purchase.order',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [view_id],
+            'res_id': line.purchase_order_id.id
+        }
+
+    def action_view_mrp_production(self, cr, uid, ids, context=None):
+        line = self.browse(cr, uid, ids, context)[0]
+
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'mrp', 'mrp_production_form_view')
+        view_id = view and view[1] or False
+
+        if not line.mrp_production_id:
+            raise orm.except_orm(_('Error!'), _("Not exist a Manufacture Order for this line"))
+
+        return {
+            'context': context,
+            'type': 'ir.actions.act_window',
+            'name': _('Manufacturing Order'),
+            'res_model': 'mrp.production',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [view_id],
+            'res_id': line.mrp_production_id.id
+        }

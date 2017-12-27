@@ -18,7 +18,11 @@ class sale_order(orm.Model):
         sale_order_line_obj = self.pool['sale.order.line']
 
         # ONE sale.order => ONE order.requirement
-        order_req_id = order_requirement_obj.create(cr, uid, {'sale_order_id': order.id}, context)
+        order_requirement_vals = {
+            'sale_order_id': order.id,
+            'note': order.note
+        }
+        order_req_id = order_requirement_obj.create(cr, uid, order_requirement_vals, context)
 
         # For every sale.order.line => one order.requirement.line
         for line in order.order_line:

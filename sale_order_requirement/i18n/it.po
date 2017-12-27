@@ -371,3 +371,19 @@ msgstr "Prodotto"
 #: field:temp.mrp.bom,supplier_id:0
 msgid "Supplier"
 msgstr "Fornitore"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Are you sure you want to do this?"
+msgstr "Sicuro di confermare?"
+
+#. module: sale_order_requirement
+#: selection:order.requirement,state:0
+msgid "Confirmed"
+msgstr "Confermato"
+
+#. module: sale_order_requirement
+#: selection:order.requirement,state:0
+#: selection:order.requirement.line,state:0
+msgid "Cancelled"
+msgstr "Annullato"

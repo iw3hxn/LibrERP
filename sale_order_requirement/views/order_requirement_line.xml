@@ -100,6 +100,7 @@
         <record id="view_order_requirement_line_form_readonly" model="ir.ui.view">
             <field name="name">order.requirement.line.form</field>
             <field name="model">order.requirement.line</field>
+            <field name="priority">1</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Order Requirement">
@@ -143,7 +144,9 @@
                                         <field name="buy" readonly="1"/>
                                         <field name="supplier_id"  readonly="1"/>
                                         <field name="purchase_order_id" />
+                                        <button string="View" name="action_view_purchase_order" icon="gtk-find" type="object" attrs="{'invisibile': [('purchase_order_id','=',False)]}"/>
                                         <field name="mrp_production_id" />
+                                        <button string="View" name="action_view_mrp_production" icon="gtk-find" type="object" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
                                     </tree>
                                     <form string="BoM Details">
                                         <field name="product_id" readonly="1"/>
