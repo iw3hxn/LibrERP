@@ -1031,3 +1031,20 @@ msgstr "Verifica Ordine Cliente"
 #: view:sale.order:0
 msgid "Confirm Customer Order"
 msgstr "Conferma Ordine Cliente"
+
+#. modules: purchase, sale_order_confirm, data_migration, purchase_requisition, invoice_immediate, base_address_contacts, base, purchase_requisition_extended, stock_picking_extended, crm
+#: model:ir.ui.menu,name:base.menu_partner_address_form
+#: view:res.bank:0
+#: view:res.partner.address:0
+#: view:res.partner:0
+#: field:res.partner.address.contact,address_id:0
+#: view:crm.lead:0
+#: field:picking.import,address_id:0
+#: field:account.invoice,address_delivery_id:0
+#: field:purchase.order,partner_address_id:0
+#: field:purchase.requisition.partner,partner_address_id:0
+#: field:virtual.purchase.requisition.partner,partner_address_id:0
+#: view:sale.order.confirm:0
+#: field:stock.picking,address_delivery_id:0
+msgid "Address"
+msgstr "Indirizzo"
