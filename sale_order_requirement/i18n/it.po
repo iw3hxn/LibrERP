@@ -388,3 +388,23 @@ msgstr "Confermato"
 #: selection:order.requirement.line,state:0
 msgid "Cancelled"
 msgstr "Annullato"
+
+#. module: sale_order_requirement
+#: field:mrp.bom,product_type:0
+msgid "Product Type"
+msgstr "Tipo Prodotto"
+
+#. module: sale_order_requirement
+#: selection:mrp.bom,product_type:0
+msgid "Stockable Product"
+msgstr "Prodotto Stoccabile"
+
+#. module: sale_order_requirement
+#: selection:mrp.bom,product_type:0
+msgid "Consumable"
+msgstr "Consumabile"
+
+#. module: sale_order_requirement
+#: selection:mrp.bom,product_type:0
+msgid "Service"
+msgstr "Servizio"

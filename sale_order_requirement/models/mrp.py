@@ -1,27 +1,18 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
-from osv import osv, fields, orm
-from datetime import datetime
-from osv import osv, fields, orm
-import decimal_precision as dp
-from tools import float_compare
-from tools import DEFAULT_SERVER_DATETIME_FORMAT
+from osv import fields, orm
 from tools.translate import _
-import netsvc
-import time
-import tools
 
-from operator import attrgetter
 
-class mrp_bom(osv.osv):
+class mrp_bom(orm.Model):
     _inherit = 'mrp.bom'
 
     def _child_compute_buy_and_produce(self, cr, uid, ids, name, arg, context=None):
         result = {}
         if context is None:
             context = {}
-        bom_obj = self.pool.get('mrp.bom')
+        bom_obj = self.pool['mrp.bom']
         bom_id = context and context.get('active_id', False) or False
         cr.execute('select id from mrp_bom')
         if all(bom_id != r[0] for r in cr.fetchall()):
@@ -50,15 +41,16 @@ class mrp_bom(osv.osv):
     _columns = {
         'child_buy_and_produce_ids': fields.function(_child_compute_buy_and_produce, relation='mrp.bom',
                                                      string="BoM Hierarchy", type='many2many'),
+        'product_type': fields.related('product_id', 'type', type='selection', string='Product Type', selection=[('product', 'Stockable Product'), ('consu', 'Consumable'), ('service', 'Service')]),
     }
 
 
-class mrp_production(osv.osv):
+class mrp_production(orm.Model):
 
     _inherit = "mrp.production"
 
     _columns = {
-        'is_from_order_requirement': fields.boolean(),
+        'is_from_order_requirement': fields.boolean('is from order requirement'),
         'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material', readonly=True),
         'level': fields.integer('Level', required=True),
     }
@@ -100,7 +92,7 @@ class mrp_production(osv.osv):
             bom_id = production.temp_bom_id.id
 
             if not (bom_point or bom_id):
-                raise osv.except_osv(_('Error'), _("Couldn't find a bill of material for this product."))
+                raise orm.except_orm(_('Error'), _("Couldn't find a bill of material for this product."))
             factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
             # Forcing routing_id to False, the lines are linked directly to temp_mrp_bom
             res = bom_obj._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)

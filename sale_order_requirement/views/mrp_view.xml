@@ -27,5 +27,18 @@
             </field>
         </record>
 
+        <record id="mrp_bom_tree_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.bom.tree.inherit</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_tree_view" />
+            <field name="model">mrp.bom</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="name" position="replace">
+                    <field name="product_type"/>
+                </field>
+            </field>
+        </record>
+
+
     </data>
 </openerp>
