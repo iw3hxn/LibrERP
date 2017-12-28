@@ -25,6 +25,6 @@ class stock_move(orm.Model):
                 wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'button_confirm', cr)
                 mrp_production_obj.force_production(cr, uid, [mrp_production.id])
                 wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'button_produce', cr)
-                wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, '586', cr)
+                # wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, '586', cr)
                 # TODO: Manca mrp_product_produce.do_produce, ids ???
                 # mrp_product_produce_obj.do_produce(cr, uid, ids, 'active_id': mrp_production.id

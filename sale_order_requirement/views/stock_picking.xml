@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="search_picking_from_customer_order" model="ir.ui.view">
+            <field name="name">stock.picking.search.sale.order</field>
+            <field name="inherit_id" ref="stock.view_picking_in_search"/>
+            <field name="model">stock.picking</field>
+            <field name="type">search</field>
+
+            <field name="arch" type="xml">
+                <field name="origin" position="after">
+                    <field name="sale_order_ids"/>
+                </field>
+            </field>
+
+        </record>
+
+    </data>
+</openerp>
