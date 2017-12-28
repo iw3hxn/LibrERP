@@ -24,7 +24,6 @@ and choose if manufacture or buy products from suppliers.
         'views/purchase_view.xml',
         'views/sale_view.xml',
         'views/stock_picking.xml',
-        'views/purchase_view.xml',
         'security/ir.model.access.csv'
     ],
     'css': ['static/src/css/style.css'],
