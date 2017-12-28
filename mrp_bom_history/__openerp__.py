@@ -3,7 +3,7 @@
 
 {
     "name": "BoM History",
-    "version": "4.0.0.0",
+    "version": "4.1.0.1",
     "depends": [
         "mrp",
         "base",
@@ -17,6 +17,7 @@
     "category": "Manufacture Resource Planning",
 
     "data": [
+        "wizard/bom_add_note_view.xml",
         "views/bom_view.xml",
     ],
     "demo": [],
