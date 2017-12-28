@@ -57,7 +57,7 @@ msgstr "Storico"
 
 #. module: mrp_bom_history
 #: view:bom.add.note:0
-#: model:ir.actions.act_window,name:bom.action_crm_add_note
+#: model:ir.actions.act_window,name:bom.action_bom_add_note
 msgid "Add Note"
 msgstr "Aggiungi nota"
 
