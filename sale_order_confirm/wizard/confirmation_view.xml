@@ -53,7 +53,7 @@
                             <field name="discount" on_change="onchange_discount(quantity, discount, price_unit)"/>
                             <field name="price_unit" on_change="onchange_price(quantity, discount, price_unit)" />
                             <field name="changed" invisible="1"/>
-                            <field name="price_subtotal"/>
+                            <field name="price_subtotal" sum="SUM"/>
                             <field name="tax_id" invisible="1"/>
                         </tree>
                     </field>
