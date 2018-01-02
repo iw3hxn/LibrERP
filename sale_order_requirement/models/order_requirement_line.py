@@ -1051,6 +1051,25 @@ class order_requirement_line(orm.Model):
             'res_id': line.id
         }
 
+    def action_view_bom(self, cr, uid, ids, context=None):
+        line = self.browse(cr, uid, ids, context)[0]
+
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'mrp', 'mrp_bom_tree_view')
+        view_id = view and view[1] or False
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Product BOM'),
+            'res_model': 'mrp.bom',
+            'view_type': 'tree',
+            'view_mode': 'tree',
+            'view_id': [view_id],
+            'domain': [('product_id', '=', line.product_id.id),
+                       ('bom_id', '=', False)],
+            # 'target': 'new',
+            'res_id': False
+        }
+
     def onchange_temp_mrp_bom_ids(self, cr, uid, ids, temp_mrp_bom_ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
