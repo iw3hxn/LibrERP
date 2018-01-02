@@ -70,7 +70,7 @@ class mrp_bom(orm.Model):
         for product_old_id in [bom.product_id.id for bom in boms]:
             if vals.get('product_id', False) and not product_old_id == vals['product_id']:
                 # on new product set that have bom
-                self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False})
+                self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False}, context)
                 bom_ids_count = self.search(cr, uid, [('product_id', '=', product_old_id), ('bom_id', '=', False)], count=True)
                 if bom_ids_count == 1:
                     self.pool['product.product'].write(cr, uid, product_old_id, {'supply_method': 'buy', 'purchase_ok': True})
