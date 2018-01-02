@@ -62,17 +62,17 @@
                                         <button name="out_of_stock_button" type="object" icon="gtk-dialog-error"
                                                 attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
-                                        <field name="is_manufactured"
-                                            attrs="{'readonly': ['|',('level','=',0),
-                                                                     ('is_leaf','=',True)]}"/>
-                                        <field name="buy" attrs="{'readonly': ['|',('level','=',0),
-                                                                                   ('is_manufactured','=',True)]}"/>
+                                        <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-ok" />
+                                        <field name="is_manufactured" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
+                                        <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="gtk-ok" />
+                                        <field name="buy" attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
                                         <field name="supplier_id"
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
                                                                      ('product_type','!=','product'),
                                                                      ('level','=',0)]}"/>
                                         <field name="supplier_ids" invisible="1"/>
+                                        <!--<button name="update_supplier" string="Reload" type="object" icon="gtk-refresh" />-->
                                     </tree>
                                 </field>
                             </page>
@@ -146,7 +146,7 @@
                                         <field name="purchase_order_id" />
                                         <button string="View" name="action_view_purchase_order" icon="gtk-find" type="object" attrs="{'invisibile': [('purchase_order_id','=',False)]}"/>
                                         <field name="mrp_production_id" />
-                                        <button string="View" name="action_view_mrp_production" icon="gtk-find" type="object" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
+                                        <button string="View" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
                                     </tree>
                                     <form string="BoM Details">
                                         <field name="product_id" readonly="1"/>
@@ -220,14 +220,17 @@
                 <tree string="Order Requirement" editable="top"
                     colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                     <field name="row_color" invisible="1"/>
+                    <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" />
                     <field name="product_id"/>
                     <field name="new_product_id"/>
                     <field name="qty" />
                     <field name="stock_availability"/>
                     <field name="spare"/>
                     <field name="state" />
-                    <button context="" name="action_open_bom" icon="gtk-execute" type="object"
+                    <button context="" name="action_open_bom" icon="terp-mrp" type="object"
                             attrs="{'invisible': [('state','=','done')]}"/>
+                    <button name="action_reload_bom" icon="gtk-refresh" type="object"
+                            attrs="{'invisible': [('state','!=','draft')]}"/>
                 </tree>
             </field>
         </record>

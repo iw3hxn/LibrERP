@@ -15,24 +15,25 @@ class MrpBom(orm.Model):
         if 'bom_lines' in values:
             for line in values['bom_lines']:
                 if line[0] == 0:
-                    message = _(u"Product: '{}', quantity: {}").format(
+                    message = _(u"Added Product: '{}', quantity: {}").format(
                         line[2]['name'], line[2]['product_qty'])
                     title = 'Added'
                 elif line[0] == 1:
                     bom_line = self.browse(cr, uid, line[1], context)
                     updated = ["{}: {} -> {}".format(key, getattr(bom_line, key, ''), value) for key, value in line[2].items()]
-                    message = _(u"Product: '{}': {}").format(bom_line.product_id.name,
+                    message = _(u"Updated Product: '{}': {}").format(bom_line.product_id.default_code,
                                                                      ', '.join(updated))
                     title = 'Updated'
                 elif line[0] == 2:
                     bom_line = self.browse(cr, uid, line[1], context)
-                    message = _(u"Product: '{}'").format(bom_line.product_id.name)
+                    message = _(u"Deleted Product: '{}'").format(bom_line.product_id.default_code)
                     title = 'Deleted'
                 else:
                     message = False
                 if message:
                     for bom_id in ids:
-                        self.mail_post(cr, uid, bom_id, message, title, context)
+                        self.message_append(cr, uid, [bom_id], message, body_text=message, context=context)
+                        # self.mail_post(cr, uid, bom_id, message, title, context)
         return super(MrpBom, self).write(cr, uid, ids, values, context)
 
     def mail_post(self, cr, uid, bom_id, body, title, context):

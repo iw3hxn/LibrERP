@@ -79,6 +79,28 @@ class temp_mrp_bom(orm.Model):
             res[line.id] = row_color
         return res
 
+    def action_toggle_manufactured(self, cr, uid, ids, context):
+        line = self.browse(cr, uid, ids, context)[0]
+        if line.level == 0 or line.is_leaf:
+            return True
+        line.write({'buy': not line.buy})
+        return True
+
+    def action_toggle_buy(self, cr, uid, ids, context):
+        line = self.browse(cr, uid, ids, context)[0]
+        if line.level == 0 or line.is_manufactured:
+            return True
+        line.write({'buy': not line.buy})
+        return True
+
+    def update_supplier(self, cr, uid, ids, context):
+        # todo check why not work!!
+        line = self.browse(cr, uid, ids, context)[0]
+        result_dict = self.pool['order.requirement.line'].get_suppliers(cr, uid, ids, line.product_id.id, context)
+        supplier_ids_formatted = result_dict['supplier_ids']
+        line.write({'supplier_ids': supplier_ids_formatted})
+        return True
+
     _columns = {
         'name': fields.char('Name', size=160, readonly=True),
         'type': fields.selection([('normal', 'Normal BoM'), ('phantom', 'Sets / Phantom')], 'BoM Type', required=True,

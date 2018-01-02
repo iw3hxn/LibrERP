@@ -590,6 +590,18 @@ class order_requirement_line(orm.Model):
     #     ret['temp_mrp_bom_routing_ids']['invisible'] = not view_bom
     #     return ret
 
+    def action_reload_bom(self, cr, uid, ids, context):
+        for requirement_line in self.browse(cr, uid, ids, context):
+            line_to_clear = []
+            for temp_line in requirement_line.temp_mrp_bom_ids:
+                if not temp_line.purchase_order_id or not temp_line.mrp_production_id:
+                    line_to_clear.append(temp_line.id)
+            if len(line_to_clear) == len(requirement_line.temp_mrp_bom_ids):  # if i can cancel all the line
+                self.pool['temp.mrp.bom'].unlink(cr, uid, line_to_clear, context)
+            else:
+                orm.except_orm(_(u'Error !'), _(u'There are same processed line'))
+        return True
+
     def onchange_is_manufactured(self, cr, uid, ids, is_manufactured, new_product_id, qty, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
