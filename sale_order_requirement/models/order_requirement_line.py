@@ -765,7 +765,6 @@ class order_requirement_line(orm.Model):
         shop_id = shop.id
 
         purchase_order_ids = purchase_order_obj.search(cr, uid, [('partner_id', '=', supplier_id),
-                                                                 ('shop_id', '=', shop_id),
                                                                  ('state', '=', 'draft')], limit=1, context=context)
 
         if not purchase_order_ids:
