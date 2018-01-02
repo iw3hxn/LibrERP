@@ -507,7 +507,7 @@ class product_product(orm.Model):
             raise orm.except_orm(
                 _("Error"),
                 _("The product is used on same Sale Order, deactivate it"))
-        if self.pool['mrp.bom'].serach(cr, uid, [('product_id', 'in', ids)], context=context):
+        if self.pool['mrp.bom'].search(cr, uid, [('product_id', 'in', ids)], context=context):
             raise orm.except_orm(
                 _("Error"),
                 _("The product is used on same BOM, deactivate it"))
