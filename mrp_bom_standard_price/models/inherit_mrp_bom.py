@@ -29,20 +29,36 @@ class mrp_bom(osv.Model):
     _inherit = 'mrp.bom'
 
     def _compute_list_price(self, cr, uid, ids, field_name, arg, context=None):
-        """ Sets particular method for the selected bom type.
-        @param field_name: Name of the field
-        @param arg: User defined argument
-        @return:  Dictionary of values
-        """
-        res = dict.fromkeys(ids, False)
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        uom_obj = self.pool['product.uom']
+        res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            date = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
-            pricelist_id = 2  # todo listen CORTEM for have better specific
-            price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist_id], line.product_id.id, line.product_qty or 1.0, None,
-                                                     {'uom': line.product_uom.id, 'date': date})[pricelist_id]
-
-        res[line.id] = price
+            cost_price = line.product_id.cost_price
+            qty = uom_obj._compute_qty(cr, uid,
+                                       from_uom_id=line.product_uom.id,
+                                       qty=line.product_qty,
+                                       to_uom_id=line.product_id.uom_po_id.id)
+            res[line.id] = {
+                'cost_price': cost_price,
+                'bom_cost_price': cost_price * qty,
+            }
         return res
+
+    # def _compute_list_price(self, cr, uid, ids, field_name, arg, context=None):
+    #     """ Sets particular method for the selected bom type.
+    #     @param field_name: Name of the field
+    #     @param arg: User defined argument
+    #     @return:  Dictionary of values
+    #     """
+    #     res = dict.fromkeys(ids, False)
+    #     for line in self.browse(cr, uid, ids, context=context):
+    #         date = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
+    #         pricelist_id = 2  # todo listen CORTEM for have better specific
+    #         price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist_id], line.product_id.id, line.product_qty or 1.0, None,
+    #                                                  {'uom': line.product_uom.id, 'date': date})[pricelist_id]
+    #
+    #     res[line.id] = price
+    #     return res
 
     _columns = {
         'property_product_pricelist_purchase': fields.property(
@@ -58,6 +74,8 @@ class mrp_bom(osv.Model):
                                          type='float', relation='product.product', string='List Price', readonly=True),
         'standard_price': fields.related('product_id', 'standard_price',
             type='float', relation='product.product', string='Cost price', readonly=True),
+        'cost_price': fields.function(_compute_list_price, string='Cost Price for Unit of Product', type='float', multi='cost_price'),
+        'bom_cost_price': fields.function(_compute_list_price, string='Cost Price', type='float', multi='cost_price'),
     }
 
     def onchange_product_id2(self, cr, uid, ids, product_id, name, product_qty, product_uom, context=None):

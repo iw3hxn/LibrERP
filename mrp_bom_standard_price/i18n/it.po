@@ -32,3 +32,13 @@ msgstr "Prezzo di costo"
 #: field:mrp.bom,list_price:0
 msgid "List Price"
 msgstr "Prezzo di listino"
+
+#. module: mrp_bom_standard_price
+#: field:mrp.bom,cost_price:0
+msgid "Cost Price for Unit of Product"
+msgstr "Prezzo di Costo per Unità di Prodotto"
+
+#. module: mrp_bom_standard_price
+#: field:mrp.bom,bom_cost_price:0
+msgid "Cost Price"
+msgstr "Prezzo di Costo"
