@@ -892,54 +892,58 @@ class ImportFile(threading.Thread, Utils):
                     ('product_id', '=', product_id),
                     ('name', '=', partner_id)
                 ], context=self.context)
+
+                suppinfo_vals = {
+                    'name': partner_id,
+                    'product_name': vals_product['name'],
+                    'product_id': product_id,
+                    'min_qty': 1,
+                    'product_code': product_code,
+                }
+                if hasattr(record, 'supplier_price') and record.supplier_price or hasattr(record,
+                                                                                          'standard_price') and record.standard_price:
+                    price = hasattr(record, 'supplier_price') and record.supplier_price or hasattr(record,
+                                                                                                   'standard_price') and record.standard_price or 0.0
+                    if 'weight_per_meter' in vals_product:
+                        price = float(price) / vals_product.get('weight_per_meter', 1)
+
+                    suppinfo_vals['pricelist_ids'] = [
+                        (0, False, {'min_quantity': 1, 'price': price})
+                    ]
+
                 if supplierinfo_ids:
                     _logger.info(u'{0}: Updating supplier info for product {1}'.format(
                         self.processed_lines, vals_product['name']
                     ))
                     suppinfo_id = supplierinfo_ids[0]
-                    self.supplierinfo_obj.write(cr, uid, suppinfo_id, {
-                        'name': partner_id,
-                        'product_name': vals_product['name'],
-                        'product_id': product_id,
-                        'min_qty': 1,
-                        'product_code': product_code
-                        # 'company_id':
-                    }, context=self.context)
+
+                    if 'pricelist_ids' in suppinfo_vals:
+                        supplierinfo = self.supplierinfo_obj.browse(cr, uid, suppinfo_id, context=self.context)
+                        if supplierinfo.pricelist_ids:
+                            remove_ids = [(2, pricelist.id) for pricelist in supplierinfo.pricelist_ids]
+                            suppinfo_vals['pricelist_ids'] = remove_ids + suppinfo_vals['pricelist_ids']
+
+                    self.supplierinfo_obj.write(cr, uid, suppinfo_id, suppinfo_vals, context=self.context)
                 else:
                     _logger.info(u'{0}: Creating supplierinfo for product {1}...'.format(
                         self.processed_lines, vals_product['name'])
                     )
-
-                    suppinfo_vals = {
-                        'name': partner_id,
-                        'product_name': vals_product['name'],
-                        'product_id': product_id,
-                        'min_qty': 1,
-                        'product_code': product_code,
-                    }
-                    if hasattr(record, 'supplier_price') and record.supplier_price or hasattr(record, 'standard_price') and record.standard_price:
-                        price = hasattr(record, 'supplier_price') and record.supplier_price or hasattr(record, 'standard_price') and record.standard_price or 0.0
-                        suppinfo_vals['pricelist_ids'] = [(0, 0, {
-                            'min_quantity': 1,
-                            'price': price
-                        })]
-
                     suppinfo_id = self.supplierinfo_obj.create(cr, uid, suppinfo_vals, context=self.context)
 
-                if hasattr(record, 'supplier_price') and record.supplier_price:
-                    partnerinfo_ids = self.partnerinfo_model.search(cr, uid, [
-                        ('suppinfo_id', '=', suppinfo_id),
-                        ('min_quantity', '=', 1)
-                    ], context=self.context)
+                # if hasattr(record, 'supplier_price') and record.supplier_price:
+                #     partnerinfo_ids = self.partnerinfo_model.search(cr, uid, [
+                #         ('suppinfo_id', '=', suppinfo_id),
+                #         ('min_quantity', '=', 1)
+                #     ], context=self.context)
 
-                    if partnerinfo_ids:
-                        self.partnerinfo_model.write(cr, uid, partnerinfo_ids[0], {'price': record.supplier_price})
-                    else:
-                        self.partnerinfo_model.create(cr, uid, {
-                            'price': record.supplier_price,
-                            'suppinfo_id': suppinfo_id,
-                            'min_quantity': 1
-                        })
+                    # if partnerinfo_ids:
+                    #     self.partnerinfo_model.write(cr, uid, partnerinfo_ids[0], {'price': record.supplier_price})
+                    # else:
+                    #     self.partnerinfo_model.create(cr, uid, {
+                    #         'price': record.supplier_price,
+                    #         'suppinfo_id': suppinfo_id,
+                    #         'min_quantity': 1
+                    #     })
 
                 if vals_product.get('categ_id', False) and hasattr(record, 'discount') and record.discount:
                     self.update_pricelist('purchase', product_id, partner_id, float(record.discount))
