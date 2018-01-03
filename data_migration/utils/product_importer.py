@@ -658,8 +658,8 @@ class ImportFile(threading.Thread, Utils):
         else:
             if self.FORMAT == 'FormatOmnitron':
                 if float(record.omnitron_weight_per_meter):
-                    vals_product['uom_id'] = self.get_uom(cr, uid, 'mm')
-                    vals_product['uom_po_id'] = self.get_uom(cr, uid, 'mm')
+                    vals_product['uom_id'] = self.get_uom(cr, uid, 'm')
+                    vals_product['uom_po_id'] = self.get_uom(cr, uid, 'm')
 
         #     if hasattr(record, 'uom_po_id') and record.uom_po_id:
         #         vals_product['uom_po_id'] = self.get_uom(cr, uid, record.uom_po_id)
