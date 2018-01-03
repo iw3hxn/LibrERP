@@ -168,6 +168,17 @@ class sale_order(orm.Model):
         default.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
         return super(sale_order, self).copy(cr, uid, ids, default, context)
 
+    def action_cancel_draft(self, cr, uid, ids, *args):
+        self.write(cr, uid, ids, {
+                'tech_validation': False,
+                'manager_validation': False,
+                'customer_validation': False,
+                'email_sent_validation': False,
+                'supervisor_validation': False,
+        })
+        super(sale_order, self).action_cancel_draft(cr, uid, ids, *args)
+        return True
+
     def onchange_invoice_type_id(self, cr, uid, ids, invoice_type_id, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
