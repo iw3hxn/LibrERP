@@ -16,7 +16,7 @@
                     <field name="payments_preview" nolabel="1" attrs="{'invisible':[('state','not in',['draft'])]}">
                         <tree string=" Virtual Maturities" > 
                              <field name="date" />
-                             <field name="amount" string="Amount"/>
+                             <field name="amount" string="Amount" sum="sum"/>
                         </tree>
                     </field>                    
                     <field name="maturity_ids" nolabel="1" attrs="{'invisible':[('state','not in',['open', 'paid'])]}">
@@ -24,7 +24,7 @@
                             <field name="date_maturity"/>
                             <field name="maturity_debit" string="Amount"/>
                             <field name="maturity_currency" />
-                            <field name="amount_residual_currency" />
+                            <field name="amount_residual_currency" sum="sum"/>
                         </tree>
                     </field>
                 </field>

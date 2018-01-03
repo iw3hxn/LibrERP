@@ -29,6 +29,7 @@ class account_move_line(orm.Model):
     _inherit = 'account.move.line'
     
     def _maturity_amount(self, cr, uid, ids, field_names, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context):
             if 'maturity_currency' in field_names:

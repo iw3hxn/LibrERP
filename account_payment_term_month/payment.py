@@ -20,9 +20,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import time
 from datetime import datetime
+
 from dateutil.relativedelta import relativedelta
 from openerp.osv import fields, orm
+from tools.translate import _
 
 PAYMENT_TERM_TYPE_SELECTION = [
     ('BB', 'Bonifico Bancario'),
@@ -36,6 +39,7 @@ PAYMENT_TERM_TYPE_SELECTION = [
     ('CN', 'Contanti'),
     ('SD', 'Sepa DD'),
 ]
+
 
 class account_payment_term_line(orm.Model):
     ''' Add extra field for manage commercial payments
@@ -90,7 +94,7 @@ class account_payment_term(orm.Model):
             ' delayed.'),
         'type': fields.selection(PAYMENT_TERM_TYPE_SELECTION, "Type of payment"),
     }
-    
+
     def compute(self, cr, uid, id, value, date_ref=False, context=None):
         '''Function overwritten for check also month values and 2 months with no payments
         allowed for the partner.'''
@@ -171,3 +175,34 @@ class account_payment_term(orm.Model):
                     result.append((next_date.strftime('%Y-%m-%d'), amt))
                 amount -= amt
         return result
+
+class account_invoice(orm.Model):
+    _inherit = 'account.invoice'
+
+    def onchange_payment_term_date_invoice(self, cr, uid, ids, payment_term_id, date_invoice):
+        if not payment_term_id:
+            return {}
+        res = {}
+        context = self.pool['res.users'].context_get(cr, uid)
+        pt_obj = self.pool['account.payment.term']
+        ait_obj = self.pool['account.invoice.tax']
+
+        if not date_invoice:
+            date_invoice = time.strftime('%Y-%m-%d')
+
+        compute_taxes = ait_obj.compute(cr, uid, ids, context=context)
+        amount_tax = 0
+        for tax in compute_taxes:
+            amount_tax += compute_taxes[tax]['amount']
+        context.update({'amount_tax': amount_tax})
+
+        pterm_list = pt_obj.compute(cr, uid, payment_term_id, value=1, date_ref=date_invoice, context=context)
+
+        if pterm_list:
+            pterm_list = [line[0] for line in pterm_list]
+            pterm_list.sort()
+            res = {'value': {'date_due': pterm_list[-1]}}
+        else:
+            raise orm.except_orm(_('Data Insufficient !'),
+                                 _('The payment term of supplier does not have a payment term line!'))
+        return res

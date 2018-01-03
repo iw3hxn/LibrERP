@@ -95,10 +95,19 @@ class account_invoice(orm.Model):
     }
     
     def action_move_create(self, cr, uid, ids, context=None):
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
-        super(account_invoice, self).action_move_create(cr, uid, ids, context=context)
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ait_obj = self.pool['account.invoice.tax']
+
         for invoice in self.browse(cr, uid, ids, context):
+            # i need to process each invoice separately for calculation on tax amount
+            compute_taxes = ait_obj.compute(cr, uid, invoice.id, context=context)
+            amount_tax = 0
+            ctx = context.copy()
+            for tax in compute_taxes:
+                amount_tax += compute_taxes[tax]['amount']
+            ctx.update({'amount_tax': amount_tax})
+
+            super(account_invoice, self).action_move_create(cr, uid, [invoice.id], context=ctx)
             date_invoice = invoice.date_invoice
             reg_date = invoice.registration_date
             if not invoice.registration_date:
@@ -146,6 +155,7 @@ class account_invoice(orm.Model):
         return True
 
     def copy(self, cr, uid, ids, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         default = default or {}
         if 'registration_date' not in default:
             default.update({
