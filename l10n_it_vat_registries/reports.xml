@@ -305,7 +305,7 @@ thead{
             <field name="report_rml">l10n_it_vat_registries/templates/registro_iva_corrispettivi.mako</field>
             <field name="webkit_header" ref="ir_header_webkit_vat_registry_corrispettivi"/>
         </record>
-
+<!--
         <record id="registro_generale_report_id" model="ir.actions.report.xml">
             <field name="name">General Registry</field>
             <field name="type">ir.actions.report.xml</field>
@@ -315,6 +315,7 @@ thead{
             <field name="report_rml">l10n_it_vat_registries/templates/registro_generale.mako</field>
             <field name="webkit_header" ref="ir_header_webkit_vat_registry_general"/>
         </record>
+-->
     </data>
 </openerp>
 
