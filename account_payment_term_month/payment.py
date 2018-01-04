@@ -180,9 +180,13 @@ class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
     def onchange_payment_term_date_invoice(self, cr, uid, ids, payment_term_id, date_invoice):
+        res = {'value': {}}
+
+        if not ids:
+            return res
+
         if not payment_term_id:
-            return {}
-        res = {}
+            return res
         context = self.pool['res.users'].context_get(cr, uid)
         pt_obj = self.pool['account.payment.term']
         ait_obj = self.pool['account.invoice.tax']
