@@ -21,7 +21,7 @@
 
 {
     "name": "Purchase Order Reopen",
-    "version": "1.4",
+    "version": "1.5",
     "author": "Camptocamp Austria",
     "category": 'Purchase Management',
     'complexity': "normal",
