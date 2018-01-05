@@ -718,7 +718,7 @@ class order_requirement_line(orm.Model):
                                                                         product_id, qty, uom_id=uom_id, partner_id=supplier_id,
                                                                         date_order=False,
                                                                         fiscal_position_id=purchase_order_values['fiscal_position'],
-                                                                        date_planned=False, price_unit=False, notes=False,
+                                                                        date_planned=False, name=False, price_unit=False, notes=False,
                                                                         context=context)['value']
 
         if order_line_values.get('taxes_id', False):

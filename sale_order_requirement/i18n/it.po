@@ -456,3 +456,20 @@ msgstr "Storico"
 #: view:mrp.production:0
 msgid "History"
 msgstr "Cronologia"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Toggle Buy"
+msgstr "Attiva / Disattiva l'acquisto"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Toggle Manufactured"
+msgstr "Attiva / Disattiva Produzione"
+
+#. modules: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:350
+#: field:temp.mrp.bom,mrp_production_id:0
+#, python-format
+msgid "Manufacturing Order"
+msgstr "Ordine di Produzione"
