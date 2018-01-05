@@ -742,7 +742,7 @@ class order_requirement_line(orm.Model):
 
         if not supplier_id:
             raise orm.except_orm(_(u'Error !'),
-                                 _(u'There are no suppliers defined for product {0}'.format(obj.product_id.name)))
+                                 _(u'There are no suppliers defined for product {0}').format(obj.product_id.name))
         is_temp_bom = False
 
         try:

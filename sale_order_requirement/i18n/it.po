@@ -408,3 +408,36 @@ msgstr "Consumabile"
 #: selection:mrp.bom,product_type:0
 msgid "Service"
 msgstr "Servizio"
+
+#. module: sale_order_requirement
+#: field:res.company,auto_production:0
+msgid "Auto Production from Order Board"
+msgstr "Auto Produzione dalla Lavagna Ordini"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:325
+#, python-format
+msgid "Not exist a Purchase Order for this line"
+msgstr "Non c'è un ordine d'acquisto per questa linea"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:345
+#, python-format
+msgid "Not exist a Manufacture Order for this line"
+msgstr "Non esiste non Ordine di Produzione per questa linea"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Start to Work on BOM"
+msgstr "Inizia a Lavorare sul Prodotto"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+msgid "Reload BOM"
+msgstr "Ricarica BOM"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement_line.py:345
+#, python-format
+msgid "There are no suppliers defined for product {0}"
+msgstr "Non ci sono fornitori per il prodotto '{0}'"

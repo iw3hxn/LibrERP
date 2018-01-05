@@ -9,7 +9,8 @@ class res_company(orm.Model):
     _inherit = 'res.company'
 
     _columns = {
-        'split_mrp_production': fields.boolean('Split Production order from order requirement')
+        'split_mrp_production': fields.boolean('Split Production order from order requirement'),
+        'auto_production': fields.boolean('Auto Production from Order Board')
     }
 
     _defaults = {
