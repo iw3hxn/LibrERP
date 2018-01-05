@@ -83,7 +83,7 @@ class temp_mrp_bom(orm.Model):
         line = self.browse(cr, uid, ids, context)[0]
         if line.level == 0 or line.is_leaf:
             return True
-        line.write({'buy': not line.buy})
+        line.write({'is_manufactured': not line.is_manufactured})
         return True
 
     def action_toggle_buy(self, cr, uid, ids, context):
