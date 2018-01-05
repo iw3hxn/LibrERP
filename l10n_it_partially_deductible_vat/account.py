@@ -167,11 +167,14 @@ class account_invoice_tax(orm.Model):
         return real_total - invoice_total
 
     def compute(self, cr, uid, invoice_id, context=None):
+        if isinstance(invoice_id, (int, long)):
+            invoice_id = [invoice_id]
+
         tax_grouped = super(account_invoice_tax, self).compute(cr, uid, invoice_id, context)
         inv_obj = self.pool.get('account.invoice')
         tax_obj = self.pool.get('account.tax')
         tax_code_obj = self.pool.get('account.tax.code')
-        invoice = inv_obj.browse(cr, uid, invoice_id, context=context)
+        invoice = inv_obj.browse(cr, uid, invoice_id[0], context=context)
         cur = invoice.currency_id
         tax_difference = self.tax_difference(cr, uid, cur, tax_grouped)
         cur_obj = self.pool.get('res.currency')
