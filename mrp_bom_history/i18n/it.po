@@ -81,3 +81,33 @@ msgstr "_Annulla"
 #: view:bom.add.note:0
 msgid "_Add"
 msgstr "_Aggiungi"
+
+#. module: mrp_bom_history
+#: code:addons/mrp_bom_history/models/bom.py:30
+#, python-format
+msgid "Deleted"
+msgstr "Cancellato"
+
+#. module: mrp_bom_history
+#: code:addons/mrp_bom_history/models/bom.py:30
+#, python-format
+msgid "Updated"
+msgstr "Aggiornato"
+
+#. module: mrp_bom_history
+#: code:addons/mrp_bom_history/models/bom.py:30
+#, python-format
+msgid "Added"
+msgstr "Aggiunto"
+
+#. module: mrp_bom_history
+#: code:addons/mrp_bom_history/models/bom.py:30
+#, python-format
+msgid "Updated Product: '{}': {}"
+msgstr "Aggiornato Prodotto: '{}': {}"
+
+#. module: mrp_bom_history
+#: code:addons/mrp_bom_history/models/bom.py:30
+#, python-format
+msgid "Added Product: '{}', quantity: {}"
+msgstr "Aggiunto Prodotto: '{}', quantità: {}"
