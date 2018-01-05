@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_mrp_production_filter_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.select.inherit</field>
+            <field name="inherit_id" ref="mrp.view_mrp_production_filter"/>
+            <field name="model">mrp.production</field>
+            <field name="type">search</field>
+
+            <field name="arch" type="xml">
+                <filter name="inprogress" position="after">
+                    <filter icon="terp-product" string="Main Products" name="mainproducts" domain="[('level','=',0)]"
+                            help="Manufacturing Orders related to main products (hide children BoM)"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="mrp_production_tree_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.tree.inherit</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+            <field name="model">mrp.production</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="level"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="mrp_inherit_related_form" model="ir.ui.view">
+            <field name="name">mrp.inherit.related.form</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <page string="Scheduled Products" position="replace"/>
+                <page string="Consumed Products" position="before">
+                    <page string="Scheduled Products">
+                        <button name="action_compute" states="draft" string="Compute Data" type="object"
+                                icon="terp-stock_format-scientific" colspan="2"/>
+                        <field colspan="4" name="product_lines" nolabel="1">
+                            <tree string="Scheduled Products" editable="top">
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name="product_uom"/>
+                                <field name="product_uos_qty" groups="product.group_uos"/>
+                                <field name="product_uos" groups="product.group_uos"/>
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+                <!--<notebook position="inside">-->
+                    <!--<page string="Communication &amp; History">-->
+                        <!--<field name="message_ids" colspan="4" nolabel="1" mode="tree" readonly="1">-->
+                            <!--<tree string="History">-->
+                                <!--<field name="display_text" string="History Information"/>-->
+                                <!--<field name="email_from" invisible="1"/>-->
+                            <!--</tree>-->
+                        <!--</field>-->
+                    <!--</page>-->
+                <!--</notebook>-->
+
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

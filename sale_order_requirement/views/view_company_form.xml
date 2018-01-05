@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <field name="security_lead" position="after">
                     <field name="split_mrp_production"/>
+                    <field name="auto_production"/>
                 </field>
             </field>
         </record>

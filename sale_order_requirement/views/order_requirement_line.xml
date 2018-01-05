@@ -144,7 +144,7 @@
                                         <field name="buy" readonly="1"/>
                                         <field name="supplier_id"  readonly="1"/>
                                         <field name="purchase_order_id" />
-                                        <button string="View" name="action_view_purchase_order" icon="gtk-find" type="object" attrs="{'invisibile': [('purchase_order_id','=',False)]}"/>
+                                        <button string="View" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisibile': [('purchase_order_id','=',False)]}"/>
                                         <field name="mrp_production_id" />
                                         <button string="View" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
                                     </tree>
@@ -227,9 +227,9 @@
                     <field name="stock_availability"/>
                     <field name="spare"/>
                     <field name="state" />
-                    <button context="" name="action_open_bom" icon="terp-mrp" type="object"
+                    <button context="" name="action_open_bom" icon="terp-mrp" type="object" help="Start to Work on BOM"
                             attrs="{'invisible': [('state','=','done')]}"/>
-                    <button name="action_reload_bom" icon="gtk-refresh" type="object"
+                    <button name="action_reload_bom" icon="gtk-refresh" type="object" help="Reload BOM"
                             attrs="{'invisible': [('state','!=','draft')]}"/>
                 </tree>
             </field>

@@ -441,3 +441,18 @@ msgstr "Ricarica BOM"
 #, python-format
 msgid "There are no suppliers defined for product {0}"
 msgstr "Non ci sono fornitori per il prodotto '{0}'"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "Communication & History"
+msgstr "Comunicazione e Storico"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "History Information"
+msgstr "Storico"
+
+#. module: sale_order_requirement
+#: view:mrp.production:0
+msgid "History"
+msgstr "Cronologia"
