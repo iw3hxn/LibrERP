@@ -62,7 +62,7 @@ class purchase_requisition_partner(orm.TransientModel):
     
     _columns = {
         'supplier_ids': fields.many2many('res.partner', string='Suppliers', readonly=True),
-        'partner_id': fields.many2one('res.partner', 'Partner', required=True, domain="[('id', 'in', supplier_ids[0][2])]"),
+        'partner_id': fields.many2one('res.partner', 'Partner', required=True,) #domain="[('id', 'in', supplier_ids[0][2])]"),
     }
     _defaults = {
         'supplier_ids': _get_requisition_suppliers,
