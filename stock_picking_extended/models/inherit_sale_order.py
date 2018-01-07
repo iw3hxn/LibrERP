@@ -75,24 +75,25 @@ class sale_order(orm.Model):
             result['value']['goods_description_id'] = partner.goods_description_id.id
         return result
 
-    def action_ship_create(self, cr, uid, ids, *args):
-        super(sale_order, self).action_ship_create(cr, uid, ids, *args)
-        context = self.pool['res.users'].context_get(cr, uid)
+    def action_ship_create(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        super(sale_order, self).action_ship_create(cr, uid, ids, context)
+
         for order in self.browse(cr, uid, ids, context=context):
             if order.company_id.required_minimum_planned_date and not order.minimum_planned_date:
                 title = _(u'Error')
                 msg = _(u'Is not possible to confirm because order {order} have no Minimum Planned Date').format(order=order.name)
                 raise orm.except_orm(_(title), _(msg))
-            # partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id)
-            picking_obj = self.pool['stock.picking']
-            picking_ids = picking_obj.search(cr, uid, [('sale_id', '=', order.id)], context=context)
-            for picking_id in picking_ids:
-                picking_obj.write(cr, uid, picking_id, {
-                    # 'order_id': order.id,
-                    'carriage_condition_id': order.carriage_condition_id.id,
-                    'goods_description_id': order.goods_description_id.id,
-                    # 'transportation_reason_id': partner.transportation_reason_id.id,
-                    }, context=context)
+            # # partner = self.pool['res.partner'].browse(cr, uid, order.partner_id.id)
+            # picking_obj = self.pool['stock.picking']
+            # picking_ids = picking_obj.search(cr, uid, [('sale_id', '=', order.id)], context=context)
+            # for picking_id in picking_ids:
+            #     picking_obj.write(cr, uid, picking_id, {
+            #         # 'order_id': order.id,
+            #         'carriage_condition_id': order.carriage_condition_id.id,
+            #         'goods_description_id': order.goods_description_id.id,
+            #         # 'transportation_reason_id': partner.transportation_reason_id.id,
+            #         }, context=context)
         return True
 
     def _prepare_order_line_move(self, cr, uid, order, line, picking_id, date_planned, context=None):
@@ -104,21 +105,15 @@ class sale_order(orm.Model):
         return res
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
-        pick_name = self.pool['ir.sequence'].get(cr, uid, 'stock.picking.out')
-        return {
-            'name': pick_name,
-            'origin': order.name,
-            'date': order.date_confirm,
-            'type': 'out',
-            'state': 'auto',
-            'move_type': order.picking_policy,
-            'sale_id': order.id,
-            'address_id': order.partner_invoice_id.id,
+        res = super(sale_order, self)._prepare_order_picking(cr, uid, order, context)
+        # if order.minimum_planned_date:
+        #     res['minimum_planned_date'] = order.minimum_planned_date
+        res.update({
+            'carriage_condition_id': order.carriage_condition_id and order.carriage_condition_id.id or False,
+            'goods_description_id': order.goods_description_id and order.goods_description_id.id or False,
             'address_delivery_id': order.partner_shipping_id.id,
-            'note': order.note,
-            'invoice_state': (order.order_policy == 'picking' and '2binvoiced') or 'none',
-            'company_id': order.company_id.id,
-        }
+        })
+        return res
 
     # Simplify code
     # def _make_invoice(self, cr, uid, order, lines, context=None):

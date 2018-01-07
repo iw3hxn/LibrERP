@@ -566,3 +566,18 @@ msgstr "Righe Lavagna Ordini"
 #: view:stock.picking:0
 msgid "Moves"
 msgstr "Prodotti Richiesti"
+
+#. module: stock_picking_extended
+#: field:purchase.order,carriage_condition_id:0
+#: field:sale.order,carriage_condition_id:0
+#: field:stock.picking,carriage_condition_id:0
+msgid "Carriage condition"
+msgstr "Porto"
+
+#. modules: invoice_immediate, stock_picking_extended
+#: field:account.invoice,goods_description_id:0
+#: field:res.partner,goods_description_id:0
+#: field:sale.order,goods_description_id:0
+#: field:stock.picking,goods_description_id:0
+msgid "Description of goods"
+msgstr "Aspetto Esteriore dei Beni"
