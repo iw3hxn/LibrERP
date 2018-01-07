@@ -121,6 +121,7 @@ msgid "Manufacturing Orders related to main products (hide children BoM)"
 msgstr "Ordine di Produzione collegato al Prodotto"
 
 #. module: sale_order_requirement
+#: field:order.requirement,new_product_id:0
 #: field:order.requirement.line,new_product_id:0
 msgid "Choosen Product"
 msgstr "Prodotto Scelto"
@@ -286,6 +287,7 @@ msgid "Month"
 msgstr "Mese"
 
 #. module: sale_order_requirement
+#: field:order.requirement,product_id:0
 #: field:order.requirement.line,product_id:0
 msgid "Original Product"
 msgstr "Prodotto Originale"
@@ -473,3 +475,38 @@ msgstr "Attiva / Disattiva Produzione"
 #, python-format
 msgid "Manufacturing Order"
 msgstr "Ordine di Produzione"
+
+#. module: sale_order_requirement
+#: field:order.requirement,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: sale_order_requirement
+#: field:order.requirement,date_to:0
+msgid "Date to"
+msgstr "Al"
+
+#. modules: sale_order_requirement
+#: field:order.requirement,client_order_ref:0
+msgid "Customer Reference"
+msgstr "Numero Ordine Cliente"
+
+#. module: sale_order_requirement
+#: field:order.requirement,user_id:0
+msgid "User"
+msgstr "Utente"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "To Deploy"
+msgstr "To Deploy"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "Done"
+msgstr "Completato"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+msgid "Order/Customer Ref"
+msgstr "Ordine/Riferimento Cliente"

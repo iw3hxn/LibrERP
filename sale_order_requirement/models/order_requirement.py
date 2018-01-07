@@ -38,6 +38,7 @@ class order_requirement(orm.Model):
     _columns = {
         'date': fields.date('Data'),
         'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade'),
+        'client_order_ref': fields.related('sale_order_id', 'client_order_ref', type='char', string="Customer Reference"),
         'customer_id': fields.related('sale_order_id', 'partner_id', type='many2one', relation='res.partner', string='Customer', store=False),
         'user_id': fields.many2one('res.users', 'User'),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number", store={
@@ -52,7 +53,13 @@ class order_requirement(orm.Model):
             ('cancel', 'Cancelled')
         ], 'Order State', readonly=True),
         'order_requirement_line_ids': fields.one2many('order.requirement.line', 'order_requirement_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)]}),
-        'note': fields.text('Note')
+        'note': fields.text('Note'),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'product_id': fields.related('order_requirement_line_ids', 'product_id', type='many2one', relation='product.product',
+                                     string='Product'),
+        'new_product_id': fields.related('order_requirement_line_ids', 'new_product_id', type='many2one', relation='product.product',
+                                     string='Choosen Product'),
     }
 
     _defaults = {

@@ -51,15 +51,21 @@
                                                on_change="onchange_temp_product_id(id,product_id,product_qty,is_manufactured,context)"
                                                attrs="{'readonly': [('level','=',0)]}"/>
                                         <field name="original_qty"/>
+
+                                        <!--<button name="action_add" string="Add" type="object" icon="gtk-add"  attrs="{'invisible': [('level', '=', '0')]}" />-->
+
                                         <field name="product_qty" attrs="{'readonly': [('level','=',0)]}"
                                                context="{'line_id':parent.id}"
                                                on_change="onchange_temp_product_qty(product_qty, context)"/>
+
+                                        <!--<button name="action_remove" string="Add" type="object" icon="gtk-remove"  attrs="{'invisible': [('level', '=', '0')]}" />-->
+
                                         <field name="product_uom" readonly="1"/>
                                         <field name="mrp_routing_id"/>
                                         <field name="stock_availability"/>
                                         <field name="spare"/>
                                         <field name="is_out_of_stock" invisible="1"/>
-                                        <button name="out_of_stock_button" type="object" icon="gtk-dialog-error"
+                                        <button name="out_of_stock_button" type="object" icon="gtk-dialog-error" help="Product is out of stock"
                                                 attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
                                         <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-ok" />

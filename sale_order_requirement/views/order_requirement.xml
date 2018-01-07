@@ -8,9 +8,16 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Order Requirement">
-                    <field name="sale_order_id"/>
+                    <filter icon="terp-document-new" string="To Deploy" domain="[('state','=','draft')]" />
+                    <filter icon="terp-check" string="Done" domain="[('state','=','done')]"/>
+                    <separator orientation="vertical"/>
+                    <field name="product_id" filter_domain="['|', ('product_id','ilike',self),('new_product_id','ilike',self)]"/>
+                    <field name="note" string="Order/Customer Ref" filter_domain="['|', ('sale_order_id','ilike',self),('client_order_ref','ilike',self)]"/>
                     <field name="customer_id"/>
-                    <field name="date"/>
+                    <separator orientation="vertical"/>
+                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    <separator orientation="vertical"/>
                     <field name="user_id" />
                     <field name="week_nbr" />
                     <field name="month" />
@@ -49,7 +56,7 @@
             <field name="arch" type="xml">
                 <tree string="Order Requirement">
                     <field name="sale_order_id"/>
-                    <field name="customer_id"/>
+                    <field name="client_order_ref"/>
                     <field name="date"/>
                     <field name="user_id" />
                     <field name="week_nbr" />
@@ -65,7 +72,7 @@
             <field name="search_view_id" ref="view_order_requirement_search"/>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+            <field name="context">{'nodelete': '1', 'noduplicate': '1'}</field>
         </record>
 
         <menuitem name="Order Requirement" action="action_view_order_requirement" id="menu_view_order_requirement"

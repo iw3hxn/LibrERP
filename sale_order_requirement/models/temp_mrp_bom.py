@@ -32,10 +32,12 @@ class temp_mrp_bom(orm.Model):
         order_requirement_line_obj = self.pool['order.requirement.line']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            product = line.product_id
+            product_id = line.product_id.id
             warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
             ordreqline = order_requirement_line_obj.browse(cr, uid, line.order_requirement_line_id.id, context)
-            res[line.id] = ordreqline.generic_stock_availability(product=product, warehouse_id=warehouse_id, context=context)
+            res[line.id] = ordreqline.generic_stock_availability(product_id=product_id, warehouse_id=warehouse_id, context=context)
+            if line.level == 0:
+                res[line.id]['stock_availability'] += line.product_qty  # i don't have to count self
         return res
 
     def _is_out_of_stock(self, cr, uid, ids, name, args, context=None):
@@ -167,6 +169,26 @@ class temp_mrp_bom(orm.Model):
         'is_manufactured': True,
         'level': 1  # Useful for insertion of new temp mrp boms
     }
+
+    def action_add(self, cr, uid, ids, context):
+        line = self.browse(cr, uid, ids, context)[0]
+        context['line_id'] = line.order_requirement_line_id.id  # todo ask if ok
+        dest_qty = line.product_qty + 1
+        line_vals = self.onchange_temp_product_qty(cr, uid, ids, dest_qty, context)
+        line_vals['product_qty'] = dest_qty
+        self.write(cr, uid, line.id, line_vals, context)
+        return True
+
+    def action_remove(self, cr, uid, ids, context):
+        line = self.browse(cr, uid, ids, context)[0]
+        context['line_id'] = line.order_requirement_line_id.id  # todo ask if ok
+        # on_change = "onchange_temp_product_qty(product_qty, context)" / >
+        dest_qty = line.product_qty - 1
+        if dest_qty > 0.0:
+            line_vals = self.onchange_temp_product_qty(cr, uid, ids, dest_qty, context)
+            line_vals['product_qty'] = dest_qty
+            self.write(cr, uid, line.id, line_vals, context)
+        return True
 
     def _check_product(self, cr, uid, ids, context=None):
         # Serve per permettere l'inserimento di una BoM con lo stesso bom_id e product_id ma con position diversa.

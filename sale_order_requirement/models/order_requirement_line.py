@@ -30,32 +30,51 @@ class order_requirement_line(orm.Model):
     #     else:
     #         return line.product_id
 
-    def generic_stock_availability(self, cr, uid, ids, product, warehouse_id, context=None):
+    def generic_stock_availability(self, cr, uid, ids, product_id, warehouse_id, location_id=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         warehouse_order_point_obj = self.pool['stock.warehouse.orderpoint']
         spare = 0
         # product = self._get_actual_product(cr, uid, ids)
-        order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product.id),
-                                                                     ('warehouse_id', '=', warehouse_id)], context=context, limit=1)
+        product_qty = context.get('product_qty', 'virtual_available')
+        ctx = context.copy()
+        ctx['warehouse'] = warehouse_id
+
+        if location_id:
+            order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product_id),
+                                                                     ('warehouse_id', '=', warehouse_id)
+                                                                     ('location_id', '=', location_id)], context=context, limit=1)
+            ctx['location'] = location_id
+
+        else:
+            order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product_id),
+                                                                         ('warehouse_id', '=', warehouse_id)],
+                                                               context=context, limit=1)
+
         if order_point_ids:
             spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
 
+        product = self.pool['product.product'].browse(cr, uid, product_id, ctx)
+
+        stock_availability = product.id and product.type != 'service' and product[product_qty] or 0.0
+        # todo aggiungere la retifica delle righe fatte ma non ancora prodotti
         res = {
-            'stock_availability': product.id and product.type != 'service' and product.qty_available or False,
+            'stock_availability': stock_availability,
             'spare': spare,
         }
         return res
 
     def _stock_availability(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
+        context['product_qty'] = 'qty_available'  # i set that on external product i get the exacty product that i have on warehouse
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             if line.new_product_id:
-                product = line.new_product_id
+                product_id = line.new_product_id.id
             else:
-                product = line.product_id
+                product_id = line.product_id.id
             warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-            res[line.id] = self.generic_stock_availability(cr, uid, [], product, warehouse_id, context)
+
+            res[line.id] = self.generic_stock_availability(cr, uid, [], product_id, warehouse_id, context=context)
         return res
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
@@ -203,7 +222,6 @@ class order_requirement_line(orm.Model):
         else:
             return product.standard_price
 
-
     def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, qty_mult, temp_father_id, level, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
@@ -217,14 +235,14 @@ class order_requirement_line(orm.Model):
         product_id = bom.product_id.id
 
         line = self.browse(cr, uid, line_id, context)
-        product = product_obj.browse(cr, uid, product_id, context)
 
         row_color = temp_mrp_bom.get_color_bylevel(level)
         level_name = '- {} {} >'.format(str(level), ' -----' * level)
 
         suppliers = line.get_suppliers(product_id, context=context)
         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-        stock_spare = self.generic_stock_availability(cr, uid, [], product, warehouse_id, context)
+
+        stock_spare = self.generic_stock_availability(cr, uid, [], product_id, warehouse_id, context=context)
         routing_id = self.get_routing_id(cr, uid, product_id, context)
 
         # partial_cost = bom.product_id.cost_price
@@ -278,14 +296,14 @@ class order_requirement_line(orm.Model):
 
         product_id = product.id
         line = self.browse(cr, uid, line_id, context)
-        product = product_obj.browse(cr, uid, product_id, context)
 
         row_color = temp_mrp_bom.get_color_bylevel(level)
-        level_name = '- {} {} >'.format(str(level), ' -----' * level)
+        level_name = u'- {} {} >'.format(str(level), ' -----' * level)
 
         suppliers = line.get_suppliers(product_id, context=context)
         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-        stock_spare = self.generic_stock_availability(cr, uid, [], product, warehouse_id, context)
+
+        stock_spare = self.generic_stock_availability(cr, uid, [], product_id, warehouse_id, context=context)
         routing_id = self.get_routing_id(cr, uid, product_id, context)
 
         partial_cost = 0
@@ -599,7 +617,8 @@ class order_requirement_line(orm.Model):
             if len(line_to_clear) == len(requirement_line.temp_mrp_bom_ids):  # if i can cancel all the line
                 self.pool['temp.mrp.bom'].unlink(cr, uid, line_to_clear, context)
             else:
-                orm.except_orm(_(u'Error !'), _(u'There are same processed line'))
+                raise orm.except_orm(_(u'Error !'), _(u'There are same processed line'))
+        self.write(cr, uid, ids, {'new_product_id': False}, context)
         return True
 
     def onchange_is_manufactured(self, cr, uid, ids, is_manufactured, new_product_id, qty, context=None):
