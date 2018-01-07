@@ -28,10 +28,13 @@ class mrp_production(orm.Model):
         If necessary, redirects to temp.mrp.bom instead of mrp.bom
         """
         # action_compute is the Entry point for intercepting the mrp production
-        productions = self.browse(cr, uid, ids, context)
-
-        if not productions:
+        if not ids:
             return 0
+
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        productions = self.browse(cr, uid, ids, context)
 
         # NOTE: SINGLE PRODUCTION (not supported for multiple lines, problems with return len(results) )
 

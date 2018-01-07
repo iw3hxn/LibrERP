@@ -961,6 +961,7 @@ class order_requirement_line(orm.Model):
             # Create manufacturing order
             mrp_production_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
 
+        mrp_production_obj.action_compute(cr, uid, mrp_production_id, context=context)
         temp_mrp_bom_obj.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
 
     def _manufacture_or_purchase_all(self, cr, uid, ids, context):
@@ -993,6 +994,7 @@ class order_requirement_line(orm.Model):
 
         # Explode orders
         _manufacture_or_purchase_rec(father_temp, context, split_mrp_production)
+        return True
 
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
