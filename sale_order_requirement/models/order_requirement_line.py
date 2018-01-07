@@ -1193,3 +1193,11 @@ class order_requirement_line(orm.Model):
         # Dummy save function
         return True
 
+    def print_production_order(self, cr, uid, ids, context):
+        production_ids = []
+        for line in self.browse(cr, uid, ids, context):
+            for temp in line.temp_mrp_bom_ids:
+                if temp.mrp_production_id:
+                    production_ids.append(temp.mrp_production_id.id)
+        return self.pool['account.invoice'].print_report(cr, uid, production_ids, 'mrp.report_mrp_production_report', context)
+
