@@ -71,11 +71,11 @@ class product_product(orm.Model):
         'supplier_code': fields.related('seller_ids', 'product_code', type='char', string="Supplier Code"),
     }
 
-    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
-        res = super(product_product, self).name_search(cr, uid, name, args, operator, context, limit)
-        ids_supplier = self.search(
-            cr, uid, args + [('supplier_code', operator, name)], limit=limit, context=context)
-
-        ids = res + ids_supplier
-        ids = list(set(ids))
-        return ids
+    # def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+    #     res = super(product_product, self).name_search(cr, uid, name, args, operator, context, limit)
+    #     ids_supplier = self.search(
+    #         cr, uid, args + [('supplier_code', operator, name)], limit=limit, context=context)
+    #
+    #     ids = res + ids_supplier
+    #     ids = list(set(ids))
+    #     return ids
