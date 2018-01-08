@@ -17,7 +17,7 @@ _logger.setLevel(logging.DEBUG)
 from openerp.addons.data_migration import settings
 from openerp.osv import orm
 from tools.translate import _
-
+from psycopg2 import IntegrityError
 from utils import Utils
 
 try:
@@ -96,52 +96,39 @@ class ImportFile(threading.Thread, Utils):
         self.updated = 0
         self.problems = 0
 
-    def run(self):
+    def setup(self, import_settings=False, config=False):
         # Recupera il record dal database
-        self.filedata_obj = self.pool['partner.import']
-        self.partnerImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.partnerImportID, context=self.context)
+        if import_settings:
+            self.partnerImportRecord = import_settings
+        else:
+            self.filedata_obj = self.pool['partner.import']
+            self.partnerImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.partnerImportID,
+                                                                context=self.context)
         self.file_name = self.partnerImportRecord.file_name.split('\\')[-1]
         self.strict = self.partnerImportRecord.strict
         self.UPDATE_ON_CODE = self.partnerImportRecord.update_on_code
         self.partner_template_id = self.partnerImportRecord.partner_template_id
-        #===================================================
-        Config = getattr(settings, self.partnerImportRecord.format)
-        self.FORMAT = self.partnerImportRecord.format
-        self.HEADER = Config.HEADER_CUSTOMER
-        self.REQUIRED = Config.REQUIRED
-        self.PARTNER_SEARCH = Config.PARTNER_SEARCH
-        self.ADDRESS_TYPE = Config.ADDRESS_TYPE
-        self.PARTNER_UNIQUE_OFFICE_CODE = Config.PARTNER_UNIQUE_OFFICE_CODE
 
-        if not len(self.HEADER) == len(Config.COLUMNS.split(',')):
-            pprint(zip(self.HEADER, Config.COLUMNS.split(',')))
+        if not config:
+            config = getattr(settings, self.partnerImportRecord.format)
+        self.FORMAT = self.partnerImportRecord.format
+        self.HEADER = config.HEADER_CUSTOMER
+        self.REQUIRED = config.REQUIRED
+        self.PARTNER_SEARCH = config.PARTNER_SEARCH
+        self.ADDRESS_TYPE = config.ADDRESS_TYPE
+        self.PARTNER_UNIQUE_OFFICE_CODE = config.PARTNER_UNIQUE_OFFICE_CODE
+
+        if not len(self.HEADER) == len(config.COLUMNS.split(',')):
+            pprint(zip(self.HEADER, config.COLUMNS.split(',')))
             raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
 
-        self.Record = namedtuple('Record', Config.COLUMNS)
-        #===================================================
+        self.Record = namedtuple('Record', config.COLUMNS)
+        # ===================================================
 
         self.partner_type = self.partnerImportRecord.partner_type
 
-        # for encoding in ('utf-8', 'latin-1', 'cp1252'):
-        #     try:
-        #         book = xlrd.open_workbook(file_contents=self.partnerImportRecord.content_text, encoding_override=encoding)
-        #         break
-        #     except:
-        #         pass
-        # else:
-        #     raise orm.except_orm('Error', _('Unknown encoding'))
-
-
-        # sheet = []
-        # sh = book.sheet_by_index(0)
-        #
-        # for rx in range(sh.nrows):
-        #     row = []
-        #     for cx in range(sh.ncols):
-        #         row.append(sh.cell_value(rowx=rx, colx=cx))
-        #     sheet.append(row)
-        #
-        # self.numberOfLines = sh.nrows
+    def run(self):
+        self.setup()
 
         try:
             table, self.numberOfLines = import_sheet(self.file_name, self.partnerImportRecord.content_text)
@@ -267,7 +254,11 @@ class ImportFile(threading.Thread, Utils):
         if code in COUNTRY_CODES:
             code = COUNTRY_CODES[code]
 
-        country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
+        if len(code) == 2:
+            country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
+        else:
+            country_ids = False
+
         if country_ids:
             return country_ids[0]
         else:
@@ -317,7 +308,7 @@ class ImportFile(threading.Thread, Utils):
             self.warning.append(error)
             return False
 
-    def write_address(self, cr, uid, address_type, partner_id, record, vals_partner, country_code, force_default=False):
+    def write_address(self, cr, uid, address_type, partner_id, record, vals_partner, country_id=False, force_default=False):
         vals_address = {
             'partner_id': partner_id,
             'name': vals_partner['name'],
@@ -339,7 +330,8 @@ class ImportFile(threading.Thread, Utils):
             vals_address['name'] = ''
 
         # Excel treats all numbers as floats
-        vals_address['zip'] = vals_address.get('zip') and self.simple_string(vals_address['zip'], as_integer=True) or ''
+        vals_address['zip'] = vals_address.get('zip') and vals_address['zip'].isdigit() and \
+                              self.simple_string(vals_address['zip'], as_integer=True) or ''
 
         if vals_address.get('zip') or vals_address.get('city'):
             city_ids = []
@@ -373,12 +365,8 @@ class ImportFile(threading.Thread, Utils):
                     if state_ids:
                         vals_address['state_id'] = state_ids[0]
 
-        if hasattr(record, 'country_code') and not vals_address.get('country_id'):
-            vals_address['country_id'] = self._country_by_code(cr, uid, country_code)
-        elif getattr(record, 'country_name'):
-            vals_address['country_id'] = self._country_by_code(cr, uid, record.country_name)
-            if not vals_address['country_id']:
-                _logger.error("Can't find country {}".format(record.country_name))
+        if country_id and not vals_address.get('country_id'):
+            vals_address['country_id'] = country_id
 
         if DEBUG:
             pprint(vals_address)
@@ -400,52 +388,7 @@ class ImportFile(threading.Thread, Utils):
             return True
         return codicefiscale.isvalid(code.upper())
 
-    def import_row(self, cr, uid, row_list, book_datemode):
-        if not len(row_list) == len(self.HEADER):
-            row_str_list = [self.toStr(value) for value in row_list]
-            if DEBUG:
-                if len(row_list) > len(self.HEADER):
-                    pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
-                else:
-                    pprint(zip(self.HEADER[:len(row_list)], row_str_list))
-
-            error = u"""Row {row}: Row_list is {row_len} long. We expect it to be {expected} long, with this columns:
-                            {keys}
-                            Instead of this we got this:
-                            {header}
-                            """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER),
-                                       keys=self.HEADER, header=', '.join(map(lambda s: s or '', row_str_list)))
-
-            _logger.error(str(row_list))
-            _logger.error(error)
-            # error = u'Riga {0} non importata. Colonne non corrsipondono al Header definito'.format(self.processed_lines)
-            # _logger.debug(error)
-            # self.error.append(error)
-            return False
-
-        if DEBUG:
-            # pprint(row_list)
-            row_str_list = [self.simple_string(value) for value in row_list]
-            pprint(zip(self.HEADER, row_str_list))
-
-
-        record = self.Record._make([self.toStr(value) for value in row_list])
-
-        if self.first_row:
-            if not record.name:
-                warning = u'Riga {0}: Trovato Header'.format(self.processed_lines)
-                _logger.debug(warning)
-                self.warning.append(warning)
-                return True
-            else:
-                for column in record:
-                    # column_ascii = unicodedata.normalize('NFKD', column).encode('ascii', 'ignore').lower()
-                    if column in self.HEADER:
-                        warning = u'Riga {0}: Trovato Header'.format(self.processed_lines)
-                        _logger.debug(warning)
-                        self.warning.append(warning)
-                        return True
-
+    def collect_values(self, cr, uid, record):
         self.first_row = False
 
         for field in self.REQUIRED:
@@ -512,40 +455,51 @@ class ImportFile(threading.Thread, Utils):
             vals_partner['name'] += ' {0}'.format(record.person_name)
 
         if hasattr(record, 'country_code'):
-            country_code = COUNTRY_CODES.get(record.country_code, record.country_code)
+            country_id = self._country_by_code(cr, uid, record.country_code)
+        elif getattr(record, 'country_name'):
+            country_id = self._country_by_code(cr, uid, record.country_name)
+            if not country_id:
+                _logger.error("Can't find country {}".format(record.country_name))
         else:
+            country_id = False
 
+        if country_id:
+            country = self.pool['res.country'].browse(cr, uid, country_id, self.context)
+            country_code = country.code
+        else:
             if hasattr(record, 'vat') and record.vat and record.vat[:2] in VAT_CODES:
                 country_code = record.vat[:2]
+                country_id = self._country_by_code(cr, uid, country_code)
+                country = self.pool['res.country'].browse(cr, uid, country_id, self.context)
             else:
                 country_code = ''
 
-        if country_code:
-            country_id = self._country_by_code(cr, uid, country_code)
-            if country_id:
-                country = self.pool['res.country'].browse(cr, uid, country_id, self.context)
-
-                fiscal_position_ids = self.account_fiscal_position_obj.search(cr, uid, [('name', '=ilike', country.name)], context=self.context)
-
-                if fiscal_position_ids and len(fiscal_position_ids) == 1:
-                    vals_partner['property_account_position'] = fiscal_position_ids[0]
-                else:
-                    warning = u"Riga {0}: Fiscal position can't be determined for partner {1}".format(self.processed_lines, vals_partner['name'])
-                    _logger.debug(warning)
-                    self.warning.append(warning)
+        if country_id:
+            fiscal_position_ids = self.account_fiscal_position_obj.search(
+                cr, uid, [('name', '=ilike', country.name)], context=self.context
+            )
+            if fiscal_position_ids and len(fiscal_position_ids) == 1:
+                vals_partner['property_account_position'] = fiscal_position_ids[0]
             else:
-                error = u"Riga {0}: Country code '{1}' non è riconosciuto. La riga viene ignorata.".format(self.processed_lines, country_code)
-                _logger.debug(error)
-                self.error.append(error)
-                return False
+                warning = u"Riga {0}: Fiscal position can't be determined for partner {1}".format(
+                    self.processed_lines, vals_partner['name'])
+                _logger.debug(warning)
+                self.warning.append(warning)
+        else:
+            error = u"Riga {0}: {1} Country non è riconosciuto".format(
+                self.processed_lines, vals_partner['name'])
+            _logger.debug(error)
+            self.error.append(error)
 
         if hasattr(record, 'fiscal_position') and record.fiscal_position:
-            fiscal_position = self.partner_template.map_account_fiscal_position(cr, uid, self.partner_template_id, record.fiscal_position)
+            fiscal_position = self.partner_template.map_account_fiscal_position(
+                cr, uid, self.partner_template_id, record.fiscal_position)
             if fiscal_position:
                 vals_partner['property_account_position'] = fiscal_position
 
         if hasattr(record, 'payment_term') and record.payment_term:
-            vals_payment = self.partner_template.map_payment_term(cr, uid, self.partner_template_id, record.payment_term)
+            vals_payment = self.partner_template.map_payment_term(
+                cr, uid, self.partner_template_id, record.payment_term)
             if vals_payment.get('property_payment_term', False):
                 vals_partner['property_payment_term'] = vals_payment['property_payment_term']
             if vals_payment.get('company_bank_id', False):
@@ -558,16 +512,12 @@ class ImportFile(threading.Thread, Utils):
             vals_partner['vat_subjected'] = True
             vals_partner['individual'] = False
 
-            if country_code:
-                country_code = country_code[:2]
-            else:
-                country_code = ''
-
             vat = record.vat
             if vat and len(vat) == 10 and country_code[:2] == 'IT':
                 vat = '0' + vat
             if vat and len(vat) == 9 and country_code[:2] == 'IT':
                 vat = '00' + vat
+
             if not country_code == record.vat[:2]:
                 vals_partner['vat'] = country_code + vat
             else:
@@ -659,7 +609,61 @@ class ImportFile(threading.Thread, Utils):
                 }, self.context)
                 vals_partner['category_id'] = [(6, 0, [category_id])]
 
-        # partner_id = self._find_partner(cr, uid, record)
+        return vals_partner, country_id
+
+    def import_row(self, cr, uid, row_list, book_datemode):
+        if not len(row_list) == len(self.HEADER):
+            row_str_list = [self.toStr(value) for value in row_list]
+            if DEBUG:
+                if len(row_list) > len(self.HEADER):
+                    pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
+                else:
+                    pprint(zip(self.HEADER[:len(row_list)], row_str_list))
+
+            error = u"""Row {row}: Row_list is {row_len} long. We expect it to be {expected} long, with this columns:
+                            {keys}
+                            Instead of this we got this:
+                            {header}
+                            """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER),
+                                       keys=self.HEADER, header=', '.join(map(lambda s: s or '', row_str_list)))
+
+            _logger.error(str(row_list))
+            _logger.error(error)
+            # error = u'Riga {0} non importata. Colonne non corrsipondono al Header definito'.format(self.processed_lines)
+            # _logger.debug(error)
+            # self.error.append(error)
+            return False
+
+        if DEBUG:
+            # pprint(row_list)
+            row_str_list = [self.simple_string(value) for value in row_list]
+            pprint(zip(self.HEADER, row_str_list))
+
+        record = self.Record._make([self.toStr(value) for value in row_list])
+
+        if self.first_row:
+            if not record.name:
+                warning = u'Riga {0}: Trovato Header'.format(self.processed_lines)
+                _logger.debug(warning)
+                self.warning.append(warning)
+                return True
+            else:
+                for column in record:
+                    # column_ascii = unicodedata.normalize('NFKD', column).encode('ascii', 'ignore').lower()
+                    if column in self.HEADER:
+                        warning = u'Riga {0}: Trovato Header'.format(self.processed_lines)
+                        _logger.debug(warning)
+                        self.warning.append(warning)
+                        return True
+
+        collected_values = self.collect_values(cr, uid, record)
+        if collected_values:
+            vals_partner, country_id = collected_values
+        else:
+            return False
+
+        record_code = self.simple_string(record.code, as_integer=True)
+
         partner_id = self._find_partner(cr, uid, vals_partner)
 
         if partner_id and partner_id > 0:
@@ -673,9 +677,16 @@ class ImportFile(threading.Thread, Utils):
                 partner_id = self.partner_obj.create(cr, uid, vals_partner, self.context)
                 self.uo_new += 1
             # except ValidateError as e:
+            except IntegrityError as e:
+                error = u"Riga {0}: Partner '{1} {2}'. I dati non corretti. (Error: {3}) La riga viene ignorata.".format(
+                    self.processed_lines, record_code, vals_partner['name'], e)
+                _logger.debug(error)
+                self.error.append(error)
+                return False
             except Exception as e:
                 # e = sys.exc_info()[0]
                 e = e[1].split(':')
+
                 if len(e) > 1:
                     e = e[1]
                 error = u"Riga {0}: Partner '{1} {2}'. I dati non corretti. (Error: {3}) La riga viene ignorata.".format(
@@ -698,16 +709,16 @@ class ImportFile(threading.Thread, Utils):
             second_address = False
 
         if first_address and second_address:
-            self.write_address(cr, uid, address_type_1, partner_id, record, vals_partner, country_code)
-            self.write_address(cr, uid, address_type_2, partner_id, record, vals_partner, country_code)
+            self.write_address(cr, uid, address_type_1, partner_id, record, vals_partner, country_id)
+            self.write_address(cr, uid, address_type_2, partner_id, record, vals_partner, country_id)
         elif first_address:
-            self.write_address(cr, uid, address_type_1, partner_id, record, vals_partner, country_code, force_default=True)
+            self.write_address(cr, uid, address_type_1, partner_id, record, vals_partner, country_id, force_default=True)
         elif second_address:
-            self.write_address(cr, uid, address_type_2, partner_id, record, vals_partner, country_code, force_default=True)
+            self.write_address(cr, uid, address_type_2, partner_id, record, vals_partner, country_id, force_default=True)
 
         if self.FORMAT == 'FormatOmnitron':
             if hasattr(record, 'email_invoice') and record.email_invoice:
-                self.write_address(cr, uid, 'invoice', partner_id, record, vals_partner, country_code)
+                self.write_address(cr, uid, 'invoice', partner_id, record, vals_partner, country_id)
 
         if hasattr(record, 'iban') and record.iban:
             self.get_or_create_bank(cr, uid, record.iban, partner_id, self.context)
