@@ -2,6 +2,7 @@
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class sale_order(orm.Model):
@@ -11,7 +12,8 @@ class sale_order(orm.Model):
     def _create_pickings_and_procurements(self, cr, uid, order, order_lines, picking_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         context['stop_procurement'] = True
-        res = super(sale_order, self)._create_pickings_and_procurements(cr, uid, order, order_lines, picking_id, context)
+        res = super(sale_order, self)._create_pickings_and_procurements(
+            cr, uid, order, order_lines, picking_id, context)
 
         order_requirement_obj = self.pool['order.requirement']
         order_requirement_line_obj = self.pool['order.requirement.line']
@@ -39,3 +41,13 @@ class sale_order(orm.Model):
 
         return res
 
+    def action_reopen(self, cr, uid, ids, context=None):
+        for order in self.browse(cr, uid, ids, context):
+            for line in order.order_line:
+                if line.order_requirement_line_id:
+                    raise orm.except_orm(
+                        _('Error'),
+                        _("You can't reopen Sale Order that already generated Requirement Order")
+                    )
+
+        return super(sale_order, self).action_reopen(cr, uid, ids, context=context)
