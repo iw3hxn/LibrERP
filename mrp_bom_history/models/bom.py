@@ -20,7 +20,19 @@ class MrpBom(orm.Model):
                     title = _('Added')
                 elif line[0] == 1:
                     bom_line = self.browse(cr, uid, line[1], context)
-                    updated = ["{}: {} -> {}".format(key, getattr(bom_line, key, ''), value) for key, value in line[2].items()]
+                    updated = []
+                    for key, value in line[2].items():
+                        initial_value = getattr(bom_line, key) or ''
+                        if initial_value and hasattr(initial_value, 'id'):
+                            initial_value = initial_value.id
+
+                        product_property = u"{}: {} -> {}".format(
+                            key,
+                            initial_value,
+                            value
+                        )
+                        updated.append(product_property)
+
                     message = _(u"Updated Product: '{}': {}").format(bom_line.product_id.default_code,
                                                                      ', '.join(updated))
                     title = _('Updated')
