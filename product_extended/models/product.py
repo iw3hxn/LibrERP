@@ -48,7 +48,10 @@ class product_product(orm.Model):
             if context.get('partner_name', False):
                 partner_name = context.get('partner_name')
                 partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
-                result[product.id] = partner_ids[0]
+                if partner_ids:
+                    result[product.id] = partner_ids[0]
+                else:
+                    result[product.id] = ''
             else:
                 result[product.id] = product.seller_ids and product.seller_ids[0].name.id or ''
         return result
@@ -79,3 +82,7 @@ class product_product(orm.Model):
     #     ids = res + ids_supplier
     #     ids = list(set(ids))
     #     return ids
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
+        return super(product_product, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
