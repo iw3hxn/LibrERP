@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2013-2014 Didotech srl (info@didotech.com)
+#    Copyright (C) 2013-2018 Didotech srl (info@didotech.com)
 #    All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -580,19 +580,19 @@ class product_pricelist_item(orm.Model):
 
     _inherit = 'product.pricelist.item'
 
-    def create(self, cr, uid, vals, context):
+    def create(self, cr, uid, vals, context=None):
         res = super(product_pricelist_item, self).create(cr, uid, vals, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache = {}
         return res
 
-    def write(self, cr, uid, ids, vals, context):
+    def write(self, cr, uid, ids, vals, context=None):
         res = super(product_pricelist_item, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache = {}
         return res
 
-    def unlink(self, cr, uid, ids, context):
+    def unlink(self, cr, uid, ids, context=None):
         res = super(product_pricelist_item, self).unlink(cr, uid, ids, context)
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache = {}
@@ -601,15 +601,15 @@ class product_pricelist_item(orm.Model):
 
 class res_partner(orm.Model):
 
-    _inherit = 'product.pricelist.item'
+    _inherit = 'res.partner'
 
-    def create(self, cr, uid, vals, context):
+    def create(self, cr, uid, vals, context=None):
         res = super(res_partner, self).create(cr, uid, vals, context)
         if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
             self.pool['product.product'].product_cost_cache = {}
         return res
 
-    def write(self, cr, uid, ids, vals, context):
+    def write(self, cr, uid, ids, vals, context=None):
         res = super(res_partner, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
             self.pool['product.product'].product_cost_cache = {}
