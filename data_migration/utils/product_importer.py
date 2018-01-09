@@ -71,26 +71,31 @@ class ImportFile(threading.Thread, Utils):
         self.ok_supplier_code = self.pool['ir.model.fields'].search(cr, uid, [('model_id', '=', product_model_id),
                                                                          ('name', '=', 'supplier_code')], context=context)
 
-    def run(self):
+    def setup(self, import_settings=False, config=False):
         # Recupera il record dal database
-        self.filedata_obj = self.pool['product.import']
-        self.productImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.productImportID, context=self.context)
+        if import_settings:
+            self.productImportRecord = import_settings
+        else:
+            self.filedata_obj = self.pool['product.import']
+            self.productImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.productImportID, context=self.context)
+
         self.file_name = self.productImportRecord.file_name.split('\\')[-1]
 
         self.update_product_name = self.productImportRecord.update_product_name
         self.update_only = self.productImportRecord.update_only
 
         # ===================================================
-        Config = getattr(settings, self.productImportRecord.format)
+        if not config:
+            config = getattr(settings, self.productImportRecord.format)
         self.FORMAT = self.productImportRecord.format
-        self.HEADER = Config.HEADER_PRODUCT
-        self.REQUIRED = Config.REQUIRED_PRODUCT
-        self.PRODUCT_SEARCH = Config.PRODUCT_SEARCH
-        self.PRODUCT_WARNINGS = Config.PRODUCT_WARNINGS
-        self.PRODUCT_ERRORS = Config.PRODUCT_ERRORS
+        self.HEADER = config.HEADER_PRODUCT
+        self.REQUIRED = config.REQUIRED_PRODUCT
+        self.PRODUCT_SEARCH = config.PRODUCT_SEARCH
+        self.PRODUCT_WARNINGS = config.PRODUCT_WARNINGS
+        self.PRODUCT_ERRORS = config.PRODUCT_ERRORS
 
         # Default values
-        self.PRODUCT_DEFAULTS = Config.PRODUCT_DEFAULTS
+        self.PRODUCT_DEFAULTS = config.PRODUCT_DEFAULTS
 
         if self.FORMAT == 'FormatOmnitron':
             company = self.pool['res.company'].browse(self.cr, self.uid, 1, self.context)
@@ -100,13 +105,15 @@ class ImportFile(threading.Thread, Utils):
             self.pricelist_version_model = self.pool['product.pricelist.version']
             self.pricelist_item_model = self.pool['product.pricelist.item']
 
-        if not len(self.HEADER) == len(Config.COLUMNS_PRODUCT.split(',')):
-            pprint(zip(self.HEADER, Config.COLUMNS_PRODUCT.split(',')))
+        if not len(self.HEADER) == len(config.COLUMNS_PRODUCT.split(',')):
+            pprint(zip(self.HEADER, config.COLUMNS_PRODUCT.split(',')))
             raise orm.except_orm('Error: wrong configuration!', 'The length of columns and headers must be the same')
 
-        self.RecordProduct = namedtuple('RecordProduct', Config.COLUMNS_PRODUCT)
+        self.RecordProduct = namedtuple('RecordProduct', config.COLUMNS_PRODUCT)
 
-        # ===================================================
+    def run(self):
+        self.setup()
+
         try:
             table, self.numberOfLines = import_sheet(self.file_name, self.productImportRecord.content_text)
         except Exception as e:
@@ -479,80 +486,7 @@ class ImportFile(threading.Thread, Utils):
                     'base': 2  # Cost Price
                 }, self.context)
 
-    def import_row(self, cr, uid, row_list):
-        if self.first_row:
-            row_str_list = [self.toStr(value) for value in row_list]
-
-            for column in row_str_list:
-                # print column
-                if column in self.HEADER:
-                    _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
-                    return True
-            self.first_row = False
-        if not len(row_list) == len(self.HEADER):
-            row_str_list = [self.toStr(value) for value in row_list]
-            if DEBUG:
-                if len(row_list) > len(self.HEADER):
-                    pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
-                else:
-                    pprint(zip(self.HEADER[:len(row_list)], row_str_list))
-
-            error = u"""Row {row}: Row_list is {row_len} long. We expect it to be {expected} long, with this columns:
-                {keys}
-                Instead of this we got this:
-                {header}
-                """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER), keys=self.HEADER, header=', '.join(map(lambda s: s or '', row_str_list)))
-
-            _logger.error(str(row_list))
-            _logger.error(error)
-            self.error.append(error)
-            return False
-        elif DEBUG:
-            # pprint(row_list)
-            row_str_list = [self.toStr(value) for value in row_list]
-            pprint(zip(self.HEADER, row_str_list))
-
-        # Sometime value is only numeric and we don't want string to be treated as Float
-        record = self.RecordProduct._make([self.toStr(value) for value in row_list])
-        _logger.debug(record)
-
-        identifier_field = self.PRODUCT_SEARCH[0]
-        identifier = getattr(record, identifier_field)
-        if identifier:
-            identifier = identifier.strip()
-
-        for field in self.PRODUCT_SEARCH:
-            if hasattr(record, field) and getattr(record, field):
-                identifier_field = field
-                identifier = getattr(record, identifier_field)
-                break
-        else:
-            error = "Row {0}: Can't find valid product key".format(self.processed_lines)
-            _logger.error(error)
-            self.error.append(error)
-            return False
-
-        # # Look for duplicated default code
-        # if record.default_code and record.default_code.strip() in self.cache:
-        #     _logger.warning(u'Code {0} already processed'.format(record.default_code.strip()))
-        #     # return False
-        # elif record.default_code:
-        #     self.cache.append(record.default_code.strip())
-
-        # Look for duplicated default code
-        if identifier and identifier in self.cache:
-            _logger.warning(u'Code {0} already processed'.format(identifier))
-            # return False
-        elif identifier:
-            self.cache.append(identifier)
-
-        for field in self.REQUIRED:
-            if not getattr(record, field):
-                error = "Riga {0}: Manca il valore della {1}. La riga viene ignorata.".format(self.processed_lines, field)
-                _logger.debug(error)
-                self.error.append(error)
-                return False
-
+    def collect_values(self, cr, uid, record, identifier_field):
         # print '>>>>>>>', record.name
         if not self.update_only:
             vals_product = self.product_obj.default_get(cr, uid, [
@@ -826,6 +760,87 @@ class ImportFile(threading.Thread, Utils):
 
         if not self.update_only:
             vals_product['listprice_update_date'] = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
+
+        return vals_product, product_code, partner_ids
+
+    def import_row(self, cr, uid, row_list):
+        if self.first_row:
+            row_str_list = [self.toStr(value) for value in row_list]
+
+            for column in row_str_list:
+                # print column
+                if column in self.HEADER:
+                    _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
+                    return True
+            self.first_row = False
+        if not len(row_list) == len(self.HEADER):
+            row_str_list = [self.toStr(value) for value in row_list]
+            if DEBUG:
+                if len(row_list) > len(self.HEADER):
+                    pprint(zip(self.HEADER, row_str_list[:len(self.HEADER)]))
+                else:
+                    pprint(zip(self.HEADER[:len(row_list)], row_str_list))
+
+            error = u"""Row {row}: Row_list is {row_len} long. We expect it to be {expected} long, with this columns:
+                {keys}
+                Instead of this we got this:
+                {header}
+                """.format(row=self.processed_lines, row_len=len(row_list), expected=len(self.HEADER),
+                           keys=self.HEADER, header=', '.join(map(lambda s: s or '', row_str_list)))
+
+            _logger.error(str(row_list))
+            _logger.error(error)
+            self.error.append(error)
+            return False
+        elif DEBUG:
+            # pprint(row_list)
+            row_str_list = [self.toStr(value) for value in row_list]
+            pprint(zip(self.HEADER, row_str_list))
+
+        # Sometime value is only numeric and we don't want string to be treated as Float
+        record = self.RecordProduct._make([self.toStr(value) for value in row_list])
+        _logger.debug(record)
+
+        identifier_field = self.PRODUCT_SEARCH[0]
+        identifier = getattr(record, identifier_field)
+        if identifier:
+            identifier = identifier.strip()
+
+        for field in self.PRODUCT_SEARCH:
+            if hasattr(record, field) and getattr(record, field):
+                identifier_field = field
+                identifier = getattr(record, identifier_field)
+                break
+        else:
+            error = "Row {0}: Can't find valid product key".format(self.processed_lines)
+            _logger.error(error)
+            self.error.append(error)
+            return False
+
+        # # Look for duplicated default code
+        # if record.default_code and record.default_code.strip() in self.cache:
+        #     _logger.warning(u'Code {0} already processed'.format(record.default_code.strip()))
+        #     # return False
+        # elif record.default_code:
+        #     self.cache.append(record.default_code.strip())
+
+        # Look for duplicated default code
+        if identifier and identifier in self.cache:
+            _logger.warning(u'Code {0} already processed'.format(identifier))
+            # return False
+        elif identifier:
+            self.cache.append(identifier)
+
+        for field in self.REQUIRED:
+            if not getattr(record, field):
+                error = "Riga {0}: Manca il valore della {1}. La riga viene ignorata.".format(self.processed_lines, field)
+                _logger.debug(error)
+                self.error.append(error)
+                return False
+
+        collected_values = self.collect_values(cr, uid, record, identifier_field)
+        if collected_values:
+            vals_product, product_code, partner_ids = collected_values
 
         product_ids = self.product_obj.search(
             cr, uid, [(identifier_field, '=ilike', identifier.replace('\\', '\\\\'))], context=self.context)
