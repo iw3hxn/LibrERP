@@ -37,12 +37,16 @@ class sale_order(orm.Model):
         for order in self.browse(cr, uid, ids, context):
             if order.shop_id and order.shop_id.sale_order_sequence_id:
                 sequence = self.pool['ir.sequence'].next_by_id(cr, uid, order.shop_id.sale_order_sequence_id.id)
-                order.write({'name': sequence, 'original_quotation_name': order.name})
+                new_order_vals = {
+                    'name': sequence,
+                    'original_quotation_name': order.name,
+                    'original_quotation_date': order.date_order,
+                }
+                order.write(new_order_vals)
         return res
 
     def action_previous_version(self, cr, uid, ids, default=None, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         if isinstance(ids, (int, long)):
             ids = [ids]
@@ -92,8 +96,7 @@ class sale_order(orm.Model):
         }
 
     def _get_version_ids(self, cr, uid, ids, field_name, arg, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for sale in self.browse(cr, uid, ids, context):
             if sale.sale_version_id:
@@ -106,7 +109,8 @@ class sale_order(orm.Model):
         return res
 
     _columns = {
-        'original_quotation_name': fields.char(''),
+        'original_quotation_name': fields.char('Original Quotation Name'),
+        'original_quotation_date': fields.date('Original Quotation Date'),
         'sale_version_id': fields.many2one('sale.order', 'Orig version', required=False, readonly=False),
         'version': fields.integer('Version no.', readonly=True),
         'active': fields.boolean('Active', readonly=False, help="It indicates that the sales order is active."),
