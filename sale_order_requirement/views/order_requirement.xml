@@ -54,7 +54,7 @@
             <field name="model">order.requirement</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Order Requirement">
+                <tree string="Order Requirement" colors="blue:state == 'draft'; black:state in ('done'); gray:state == 'cancel'">
                     <field name="sale_order_id"/>
                     <field name="client_order_ref"/>
                     <field name="date"/>
@@ -77,6 +77,10 @@
 
         <menuitem name="Order Requirement" action="action_view_order_requirement" id="menu_view_order_requirement"
                   parent="mrp.menu_mrp_manufacturing" sequence="3"/>
+
+        <record id="base.menu_mrp_root" model="ir.ui.menu">
+		    <field name="action" ref=""/>
+	    </record>
 
     </data>
 </openerp>

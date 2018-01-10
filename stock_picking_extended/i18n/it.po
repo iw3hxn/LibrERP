@@ -581,3 +581,9 @@ msgstr "Porto"
 #: field:stock.picking,goods_description_id:0
 msgid "Description of goods"
 msgstr "Aspetto Esteriore dei Beni"
+
+#. module: stock_picking_extended
+#: view:stock.picking:0
+#: field:stock.picking,internal_note:0
+msgid "Internal Note"
+msgstr "Nota Interna"

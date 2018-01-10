@@ -162,6 +162,7 @@ class stock_picking(orm.Model):
                                         }),
 
         'minimum_planned_date': fields.related('sale_id', 'minimum_planned_date', type='date', string='Expected Date'),
+        'internal_note': fields.char('Internal Note')
     }
 
     def check_limit(self, cr, uid, ids, context=None):

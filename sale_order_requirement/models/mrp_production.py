@@ -44,11 +44,11 @@ class mrp_production(orm.Model):
         results = []
 
         # If production order was created by order requirement, behaviour is different
-        bom_obj = self.pool['temp.mrp.bom']
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         uom_obj = self.pool['product.uom']
         prod_line_obj = self.pool['mrp.production.product.line']
         workcenter_line_obj = self.pool['mrp.production.workcenter.line']
-        for production in self.browse(cr, uid, ids):
+        for production in self.browse(cr, uid, ids, context):
             cr.execute('delete from mrp_production_product_line where production_id=%s', (production.id,))
             cr.execute('delete from mrp_production_workcenter_line where production_id=%s', (production.id,))
 
@@ -59,15 +59,21 @@ class mrp_production(orm.Model):
                 raise orm.except_orm(_('Error'), _("Couldn't find a bill of material for this product."))
             factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
             # Forcing routing_id to False, the lines are linked directly to temp_mrp_bom
-            res = bom_obj._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)
+            res = temp_mrp_bom_obj._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)
             results = res[0]
             results2 = res[1]
             for line in results:
                 line['production_id'] = production.id
-                prod_line_obj.create(cr, uid, line)
+                prod_line_obj.create(cr, uid, line, context)
+            if not results2 and production.routing_id:
+                bom_point = production.bom_id
+                original_bom_res = self.pool['mrp.bom']._bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, properties, routing_id=production.routing_id.id)
+
+                results2 = original_bom_res[1]
+
             for line in results2:
                 line['production_id'] = production.id
-                workcenter_line_obj.create(cr, uid, line)
+                workcenter_line_obj.create(cr, uid, line, context)
         return len(results)
 
     # def write(self, cr, uid, ids, values, context):

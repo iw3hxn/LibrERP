@@ -499,7 +499,7 @@ msgstr "Utente"
 #. module: sale_order_requirement
 #: view:order.requirement:0
 msgid "To Deploy"
-msgstr "To Deploy"
+msgstr "Da Sviluppare"
 
 #. module: sale_order_requirement
 #: view:order.requirement:0

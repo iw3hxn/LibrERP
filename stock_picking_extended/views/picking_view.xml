@@ -147,7 +147,7 @@
                         <group col="2" colspan="2">
                             <field name="sale_id"/>
                             <field name="customer_id"/>
-                            <field name="note"/>
+                            <field name="internal_note"/>
                             <field name="creation_date"/>
                             <field name="carrier_id"/>
                         </group>
@@ -220,6 +220,7 @@
                     <field name="client_order_ref"/>
                     <field name="customer_id"/>
                     <field name="note"/>
+                    <field name="internal_note" />
                     <field name="minimum_planned_date"/>
                     <field name="week_nbr" />
                     <field name="order_type" />
