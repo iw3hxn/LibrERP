@@ -22,3 +22,9 @@ class sale_order(orm.Model):
                 res['value']['incoterm'] = partner.default_incoterm_id.id
         return res
 
+    def _prepare_order_picking(self, cr, uid, order, context=None):
+        res = super(sale_order, self)._prepare_order_picking(cr, uid, order, context)
+        res.update({
+            'incoterm_id': order.incoterm_id and order.incoterm_id.id or False,
+        })
+        return res
