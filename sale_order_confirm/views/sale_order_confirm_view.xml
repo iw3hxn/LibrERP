@@ -246,7 +246,7 @@
 
                     <button name="%(sale.action_view_sale_advance_payment_inv)d" position="attributes">
                         <attribute name="states">
-                            draft,wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,waiting_date,progress
+                            draft,wait_technical_validation,wait_manager_validation,send_to_customer,wait_customer_validation,waiting_date,progress,wait_supervisor_validation
                         </attribute>
                     </button>
                     <button name="order_confirm" position="after">

@@ -300,7 +300,7 @@ class sale_order(orm.Model):
         if not args:
             args = []
         if name:
-            ids = self.search(cr, uid, [('name', '=', name)] + args, limit=limit, context=context)
+            ids = self.search(cr, uid, [('name', operator, name)] + args, limit=limit, context=context)
             if not len(ids):
                 ids = self.search(cr, uid, [('partner_id', 'ilike', name)] + args, limit=limit, context=context)
                 ids = list(set(ids))
