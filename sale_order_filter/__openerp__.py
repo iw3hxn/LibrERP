@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014-2016 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2018 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -24,7 +24,7 @@
 
 {
     "name": "Sale Order Filter",
-    "version": "3.1.1.2",
+    "version": "3.1.1.3",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Sale',
