@@ -2,6 +2,7 @@ code,id,name,parent_id:id
 ,vat_code_chart_root,Imposte Italia (V1.00),
 A-T,template_tax_acq,IVA a credito,vat_code_chart_root
 A-B,template_bse_acq,Imponibile IVA a credito,vat_code_chart_root
+A-B-ind,template_bse_acq_ind,Imponibile IVA indetraibile,vat_code_chart_root
 V-T,template_tax_vnd,IVA a debito,vat_code_chart_root
 V-B,template_bse_vnd,Imponibile IVA a debito,vat_code_chart_root
 A-T-ind,template_tax_acq_ind,IVA indetraibile,vat_code_chart_root
@@ -9,19 +10,22 @@ A-T-22,template_tax_acq_22,IVA 22% da acquisti,template_tax_acq
 A-B-22,template_bse_acq_22,Imponibile IVA 22% da acquisti,template_bse_acq
 V-T-22,template_tax_vnd_22,IVA 22% su vendite,template_tax_vnd
 V-B-22,template_bse_vnd_22,Imponibile IVA 22% su vendite,template_bse_vnd
-A-T-22-d50-i,template_tax_acq_22_d50_i,IVA 22% da acquisti detr 50 I,template_tax_acq
+A-T-22-d50-i,template_tax_acq_22_d50_i,IVA 22% da acquisti detr 50 I,template_tax_acq_ind
 A-T-22-d50-d,template_tax_acq_22_d50_d,IVA 22% da acquisti detr 50 D,template_tax_acq
 A-B-22-d50-d,template_bse_acq_22_d50_d,Imponibile 22% da acquisti detr 50 D,template_bse_acq
-A-T-22-d40-i,template_tax_acq_22_d40_i,IVA 22% da acquisti detr 40 I,template_tax_acq
+A-T-22-d40-i,template_tax_acq_22_d40_i,IVA 22% da acquisti detr 40 I,template_tax_acq_ind
 A-T-22-d40-d,template_tax_acq_22_d40_d,IVA 22% da acquisti detr 40 D,template_tax_acq
 A-B-22-d40-d,template_bse_acq_22_d40_d,Imponibile 22% da acquisti detr 40 D,template_bse_acq
 A-T-04,template_tax_acq_04,IVA 04% acquisti,template_tax_acq
-A-B-04,template_bse_acq_04,Imponibile IVA04% acquisti,template_bse_acq
+A-B-04,template_bse_acq_04,Imponibile IVA 04% acquisti,template_bse_acq
 A-T-04,template_tax_acq_10,IVA 10% acquisti,template_tax_acq
 A-B-04,template_bse_acq_10,Imponibile IVA 10% acquisti,template_bse_acq
-A-B-22-ind,template_bse_acq_22_ind,Imponibile 22 non detraibile,vat_code_chart_root
-A-B-04-ind,template_bse_acq_04_ind,Imponibile 04 non detraibile,vat_code_chart_root
-A-B-10-ind,template_bse_acq_10_ind,Imponibile 10 non detraibile,vat_code_chart_root
+A-B-22-ind,template_bse_acq_22_ind,Imponibile 22 non detraibile,template_bse_acq_ind
+A-B-04-ind,template_bse_acq_04_ind,Imponibile 04 non detraibile,template_bse_acq_ind
+A-B-10-ind,template_bse_acq_10_ind,Imponibile 10 non detraibile,template_bse_acq_ind
+A-T-22-ind,template_tax_acq_22_ind,IVA 22 non detraibile,template_tax_acq_ind
+A-T-04-ind,template_tax_acq_04_ind,IVA 04 non detraibile,template_tax_acq_ind
+A-T-10-ind,template_tax_acq_10_ind,IVA 10 non detraibile,template_tax_acq_ind
 V-T-22-PA,template_tax_vnd_22_pa,IVA 22% su vendite PA,template_tax_vnd
 V-B-22-PA,template_bse_vnd_22_pa,Imponibile 22% su vendite PA,template_bse_vnd
 V-T-22-PA-C,template_tax_vnd_22_pa_c,IVA 22% su vendite PA detratta,template_tax_vnd
@@ -31,4 +35,20 @@ V-B-22-RC-A,template_bse_acq_22_rc,Imponibile 22% acquisti reverse charge art 17
 V-T-22-RC-V,template_tax_acq_22_rc_v,IVA 22% vnd acquisti reverse charge art 17 c6,template_tax_vnd
 V-B-22-RC-V,template_bse_acq_22_rc_v,Imponibile 22% vnd acquisti reverse charge art 17 c6,template_bse_vnd
 A-B-00-ES,template_bse_acq_00_art10,Imponibile acquisti esenti art 10,template_bse_acq
-A-B-00-EX-art15,template_bse_acq_00_art15,Imponibile acquisti esclusi art 10,vat_code_chart_root
+A-B-00-EX-art15,template_bse_acq_00_art15,Imponibile acquisti esclusi art 15,template_bse_acq_ind
+V-T-04,template_tax_vnd_04,Iva 04% vendite,template_tax_vnd
+V-B-04,template_bse_vnd_04,Imponibile 04% vendite,template_bse_vnd
+V-T-10,template_tax_vnd_10,Iva 10% vendite,template_tax_vnd
+V-B-10,template_bse_vnd_10,Imponibile 10% vendite,template_bse_vnd
+A-T-22-A-INTRA,template_tax_acq_22_a_intra,Iva 22% acquisti intracomunitari,template_tax_acq
+A-B-22-A-INTRA,template_bse_acq_22_a_intra,Imponibile 22% acquisti intracomunitari,template_bse_acq
+V-T-22-A-INTRA,template_tax_vnd_22_va_intra,Iva 22% vendite acquisti intracomunitari,vat_code_chart_root
+V-B-22-A-INTRA,template_bse_vnd_22_va_intra,Imponibile 22% vendite acquisti intracomunitari,vat_code_chart_root
+V-T-00-INTRA,template_tax_vnd_00_intra,Vendite intracomunitarie non imponibili DL 331 93,template_tax_vnd
+V-B-00-INTRA,template_bse_vnd_00_intra,Base intracomunitarie non imponibili DL 331 93,template_bse_vnd
+V-T-00-ART8-C1-LA,template_tax_vnd_00_art8_c1_la,Cessioni all’esportazione non imponibili art 8 c 1 l a dpr 633 1972,template_tax_vnd
+V-B-00-ART8-C1-LA,template_bse_vnd_00_art8_c1_la,Base cessioni all’esportazione non imponibili art 8 c 1 l a dpr 633 1973,template_bse_vnd
+V-T-00-ART8-C1-LC,template_tax_vnd_00_art8_c1_lc,Cessioni all’esportazione non imponibili art 8 c 1 l c (plafond) dpr 633 1972,template_tax_vnd
+V-B-00-ART8-C1-LC,template_bse_vnd_00_art8_c1_lc,Base cessioni all’esportazione non imponibili art 8 c 1 l c (plafond) dpr 633 1972,template_bse_vnd
+V-T-00-ART7,template_tax_vnd_00_art7,Operazioni non imponibili art 7 dpr 633 1972,template_tax_vnd
+V-B-00-ART7,template_bse_vnd_00_art7,Base operazioni non imponibili art 7 dpr 633 1972,template_bse_vnd
