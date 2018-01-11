@@ -112,7 +112,7 @@ class SaleOrder(orm.Model):
             new_line_value = sale_order_line_model.product_id_change(
                 cr, uid, [], [], product_id, qty=0, uom=False, qty_uos=0, uos=False, name='', partner_id=partner_id,
                                                             lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False,
-                                                            flag=False, supplier_id=False, extra_purchase_discount=0.0, auto_supplier=True, context=context)['value']
+                                                            flag=False, context=context)['value']
 
             if new_line_value.get('tax_id', False):
                 new_line_value['tax_id'] = [(6, 0, new_line_value.get('tax_id'))]
@@ -133,6 +133,15 @@ class SaleOrder(orm.Model):
         print values
         return values
 
+    def get_payment_term(self, cr, uid, payment_type, context):
+        payment_term_ids = self.pool['account.payment.term'].search(
+            cr, uid, [('name', '=ilike', payment_type)], context=context)
+
+        if payment_term_ids:
+            return payment_term_ids[0]
+        else:
+            return False
+
     def create_external(self, cr, uid, values, context=None):
 
         partner_id = self.partner_from_address_data(cr, uid, values['Order']['Address'], context)
@@ -141,13 +150,20 @@ class SaleOrder(orm.Model):
 
         sale_order_values = self.onchange_partner_id(cr, uid, False, partner_id)['value']
 
+        payment_type = self.get_payment_term(cr, uid, values['Order']['PaymentType'], context)
+
         sale_order_values.update({
             'name': values['Order']['@Code'],
             'date_order': datetime.datetime.strptime(
                 values['Order']['@Date'], DEFAULT_SERVER_DATETIME_FORMAT
             ).strftime(DEFAULT_SERVER_DATE_FORMAT),
             'partner_id': partner_id,
-            'order_line': [(0, False, line) for line in order_lines]
+            'order_line': [(0, False, line) for line in order_lines],
+            'note': values['Order'].get('Notes', ''),
+            'payment_term': payment_type,
+            'minimum_planned_date': datetime.datetime.strptime(
+                values['Order']['ServiceDate'], DEFAULT_SERVER_DATETIME_FORMAT
+            ).strftime(DEFAULT_SERVER_DATE_FORMAT)
         })
 
         shop_name = values.get('Order', {}).get('Store', {}).get('Name', False)
