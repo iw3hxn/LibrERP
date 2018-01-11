@@ -694,7 +694,7 @@ msgstr "Nessun Confronto"
 #. module: account_financial_report_webkit
 #: field:account.move.line,last_rec_date:0
 msgid "Last reconciliation date"
-msgstr "Last reconciliation date"
+msgstr "Ultima data di riconciliazione"
 
 #. module: account_financial_report_webkit
 #: field:open.invoices.webkit,partner_ids:0
@@ -852,7 +852,7 @@ msgstr "Lasciare vuoto per tutti gli esercizi fiscali aperti"
 #. module: account_financial_report_webkit
 #: help:account.move.line,last_rec_date:0
 msgid "the date of the last reconciliation (full or partial) account move line"
-msgstr "the date of the last reconciliation (full or partial) account move line"
+msgstr "La data dell'ultima riconciliazione (parziale o totale)"
 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:109
