@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <record id="ir_cron_update_project_calendar" forcecreate="True" model="ir.cron">
             <field name="name">Load Orderes from XML</field>
             <field name="active" eval="True" />
