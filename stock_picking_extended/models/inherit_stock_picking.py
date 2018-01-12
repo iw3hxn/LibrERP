@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2010-2012 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
-#    Copyright (C) 2014 Didotech srl
+#    Copyright (C) 2014-2018 Didotech srl
 #    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -247,8 +247,8 @@ class stock_picking(orm.Model):
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         context = context or self.pool['res.users'].context_get(cr, uid)
         new_args = []
-        if context.get('order', False):
-            order = context['order']
+
+        order = order or context.get('order')
 
         for arg in args:
             # if arg and len(arg)==3 and arg[0] in field_to_sql.keys() and arg[1]=='ilike':
