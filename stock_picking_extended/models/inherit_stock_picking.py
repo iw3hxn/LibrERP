@@ -161,7 +161,13 @@ class stock_picking(orm.Model):
                                         'sale.order': (_get_picking_sale, ['minimum_planned_date'], 5000),
                                         }),
 
-        'minimum_planned_date': fields.related('sale_id', 'minimum_planned_date', type='date', string='Expected Date'),
+        'minimum_planned_date': fields.related('sale_id', 'minimum_planned_date', type='date', string='Expected Date',
+                                               store={
+                                                   'stock.picking': (
+                                                   lambda self, cr, uid, ids, c={}: ids, ['max_date'], 5000),
+                                                   'sale.order': (_get_picking_sale, ['minimum_planned_date'], 5000),
+                                               }
+                                               ),
         'internal_note': fields.char('Internal Note')
     }
 
