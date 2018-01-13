@@ -53,7 +53,8 @@ class order_requirement(orm.Model):
             ('cancel', 'Cancelled')
         ], 'Order State', readonly=True),
         'order_requirement_line_ids': fields.one2many('order.requirement.line', 'order_requirement_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)]}),
-        'note': fields.text('Note'),
+        'note': fields.text('Order Note'),
+        'internal_note': fields.related('sale_order_id', 'picking_ids', 'internal_note', type='text', string='Internal Note'),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'product_id': fields.related('order_requirement_line_ids', 'product_id', type='many2one', relation='product.product',

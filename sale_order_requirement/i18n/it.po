@@ -510,3 +510,15 @@ msgstr "Completato"
 #: view:order.requirement:0
 msgid "Order/Customer Ref"
 msgstr "Ordine/Riferimento Cliente"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+#: field:order.requirement,internal_note:0
+msgid "Internal Note"
+msgstr "Nota Interna"
+
+#. module: sale_order_requirement
+#: view:order.requirement:0
+#: field:order.requirement,note:0
+msgid "Order Note"
+msgstr "Nota Ordine"

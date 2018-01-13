@@ -171,7 +171,7 @@ class stock_picking(orm.Model):
                                                    'sale.order': (_get_picking_sale, ['minimum_planned_date'], 5000),
                                                }
                                                ),
-        'internal_note': fields.char('Internal Note')
+        'internal_note': fields.text('Internal Note')
     }
 
     def check_limit(self, cr, uid, ids, context=None):
