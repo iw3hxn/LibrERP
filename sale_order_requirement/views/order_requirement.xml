@@ -38,6 +38,7 @@
                     <field name="month" />
                     <newline />
                     <field name="note"/>
+                    <field name="internal_note"/>
                     <group col="1" colspan="4">
                         <field name="order_requirement_line_ids" nolabel="1"/>
                     </group>
