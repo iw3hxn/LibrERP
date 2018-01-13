@@ -135,7 +135,10 @@ class stock_picking(orm.Model):
         # 'weight': fields.float('Gross weight', digits_compute=dp.get_precision('Stock Weight'), help="The gross weight in Kg."),
         # 'weight_net': fields.float('Net weight', digits_compute=dp.get_precision('Stock Weight'), help="The net weight in Kg."),
         'customer_id': fields.related('sale_id', 'partner_id', type='many2one', relation='res.partner',
-                                      string='Customer', store=False, readonly=True),
+                                      string='Customer', readonly=True, store={
+                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
+                                        'sale.order': (_get_picking_sale, ['partner_id'], 6000),
+                                        }),
         'order_type': fields.function(_get_order_type, string="Order Type", type="selection", selection=[
             ('client', 'Client'),
             ('internal', 'Internal'),
@@ -248,7 +251,8 @@ class stock_picking(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         new_args = []
 
-        order = order or context.get('order')
+        if not order:
+            order = context.get('order', None)
 
         for arg in args:
             # if arg and len(arg)==3 and arg[0] in field_to_sql.keys() and arg[1]=='ilike':
