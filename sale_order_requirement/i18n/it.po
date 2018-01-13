@@ -23,6 +23,7 @@ msgstr "Settimana n."
 
 #. module: sale_order_requirement
 #: code:addons/sale_order_requirement/models/order_requirement_line.py:1022
+#: code:addons/sale_order_requirement/models/stock_move.py:96
 #, python-format
 msgid "Product BOM"
 msgstr "Distinta Base"
@@ -522,3 +523,23 @@ msgstr "Nota Interna"
 #: field:order.requirement,note:0
 msgid "Order Note"
 msgstr "Nota Ordine"
+
+#. modules: sale_order_requirement
+#: view:product.product:0
+#: view:sale.order:0
+#: view:order.requirement.line:0
+#: view:stock.picking:0
+msgid "Open BOM"
+msgstr "Esplodi Distinta"
+
+#. modules: sale_order_requirement
+#: view:order.requirement.line:0
+#: view:stock.picking:0
+msgid "Print"
+msgstr "Stampa"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
+#: view:stock.picking:0
+msgid "Print All production Order"
+msgstr "Stampa tutti gli Ordini di Produzione"

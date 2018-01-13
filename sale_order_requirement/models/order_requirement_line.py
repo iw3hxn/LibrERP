@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
-import time
-
+import decimal_precision as dp
 import tools
+from openerp.osv import orm, fields
 from tools.translate import _
 
-import decimal_precision as dp
-from openerp.osv import orm, fields
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from temp_mrp_bom import temp_mrp_bom
 from ..util import rounding
 
