@@ -105,7 +105,7 @@ class purchase_order_line(orm.Model):
                                                                        so_pricelist.currency_id.id,
                                                                        new_list_price, context=ctx)
                 discount = (new_list_price - price) / new_list_price * 100
-                if discount > 0:
+                if discount >= 0:
                     result['price_unit'] = new_list_price
                     result['discount'] = discount
         return res
