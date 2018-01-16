@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
-#    Copyright (C) 2010 Associazione OpenERP Italia
+#
+#    Copyright (C) 2010-2012 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
+#    Copyright (C) 2014-2018 Didotech srl
+#    (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -19,19 +21,31 @@
 #
 ##############################################################################
 
-from . import inherit_account_invoice
-from . import inherit_account_invoice_line
-from . import inherit_product_product
-from . import inherit_purchase_order
-from . import inherit_res_company
-from . import inherit_res_partner
-from . import inherit_res_partner_address
-from . import inherit_sale_order
-from . import inherit_stock_incoterm
-from . import inherit_stock_journal
-from . import inherit_stock_location
-from . import inherit_stock_move
-from . import inherit_stock_picking
-from . import stock_picking_carriage_condition
-from . import stock_picking_goods_description
-from . import stock_picking_transportation_condition
+from openerp.osv import orm
+
+
+class stock_incoterms(orm.Model):
+    _inherit = "stock.incoterms"
+
+    def name_get(self, cr, user, ids, context=None):
+
+        if not len(ids):
+            return []
+
+        def _name_get(d):
+            name = d.get('name', '')
+            code = d.get('code', False)
+            if code:
+                name = '[%s] %s' % (code, name)
+            return (d['id'], name)
+
+        result = []
+        for incoterm in self.browse(cr, user, ids, context=context):
+            mydict = {
+                'id': incoterm.id,
+                'name': incoterm.name,
+                'code': incoterm.code,
+            }
+            result.append(_name_get(mydict))
+        return result
+
