@@ -135,3 +135,47 @@ class purchase_order(orm.Model):
             self.hook_purchase_state(cr, uid, ids, vals, context)
 
         return super(purchase_order, self).write(cr, uid, ids, vals, context=context)
+
+    def onchange_fiscal_position(self, cr, uid, ids, fiscal_position, order_lines, context=None):
+        '''Update taxes of order lines for each line where a product is defined
+
+        :param list ids: not used
+        :param int fiscal_position: sale order fiscal position
+        :param list order_lines: command list for one2many write method
+        '''
+        order_line = []
+        fiscal_obj = self.pool['account.fiscal.position']
+        product_obj = self.pool['product.product']
+        line_obj = self.pool['purchase.order.line']
+
+        fpos = False
+        if fiscal_position:
+            fpos = fiscal_obj.browse(cr, uid, fiscal_position, context=context)
+
+        for line in order_lines:
+            # create    (0, 0,  { fields })
+            # update    (1, ID, { fields })
+
+            if line[0] in [0, 1]:
+                prod = None
+                if line[2].get('product_id'):
+                    prod = product_obj.browse(cr, uid, line[2]['product_id'], context=context)
+                elif line[1]:
+                    prod = line_obj.browse(cr, uid, line[1], context=context).product_id
+                if prod and prod.taxes_id:
+                    line[2]['taxes_id'] = [[6, 0, fiscal_obj.map_tax(cr, uid, fpos, prod.supplier_taxes_id, context)]]
+                order_line.append(line)
+
+            # link      (4, ID)
+            # link all  (6, 0, IDS)
+            elif line[0] in [4, 6]:
+                line_ids = line[0] == 4 and [line[1]] or line[2]
+                for line_id in line_ids:
+                    prod = line_obj.browse(cr, uid, line_id, context=context).product_id
+                    if prod and prod.taxes_id:
+                        order_line.append([1, line_id, {'taxes_id': [[6, 0, fiscal_obj.map_tax(cr, uid, fpos, prod.supplier_taxes_id, context)]]}])
+                    else:
+                        order_line.append([4, line_id])
+            else:
+                order_line.append(line)
+        return {'value': {'order_line': order_line, 'amount_untaxed': False, 'amount_tax': False, 'amount_total': False}}
