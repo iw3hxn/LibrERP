@@ -21,6 +21,7 @@ class stock_picking(orm.Model):
         result = super(stock_picking, self).action_done(cr, uid, ids, context=context)
 
         for picking in self.browse(cr, uid, ids, context):
-            wf_service.trg_validate(uid, 'sale.order', picking.sale_id.id, 'close_sale_order', cr)
+            if picking.sale_id and picking.sale_id.id:
+                wf_service.trg_validate(uid, 'sale.order', picking.sale_id.id, 'close_sale_order', cr)
 
         return result
