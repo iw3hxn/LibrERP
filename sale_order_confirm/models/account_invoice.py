@@ -36,6 +36,8 @@ class account_invoice(orm.Model):
                 if xml_id_it == xml_id:
                     return key
             return False
+        if not ids:
+            return False
 
         report_id = id_from_xml_id()
         report = self.pool['ir.actions.report.xml'].browse(cr, uid, report_id, context)
