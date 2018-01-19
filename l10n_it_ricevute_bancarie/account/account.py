@@ -82,7 +82,7 @@ class account_move_line(orm.Model):
     }
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
-        view_payments_tree_id = self.pool.get('ir.model.data').get_object_reference(
+        view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(
             cr, uid, 'l10n_it_ricevute_bancarie', 'view_riba_da_emettere_tree')
         if view_id == view_payments_tree_id[1]:
             # Use RiBa list - grazie a eLBati @ account_due_list
@@ -97,9 +97,9 @@ class account_move_line(orm.Model):
             context = {}
         riba_distinta_line_obj = self.pool['riba.distinta.line']
         riba_distinta_move_line_obj = self.pool['riba.distinta.move.line']
-        riba_distinta_move_line_ids = riba_distinta_move_line_obj.search(cr, uid, [('move_line_id', 'in', ids)])
+        riba_distinta_move_line_ids = riba_distinta_move_line_obj.search(cr, uid, [('move_line_id', 'in', ids)], context=context)
         if riba_distinta_move_line_ids:
-            riba_line_ids = riba_distinta_line_obj.search(cr, uid, [('move_line_ids', 'in', riba_distinta_move_line_ids)])
+            riba_line_ids = riba_distinta_line_obj.search(cr, uid, [('move_line_ids', 'in', riba_distinta_move_line_ids)], context=context)
             if riba_line_ids:
                 for riba_line in riba_distinta_line_obj.browse(cr, uid, riba_line_ids, context=context):
                     if riba_line.state in ['draft', 'cancel']:
@@ -120,9 +120,29 @@ class account_invoice(orm.Model):
             return False
         else:
             for invoice in self.browse(cr, uid, ids, context):
-                if invoice.payment_term and invoice.payment_term.riba:
-                    if not invoice.partner_id.bank_riba_id:
-                        raise orm.except_orm(u'Fattura Cliente',
+                if invoice.payment_term:
+                    if invoice.payment_term.spese_incasso_id:
+                        account_invoice_line_obj = self.pool['account.invoice.line']
+                        account_invoice_line_ids = account_invoice_line_obj.search(cr, uid, [('product_id', '=', invoice.payment_term.spese_incasso_id.id), ('invoice_id', '=', invoice.id)], context=context)
+                        if not account_invoice_line_ids:
+                            # i have to add spese incasso
+                            account_invoice_line_vals = {
+                                'product_id': invoice.payment_term.spese_incasso_id.id,
+                                'invoice_id': invoice.id
+                            }
+
+                            account_invoice_line_vals.update(account_invoice_line_obj.product_id_change(cr, uid, ids, invoice.payment_term.spese_incasso_id.id, False, type=invoice.type,
+                                                           partner_id=invoice.partner_id.id, fposition_id=invoice.fiscal_position and invoice.fiscal_position.id,
+                                                           context=context,
+                                                           company_id=invoice.company_id.id).get('value'))
+
+                            if account_invoice_line_vals.get('invoice_line_tax_id', False):
+                                account_invoice_line_vals['invoice_line_tax_id'] = [(6, False, account_invoice_line_vals.get('invoice_line_tax_id'))]
+                            account_invoice_line_obj.create(cr, uid, account_invoice_line_vals, context)
+
+                    if invoice.payment_term.riba:
+                        if not invoice.partner_id.bank_riba_id:
+                            raise orm.except_orm(u'Fattura Cliente',
                                    u'Impossibile da validare in quanto non è impostata la banca appoggio Riba nel partner {partner}'.format(partner=invoice.partner_id.name))
-                        return False
+                            return False
         return True
