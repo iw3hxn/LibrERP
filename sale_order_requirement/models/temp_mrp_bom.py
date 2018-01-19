@@ -4,7 +4,7 @@
 import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-
+import order_requirement_line
 from ..util import rounding
 
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
@@ -83,9 +83,16 @@ class temp_mrp_bom(orm.Model):
 
     def action_toggle_manufactured(self, cr, uid, ids, context):
         line = self.browse(cr, uid, ids, context)[0]
+        ordreqline_obj = self.pool['order.requirement.line']
         if line.level == 0 or line.is_leaf:
             return True
-        line.write({'is_manufactured': not line.is_manufactured})
+        temp_dict = {'is_manufactured': not line.is_manufactured}
+        line.write(temp_dict)
+
+        ordreqline = ordreqline_obj.browse(cr, uid, line.order_requirement_line_id.id, context)
+        # Build update value [1, ID, vals]
+        temp_vals = [1, line.id, temp_dict]
+        ordreqline.onchange_temp_mrp_bom_ids(temp_mrp_bom_ids=[temp_vals], context=context)
         return True
 
     def action_toggle_buy(self, cr, uid, ids, context):

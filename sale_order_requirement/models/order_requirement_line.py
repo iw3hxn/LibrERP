@@ -6,7 +6,8 @@ import tools
 from openerp.osv import orm, fields
 from tools.translate import _
 
-from temp_mrp_bom import temp_mrp_bom
+import temp_mrp_bom
+
 from ..util import rounding
 
 routing_colors = ['darkblue', 'forestgreen', 'orange', 'blue', 'grey']
@@ -185,42 +186,6 @@ class order_requirement_line(orm.Model):
                 ret_vals.append(routing_vals)
         return ret_vals
 
-    def _compute_supplier_price(self, cr, uid, ids, product, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        return product.cost_price
-        # cost_price inside product just do that:
-
-        # user = self.pool['res.users'].browse(cr, uid, uid, context)
-        # if product.prefered_supplier:
-        #     pricelist = product.prefered_supplier.property_product_pricelist_purchase or False
-        #     ctx = {
-        #         'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-        #     }
-        #     if context.get('partner_name', False):
-        #         partner_name = context.get('partner_name')
-        #         partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
-        #         partner_id = partner_ids and partner_ids[0] or False
-        #     else:
-        #         partner_id = False
-        #     price = \
-        #     self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, partner_id, context=ctx)[
-        #         pricelist.id] or 0
-        #
-        #     price_subtotal = 0.0
-        #     if pricelist:
-        #         from_currency = pricelist.currency_id.id
-        #         to_currency = user.company_id.currency_id.id
-        #         price_subtotal = self.pool['res.currency'].compute(
-        #             cr, uid,
-        #             from_currency_id=from_currency,
-        #             to_currency_id=to_currency,
-        #             from_amount=price,
-        #             context=context
-        #         )
-        #     return price_subtotal or price or product.standard_price
-        # else:
-        #     return product.standard_price
-
     def _get_temp_vals_from_mrp_bom(self, cr, uid, ids, bom, qty_mult, temp_father_id, level, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_obj = self.pool['product.product']
@@ -235,7 +200,7 @@ class order_requirement_line(orm.Model):
 
         line = self.browse(cr, uid, line_id, context)
 
-        row_color = temp_mrp_bom.get_color_bylevel(level)
+        row_color = temp_mrp_bom.temp_mrp_bom.get_color_bylevel(level)
         level_name = '- {} {} >'.format(str(level), ' -----' * level)
 
         suppliers = line.get_suppliers(product_id, context=context)
@@ -247,7 +212,7 @@ class order_requirement_line(orm.Model):
         # partial_cost = bom.product_id.cost_price
         partial_cost = 0
         if is_leaf:
-            partial_cost = self._compute_supplier_price(cr, uid, ids, bom.product_id, context)
+            partial_cost = bom.product_id.cost_price
 
         return {
             'name': bom.name,
@@ -296,7 +261,7 @@ class order_requirement_line(orm.Model):
         product_id = product.id
         line = self.browse(cr, uid, line_id, context)
 
-        row_color = temp_mrp_bom.get_color_bylevel(level)
+        row_color = temp_mrp_bom.temp_mrp_bom.get_color_bylevel(level)
         level_name = u'- {} {} >'.format(str(level), ' -----' * level)
 
         suppliers = line.get_suppliers(product_id, context=context)
@@ -307,7 +272,7 @@ class order_requirement_line(orm.Model):
 
         partial_cost = 0
         if is_leaf:
-            partial_cost = self._compute_supplier_price(cr, uid, ids, product, context)
+            partial_cost = product.cost_price
 
         return {
             'name': product.name,
