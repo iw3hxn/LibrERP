@@ -26,6 +26,7 @@
                     <field name="id" invisible="1"/>
                     <group colspan="8" col="8" attrs="{'invisible': [('state','!=','draft')]}">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
+                        <button name="reload_bom" string="Reload &amp; Preview" icon="gtk-refresh" type="object"/>
                         <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"
                                 confirm="Are you sure you want to do this?"/>
                     </group>
@@ -68,6 +69,7 @@
                                         <button name="out_of_stock_button" type="object" icon="gtk-dialog-error" help="Product is out of stock"
                                                 attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
+                                        <field name="temp_mrp_bom_action"/>
                                         <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-ok" />
                                         <field name="is_manufactured" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
                                         <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="gtk-ok" />

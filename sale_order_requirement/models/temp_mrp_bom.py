@@ -47,6 +47,19 @@ class temp_mrp_bom(orm.Model):
             res[line.id] = line.stock_availability < line.spare
         return res
 
+    def _get_temp_mrp_bom_action(self, cr, uid, ids, name, args, context=None):
+        # Return a string describing whether a product is being bought or produced
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.is_manufactured:
+                preview = 'Produce'
+            elif line.buy:
+                preview = 'Buy'
+            else:
+                preview = 'Stock'
+            res[line.id] = preview
+        return res
+
     # This is called also when loading saved temp mrp boms,
     # during creation see get_temp_mrp_bom
     def _get_routing(self, cr, uid, ids, field_name, arg, context):
@@ -167,7 +180,8 @@ class temp_mrp_bom(orm.Model):
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, store=False),
         'sequence': fields.integer('Sequence index'),
-        'is_out_of_stock': fields.function(_is_out_of_stock, method=True, type='boolean', string='Out of Stock', readonly=True)
+        'is_out_of_stock': fields.function(_is_out_of_stock, method=True, type='boolean', string='Out of Stock', readonly=True),
+        'temp_mrp_bom_action': fields.function(_get_temp_mrp_bom_action, method=True, type='char', string='Action', readonly=True)
     }
 
     _order = 'sequence,level,id'

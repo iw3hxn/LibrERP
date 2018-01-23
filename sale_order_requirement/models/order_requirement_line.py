@@ -1157,6 +1157,10 @@ class order_requirement_line(orm.Model):
         # Dummy save function
         return True
 
+    def reload_bom(self, cr, uid, ids, context=None):
+        # Dummy reload_bom
+        return True
+
     def print_production_order(self, cr, uid, ids, context):
         production_ids = []
         for line in self.browse(cr, uid, ids, context):
