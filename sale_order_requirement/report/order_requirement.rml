@@ -69,18 +69,17 @@
     <paraStyle name="P5" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
     <paraStyle name="P6" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
     <paraStyle name="P7" fontName="Helvetica-Bold" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P8" fontName="Helvetica-Bold" fontSize="6.0" leading="8" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P9" fontName="Helvetica" textColor="#000000"/>
-    <paraStyle name="P10" fontName="Helvetica" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P11" fontName="Helvetica-Bold" fontSize="10.0" leading="13" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P12" fontName="Helvetica-Bold" fontSize="10.0" leading="13" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P13" fontName="Helvetica" fontSize="8.0" leading="10" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P14" fontName="Helvetica" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P15" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" fontSize="18.0" leading="22" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P16" fontName="Helvetica-Bold" fontSize="6.0" leading="8" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
-    <paraStyle name="P17" fontName="Helvetica" textColor="#000000"/>
-    <paraStyle name="P18" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" alignment="LEFT" textColor="#000000"/>
-    <paraStyle name="P19" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" alignment="CENTER" textColor="#000000"/>
+    <paraStyle name="P8" fontName="Helvetica" textColor="#000000"/>
+    <paraStyle name="P9" fontName="Helvetica" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+    <paraStyle name="P10" fontName="Helvetica-Bold" fontSize="10.0" leading="13" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+    <paraStyle name="P11" fontName="Helvetica-Bold" fontSize="10.0" leading="13" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+    <paraStyle name="P12" fontName="Helvetica" fontSize="8.0" leading="10" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+    <paraStyle name="P13" fontName="Helvetica" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+    <paraStyle name="P14" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" fontSize="18.0" leading="22" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+    <paraStyle name="P15" fontName="Helvetica-Bold" fontSize="6.0" leading="8" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
+    <paraStyle name="P16" fontName="Helvetica" textColor="#000000"/>
+    <paraStyle name="P17" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" alignment="LEFT" textColor="#000000"/>
+    <paraStyle name="P18" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" alignment="CENTER" textColor="#000000"/>
     <paraStyle name="Standard" fontName="Helvetica"/>
     <paraStyle name="Text body" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
     <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
@@ -172,7 +171,7 @@
         </td>
       </tr>
     </blockTable>
-    <para style="P9">
+    <para style="P8">
       <font color="white"> </font>
     </para>
     <para style="P7">Products to Delivery [[ o.order_requirement_line_ids ==[] and removeParentNode('section')]]</para>
@@ -211,22 +210,19 @@
         <font color="white"> </font>
       </para>
       <pageBreak/>
-      <para style="P14">
-        <font color="white"> </font>
-      </para>
-      <para style="P2">[[ repeatIn(o.order_requirement_line_ids,'line') ]]</para>
+      <para style="P13">[[ repeatIn(o.order_requirement_line_ids,'line') ]]</para>
       <blockTable colWidths="424.0,103.0" style="Table9">
         <tr>
           <td>
-            <para style="P11">[[ (line.product_id and line.product_id.code) or '' ]] [[ (line.product_id and line.product_id.name) or '' ]]</para>
+            <para style="P10">[[ (line.product_id and line.product_id.code) or '' ]] [[ (line.product_id and line.product_id.name) or '' ]]</para>
           </td>
           <td>
-            <para style="P12">[[ formatLang(line.qty) ]]</para>
+            <para style="P11">[[ formatLang(line.qty) ]]</para>
           </td>
         </tr>
         <tr>
           <td>
-            <para style="P9">[[ repeatIn(line.temp_mrp_bom_ids,'line_bom') ]]</para>
+            <para style="P8">[[ repeatIn(line.temp_mrp_bom_ids,'line_bom') ]]</para>
             <blockTable colWidths="108.0,316.0,45.0,58.0" style="Tabella2">
               <tr>
                 <td>
@@ -244,46 +240,22 @@
                 </td>
               </tr>
             </blockTable>
-            <para style="P8">
-              <font color="white"> </font>
-            </para>
-            <para style="P8">
-              <font color="white"> </font>
-            </para>
-            <para style="P8">
-              <font color="white"> </font>
-            </para>
-            <para style="P8">
-              <font color="white"> </font>
-            </para>
-            <para style="P8">
-              <font color="white"> </font>
-            </para>
-            <para style="P8">
-              <font color="white"> </font>
-            </para>
-            <para style="P8">
+            <para style="P15">
               <font color="white"> </font>
             </para>
           </td>
         </tr>
       </blockTable>
     </section>
-    <para style="P9">
-      <font color="white"> </font>
-    </para>
-    <para style="P9">
-      <font color="white"> </font>
+    <para style="P8">
+      <font face="Helvetica" size="12.0"/>
     </para>
     <section>
-      <para style="P18">
+      <para style="P17">
         <font face="Helvetica" size="12.0"/>
       </para>
-      <para style="P18">
-        <font face="Helvetica" size="12.0"/>
-      </para>
-      <para style="P19"><font face="Helvetica" size="20.0">INTERNAL NOTE</font> [[ o.internal_note ==[] and removeParentNode('section')]]</para>
-      <para style="P15">[[ o.internal_note ]]</para>
+      <para style="P18"><font face="Helvetica" size="20.0">INTERNAL NOTE</font> [[ o.internal_note ==[] and removeParentNode('section')]]</para>
+      <para style="P14">[[ o.internal_note ]]</para>
     </section>
   </story>
 </document>
