@@ -139,6 +139,7 @@ class account_invoice(orm.Model):
                             if account_invoice_line_vals.get('invoice_line_tax_id', False):
                                 account_invoice_line_vals['invoice_line_tax_id'] = [(6, False, account_invoice_line_vals.get('invoice_line_tax_id'))]
                             account_invoice_line_obj.create(cr, uid, account_invoice_line_vals, context)
+                            invoice.button_compute()
 
                     if invoice.payment_term.riba:
                         if not invoice.partner_id.bank_riba_id:
