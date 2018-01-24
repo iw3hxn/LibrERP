@@ -1048,3 +1048,14 @@ msgstr "Conferma Ordine Cliente"
 #: field:stock.picking,address_delivery_id:0
 msgid "Address"
 msgstr "Indirizzo"
+
+#. module: sale_order_confirm
+#: field:account.fiscal.position,split_invoice_advanced:0
+msgid "Split Invoice Advanced"
+msgstr "Dividi Fattura Finale dall'anticipo"
+
+#. modules: sale_order_confirm
+#: code:addons/sale_order_confirm/stock_picking.py:97
+#, python-format
+msgid "Invoice {name}"
+msgstr "Fattura {name}"

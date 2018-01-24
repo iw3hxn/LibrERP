@@ -29,10 +29,11 @@
 
 {
     "name": "Extend sale_order",
-    "version": "3.30.60.68",
+    "version": "3.31.61.69",
     "category": "Sales Management",
     "description": """This Module, provided user's wizard to confirm/modify sale order.
     It also increases usability on sale order using credit limit amd default payment term
+    Is possible to split final invoice in 2 part, credit refund for advanced payment and normal invoice for order
 
     Look inside 'company' table to configure module.
     If "Need Supervisor Verification after Customer Confirmation" is selected,
@@ -60,6 +61,7 @@
         'wizard/confirmation_view.xml',
         'wizard/add_order_version_view.xml',
         'wizard/sale_make_invoice_advance.xml',
+        'views/account_fiscal_position_view.xml',
         'views/sale_order_confirm_view.xml',
         'views/sale_order_menu.xml',
         'views/sale_workflow.xml',

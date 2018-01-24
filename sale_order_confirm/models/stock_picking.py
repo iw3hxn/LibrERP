@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from tools.translate import _
 
 
 class stock_picking(orm.Model):
@@ -30,7 +31,8 @@ class stock_picking(orm.Model):
     def _invoice_hook(self, cr, uid, picking, invoice_id):
         '''Call after the creation of the invoice'''
         res = super(stock_picking, self)._invoice_hook(cr, uid, picking, invoice_id)
-        invoice = self.pool['account.invoice'].browse(cr, uid, invoice_id)
+        account_invoice_obj = self.pool['account.invoice']
+        invoice = account_invoice_obj.browse(cr, uid, invoice_id)
         if not invoice.fiscal_position:
             if invoice.partner_id.property_account_position:
                 invoice.write({'fiscal_position': invoice.partner_id.property_account_position.id})
@@ -40,8 +42,15 @@ class stock_picking(orm.Model):
         if picking.sale_id:
             for invoice in picking.sale_id.invoice_ids:
                 if invoice.advance_order_id:
-                    for line in invoice.invoice_line:
-                        self.pool['account.invoice.line'].copy(cr, uid, line.id, {'invoice_id': invoice_id, 'price_unit': -line.price_unit, 'sequence': 1000})
+                    # here i need to check fiscal_position
+                    if invoice.fiscal_position.split_invoice_advanced:
+                        new_invoice_id = account_invoice_obj.copy(cr, uid, invoice.id, {'type': 'out_refund', 'invoice_line': False, 'journal_id': False})
+                        note = _('Invoice {name}').format(name=invoice.number)
+                        for line in invoice.invoice_line:
+                            self.pool['account.invoice.line'].copy(cr, uid, line.id, {'invoice_id': new_invoice_id, 'price_unit': line.price_unit, 'sequence': 1000, 'note': note })
+                    else:
+                        for line in invoice.invoice_line:
+                            self.pool['account.invoice.line'].copy(cr, uid, line.id, {'invoice_id': invoice_id, 'price_unit': -line.price_unit, 'sequence': 1000})
+                        invoice.button_compute()
                     invoice.write({'advance_order_id': False})
-                    invoice.button_compute()
         return res

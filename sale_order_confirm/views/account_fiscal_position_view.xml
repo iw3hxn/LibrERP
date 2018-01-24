@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="reverse_charge_view_account_position_form" model="ir.ui.view">
+            <field name="name">reverse_charge.account_position.form</field>
+            <field name="model">account.fiscal.position</field>
+            <field name="inherit_id" ref="account.view_account_position_form"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/separator[@string='Mapping']" position="before">
+                    <group>
+                        <field name="split_invoice_advanced"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
