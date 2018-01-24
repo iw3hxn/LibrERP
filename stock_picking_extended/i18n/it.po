@@ -468,6 +468,11 @@ msgstr "Stato dell'ordine"
 msgid "Total Amount (VAT Excluded)"
 msgstr "Totale Ordine (IVA esclusa)"
 
+#. module: stock_picking_extended
+#: field:stock.picking,payment_term_id:0
+msgid "Payment Term"
+msgstr "Termine di pagamento"
+
 #. modules: stock_picking_extended
 #: field:stock.picking,city:0
 msgid "City"

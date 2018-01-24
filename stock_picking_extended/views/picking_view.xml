@@ -9,6 +9,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <field name="state" position="after">
+                    <field name="amount_total" groups="account.group_customer_account_invoice"/>
+                    <field name="payment_term_id" groups="account.group_customer_account_invoice"/>
                     <button name="print_picking" string="Print" type="object" icon="gtk-print" invisible="not context.get('view_print')"/>
                 </field>
             </field>

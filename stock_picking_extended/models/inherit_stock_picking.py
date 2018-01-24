@@ -158,17 +158,18 @@ class stock_picking(orm.Model):
         'board_date': fields.date('Order Board Delivery date'),
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
                                        readonly=True),
+        'payment_term_id': fields.related('sale_id', 'payment_term', type='many2one', relation='account.payment.term', string="Payment Term"),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number",
                                     store={
                                         'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['max_date'], 5000),
-                                        'sale.order': (_get_picking_sale, ['minimum_planned_date'], 5000),
+                                        'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 6000),
                                         }),
 
         'minimum_planned_date': fields.related('sale_id', 'minimum_planned_date', type='date', string='Expected Date',
                                                store={
                                                    'stock.picking': (
                                                    lambda self, cr, uid, ids, c={}: ids, ['max_date'], 5000),
-                                                   'sale.order': (_get_picking_sale, ['minimum_planned_date'], 5000),
+                                                   'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 6000),
                                                }
                                                ),
         'internal_note': fields.text('Internal Note')
