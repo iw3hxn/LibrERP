@@ -17,7 +17,7 @@
             <field name="name">Personal Stock Journal</field>
             <field name="model_id" ref="stock.model_stock_journal"/>
             <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+            <field name="groups" eval="[(4, ref('stock.group_stock_manager')), (4, ref('account.group_account_invoice'))]"/>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
