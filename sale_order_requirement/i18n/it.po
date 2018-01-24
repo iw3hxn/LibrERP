@@ -87,6 +87,11 @@ msgstr "Salva"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
+msgid "Reload &amp; Preview"
+msgstr "Ricarica &amp; Preview"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
 msgid "BoM Details"
 msgstr "Dettagli Distinta"
 

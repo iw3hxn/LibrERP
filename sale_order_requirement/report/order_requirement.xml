@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+<!--
+       IMPORTANT : DO NOT CHANGE THIS FILE, IT WILL BE REGENERERATED AUTOMATICALLY
+-->
+
+        <report auto="True"
+                header="True"
+                model="order.requirement"
+                id="order_requirement_report"
+                string="Order Requirement"
+                name="order.requirement.explosion"
+                rml="sale_order_requirement/report/order_requirement.rml"
+                report_type="pdf"
+                file=""
+                 />
+<!--
+       IMPORTANT : DO NOT CHANGE THIS FILE, IT WILL BE REGENERERATED AUTOMATICALLY
+-->
+
+    </data>
+</openerp>
