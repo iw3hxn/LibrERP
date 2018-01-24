@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2018 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -50,7 +50,7 @@ class account_invoice(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
 
-        return [(x['id'], str(x.type in ['in_invoice', 'in_refund'] and x.supplier_invoice_number or x.number or x.name)) for x in self.browse(cr, uid, ids, context=context)]
+        return [(x['id'], unicode(x.type in ['in_invoice', 'in_refund'] and x.supplier_invoice_number or x.number or x.name)) for x in self.browse(cr, uid, ids, context=context)]
 
     def _get_stock_picking(self, cr, uid, ids, field_name, model_name, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
