@@ -177,7 +177,7 @@
                     <notebook colspan="4">
                         <page string="Moves">
                             <field name="move_lines" nolabel="1">
-                                <tree string="Moves">
+                                <tree string="Moves" colors="green:goods_ready">
                                     <field name="product_id"/>
                                     <field name="product_qty" sum="product_sum"/>
                                     <field name="product_uom"/>
@@ -185,7 +185,7 @@
                                     <field name="note"/>
                                     <field name="prodlot_id" invisible="1"/>
                                     <field name="goods_ready"/>
-                                    <field name="state"/>
+                                    <field name="state" invisible="1"/>
                                     <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok"
                                             attrs="{'invisible': [('state', '=', 'done')]}"/>
                                 </tree>
