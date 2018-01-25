@@ -70,10 +70,11 @@
                                                 attrs="{'invisible': [('is_out_of_stock','=',False)]}"/>
                                         <field name="cost"/>
                                         <field name="temp_mrp_bom_action"/>
-                                        <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-ok" />
-                                        <field name="is_manufactured" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
-                                        <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="gtk-ok" />
-                                        <field name="buy" attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
+                                        <button name="action_toggle_manufactured" string="Toggle Manufactured" type="object" icon="gtk-properties" attrs="{'invisible': [('level','=',0)]}"/>
+                                        <field name="is_manufactured" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
+                                        <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar" attrs="{'invisible': ['|',('level','=',0),('is_manufactured','=',True)]}"/>
+                                        <button name="action_toggle_buy" string="Toggle Buy" type="object" icon="terp-dolar" attrs="{'invisible': ['|',('level','=',0),('is_manufactured','=',True)]}"/>
+                                        <field name="buy" invisible="1" attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
                                         <field name="supplier_id"
                                                attrs="{'required': [('is_manufactured', '=', False)],
                                                     'readonly': ['|',('is_manufactured', '=', True),
