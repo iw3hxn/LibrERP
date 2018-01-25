@@ -44,7 +44,7 @@ class StockMove(orm.Model):
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
 
         for stock_move in self.browse(cr, uid, ids, context=context):
-            res[stock_move.id] = True
+            res[stock_move.id] = False
             sale_id = stock_move.sale_id and stock_move.sale_id.id or False
             sale_order_line_id = stock_move.sale_line_id and stock_move.sale_line_id.id or False
             if sale_id and sale_order_line_id:
@@ -52,7 +52,7 @@ class StockMove(orm.Model):
                     ('sale_order_line_id', '=', sale_order_line_id)], context=context)
                 temp_mrp_bom_ids = temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', 'in', order_requirement_line_ids), ('mrp_production_id', '!=', False)], context=context)
                 if not temp_mrp_bom_ids:  # if not exist production order means that is a normal product
-                    if stock_move.state != 'done':
+                    if stock_move.state == 'done':
                         res[stock_move.id] = True
                 for temp_mrp_bom in temp_mrp_bom_obj.browse(cr, uid, temp_mrp_bom_ids, context):
                     if temp_mrp_bom.mrp_production_id and temp_mrp_bom.mrp_production_id.state != 'done':
