@@ -51,3 +51,5 @@ class delivery_carrier(orm.Model):
                 return grid.id
 
         return False
+
+    _order = "name"
