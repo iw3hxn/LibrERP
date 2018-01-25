@@ -109,6 +109,8 @@ class sale_order(orm.Model):
         # if order.minimum_planned_date:
         #     res['minimum_planned_date'] = order.minimum_planned_date
         res.update({
+            'address_id': order.partner_invoice_id.id,
+            'address_delivery_id': order.partner_shipping_id.id,
             'carriage_condition_id': order.carriage_condition_id and order.carriage_condition_id.id or False,
             'goods_description_id': order.goods_description_id and order.goods_description_id.id or False,
             'address_delivery_id': order.partner_shipping_id.id,
