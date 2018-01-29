@@ -33,7 +33,7 @@ Double-validation for purchases
     """,
     'website': 'http://www.didotech.com',
     'data': [
-        'purchase_workflow.xml',
+        'views/purchase_workflow.xml',
     ],
     'installable': True,
     'auto_install': False,
