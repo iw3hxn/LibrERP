@@ -103,3 +103,9 @@ class StockMove(orm.Model):
             # 'target': 'new',
             'res_id': False
         }
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        new_ids = [i for i in ids if i]
+        return super(StockMove, self).write(cr, uid, new_ids, vals, context)
