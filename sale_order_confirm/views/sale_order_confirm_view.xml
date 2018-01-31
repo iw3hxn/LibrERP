@@ -364,12 +364,13 @@
                 </field>
                 <filter string="Sales" position="replace">
                     <filter icon="terp-check" string="Sales" domain="[('state','in',('manual','progress'))]" context="{'show_date': True}"/>
+                    <filter icon="gtk-ok" string="Sales Done" domain="[('state','=', 'done')]" context="{'show_date': True}"/>
                 </filter>
             </field>
         </record>
 
         <record id="view_sale_order_tree_date" model="ir.ui.view">
-            <field name="name">sale.order.filter</field>
+            <field name="name">sale.order.tree</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_tree"/>
             <field name="type">tree</field>
