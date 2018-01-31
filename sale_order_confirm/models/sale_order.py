@@ -122,7 +122,7 @@ class sale_order(orm.Model):
                     default = self.default_get(cr, uid, ['order_policy'], context)
                     order.write({'order_policy': default.get('order_policy')})
 
-        return super(sale_order, self).action_wait(cr, uid, ids, context=context)
+        return super(sale_order, self).action_wait(cr, uid, ids, context)
 
     def copy(self, cr, uid, ids, default, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
