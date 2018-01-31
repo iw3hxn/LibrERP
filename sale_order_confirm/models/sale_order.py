@@ -47,35 +47,16 @@ class sale_order(orm.Model):
                 res['section_id'] = section_ids[0]
         return res
 
-    def service_only(self, cr, uid, ids, values, context):
+    def service_only(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        deleted_products = []
         service = True
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
 
-        if values and 'order_line' in values and values['order_line']:
-            for line in values['order_line']:
-                # create new line
-                if line[0] == 0:
-                    if 'product_id' in line[2] and line[2]['product_id']:
-                        product = self.pool['product.product'].browse(cr, uid, line[2]['product_id'], context)
-                        if not product.type == 'service':
-                            if line[0] == 0:
-                                return False
-                elif line[0] == 2 and line[1]:
-                    order_line = self.pool['sale.order.line'].browse(cr, uid, line[1], context)
-                    if order_line.product_id and not order_line.product_id.type == 'service':
-                        deleted_products.append(order_line.product_id.id)
-        elif not ids:
-            return False
-        else:
-            service = False
-
         for order in self.browse(cr, uid, ids, context):
             if order.order_line:
                 for order_line in order.order_line:
-                    if order_line.product_id.type != 'service' or order_line.product_id.id in deleted_products:
+                    if order_line.product_id and order_line.product_id.type != 'service':
                         return False
             elif not service:
                     return False
@@ -105,20 +86,6 @@ class sale_order(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        company = self.pool['res.users'].browse(cr, uid, uid).company_id
-        if self.service_only(cr, uid, False, vals, context) and vals.get('order_policy', '') == 'picking':
-            if company.auto_order_policy:
-                vals.update({'order_policy': 'manual'})
-            else:
-                raise orm.except_orm(_('Warning'), _("You can't create an order with Invoicing being based on Picking if there are only service products"))
-        elif self.service_only(cr, uid, False, vals, context):
-                if company.auto_order_policy:
-                    vals.update({'order_policy': 'manual'})
-        else:
-            if company.auto_order_policy:
-                default = self.default_get(cr, uid, ['order_policy'], context)
-                vals.update({'order_policy': default.get('order_policy')})
-
         ids = super(sale_order, self).create(cr, uid, vals, context=context)
         self.adaptative_function(cr, uid, ids, vals, context)
         return ids
@@ -131,27 +98,31 @@ class sale_order(orm.Model):
             ids = [ids]
 
         orders = self.browse(cr, uid, ids, context)
-        for order in orders:
-            company = self.pool['res.users'].browse(cr, uid, uid).company_id
-            if self.service_only(cr, uid, [order.id], vals, context) and vals.get('order_policy', order.order_policy) == 'picking':
-                if company.auto_order_policy:
-                    vals.update({'order_policy': 'manual'})
-                else:
-                    raise orm.except_orm(_('Warning'), _(
-                        "You can't create an order with Invoicing being based on Picking if there are only service products"))
-            elif self.service_only(cr, uid, [order.id], vals, context):
-                if company.auto_order_policy:
-                    vals.update({'order_policy': 'manual'})
-            else:
-                if company.auto_order_policy:
-                    default = self.default_get(cr, uid, ['order_policy'], context)
-                    vals.update({'order_policy': default.get('order_policy')})
 
         self.adaptative_function(cr, uid, ids, vals, context)
         if vals.get('state', False):
             self.hook_sale_state(cr, uid, orders, vals, context)
 
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
+
+    def action_wait(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
+        for order in self.browse(cr, uid, ids, context):
+            company = self.pool['res.users'].browse(cr, uid, uid).company_id
+
+            if self.service_only(cr, uid, [order.id], context) and order.order_policy and order.order_policy == 'picking':
+                if company.auto_order_policy:
+                    order.write({'order_policy': 'manual'})
+                else:
+                    raise orm.except_orm(_('Warning'), _(
+                        "You can't create an order with Invoicing being based on Picking if there are only service products"))
+            else:
+                if company.auto_order_policy:
+                    default = self.default_get(cr, uid, ['order_policy'], context)
+                    order.write({'order_policy': default.get('order_policy')})
+
+        return super(sale_order, self).action_wait(cr, uid, ids, context=context)
 
     def copy(self, cr, uid, ids, default, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
