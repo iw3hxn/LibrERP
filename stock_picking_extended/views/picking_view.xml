@@ -147,7 +147,7 @@
 
                     <group col="4" colspan="4">
                         <group col="2" colspan="2">
-                            <field name="sale_id"/>
+                            <field name="sale_id" groups="base.group_sale_salesman"/>
                             <field name="customer_id"/>
                             <field name="internal_note"/>
                             <field name="creation_date"/>
@@ -172,6 +172,7 @@
                             <field name="board_date"/>
                             <newline />
                             <field name="amount_total" groups="base.group_sale_salesman"/>
+                            <field name="invoice_state" />
                         </group>
                     </group>
                     <notebook colspan="4">
@@ -229,6 +230,7 @@
                     <field name="order_sent" />
                     <field name="order_ready" />
                     <field name="amount_total" sum="Total" groups="base.group_sale_salesman"/>
+                    <field name="invoice_state" />
                 </tree>
             </field>
         </record>

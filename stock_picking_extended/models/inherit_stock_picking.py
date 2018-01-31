@@ -32,6 +32,19 @@ from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
+    def _get_invoice_state(self, cr, uid, ids, field_name, arg, context):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = dict.fromkeys(ids, 0.0)
+        for picking in self.browse(cr, 1, ids, context=context):
+            res[picking.id] = ''
+            order = picking.sale_id
+            if order:
+                # res[picking.id] = u'{payment_term}'.format(
+                #     payment_term=order.payment_term and order.payment_term.name or '')
+                for invoice in order.invoice_ids:
+                    res[picking.id] = dict(self.pool['account.invoice'].fields_get(cr, uid, context=context)['state']['selection'])[invoice.state]
+        return res
+
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, 0.0)
@@ -172,7 +185,8 @@ class stock_picking(orm.Model):
                                                    'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 600),
                                                }
                                                ),
-        'internal_note': fields.text('Internal Note')
+        'internal_note': fields.text('Internal Note'),
+        'invoice_state': fields.function(_get_invoice_state, string="Invoice State", type='char'),
     }
 
     def check_limit(self, cr, uid, ids, context=None):
