@@ -353,13 +353,31 @@
         </record>
 
         <record id="view_sale_order_filter_by_product" model="ir.ui.view">
-            <field name="name">sale.order.filter.by.year</field>
+            <field name="name">sale.order.filter</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="product_id" />
+
+                </field>
+                <filter string="Sales" position="replace">
+                    <filter icon="terp-check" string="Sales" domain="[('state','in',('manual','progress'))]" context="{'show_date': True}"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="view_sale_order_tree_date" model="ir.ui.view">
+            <field name="name">sale.order.filter</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="date_order" position="replace">
+                    <field name="date_order" invisible="context.get('show_date',False)"/>
+                    <field name="date_confirm" invisible="not context.get('show_date',False)"/>
+
                 </field>
             </field>
         </record>
