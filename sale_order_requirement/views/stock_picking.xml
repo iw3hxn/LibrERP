@@ -20,13 +20,27 @@
             <field name="inherit_id" ref="stock_picking_extended.view_stock_picking_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='product_id']" position="before">
-                    <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" />
-                    <button name="print_production_order" string="Print" type="object" help="Print All production Order" icon="gtk-print"  />
+                <xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='product_id']"
+                       position="before">
+                    <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in"/>
+                    <button name="print_production_order" string="Print" type="object" help="Print All production Order"
+                            icon="gtk-print"/>
                 </xpath>
                 <!--<xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='state']" position="after">-->
 
                 <!--</xpath>-->
+            </field>
+        </record>
+
+        <record id="view_stock_picking_in_form" model="ir.ui.view">
+            <field name="name">stock.picking.order.in.form.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_in_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page/field/tree/field[@name='state']" position="after">
+                    <field name="temp_mrp_bom_ids"/>
+                </xpath>
             </field>
         </record>
 
