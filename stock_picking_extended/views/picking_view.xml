@@ -130,7 +130,7 @@
             <field name="arch" type="xml">
                 <search string="Order Board">
                     <filter icon="gtk-ok" name="available" string="Goods Ready" domain="[('goods_ready','=', True)]" />
-                    <field name="sale_id" filter_domain="['|',('sale_id','ilike',self),('origin','ilike',self)]"/>
+                    <field name="sale_id" filter_domain="['|',('sale_id','ilike',self),('origin','ilike',self)]" domain="[('state','in', ['progress', 'manual', 'done'])]"/>
                     <field name="customer_id"/>
                     <field name="minimum_planned_date"/>
                     <field name="week_nbr" />
@@ -172,7 +172,7 @@
                             <field name="board_date"/>
                             <newline />
                             <field name="amount_total" groups="base.group_sale_salesman"/>
-                            <field name="invoice_state" />
+                            <field name="invoiced_state" />
                         </group>
                     </group>
                     <notebook colspan="4">

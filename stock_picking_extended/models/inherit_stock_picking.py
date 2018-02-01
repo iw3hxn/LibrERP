@@ -32,7 +32,7 @@ from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
-    def _get_invoice_state(self, cr, uid, ids, field_name, arg, context):
+    def _get_invoiced_state(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, 0.0)
         for picking in self.browse(cr, 1, ids, context=context):
@@ -186,7 +186,7 @@ class stock_picking(orm.Model):
                                                }
                                                ),
         'internal_note': fields.text('Internal Note'),
-        'invoice_state': fields.function(_get_invoice_state, string="Invoice State", type='char'),
+        'invoiced_state': fields.function(_get_invoiced_state, string="Invoice State", type='char'),
     }
 
     def check_limit(self, cr, uid, ids, context=None):
