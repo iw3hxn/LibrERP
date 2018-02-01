@@ -344,10 +344,10 @@ class stock_picking(orm.Model):
             self.pool['account.invoice.line'].write(cr, uid, invoice_line_id, {'note': move_line.note}, context)
         return super(stock_picking, self)._invoice_line_hook(cr, uid, move_line, invoice_line_id)
 
-    def localtime(self, cr, uid, date_time, context=None):
+    def localtime(self, cr, uid, ids, date_time, context=None):
         return fields.datetime.context_timestamp(
             cr,
             uid,
             datetime.strptime(date_time, DEFAULT_SERVER_DATETIME_FORMAT),
             context=context
-        )
+        ).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
