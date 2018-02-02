@@ -274,7 +274,7 @@ class sale_order_line(orm.Model):
                         seller_ids = self.pool['res.partner'].search(cr, uid, [('supplier', '=', True)], context=context)
 
                     result_dict['value'].update({
-                        'supplier_id': seller_ids[0],
+                        'supplier_id': seller_ids and seller_ids[0] or False,
                         'supplier_ids': seller_ids,
                     })
 
