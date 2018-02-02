@@ -58,7 +58,7 @@ class product_product(orm.Model):
             if 'list_price' in ret:
                 ret['list_price']['invisible'] = True
       
-        if group_obj.user_in_group(cr, uid, uid, 'price_security.hide_purchase_prices', context=context):
+        if group_obj.user_in_group(cr, uid, uid, 'dt_price_security.hide_purchase_prices', context=context):
             if 'standard_price' in ret:
                 ret['standard_price']['invisible'] = True
             if 'cost_method' in ret:

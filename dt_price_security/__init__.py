@@ -20,7 +20,6 @@
 ##############################################################################
 
 from . import invoice
-from . import partner
 from . import product
 from . import res_user
 from . import sale

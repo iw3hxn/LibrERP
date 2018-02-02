@@ -105,6 +105,7 @@ class account_invoice_line(orm.Model):
         if discount:
             restriction_obj = self.pool['price_security.discount_restriction']
             restriction_obj.check_discount_with_restriction(cr, uid, discount, pricelist.id, company_id, context=context)
+        return True
 
     def get_invoice_pricelist(self, cr, uid, line_id, vals, context=None):
         if context is None:

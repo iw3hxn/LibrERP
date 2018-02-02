@@ -50,7 +50,7 @@ class discount_restriction(orm.Model):
         restriction_id = self.get_restriction_id(cr, uid, uid, pricelist_id, context=context)
         
         group_obj = self.pool['res.groups']
-        if not group_obj.user_in_group(cr, uid, uid, 'price_security.can_modify_prices', context=context):
+        if not group_obj.user_in_group(cr, uid, uid, 'dt_price_security.can_modify_prices', context=context):
             title = _('Discount out of range')
             msg1 = _('The applied discount is out of range with respect to the allowed. The discount can be between %s and %s for the current price list.')
             msg2 = _('The applied discount is out of range with respect to the allowed. You cannot give any discount with the current price list.')
@@ -70,6 +70,7 @@ class discount_restriction(orm.Model):
                         raise orm.except_orm(title, msg2)
                     else:
                         raise orm.except_orm(title, msg1 % (0, company_max_discount))
+        return True
     
     def get_restriction_id(self, cr, uid, user_id, pricelist_id, context=None):
         if context is None:
@@ -89,6 +90,3 @@ class discount_restriction(orm.Model):
         if isinstance(restriction_id, list):
             restriction_id = restriction_id[0]
         return restriction_id
-
-
-
