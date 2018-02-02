@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <field name="active" position="after">
                     <newline />
-                    <field name="type"/>
+                    <field name="type" on_change="onchange_type(type)" />
                 </field>
             </field>
         </record>

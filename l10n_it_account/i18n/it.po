@@ -10814,6 +10814,12 @@ msgstr "Impossibile da Emettere. Bisogna impostare nella fattura del Partner {pa
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:212
 #, python-format
+msgid "Impossible to Validate, need to set Bank on invoice of {partner}"
+msgstr "Impossibile da Emettere. Bisogna impostare nella fattura del Partner {partner} il 'CONTO BANCARIO'"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:212
+#, python-format
 msgid "Impossible to Cancel, need to cancel Internal Number {number}"
 msgstr "Impossibile da Annullare. Bisogna bisogna prima cancellare il 'FORZA NUMERO' {number}"
 
@@ -10828,8 +10834,6 @@ msgstr "Impossibile da Emettere. C'è gia la fattura del {partner} a cui è forz
 #, python-format
 msgid "Impossible to Validate, fiscal position {fiscal} is overdue"
 msgstr "Impossibile da Emettere. C'è la posizione fiscale {fiscal} scaduta"
-
-
 
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:212

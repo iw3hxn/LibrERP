@@ -41,3 +41,9 @@ class account_payment_term(orm.Model):
     _columns = {
         'type': fields.selection(PAYMENT_TERM_TYPE_SELECTION, "Type of payment"),
     }
+
+    def onchange_type(self, cr, uid, ids, type, context=None):
+        result = {
+            'value': {}
+        }
+        return result

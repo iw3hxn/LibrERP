@@ -49,6 +49,15 @@ class account_payment_term(orm.Model):
 
         return excluse_product_ids
 
+    def onchange_type(self, cr, uid, ids, type, context=None):
+        result = super(account_payment_term, self).onchange_type(cr, uid, ids, type, context)
+        if type:
+            if type == 'RB':
+                result['value']['riba'] = True
+            else:
+                result['value']['riba'] = False
+        return result
+
 
 class res_bank_add_field(orm.Model):
     _inherit = 'res.bank'
