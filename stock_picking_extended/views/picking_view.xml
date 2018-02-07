@@ -60,6 +60,11 @@
                     <field name="credit_limit" attrs="{'invisible': [('visible_credit_limit','!=',True)]}"/>
                     <field name="visible_credit_limit" invisible="1"/>
                 </field>
+                <notebook position="inside">
+                    <page string="Internal Notes">
+                        <field colspan="4" name="interal_note" nolabel="1"/>
+                    </page>
+                </notebook>
             </field>
         </record>
 
@@ -230,6 +235,7 @@
                     <field name="order_sent" />
                     <field name="order_ready" />
                     <field name="amount_total" sum="Total" groups="base.group_sale_salesman"/>
+                    <field name="payment_term_id" />
                     <field name="invoice_state" />
                 </tree>
             </field>

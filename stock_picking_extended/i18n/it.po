@@ -597,3 +597,8 @@ msgstr "Nota Interna"
 #: field:stock.picking,invoice_state:0
 msgid "Invoice State"
 msgstr "Stato Fatture"
+
+#. module: stock_picking_extended
+#: view:stock.picking:0
+msgid "Internal Notes"
+msgstr "Note Interne
