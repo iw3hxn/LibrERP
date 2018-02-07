@@ -74,6 +74,22 @@ class product_product(orm.Model):
         'supplier_code': fields.related('seller_ids', 'product_code', type='char', string="Supplier Code"),
     }
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        default.update({
+            'last_purchase_price': False,
+            'last_purchase_date': False,
+            'last_supplier_id': False,
+            'last_purchase_order_id': False,
+            'last_sale_price': False,
+            'last_sale_date': False,
+            'last_customer_id': False,
+            'last_sale_order_id': False,
+            'last_customer_invoice_id': False,
+            'last_supplier_invoice_id': False,
+        })
+        return super(product_product, self).copy(cr, uid, id, default, context)
+
     # def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
     #     res = super(product_product, self).name_search(cr, uid, name, args, operator, context, limit)
     #     ids_supplier = self.search(
