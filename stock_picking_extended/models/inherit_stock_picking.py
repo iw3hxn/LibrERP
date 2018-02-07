@@ -266,9 +266,7 @@ class stock_picking(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         new_args = []
 
-        if not order:
-            order = context.get('order', None)
-
+        order = order or context.get('order', None)
         for arg in args:
             # if arg and len(arg)==3 and arg[0] in field_to_sql.keys() and arg[1]=='ilike':
             if arg and len(arg) == 3 and arg[1] == 'ilike':
