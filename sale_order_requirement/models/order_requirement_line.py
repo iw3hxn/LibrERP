@@ -764,6 +764,9 @@ class order_requirement_line(orm.Model):
 
         if not purchase_order_ids:
             # Adding if no "similar" orders are presents
+
+            purchase_order_values = purchase_order_obj.default_get(cr, uid, [], context=context)
+
             purchase_order_values = purchase_order_obj.onchange_partner_id(cr, uid, [], supplier_id)['value']
             location_id = shop.warehouse_id.lot_stock_id.id
 
@@ -771,10 +774,9 @@ class order_requirement_line(orm.Model):
             purchase_order_values.update({
                 'shop_id': shop_id,
                 'partner_id': supplier_id,
-                'invoice_method': 'manual',
                 'location_id': location_id,
                 'product_uom': uom_id,
-                'sale_order_ids': [(4, sale_order_id)],
+                # 'sale_order_ids': [(4, sale_order_id)],
             })
 
             purchase_id = purchase_order_obj.create(cr, uid, purchase_order_values, context=context)

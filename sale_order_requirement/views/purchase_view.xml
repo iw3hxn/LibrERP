@@ -37,8 +37,7 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <field name="product_id" position="after">
-                    <field name="sale_order_ids" >
-                    </field>
+                    <field name="sale_order_ids" domain="[('state','in', ['progress', 'manual', 'done'])]"/>
                 </field>
             </field>
         </record>
@@ -51,7 +50,7 @@
 
             <field name="arch" type="xml">
                 <field name="product_id" position="after">
-                    <field name="sale_order_ids"/>
+                    <field name="sale_order_ids" domain="[('state','in', ['progress', 'manual', 'done'])]"/>
                 </field>
             </field>
 
