@@ -13,7 +13,8 @@
 			<field name="arch" type="xml">
 				<form string="Change Price">
 					<field name="name" colspan="4" required="1"/>
-					<field name="price_type" colspan="4" required="1"/>
+					<field name="price_type" colspan="4" required="1" on_change="onchange_price_type(price_type, context)"/>
+					<field name="supplier_id" attrs="{'invisible':[('price_type','!=', 'supplier_form')]}"/>
 					<field name="value" colspan="4" required="1"/>
 					<button string="Close" special="cancel" icon="gtk-cancel" />
 					<button string="Change" name="change" type="object" icon="gtk-ok" />

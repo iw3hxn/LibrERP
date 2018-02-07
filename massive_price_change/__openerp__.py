@@ -19,7 +19,7 @@
 
 {
     'name': 'Massive Price Change',
-    'version': '3.0.0.0',
+    'version': '3.1.1.1',
     'category': 'Tools',
     'complexity': "easy",
     'description': 'Wizard to change price to a lot of product with one click',

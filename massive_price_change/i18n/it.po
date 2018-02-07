@@ -6,14 +6,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-31 09:17+0000\n"
-"PO-Revision-Date: 2013-07-31 09:17+0000\n"
+"POT-Creation-Date: 2018-02-07 15:08+0000\n"
+"PO-Revision-Date: 2018-02-07 15:08+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: massive_price_change
+#: code:addons/massive_price_change/wizard/wizard.py:47
+#, python-format
+msgid "You must be on group 'Show Cost Price'"
+msgstr "Devi essere nel gruppo 'Vedi Prezzo di Costo'"
+
+#. module: massive_price_change
+#: code:addons/massive_price_change/wizard/wizard.py:44
+#: code:addons/massive_price_change/wizard/wizard.py:47
+#, python-format
+msgid "You don't have Permission!"
+msgstr "Non hai i permessi!"
+
+#. module: massive_price_change
+#: code:addons/massive_price_change/wizard/wizard.py:44
+#, python-format
+msgid "You must be on group 'Show Sell Price'"
+msgstr "Devi essere nel gruppo 'Vedi Prezzo di Vendita'"
+
+#. module: massive_price_change
+#: model:ir.actions.act_window,name:massive_price_change.action_massive_price_change_wizard
+msgid "Massive Price Change"
+msgstr "Modifica Massiva Prezzo"
 
 #. module: massive_price_change
 #: help:wzd.massive_price_change,value:0
@@ -31,12 +55,7 @@ msgid "Fix Price"
 msgstr "Prezzo Fisso"
 
 #. module: massive_price_change
-#: selection:wzd.massive_price_change,name:0
-msgid "Cost"
-msgstr "Costo"
-
-#. module: massive_price_change
-#: selection:wzd.massive_price_change,name:0
+#: selection:wzd.massive_price_change,price_type:0
 msgid "Sale"
 msgstr "Vendita"
 
@@ -44,6 +63,16 @@ msgstr "Vendita"
 #: field:wzd.massive_price_change,name:0
 msgid "Standard Price MarkUp Type"
 msgstr "Tipo di Ricarico Prezzo Standard"
+
+#. module: massive_price_change
+#: selection:wzd.massive_price_change,price_type:0
+msgid "Cost"
+msgstr "Costo"
+
+#. module: massive_price_change
+#: selection:wzd.massive_price_change,price_type:0
+msgid "Supplier Form"
+msgstr "Modulo Fornitore"
 
 #. module: massive_price_change
 #: field:wzd.massive_price_change,value:0
@@ -66,12 +95,17 @@ msgid "Change Price"
 msgstr "Modifica Prezzo"
 
 #. module: massive_price_change
-#: model:ir.actions.act_window,name:massive_price_change.action_massive_price_change_wizard
-msgid "Massive Price Change"
-msgstr "Modifica Massiva Prezzo"
-
-#. module: massive_price_change
 #: view:wzd.massive_price_change:0
 msgid "Change"
 msgstr "Modifica"
+
+#. module: massive_price_change
+#: field:wzd.massive_price_change,price_type:0
+msgid "Price Type"
+msgstr "Tipo di Prezzo"
+
+#. module: massive_price_change
+#: field:wzd.massive_price_change,supplier_id:0
+msgid "Supplier"
+msgstr "Fornitore"
 
