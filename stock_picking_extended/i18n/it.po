@@ -601,4 +601,4 @@ msgstr "Stato Fatture"
 #. module: stock_picking_extended
 #: view:stock.picking:0
 msgid "Internal Notes"
-msgstr "Note Interne
+msgstr "Note Interne"
