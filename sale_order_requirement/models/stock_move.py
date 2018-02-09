@@ -67,6 +67,7 @@ class StockMove(orm.Model):
                     if stock_move.state == 'done':
                         res[stock_move.id] = True
                 for temp_mrp_bom in temp_mrp_bom_obj.browse(cr, uid, temp_mrp_bom_ids, context):
+                    res[stock_move.id] = True
                     if temp_mrp_bom.mrp_production_id and temp_mrp_bom.mrp_production_id.state != 'done':
                         res[stock_move.id] = False
 
