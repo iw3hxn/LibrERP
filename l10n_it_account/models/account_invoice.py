@@ -439,7 +439,7 @@ class account_invoice(orm.Model):
         return True
 
     _columns = {
-        'supplier_invoice_number': fields.char('Supplier invoice nr', size=16),
+        'supplier_invoice_number': fields.char('Supplier invoice nr', size=32),
         'totale_documento': fields.function(get_total_fiscal, digits_compute=dp.get_precision('Account'), string='Totale Documento', type='float', method=True, store=
              {
                  'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),

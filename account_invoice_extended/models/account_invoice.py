@@ -84,7 +84,7 @@ class account_invoice(orm.Model):
         return result
 
     _columns = {
-        'supplier_invoice_number': fields.char('Supplier invoice nr', size=16),
+        'supplier_invoice_number': fields.char('Supplier invoice nr', size=32),
         # 'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
         'stock_picking_ids': fields.function(_get_stock_picking, 'Stock Picking', type='one2many', relation="stock.picking", readonly=True, method=True),
     }
