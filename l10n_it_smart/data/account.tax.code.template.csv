@@ -52,3 +52,5 @@ V-T-00-ART8-C1-LC,template_tax_vnd_00_art8_c1_lc,Cessioni all’esportazione non
 V-B-00-ART8-C1-LC,template_bse_vnd_00_art8_c1_lc,Base cessioni all’esportazione non imponibili art 8 c 1 l c (plafond) dpr 633 1972,template_bse_vnd
 V-T-00-ART7,template_tax_vnd_00_art7,Operazioni non imponibili art 7 dpr 633 1972,template_tax_vnd
 V-B-00-ART7,template_bse_vnd_00_art7,Base operazioni non imponibili art 7 dpr 633 1972,template_bse_vnd
+V-T-00-RC,template_tax_vnd_00_rc,Vendite Reverse Charge,template_tax_vnd
+V-B-00-RC,template_bse_vnd_00_rc,Base Cessioni in reverse charge,template_bse_vnd
