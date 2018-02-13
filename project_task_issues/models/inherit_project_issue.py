@@ -40,8 +40,13 @@ class project_issue(orm.Model):
     #     return [(x['id'], str(x.id)) for x in self.browse(cr, uid, ids, context=context)]
 
     def on_change_project(self, cr, uid, ids, project_id, email_from, context=None):
-        if not project_id:
+        if not project_id or not ids:
             return {'value': {}}
+
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
+        if isinstance(ids, (int, long)):
+            ids = [ids]
 
         project = self.pool['project.project'].browse(cr, uid, project_id, context=context)
 
@@ -50,13 +55,28 @@ class project_issue(orm.Model):
             task_id = task_ids[0]
         else:
             task_id = False
-        return {
-            'value': {
-                'partner_id': project.partner_id and project.partner_id.id,
-                'task_id': task_id,
-                'analytic_account_id': project.analytic_account_id.id,
-            }
+
+        vals = {
+            'partner_id': project.partner_id and project.partner_id.id,
+            'task_id': task_id,
+            'analytic_account_id': project.analytic_account_id.id,
         }
+        issue = self.browse(cr, uid, ids[0], context)
+        if not issue.user_id:
+            vals['user_id'] = uid
+
+        return {
+            'value': vals
+        }
+
+    def onchange_task_id(self, cr, uid, ids, task_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = super(project_issue, self).onchange_task_id(cr, uid, ids, task_id, context)
+        if not res.get('value', {}).get('user_id', False):
+            issue = self.browse(cr, uid, ids[0], context)
+            if not issue.user_id:
+                res['value']['user_id'] = uid
+        return res
 
     _columns = {
         'work_ids': fields.one2many('project.task.work', 'issue_id', 'Work done'),
