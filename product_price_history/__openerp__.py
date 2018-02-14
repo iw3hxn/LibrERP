@@ -23,7 +23,7 @@
 
 {
     "name": "Product Price History",
-    "version": "3.1.2.2",
+    "version": "3.2.3.3",
     "author": "Zikzakmedia SL",
     "website": "www.zikzakmedia.com",
     "license": "AGPL-3",

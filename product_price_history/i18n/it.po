@@ -60,6 +60,11 @@ msgid "Date To"
 msgstr "Data Variazione"
 
 #. module: product_price_history
+#: field:product.price.history,supplier_id:0
+msgid "Supplier"
+msgstr "Fornitore"
+
+#. module: product_price_history
 #: model:ir.model,name:product_price_history.model_product_template
 msgid "Product Template"
 msgstr "Modello Prodotto"

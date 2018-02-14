@@ -63,6 +63,36 @@ class product_template(orm.Model):
         return super(product_template, self).write(cr, uid, ids, values, context=context)
 
 
+class pricelist_partnerinfo(orm.Model):
+
+    _inherit = 'pricelist.partnerinfo'
+
+    def write(self, cr, uid, ids, values, context=None):
+        """
+        Add old Sale Price or Sale Cost to historial
+        """
+        for partner_info in self.browse(cr, uid, ids, context=context):
+            if 'price' in values and partner_info.price != values['price']:
+                product_id = partner_info.suppinfo_id.product_id.id
+                supplier_id = partner_info.suppinfo_id.name.id
+                history_values = {
+                    'user_id': uid,
+                    'product_id': product_id,
+                    'date_to': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                    'supplier_id': supplier_id
+                }
+
+                if values.get('price', False):
+                    history_values.update({
+                        'standard_price': partner_info.price,
+                        'new_standard_price': values['price'],
+
+                    })
+                self.pool['product.price.history'].create(cr, uid, history_values, context=context)
+
+        return super(pricelist_partnerinfo, self).write(cr, uid, ids, values, context=context)
+
+
 class product_product(orm.Model):
     _inherit = 'product.product'
 

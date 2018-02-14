@@ -599,6 +599,29 @@ class product_pricelist_item(orm.Model):
         return res
 
 
+class pricelist_partnerinfo(orm.Model):
+
+    _inherit = 'pricelist.partnerinfo'
+
+    def create(self, cr, uid, vals, context=None):
+        res = super(pricelist_partnerinfo, self).create(cr, uid, vals, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache = {}
+        return res
+
+    def write(self, cr, uid, ids, vals, context=None):
+        res = super(pricelist_partnerinfo, self).write(cr, uid, ids, vals, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache = {}
+        return res
+
+    def unlink(self, cr, uid, ids, context=None):
+        res = super(pricelist_partnerinfo, self).unlink(cr, uid, ids, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache = {}
+        return res
+
+
 class res_partner(orm.Model):
 
     _inherit = 'res.partner'

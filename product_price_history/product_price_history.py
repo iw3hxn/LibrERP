@@ -32,6 +32,7 @@ class product_price_history(orm.Model):
     _order = 'date_to desc'
 
     _columns = {
+        'supplier_id': fields.many2one('res.partner', 'Supplier', readonly=True),
         'date_to': fields.datetime('Date To', readonly=True, required=True),
         'product_id': fields.many2one('product.template', 'Product', readonly=True, required=True, ondelete='cascade'),
         'user_id': fields.many2one('res.users', 'User', readonly=True, required=True, ondelete='cascade'),
