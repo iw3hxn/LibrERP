@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="warning.product_warning_form_view" model="ir.ui.view">
+            <field name="name">product.warning.form.inherit</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Warnings">
+                        <group colspan="2" col="2">
+                            <separator string="Warning when Selling this Product" colspan="4"/>
+                            <field name="sale_line_warn" nolabel="1"/>
+                            <field name="sale_line_warn_msg" colspan="3" nolabel="1"
+                                   attrs="{'required':[('sale_line_warn','!=','no-message')],'readonly':[('sale_line_warn','=','no-message')]}"/>
+                        </group>
+                        <group colspan="2" col="2">
+                            <separator string="Warning when Purchasing this Product" colspan="4"/>
+                            <field name="purchase_line_warn" nolabel="1"/>
+                            <field name="purchase_line_warn_msg" colspan="3" nolabel="1"
+                                   attrs="{'required':[('purchase_line_warn','!=','no-message')],'readonly':[('purchase_line_warn','=','no-message')]}"/>
+                        </group>
+                        <group colspan="2" col="2">
+                            <separator string="Warning on Bom" colspan="4"/>
+                            <field name="mrp_bom_warn" nolabel="1"/>
+                            <field name="mrp_bom_warn_msg" colspan="3" nolabel="1"
+                                   attrs="{'required':[('mrp_bom_warn','!=','no-message')],'readonly':[('mrp_bom_warn','=','no-message')]}"/>
+                        </group>
+
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+    </data>
+</openerp>
