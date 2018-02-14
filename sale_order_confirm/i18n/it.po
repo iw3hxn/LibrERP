@@ -1059,3 +1059,41 @@ msgstr "Dividi Fattura Finale dall'anticipo"
 #, python-format
 msgid "Invoice {name}"
 msgstr "Fattura {name}"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Sales Done"
+msgstr "Completati"
+
+#. module: sale_order_confirm
+#: view:sale.order:0
+msgid "Sales Cancelled"
+msgstr "Annullati"
+
+#. modules: sale_order_confirm
+#: model:ir.model,name:sale_order_confirm.model_crm_lost_reason
+msgid "Reason for loosing leads"
+msgstr "Modivo di Perdita Preventivo"
+
+#. module: sale_order_confirm
+#: model:ir.actions.act_window,name:sale_order_confirm.crm_lost_reason_action
+#: model:ir.ui.menu,name:sale_order_confirm.menu_crm_lost_reason
+msgid "Lost Reasons"
+msgstr "Motivi Perdita"
+
+#. modules: sale_order_confirm
+#: field:crm.lost.reason,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: sale_order_confirm
+#: view:crm.lost.reason:0
+#: field:sale.order,lost_reason_id:0
+#: field:sale.order.revision.note,lost_reason_id:0
+msgid "Lost Reason"
+msgstr "Motivo Perdita"
+
+#. module: sale_order_confirm
+#: view:crm.lost.reason:0
+msgid "Search Lost Reason"
+msgstr "Ricerca Motivo Perdita"

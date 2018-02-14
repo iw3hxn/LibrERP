@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--
+                    crm.lost.reason views
+                -->
+        <record id="crm_lost_reason_view_search" model="ir.ui.view">
+            <field name="name">crm.lost.reason.view.search</field>
+            <field name="model">crm.lost.reason</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Lost Reason">
+                    <filter string="Include archived" name="archived"
+                            domain="['|', ('active', '=', True), ('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="crm_lost_reason_view_form" model="ir.ui.view">
+            <field name="name">crm.lost.reason.form</field>
+            <field name="model">crm.lost.reason</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Lost Reason">
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_lost_reason_view_form" model="ir.ui.view">
+            <field name="name">crm.lost.reason.form</field>
+            <field name="model">crm.lost.reason</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Lost Reason" editable="top">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_lost_reason_action" model="ir.actions.act_window">
+            <field name="name">Lost Reasons</field>
+            <field name="res_model">crm.lost.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+            id="menu_crm_lost_reason"
+            action="crm_lost_reason_action"
+            parent="base.menu_sale_config_sales"
+            sequence="6"/>
+
+    </data>
+</openerp>

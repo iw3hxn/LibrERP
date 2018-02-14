@@ -34,6 +34,7 @@ class sale_order_revision_note(orm.TransientModel):
     _name = "sale.order.revision.note"
     _columns = {
         'name': fields.char('Reason', size=256, select=True),
+        'lost_reason_id': fields.many2one('crm.lost.reason', string='Lost Reason'),
     }
     
     def create_revision(self, cr, uid, ids, context=None):
@@ -68,8 +69,14 @@ class sale_order_revision_note(orm.TransientModel):
         active_ids = context.get('active_ids', [])
         if not active_ids:
             return False
-        reason_note = self.browse(cr, uid, ids[0], context=context).name
-        sale_order_obj.write(cr, uid, active_ids, {'revision_note': reason_note}, context=context)
+
+        wizard = self.browse(cr, uid, ids[0], context=context)
+        reason_note = wizard.name
+        sale_order_vals = {
+            'revision_note': reason_note,
+            'lost_reason_id': wizard.lost_reason_id and wizard.lost_reason_id.id
+        }
+        sale_order_obj.write(cr, uid, active_ids, sale_order_vals, context=context)
         if reason_note:
             text = _("Add Note for Reject: '%s' ") % reason_note
             sale_order_obj.message_append(cr, uid, active_ids, text, body_text=text, context=context)

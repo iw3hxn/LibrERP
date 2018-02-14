@@ -11,3 +11,6 @@ access_product_pricelist_user,product.pricelist.user,product.model_product_price
 access_product_pricelist_version_user,product.pricelist.version.user,product.model_product_pricelist_version,base.group_sale_salesman,1,0,0,0
 access_product_pricelist_item_user,product.pricelist.item.user,product.model_product_pricelist_item,base.group_sale_salesman,1,0,0,0
 access_product_price_type_user,product.price.type.user,product.model_product_price_type,base.group_sale_salesman,1,0,0,0
+access_crm_lost_reason_manager,crm.lost.reason.manager,model_crm_lost_reason,base.group_sale_manager,1,1,1,1
+access_crm_lost_reason_salesman,crm.lost.reason.salesman,model_crm_lost_reason,base.group_sale_salesman,1,0,0,0
+access_crm_lost_reason_user,crm.lost.reason.user,model_crm_lost_reason,base.group_user,1,0,0,0
