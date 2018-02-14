@@ -146,6 +146,7 @@ class sale_order(orm.Model):
         default = default or {}
         default.update({
             'original_quotation_name': False,
+            'original_quotation_date': False,
         })
         return super(sale_order, self).copy(cr, uid, id, default, context)
 
