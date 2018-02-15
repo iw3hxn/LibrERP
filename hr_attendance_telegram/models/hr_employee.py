@@ -16,7 +16,7 @@ class hr_employee(orm.Model):
         employee_id = self.pool['hr.sign.in.out']._get_empid(cr, uid, context=context).get('emp_id')
         return employee_id
 
-    def _telegram_attendance_action(self, cr, uid, position, employee_id, type, context):
+    def telegram_attendance_action(self, cr, uid, position, employee_id, type, context):
         hr_attendance_id = self.pool['hr.employee'].attendance_action_change(cr, uid, [employee_id], type, context)
         if hr_attendance_id:
             self.pool['hr.attendance'].write(cr, uid, hr_attendance_id, {
@@ -39,7 +39,7 @@ class hr_employee(orm.Model):
             cond = not last_att or last_att.action == 'sign_out'
             if cond:
                 position = self.pool['res.users'].get_position(cr, uid, cancel_data=True, context=context)
-                self._telegram_attendance_action(cr, uid, position, emp_id, 'sign_in', context)
+                self.telegram_attendance_action(cr, uid, position, emp_id, 'sign_in', context)
                 return True
         return False
 
@@ -56,7 +56,7 @@ class hr_employee(orm.Model):
             cond = not last_att or last_att.action == 'sign_in'
             if cond:
                 position = self.pool['res.users'].get_position(cr, uid, cancel_data=True, context=context)
-                self._telegram_attendance_action(cr, uid, position, emp_id, 'sign_out', context)
+                self.telegram_attendance_action(cr, uid, position, emp_id, 'sign_out', context)
                 return True
         return False
 
