@@ -16,9 +16,9 @@ class hr_employee(orm.Model):
         employee_id = self.pool['hr.sign.in.out']._get_empid(cr, uid, context=context).get('emp_id')
         return employee_id
 
-    def telegram_attendance_action(self, cr, uid, position, employee_id, type, context):
+    def telegram_attendance_action(self, cr, uid, position, employee_id, type, context=None):
         hr_attendance_id = self.pool['hr.employee'].attendance_action_change(cr, uid, [employee_id], type, context)
-        if hr_attendance_id:
+        if hr_attendance_id and isinstance(position, (list, tuple)):
             self.pool['hr.attendance'].write(cr, uid, hr_attendance_id, {
                 'latitude': position[0],
                 'longitude': position[1]},

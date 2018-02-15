@@ -25,7 +25,7 @@
     "name": """HR Attendance with Telegram Bot""",
     "summary": """Telegram Integration""",
     "category": "Telegram",
-    "version": "3.0.1.0",
+    "version": "3.0.2.0",
 
     "author": "Didotech SRL",
     "website": "https://www.didotech.com",
