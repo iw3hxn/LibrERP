@@ -34,6 +34,7 @@
     "init": [],
     "demo": [],
     "data": [
+        'security/ir.model.access.csv',
         'views/sale_view.xml',
         'views/crm_activity.xml',
     ],

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_activity_manager,access_crm_activity_manager,model_crm_activity,base.group_sale_manager,1,1,1,1
+access_crm_activity_salesman,access_crm_activity_salesman,model_crm_activity,base.group_sale_salesman,1,0,0,0
+access_crm_activity_user,access_crm_activity_user,model_crm_activity,base.group_user,1,0,0,0
