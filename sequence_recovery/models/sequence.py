@@ -84,7 +84,7 @@ class ir_sequence(orm.Model):
             # ----- If found it, it recoveries the sequence and return it
             recovery_id = recovery_ids[0]
             sequence = recovery_obj.browse(cr, uid, recovery_id, context).sequence
-            recovery_obj.write(cr, uid, recovery_ids, {'active': False}, context)
+            recovery_obj.write(cr, uid, recovery_id, {'active': False}, context)
         else:
             sequence = super(ir_sequence, self).next_by_id(cr, uid, sequence_id, context)
         return sequence
