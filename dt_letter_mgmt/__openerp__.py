@@ -23,7 +23,7 @@
 
 {
     "name": "Letter Management",
-    "version": "3.3.0.7",
+    "version": "3.3.0.8",
     "depends": [
         "base"
     ],
@@ -36,7 +36,9 @@
     "init_xml": [],
     'depends': [
         'hr',
-        'base_address_contacts'
+        'base_address_contacts',
+        'web_wysiwyg',
+        'web_display_html'
     ],
     'update_xml': [
         "security/letter_security.xml",

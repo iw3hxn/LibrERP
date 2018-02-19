@@ -354,8 +354,11 @@
 					<notebook>
                         <page string="Note">
 							<separator string="Note" />
-							<field name="note" select="2" colspan="4"
+							<field name="note" select="2" colspan="4" widget="text_WYSIWYG"
 								nolabel="1" />
+                        	<html>
+                            	<a onclick="javascript:toggle_ckeditor();" class="wysiwyg_button wysiwyg_button_off oe_button">WYSIWYG on</a>
+                        	</html>
 						</page>
 						<page string="Extra Info." groups="dt_letter_mgmt.group_letter_extended">
 							<field name="company_id" select="2" groups="base.group_multi_company"
