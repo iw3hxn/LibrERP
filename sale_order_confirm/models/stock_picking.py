@@ -44,7 +44,9 @@ class stock_picking(orm.Model):
                 if invoice.advance_order_id:
                     # here i need to check fiscal_position
                     if invoice.fiscal_position.split_invoice_advanced:
-                        new_invoice_id = account_invoice_obj.copy(cr, uid, invoice.id, {'type': 'out_refund', 'invoice_line': False, 'journal_id': False})
+                        journal_ids = self.pool['account.journal'].search(cr, uid, [('type', '=', 'sale_refund')], limit=1)
+                        journal_id = journal_ids and journal_ids[0] or False
+                        new_invoice_id = account_invoice_obj.copy(cr, uid, invoice.id, {'type': 'out_refund', 'invoice_line': False, 'journal_id': journal_id})
                         note = _('Invoice {name}').format(name=invoice.number)
                         for line in invoice.invoice_line:
                             self.pool['account.invoice.line'].copy(cr, uid, line.id, {'invoice_id': new_invoice_id, 'price_unit': line.price_unit, 'sequence': 1000, 'note': note })
