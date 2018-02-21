@@ -11,7 +11,7 @@
                     <filter icon="terp-document-new" string="To Deploy" domain="[('state','=','draft')]" />
                     <filter icon="terp-check" string="Done" domain="[('state','=','done')]"/>
                     <separator orientation="vertical"/>
-                    <field name="product_id" filter_domain="['|', ('product_id','ilike',self),('new_product_id','ilike',self)]"/>
+                    <field name="product_id" filter_domain="['|', '|', ('product_id','ilike',self),('new_product_id','ilike',self), ('production_product_id', 'ilike', self)]"/>
                     <field name="note" string="Order/Customer Ref" filter_domain="['|', ('sale_order_id','ilike',self),('client_order_ref','ilike',self)]"/>
                     <field name="customer_id"/>
                     <separator orientation="vertical"/>

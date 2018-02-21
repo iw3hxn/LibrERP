@@ -57,6 +57,8 @@ class order_requirement(orm.Model):
         'internal_note': fields.related('sale_order_id', 'picking_ids', 'internal_note', type='text', string='Internal Note'),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'production_product_id': fields.related('order_requirement_line_ids', 'temp_mrp_bom_ids', 'product_id', type='many2one', relation='product.product',
+                                     string='Product Production'),
         'product_id': fields.related('order_requirement_line_ids', 'product_id', type='many2one', relation='product.product',
                                      string='Product'),
         'new_product_id': fields.related('order_requirement_line_ids', 'new_product_id', type='many2one', relation='product.product',
