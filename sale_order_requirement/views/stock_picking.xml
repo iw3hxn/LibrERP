@@ -39,7 +39,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <xpath expr="/form/notebook/page/field/tree/field[@name='state']" position="after">
-                    <field name="temp_mrp_bom_ids"/>
+                    <field name="temp_mrp_bom_list"/>
                 </xpath>
             </field>
         </record>

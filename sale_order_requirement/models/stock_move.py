@@ -40,13 +40,18 @@ class StockMove(orm.Model):
     def _get_connected_order_ids(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for stock_move in self.browse(cr, uid, ids, context):
-            order_ids = ''
+            order_name = ''
+            order_ids = []
             if stock_move.purchase_line_id:
                 for line in stock_move.purchase_line_id.temp_mrp_bom_ids:
-                    if order_ids:
-                        order_ids += ', '
-                    order_ids += line.name_get()[0][1]
-            res[stock_move.id] = order_ids
+                    if order_name:
+                        order_name += ', '
+                    order_name += line.name_get()[0][1]
+                    order_ids.append(line.id)
+            res[stock_move.id] = {
+                'temp_mrp_bom_list': order_name,
+                'temp_mrp_bom_ids': order_ids
+            }
         return res
 
     def _line_ready(self, cr, uid, ids, field_name, arg, context=None):
@@ -75,8 +80,9 @@ class StockMove(orm.Model):
 
     _columns = {
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
-        'temp_mrp_bom_ids': fields.function(_get_connected_order_ids, type='char', method=True,
-                                   string='Sale Orders'),
+        'temp_mrp_bom_ids': fields.function(_get_connected_order_ids, type='one2many', relation='temp.mrp.bom', method=True, string='Sale Orders',
+                                             multi="connected_order"),
+        'temp_mrp_bom_list': fields.function(_get_connected_order_ids, type='char', method=True, string='Sale Orders', multi="connected_order"),
     }
 
     def print_production_order(self, cr, uid, ids, context):
