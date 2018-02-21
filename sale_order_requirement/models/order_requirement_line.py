@@ -422,12 +422,15 @@ class order_requirement_line(orm.Model):
         def _get_rec(bom_rec, father_id, level):
             global sequence
 
+            father = temp_mrp_bom_obj.browse(cr, uid, father_id, context)
+            mult = qty_mult * father.original_qty
+
             bom_children = bom_rec.child_buy_and_produce_ids
             if not bom_children:
                 return
             for bom in bom_children:
                 if bom.product_id.type == 'product':
-                    temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, qty_mult, father_id, level, context)
+                    temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom, mult, father_id, level, context)
                     temp_vals['sequence'] = sequence
                     sequence += 1
                     temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
@@ -442,9 +445,13 @@ class order_requirement_line(orm.Model):
                 # elif bom.product_id.type == 'service'
                 # TODO => IDEA: change sale_order and let include service and create ROUTING FROM product type = service
 
+
         if not bom_ids:
             # It's a product with no BoM
-            temp_vals = self._get_temp_vals_from_product(cr, uid, ids, product, qty_mult, father_temp_id, start_level, context)
+            father = temp_mrp_bom_obj.browse(cr, uid, father_temp_id, context)
+            mult = qty_mult * father.original_qty
+
+            temp_vals = self._get_temp_vals_from_product(cr, uid, ids, product, mult, father_temp_id, start_level, context)
             temp_vals['sequence'] = sequence
             sequence += 1
             temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
@@ -460,8 +467,15 @@ class order_requirement_line(orm.Model):
 
         for bom_father in bom_ids:
             # Main BOMs only if create_father = True
+
             if create_father:
-                temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_father, qty_mult, father_temp_id, start_level, context)
+                if father_temp_id > 0:
+                    father = temp_mrp_bom_obj.browse(cr, uid, father_temp_id, context)
+                    mult = qty_mult * father.original_qty
+                else:
+                    mult = qty_mult
+                temp_vals = self._get_temp_vals_from_mrp_bom(cr, uid, ids, bom_father, mult,
+                                                             father_temp_id, start_level, context)
                 temp_vals['sequence'] = sequence
                 sequence += 1
                 temp_id = temp_mrp_bom_obj.create(cr, uid, temp_vals, context)
@@ -673,9 +687,20 @@ class order_requirement_line(orm.Model):
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         line_id = ids[0]
         line = self.browse(cr, uid, line_id, context)
-        for temp in line.temp_mrp_bom_ids:
+
+        def _recalc_qty_rec(temp, father_qty):
             oldqty = temp.original_qty
-            temp_mrp_bom_obj.write(cr, uid, temp.id, {'product_qty': oldqty * qty}, context)
+            new_qty = oldqty * father_qty
+            temp_mrp_bom_obj.write(cr, uid, temp.id, {'product_qty': new_qty}, context)
+            for t in temp.bom_lines:
+                _recalc_qty_rec(t, new_qty)
+
+        father = line.temp_mrp_bom_ids[0]
+        new_father_qty = father.original_qty * qty
+        temp_mrp_bom_obj.write(cr, uid, father.id, {'product_qty': new_father_qty}, context)
+        # Recursively calculate quantity
+        _recalc_qty_rec(father, new_father_qty)
+
         total_cost = self._update_cost(cr, uid, line_id, context)
         return {'value': {'qty': qty, 'cost': total_cost}}
 
