@@ -92,13 +92,14 @@ class stock_picking(orm.Model):
                                                                    ('state', '=', 'done'),
                                                                    ('date_expected', '>', move.date),
                                                                    ('price_unit', '!=', move.price_unit),
-                                                                   ('company_id', '=', move.company_id.id)])
+                                                                   ('company_id', '=', move.company_id.id)], context=context)
                         if later_ids:
                             later_prices = []
                             for later_move in move_line_obj.browse(cr, uid, later_ids):
-                                later_prices.append(later_move.price_unit)
-                                raise orm.except_orm(_('Error'), _(
-                                    'You cannot reopen this picking, because product "%s" of this picking has already later posted moves with different cost price(s) %s  then the current [%s] to be reopened! Recalculation of avarage price is not supported') % (
+                                if later_move.purchase_line_id:
+                                    later_prices.append(later_move.price_unit)
+                                    raise orm.except_orm(_('Error'), _(
+                                        'You cannot reopen this picking, because product "%s" of this picking has already later posted moves with different cost price(s) %s  then the current [%s] to be reopened! Recalculation of avarage price is not supported') % (
                                                      move.product_id.name, later_prices, move.price_unit))
         return True
 
