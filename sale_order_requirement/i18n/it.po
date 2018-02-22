@@ -553,3 +553,8 @@ msgstr "Stampa tutti gli Ordini di Produzione"
 #: field:stock.move,temp_mrp_bom_ids:0
 msgid "Sale Orders"
 msgstr "Ordini di Vendita"
+
+#. module: sale_order_requirement
+#: field:stock.move,temp_mrp_bom_list:0
+msgid "Sale Orders"
+msgstr "Ordini di Vendita"
