@@ -545,6 +545,25 @@ class order_requirement_line(orm.Model):
             res[line.id] = state_str
         return res
 
+    def _purchase_orders_state(self, cr, uid, ids, name, args, context=None):
+        # All related purchase order lines WITH MOVES in done state
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            # First -> all non null purchase order lines
+            po_lines = line.purchase_order_line_ids
+            # All stock moves lists (list of lists)
+            moves_lists = [p.move_ids for p in po_lines if p.move_ids]
+            # Flat list -> all moves
+            moves = [m for lines in moves_lists for m in lines]
+            tot = len(moves)
+            done = len([m for m in moves if m.state == 'done'])
+            state_str = ''
+            if tot > 0:
+                state_str = '%d/%d' % (done, tot)
+            res[line.id] = state_str
+        return res
+
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}),
@@ -579,6 +598,8 @@ class order_requirement_line(orm.Model):
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         'production_orders_state': fields.function(_production_orders_state, method=True, type='string',
                                                    string='Prod. orders', readonly=True),
+        'purchase_orders_state': fields.function(_purchase_orders_state, method=True, type='string',
+                                                 string='Purch. orders', readonly=True),
         # 'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'), # TODO: needed?
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),

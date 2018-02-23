@@ -304,6 +304,11 @@ msgid "Prod. orders"
 msgstr "Ord. produzione"
 
 #. module: sale_order_requirement
+#: field:order.requirement.line,purchase_orders_state:0
+msgid "Purch. orders"
+msgstr "Ord. acquisto"
+
+#. module: sale_order_requirement
 #: field:order.requirement.line,stock_availability:0
 #: field:temp.mrp.bom,stock_availability:0
 msgid "Stock Availability"
