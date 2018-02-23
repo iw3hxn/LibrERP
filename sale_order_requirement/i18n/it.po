@@ -299,6 +299,11 @@ msgid "Original Product"
 msgstr "Prodotto Originale"
 
 #. module: sale_order_requirement
+#: field:order.requirement.line,production_orders_state:0
+msgid "Prod. orders"
+msgstr "Ord. produzione"
+
+#. module: sale_order_requirement
 #: field:order.requirement.line,stock_availability:0
 #: field:temp.mrp.bom,stock_availability:0
 msgid "Stock Availability"

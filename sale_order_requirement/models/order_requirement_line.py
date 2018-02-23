@@ -532,6 +532,19 @@ class order_requirement_line(orm.Model):
     #
     #     return res
 
+    def _production_orders_state(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            mrp_productions = set([temp.mrp_production_id for temp in line.temp_mrp_bom_ids if temp.mrp_production_id])
+            tot = len(mrp_productions)
+            done = len([prod for prod in mrp_productions if prod.state == 'done'])
+            state_str = ''
+            if tot > 0:
+                state_str = '%d/%d' % (done, tot)
+            res[line.id] = state_str
+        return res
+
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
                                           states={'draft': [('readonly', False)]}),
@@ -564,6 +577,8 @@ class order_requirement_line(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders'),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
+        'production_orders_state': fields.function(_production_orders_state, method=True, type='string',
+                                                   string='Prod. orders', readonly=True),
         # 'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'), # TODO: needed?
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
