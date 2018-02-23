@@ -48,6 +48,11 @@
                         </field>
                     </page>
                 </page>
+
+                <field name="picking_id" position="after">
+                    <field name="order_requirement_line_id"/>
+                </field>
+
                 <!--<notebook position="inside">-->
                     <!--<page string="Communication &amp; History">-->
                         <!--<field name="message_ids" colspan="4" nolabel="1" mode="tree" readonly="1">-->

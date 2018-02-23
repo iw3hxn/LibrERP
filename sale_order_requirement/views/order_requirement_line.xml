@@ -152,9 +152,9 @@
                                         <field name="buy" readonly="1"/>
                                         <field name="supplier_id"  readonly="1"/>
                                         <field name="purchase_order_id" />
-                                        <button string="View" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisibile': [('purchase_order_id','=',False)]}"/>
+                                        <button string="View" name="action_view_purchase_order" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>
                                         <field name="mrp_production_id" />
-                                        <button string="View" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
+                                        <button string="View" name="action_view_mrp_production" icon="STOCK_FULLSCREEN" type="object" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
                                     </tree>
                                     <form string="BoM Details">
                                         <field name="product_id" readonly="1"/>
@@ -240,6 +240,7 @@
                     <button name="action_reload_bom" icon="gtk-refresh" type="object" help="Reload BOM"
                             attrs="{'invisible': [('state','!=','draft')]}"/>
                     <field name="production_orders_state"/>
+                    <field name="purchase_orders_state"/>
                     <button name="print_production_order" string="Print" type="object" help="Print All production Order" icon="gtk-print" attrs="{'invisible': [('state','=','draft')]}" />
                 </tree>
             </field>
