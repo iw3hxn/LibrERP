@@ -162,7 +162,7 @@
                                         <field name="level"/>
                                         <field name="is_leaf"/>
                                         <field name="product_uom" readonly="1"/>
-                                        <field name="mrp_routing_id" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
+                                        <field name="mrp_routing_id" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
                                         <field name="stock_availability"/>
                                         <field name="spare"/>
                                         <field name="cost"/>
@@ -174,10 +174,10 @@
                                         <field name="is_manufactured" readonly="1"/>
                                         <newline/>
                                         <!--<field name="user_id"/>-->
-                                        <field name="purchase_order_id" attrs="{'invisibile': [('purchase_order_id','=',False)]}"/>
+                                        <field name="purchase_order_id" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>
                                         <field name="supplier_id"  readonly="1"/>
                                         <newline />
-                                        <field name="mrp_production_id" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
+                                        <field name="mrp_production_id" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
                                     </form>
                                 </field>
                             </page>
