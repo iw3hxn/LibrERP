@@ -545,8 +545,24 @@ class order_requirement_line(orm.Model):
             res[line.id] = state_str
         return res
 
+    def _purchase_orders_approved(self, cr, uid, ids, name, args, context=None):
+        # Based on purchase orders approved / total
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            # First -> all non null purchase order lines
+            purchase_orders = line.purchase_order_ids
+            # All
+            tot = len(purchase_orders)
+            done = len([p for p in purchase_orders if p.state in ('approved', 'done')])
+            state_str = ''
+            if tot > 0:
+                state_str = '%d/%d' % (done, tot)
+            res[line.id] = state_str
+        return res
+
     def _purchase_orders_state(self, cr, uid, ids, name, args, context=None):
-        # All related purchase order lines WITH MOVES in done state
+        # Based on stock moves in purchase order lines => count stock moves in state 'done'
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
@@ -554,10 +570,25 @@ class order_requirement_line(orm.Model):
             po_lines = line.purchase_order_line_ids
             # All stock moves lists (list of lists)
             moves_lists = [p.move_ids for p in po_lines if p.move_ids]
-            # Flat list -> all moves
+            # Flat list -> all moves excluding canceled ones
             moves = [m for lines in moves_lists for m in lines if m.state != 'cancel']
             tot = len(moves)
             done = len([m for m in moves if m.state == 'done'])
+            state_str = ''
+            if tot > 0:
+                state_str = '%d/%d' % (done, tot)
+            res[line.id] = state_str
+        return res
+
+    def ORDER_LINES_purchase_orders_state(self, cr, uid, ids, name, args, context=None):
+        # Based on Purchase Order lines state
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            po_lists = [p.order_line for p in line.purchase_order_ids if p.order_line]
+            po_lines = [pl for lines in po_lists for pl in lines]
+            tot = len(po_lines)
+            done = len([p for p in po_lines if p.state == 'done'])
             state_str = ''
             if tot > 0:
                 state_str = '%d/%d' % (done, tot)
@@ -598,8 +629,10 @@ class order_requirement_line(orm.Model):
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
         'production_orders_state': fields.function(_production_orders_state, method=True, type='string',
                                                    string='Prod. orders', readonly=True),
+        'purchase_orders_approved': fields.function(_purchase_orders_approved, method=True, type='string',
+                                                    string='Purch. orders approved', readonly=True),
         'purchase_orders_state': fields.function(_purchase_orders_state, method=True, type='string',
-                                                 string='Purch. orders', readonly=True),
+                                                 string='Deliveries', readonly=True),
         # 'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'), # TODO: needed?
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
@@ -621,6 +654,18 @@ class order_requirement_line(orm.Model):
     #     ret['temp_mrp_bom_ids']['invisible'] = not view_bom
     #     ret['temp_mrp_bom_routing_ids']['invisible'] = not view_bom
     #     return ret
+
+    def name_get(self, cr, user, ids, context=None):
+        if context is None:
+            context = {}
+        if not len(ids):
+            return []
+
+        result = {}
+        for ordreqline in self.browse(cr, user, ids, context=context):
+            name = u'Open ({})'.format(ordreqline.id)
+            result[ordreqline.id] = name
+        return result
 
     def action_reload_bom(self, cr, uid, ids, context):
         for requirement_line in self.browse(cr, uid, ids, context):
@@ -826,8 +871,6 @@ class order_requirement_line(orm.Model):
         if not purchase_order_ids:
             # Adding if no "similar" orders are presents
 
-            purchase_order_values = purchase_order_obj.default_get(cr, uid, [], context=context)
-
             purchase_order_values = purchase_order_obj.onchange_partner_id(cr, uid, [], supplier_id)['value']
             location_id = shop.warehouse_id.lot_stock_id.id
 
@@ -895,6 +938,7 @@ class order_requirement_line(orm.Model):
                 purchase_order_line_values.update({
                     'product_qty': qty,
                     'order_id': present_order_id,
+                    'order_requirement_ids': [(4, line.order_requirement_id.id)],
                     'order_requirement_line_ids': [(4, line_id)],
                     'sale_order_ids': [(4, sale_order_id)],
                 })
