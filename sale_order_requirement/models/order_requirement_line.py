@@ -555,7 +555,7 @@ class order_requirement_line(orm.Model):
             # All stock moves lists (list of lists)
             moves_lists = [p.move_ids for p in po_lines if p.move_ids]
             # Flat list -> all moves
-            moves = [m for lines in moves_lists for m in lines]
+            moves = [m for lines in moves_lists for m in lines if m.state != 'cancel']
             tot = len(moves)
             done = len([m for m in moves if m.state == 'done'])
             state_str = ''
