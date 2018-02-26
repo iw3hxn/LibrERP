@@ -33,6 +33,7 @@ class product_product(orm.Model):
 
     _columns = {
         'lot_split_type': fields.selection(LOT_SPLIT_TYPE_SELECTION, 'Lot split type', required=True, help="None: no split ; single: 1 line/product unit ; Logistical Unit: split using the 1st Logistical Unit quantity of the product form packaging tab (to be improved to take into account all LU)"),
+        'supplier_code': fields.related('seller_ids', 'product_code', type='char', string="Supplier Code"),
     }
     _defaults = {
         'lot_split_type': lambda *a: 'none',
@@ -43,5 +44,5 @@ class product_ul(orm.Model):
     _inherit = "product.ul"
     
     _columns = {
-        'product_id': fields.many2one('product.product', 'Product' ), 
+        'product_id': fields.many2one('product.product', 'Product'),
     }

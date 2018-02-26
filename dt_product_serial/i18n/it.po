@@ -443,6 +443,13 @@ msgid "Logistical Unit"
 msgstr "Lotto"
 
 #. module: dt_product_serial
+#: field:pallet.move,pallet_id:0
+#: field:stock.move,pallet_id:0
+#: field:stock.partial.picking.line,code:0
+msgid "Supplier Reference"
+msgstr "Codice Fornitore"
+
+#. module: dt_product_serial
 #: view:stock.partial.picking:0
 msgid "Set To Zero All"
 msgstr "Porta a Zero tutte le righe"
@@ -472,3 +479,8 @@ msgstr "Salva"
 #, python-format
 msgid "Delivered"
 msgstr "Inviato"
+
+#. module: dt_product_serial
+#: view:stock.partial.picking.line:0
+msgid "Product code for search in line"
+msgstr "Ricerca prodotto tra le righe"

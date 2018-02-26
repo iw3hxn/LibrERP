@@ -20,5 +20,9 @@
 #
 ##############################################################################
 
-from . import models
-from . import wizard
+from . import product
+from . import pallet
+from . import stock
+from . import company
+from . import prodlot_wizard
+from . import partner
