@@ -51,6 +51,8 @@
 
                 <field name="picking_id" position="after">
                     <field name="order_requirement_line_id"/>
+                    <!--<button colspan="1" name="action_view_order_requirement" context="{'ordreq_line_id': order_requirement_line_id}"-->
+                            <!--icon="terp-gtk-select-all" type="object" string="Order Requirement Line"/>-->
                 </field>
 
                 <!--<notebook position="inside">-->

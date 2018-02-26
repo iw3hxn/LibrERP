@@ -71,6 +71,8 @@ class order_requirement(orm.Model):
         'user_id': lambda obj, cr, uid, context: uid,
     }
 
+    _order = 'date desc'
+
     def set_state_draft(self, cr, uid, ids, context):
         for order in self.browse(cr, uid, ids, context):
             for line in order.order_requirement_line_ids:

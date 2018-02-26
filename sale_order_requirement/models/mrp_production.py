@@ -78,28 +78,24 @@ class mrp_production(orm.Model):
                 workcenter_line_obj.create(cr, uid, line, context)
         return len(results)
 
-    # def write(self, cr, uid, ids, values, context):
-    #     if 'product_lines' in values:
-    #         production_product_obj = self.pool['mrp.production.product.line']
-    #         for line in values['product_lines']:
-    #             if line[0] == 0:
-    #                 message = _(u"Added Product: '{}', quantity: {}").format(
-    #                     line[2]['name'], line[2]['product_qty'])
-    #                 title = 'Added'
-    #             elif line[0] == 1:
-    #                 bom_line = production_product_obj.browse(cr, uid, line[1], context)
-    #                 updated = ["{}: {} -> {}".format(key, getattr(bom_line, key, ''), value) for key, value in line[2].items()]
-    #                 message = _(u"Updated Product: '{}': {}").format(bom_line.product_id.default_code,
-    #                                                                  ', '.join(updated))
-    #                 title = 'Updated'
-    #             elif line[0] == 2:
-    #                 bom_line = production_product_obj.browse(cr, uid, line[1], context)
-    #                 message = _(u"Deleted Product: '{}'").format(bom_line.product_id.default_code)
-    #                 title = 'Deleted'
-    #             else:
-    #                 message = False
-    #             if message:
-    #                 for bom_id in ids:
-    #                     self.message_append(cr, uid, [bom_id], message, body_text=message, context=context)
-    #                     # self.mail_post(cr, uid, bom_id, message, title, context)
-    #     return super(mrp_production, self).write(cr, uid, ids, values, context)
+    def action_view_order_requirement(self, cr, uid, ids, context=None):
+
+        if 'ordreq_line_id' not in context:
+            return False
+
+        ordreq_line_id = context['ordreq_line_id']
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
+                                                               'view_order_requirement_line_form')
+        view_id = view and view[1] or False
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Product BOM'),
+            'res_model': 'order.requirement.line',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [view_id],
+            # 'target': 'new',
+            'context': {'view_bom': True},
+            'res_id': ordreq_line_id
+        }
+

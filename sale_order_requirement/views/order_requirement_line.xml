@@ -162,7 +162,7 @@
                                         <field name="level"/>
                                         <field name="is_leaf"/>
                                         <field name="product_uom" readonly="1"/>
-                                        <field name="mrp_routing_id" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
+                                        <field name="mrp_routing_id" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
                                         <field name="stock_availability"/>
                                         <field name="spare"/>
                                         <field name="cost"/>
@@ -174,10 +174,10 @@
                                         <field name="is_manufactured" readonly="1"/>
                                         <newline/>
                                         <!--<field name="user_id"/>-->
-                                        <field name="purchase_order_id" attrs="{'invisible': [('purchase_order_id','=',False)]}"/>
+                                        <field name="purchase_order_id" attrs="{'invisibile': [('purchase_order_id','=',False)]}"/>
                                         <field name="supplier_id"  readonly="1"/>
                                         <newline />
-                                        <field name="mrp_production_id" attrs="{'invisible': [('mrp_production_id','=',False)]}"/>
+                                        <field name="mrp_production_id" attrs="{'invisibile': [('mrp_production_id','=',False)]}"/>
                                     </form>
                                 </field>
                             </page>
@@ -240,6 +240,7 @@
                     <button name="action_reload_bom" icon="gtk-refresh" type="object" help="Reload BOM"
                             attrs="{'invisible': [('state','!=','draft')]}"/>
                     <field name="production_orders_state"/>
+                    <field name="purchase_orders_approved"/>
                     <field name="purchase_orders_state"/>
                     <button name="print_production_order" string="Print" type="object" help="Print All production Order" icon="gtk-print" attrs="{'invisible': [('state','=','draft')]}" />
                 </tree>
