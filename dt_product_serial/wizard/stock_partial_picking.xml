@@ -7,6 +7,16 @@
             <field name="inherit_id" ref="stock.stock_partial_picking_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
+                <xpath expr="/form/field[@name='move_ids']/tree[@string='Product Moves']" position="attributes">
+                    <attribute name="colors">fuchsia:row_color=='fuchsia';grey:row_color=='grey';blue:row_color=='blue';red:row_color=='red';green:row_color=='green';orange:row_color=='orange'</attribute>
+                </xpath>
+                <xpath expr="/form/field[@name='move_ids']" position="attributes">
+                    <attribute name="on_change">onchange_product_search(product_search, move_ids, context)</attribute>
+                </xpath>
+                <field name="move_ids" position="before">
+                    <field name="product_search" placeholder="Product code for search in line" colspan="4" nolabel="1"
+                               on_change="onchange_product_search(product_search, move_ids, context)"/>
+                </field>
                 <field name="hide_tracking" position="after">
                     <field name="tracking_code"/>
                     <newline/>
@@ -16,15 +26,16 @@
                     <button name="action_set_max_except_check" string="Set To Max Except Check" colspan="1" type="object" icon="gtk-home"/>
                 </field>
                 <field name="product_id" position="replace">
+                    <field name="row_color" invisible="1"/>
+                    <field name="code" invisible="not context.get('type_in', False)"/>
                     <field name="product_id" readonly="1" />
                 </field>
                 <field name="quantity" position="replace">
-                    <button name="action_add" string="Add" type="object" icon="gtk-add"  attrs="{'invisible': [('split_type', '=', 'single')]}"/>
                     <field name="quantity" attrs="{'readonly': [('split_type', '=', 'single')]}" />
+                    <button name="action_add" string="Add" type="object" icon="gtk-add"  attrs="{'invisible': [('split_type', '=', 'single')]}"/>
                     <button name="action_remove" string="Remove" type="object" icon="gtk-remove"  attrs="{'invisible': [('split_type', '=', 'single')]}"/>
-                    <field name="line_check" />
                     <button name="action_check" string="Check" type="object" icon="gtk-apply" />
-
+                    <field name="line_check" />
                     <field name="balance" groups="stock.view_balance"/>
                     <field name="pallet_qty" groups="stock.view_pallet" />
                     <field name="pallet_id" groups="stock.view_pallet" widget="selection" />

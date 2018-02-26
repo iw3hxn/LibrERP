@@ -31,7 +31,7 @@ class res_partner(orm.Model):
     def _get_pallets(self, cr, uid, ids, field_name, args, context=None):
         result = {}
         
-        pallet_type_ids = self.pool['product.ul'].search(cr, uid, [('type', '=', 'pallet')])
+        pallet_type_ids = self.pool['product.ul'].search(cr, uid, [('type', '=', 'pallet')], context=context)
         
         for partner_id in ids:
             result[partner_id] = pallet_type_ids or []

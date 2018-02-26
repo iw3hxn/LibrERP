@@ -33,9 +33,25 @@ LOT_SPLIT_TYPE_SELECTION = [
 class stock_partial_picking_line(orm.TransientModel):
     _inherit = "stock.partial.picking.line"
 
+    def _get_color_line(self, cr, uid, picking_line, product_ids=[], context=None):
+        if picking_line.product_id.id in product_ids:
+            color = 'blue'
+        elif picking_line.tracking:
+            color = 'red'
+        elif picking_line.line_check or context.get('line_check', False):
+            color = 'grey'
+        else:
+            color = 'black'
+        return color
+
     def action_check(self, cr, uid, move_ids, context):
         line = self.pool['stock.partial.picking.line'].browse(cr, uid, move_ids, context)[0]
-        line.write({'line_check': not line.line_check})
+        color = self._get_color_line(self, cr, uid, line, [], context)
+        line_vals = {
+            'line_check': not line.line_check,
+            'row_color': color
+        }
+        line.write(line_vals)
         return True
 
     def action_add(self, cr, uid, move_ids, context):
@@ -90,7 +106,32 @@ class stock_partial_picking_line(orm.TransientModel):
 
         return True
 
+    def get_color(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        for line in self.browse(cr, uid, ids, context):
+            res[line.id] = 'black'
+            if line.tracking:
+                res[line.id] = 'red'
+        return res
+
+    def _product_code(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        if context is None:
+            context = {}
+        product_obj = self.pool['product.product']
+
+        for line in self.browse(cr, uid, ids, context=context):
+            partner_id = line.move_id.partner_id and line.move_id.partner_id.id or None
+            code = product_obj._get_partner_code_name(cr, uid, [], line.product_id, partner_id, context=context)['code']
+            if code != line.product_id.default_code:
+                res[line.id] = code
+            else:
+                res[line.id] = ''
+        return res
+
     _columns = {
+        'code': fields.function(_product_code, type='char', string='Supplier Reference'),
+        'row_color': fields.char(string='Row color'),
         'new_prodlot_code': fields.function(_get_prodlot_code, fnct_inv=_set_prodlot_code,
                                             method=True, type='char', size=64,
                                             string='Prodlot fast input', select=1
@@ -142,7 +183,50 @@ class stock_partial_picking(orm.TransientModel):
     
     _columns = {
         'tracking_code': fields.char('Pack', size=64),
+        'product_search': fields.char('Search Product', size=64)
     }
+
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(stock_partial_picking, self).default_get(cr, uid, fields, context=context)
+
+        for line in res.get('move_ids', []):
+            if line.get('product_id', False) and line.get('move_id', False):
+                move = self.pool['stock.move'].browse(cr, uid, line['move_id'], context=context)
+                product = self.pool['product.product'].browse(cr, uid, line['product_id'], context=context)
+
+                if (move.picking_id.type == 'in' and product.track_incoming) or (move.picking_id.type == 'out' and product.track_outgoing):
+                    line['tracking'] = True
+                    line['row_color'] = 'red'
+        return res
+
+    def onchange_product_search(self, cr, uid, ids, product_search, move_ids, context):
+        product_obj = self.pool['product.product']
+        if product_search:
+            product_ids = product_obj.search(cr, uid, ['|', '|', '|',
+                                                       ('ean13', '=', product_search),
+                                                       ('supplier_code', '=', product_search),
+                                                       ('default_code', '=', product_search),
+                                                       ('name', 'ilike', product_search)
+                                                       ], context=context)
+        else:
+            product_ids = []
+        for line in move_ids:
+            if line[0] in [1, 4] and line[1]:
+                picking_line = self.pool['stock.partial.picking.line'].browse(cr, uid, line[1], context)
+                context_copy = context.copy()
+                if line[2] and line[2].get('line_check', False):
+                    context_copy.update({'line_check': line[2].get('line_check', False)})
+                color = self.pool['stock.partial.picking.line']._get_color_line(cr, uid, picking_line, product_ids, context_copy)
+                line[0] = 1  # update
+                row_color = {'row_color': color}
+                if line[2]:
+                    line[2].update(row_color)
+                else:
+                    line[2] = row_color
+
+        return {'value': {'move_ids': move_ids}}
 
     def action_set_zero_all(self, cr, uid, move_ids, context):
         for line in self.pool['stock.partial.picking'].browse(cr, uid, move_ids, context)[0].move_ids:

@@ -23,6 +23,7 @@
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
+
 def is_integer(value):
     try:
         int(value)
@@ -48,7 +49,7 @@ class stock_picking_prodlot_selection_wizard(orm.TransientModel):
             context = self.pool['res.users'].context_get(cr, uid)
         if not ids:
             return {}
-        if not 'active_id' in context:
+        if 'active_id' not in context:
             return {}
 
         record = self.browse(cr, uid, ids[0], context)
@@ -56,7 +57,6 @@ class stock_picking_prodlot_selection_wizard(orm.TransientModel):
         last = record.last_lot
         if len(first) != len(last):
             raise orm.except_orm(_('Invalid lot numbers'), _('First and last lot numbers must have the same length.'))
-
 
         first_number = ''
         last_number = ''

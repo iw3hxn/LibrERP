@@ -31,8 +31,8 @@ class pallet_move(orm.Model):
         'name': fields.char("Number", size=256 , required=True),
         'date': fields.date('Date', required=True),
         'partner_id': fields.many2one('res.partner', 'Partner'),
-        'move': fields.selection([('in', '+'), ('out', '-')], 'Move', readonly=True ),
-        'account_invoice_id': fields.many2one('account.invoice', 'Invoice', domain=[('partner_id', '=', 'partner_id')] ),
+        'move': fields.selection([('in', '+'), ('out', '-')], 'Move', readonly=True),
+        'account_invoice_id': fields.many2one('account.invoice', 'Invoice', domain=[('partner_id', '=', 'partner_id')]),
         'stock_picking_id': fields.many2one('stock.picking', 'Picking', domain=[('partner_id', '=', 'partner_id')]),
         'pallet_qty': fields.integer('Number of Pallets'),
         'pallet_id': fields.many2one('product.ul', 'Pallet', domain=[('type', '=', 'pallet')]),
@@ -53,12 +53,12 @@ class product_ul(orm.Model):
         result = {}
         
         if context.get('partner_id', False):
-            product_ul_pallet_ids = self.search(cr, uid, [('type', '=', 'pallet')])
+            product_ul_pallet_ids = self.search(cr, uid, [('type', '=', 'pallet')], context=context)
             for product_ul_id in ids:
                 if product_ul_id in product_ul_pallet_ids:
-                    #pallets_out = pallet_move_obj.search(cr, uid, [('pallet_id', '=', product_ul_id), ('partner_id', '=', context['partner_id']), ('move', '=', 'out')])
-                    #pallets_in = pallet_move_obj.search(cr, uid, [('pallet_id', '=', product_ul_id), ('partner_id', '=', context['partner_id']), ('move', '=', 'in')])
-                    pallet_move_ids = pallet_move_obj.search(cr, uid, [('pallet_id', '=', product_ul_id), ('partner_id', '=', context['partner_id'])])
+                    # pallets_out = pallet_move_obj.search(cr, uid, [('pallet_id', '=', product_ul_id), ('partner_id', '=', context['partner_id']), ('move', '=', 'out')])
+                    # pallets_in = pallet_move_obj.search(cr, uid, [('pallet_id', '=', product_ul_id), ('partner_id', '=', context['partner_id']), ('move', '=', 'in')])
+                    pallet_move_ids = pallet_move_obj.search(cr, uid, [('pallet_id', '=', product_ul_id), ('partner_id', '=', context['partner_id'])], context=context)
                     if pallet_move_ids:
                         pallet_sum = 0
                         for pallet_move in pallet_move_obj.browse(cr, uid, pallet_move_ids):

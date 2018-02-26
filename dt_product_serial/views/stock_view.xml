@@ -250,6 +250,10 @@
             </field>
         </field>
     </record>
+
+    <record id="stock.action_picking_tree4" model="ir.actions.act_window">
+        <field name="context">{'contact_display': 'partner_address',"search_default_available": 1, 'type_in': 1}</field>
+    </record>
     
     <!-- Wizard to help users input production lots in batch -->
 <!-- TODO Nan-TIc : port to v6
