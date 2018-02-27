@@ -17,8 +17,10 @@
                     <field name="qty" on_change="onchange_qty(qty)"/>
                     <field name="original_cost"/>
                     <field name="cost"/>
-                    <field name="is_manufactured" on_change="onchange_is_manufactured(is_manufactured,new_product_id,qty)"/>
+                    <field name="has_bom" invisible="1"/>
                     <field name="buy" attrs="{'readonly': ['|', ('is_manufactured','=',True)]}"/>
+                    <field name="is_manufactured" attrs="{'invisible': [('has_bom','=',False)]}"
+                           on_change="onchange_is_manufactured(is_manufactured,new_product_id,qty)"/>
                     <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True)],
                                 'required': [('is_manufactured', '=', False)],
                                 'readonly': [('state','!=','draft')]}"/>

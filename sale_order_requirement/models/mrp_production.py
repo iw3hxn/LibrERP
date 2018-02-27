@@ -78,24 +78,3 @@ class mrp_production(orm.Model):
                 workcenter_line_obj.create(cr, uid, line, context)
         return len(results)
 
-    def action_view_order_requirement(self, cr, uid, ids, context=None):
-
-        if 'ordreq_line_id' not in context:
-            return False
-
-        ordreq_line_id = context['ordreq_line_id']
-        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement',
-                                                               'view_order_requirement_line_form')
-        view_id = view and view[1] or False
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Product BOM'),
-            'res_model': 'order.requirement.line',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'view_id': [view_id],
-            # 'target': 'new',
-            'context': {'view_bom': True},
-            'res_id': ordreq_line_id
-        }
-

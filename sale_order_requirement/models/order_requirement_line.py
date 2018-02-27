@@ -445,11 +445,13 @@ class order_requirement_line(orm.Model):
                 # elif bom.product_id.type == 'service'
                 # TODO => IDEA: change sale_order and let include service and create ROUTING FROM product type = service
 
-
         if not bom_ids:
             # It's a product with no BoM
             father = temp_mrp_bom_obj.browse(cr, uid, father_temp_id, context)
-            mult = qty_mult * father.original_qty
+            mult = qty_mult
+            # Not always we have a father
+            if father.id:
+                mult *= father.original_qty
 
             temp_vals = self._get_temp_vals_from_product(cr, uid, ids, product, mult, father_temp_id, start_level, context)
             temp_vals['sequence'] = sequence
@@ -580,19 +582,15 @@ class order_requirement_line(orm.Model):
             res[line.id] = state_str
         return res
 
-    def ORDER_LINES_purchase_orders_state(self, cr, uid, ids, name, args, context=None):
-        # Based on Purchase Order lines state
+    def _has_bom(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            po_lists = [p.order_line for p in line.purchase_order_ids if p.order_line]
-            po_lines = [pl for lines in po_lists for pl in lines]
-            tot = len(po_lines)
-            done = len([p for p in po_lines if p.state == 'done'])
-            state_str = ''
-            if tot > 0:
-                state_str = '%d/%d' % (done, tot)
-            res[line.id] = state_str
+            try:
+                has_bom = bool(line.new_product_id.bom_ids)
+            except:
+                has_bom = False
+            res[line.id] = has_bom
         return res
 
     _columns = {
@@ -637,7 +635,8 @@ class order_requirement_line(orm.Model):
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
         'cost': fields.float('Cost', readonly=True),
-        'original_cost': fields.float('Original Cost', readonly=True)
+        'original_cost': fields.float('Original Cost', readonly=True),
+        'has_bom': fields.function(_has_bom, method=True, type='boolean', string='Product has bom?', readonly=True)
     }
 
     _defaults = {
