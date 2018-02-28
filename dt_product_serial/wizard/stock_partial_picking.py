@@ -46,7 +46,7 @@ class stock_partial_picking_line(orm.TransientModel):
 
     def action_check(self, cr, uid, move_ids, context):
         line = self.pool['stock.partial.picking.line'].browse(cr, uid, move_ids, context)[0]
-        color = self._get_color_line(self, cr, uid, line, [], context)
+        color = self._get_color_line(cr, uid, line, [], context)
         line_vals = {
             'line_check': not line.line_check,
             'row_color': color
