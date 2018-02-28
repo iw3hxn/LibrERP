@@ -15,18 +15,18 @@ class order_requirement(orm.Model):
     def _get_day(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
-        for order_requirement in self.browse(cr, uid, ids, context=context):
-            res[order_requirement.id] = {
+        for requirement in self.browse(cr, uid, ids, context=context):
+            res[requirement.id] = {
                 'week_nbr': False,
             }
-            if not order_requirement.date:
+            if not requirement.date:
                 continue
 
-            start_date = datetime.strptime(order_requirement.date, DEFAULT_SERVER_DATE_FORMAT)
+            start_date = datetime.strptime(requirement.date, DEFAULT_SERVER_DATE_FORMAT)
             start_date = date(start_date.year, start_date.month, start_date.day)
 
             # mese in italiano start_date.strftime('%B').capitalize()
-            res[order_requirement.id] = {
+            res[requirement.id] = {
                 'week_nbr': start_date.isocalendar()[1],
                 'month': int(start_date.strftime("%m")),
             }

@@ -133,6 +133,12 @@ msgid "Choosen Product"
 msgstr "Prodotto Scelto"
 
 #. module: sale_order_requirement
+#: field:mrp.production,account_analytic_id:0
+#: field:stock.move,account_analytic_id:0
+msgid "Analytic Account"
+msgstr "Contabilità Analitica"
+
+#. module: sale_order_requirement
 #: field:order.requirement.line,order_requirement_id:0
 msgid "Order Reference"
 msgstr "Riferimento Ordine"
@@ -543,6 +549,12 @@ msgstr "Nota Interna"
 #: field:order.requirement,note:0
 msgid "Order Note"
 msgstr "Nota Ordine"
+
+#. module: sale_order_requirement
+#: field:sale.order,mrp_production_ids:0
+#: view:sale.order:0
+msgid "Production Order"
+msgstr "Ordini di Produzione"
 
 #. modules: sale_order_requirement
 #: view:product.product:0

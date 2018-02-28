@@ -81,6 +81,7 @@ class StockMove(orm.Model):
         return res
 
     _columns = {
+        'analytic_account_id': fields.many2one('account.analytic.account', 'Analytic Account', ),
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
         'temp_mrp_bom_ids': fields.function(_get_connected_order_ids, type='one2many', relation='temp.mrp.bom', method=True, string='Sale Orders',
                                              multi="connected_order"),

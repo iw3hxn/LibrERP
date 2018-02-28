@@ -51,3 +51,17 @@ class sale_order(orm.Model):
                     )
 
         return super(sale_order, self).action_reopen(cr, uid, ids, context=context)
+
+    def _get_production_order(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        mrp_production_obj = self.pool['mrp.production']
+        for order in self.browse(cr, uid, ids, context):
+            mrp_production_ids = mrp_production_obj.search(cr, uid, [('sale_id', '=', order.id)], context=context)
+            result[order.id] = mrp_production_ids
+        return result
+
+    _columns = {
+        'mrp_production_ids': fields.function(_get_production_order, string="Production Order", type='one2many',
+                                              method=True, relation='mrp.production')
+    }

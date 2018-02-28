@@ -1,6 +1,6 @@
 {
     "name": "Sale Order Requirement",
-    "version": "4.29.33.34",
+    "version": "4.30.34.35",
     "author": "Antonio Mignolli - Didotech SRL",
     "category": 'Sales Management',
     "description": """
@@ -27,6 +27,7 @@ and choose if manufacture or buy products from suppliers.
         'views/stock_picking.xml',
         'security/ir.model.access.csv',
         'views/sale_workflow.xml',
+        'views/sale_order_view.xml',
         'report/order_requirement.xml',
  #       'report/incoming_bill.xml',
     ],

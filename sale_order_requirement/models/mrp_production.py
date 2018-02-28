@@ -16,12 +16,83 @@ class mrp_production(orm.Model):
                                                     relation='order.requirement.line', type='many2one', readonly=True),
         'level': fields.integer('Level', required=True),
         'sale_id': fields.many2one('sale.order', 'Sale order'),
+        'analytic_account_id': fields.many2one('account.analytic.account',
+                                               'Analytic Account', ),
     }
 
     _defaults = {
         'is_from_order_requirement': False,
         'level': 0
     }
+
+    def _make_production_produce_line(self, cr, uid, production, context=None):
+        stock_move = self.pool['stock.move']
+        move_id = super(mrp_production, self)._make_production_produce_line(
+            cr, uid, production, context=context)
+        if production.analytic_account_id:
+            stock_move.write(cr, uid, [move_id], {
+                'analytic_account_id': production.analytic_account_id.id
+            }, context=context)
+        return move_id
+
+    def _make_production_consume_line(self, cr, uid, production_line, parent_move_id, source_location_id=False,
+                                      context=None):
+        stock_move = self.pool['stock.move']
+        move_id = super(mrp_production, self)._make_production_consume_line(
+            cr, uid, production_line, parent_move_id,
+            source_location_id=source_location_id, context=context)
+        production = production_line.production_id
+        if production.analytic_account_id:
+            stock_move.write(cr, uid, [move_id], {
+                'analytic_account_id': production.analytic_account_id.id
+            }, context=context)
+        return move_id
+
+    def _costs_generate(self, cr, uid, production):
+        context = self.pool['res.users'].context_get(cr, uid)
+        super(mrp_production, self)._costs_generate(cr, uid, production)
+        amount = 0.0
+        analytic_line_obj = self.pool['account.analytic.line']
+        for wc_line in production.workcenter_lines:
+            wc = wc_line.workcenter_id
+            if wc.costs_journal_id:
+                # Cost per hour
+                value = wc_line.delay * wc.costs_hour
+                account = False
+                if production.analytic_account_id:
+                    account = production.analytic_account_id
+                if production.sale_id and production.sale_id.project_id:
+                    account = production.sale_id.project_id.id
+                if value and account:
+                    amount += value
+                    analytic_line_obj.create(cr, uid, {
+                        'name': wc_line.name + _(' (H)'),
+                        'amount': value,
+                        'account_id': account,
+                        'general_account_id': wc.costs_general_account_id and wc.costs_general_account_id.id or wc.product_id.property_account_income and wc.product_id.property_account_income.id,
+                        'journal_id': wc.costs_journal_id.id,
+                        'ref': wc.code,
+                        'product_id': wc.product_id and wc.product_id.id or False,
+                        'unit_amount': wc_line.hour,
+                        'product_uom_id': wc.product_id and wc.product_id.uom_id.id or False
+                    }, context)
+                # Cost per cycle
+                value = wc_line.cycle * wc.costs_cycle
+
+                if value and account:
+                    amount += value
+                    analytic_line_obj.create(cr, uid, {
+                        'name': wc_line.name + ' (C)',
+                        'amount': value,
+                        'account_id': account,
+                        'general_account_id': wc.costs_general_account_id.id or wc.product_id.property_account_income and wc.product_id.property_account_income.id,
+                        'journal_id': wc.costs_journal_id.id,
+                        'ref': wc.code,
+                        'product_id': wc.product_id.id,
+                        'unit_amount': wc_line.cycle,
+                        'product_uom_id': wc.product_id  and wc.product_id.uom_id.id or False
+                    }, context)
+        return amount
 
     def action_compute(self, cr, uid, ids, properties=[], context=None):
         """ Computes bills of material of a product.

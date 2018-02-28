@@ -863,6 +863,7 @@ class order_requirement_line(orm.Model):
 
         shop = obj.sale_order_id.shop_id
         shop_id = shop.id
+        account_analytic_id = obj.sale_order_id.project_id and obj.sale_order_id.project_id.id
 
         purchase_order_ids = purchase_order_obj.search(cr, uid, [('partner_id', '=', supplier_id),
                                                                  ('state', '=', 'draft')], limit=1, context=context)
@@ -878,7 +879,6 @@ class order_requirement_line(orm.Model):
                 'shop_id': shop_id,
                 'partner_id': supplier_id,
                 'location_id': location_id,
-                'product_uom': uom_id,
                 # 'sale_order_ids': [(4, sale_order_id)],
             })
 
@@ -887,6 +887,7 @@ class order_requirement_line(orm.Model):
             purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
                                                                              purchase_order_values, supplier_id, context)
             purchase_order_line_values.update({
+                'account_analytic_id': account_analytic_id,
                 'product_qty': qty,
                 'order_id': purchase_id,
                 'order_requirement_ids': [(4, line.order_requirement_id.id)],
@@ -920,9 +921,12 @@ class order_requirement_line(orm.Model):
             present_order = purchase_order_obj.browse(cr, uid, present_order_id, context)
 
             # Search for same product with same UOM in Product lines
-            purchase_order_line_ids = purchase_order_line_obj.search(cr, uid, [('order_id', 'in', purchase_order_ids),
-                                                                               ('product_id', '=', product_id)],
-                                                                     context=context)
+            purchase_line_search = [('order_id', 'in', purchase_order_ids), ('product_id', '=', product_id)]
+            if account_analytic_id:
+                purchase_line_search.append(('account_analytic_id', '=', account_analytic_id))
+
+            purchase_order_line_ids = purchase_order_line_obj.search(cr, uid, purchase_line_search, context=context)
+
             if not purchase_order_line_ids:
                 # TODO: Can be simplified: if no order present create order and use it below, do not repeat code!
                 # TODO: but check purchase_order_id, don't replicate relationship
@@ -935,6 +939,7 @@ class order_requirement_line(orm.Model):
                 purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
                                                                                  purchase_order_values, supplier_id, context)
                 purchase_order_line_values.update({
+                    'account_analytic_id': account_analytic_id,
                     'product_qty': qty,
                     'order_id': present_order_id,
                     'order_requirement_ids': [(4, line.order_requirement_id.id)],

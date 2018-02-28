@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+
+        <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.requirement.form</field>
+            <field name="model">sale.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//separator[@string='Invoices']"  position="before">
+                    <separator colspan="4" string="Production Order"/>
+                    <field colspan="4" name="mrp_production_ids" nolabel="1" context="{'view_print': True}" groups="stock.group_stock_user"/>
+                </xpath>
+
+            </field>
+        </record>
+    
+    </data>
+</openerp>

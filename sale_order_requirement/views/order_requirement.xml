@@ -35,10 +35,14 @@
                     <field name="customer_id"/>
                     <field name="date"/>
                     <field name="week_nbr" />
-                    <field name="month" />
-                    <newline />
-                    <field name="note"/>
-                    <field name="internal_note"/>
+                    <field name="month"/>
+                    <newline/>
+                    <group col="1" colspan="2" string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                    <group col="1" colspan="2" string="Internal Note">
+                        <field name="internal_note" nolabel="1"/>
+                    </group>
                     <group col="1" colspan="4">
                         <field name="order_requirement_line_ids" nolabel="1"/>
                     </group>
