@@ -67,8 +67,8 @@ class sale_order(orm.Model):
         project_task_obj = self.pool['project.task']
         sale_order_obj = self.pool['sale.order']
 
-        for sale_order in sale_order_obj.browse(cr, uid, ids, context):
-            result[sale_order.id] = project_task_obj.search(cr, uid, [('project_id', '=', sale_order.project_project.id)], context=context)
+        for order in sale_order_obj.browse(cr, uid, ids, context):
+            result[order.id] = project_task_obj.search(cr, uid, [('project_id', '=', order.project_project.id)], context=context)
         return result
          
     _columns = {
