@@ -57,9 +57,11 @@ class sale_order(orm.Model):
             ids = [ids]
         
         project = self.pool['project.project'].browse(cr, uid, field_value, context)
-        for order in self.browse(cr, uid, ids, context):
-            # Yes, it's crazy. Thanks to the authors of the sale_order for the wrong field name
-            self.write(cr, uid, order.id, {'project_id': project.analytic_account_id.id})
+        self.write(cr, uid, ids, {'project_id': project.analytic_account_id.id}, context)
+
+        # for order in self.browse(cr, uid, ids, context):
+        #     # Yes, it's crazy. Thanks to the authors of the sale_order for the wrong field name
+        #     self.write(cr, uid, order.id, {'project_id': project.analytic_account_id.id})
         return True
 
     def _get_project_task(self, cr, uid, ids, field_name, model_name, context=None):
