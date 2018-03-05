@@ -45,6 +45,7 @@
         'project',
         'task_time_control',
         'res_users_helper_functions',
+        'res_user_signature',
     ],
     "data": [
         'views/hr_expense_view.xml',
