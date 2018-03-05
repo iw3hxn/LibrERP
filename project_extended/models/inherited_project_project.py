@@ -348,13 +348,13 @@ class project_project(orm.Model):
         'total_sell': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                       multi='sums', string="Sell Amount", store={
                 'sale.order': (_get_project_order, ['state'], 50),
-                'sale.order.line': (_get_project_order_line, ['price_subtotal'], 50),
+                'sale.order.line': (_get_project_order_line, ['price_unit', 'price_subtotal'], 50),
             }, ),
         'total_sell_service': fields.function(_total_account, type='float',
                                               digits_compute=dp.get_precision('Sale Price'), multi='sums',
                                               string="Service Sell Amount", store={
                 'sale.order': (_get_project_order, ['state'], 50),
-                'sale.order.line': (_get_project_order_line, ['price_subtotal'], 50),
+                'sale.order.line': (_get_project_order_line, ['price_unit', 'price_subtotal'], 50),
             }, ),
         'total_spent': fields.function(_total_account, type='float', digits_compute=dp.get_precision('Sale Price'),
                                        multi='sums', string="Spent Amount", store={
