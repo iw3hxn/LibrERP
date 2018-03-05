@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="wizard_set_partner_position_form" model="ir.ui.view">
+            <field name="name">wizard.set.partner.position.form</field>
+            <field name="model">wizard.set.partner.position</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Select partner e partner address">
+                    <field name="partner_id" />
+                    <field name="address_id" domain="[('partner_id', '=', partner_id)]"/>
+                    <separator colspan="5"/>
+                    <group>
+                        <button icon="gtk-cancel" special="cancel" string="Cancel" />
+                        <button name="action_set_position" string="Ok" type="object" icon="kanban-apply" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -44,3 +44,18 @@ class hr_attendance(orm.Model):
         'longitude': fields.float('Longitude', digits=(16, 4)),
         'position': fields.function(_get_position, string=_('Position'), method=True, type='text')
     }
+
+    def action_create_relation(self, cr, uid, ids, context):
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid,
+            'hr_attendance_position', 'wizard_set_partner_position_form')
+        view_id = view and view[1] or False
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Set position'),
+            'res_model': 'wizard.set.partner.position',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [view_id],
+            'target': 'new'
+        }

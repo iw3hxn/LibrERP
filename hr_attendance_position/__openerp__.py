@@ -3,7 +3,7 @@
 
 {
     "name": "Attendance Position",
-    "version": "4.0.0.0",
+    "version": "4.1.1.1",
     "author": "Andrei Levin - Didotech SRL",
     "category": 'Partner',
     "description": """
@@ -21,7 +21,8 @@ Get geographic position of a partner address from Google Maps
         'views/data.xml',
         'views/company_view.xml',
         'views/partner_view.xml',
-        'views/hr_attendance.xml'
+        'views/hr_attendance.xml',
+        'wizard/set_coordinates.xml'
     ],
     'installable': True,
     'auto_install': False,

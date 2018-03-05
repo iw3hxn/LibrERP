@@ -2,7 +2,7 @@
   <data noupdate="True">
     <record id="gps_coordinate_compare_delta" model="ir.config_parameter">
       <field name="key">gps_coordinate_compare_delta</field>
-      <field name="value">0.002</field>
+      <field name="value">0.001</field>
     </record>
   </data>
 </openerp>

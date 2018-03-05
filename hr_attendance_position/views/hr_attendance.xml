@@ -2,6 +2,22 @@
 <openerp>
     <data>
 
+        <record id="position_hr_attendance_form" model="ir.ui.view">
+            <field name="name">hr.attendance.position.form.inherit</field>
+            <field name="model">hr.attendance</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="hr_attendance.view_attendance_form"/>
+            <field name="arch" type="xml">
+                <field name="action_desc" position="after">
+                    <!--<field name="latitude"/>-->
+                    <!--<field name="longitude"/>-->
+                    <field name="position" />
+                    <separator colspan="5"/>
+                    <button name="action_create_relation" string="Set Position" type="object" icon="kanban-apply" />
+                </field>
+            </field>
+        </record>
+
         <record id="position_hr_attendance" model="ir.ui.view">
             <field name="name">hr.attendance.position.inherit</field>
             <field name="model">hr.attendance</field>
