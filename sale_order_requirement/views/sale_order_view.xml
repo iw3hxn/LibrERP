@@ -26,7 +26,7 @@
             <field name="arch" type="xml">
                 <field colspan="4" name="note" nolabel="1" position="after">
                     <separator colspan="4" string="Internal Note"/>
-                    <field colspan="4" name="internal_note"/>
+                    <field colspan="4" name="internal_note" nolabel="1"/>
                 </field>
 
             </field>
