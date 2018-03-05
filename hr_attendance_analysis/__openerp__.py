@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': "HR - Attendance Analysis",
-    'version': '0.2',
+    'version': '3.0.3.0',
     'category': 'Generic Modules/Human Resources',
     'summary': "Dynamic reports based on employee's attendances and "
                "contract's calendar",
