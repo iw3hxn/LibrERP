@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2016-2018 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -25,7 +25,7 @@
     "name": """HR Attendance with Telegram Bot""",
     "summary": """Telegram Integration""",
     "category": "Telegram",
-    "version": "3.0.2.0",
+    "version": "3.0.3.0",
 
     "author": "Didotech SRL",
     "website": "https://www.didotech.com",
@@ -37,12 +37,11 @@
     """,
     "depends": [
         "telegram",
-        "hr_attendance"
+        "hr_attendance",
+        "hr_attendance_position"
     ],
-
     "data": [
-        "data/commands.xml",
-        "views/hr_attendance.xml",
+        "data/commands.xml"
     ],
     "installable": True,
     "auto_install": False,
