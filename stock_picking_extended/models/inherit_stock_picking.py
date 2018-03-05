@@ -116,7 +116,12 @@ class stock_picking(orm.Model):
             result[picking.id] = True
         return result.keys()
 
+    def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
+        res = self.name_get(cr, uid, ids, context=context)
+        return dict(res)
+
     _columns = {
+        'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Name'),
         'goods_ready': fields.related('move_lines', 'goods_ready', type='boolean', string='Goods Ready'),
         'carriage_condition_id': fields.many2one(
             'stock.picking.carriage_condition', 'Carriage condition'),

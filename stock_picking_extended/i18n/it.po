@@ -178,6 +178,11 @@ msgid "Transportation condition"
 msgstr "Condizione Trasporto"
 
 #. module: stock_picking_extended
+#: field:stock.picking,complete_name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: stock_picking_extended
 #: field:account.invoice,address_delivery_id:0
 #: field:stock.picking,address_delivery_id:0
 msgid "Address"
