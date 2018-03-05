@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_googleapi_config" model="ir.ui.view">
+            <field name="name">view_googleapi_config</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <page string="Configuration" position="inside">
+                    <separator string="Google API" colspan="4"/>
+                    <group>
+                        <field name="google_key"/>
+                    </group>
+                </page>
+            </field>
+        </record>
+
+	</data>
+</openerp>
