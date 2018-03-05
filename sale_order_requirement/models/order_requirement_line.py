@@ -170,7 +170,7 @@ class order_requirement_line(orm.Model):
                     seqfactor = 20 * temp.sequence
                 routing_vals = {
                     'mrp_routing_id': routing_id,
-                    'name': tools.ustr(wcl.name) + ' - ' + tools.ustr(bom.product_id.name),
+                    'name': tools.ustr(wcl.name),
                     'workcenter_id': wc.id,
                     'sequence': seqfactor + wcl.sequence,
                     'cycle': cycle,

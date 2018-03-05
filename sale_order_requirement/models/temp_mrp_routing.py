@@ -10,7 +10,7 @@ class temp_mrp_routing(orm.Model):
     _name = 'temp.mrp.routing'
     _columns = {
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing'),
-        'name': fields.char('Name', size=64),
+        'name': fields.char('Name', size=128),
         # TODO Workcenter readonly SO FAR => Evaluate changeability in the future
         'workcenter_id': fields.many2one('mrp.workcenter', string='Workcenter', readonly=True),
         # 'workcenter_lines': fields.one2many('mrp.routing.workcenter', 'routing_id', 'Work Centers'),
