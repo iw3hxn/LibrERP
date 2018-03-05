@@ -17,6 +17,20 @@
 
             </field>
         </record>
+
+        <record id="view_order_note_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.requirement-note.form</field>
+            <field name="model">sale.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <field colspan="4" name="note" nolabel="1" position="after">
+                    <separator colspan="4" string="Internal Note"/>
+                    <field colspan="4" name="internal_note"/>
+                </field>
+
+            </field>
+        </record>
     
     </data>
 </openerp>

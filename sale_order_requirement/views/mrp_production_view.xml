@@ -37,9 +37,10 @@
                     <page string="Scheduled Products">
                         <button name="action_compute" states="draft" string="Compute Data" type="object"
                                 icon="terp-stock_format-scientific" colspan="2"/>
-                        <field colspan="4" name="product_lines" nolabel="1">
-                            <tree string="Scheduled Products" editable="top">
-                                <field name="product_id"/>
+                        <field colspan="4" name="product_lines" nolabel="1" readonly="[('state','not in', ('draft'))]" >
+                            <tree string="Scheduled Products" editable="bottom">
+                                <field name="name" invisible="1"/>
+                                <field name="product_id" on_change="onchange_product_id(product_id, product_qty, context)"/>
                                 <field name="product_qty"/>
                                 <field name="product_uom"/>
                                 <field name="product_uos_qty" groups="product.group_uos"/>
@@ -48,7 +49,6 @@
                         </field>
                     </page>
                 </page>
-
                 <field name="picking_id" position="after">
                     <field name="order_requirement_line_id"/>
                     <!--<button colspan="1" name="action_view_order_requirement" context="{'ordreq_line_id': order_requirement_line_id}"-->

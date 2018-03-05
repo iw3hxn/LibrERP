@@ -62,6 +62,13 @@ class sale_order(orm.Model):
         return result
 
     _columns = {
+        'internal_note': fields.text('Internal Note'),
         'mrp_production_ids': fields.function(_get_production_order, string="Production Order", type='one2many',
                                               method=True, relation='mrp.production')
     }
+
+    def _prepare_order_picking(self, cr, uid, order, context=None):
+        res = super(sale_order, self)._prepare_order_picking(cr, uid, order, context)
+        if order.internal_note:
+            res['internal_note'] = order.internal_note
+        return res

@@ -556,6 +556,12 @@ msgstr "Nota Ordine"
 msgid "Production Order"
 msgstr "Ordini di Produzione"
 
+#. module: sale_order_requirement
+#: field:sale.order,internal_note:0
+#: view:sale.order:0
+msgid "Internal Note"
+msgstr "Note di Produzione"
+
 #. modules: sale_order_requirement
 #: view:product.product:0
 #: view:sale.order:0
