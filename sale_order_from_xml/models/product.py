@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2017 Didotech srl (www.didotech.com)
+# © 2017-2018 Didotech srl (www.didotech.com)
 
 from openerp.osv import orm, fields
 from data_migration.utils.utils import Utils
@@ -9,7 +9,11 @@ class ProductProduct(orm.Model):
     _inherit = 'product.product'
 
     def get_create(self, cr, uid, values, context):
-        product_ids = self.search(cr, uid, [('ean13', '=', values['Ean'])], context=context)
+        if len(values['Ean']) == 13:
+            product_ids = self.search(cr, uid, [('ean13', '=', values['Ean'])], context=context)
+        else:
+            product_ids = self.search(cr, uid, [('default_code', '=', values['Ean'])], context=context)
+
         if product_ids:
             return product_ids[0]
         else:
@@ -26,7 +30,8 @@ class ProductProduct(orm.Model):
 
             product_values.update({
                 'name': values['Name'],
-                'ean13': values['Ean'],
+                'ean13': len(values['Ean']) == 13 and values['Ean'] or '',
+                'default_code': values['Ean'],
                 'list_price': float(Utils.toStr(values['Price'])),
                 'procure_method': 'make_to_order'
             })

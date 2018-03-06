@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# © 2014 - 2017 Didotech srl (www.didotech.com)
+# © 2017-2018 Didotech srl (www.didotech.com)
 
 {
     "name": "Order from XML",
-    "version": "4.1.3.1",
+    "version": "4.1.4.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     'category': 'Sales Management',
