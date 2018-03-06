@@ -80,12 +80,69 @@ class StockMove(orm.Model):
 
         return res
 
+    def _purchase_orders_approved(self, cr, uid, ids, name, args, context=None):
+        # Get the order approved by order requirement line, from sale order id
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ordreqline_obj = self.pool['order.requirement.line']
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            done = 0
+            tot = 0
+            try:
+                ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_id', '=', line.sale_id.id),
+                                                                 ('new_product_id', '=', line.product_id.id)],
+                                                       context=context)
+                # Maybe useless, but is generic, it supports eventually multiple lines
+                for ordreqline in ordreqline_obj.browse(cr, uid, ordreqline_ids, context):
+                    d, t = ordreqline_obj.get_purchase_orders_approved(ordreqline)
+                    done += d
+                    tot += t
+                state_str = ''
+                if tot > 0:
+                    state_str = '%d/%d' % (done, tot)
+            except Exception as e:
+                print '_purchase_orders_approved ' + e.message
+                state_str = ''
+            res[line.id] = state_str
+        return res
+
+    def _purchase_orders_state(self, cr, uid, ids, name, args, context=None):
+        # Get the order state by order requirement line, from sale order id
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ordreqline_obj = self.pool['order.requirement.line']
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            done = 0
+            tot = 0
+            try:
+                ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_id', '=', line.sale_id.id),
+                                                                 ('new_product_id', '=', line.product_id.id)],
+                                                       context=context)
+                # Maybe useless, but is generic, it supports eventually multiple lines
+                for ordreqline in ordreqline_obj.browse(cr, uid, ordreqline_ids, context):
+                    d, t = ordreqline_obj.get_purchase_orders_state(ordreqline)
+                    done += d
+                    tot += t
+                state_str = ''
+                if tot > 0:
+                    state_str = '%d/%d' % (done, tot)
+            except Exception as e:
+                print '_purchase_orders_state ' + e.message
+                state_str = ''
+            res[line.id] = state_str
+
+        return res
+
     _columns = {
         'analytic_account_id': fields.many2one('account.analytic.account', 'Analytic Account', ),
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
         'temp_mrp_bom_ids': fields.function(_get_connected_order_ids, type='one2many', relation='temp.mrp.bom', method=True, string='Sale Orders',
                                              multi="connected_order"),
         'temp_mrp_bom_list': fields.function(_get_connected_order_ids, type='char', method=True, string='Sale Orders', multi="connected_order"),
+        'purchase_orders_approved': fields.function(_purchase_orders_approved, method=True, type='string',
+                                                    string='Purch. orders approved', readonly=True),
+        'purchase_orders_state': fields.function(_purchase_orders_state, method=True, type='string',
+                                                 string='Deliveries', readonly=True)
     }
 
     def print_production_order(self, cr, uid, ids, context):

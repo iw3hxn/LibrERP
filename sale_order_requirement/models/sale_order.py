@@ -64,7 +64,8 @@ class sale_order(orm.Model):
     _columns = {
         'internal_note': fields.text('Internal Note'),
         'mrp_production_ids': fields.function(_get_production_order, string="Production Order", type='one2many',
-                                              method=True, relation='mrp.production')
+                                              method=True, relation='mrp.production'),
+        'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders', readonly=True)
     }
 
     def _prepare_order_picking(self, cr, uid, order, context=None):

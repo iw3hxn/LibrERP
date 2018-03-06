@@ -547,35 +547,46 @@ class order_requirement_line(orm.Model):
             res[line.id] = state_str
         return res
 
-    def _purchase_orders_approved(self, cr, uid, ids, name, args, context=None):
+    @staticmethod
+    def get_purchase_orders_approved(ordreqline):
         # Based on purchase orders approved / total
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            # First -> all non null purchase order lines
-            purchase_orders = line.purchase_order_ids
-            # All
-            tot = len(purchase_orders)
-            done = len([p for p in purchase_orders if p.state in ('approved', 'done')])
-            state_str = ''
-            if tot > 0:
-                state_str = '%d/%d' % (done, tot)
-            res[line.id] = state_str
-        return res
+        # First -> all non null purchase orders
+        purchase_orders = ordreqline.purchase_order_ids
+        # All
+        tot = len(purchase_orders)
+        done = len([p for p in purchase_orders if p.state in ('approved', 'done')])
+        return done, tot
+
+    @staticmethod
+    def get_purchase_orders_state(ordreqline):
+        # First -> all non null purchase order lines
+        po_lines = ordreqline.purchase_order_line_ids
+        # All stock moves lists (list of lists)
+        moves_lists = [p.move_ids for p in po_lines if p.move_ids]
+        # Flat list -> all moves excluding canceled ones
+        moves = [m for lines in moves_lists for m in lines if m.state != 'cancel']
+        tot = len(moves)
+        done = len([m for m in moves if m.state == 'done'])
+        return done, tot
 
     def _purchase_orders_state(self, cr, uid, ids, name, args, context=None):
         # Based on stock moves in purchase order lines => count stock moves in state 'done'
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            # First -> all non null purchase order lines
-            po_lines = line.purchase_order_line_ids
-            # All stock moves lists (list of lists)
-            moves_lists = [p.move_ids for p in po_lines if p.move_ids]
-            # Flat list -> all moves excluding canceled ones
-            moves = [m for lines in moves_lists for m in lines if m.state != 'cancel']
-            tot = len(moves)
-            done = len([m for m in moves if m.state == 'done'])
+            done, tot = self.get_purchase_orders_state(line)
+            state_str = ''
+            if tot > 0:
+                state_str = '%d/%d' % (done, tot)
+            res[line.id] = state_str
+        return res
+
+    def _purchase_orders_approved(self, cr, uid, ids, name, args, context=None):
+        # Based on purchase orders approved / total
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            done, tot = self.get_purchase_orders_approved(line)
             state_str = ''
             if tot > 0:
                 state_str = '%d/%d' % (done, tot)
@@ -952,8 +963,10 @@ class order_requirement_line(orm.Model):
                     })
                 # Creating a new line
                 purchase_line_id = purchase_order_line_obj.create(cr, uid, purchase_order_line_values, context)
-                # Link to line many2many field
-                self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)]}, context)
+                # Link to line many2many fields
+                self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)],
+                                              'purchase_order_ids': [(4, present_order_id)],
+                                              }, context)
 
                 # Add references also to purchase order
                 refence_values = {'sale_order_ids': [(4, sale_order_id)]}

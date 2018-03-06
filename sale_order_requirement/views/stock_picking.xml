@@ -26,9 +26,11 @@
                     <button name="print_production_order" string="Print" type="object" help="Print All production Order"
                             icon="gtk-print"/>
                 </xpath>
-                <!--<xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='state']" position="after">-->
-
-                <!--</xpath>-->
+                <xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='goods_ready']" position="after">
+                    <field name="sale_id" invisible="0"/>
+                    <field name="purchase_orders_approved"/>
+                    <field name="purchase_orders_state"/>
+                </xpath>
             </field>
         </record>
 
