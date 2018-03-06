@@ -35,7 +35,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_hr_attendance_filter">
+        <record id="view_hr_attendance_filter" model="ir.ui.view">
             <field name="name">view_hr_attendance_filter</field>
             <field name="model">hr.attendance</field>
             <field name="type">search</field>
@@ -56,14 +56,15 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_hr_attendance_calendar">
+        <record id="view_hr_attendance_calendar" model="ir.ui.view">
             <field name="name">view_hr_attendance.calendar</field>
             <field name="model">hr.attendance</field>
+            <field name="type">calendar</field>
             <field name="arch" type="xml">
                 <calendar string="Calendar View" date_start="name" date_stop="end_datetime" color="employee_id">
                     <field name="duration"   />
-                    <field name="outside_calendar_duration"   />
-                    <field name="inside_calendar_duration"  />
+                    <field name="outside_calendar_duration" />
+                    <field name="inside_calendar_duration" />
                 </calendar>
             </field>
         </record>
