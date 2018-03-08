@@ -34,12 +34,12 @@ class account_tax(orm.Model):
 
     def _have_same_rate(self, account_taxes):
         rate = None
-        for account_tax in account_taxes:
-            if account_tax.type != 'balance':
-                if rate is None:
-                    rate = account_tax.amount
-                elif rate != account_tax.amount:
-                    return False
+        # for account_tax in account_taxes:
+        #     if account_tax.type != 'balance':
+        #         if rate is None:
+        #             rate = abs(account_tax.amount)
+        #         elif rate != abs(account_tax.amount):
+        #             return False
         return True
 
     def get_main_tax(self, tax):
