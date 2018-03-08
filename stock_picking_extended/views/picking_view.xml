@@ -137,6 +137,11 @@
                     <filter icon="gtk-ok" name="available" string="Goods Ready" domain="[('goods_ready','=', True)]" />
                     <field name="sale_id" filter_domain="['|',('sale_id','ilike',self),('origin','ilike',self)]" domain="[('state','in', ['progress', 'manual', 'done'])]"/>
                     <field name="customer_id"/>
+                    <field name="province" />
+                    <field name="region"/>
+                    <field name="product_id"/>
+                    <filter domain="[]" icon="terp-stock_zoom" name="show_delivery" string="Delivery Data"
+                           context="{'show_delivery': True}"/>
                     <field name="minimum_planned_date"/>
                     <field name="week_nbr" />
                 </search>
@@ -227,6 +232,8 @@
                     <field name="sale_id"/>
                     <field name="client_order_ref"/>
                     <field name="customer_id"/>
+                    <field name="province" invisible="not context.get('show_delivery', False)"/>
+                    <field name="region" invisible="not context.get('show_delivery', False)"/>
                     <field name="note"/>
                     <field name="internal_note" />
                     <field name="minimum_planned_date"/>
@@ -235,8 +242,8 @@
                     <field name="order_sent" />
                     <field name="order_ready" />
                     <field name="amount_total" sum="Total" groups="base.group_sale_salesman"/>
-                    <field name="payment_term_id" />
-                    <field name="invoice_state" />
+                    <field name="payment_term_id" invisible="context.get('show_delivery', False)"/>
+                    <field name="invoice_state" invisible="context.get('show_delivery', False)" />
                 </tree>
             </field>
         </record>

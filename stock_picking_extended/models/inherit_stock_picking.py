@@ -116,6 +116,15 @@ class stock_picking(orm.Model):
             result[picking.id] = True
         return result.keys()
 
+    def _get_picking_partner_address(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        stock_picking_model = self.pool['stock.picking']
+        picking_ids = stock_picking_model.search(cr, uid, [('address_delivery_id', 'in', ids)], context=context)
+        for picking in stock_picking_model.browse(cr, uid, picking_ids, context):
+            result[picking.id] = True
+        return result.keys()
+
     def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
         res = self.name_get(cr, uid, ids, context=context)
         return dict(res)
@@ -168,9 +177,16 @@ class stock_picking(orm.Model):
         'street': fields.related('address_delivery_id', 'street', type='char', string='Street', store=False),
         'city': fields.related('address_delivery_id', 'city', type='char', string='City', store=False),
         'province': fields.related('address_delivery_id', 'province', type='many2one', relation='res.province',
-                                   string='Province', store=False, readonly=True),
+                                   string='Province', readonly=True, store={
+                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['address_delivery_id'], 6000),
+                                        'res.partner.address': (_get_picking_partner_address, ['province'], 6000),
+                                        }),
+
         'region': fields.related('address_delivery_id', 'region', type='many2one', relation='res.region', string='Region',
-                                 store=False, readonly=True),
+                                 readonly=True, store={
+                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['address_delivery_id'], 6000),
+                                        'res.partner.address': (_get_picking_partner_address, ['province'], 6000),
+                                        }),
         'agent': fields.related('customer_id', 'section_id', type='many2one', relation='crm.case.section',
                                 string='Agent', store=False, readonly=True),
         'board_date': fields.date('Order Board Delivery date'),
