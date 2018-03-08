@@ -311,7 +311,7 @@ class project_project(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         for line in self.pool['sale.order.line'].browse(cr, uid, ids, context=context):
-            if line.order_id.project_project:
+            if line.order_id.project_id and line.order_id.project_id.id:
                 result[line.order_id.project_project.id] = True
         return result.keys()
 
