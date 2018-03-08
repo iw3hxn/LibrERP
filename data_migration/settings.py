@@ -160,11 +160,11 @@ class FormatTwo():
 
     HEADER_PRODUCT = (
         'COD.', 'DESCR.1', 'Descrizione Commerciale', 'descrizione inglese', 'misure',
-        'Altezza di caduta', 'età utente', 'Unità di misura acquisto', 'categoria', 'Ultimo prezzo d\'acquisto',
+        'Altezza di caduta', 'età utente', 'Unità di misura acquisto', 'categoria', 'Prezzo Vendita',
         'Attivo', 'Metodo di approvvigionamento'
     )
     COLUMNS_PRODUCT = "default_code, name, description_sale, eng_description_sale, measures, " \
-                      "drop_height, user_age, uom, category, standard_price, " \
+                      "drop_height, user_age, uom, category, list_price, " \
                       "active, procure_method"
     PRODUCT_SEARCH = ('default_code', 'name')
     REQUIRED_PRODUCT = ['default_code', 'name']
