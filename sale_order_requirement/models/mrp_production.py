@@ -3,6 +3,8 @@
 
 from osv import fields, orm
 from tools.translate import _
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class mrp_production(orm.Model):
@@ -129,7 +131,8 @@ class mrp_production(orm.Model):
             bom_id = production.temp_bom_id.id
 
             if not (bom_point or bom_id):
-                raise orm.except_orm(_('Error'), _("Couldn't find a bill of material for this product."))
+                _logger.error('action_compute: Production order %s does not have a bill of material.' % production.name)
+                raise orm.except_orm(_('Error'), _("Found a production order to enqueue to, but it does not have a bill of material."))
             factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
             # Forcing routing_id to False, the lines are linked directly to temp_mrp_bom
             res = temp_mrp_bom_obj._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)
