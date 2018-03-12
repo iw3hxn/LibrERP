@@ -132,7 +132,7 @@ class mrp_production(orm.Model):
 
             if not (bom_point or bom_id):
                 _logger.error('action_compute: Production order %s does not have a bill of material.' % production.name)
-                raise orm.except_orm(_('Error'), _("Found a production order to enqueue to, but it does not have a bill of material."))
+                raise orm.except_orm(_('Error'), _("Found a production order to enqueue to, but it does not have a bill of material: ") + production.name)
             factor = uom_obj._compute_qty(cr, uid, production.product_uom.id, production.product_qty, bom_point.product_uom.id)
             # Forcing routing_id to False, the lines are linked directly to temp_mrp_bom
             res = temp_mrp_bom_obj._temp_mrp_bom_explode(cr, uid, bom_point, factor / bom_point.product_qty, context)

@@ -103,8 +103,8 @@ msgstr "Q.tà Desiderata"
 #. module: sale_order_requirement
 #: code:addons/sale_order_requirement/models/mrp_production.py:135
 #, python-format
-msgid "Found a production order to enqueue to, but it does not have a bill of material."
-msgstr "Trovato un ordine di produzione a cui accodare, ma è senza distinta."
+msgid "Found a production order to enqueue to, but it does not have a bill of material: "
+msgstr "Trovato un ordine di produzione a cui accodare, ma è senza distinta: "
 
 #. module: sale_order_requirement
 #: field:temp.mrp.routing,temp_mrp_bom_id:0
