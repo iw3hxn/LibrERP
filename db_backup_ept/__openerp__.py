@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+# © 2014 Emipro Technologies (www.emiprotechnologies.com)
+# © 2015-2018 Didotech srl (www.didotech.com)
+
 {
-    "name" : "Database Auto-Backup & Backup Auto-Transfer to FTP server",
-    "version" : "6.1.1",
-    "author" : "Emipro Technologies",
-    "website" : "http://www.emiprotechnologies.com",
-    "category" : "Generic Modules",
+    "name": "Database Auto-Backup & Backup Auto-Transfer to FTP server",
+    "version": "6.2.2.1",
+    "author": "Emipro Technologies",
+    "website": "http://www.emiprotechnologies.com",
+    "category": "Generic Modules",
     "description": """
     
         Key feature of this module includes,
@@ -32,9 +36,7 @@
     "depends": [
         "base"
     ],
-    "init_xml": [],
-    "demo_xml": [],
-    "update_xml": [
+    "data": [
         "view/bkp_conf_view.xml",
         "security/db_backup_security.xml",
         "security/backup_data.xml",

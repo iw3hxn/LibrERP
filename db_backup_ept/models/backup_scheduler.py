@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+# © 2014 Emipro Technologies (www.emiprotechnologies.com)
+# © 2015-2018 Didotech srl (www.didotech.com)
+
 from openerp.osv import orm, fields
 import xmlrpclib
 import socket
@@ -63,15 +67,23 @@ addons_path = tools.config['addons_path'] + '/db_backup_ept/DBbackups'
 class db_backup_ept(orm.Model):
     _name = 'db.autobackup.ept'
   
-    def get_db_list(self, cr, user, ids, host='localhost', port='8069', context={}):
+    def get_db_list(self, cr, user, ids, host='localhost', port='8069', context=None):
         uri = 'http://' + host + ':' + port
         conn = xmlrpclib.ServerProxy(uri + '/xmlrpc/db')
         db_list = execute(conn, 'list')
         return db_list
         
-    def get_addons_path(selfcr, user, context={}):
+    def get_addons_path(self, cr, user, context=None):
         addons_path = tools.config['addons_path'] + '/db_backup_ept/DBbackups'
         return addons_path
+
+    def _count_backups(self, cr, uid, ids, field_name, arg, context):
+        result = {}
+
+        for backup in self.browse(cr, uid, ids, context):
+            result[backup.id] = len(backup.history_line)
+
+        return result
 
     _columns = {
         'name': fields.char('Database', size=100, required='True', help='Database you want to schedule backups for'),
@@ -80,13 +92,25 @@ class db_backup_ept(orm.Model):
         'history_line': fields.one2many('db.backup.line', 'backup_id', 'History', readonly=True),
         'active': fields.boolean('Active'),
         'ftp_enable': fields.boolean('FTP Enable ?'),
-        'keep_backup_local': fields.boolean('Keep Backup on Local Path?',
-                                            help="Check this field if you want to keep database backup in Local directory. If this is unchecked then database backup will only be able transfer to FTP server."),
+        'keep_backup_local': fields.boolean(
+            'Keep Backup on Local Path?',
+            help="Check this field if you want to keep database backup in Local directory. If this is unchecked then database backup will only be able transfer to FTP server."
+        ),
         'FTP_id': fields.many2one('ept.ftpbackup', "FTP"),
-        'backup_dir': fields.char('Backup Directory', size=512, help='Absolute path for storing the backups', required='True'),
+        'backup_dir': fields.char(
+            'Backup Directory', size=512, help='Absolute path for storing the backups', required='True'
+        ),
         'ept_enable_email_notification': fields.boolean('ept_enable_email_notification'),
-        'email_ids': fields.char('Email Ids', size=1024, help='Add email id for FTP backup schedule notification. Separate Email Ids by comma(,). '),
-        'user_ids': fields.many2many('res.users', 'db_backup_users_rel', 'backup_id', 'user_id', 'users', help='select user for email notification.')
+        'email_ids': fields.char(
+            'Email Ids', size=1024,
+            help='Add email id for FTP backup schedule notification. Separate Email Ids by comma(,). '
+        ),
+        'user_ids': fields.many2many(
+            'res.users', 'db_backup_users_rel', 'backup_id', 'user_id',
+            'users', help='select user for email notification.'
+        ),
+        'backups_to_keep': fields.integer('Backups to keep', help="If set to 0 backups will not be deleted"),
+        'backups_on_disk': fields.function(_count_backups, string='Backups on disk', method=True, type='integer')
     }
 
     _defaults = {
@@ -96,35 +120,51 @@ class db_backup_ept(orm.Model):
         'active': True,
     }
     
-    def _check_db_exist(self, cr, user, ids):
-        for record in self.browse(cr, user, ids):
+    def _check_db_exist(self, cr, user, ids, context=None):
+        for record in self.browse(cr, user, ids, context):
             db_list = self.get_db_list(cr, user, ids, record.host, record.port)
             if record.name in db_list:
                 return True
         return False
     
     _constraints = [
-        (_check_db_exist, 'Error !!! No such database exist.', [])
+        (_check_db_exist, 'Error!!! No such database exist.', [])
     ]
     
     def __init__(self, cr, pool):
         super(db_backup_ept, self).__init__(cr, pool)
         self._pg_psw_env_var_is_set = False
     
-    def schedule_backup(self, cr, user, context={}):
-        conf_ids = self.search(cr, user, [('active', '=', 'True')], context=context)
-        confs = self.browse(cr, user, conf_ids, context)
-        for rec in confs:
-            db_list = self.get_db_list(cr, user, [], rec.host, rec.port)
+    def schedule_backup(self, cr, uid, context=None):
+        conf_ids = self.search(cr, uid, [('active', '=', 'True')], context=context)
+
+        self.delete_obsolete_backups(cr, uid, conf_ids, context)
+
+        for rec in self.browse(cr, uid, conf_ids, context):
+            db_list = self.get_db_list(cr, uid, [], rec.host, rec.port)
             if rec.name in db_list:
                 try:
                     if not os.path.isdir(rec.backup_dir):
                         os.makedirs(rec.backup_dir)
                 except:
                     raise
-                self.ept_backup(cr, user, [rec.id], rec.name, rec.backup_dir, True, rec.ftp_enable, rec.FTP_id, rec, rec.keep_backup_local, context)
+                self.ept_backup(
+                    cr, uid, [rec.id], rec.name, rec.backup_dir, True, rec.ftp_enable,
+                    rec.FTP_id, rec, rec.keep_backup_local, context)
                 # self.hv_backup(cr, user,[Bak conf ID], db_name, db_bkp_dir,AUTO,FTP)
         return True
+
+    def delete_obsolete_backups(self, cr, uid, ids, context):
+        for backup in self.browse(cr, uid, ids, context):
+            if backup.backups_to_keep and len(backup.history_line) > backup.backups_to_keep:
+                backups_to_delete = backup.history_line[backup.backups_to_keep:]
+                for condemned in backups_to_delete:
+                    _logger.info(u'Deleting backup {} ...'.format(condemned.path))
+                    try:
+                        os.unlink(condemned.path)
+                    except:
+                        pass
+                    condemned.unlink()
 
     def _set_pg_psw_env_var(self):
         #if os.name != 'nt' and not os.environ.get('PGPASSWORD', ''):
@@ -209,7 +249,7 @@ class db_backup_ept(orm.Model):
                             ftp = ftp_login(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)
                             # s = ftplib.FTP(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password)  # Connect
                             f = open(tar_file_path, 'rb')                # file to send
-                            # import pdb;pdb.set_trace()
+
                             remote_file_path = os.path.join(ept_ftp.to_ept_location, tar_file_name)
                             ftp.storbinary('STOR ' + remote_file_path, f)         # Send the file
                             f.close()                                # Close file and FTP
@@ -255,7 +295,9 @@ class db_backup_ept(orm.Model):
                     }, context)
         self._unset_pg_psw_env_var()
         if bak_conf and bak_conf.ept_enable_email_notification:
-            email_from_ids = self.pool['ir.config_parameter'].search(cr, uid, [('key', '=', 'auto_backup_from_email_Id')], context=context)
+            email_from_ids = self.pool['ir.config_parameter'].search(
+                cr, uid, [('key', '=', 'auto_backup_from_email_Id')], context=context
+            )
             
             to_user_email_ids = ''
             to_email_ids = bak_conf.email_ids
@@ -294,7 +336,10 @@ class db_backup_ept(orm.Model):
                     for email in to_email_ids.split(","):
                         email_to = email
                         if email_to:
-                            self.pool['mail.message'].schedule_with_attach(cr, uid, email_from.value or '', [email_to], email_subject, report_body, model=model, subtype='html')
+                            self.pool['mail.message'].schedule_with_attach(
+                                cr, uid, email_from.value or '', [email_to], email_subject,
+                                report_body, model=model, subtype='html'
+                            )
         os.remove(file_path)
         return True
 
@@ -311,6 +356,8 @@ class db_backup_line(orm.Model):
         'done_by': fields.many2one('res.users', 'Done By'),
         'message': fields.text('Message'),
     }
+
+    _order = 'date_time desc'
   
 
 class Eptftpbackup(orm.Model):
@@ -321,18 +368,26 @@ class Eptftpbackup(orm.Model):
     _columns = {
         'name': fields.char('Name', size=255, required=True, readonly=True, states={'draft': [('readonly', False)]}),
         'is_ftp_active': fields.boolean('Is FTP Active'),
-        'ept_ftp_host': fields.char('FTP Host/Server', size=255, required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'ept_ftp_username': fields.char('FTP Username', size=255, required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'ept_ftp_password': fields.char('FTP Password', size=255, required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'ept_ftp_location': fields.char('FTP Location', size=255, readonly=True, states={'draft': [('readonly', False)]},
-                                        help="The location must contain a trailing `/`"),
-        'to_ept_location': fields.char('To Directory', size=255, help="The location must contain a trailing `/`", required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'ept_ftp_host': fields.char(
+            'FTP Host/Server', size=255, required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'ept_ftp_username': fields.char(
+            'FTP Username', size=255, required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'ept_ftp_password': fields.char(
+            'FTP Password', size=255, required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'ept_ftp_location': fields.char(
+            'FTP Location', size=255, readonly=True, states={'draft': [('readonly', False)]},
+            help="The location must contain a trailing `/`"
+        ),
+        'to_ept_location': fields.char(
+            'To Directory', size=255, help="The location must contain a trailing `/`",
+            required=True, readonly=True, states={'draft': [('readonly', False)]}
+        ),
         'state': fields.selection([('draft', 'Draft'), ('confirmed', 'Confirmed')], 'State', readonly=True),
     }
     
     _defaults = {
         'state': 'draft',
-        'is_ftp_active': True,
+        'is_ftp_active': True
     }
     
     def btn_confirm(self, cr, uid, ids, context=None):
@@ -352,4 +407,3 @@ class Eptftpbackup(orm.Model):
         if ftp_connect(ept_ftp.ept_ftp_host, ept_ftp.ept_ftp_username, ept_ftp.ept_ftp_password, ept_ftp.to_ept_location):
             raise orm.except_orm(_(''), _('FTP Connection test successfully.'))
         return True
-

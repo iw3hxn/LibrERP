@@ -33,6 +33,9 @@
 							<field name="host" />
 							<field name="port"  />
 							<field name="backup_dir" colspan="4"  />
+							<field name="backups_to_keep" />
+							<field name="backups_on_disk" />
+							<newline />
 							<field name="ftp_enable" />
 							<field name='FTP_id' domain="[('state','=','confirmed')]" attrs="{'invisible':[('ftp_enable','=',False)],'required':[('ftp_enable','=',True)]}" />
 							<field name="keep_backup_local" attrs="{'invisible':[('ftp_enable','=',False)]}" />

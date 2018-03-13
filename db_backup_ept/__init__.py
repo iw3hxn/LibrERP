@@ -1,4 +1,4 @@
 # Created By Hiren Vora
 
-import backup_scheduler
-import wizard
+from . import models
+from . import wizard
