@@ -19,6 +19,9 @@
 #
 ##############################################################################
 from openerp.osv import orm, fields
+from openerp.tools.config import config
+
+ENABLE_CACHE = config.get('product_cache', False)
 
 
 class res_company(orm.Model):
@@ -30,9 +33,17 @@ class res_company(orm.Model):
             [('real', 'Real Stock'),
              ('virtual', 'Virtual Stock'),
              ('immediately', 'Immediately Usable Stock')],
-            'Reference Stock for BoM Stock')
+            'Reference Stock for BoM Stock'),
+        'exclude_routing': fields.boolean('Exclude Routing on BOM Cost'),
     }
 
     _defaults = {
-        'ref_stock': 'real'
+        'ref_stock': 'real',
+        'exclude_routing': False
     }
+
+    def write(self, cr, uid, ids, vals, context=None):
+        res = super(res_company, self).write(cr, uid, ids, vals, context)
+        if ENABLE_CACHE and 'exclude_routing' in vals:
+            self.pool['product.product'].product_cost_cache = {}
+        return res

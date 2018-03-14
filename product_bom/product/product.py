@@ -120,7 +120,7 @@ class product_product(orm.Model):
                 else:
                     bom = bom_obj.browse(cr, uid, bom_id, context)
                 
-                if bom.routing_id:
+                if bom.routing_id and not context.get('exclude_routing', False):
                     for wline in bom.routing_id.workcenter_lines:
                         wc = wline.workcenter_id
                         cycle = wline.cycle_nbr
@@ -196,7 +196,10 @@ class product_product(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         product_uom = context.get('product_uom')
         bom_properties = context.get('properties')
-        res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties, context)
+        company = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id
+        ctx = context.copy()
+        ctx.update({'exclude_routing': company.exclude_routing})
+        res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties, context=ctx)
         end_time = datetime.now()
         duration_seconds = (end_time - start_time)
         duration = '{sec}'.format(sec=duration_seconds)

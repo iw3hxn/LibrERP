@@ -51,6 +51,11 @@ msgid "Reference Stock for BoM Stock"
 msgstr "Reference Stock for BoM Stock"
 
 #. module: product_bom
+#: field:res.company,exclude_routing:0
+msgid "Exclude Routing on BOM Cost"
+msgstr "Escludi il Routing dal costo della BOM"
+
+#. module: product_bom
 #: help:product.product,bom_stock:0
 msgid "Quantities of products based on Bill of Materials, useful to know how much of this product you could produce.Computed as:\n"
 " Reference stock of this product + how much could I produce of this product with the BoMComponents"

@@ -11,6 +11,7 @@
                 <page string="Configuration" position="inside">
                     <separator string="Stock - Various" colspan="4"/>
                     <field name="ref_stock" />
+                    <field name="exclude_routing" />
                 </page>   
             </field>
         </record>
