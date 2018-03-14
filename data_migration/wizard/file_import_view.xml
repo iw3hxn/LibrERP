@@ -75,6 +75,7 @@
                         <field name="file_name" invisible="1" />
                         <field name="content_base64" filename="file_name" required="True" />
                         <field name="format" />
+                        <newline />
                         <field name="update_product_name" />
                         <field name="update_only" />
                     </group>

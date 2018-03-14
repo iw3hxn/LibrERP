@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# © 2015-2017 Didotech srl (www.didotech.com)
+# © 2015-2018 Didotech srl (www.didotech.com)
 
 {
     'name': 'Data migration import',
-    'version': '3.13.92.22',
+    'version': '3.13.93.22',
     'category': 'Tools',
     'description': """
         This module gives a possibilitie to import products and partners

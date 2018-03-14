@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# © 2017-2018 Didotech srl (www.didotech.com)
 """
 Disable openerp related imports in utils.py before running tests
 """
@@ -23,11 +25,12 @@ def test_conversion():
         '02,085': '02,085',
         '.': '.',
         ',': ',',
-        'L00df': 'L00df'
+        'L00df': 'L00df',
+        u'€ 4.072,00': '4072.0'
     }
 
     for value, result in values.items():
-        assert to_str(value) == result, "{} is not {}".format(value, result)
+        assert to_str(value) == result, u"{} is not {}".format(value, result)
 
 
 if __name__ == '__main__':

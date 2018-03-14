@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2013 - 2017 Didotech srl (www.didotech.com)
+# © 2013 - 2018 Didotech srl (www.didotech.com)
 
 # DEBUG = True
 DEBUG = False
@@ -528,12 +528,25 @@ class FormatOmnitron(object):
     PARTNER_UNIQUE_OFFICE_CODE = True
 
 
+class FormatStandardPriceUpdate(object):
+    HEADER_PRODUCT = ("Codice articolo", "Listino Distinte")
+    COLUMNS_PRODUCT = "default_code, standard_price"
+    PRODUCT_SEARCH = ['default_code']
+    REQUIRED_PRODUCT = ['default_code']
+    PRODUCT_WARNINGS = []
+    PRODUCT_ERRORS = []
+
+    # Default values
+    PRODUCT_DEFAULTS = {}
+
+
 class Inventory(object):
     TABLE = OrderedDict((
         ('default_code', 'Product Code'),
         ('name', 'Product Name'),
         ('qty_available', 'Product quantity')
     ))
+
 
 # Nothing should be changed after this line
 # -----------------------------------------------------------------------------

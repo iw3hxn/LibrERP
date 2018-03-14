@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2013-2017 Didotech srl (www.didotech.com)
+# © 2013-2018 Didotech srl (www.didotech.com)
 
 import logging
 import math
@@ -548,10 +548,11 @@ class ImportFile(threading.Thread, Utils):
                 if record.omnitron_weight_per_meter and float(record.omnitron_weight_per_meter):
                     vals_product['weight_per_meter'] = float(record.omnitron_weight_per_meter)
 
-        elif isinstance(record.name, unicode):
-            vals_product['name'] = record.name
-        else:
-            vals_product['name'] = unicode(record.name, 'utf-8')
+        elif hasattr(record, 'name'):
+            if isinstance(record.name, unicode):
+                vals_product['name'] = record.name
+            else:
+                vals_product['name'] = unicode(record.name, 'utf-8')
 
         if hasattr(record, 'category') and record.category:
             # We can't use \ in SQL, so we forced to use \\ which became \\\\
@@ -870,6 +871,7 @@ class ImportFile(threading.Thread, Utils):
                 del vals_product['name']
             else:
                 name = 'Unknown'
+
             if vals_product:
                 _logger.info(
                     u'Row {row}: Updating product {product}...'.format(row=self.processed_lines, product=identifier))

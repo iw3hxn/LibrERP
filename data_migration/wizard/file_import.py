@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2014 Didotech SRL (info at didotech.com)
+# Copyright (c) 2014-2018 Didotech SRL (info at didotech.com)
 #
 # This program is Free Software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -166,6 +166,7 @@ class product_import(filedata_import):
                 ('FormatFive', _('Format Five')),
                 ('FormatSix', _('Format Six')),
                 ('FormatOmnitron', _('Format Omnitron')),
+                ('FormatStandardPriceUpdate', _('Update Standard Price'))
             ), 'Formato Dati', required=True, readonly=False
         ),
         # Data of file, in code BASE64

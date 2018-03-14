@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2013 - 2017 Andrei Levin - Didotech srl (www.didotech.com)
+# © 2013-2018 Andrei Levin - Didotech srl (www.didotech.com)
 
 import logging
 import re
@@ -30,13 +30,16 @@ class Utils():
     @staticmethod
     def toStr(value):
         if value and not value == '\\N':
-            if isinstance(value, (str, unicode)) and value.lower() == 'null':
-                return False
-
-            number = re.compile(r'^(?!0[0-9])[0-9.,]+(?<![.,])$')
-            number_with_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
-            number_with_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
             if isinstance(value, (unicode, str)):
+                if value.lower() == 'null':
+                    return False
+
+                number = re.compile(r'^(?!0[0-9])[0-9.,]+(?<![.,])$')
+                number_with_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
+                number_with_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
+
+                value = value.strip(u'€ ')
+
                 if number.match(value):
                     if ',' in value or '.' in value:
                         if number_with_thousands_separator_italian.match(value):
