@@ -129,9 +129,27 @@ class stock_picking(orm.Model):
         res = self.name_get(cr, uid, ids, context=context)
         return dict(res)
 
+    def _is_goods_ready(self, cr, uid, ids, field_name, arg, context=None):
+        result = {}
+        for pick in self.browse(cr, uid, ids, context):
+            moves_ready = False
+            for m in pick.move_lines:
+                if m.goods_ready:
+                    moves_ready = True
+                    break
+            result[pick.id] = moves_ready
+        return result
+
+    def _filter_goods_ready(self, cr, uid, obj, field_name, args, context=None):
+        all_pickings_ids = self.search(cr, uid, [], context=context)
+        goods_ready_dict = self._is_goods_ready(cr=cr, uid=uid, ids=all_pickings_ids, field_name=field_name, arg=args, context=context)
+        res = [key for (key, value) in goods_ready_dict.iteritems() if value]
+        where = [('id', 'in', res)]
+        return where
+
     _columns = {
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Name'),
-        'goods_ready': fields.related('move_lines', 'goods_ready', type='boolean', string='Goods Ready'),
+        'goods_ready': fields.function(_is_goods_ready, type="boolean", string="Have Posa", fnct_search=_filter_goods_ready),
         'carriage_condition_id': fields.many2one(
             'stock.picking.carriage_condition', 'Carriage condition'),
         'goods_description_id': fields.many2one(
