@@ -319,6 +319,12 @@ msgstr "Numero lotto non valido"
 msgid "Pack"
 msgstr "Pacco"
 
+
+#. module: dt_product_serial
+#: field:stock.partial.picking,arrival_date:0
+msgid "Real arrival date"
+msgstr "Data effettiva arrivo merce"
+
 #. module: dt_product_serial
 #: model:ir.model,name:dt_product_serial.model_stock_partial_picking_line
 msgid "stock.partial.picking.line"

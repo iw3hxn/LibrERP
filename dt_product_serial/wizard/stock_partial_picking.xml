@@ -19,6 +19,7 @@
                 </field>
                 <field name="hide_tracking" position="after">
                     <field name="tracking_code"/>
+                    <field name="arrival_date"/>
                     <newline/>
                     <button name="action_set_zero_all" string="Set To Zero All" colspan="1" type="object" icon="gtk-clear"/>
                     <button name="action_set_zero_except_check" string="Set To Zero Except Check" colspan="1" type="object" icon="gtk-clear"/>

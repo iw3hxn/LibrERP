@@ -183,7 +183,8 @@ class stock_partial_picking(orm.TransientModel):
     
     _columns = {
         'tracking_code': fields.char('Pack', size=64),
-        'product_search': fields.char('Search Product', size=64)
+        'product_search': fields.char('Search Product', size=64),
+        'arrival_date': fields.date('Real arrival date')
     }
 
     def default_get(self, cr, uid, fields, context=None):
