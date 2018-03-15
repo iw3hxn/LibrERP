@@ -15,6 +15,7 @@ Basato su sale_order_modify_confirmed""",
     'license': 'AGPL-3',
     "depends": ['sale', 'sale_margin'],
     "update_xml": [
+        'security/ir.model.access.csv',
         'wizard/wizard_modify_order.xml',
         'views/sale_view.xml'
     ],
