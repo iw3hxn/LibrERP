@@ -1,0 +1,140 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* sale_order_modify_confirmed
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-09 09:57+0000\n"
+"PO-Revision-Date: 2014-07-09 09:57+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.modifyorder,partner_id:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.modifyorder,partner_invoice_id:0
+msgid "Invoice Address"
+msgstr "Indirizzo di Fatturazione"
+
+#. module: sale_order_modify_confirmed
+#: model:ir.model,name:sale_order_modify_confirmed.model_wizar_order_line
+msgid "wizar.order.line"
+msgstr "wizar.order.line"
+
+#. module: sale_order_modify_confirmed
+#: code:addons/sale_order_modify_confirmed/wizard/wizard_modifyorder.py:50
+#, python-format
+msgid "Select only one Order to modify!"
+msgstr "Puoi modificare solo un Ordine per volta!"
+
+#. module: sale_order_modify_confirmed
+#: model:ir.model,name:sale_order_modify_confirmed.model_wizard_modifyorder
+msgid "wizard.modifyorder"
+msgstr "wizard.modifyorder"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.modifyorder,order_id:0
+msgid "Sale Order"
+msgstr "Ordine"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.order.line,product_id:0
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: sale_order_modify_confirmed
+#: model:ir.actions.act_window,name:sale_order_modify_confirmed.act_modify_saleorder
+#: model:ir.actions.act_window,name:sale_order_modify_confirmed.action_modify_saleorder
+msgid "Modify Sale Order"
+msgstr "Modifica Ordine di Vendita"
+
+#. module: sale_order_modify_confirmed
+#: model:ir.model,name:sale_order_modify_confirmed.model_wizard_order_line
+msgid "wizard.order.line"
+msgstr "wizard.order.line"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.modifyorder,partner_shipping_id:0
+msgid "Delivery Address"
+msgstr "Indirizzo di Spedizione"
+
+#. module: sale_order_modify_confirmed
+#: view:wizard.modifyorder:0
+msgid "Wizard Modify Sale Order"
+msgstr "Wizard Modifica Ordine di Vendita"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.order.line,price_unit:0
+msgid "Unit Price"
+msgstr "Prezzo Unitario"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.order.line,price_unit:0
+msgid "Unit Price"
+msgstr "Prezzo Unitario"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.order.line,purchase_price:0
+msgid "Purchase Price"
+msgstr "Prezzo Acquisto"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.order.line,name:0
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: sale_order_modify_confirmed
+#: view:wizard.modifyorder:0
+msgid "Done"
+msgstr "Conferma"
+
+#. module: sale_order_modify_confirmed
+#: code:addons/sale_order_modify_confirmed/wizard/wizard_modifyorder.py:49
+#, python-format
+msgid "Errore"
+msgstr "Errore"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.order.line,line_id:0
+msgid "Line id"
+msgstr "Id di Linea"
+
+#. module: sale_order_modify_confirmed
+#: view:wizard.modifyorder:0
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.modifyorder,order_line:0
+msgid "Order Lines"
+msgstr "Righe Ordine"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.order.line,order_id:0
+msgid "Order Reference"
+msgstr "Riferimento Ordine"
+
+#. module: sale_order_modify_confirmed
+#: view:wizard.modifyorder:0
+msgid "Order Line"
+msgstr "Riga Ordine"
+
+#. module: sale_order_modify_confirmed
+#: field:wizard.order.line,discount:0
+msgid "Discount (%)"
+msgstr "Sconto (%)"
+
+#. module: sale_order_modify_confirmed
+#: model:ir.actions.act_window,name:sale_order_modify_confirmed.act_modify_saleorder
+#: model:ir.actions.act_window,name:sale_order_modify_confirmed.action_modify_saleorder
+msgid "Modify Sale Order"
+msgstr "Modifica Ordine di Vendita"
