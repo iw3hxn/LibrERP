@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <record id="sale_order_form_view_inherit" model="ir.ui.view">
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <button name="action_reopen" position="before">
+                    <field name="has_services" invisible="1"/>
+                    <button type='action' name='%(action_modify_saleorder)d' icon="gtk-edit" string="Edit Services" colspan="4"
+                    attrs="{'invisible': ['|',('has_services','=',False),
+                                          ('state','not in',['wait_supervisor_validation','done'])]}"/>
+                </button>
+            </field>
+        </record>
+
+    </data>
+</openerp>

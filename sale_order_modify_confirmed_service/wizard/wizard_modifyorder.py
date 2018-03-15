@@ -1,23 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2014 Andre@ (<a.gallina@cgsoftware.it>)
-#    All Rights Reserved
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published
-#    by the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
 from openerp.osv import orm, fields
 from tools.translate import _
@@ -56,7 +38,7 @@ class wizard_modifyorder(orm.TransientModel):
                 cr, uid, order_id, context)
             line_value = []
             for line in order.order_line:
-                if line.product_id: #and line.product_id.type != 'service':
+                if line.product_id and line.product_id.type == 'service':
                     line_value.append({
                         'name': line.name,
                         'product_id': line.product_id.id,
@@ -120,7 +102,7 @@ class wizard_modifyorder(orm.TransientModel):
             cr, uid, order_id, context)
         line_value = []
         for line in order.order_line:
-            if line.product_id: # and line.product_id.type != 'service':
+            if line.product_id and line.product_id.type == 'service':
                 line_value.append({
                     'product_id': line.product_id.id,
                     'name': line.name,
@@ -150,9 +132,9 @@ class wizard_order_line(orm.TransientModel):
             'wizard.modifyorder', 'Order Reference'),
         'line_id': fields.many2one(
             'sale.order.line', 'Line id'),
-        'product_id': fields.many2one('product.product', 'Product', domain=[('type', '=', 'service')]),
+        'product_id': fields.many2one('product.product', 'Product', domain=[('type', '=', 'service')], readonly=True),
         'name': fields.char('Description', size=64),
-        'price_unit': fields.float('Unit Price', digits_compute=dp.get_precision('Product Price')),
-        'discount': fields.float('Discount (%)', digits_compute=dp.get_precision('Discount')),
+        'price_unit': fields.float('Unit Price', digits_compute=dp.get_precision('Product Price'), readonly=True),
+        'discount': fields.float('Discount (%)', digits_compute=dp.get_precision('Discount'), readonly=True),
         'purchase_price': fields.float('Purchase Price', digits_compute=dp.get_precision('Product Price')),
     }
