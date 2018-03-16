@@ -21,7 +21,8 @@
         <record id="view_partner_coordinates" model="ir.ui.view">
             <field name="name">partner.coordinates.inherit</field>
             <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form" />
+            <!--<field name="inherit_id" ref="base.view_partner_form" />-->
+            <field name="inherit_id" ref="base_address_contacts.view_partner_form_inherit" />
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <data>
