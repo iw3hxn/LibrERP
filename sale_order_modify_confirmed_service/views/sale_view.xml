@@ -11,7 +11,7 @@
                     <button type='action' name='%(action_modify_saleorder)d' icon="gtk-edit" string="Edit Services"
                             colspan="4" groups="base.group_sale_manager"
                             attrs="{'invisible': ['|',('has_services','=',False),
-                                                      ('state','not in',['wait_supervisor_validation','done'])]}"/>
+                                                      ('state','not in',['wait_supervisor_validation','progress','done'])]}"/>
                 </button>
             </field>
         </record>
