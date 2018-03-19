@@ -131,7 +131,7 @@ class stock_move(orm.Model):
         The following code will detect this situation and reconnect properly the moves into only: b->a, c->e and d->f
         """
         result = super(stock_move, self).action_done(cr, uid, ids, context)
-        for move in self.browse(cr, uid, ids):
+        for move in self.browse(cr, uid, ids, context):
             if move.product_id.lot_split_type and move.move_dest_id and move.move_dest_id.id:
                 cr.execute(
                     "select stock_move.id from stock_move_history_ids left join stock_move on stock_move.id = stock_move_history_ids.child_id where parent_id=%s and stock_move.product_qty=1",
