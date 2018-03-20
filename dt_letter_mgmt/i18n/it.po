@@ -501,7 +501,7 @@ msgstr "Indirizzo"
 #. module: dt_letter_mgmt
 #: model:ir.model,name:dt_letter_mgmt.model_res_letter
 msgid "A Register class to log all movements regarding letters"
-msgstr "Una registro per registrare tutti i movimenti per quanto riguarda le lettere"
+msgstr "Registro Lettere"
 
 #. module: dt_letter_mgmt
 #: selection:letter.type,color:0
