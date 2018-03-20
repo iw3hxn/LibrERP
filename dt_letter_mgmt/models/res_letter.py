@@ -183,6 +183,8 @@ class res_letter(orm.Model):
         'active': True,
         'company_id': lambda self, cr, uid, c: self.pool['res.company']._company_default_get(cr, uid, 'res.letter', context=c),
     }
+
+    _order = 'date desc'
     
     def create(self, cr, uid, values, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
