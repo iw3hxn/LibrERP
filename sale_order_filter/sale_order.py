@@ -77,10 +77,27 @@ class sale_order(orm.Model):
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
         new_args = []
 
+        done = False
+        for arg in args:
+            if arg[0] == 'state':
+                if isinstance(arg[2], (str, unicode)):
+                    states = [arg[2]]
+                else:
+                    states = arg[2]
+                for state in states:
+                    if state in ['manual', 'progress', 'done']:
+                        done = True
+                        continue
+
         for arg in args:
             if arg[0] == 'year':
-                new_args.append(('date_order', '>=', '{year}-01-01'.format(year=arg[2])))
-                new_args.append(('date_order', '<=', '{year}-12-31'.format(year=arg[2])))
+                if done:
+                    date_filter = 'date_confirm'
+                else:
+                    date_filter = 'date_order'
+
+                new_args.append(('{date_filter}'.format(date_filter=date_filter), '>=', '{year}-01-01'.format(year=arg[2])))
+                new_args.append(('{date_filter}'.format(date_filter=date_filter), '<=', '{year}-12-31'.format(year=arg[2])))
             elif arg[0] == 'section_id':
                 section_ids = self.get_crm_section_children(cr, uid, arg[2], context)
                 section_ids.append(arg[2])
