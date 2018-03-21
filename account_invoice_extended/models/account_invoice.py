@@ -178,6 +178,8 @@ class account_invoice(orm.Model):
                 partner_vals['property_payment_term'] = vals.get('payment_term')
             if not invoice.partner_id.property_account_position and vals.get('fiscal_position', False):
                 partner_vals['property_account_position'] = vals.get('fiscal_position')
+            if not invoice.partner_id.company_bank_id and vals.get('partner_bank_id', False):
+                partner_vals['company_bank_id'] = vals.get('partner_bank_id')
 
             if partner_vals:
                 invoice.partner_id.write(partner_vals)
