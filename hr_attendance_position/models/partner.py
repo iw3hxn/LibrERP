@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
 # © 2018 Andrei Levin - Didotech srl (www.didotech.com)
 
+import logging
+
 from openerp.osv import orm, fields
-import googlemaps
 from tools.translate import _
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
+try:
+    import googlemaps
+except (ImportError, IOError) as err:
+    _logger.error(err)
 
 
 class ResPartnerAddress(orm.Model):
