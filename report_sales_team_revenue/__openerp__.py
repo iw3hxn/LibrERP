@@ -31,6 +31,7 @@
     "depends": [
         'base',
         'crm',
+        'sale_commission'
     ],
     "data": [
         # 'security/ir.model.access.csv',
