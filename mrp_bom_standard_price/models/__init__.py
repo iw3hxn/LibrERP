@@ -8,4 +8,5 @@
 #    Coded by: Juan Carlos Funes(juan@vauxoo.com)
 #############################################################################
 from . import inherit_mrp_bom
+from . import inherit_mrp_routing_workcenter
 

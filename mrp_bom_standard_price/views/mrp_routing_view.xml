@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<openerp>
+    <data>
+    
+        <record model="ir.ui.view" id="view_mrp_routing_tree_xml">
+            <field name="name">mrp.routing.workcenter.tree</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view"/>
+            <field name="arch" type="xml">
+                    <field name="hour_nbr" position="replace">
+                        <field name="hour_nbr" widget="float_time" sum="Total Time"/>
+                        <field name="costs_hour"/>
+                        <field name="total_cost" sum="Total Cost"/>
+                    </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_mrp_routing_form_xml">
+            <field name="name">mrp.routing.workcenter.form</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
+            <field name="arch" type="xml">
+                <field name="hour_nbr" position="after">
+                    <field name="total_cost"/>
+                </field>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>

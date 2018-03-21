@@ -42,3 +42,14 @@ msgstr "Prezzo di Costo per Unità di Prodotto"
 #: field:mrp.bom,bom_cost_price:0
 msgid "Cost Price"
 msgstr "Prezzo di Costo"
+
+#. module: mrp
+#: field:mrp.routing.workcenter,costs_hour:0
+msgid "Cost per hour"
+msgstr "Costo Orario"
+
+#. module: mrp
+#: field:mrp.routing.workcenter,total_cost:0
+msgid "Total Cost"
+msgstr "Costo Totale"
+
