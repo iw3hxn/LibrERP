@@ -243,7 +243,7 @@
                     <field name="order_ready" />
                     <field name="amount_total" sum="Total" groups="base.group_sale_salesman"/>
                     <field name="payment_term_id" invisible="context.get('show_delivery', False)"/>
-                    <field name="invoice_state" invisible="context.get('show_delivery', False)" />
+                    <field name="invoiced_state" invisible="context.get('show_delivery', False)" />
                 </tree>
             </field>
         </record>
