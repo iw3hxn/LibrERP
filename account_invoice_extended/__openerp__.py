@@ -53,6 +53,7 @@
         'web_hide_buttons',
         'account_due_list',
         'stock_picking_extended',
+        'account_bank',
     ],
     "data": [
         'security/account_security.xml',
