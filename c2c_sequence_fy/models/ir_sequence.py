@@ -208,7 +208,7 @@ class ir_sequence(orm.Model):
 
     def _journal(self, cr, uid, seq, context=None):
         journal_obj = self.pool['account.journal']
-        jou = journal_obj.browse(cr, uid, journal_obj.search(cr, uid, [('sequence_id', '=', seq.id)], context=context), context)
+        jou = journal_obj.browse(cr, uid, journal_obj.search(cr, 1, [('sequence_id', '=', seq.id)], context=context), context)
         if jou:
             return jou[0]
         else:
