@@ -37,7 +37,7 @@ reports for your country - l10n_(country code)_sale_reports
     'license': 'AGPL-3',
     "depends": [
         'l10n_it_sale',
-        'report_aeroo_ooo',
+        'report_aeroo',
         'stock',
         'l10n_it_account_report'
     ],

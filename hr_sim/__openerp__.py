@@ -34,7 +34,7 @@
     "author": "Denero Team @ Didotech.com",
     'depends': [
         'hr',
-        'report_aeroo_ooo',
+        'report_aeroo',
         'web_hide_buttons'
     ],
     'init_xml': [
