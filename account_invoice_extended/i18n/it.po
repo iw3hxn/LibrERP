@@ -92,3 +92,18 @@ msgstr "Nel giornale '{journal}' è impostato la verifica della data nel periodo
 #, python-format
 msgid "Error"
 msgstr "Errore"
+
+#. module: l10n_it_sale_report
+#: field:account.invoice,sale_order_ids:0
+msgid "Sale orders"
+msgstr "Ordini di vendita"
+
+#. modules: account_invoice_extended
+#: view:account.invoice:0
+msgid "Sale"
+msgstr "Vendita"
+
+#. module: account_invoice_extended
+#: view:account.invoice:0
+msgid "Sale / Stock Picking"
+msgstr "Vendite / DDT"

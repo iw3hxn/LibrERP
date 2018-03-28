@@ -87,6 +87,9 @@ class account_invoice(orm.Model):
         'supplier_invoice_number': fields.char('Supplier invoice nr', size=32),
         # 'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
         'stock_picking_ids': fields.function(_get_stock_picking, 'Stock Picking', type='one2many', relation="stock.picking", readonly=True, method=True),
+        'sale_order_ids': fields.many2many(
+            'sale.order', 'sale_order_invoice_rel', 'invoice_id', 'order_id', 'Sale orders'
+        )
     }
     
     def copy(self, cr, uid, order_id, default, context=None):
