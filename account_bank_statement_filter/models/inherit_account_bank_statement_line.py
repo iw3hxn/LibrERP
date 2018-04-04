@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -22,27 +22,15 @@
 #
 ##############################################################################
 
-{
-    "name": "Account Bank Statement Filter",
-    "version": "3.2.2.4",
-    "author": "Didotech SRL",
-    "website": "http://www.didotech.com",
-    "category": 'Accounting & Finance',
-    "description": """
-        Module adds extra functionality to account bank statement:
-            - possibility to filter statement by year
-            - possibility to see statement of last or current month
-            - possibility to see statement where there are a selected partner
-    """,
-    "depends": [
-        'base',
-        'account',
-    ],
-    "data": [
-        'views/account_bank_view.xml',
-        'views/account_bank_statement_line_view.xml'
-    ],
-    "active": False,
-    "installable": True,
-    'auto_install': True
-}
+from openerp.osv import orm, fields
+
+
+class account_bank_statement_line(orm.Model):
+    _inherit = 'account.bank.statement.line'
+
+    _columns = {
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'journal_id': fields.related('statement_id', 'journal_id', type='many2one', relation='account.journal',
+                                     string='Journal', store=True, readonly=True),
+    }
