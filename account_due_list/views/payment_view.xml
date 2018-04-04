@@ -220,14 +220,10 @@
                 <search string="Account Ledger">
                     <group>
                         <field name="account_id"/>
+                        <field name="name"/>
                         <separator orientation="vertical"/>
-                        <filter icon="terp-go-today" string="From Start Current Year"
-                                domain="[('date','&gt;=',time.strftime('%%Y-01-01'))]" help="Start Date"
-                                name="start_year"/>
-                        <separator orientation="vertical"/>
-                        <filter icon="terp-go-today" string="From Start Current Month"
-                                domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date"
-                                name="start_month"/>
+                        <field name="journal_id" context="{'filter_journal_id': True}"/>
+                        <field name="partner_id"/>
                         <separator orientation="vertical"/>
                         <field string="Invoice from" name="date_from" filter_domain="[('invoice_date','&gt;=',self)]"/>
                         <field string="Invoice to" name="date_to" filter_domain="[('invoice_date','&lt;=',self)]"/>
@@ -235,8 +231,14 @@
                         <field string="Due from" name="date_from" filter_domain="[('date','&gt;=',self)]"/>
                         <field string="Due to" name="date_to" filter_domain="[('date','&lt;=',self)]"/>
                         <newline/>
-                        <field name="journal_id" context="{'filter_journal_id': True}"/>
-                        <field name="partner_id"/>
+                        <filter icon="terp-go-today" string="From Start Current Year"
+                                domain="[('date','&gt;=',time.strftime('%%Y-01-01'))]" help="Start Date"
+                                name="start_year"/>
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-go-today" string="From Start Current Month"
+                                domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date"
+                                name="start_month"/>
+
                     </group>
                 </search>
             </field>
