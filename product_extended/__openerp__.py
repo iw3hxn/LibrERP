@@ -3,7 +3,7 @@
 
 {
     "name": "Product Extended",
-    "version": "3.8.14.11",
+    "version": "3.8.14.12",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     'category': 'Sales Management',
