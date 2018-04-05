@@ -28,17 +28,27 @@ from openerp import SUPERUSER_ID
 class purchase_order(orm.Model):
     _inherit = "purchase.order"
 
-    def wkf_confirm_order(self, cr, uid, ids, context=None):
-        res = super(purchase_order, self).wkf_confirm_order(cr, uid, ids, context)
+    def wkf_approve_order(self, cr, uid, ids, context=None):
+        res = super(purchase_order, self).wkf_approve_order(cr, uid, ids, context)
         self.update_product(cr, uid, ids, context)
         return res
+
+    def _get_product_unit_price(self, cr, uid, ids, to_currency, order_line, context):
+        from_currency = order_line.order_id.pricelist_id.currency_id.id
+        price_subtotal = self.pool['res.currency'].compute(
+            cr, uid,
+            from_currency_id=from_currency,
+            to_currency_id=to_currency,
+            from_amount=order_line.price_subtotal,
+            context=context
+        )
+        return price_subtotal / order_line.product_qty
 
     def update_product(self, cr, uid, ids, context):
         supplierinfo_obj = self.pool['product.supplierinfo']
         user = self.pool['res.users'].browse(cr, uid, uid, context)
         to_currency = user.company_id.currency_id.id
         for order in self.browse(cr, uid, ids, context):
-            from_currency = order.pricelist_id.currency_id.id
             for line in order.order_line:
                 if line.product_id:
                     vals = {
@@ -47,7 +57,7 @@ class purchase_order(orm.Model):
                         'last_supplier_id': line.partner_id.id,
                         'last_purchase_order_id': order.id,
                     }
-                    # line.product_id.write(vals)
+
                     self.pool['product.product'].write(cr, SUPERUSER_ID, line.product_id.id, vals, context)
                     supplierinfo_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('name', '=', line.partner_id.id)], context=context)
                     if not supplierinfo_ids:
@@ -56,17 +66,12 @@ class purchase_order(orm.Model):
                         if supplierinfo_ids:
                             sequence = supplierinfo_obj.browse(cr, uid, supplierinfo_ids[-1], context).sequence + 10
 
-                        price_subtotal = self.pool['res.currency'].compute(
-                            cr, uid,
-                            from_currency_id=from_currency,
-                            to_currency_id=to_currency,
-                            from_amount=line.price_subtotal,
-                            context=context
-                        )
+                        price_unit = self._get_product_unit_price(cr, uid, ids, to_currency, line, context)
+
                         pricelist_vals = {
                             'min_quantity': 1,
                             'name': order.name,
-                            'price': price_subtotal / line.product_qty,
+                            'price': price_unit,
                         }
 
                         supplierinfo_obj.create(cr, uid, {
