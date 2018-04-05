@@ -20,6 +20,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: crm_lead_correct
+#: view:crm.case.section:0
 #: field:crm.case.section,region_ids:0
 msgid "Regions"
 msgstr "Regioni"
