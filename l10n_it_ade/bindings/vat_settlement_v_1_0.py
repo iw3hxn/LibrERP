@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ./vat_settlement_v_1_0.py
 # PyXB bindings for NM:4f059617657cbf045796906b94fd6da476500108
-# Generated 2017-09-22 16:54:15.194915 by PyXB version 1.2.4 using Python 2.7.5.final.0
+# Generated 2017-10-03 10:08:19.850342 by PyXB version 1.2.4 using Python 2.7.5.final.0
 # by Antonio Maria Vigliotti <antoniomaria.vigliotti@gmail.com>
 # Namespace urn:www.agenziaentrate.gov.it:specificheTecniche:sco:ivp
 from __future__ import unicode_literals
@@ -22,7 +22,7 @@ except ImportError as err:
 
 # Unique identifier for bindings created at the same time
 _GenerationUID = pyxb.utils.utility.UniqueIdentifier(
-    'urn:uuid:dd60366c-9fa5-11e7-a24e-005056ba06a2')
+    'urn:uuid:faf43498-a811-11e7-95f5-005056ba06a2')
 
 # Version of PyXB used to generate the bindings
 _PyXBVersion = '1.2.4'
@@ -31,8 +31,11 @@ if pyxb.__version__ != _PyXBVersion:
     raise pyxb.PyXBVersionError(_PyXBVersion)
 
 # Import bindings for namespaces imported into schema
-import pyxb.binding.datatypes
 from . import _ds as _ImportedBinding__ds
+try:
+    import pyxb.binding.datatypes
+except ImportError as err:
+    _logger.debug(err)
 from . import _cm as _ImportedBinding__cm
 
 # NOTE: All namespace declarations are reserved within the binding

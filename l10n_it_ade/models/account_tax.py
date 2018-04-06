@@ -31,7 +31,7 @@ class AccountTax(orm.Model):
             ('N3', 'non imponibili'),
             ('N4', 'esenti'),
             ('N5', 'regime del margine/IVA non esposta'),
-            ('N6', 'inversione contabile (reverse charge autofatture)'),
+            ('N6', 'inversione contabile (acq. in reverse charge)'),
             ('N7', 'IVA assolta in altro stato UE'),
             ('FC', 'FC applicazione IVA'),
             ], string="Non taxable nature"),

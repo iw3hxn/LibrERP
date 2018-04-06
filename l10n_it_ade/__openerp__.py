@@ -5,7 +5,7 @@
 #
 {
     "name": "Base xml Agenzia delle Entrate",
-    "version": "6.1.1.3.2",
+    "version": "6.1.1.3.3",
     "category": "Localization/Italy",
     "summary": "Codice con le definizioni dei file xml Agenzia delle Entrate",
     "author": "SHS-AV s.r.l.,"
@@ -51,13 +51,13 @@ Schemi
 Il modulo rende disponibili i seguenti schemi:
 
 * Liquidazione IVA elettronica versione 1.0
-* Comunicazione clienti e fornitori (spesometro 2017) versione 2.0
+* Comunicazione clienti e fornitori (spesometro 2018) versione 2.1
 * FatturaPA versione 1.2
 """,
     "license": "AGPL-3",
     "depends": [
-        'account'
-    ],
+        'account',
+        ],
     "data": [
         'views/account_tax_view.xml',
         'views/account_journal.xml',

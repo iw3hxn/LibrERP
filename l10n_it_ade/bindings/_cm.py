@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ./_cm.py
 # PyXB bindings for NM:6d05a298a781c71d177aab761a79c5e637d7f467
-# Generated 2017-09-22 16:54:15.194578 by PyXB version 1.2.4 using Python 2.7.5.final.0
+# Generated 2017-10-03 10:08:19.849710 by PyXB version 1.2.4 using Python 2.7.5.final.0
 # by Antonio Maria Vigliotti <antoniomaria.vigliotti@gmail.com>
 # Namespace urn:www.agenziaentrate.gov.it:specificheTecniche:common [xmlns:cm]
 from __future__ import unicode_literals
@@ -22,7 +22,7 @@ except ImportError as err:
 
 # Unique identifier for bindings created at the same time
 _GenerationUID = pyxb.utils.utility.UniqueIdentifier(
-    'urn:uuid:dd60366c-9fa5-11e7-a24e-005056ba06a2')
+    'urn:uuid:faf43498-a811-11e7-95f5-005056ba06a2')
 
 # Version of PyXB used to generate the bindings
 _PyXBVersion = '1.2.4'
@@ -31,7 +31,10 @@ if pyxb.__version__ != _PyXBVersion:
     raise pyxb.PyXBVersionError(_PyXBVersion)
 
 # Import bindings for namespaces imported into schema
-import pyxb.binding.datatypes
+try:
+    import pyxb.binding.datatypes
+except ImportError as err:
+    _logger.debug(err)
 
 # NOTE: All namespace declarations are reserved within the binding
 Namespace = pyxb.namespace.NamespaceForURI(
@@ -106,8 +109,6 @@ Namespace.addCategoryObject(
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoAN_Type
-
-
 class DatoAN_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice costituito da caratteri alfanumerici maiuscoli e dai caratteri: punto, virgola, apice, trattino, spazio, barra semplice, °, ^, ampersand, parentesi aperta e chiusa, doppie virgolette, barra rovesciata, la barra dritta, il più, le maiuscole accentate e la Ü. Tali caratteri non sono ammesi come primo carattere tranne: i numeri da 0 a 9, i caratteri maiuscoli da A a Z, il meno e le dopppie virgolette."""
@@ -126,8 +127,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoAN_Type', DatoAN_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoNU_Type
-
-
 class DatoNU_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica numeri naturali positivi e negativi con al massimo 16 cifre."""
@@ -148,8 +147,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoNU_Type', DatoNU_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoPC_Type
-
-
 class DatoPC_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che esprime una percentuale e dunque consente valori positivi non superiori a 100, con al massimo 2 cifre decimali. Il separatore decimale previsto è la virgola."""
@@ -171,8 +168,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoPC_Type', DatoPC_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoQU_Type
-
-
 class DatoQU_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica numeri positivi con al massimo 5 cifre decimali. La lunghezza massima prevista è di 16 caratteri, il separatore decimale previsto è la virgola."""
@@ -193,8 +188,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoQU_Type', DatoQU_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoVP_Type
-
-
 class DatoVP_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica numeri positivi con 2 cifre decimali. La lunghezza massima prevista è di 16 caratteri, il separatore decimale previsto è la virgola."""
@@ -215,8 +208,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoVP_Type', DatoVP_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoN1_Type
-
-
 class DatoN1_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica i numeri naturali da 1 a 9."""
@@ -237,8 +228,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoN1_Type', DatoN1_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoNP_Type
-
-
 class DatoNP_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica numeri naturali positivi con al massimo 16 cifre."""
@@ -256,8 +245,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoNP_Type', DatoNP_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoPI_Type
-
-
 class DatoPI_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica la partita IVA rispettandone i vincoli di struttura. """
@@ -278,8 +265,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoPI_Type', DatoPI_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoCN_Type
-
-
 class DatoCN_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica un codice fiscale numerico rispettandone i vincoli di struttura."""
@@ -300,8 +285,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoCN_Type', DatoCN_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoCF_Type
-
-
 class DatoCF_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica un codice fiscale provvisorio o alfanumerico rispettandone i vincoli di struttura."""
@@ -320,8 +303,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoCF_Type', DatoCF_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoCB_Type
-
-
 class DatoCB_Type (pyxb.binding.datatypes.byte):
 
     """Tipo semplice che consente esclusivamente i valori 0 e 1."""
@@ -339,8 +320,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoCB_Type', DatoCB_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoCB12_Type
-
-
 class DatoCB12_Type (pyxb.binding.datatypes.byte):
 
     """Tipo semplice che consente esclusivamente 12 caratteri con i valori 0 e 1."""
@@ -358,8 +337,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoCB12_Type', DatoCB12_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoDT_Type
-
-
 class DatoDT_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica una data nel formato ggmmaaaa. La data indicata non deve essere successiva alla data corrente."""
@@ -381,8 +358,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoDT_Type', DatoDT_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoDA_Type
-
-
 class DatoDA_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica un anno nel formato aaaa. Sono ammessi anni dal 1800 al 2099."""
@@ -403,8 +378,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoDA_Type', DatoDA_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoDN_Type
-
-
 class DatoDN_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica una data nel formato ggmmaaaa."""
@@ -426,8 +399,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoDN_Type', DatoDN_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoD6_Type
-
-
 class DatoD6_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica una data nel formato mmaaaa."""
@@ -449,8 +420,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoD6_Type', DatoD6_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoEM_Type
-
-
 class DatoEM_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica un elemento di tipo email"""
@@ -469,8 +438,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoEM_Type', DatoEM_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoGA_Type
-
-
 class DatoGA_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica il numero di giorni in un anno e va da 1 a 365"""
@@ -495,8 +462,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoGA_Type', DatoGA_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoTL_Type
-
-
 class DatoTL_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica un elemento di tipo telefono"""
@@ -514,8 +479,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoTL_Type', DatoTL_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}DatoCP_Type
-
-
 class DatoCP_Type (pyxb.binding.datatypes.string):
 
     """Tipo semplice che identifica un elemento di tipo cap"""
@@ -533,8 +496,6 @@ Namespace.addCategoryObject('typeBinding', 'DatoCP_Type', DatoCP_Type)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}ProvincieItaliane
-
-
 class ProvincieItaliane (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """
@@ -887,8 +848,6 @@ Namespace.addCategoryObject(
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}ProvincieCroate
-
-
 class ProvincieCroate (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """An atomic simple type."""
@@ -912,8 +871,6 @@ Namespace.addCategoryObject('typeBinding', 'ProvincieCroate', ProvincieCroate)
 
 # Atomic simple type:
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}Estero
-
-
 class Estero (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """An atomic simple type."""
@@ -932,8 +889,6 @@ Namespace.addCategoryObject('typeBinding', 'Estero', Estero)
 
 # Union simple type: {urn:www.agenziaentrate.gov.it:specificheTecniche:common}PR_Type
 # superclasses pyxb.binding.datatypes.anySimpleType
-
-
 class PR_Type (pyxb.binding.basis.STD_union):
 
     """Tipo semplice costituito dalle sigle delle provincie italiane in vigore."""
@@ -946,9 +901,9 @@ class PR_Type (pyxb.binding.basis.STD_union):
     _MemberTypes = (ProvincieItaliane, )
 
 
+PR_Type._CF_pattern = pyxb.binding.facets.CF_pattern()
 PR_Type._CF_enumeration = pyxb.binding.facets.CF_enumeration(
     value_datatype=PR_Type)
-PR_Type._CF_pattern = pyxb.binding.facets.CF_pattern()
 PR_Type.AG = 'AG'                                 # originally ProvincieItaliane.AG
 PR_Type.AL = 'AL'                                 # originally ProvincieItaliane.AL
 PR_Type.AN = 'AN'                                 # originally ProvincieItaliane.AN
@@ -1059,14 +1014,12 @@ PR_Type.VR = 'VR'                                 # originally ProvincieItaliane
 PR_Type.VS = 'VS'                                 # originally ProvincieItaliane.VS
 PR_Type.VT = 'VT'                                 # originally ProvincieItaliane.VT
 PR_Type.VV = 'VV'                                 # originally ProvincieItaliane.VV
-PR_Type._InitializeFacetMap(PR_Type._CF_enumeration,
-                            PR_Type._CF_pattern)
+PR_Type._InitializeFacetMap(PR_Type._CF_pattern,
+                            PR_Type._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', 'PR_Type', PR_Type)
 
 # Union simple type: {urn:www.agenziaentrate.gov.it:specificheTecniche:common}PN_Type
 # superclasses pyxb.binding.datatypes.anySimpleType
-
-
 class PN_Type (pyxb.binding.basis.STD_union):
 
     """Tipo semplice costituito dalle sigle delle provincie italiane in vigore,  dalle sigle delle provincie croate di Fiume, Pola e Zara e dalla sigla “EE” che indica un paese estero."""
@@ -1079,9 +1032,9 @@ class PN_Type (pyxb.binding.basis.STD_union):
     _MemberTypes = (ProvincieItaliane, ProvincieCroate, Estero, )
 
 
+PN_Type._CF_pattern = pyxb.binding.facets.CF_pattern()
 PN_Type._CF_enumeration = pyxb.binding.facets.CF_enumeration(
     value_datatype=PN_Type)
-PN_Type._CF_pattern = pyxb.binding.facets.CF_pattern()
 PN_Type.AG = 'AG'                                 # originally ProvincieItaliane.AG
 PN_Type.AL = 'AL'                                 # originally ProvincieItaliane.AL
 PN_Type.AN = 'AN'                                 # originally ProvincieItaliane.AN
@@ -1196,14 +1149,12 @@ PN_Type.FU = 'FU'                                 # originally ProvincieCroate.F
 PN_Type.PL = 'PL'                                 # originally ProvincieCroate.PL
 PN_Type.ZA = 'ZA'                                 # originally ProvincieCroate.ZA
 PN_Type.EE = 'EE'                                 # originally Estero.EE
-PN_Type._InitializeFacetMap(PN_Type._CF_enumeration,
-                            PN_Type._CF_pattern)
+PN_Type._InitializeFacetMap(PN_Type._CF_pattern,
+                            PN_Type._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', 'PN_Type', PN_Type)
 
 # Union simple type: {urn:www.agenziaentrate.gov.it:specificheTecniche:common}PE_Type
 # superclasses pyxb.binding.datatypes.anySimpleType
-
-
 class PE_Type (pyxb.binding.basis.STD_union):
 
     """Tipo semplice costituito dalle sigle delle provincie italiane in vigore e dalla sigla “EE” che indica un paese estero."""
@@ -1216,9 +1167,9 @@ class PE_Type (pyxb.binding.basis.STD_union):
     _MemberTypes = (ProvincieItaliane, Estero, )
 
 
+PE_Type._CF_pattern = pyxb.binding.facets.CF_pattern()
 PE_Type._CF_enumeration = pyxb.binding.facets.CF_enumeration(
     value_datatype=PE_Type)
-PE_Type._CF_pattern = pyxb.binding.facets.CF_pattern()
 PE_Type.AG = 'AG'                                 # originally ProvincieItaliane.AG
 PE_Type.AL = 'AL'                                 # originally ProvincieItaliane.AL
 PE_Type.AN = 'AN'                                 # originally ProvincieItaliane.AN
@@ -1330,15 +1281,13 @@ PE_Type.VS = 'VS'                                 # originally ProvincieItaliane
 PE_Type.VT = 'VT'                                 # originally ProvincieItaliane.VT
 PE_Type.VV = 'VV'                                 # originally ProvincieItaliane.VV
 PE_Type.EE = 'EE'                                 # originally Estero.EE
-PE_Type._InitializeFacetMap(PE_Type._CF_enumeration,
-                            PE_Type._CF_pattern)
+PE_Type._InitializeFacetMap(PE_Type._CF_pattern,
+                            PE_Type._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', 'PE_Type', PE_Type)
 
 # Complex type
 # {urn:www.agenziaentrate.gov.it:specificheTecniche:common}Documento_Type
 # with content type EMPTY
-
-
 class Documento_Type (pyxb.binding.basis.complexTypeDefinition):
     """Documento trasmesso"""
     _TypeDefinition = None

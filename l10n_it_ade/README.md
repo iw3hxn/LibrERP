@@ -44,13 +44,13 @@ Schemi
 Il modulo rende disponibili i seguenti schemi:
 
 * Liquidazione IVA elettronica versione 1.0
-* Comunicazione clienti e fornitori (spesometro 2017) versione 2.0
+* Comunicazione clienti e fornitori (spesometro light 2018) versione 2.1
 * FatturaPA versione 1.2
 
 
 Per aggiungere nuovi schemi o modificare o aggiornare gli schemi gestiti:
 
-- Aggiungere o modificare gli schemi nella directory ./data
+- Aggiungere o modificare gli schemi nella directory ./binding
 - Eseguire da una macchina CentOS lo script ./pyxbgen.sh -u
 
 
