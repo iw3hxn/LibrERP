@@ -6,81 +6,47 @@
 #
 # [2017: SHS-AV s.r.l.] First version
 #
-import os
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
 # from openerp import release
 import logging
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.DEBUG)
 try:
     from unidecode import unidecode
-    if os.environ.get('SPESOMETRO_VERSION', '2.1') == '2.0':
-        SPESOMETRO_VERSION = '2.0'
-        from openerp.addons.l10n_it_ade.bindings.dati_fattura_v_2_0 import (
-            DatiFattura,
-            VersioneType,
-            DatiFatturaHeaderType,
-            DichiaranteType,
-            CodiceFiscaleType,
-            DTEType,
-            CedentePrestatoreDTEType,
-            IdentificativiFiscaliType,
-            IdentificativiFiscaliITType,
-            IdFiscaleITType,
-            IdFiscaleType,
-            CessionarioCommittenteDTEType,
-            AltriDatiIdentificativiNoSedeType,
-            AltriDatiIdentificativiNoCAPType,
-            IdentificativiFiscaliNoIVAType,
-            IndirizzoType,
-            IndirizzoNoCAPType,
-            # RettificaType,
-            DatiFatturaBodyDTEType,
-            DatiGeneraliType,
-            DatiRiepilogoType,
-            DatiIVAType,
-            DTRType,
-            CessionarioCommittenteDTRType,
-            CedentePrestatoreDTRType,
-            DatiFatturaBodyDTRType,
-            DatiGeneraliDTRType,
-            )
-    else:
-        SPESOMETRO_VERSION = '2.1'
-        from openerp.addons.l10n_it_ade.bindings.dati_fattura_v_2_1 import (
-            DatiFattura,
-            VersioneType,
-            DatiFatturaHeaderType,
-            DichiaranteType,
-            CodiceFiscaleType,
-            DTEType,
-            CedentePrestatoreDTEType,
-            IdentificativiFiscaliType,
-            IdentificativiFiscaliITType,
-            IdFiscaleITType,
-            IdFiscaleType,
-            CessionarioCommittenteDTEType,
-            AltriDatiIdentificativiITType,
-            AltriDatiIdentificativiType,
-            IdentificativiFiscaliNoIVAType,
-            IndirizzoType,
-            # IndirizzoNoCAPType,
-            # RettificaType,
-            DatiFatturaBodyDTEType,
-            DatiGeneraliDTEType,
-            DatiRiepilogoType,
-            DatiIVAType,
-            DTRType,
-            CessionarioCommittenteDTRType,
-            CedentePrestatoreDTRType,
-            DatiFatturaBodyDTRType,
-            DatiGeneraliDTRType,
-            )
+    from openerp.addons.l10n_it_ade.bindings.dati_fattura_v_2_0 import (
+        DatiFattura,
+        VersioneType,
+        DatiFatturaHeaderType,
+        DichiaranteType,
+        CodiceFiscaleType,
+        DTEType,
+        CedentePrestatoreDTEType,
+        IdentificativiFiscaliType,
+        IdentificativiFiscaliITType,
+        IdFiscaleITType,
+        IdFiscaleType,
+        CessionarioCommittenteDTEType,
+        AltriDatiIdentificativiNoSedeType,
+        AltriDatiIdentificativiNoCAPType,
+        IdentificativiFiscaliNoIVAType,
+        IndirizzoType,
+        IndirizzoNoCAPType,
+        # RettificaType,
+        DatiFatturaBodyDTEType,
+        DatiGeneraliType,
+        DatiRiepilogoType,
+        DatiIVAType,
+        DTRType,
+        CessionarioCommittenteDTRType,
+        CedentePrestatoreDTRType,
+        DatiFatturaBodyDTRType,
+        DatiGeneraliDTRType,
+    )
     #   ANNType)
 except ImportError as err:
     _logger.debug(err)
 
+_logger.setLevel(logging.DEBUG)
 
 VERSIONE = 'DAT20'
 
@@ -127,10 +93,7 @@ class WizardVatCommunication(orm.TransientModel):
             if selector == 'company':
                 sede = (IndirizzoType())
             elif selector == 'customer':
-                if SPESOMETRO_VERSION == '2.0':
-                    sede = (IndirizzoNoCAPType())
-                else:
-                    sede = (IndirizzoType())
+                sede = (IndirizzoNoCAPType())
             elif selector == 'supplier':
                 sede = (IndirizzoType())
             else:
@@ -141,15 +104,9 @@ class WizardVatCommunication(orm.TransientModel):
             if selector == 'company':
                 sede = (IndirizzoType())
             elif selector == 'customer':
-                if SPESOMETRO_VERSION == '2.0':
-                    sede = (IndirizzoNoCAPType())
-                else:
-                    sede = (IndirizzoType())
+                sede = (IndirizzoNoCAPType())
             elif selector == 'supplier':
-                if SPESOMETRO_VERSION == '2.0':
-                    sede = (IndirizzoNoCAPType())
-                else:
-                    sede = (IndirizzoType())
+                sede = (IndirizzoNoCAPType())
             else:
                 raise orm.except_orm(
                     _('Error!'),
@@ -196,36 +153,18 @@ class WizardVatCommunication(orm.TransientModel):
     def get_name(self, cr, uid, fields, dte_dtr_id, selector, context=None):
         if dte_dtr_id == 'DTE':
             if selector == 'company':
-                if SPESOMETRO_VERSION == '2.0':
-                    AltriDatiIdentificativi = \
-                        (AltriDatiIdentificativiNoSedeType())
-                else:
-                    AltriDatiIdentificativi = \
-                        (AltriDatiIdentificativiITType())
+                AltriDatiIdentificativi = (AltriDatiIdentificativiNoSedeType())
             elif selector == 'customer' or selector == 'supplier':
-                if SPESOMETRO_VERSION == '2.0':
-                    AltriDatiIdentificativi = \
-                        (AltriDatiIdentificativiNoCAPType())
-                else:
-                    AltriDatiIdentificativi = \
-                        (AltriDatiIdentificativiType())
+                AltriDatiIdentificativi = (AltriDatiIdentificativiNoCAPType())
             else:
                 raise orm.except_orm(
                     _('Error!'),
                     _('Internal error: invalid partner selector'))
         else:
             if selector == 'company':
-                if SPESOMETRO_VERSION == '2.0':
-                    AltriDatiIdentificativi = \
-                        (AltriDatiIdentificativiNoSedeType())
-                else:
-                    AltriDatiIdentificativi = (AltriDatiIdentificativiITType())
+                AltriDatiIdentificativi = (AltriDatiIdentificativiNoSedeType())
             elif selector == 'customer' or selector == 'supplier':
-                if SPESOMETRO_VERSION == '2.0':
-                    AltriDatiIdentificativi = \
-                        (AltriDatiIdentificativiNoCAPType())
-                else:
-                    AltriDatiIdentificativi = (AltriDatiIdentificativiType())
+                AltriDatiIdentificativi = (AltriDatiIdentificativiNoCAPType())
             else:
                 raise orm.except_orm(
                     _('Error!'),
@@ -330,6 +269,15 @@ class WizardVatCommunication(orm.TransientModel):
             fields = commitment_model.get_xml_cessionario_cedente(
                 cr, uid, commitment, partner_id, dte_dtr_id, context)
 
+            # Missed mandatory data: skip record
+            # if not fields.get('xml_IdPaese') and \
+            #         not fields.get('xml_IdCodice') and \
+            #         not fields.get('xml_CodiceFiscale', False):
+            #     # Corrispettivi
+            #     continue
+            # TODO: StabileOrganizzazione
+            # TODO: RappresentanteFiscale
+
             if dte_dtr_id == 'DTE':
                 partner = self.get_cessionario_committente(
                     cr, uid, fields, dte_dtr_id, context)
@@ -347,10 +295,7 @@ class WizardVatCommunication(orm.TransientModel):
                     cr, uid, commitment, invoice_id, dte_dtr_id, context)
                 if dte_dtr_id == 'DTE':
                     invoice = (DatiFatturaBodyDTEType())
-                    if SPESOMETRO_VERSION == '2.0':
-                        invoice.DatiGenerali = (DatiGeneraliType())
-                    else:
-                        invoice.DatiGenerali = (DatiGeneraliDTEType())
+                    invoice.DatiGenerali = (DatiGeneraliType())
                 else:
                     invoice = (DatiFatturaBodyDTRType())
                     invoice.DatiGenerali = (DatiGeneraliDTRType())

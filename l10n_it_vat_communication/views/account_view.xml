@@ -12,10 +12,24 @@
                 <field name="state" select="1"/>
                 <notebook colspan="4">
                     <page string="Header">
-                        <field name="soggetto_codice_fiscale"
-                               on_change="onchange_fiscalcode(soggetto_codice_fiscale,
-                                                              'soggetto_codice_fiscale')" />
-                        <field name="codice_carica" />
+                        <group colspan="4">
+                            <field name="soggetto_codice_fiscale" colspan="1"
+                                   on_change="onchange_fiscalcode(soggetto_codice_fiscale,
+                                                                  'soggetto_codice_fiscale')" />
+                            <field name="codice_carica" colspan="1"/>
+                        </group>
+                        <group colspan="2">
+                            <field name="dte_amount_total"/>
+                            <field name="dte_amount_taxable"/>
+                            <field name="dte_amount_tax"/>
+                            <field name="dte_amount_discarded"/>
+                        </group>
+                        <group colspan="2">
+                            <field name="dtr_amount_total"/>
+                            <field name="dtr_amount_taxable"/>
+                            <field name="dtr_amount_tax"/>
+                            <field name="dtr_amount_discarded"/>
+                        </group>
                     </page>
                     <page string="Periods">
                         <button type='action' name="%(action_add_period)d" string="Add period" colspan="2" attrs="{'readonly': [('state', 'in', ('confirmed',))]}"></button>

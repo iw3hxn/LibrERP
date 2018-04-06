@@ -46,6 +46,12 @@ msgid "Amount"
 msgstr "Importo"
 
 #. module: l10n_it_vat_communication
+#: view:account.vat.communication:0
+#: field:account.vat.communication,attachment_ids:0
+msgid "Attachments"
+msgstr "Allegati"
+
+#. module: l10n_it_vat_communication
 #: field:account.vat.communication,company_id:0
 msgid "Azienda"
 msgstr "Azienda"
@@ -126,6 +132,11 @@ msgstr "Attuale Comunicazione non trovata"
 #: selection:account.vat.communication,codice_carica:0
 msgid "Custode giudiziario"
 msgstr "Custode giudiziario"
+
+#. module: l10n_it_vat_communication
+#: field:wizard.vat.communication,target:0
+msgid "Customers/Suppliers"
+msgstr "Clienti/Fornitori"
 
 #. module: l10n_it_vat_communication
 #: field:account.vat.communication.dte.line,xml_TipoDocumento:0
@@ -235,6 +246,12 @@ msgstr "Tipo %s di fattura %s non valido"
 #: field:account.vat.communication.dtr.line,invoice_id:0
 msgid "Invoice"
 msgstr "Fattura"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:327
+#, python-format
+msgid "Invoice %s (%d), discarded tax line %s"
+msgstr "Invoice %s (%d), discarded tax line %s"
 
 #. module: l10n_it_vat_communication
 #: code:_description:0
@@ -417,6 +434,12 @@ msgid "Tax amount"
 msgstr "Importo IVA"
 
 #. module: l10n_it_vat_communication
+#: field:account.vat.communication.dte.line,xml_Detraibile:0
+#: field:account.vat.communication.dtr.line,xml_Detraibile:0
+msgid "Tax deductible"
+msgstr "IVA detraibile"
+
+#. module: l10n_it_vat_communication
 #: field:account.vat.communication.dte.line,xml_Aliquota:0
 #: field:account.vat.communication.dtr.line,xml_Aliquota:0
 msgid "Tax rate"
@@ -439,6 +462,86 @@ msgstr "Imponibile"
 #: field:account.vat.communication.dtr.line,amount_taxable:0
 msgid "Taxable amount"
 msgstr "Imponibile/Importo"
+
+#. module: l10n_it_vat_communication
+#: help:account.vat.communication,dtr_amount_discarded:0
+msgid "Total amount discarded from purchase invoices"
+msgstr "Totale importi scartati da fatture di acquisto"
+
+#. module: l10n_it_vat_communication
+#: help:account.vat.communication,dte_amount_discarded:0
+msgid "Total amount discarded from sale invoices"
+msgstr "Totale importi scartati da fatture di vendita"
+
+#. module: l10n_it_vat_communication
+#: help:account.vat.communication,dtr_amount_total:0
+msgid "Total amount of purchase invoices in Communication"
+msgstr "Ammontare degli acquisti in Comunicazione"
+
+#. module: l10n_it_vat_communication
+#: help:account.vat.communication,dte_amount_total:0
+msgid "Total amount of sale invoices in Communication"
+msgstr "Ammontare delle vendite in Comunicazione"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication,dtr_amount_discarded:0
+msgid "Total discarded purchases"
+msgstr "Ammontare acquisti scartato"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication,dte_amount_discarded:0
+msgid "Total discarded sales"
+msgstr "Ammontare vendite scartato"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication,dtr_amount_total:0
+msgid "Total purchases"
+msgstr "Ammontare acquisti"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication,dte_amount_total:0
+msgid "Total sales"
+msgstr "Ammontare vendite"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication,dtr_amount_tax:0
+msgid "Total tax purchases"
+msgstr "IVA totale acquisti"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication,dte_amount_tax:0
+msgid "Total tax sales"
+msgstr "IVA totale vendite"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication,dtr_amount_taxable:0
+msgid "Total taxable purchases"
+msgstr "Imponibile/importi acquisti"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication,dte_amount_taxable:0
+msgid "Total taxable sales"
+msgstr "Imponibile/importi vendite"
+
+#. module: l10n_it_vat_communication
+#: help:account.vat.communication,dtr_amount_taxable:0
+msgid "Total taxables of purchase invoices in Communication"
+msgstr "Totale imponibile/importi degli acquisti in Comunicazione"
+
+#. module: l10n_it_vat_communication
+#: help:account.vat.communication,dte_amount_taxable:0
+msgid "Total taxables of sale invoices in Communication"
+msgstr "Total imponibile/importi delle vendite in Comunicazione"
+
+#. module: l10n_it_vat_communication
+#: help:account.vat.communication,dtr_amount_tax:0
+msgid "Total taxes of purchase invoices in Communication"
+msgstr "Totale IVA da acquisti in Comunicazione"
+
+#. module: l10n_it_vat_communication
+#: help:account.vat.communication,dte_amount_tax:0
+msgid "Total taxes of sale invoices in Communication"
+msgstr "Totale IVA da vendite in Comunicazione"
 
 #. module: l10n_it_vat_communication
 #: selection:account.vat.communication,codice_carica:0
@@ -472,10 +575,22 @@ msgid "VAT communications"
 msgstr "Comunicazioni IVA"
 
 #. module: l10n_it_vat_communication
+#: field:account.vat.communication.dte.line,tax_nodet_rate:0
+#: field:account.vat.communication.dtr.line,tax_nodet_rate:0
+msgid "VAT non deductible rate"
+msgstr "Perc.IVA non detraibile"
+
+#. module: l10n_it_vat_communication
 #: field:account.vat.communication.dte.line,xml_IdCodice:0
 #: field:account.vat.communication.dtr.line,xml_IdCodice:0
 msgid "VAT number"
 msgstr "Partita IVA"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication.dte.line,tax_payability:0
+#: field:account.vat.communication.dtr.line,tax_payability:0
+msgid "VAT payability"
+msgstr "Esigibilità IVA"
 
 #. module: l10n_it_vat_communication
 #: field:account.vat.communication.dte.line,tax_rate:0
@@ -568,14 +683,30 @@ msgid "remove.period.from.vat.statement"
 msgstr "remove.period.from.vat.statement"
 
 #. module: l10n_it_vat_communication
-#: field:wizard.vat.communication,state:0
-msgid "unknown"
-msgstr "unknown"
-
-#. module: l10n_it_vat_communication
 #: code:_description:0
 #: model:ir.model,name:l10n_it_vat_communication.model_wizard_vat_communication
 #, python-format
 msgid "wizard.vat.communication"
 msgstr "wizard.vat.communication"
 
+#. module: l10n_it_vat_communication
+#: view:wizard.vat.communication:0
+msgid "Start Export Supplier Invoices"
+msgstr "Esporta Fatture Fornitori"
+
+#. module: l10n_it_vat_communication
+#: view:wizard.vat.communication:0
+msgid "Start Export Customer Invoices"
+msgstr "Esporta Fatture Clienti"
+
+#. modules: l10n_it_fatturapa, l10n_it_vat_communication
+#: field:account.vat.communication.dte.line,tax_nature:0
+#: field:account.vat.communication.dtr.line,tax_nature:0
+msgid "Non taxable nature"
+msgstr "Natura"
+
+#. modules: l10n_it_fatturapa, l10n_it_vat_communication
+#: field:account.vat.communication.dte.line,tax_payability:0
+#: field:account.vat.communication.dtr.line,tax_payability:0
+msgid "VAT payability"
+msgstr "Esigibilita' Iva"
