@@ -113,6 +113,7 @@ msgstr "Confermato"
 #. module: l10n_it_vat_communication
 #: field:account.vat.communication.dte.line,xml_IdPaese:0
 #: field:account.vat.communication.dtr.line,xml_IdPaese:0
+#: field:account.vat.communication.line,xml_IdPaese:0
 msgid "Country"
 msgstr "Nazione"
 
@@ -202,8 +203,16 @@ msgstr "Filename"
 #. module: l10n_it_vat_communication
 #: field:account.vat.communication.dte.line,xml_CodiceFiscale:0
 #: field:account.vat.communication.dtr.line,xml_CodiceFiscale:0
+#: field:account.vat.communication.line,xml_CodiceFiscale:0
 msgid "Fiscalcode"
 msgstr "Codice Fiscale"
+
+#. module: l10n_it_vat_communication
+#: field:account.vat.communication.dte.line,xml_Error:0
+#: field:account.vat.communication.dtr.line,xml_Error:0
+#: field:account.vat.communication.line,xml_Error:0
+msgid "Error"
+msgstr "Errore"
 
 #. module: l10n_it_vat_communication
 #: view:account.vat.communication:0
@@ -583,6 +592,7 @@ msgstr "Perc.IVA non detraibile"
 #. module: l10n_it_vat_communication
 #: field:account.vat.communication.dte.line,xml_IdCodice:0
 #: field:account.vat.communication.dtr.line,xml_IdCodice:0
+#: field:account.vat.communication.line,xml_IdCodice:0
 msgid "VAT number"
 msgstr "Partita IVA"
 

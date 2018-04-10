@@ -38,8 +38,9 @@
                         <field name="period_ids" colspan="4" nolabel="1" readonly="1"/>
                     </page>
                     <page string="Sale invoices">
-                         <field name="account_vat_communication_dte_line_ids" nolabel="1">
-                             <tree editable="bottom" string="Sale invoice Lines">
+                         <field name="account_vat_communication_dte_line_ids" nolabel="1" readonly="1">
+                             <tree string="Sale invoice Lines">
+                                  <field name="xml_Error" />
                                   <field name="invoice_id" />
                                   <field name="tax_id" />
                                   <field name="xml_TipoDocumento" />
@@ -47,10 +48,10 @@
                                   <field name="xml_IdPaese" />
                                   <field name="xml_IdCodice" />
                                   <field name="xml_CodiceFiscale" />
-                                  <field name="amount_total" />
-                                  <field name="amount_taxable" />
-                                  <field name="amount_tax" />
-                                  <!--<field name="xml_Aliquota" />-->
+                                  <field name="amount_total" sum="Total"/>
+                                  <field name="amount_taxable" sum="Taxable"/>
+                                  <field name="amount_tax" sum="Tax"/>
+                                  <field name="xml_Aliquota" />
                                   <!--<field name="xml_Detraibile" />-->
                                   <field name="tax_nature" />
                                   <field name="tax_payability" />
@@ -74,8 +75,9 @@
                          </field>
                     </page>
                     <page string="Purchase invoices">
-                         <field name="account_vat_communication_dtr_line_ids" nolabel="1">
-                             <tree editable="bottom" string="Purchase invoice Lines">
+                         <field name="account_vat_communication_dtr_line_ids" nolabel="1" readonly="1">
+                             <tree string="Purchase invoice Lines" >
+                                  <field name="xml_Error" />
                                   <field name="invoice_id" />
                                   <field name="tax_id" />
                                   <field name="xml_TipoDocumento" />
@@ -83,11 +85,11 @@
                                   <field name="xml_IdPaese" />
                                   <field name="xml_IdCodice" />
                                   <field name="xml_CodiceFiscale" />
-                                  <field name="amount_total" />
-                                  <field name="amount_taxable" />
-                                  <field name="amount_tax" />
-                                  <!--<field name="xml_Aliquota" />-->
-                                  <!--<field name="xml_Detraibile" />-->
+                                  <field name="amount_total" sum="Total"/>
+                                  <field name="amount_taxable" sum="Taxable"/>
+                                  <field name="amount_tax" sum="Tax"/>
+                                  <field name="xml_Aliquota" />
+                                  <field name="xml_Detraibile" />
                                   <field name="tax_nature" />
                                   <field name="tax_payability" />
                              </tree>

@@ -256,6 +256,8 @@ class AccountVatCommunication(orm.Model):
                         continue
                     if invoice_tax.base_code_id.exclude_from_registries:
                         continue
+                if release.major_version == '6.1' and tax_dict.get('amount', 0.00) < 0.00:
+                    continue
 
                 tax = invoice_tax
                 if tax and not tax.parent_id:
@@ -270,11 +272,13 @@ class AccountVatCommunication(orm.Model):
                 else:
                     if release.major_version == '6.1':
                         tax_rate = 0
-                        for child in account_tax_model.browse(
-                                cr, uid, tax.parent_id.id).child_ids:
+                        for child in tax.parent_id.child_ids:
                             if child.type == 'percent':
                                 tax_rate += child.amount
-                        tax_nodet_rate = 1 - (tax.amount / tax_rate)
+                        if tax_rate:
+                            tax_nodet_rate = 1 - (tax.amount / tax_rate)
+                        else:
+                            tax_nodet_rate = 0
                     else:
                         if tax.type == 'percent' and \
                                         tax.amount > tax_nodet_rate:
@@ -366,8 +370,8 @@ class AccountVatCommunication(orm.Model):
         if comm_lines:
             for line_id in commitment_line_model.search(
                 cr, uid, [('commitment_id', '=', commitment.id),
-                          ('invoice_id', 'not in', comm_lines.keys()), ]):
-                commitment_line_model.unlink(cr, uid, [line_id])
+                          ('invoice_id', 'not in', comm_lines.keys()), ], context=context):
+                commitment_line_model.unlink(cr, uid, [line_id], context)
         for invoice_id in comm_lines:
             for line_id in commitment_line_model.search(
                 cr, uid, [('commitment_id', '=', commitment.id),
@@ -398,16 +402,15 @@ class AccountVatCommunication(orm.Model):
                               ('invoice_id', '=', invoice_id),
                               ('tax_id', '=', tax_id), ])
                 if ids:
-                    commitment_line_model.write(cr, uid, ids, line)
+                    commitment_line_model.write(cr, uid, ids, line, context)
                 else:
-                    commitment_line_model.create(cr, uid, line)
+                    commitment_line_model.create(cr, uid, line, context)
         return sum_amounts
 
     def load_DTE(self, cr, uid, commitment, context=None):
         """Read all sale invoices in periods"""
         context = context or {}
-        commitment_DTE_line_model = self.pool[
-            'account.vat.communication.dte.line']
+        commitment_DTE_line_model = self.pool['account.vat.communication.dte.line']
         sum_amounts = self.load_DTE_DTR(
             cr, uid, commitment, commitment_DTE_line_model, 'DTE', context)
         return sum_amounts
@@ -415,8 +418,7 @@ class AccountVatCommunication(orm.Model):
     def load_DTR(self, cr, uid, commitment, context=None):
         """Read all purchase invoices in periods"""
         context = context or {}
-        commitment_DTR_line_model = self.pool[
-            'account.vat.communication.dtr.line']
+        commitment_DTR_line_model = self.pool['account.vat.communication.dtr.line']
         sum_amounts = self.load_DTE_DTR(
             cr, uid, commitment, commitment_DTR_line_model, 'DTR', context)
         return sum_amounts
@@ -613,6 +615,39 @@ class AccountVatCommunication(orm.Model):
 class commitment_line(orm.AbstractModel):
     _name = 'account.vat.communication.line'
 
+    def _xml_dati_partner(self, cr, uid, ids, fname, args, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            ctx = context.copy()
+            ctx['no_except'] = True
+            fields = self._dati_partner(cr, uid, line.partner_id, args, context=ctx)
+
+            result = {}
+            for f in fname:
+                if fields.get(f, ''):
+                    result[f] = fields[f]
+            res[line.id] = result
+        return res
+
+    def _xml_dati_lines(self, cr, uid, ids, fname, args, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = self._dati_line(cr, uid, line, args, context=context)
+        return res
+
+    def _xml_tipodocumento(self, cr, uid, ids, fname, args, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = self._tipodocumento(cr, uid, line.invoice_id, context=context)
+        return res
+
+    def _get_error(self, error, context):
+        if context.get('no_except', False):
+            return error
+        else:
+            raise orm.except_orm(_('Error!'), error)
+        return False
+
     def _dati_partner(self, cr, uid, partner, args, context=None):
         if release.major_version == '6.1':
             address_id = self.pool['res.partner'].address_get(
@@ -622,16 +657,15 @@ class commitment_line(orm.AbstractModel):
         else:
             address = partner
 
-        res = {}
+        res = {'xml_Error': ''}
+
         if partner.vat:
             vat = partner.vat
             res['xml_IdPaese'] = vat and vat[0:2] or ''
             res['xml_IdCodice'] = vat and vat[2:] or ''
         res['xml_Nazione'] = address.country_id.code or res.get('xml_IdPaese')
         if not res.get('xml_Nazione'):
-            raise orm.except_orm(
-                _('Error!'),
-                _('Unknow country of %s') % partner.name)
+            self._get_error(_('Unknow country of %s') % partner.name, context)
 
         if partner.individual and partner.fiscalcode:
             r = self.pool['account.vat.communication'].onchange_fiscalcode(
@@ -640,9 +674,8 @@ class commitment_line(orm.AbstractModel):
                 country_id=partner.country,
                 context=context)
             if 'warning' in r:
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('Invalid fiscalcode of %s') % partner.name)
+                res['xml_Error'] += self._get_error(_('Invalid fiscalcode of %s') % partner.name, context)
+
             res['xml_CodiceFiscale'] = partner.fiscalcode
         elif res.get('xml_IdPaese', '') == 'IT':
             # res['xml_CodiceFiscale'] = res['xml_IdCodice']
@@ -661,46 +694,34 @@ class commitment_line(orm.AbstractModel):
                 res['xml_Nome'] = partner.firstname
                 res['xml_Cognome'] = partner.lastname
             if not res.get('xml_Cognome') or not res.get('xml_Nome'):
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('Invalid First or Last name %s') % (partner.name))
+                res['xml_Error'] += self._get_error(_('Invalid First or Last name %s') % (partner.name), context)
         else:
             res['xml_Denominazione'] = partner.name
             if not partner.vat and \
                     (res['xml_Nazione'] == 'IT' or
                      res['xml_Nazione'] in EU_COUNTRIES):
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('Partner %s without VAT number') % (partner.name))
+                self._get_erro(_('Partner %s without VAT number') % (partner.name), context)
 
         res['xml_Nazione'] = address.country_id.code or res.get('xml_IdPaese', False)
 
         if not res['xml_Nazione']:
-            raise orm.except_orm(
-                'Warning',
-                _('Impossible determine country code for partner {}').format(partner.name)
-            )
+            res['xml_Error'] += self._get_error(('Impossible determine country code for partner {}').format(partner.name), context)
         if address.street:
             res['xml_Indirizzo'] = address.street.replace(
                 u"'", '').replace(u"’", '')
         else:
-            raise orm.except_orm(
-                _('Error!'),
-                _('Partner %s without street on address') % (partner.name))
+            if not context.get('no_except', False):
+                res['xml_Error'] += self._get_error(_('Partner %s without street on address') % (partner.name), context)
 
         if res.get('xml_IdPaese', '') == 'IT':
             if address.zip:
                 res['xml_CAP'] = address.zip.replace('x', '0').replace('%',
                                                                        '0')
             if len(res['xml_CAP']) != 5 or not res['xml_CAP'].isdigit():
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('Partner %s has wrong zip code') % (partner.name))
+                res['xml_Error'] += self._get_error(_('Partner %s has wrong zip code') % (partner.name), context)
         res['xml_Comune'] = address.city or ' '
         if not address.city:
-            raise orm.except_orm(
-                _('Error!'),
-                _('Partner %s without city on address') % (partner.name))
+            res['xml_Error'] += self._get_error(_('Partner %s without city on address') % (partner.name), context)
         if res['xml_Nazione'] == 'IT':
             if release.major_version == '6.1':
                 res['xml_Provincia'] = address.province.code
@@ -708,19 +729,19 @@ class commitment_line(orm.AbstractModel):
                 res['xml_Provincia'] = partner.state_id.code
             if not res['xml_Provincia']:
                 del res['xml_Provincia']
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('Partner %s without province on address') % (
-                        partner.name))
+                res['xml_Error'] += self._get_error(_('Partner %s without province on address') % (
+                        partner.name), context)
         return res
 
     def _dati_line(self, cr, uid, line, args, context=None):
-        res = {}
-        res['xml_ImponibileImporto'] = abs(line.amount_taxable)
-        res['xml_Imposta'] = abs(line.amount_tax)
-        res['xml_Aliquota'] = line.tax_rate * 100
-        res['xml_Detraibile'] = 100.0 - line.tax_nodet_rate * 100
-        if (args and args.get('xml', False)):
+        res = {
+            'xml_ImponibileImporto': abs(line.amount_taxable),
+            'xml_Imposta': abs(line.amount_tax),
+            'xml_Aliquota': line.tax_rate * 100,
+            'xml_Detraibile': 100.0 - line.tax_nodet_rate * 100
+        }
+
+        if args and args.get('xml', False):
             # Load data during export xml
             if res['xml_Detraibile'] == 0:
                 res['xml_Deducibile'] = "SI"
@@ -766,69 +787,16 @@ class commitment_line(orm.AbstractModel):
                                                             country_code,
                                                             invoice.number))
 
-
-class commitment_DTE_line(orm.Model):
-    _name = 'account.vat.communication.dte.line'
-    _inherit = 'account.vat.communication.line'
-
-    def _xml_dati_partner(self, cr, uid, ids, fname, args, context=None):
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            fields = self._dati_partner(cr, uid, line.partner_id, args,
-                                        context=context)
-
-            result = {}
-            for f in ('xml_IdPaese', 'xml_IdCodice', 'xml_CodiceFiscale'):
-                if fields.get(f, ''):
-                    result[f] = fields[f]
-            res[line.id] = result
-        return res
-
-    def _xml_dati_line(self, cr, uid, ids, fname, args, context=None):
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = self._dati_line(cr, uid, line, args,
-                                           context=context)
-        return res
-
-    def _xml_tipodocumento(self, cr, uid, ids, fname, args, context=None):
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = self._tipodocumento(cr, uid, line.invoice_id,
-                                               context=context)
-        return res
-
     _columns = {
-        'commitment_id': fields.many2one(
-            'account.vat.communication', 'VAT commitment'),
-        'invoice_id': fields.many2one(
-            'account.invoice', 'Invoice'),
-        'tax_id': fields.many2one(
-            'account.tax.code', 'VAT code'),
-        'partner_id': fields.many2one(
-            'res.partner', 'Partner',
-            readony=True),
-        'tax_vat_id': fields.many2one(
-            'account.tax.code', 'VAT code',
-            readony=True),
-        'tax_rate': fields.float(
-            'VAT rate',
-            readony=True),
-        'tax_nodet_rate': fields.float(
-            'VAT non deductible rate',
-            readony=True),
-        'tax_nature': fields.char(
-            'Non taxable nature',
-            readony=True),
-        'tax_payability': fields.char(
-            'VAT payability',
-            readony=True),
-        'amount_total': fields.float(
-            'Amount', digits_compute=dp.get_precision('Account')),
-        'amount_taxable': fields.float(
-            'Taxable amount', digits_compute=dp.get_precision('Account')),
-        'amount_tax': fields.float(
-            'Tax amount', digits_compute=dp.get_precision('Account')),
+        'xml_Error': fields.function(
+            _xml_dati_partner,
+            string="Error",
+            type="char",
+            multi=True,
+            store=False,
+            select=True,
+            readonly=True
+        ),
         'xml_IdPaese': fields.function(
             _xml_dati_partner,
             string="Country",
@@ -862,45 +830,83 @@ class commitment_DTE_line(orm.Model):
             select=True,
             readonly=True),
         'xml_ImponibileImporto': fields.function(
-            _xml_dati_line,
+            _xml_dati_lines,
             string="Taxable",
             type="float",
-            multi=True,
+            multi='xml_dati_line',
             store=False,
             select=True,
             readonly=True),
         'xml_Imposta': fields.function(
-            _xml_dati_line,
+            _xml_dati_lines,
             string="Tax",
             type="float",
-            multi=True,
+            multi='xml_dati_line',
             store=False,
             select=True,
             readonly=True),
         'xml_Aliquota': fields.function(
-            _xml_dati_line,
+            _xml_dati_lines,
             string="Tax rate",
             type="float",
-            multi=True,
+            multi='xml_dati_line',
             store=False,
             select=True,
             readonly=True),
         'xml_Detraibile': fields.function(
-            _xml_dati_line,
+            _xml_dati_lines,
             string="Tax deductible",
             type="float",
-            multi=True,
+            multi='xml_dati_line',
             store=False,
             select=True,
             readonly=True),
         'xml_Natura': fields.function(
-            _xml_dati_line,
+            _xml_dati_lines,
             string="Tax type",
             type="char",
-            multi=True,
+            multi='xml_dati_line',
             store=False,
             select=True,
             readonly=True),
+    }
+
+
+class commitment_DTE_line(orm.Model):
+    _name = 'account.vat.communication.dte.line'
+    _inherit = 'account.vat.communication.line'
+
+    _columns = {
+        'commitment_id': fields.many2one(
+            'account.vat.communication', 'VAT commitment'),
+        'invoice_id': fields.many2one(
+            'account.invoice', 'Invoice'),
+        'tax_id': fields.many2one(
+            'account.tax.code', 'VAT code'),
+        'partner_id': fields.many2one(
+            'res.partner', 'Partner',
+            readony=True),
+        'tax_vat_id': fields.many2one(
+            'account.tax.code', 'VAT code',
+            readony=True),
+        'tax_rate': fields.float(
+            'VAT rate',
+            readony=True),
+        'tax_nodet_rate': fields.float(
+            'VAT non deductible rate',
+            readony=True),
+        'tax_nature': fields.char(
+            'Non taxable nature',
+            readony=True),
+        'tax_payability': fields.char(
+            'VAT payability',
+            readony=True),
+        'amount_total': fields.float(
+            'Amount', digits_compute=dp.get_precision('Account')),
+        'amount_taxable': fields.float(
+            'Taxable amount', digits_compute=dp.get_precision('Account')),
+        'amount_tax': fields.float(
+            'Tax amount', digits_compute=dp.get_precision('Account')),
     }
 
 
@@ -908,33 +914,6 @@ class commitment_DTR_line(orm.Model):
     _name = 'account.vat.communication.dtr.line'
     _inherit = 'account.vat.communication.line'
 
-    def _xml_dati_partner(self, cr, uid, ids, fname, args, context=None):
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            fields = self._dati_partner(cr, uid, line.partner_id, args,
-                                        context=context)
-
-            result = {}
-            for f in ('xml_IdPaese', 'xml_IdCodice', 'xml_CodiceFiscale'):
-                if fields.get(f, ''):
-                    result[f] = fields[f]
-            res[line.id] = result
-        return res
-
-    def _xml_dati_line(self, cr, uid, ids, fname, args, context=None):
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = self._dati_line(cr, uid, line, args,
-                                           context=context)
-        return res
-
-    def _xml_tipodocumento(self, cr, uid, ids, fname, args, context=None):
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = self._tipodocumento(cr, uid, line.invoice_id,
-                                               context=context)
-        return res
-
     _columns = {
         'commitment_id': fields.many2one(
             'account.vat.communication', 'VAT commitment'),
@@ -966,78 +945,6 @@ class commitment_DTR_line(orm.Model):
             'Taxable amount', digits_compute=dp.get_precision('Account')),
         'amount_tax': fields.float(
             'Tax amount', digits_compute=dp.get_precision('Account')),
-        'xml_IdPaese': fields.function(
-            _xml_dati_partner,
-            string="Country",
-            type="char",
-            multi=True,
-            store=False,
-            select=True,
-            readonly=True),
-        'xml_IdCodice': fields.function(
-            _xml_dati_partner,
-            string="VAT number",
-            type="char",
-            multi=True,
-            store=False,
-            select=True,
-            readonly=True),
-        'xml_CodiceFiscale': fields.function(
-            _xml_dati_partner,
-            string="Fiscalcode",
-            type="char",
-            multi=True,
-            store=False,
-            select=True,
-            readonly=True),
-        'xml_TipoDocumento': fields.function(
-            _xml_tipodocumento,
-            string="Document type",
-            help="Values: TD01=invoice, TD04=refund",
-            type="char",
-            store=False,
-            select=True,
-            readonly=True),
-        'xml_ImponibileImporto': fields.function(
-            _xml_dati_line,
-            string="Taxable",
-            type="float",
-            multi=True,
-            store=False,
-            select=True,
-            readonly=True),
-        'xml_Imposta': fields.function(
-            _xml_dati_line,
-            string="Tax",
-            type="float",
-            multi=True,
-            store=False,
-            select=True,
-            readonly=True),
-        'xml_Aliquota': fields.function(
-            _xml_dati_line,
-            string="Tax rate",
-            type="float",
-            multi=True,
-            store=False,
-            select=True,
-            readonly=True),
-        'xml_Detraibile': fields.function(
-            _xml_dati_line,
-            string="Tax deductible",
-            type="float",
-            multi=True,
-            store=False,
-            select=True,
-            readonly=True),
-        'xml_Natura': fields.function(
-            _xml_dati_line,
-            string="Tax type",
-            type="char",
-            multi=True,
-            store=False,
-            select=True,
-            readonly=True),
     }
 
 
