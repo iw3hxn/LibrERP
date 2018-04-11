@@ -439,6 +439,7 @@
                     <field name="user_id">
                         <filter domain="[('user_id','=',uid)]" help="My Sale Orders" icon="terp-personal"/>
                     </field>
+                    <field name="section_id" widget="selection"/>
                     <field name="shop_id" widget="selection"/>
                     <newline/>
                     <group expand="0" string="Group By..." groups="base.group_extended">
