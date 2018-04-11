@@ -269,6 +269,8 @@ class AccountVatCommunication(orm.Model):
                         tax_payability = tax.payability
                     if tax.type_tax_use:
                         tax_type = tax.type_tax_use
+                    if not tax.account_collected_id or not tax.account_paid_id:
+                        tax_nodet_rate = 1
                 else:
                     if release.major_version == '6.1':
                         tax_rate = 0
@@ -700,7 +702,7 @@ class commitment_line(orm.AbstractModel):
             if not partner.vat and \
                     (res['xml_Nazione'] == 'IT' or
                      res['xml_Nazione'] in EU_COUNTRIES):
-                self._get_erro(_('Partner %s without VAT number') % (partner.name), context)
+                self._get_error(_('Partner %s without VAT number') % (partner.name), context)
 
         res['xml_Nazione'] = address.country_id.code or res.get('xml_IdPaese', False)
 
