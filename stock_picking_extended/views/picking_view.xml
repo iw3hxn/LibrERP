@@ -16,6 +16,19 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="stock.stock_picking_calendar">
+            <field name="name">stock.picking.calendar</field>
+            <field name="model">stock.picking</field>
+            <field name="type">calendar</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Calendar View" date_start="min_date" date_stop="max_date" color="customer_id">
+                    <field name="origin"/>
+                    <field name="customer_id"/>
+                </calendar>
+            </field>
+        </record>
+
         <record id="stock_picking_out_form_inherit" model="ir.ui.view">
             <field name="name">stock.picking.form.inherit.ddt</field>
             <field name="model">stock.picking</field>
@@ -303,7 +316,7 @@
             <field name="search_view_id" ref="view_stock_picking_search"/>
             <field name="view_id" ref="view_stock_picking_tree"/>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,calendar</field>
         </record>
 
         <record id="action_stock_picking_tree1_view1" model="ir.actions.act_window.view">
@@ -317,6 +330,12 @@
             <field eval="2" name="sequence"/>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_stock_picking_form"/>
+            <field name="act_window_id" ref="action_view_stock_picking"/>
+        </record>
+
+        <record id="action_stock_picking_calendar1_view1" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">calendar</field>
             <field name="act_window_id" ref="action_view_stock_picking"/>
         </record>
 
