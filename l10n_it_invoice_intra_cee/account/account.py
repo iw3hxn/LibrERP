@@ -229,9 +229,9 @@ class account_invoice(orm.Model):
         })
         new_line = []
         tax_relation = self._get_tax_relation(cr, uid, invoice_id, context)
-        if self.pool.get('ir.module.module').search(cr, uid, [
+        if self.pool['ir.module.module'].search(cr, uid, [
             ('state', '=', 'installed'),
-            ('name', '=', 'l10n_it_asset')]):
+            ('name', '=', 'l10n_it_asset')], context=context):
             asset = True
         else:
             asset = False
@@ -433,12 +433,11 @@ class account_invoice(orm.Model):
         return res
 
     def action_cancel(self, cr, uid, ids, context=None):
-        invoices = self.browse(cr, uid, ids, context)
         account_move = self.pool['account.move']
         voucher_obj = self.pool['account.voucher']
         wf_service = netsvc.LocalService("workflow")
         move_ids = []
-        for inv in invoices:
+        for inv in self.browse(cr, uid, ids, context):
             # ----- Delete Auto Invoice
             if inv.auto_invoice_id:
                 # ----- Delete Payments for supplier invoice
@@ -448,30 +447,25 @@ class account_invoice(orm.Model):
                         _('You cannot cancel an invoice which is partially \
                         paid. You need to unreconcile related payment entries \
                         first.'))
-                payment_ids = []
-                for payment in inv.payment_ids:
-                    voucher_ids = voucher_obj.search(
-                        cr, uid, [('move_id', '=', payment.move_id.id)])
-                    if not voucher_ids:
-                        continue
-                    payment_ids = payment_ids + voucher_ids
-                # ----- Delete Payments for auto invoice
+                reconcile_ids = []
                 for payment in inv.auto_invoice_id.payment_ids:
-                    voucher_ids = voucher_obj.search(
-                        cr, uid, [('move_id', '=', payment.move_id.id)])
-                    if not voucher_ids:
-                        continue
-                    payment_ids = payment_ids + voucher_ids
-                if payment_ids:
-                    voucher_obj.cancel_voucher(
-                        cr, uid, payment_ids, context)
-                    voucher_obj.unlink(cr, uid, payment_ids, context)
+                    if payment.reconcile_id:
+                        reconcile_ids.append(payment.reconcile_id.id)
+                    if payment.reconcile_partial_id:
+                        reconcile_ids.append(payment.reconcile_partial_id.id)
+
+                # ----- Delete Payments for auto invoice
+
+                if reconcile_ids:
+                    self.pool['account.move.reconcile'].unlink(cr, uid, reconcile_ids, context)
+
+
                 # ---- Delete Invoice
                 wf_service.trg_validate(uid, 'account.invoice',
                                         inv.auto_invoice_id.id,
                                         'invoice_cancel', cr)
-                self.action_cancel_draft(
-                    cr, uid, [inv.auto_invoice_id.id])
+                self.action_cancel_draft(cr, uid, [inv.auto_invoice_id.id])
+                self.write(cr, uid, [inv.auto_invoice_id.id], {'internal_number': False}, context)
                 self.unlink(cr, uid, [inv.auto_invoice_id.id], context)
             # ----- Save account move ids
             if inv.transfer_entry_id:
