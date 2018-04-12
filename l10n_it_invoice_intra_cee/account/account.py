@@ -455,10 +455,15 @@ class account_invoice(orm.Model):
                         reconcile_ids.append(payment.reconcile_partial_id.id)
 
                 # ----- Delete Payments for auto invoice
+                if inv.transfer_entry_id:
+                    for move in inv.transfer_entry_id.line_id:
+                        if move.reconcile_id:
+                            reconcile_ids.append(move.reconcile_id.id)
+                        if move.reconcile_partial_id:
+                            reconcile_ids.append(move.reconcile_partial_id.id)
 
                 if reconcile_ids:
-                    self.pool['account.move.reconcile'].unlink(cr, uid, reconcile_ids, context)
-
+                    self.pool['account.move.reconcile'].unlink(cr, uid, list(set(reconcile_ids)), context)
 
                 # ---- Delete Invoice
                 wf_service.trg_validate(uid, 'account.invoice',
