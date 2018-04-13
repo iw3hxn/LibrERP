@@ -85,10 +85,11 @@ class stock_picking(orm.Model):
                                                                group, type, context)
 
         for picking in self.browse(cr, uid, ids, context=context):
-            self.pool['account.invoice'].write(cr, uid, res[picking.id], {
-                'cig': picking.cig,
-                'cup': picking.cup,
-            })
+            if picking.id in res.keys():
+                self.pool['account.invoice'].write(cr, uid, res[picking.id], {
+                    'cig': picking.cig,
+                    'cup': picking.cup,
+                }, context)
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
