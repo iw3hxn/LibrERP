@@ -312,13 +312,19 @@ class stock_picking(orm.Model):
             if arg and len(arg) == 3 and arg[1] == 'ilike':
                 values = arg[2].split(',')
                 if values > 1:
-                    new_args += ['|' for x in range(len(values) - 1)] + [(arg[0], arg[1], value.strip()) for value in
-                                                                         values]
+                    new_args += ['|' for x in range(len(values) - 1)] + [(arg[0], arg[1], value.strip()) for value in values]
             else:
                 new_args.append(arg)
 
         return super(stock_picking, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order,
                                                  context=context, count=count)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if vals.get('minimum_planned_date', False):
+            text = _(u'has change delivery date to {date}').format(date=vals.get('minimum_planned_date', False))
+            self.message_append(cr, uid, ids, text, body_text=text, context=context)
+        res = super(stock_picking, self).write(cr, uid, ids, vals, context)
+        return res
 
     def create(self, cr, uid, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -358,11 +364,13 @@ class stock_picking(orm.Model):
                                                                group, type, context)
 
         for picking in self.browse(cr, uid, ids, context=context):
-            self.pool['account.invoice'].write(cr, uid, res[picking.id], {
-                'carriage_condition_id': picking.carriage_condition_id.id,
-                'goods_description_id': picking.goods_description_id.id,
-                'transportation_condition_id': picking.transportation_condition_id.id,
-            }, context)
+            if picking.id in res.keys():
+                invoice_vals = {
+                    'carriage_condition_id': picking.carriage_condition_id and picking.carriage_condition_id.id or False,
+                    'goods_description_id': picking.goods_description_id and picking.goods_description_id.id or False,
+                    'transportation_condition_id': picking.transportation_condition_id and picking.transportation_condition_id.id or False,
+                }
+                self.pool['account.invoice'].write(cr, uid, res[picking.id], invoice_vals, context)
             if picking.sale_id:
                 for order_line in picking.sale_id.order_line:
                     if not order_line.invoiced:
