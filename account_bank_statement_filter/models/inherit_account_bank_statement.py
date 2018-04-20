@@ -47,7 +47,7 @@ class account_bank_statement(orm.Model):
         
         result = {}
         for statement in self.browse(cr, uid, ids, context):
-            if statement.date_invoice:
+            if statement.date:
                 result[statement.id] = datetime.datetime.strptime(statement.date, '%Y-%m-%d').year
             else:
                 result[statement.id] = False
