@@ -81,16 +81,19 @@ except Exception:
     _logger.error(err_msg)
     # logger.notifyChannel('report_aeroo', netsvc.LOG_CRITICAL, err_msg)
 
+
 def aeroo_ooo_test(cr):
     '''
     Detect report_aeroo_ooo module
     '''
-    aeroo_ooo = False
-    cr.execute("SELECT id, state FROM ir_module_module WHERE name='report_aeroo_ooo'")
-    helper_module = cr.dictfetchone()
-    if helper_module and helper_module['state'] in ('installed', 'to upgrade'):
-        aeroo_ooo = True
-    return aeroo_ooo
+    # aeroo_ooo = False
+    # # cr.execute("SELECT id, state FROM ir_module_module WHERE name='report_aeroo_ooo'")
+    # cr.execute("SELECT id, state FROM ir_module_module WHERE name='report_aeroo_loffice'")
+    # helper_module = cr.dictfetchone()
+    # if helper_module and helper_module['state'] in ('installed', 'to upgrade'):
+    #     aeroo_ooo = True
+    # return aeroo_ooo
+    return 'openoffice' in netsvc.Service._services
 
 
 class Counter(object):
@@ -320,12 +323,20 @@ class Aeroo_report(report_sxw):
             report_xml_ids = ir_obj.search(cr, uid, [('report_name', '=', name)], context=context)
             if report_xml_ids:
                 report_xml = ir_obj.browse(cr, uid, report_xml_ids[0], context=context)
-                data = {'model': obj._table_name, 'id': obj.id, 'report_type': 'aeroo', 'in_format': 'genshi-raw'}
-                report, output = netsvc.Service._services['report.%s' % name].create_genshi_raw_report(cr, uid, \
-                                                                                                       [obj.id], data,
-                                                                                                       report_xml,
-                                                                                                       context=context,
-                                                                                                       output='raw')  # change for OpenERP 6.0 - Service class usage
+                data = {
+                    'model': obj._table_name,
+                    'id': obj.id,
+                    'report_type': 'aeroo',
+                    'in_format': 'genshi-raw'
+                }
+                report, output = netsvc.Service._services['report.%s' % name].create_genshi_raw_report(
+                    cr, uid,
+                    [obj.id],
+                    data,
+                    report_xml,
+                    context=context,
+                    output='raw'
+                )  # change for OpenERP 6.0 - Service class usage
                 return report
             return None
 
