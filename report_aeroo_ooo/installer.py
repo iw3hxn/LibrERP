@@ -34,20 +34,29 @@ from osv import fields
 from osv import osv
 import netsvc
 import tools
-from xml.dom import minidom
+# from xml.dom import minidom
 import os, base64
 import urllib2
+
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
 from tools.translate import _
 
-from report_aeroo_ooo.DocumentConverter import DocumentConversionException
-from report_aeroo_ooo.report import OpenOffice_service
+import logging
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
+try:
+    from report_aeroo_ooo.DocumentConverter import DocumentConversionException
+    from report_aeroo_ooo.report import OpenOffice_service
+except ImportError, e:
+    _logger.error('Cannot `import {0}`'.format(e))  # Avoid init error if not installed
+
 from report_aeroo.report_aeroo import aeroo_lock
 
 _url = 'http://www.alistek.com/aeroo_banner/v6_1_report_aeroo_ooo.png'
+
 
 class aeroo_config_installer(osv.osv_memory):
     _name = 'aeroo_config.installer'
@@ -60,11 +69,11 @@ class aeroo_config_installer(osv.osv_memory):
             return self._logo_image
         try:
             im = urllib2.urlopen(_url.encode("UTF-8"))
-            if im.headers.maintype!='image':
+            if im.headers.maintype != 'image':
                 raise TypeError(im.headers.maintype)
         except Exception, e:
-            path = os.path.join('report_aeroo','config_pixmaps','module_banner.png')
-            image_file = file_data = tools.file_open(path,'rb')
+            path = os.path.join('report_aeroo', 'config_pixmaps', 'module_banner.png')
+            image_file = file_data = tools.file_open(path, 'rb')
             try:
                 file_data = image_file.read()
                 self._logo_image = base64.encodestring(file_data)
@@ -77,26 +86,27 @@ class aeroo_config_installer(osv.osv_memory):
 
     def _get_image_fn(self, cr, uid, ids, name, args, context=None):
         image = self._get_image(cr, uid, context)
-        return dict.fromkeys(ids, image) # ok to use .fromkeys() as the image is same for all 
+        return dict.fromkeys(ids, image)  # ok to use .fromkeys() as the image is same for all
 
     _columns = {
         'host': fields.char('Host', size=64, required=True),
         'port': fields.integer('Port', required=True),
         'ooo_restart_cmd': fields.char('OOO restart command', size=256, \
-            help='Enter the shell command that will be executed to restart the LibreOffice/OpenOffice background process.'+ \
-                'The command will be executed as the user of the OpenERP server process,'+ \
-                'so you may need to prefix it with sudo and configure your sudoers file to have this command executed without password.'),
-        'state':fields.selection([
-            ('init','Init'),
-            ('error','Error'),
-            ('done','Done'),
-            
+                                       help='Enter the shell command that will be executed to restart the LibreOffice/OpenOffice background process.' + \
+                                            'The command will be executed as the user of the OpenERP server process,' + \
+                                            'so you may need to prefix it with sudo and configure your sudoers file to have this command executed without password.'),
+        'state': fields.selection([
+            ('init', 'Init'),
+            ('error', 'Error'),
+            ('done', 'Done'),
+
         ], 'State', select=True, readonly=True),
         'msg': fields.text('Message', readonly=True),
         'error_details': fields.text('Error Details', readonly=True),
-        'link':fields.char('Installation Manual', size=128, help='Installation (Dependencies and Base system setup)', readonly=True),
+        'link': fields.char('Installation Manual', size=128, help='Installation (Dependencies and Base system setup)',
+                            readonly=True),
         'config_logo': fields.function(_get_image_fn, string='Image', type='binary', method=True),
-        
+
     }
 
     def default_get(self, cr, uid, fields, context=None):
@@ -122,8 +132,7 @@ class aeroo_config_installer(osv.osv_memory):
         try:
             fp = tools.file_open('report_aeroo_ooo/test_temp.odt', mode='rb')
             file_data = fp.read()
-            DC = netsvc.Service._services.setdefault('openoffice', \
-                    OpenOffice_service(cr, data['host'], data['port']))
+            DC = netsvc.Service._services.setdefault('openoffice', OpenOffice_service(cr, data['host'], data['port']))
             with aeroo_lock:
                 DC.putDocument(file_data)
                 DC.saveByStream()
@@ -141,11 +150,12 @@ class aeroo_config_installer(osv.osv_memory):
             error_details = ''
             state = 'done'
 
-        if state=='error':
+        if state == 'error':
             msg = _('Connection to OpenOffice.org instance was not established or convertion to PDF unsuccessful!')
         else:
-            msg = _('Connection to the OpenOffice.org instance was successfully established and PDF convertion is working.')
-        return self.write(cr, uid, ids, {'msg':msg,'error_details':error_details,'state':state})
+            msg = _(
+                'Connection to the OpenOffice.org instance was successfully established and PDF convertion is working.')
+        return self.write(cr, uid, ids, {'msg': msg, 'error_details': error_details, 'state': state}, context=context)
 
     _defaults = {
         'config_logo': _get_image,

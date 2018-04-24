@@ -46,29 +46,41 @@ except ImportError:
 
 _logger = logging.getLogger(__name__)
 
-if sys.platform=='win32':
+if sys.platform == 'win32':
     import _winreg
     import platform
+
     try:
         key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment')
         python_path = _winreg.QueryValueEx(key, "PYTHONPATH")[0].split(';')
         if python_path:
             sys.path.extend(python_path)
         else:
-            sys.path.extend(platform.machine()=='x86' and DEFAULT_OPENOFFICE_PATH or DEFAULT_OPENOFFICE_PATH_AMD64)
+            sys.path.extend(platform.machine() == 'x86' and DEFAULT_OPENOFFICE_PATH or DEFAULT_OPENOFFICE_PATH_AMD64)
     except WindowsError, e:
-        sys.path.extend(platform.machine()=='x86' and DEFAULT_OPENOFFICE_PATH or DEFAULT_OPENOFFICE_PATH_AMD64)
+        sys.path.extend(platform.machine() == 'x86' and DEFAULT_OPENOFFICE_PATH or DEFAULT_OPENOFFICE_PATH_AMD64)
 
-import uno
-import unohelper
-from com.sun.star.beans import PropertyValue
-from com.sun.star.uno import Exception as UnoException
-from com.sun.star.connection import NoConnectException, ConnectionSetupException
-from com.sun.star.beans import UnknownPropertyException
-from com.sun.star.lang import IllegalArgumentException
-from com.sun.star.io import XOutputStream
-from com.sun.star.io import IOException
+import logging
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
+
+try:
+    import uno
+    import unohelper
+    from com.sun.star.beans import PropertyValue
+    from com.sun.star.uno import Exception as UnoException
+    from com.sun.star.connection import NoConnectException, ConnectionSetupException
+    from com.sun.star.beans import UnknownPropertyException
+    from com.sun.star.lang import IllegalArgumentException
+    from com.sun.star.io import XOutputStream
+    from com.sun.star.io import IOException
+except ImportError, e:
+    _logger.error('Cannot `import {0}`'.format(e.message))  # Avoid init error if not installed
+
+
 from tools.translate import _
+
 
 class DocumentConversionException(Exception):
 
@@ -77,6 +89,7 @@ class DocumentConversionException(Exception):
 
     def __str__(self):
         return self.message
+
 
 class OutputStreamWrapper(unohelper.Base, XOutputStream):
     """ Minimal Implementation of XOutputStream """
@@ -102,10 +115,12 @@ class OutputStreamWrapper(unohelper.Base, XOutputStream):
         if self.debug:
             sys.stderr.write("Flushing output.\n")
         pass
+
     def closeOutput(self):
         if self.debug:
             sys.stderr.write("Closing output.\n")
         pass
+
 
 class DocumentConverter:
    
@@ -154,7 +169,7 @@ class DocumentConverter:
             pass
         outputStream = OutputStreamWrapper(False)
         try:
-            self.document.storeToURL('private:stream', self._toProperties(OutputStream = outputStream, FilterName = filter_name, FilterOptions=CSVFilterOptions))
+            self.document.storeToURL('private:stream', self._toProperties(OutputStream=outputStream, FilterName=filter_name, FilterOptions=CSVFilterOptions))
         except IOException, e:
             print ("IOException during conversion: %s - %s" % (e.ErrCode, e.Message))
             outputStream.close()
@@ -181,12 +196,12 @@ class DocumentConverter:
             search = self.document.createSearchDescriptor()
             search.SearchString = placeholder_text
             found = self.document.findFirst( search )
-            #while found:
+            # while found:
             try:
                 found.insertDocumentFromURL('private:stream', self._toProperties(InputStream = subStream, FilterName = "writer8"))
             except Exception, ex:
                 print (_("Error inserting file %s on the OpenOffice document: %s") % (subreport, ex))
-            #found = self.document.findNext(found, search)
+            # found = self.document.findNext(found, search)
 
             os.unlink(subreport)
 
@@ -234,7 +249,7 @@ class DocumentConverter:
             retcode = subprocess.call(self._ooo_restart_cmd, shell=True)
             if retcode == 0:
                 _logger.warning('Restart successfull')
-                time.sleep(4) # Let some time for LibO/OOO to be fully started
+                time.sleep(4)  # Let some time for LibO/OOO to be fully started
             else:
                 _logger.error('Restart script failed with return code %d' % retcode)
         except OSError, e:

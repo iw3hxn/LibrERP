@@ -31,7 +31,15 @@
 
 from osv import osv,fields
 import netsvc
-from DocumentConverter import DocumentConverter
+import logging
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
+try:
+    from DocumentConverter import DocumentConverter
+except Exception as e:
+    _logger.error('Cannot `import {0}`'.format(e.message))  # Avoid init error if not installed
+
 
 class OpenOffice_service (DocumentConverter, netsvc.Service):
 

@@ -41,13 +41,13 @@ check_list = [
     'from com.sun.star.io import IOException',
 ]
 
-from check_deps import check_deps
-check_deps(check_list)
 
-import installer
-import report
+import logging
+_logger = logging.getLogger(__name__)
 try:
+    import installer
+    import report
     import DocumentConverter
-except ImportError, e:
-    print e
+except Exception as e:
+    _logger.info('Cannot `import {0}`'.format(e.message))
 
