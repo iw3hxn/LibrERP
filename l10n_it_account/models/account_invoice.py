@@ -360,7 +360,9 @@ class account_invoice(orm.Model):
                         return False
 
                 if invoice.payment_term and invoice.company_id.check_invoice_payment_term and invoice.payment_term.type == 'BB' and not invoice.partner_bank_id and invoice.type == 'out_invoice':
-                    if not context.get('no_except', False):
+                    if invoice.partner_id.company_bank_id:
+                        invoice.write({'partner_bank_id': invoice.partner_id.company_bank_id.id})
+                    elif not context.get('no_except', False):
                         raise orm.except_orm(_('Invoice'),
                                          _(
                                              'Impossible to Validate, need to set Bank on invoice of {partner}').format(
