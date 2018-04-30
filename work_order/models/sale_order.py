@@ -290,7 +290,7 @@ class sale_order(orm.Model):
                 'to_invoice': invoice_ratio,
                 'state': 'pending',
                 'warn_manager': True,
-                'user_id': shop.project_manager_id and shop.project_manager_id.id or False,
+                'user_id': shop.project_manager_id and shop.project_manager_id.id or order.user_id and order.user_id.id or False,
             }
 
             if shop.member_ids:
