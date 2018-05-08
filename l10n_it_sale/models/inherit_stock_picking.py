@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
 class stock_picking(orm.Model):
@@ -76,6 +77,21 @@ class stock_picking(orm.Model):
             })
 
         return super(stock_picking, self).copy(cr, uid, ids, default, context)
+
+    def action_ddt_assign(self, cr, uid, ids, context):
+        wizard_assig_ddt_obj = self.pool['wizard.assign.ddt']
+        for picking in self.browse(cr, uid, ids, context=context):
+            if picking.ddt_number:
+                raise orm.except_orm(_('Error'),
+                                     (_('Picking have Just DDT number {number}').format(number=picking.ddt_number)))
+            if picking.type != 'out':
+                raise orm.except_orm(_('Error'),
+                                     (_('Only Out Picking can have DDT number')))
+            ctx = context.copy()
+            ctx['active_ids'] = [picking.id]
+            wizard_id = wizard_assig_ddt_obj.create(cr, uid, {}, ctx)
+            wizard_assig_ddt_obj.assign_ddt(cr, uid, wizard_id, context=ctx)
+        return True
 
     def action_invoice_create(self, cr, uid, ids, journal_id=False,
                               group=False, type='out_invoice', context=None):
