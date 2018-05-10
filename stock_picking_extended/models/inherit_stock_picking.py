@@ -125,6 +125,15 @@ class stock_picking(orm.Model):
             result[picking.id] = True
         return result.keys()
 
+    def _get_picking_partner(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        stock_picking_model = self.pool['stock.picking']
+        picking_ids = stock_picking_model.search(cr, uid, [('customer_id', 'in', ids)], context=context)
+        for picking in stock_picking_model.browse(cr, uid, picking_ids, context):
+            result[picking.id] = True
+        return result.keys()
+
     def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
         res = self.name_get(cr, uid, ids, context=context)
         return dict(res)
@@ -206,7 +215,14 @@ class stock_picking(orm.Model):
                                         'res.partner.address': (_get_picking_partner_address, ['province'], 6000),
                                         }),
         'agent': fields.related('customer_id', 'section_id', type='many2one', relation='crm.case.section',
-                                string='Agent', store=False, readonly=True),
+                                string='Agent', readonly=True, store={
+                                        'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['customer_id'], 6000),
+                                        'res.partner': (_get_picking_partner, ['section_id'], 6000),
+                                        }),
+        'sale_user_id': fields.related('sale_id', 'user_id', type='many2one', relation='res.users',
+                                string='Sale User', readonly=True, store={
+                'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
+            }),
         'board_date': fields.date('Order Board Delivery date'),
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)', readonly=True,
                                        store={

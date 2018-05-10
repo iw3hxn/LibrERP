@@ -22,7 +22,7 @@
             <field name="type">calendar</field>
             <field name="priority" eval="2"/>
             <field name="arch" type="xml">
-                <calendar string="Calendar View" date_start="min_date" date_stop="max_date" color="customer_id">
+                <calendar string="Calendar View" date_start="minimum_planned_date" date_stop="minimum_planned_date" color="customer_id">
                     <field name="origin"/>
                     <field name="customer_id"/>
                 </calendar>
@@ -150,6 +150,7 @@
                     <filter icon="gtk-ok" name="available" string="Goods Ready" domain="[('goods_ready','=', True)]" />
                     <field name="sale_id" filter_domain="['|',('sale_id','ilike',self),('origin','ilike',self)]" domain="[('state','in', ['progress', 'manual', 'done'])]"/>
                     <field name="customer_id"/>
+                    <field name="sale_user_id"/>
                     <field name="province" />
                     <field name="region"/>
                     <field name="product_id"/>
@@ -170,7 +171,7 @@
 
                     <group col="4" colspan="4">
                         <group col="2" colspan="2">
-                            <field name="sale_id" groups="base.group_sale_salesman"/>
+                            <field name="sale_id" groups="base.group_sale_salesman" readonly="1"/>
                             <field name="customer_id"/>
                             <field name="internal_note"/>
                             <field name="creation_date"/>
@@ -182,9 +183,9 @@
                             <field name="order_type"/>
                             <field name="order_sent"/>
                             <field name="order_ready"/>
-                            <field name="street"/>
+                            <field name="street" readonly="1"/>
                             <newline/>
-                            <field name="city"/>
+                            <field name="city" readonly="1"/>
                             <newline/>
                             <field name="province"/>
                             <newline/>
@@ -230,6 +231,18 @@
                         <page string="Info">
                             <field name="note" nolabel="1"/>
                         </page>
+                        <page string="Communication &amp; History" groups="base.group_extended">
+                            <field name="message_ids" colspan="4" nolabel="1" mode="tree" readonly="1">
+                                <tree string="History">
+                                    <field name="display_text" string="History Information"/>
+                                    <field name="email_from" invisible="1"/>
+                                    <button string="Reply" attrs="{'invisible': [('email_from', '=', False)]}" name="%(mail.action_email_compose_message_wizard)d" context="{'mail.compose.message.mode':'reply', 'message_id':active_id}" icon="terp-mail-replied" type="action"/>
+                                </tree>
+                            </field>
+                            <button string="Send New Email"
+                                    name="%(mail.action_email_compose_message_wizard)d"
+                                    icon="terp-mail-message-new" type="action"/>
+                        </page>
                     </notebook>
                     <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}' invisible="1"/>
                 </form>
@@ -245,6 +258,7 @@
                     <field name="sale_id"/>
                     <field name="client_order_ref"/>
                     <field name="customer_id"/>
+                    <field name="sale_user_id" invisible="not context.get('show_delivery', False)"/>
                     <field name="province" invisible="not context.get('show_delivery', False)"/>
                     <field name="region" invisible="not context.get('show_delivery', False)"/>
                     <field name="note"/>

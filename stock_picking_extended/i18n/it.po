@@ -613,3 +613,13 @@ msgstr "Stato Fatture"
 #: view:stock.picking:0
 msgid "Internal Notes"
 msgstr "Note Interne"
+
+#. module: stock_picking_extended
+#: view:stock.picking:0
+msgid "Delivery Data"
+msgstr "Dati Consegna"
+
+#. module: stock_picking_extended
+#: field:stock.picking,sale_user_id:0
+msgid "Sale User"
+msgstr "Venditore"
