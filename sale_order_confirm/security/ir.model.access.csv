@@ -14,3 +14,8 @@ access_product_price_type_user,product.price.type.user,product.model_product_pri
 access_crm_lost_reason_manager,crm.lost.reason.manager,model_crm_lost_reason,base.group_sale_manager,1,1,1,1
 access_crm_lost_reason_salesman,crm.lost.reason.salesman,model_crm_lost_reason,base.group_sale_salesman,1,0,0,0
 access_crm_lost_reason_user,crm.lost.reason.user,model_crm_lost_reason,base.group_user,1,0,0,0
+access_account_move_all,access_account_move_all,account.model_account_move,,1,0,0,0
+access_account_move_line_all,access_account_move_line_all,account.model_account_move_line,,1,0,0,0
+access_account_move_reconcile_all,access_account_move_reconcile_all,account.model_account_move_reconcile,,1,0,0,0
+access_account_journal_view_all,account_journal_view_all,account.model_account_journal_view,,1,0,0,0
+access_account_journal_column_all,account_journal_column_all,account.model_account_journal_column,,1,0,0,0
