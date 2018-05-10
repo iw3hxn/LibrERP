@@ -591,3 +591,9 @@ msgstr "Ordini di Vendita"
 #: field:stock.move,temp_mrp_bom_list:0
 msgid "Sale Orders"
 msgstr "Ordini di Vendita"
+
+#. module: sale_order_requirement
+#: field:mrp.production,sale_id:0
+msgid "Sale order"
+msgstr "Ordine Vendita"
+

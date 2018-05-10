@@ -12,6 +12,9 @@
                     <filter icon="terp-product" string="Main Products" name="mainproducts" domain="[('level','=',0)]"
                             help="Manufacturing Orders related to main products (hide children BoM)"/>
                 </filter>
+                <field name="origin" position="after">
+                    <field name="sale_id"/>
+                </field>
             </field>
         </record>
 
