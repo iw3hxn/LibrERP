@@ -27,8 +27,8 @@ from . import company
 from . import crm_lost_reason
 from . import partner
 from . import product_pricelist
+from . import res_partner_address
 from . import sale_order
 from . import sale_order_line
 from . import sale_shop
 from . import stock_picking
-

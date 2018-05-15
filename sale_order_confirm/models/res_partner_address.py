@@ -34,5 +34,5 @@ class res_partner_address(orm.Model):
         if sale_order_ids:
             title = _(u'Error')
             msg = _(u'Is not possible to Delete Address because exist a connected Sale Order')
-            raise orm.except_orm(_(title), _(msg))
+            raise orm.except_orm(title, msg)
         return super(res_partner_address, self).unlink(cr, uid, ids, context)
