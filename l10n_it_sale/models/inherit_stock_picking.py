@@ -90,7 +90,7 @@ class stock_picking(orm.Model):
             ctx = context.copy()
             ctx['active_ids'] = [picking.id]
             wizard_id = wizard_assig_ddt_obj.create(cr, uid, {}, ctx)
-            wizard_assig_ddt_obj.assign_ddt(cr, uid, wizard_id, context=ctx)
+            wizard_assig_ddt_obj.assign_ddt(cr, uid, [wizard_id], context=ctx)
         return True
 
     def action_invoice_create(self, cr, uid, ids, journal_id=False,

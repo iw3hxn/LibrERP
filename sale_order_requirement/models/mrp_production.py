@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class mrp_production(orm.Model):
 
-    _inherit = "mrp.production"
+    _inherit = 'mrp.production'
 
     _columns = {
         'is_from_order_requirement': fields.boolean('is from order requirement'),
@@ -151,4 +151,62 @@ class mrp_production(orm.Model):
                 line['production_id'] = production.id
                 workcenter_line_obj.create(cr, uid, line, context)
         return len(results)
+
+    def edit_production(self, cr, uid, ids, context=None):
+        if not ids:
+            return
+        context = self.pool['res.users'].context_get(cr, uid)
+        stock_move_obj = self.pool['stock.move']
+        stock_move_temp_obj = self.pool['stock.move.temp']
+        mrp_production_wizard_obj = self.pool['mrp.production.wizard']
+
+        production = self.browse(cr, uid, ids[0], context)
+
+        # COPY STOCK.MOVE DATA
+
+        wizard_id = mrp_production_wizard_obj.create(cr, uid, {'production_id': production.id}, context)
+        # wizard = mrp_production_wizard_obj.browse(cr, uid, wizard_id, context)
+
+        # All moves, to be consumed and consumed
+        move_lines = production.move_lines
+        move_lines.extend(production.move_lines2)
+
+        for line in move_lines:
+            vals = {
+                'production_id': production.id,
+                'orig_stock_move_id': line.id,
+                'product_id': line.product_id.id,
+                'product_qty': line.product_qty,
+                'product_uom': line.product_uom.id,
+                'location_id': line.location_id.id,
+                'location_dest_id': line.location_dest_id.id,
+                'prodlot_id': line.prodlot_id.id,
+                'is_consumed': line.state == 'done',
+                'state': line.state,
+                'wizard_id': wizard_id
+            }
+            # if vals['is_consumed']:
+            #     mrp_production_wizard_obj.write(cr, uid, wizard_id, {'move_lines2': (0, False, vals)}, context=context)
+            # else:
+            #     mrp_production_wizard_obj.write(cr, uid, wizard_id, {'move_lines': (0, False, vals)}, context=context)
+            # if vals['is_consumed']:
+            #     mrp_production_wizard_obj.write(cr, uid, wizard_id, {'move_lines2': (0, False, vals)}, context=context)
+            # else:
+            #     mrp_production_wizard_obj.write(cr, uid, wizard_id, {'move_lines': (0, False, vals)}, context=context)
+
+            stock_move_temp_obj.create(cr, uid, vals, context)
+
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale_order_requirement', 'view_edit_mrp_products_wizard')
+        view_id = view and view[1] or False
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Edit Products'),
+            'res_model': 'mrp.production.wizard',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [view_id],
+            'target': 'new',
+            'res_id': wizard_id
+        }
 

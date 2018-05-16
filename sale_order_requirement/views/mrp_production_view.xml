@@ -52,6 +52,11 @@
                         </field>
                     </page>
                 </page>
+                <button name="action_cancel" position="before">
+                    <button name="edit_production" string="Edit Products" icon="gtk-edit" states="confirmed,ready" type="object"/>
+                            <!--confirm="Are you sure you want to add/remove products?"/>-->
+                </button>
+
                 <field name="picking_id" position="after">
                     <field name="order_requirement_line_id"/>
                     <!--<button colspan="1" name="action_view_order_requirement" context="{'ordreq_line_id': order_requirement_line_id}"-->

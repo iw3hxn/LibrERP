@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--  Edit Products -->
+
+		<record id="view_edit_mrp_products_wizard" model="ir.ui.view">
+            <field name="name">Edit Products</field>
+            <field name="model">mrp.production.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Edit Products">
+                    <separator string="Edit Products" colspan="4"/>
+                    <newline/>
+                    <!--<field name="name" readonly="1"/>-->
+                    <!--<field name="is_from_order_requirement" readonly="1"/>-->
+                    <field name="move_lines">
+                        <tree string="Products to Consume" editable="bottom">
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom"/>
+                            <field name="location_id"  string="Source Loc."/>
+                            <field name="prodlot_id" string="Production Lot"/>
+                            <field name="state" invisible="1"/>
+                        </tree>
+                    </field>
+                    <field name="move_lines2">
+                        <tree string="Consumed Products" editable="bottom">
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom"/>
+                            <field name="prodlot_id" string="Production Lot"/>
+                            <field name="state" invisible="1"/>
+                        </tree>
+                    </field>
+				    <separator colspan="4"/>
+				    <group col="2" colspan="4">
+                		<button icon='gtk-stop' special="cancel"
+                			string="Cancel" />
+                		<button name="confirm_edit_mrp_products" string="Approve"
+                			colspan="1" type="object" icon="gtk-ok" />
+                	</group>
+                </form>
+            </field>
+        </record>
+
+        <!--<record id="action_edit_mrp_products" model="ir.actions.act_window">-->
+            <!--<field name="name">Edit Products</field>-->
+            <!--<field name="type">ir.actions.act_window</field>-->
+            <!--<field name="res_model">edit.mrp.products</field>-->
+            <!--<field name="view_type">form</field>-->
+            <!--<field name="view_mode">form</field>-->
+            <!--<field name="target">new</field>-->
+        <!--</record>-->
+
+	</data>
+</openerp>

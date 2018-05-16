@@ -29,6 +29,7 @@ and choose if manufacture or buy products from suppliers.
         'views/sale_workflow.xml',
         'views/sale_order_view.xml',
         'report/order_requirement.xml',
+        'wizards/mrp_edit_products_wizard.xml'
  #       'report/incoming_bill.xml',
     ],
     'css': ['static/src/css/style.css'],
