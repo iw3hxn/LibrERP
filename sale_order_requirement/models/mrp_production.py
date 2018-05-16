@@ -185,14 +185,6 @@ class mrp_production(orm.Model):
                 'state': line.state,
                 'wizard_id': wizard_id
             }
-            # if vals['is_consumed']:
-            #     mrp_production_wizard_obj.write(cr, uid, wizard_id, {'move_lines2': (0, False, vals)}, context=context)
-            # else:
-            #     mrp_production_wizard_obj.write(cr, uid, wizard_id, {'move_lines': (0, False, vals)}, context=context)
-            # if vals['is_consumed']:
-            #     mrp_production_wizard_obj.write(cr, uid, wizard_id, {'move_lines2': (0, False, vals)}, context=context)
-            # else:
-            #     mrp_production_wizard_obj.write(cr, uid, wizard_id, {'move_lines': (0, False, vals)}, context=context)
 
             stock_move_temp_obj.create(cr, uid, vals, context)
 

@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
-from osv import fields, orm
-from tools.translate import _
 import logging
+
+from osv import fields, orm
+
+import openerp.netsvc as netsvc
+
 _logger = logging.getLogger(__name__)
 
 
@@ -24,7 +27,8 @@ class mrp_production_wizard(orm.TransientModel):
         stock_move_obj = self.pool['stock.move']
         for wizard in self.browse(cr, uid, ids, context):
             picking = wizard.production_id.picking_id
-            # I have to reopen associated picking
+
+            # Reopen associated picking
             picking.action_reopen(context=context)
 
             # re-elaborate
@@ -51,7 +55,11 @@ class mrp_production_wizard(orm.TransientModel):
                 }
                 stock_move_obj.create(cr, uid, vals, context)
 
-            picking.draft_force_assign(context=context)
+            picking.draft_validate(context=context)
+
+            wf_service = netsvc.LocalService("workflow")
+            wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, 'force_production', cr)
+            # wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, cr)
 
         return {
             'type': 'ir.actions.act_window_close'
