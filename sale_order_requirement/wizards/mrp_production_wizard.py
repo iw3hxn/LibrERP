@@ -52,13 +52,15 @@ class mrp_production_wizard(orm.TransientModel):
                     'prodlot_id': line.prodlot_id.id,
                     'picking_id': picking.id,
                     'state': line.state
+                    # 'state': 'waiting'
                 }
                 stock_move_obj.create(cr, uid, vals, context)
 
             picking.draft_validate(context=context)
+            wizard.production_id.action_confirm(context=context)
 
-            wf_service = netsvc.LocalService("workflow")
-            wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, 'force_production', cr)
+            # wf_service = netsvc.LocalService("workflow")
+            # wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, 'force_production', cr)
             # wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, cr)
 
         return {
