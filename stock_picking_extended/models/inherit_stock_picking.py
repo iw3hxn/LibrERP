@@ -367,44 +367,37 @@ class stock_picking(orm.Model):
         return ids
 
     def _prepare_invoice_line(self, cr, uid, group, picking, move_line, invoice_id, invoice_vals, context=None):
-        res = super(stock_picking, self)._prepare_invoice_line(cr, uid, group, picking, move_line, invoice_id,
-                                                               invoice_vals, context=context)
+        invoice_line_vals = super(stock_picking, self)._prepare_invoice_line(cr, uid, group, picking, move_line,
+                                                                             invoice_id,
+                                                                             invoice_vals, context=context)
         """ Update dict with correct shipped qty
         """
-        res['quantity'] = move_line.product_qty or move_line.product_uos_qty
+        invoice_line_vals['quantity'] = move_line.product_qty or move_line.product_uos_qty
+        if picking.company_id.note_on_invoice_line:
+            invoice_line_vals.update({'note': move_line.note})
+        return invoice_line_vals
+
+    def _prepare_invoice(self, cr, uid, picking, partner, inv_type, journal_id, context=None):
+        invoice_vals = super(stock_picking, self)._prepare_invoice(cr, uid, picking, partner, inv_type, journal_id,
+                                                                   context)
+        invoice_vals.update({
+            'carriage_condition_id': picking.carriage_condition_id and picking.carriage_condition_id.id or False,
+            'goods_description_id': picking.goods_description_id and picking.goods_description_id.id or False,
+            'transportation_condition_id': picking.transportation_condition_id and picking.transportation_condition_id.id or False,
+        })
+        return invoice_vals
+
+    def _invoice_hook(self, cr, uid, picking, invoice_id):
+        res = super(stock_picking, self)._invoice_hook(cr, uid, picking, invoice_id)
+        if picking.sale_id:
+            for order_line in picking.sale_id.order_line:
+                if not order_line.invoiced:
+                    break
+            else:
+                sale_order = picking.sale_id
+                if sale_order.state == 'manual':
+                    sale_order.write({'state': 'progress'})
         return res
-
-    def action_invoice_create(self, cr, uid, ids, journal_id=False,
-                              group=False, type='out_invoice', context=None):
-        res = super(stock_picking, self).action_invoice_create(cr, uid, ids, journal_id,
-                                                               group, type, context)
-
-        for picking in self.browse(cr, uid, ids, context=context):
-            if picking.id in res.keys():
-                invoice_vals = {
-                    'carriage_condition_id': picking.carriage_condition_id and picking.carriage_condition_id.id or False,
-                    'goods_description_id': picking.goods_description_id and picking.goods_description_id.id or False,
-                    'transportation_condition_id': picking.transportation_condition_id and picking.transportation_condition_id.id or False,
-                }
-                self.pool['account.invoice'].write(cr, uid, res[picking.id], invoice_vals, context)
-            if picking.sale_id:
-                for order_line in picking.sale_id.order_line:
-                    if not order_line.invoiced:
-                        break
-                else:
-                    sale_order = self.pool['sale.order'].browse(cr, uid, picking.sale_id.id, context)
-                    if sale_order.state == 'manual':
-                        sale_order.write({'state': 'progress'})
-
-        return res
-
-    def _invoice_line_hook(self, cr, uid, move_line, invoice_line_id):
-        context = self.pool['res.users'].context_get(cr, uid)
-        company_id = self.pool['res.users'].get_current_company(cr, uid)[0][0]
-        company = self.pool['res.company'].browse(cr, uid, company_id, context)
-        if company.note_on_invoice_line:
-            self.pool['account.invoice.line'].write(cr, uid, invoice_line_id, {'note': move_line.note}, context)
-        return super(stock_picking, self)._invoice_line_hook(cr, uid, move_line, invoice_line_id)
 
     def localtime(self, cr, uid, ids, date_time, context=None):
         return fields.datetime.context_timestamp(

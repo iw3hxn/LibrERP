@@ -49,13 +49,22 @@ class sale_order(orm.Model):
 
         return super(sale_order, self).copy(cr, uid, id, default, context)
 
-    def _make_invoice(self, cr, uid, order, lines, context=None):
-        inv_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
+    # def _make_invoice(self, cr, uid, order, lines, context=None):
+    #     inv_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
+    #
+    #     self.pool['account.invoice'].write(cr, uid, inv_id, {
+    #         'carriage_condition_id': order.carriage_condition_id.id,
+    #         'goods_description_id': order.goods_description_id.id,
+    #         'cig': order.cig or '',
+    #         'cup': order.cup or ''
+    #         }, context=context)
+    #     return inv_id
 
-        self.pool['account.invoice'].write(cr, uid, inv_id, {
+    # is better to use hook function, in this mode hope to speedup
+    def _inv_get(self, cr, uid, order, context=None):
+        return {
             'carriage_condition_id': order.carriage_condition_id.id,
             'goods_description_id': order.goods_description_id.id,
             'cig': order.cig or '',
             'cup': order.cup or ''
-            }, context=context)
-        return inv_id
+        }

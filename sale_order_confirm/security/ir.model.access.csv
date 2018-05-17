@@ -19,3 +19,4 @@ access_account_move_line_all,access_account_move_line_all,account.model_account_
 access_account_move_reconcile_all,access_account_move_reconcile_all,account.model_account_move_reconcile,,1,0,0,0
 access_account_journal_view_all,account_journal_view_all,account.model_account_journal_view,,1,0,0,0
 access_account_journal_column_all,account_journal_column_all,account.model_account_journal_column,,1,0,0,0
+access_account_tax_code_all,account_tax_code_all,account.model_account_tax_code,,1,0,0,0
