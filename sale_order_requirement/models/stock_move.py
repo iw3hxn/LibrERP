@@ -225,3 +225,14 @@ class StockMove(orm.Model):
             'target': 'current',
             'res_id': production_id,
         }
+
+    def default_get(self, cr, uid, fields, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = super(StockMove, self).default_get(cr, uid, fields, context)
+        if context.get('edit_mrp_production', False):
+            location_id = context.get('location_id', False)
+            location_dest_id = context.get('location_dest_id', False)
+            res['location_id'] = location_id
+            res['location_dest_id'] = location_dest_id
+        return res
+

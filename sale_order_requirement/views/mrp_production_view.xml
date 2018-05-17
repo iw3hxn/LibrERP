@@ -53,6 +53,13 @@
                     </page>
                 </page>
 
+                <field name="move_lines" position="attributes">
+                    <attribute name="context">{'edit_mrp_production': 1, 'location_id': location_src_id, 'location_dest_id': location_dest_id}</attribute>
+                </field>
+                <field name="move_lines2" position="attributes">
+                    <attribute name="context">{'edit_mrp_production': 1, 'location_id': location_src_id, 'location_dest_id': location_dest_id}</attribute>
+                </field>
+
                 <xpath expr="//page[@string='Consumed Products']/field[@name='move_lines']/tree/field[@name='state']" position="before">
                     <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" />
                 </xpath>
