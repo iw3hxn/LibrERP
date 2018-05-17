@@ -52,16 +52,13 @@
                         </field>
                     </page>
                 </page>
+
                 <xpath expr="//page[@string='Consumed Products']/field[@name='move_lines']/tree/field[@name='state']" position="before">
-                        <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" />
+                    <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" />
                 </xpath>
                 <xpath expr="//page[@string='Consumed Products']/field[@name='move_lines2']/tree/field[@name='state']" position="before">
-                        <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" />
+                    <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" />
                 </xpath>
-                <button name="action_cancel" position="before">
-                    <button name="edit_production" string="Edit Products" icon="gtk-edit" states="confirmed,ready" type="object"/>
-                            <!--confirm="Are you sure you want to add/remove products?"/>-->
-                </button>
 
                 <field name="picking_id" position="after">
                     <field name="order_requirement_line_id"/>

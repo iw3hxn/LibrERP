@@ -2,9 +2,10 @@
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
 import netsvc
-# from openerp import api
-from openerp.osv import orm, fields
+from osv import osv
 from tools.translate import _
+
+from openerp.osv import orm, fields
 
 
 class StockMove(orm.Model):
@@ -143,7 +144,7 @@ class StockMove(orm.Model):
         'purchase_orders_approved': fields.function(_purchase_orders_approved, method=True, type='string',
                                                     string='Purch. orders approved', readonly=True),
         'purchase_orders_state': fields.function(_purchase_orders_state, method=True, type='string',
-                                                 string='Deliveries', readonly=True)
+                                                 string='Deliveries', readonly=True),
     }
 
     def print_production_order(self, cr, uid, ids, context):
@@ -182,7 +183,6 @@ class StockMove(orm.Model):
             'view_id': [view_id],
             'domain': [('product_id', '=', line.product_id.id),
                        ('bom_id', '=', False)],
-            # 'target': 'new',
             'res_id': False
         }
 
@@ -193,21 +193,35 @@ class StockMove(orm.Model):
         new_ids = [i for i in ids if i]
         return super(StockMove, self).write(cr, uid, new_ids, vals, context)
 
-    def unlink(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        new_ids = [i for i in ids if i]
-        context['call_unlink'] = True
-
-        return super(StockMove, self).unlink(cr, uid, new_ids, context)
-
-    # @api.multi
     def remove_from_production(self, cr, uid, ids, context=None):
         context['call_unlink'] = True
-        self.unlink(cr, uid, ids, context)
+        mrp_production_obj = self.pool['mrp.production']
+        production = None
 
-        # return {
-        #     'type': 'ir.actions.client',
-        #     'tag': 'reload'
-        # }
+        try:
+            picking_id = self.browse(cr, uid, ids[0], context).picking_id.id
+            production_id = mrp_production_obj.search(cr, uid, [('picking_id', '=', picking_id)])[0]
+            production = mrp_production_obj.browse(cr, uid, production_id, context)
+        except:
+            pass
+
+        if production and production.state == 'done': #('picking_except', 'confirmed', 'ready'):
+            raise osv.except_osv(_('UserError'), _('Production already finished'))
+        try:
+            self.unlink(cr, uid, ids, context)
+        except:
+            # If not found -> maybe already removed
+            pass
+
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'mrp', 'mrp_production_form_view')
+        view_id = view and view[1] or False
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Manufacturing Orders'),
+            'res_model': 'mrp.production',
+            'view_mode': 'page',
+            'view_id': [view_id],
+            'target': 'current',
+            'res_id': production_id,
+        }
