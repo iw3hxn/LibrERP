@@ -39,6 +39,7 @@ class mrp_production_wizard(orm.TransientModel):
 
             to_be_removed = [p for p in picking_lines_ids if p not in wizard_lines_ids]
             to_be_added = [p for p in wizard_lines if not p.orig_stock_move_id]
+            to_be_edited = [p for p in wizard_lines if p not in to_be_added and p not in to_be_removed]
 
             stock_move_obj.unlink(cr, uid, to_be_removed, context)
 
@@ -56,12 +57,22 @@ class mrp_production_wizard(orm.TransientModel):
                 }
                 stock_move_obj.create(cr, uid, vals, context)
 
-            picking.draft_validate(context=context)
-            wizard.production_id.action_confirm(context=context)
+            # picking.force_assign(context=context)
+            # picking.draft_validate(context=context)
+            # wizard.production_id.action_confirm(context=context)
 
-            # wf_service = netsvc.LocalService("workflow")
+            wf_service = netsvc.LocalService("workflow")
+            wf_service.trg_validate(uid, 'stock.picking', picking.id, 'button_confirm', cr)
+            # wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, 'button_confirm', cr)
             # wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, 'force_production', cr)
-            # wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, cr)
+
+            for line in to_be_edited:
+                line.write({'state': 'waiting'})
+
+            # wf_service.trg_validate(uid, 'mrp.production', wizard.production_id.id, 'action_confirm', cr)
+            # Bring back the workflow state
+            # wf_service.trg_delete(uid, 'mrp.production', wizard.production_id.id, cr)
+            # wf_service.trg_create(uid, 'mrp.production', wizard.production_id.id, cr)
 
         return {
             'type': 'ir.actions.act_window_close'

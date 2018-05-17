@@ -2,6 +2,7 @@
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
 import netsvc
+# from openerp import api
 from openerp.osv import orm, fields
 from tools.translate import _
 
@@ -186,7 +187,27 @@ class StockMove(orm.Model):
         }
 
     def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if isinstance(ids, (int, long)):
             ids = [ids]
         new_ids = [i for i in ids if i]
         return super(StockMove, self).write(cr, uid, new_ids, vals, context)
+
+    def unlink(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        new_ids = [i for i in ids if i]
+        context['call_unlink'] = True
+
+        return super(StockMove, self).unlink(cr, uid, new_ids, context)
+
+    # @api.multi
+    def remove_from_production(self, cr, uid, ids, context=None):
+        context['call_unlink'] = True
+        self.unlink(cr, uid, ids, context)
+
+        # return {
+        #     'type': 'ir.actions.client',
+        #     'tag': 'reload'
+        # }
