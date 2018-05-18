@@ -93,20 +93,13 @@ class stock_picking(orm.Model):
             wizard_assig_ddt_obj.assign_ddt(cr, uid, [wizard_id], context=ctx)
         return True
 
-    def action_invoice_create(self, cr, uid, ids, journal_id=False,
-                              group=False, type='out_invoice', context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-
-        res = super(stock_picking, self).action_invoice_create(cr, uid, ids, journal_id,
-                                                               group, type, context)
-
-        for picking in self.browse(cr, uid, ids, context=context):
-            if picking.id in res.keys():
-                self.pool['account.invoice'].write(cr, uid, res[picking.id], {
-                    'cig': picking.cig,
-                    'cup': picking.cup,
-                }, context)
-        return res
+    def _prepare_invoice(self, cr, uid, picking, partner, inv_type, journal_id, context=None):
+        invoice_vals = super(stock_picking, self)._prepare_invoice(cr, uid, picking, partner, inv_type, journal_id, context)
+        invoice_vals.update({
+            'cig': picking.cig,
+            'cup': picking.cup,
+        })
+        return invoice_vals
 
     def write(self, cr, uid, ids, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
