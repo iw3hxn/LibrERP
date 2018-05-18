@@ -177,7 +177,6 @@ class DocumentConverter:
         openDocumentBytes = outputStream.data.getvalue()
         outputStream.close()
         return openDocumentBytes
-        
 
     def insertSubreports(self, oo_subreports):
         """

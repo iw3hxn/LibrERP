@@ -60,64 +60,7 @@ _url = 'http://www.alistek.com/aeroo_banner/v6_1_report_aeroo_ooo.png'
 
 class aeroo_config_installer(osv.osv_memory):
     _name = 'aeroo_config.installer'
-    _inherit = 'res.config.installer'
-    _rec_name = 'host'
-    _logo_image = None
-
-    def _get_image(self, cr, uid, context=None):
-        if self._logo_image:
-            return self._logo_image
-        try:
-            im = urllib2.urlopen(_url.encode("UTF-8"))
-            if im.headers.maintype != 'image':
-                raise TypeError(im.headers.maintype)
-        except Exception, e:
-            path = os.path.join('report_aeroo', 'config_pixmaps', 'module_banner.png')
-            image_file = file_data = tools.file_open(path, 'rb')
-            try:
-                file_data = image_file.read()
-                self._logo_image = base64.encodestring(file_data)
-                return self._logo_image
-            finally:
-                image_file.close()
-        else:
-            self._logo_image = base64.encodestring(im.read())
-            return self._logo_image
-
-    def _get_image_fn(self, cr, uid, ids, name, args, context=None):
-        image = self._get_image(cr, uid, context)
-        return dict.fromkeys(ids, image)  # ok to use .fromkeys() as the image is same for all
-
-    _columns = {
-        'host': fields.char('Host', size=64, required=True),
-        'port': fields.integer('Port', required=True),
-        'ooo_restart_cmd': fields.char('OOO restart command', size=256, \
-                                       help='Enter the shell command that will be executed to restart the LibreOffice/OpenOffice background process.' + \
-                                            'The command will be executed as the user of the OpenERP server process,' + \
-                                            'so you may need to prefix it with sudo and configure your sudoers file to have this command executed without password.'),
-        'state': fields.selection([
-            ('init', 'Init'),
-            ('error', 'Error'),
-            ('done', 'Done'),
-
-        ], 'State', select=True, readonly=True),
-        'msg': fields.text('Message', readonly=True),
-        'error_details': fields.text('Error Details', readonly=True),
-        'link': fields.char('Installation Manual', size=128, help='Installation (Dependencies and Base system setup)',
-                            readonly=True),
-        'config_logo': fields.function(_get_image_fn, string='Image', type='binary', method=True),
-
-    }
-
-    def default_get(self, cr, uid, fields, context=None):
-        config_obj = self.pool.get('oo.config')
-        data = super(aeroo_config_installer, self).default_get(cr, uid, fields, context=context)
-        ids = config_obj.search(cr, 1, [], context=context)
-        if ids:
-            res = config_obj.read(cr, 1, ids[0], context=context)
-            del res['id']
-            data.update(res)
-        return data
+    _inherit = 'aeroo_config.installer'
 
     def check(self, cr, uid, ids, context=None):
         config_obj = self.pool.get('oo.config')
@@ -156,15 +99,4 @@ class aeroo_config_installer(osv.osv_memory):
             msg = _(
                 'Connection to the OpenOffice.org instance was successfully established and PDF convertion is working.')
         return self.write(cr, uid, ids, {'msg': msg, 'error_details': error_details, 'state': state}, context=context)
-
-    _defaults = {
-        'config_logo': _get_image,
-        'host': 'localhost',
-        'port': 8100,
-        'ooo_restart_cmd': 'sudo /etc/init.d/office_init  restart',
-        'state': 'init',
-        'link': 'http://www.alistek.com/wiki/index.php/Aeroo_Reports_Linux_server#Installation_.28Dependencies_and_Base_system_setup.29',
-    }
-
-aeroo_config_installer()
 

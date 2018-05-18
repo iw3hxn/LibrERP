@@ -29,6 +29,9 @@
 #
 ##############################################################################
 
+
+from . import oo_config
+
 check_list = [
     'import uno',
     'import unohelper',
@@ -45,9 +48,14 @@ check_list = [
 import logging
 _logger = logging.getLogger(__name__)
 try:
-    import installer
-    import report
-    import DocumentConverter
+    from . import installer
 except Exception as e:
     _logger.info('Cannot `import {0}`'.format(e.message))
-
+try:
+    from . import report
+except Exception as e:
+    _logger.info('Cannot `import {0}`'.format(e.message))
+try:
+    from . import DocumentConverter
+except Exception as e:
+    _logger.info('Cannot `import {0}`'.format(e.message))
