@@ -35,6 +35,8 @@ class res_partner(orm.Model):
         # import pdb; pdb.set_trace()
         partner_vat = self.search(cr, SUPERUSER_ID, [('vat', '=', vat)], context=context)
         # partner_vat_dif = set(partner_vat).symmetric_difference(set(ids))
+        if context.get('res_log_read', False):
+            return True
         if partner_vat and ids not in partner_vat:
             partner = self.browse(cr, SUPERUSER_ID, partner_vat, context)[0]
             raise orm.except_orm(_('Error!'),
