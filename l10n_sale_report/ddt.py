@@ -79,7 +79,7 @@ class Parser(report_sxw.rml_parse):
                 order = order_obj.browse(self.cr, self.uid, order_ids[0], self.context)
                 if order.client_order_ref:
                     order_date = datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT)
-                    description.append('{client_order} of {customer_order_date}'.format(client_order=order.client_order_ref, customer_order_date=order_date.strftime("%m/%d/%Y")))
+                    description.append(u'{client_order} of {customer_order_date}'.format(client_order=order.client_order_ref, customer_order_date=order_date.strftime("%m/%d/%Y")))
         return '\n'.join(description)
 
     def _get_utente(self):
