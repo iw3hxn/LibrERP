@@ -235,4 +235,3 @@ class StockMove(orm.Model):
             res['location_id'] = location_id
             res['location_dest_id'] = location_dest_id
         return res
-

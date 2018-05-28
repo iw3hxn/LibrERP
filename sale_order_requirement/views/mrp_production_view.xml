@@ -61,10 +61,10 @@
                 </field>
 
                 <xpath expr="//page[@string='Consumed Products']/field[@name='move_lines']/tree/field[@name='state']" position="before">
-                    <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" />
+                    <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" groups="mrp.group_mrp_manager"/>
                 </xpath>
                 <xpath expr="//page[@string='Consumed Products']/field[@name='move_lines2']/tree/field[@name='state']" position="before">
-                    <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" />
+                    <button name="remove_from_production" type="object" icon="STOCK_DELETE" confirm="Are you sure?" groups="mrp.group_mrp_manager"/>
                 </xpath>
 
                 <field name="picking_id" position="after">
