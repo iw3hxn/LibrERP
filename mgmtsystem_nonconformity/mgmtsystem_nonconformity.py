@@ -301,13 +301,52 @@ class mgmtsystem_nonconformity(orm.Model):
         return self.write(cr, uid, ids, vals, context=context)
 
 
+def _get_all_nonconformities(self, cr, uid, ids, field_name, arg, context):
+    ret = {}
+    for action in self.browse(cr, uid, ids, context):
+        nonconformity_all_ids = action.nonconformity_ids
+        if action.nonconformity_immediate_ids:
+            nonconformity_all_ids.append(action.nonconformity_immediate_ids)
+        ret[action.id] = [n.id for n in nonconformity_all_ids]
+    return ret
+
+def _get_all_partner_ids(self, cr, uid, ids, field_name, arg, context):
+    ret = {}
+    for action in self.browse(cr, uid, ids, context):
+        ret[action.id] = [n.partner_id.id for n in action.nonconformity_all_ids]
+    return ret
+
+
 class mgmtsystem_action(orm.Model):
-    _inherit = "mgmtsystem.action"
+    _inherit = 'mgmtsystem.action'
     _columns = {
-        'nonconformity_immediate_id': fields.one2many('mgmtsystem.nonconformity', 'immediate_action_id', readonly=True),
+        'nonconformity_immediate_ids': fields.one2many('mgmtsystem.nonconformity', 'immediate_action_id', readonly=True),
         'nonconformity_ids': fields.many2many(
             'mgmtsystem.nonconformity', 'mgmtsystem_nonconformity_action_rel', 'action_id', 'nonconformity_id',
             'Nonconformities', readonly=True),
+        'nonconformity_all_ids': fields.function(_get_all_nonconformities, method=True, type='one2many',
+                                                 relation='mgmtsystem.nonconformity', string="Non conformities"),
+        'partner_ids': fields.function(_get_all_partner_ids, method=True, type='one2many', relation='res.partner', string='Partners')
     }
+
+    def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
+        search_ids = super(mgmtsystem_action, self).search(cr, uid, [], offset=offset,
+                                                           limit=limit, order=order, context=context, count=count)
+        partner_id = None
+        for arg in args:
+            if 'partner_id' in arg:
+                partner_id = arg[2]
+                break
+
+        if not partner_id:
+            return search_ids
+
+        found_ids = []
+        for action in self.browse(cr, uid, search_ids):
+            partner_ids = [p.id for p in action.partner_ids]
+            if partner_id in partner_ids:
+                found_ids.append(action.id)
+        return found_ids
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -20,7 +20,7 @@
                     <field name="author_user_id"/>
                     <field name="responsible_user_id"/>
                     <field name="manager_user_id"/>
-		    <field name="system_id"/>
+		            <field name="system_id" widget="selection"/>
                     <field name="state"/>
                     <field name="cost"/>
                 </tree>
@@ -81,7 +81,7 @@
                         <field name="responsible_user_id" attrs="{'readonly':[('state','not in',['draft','analysis'])]}"/>
                         <field name="manager_user_id" attrs="{'readonly':[('state','not in',['draft','analysis'])]}"/>
                         <field name="author_user_id" attrs="{'readonly':[('state','not in',['draft'])]}"/>
-			            <field name="system_id" attrs="{'readonly':[('state','not in',['draft','analysis'])]}"/>
+			            <field name="system_id" attrs="{'readonly':[('state','not in',['draft','analysis'])]}" widget="selection"/>
                     </group>
                     <notebook colspan="4">
                         <page string="Inputs">

@@ -22,10 +22,11 @@
 from openerp.osv import fields, orm
 from crm import crm
 
+
 class mgmtsystem_action(orm.Model):
-    _name = "mgmtsystem.action"
-    _description = "Action"
-    _inherit = "crm.claim"
+    _name = 'mgmtsystem.action'
+    _description = 'Action'
+    _inherit = 'crm.claim'
     _columns = {
         'reference': fields.char('Reference', size=64, required=True, readonly=True),
         'type_action': fields.selection([('immediate', 'Immediate Action'),
@@ -33,11 +34,10 @@ class mgmtsystem_action(orm.Model):
                                          ('prevention', 'Preventive Action'),
                                          ('improvement', 'Improvement Opportunity')],
                                         'Response Type'),
-        'message_ids': fields.one2many('mail.message',
-                                       'res_id',
-                                       'Messages',
-                                       domain=[('model','=',_name)]),
+        'message_ids': fields.one2many('mail.message', 'res_id', 'Messages', domain=[('model', '=', _name)]),
         'system_id': fields.many2one('mgmtsystem.system', 'System'),
+        'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
+        'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
     }
 
     _defaults = {

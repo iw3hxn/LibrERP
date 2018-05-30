@@ -41,6 +41,7 @@ WARNING: when upgrading from v0.1, data conversion is required, since there are 
         'mgmtsystem_nonconformity_workflow.xml',
         'nonconformity_sequence.xml',
         'board_mgmtsystem_nonconformity.xml',
+        'view_partner_form.xml',
 #        'mgmtsystem_nonconformity_data.xml',
     ],
     "demo" : [
