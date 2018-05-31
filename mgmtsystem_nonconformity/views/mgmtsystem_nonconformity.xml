@@ -177,10 +177,12 @@
                         </page>
                         <page string="Cost" >
                             <separator string="Costs" colspan="4"/>
-                            <field name="cost_ids" nolabel="1">
+                            <field name="cost_total"/>
+                            <newline/>
+                            <field name="cost_ids" nolabel="1" colspan="4">
                                 <tree>
-                                    <field name="name"/>
-                                    <field name="cost"/>
+                                    <field name="name" context="{'mgmtsystem_nonconformity_id': parent.id}"/>
+                                    <field name="cost" context="{'mgmtsystem_nonconformity_id': parent.id}"/>
                                 </tree>
                             </field>
                         </page>

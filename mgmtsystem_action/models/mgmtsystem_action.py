@@ -38,6 +38,7 @@ class mgmtsystem_action(orm.Model):
         'system_id': fields.many2one('mgmtsystem.system', 'System'),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'cost': fields.float('Cost')
     }
 
     _defaults = {

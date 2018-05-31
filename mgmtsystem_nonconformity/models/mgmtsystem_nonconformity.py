@@ -151,9 +151,14 @@ class mgmtsystem_nonconformity(orm.Model):
 
     def _calculate_total_cost(self, cr, uid, ids, field_name, arg, context):
         ret = {}
-        # TODO: implement
         for nonconformity in self.browse(cr, uid, ids, context):
-            ret[nonconformity.id] = 0
+            tot = 0
+            for cost in nonconformity.cost_ids:
+                tot += cost.cost
+            # TODO: VERIIFY WITH IMMEDIATE_ACTION cost!
+            for action in nonconformity.action_ids:
+                tot += action.cost
+            ret[nonconformity.id] = tot
         return ret
 
     _columns = {
@@ -180,6 +185,7 @@ class mgmtsystem_nonconformity(orm.Model):
                                       'nonconformity_id', 'cause_id', 'Cause'),
         'severity_id': fields.many2one('mgmtsystem.nonconformity.severity', 'Severity'),
         'analysis': fields.text('Analysis'),
+        # TODO: immediate_action_id seems useless, all goes into action_ids
         'immediate_action_id': fields.many2one('mgmtsystem.action', 'Immediate action',
                                                domain="[('nonconformity_id','=',id)]"),
         'analysis_date': fields.datetime('Analysis Date', readonly=True),
@@ -314,8 +320,8 @@ def _get_all_nonconformities(self, cr, uid, ids, field_name, arg, context):
     ret = {}
     for action in self.browse(cr, uid, ids, context):
         nonconformity_all_ids = action.nonconformity_ids
-        if action.nonconformity_immediate_ids:
-            nonconformity_all_ids.append(action.nonconformity_immediate_ids)
+        if action.nonconformity_immediate_id:
+            nonconformity_all_ids.append(action.nonconformity_immediate_id.id)
         ret[action.id] = [n.id for n in nonconformity_all_ids]
     return ret
 
@@ -342,7 +348,7 @@ class mgmtsystem_action(orm.Model):
     }
 
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
-        search_ids = super(mgmtsystem_action, self).search(cr, uid, [], offset=offset,
+        search_ids = super(mgmtsystem_action, self).search(cr, uid, args, offset=offset,
                                                            limit=limit, order=order, context=context, count=count)
         partner_id = None
         for arg in args:
