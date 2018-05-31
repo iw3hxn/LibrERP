@@ -12,3 +12,9 @@ class res_partner_inherit(orm.Model):
         'mgmtsystem_nonconformity_ids': fields.one2many('mgmtsystem.nonconformity', 'partner_id', 'Non conformity',
                                                         readonly=True),
     }
+
+    # def button_dummy(self, cr, uid, ids, context=None):
+    #     from pprint import pprint
+    #     for p in self.browse(cr, uid, ids, context):
+    #         ncs = [n.description for n in p.mgmtsystem_nonconformity_ids]
+    #         pprint(ncs)

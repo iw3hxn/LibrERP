@@ -2,13 +2,13 @@
 <openerp>
     <data>
 
-        <menuitem id="menu_mgmtsystem_root" 
+        <menuitem id="menu_mgmtsystem_root"
             name="Management System" 
             sequence="15" 
             groups="mgmtsystem.group_mgmtsystem_manager,base.group_user"
-            web_icon="images/mgmtsystem.png"
-            web_icon_hover="images/mgmtsystem-hover.png"
-            />
+            web_icon="static/src/img/mgmtsystem.png"
+            web_icon_hover="static/src/img/mgmtsystem-hover.png"
+        />
 
         <menuitem id="menu_mgmtsystem_main" 
             name="Management System" 

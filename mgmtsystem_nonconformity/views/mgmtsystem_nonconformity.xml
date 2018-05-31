@@ -22,7 +22,7 @@
                     <field name="manager_user_id"/>
 		            <field name="system_id" widget="selection"/>
                     <field name="state"/>
-                    <field name="cost"/>
+                    <field name="cost_total"/>
                 </tree>
             </field>
         </record>
@@ -176,7 +176,13 @@
 
                         </page>
                         <page string="Cost" >
-                            <field name="cost" />
+                            <separator string="Costs" colspan="4"/>
+                            <field name="cost_ids" nolabel="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="cost"/>
+                                </tree>
+                            </field>
                         </page>
 
                     </notebook>

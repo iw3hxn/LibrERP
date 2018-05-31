@@ -149,6 +149,13 @@ class mgmtsystem_nonconformity(orm.Model):
             res[o.id] = _STATES_DICT.get(o.state, o.state)
         return res
 
+    def _calculate_total_cost(self, cr, uid, ids, field_name, arg, context):
+        ret = {}
+        # TODO: implement
+        for nonconformity in self.browse(cr, uid, ids, context):
+            ret[nonconformity.id] = 0
+        return ret
+
     _columns = {
         # 1. Description
         'id': fields.integer('ID', readonly=True),
@@ -190,7 +197,9 @@ class mgmtsystem_nonconformity(orm.Model):
         'evaluation_comments': fields.text('Evaluation Comments',
                                            help="Conclusions from the last effectiveness evaluation."),
         # 5. Cost
-        'cost': fields.float('Cost'),
+        'cost_ids': fields.one2many('mgmtsystem.nonconformity.cost', 'mgmtsystem_nonconformity_id', string='Cost'),
+        'cost_total': fields.function(_calculate_total_cost, method=True, type='float', string='Total Cost',
+                                      help='Total cost of Nonconformity, sum of all nonconformities and actions costs')
     }
     _defaults = {
         'date': lambda *a: time.strftime(DATE_FORMAT),
@@ -310,6 +319,7 @@ def _get_all_nonconformities(self, cr, uid, ids, field_name, arg, context):
         ret[action.id] = [n.id for n in nonconformity_all_ids]
     return ret
 
+
 def _get_all_partner_ids(self, cr, uid, ids, field_name, arg, context):
     ret = {}
     for action in self.browse(cr, uid, ids, context):
@@ -320,13 +330,15 @@ def _get_all_partner_ids(self, cr, uid, ids, field_name, arg, context):
 class mgmtsystem_action(orm.Model):
     _inherit = 'mgmtsystem.action'
     _columns = {
-        'nonconformity_immediate_ids': fields.one2many('mgmtsystem.nonconformity', 'immediate_action_id', readonly=True),
+        'nonconformity_immediate_id': fields.many2one('mgmtsystem.nonconformity', 'immediate_action_id', readonly=True),
         'nonconformity_ids': fields.many2many(
             'mgmtsystem.nonconformity', 'mgmtsystem_nonconformity_action_rel', 'action_id', 'nonconformity_id',
             'Nonconformities', readonly=True),
         'nonconformity_all_ids': fields.function(_get_all_nonconformities, method=True, type='one2many',
                                                  relation='mgmtsystem.nonconformity', string="Non conformities"),
-        'partner_ids': fields.function(_get_all_partner_ids, method=True, type='one2many', relation='res.partner', string='Partners')
+        'partner_ids': fields.function(_get_all_partner_ids, method=True, type='one2many', relation='res.partner', string='Partners'),
+        'immediate_partner_id': fields.related('nonconformity_immediate_id', 'partner_id', relation='res.partner', string='Partner',
+                                               help='If this action is immediate, this field is the partner associated to Nonconformity')
     }
 
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
