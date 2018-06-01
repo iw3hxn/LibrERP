@@ -9433,11 +9433,10 @@ msgid "Subscription"
 msgstr "Abbonamento"
 
 #. module: l10n_it_account
-#: code:addons/l10n_it_account/account/invoice.py:109
-#: code:addons/l10n_it_account/account/invoice.py:116
+#: code:addons/l10n_it_account/account/invoice.py:200
 #, python-format
-msgid "Cannot create invoice! Post the invoice with a greater date"
-msgstr "Impossibile registrare la fattura in contabilità! Esistono fatture registrate con data successiva alla fattura corrente; inserisci una data superiore per il documento"
+msgid "Cannot create invoice! Post the invoice with a greater date of {invoice}"
+msgstr "Impossibile registrare la fattura in contabilità! Esistono fatture registrate con data successiva alla fattura corrente; inserisci una data superiore per il documento rispetto la fattura {invoice}"
 
 #. module: account
 #: model:ir.model,name:account.model_account_analytic_balance
@@ -10247,7 +10246,7 @@ msgstr "Non è possibile cambiare il tipo di conto che contiene registrazioni co
 #. module: l10n_it_account
 #: field:res.partner,individual:0
 msgid "Persona Fisica"
-msgstr "Persona Fisica"
+msgstr "Ha codice Fiscale"
 
 #. module: account
 #: code:addons/account/account_move_line.py:846
