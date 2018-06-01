@@ -6,7 +6,7 @@
             <field name="model">mgmtsystem.action</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Action">
+                <tree string="Action" colors="grey:state == 'done';red:date&lt;current_date and state not in ('done','cancel');black:date_deadline&gt;=current_date;">
                     <field name="reference"/>
                     <field name="name" string="Subject"/>
                     <field name="type_action"/>
