@@ -11,7 +11,7 @@ class mgmtsystem_nonconformity(orm.Model):
     _description = 'Nonconformity Costs of the management system'
 
     _columns = {
-        'name': fields.char('Name'),
-        'cost': fields.float('Cost'),
+        'name': fields.char('Name', required=True),
+        'cost': fields.float('Cost', required=True),
         'mgmtsystem_nonconformity_id': fields.many2one('mgmtsystem.nonconformity', 'Nonconformity')
     }

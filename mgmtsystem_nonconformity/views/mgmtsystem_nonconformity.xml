@@ -22,7 +22,7 @@
                     <field name="manager_user_id"/>
 		            <field name="system_id" widget="selection"/>
                     <field name="state"/>
-                    <field name="cost_total"/>
+                    <field name="cost_total" sum="total"/>
                 </tree>
             </field>
         </record>
@@ -91,7 +91,7 @@
                             <separator string="Origins" colspan="4"/>
                             <field name="origin_ids" nolabel="1" colspan="4" attrs="{'readonly':[('state','not in',['draft','analysis'])]}" widget="many2many_checkboxes"/>
                         </page>
-                        <page string="Procedures">
+                        <page string="Procedures" groups="mgmtsystem_nonconformity.group_mgmtsystem_nonconformity_procedures">
                             <field name="procedure_ids" nolabel="1" attrs="{'readonly':[('state','not in',['draft','analysis'])]}" 
                                    domain="[('group_id','in',('Procedure','Environmental Aspect','Quality Manual','Environment Manual'))]"/>
                         </page>
@@ -108,8 +108,9 @@
 
                             <separator string="Analysis Confirmation" colspan="4"/>
                             <group colspan="2" col="2">
-	                            <field name="severity_id" attrs="{'readonly':[('state','not in',['analysis'])]}"/>
-	                            <field name="immediate_action_id" domain="[('type_action','=','immediate')]" 
+	                            <field name="severity_id" attrs="{'readonly':[('state','not in',['analysis'])]}" widget="selection"/>
+	                            <field name="immediate_action_id"
+                                       domain="[('type_action','=','immediate'), ('nonconformity_immediate_id', '=', id)]"
 	                                  attrs="{'readonly':[('state','not in',['analysis'])]}"/>
                             </group>
                             <group colspan="2" col="2">
@@ -180,9 +181,9 @@
                             <field name="cost_total"/>
                             <newline/>
                             <field name="cost_ids" nolabel="1" colspan="4">
-                                <tree>
-                                    <field name="name" context="{'mgmtsystem_nonconformity_id': parent.id}"/>
-                                    <field name="cost" context="{'mgmtsystem_nonconformity_id': parent.id}"/>
+                                <tree editable="top" >
+                                    <field name="name"/>
+                                    <field name="cost" sum="total"/>
                                 </tree>
                             </field>
                         </page>

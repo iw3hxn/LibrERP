@@ -344,7 +344,7 @@ class mgmtsystem_action(orm.Model):
                                                  relation='mgmtsystem.nonconformity', string="Non conformities"),
         'partner_ids': fields.function(_get_all_partner_ids, method=True, type='one2many', relation='res.partner', string='Partners'),
         'immediate_partner_id': fields.related('nonconformity_immediate_id', 'partner_id', relation='res.partner', string='Partner',
-                                               help='If this action is immediate, this field is the partner associated to Nonconformity')
+                                                help='If this action is immediate, this field is the partner associated to Nonconformity')
     }
 
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):
