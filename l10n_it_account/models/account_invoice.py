@@ -186,20 +186,20 @@ class account_invoice(orm.Model):
                 cr, uid, [('fiscalyear_id', '=', fy_id), ('company_id', '=', invoice.company_id.id)], context=context)
 
             if inv_type in ['out_invoice', 'out_refund']:
-
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '>', date_invoice),
                                             ('number', '<', number), ('journal_id', '=', journal_id),
                                             ('period_id', 'in', period_ids), ('state', 'in', ['open', 'paid'])], context=context)
-                if res and not internal_number:
-                    raise orm.except_orm(_(u'Date Inconsistency'),
-                                         _(u'Cannot create invoice! Post the invoice with a greater date'))
-            if inv_type in ['in_invoice', 'in_refund']:
+
+            else:
                 res = self.search(cr, uid, [('type', '=', inv_type), ('registration_date', '>', reg_date),
                                             ('number', '<', number), ('journal_id', '=', journal_id),
-                                            ('period_id', 'in', period_ids)], context=context)
-                if res and not internal_number:
-                    raise orm.except_orm(_(u'Date Inconsistency'),
-                                         _(u'Cannot create invoice! Post the invoice with a greater date'))
+                                            ('period_id', 'in', period_ids), ('state', 'in', ['open', 'paid'])], context=context)
+            if res and not internal_number:
+                error_invoice = self.browse(cr, uid, res[0], context)
+                raise orm.except_orm(_(u'Date Inconsistency'),
+                                     _(u'Cannot create invoice! Post the invoice with a greater date of {invoice}'.format(invoice=error_invoice.number)))
+
+            if inv_type in ['in_invoice', 'in_refund']:
                 supplier_invoice_number = invoice.supplier_invoice_number
                 partner_id = invoice.partner_id.id
                 res = self.search(cr, uid, [('type', '=', inv_type), ('date_invoice', '=', date_invoice),
