@@ -60,28 +60,29 @@ class ExcelExportView(ExcelExport):
             for cell_index, cell_value in enumerate(row):
                 if isinstance(cell_value, basestring):
                     cell_value = re.sub("\r", " ", cell_value)
-
-                    if number_pattern.match(cell_value):
-                        cell_value = float(
-                            cell_value.replace(
-                                separators.get('thousands_sep', ''), ''
-                            ).replace(
-                                separators['decimal_point'], '.'
-                            ) or 0.00
-                        )
-                        # style = xlwt.easyxf(num_format_str='#,##0.00')
-                        len_cell = len('{num}'.format(num=cell_value)) * 500
-                        style = xlwt.easyxf(num_format_str='#,##0.00;[RED]-#,##0.00')
-                    elif date_pattern.match(cell_value):
-                        cell_value = datetime.strptime(cell_value, separators['date_format'])
-                        # style = xlwt.easyxf(num_format_str='dd/mm/yyyy')
-                        style = xlwt.easyxf(num_format_str='d mmm yyyy')
-                        len_cell = 4000
-                    else:
-                        len_cell = len(cell_value) * 250
-                    if worksheet.col(cell_index).width < len_cell:
-                        if len_cell < 65535:
-                            worksheet.col(cell_index).width = len_cell
+                    # If starting with '0' don't convert to number (for avoiding number conversion of default_code)
+                    if cell_value and cell_value[0] != '0':
+                        if number_pattern.match(cell_value):
+                            cell_value = float(
+                                cell_value.replace(
+                                    separators.get('thousands_sep', ''), ''
+                                ).replace(
+                                    separators['decimal_point'], '.'
+                                ) or 0.00
+                            )
+                            # style = xlwt.easyxf(num_format_str='#,##0.00')
+                            len_cell = len('{num}'.format(num=cell_value)) * 500
+                            style = xlwt.easyxf(num_format_str='#,##0.00;[RED]-#,##0.00')
+                        elif date_pattern.match(cell_value):
+                            cell_value = datetime.strptime(cell_value, separators['date_format'])
+                            # style = xlwt.easyxf(num_format_str='dd/mm/yyyy')
+                            style = xlwt.easyxf(num_format_str='d mmm yyyy')
+                            len_cell = 4000
+                        else:
+                            len_cell = len(cell_value) * 250
+                        if worksheet.col(cell_index).width < len_cell:
+                            if len_cell < 65535:
+                                worksheet.col(cell_index).width = len_cell
 
                 if cell_value is False:
                     cell_value = None
