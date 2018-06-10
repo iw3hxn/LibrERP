@@ -21,6 +21,7 @@
 
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
+from openerp import SUPERUSER_ID
 
 
 class project_task(orm.Model):
@@ -32,7 +33,7 @@ class project_task(orm.Model):
         if not len(ids):
             return []
         res = []
-        for record in self.browse(cr, uid, ids, context=context):
+        for record in self.browse(cr, SUPERUSER_ID, ids, context=context):
             if record.project_id:
                 name = record.project_id.name[:30] + ' : ' + record.name
             else:
