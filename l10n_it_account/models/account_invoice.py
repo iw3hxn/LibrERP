@@ -503,8 +503,9 @@ class account_invoice(orm.Model):
                     condition[0] = 'id'
                     condition[1] = 'in'
                     condition[2] = invoice_ids
+                    # Don't limit e don't offset even if it can produce much more than 80 results.
                     invoice_ids = super(account_invoice, self).search(
-                        cr, uid, sale_order_args, offset=offset, limit=limit, order=order, context=context, count=False
+                        cr, uid, sale_order_args, offset=0, limit=0, order=order, context=context, count=False
                     )
                     break
 
@@ -517,6 +518,9 @@ class account_invoice(orm.Model):
         if count:
             return len(invoice_ids)
         else:
+            # Don't do double offset
+            offset = 0
+            limit = 0
             return super(account_invoice, self).search(
                 cr, uid, [('id', 'in', invoice_ids)], offset=offset, limit=limit, order=order, context=context, count=False
             )
