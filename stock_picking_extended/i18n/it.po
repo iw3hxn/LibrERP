@@ -474,6 +474,11 @@ msgid "Total Amount (VAT Excluded)"
 msgstr "Totale Ordine (IVA esclusa)"
 
 #. module: stock_picking_extended
+#: field:stock.picking,amount_partial:0
+msgid "Partial Amount (VAT Excluded)"
+msgstr "Importo Righe (IVA esclusa)"
+
+#. module: stock_picking_extended
 #: field:stock.picking,payment_term_id:0
 msgid "Payment Term"
 msgstr "Termine di pagamento"

@@ -9,6 +9,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <field name="state" position="after">
+                    <field name="amount_partial" groups="account.group_customer_account_invoice" sum="SUM" invisible="context.get('view_print')"/>
                     <field name="amount_total" groups="account.group_customer_account_invoice" sum="SUM" invisible="context.get('view_print')"/>
                     <field name="payment_term_id" groups="account.group_customer_account_invoice" invisible="context.get('view_print')"/>
                     <button name="print_picking" string="Print" type="object" icon="gtk-print" invisible="not context.get('view_print')"/>
@@ -268,6 +269,7 @@
                     <field name="order_type" />
                     <field name="order_sent" />
                     <field name="order_ready" />
+                    <field name="amount_partial" sum="Total" groups="base.group_sale_salesman"/>
                     <field name="amount_total" sum="Total" groups="base.group_sale_salesman"/>
                     <field name="payment_term_id" invisible="context.get('show_delivery', False)"/>
                     <field name="invoiced_state" invisible="context.get('show_delivery', False)" />

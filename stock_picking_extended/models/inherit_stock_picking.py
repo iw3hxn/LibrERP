@@ -149,6 +149,18 @@ class stock_picking(orm.Model):
             result[pick.id] = moves_ready
         return result
 
+    def _get_amount_partial(self, cr, uid, ids, field_name, arg, context=None):
+        result = {}
+        for pick in self.browse(cr, uid, ids, context):
+            picking_amount = 0.0
+            if pick.type != 'out':
+                result[pick.id] = 0.0
+                continue
+            for move in pick.move_lines:
+                picking_amount += move.price_unit * move.product_qty
+            result[pick.id] = picking_amount
+        return result
+
     def _filter_goods_ready(self, cr, uid, obj, field_name, args, context=None):
         all_pickings_ids = self.search(cr, uid, [], context=context)
         goods_ready_dict = self._is_goods_ready(cr=cr, uid=uid, ids=all_pickings_ids, field_name=field_name, arg=args, context=context)
@@ -224,11 +236,14 @@ class stock_picking(orm.Model):
                 'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
             }),
         'board_date': fields.date('Order Board Delivery date'),
-        'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)', readonly=True,
+        'amount_partial': fields.function(_get_amount_partial, string='Partial Amount (VAT Excluded)', readonly=True,
+                                          store=False),
+        'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
+                                       readonly=True,
                                        store={
-                                            'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id', 'state'], 5000),
-                                            'sale.order': (_get_picking_sale, ['amount_untaxed', 'state'], 6000),
-                                        }),
+                                           'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id', 'state'], 5000),
+                                           'sale.order': (_get_picking_sale, ['amount_untaxed', 'state'], 6000),
+                                       }),
         'payment_term_id': fields.related('sale_id', 'payment_term', type='many2one', relation='account.payment.term', string="Payment Term"),
         'week_nbr': fields.function(_get_day, method=True, multi='day_of_week', type="integer", string="Week Number",
                                     store={
