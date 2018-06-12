@@ -247,7 +247,7 @@ class CommonPartnersReportHeaderWebkit(CommonReportHeaderWebkit):
 
         if not period_ids:
             period_ids = [-1]
-        search_param = {'date_start': start_period.date_start,
+        search_param = {'date_start': start_period,
                         'period_ids': tuple(period_ids),
                         'account_ids': tuple(account_ids),}
         sql = ("SELECT ml.id, ml.account_id, ml.partner_id "
