@@ -98,7 +98,8 @@ class sale_order_line(orm.Model):
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid, context=context)
-        self.check_discount_constrains(cr, uid, False, vals, context=context)
+        if vals.get('discount', False):
+            self.check_discount_constrains(cr, uid, False, vals, context=context)
         return super(sale_order_line, self).create(cr, uid, vals, context=context)
     
     def write(self, cr, uid, ids, vals, context=None):
@@ -106,8 +107,9 @@ class sale_order_line(orm.Model):
             context = self.pool['res.users'].context_get(cr, uid, context=context)
         if not isinstance(ids, list):
             ids = [ids]
-        for line_id in ids:
-            self.check_discount_constrains(cr, uid, line_id, vals, context=context)
+        if vals.get('discount', False):
+            for line_id in ids:
+                self.check_discount_constrains(cr, uid, line_id, vals, context=context)
         
         return super(sale_order_line, self).write(cr, uid, ids, vals, context=context)
     
