@@ -13,7 +13,7 @@ class sale_order(orm.Model):
         result = {}
 
         for order in self.browse(cr, uid, ids, context):
-            lines_services = False
+            lines_services = True
             for l in order.order_line:
                 if l.product_id.type == 'service':
                     lines_services = True

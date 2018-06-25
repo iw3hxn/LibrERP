@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
+import decimal_precision as dp
 from openerp.osv import orm, fields
 from tools.translate import _
-import decimal_precision as dp
 
 
 class wizard_modifyorder(orm.TransientModel):
@@ -22,6 +22,7 @@ class wizard_modifyorder(orm.TransientModel):
     }
 
     def view_init(self, cr, uid, fields_list, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(wizard_modifyorder, self).view_init(
             cr, uid, fields_list, context)
         select_order = context['active_ids']
@@ -32,6 +33,7 @@ class wizard_modifyorder(orm.TransientModel):
         return res
 
     def default_get(self, cr, uid, fields, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if context:
             order_id = context.get('active_id')
             order = self.pool.get('sale.order').browse(
@@ -56,33 +58,46 @@ class wizard_modifyorder(orm.TransientModel):
             }
 
     def write_order(self, cr, uid, ids, context=None):
-        if not context:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         wizard = self.browse(cr, uid, ids, context)[0]
-
+        order = wizard.order_id
         for line in wizard.order_line:
-            line.line_id.write({
-                'name': line.name,
-                'product_id': line.product_id.id,
-                'price_unit': line.price_unit,
-                'discount': line.discount,
-                'purchase_price': line.purchase_price,
-            })
-            for move in line.line_id.move_ids:
-                if move.state != 'done':
-                    move.write({
-                        'product_id': line.product_id.id,
-                    })
-                elif move.product_id != line.product_id:
-                    raise orm.except_orm(
-                        _('Errore'),
-                        _('Impossible to change product {product} because just delivery with picking {picking}!'.format(
-                            product=line.product_id.name, picking=move.picking_id.name_get()[0][1])))
+            if line.line_id:
+                line.line_id.write({
+                    'product_id': line.product_id.id,
+                    'price_unit': line.price_unit,
+                    'discount': line.discount,
+                    'purchase_price': line.purchase_price,
+                })
+                for move in line.line_id.move_ids:
+                    if move.state != 'done':
+                        move.write({
+                            'product_id': line.product_id.id,
+                        })
+                    elif move.product_id != line.product_id:
+                        raise orm.except_orm(
+                            _('Errore'),
+                            _('Impossible to change product {product} because just delivery with picking {picking}!'.format(
+                                product=line.product_id.name, picking=move.picking_id.name_get()[0][1])))
+            else:
+                sale_order_line_obj = self.pool['sale.order.line']
+                line_value = sale_order_line_obj.product_id_change(cr, uid, [], order.pricelist_id.id, line.product_id.id, qty=1,
+                                                                   uom=False, qty_uos=0, uos=False, name='',
+                                                                   partner_id=order.partner_id.id,
+                                                                   lang=False, update_tax=True, date_order=order.date_order,
+                                                                   packaging=False, fiscal_position=order.fiscal_position.id, flag=False,
+                                                                   context=context).get('value')
+                line_value.update({
+                    'product_id': line.product_id.id,
+                    'price_unit': line.price_unit,
+                    'discount': line.discount,
 
+                    'order_id': order.id
+                })
+                line_id = sale_order_line_obj.create(cr, uid, line_value, context)
+                line.write({'line_id': line_id})
         if wizard.order_id.picking_ids:
-            order = wizard.order_id
-
             for picking in order.picking_ids:
                 if picking.address_delivery_id.id != wizard.partner_shipping_id.id:
                     picking.write({
@@ -96,10 +111,10 @@ class wizard_modifyorder(orm.TransientModel):
         return {'type': 'ir.actions.act_window_close'}
 
     def onchange_order_id(self, cr, uid, ids, order_id, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not order_id:
             return {}
-        order = self.pool.get('sale.order').browse(
-            cr, uid, order_id, context)
+        order = self.pool['sale.order'].browse(cr, uid, order_id, context)
         line_value = []
         for line in order.order_line:
             if line.product_id and line.product_id.type == 'service':
@@ -132,9 +147,22 @@ class wizard_order_line(orm.TransientModel):
             'wizard.modifyorder', 'Order Reference'),
         'line_id': fields.many2one(
             'sale.order.line', 'Line id'),
-        'product_id': fields.many2one('product.product', 'Product', domain=[('type', '=', 'service')], readonly=True),
+        'product_id': fields.many2one('product.product', 'Product', domain=[('type', '=', 'service')], required=1),
         'name': fields.char('Description', size=64),
-        'price_unit': fields.float('Unit Price', digits_compute=dp.get_precision('Product Price'), readonly=True),
-        'discount': fields.float('Discount (%)', digits_compute=dp.get_precision('Discount'), readonly=True),
+        'price_unit': fields.float('Unit Price', digits_compute=dp.get_precision('Product Price')),
+        'discount': fields.float('Discount (%)', digits_compute=dp.get_precision('Discount')),
         'purchase_price': fields.float('Purchase Price', digits_compute=dp.get_precision('Product Price')),
     }
+
+    def create(self, cr, uid, values, context=None):
+        if 'line_id' not in values:
+
+            sale_order_line_obj = self.pool['sale.order.line']
+            order = self.browse(cr, uid, id, context)
+
+            line_value = sale_order_line_obj.product_id_change(cr, uid, [], pricelist, values['product_id'], qty=1,
+            uom=False, qty_uos=0, uos=False, name='', partner_id=False,
+            lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False, context=context)
+            line_id = sale_order_line_obj.create(cr, uid, line_value, context)
+            values['line_id'] = line_id
+        return super(wizard_order_line, self).create(cr, uid, values, context)
