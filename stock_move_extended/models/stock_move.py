@@ -242,23 +242,19 @@ class stock_move(orm.Model):
 
     def _get_sale_order(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        result = {}
+        stock_move_ids = []
         for order in self.pool['sale.order'].browse(cr, uid, ids, context=context):
             if order.origin:
                 stock_move_ids = self.pool['stock.move'].search(cr, uid, [('origin', 'like', order.origin)], limit=1, context=context)
-                for move_id in stock_move_ids:
-                    result[move_id] = True
-        return result.keys()
+        return stock_move_ids
 
     def _get_purchase_order(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        result = {}
+        stock_move_ids = []
         for order in self.pool['purchase.order'].browse(cr, uid, ids, context=context):
             if order.origin:
                 stock_move_ids = self.pool['stock.move'].search(cr, uid, [('origin', 'like', order.origin)], limit=1, context=context)
-                for move_id in stock_move_ids:
-                    result[move_id] = True
-        return result.keys()
+        return stock_move_ids
 
     def _get_stock_location(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
