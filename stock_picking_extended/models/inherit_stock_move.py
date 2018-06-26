@@ -19,8 +19,7 @@
 #
 ##############################################################################
 
-# import decimal_precision as dp
-
+import decimal_precision as dp
 from openerp.osv import orm, fields
 
 
@@ -35,12 +34,28 @@ class stock_move(orm.Model):
                 res[move.id] = True
         return res
 
+    def _get_picking_sale(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        stock_picking_model = self.pool['stock.picking']
+        stock_move_model = self.pool['stock.move']
+        picking_ids = stock_picking_model.search(cr, uid, [('sale_id', 'in', ids)], context=context)
+        move_ids = stock_move_model.search(cr, uid, [('picking_id', 'in', picking_ids)], context=context)
+        return move_ids
+
+    def _get_picking(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        stock_move_model = self.pool['stock.move']
+        move_ids = stock_move_model.search(cr, uid, [('picking_id', 'in', ids)], context=context)
+        return move_ids
+
     _columns = {
-        'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False
-        # {
-        #         'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['state'], 500),
-        # }
-        ),
+        'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
+        'minimum_planned_date': fields.related('picking_id', 'sale_id', 'minimum_planned_date', type='date', string='Expected Date', store={
+                                        'stock.picking': (_get_picking, ['sale_id'], 5000),
+                                        'sale.order': (_get_picking_sale, ['minimum_planned_date'], 6000),
+                                        }),
+        'line_price_subtotal': fields.related('sale_line_id', 'price_subtotal', type='float', string='Line Amount (VAT Excluded)', digits_compute=dp.get_precision('Sale Price'),
+                                       readonly=True, store=False),
         'sale_id': fields.related('picking_id', 'sale_id', relation='sale.order', type='many2one', string='Sale Order')
     }
 

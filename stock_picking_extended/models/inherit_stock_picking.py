@@ -109,30 +109,21 @@ class stock_picking(orm.Model):
 
     def _get_picking_sale(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        result = {}
         stock_picking_model = self.pool['stock.picking']
         picking_ids = stock_picking_model.search(cr, uid, [('sale_id', 'in', ids)], context=context)
-        for picking in stock_picking_model.browse(cr, uid, picking_ids, context):
-            result[picking.id] = True
-        return result.keys()
+        return picking_ids
 
     def _get_picking_partner_address(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        result = {}
         stock_picking_model = self.pool['stock.picking']
         picking_ids = stock_picking_model.search(cr, uid, [('address_delivery_id', 'in', ids)], context=context)
-        for picking in stock_picking_model.browse(cr, uid, picking_ids, context):
-            result[picking.id] = True
-        return result.keys()
+        return picking_ids
 
     def _get_picking_partner(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        result = {}
         stock_picking_model = self.pool['stock.picking']
         picking_ids = stock_picking_model.search(cr, uid, [('customer_id', 'in', ids)], context=context)
-        for picking in stock_picking_model.browse(cr, uid, picking_ids, context):
-            result[picking.id] = True
-        return result.keys()
+        return picking_ids
 
     def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
         res = self.name_get(cr, uid, ids, context=context)

@@ -341,6 +341,7 @@ msgstr "Fatturato"
 #: view:sale.order:0
 #: field:sale.order,minimum_planned_date:0
 #: field:stock.picking,minimum_planned_date:0
+#: field:stock.move,minimum_planned_date:0
 #: view:stock.picking:0
 msgid "Expected Date"
 msgstr "Data prevista"
@@ -628,3 +629,8 @@ msgstr "Dati Consegna"
 #: field:stock.picking,sale_user_id:0
 msgid "Sale User"
 msgstr "Venditore"
+
+#. module: stock_picking_extended
+#: field:stock.move,line_price_subtotal:0
+msgid "Line Amount (VAT Excluded)"
+msgstr "Imponibile Riga"

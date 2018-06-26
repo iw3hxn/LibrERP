@@ -311,6 +311,7 @@
                 <tree string="Line Order Board">
                     <field name="picking_id" />
                     <field name="sale_id" />
+                    <field name="minimum_planned_date"/>
                     <field name="partner_id" invisible="1"/>
                     <field name="product_id"/>
                     <field name="product_qty" sum="product_sum"/>
@@ -320,6 +321,7 @@
                     <field name="state"/>
                     <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok"
                             attrs="{'invisible': [('state', '=', 'done')]}"/>
+                    <field name="line_price_subtotal" sum="line_price_subtotal"/>
                 </tree>
             </field>
         </record>
