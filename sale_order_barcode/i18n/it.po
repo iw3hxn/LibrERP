@@ -23,7 +23,7 @@ msgstr "Codice a barre"
 #. module: sale_order_barcode
 #: code:addons/sale_order_barcode/models/sale.py:62
 #, python-format
-msgid "Error"
+msgid "Not able to sell product with code {code}"
 msgstr "Not able to sell product with code {code}"
 
 #. module: sale_order_barcode
