@@ -215,7 +215,7 @@ class stock_picking(orm.Model):
         'region': fields.related('address_delivery_id', 'region', type='many2one', relation='res.region', string='Region',
                                  readonly=True, store={
                                         'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['address_delivery_id'], 6000),
-                                        'res.partner.address': (_get_picking_partner_address, ['province'], 6000),
+                                        'res.partner.address': (_get_picking_partner_address, ['region'], 6000),
                                         }),
         'agent': fields.related('customer_id', 'section_id', type='many2one', relation='crm.case.section',
                                 string='Agent', readonly=True, store={
