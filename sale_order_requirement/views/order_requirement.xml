@@ -46,7 +46,7 @@
                     <group col="1" colspan="4">
                         <field name="order_requirement_line_ids" nolabel="1"/>
                     </group>
-                    <button name="set_state_draft" string="Retu rn to Draft" type="object" icon="gtk-ok" states="done,cancel" />
+                    <button name="set_state_draft" string="Return to Draft" type="object" icon="gtk-ok" states="done,cancel" />
                     <newline />
                     <field name="user_id" />
                     <field name="state" widget="statusbar" statusbar_colors='{"draft":"red","done":"black","cancel":"grey"}'/>
