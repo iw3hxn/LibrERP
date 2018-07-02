@@ -30,7 +30,7 @@ class stock_move(orm.Model):
         res = {}
         for move in self.browse(cr, uid, ids, context=context):
             res[move.id] = False
-            if move.state == 'done':
+            if move.state == 'assigned':
                 res[move.id] = True
         return res
 
@@ -120,7 +120,7 @@ class stock_move(orm.Model):
 
         else:
             line.write(line_vals)
-            self.action_done(cr, uid, [line.id], context)
+            self.force_assign(cr, uid, [line.id], context)
             self._action_check_goods_ready_hook(cr, uid, [line.id], context)
 
         return return_vals
