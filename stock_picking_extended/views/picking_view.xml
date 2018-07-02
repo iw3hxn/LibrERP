@@ -213,7 +213,7 @@
                                     <field name="goods_ready"/>
                                     <field name="state" invisible="1"/>
                                     <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok"
-                                            attrs="{'invisible': [('state', '=', 'done')]}"/>
+                                            attrs="{'invisible': [('state', 'in', ['confirmed', 'done'])]}"/>
                                 </tree>
                                 <form string="Move">
                                     <field name="product_id" readonly="1"/>
