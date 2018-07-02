@@ -28,11 +28,15 @@ class stock_picking(orm.Model):
 
     _inherit = 'stock.picking'
 
-    def _invoice_hook(self, cr, uid, picking, invoice_id):
+    def _invoice_hook(self, cr, uid, picking_browse, invoice_id):
         '''Call after the creation of the invoice'''
-        res = super(stock_picking, self)._invoice_hook(cr, uid, picking, invoice_id)
+        res = super(stock_picking, self)._invoice_hook(cr, uid, picking_browse, invoice_id)
+        context = self.pool['res.users'].context_get(cr, uid)
         account_invoice_obj = self.pool['account.invoice']
-        invoice = account_invoice_obj.browse(cr, uid, invoice_id)
+        account_invoice_line_obj = self.pool['account.invoice.line']
+        invoice = account_invoice_obj.browse(cr, uid, invoice_id, context)
+        picking = self.browse(cr, uid, picking_browse.id, context)
+
         if not invoice.fiscal_position:
             if invoice.partner_id.property_account_position:
                 invoice.write({'fiscal_position': invoice.partner_id.property_account_position.id})
@@ -44,15 +48,26 @@ class stock_picking(orm.Model):
                 if invoice.advance_order_id:
                     # here i need to check fiscal_position
                     if invoice.fiscal_position.split_invoice_advanced:
-                        journal_ids = self.pool['account.journal'].search(cr, uid, [('type', '=', 'sale_refund')], limit=1)
+                        journal_ids = self.pool['account.journal'].search(cr, uid, [('type', '=', 'sale_refund')], limit=1, context=context)
                         journal_id = journal_ids and journal_ids[0] or False
-                        new_invoice_id = account_invoice_obj.copy(cr, uid, invoice.id, {'type': 'out_refund', 'invoice_line': False, 'journal_id': journal_id})
+                        new_invoice_id = account_invoice_obj.copy(cr, uid, invoice.id, {'type': 'out_refund', 'invoice_line': False, 'journal_id': journal_id}, context=context)
                         note = _('Invoice {name}').format(name=invoice.number)
                         for line in invoice.invoice_line:
-                            self.pool['account.invoice.line'].copy(cr, uid, line.id, {'invoice_id': new_invoice_id, 'price_unit': line.price_unit, 'sequence': 1000, 'note': note })
+                            line_vals = {
+                                'invoice_id': new_invoice_id,
+                                'price_unit': line.price_unit,
+                                'sequence': 1000,
+                                'note': note
+                            }
+                            account_invoice_line_obj.copy(cr, uid, line.id, line_vals, context=context)
                     else:
                         for line in invoice.invoice_line:
-                            self.pool['account.invoice.line'].copy(cr, uid, line.id, {'invoice_id': invoice_id, 'price_unit': -line.price_unit, 'sequence': 1000})
+                            line_vals = {
+                                'invoice_id': invoice_id,
+                                'price_unit': -line.price_unit,
+                                'sequence': 1000,
+                            }
+                            account_invoice_line_obj.copy(cr, uid, line.id, line_vals, context=context)
                         invoice.button_compute()
                     invoice.write({'advance_order_id': False})
         return res
