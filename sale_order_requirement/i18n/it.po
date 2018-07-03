@@ -597,3 +597,8 @@ msgstr "Ordini di Vendita"
 msgid "Sale order"
 msgstr "Ordine Vendita"
 
+#. module: sale_order_requirement
+#: field:stock.move,product_bom_ids:0
+msgid "Product BOM"
+msgstr "Prodotto in Distinta"
+

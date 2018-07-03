@@ -54,6 +54,12 @@ class StockMove(orm.Model):
                         order_name += ', '
                     order_name += line.name_get()[0][1]
                     order_ids.append(line.id)
+            elif stock_move.sale_line_id and stock_move.sale_line_id.order_requirement_line_id:
+                for line in stock_move.sale_line_id.order_requirement_line_id.temp_mrp_bom_ids:
+                    if order_name:
+                        order_name += ', '
+                    order_name += line.name_get()[0][1]
+                    order_ids.append(line.id)
             res[stock_move.id] = {
                 'temp_mrp_bom_list': order_name,
                 'temp_mrp_bom_ids': order_ids
@@ -142,13 +148,16 @@ class StockMove(orm.Model):
     _columns = {
         'analytic_account_id': fields.many2one('account.analytic.account', 'Analytic Account', ),
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
-        'temp_mrp_bom_ids': fields.function(_get_connected_order_ids, type='one2many', relation='temp.mrp.bom', method=True, string='Sale Orders',
+        'temp_mrp_bom_ids': fields.function(_get_connected_order_ids, type='one2many', relation='temp.mrp.bom', method=True, string='Bom Structure',
                                              multi="connected_order"),
         'temp_mrp_bom_list': fields.function(_get_connected_order_ids, type='char', method=True, string='Sale Orders', multi="connected_order"),
         'purchase_orders_approved': fields.function(_purchase_orders_approved, method=True, type='string',
                                                     string='Purch. orders approved', readonly=True),
         'purchase_orders_state': fields.function(_purchase_orders_state, method=True, type='string',
                                                  string='Deliveries', readonly=True),
+        'product_bom_ids': fields.related(
+            'sale_line_id', 'order_requirement_line_id', 'temp_mrp_bom_ids', 'product_id',
+            string='Product BOM', relation='product.product', type='many2one'),
     }
 
     def print_production_order(self, cr, uid, ids, context):
