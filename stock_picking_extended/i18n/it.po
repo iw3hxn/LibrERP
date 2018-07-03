@@ -634,3 +634,24 @@ msgstr "Venditore"
 #: field:stock.move,line_price_subtotal:0
 msgid "Line Amount (VAT Excluded)"
 msgstr "Imponibile Riga"
+
+#. module: stock_picking_extended
+#: view:stock.move:0
+msgid "Next Month"
+msgstr "Mese Prossimo"
+
+#. module: stock_picking_extended
+#: view:stock.move:0
+msgid "Current Month"
+msgstr "Mese Corrente"
+
+#. module: stock_picking_extended
+#: view:stock.move:0
+msgid "Last Month"
+msgstr "Mese Scorso"
+
+#. module: stock_picking_extended
+#: view:stock.move:0
+msgid "Order Delivery"
+msgstr "Data di Consegna"
+
