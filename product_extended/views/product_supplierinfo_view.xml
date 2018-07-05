@@ -8,6 +8,9 @@
             <field name="type">tree</field>
             <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
             <field name="arch" type="xml">
+                <field name="sequence" position="after">
+                    <field name="product_code" />
+                </field>
                 <field name="min_qty" position="after" >
                     <field name="list_price" />
                     <field name="cost_price" />
