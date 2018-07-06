@@ -532,6 +532,7 @@ msgid "Delivery Data"
 msgstr "Delivery Data"
 
 #. module: stock_picking_extended
+#: field:stock.move,week_nbr:0
 #: field:stock.picking,week_nbr:0
 msgid "Week Number"
 msgstr "Settimana n."

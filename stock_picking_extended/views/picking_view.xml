@@ -292,6 +292,8 @@
                     <filter icon="terp-go-month" string="Next Month" name="next_month" help="Delivery of the next month" domain="[('minimum_planned_date', '&lt;', (datetime.date.today() + relativedelta(months=2)).strftime('%%Y-%%m-01 00:00:00')), ('minimum_planned_date', '&gt;=', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"/>
                     <field name="date_from" filter_domain="[('minimum_planned_date','&gt;=',self)]"/>
                     <field name="date_to" filter_domain="[('minimum_planned_date','&lt;=',self)]"/>
+                    <separator orientation="vertical"/>
+                    <field name="week_nbr"/>
                     <newline/>
                     <group expand="0" string="Group By...">
                         <separator orientation="vertical"/>

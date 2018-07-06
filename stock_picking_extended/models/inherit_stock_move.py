@@ -59,6 +59,7 @@ class stock_move(orm.Model):
         'sale_id': fields.related('picking_id', 'sale_id', relation='sale.order', type='many2one', string='Sale Order'),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'week_nbr': fields.related('picking_id', 'week_nbr', type='integer', string="Week Number"),
     }
 
     def _default_journal_location_source(self, cr, uid, context=None):
