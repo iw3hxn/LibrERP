@@ -286,6 +286,8 @@ class account_invoice(orm.Model):
                         origins[invoice_origin] = invoice.id
 
         # now on origins i have all the origin and invoice.id
+        picking_to_write_ids = []
+        # account_invoice_to_delete_ids = []
         for origin in origins:
             if origin:
                 # OUTxxx:SOyy
@@ -294,12 +296,15 @@ class account_invoice(orm.Model):
                 else:
                     pickings_name = origin
                 picking_id = stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
-                if super(account_invoice, self).unlink(cr, uid, [origins[origin]], context=context):
-                    if picking_id:
-                        stock_picking_obj.write(cr, uid, [picking_id[0]], {'invoice_state': '2binvoiced'}, context=context)
-                # now i need to eliminate other ids
-                if origins[origin] in ids:
-                    del ids[ids.index(origins[origin])]
+        #        account_invoice_to_delete_ids.append(origins[origin])
+                picking_to_write_ids.append(picking_id[0])
+        #         # now i need to eliminate other ids
+        #         if origins[origin] in ids:
+        #             del ids[ids.index(origins[origin])]
+        # if account_invoice_to_delete_ids:
+        #     super(account_invoice, self).unlink(cr, uid, [], context=context)
+        if picking_to_write_ids:
+            stock_picking_obj.write(cr, uid, picking_to_write_ids, {'invoice_state': '2binvoiced'}, context=context)
 
         return super(account_invoice, self).unlink(cr, uid, ids, context=context)
 
