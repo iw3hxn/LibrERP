@@ -201,6 +201,12 @@ msgid "For Recovery use Automatic Sequence"
 msgstr "Per utilizzare queste sequenze usare la modalità automatica"
 
 #. module: l10n_it_sale
+#: code:addons/l10n_it_sale/wizard/assign_ddt.py:107
+#, python-format
+msgid "For Recovery use Manual Sequence"
+msgstr "ATTENZIONE Per utilizzare queste sequenze usare la modalità MANUALE"
+
+#. module: l10n_it_sale
 #: code:addons/l10n_it_sale/wizard/assign_ddt.py:103
 #, python-format
 msgid "{name} of {date}"

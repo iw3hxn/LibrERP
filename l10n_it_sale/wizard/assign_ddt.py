@@ -93,19 +93,22 @@ class wizard_assign_ddt(orm.TransientModel):
             sequence_recovery_obj = self.pool['ir.sequence_recovery']
             picking = picking_obj.browse(cr, uid, context.get('active_ids', []), context=context)[0]
 
-            sequence_id = picking.stock_journal_id.ddt_sequence and \
-                              picking.stock_journal_id.ddt_sequence.id or False
+            sequence_id = picking.stock_journal_id.ddt_sequence and picking.stock_journal_id.ddt_sequence.id or []
+            manual_recovery = True
             if not sequence_id:
+                manual_recovery = False
                 sequence_id = self.pool['ir.sequence'].search(cr, uid, [('code', '=', 'stock.ddt')])[0]
-            sequence_recovery_ids = sequence_recovery_obj.search(cr, uid, [('sequence_id', '=', sequence_id)],
-                                                                     context=context)
+            sequence_recovery_ids = sequence_recovery_obj.search(cr, uid, [('sequence_id', '=', sequence_id)], context=context)
             for sequence_recovery in sequence_recovery_obj.browse(cr, uid, sequence_recovery_ids, context):
                 date_recovery = sequence_recovery.date
                 description.append(_('{name} of {date}').format(name=sequence_recovery.sequence, date=date_recovery))
                 result.update({'ddt_to_recovery': True,
                                'number_method': 'sequence'})
             if description:
-                description.append(_('For Recovery use Automatic Sequence'))
+                if manual_recovery:
+                    description.append(_('For Recovery use Manual Sequence'))
+                else:
+                    description.append(_('For Recovery use Automatic Sequence'))
 
             result['existing_ddt'] = '\n'.join(description)
         return result
