@@ -207,25 +207,17 @@
                                     <field name="product_id"/>
                                     <field name="product_qty" sum="product_sum"/>
                                     <field name="product_uom"/>
-                                    <!--<field name="measures"/>-->
                                     <field name="note"/>
                                     <field name="prodlot_id" invisible="1"/>
                                     <field name="goods_ready"/>
                                     <field name="state" invisible="1"/>
                                     <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok"
-                                            attrs="{'invisible': [('state', 'in', ['confirmed', 'done'])]}"/>
+                                            attrs="{'invisible': [('state', '=', 'done')]}"/>
                                 </tree>
                                 <form string="Move">
                                     <field name="product_id" readonly="1"/>
                                     <field name="product_qty" readonly="1"/>
                                     <field name="state"/>
-                                    <!--<newline />-->
-                                    <!--<group col="2" colspan="4">-->
-                                    <!--<button type="object" name="download_attachment" icon="gtk-go-down" colspan="1" context="{'attach_type':'_ST'}"-->
-                                    <!--string="Download ST Attachments"/>-->
-                                    <!--<button type="object" name="download_attachment" icon="gtk-go-down" colspan="1" context="{'attach_type':'_SI'}"-->
-                                    <!--string="Download SI Attachments"/>-->
-                                    <!--</group>-->
                                 </form>
                             </field>
                         </page>
