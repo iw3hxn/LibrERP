@@ -37,7 +37,6 @@ class StockMove(orm.Model):
             return True
         return False
 
-
     def _action_check_goods_ready_hook(self, cr, uid, stock_move_ids, context):
         res = super(StockMove, self)._action_check_goods_ready_hook(cr, uid, stock_move_ids, context)
         self._force_production_order(cr, uid, stock_move_ids, context)
@@ -76,14 +75,14 @@ class StockMove(orm.Model):
             res[stock_move.id] = False
             sale_id = stock_move.sale_id and stock_move.sale_id.id or False
             sale_order_line_id = stock_move.sale_line_id and stock_move.sale_line_id.id or False
-            if stock_move.state == 'done':
+            if stock_move.state in ['assigned', 'done']:
                 res[stock_move.id] = True
             elif sale_id and sale_order_line_id:
                 order_requirement_line_ids = order_requirement_line_obj.search(cr, uid, [
                     ('sale_order_line_id', '=', sale_order_line_id)], context=context)
                 temp_mrp_bom_ids = temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', 'in', order_requirement_line_ids), ('mrp_production_id', '!=', False)], context=context)
                 if not temp_mrp_bom_ids:  # if not exist production order means that is a normal product
-                    if stock_move.state == 'done':
+                    if stock_move.state == 'assigned':
                         res[stock_move.id] = True
                 for temp_mrp_bom in temp_mrp_bom_obj.browse(cr, uid, temp_mrp_bom_ids, context):
                     res[stock_move.id] = True

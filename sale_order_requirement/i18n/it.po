@@ -311,6 +311,7 @@ msgstr "Ord. produzione"
 
 #. module: sale_order_requirement
 #: field:order.requirement.line,purchase_orders_approved:0
+#: field:stock.move,purchase_orders_approved:0
 msgid "Purch. orders approved"
 msgstr "Ord. acquisto approvati"
 
