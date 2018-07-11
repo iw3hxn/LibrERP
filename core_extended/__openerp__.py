@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2018 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.1.16.1",
+    "version": "2.1.17.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",
@@ -62,6 +62,11 @@
             'csv' - uses module csv included in standard Python distribution
 
         create group - View Reporting
+        
+        dict_cache - Dictionary class extended with empty() method
+        
+        redis - Dictionary-like class to work with Redis. Use database with index 0 for database to index mapping
+            Requires walrus module for communication with Redis
 
     """,
     "depends": [
