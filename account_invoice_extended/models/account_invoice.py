@@ -77,7 +77,6 @@ class account_invoice(orm.Model):
                     else:
                         pickings_name = origin
                     picking_ids += stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
-                    print picking_ids
 
             result[invoice.id] = picking_ids
 
@@ -295,14 +294,8 @@ class account_invoice(orm.Model):
                     pickings_name = origin.split(':')[0]
                 else:
                     pickings_name = origin
-                picking_id = stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
-        #        account_invoice_to_delete_ids.append(origins[origin])
-                picking_to_write_ids.append(picking_id[0])
-        #         # now i need to eliminate other ids
-        #         if origins[origin] in ids:
-        #             del ids[ids.index(origins[origin])]
-        # if account_invoice_to_delete_ids:
-        #     super(account_invoice, self).unlink(cr, uid, [], context=context)
+                picking_to_write_ids += stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
+
         if picking_to_write_ids:
             stock_picking_obj.write(cr, uid, picking_to_write_ids, {'invoice_state': '2binvoiced'}, context=context)
 
