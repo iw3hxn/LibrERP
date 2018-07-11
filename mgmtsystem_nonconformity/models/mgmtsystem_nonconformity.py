@@ -212,6 +212,8 @@ class mgmtsystem_nonconformity(orm.Model):
         'state': 'draft',
         'author_user_id': lambda cr, uid, id, c={}: id,
         'ref': 'NEW',
+        'responsible_user_id': lambda obj, cr, uid, context: uid,
+        'manager_user_id': lambda obj, cr, uid, context: uid,
     }
 
     def create(self, cr, uid, vals, context=None):
@@ -238,6 +240,10 @@ class mgmtsystem_nonconformity(orm.Model):
         vals = {'analysis_date': time.strftime(DATETIME_FORMAT), 'analysis_user_id': uid}
         self.write(cr, uid, ids, vals, context=context)
         self.message_append(cr, uid, self.browse(cr, uid, ids, context=context), _('Analysis Approved'))
+        wf_service = netsvc.LocalService("workflow")
+        cr.commit()
+        for non_conformity_id in ids:
+            wf_service.trg_validate(uid, 'mgmtsystem.nonconformity', non_conformity_id, 'button_review', cr)
         return True
 
     def wkf_review(self, cr, uid, ids, context=None):
@@ -261,6 +267,10 @@ class mgmtsystem_nonconformity(orm.Model):
         vals = {'actions_date': time.strftime(DATETIME_FORMAT), 'actions_user_id': uid}
         self.write(cr, uid, ids, vals, context=context)
         self.message_append(cr, uid, self.browse(cr, uid, ids, context=context), _('Action Plan Approved'))
+        wf_service = netsvc.LocalService("workflow")
+        cr.commit()
+        for non_conformity_id in ids:
+            wf_service.trg_validate(uid, 'mgmtsystem.nonconformity', non_conformity_id, 'button_open', cr)
         return True
 
     def wkf_open(self, cr, uid, ids, context=None):
@@ -286,6 +296,10 @@ class mgmtsystem_nonconformity(orm.Model):
         vals = {'evaluation_date': time.strftime(DATETIME_FORMAT), 'evaluation_user_id': uid}
         self.write(cr, uid, ids, vals, context=context)
         self.message_append(cr, uid, self.browse(cr, uid, ids, context=context), _('Effectiveness Evaluation Approved'))
+        wf_service = netsvc.LocalService("workflow")
+        cr.commit()
+        for non_conformity_id in ids:
+            wf_service.trg_validate(uid, 'mgmtsystem.nonconformity', non_conformity_id, 'button_close', cr)
         return True
 
     def wkf_cancel(self, cr, uid, ids, context=None):

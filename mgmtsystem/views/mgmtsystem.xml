@@ -5,7 +5,7 @@
         <menuitem id="menu_mgmtsystem_root"
             name="Management System" 
             sequence="15" 
-            groups="mgmtsystem.group_mgmtsystem_manager,base.group_user"
+            groups="mgmtsystem.group_mgmtsystem_manager,mgmtsystem.group_mgmtsystem_viewer"
             web_icon="static/src/img/mgmtsystem.png"
             web_icon_hover="static/src/img/mgmtsystem-hover.png"
         />

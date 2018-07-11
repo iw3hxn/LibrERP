@@ -302,7 +302,7 @@ msgstr "Origini"
 #. module: mgmtsystem_nonconformity
 #: view:mgmtsystem.nonconformity:0
 msgid "Inputs"
-msgstr "Ingresso"
+msgstr "Descrizione NC"
 
 #. module: mgmtsystem_nonconformity
 #: view:mgmtsystem.nonconformity:0

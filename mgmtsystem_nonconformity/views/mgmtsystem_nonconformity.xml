@@ -111,7 +111,9 @@
 	                            <field name="severity_id" attrs="{'readonly':[('state','not in',['analysis'])]}" widget="selection"/>
 	                            <field name="immediate_action_id"
                                        domain="[('type_action','=','immediate'), ('nonconformity_immediate_id', '=', id)]"
-	                                  attrs="{'readonly':[('state','not in',['analysis'])]}"/>
+                                       attrs="{'readonly':[('state','not in',['analysis'])]}"
+                                       context="{'default_type_action': 'immediate'}"
+                                />
                             </group>
                             <group colspan="2" col="2">
 	                            <field name="analysis_user_id"/>
@@ -192,9 +194,9 @@
                     <group col="8" colspan="4">
                         <field name="state" widget="statusbar" statusbar_visible="draft,analysis,pending,open,done"/>
                         <button name="button_cancel" string="Cancel" states="draft,analysis,pending,open" icon="gtk-cancel"/>
-                        <button name="button_analysis" string="Send for Analysis" states="draft,pending" icon="terp-idea"/>
-                        <button name="button_review" string="Send for Review" states="analysis,open" icon="gtk-go-up" />
-                        <button name="button_open" string="Start/Open" states="pending" icon="gtk-go-forward" />
+                        <button name="button_analysis" string="Send for Analysis" states="draft" icon="terp-idea"/>
+                        <!--<button name="button_review" string="Send for Review" states="analysis,open" icon="gtk-go-up" />-->
+                        <!--<button name="button_open" string="Start/Open" states="pending" icon="gtk-go-forward" />-->
                         <button name="button_close" string="Close" states="open" icon="terp-dialog-close"
                                 groups="mgmtsystem.group_mgmtsystem_manager,mgmtsystem.group_mgmtsystem_auditor" />
                         <button name="case_reset" string="Reset to New" states="done,cancel" type="object" icon="gtk-undo"/>

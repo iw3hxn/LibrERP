@@ -2,7 +2,7 @@
 
 {
     "name": "Management System - Action",
-    "version": "1.1",
+    "version": "1.1.a",
     "author": "Savoir-faire Linux,Odoo Community Association (OCA) - refactored by Antonio Mignolli - Didotech SRL",
     "website": "http://www.savoirfairelinux.com",
     "license": "AGPL-3",
