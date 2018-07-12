@@ -1,0 +1,58 @@
+<openerp>
+    <data>
+
+        <record id="view_mgmtsystem_nonconformity_location_form" model="ir.ui.view">
+            <field name="name">mgmtsystem.nonconformity.location.form</field>
+            <field name="model">mgmtsystem.nonconformity.location</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sim Reference Locations">
+                    <group col="6" colspan="4">
+                        <field name="name" select="1"/>
+                        <field name="model" select="1"/>
+                        <field name="active" select="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="mgmtsystem_nonconformity_location_tree" model="ir.ui.view">
+            <field name="name">mgmtsystem.nonconformity.location.tree</field>
+            <field name="model">mgmtsystem.nonconformity.location</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Reference Locations" editable="top">
+                    <field name="name" select="1"/>
+                    <field name="model" select="1"/>
+                    <field name="active" select="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_mgmtsystem_nonconformity_location_filter" model="ir.ui.view">
+            <field name="name">mgmtsystem.nonconformity.location.filter</field>
+            <field name="model">mgmtsystem.nonconformity.location</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Reference Locations">
+                    <group col="10" colspan="4">
+                        <field name="name"/>
+                        <field name="model"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_mgmtsystem_nonconformity_location_form" model="ir.actions.act_window">
+            <field name="name">NC References</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mgmtsystem.nonconformity.location</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="mgmtsystem_nonconformity_location_tree"/>
+            <field name="search_view_id" ref="view_mgmtsystem_nonconformity_location_filter" />
+        </record>
+
+        <menuitem action="action_mgmtsystem_nonconformity_location_form" id="menu_mgmtsystem_nonconformity_location_tree" parent="mgmtsystem.menu_mgmtsystem_configuration" sequence="10" groups="mgmtsystem.group_mgmtsystem_user_manager"/>
+        
+         
+    </data>
+</openerp>
