@@ -499,6 +499,11 @@ msgstr "Il piano d'azione è già approvato."
 #. module: mgmtsystem_nonconformity
 #: field:mgmtsystem.nonconformity,reference:0
 msgid "Related to"
+msgstr "Nota Collegamento"
+
+#. module: mgmtsystem_nonconformity
+#: field:mgmtsystem.nonconformity,reference_obj:0
+msgid "Reference"
 msgstr "Collegato a"
 
 #. module: mgmtsystem_nonconformity
@@ -688,3 +693,46 @@ msgstr "Commenti sul piano di azoione."
 #, python-format
 msgid "Action Plan Approved"
 msgstr "Piano di azione approvato"
+
+#. module: mgmtsystem_nonconformity
+#: help:mgmtsystem.nonconformity,cost_total:0
+msgid "Total cost of Nonconformity, sum of all nonconformities and actions costs"
+msgstr "Costo totale della non conformità, dato come la somma dei costi di tutte le azioni"
+
+#. module: mgmtsystem_nonconformity
+#: field:mgmtsystem.nonconformity,cost_total:0
+msgid "Total Cost"
+msgstr "Costo Totale"
+
+#. module: mgmtsystem_nonconformity
+#: field:mgmtsystem.nonconformity,action_date_close:0
+msgid "Date Close"
+msgstr "Data Chiusura Azioni"
+
+#. module: mgmtsystem_nonconformity
+#: field:res.partner,mgmtsystem_nonconformity_ids:0
+msgid "Non conformity"
+msgstr "Non conformità"
+
+#. module: mgmtsystem_nonconformity
+#: field:mgmtsystem.nonconformity,action_open:0
+msgid "Close of"
+msgstr "Chiuse di"
+
+#. module: mgmtsystem_nonconformity
+#: view:mgmtsystem.nonconformity.location:0
+msgid "Sim Reference Locations"
+msgstr "Referenze Non conformità"
+
+#. module: mgmtsystem_nonconformity
+#: view:mgmtsystem.nonconformity:0
+msgid "Costs"
+msgstr "Costi"
+
+#. module: mgmtsystem_nonconformity
+#: view:mgmtsystem.nonconformity:0
+#: field:mgmtsystem.nonconformity,cost_ids:0
+#: field:mgmtsystem.nonconformity.cost,cost:0
+msgid "Cost"
+msgstr "Costo"
+

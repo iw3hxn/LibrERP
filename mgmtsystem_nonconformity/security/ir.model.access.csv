@@ -11,3 +11,5 @@
 "access_mgmtsystem_nonconformity_severity_viewer","mgmtsystem.nonconformity.severity.viewer","model_mgmtsystem_nonconformity_severity","mgmtsystem.group_mgmtsystem_viewer",1,0,0,0
 "access_mgmtsystem_nonconformity_severity_manager","mgmtsystem.nonconformity.severity.manager","model_mgmtsystem_nonconformity_severity","mgmtsystem.group_mgmtsystem_manager",1,1,1,1
 "access_mgmtsystem_nonconformity_cost","access_mgmtsystem_nonconformity_cost","model_mgmtsystem_nonconformity_cost",,1,1,1,1
+"access_mgmtsystem_location_user","mgmtsystem.location.user","model_mgmtsystem_nonconformity_location","mgmtsystem.group_mgmtsystem_user",1,0,0,0
+"access_mgmtsystem_location_manager","mgmtsystem.location.manager","model_mgmtsystem_nonconformity_location","mgmtsystem.group_mgmtsystem_manager",1,1,1,1

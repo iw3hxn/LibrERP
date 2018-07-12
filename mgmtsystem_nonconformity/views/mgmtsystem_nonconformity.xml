@@ -23,6 +23,8 @@
 		            <field name="system_id" widget="selection"/>
                     <field name="state"/>
                     <field name="cost_total" sum="total"/>
+                    <!--<field name="action_date_close"/>-->
+                    <field name="action_open"/>
                 </tree>
             </field>
         </record>
@@ -43,7 +45,7 @@
                         <field name="date"/>
                         <field name="author_user_id" string="User" 
                                filter_domain="['|','|',('author_user_id','=',uid),('responsible_user_id','=',uid),('manager_user_id','=',uid)]" />
-			            <field name="system_id"/>
+			            <field name="system_id" widget="selection"/>
                     </group>
                     <newline />
                     <group expand="0" string="Group By...">
@@ -75,7 +77,8 @@
                         <field name="ref" attrs="{'readonly':[('state','not in',['draft'])]}"/>
                         <field name="date" attrs="{'readonly':[('state','not in',['draft'])]}"/>
                         <field name="partner_id" attrs="{'readonly':[('state','not in',['draft','analysis'])]}"/>
-                        <field name="reference" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                        <field name="reference_obj" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                        <field name="reference" attrs="{'readonly':[('state','not in',['draft'])]}" />
                     </group>
                     <group colspan="2" col="2">
                         <field name="responsible_user_id" attrs="{'readonly':[('state','not in',['draft','analysis'])]}"/>

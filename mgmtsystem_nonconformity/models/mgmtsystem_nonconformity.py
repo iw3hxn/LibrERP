@@ -19,13 +19,38 @@
 #
 ##############################################################################
 
-from tools.translate import _
+import time
+
 import netsvc as netsvc
 from openerp.osv import fields, orm
-
-import time
 from tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 from tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
+from tools.translate import _
+
+
+class mgmtsystem_nonconformity_location(orm.Model):
+    _name = "mgmtsystem.nonconformity.location"
+    _description = "Non Conformity Reference Locations"
+    _columns = {
+        'name': fields.char('Name', size=60, required=True),
+        'active': fields.boolean('Active',
+                                 help="If the active field is set to False, it will allow you to hide the sim allocation without removing it."),
+        'model': fields.many2one('ir.model', 'Object', required=True),
+    }
+    _defaults = {
+        'active': lambda *a: True,
+    }
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if 'model' in vals:
+            raise orm.except_orm(_('Error !'), _(
+                'You cannot modify the Object linked to the Document Type!\nCreate another Document instead !'))
+        return super(mgmtsystem_nonconformity_location, self).write(cr, uid, ids, vals, context=context)
+
+
+def _get_location(self, cr, uid, context=None):
+    cr.execute('SELECT m.model, s.name FROM mgmtsystem_nonconformity_location s, ir_model m WHERE s.model = m.id ORDER BY s.name')
+    return cr.fetchall()
 
 
 class mgmtsystem_nonconformity_cause(orm.Model):
@@ -161,6 +186,23 @@ class mgmtsystem_nonconformity(orm.Model):
             ret[nonconformity.id] = tot
         return ret
 
+    def _calculate_action_status(self, cr, uid, ids, field_name, arg, context):
+        ret = {}
+        action_obj = self.pool['mgmtsystem.action']
+
+        for nonconformity in self.browse(cr, uid, ids, context):
+            action_connnected_ids = action_obj.search(cr, uid, [('nonconformity_ids', '=', nonconformity.id)], context=context)
+            if nonconformity.immediate_action_id:
+                action_connnected_ids.append(nonconformity.immediate_action_id.id)
+            action_closed_ids = action_obj.search(cr, uid, [('id', 'in', action_connnected_ids), ('state', '=', 'done')], context=context)
+
+            ret[nonconformity.id] = {
+                'action_date_close': False,
+                'action_open': _(u'{0} of {1}').format(len(action_closed_ids), len(action_connnected_ids))
+            }
+
+        return ret
+
     _columns = {
         # 1. Description
         'id': fields.integer('ID', readonly=True),
@@ -168,6 +210,7 @@ class mgmtsystem_nonconformity(orm.Model):
         'date': fields.date('Date', required=True),
         'partner_id': fields.many2one('res.partner', 'Partner', required=True),
         'reference': fields.char('Related to', size=50),
+        'reference_obj': fields.reference('Reference', selection=_get_location, size=None),
         'responsible_user_id': fields.many2one('res.users', 'Responsible', required=True),
         'manager_user_id': fields.many2one('res.users', 'Manager', required=True),
         'author_user_id': fields.many2one('res.users', 'Filled in by', required=True),
@@ -205,7 +248,10 @@ class mgmtsystem_nonconformity(orm.Model):
         # 5. Cost
         'cost_ids': fields.one2many('mgmtsystem.nonconformity.cost', 'mgmtsystem_nonconformity_id', string='Cost'),
         'cost_total': fields.function(_calculate_total_cost, method=True, type='float', string='Total Cost',
-                                      help='Total cost of Nonconformity, sum of all nonconformities and actions costs')
+                                      help='Total cost of Nonconformity, sum of all nonconformities and actions costs'),
+        # 6. Action connected
+        'action_date_close': fields.function(_calculate_action_status, method=True, type='date', string='Date Close', multi='date_action'),
+        'action_open': fields.function(_calculate_action_status, method=True, type='string', string='Close of', multi='date_action')
     }
     _defaults = {
         'date': lambda *a: time.strftime(DATE_FORMAT),
