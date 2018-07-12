@@ -118,7 +118,7 @@ class product_product(orm.Model):
                         u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id,
                                                                                         std_price=std_price, qty=qty))
 
-                print(std_price, qty)
+                # print(std_price, qty)
                 price += std_price * qty
 
             if sub_products:
@@ -160,8 +160,13 @@ class product_product(orm.Model):
                     partner_id = partner_ids[0]
                 else:
                     partner_id = False
-                price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product_id, 1, partner_id,
+                if pricelist:
+                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product_id, 1, partner_id,
                                                                  context=ctx)[pricelist.id] or 0
+                else:
+                    raise orm.except_orm(
+                        _("Error"),
+                        _("The supplier {supplier} have no pricelist associated").format(supplier=product.prefered_supplier.name))
 
                 price_subtotal = 0.0
                 if pricelist:

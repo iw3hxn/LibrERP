@@ -234,3 +234,9 @@ msgstr "Il prodotto è usato in qualche Ordine di Vendita, potete deattivarlo"
 #, python-format
 msgid "The product is used on same BOM, deactivate it"
 msgstr "Il prodotto è usato in qualche Distinta Base, potete deattivarlo"
+
+#. module: product_bom
+#: code:addons/product_bom/product.py:503
+#, python-format
+msgid "The supplier {supplier} have no pricelist associated"
+msgstr "Il fornitore {supplier} non ha un listino associato"
