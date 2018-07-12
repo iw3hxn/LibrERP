@@ -45,5 +45,5 @@ class res_company(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         res = super(res_company, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE and 'exclude_routing' in vals:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res

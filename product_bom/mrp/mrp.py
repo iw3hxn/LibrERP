@@ -67,13 +67,21 @@ class mrp_bom(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
         boms = self.browse(cr, uid, ids, context)
-        for product_old_id in [bom.product_id.id for bom in boms]:
+        for bom in boms:
+            product_old_id = bom.product_id.id
             if vals.get('product_id', False) and not product_old_id == vals['product_id']:
                 # on new product set that have bom
                 self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False}, context)
                 bom_ids_count = self.search(cr, uid, [('product_id', '=', product_old_id), ('bom_id', '=', False)], count=True)
                 if bom_ids_count == 1:
                     self.pool['product.product'].write(cr, uid, product_old_id, {'supply_method': 'buy', 'purchase_ok': True})
+
+        if 'bom_lines' in vals:
+            for bom_line in vals['bom_lines']:
+                if bom_line[0] == 2 or isinstance(bom_line[2], dict) and 'product_qty' in bom_line[2]:
+                    if product_old_id in self.pool['product.product'].product_cost_cache:
+                        del self.pool['product.product'].product_cost_cache[product_old_id]
+
         return super(mrp_bom, self).write(cr, uid, ids, vals, context=context)
 
     def action_view_bom(self, cr, uid, ids, context=None):

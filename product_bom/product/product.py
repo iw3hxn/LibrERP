@@ -1,23 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2013-2018 Didotech srl (info@didotech.com)
-#    All Rights Reserved
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published
-#    by the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2013-2018 Didotech srl (info@didotech.com)
 
 import logging
 import time
@@ -33,6 +15,7 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 ENABLE_CACHE = config.get('product_cache', False)
+CACHE_TYPE = config.get('cache_type', 'dictionary')
 
 
 class product_product(orm.Model):
@@ -49,10 +32,184 @@ class product_product(orm.Model):
 
     def __init__(self, cr, uid):
         super(product_product, self).__init__(cr, uid)
-        self.product_cost_cache = {}
+
+        if CACHE_TYPE == 'redis':
+            from openerp.addons.core_extended.redis import Redis
+            host = config.get('redis_host', 'localhost')
+
+            self.product_cost_cache = Redis(host, database=cr.db_name, model=self._name)
+        else:
+            from openerp.addons.core_extended.dict_cache import SimpleCache
+            self.product_cost_cache = SimpleCache()
 
     def _hook_compute_purchase_price_no_supplier(self, product):
         return product.standard_price
+
+    def product_cache(func):
+        def cached_product(self, cr, uid, product_id, bom_properties, log_product=None, context=None):
+            if product_id in self.product_cost_cache and not context.get('partner_name', False):
+                _logger.debug('Returning from cache')
+                return self.product_cost_cache[product_id]
+            else:
+                value = func(self, cr, uid, product_id, bom_properties, log_product=log_product, context=context)
+                self.product_cost_cache[product_id] = value
+                return value
+
+        if ENABLE_CACHE:
+            return cached_product
+        else:
+            return func
+
+    @product_cache
+    def _get_subproduct_cost_price(self, cr, uid, product_id, bom_properties, log_product=None, context=None):
+        return log_product.cost_price
+
+    @product_cache
+    def _compute_product_purchase_price(self, cr, uid, product_id, bom_properties, log_product=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        bom_properties = bom_properties or []
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+
+        bom_obj = self.pool['mrp.bom']
+        uom_obj = self.pool['product.uom']
+
+        debug_logger = True
+
+        if ENABLE_CACHE:
+            if debug_logger:
+                _logger.debug(u'[{product.default_code}] {product.name}'.format(product=log_product))
+            # cached_price = self.product_cost_cache.get(product_id, 0)
+
+        bom_id = bom_obj._bom_find(cr, uid, product_id, product_uom=None, properties=bom_properties)
+        if bom_id:
+            sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
+            sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
+
+            price = 0.
+            if ENABLE_CACHE and debug_logger:
+                _logger.debug(
+                    u'[{product.default_code}] Start Explosion ========================'.format(product=log_product))
+
+            for sub_product in sub_products:
+                if sub_product.product_id.id == product_id:
+                    product = self.browse(cr, uid, product_id, context)
+                    error = "Product '{product.name}' (id: {product.id}) is referenced to itself".format(
+                        product=product)
+                    _logger.error(error)
+                    continue
+
+                # std_price = sub_product.standard_price
+                # if ENABLE_CACHE:
+                #     if sub_product.product_id.id in self.product_cost_cache:
+                #         std_price = self.product_cost_cache[sub_product.product_id.id]
+                #     else:
+                #         std_price = sub_product.product_id.cost_price
+                #         self.product_cost_cache[sub_product.product_id.id] = std_price
+                # else:
+                #     std_price = sub_product.product_id.cost_price
+                std_price = self._get_subproduct_cost_price(cr, uid, sub_product.product_id.id, False, sub_product.product_id, context)
+
+                qty = uom_obj._compute_qty(cr, uid,
+                                           from_uom_id=sub_product.product_uom.id,
+                                           qty=sub_product.product_qty,
+                                           to_uom_id=sub_product.product_id.uom_po_id.id)
+                if ENABLE_CACHE and debug_logger:
+                    _logger.debug(
+                        u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id,
+                                                                                        std_price=std_price, qty=qty))
+
+                print(std_price, qty)
+                price += std_price * qty
+
+            if sub_products:
+                # Don't use browse when we already have it
+                bom = sub_products[0].bom_id
+            else:
+                bom = bom_obj.browse(cr, uid, bom_id, context)
+
+            if bom.routing_id and not context.get('exclude_routing', False):
+                for wline in bom.routing_id.workcenter_lines:
+                    wc = wline.workcenter_id
+                    cycle = wline.cycle_nbr
+                    # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
+                    price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
+            price /= bom.product_qty
+            price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
+            if ENABLE_CACHE and debug_logger:
+                _logger.debug(
+                    u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=log_product, price=price))
+
+            return price
+        else:
+            # no BoM: use standard_price
+            # use standard_price if no supplier indicated
+
+            # if product_id in self.product_cost_cache and ENABLE_CACHE and not context.get('partner_name', False):
+            #     return self.product_cost_cache[product_id]
+
+            product = self.browse(cr, uid, product_id, context)
+            if product.prefered_supplier:
+                pricelist = product.prefered_supplier.property_product_pricelist_purchase or False
+                ctx = {
+                    'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                }
+                if context.get('partner_name', False):
+                    partner_name = context.get('partner_name')
+                    partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)],
+                                                                  context=context)
+                    partner_id = partner_ids[0]
+                else:
+                    partner_id = False
+                price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product_id, 1, partner_id,
+                                                                 context=ctx)[pricelist.id] or 0
+
+                price_subtotal = 0.0
+                if pricelist:
+                    from_currency = pricelist.currency_id.id
+                    to_currency = user.company_id.currency_id.id
+                    price_subtotal = self.pool['res.currency'].compute(
+                        cr, uid,
+                        from_currency_id=from_currency,
+                        to_currency_id=to_currency,
+                        from_amount=price,
+                        context=context
+                    )
+                cost_price = price_subtotal or price or product.standard_price
+            else:
+                cost_price = self._hook_compute_purchase_price_no_supplier(product)
+
+            if ENABLE_CACHE and debug_logger:
+                _logger.debug(
+                    u'NO BOM [{product.default_code}] price = {price}'.format(product=log_product, price=cost_price))
+
+            return cost_price
+
+    def _compute_purchase_price_new(self, cr, uid, ids,
+                                product_uom=None,
+                                bom_properties=None,
+                                context=None):
+        '''
+        Compute the purchase price, taking into account sub products and routing
+        '''
+
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        bom_properties = bom_properties or []
+
+        res = {}
+        debug_logger = True
+
+        if not ids:
+            ids = self.search(cr, uid, [])
+
+        if debug_logger:
+            for product in self.browse(cr, uid, ids, context):
+                res[product.id] = self._compute_product_purchase_price(cr, uid, product.id, bom_properties,
+                                                                       log_product=product, context=context)
+        else:
+            for product_id in ids:
+                res[product_id] = self._compute_product_purchase_price(cr, uid, product_id, bom_properties, context=context)
+
+        return res
 
     def _compute_purchase_price(self, cr, uid, ids,
                                 product_uom=None,
@@ -65,13 +222,13 @@ class product_product(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         bom_properties = bom_properties or []
         user = self.pool['res.users'].browse(cr, uid, uid, context)
-        
+
         bom_obj = self.pool['mrp.bom']
         uom_obj = self.pool['product.uom']
 
         res = {}
         ids = ids or []
-        
+
         for product in self.browse(cr, uid, ids, context):
             if ENABLE_CACHE:
                 _logger.debug(u'[{product.default_code}] {product.name}'.format(product=product))
@@ -79,7 +236,7 @@ class product_product(orm.Model):
             if bom_id:
                 sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
                 sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
-                
+
                 price = 0.
                 if ENABLE_CACHE:
                     _logger.debug(u'[{product.default_code}] Start Explosion ========================'.format(product=product))
@@ -88,7 +245,7 @@ class product_product(orm.Model):
                         error = "Product '{product.name}' (id: {product.id}) is referenced to itself".format(product=product)
                         _logger.error(error)
                         continue
-                        
+
                     # std_price = sub_product.standard_price
                     if ENABLE_CACHE:
                         if sub_product.product_id.id in self.product_cost_cache:
@@ -119,7 +276,7 @@ class product_product(orm.Model):
                     bom = sub_products[0].bom_id
                 else:
                     bom = bom_obj.browse(cr, uid, bom_id, context)
-                
+
                 if bom.routing_id and not context.get('exclude_routing', False):
                     for wline in bom.routing_id.workcenter_lines:
                         wc = wline.workcenter_id
@@ -176,7 +333,7 @@ class product_product(orm.Model):
                 if ENABLE_CACHE and not context.get('partner_name', False):
                     self.product_cost_cache[product.id] = res[product.id]
                 continue
-        
+
         return res
 
     def get_cost_field(self, cr, uid, ids, context=None):
@@ -190,7 +347,6 @@ class product_product(orm.Model):
         return res
 
     def _cost_price(self, cr, uid, ids, field_name, arg, context=None):
-        start_time = datetime.now()
         # _logger.error(
         #     u'START _cost_price for {ids} and {field}'.format(ids=ids, field=field_name))
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -199,11 +355,25 @@ class product_product(orm.Model):
         company = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id
         ctx = context.copy()
         ctx.update({'exclude_routing': company.exclude_routing})
-        res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties, context=ctx)
-        end_time = datetime.now()
-        duration_seconds = (end_time - start_time)
-        duration = '{sec}'.format(sec=duration_seconds)
-        _logger.info(u'_cost_price get in {duration}'.format(duration=duration))
+
+        # Set to False to use old function
+        new = True
+
+        if new:
+            start_time = datetime.now()
+            res = self._compute_purchase_price_new(cr, uid, ids, product_uom, bom_properties, context=ctx)
+            end_time = datetime.now()
+            duration_seconds = (end_time - start_time)
+            duration = '{sec}'.format(sec=duration_seconds)
+            _logger.info(u'_cost_price_new get in {duration} for {qty} products'.format(duration=duration, qty=len(ids)))
+        else:
+            start_time = datetime.now()
+            res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties, context=ctx)
+            end_time = datetime.now()
+            duration_seconds = (end_time - start_time)
+            duration = '{sec}'.format(sec=duration_seconds)
+            _logger.info(u'_cost_price get in {duration} for {qty} products'.format(duration=duration, qty=len(ids)))
+
         return res
 
     def _kit_filter(self, cr, uid, obj, name, args, context):
@@ -586,19 +756,19 @@ class product_pricelist_item(orm.Model):
     def create(self, cr, uid, vals, context=None):
         res = super(product_pricelist_item, self).create(cr, uid, vals, context)
         if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
         res = super(product_pricelist_item, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res
 
     def unlink(self, cr, uid, ids, context=None):
         res = super(product_pricelist_item, self).unlink(cr, uid, ids, context)
         if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res
 
 
@@ -609,19 +779,19 @@ class pricelist_partnerinfo(orm.Model):
     def create(self, cr, uid, vals, context=None):
         res = super(pricelist_partnerinfo, self).create(cr, uid, vals, context)
         if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
         res = super(pricelist_partnerinfo, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res
 
     def unlink(self, cr, uid, ids, context=None):
         res = super(pricelist_partnerinfo, self).unlink(cr, uid, ids, context)
         if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res
 
 
@@ -632,11 +802,11 @@ class res_partner(orm.Model):
     def create(self, cr, uid, vals, context=None):
         res = super(res_partner, self).create(cr, uid, vals, context)
         if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
         res = super(res_partner, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
-            self.pool['product.product'].product_cost_cache = {}
+            self.pool['product.product'].product_cost_cache.empty()
         return res
