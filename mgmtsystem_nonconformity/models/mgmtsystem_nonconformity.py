@@ -31,6 +31,7 @@ from tools.translate import _
 class mgmtsystem_nonconformity_location(orm.Model):
     _name = "mgmtsystem.nonconformity.location"
     _description = "Non Conformity Reference Locations"
+    _order = "name"
     _columns = {
         'name': fields.char('Name', size=60, required=True),
         'active': fields.boolean('Active',

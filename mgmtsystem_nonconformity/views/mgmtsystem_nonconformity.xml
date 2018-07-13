@@ -382,6 +382,30 @@
                 
             </field>
         </record>
+
+        <record id="view_mgmtsystem_action_tree" model="ir.ui.view">
+            <field name="name">mgmtsystem.action.tree</field>
+            <field name="model">mgmtsystem.action</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="mgmtsystem_action.view_mgmtsystem_action_tree"/>
+            <field name="arch" type="xml">
+                <field name="reference" position="after">
+                    <field name="immediate_partner_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_mgmtsystem_action_search" model="ir.ui.view">
+            <field name="name">mgmtsystem.action.search</field>
+            <field name="model">mgmtsystem.action</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="mgmtsystem_action.view_mgmtsystem_action_filter"/>
+            <field name="arch" type="xml">
+                <field name="reference" position="after">
+                    <field name="immediate_partner_id"/>
+                </field>
+            </field>
+        </record>
          
     </data>
 </openerp>

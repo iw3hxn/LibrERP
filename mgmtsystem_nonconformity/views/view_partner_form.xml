@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <notebook position="inside">
-                    <page string="Non conformities" groups="mgmtsystem.group_mgmtsystem_user">
+                    <page string="Non conformities" groups="mgmtsystem.group_mgmtsystem_viewer">
                         <separator string="Non conformities" colspan="4" />
                         <field name="mgmtsystem_nonconformity_ids" nolabel="1">
                             <tree string="Non conformities">

@@ -736,3 +736,39 @@ msgstr "Costi"
 msgid "Cost"
 msgstr "Costo"
 
+#. module: mgmtsystem_nonconformity
+#: field:mgmtsystem.action,nonconformity_all_ids:0
+#: view:res.partner:0
+msgid "Non conformities"
+msgstr "Non conformità"
+
+#. module: mgmtsystem_nonconformity
+#: model:ir.actions.act_window,name:mgmtsystem_nonconformity.action_mgmtsystem_nonconformity_location_form
+#: model:ir.ui.menu,name:mgmtsystem_nonconformity.menu_mgmtsystem_nonconformity_location_tree
+msgid "NC References"
+msgstr "Riferimenti delle NC"
+
+#. module: mgmtsystem_nonconformity
+#: field:mgmtsystem.nonconformity.cost,name:0
+#: field:mgmtsystem.nonconformity.location,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: mgmtsystem_nonconformity
+#: field:mgmtsystem.nonconformity.location,model:0
+msgid "Object"
+msgstr "Oggetto"
+
+#. module: mgmtsystem_nonconformity
+#: field:mgmtsystem.nonconformity.location,active:0
+msgid "Active"
+msgstr "Attivo"
+
+#. module: mgmtsystem_nonconformity
+#: code:addons/mgmtsystem_nonconformity/models/mgmtsystem_nonconformity.py:47
+#, python-format
+msgid "You cannot modify the Object linked to the Document Type!\n"
+"Create another Document instead !"
+msgstr "Non puoi modificare il link all'oggetto!\n"
+"Va creato un nuovo record !"
+
