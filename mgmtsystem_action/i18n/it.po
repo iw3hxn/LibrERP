@@ -1,7 +1,6 @@
-# Spanish translation for openerp-mgmtsystem
-# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
-# This file is distributed under the same license as the openerp-mgmtsystem package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#
 #
 msgid ""
 msgstr ""
@@ -16,7 +15,7 @@ msgstr ""
 "X-Launchpad-Export-Date: 2013-06-06 05:48+0000\n"
 "X-Generator: Poedit 2.0.6\n"
 "Last-Translator: \n"
-"Language: es\n"
+"Language: it\n"
 
 #. module: mgmtsystem_action
 #: field:mgmtsystem.action,categ_id:0
@@ -164,7 +163,7 @@ msgstr "CC globale"
 #. module: mgmtsystem_action
 #: field:mgmtsystem.action,name:0
 msgid "Claim Subject"
-msgstr "Segnalazione"
+msgstr "Titolo Azione"
 
 #. module: mgmtsystem_action
 #: field:mgmtsystem.action,company_id:0
@@ -410,18 +409,3 @@ msgstr "Aprire"
 #: selection:mgmtsystem.action,priority:0
 msgid "Low"
 msgstr "Basso"
-
-#~ msgid "Date of Claim"
-#~ msgstr "Fecha reclamación"
-
-#~ msgid "Draft"
-#~ msgstr "Borrador"
-
-#~ msgid "Claim/Action Description"
-#~ msgstr "Descripción de la reclamación/acción"
-
-#~ msgid "Done"
-#~ msgstr "Hecho"
-
-#~ msgid "Action Type"
-#~ msgstr "Tipo de acción"
