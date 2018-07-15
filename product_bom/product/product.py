@@ -725,6 +725,8 @@ class product_product(orm.Model):
             self.write(cr, uid, product.id, {'standard_price': product.cost_price}, context)
         return True
 
+
+
     def write(self, cr, uid, ids, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
@@ -734,17 +736,9 @@ class product_product(orm.Model):
         res = super(product_product, self).write(cr, uid, ids, vals, context)
         changed_product = []
         if ENABLE_CACHE:
-            if 'standard_price' in vals:
-                changed_product = ids
+            if 'standard_price' in vals or 'seller_ids' in vals:
                 bom_obj = self.pool['mrp.bom']
-                bom_ids = bom_obj.search(cr, uid, [('product_id', 'in', ids)], context=context)
-                for bom in bom_obj.browse(cr, uid, bom_ids, context):
-                    bom_parent = bom.bom_id
-                    while bom_parent:
-                        changed_product.append(bom_parent.product_id.id)
-                        bom_parent = bom_parent.bom_id
-            if 'seller_ids' in vals:
-                changed_product = ids
+                changed_product = bom_obj.GetWhereUsed(cr, uid, ids, context)[1].keys()
             for product_id in changed_product:
                 if product_id in self.product_cost_cache:
                     del self.product_cost_cache[product_id]
@@ -753,51 +747,51 @@ class product_product(orm.Model):
 
 # CANCEL CACHE IF SOMETHING CHANGE ON PRICELIST
 
+#
+# class product_pricelist_item(orm.Model):
+#
+#     _inherit = 'product.pricelist.item'
+#
+#     def create(self, cr, uid, vals, context=None):
+#         res = super(product_pricelist_item, self).create(cr, uid, vals, context)
+#         if ENABLE_CACHE:
+#             self.pool['product.product'].product_cost_cache.empty()
+#         return res
+#
+#     def write(self, cr, uid, ids, vals, context=None):
+#         res = super(product_pricelist_item, self).write(cr, uid, ids, vals, context)
+#         if ENABLE_CACHE:
+#             self.pool['product.product'].product_cost_cache.empty()
+#         return res
+#
+#     def unlink(self, cr, uid, ids, context=None):
+#         res = super(product_pricelist_item, self).unlink(cr, uid, ids, context)
+#         if ENABLE_CACHE:
+#             self.pool['product.product'].product_cost_cache.empty()
+#         return res
 
-class product_pricelist_item(orm.Model):
 
-    _inherit = 'product.pricelist.item'
-
-    def create(self, cr, uid, vals, context=None):
-        res = super(product_pricelist_item, self).create(cr, uid, vals, context)
-        if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache.empty()
-        return res
-
-    def write(self, cr, uid, ids, vals, context=None):
-        res = super(product_pricelist_item, self).write(cr, uid, ids, vals, context)
-        if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache.empty()
-        return res
-
-    def unlink(self, cr, uid, ids, context=None):
-        res = super(product_pricelist_item, self).unlink(cr, uid, ids, context)
-        if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache.empty()
-        return res
-
-
-class pricelist_partnerinfo(orm.Model):
-
-    _inherit = 'pricelist.partnerinfo'
-
-    def create(self, cr, uid, vals, context=None):
-        res = super(pricelist_partnerinfo, self).create(cr, uid, vals, context)
-        if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache.empty()
-        return res
-
-    def write(self, cr, uid, ids, vals, context=None):
-        res = super(pricelist_partnerinfo, self).write(cr, uid, ids, vals, context)
-        if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache.empty()
-        return res
-
-    def unlink(self, cr, uid, ids, context=None):
-        res = super(pricelist_partnerinfo, self).unlink(cr, uid, ids, context)
-        if ENABLE_CACHE:
-            self.pool['product.product'].product_cost_cache.empty()
-        return res
+# class pricelist_partnerinfo(orm.Model):
+#
+#     _inherit = 'pricelist.partnerinfo'
+#
+#     def create(self, cr, uid, vals, context=None):
+#         res = super(pricelist_partnerinfo, self).create(cr, uid, vals, context)
+#         if ENABLE_CACHE:
+#             self.pool['product.product'].product_cost_cache.empty()
+#         return res
+#
+#     def write(self, cr, uid, ids, vals, context=None):
+#         res = super(pricelist_partnerinfo, self).write(cr, uid, ids, vals, context)
+#         if ENABLE_CACHE:
+#             self.pool['product.product'].product_cost_cache.empty()
+#         return res
+#
+#     def unlink(self, cr, uid, ids, context=None):
+#         res = super(pricelist_partnerinfo, self).unlink(cr, uid, ids, context)
+#         if ENABLE_CACHE:
+#             self.pool['product.product'].product_cost_cache.empty()
+#         return res
 
 
 class res_partner(orm.Model):
