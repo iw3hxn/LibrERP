@@ -800,10 +800,12 @@ class res_partner(orm.Model):
         res = super(res_partner, self).create(cr, uid, vals, context)
         if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
             self.pool['product.product'].product_cost_cache.empty()
+            _logger.info(u'_cost_price CREATE cache empty')
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
         res = super(res_partner, self).write(cr, uid, ids, vals, context)
         if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
             self.pool['product.product'].product_cost_cache.empty()
+            _logger.info(u'_cost_price WRITE cache empty')
         return res
