@@ -725,8 +725,6 @@ class product_product(orm.Model):
             self.write(cr, uid, product.id, {'standard_price': product.cost_price}, context)
         return True
 
-
-
     def write(self, cr, uid, ids, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
