@@ -22,10 +22,12 @@
 import logging
 
 from openerp.osv import orm
+from openerp.tools.config import config
 from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
+ENABLE_CACHE = config.get('product_cache', False)
 
 
 class mrp_bom(orm.Model):
@@ -40,6 +42,11 @@ class mrp_bom(orm.Model):
                 {'supply_method': 'produce', 'purchase_ok': False},
                 context
             )
+            if vals.get('product_id', False):
+                for product_id in self.GetWhereUsed(cr, uid, [vals['product_id']], context)[1].keys():
+                    if int(product_id) in self.pool['product.product'].product_cost_cache:
+                        del self.pool['product.product'].product_cost_cache[int(product_id)]
+
         return super(mrp_bom, self).create(cr, uid, vals, context=context)
     
     def unlink(self, cr, uid, ids, context=None):
@@ -67,6 +74,7 @@ class mrp_bom(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
         boms = self.browse(cr, uid, ids, context)
+        product_ids = []
         for bom in boms:
             product_old_id = bom.product_id.id
             if vals.get('product_id', False) and not product_old_id == vals['product_id']:
@@ -75,6 +83,15 @@ class mrp_bom(orm.Model):
                 bom_ids_count = self.search(cr, uid, [('product_id', '=', product_old_id), ('bom_id', '=', False)], count=True)
                 if bom_ids_count == 1:
                     self.pool['product.product'].write(cr, uid, product_old_id, {'supply_method': 'buy', 'purchase_ok': True})
+            if 'bom_lines' in vals and ENABLE_CACHE:
+                product_ids.append(product_old_id)
+                if vals.get('product_id', False):
+                    product_ids.append(int(vals['product_id']))
+
+        changed_product = self.GetWhereUsed(cr, uid, product_ids, context)[1].keys()
+        for product_id in changed_product:
+            if int(product_id) in self.pool['product.product'].product_cost_cache:
+                del self.pool['product.product'].product_cost_cache[int(product_id)]
 
         if 'bom_lines' in vals:
             for bom_line in vals['bom_lines']:
@@ -106,7 +123,11 @@ class mrp_bom(orm.Model):
     def GetWhereUsed(self, cr, uid, ids, context=None):
         """
             Return a list of all fathers of a Part (all levels)
+
         """
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
         self._packed = []
         relDatas = []
         if len(ids) < 1:

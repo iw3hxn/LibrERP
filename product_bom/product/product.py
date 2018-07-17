@@ -738,8 +738,8 @@ class product_product(orm.Model):
                 bom_obj = self.pool['mrp.bom']
                 changed_product = bom_obj.GetWhereUsed(cr, uid, ids, context)[1].keys()
             for product_id in changed_product:
-                if product_id in self.product_cost_cache:
-                    del self.product_cost_cache[product_id]
+                if int(product_id) in self.product_cost_cache:
+                    del self.product_cost_cache[int(product_id)]
 
         return res
 
