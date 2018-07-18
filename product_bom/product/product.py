@@ -725,6 +725,25 @@ class product_product(orm.Model):
             self.write(cr, uid, product.id, {'standard_price': product.cost_price}, context)
         return True
 
+    from profilehooks import profile
+    @profile(immediate=True)
+    def update_cache_price(self, cr, uid, context=None):
+        """
+        This Function is call by scheduler.
+        """
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if ENABLE_CACHE:
+            cache_length = len(self.product_cost_cache)
+            cache_ids = self.product_cost_cache.keys()
+            product_ids = self.search(cr, uid, [], context=context)
+            _logger.info(u'Cache {cache} of {product}'.format(cache=cache_length, product=len(product_ids)))
+            product_to_browse_ids = list(set(product_ids)-set(cache_ids))
+            if product_to_browse_ids:
+                for product in self.browse(cr, uid, product_to_browse_ids, context):
+                    cost_price = product.cost_price
+
+        return True
+
     def write(self, cr, uid, ids, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
