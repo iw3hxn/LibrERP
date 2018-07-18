@@ -2,6 +2,10 @@
 # © 2018 Andrei Levin - Didotech srl (www.didotech.com)
 
 from walrus import *
+import logging
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
 
 class Redis(object):
@@ -13,13 +17,16 @@ class Redis(object):
         config = db_config.Hash('config')
 
         db_index = config[database]
-        if not db_index:
+        if db_index:
+            _logger.info("Find index {} for db {}".format(db_index, database))
+        else:
             db_index = len(config.keys()) + 1
 
             while str(db_index) in config.values():
                 db_index += 1
 
             config[database] = db_index
+            _logger.info("Created new index {} for db {}".format(db_index, database))
 
         db_index = int(db_index)
         cache_db = Database(host=self.host, db=db_index)
@@ -52,10 +59,17 @@ class Redis(object):
         self.hash.expire(ttl=0)
 
     def empty(self):
+        _logger.info("Deleting Redis cache...")
         self.expire()
 
     def __delitem__(self, key):
         del self.hash[key]
+
+    def __len__(self):
+        return len(self.hash)
+
+    def keys(self):
+        return self.hash.keys()
 
 
 if __name__ == '__main__':
