@@ -106,7 +106,7 @@ class product_product(orm.Model):
                 #         self.product_cost_cache[sub_product.product_id.id] = std_price
                 # else:
                 #     std_price = sub_product.product_id.cost_price
-                std_price = self._get_subproduct_cost_price(cr, uid, sub_product.product_id.id, False, sub_product.product_id, context)
+                std_price = self._get_subproduct_cost_price(cr, uid, sub_product.product_id, False, context)
 
                 qty = uom_obj._compute_qty(cr, uid,
                                            from_uom_id=sub_product.product_uom.id,
@@ -136,7 +136,7 @@ class product_product(orm.Model):
             price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
             if ENABLE_CACHE and debug_logger:
                 _logger.debug(
-                    u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=log_product, price=price))
+                    u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
 
             return price
         else:

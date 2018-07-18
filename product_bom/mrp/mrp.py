@@ -83,15 +83,15 @@ class mrp_bom(orm.Model):
                 bom_ids_count = self.search(cr, uid, [('product_id', '=', product_old_id), ('bom_id', '=', False)], count=True)
                 if bom_ids_count == 1:
                     self.pool['product.product'].write(cr, uid, product_old_id, {'supply_method': 'buy', 'purchase_ok': True})
-            if 'bom_lines' in vals and ENABLE_CACHE:
+            if ('bom_lines' in vals or 'routing_id' in vals) and ENABLE_CACHE:
                 product_ids.append(product_old_id)
                 if vals.get('product_id', False):
                     product_ids.append(int(vals['product_id']))
-
-        changed_product = self.GetWhereUsed(cr, uid, product_ids, context)[1].keys()
-        for product_id in changed_product:
-            if int(product_id) in self.pool['product.product'].product_cost_cache:
-                del self.pool['product.product'].product_cost_cache[int(product_id)]
+        if product_ids:
+            changed_product = self.GetWhereUsed(cr, uid, product_ids, context)[1].keys()
+            for product_id in changed_product:
+                if int(product_id) in self.pool['product.product'].product_cost_cache:
+                    del self.pool['product.product'].product_cost_cache[int(product_id)]
 
         if 'bom_lines' in vals:
             for bom_line in vals['bom_lines']:
