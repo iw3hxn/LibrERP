@@ -781,7 +781,7 @@ class product_product(orm.Model):
                             thread.start()
                             threads.append(thread)
                 else:
-                    for product in self.browse(self.cr, self.uid, self.product_ids, self.context):
+                    for product in self.browse(cr, uid, product_ids, context):
                         cost_price = product.cost_price
 
         return True
