@@ -2,10 +2,12 @@
 # © 2013-2018 Didotech srl (info@didotech.com)
 
 import logging
+import multiprocessing
 import time
 from datetime import datetime
 
 import decimal_precision as dp
+import pooler
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.config import config
@@ -19,6 +21,30 @@ CACHE_TYPE = config.get('cache_type', 'dictionary')
 
 
 class product_product(orm.Model):
+
+    class UpdateCachePrice(multiprocessing.Process):
+
+        def __init__(self, cr, uid, product_product_obj, split_ids, context=None):
+            self.cr = pooler.get_db(cr.dbname).cursor()
+            self.product_product_obj = product_product_obj
+            self.uid = uid
+            self.context = context
+            self.product_ids = split_ids
+            multiprocessing.Process.__init__(self)
+
+        def run(self):
+            try:
+                for product in self.product_product_obj.browse(self.cr, self.uid, self.product_ids, self.context):
+                    cost_price = product.cost_price
+
+            except Exception as e:
+                # Annulla le modifiche fatte
+                _logger.error(u'Error: {error}'.format(error=e))
+                self.cr.rollback()
+            self.cr.commit()
+            self.cr.close()
+            return True
+
     """
     Inherit Product in order to add an "Bom Stock" field
     """
@@ -725,12 +751,19 @@ class product_product(orm.Model):
             self.write(cr, uid, product.id, {'standard_price': product.cost_price}, context)
         return True
 
-    from profilehooks import profile
-    @profile(immediate=True)
+    # from profilehooks import profile
+    # @profile(immediate=True)
     def update_cache_price(self, cr, uid, context=None):
         """
         This Function is call by scheduler.
         """
+        def _chunkIt(seq, size):
+            newseq = []
+            splitsize = 1.0 / size * len(seq)
+            for line in range(size):
+                newseq.append(seq[int(round(line * splitsize)): int(round((line + 1) * splitsize))])
+            return newseq
+
         context = context or self.pool['res.users'].context_get(cr, uid)
         if ENABLE_CACHE:
             cache_length = len(self.product_cost_cache)
@@ -739,8 +772,17 @@ class product_product(orm.Model):
             _logger.info(u'Cache {cache} of {product}'.format(cache=cache_length, product=len(product_ids)))
             product_to_browse_ids = list(set(product_ids)-set(cache_ids))
             if product_to_browse_ids:
-                for product in self.browse(cr, uid, product_to_browse_ids, context):
-                    cost_price = product.cost_price
+                if CACHE_TYPE == 'redis':
+                    workers = multiprocessing.cpu_count()
+                    threads = []
+                    for split in _chunkIt(product_to_browse_ids, workers):
+                        if split:
+                            thread = self.UpdateCachePrice(cr, uid, self, split, context)
+                            thread.start()
+                            threads.append(thread)
+                else:
+                    for product in self.browse(self.cr, self.uid, self.product_ids, self.context):
+                        cost_price = product.cost_price
 
         return True
 
