@@ -21,15 +21,13 @@
 #
 ##############################################################################
 
-from tools.translate import _
-
+import multiprocessing
 from datetime import date, datetime
 
+import pooler
 from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
-from profilehooks import profile
-import multiprocessing
-import pooler
+from tools.translate import _
 
 
 def _chunkIt(seq, size):
