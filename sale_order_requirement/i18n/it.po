@@ -584,6 +584,12 @@ msgid "Print All production Order"
 msgstr "Stampa tutti gli Ordini di Produzione"
 
 #. module: sale_order_requirement
+#: view:order.requirement.line:0
+#: view:stock.picking:0
+msgid "Print BOM"
+msgstr "Stampa Distinta Base esplosa"
+
+#. module: sale_order_requirement
 #: field:stock.move,temp_mrp_bom_ids:0
 msgid "Sale Orders"
 msgstr "Ordini di Vendita"

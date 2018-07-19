@@ -180,6 +180,15 @@ class StockMove(orm.Model):
 
         return self.pool['account.invoice'].print_report(cr, uid, production_ids, 'mrp.report_mrp_production_report', context)
 
+    def print_bom_explode(self, cr, uid, ids, context):
+        mrp_bom_obj = self.pool['mrp.bom']
+        product_ids = []
+        for stock_move in self.browse(cr, uid, ids, context):
+            if stock_move.product_id:
+                product_ids.append(stock_move.product_id.id)
+        bom_ids = mrp_bom_obj.search(cr, uid, [('product_id', 'in', product_ids)], context=context)
+        return self.pool['account.invoice'].print_report(cr, uid, bom_ids, 'mrp.report_bom_structure', context)
+
     def action_view_bom(self, cr, uid, ids, context=None):
         line = self.browse(cr, uid, ids, context)[0]
 

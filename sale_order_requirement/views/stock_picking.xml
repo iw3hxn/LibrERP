@@ -23,8 +23,10 @@
                 <xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='product_id']"
                        position="before">
                     <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in"/>
-                    <button name="print_production_order" string="Print" type="object" help="Print All production Order"
+                    <button name="print_bom_explode" string="Print BOM" type="object" icon="gtk-print"/>
+                    <button name="print_production_order" string="Print All production Order" type="object" help="Print All production Order"
                             icon="gtk-print"/>
+
                 </xpath>
                 <xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='goods_ready']" position="after">
                     <field name="sale_id" invisible="0"/>
