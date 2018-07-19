@@ -24,7 +24,7 @@
 
 {
     "name": "Core extended",
-    "version": "2.1.17.1",
+    "version": "2.1.18.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Base",

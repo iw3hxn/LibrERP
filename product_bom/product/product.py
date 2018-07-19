@@ -21,6 +21,9 @@ CACHE_TYPE = config.get('cache_type', 'dictionary')
 
 
 class product_product(orm.Model):
+    """
+    Inherit Product in order to add an "Bom Stock" field
+    """
 
     class UpdateCachePrice(multiprocessing.Process):
 
@@ -30,6 +33,7 @@ class product_product(orm.Model):
             self.uid = uid
             self.context = context
             self.product_ids = split_ids
+
             multiprocessing.Process.__init__(self)
 
         def run(self):
@@ -37,17 +41,17 @@ class product_product(orm.Model):
                 for product in self.product_product_obj.browse(self.cr, self.uid, self.product_ids, self.context):
                     cost_price = product.cost_price
 
+                self.cr.commit()
+                return True
             except Exception as e:
-                # Annulla le modifiche fatte
+                # Rollback
                 _logger.error(u'Error: {error}'.format(error=e))
                 self.cr.rollback()
-            self.cr.commit()
-            self.cr.close()
-            return True
+                return False
 
-    """
-    Inherit Product in order to add an "Bom Stock" field
-    """
+        def __del__(self):
+            self.cr.close()
+
     _inherit = 'product.product'
     
     # def _get_prefered_supplier(self, cr, uid, ids, field_name, args, context):
@@ -60,10 +64,15 @@ class product_product(orm.Model):
         super(product_product, self).__init__(cr, uid)
 
         if CACHE_TYPE == 'redis':
-            from openerp.addons.core_extended.redis import Redis
-            host = config.get('redis_host', 'localhost')
+            try:
+                from openerp.addons.core_extended.redis import Redis
+                host = config.get('redis_host', 'localhost')
 
-            self.product_cost_cache = Redis(host, database=cr.db_name, model=self._name)
+                self.product_cost_cache = Redis(host, database=cr.db_name, model=self._name)
+            except:
+                _logger.error("Unable to import Redis")
+                from openerp.addons.core_extended.dict_cache import SimpleCache
+                self.product_cost_cache = SimpleCache()
         else:
             from openerp.addons.core_extended.dict_cache import SimpleCache
             self.product_cost_cache = SimpleCache()
@@ -755,7 +764,7 @@ class product_product(orm.Model):
     # @profile(immediate=True)
     def update_cache_price(self, cr, uid, context=None):
         """
-        This Function is call by scheduler.
+        This Function is called by scheduler.
         """
         def _chunkIt(seq, size):
             newseq = []
@@ -765,23 +774,31 @@ class product_product(orm.Model):
             return newseq
 
         context = context or self.pool['res.users'].context_get(cr, uid)
+
         if ENABLE_CACHE:
             cache_length = len(self.product_cost_cache)
             cache_ids = self.product_cost_cache.keys()
+            cache_ids = [int(cache_id) for cache_id in cache_ids]
             product_ids = self.search(cr, uid, [], context=context)
             _logger.info(u'Cache {cache} of {product}'.format(cache=cache_length, product=len(product_ids)))
-            product_to_browse_ids = list(set(product_ids)-set(cache_ids))
+            product_to_browse_ids = list(set(product_ids) - set(cache_ids))
             if product_to_browse_ids:
+                _logger.setLevel(logging.WARNING)
+
                 if CACHE_TYPE == 'redis':
                     workers = multiprocessing.cpu_count()
-                    threads = []
+                    # threads = []
                     for split in _chunkIt(product_to_browse_ids, workers):
                         if split:
                             thread = self.UpdateCachePrice(cr, uid, self, split, context)
                             thread.start()
-                            threads.append(thread)
+                            # threads.append(thread)
+
+                    # for job in threads:
+                    #     job.join()
                 else:
                     for product in self.browse(cr, uid, product_ids, context):
+                        # Get price to trigger cache calculation
                         cost_price = product.cost_price
 
         return True
