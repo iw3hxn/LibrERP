@@ -247,13 +247,7 @@
         </tr>
       </blockTable>
     </section>
-    <para style="P8">
-      <font face="Helvetica" size="12.0"/>
-    </para>
     <section>
-      <para style="P17">
-        <font face="Helvetica" size="12.0"/>
-      </para>
       <para style="P18"><font face="Helvetica" size="20.0">INTERNAL NOTE</font> [[ o.internal_note ==[] and removeParentNode('section')]]</para>
       <para style="P14">[[ o.internal_note ]]</para>
     </section>
