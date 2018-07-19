@@ -1298,3 +1298,11 @@ class order_requirement_line(orm.Model):
                     production_ids.append(temp.mrp_production_id.id)
         return self.pool['account.invoice'].print_report(cr, uid, production_ids, 'mrp.report_mrp_production_report', context)
 
+    def print_bom_explode(self, cr, uid, ids, context):
+        mrp_bom_obj = self.pool['mrp.bom']
+        product_ids = []
+        for line in self.browse(cr, uid, ids, context):
+            if line.product_id:
+                product_ids.append(line.product_id.id)
+        bom_ids = mrp_bom_obj.search(cr, uid, [('product_id', 'in', product_ids)], context=context)
+        return self.pool['account.invoice'].print_report(cr, uid, bom_ids, 'mrp.report_bom_structure', context)
