@@ -38,67 +38,69 @@ def _chunkIt(seq, size):
     return newseq
 
 
+class GetInvoicedState(multiprocessing.Process):
+    def __init__(self, cr, uid, split_ids, res, context=None):
+        self.cr = pooler.get_db(cr.dbname).cursor()
+        self.stock_picking_obj = pooler.get_pool(self.cr.dbname).get('stock.picking')
+        self.account_invoice_obj = pooler.get_pool(self.cr.dbname).get('account.invoice')
+        self.uid = uid
+        self.context = context
+        self.ids = split_ids
+        self.res = res
+        multiprocessing.Process.__init__(self)
+
+    def run(self):
+        try:
+            for picking in self.stock_picking_obj.browse(self.cr, 1, self.ids, context=self.context):
+                self.res[picking.id] = ''
+                order = picking.sale_id
+                if order:
+                    for invoice in order.invoice_ids:
+                        self.res[picking.id] = dict(
+                            self.account_invoice_obj.fields_get(self.cr, self.uid, context=self.context)['state'][
+                                'selection'])[invoice.state]
+            self.cr.commit()
+        except Exception as e:
+            # Rollback
+            self.cr.rollback()
+        return True
+
+    def __del__(self):
+        self.cr.close()
+
+
+class GetAmountPartial(multiprocessing.Process):
+    def __init__(self, cr, uid, split_ids, res, context=None):
+        self.cr = pooler.get_db(cr.dbname).cursor()
+        self.stock_picking_obj = pooler.get_pool(self.cr.dbname).get('stock.picking')
+        self.uid = uid
+        self.context = context
+        self.ids = split_ids
+        self.res = res
+        multiprocessing.Process.__init__(self)
+
+    def run(self):
+        try:
+            for picking in self.stock_picking_obj.browse(self.cr, self.uid, self.ids, context=self.context):
+                picking_amount = 0.0
+                if picking.type != 'out':
+                    self.res[picking.id] = 0.0
+                    continue
+                for move in picking.move_lines:
+                    picking_amount += move.price_unit * move.product_qty
+                self.res[picking.id] = picking_amount
+            self.cr.commit()
+        except Exception as e:
+            # Rollback
+            self.cr.rollback()
+        return True
+
+    def __del__(self):
+        self.cr.close()
+
+
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
-
-    class GetInvoicedState(multiprocessing.Process):
-        def __init__(self, cr, uid, split_ids, res, context=None):
-            self.cr = pooler.get_db(cr.dbname).cursor()
-            self.stock_picking_obj = pooler.get_pool(self.cr.dbname).get('stock.picking')
-            self.account_invoice_obj = pooler.get_pool(self.cr.dbname).get('account.invoice')
-            self.uid = uid
-            self.context = context
-            self.ids = split_ids
-            self.res = res
-            multiprocessing.Process.__init__(self)
-
-        def run(self):
-            try:
-                for picking in self.stock_picking_obj.browse(self.cr, 1, self.ids, context=self.context):
-                    self.res[picking.id] = ''
-                    order = picking.sale_id
-                    if order:
-                        for invoice in order.invoice_ids:
-                            self.res[picking.id] = dict(
-                                self.account_invoice_obj.fields_get(self.cr, self.uid, context=self.context)['state'][
-                                    'selection'])[invoice.state]
-                self.cr.commit()
-            except Exception as e:
-                # Rollback
-                self.cr.rollback()
-            return True
-
-        def __del__(self):
-            self.cr.close()
-
-    class GetAmountPartial(multiprocessing.Process):
-        def __init__(self, cr, uid, split_ids, res, context=None):
-            self.cr = pooler.get_db(cr.dbname).cursor()
-            self.stock_picking_obj = pooler.get_pool(self.cr.dbname).get('stock.picking')
-            self.uid = uid
-            self.context = context
-            self.ids = split_ids
-            self.res = res
-            multiprocessing.Process.__init__(self)
-
-        def run(self):
-            try:
-                for picking in self.stock_picking_obj.browse(self.cr, self.uid, self.ids, context=self.context):
-                    picking_amount = 0.0
-                    if picking.type != 'out':
-                        self.res[picking.id] = 0.0
-                        continue
-                    for move in picking.move_lines:
-                        picking_amount += move.price_unit * move.product_qty
-                    self.res[picking.id] = picking_amount
-                self.cr.commit()
-            except Exception as e:
-                # Rollback
-                self.cr.rollback()
-            return True
-
-        def __del__(self):
-            self.cr.close()
 
     # def _get_invoiced_state(self, cr, uid, ids, field_name, arg, context):
     #     context = context or self.pool['res.users'].context_get(cr, uid)
@@ -120,7 +122,7 @@ class stock_picking(orm.Model):
 
             for split in _chunkIt(ids, workers):
                 if split:
-                    thread = self.GetInvoicedState(cr, uid, split, res_processor, context)
+                    thread = GetInvoicedState(cr, uid, split, res_processor, context)
                     thread.start()
                     threads.append(thread)
             # wait for invoice created
@@ -248,13 +250,13 @@ class stock_picking(orm.Model):
 
             for split in _chunkIt(ids, workers):
                 if split:
-                    thread = self.GetAmountPartial(cr, uid, split, res_processor, context)
+                    thread = GetAmountPartial(cr, uid, split, res_processor, context)
                     thread.start()
                     threads.append(thread)
             # wait for invoice created
             for job in threads:
                 job.join()
-            for key in res_processor.keys():
+            for key in res_processor:
                 res[key] = res_processor[key]
         return res
 
