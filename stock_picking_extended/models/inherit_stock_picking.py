@@ -102,35 +102,36 @@ class GetAmountPartial(multiprocessing.Process):
 class stock_picking(orm.Model):
     _inherit = "stock.picking"
 
-    # def _get_invoiced_state(self, cr, uid, ids, field_name, arg, context):
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     res = dict.fromkeys(ids, 0.0)
-    #     for picking in self.browse(cr, 1, ids, context=context):
-    #         res[picking.id] = ''
-    #         order = picking.sale_id
-    #         if order:
-    #             for invoice in order.invoice_ids:
-    #                 res[picking.id] = dict(self.pool['account.invoice'].fields_get(cr, uid, context=context)['state']['selection'])[invoice.state]
-    #     return res
     def _get_invoiced_state(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        workers = multiprocessing.cpu_count()
-        threads = []
-        res = {}
-        with multiprocessing.Manager() as manager:
-            res_processor = manager.dict()
-
-            for split in _chunkIt(ids, workers):
-                if split:
-                    thread = GetInvoicedState(cr, uid, split, res_processor, context)
-                    thread.start()
-                    threads.append(thread)
-            # wait for invoice created
-            for job in threads:
-                job.join()
-            for key in res_processor.keys():
-                res[key] = res_processor[key]
+        res = dict.fromkeys(ids, 0.0)
+        for picking in self.browse(cr, 1, ids, context=context):
+            res[picking.id] = ''
+            order = picking.sale_id
+            if order:
+                for invoice in order.invoice_ids:
+                    res[picking.id] = dict(self.pool['account.invoice'].fields_get(cr, uid, context=context)['state']['selection'])[invoice.state]
         return res
+
+    # def _get_invoiced_state(self, cr, uid, ids, field_name, arg, context):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     workers = multiprocessing.cpu_count()
+    #     threads = []
+    #     res = {}
+    #     with multiprocessing.Manager() as manager:
+    #         res_processor = manager.dict()
+    #
+    #         for split in _chunkIt(ids, workers):
+    #             if split:
+    #                 thread = GetInvoicedState(cr, uid, split, res_processor, context)
+    #                 thread.start()
+    #                 threads.append(thread)
+    #         # wait for invoice created
+    #         for job in threads:
+    #             job.join()
+    #         for key in res_processor.keys():
+    #             res[key] = res_processor[key]
+    #     return res
 
     def _credit_limit(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -227,38 +228,39 @@ class stock_picking(orm.Model):
             result[pick.id] = moves_ready
         return result
 
-    # def _get_amount_partial(self, cr, uid, ids, field_name, arg, context=None):
-    #     result = {}
-    #     for pick in self.browse(cr, uid, ids, context):
-    #         picking_amount = 0.0
-    #         if pick.type != 'out':
-    #             result[pick.id] = 0.0
-    #             continue
-    #         for move in pick.move_lines:
-    #             picking_amount += move.price_unit * move.product_qty
-    #         result[pick.id] = picking_amount
-    #     return result
     def _get_amount_partial(self, cr, uid, ids, field_name, arg, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        workers = multiprocessing.cpu_count()
-        # if workers > 1:
-        #     workers = workers / 2
-        threads = []
-        res = {}
-        with multiprocessing.Manager() as manager:
-            res_processor = manager.dict()
+        result = {}
+        for pick in self.browse(cr, uid, ids, context):
+            picking_amount = 0.0
+            if pick.type != 'out':
+                result[pick.id] = 0.0
+                continue
+            for move in pick.move_lines:
+                picking_amount += move.price_unit * move.product_qty
+            result[pick.id] = picking_amount
+        return result
 
-            for split in _chunkIt(ids, workers):
-                if split:
-                    thread = GetAmountPartial(cr, uid, split, res_processor, context)
-                    thread.start()
-                    threads.append(thread)
-            # wait for invoice created
-            for job in threads:
-                job.join()
-            for key in res_processor.keys():
-                res[key] = res_processor[key]
-        return res
+    # def _get_amount_partial(self, cr, uid, ids, field_name, arg, context=None):
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     workers = multiprocessing.cpu_count()
+    #     # if workers > 1:
+    #     #     workers = workers / 2
+    #     threads = []
+    #     res = {}
+    #     with multiprocessing.Manager() as manager:
+    #         res_processor = manager.dict()
+    #
+    #         for split in _chunkIt(ids, workers):
+    #             if split:
+    #                 thread = GetAmountPartial(cr, uid, split, res_processor, context)
+    #                 thread.start()
+    #                 threads.append(thread)
+    #         # wait for invoice created
+    #         for job in threads:
+    #             job.join()
+    #         for key in res_processor.keys():
+    #             res[key] = res_processor[key]
+    #     return res
 
     def _filter_goods_ready(self, cr, uid, obj, field_name, args, context=None):
         all_pickings_ids = self.search(cr, uid, [], context=context)
