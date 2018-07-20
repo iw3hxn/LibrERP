@@ -256,7 +256,7 @@ class stock_picking(orm.Model):
             # wait for invoice created
             for job in threads:
                 job.join()
-            for key in res_processor:
+            for key in res_processor.keys():
                 res[key] = res_processor[key]
         return res
 
