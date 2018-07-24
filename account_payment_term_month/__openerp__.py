@@ -24,7 +24,7 @@
 
 {
     "name": "Payment terms - Commercial month",
-    "version": "2.2.5.2",
+    "version": "2.2.5.3",
     "author": "Didotech s.r.l.",
     "website": "http://www.didotech.com",
     "category": "Account / Payments",
@@ -42,7 +42,7 @@ then the due date is 28-02
     ],
     "demo": [],
     "data": [
-        "payment_view.xml",
+        "views/payment_view.xml",
     ],
     "test": [
         "test/invoice_emission.yml",

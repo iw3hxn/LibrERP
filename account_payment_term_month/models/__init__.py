@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import models
-
-
+from . import inherit_account_invoice
+from . import inherit_account_payment_term
+from . import inherit_account_payment_term_line
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

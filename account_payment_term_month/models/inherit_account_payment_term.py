@@ -20,12 +20,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import time
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from openerp.osv import fields, orm
-from tools.translate import _
 
 PAYMENT_TERM_TYPE_SELECTION = [
     ('BB', 'Bonifico Bancario'),
@@ -41,34 +39,6 @@ PAYMENT_TERM_TYPE_SELECTION = [
 ]
 
 
-class account_payment_term_line(orm.Model):
-    ''' Add extra field for manage commercial payments
-    '''
-    _name = "account.payment.term.line"
-    _inherit = "account.payment.term.line"
-
-    _columns = {
-        'months': fields.integer(
-            'Number of month', required=False,
-            help="Number of month to add before computation of the day of "
-                 "month. If Date=15-01, Number of month=1, Day of Month=-1, "
-                 "then the due date is 28-02. If compiled, there is no "
-                 "need to compile the field Days."),
-        'value': fields.selection([('procent', 'Percent'),
-                           ('balance', 'Balance'),
-                           ('fixed', 'Fixed Amount'),
-                           ('tax', 'Tax Amount'),
-                           ], 'Valuation',
-                           required=True, help="""Select here the kind of valuation related to this payment term line. 
-                           Note that you should have your last line with the type 'Balance' to ensure that the whole 
-                           amount will be threated."""),
-    }
-    _defaults = {
-        'days': 0,
-        'months': 0,
-    }
-
-
 class account_payment_term(orm.Model):
     ''' Overwrite compute method, add month check and 2 months which payment
     can be delayed to the next month.'''
@@ -76,30 +46,82 @@ class account_payment_term(orm.Model):
     _inherit = "account.payment.term"
 
     _columns = {
+        'month_list': fields.char('Month List'),
+        'month_day': fields.integer('Day of payment'),
+        'tax_exclude': fields.boolean('Tax Exclude'),
+        'tax_day': fields.integer('Tax Day'),
         'month_to_be_delayed1': fields.integer(
             'First month without payments', required=False,
             help="First month with no payments allowed."),
         'days_to_be_delayed1': fields.integer(
             'Days of delay for first month', required=False, help="Number of days of delay"
-            " for first month without payments."),
+                                                                  " for first month without payments."),
         'min_day_to_be_delayed1': fields.integer('First date from which payment will be'
-            ' delayed.'),
+                                                 ' delayed.'),
         'month_to_be_delayed2': fields.integer(
             'Second month without payments', required=False,
             help="Second month with no payments allowed."),
         'days_to_be_delayed2': fields.integer(
             'Days of delay for second month', required=False, help="Number of days of delay"
-            " for second month without payments."),
+                                                                   " for second month without payments."),
         'min_day_to_be_delayed2': fields.integer('Second date from which payment will be'
-            ' delayed.'),
+                                                 ' delayed.'),
         'type': fields.selection(PAYMENT_TERM_TYPE_SELECTION, "Type of payment"),
     }
+
+    def _get_payment_term_line_vals(self, cr, uid, month_number, month_total_number, days, day2=0, context=None):
+        if day2 == -1:
+            delta = 'FM'
+        elif day2 > 0:
+            delta = u'+ {}'.format(day2)
+        else:
+            delta = ''
+
+        if month_total_number:
+            value_amount = float(100.0 / month_total_number) / 100.00
+        else:
+            value_amount = 1
+        vals = {
+            'sequence': month_number,
+            'name': u'{0} {1}'.format(days, delta),
+            'value': 'procent',
+            'days': days,
+            'days2': day2,
+            'value_amount': value_amount
+        }
+        if month_number == month_total_number:
+            vals.update({
+                'value': 'balance',
+                'value_amount': 0
+            })
+        return vals
+
+    def create(self, cr, uid, value, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if 'month_list' in value and not value.get('line_ids', False):
+            month_list = []
+            if value.get('month_list'):
+                month_list = [int(b) for b in value.get('month_list').replace('/', ',').split(',') if b]
+            month__total_number = len(month_list)
+            lines_vals = []
+            if value.get('tax_exclude', False):
+                tax_vals = self._get_payment_term_line_vals(cr, uid, 0, 0, value.get('tax_day' or 0), 0, context)
+                tax_vals.update({
+                    'value': 'tax',
+                    'value_amount': 1
+                })
+                lines_vals.append(tax_vals)
+            for month in month_list:
+                lines_vals.append(self._get_payment_term_line_vals(cr, uid, month_list.index(month) + 1, month__total_number, month, value.get('month_day' or 0), context))
+            value['line_ids'] = [(0, False, line) for line in lines_vals]
+        res = super(account_payment_term, self).create(cr, uid, value, context)
+        return res
 
     def compute(self, cr, uid, id, value, date_ref=False, context=None):
         '''Function overwritten for check also month values and 2 months with no payments
         allowed for the partner.'''
         result = []
-        context = context or {}
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not date_ref:
             date_ref = datetime.now().strftime('%Y-%m-%d')
         pt = self.browse(cr, uid, id, context=context)
@@ -129,21 +151,21 @@ class account_payment_term(orm.Model):
                         next_date = next_first_date + relativedelta(
                             days=line.days2)
                         if next_date.month == pt.month_to_be_delayed1 and \
-                                next_date.day >= pt.min_day_to_be_delayed1:
+                                        next_date.day >= pt.min_day_to_be_delayed1:
                             next_date = next_first_date + relativedelta(
                                 day=pt.days_to_be_delayed1)
                         if next_date.month == pt.month_to_be_delayed2 and \
-                                next_date.day >= pt.min_day_to_be_delayed2:
+                                        next_date.day >= pt.min_day_to_be_delayed2:
                             next_date = next_first_date + relativedelta(
                                 day=pt.days_to_be_delayed2)
                     if line.days2 > 0:
                         next_date += relativedelta(day=line.days2, months=1)
                         if next_date.month == pt.month_to_be_delayed1 and \
-                                next_date.day >= pt.min_day_to_be_delayed1:
+                                        next_date.day >= pt.min_day_to_be_delayed1:
                             next_date += relativedelta(
                                 day=pt.days_to_be_delayed1, months=1)
                         if next_date.month == pt.month_to_be_delayed2 and \
-                                next_date.day >= pt.min_day_to_be_delayed2:
+                                        next_date.day >= pt.min_day_to_be_delayed2:
                             next_date += relativedelta(
                                 day=pt.days_to_be_delayed2, months=1)
                     result.append((next_date.strftime('%Y-%m-%d'), amt))
@@ -154,59 +176,25 @@ class account_payment_term(orm.Model):
                         next_first_date = next_date + relativedelta(day=1, months=1)  # Getting 1st of next month
                         next_date = next_first_date + relativedelta(days=line.days2)
                         if next_date.month == pt.month_to_be_delayed1 and \
-                                next_date.day >= pt.min_day_to_be_delayed1:
+                                        next_date.day >= pt.min_day_to_be_delayed1:
                             next_date = next_first_date + relativedelta(
                                 day=pt.days_to_be_delayed1)
                         if next_date.month == pt.month_to_be_delayed2 and \
-                                next_date.day >= pt.min_day_to_be_delayed2:
+                                        next_date.day >= pt.min_day_to_be_delayed2:
                             next_date = next_first_date + relativedelta(
                                 day=pt.days_to_be_delayed2)
                     if line.days2 >= 0:
                         if line.days2 > 0:
                             next_date += relativedelta(day=line.days2, months=1)
                         if next_date.month == pt.month_to_be_delayed1 and \
-                                next_date.day >= pt.min_day_to_be_delayed1:
+                                        next_date.day >= pt.min_day_to_be_delayed1:
                             next_date += relativedelta(
                                 day=pt.days_to_be_delayed1, months=1)
                         if next_date.month == pt.month_to_be_delayed2 and \
-                                next_date.day >= pt.min_day_to_be_delayed2:
+                                        next_date.day >= pt.min_day_to_be_delayed2:
                             next_date += relativedelta(
                                 day=pt.days_to_be_delayed2, months=1)
                     result.append((next_date.strftime('%Y-%m-%d'), amt))
                 amount -= amt
         return result
 
-class account_invoice(orm.Model):
-    _inherit = 'account.invoice'
-
-    def onchange_payment_term_date_invoice(self, cr, uid, ids, payment_term_id, date_invoice):
-        res = {'value': {}}
-
-        if not ids:
-            return res
-
-        if not payment_term_id:
-            return res
-        context = self.pool['res.users'].context_get(cr, uid)
-        pt_obj = self.pool['account.payment.term']
-        ait_obj = self.pool['account.invoice.tax']
-
-        if not date_invoice:
-            date_invoice = time.strftime('%Y-%m-%d')
-
-        compute_taxes = ait_obj.compute(cr, uid, ids, context=context)
-        amount_tax = 0
-        for tax in compute_taxes:
-            amount_tax += compute_taxes[tax]['amount']
-        context.update({'amount_tax': amount_tax})
-
-        pterm_list = pt_obj.compute(cr, uid, payment_term_id, value=1, date_ref=date_invoice, context=context)
-
-        if pterm_list:
-            pterm_list = [line[0] for line in pterm_list]
-            pterm_list.sort()
-            res = {'value': {'date_due': pterm_list[-1]}}
-        else:
-            raise orm.except_orm(_('Data Insufficient !'),
-                                 _('The payment term of supplier does not have a payment term line!'))
-        return res

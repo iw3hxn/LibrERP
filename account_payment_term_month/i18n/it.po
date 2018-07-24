@@ -26,6 +26,26 @@ msgid "Payment Term"
 msgstr "Termine di pagamento"
 
 #. module: account_payment_term_month
+#: field:account.payment.term,month_list:0
+msgid "Month List"
+msgstr "Lista dei giorni separati da /"
+
+#. module: account_payment_term_month
+#: field:account.payment.term,month_day:0
+msgid "Day of payment"
+msgstr "Giorno del mese -1 FM"
+
+#. module: account_payment_term_month
+#: field:account.payment.term,tax_day:0
+msgid "Tax Day"
+msgstr "Giorno Tassa se scorporata"
+
+#. module: account_payment_term_month
+#: field:account.payment.term,tax_exclude:0
+msgid "Tax Exclude"
+msgstr "Scorpora Tasse"
+
+#. module: account_payment_term_month
 #: field:account.payment.term,days_to_be_delayed1:0
 msgid "Days of delay for first month"
 msgstr "Giorni di dilazione per il primo mese escluso"
