@@ -40,17 +40,21 @@ class product_product(orm.Model):
             try:
                 for product in self.product_product_obj.browse(self.cr, self.uid, self.product_ids, self.context):
                     cost_price = product.cost_price
-
                 self.cr.commit()
                 return True
             except Exception as e:
                 # Rollback
                 _logger.error(u'Error: {error}'.format(error=e))
                 self.cr.rollback()
-                return False
+            finally:
+                if not self.cr.closed:
+                    self.cr.close()
+            return True
 
         def __del__(self):
-            self.cr.close()
+            if not self.cr.closed:
+                self.cr.close()
+            return True
 
     _inherit = 'product.product'
     
