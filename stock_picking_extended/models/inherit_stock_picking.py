@@ -255,7 +255,7 @@ class stock_picking(orm.Model):
 
     def _get_amount_partial(self, cr, uid, ids, field_name, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        workers = 1 #  multiprocessing.cpu_count()
+        workers = multiprocessing.cpu_count()
         # if workers > 1:
         #     workers = workers / 2
         threads = []
