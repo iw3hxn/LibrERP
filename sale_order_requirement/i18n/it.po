@@ -609,3 +609,21 @@ msgstr "Ordine Vendita"
 msgid "Product BOM"
 msgstr "Prodotto in Distinta"
 
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement.py:135
+#, python-format
+msgid "Please delete below"
+msgstr "Per farlo cancellare i documenti sotto elencati"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement.py:95
+#, python-format
+msgid "Order"
+msgstr "Ordine Acquisto"
+
+#. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/order_requirement.py:95
+#, python-format
+msgid "Production"
+msgstr "Ordine di Produzione"
+

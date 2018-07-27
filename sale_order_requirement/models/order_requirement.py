@@ -74,11 +74,40 @@ class order_requirement(orm.Model):
     _order = 'date desc'
 
     def set_state_draft(self, cr, uid, ids, context):
-        for order in self.browse(cr, uid, ids, context):
-            for line in order.order_requirement_line_ids:
-                if line.state != 'draft':
-                    print line
-                    # todo cancel purchase order and purchase production order
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        order_requirement_line_obj = self.pool['order.requirement.line']
+        line_ids = order_requirement_line_obj.search(cr, uid, [('order_requirement_id', 'in', ids), ('state', '!=', 'draft')], context=context)
+        purchase_order = []
+        production_order = []
+        description = []
+        if line_ids:
+            # search PO
+            order_ids = temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', 'in', line_ids), ('purchase_order_id', '!=', False)], context=context)
+            production_ids = temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', 'in', line_ids), ('mrp_production_id', '!=', False)], context=context)
+            for temp_mrp_bom in temp_mrp_bom_obj.browse(cr, uid, production_ids + order_ids, context):
+                if temp_mrp_bom.purchase_order_id:
+                    if temp_mrp_bom.purchase_order_id.name not in purchase_order:
+                        purchase_order.append(temp_mrp_bom.purchase_order_id.name)
+                if temp_mrp_bom.mrp_production_id:
+                    if temp_mrp_bom.mrp_production_id.name not in production_order:
+                        production_order.append(temp_mrp_bom.mrp_production_id.name)
+
+        if purchase_order or production_order:
+            description.append(_(u'Please delete below'))
+        if purchase_order:
+            description.append(_(u'Order'))
+            description += purchase_order
+        if production_order:
+            description.append(_(u'Production'))
+            description += production_order
+
+        if description:
+            raise orm.except_orm(_(u'Error !'), '\n'.join(description))
+
+        order_requirement_line_obj.write(cr, uid, line_ids, {'state': 'draft'}, context)
+        order_requirement_line_obj.action_reload_bom(cr, uid, line_ids, context)
+        self.write(cr, uid, ids, {'state': 'draft'}, context)
+        return True
 
     # def set_state_done(self, cr, uid, ids, context):
         # TODO set_state_done, now commented in view
