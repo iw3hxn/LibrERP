@@ -56,6 +56,11 @@ class product_product(orm.Model):
                 self.cr.close()
             return True
 
+        def terminate(self):
+            if not self.cr.closed:
+                self.cr.close()
+            return self.terminate()
+
     _inherit = 'product.product'
     
     # def _get_prefered_supplier(self, cr, uid, ids, field_name, args, context):

@@ -74,6 +74,11 @@ class GetInvoicedState(multiprocessing.Process):
             self.cr.close()
         return True
 
+    def terminate(self):
+        if not self.cr.closed:
+            self.cr.close()
+        return self.terminate()
+
 
 class GetAmountPartial(multiprocessing.Process):
     def __init__(self, cr, uid, split_ids, res, context=None):
@@ -110,6 +115,11 @@ class GetAmountPartial(multiprocessing.Process):
         if not self.cr.closed:
             self.cr.close()
         return True
+
+    def terminate(self):
+        if not self.cr.closed:
+            self.cr.close()
+        return self.terminate()
 
 
 class stock_picking(orm.Model):
@@ -266,6 +276,7 @@ class stock_picking(orm.Model):
             for split in _chunkIt(ids, workers):
                 if split:
                     thread = GetAmountPartial(cr, uid, split, res_processor, context)
+                    thread.daemon = True
                     thread.start()
                     threads.append(thread)
             # wait for invoice created
@@ -273,6 +284,12 @@ class stock_picking(orm.Model):
                 job.join()
             for key in res_processor.keys():
                 res[key] = res_processor[key]
+
+        import pdb; pdb.set_trace()
+
+        for job in threads:
+            job.terminate()
+
         return res
 
     def _filter_goods_ready(self, cr, uid, obj, field_name, args, context=None):
