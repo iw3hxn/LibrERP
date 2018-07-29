@@ -285,7 +285,6 @@ class stock_picking(orm.Model):
             for key in res_processor.keys():
                 res[key] = res_processor[key]
 
-        import pdb; pdb.set_trace()
 
         for job in threads:
             job.terminate()
