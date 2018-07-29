@@ -77,7 +77,7 @@ class GetInvoicedState(multiprocessing.Process):
     def terminate(self):
         if not self.cr.closed:
             self.cr.close()
-        return self.terminate()
+        return True
 
 
 class GetAmountPartial(multiprocessing.Process):
@@ -119,7 +119,7 @@ class GetAmountPartial(multiprocessing.Process):
     def terminate(self):
         if not self.cr.closed:
             self.cr.close()
-        return self.terminate()
+        return True
 
 
 class stock_picking(orm.Model):
@@ -284,7 +284,6 @@ class stock_picking(orm.Model):
                 job.join()
             for key in res_processor.keys():
                 res[key] = res_processor[key]
-
 
         for job in threads:
             job.terminate()

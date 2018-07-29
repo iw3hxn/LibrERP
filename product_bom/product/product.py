@@ -59,7 +59,7 @@ class product_product(orm.Model):
         def terminate(self):
             if not self.cr.closed:
                 self.cr.close()
-            return self.terminate()
+            return True
 
     _inherit = 'product.product'
     
