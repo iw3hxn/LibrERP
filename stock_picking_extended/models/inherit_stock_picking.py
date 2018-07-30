@@ -23,7 +23,7 @@
 
 import multiprocessing
 from datetime import date, datetime
-import time
+
 import pooler
 from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
@@ -77,7 +77,7 @@ class GetInvoicedState(multiprocessing.Process):
     def terminate(self):
         if not self.cr.closed:
             self.cr.close()
-        return True
+        return super(GetAmountPartial, self).terminate()
 
 
 class GetAmountPartial(multiprocessing.Process):
@@ -119,7 +119,7 @@ class GetAmountPartial(multiprocessing.Process):
     def terminate(self):
         if not self.cr.closed:
             self.cr.close()
-        return True
+        return super(GetAmountPartial, self).terminate()
 
 
 class stock_picking(orm.Model):
@@ -276,7 +276,6 @@ class stock_picking(orm.Model):
             for split in _chunkIt(ids, workers):
                 if split:
                     thread = GetAmountPartial(cr, uid, split, res_processor, context)
-                    thread.daemon = True
                     thread.start()
                     threads.append(thread)
             # wait for invoice created
