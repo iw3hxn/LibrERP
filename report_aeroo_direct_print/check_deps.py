@@ -30,22 +30,17 @@
 #
 ##############################################################################
 
-from osv import osv
-from tools.translate import _
+import logging
+_logger = logging.getLogger(__name__)
 
 __all__ = [
     'check_deps',
 ]
 
+
 def check_deps(check_list):
-    error = False
-    import_errors = []
     for imp in check_list:
         try:
             exec imp in {}
-        except ImportError,e:
-            error = True
-            import_errors.append(str(e))
-    if error:
-        raise osv.except_osv(_('Warning!')+' '+_('Unmet python dependencies!'), '\n'.join(import_errors))
-
+        except ImportError, e:
+            _logger.debug('Cannot `import {imp}`'.format(imp=imp))
