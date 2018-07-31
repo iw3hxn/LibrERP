@@ -34,8 +34,14 @@ from osv import fields
 from osv import osv
 import tools
 import os, base64
-import cups
 import urllib2
+import logging
+_logger = logging.getLogger(__name__)
+try:
+    import cups
+except ImportError:
+    _logger.debug('Cannot `import cups`')
+
 
 _url = 'http://www.alistek.com/aeroo_banner/v6_1_report_aeroo_direct_print.png'
 
