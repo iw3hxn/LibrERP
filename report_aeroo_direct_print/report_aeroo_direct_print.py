@@ -29,16 +29,28 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
-from tools.translate import _
+import logging
+_logger = logging.getLogger(__name__)
+
+from tempfile import NamedTemporaryFile
 
 import netsvc
-import cups
-from tempfile import NamedTemporaryFile
-import md5
-SUPPORTED_PRINT_FORMAT = ('pdf','raw')
-SPECIAL_PRINTERS = ('user-def-gen-purpose-printer','user-def-label-printer')
+from osv import fields
+from osv import osv
+from tools.translate import _
+try:
+    import cups
+except ImportError:
+    _logger.debug('Cannot `import cups`')
+try:
+    import md5
+except ImportError:
+    _logger.debug('Cannot `import md5`')
+
+
+SUPPORTED_PRINT_FORMAT = ('pdf', 'raw')
+SPECIAL_PRINTERS = ('user-def-gen-purpose-printer', 'user-def-label-printer')
+
 
 class report_print_actions(osv.osv_memory):
     _name = 'aeroo.print_actions'
