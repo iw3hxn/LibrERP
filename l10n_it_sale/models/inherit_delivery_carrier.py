@@ -53,3 +53,9 @@ class delivery_carrier(orm.Model):
         return False
 
     _order = "name"
+
+    _columns = {
+        'partner_id': fields.many2one('res.partner', 'Transport Company', required=True, domain="[('supplier', '=', True)]",
+                                      help="The partner that is doing the delivery service."),
+        'product_id': fields.many2one('product.product', 'Delivery Product', required=True, domain="[('type', '=', 'service')]"),
+    }
