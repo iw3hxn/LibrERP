@@ -71,3 +71,9 @@ class stock_picking(orm.Model):
                         invoice.button_compute()
                     invoice.write({'advance_order_id': False})
         return res
+
+    def _get_group_keys(self, cr, uid, partner, picking, context=None):
+        res = super(stock_picking, self)._get_group_keys(cr, uid, partner, picking)
+        if picking.sale_id and picking.sale_id.payment_term:
+            res = '{0}_{1}'.format(res, picking.sale_id.payment_term.id)
+        return res
