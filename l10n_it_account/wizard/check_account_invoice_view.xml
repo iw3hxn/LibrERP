@@ -19,7 +19,7 @@
                         <field name="check_supplier_invoice_number" invisible="1"/>
                         <field name="supplier_invoice_number" attrs="{'invisible':[('check_supplier_invoice_number', '=', False)], 'required':[('check_supplier_invoice_number', '=', True)]}"/>
                         <field name="show_message" invisible="1"/>
-                        <field name="warning" attrs="{'invisible':[('show_message', '=', False)]}" nolabel="1"/>
+                        <field name="warning" attrs="{'invisible':[('show_message', '=', False)]}" nolabel="1" readonly="1"/>
                     </group>
                     <group colspan="3" col="2">
                         <button icon="gtk-cancel" special="cancel" string="Cancel"/>
