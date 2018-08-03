@@ -251,8 +251,13 @@ class account_invoice(orm.Model):
     def create_form_validate_check(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         context.update(no_except=True)
-
-        if self.invoice_validate_check(cr, uid, ids, context):
+        invoice = self.browse(cr, uid, ids[0], context)
+        warning = False
+        if len(ids) == 1:
+            partner = invoice.partner_id
+            if partner.invoice_warn == 'warning':
+                warning = partner.invoice_warn_msg
+        if self.invoice_validate_check(cr, uid, ids, context) and not warning:
             wf_service = netsvc.LocalService('workflow')
             for id in ids:
                 wf_service.trg_validate(uid, 'account.invoice', id, 'invoice_open', cr)
@@ -260,7 +265,11 @@ class account_invoice(orm.Model):
         elif len(ids) == 1:
             context = context.update(active_ids=ids, active_model=self._name)
             form_vals = {}
-            invoice = self.browse(cr, uid, ids[0], context)
+            if warning:
+                form_vals.update({
+                    'show_message': True,
+                    'warning': warning
+                })
             if invoice.type in ['out_invoice', 'out_refund']:
                 form_vals.update({
                     'check_invoice_payment_term': invoice.company_id.check_invoice_payment_term and not invoice.payment_term,
@@ -321,6 +330,10 @@ class account_invoice(orm.Model):
 
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.type in ['out_invoice', 'out_refund']:
+                partner = invoice.partner_id
+                if partner.invoice_warn == 'block':
+                    raise orm.except_orm(_('Alert for %s !') % (partner.name), partner.invoice_warn_msg)
+
                 if invoice.fiscal_position and invoice.fiscal_position.is_tax_exemption:
                     # i'm on a Lettera intento, so check validity
                     date_invoice = invoice.date_invoice or datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)

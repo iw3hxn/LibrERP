@@ -10874,3 +10874,8 @@ msgstr "P.IVA"
 #: view:check.account.invoice:0
 msgid "Mandatory field for validate invoice"
 msgstr "Campi obbligatori per l'emissione della fattura"
+
+#. module: l10n_it_account
+#: field:check.account.invoice,message:0
+msgid "Message"
+msgstr "Messaggio"

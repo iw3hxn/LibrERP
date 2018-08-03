@@ -51,6 +51,8 @@ class check_account_invoice(orm.TransientModel):
         'vat': fields.char('Vat', size=15, required=False),
         'check_supplier_invoice_number': fields.boolean('Supplier invoice nr'),
         'supplier_invoice_number': fields.char('Supplier invoice nr', size=32),
+        'show_message': fields.boolean('Show Message'),
+        'warning': fields.text('Message'),
     }
 
     def action_invoice_validate(self, cr, uid, ids, context):

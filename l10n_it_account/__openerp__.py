@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation',
-    'version': '3.22.49.45',
+    'version': '3.23.50.46',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
