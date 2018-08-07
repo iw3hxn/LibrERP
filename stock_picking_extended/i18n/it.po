@@ -543,6 +543,11 @@ msgid "Expected Date"
 msgstr "Data prevista"
 
 #. module: stock_picking_extended
+#: field:stock.picking,picked_rate:0
+msgid "Ready"
+msgstr "Pronto"
+
+#. module: stock_picking_extended
 #: field:stock.move,sale_id:0
 msgid "Sale Order"
 msgstr "Ordine Cliente"

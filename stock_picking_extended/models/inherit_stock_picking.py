@@ -212,11 +212,40 @@ class stock_picking(orm.Model):
         for picking in self.browse(cr, uid, ids, context=context):
             res[picking.id] = {
                 'order_sent': False,
-                'order_ready': False
+                'picked_rate': 0.0
             }
+
+            # if picking.ddt_number:
+            #     res[picking.id]['order_sent'] = True
+
             if picking.state == 'done':
-                res[picking.id]['order_ready'] = True
+                res[picking.id].update(
+                    {
+                        # 'order_ready': True,
+                        'picked_rate': 100.0
+                    })
+            else:
+                move_obj = self.pool['stock.move']
+                total_move_ids = move_obj.search(cr, uid, [('picking_id', '=', picking.id)], context=context)
+                ready_move_ids = move_obj.search(cr, uid, [('picking_id', '=', picking.id), ('state', '=', 'assigned')],
+                                                 context=context)
+                total_move = len(total_move_ids)
+                ready_move = len(ready_move_ids)
+                if total_move:
+                    ratio = (ready_move * 100.0) / total_move
+                    res[picking.id].update(
+                        {
+                            'picked_rate': ratio
+                        })
+                    if ratio == 100.0:
+                        picking.write({'order_ready': True})
         return res
+
+    def _get_picking_move(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        stock_picking_model = self.pool['stock.picking']
+        picking_ids = stock_picking_model.search(cr, uid, [('move_lines', 'in', ids)], context=context)
+        return picking_ids
 
     def _get_picking_sale(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -337,8 +366,19 @@ class stock_picking(orm.Model):
             ('client', 'Client'),
             ('internal', 'Internal'),
         ], readonly=True),
-        'order_sent': fields.function(_get_order_board_state, type='boolean', multi='order_state', string='Order Sent'),
-        'order_ready': fields.function(_get_order_board_state, type='boolean', multi='order_state', string='Order Ready'),
+        'picked_rate': fields.function(_get_order_board_state, type='float', multi='order_state', string='Ready', store={
+                                           'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['state'], 5000),
+                                           'stock.move': (_get_picking_move, ['state'], 6000),
+                                       }),
+        'picked_rate': fields.function(_get_order_board_state, type='float', multi='order_state', string='Ready', store={
+                                           'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['state'], 5000),
+                                           'stock.move': (_get_picking_move, ['state'], 6000),
+                                       }),
+        'order_sent': fields.function(_get_order_board_state, type='boolean', multi='order_state', string='Order Sent', store={
+                                           'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['state'], 5000),
+                                           'stock.move': (_get_picking_move, ['state'], 6000),
+                                       }),
+        'order_ready': fields.boolean(string='Order Ready'),
         'creation_date': fields.related('sale_id', 'create_date', type='date', string='Inserted on', store=False,
                                         readonly=True),
         'street': fields.related('address_delivery_id', 'street', type='char', string='Street', store=False),
