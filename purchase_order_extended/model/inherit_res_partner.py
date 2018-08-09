@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2017 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2018 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -21,7 +21,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import inherit_purchase_order
-from . import inherit_purchase_order_line
-from . import inherit_res_partner
-from . import inherit_stock_picking
+
+from openerp.osv import orm, fields
+
+
+class res_partner(orm.Model):
+    _inherit = 'res.partner'
+
+    _columns = {
+        'property_payment_term_payable': fields.property(
+            'account.payment.term',
+            type='many2one',
+            relation='account.payment.term',
+            string='Payment Term for Supplier',
+            view_load=True,
+            help="This payment term will be used instead of the default one for the current partner for supplier moves."),
+
+    }
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <record id="view_partner_form_property_payment" model="ir.ui.view">
+            <field name="name">res.partner.virtual.property.payment</field>
+            <field name="model">res.partner</field>
+            <field name="priority">1</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="property_payment_term" position="before">
+                        <newline/>
+                        <field name="property_payment_term_payable" widget="selection" />
+                    </field>
+                </data>
+            </field>
+        </record>
+
+    </data>
+</openerp>
