@@ -26,5 +26,5 @@ class account_voucher(orm.Model):
     def onchange_amount(self, cr, uid, ids, amount, rate, partner_id, journal_id, currency_id, ttype, date, payment_rate_currency_id, company_id, context=None):
         company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
         if company.disable_voucher_onchange_amount:
-            return False
+            return {'value': {}}
         return super(account_voucher, self).onchange_amount(cr, uid, ids, amount, rate, partner_id, journal_id, currency_id, ttype, date, payment_rate_currency_id, company_id, context)
