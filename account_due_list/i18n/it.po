@@ -123,7 +123,7 @@ msgstr "Data Fattura"
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Total Credit"
-msgstr "Credito Totale"
+msgstr "Totale AVERE"
 
 #. module: account_due_list
 #: view:account.move.line:0
@@ -178,7 +178,7 @@ msgstr "Carta di Credito"
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "Total Debit"
-msgstr "Debito Totale"
+msgstr "Totale DARE"
 
 #. module: account_due_list
 #: sql_constraint:account.move.line:0

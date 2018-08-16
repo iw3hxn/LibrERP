@@ -184,7 +184,7 @@ msgstr "Cancella movimento contabile"
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Total Credit"
-msgstr "Totale Avere"
+msgstr "Totale AVERE"
 
 #. module: account_asset
 #: model:ir.ui.menu,name:account_asset.menu_print_asset_report
@@ -245,7 +245,7 @@ msgstr "Voce di Giornale"
 #. module: account_asset
 #: view:account.asset.asset:0
 msgid "Total Debit"
-msgstr "Totale Dare"
+msgstr "Totale DARE"
 
 #. module: account_asset
 #: field:account.asset.depreciation.line,amount:0

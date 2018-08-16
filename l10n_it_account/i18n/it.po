@@ -146,7 +146,7 @@ msgstr "Saldo scaduto"
 #. module: account
 #: view:account.move:0
 msgid "Total Debit"
-msgstr "Debito Totale"
+msgstr "Totale DARE"
 
 #. module: account
 #: view:account.unreconcile:0
@@ -458,7 +458,7 @@ msgstr "Conto predefinito di debito"
 #. module: account
 #: view:account.move:0
 msgid "Total Credit"
-msgstr "Credito Totale"
+msgstr "Totale AVERE"
 
 #. module: l10n_it_account
 #: model:account.payment.term,name:l10n_it_account.payment_term_120_days_10_monthly_1
@@ -745,7 +745,7 @@ msgstr "Per la riconciliazione si deve avere la stessa azienda per tutte le regi
 #: model:ir.actions.act_window,name:account.action_aged_receivable
 #, python-format
 msgid "Receivable Accounts"
-msgstr "Conti di Credito"
+msgstr "Conti clienti"
 
 #. module: l10n_it_account
 #: model:account.payment.term,note:l10n_it_account.payment_term_120_days_1
@@ -1666,13 +1666,13 @@ msgstr "Ricerca Movimenti Bancari"
 #. module: account
 #: view:account.move.line:0
 msgid "Unposted Journal Items"
-msgstr "Registrazioni contabili non confermate"
+msgstr "Movimenti non definitivi"
 
 #. module: account
 #: view:account.chart.template:0
 #: field:account.chart.template,property_account_payable:0
 msgid "Payable Account"
-msgstr "Conto di debito"
+msgstr "Conto fornitori"
 
 #. module: l10n_it_account
 #: model:account.payment.term,note:l10n_it_account.payment_term_120_days_10_monthly_1
@@ -1770,7 +1770,7 @@ msgstr "Fatturazione"
 #: code:addons/account/report/account_partner_balance.py:115
 #, python-format
 msgid "Unknown Partner"
-msgstr "Partner sconosciuto"
+msgstr "Controparte sconosciuta"
 
 #. module: account
 #: field:account.tax.code,sum:0
@@ -2671,7 +2671,7 @@ msgstr "30% Anticipo, Resto a 30 giorni"
 #. module: account
 #: view:account.entries.report:0
 msgid "Unreconciled entries"
-msgstr "Voci non riconciliate"
+msgstr "Registrazioni non riconciliate"
 
 #. module: account
 #: field:account.invoice.tax,base_code_id:0
@@ -2947,7 +2947,7 @@ msgstr "Genera automaticamente le voci basandosi su cosa è stato inserito nel s
 #: model:ir.actions.report.xml,name:account.account_aged_partner_balance
 #: model:ir.ui.menu,name:account.menu_aged_trial_balance
 msgid "Aged Partner Balance"
-msgstr "Estratto Conto Partner Periodico"
+msgstr "Saldo cliente - fornitore valorizzato per anzianita"
 
 #. module: account
 #: model:process.transition,name:account.process_transition_entriesreconcile0
@@ -3365,7 +3365,7 @@ msgstr "Inizia il"
 #. module: account
 #: model:ir.model,name:account.model_account_partner_ledger
 msgid "Account Partner Ledger"
-msgstr "Mastrino  partner"
+msgstr "Estratto conto cliente - fornitore"
 
 #. module: account
 #: help:account.journal.column,sequence:0
@@ -3598,7 +3598,7 @@ msgstr "Imposte su acquisti"
 #. module: account
 #: view:validate.account.move.lines:0
 msgid "All selected journal entries will be validated and posted. It means you won't be able to modify their accounting fields anymore."
-msgstr "Tutte le voci selezionate nel giornale verranno validate e confermate. Significa che non sarà più possibile modificarle."
+msgstr "Tutte le scritture selezionate saranno validate e rese definitive. Non si potranno modificare in futuro."
 
 #. module: account
 #: model:ir.actions.report.xml,name:account.account_transfers
@@ -4430,7 +4430,7 @@ msgstr "Utente Paypal (generalmnete un'email) per ricevere pagamenti online."
 #: code:addons/account/report/common_report_header.py:68
 #, python-format
 msgid "All Posted Entries"
-msgstr "Tutte le registrazioni Pubblicate"
+msgstr "Tutte le scritture definitive"
 
 #. module: account
 #: code:addons/account/account_bank_statement.py:367
@@ -5618,7 +5618,7 @@ msgstr "Quantita' dei prodotti"
 #: selection:account.move,state:0
 #: view:account.move.line:0
 msgid "Unposted"
-msgstr "Non Pubblicate"
+msgstr "Non definitivi"
 
 #. module: account
 #: view:account.change.currency:0
@@ -5860,7 +5860,7 @@ msgstr "Storno"
 #. module: account
 #: field:res.partner,debit:0
 msgid "Total Payable"
-msgstr "Totale debito"
+msgstr "Totale a debito"
 
 #. module: account
 #: model:account.account.type,name:account.data_account_type_income
@@ -5930,7 +5930,7 @@ msgstr "Valutazione"
 #: code:addons/account/report/account_partner_ledger.py:399
 #, python-format
 msgid "Receivable and Payable Accounts"
-msgstr "Conti di credito e debito"
+msgstr "Conti clienti e fornitori"
 
 #. module: account
 #: field:account.fiscal.position.account.template,position_id:0
@@ -6761,7 +6761,7 @@ msgstr "Stato in \"bozza\""
 #: code:addons/account/account_move_line.py:1061
 #, python-format
 msgid "Total debit"
-msgstr "Totale debiti"
+msgstr "Totale DARE"
 
 #. module: account
 #: code:addons/account/account_move_line.py:827
@@ -7179,7 +7179,7 @@ msgstr "A statement with manual entries becomes a draft statement."
 #. module: account
 #: view:account.aged.trial.balance:0
 msgid "Aged Partner Balance is a more detailed report of your receivables by intervals. When opening that report, OpenERP asks for the name of the company, the fiscal period and the size of the interval to be analyzed (in days). OpenERP then calculates a table of credit balance by period. So if you request an interval of 30 days OpenERP generates an analysis of creditors for the past month, past two months, and so on. "
-msgstr "Aged Partner Balance is a more detailed report of your receivables by intervals. When opening that report, OpenERP asks for the name of the company, the fiscal period and the size of the interval to be analyzed (in days). OpenERP then calculates a table of credit balance by period. So if you request an interval of 30 days OpenERP generates an analysis of creditors for the past month, past two months, and so on. "
+msgstr "Il saldo clienti- fornitori per anzianita' e' un rapporto che dettaglia per intervalli di alzianità LibrERP calcola una tabella di saldi classificandola per data iniziale. Se quindi viene richiesto un intervallo di 30gg Odoo genera un'analisi dei saldi a " credito per il mese passato, per i due mesi passati e così via. "
 
 #. module: account
 #: field:account.invoice,origin:0
@@ -7679,7 +7679,7 @@ msgstr "Questo campo facoltativo permette di collegare un modello di conto ad un
 #. module: account
 #: view:account.move:0
 msgid "Unposted Journal Entries"
-msgstr "Registrazioni non PUbblicate"
+msgstr "Registrazioni non definitive"
 
 #. module: account
 #: view:product.product:0
@@ -7760,7 +7760,7 @@ msgstr "Maggio"
 #: code:addons/account/report/account_partner_ledger.py:397
 #, python-format
 msgid "Payable Accounts"
-msgstr "Conti di Debito"
+msgstr "Conti fornitori"
 
 #. module: account
 #: model:ir.model,name:account.model_account_chart_template
@@ -7947,7 +7947,7 @@ msgstr "Riga Movimento di Cassa"
 #: model:ir.actions.report.xml,name:account.account_3rdparty_ledger_other
 #: model:ir.ui.menu,name:account.menu_account_partner_ledger
 msgid "Partner Ledger"
-msgstr "Mastro del partner"
+msgstr "Estratto conto cliente - fornitore"
 
 #. module: account
 #: selection:account.tax.template,type:0
@@ -8501,7 +8501,7 @@ msgstr "Riconciliazione"
 #: view:account.chart.template:0
 #: field:account.chart.template,property_account_receivable:0
 msgid "Receivable Account"
-msgstr "Conto di Credito"
+msgstr "Conto clienti"
 
 #. module: account
 #: view:account.invoice:0
@@ -8671,7 +8671,7 @@ msgstr "Il codice del conto deve essere unico per ogni azienda!"
 #: view:account.invoice:0
 #: model:ir.actions.act_window,name:account.act_account_journal_2_account_invoice_opened
 msgid "Unpaid Invoices"
-msgstr "Fatture Non Pagate"
+msgstr "Partite aperte"
 
 #. module: account
 #: code:addons/account/account_invoice.py:562
@@ -9155,7 +9155,7 @@ msgstr "Vista Giornale"
 #: code:addons/account/account_move_line.py:1064
 #, python-format
 msgid "Total credit"
-msgstr "Totale crediti"
+msgstr "Totale AVERE"
 
 #. module: account
 #: model:process.transition,note:account.process_transition_suppliervalidentries0
@@ -9262,7 +9262,7 @@ msgstr "Metodo di chiusura"
 #: model:account.account.type,name:account.data_account_type_payable
 #: selection:account.entries.report,type:0
 msgid "Payable"
-msgstr "Debito"
+msgstr "Debiti Fornitori"
 
 #. module: account
 #: view:report.account.sales:0
@@ -10103,7 +10103,7 @@ msgstr "Sign For Parent"
 #. module: account
 #: model:ir.model,name:account.model_account_balance_report
 msgid "Trial Balance Report"
-msgstr "Trial Balance Report"
+msgstr "Rapporto situazione contabile"
 
 #. module: account
 #: model:ir.actions.act_window,name:account.action_bank_statement_draft_tree
@@ -10257,7 +10257,7 @@ msgstr "La registrazione è già stata riconciliata"
 #. module: account
 #: model:ir.model,name:account.model_report_account_receivable
 msgid "Receivable accounts"
-msgstr "Conti di credito"
+msgstr "Conti clienti"
 
 #. module: account
 #: selection:account.model.line,date_maturity:0
@@ -10504,7 +10504,7 @@ msgstr "Conti Bancari"
 #. module: account
 #: field:res.partner,credit:0
 msgid "Total Receivable"
-msgstr "Totale credito"
+msgstr "Totale a credito"
 
 #. module: account
 #: view:account.account:0

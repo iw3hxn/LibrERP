@@ -129,7 +129,7 @@ msgstr "Si aggiunge la colonna valuta"
 #: selection:partners.ledger.webkit,result_selection:0
 #, python-format
 msgid "Receivable and Payable Accounts"
-msgstr "Conti di credito e debito"
+msgstr "Conti clienti e fornitori"
 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:99
@@ -187,7 +187,7 @@ msgstr "Codice"
 #: model:ir.actions.act_window,name:account_financial_report_webkit.action_account_partners_ledger_menu_webkit
 #: model:ir.actions.report.xml,name:account_financial_report_webkit.account_report_partners_ledger_webkit
 msgid "Partner Ledger Webkit"
-msgstr "Partner Ledger Webkit"
+msgstr "Estratto conto cliente - fornitore"
 
 #. module: account_financial_report_webkit
 #: field:account.common.balance.report,display_account:0
@@ -311,7 +311,7 @@ msgstr "Filtra per"
 #: view:partners.ledger.webkit:0
 #, python-format
 msgid "Partner Ledger"
-msgstr "Mastro del partner"
+msgstr "Estratto conto cliente - fornitore"
 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_general_ledger.mako:116
@@ -571,7 +571,7 @@ msgstr "del"
 #: selection:partners.ledger.webkit,result_selection:0
 #, python-format
 msgid "Payable Accounts"
-msgstr "Conti di Debito"
+msgstr "Conti fornitori"
 
 #. module: account_financial_report_webkit
 #: code:addons/account_financial_report_webkit/report/open_invoices.py:60
@@ -821,7 +821,7 @@ msgstr "Fatture Aperte"
 #: selection:trial.balance.webkit,target_move:0
 #, python-format
 msgid "All Posted Entries"
-msgstr "Tutte le registrazioni Pubblicate"
+msgstr "Tutte le scritture definitive"
 
 #. module: account_financial_report_webkit
 #: report:addons/account_financial_report_webkit/report/templates/account_report_partner_balance.mako:90
@@ -1167,7 +1167,7 @@ msgstr "Data Liquidazione"
 #. module: account_financial_report_webkit
 #: model:ir.model,name:account_financial_report_webkit.model_partners_ledger_webkit
 msgid "Partner Ledger Report"
-msgstr "Partner Ledger Report"
+msgstr "Estratto conto cliente - fornitore"
 
 #. module: account_financial_report_webkit
 #: view:open.invoices.webkit:0

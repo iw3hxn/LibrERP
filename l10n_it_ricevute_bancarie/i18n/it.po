@@ -149,7 +149,7 @@ msgstr "Effetti"
 #. module: l10n_it_ricevute_bancarie
 #: view:account.move.line:0
 msgid "Total Credit"
-msgstr "Credito Totale"
+msgstr "Totale AVERE"
 
 #. module: l10n_it_ricevute_bancarie
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.riba_accreditation_action
@@ -204,7 +204,7 @@ msgstr "Descrizione"
 #. module: l10n_it_ricevute_bancarie
 #: view:account.move.line:0
 msgid "Total Debit"
-msgstr "Debito totale"
+msgstr "Totale DARE"
 
 #. module: l10n_it_ricevute_bancarie
 #: view:riba.distinta:0

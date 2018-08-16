@@ -222,7 +222,7 @@ msgstr "Totale Ricavi"
 #: code:addons/account_financial_report_horizontal/report/common_report_header.py:36
 #, python-format
 msgid "All Posted Entries"
-msgstr "Tutte le registrazioni Pubblicate"
+msgstr "Tutte le scritture definitive"
 
 #. module: account_financial_report_horizontal
 #: report:account.balancesheet.horizontal:0
