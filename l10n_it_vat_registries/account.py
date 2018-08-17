@@ -40,12 +40,17 @@ class account_tax(orm.Model):
 
     def _set_is_base(self, cr, uid, vals, context):
         if vals.get('base_code_id', False) or vals.get('ref_base_code_id', False):
+            account_tax_code_obj = self.pool['account.tax.code']
             account_tax_code_ids = []
             if vals.get('base_code_id'):
                 account_tax_code_ids.append(vals.get('base_code_id'))
             if vals.get('ref_base_code_id'):
                 account_tax_code_ids.append(vals.get('ref_base_code_id'))
-            self.pool['account.tax.code'].write(cr, uid, account_tax_code_ids, {'is_base': True}, context)
+            # CARLO done because when i create from new profile is possible that tax code is not commit on database
+            for tax_code in account_tax_code_obj.browse(cr, uid, account_tax_code_ids, context):
+                tax_code.write({'is_base': True})
+
+        return True
 
     def write(self, cr, uid, ids, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
