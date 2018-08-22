@@ -144,4 +144,21 @@ msgstr "Modifica Ordine di Vendita"
 msgid "Edit Services"
 msgstr "Modifica Servizi"
 
+#. module: sale_order_modify_confirmed_service
+#: code:addons/sale_order_modify_confirmed_service/wizard/wizard_modifyorder.py:110
+#, python-format
+msgid "There are a just done DDT"
+msgstr "C'è già un DDT emesso"
+
+#. module: sale_order_modify_confirmed_service
+#: code:addons/sale_order_modify_confirmed_service/wizard/wizard_modifyorder.py:109
+#, python-format
+msgid "Error"
+msgstr "Errore"
+
+#. module: sale_order_modify_confirmed_service
+#: code:addons/sale_order_modify_confirmed_service/wizard/wizard_modifyorder.py:81
+#, python-format
+msgid "Impossible to change product {product} because just delivery with picking {picking}!"
+msgstr "Impossibile cambiare il prodotto {product} perchè è già stata creata un {picking}!"
 

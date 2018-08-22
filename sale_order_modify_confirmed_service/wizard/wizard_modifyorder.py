@@ -78,8 +78,8 @@ class wizard_modifyorder(orm.TransientModel):
                     elif move.product_id != line.product_id:
                         raise orm.except_orm(
                             _('Errore'),
-                            _('Impossible to change product {product} because just delivery with picking {picking}!'.format(
-                                product=line.product_id.name, picking=move.picking_id.name_get()[0][1])))
+                            _('Impossible to change product {product} because just delivery with picking {picking}!').format(
+                                product=line.product_id.name, picking=move.picking_id.name_get()[0][1]))
             else:
                 sale_order_line_obj = self.pool['sale.order.line']
                 line_value = sale_order_line_obj.product_id_change(cr, uid, [], order.pricelist_id.id, line.product_id.id, qty=1,
@@ -100,9 +100,14 @@ class wizard_modifyorder(orm.TransientModel):
         if wizard.order_id.picking_ids:
             for picking in order.picking_ids:
                 if picking.address_delivery_id.id != wizard.partner_shipping_id.id:
-                    picking.write({
-                        'address_delivery_id': wizard.partner_shipping_id.id
-                    })
+                    if hasattr(picking, 'ddt_number') and not picking.ddt_number:
+                        picking.write({
+                            'address_delivery_id': wizard.partner_shipping_id.id
+                        })
+                    else:
+                        raise orm.except_orm(
+                            _('Error'),
+                            _('There are a just done DDT'))
         wizard.order_id.write({
             'partner_invoice_id': wizard.partner_invoice_id.id,
             'partner_shipping_id': wizard.partner_shipping_id.id,
@@ -156,10 +161,9 @@ class wizard_order_line(orm.TransientModel):
 
     def create(self, cr, uid, values, context=None):
         if 'line_id' not in values:
-
             sale_order_line_obj = self.pool['sale.order.line']
             order = self.browse(cr, uid, id, context)
-
+            pricelist = order.pricelist_id.id
             line_value = sale_order_line_obj.product_id_change(cr, uid, [], pricelist, values['product_id'], qty=1,
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False, context=context)
