@@ -16,9 +16,9 @@
                             on_change="onchange_order_id(order_id, context)" invisible="1"/>
                         <field name="partner_id" invisible="1"/>
                         <field name="partner_invoice_id"
-                            domain="[('parent_id','=', partner_id)]"/>
+                            domain="[('partner_id','=', partner_id)]"/>
                         <field name="partner_shipping_id"
-                            domain="[('parent_id','=', partner_id)]"/>
+                            domain="[('partner_id','=', partner_id)]"/>
                         <field name="order_line" nolabel="1" colspan="4">
                             <tree string="Order Line" editable="bottom">
                                 <field name="name" invisible="1"/>
