@@ -421,3 +421,8 @@ msgstr "Storico Meeting"
 #, python-format
 msgid "Missing Contact Name"
 msgstr "Manca il Nome del Contatto"
+
+#. module: crm_lead_correct
+#: view:crm.lead:0
+msgid "Show Note"
+msgstr "Vedi Note"
