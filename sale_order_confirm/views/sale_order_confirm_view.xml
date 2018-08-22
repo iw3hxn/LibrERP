@@ -385,7 +385,8 @@
                     <field name="date_confirm" invisible="not context.get('show_date',False)"/>
                     <field name="minimum_planned_date" invisible="not context.get('show_date',False)"/>
                 </field>
-                <field name="state" position="after">
+                <field name="state" position="replace">
+                    <field name="state" invisible="context.get('hide_state', False)" />
                     <field name="lost_reason_id" invisible="not context.get('show_lost_reason_id',False)"/>
                 </field>
             </field>

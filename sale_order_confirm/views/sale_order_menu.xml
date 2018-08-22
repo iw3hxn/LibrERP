@@ -57,7 +57,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar,kanban</field>
             <field name="search_view_id" ref="view_sales_order_filter_simple"/>
-            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
             <field name="domain">[('state','=','wait_technical_validation')]</field>
         </record>
         <menuitem action="action_order_form_technical" id="menu_sale_order_technical" parent="base.menu_sales"
@@ -72,7 +72,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar,kanban</field>
             <field name="search_view_id" ref="view_sales_order_filter_simple"/>
-            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
             <field name="domain">[('state','=','wait_manager_validation')]</field>
         </record>
         <menuitem action="action_order_form_manager" id="menu_sale_order_manager" parent="base.menu_sales" sequence="7"
@@ -85,7 +85,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar,kanban</field>
             <field name="search_view_id" ref="view_sales_order_filter_simple"/>
-            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
             <field name="domain">[('state','=','send_to_customer')]</field>
         </record>
         <menuitem action="action_order_to_send" id="menu_sale_order_to_send" parent="base.menu_sales" sequence="8"
@@ -98,7 +98,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar,kanban</field>
             <field name="search_view_id" ref="view_sales_order_filter_simple"/>
-            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
             <field name="domain">[('state','=','wait_supervisor_validation')]</field>
         </record>
 
@@ -112,7 +112,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar,kanban</field>
             <field name="search_view_id" ref="view_sales_order_filter_simple"/>
-            <field name="context">{'nodelete': '1', 'nocreate': '1'}</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'hide_state': '1'}</field>
             <field name="domain">[('state','=','wait_customer_validation')]</field>
         </record>
 
