@@ -29,7 +29,7 @@
     "category": "Sales",
     "depends": [
         'sale_order_confirm',
-        'sale_order_version'
+        'sale_order_version',
     ],
     "init": [],
     "demo": [],

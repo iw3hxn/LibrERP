@@ -2,7 +2,6 @@
 <openerp>
     <data>
 
-
         <record id="view_sale_order_tree_date" model="ir.ui.view">
             <field name="name">sale.order.tree</field>
             <field name="model">sale.order</field>
@@ -38,14 +37,15 @@
             </field>
         </record>
 
-        <record id="view_sale_order_tree_date" model="ir.ui.view">
+        <record id="view_sale_order_search_date" model="ir.ui.view">
             <field name="name">sale.order.search</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_order_confirm.view_sales_order_filter_simple"/>
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <field name="shop_id" position="before">
-                    <field name="date_action_next"/>
+                    <field name="date_from" filter_domain="[('date_action_next','&gt;=',self)]" string="Next Action From"/>
+                    <field name="date_to" filter_domain="[('date_action_next','&lt;=',self)]" string="Next Action To"/>
                     <field name="next_activity_id" widget="selection"/>
                 </field>
             </field>
@@ -63,8 +63,6 @@
                 </calendar>
             </field>
         </record>
-
-
 
     </data>
 </openerp>
