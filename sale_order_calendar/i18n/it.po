@@ -73,9 +73,3 @@ msgstr "Ricerca Azioni"
 #: view:sale.order:0
 msgid "What to do..."
 msgstr "Cosa fare..."
-
-#. module: sale_order_calendar
-#: view:sale.order:0
-#: field:sale.order,date_action_next:0
-msgid "Next Action"
-msgstr "Prossima Azione"

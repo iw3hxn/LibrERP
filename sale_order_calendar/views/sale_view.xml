@@ -17,7 +17,7 @@
         </record>
 
         <record id="sale_order_confirm_view" model="ir.ui.view">
-            <field name="name">sale.order.confirm.view</field>
+            <field name="name">sale.order.activity.view</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="priority">5</field>
@@ -35,6 +35,19 @@
                     </xpath>
 
                 </data>
+            </field>
+        </record>
+
+        <record id="view_sale_order_tree_date" model="ir.ui.view">
+            <field name="name">sale.order.search</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_order_confirm.view_sales_order_filter_simple"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="shop_id" position="before">
+                    <field name="date_action_next"/>
+                    <field name="next_activity_id" widget="selection"/>
+                </field>
             </field>
         </record>
 
