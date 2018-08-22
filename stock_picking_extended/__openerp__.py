@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.43.42.55',
+    'version': '3.44.42.55',
     'category': 'Others',
     'description': """LibrERP - Stock picking extension
 

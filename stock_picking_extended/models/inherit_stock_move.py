@@ -51,9 +51,9 @@ class stock_move(orm.Model):
     _columns = {
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
         'minimum_planned_date': fields.related('picking_id', 'sale_id', 'minimum_planned_date', type='date', string='Expected Date', store={
-                                        'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['picking_id'], 6000),
-                                        'stock.picking': (_get_picking, ['sale_id', 'state'], 5000),
-                                        'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 6000),
+                                        'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['picking_id'], 20),
+                                        'stock.picking': (_get_picking, ['sale_id', 'state', 'move_lines'], 5000),
+                                        'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 8000),
                                         }),
         'line_price_subtotal': fields.related('sale_line_id', 'price_subtotal', type='float', string='Line Amount (VAT Excluded)', digits_compute=dp.get_precision('Sale Price'),
                                        readonly=True, store=False),

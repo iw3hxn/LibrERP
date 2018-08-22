@@ -67,7 +67,8 @@ class GetInvoicedState(multiprocessing.Process):
         finally:
             if not self.cr.closed:
                 self.cr.close()
-        return True
+        print self.pid
+        return multiprocessing.Process.run(self)
 
     def __del__(self):
         if not self.cr.closed:
@@ -109,7 +110,8 @@ class GetAmountPartial(multiprocessing.Process):
         finally:
             if not self.cr.closed:
                 self.cr.close()
-        return True
+        print self.pid
+        return multiprocessing.Process.run(self)
 
     def __del__(self):
         if not self.cr.closed:
@@ -403,7 +405,7 @@ class stock_picking(orm.Model):
                                 string='Sale User', readonly=True, store={
                 'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
             }),
-        'board_date': fields.date('Order Board Delivery date'),
+        'board_date': fields.related('sale_id', 'date_confirm', type='date', string='Order Board Delivery date'),
         'amount_partial': fields.function(_get_amount_partial, string='Partial Amount (VAT Excluded)', readonly=True,
                                           store=False),
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',

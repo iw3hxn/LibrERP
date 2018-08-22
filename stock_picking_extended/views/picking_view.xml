@@ -256,6 +256,7 @@
                     <field name="region" invisible="not context.get('show_delivery', False)"/>
                     <field name="note"/>
                     <field name="internal_note" />
+                    <field name="board_date" />
                     <field name="minimum_planned_date"/>
                     <field name="week_nbr" />
                     <field name="order_type" />
@@ -306,6 +307,8 @@
                 <form string="Move">
                     <field name="product_id" readonly="1"/>
                     <field name="product_qty" readonly="1"/>
+                    <field name="picking_id" readonly="1"/>
+                    <field name="sale_id" readonly="1"/>
                     <field name="state"/>
                 </form>
             </field>
