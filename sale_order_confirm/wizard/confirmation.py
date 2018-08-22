@@ -180,14 +180,15 @@ class sale_order_confirm(orm.TransientModel):
     }
     
     def get_generic_product(self, cr, uid, context):
-        product_ids = self.pool['product.product'].search(cr, uid, [('name', '=', 'Generic product')], context=context)
+        product_name = _('Generic product')
+        product_ids = self.pool['product.template'].search(cr, uid, [('name', '=', product_name)], context=context)
         if product_ids:
             return product_ids[0]
         else:
             uom_id = 1
             price = 1.0
             return self.pool['product.product'].create(cr, uid, {
-                'name': 'Generic product',
+                'name': product_name,
                 'uom_id': uom_id,
                 'uom_po_id': uom_id,
                 'cost_price': price,
@@ -233,13 +234,14 @@ class sale_order_confirm(orm.TransientModel):
                 product_id = sale_order_line.product_id.id
             else:
                 product_id = self.get_generic_product(cr, uid, context)
+                sale_order_line_obj.write(cr, uid, sale_order_line.id, {'product_id': product_id}, context)
                 
             if sale_order_line.tax_id:
                 tax_id = [(6, 0, [tax_id.id for tax_id in sale_order_line.tax_id])]
             else:
                 product = self.pool['product.product'].browse(cr, uid, product_id, context)
                 tax_id = [(6, 0, [tax_id.id for tax_id in product.taxes_id])]
-                sale_order_line_obj.write(cr, uid, sale_order_line.id, {'tax_id': tax_id})
+                sale_order_line_obj.write(cr, uid, sale_order_line.id, {'tax_id': tax_id}, context)
 
             sale_order_confirm_line_vals = {
                 'order_id': sale_order.id,
