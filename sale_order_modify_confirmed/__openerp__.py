@@ -21,7 +21,7 @@
 
 {
     'name': "Wizard Modifica Ordini",
-    'version': '3.0.0.1',
+    'version': '3.0.0.2',
     'category': 'Sales Management',
     'description': """Wizard per la modifica di sale order consegnati.
 Il modulo prevede la modifica di indirizzi e informazioni sulle righe
@@ -32,5 +32,5 @@ come prezzo e sconto""",
     "depends": ['sale', 'sale_margin'],
     "update_xml": ['wizard/wizard_modify_order.xml'],
     "active": False,
-    "installable": True
+    "installable": False
 }
