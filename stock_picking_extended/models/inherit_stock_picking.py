@@ -208,10 +208,8 @@ class stock_picking(orm.Model):
             res[picking.id] = order_type
         return res
 
-
-    from profilehooks import profile
-    @profile(immediate=True)
-
+    # from profilehooks import profile
+    # @profile(immediate=True)
     def _get_order_board_state(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
