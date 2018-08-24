@@ -66,6 +66,11 @@ msgid "Prefered Supplier"
 msgstr "Fornitore Preferenziale"
 
 #. module: purchase_requisition_extended
+#: field:purchase.requisition.line,multy_supplier:0
+msgid "Other Supplier"
+msgstr "Altri Fornitori"
+
+#. module: purchase_requisition_extended
 #: model:ir.model,name:purchase_requisition_extended.model_purchase_requisition_partner
 #: model:ir.model,name:purchase_requisition_extended.model_virtual_purchase_requisition_partner
 msgid "Purchase Requisition Partner"

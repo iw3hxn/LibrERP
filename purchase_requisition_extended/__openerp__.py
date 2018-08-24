@@ -31,7 +31,7 @@
 
 {
     "name": "Purchase Requisition Extended",
-    "version": "3.0.2.7",
+    "version": "3.1.2.8",
     "author": "Andrei Levin",
     "category": "Sales & Purchases",
     "description": '''
@@ -43,12 +43,9 @@
         "base",
         'purchase_requisition',
     ],
-    "init_xml": [
-        'purchase_requisition_view.xml'
-    ],
-    "update_xml": [
+    "data": [
         'wizard/purchase_requisition_partner_view.xml',
-        'purchase_requisition_view.xml'
+        'views/purchase_requisition_view.xml'
     ],
     "active": False,
     "installable": True,

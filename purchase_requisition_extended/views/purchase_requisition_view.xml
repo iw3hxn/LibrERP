@@ -13,12 +13,22 @@
                             <field name="product_id" on_change="onchange_product_id(product_id,product_uom_id)"/>
                             <field name="product_qty"/>
                             <field name="prefered_supplier" />
+                            <field name="multy_supplier" />
                             <field name="product_uom_id"/>
                             <field name="draft" />
                             <field name="approved" />
                             <field name="color" invisible="True" />
                         </tree>
                     </tree>
+                    <form string="Products" position="replace">
+                        <form string="Products" >
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom_id"/>
+                            <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                            <field name="seller_ids"  nolabel="1" readonly="1" colspan="4"/>
+                        </form>
+                    </form>
                     <xpath expr="/form/notebook/page[@string='Quotations']/group" position="replace">
                         <group col="8" colspan="4">
                             <label colspan="2"  string=""/>
@@ -30,6 +40,10 @@
                     </xpath>
                 </data>
             </field>
+        </record>
+
+        <record id="purchase_requisition.action_purchase_requisition" model="ir.actions.act_window">
+            <field name="context">{}</field>
         </record>
         
     </data>
