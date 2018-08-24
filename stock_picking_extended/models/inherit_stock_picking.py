@@ -30,98 +30,98 @@ from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from tools.translate import _
 
 
-def _chunkIt(seq, size):
-    newseq = []
-    splitsize = 1.0 / size * len(seq)
-    for line in range(size):
-        newseq.append(seq[int(round(line * splitsize)): int(round((line + 1) * splitsize))])
-    return newseq
-
-
-class GetInvoicedState(multiprocessing.Process):
-    def __init__(self, cr, uid, split_ids, res, context=None):
-        self.cr = pooler.get_db(cr.dbname).cursor()
-        self.stock_picking_obj = pooler.get_pool(self.cr.dbname).get('stock.picking')
-        self.account_invoice_obj = pooler.get_pool(self.cr.dbname).get('account.invoice')
-        self.uid = uid
-        self.context = context
-        self.ids = split_ids
-        self.res = res
-        multiprocessing.Process.__init__(self)
-
-    def run(self):
-        try:
-            for picking in self.stock_picking_obj.browse(self.cr, 1, self.ids, context=self.context):
-                self.res[picking.id] = ''
-                order = picking.sale_id
-                if order:
-                    for invoice in order.invoice_ids:
-                        self.res[picking.id] = dict(
-                            self.account_invoice_obj.fields_get(self.cr, self.uid, context=self.context)['state'][
-                                'selection'])[invoice.state]
-            self.cr.commit()
-        except Exception:
-            # Rollback
-            self.cr.rollback()
-            raise
-        finally:
-            if not self.cr.closed:
-                self.cr.close()
-        print self.pid
-        return multiprocessing.Process.run(self)
-
-    def __del__(self):
-        if not self.cr.closed:
-            self.cr.close()
-        return True
-
-    def terminate(self):
-        if not self.cr.closed:
-            self.cr.close()
-        return super(GetAmountPartial, self).terminate()
-
-
-class GetAmountPartial(multiprocessing.Process):
-    def __init__(self, cr, uid, split_ids, res, context=None):
-        db, pool = pooler.get_db_and_pool(cr.dbname)
-        self.cr = db.cursor()
-        self.stock_picking_obj = pooler.get_pool(self.cr.dbname).get('stock.picking')
-        self.uid = uid
-        self.context = context
-        self.ids = split_ids
-        self.res = res
-        multiprocessing.Process.__init__(self)
-
-    def run(self):
-        try:
-            for picking in self.stock_picking_obj.browse(self.cr, self.uid, self.ids, context=self.context):
-                picking_amount = 0.0
-                if picking.type != 'out':
-                    self.res[picking.id] = 0.0
-                    continue
-                for move in picking.move_lines:
-                    picking_amount += move.price_unit * move.product_qty
-                self.res[picking.id] = picking_amount
-            self.cr.commit()
-        except Exception:
-            # Rollback
-            self.cr.rollback()
-            raise
-        finally:
-            if not self.cr.closed:
-                self.cr.close()
-        print self.pid
-        return multiprocessing.Process.run(self)
-
-    def __del__(self):
-        if not self.cr.closed:
-            self.cr.close()
-        return True
-
-    def terminate(self):
-        if not self.cr.closed:
-            self.cr.close()
-        return super(GetAmountPartial, self).terminate()
+# def _chunkIt(seq, size):
+#     newseq = []
+#     splitsize = 1.0 / size * len(seq)
+#     for line in range(size):
+#         newseq.append(seq[int(round(line * splitsize)): int(round((line + 1) * splitsize))])
+#     return newseq
+#
+#
+# class GetInvoicedState(multiprocessing.Process):
+#     def __init__(self, cr, uid, split_ids, res, context=None):
+#         self.cr = pooler.get_db(cr.dbname).cursor()
+#         self.stock_picking_obj = pooler.get_pool(self.cr.dbname).get('stock.picking')
+#         self.account_invoice_obj = pooler.get_pool(self.cr.dbname).get('account.invoice')
+#         self.uid = uid
+#         self.context = context
+#         self.ids = split_ids
+#         self.res = res
+#         multiprocessing.Process.__init__(self)
+#
+#     def run(self):
+#         try:
+#             for picking in self.stock_picking_obj.browse(self.cr, 1, self.ids, context=self.context):
+#                 self.res[picking.id] = ''
+#                 order = picking.sale_id
+#                 if order:
+#                     for invoice in order.invoice_ids:
+#                         self.res[picking.id] = dict(
+#                             self.account_invoice_obj.fields_get(self.cr, self.uid, context=self.context)['state'][
+#                                 'selection'])[invoice.state]
+#             self.cr.commit()
+#         except Exception:
+#             # Rollback
+#             self.cr.rollback()
+#             raise
+#         finally:
+#             if not self.cr.closed:
+#                 self.cr.close()
+#         print self.pid
+#         return multiprocessing.Process.run(self)
+#
+#     def __del__(self):
+#         if not self.cr.closed:
+#             self.cr.close()
+#         return True
+#
+#     def terminate(self):
+#         if not self.cr.closed:
+#             self.cr.close()
+#         return super(GetAmountPartial, self).terminate()
+#
+#
+# class GetAmountPartial(multiprocessing.Process):
+#     def __init__(self, cr, uid, split_ids, res, context=None):
+#         db, pool = pooler.get_db_and_pool(cr.dbname)
+#         self.cr = db.cursor()
+#         self.stock_picking_obj = pooler.get_pool(self.cr.dbname).get('stock.picking')
+#         self.uid = uid
+#         self.context = context
+#         self.ids = split_ids
+#         self.res = res
+#         multiprocessing.Process.__init__(self)
+#
+#     def run(self):
+#         try:
+#             for picking in self.stock_picking_obj.browse(self.cr, self.uid, self.ids, context=self.context):
+#                 picking_amount = 0.0
+#                 if picking.type != 'out':
+#                     self.res[picking.id] = 0.0
+#                     continue
+#                 for move in picking.move_lines:
+#                     picking_amount += move.price_unit * move.product_qty
+#                 self.res[picking.id] = picking_amount
+#             self.cr.commit()
+#         except Exception:
+#             # Rollback
+#             self.cr.rollback()
+#             raise
+#         finally:
+#             if not self.cr.closed:
+#                 self.cr.close()
+#         print self.pid
+#         return multiprocessing.Process.run(self)
+#
+#     def __del__(self):
+#         if not self.cr.closed:
+#             self.cr.close()
+#         return True
+#
+#     def terminate(self):
+#         if not self.cr.closed:
+#             self.cr.close()
+#         return super(GetAmountPartial, self).terminate()
 
 
 class stock_picking(orm.Model):
@@ -131,7 +131,7 @@ class stock_picking(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = dict.fromkeys(ids, 0.0)
         for picking in self.browse(cr, 1, ids, context=context):
-            res[picking.id] = ''
+            res[picking.id] = ' '
             order = picking.sale_id
             if order:
                 for invoice in order.invoice_ids:
@@ -163,7 +163,7 @@ class stock_picking(orm.Model):
         res = dict.fromkeys(ids, 0.0)
         for picking in self.browse(cr, uid, ids, context=context):
             res[picking.id] = False
-            partner = picking.address_id.partner_id
+            partner = picking.address_id and picking.address_id.partner_id or False
             if partner:
                 # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
                 invoice_obj = self.pool['account.invoice']
@@ -207,6 +207,10 @@ class stock_picking(orm.Model):
                 order_type = 'client'
             res[picking.id] = order_type
         return res
+
+
+    from profilehooks import profile
+    @profile(immediate=True)
 
     def _get_order_board_state(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -283,15 +287,20 @@ class stock_picking(orm.Model):
         return result
 
     def _get_amount_partial(self, cr, uid, ids, field_name, arg, context=None):
-        result = {}
-        for pick in self.browse(cr, uid, ids, context):
-            picking_amount = 0.0
-            if pick.type != 'out':
-                result[pick.id] = 0.0
-                continue
-            for move in pick.move_lines:
-                picking_amount += move.price_unit * move.product_qty
-            result[pick.id] = picking_amount
+        result = dict.fromkeys(ids, 0.0)
+        cr.execute(
+            """SELECT picking_id, ABS(COALESCE(SUM(price_unit * product_qty))) FROM stock_move  WHERE stock_move.picking_id IN ({picking_ids}) GROUP BY picking_id""".format(picking_ids=', '.join([str(picking_id) for picking_id in ids])))
+        priority_search = cr.fetchall()
+        for res in priority_search:
+            result[res[0]] = res[1]
+
+        # for pick in self.browse(cr, uid, ids, context):
+        #     picking_amount = 0.0
+        #     if pick.type != 'out':
+        #         continue
+        #     for move in pick.move_lines:
+        #         picking_amount += move.price_unit * move.product_qty
+        #     result[pick.id] = picking_amount
         return result
 
     # def _get_amount_partial(self, cr, uid, ids, field_name, arg, context=None):
@@ -372,10 +381,6 @@ class stock_picking(orm.Model):
                                            'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['state'], 5000),
                                            'stock.move': (_get_picking_move, ['state'], 6000),
                                        }),
-        'picked_rate': fields.function(_get_order_board_state, type='float', multi='order_state', string='Ready', store={
-                                           'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['state'], 5000),
-                                           'stock.move': (_get_picking_move, ['state'], 6000),
-                                       }),
         'order_sent': fields.function(_get_order_board_state, type='boolean', multi='order_state', string='Order Sent', store={
                                            'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['state'], 5000),
                                            'stock.move': (_get_picking_move, ['state'], 6000),
@@ -428,6 +433,11 @@ class stock_picking(orm.Model):
                                                }),
         'internal_note': fields.text('Internal Note'),
         'invoiced_state': fields.function(_get_invoiced_state, string="Invoice State", type='char'),
+        'location_id': fields.related('move_lines', 'location_id', type='many2one', relation='stock.location',
+                                      string='Location', readonly=True, auto_join=True),
+        'location_dest_id': fields.related('move_lines', 'location_dest_id', type='many2one', relation='stock.location',
+                                           string='Destination Location', readonly=True, auto_join=True),
+
     }
 
     def check_limit(self, cr, uid, ids, context=None):
