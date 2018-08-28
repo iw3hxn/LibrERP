@@ -56,6 +56,14 @@ class product_product(orm.Model):
                 result[product.id] = product.seller_ids and product.seller_ids[0].name.id or ''
         return result
 
+    def _get_stock_location_ids(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        stock_location_ids = self.pool['stock.location'].search(cr, uid, [('usage', '=', 'internal'),
+                                                                          ('chained_location_type', '=', 'none')])
+        for product_id in ids:
+            res[product_id] = stock_location_ids
+        return res
+
     _columns = {
         'prefered_supplier': fields.function(_get_prefered_supplier, type='many2one', relation='res.partner',
                                              string='Prefered Supplier'),
@@ -72,6 +80,7 @@ class product_product(orm.Model):
         'supplier_id': fields.related('seller_ids', 'name', type='many2one', relation='res.partner',
                                      string='Supplier'),
         'supplier_code': fields.related('seller_ids', 'product_code', type='char', string="Supplier Code"),
+        'stock_location_ids': fields.function(_get_stock_location_ids, type='one2many', relation='stock.location', string="Stock Locations", readonly=True)
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -102,3 +111,4 @@ class product_product(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
         return super(product_product, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+

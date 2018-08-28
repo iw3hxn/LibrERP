@@ -48,8 +48,21 @@
                     </group>
                     <newline/>
                 </xpath>
+                <group name="misc" position="after">
+                      <group col="2" colspan="2" attrs="{'invisible':[('type', '=', 'service')]}">
+                          <separator string="Stock By Location" colspan="2"/>
+                          <field name="stock_location_ids" context="{'product_id': id}" nolabel="1" readonly="1">
+                              <tree string="Stock Location">
+                                  <field name="name"/>
+                                  <field name="stock_real"/>
+                                  <field name="stock_virtual"/>
+                              </tree>
+                          </field>
+                      </group>
+                  </group>
             </field>
         </record>
+
 
         <record model="ir.ui.view" id="product_inh_new_fields_tree_view">
             <field name="name">product.inh.new.fields.tree</field>
