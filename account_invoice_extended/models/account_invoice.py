@@ -50,7 +50,7 @@ class account_invoice(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
 
-        return [(x['id'], unicode(x.type in ['in_invoice', 'in_refund'] and x.supplier_invoice_number or x.number or x.name)) for x in self.browse(cr, uid, ids, context=context)]
+        return [(x['id'], unicode(x['type'] in ['in_invoice', 'in_refund'] and x['supplier_invoice_number'] or x['number'] or x['name'])) for x in self.read(cr, uid, ids, ['id', 'type', 'number', 'name', 'supplier_invoice_number'], context=context)]
 
     def _get_stock_picking(self, cr, uid, ids, field_name, model_name, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
