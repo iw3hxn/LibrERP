@@ -33,12 +33,12 @@ class stock_picking(orm.Model):
         'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
         'cup': fields.char('CUP', size=64, help="Codice unico di Progetto")
     }
-    
+
     def name_get(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = []
-        for picking in self.browse(cr, uid, ids, context):
-            res.append((picking.id, picking.ddt_number or picking.ddt_in_reference or picking.name))
+        for picking in self.read(cr, uid, ids, ['id', 'ddt_number', 'ddt_in_reference', 'name'], context):
+            res.append((picking['id'], picking['ddt_number'] or picking['ddt_in_reference'] or picking['name']))
         return res
         
     def _check_ddt_in_reference_unique(self, cr, uid, ids, context=None):
