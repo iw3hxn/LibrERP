@@ -261,9 +261,13 @@ class sale_order(orm.Model):
         if not len(ids):
             return []
         res = []
-        for sale in self.browse(cr, uid, ids, context=context):
-            name = u'[{sale_name}] {partner_name}'.format(sale_name=sale.name, partner_name=sale.partner_id.name)
-            res.append((sale.id, name))
+        for sale in self.read(cr, uid, ids, ['id', 'name', 'partner_id'], context=context):
+            name = u'[{sale_name}] {partner_name}'.format(sale_name=sale['name'], partner_name=sale['partner_id'][1])
+            res.append((sale['id'], name))
+        # for sale in self.browse(cr, uid, ids, context=context):
+        #     name = u'[{sale_name}] {partner_name}'.format(sale_name=sale.name, partner_name=sale.partner_id.name)
+        #     res.append((sale.id, name))
+
         return res
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=10):
