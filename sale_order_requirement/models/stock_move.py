@@ -42,8 +42,8 @@ class StockMove(orm.Model):
         self._force_production_order(cr, uid, stock_move_ids, context)
         return res
 
-    from profilehooks import profile
-    @profile(immediate=True)
+    #from profilehooks import profile
+    #@profile(immediate=True)
     def _get_connected_order_ids(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for stock_move in self.browse(cr, uid, ids, context):
