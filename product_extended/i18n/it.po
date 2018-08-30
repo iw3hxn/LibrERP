@@ -112,3 +112,7 @@ msgstr "Prezzo Listino"
 msgid "Cost Price"
 msgstr "Prezzo Netto"
 
+#. module: product_extended
+#: view:product.product:0
+msgid "Stock By Location"
+msgstr "Giacenza per Punto di Stoccaggio"
