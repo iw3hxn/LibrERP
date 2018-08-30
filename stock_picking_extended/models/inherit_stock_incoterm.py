@@ -40,12 +40,11 @@ class stock_incoterms(orm.Model):
             return (d['id'], name)
 
         result = []
-        for incoterm in self.browse(cr, user, ids, context=context):
+        for incoterm in self.read(cr, user, ids, ['id', 'name', 'code'], context=context):
             mydict = {
-                'id': incoterm.id,
-                'name': incoterm.name,
-                'code': incoterm.code,
+                'id': incoterm['id'],
+                'name': incoterm['name'],
+                'code': incoterm['code'],
             }
             result.append(_name_get(mydict))
         return result
-

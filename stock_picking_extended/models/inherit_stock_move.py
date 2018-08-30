@@ -56,7 +56,7 @@ class stock_move(orm.Model):
                                         'sale.order': (_get_picking_sale, ['minimum_planned_date', 'state'], 8000),
                                         }),
         'line_price_subtotal': fields.related('sale_line_id', 'price_subtotal', type='float', string='Line Amount (VAT Excluded)', digits_compute=dp.get_precision('Sale Price'),
-                                       readonly=True, store=False),
+                                       readonly=True, store=False, auto_join=True),
         'sale_id': fields.related('picking_id', 'sale_id', relation='sale.order', type='many2one', string='Sale Order'),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),

@@ -129,13 +129,13 @@ class stock_picking(orm.Model):
 
     def _get_invoiced_state(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        res = dict.fromkeys(ids, 0.0)
+        res = dict.fromkeys(ids, u' ')
+        state_dict = dict(self.pool['account.invoice'].fields_get(cr, uid, context=context)['state']['selection'])
         for picking in self.browse(cr, 1, ids, context=context):
-            res[picking.id] = ' '
             order = picking.sale_id
             if order:
                 for invoice in order.invoice_ids:
-                    res[picking.id] = dict(self.pool['account.invoice'].fields_get(cr, uid, context=context)['state']['selection'])[invoice.state]
+                    res[picking.id] = state_dict[invoice.state]
         return res
 
     # def _get_invoiced_state(self, cr, uid, ids, field_name, arg, context):
