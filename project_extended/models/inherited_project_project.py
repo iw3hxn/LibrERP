@@ -211,17 +211,24 @@ class project_project(orm.Model):
 
         return res
 
+    from profilehooks import profile
+    @profile(immediate=True)
     def name_get(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if not len(ids):
             return []
         res = []
-        for project in self.browse(cr, uid, ids, context=context):
-            if project.partner_id:
-                name = project.name + ' : ' + project.partner_id.name
-            else:
-                name = project.name
-            res.append((project.id, name))
+        for project in self.read(cr, uid, ids, ['name', 'partner_id'], context):
+            name = project['name']
+            if project['partner_id']:
+                name += ' : ' + project['partner_id'][1]
+            res.append((project['id'], name))
+        # for project in self.browse(cr, uid, ids, context=context):
+        #     if project.partner_id:
+        #         name = project.name + ' : ' + project.partner_id.name
+        #     else:
+        #         name = project.name
+        #     res.append((project.id, name))
         return res
 
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
