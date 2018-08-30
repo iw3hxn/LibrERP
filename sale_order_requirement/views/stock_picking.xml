@@ -60,17 +60,29 @@
             </field>
         </record>
 
+        <record id="view_stock_move_tree" model="ir.ui.view">
+            <field name="name">stock.move.order.board.tree</field>
+            <field name="inherit_id" ref="stock_picking_extended.view_stock_move_tree"/>
+            <field name="model">stock.move</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="line_price_subtotal" position="after">
+                    <field name="note" />
+                    <field name="purchase_orders_approved" />
+                    <field name="purchase_orders_state" />
+                </field>
+            </field>
+        </record>
+
         <record id="view_product_from_bom" model="ir.ui.view">
             <field name="name">stock.move.form.product.bom</field>
             <field name="inherit_id" ref="stock_picking_extended.view_stock_move_form"/>
             <field name="model">stock.move</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <field name="state" position="after">
-                    <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context=""
-                           on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
-                           readonly="1">
-                        <tree string="BoM Structure" editable="bottom"
+                <field name="note" position="after">
+                    <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context="" readonly="1">
+                        <tree string="BoM Structure"
                               colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                             <field name="row_color" invisible="1"/>
                             <field name="is_leaf"/>
@@ -79,28 +91,20 @@
                             <field name="level" invisible="1"/>
                             <field name="product_type" invisible="1"/>
                             <field name="level_name"/>
-                            <field name="product_id" context="{'line_id':parent.id}"
-                                   on_change="onchange_temp_product_id(id,product_id,product_qty,is_manufactured,context)"
-                                   attrs="{'readonly': [('level','=',0)]}"/>
+                            <field name="product_id" context="{'line_id':parent.id}" />
                             <field name="original_qty"/>
-
-                            <field name="product_qty" attrs="{'readonly': [('level','=',0)]}"
-                                   context="{'line_id':parent.id}"
-                                   on_change="onchange_temp_product_qty(product_qty, context)"/>
+                            <field name="product_qty"
+                                   context="{'line_id':parent.id}"/>
                             <field name="product_uom" readonly="1"/>
                             <field name="mrp_routing_id"/>
-                            <field name="stock_availability"/>
-                            <field name="spare"/>
-                            <field name="is_out_of_stock" invisible="1"/>
-                            <field name="cost"/>
+                            <!--<field name="stock_availability"/>-->
+                            <!--<field name="spare"/>-->
+                            <!--<field name="is_out_of_stock" invisible="1"/>-->
+                            <!--<field name="cost"/>-->
                             <field name="temp_mrp_bom_action"/>
-                            <field name="is_manufactured" invisible="1"
-                                   attrs="{'readonly': ['|',('level','=',0), ('is_leaf','=',True)]}"/>
-                            <field name="buy" invisible="1"
-                                   attrs="{'readonly': ['|',('level','=',0), ('is_manufactured','=',True)]}"/>
+                            <field name="is_manufactured" invisible="1" />
+                            <field name="buy" invisible="1"/>
                             <field name="supplier_id"/>
-                            <field name="supplier_ids" invisible="1"/>
-                            <!--<button name="update_supplier" string="Reload" type="object" icon="gtk-refresh" />-->
                         </tree>
                     </field>
 

@@ -35,6 +35,8 @@ class order_requirement(orm.Model):
 
     _rec_name = 'sale_order_id'
 
+    _order = 'state, date'
+
     _columns = {
         'date': fields.date('Data'),
         'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade'),

@@ -280,6 +280,10 @@ msgstr "Colore Riga"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
+#: view:stock.move:0
+#: field:stock.move,temp_mrp_bom_ids:0
+msgid "Bom Structure"
+msgstr "Bom Structure"
 msgid "BoM Structure"
 msgstr "Struttura Distinta"
 
@@ -317,8 +321,9 @@ msgstr "Ord. acquisto approvati"
 
 #. module: sale_order_requirement
 #: field:order.requirement.line,purchase_orders_state:0
+#: field:stock.move,purchase_orders_state:0
 msgid "Deliveries"
-msgstr "Consegne"
+msgstr "Materiale Arrivato"
 
 #. module: sale_order_requirement
 #: field:order.requirement.line,stock_availability:0

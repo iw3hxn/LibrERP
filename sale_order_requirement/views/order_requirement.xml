@@ -32,7 +32,7 @@
             <field name="arch" type="xml">
                 <form string="Order Requirement">
                     <field name="sale_order_id"/>
-                    <field name="customer_id"/>
+                    <!--<field name="customer_id" invisible="1"/>-->
                     <field name="date"/>
                     <field name="week_nbr" />
                     <field name="month"/>

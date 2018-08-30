@@ -4,7 +4,7 @@
 import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
-import order_requirement_line
+
 from ..util import rounding
 
 default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
@@ -13,6 +13,8 @@ default_row_colors = ['black', 'darkblue', 'cadetblue', 'grey']
 class temp_mrp_bom(orm.Model):
     _name = 'temp.mrp.bom'
 
+    stock_availability = {}
+
     def name_get(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = []
@@ -20,9 +22,13 @@ class temp_mrp_bom(orm.Model):
             return res
         if isinstance(ids, (int, long)):
             ids = [ids]
-        for bom_required in self.browse(cr, uid, ids, context=context):
-            name = u"{}: {} {}".format(bom_required.sale_order_id.name, bom_required.product_qty, bom_required.product_uom.name)
-            res.append((bom_required.id, name))
+        # for bom_required in self.browse(cr, uid, ids, context=context):
+        #     name = u"{}: {} {}".format(bom_required.sale_order_id.name, bom_required.product_qty, bom_required.product_uom.name)
+        #     res.append((bom_required.id, name))
+
+        for bom_required in self.read(cr, uid, ids, ['sale_order_id', 'product_qty', 'product_uom'], context=context):
+            name = u"{}: {} {}".format(bom_required['sale_order_id'][1], bom_required['product_qty'], bom_required['product_uom'][1])
+            res.append((bom_required['id'], name))
         return res
 
     # This is called also when loading saved temp mrp boms,
@@ -32,12 +38,15 @@ class temp_mrp_bom(orm.Model):
         order_requirement_line_obj = self.pool['order.requirement.line']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
+            if line.id in self.stock_availability:
+                res[line.id] = self.stock_availability[line.id]
+                continue
             product_id = line.product_id.id
             warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
-            ordreqline = order_requirement_line_obj.browse(cr, uid, line.order_requirement_line_id.id, context)
-            res[line.id] = ordreqline.generic_stock_availability(product_id=product_id, warehouse_id=warehouse_id, context=context)
+            res[line.id] = order_requirement_line_obj.generic_stock_availability(cr, uid, ids, product_id, warehouse_id, context=context)
             if line.level == 0:
                 res[line.id]['stock_availability'] += line.product_qty  # i don't have to count self
+            self.stock_availability[line.id] = res[line.id]
         return res
 
     def _is_out_of_stock(self, cr, uid, ids, name, args, context=None):
@@ -131,7 +140,7 @@ class temp_mrp_bom(orm.Model):
                                       "If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."),
         'level_name': fields.char('Level', readonly=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True,
-                                                     ondelete='cascade'),
+                                                     ondelete='cascade', select=True),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'product_id': fields.many2one('product.product', 'Product', required=True),
@@ -151,7 +160,7 @@ class temp_mrp_bom(orm.Model):
         'partial_cost': fields.float('Partial Cost', readonly=True),
         'cost': fields.float('Cost', readonly=True),
         'product_type': fields.char('Pr.Type', size=10, readonly=True),
-        'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id',
+        'sale_order_id': fields.related('order_requirement_line_id', 'order_requirement_id', 'sale_order_id', auto_join=True,
                                         string='Sale Order', relation='sale.order', type='many2one', readonly=True),
         # mrp_bom_id and mrp_bom_parent_id point to the original mrp bom
         'mrp_bom_id': fields.many2one('mrp.bom'),

@@ -625,7 +625,7 @@ class order_requirement_line(orm.Model):
                                  string='Spare', readonly=True),
         'order_requirement_id': fields.many2one('order.requirement', 'Order Reference', required=True,
                                                 ondelete='cascade', select=True),
-        'sale_order_line_id': fields.many2one('sale.order.line', string='Sale Order Line'),
+        'sale_order_line_id': fields.many2one('sale.order.line', string='Sale Order Line', select=True),
         'sale_order_id': fields.related('order_requirement_id', 'sale_order_id', string='Sale Order',
                                         relation='sale.order', type='many2one', readonly=True),
         'sequence': fields.integer('Sequence',
@@ -647,7 +647,8 @@ class order_requirement_line(orm.Model):
         'temp_mrp_bom_routing_ids': fields.one2many('temp.mrp.routing', 'order_requirement_line_id', 'BoM Routing'),
         'cost': fields.float('Cost', readonly=True),
         'original_cost': fields.float('Original Cost', readonly=True),
-        'has_bom': fields.function(_has_bom, method=True, type='boolean', string='Product has bom?', readonly=True)
+        'has_bom': fields.function(_has_bom, method=True, type='boolean', string='Product has bom?', readonly=True),
+        'user_id': fields.many2one('res.users', 'User'),
     }
 
     _defaults = {
@@ -1307,3 +1308,4 @@ class order_requirement_line(orm.Model):
                 product_ids.append(line.product_id.id)
         bom_ids = mrp_bom_obj.search(cr, uid, [('product_id', 'in', product_ids)], context=context)
         return self.pool['account.invoice'].print_report(cr, uid, bom_ids, 'mrp.report_bom_structure', context)
+

@@ -42,6 +42,8 @@ class StockMove(orm.Model):
         self._force_production_order(cr, uid, stock_move_ids, context)
         return res
 
+    from profilehooks import profile
+    @profile(immediate=True)
     def _get_connected_order_ids(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for stock_move in self.browse(cr, uid, ids, context):
@@ -212,7 +214,13 @@ class StockMove(orm.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
         new_ids = [i for i in ids if i]
+        if 'state' in vals or 'product_id' in vals:
+            self.pool['temp.mrp.bom'].stock_availability = {}
         return super(StockMove, self).write(cr, uid, new_ids, vals, context)
+
+    def create(self, cr, uid, vals, context=None):
+        self.pool['temp.mrp.bom'].stock_availability = {}
+        return super(StockMove, self).create(cr, uid, vals, context)
 
     def remove_from_production(self, cr, uid, ids, context=None):
         context['call_unlink'] = True

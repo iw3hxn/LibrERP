@@ -26,6 +26,7 @@
                                 'readonly': [('state','!=','draft')]}"/>
                     <field name="supplier_ids" invisible="1"/>
                     <field name="id" invisible="1"/>
+                    <field name="user_id" widget="selection" />
                     <group colspan="8" col="8" attrs="{'invisible': [('state','!=','draft')]}">
                         <button name="save_suppliers" string="Save" icon="gtk-save" type="object"/>
                         <button name="reload_bom" string="Reload &amp; Preview" icon="gtk-refresh" type="object"/>
@@ -230,6 +231,7 @@
                 <tree string="Order Requirement" editable="top"
                     colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                     <field name="row_color" invisible="1"/>
+                    <field name="user_id" />
                     <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" />
                     <field name="product_id"/>
                     <field name="new_product_id"/>
