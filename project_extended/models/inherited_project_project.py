@@ -211,8 +211,6 @@ class project_project(orm.Model):
 
         return res
 
-    from profilehooks import profile
-    @profile(immediate=True)
     def name_get(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if not len(ids):
