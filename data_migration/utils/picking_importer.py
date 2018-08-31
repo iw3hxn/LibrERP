@@ -258,13 +258,13 @@ class ImportFile(threading.Thread, Utils):
             # i need to create stock.picking
             # so need to create one
             # picking_type = self.location_obj.picking_type_get(cr, uid, self.location_id, self.location_dest_id)
-
+            invoice_state = self.stock_journal_id and self.stock_journal_id.default_invoice_state or 'none'
             vals_picking = {
                 'address_id': self.address_id.id,
                 'origin': origin,
                 'type': picking_type,
                 'move_type': 'one',
-                'invoice_state': 'none',
+                'invoice_state': invoice_state,
                 'auto_picking': True,
                 'stock_journal_id': self.stock_journal_id.id,
                 'min_date': date,
