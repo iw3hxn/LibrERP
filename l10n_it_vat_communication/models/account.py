@@ -41,8 +41,8 @@ class AccountVatCommunication(orm.Model):
 
     _columns = {
         'company_id': fields.many2one('res.company', 'Azienda', required=True),
-        # 'progressivo_telematico':
-        #     fields.integer('Progressivo telematico', readonly=True),
+        'progressivo_telematico':
+            fields.integer('Progressivo telematico', readonly=True),
         'soggetto_codice_fiscale':
             fields.char('Codice fiscale dichiarante',
                         size=16, required=True,
@@ -225,7 +225,7 @@ class AccountVatCommunication(orm.Model):
                 cr, uid, address_id, context=None)
         else:
             address = partner
-        code = partner.vat and partner.vat[0:2]
+        code = partner.vat and partner.vat[0:2].upper()
         return address.country_id.code or code
 
     def load_invoices(self, cr, uid, commitment, commitment_line_model,
@@ -247,16 +247,16 @@ class AccountVatCommunication(orm.Model):
                 tax_rate = 0.0
                 tax_nodet_rate = 0.0
                 if invoice_tax.tax_code_id:
-                    if release.major_version == '6.1' and invoice_tax.tax_code_id.notprintable:
+                    if invoice_tax.tax_code_id.notprintable:
                         continue
-                    if release.major_version == '6.1' and invoice_tax.tax_code_id.exclude_from_registries:
+                    if invoice_tax.tax_code_id.exclude_from_registries:
                         continue
                 else:
                     if invoice_tax.base_code_id.notprintable:
                         continue
                     if invoice_tax.base_code_id.exclude_from_registries:
                         continue
-                if release.major_version == '6.1' and tax_dict.get('amount', 0.00) < 0.00:
+                if tax_dict.get('amount', 0.00) < 0.00:
                     continue
 
                 tax = invoice_tax
@@ -662,7 +662,7 @@ class commitment_line(orm.AbstractModel):
         res = {'xml_Error': ''}
 
         if partner.vat:
-            vat = partner.vat
+            vat = partner.vat.replace(' ', '')
             res['xml_IdPaese'] = vat and vat[0:2] or ''
             res['xml_IdCodice'] = vat and vat[2:] or ''
         res['xml_Nazione'] = address.country_id.code or res.get('xml_IdPaese')
@@ -708,11 +708,13 @@ class commitment_line(orm.AbstractModel):
 
         if not res['xml_Nazione']:
             res['xml_Error'] += self._get_error(('Impossible determine country code for partner {}').format(partner.name), context)
-        if address.street:
-            res['xml_Indirizzo'] = address.street.replace(
-                u"'", '').replace(u"’", '')
+        if address.street or address.street2:
+            if address.street:
+                res['xml_Indirizzo'] = address.street.replace(u"'", '').replace(u"’", '')
+            else:
+                res['xml_Indirizzo'] = address.street2.replace(u"'", '').replace(u"’", '')
         else:
-            if not context.get('no_except', False):
+            if context.get('no_except', False):
                 res['xml_Error'] += self._get_error(_('Partner %s without street on address') % (partner.name), context)
 
         if res.get('xml_IdPaese', '') == 'IT':

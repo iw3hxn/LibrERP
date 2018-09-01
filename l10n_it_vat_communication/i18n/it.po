@@ -720,3 +720,45 @@ msgstr "Natura"
 #: field:account.vat.communication.dtr.line,tax_payability:0
 msgid "VAT payability"
 msgstr "Esigibilita' Iva"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:679
+#, python-format
+msgid "Invalid fiscalcode of %s"
+msgstr "Codicce fiscale di %s non valido"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:699
+#, python-format
+msgid "Invalid First or Last name %s"
+msgstr "Cognome o Nome di %s non valido"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:705
+#, python-format
+msgid "Partner %s without VAT number"
+msgstr "Partner %s senza Partita IVA"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:718
+#, python-format
+msgid "Partner %s without street on address"
+msgstr "Partner %s senza la via nell'indirizzo"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:725
+#, python-format
+msgid "Partner %s has wrong zip code"
+msgstr "Partner %s senza CAP nell'indirizzo"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:728
+#, python-format
+msgid "Partner %s without city on address"
+msgstr "Partner %s senza città nell'indirizzo"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:736
+#, python-format
+msgid "Partner %s without province on address"
+msgstr "Partner %s senza provincia nell'indirizzo"

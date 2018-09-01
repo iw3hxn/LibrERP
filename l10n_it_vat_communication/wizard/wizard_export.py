@@ -302,7 +302,7 @@ class WizardVatCommunication(orm.TransientModel):
                     IdFiscaleITType())
 
             partner.IdentificativiFiscali.IdFiscaleIVA.\
-                IdPaese = fields['xml_IdPaese']
+                IdPaese = fields['xml_IdPaese'].upper()
             partner.IdentificativiFiscali.IdFiscaleIVA.\
                 IdCodice = fields['xml_IdCodice']
 
