@@ -583,6 +583,8 @@ msgstr "Dichiarazione IVA"
 
 #. module: account_vat_period_end_statement
 #: report:addons/account_vat_period_end_statement/report/vat_period_end_statement.mako:37
+#: report:addons/account_vat_period_end_statement/report/vat_period_end_statement.mako:43
+#: report:addons/account_vat_period_end_statement/report/vat_period_end_statement5.mako:43
 #: model:ir.actions.report.xml,name:account_vat_period_end_statement.print_vat_period_end_statement
 msgid "VAT Statement Summary"
 msgstr "Prospetto liquidazione IVA"
