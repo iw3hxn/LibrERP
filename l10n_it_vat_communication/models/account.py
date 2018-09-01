@@ -236,27 +236,39 @@ class AccountVatCommunication(orm.Model):
         sum_amounts = {}
         for f in ('total', 'taxable', 'tax', 'discarded'):
             sum_amounts[f] = 0.0
-        for invoice_id in invoice_model.search(cr, uid, where, context=context):
+        invoice_ids = invoice_model.search(cr, uid, where, context=context)
+        for invoice in invoice_model.browse(cr, uid, invoice_ids, context):
+            partner = invoice.partner_id
+            if not partner.vat and not partner.cf:
+                continue
             inv_line = {}
-            invoice = invoice_model.browse(cr, uid, invoice_id, context)
             ait_obj = self.pool['account.invoice.tax']
-            for tax_dict in ait_obj.compute(cr, uid, invoice_id, context).values():
+
+            tax_payability = 'I'
+            if release.major_version == '6.1':
+                for tax_line in invoice.tax_line:
+                    tax_id = self.pool['account.tax'].get_tax_by_invoice_tax(
+                        cr, uid, tax_line.name, context=context)
+                    tax = self.pool['account.tax'].browse(cr, uid, tax_id, context=context)
+                    if tax.payability and tax.payability != 'I':
+                        tax_payability = tax.payability
+
+            for tax_dict in ait_obj.compute(cr, uid, invoice.id, context).values():
                 invoice_tax = account_tax_model.browse(cr, uid, tax_dict['account_tax_id'], context)
                 tax_nature = False
-                tax_payability = 'I'
                 tax_rate = 0.0
                 tax_nodet_rate = 0.0
                 if invoice_tax.tax_code_id:
-                    if invoice_tax.tax_code_id.notprintable:
+                    if release.major_version == '6.1' and invoice_tax.tax_code_id.notprintable:
                         continue
-                    if invoice_tax.tax_code_id.exclude_from_registries:
+                    if release.major_version == '6.1' and invoice_tax.tax_code_id.exclude_from_registries:
                         continue
                 else:
                     if invoice_tax.base_code_id.notprintable:
                         continue
                     if invoice_tax.base_code_id.exclude_from_registries:
                         continue
-                if tax_dict.get('amount', 0.00) < 0.00:
+                if release.major_version == '6.1' and tax_dict.get('amount', 0.00) < 0.00:
                     continue
 
                 tax = invoice_tax
@@ -333,9 +345,9 @@ class AccountVatCommunication(orm.Model):
                     sum_amounts['tax'] += tax_dict['amount']
                     sum_amounts['total'] += round(tax_dict['base'] + tax_dict['amount'], 2)
             if inv_line:
-                comm_lines[invoice_id] = {}
-                comm_lines[invoice_id]['partner_id'] = invoice.partner_id.id
-                comm_lines[invoice_id]['taxes'] = inv_line
+                comm_lines[invoice.id] = {}
+                comm_lines[invoice.id]['partner_id'] = invoice.partner_id.id
+                comm_lines[invoice.id]['taxes'] = inv_line
         return comm_lines, sum_amounts
 
     def load_DTE_DTR(self, cr, uid, commitment, commitment_line_model,
@@ -619,11 +631,12 @@ class commitment_line(orm.AbstractModel):
 
     def _xml_dati_partner(self, cr, uid, ids, fname, args, context=None):
         res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            ctx = context.copy()
-            ctx['no_except'] = True
+        ctx = context.copy()
+        ctx['no_except'] = True
+        for line in self.browse(cr, uid, ids, context=ctx):
             fields = self._dati_partner(cr, uid, line.partner_id, args, context=ctx)
-
+            if not line.tax_rate and not line.tax_nature:
+                fields['xml_Error'] += _('No tax Nature')
             result = {}
             for f in fname:
                 if fields.get(f, ''):
@@ -721,7 +734,7 @@ class commitment_line(orm.AbstractModel):
             if address.zip:
                 res['xml_CAP'] = address.zip.replace('x', '0').replace('%',
                                                                        '0')
-            if len(res['xml_CAP']) != 5 or not res['xml_CAP'].isdigit():
+            if len(res.get('xml_CAP', '')) != 5 or not res.get('xml_CAP', '').isdigit():
                 res['xml_Error'] += self._get_error(_('Partner %s has wrong zip code') % (partner.name), context)
         res['xml_Comune'] = address.city or ' '
         if not address.city:

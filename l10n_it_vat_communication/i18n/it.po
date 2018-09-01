@@ -762,3 +762,9 @@ msgstr "Partner %s senza città nell'indirizzo"
 #, python-format
 msgid "Partner %s without province on address"
 msgstr "Partner %s senza provincia nell'indirizzo"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/models/account.py:626
+#, python-format
+msgid "No tax Nature"
+msgstr "\n Manca la Natura della Tassa"
