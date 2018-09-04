@@ -691,7 +691,7 @@ class commitment_line(orm.AbstractModel):
             if 'warning' in r:
                 res['xml_Error'] += self._get_error(_('Invalid fiscalcode of %s') % partner.name, context)
 
-            res['xml_CodiceFiscale'] = partner.fiscalcode
+            res['xml_CodiceFiscale'] = partner.fiscalcode.upper()
         elif res.get('xml_IdPaese', '') == 'IT':
             # res['xml_CodiceFiscale'] = res['xml_IdCodice']
             pass
@@ -732,8 +732,7 @@ class commitment_line(orm.AbstractModel):
 
         if res.get('xml_IdPaese', '') == 'IT':
             if address.zip:
-                res['xml_CAP'] = address.zip.replace('x', '0').replace('%',
-                                                                       '0')
+                res['xml_CAP'] = address.zip.replace('x', '0').replace('%', '0').replace(' ', '')
             if len(res.get('xml_CAP', '')) != 5 or not res.get('xml_CAP', '').isdigit():
                 res['xml_Error'] += self._get_error(_('Partner %s has wrong zip code') % (partner.name), context)
         res['xml_Comune'] = address.city or ' '
