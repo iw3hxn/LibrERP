@@ -285,6 +285,8 @@ class AccountVatCommunication(orm.Model):
                         tax_nodet_rate = 1
                 else:
                     if release.major_version == '6.1':
+                        if tax.non_taxable_nature:
+                            tax_nature = tax.non_taxable_nature
                         tax_rate = 0
                         for child in tax.parent_id.child_ids:
                             if child.type == 'percent':
