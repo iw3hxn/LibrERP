@@ -290,6 +290,10 @@ class AccountVatCommunication(orm.Model):
                         tax_rate = 0
                         for child in tax.parent_id.child_ids:
                             if child.type == 'percent':
+                                if child.tax_code_id.notprintable:
+                                    continue
+                                if child.tax_code_id.exclude_from_registries:
+                                    continue
                                 tax_rate += child.amount
                         if tax_rate:
                             tax_nodet_rate = 1 - (tax.amount / tax_rate)
@@ -361,7 +365,7 @@ class AccountVatCommunication(orm.Model):
             fiscal_position_model = self.pool['account.fiscal.position']
             fiscal_position_ids = fiscal_position_model.search(cr, uid, [('journal_auto_invoice_id', '!=', False)], context=context)
             for fiscal_position in fiscal_position_model.browse(cr, uid, fiscal_position_ids, context):
-                exclude_journal_ids.append(fiscal_position.sale_journal_id.id)
+                exclude_journal_ids.append(fiscal_position.journal_auto_invoice_id.id)
         else:
             exclude_journal_ids = journal_model.search(
                 cr, uid, [('rev_charge', '=', True)])
@@ -788,9 +792,11 @@ class commitment_line(orm.AbstractModel):
                 not invoice.partner_id.vat and \
                 not invoice.partner_id.fiscalcode:
             return 'TD08'
-        elif country_code != 'IT' and country_code in EU_COUNTRIES and \
-                doctype == 'in_invoice':
-            return 'TD11'
+        elif country_code != 'IT' and country_code in EU_COUNTRIES and doctype == 'in_invoice':
+            for line in invoice.invoice_line:
+                if line.product_id and line.product_id.type == 'service':
+                    return 'TD11'
+                return 'TD10'
         elif doctype in ('out_invoice', 'in_invoice'):
             if invoice.amount_total >= 0:
                 return 'TD01'
