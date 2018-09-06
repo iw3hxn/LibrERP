@@ -97,10 +97,9 @@ class sale_order(orm.Model):
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
 
-        orders = self.browse(cr, uid, ids, context)
-
         self.adaptative_function(cr, uid, ids, vals, context)
         if vals.get('state', False):
+            orders = self.browse(cr, uid, ids, context)
             self.hook_sale_state(cr, uid, orders, vals, context)
 
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
