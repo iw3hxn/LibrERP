@@ -170,7 +170,7 @@ class sale_order(orm.Model):
                     invoice_ratio = 1
                 else:
                     invoice_ratio = 3
-                project_name = order.project_project.name
+                project_name = order.name.split(' ')[0]
                 if order.client_order_ref:
                     project_name = project_name + ' - ' + order.client_order_ref
                 self.pool['project.project'].write(cr, uid, project_id, {'to_invoice': invoice_ratio, 'state': 'open', 'name': project_name}, context=context)
@@ -271,6 +271,25 @@ class sale_order(orm.Model):
         default.update({'project_project': False,
                         'project_id': False, })
         return super(sale_order, self).copy(cr, uid, id, default, context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        res = super(sale_order, self).write(cr, uid, ids, vals, context)
+        if 'partner_id' in vals:
+            analytic_account_ids = []
+            orders_project = self.read(cr, uid, ids, ['project_id'], context)
+            for order in orders_project:
+                if order['project_id']:
+                    analytic_account_ids.append(order['project_id'][0])
+            if analytic_account_ids:
+                analytic_account_vals = {
+                    'partner_id': vals['partner_id']
+                }
+                if vals.get('partner_order_id', False):
+                    analytic_account_vals.update({
+                        'contact_id': vals['partner_order_id']
+                    })
+                self.pool['account.analytic.account'].write(cr, uid, list(set(analytic_account_ids)), analytic_account_vals, context)
+        return res
 
     def create(self, cr, uid, values, context=None):
         order_id = super(sale_order, self).create(cr, uid, values, context)
