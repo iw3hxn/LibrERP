@@ -198,6 +198,8 @@ msgid "Routing Lines"
 msgstr "Righe Routing"
 
 #. module: sale_order_requirement
+#: code:addons/sale_order_requirement/models/temp_mrp_bom.py:386
+#: model:ir.model,name:sale_order_requirement.model_purchase_order
 #: field:temp.mrp.bom,purchase_order_id:0
 msgid "Purchase Order"
 msgstr "Ordine Acquisto"
@@ -632,3 +634,13 @@ msgstr "Ordine Acquisto"
 msgid "Production"
 msgstr "Ordine di Produzione"
 
+#. module: sale_order_requirement
+#: model:ir.actions.act_window,name:sale_order_requirement.action_view_order_requirement_line
+#: field:mrp.production,order_requirement_line_id:0
+msgid "Order Requirement Line"
+msgstr "Riga Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: view:purchase.order.line:0
+msgid "Sale Order Lines"
+msgstr "Ordine di Vendita Collegati"

@@ -52,21 +52,21 @@ class temp_mrp_bom(orm.Model):
     def _is_out_of_stock(self, cr, uid, ids, name, args, context=None):
         # Return True if stock is less than spare
         res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = line.stock_availability < line.spare
+        for line in self.read(cr, uid, ids, ['stock_availability', 'spare'], context=context):
+            res[line['id']] = line['stock_availability'] < line['spare']
         return res
 
     def _get_temp_mrp_bom_action(self, cr, uid, ids, name, args, context=None):
         # Return a string describing whether a product is being bought or produced
         res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            if line.is_manufactured:
+        for line in self.read(cr, uid, ids, ['is_manufactured', 'buy'], context=context):
+            if line['is_manufactured']:
                 preview = 'Produce'
-            elif line.buy:
+            elif line['buy']:
                 preview = 'Buy'
             else:
                 preview = 'Stock'
-            res[line.id] = preview
+            res[line['id']] = preview
         return res
 
     # This is called also when loading saved temp mrp boms,
@@ -74,18 +74,18 @@ class temp_mrp_bom(orm.Model):
     def _get_routing(self, cr, uid, ids, field_name, arg, context):
         res = {}
         mrp_bom_obj = self.pool['mrp.bom']
-        for line in self.browse(cr, uid, ids, context):
-            product_id = line.product_id
+        for line in self.read(cr, uid, ids, ['product_id'], context):
+            product_id = line['product_id'][0]
             routing_id = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context)
             # Here routing_id must be a browse record, not a list
-            res[line.id] = routing_id
+            res[line['id']] = routing_id
         return res
 
     def _is_belowspare(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
-        for line in self.browse(cr, uid, ids, context):
-            res[line.id] = line.stock_availability < line.spare
+        for line in self.read(cr, uid, ids, ['stock_availability', 'spare'], context):
+            res[line['id']] = line['stock_availability'] < line['spare']
         return res
 
     @staticmethod
@@ -98,9 +98,9 @@ class temp_mrp_bom(orm.Model):
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
-        for line in self.browse(cr, uid, ids, context):
-            row_color = temp_mrp_bom.get_color_bylevel(line.level)
-            res[line.id] = row_color
+        for line in self.read(cr, uid, ids, ['level'], context):
+            row_color = temp_mrp_bom.get_color_bylevel(line['level'])
+            res[line['id']] = row_color
         return res
 
     def action_toggle_manufactured(self, cr, uid, ids, context):
@@ -127,7 +127,7 @@ class temp_mrp_bom(orm.Model):
     def update_supplier(self, cr, uid, ids, context):
         # todo check why not work!!
         line = self.browse(cr, uid, ids, context)[0]
-        result_dict = self.pool['order.requirement.line'].get_suppliers(cr, uid, ids, line.product_id.id, context)
+        result_dict = self.pool['order.requirement.line'].get_suppliers(cr, uid, ids, line.product_id, context)
         supplier_ids_formatted = result_dict['supplier_ids']
         line.write({'supplier_ids': supplier_ids_formatted})
         return True
@@ -168,9 +168,9 @@ class temp_mrp_bom(orm.Model):
         # mrp_routing_id is a relation with ORIGINAL routing (but we make a copy)
         'mrp_routing_id': fields.many2one('mrp.routing', string='Routing', auto_join=True, readonly=True),
         'temp_mrp_routing_lines': fields.one2many('temp.mrp.routing', 'temp_mrp_bom_id', 'Routing Lines'),
-        'mrp_production_id': fields.many2one('mrp.production', string='Manufacturing Order'),
+        'mrp_production_id': fields.many2one('mrp.production', string='Manufacturing Order', select=True),
         # 'mrp_production_line_id': fields.many2one('mrp.production.???', string='Manufacturing Order'),
-        'purchase_order_id': fields.many2one('purchase.order', string='Purchase Order'),
+        'purchase_order_id': fields.many2one('purchase.order', string='Purchase Order', select=True),
         'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order Line'),
         'level': fields.integer('Level'),
         'is_manufactured': fields.boolean('Manufacture'),
@@ -324,8 +324,8 @@ class temp_mrp_bom(orm.Model):
         # NOTE: MRP.BOM version will find only the first-level children. Not good for temp.mrp.bom
         # WARNING: PHANTOM KITS NOT MANAGED
 
-        user = self.pool['res.users'].browse(cr, uid, uid, context)
-        split_mrp_production = user.company_id.split_mrp_production
+        company_id = self.pool['res.users']._get_company(cr, uid, context=context)
+        split_mrp_production = self.pool['res.company'].read(cr, uid, company_id, ['split_mrp_production'], context)['split_mrp_production']
 
         result = []
         result2 = []

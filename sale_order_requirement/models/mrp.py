@@ -8,6 +8,16 @@ from tools.translate import _
 class mrp_bom(orm.Model):
     _inherit = 'mrp.bom'
 
+    _index_name = 'mrp_bom_product_id_index'
+
+    def _auto_init(self, cr, context={}):
+        super(mrp_bom, self)._auto_init(cr, context)
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
+                   (self._index_name,))
+
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON mrp_bom (product_id)'.format(name=self._index_name))
+
     def _child_compute_buy_and_produce(self, cr, uid, ids, name, arg, context=None):
         result = {}
         if context is None:

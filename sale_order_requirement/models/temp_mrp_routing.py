@@ -22,7 +22,7 @@ class temp_mrp_routing(orm.Model):
         'row_color': fields.char('Row Color', store=False),
         'temp_mrp_bom_id': fields.many2one('temp.mrp.bom', 'Temp BoM', required=True, ondelete='cascade'),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line',
-                                                     required=True, ondelete='cascade')
+                                                     required=True, ondelete='cascade', select=True)
     }
 
     _order = "sequence,id"

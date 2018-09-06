@@ -87,27 +87,22 @@ class order_requirement_line(orm.Model):
                 res[line.id] = 'cadetblue'
         return res
 
-    def get_suppliers(self, cr, uid, ids, new_product_id, context=None):
+    def get_suppliers(self, cr, uid, ids, product, context=None):
         # Return FORMATTED supplier_ids [(6, False, [ID])] and a choosen supplier_id
         context = context or self.pool['res.users'].context_get(cr, uid)
         supplierinfo_obj = self.pool['product.supplierinfo']
         result_dict = {}
-        if new_product_id:
-            product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
+        if product:
             # --find the supplier
-            supplier_info_ids = supplierinfo_obj.search(cr, uid, [('product_id', '=', product.product_tmpl_id.id)],
-                                                        order="sequence", context=context)
-            supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-            seller_ids = list(set([info.name.id for info in supplier_infos]))
-
-            if seller_ids:
+            if product.seller_ids:
+                seller_ids = list(set([info.name.id for info in product.seller_ids]))
                 supplier_id = seller_ids[0]
             else:
                 supplier_id = False
                 # If not suppliers found -> returns all of them
                 supplier_info_ids = supplierinfo_obj.search(cr, uid, [], order="sequence", context=context)
-                supplier_infos = supplierinfo_obj.browse(cr, uid, supplier_info_ids, context=context)
-                seller_ids = list(set([info.name.id for info in supplier_infos]))
+                supplier_infos = supplierinfo_obj.read(cr, uid, supplier_info_ids, ['name'], context=context)
+                seller_ids = list(set([info['name'][0] for info in supplier_infos]))
 
         else:
             supplier_id = False
@@ -115,7 +110,7 @@ class order_requirement_line(orm.Model):
 
         result_dict.update({
             'supplier_id': supplier_id,
-            'supplier_ids': [(6, False, [s for s in seller_ids])],
+            'supplier_ids': [(6, False, seller_ids)],
         })
 
         return result_dict
@@ -196,18 +191,18 @@ class order_requirement_line(orm.Model):
         is_manufactured = not is_leaf
         buy = not is_manufactured
 
-        product_id = bom.product_id.id
+        product = bom.product_id
 
         line = self.browse(cr, uid, line_id, context)
 
         row_color = temp_mrp_bom.temp_mrp_bom.get_color_bylevel(level)
         level_name = '- {} {} >'.format(str(level), ' -----' * level)
 
-        suppliers = line.get_suppliers(product_id, context=context)
+        suppliers = line.get_suppliers(product, context=context)
         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
 
-        stock_spare = self.generic_stock_availability(cr, uid, [], product_id, warehouse_id, context=context)
-        routing_id = self.get_routing_id(cr, uid, product_id, context)
+        stock_spare = self.generic_stock_availability(cr, uid, [], product.id, warehouse_id, context=context)
+        routing_id = self.get_routing_id(cr, uid, product.id, context)
 
         # partial_cost = bom.product_id.cost_price
         partial_cost = 0
@@ -221,7 +216,7 @@ class order_requirement_line(orm.Model):
             'mrp_bom_id': bom.id,
             'type': bom.type,
             # 'mrp_bom_parent_id': bom_parent_id,
-            'product_id': product_id,
+            'product_id': product.id,
             'original_qty': bom.product_qty,
             'product_qty': bom.product_qty * qty_mult,
             'product_uom': bom.product_uom.id,
@@ -264,7 +259,7 @@ class order_requirement_line(orm.Model):
         row_color = temp_mrp_bom.temp_mrp_bom.get_color_bylevel(level)
         level_name = u'- {} {} >'.format(str(level), ' -----' * level)
 
-        suppliers = line.get_suppliers(product_id, context=context)
+        suppliers = line.get_suppliers(product, context=context)
         warehouse_id = line.sale_order_id.shop_id.warehouse_id.id
 
         stock_spare = self.generic_stock_availability(cr, uid, [], product_id, warehouse_id, context=context)
@@ -400,7 +395,7 @@ class order_requirement_line(orm.Model):
         self.write(cr, uid, line_id, line_vals, context)
         return total_cost
 
-    def create_temp_mrp_bom(self, cr, uid, ids, product_id, qty_mult, father_temp_id, start_level, start_sequence=0,
+    def create_temp_mrp_bom(self, cr, uid, ids, product, qty_mult, father_temp_id, start_level, start_sequence=0,
                             create_father=True, create_children=True, context=None):
         # Returns 2 list of VALS (probably not needed)
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -414,9 +409,12 @@ class order_requirement_line(orm.Model):
         global sequence
         sequence = start_sequence
 
-        product = product_obj.browse(cr, uid, product_id, context)
+        if isinstance(product, (int, long)):
+            product = product_obj.browse(cr, uid, product, context)
+
         # bom_ids = product.bom_ids # NO, wrong, duplicates !
-        bom_ids = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product_id),
+
+        bom_ids = mrp_bom_obj.search_browse(cr, uid, [('product_id', '=', product.id),
                                                       ('bom_id', '=', False)], context=context)
 
         def _get_rec(bom_rec, father_id, level):
@@ -606,7 +604,7 @@ class order_requirement_line(orm.Model):
 
     _columns = {
         'new_product_id': fields.many2one('product.product', 'Choosen Product', readonly=True,
-                                          states={'draft': [('readonly', False)]}),
+                                          states={'draft': [('readonly', False)]}, select=True),
         'product_id': fields.many2one('product.product', 'Original Product', readonly=True),
         # todo remove 'actual_product': fields.function(_get_actual_product, store=False),
         'is_manufactured': fields.boolean('Manufacture', readonly=True, states={'draft': [('readonly', False)]},
@@ -673,9 +671,9 @@ class order_requirement_line(orm.Model):
             return []
 
         result = {}
-        for ordreqline in self.browse(cr, user, ids, context=context):
-            name = u'Open ({})'.format(ordreqline.id)
-            result[ordreqline.id] = name
+        for ordreqline in self.read(cr, user, ids, ['sale_order_line_id'], context=context):
+            name = u'{}'.format(ordreqline['sale_order_line_id'][1])
+            result[ordreqline['id']] = name
         return result
 
     def action_reload_bom(self, cr, uid, ids, context):
@@ -734,12 +732,11 @@ class order_requirement_line(orm.Model):
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        result_dict = self.get_suppliers(cr, uid, ids, new_product_id, context)
 
         if new_product_id:
             temp_mrp_bom_obj = self.pool['temp.mrp.bom']
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
-
+            result_dict = self.get_suppliers(cr, uid, ids, product, context)
             # Update BOM according to new product
             # Removing existing temp mrp bom
             line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
@@ -749,7 +746,7 @@ class order_requirement_line(orm.Model):
 
             supplier_ids_formatted = result_dict['supplier_ids']
             self.write(cr, uid, line.id, {'new_product_id': product.id, 'supplier_ids': supplier_ids_formatted}, context)
-            temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product.id, qty, False, 0, 0, True, True, context)
+            temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product, qty, False, 0, 0, True, True, context)
             # TODO: maybe another option create_if_leaf in create temp mrp bom
             temp = temp_ids[0]
             if temp['is_leaf']:
@@ -759,7 +756,9 @@ class order_requirement_line(orm.Model):
                 result_dict['is_manufactured'] = False
                 self.write(cr, uid, line.id, {'is_manufactured': False}, context)
         else:
-            result_dict['view_bom'] = False
+            result_dict = {
+                'view_bom': False
+            }
 
         # RELOAD
         line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
@@ -845,7 +844,7 @@ class order_requirement_line(orm.Model):
                                  _(u'There are no suppliers defined for product {0}').format(obj.product_id.name))
         is_temp_bom = False
 
-        try:
+        if obj._name != 'temp.mrp.bom':
             # Try if it's a ordreq line
             if obj.new_product_id:
                 product = obj.new_product_id
@@ -853,7 +852,7 @@ class order_requirement_line(orm.Model):
                 product = obj.product_id
             # TODO maybe let user change uom in line product
             uom_id = product.uom_id.id
-        except AttributeError:
+        else:
             # If we are here it's a temp_mrp_bom
             is_temp_bom = True
             product = obj.product_id
@@ -863,19 +862,19 @@ class order_requirement_line(orm.Model):
 
         if is_temp_bom:
             qty = obj.product_qty
-            line_id = obj.order_requirement_line_id.id
+            line_obj = obj.order_requirement_line_id
             obj_formatted_id = [(4, obj.id)]
         else:
             qty = obj.qty
-            line_id = obj.id
+            line_obj = obj
             obj_formatted_id = False
 
-        line = self.browse(cr, uid, line_id, context)
+        line = line_obj
         sale_order_id = line.sale_order_id.id
 
         shop = obj.sale_order_id.shop_id
         shop_id = shop.id
-        account_analytic_id = obj.sale_order_id.project_id and obj.sale_order_id.project_id.id
+        # account_analytic_id = obj.sale_order_id.project_id and obj.sale_order_id.project_id.id
 
         purchase_order_ids = purchase_order_obj.search(cr, uid, [('partner_id', '=', supplier_id),
                                                                  ('state', '=', 'draft')], limit=1, context=context)
@@ -904,11 +903,11 @@ class order_requirement_line(orm.Model):
             purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
                                                                              purchase_order_values, supplier_id, context)
             purchase_order_line_values.update({
-                'account_analytic_id': account_analytic_id,
+                # 'account_analytic_id': account_analytic_id,
                 'product_qty': qty,
                 'order_id': purchase_id,
                 'order_requirement_ids': [(4, line.order_requirement_id.id)],
-                'order_requirement_line_ids': [(4, line_id)],
+                'order_requirement_line_ids': [(4, line_obj.id)],
                 # 'sale_order_ids': [(4, sale_order_id)],
             })
 
@@ -920,7 +919,7 @@ class order_requirement_line(orm.Model):
             # Create order line and relationship with order_requirement_line
             purchase_line_id = purchase_order_line_obj.create(cr, uid, purchase_order_line_values, context)
             # Add the purchase line to ordreq LINE
-            self.write(cr, uid, line_id, {
+            self.write(cr, uid, line_obj.id, {
                 'purchase_order_ids': [(4, purchase_id)],
                 'purchase_order_line_ids': [(4, purchase_line_id)]
             }, context)
@@ -939,8 +938,8 @@ class order_requirement_line(orm.Model):
 
             # Search for same product with same UOM in Product lines
             purchase_line_search = [('order_id', 'in', purchase_order_ids), ('product_id', '=', product_id)]
-            if account_analytic_id:
-                purchase_line_search.append(('account_analytic_id', '=', account_analytic_id))
+            # if account_analytic_id:
+            #     purchase_line_search.append(('account_analytic_id', '=', account_analytic_id))
 
             purchase_order_line_ids = purchase_order_line_obj.search(cr, uid, purchase_line_search, context=context)
 
@@ -957,11 +956,11 @@ class order_requirement_line(orm.Model):
                 purchase_order_line_values = self._get_purchase_order_line_value(cr, uid, product_id, uom_id, qty,
                                                                                  purchase_order_values, supplier_id, context)
                 purchase_order_line_values.update({
-                    'account_analytic_id': account_analytic_id,
+                    # 'account_analytic_id': account_analytic_id,
                     'product_qty': qty,
                     'order_id': present_order_id,
                     'order_requirement_ids': [(4, line.order_requirement_id.id)],
-                    'order_requirement_line_ids': [(4, line_id)],
+                    'order_requirement_line_ids': [(4, line_obj.id)],
                     # 'sale_order_ids': [(4, sale_order_id)],
                 })
                 if obj_formatted_id:
@@ -971,7 +970,7 @@ class order_requirement_line(orm.Model):
                 # Creating a new line
                 purchase_line_id = purchase_order_line_obj.create(cr, uid, purchase_order_line_values, context)
                 # Link to line many2many fields
-                self.write(cr, uid, line_id, {'purchase_order_line_ids': [(4, purchase_line_id)],
+                self.write(cr, uid, line_obj.id, {'purchase_order_line_ids': [(4, purchase_line_id)],
                                               'purchase_order_ids': [(4, present_order_id)],
                                               }, context)
 
@@ -996,7 +995,7 @@ class order_requirement_line(orm.Model):
 
                 purchase_order_line_values = {
                     'product_qty': newqty,
-                    'order_requirement_line_ids': [(4, line_id)],
+                    'order_requirement_line_ids': [(4, line_obj.id)],
                     # 'sale_order_ids': [(4, sale_order_id)],
                 }
 
@@ -1045,9 +1044,12 @@ class order_requirement_line(orm.Model):
             mrp_production_values = mrp_production_obj.product_id_change(cr, uid, [], product.id)['value']
 
             mrp_production_values.update({
+                'analytic_account_id': temp.sale_order_id.project_id and temp.sale_order_id.project_id.id or False,
                 'product_id': product.id,
                 'product_qty': temp.product_qty,
                 'sale_id': temp.sale_order_id.id,
+                'sale_name': temp.sale_order_id.name,
+                'sale_ref': temp.sale_order_id.client_order_ref or '',
                 'is_from_order_requirement': True,
                 'temp_bom_id': temp.id,
                 'level': temp.level
@@ -1059,14 +1061,14 @@ class order_requirement_line(orm.Model):
         mrp_production_obj.action_compute(cr, uid, mrp_production_id, context=context)
         temp_mrp_bom_obj.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
 
-    def _manufacture_or_purchase_all(self, cr, uid, ids, context):
+    def _manufacture_or_purchase_all(self, cr, uid, line, context):
         # line is a order_requirement_line, not a bom line
         user = self.pool['res.users'].browse(cr, uid, uid, context)
 
         split_mrp_production = user.company_id.split_mrp_production
 
         # Single line
-        line = self.browse(cr, uid, ids, context)[0]
+        # line = self.browse(cr, uid, ids, context)[0]
 
         if not line.temp_mrp_bom_ids:
             return
@@ -1099,7 +1101,7 @@ class order_requirement_line(orm.Model):
                                      _(u'This manufacturing order has already started'))
             # line is an order_requirement_line
             if line.is_manufactured:
-                self._manufacture_or_purchase_all(cr, uid, ids, context)
+                self._manufacture_or_purchase_all(cr, uid, line, context)
             else:
                 self._purchase_bom(cr, uid, line, context)
 
@@ -1127,7 +1129,7 @@ class order_requirement_line(orm.Model):
         if not line.new_product_id:
             product_id = line.product_id.id
             is_manufactured = True
-            line_vals = line.get_suppliers(product_id, context=context)
+            line_vals = line.get_suppliers(line.product_id, context=context)
             supplier_ids_formatted = line_vals['supplier_ids']
             line_vals.update({'new_product_id': product_id,
                               'is_manufactured': is_manufactured,
@@ -1150,7 +1152,7 @@ class order_requirement_line(orm.Model):
 
         if is_manufactured and not line.temp_mrp_bom_ids:
             # if line.product_id.
-            temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id.id, qty_mult, False, 0, 0, True, True, context)
+            temp_ids, temp_routing = self.create_temp_mrp_bom(cr, uid, ids, line.new_product_id, qty_mult, False, 0, 0, True, True, context)
             if temp_ids:
                 temp_mrp_bom_obj = self.pool['temp.mrp.bom']
                 temp = temp_ids[0]
@@ -1257,10 +1259,10 @@ class order_requirement_line(orm.Model):
                             # Reloading eventually modified
                             temp_mrp = temp_mrp_bom_obj.browse(cr, uid, temp_id, context)
                             saved_sequence = temp_mrp.sequence
-                            product_id = temp_mrp.product_id.id
+                            product = temp_mrp.product_id
 
                             # Must recalculate children but no father -> create_father=False
-                            self.create_temp_mrp_bom(cr, uid, ids, product_id, saved_qty, temp_id, saved_level, saved_sequence, False,
+                            self.create_temp_mrp_bom(cr, uid, ids, product, saved_qty, temp_id, saved_level, saved_sequence, False,
                                                      True, context)
                         else:
                             # Must remove children

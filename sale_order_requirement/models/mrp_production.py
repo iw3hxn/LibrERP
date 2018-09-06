@@ -50,11 +50,13 @@ class mrp_production(orm.Model):
             }, context=context)
         return move_id
 
-    def _costs_generate(self, cr, uid, production):
-        context = self.pool['res.users'].context_get(cr, uid)
-        super(mrp_production, self)._costs_generate(cr, uid, production)
+    def _costs_generate(self, cr, uid, production, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        super(mrp_production, self)._costs_generate(cr, uid, production, context)
         amount = 0.0
         analytic_line_obj = self.pool['account.analytic.line']
+        default_account = self.pool['ir.property'].get(cr, uid, 'property_account_expense_categ',
+                                                           'product.category', context=context)
         for wc_line in production.workcenter_lines:
             wc = wc_line.workcenter_id
             if wc.costs_journal_id:
@@ -63,21 +65,22 @@ class mrp_production(orm.Model):
                 account = False
                 if production.analytic_account_id:
                     account = production.analytic_account_id
-                if production.sale_id and production.sale_id.project_id:
-                    account = production.sale_id.project_id.id
+                elif production.sale_id and production.sale_id.project_id:
+                    account = production.sale_id.project_id
                 if value and account:
                     amount += value
-                    analytic_line_obj.create(cr, uid, {
+                    analytic_line_vals = {
                         'name': wc_line.name + _(' (H)'),
                         'amount': value,
-                        'account_id': account,
-                        'general_account_id': wc.costs_general_account_id and wc.costs_general_account_id.id or wc.product_id.property_account_income and wc.product_id.property_account_income.id,
+                        'account_id': account.id,
+                        'general_account_id': wc.costs_general_account_id and wc.costs_general_account_id.id or wc.product_id.property_account_income and wc.product_id.property_account_income.id or default_account.id,
                         'journal_id': wc.costs_journal_id.id,
                         'ref': wc.code,
                         'product_id': wc.product_id and wc.product_id.id or False,
                         'unit_amount': wc_line.hour,
                         'product_uom_id': wc.product_id and wc.product_id.uom_id.id or False
-                    }, context)
+                    }
+                    analytic_line_obj.create(cr, uid, analytic_line_vals, context)
                 # Cost per cycle
                 value = wc_line.cycle * wc.costs_cycle
 
@@ -86,13 +89,13 @@ class mrp_production(orm.Model):
                     analytic_line_obj.create(cr, uid, {
                         'name': wc_line.name + ' (C)',
                         'amount': value,
-                        'account_id': account,
-                        'general_account_id': wc.costs_general_account_id.id or wc.product_id.property_account_income and wc.product_id.property_account_income.id,
+                        'account_id': account.id,
+                        'general_account_id': wc.costs_general_account_id.id or wc.product_id.property_account_income and wc.product_id.property_account_income.id or default_account.id,
                         'journal_id': wc.costs_journal_id.id,
                         'ref': wc.code,
                         'product_id': wc.product_id.id,
                         'unit_amount': wc_line.cycle,
-                        'product_uom_id': wc.product_id  and wc.product_id.uom_id.id or False
+                        'product_uom_id': wc.product_id and wc.product_id.uom_id.id or False
                     }, context)
         return amount
 

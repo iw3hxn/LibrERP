@@ -66,8 +66,7 @@
             <field name="model">stock.move</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <field name="line_price_subtotal" position="after">
-                    <field name="note" />
+                <field name="line_price_subtotal" position="before">
                     <field name="purchase_orders_approved" />
                     <field name="purchase_orders_state" />
                 </field>

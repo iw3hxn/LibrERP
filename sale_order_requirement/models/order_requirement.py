@@ -15,18 +15,18 @@ class order_requirement(orm.Model):
     def _get_day(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
-        for requirement in self.browse(cr, uid, ids, context=context):
-            res[requirement.id] = {
+        for requirement in self.read(cr, uid, ids, ['date'], context=context):
+            res[requirement['id']] = {
                 'week_nbr': False,
             }
-            if not requirement.date:
+            if not requirement['date']:
                 continue
 
-            start_date = datetime.strptime(requirement.date, DEFAULT_SERVER_DATE_FORMAT)
+            start_date = datetime.strptime(requirement['date'], DEFAULT_SERVER_DATE_FORMAT)
             start_date = date(start_date.year, start_date.month, start_date.day)
 
             # mese in italiano start_date.strftime('%B').capitalize()
-            res[requirement.id] = {
+            res[requirement['id']] = {
                 'week_nbr': start_date.isocalendar()[1],
                 'month': int(start_date.strftime("%m")),
             }
@@ -39,7 +39,7 @@ class order_requirement(orm.Model):
 
     _columns = {
         'date': fields.date('Data'),
-        'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade'),
+        'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade', select=True),
         'client_order_ref': fields.related('sale_order_id', 'client_order_ref', type='char', string="Customer Reference"),
         'customer_id': fields.related('sale_order_id', 'partner_id', type='many2one', relation='res.partner', string='Customer', store=False),
         'user_id': fields.many2one('res.users', 'User'),
