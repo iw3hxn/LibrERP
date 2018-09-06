@@ -36,14 +36,14 @@ class sale_order(orm.Model):
         result = {}
         project_obj = self.pool['project.project']
 
-        for order in self.browse(cr, uid, ids, context):
-            if order.project_id:
-                project_ids = project_obj.search(cr, uid, [('analytic_account_id', '=', order.project_id.id)], context=context)
+        for order in self.read(cr, uid, ids, ['project_id'], context):
+            if order['project_id']:
+                project_ids = project_obj.search(cr, uid, [('analytic_account_id', '=', order['project_id'][0])], context=context)
                 if project_ids:
-                    project = project_obj.browse(cr, uid, project_ids[0], context)
-                    result[order.id] = (project.id, project.name)
+                    project = project_obj.read(cr, uid, project_ids[0], ['name'], context)
+                    result[order['id']] = (project['id'], project['name'])
                 else:
-                    result[order.id] = False
+                    result[order['id']] = False
             else:
                 result[order.id] = False
 
