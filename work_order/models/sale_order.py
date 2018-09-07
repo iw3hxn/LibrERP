@@ -45,7 +45,7 @@ class sale_order(orm.Model):
                 else:
                     result[order['id']] = False
             else:
-                result[order.id] = False
+                result[order['id']] = False
 
         return result
     
