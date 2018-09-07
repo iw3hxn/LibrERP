@@ -262,11 +262,27 @@ class project_project(orm.Model):
     def _get_purchase_order(self, cr, uid, ids, field_name, model_name, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
-        purchase_order_obj = self.pool['purchase.order']
+        sale_order_obj = self.pool['sale.order']
+        purchase_order_line_obj = self.pool['purchase.order.line']
+
+        order_requirement_obj = self.pool.get('order.requirement')  # in this mode test if exist order requirement
 
         for project in self.browse(cr, uid, ids, context):
-            name = project.name.split('-')[0]
-            result[project.id] = purchase_order_obj.search(cr, uid, [('origin', 'ilike', name), ('state', 'not in', ['draft', 'cancel'])], context=context)
+            purchase_ids = []
+            account_analytic_id = project.analytic_account_id.id
+            purchase_sale_ids = []
+            if order_requirement_obj:
+                sale_order_ids = sale_order_obj.search(cr, uid, [('project_id', '=', account_analytic_id)], context=context)
+                order_requirement_ids = order_requirement_obj.search(cr, uid, [('sale_order_id', 'in', sale_order_ids)], context=context)
+                purchase_sale_ids = purchase_order_line_obj.search(cr, uid, [('order_requirement_ids', 'in', order_requirement_ids)], context=context)
+
+            purchase_order_line_ids = purchase_order_line_obj.search(cr, uid, [('account_analytic_id', '=', account_analytic_id)], context=context)
+
+            for purchase_order_line in purchase_order_line_obj.browse(cr, uid, list(set(purchase_order_line_ids + purchase_sale_ids)), context):
+                purchase_ids.append(purchase_order_line.order_id.id)
+            result[project.id] = list(set(purchase_ids))
+            # name = project.name.split('-')[0]
+            # result[project.id] = purchase_order_obj.search(cr, uid, [('origin', 'ilike', name), ('state', 'not in', ['draft', 'cancel'])], context=context)
 
         return result
 
@@ -293,10 +309,12 @@ class project_project(orm.Model):
     def _get_project_account(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
+        analytic_account_ids = []
         for line in self.pool['account.analytic.line'].browse(cr, uid, ids, context=context):
             if line.account_id:
-                for project_id in self.pool['project.project'].search(cr, uid, [('analytic_account_id', '=', line.account_id.id)],  context=context):
-                    result[project_id] = True
+                analytic_account_ids.append(line.account_id.id)
+        for project_id in self.pool['project.project'].search(cr, uid, [('analytic_account_id', 'in', analytic_account_ids)],  context=context):
+            result[project_id] = True
         return result.keys()
 
     # def _get_project_account_invoice(self, cr, uid, ids, context=None):
