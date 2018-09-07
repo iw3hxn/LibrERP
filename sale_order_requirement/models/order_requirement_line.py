@@ -995,6 +995,7 @@ class order_requirement_line(orm.Model):
 
                 purchase_order_line_values = {
                     'product_qty': newqty,
+                    'order_requirement_ids': [(4, line_obj.order_requirement_id.id)],
                     'order_requirement_line_ids': [(4, line_obj.id)],
                     # 'sale_order_ids': [(4, sale_order_id)],
                 }
