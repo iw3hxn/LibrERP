@@ -24,7 +24,7 @@
 
 {
     "name": "Job Order management",
-    "version": "3.19.41.36",
+    "version": "3.19.42.36",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Sales Management",
@@ -48,6 +48,7 @@
         'stock',
         'dt_product_serial',
         'project',
+        'mrp',
         'sale_order_confirm',
         'project_timesheet',
         'task_time_control',

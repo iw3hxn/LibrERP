@@ -50,7 +50,7 @@ class account_analytic_line(orm.Model):
             amount = 0.0
             for bom in product.bom_lines:
                 bom_product_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom.id)], context=context)
-                bom_products = bom_obj.browse(cr, uid, bom_product_ids)
+                bom_products = bom_obj.browse(cr, uid, bom_product_ids, context)
                 for bom_product in bom_products:
                     if not bom_product.product_id.product_tmpl_id.type == 'service':
                         amount += bom_product.product_id.standard_price * bom_product.product_qty

@@ -1048,11 +1048,12 @@ class order_requirement_line(orm.Model):
                 'product_id': product.id,
                 'product_qty': temp.product_qty,
                 'sale_id': temp.sale_order_id.id,
-                'sale_name': temp.sale_order_id.name,
-                'sale_ref': temp.sale_order_id.client_order_ref or '',
+                # 'sale_name': temp.sale_order_id.name,
+                # 'sale_ref': temp.sale_order_id.client_order_ref or '',
                 'is_from_order_requirement': True,
                 'temp_bom_id': temp.id,
-                'level': temp.level
+                'level': temp.level,
+                'notes': temp.order_requirement_line_id.order_requirement_id.internal_note or '',
             })
 
             # Create manufacturing order
@@ -1060,6 +1061,7 @@ class order_requirement_line(orm.Model):
 
         mrp_production_obj.action_compute(cr, uid, mrp_production_id, context=context)
         temp_mrp_bom_obj.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
+        return True
 
     def _manufacture_or_purchase_all(self, cr, uid, line, context):
         # line is a order_requirement_line, not a bom line

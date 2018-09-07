@@ -9,7 +9,7 @@ from mrp import mrp_bom
 class temp_mrp_routing(orm.Model):
     _name = 'temp.mrp.routing'
     _columns = {
-        'mrp_routing_id': fields.many2one('mrp.routing', string='Routing'),
+        'mrp_routing_id': fields.many2one('mrp.routing', string='Routing', select=True),
         'name': fields.char('Name', size=128),
         # TODO Workcenter readonly SO FAR => Evaluate changeability in the future
         'workcenter_id': fields.many2one('mrp.workcenter', string='Workcenter', readonly=True),
@@ -20,7 +20,7 @@ class temp_mrp_routing(orm.Model):
         'cycle': fields.float('Cycle'),
         'hour': fields.float('Hour'),
         'row_color': fields.char('Row Color', store=False),
-        'temp_mrp_bom_id': fields.many2one('temp.mrp.bom', 'Temp BoM', required=True, ondelete='cascade'),
+        'temp_mrp_bom_id': fields.many2one('temp.mrp.bom', 'Temp BoM', required=True, ondelete='cascade', select=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line',
                                                      required=True, ondelete='cascade', select=True)
     }

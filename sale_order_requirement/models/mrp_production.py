@@ -71,7 +71,7 @@ class mrp_production(orm.Model):
                     amount += value
                     analytic_line_vals = {
                         'name': wc_line.name + _(' (H)'),
-                        'amount': value,
+                        'amount': -value,
                         'account_id': account.id,
                         'general_account_id': wc.costs_general_account_id and wc.costs_general_account_id.id or wc.product_id.property_account_income and wc.product_id.property_account_income.id or default_account.id,
                         'journal_id': wc.costs_journal_id.id,
@@ -88,7 +88,7 @@ class mrp_production(orm.Model):
                     amount += value
                     analytic_line_obj.create(cr, uid, {
                         'name': wc_line.name + ' (C)',
-                        'amount': value,
+                        'amount': -value,
                         'account_id': account.id,
                         'general_account_id': wc.costs_general_account_id.id or wc.product_id.property_account_income and wc.product_id.property_account_income.id or default_account.id,
                         'journal_id': wc.costs_journal_id.id,

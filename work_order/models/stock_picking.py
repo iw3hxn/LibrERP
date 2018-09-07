@@ -56,11 +56,8 @@ class stock_picking(orm.Model):
                     'project_id': order.project_project.id
                 })
         return {'value': res}
-    
-    def do_partial(self, cr, uid, ids, partial_data, context):
-        if not isinstance(ids, (list, tuple)):
-            ids = [ids]
 
+    def _commit_cost(self, cr, uid, ids, context=None):
         for picking in self.browse(cr, uid, ids, context):
             if picking.project_id or picking.sale_project or picking.account_id:
                 for move in picking.move_lines:
@@ -75,6 +72,18 @@ class stock_picking(orm.Model):
                         'origin_document': move
                     }
                     self.pool['account.analytic.line'].update_or_create_line(cr, uid, values, context)
+        return True
+
+    def action_done(self, cr, uid, ids, context=None):
+        result = super(stock_picking, self).action_done(cr, uid, ids, context=context)
+        picking_ids = self.search(cr, uid, [('id', 'in', ids), ('type', '=', 'internal')], context=context)
+        self._commit_cost(cr, uid, picking_ids, context)
+        return result
+    
+    def do_partial(self, cr, uid, ids, partial_data, context):
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+        self._commit_cost(cr, uid, ids, context)
         return super(stock_picking, self).do_partial(cr, uid, ids, partial_data, context=context)
 
     def action_reopen(self, cr, uid, ids, context=None):

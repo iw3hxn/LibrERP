@@ -57,9 +57,9 @@ class sale_order(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
         mrp_production_obj = self.pool['mrp.production']
-        for order in self.browse(cr, uid, ids, context):
-            mrp_production_ids = mrp_production_obj.search(cr, uid, [('sale_id', '=', order.id)], context=context)
-            result[order.id] = mrp_production_ids
+        for order_id in ids:
+            mrp_production_ids = mrp_production_obj.search(cr, uid, [('sale_id', '=', order_id)], context=context)
+            result[order_id] = mrp_production_ids
         return result
 
     _columns = {

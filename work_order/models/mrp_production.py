@@ -21,12 +21,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import account_analytic_line
-from . import mrp_production
-from . import project_project
-from . import project_task
-from . import res_company
-from . import sale_order
-from . import sale_shop
-from . import stock_picking
 
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
+from product._common import rounding
+import datetime
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+
+
+class mrp_production(orm.Model):
+    _inherit = 'mrp.production'
+    
+    def _make_production_internal_shipment(self, cr, uid, production, context=None):
+        picking_id = super(mrp_production, self)._make_production_internal_shipment(cr, uid, production, context)
+        picking_vals = {}
+        if production.analytic_account_id:
+
+            project_ids = self.pool['project.project'].search(cr, uid, [('analytic_account_id', '=', production.analytic_account_id.id)],
+                                             context=context)
+            picking_vals.update({'project_id': project_ids[0]})
+            self.pool['stock.picking'].write(cr, uid, picking_id, picking_vals, context)
+        return picking_id
