@@ -14,7 +14,7 @@ class sale_order(orm.Model):
         context['stop_procurement'] = True
         res = super(sale_order, self)._create_pickings_and_procurements(
             cr, uid, order, order_lines, picking_id, context)
-        if self.service_only(cr, uid, order.id, context):
+        if self.service_only(cr, uid, [order], context):
             return res
         order_requirement_obj = self.pool['order.requirement']
         order_requirement_line_obj = self.pool['order.requirement.line']
