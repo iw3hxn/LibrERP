@@ -47,13 +47,9 @@ class sale_order(orm.Model):
                 res['section_id'] = section_ids[0]
         return res
 
-    def service_only(self, cr, uid, ids, context):
-        context = context or self.pool['res.users'].context_get(cr, uid)
+    def service_only(self, cr, uid, orders, context):
         service = True
-        if not isinstance(ids, (list, tuple)):
-            ids = [ids]
-
-        for order in self.browse(cr, uid, ids, context):
+        for order in orders:
             if order.order_line:
                 for order_line in order.order_line:
                     if order_line.product_id and order_line.product_id.type != 'service':
@@ -67,12 +63,10 @@ class sale_order(orm.Model):
         # function call if change state the sale order
         return True
 
-    def adaptative_function(self, cr, uid, ids, vals, context):
+    def adaptative_function(self, cr, uid, orders, vals, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        if not isinstance(ids, (list, tuple)):
-            ids = [ids]
         if vals.get('section_id', False) or vals.get('carrier_id', False) or vals.get('payment_term'):
-            for order in self.browse(cr, uid, ids, context):
+            for order in orders:
                 partner_vals = {}
                 if not order.partner_id.section_id:
                     partner_vals['section_id'] = vals.get('section_id')
@@ -86,9 +80,10 @@ class sale_order(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        ids = super(sale_order, self).create(cr, uid, vals, context=context)
-        self.adaptative_function(cr, uid, ids, vals, context)
-        return ids
+        order_id = super(sale_order, self).create(cr, uid, vals, context=context)
+        order = self.browse(cr, uid, order_id, context)
+        self.adaptative_function(cr, uid, [order], vals, context)
+        return order_id
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
@@ -97,20 +92,18 @@ class sale_order(orm.Model):
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
 
-        self.adaptative_function(cr, uid, ids, vals, context)
+        orders = self.browse(cr, uid, ids, context)
+        self.adaptative_function(cr, uid, orders, vals, context)
         if vals.get('state', False):
-            orders = self.browse(cr, uid, ids, context)
             self.hook_sale_state(cr, uid, orders, vals, context)
 
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
 
     def action_wait(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-
+        company = self.pool['res.users'].browse(cr, uid, uid).company_id
         for order in self.browse(cr, uid, ids, context):
-            company = self.pool['res.users'].browse(cr, uid, uid).company_id
-
-            if self.service_only(cr, uid, [order.id], context) and order.order_policy and order.order_policy == 'picking':
+            if self.service_only(cr, uid, [order], context) and order.order_policy and order.order_policy == 'picking':
                 if company.auto_order_policy:
                     order.write({'order_policy': 'manual'})
                 else:
@@ -155,8 +148,8 @@ class sale_order(orm.Model):
         res = {}
         if invoice_type_id:
             invoice_type_obj = self.pool['sale_journal.invoice.type']
-            invoice_type = invoice_type_obj.browse(cr, uid, invoice_type_id, context)
-            if invoice_type.invoicing_method == 'grouped':
+            invoice_type = invoice_type_obj.read(cr, uid, invoice_type_id, ['invoicing_method'], context)
+            if invoice_type['invoicing_method'] == 'grouped':
                 res['order_policy'] = 'picking'
         return {'value': res}
 
@@ -217,9 +210,10 @@ class sale_order(orm.Model):
 
         return False
 
-    def check_limit(self, cr, uid, ids, context=None):
+    def check_limit(self, cr, uid, ids, context=None, orders=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        for order in self.browse(cr, uid, ids, context=context):
+        orders = orders or self.browse(cr, uid, ids, context=context)
+        for order in orders:
             if order.credit_limit < 0 and order.company_id and order.company_id.check_credit_limit:
                 title = _(u'Credit Over Limit')
                 msg = _(u'Is not possible to confirm because customer exceed the credit limit. \n Is Possible change the Order Policy \"Pay Before Delivery\" \n on tab \"Other Information\"')
@@ -516,8 +510,8 @@ class sale_order(orm.Model):
 
     def check_direct_confirm(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        if self.check_limit(cr, uid, ids, context):
-            for order in self.browse(cr, uid, ids, context):
+        for order in self.browse(cr, uid, ids, context):
+            if self.check_limit(cr, uid, ids, context, [order]):
                 values = {
                     'state': 'wait_customer_validation',
                     'customer_validation': True
