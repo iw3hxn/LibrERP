@@ -49,11 +49,11 @@ class crm_case_categ(orm.Model):
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
-        for categ in self.browse(cr, uid, ids, context):
-            if categ.color:
-                value[categ.id] = categ.color
+        for categ in self.read(cr, uid, ids, ['color'], context):
+            if categ['color']:
+                value[categ['id']] = categ.color
             else:
-                value[categ.id] = 'black'
+                value[categ['id']] = 'black'
 
         return value
 
