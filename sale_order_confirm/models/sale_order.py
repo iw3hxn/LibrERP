@@ -32,19 +32,33 @@ import re
 class sale_order(orm.Model):
     _inherit = "sale.order"
 
+    def _get_shop_id(self, cr, uid, context):
+        shop_ids = self.pool['sale.shop'].search(cr, uid, [], context=context, limit=1)
+        return shop_ids and shop_ids[0] or False
+
     def default_get(self, cr, uid, fields, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         # sale_order_obj = self.pool['sale.order']
         # sale_order_line_obj = self.pool['sale.order.line']
         res = super(sale_order, self).default_get(cr, uid, fields, context=context)
         if not res.get('shop_id', False):
-            shop_ids = self.pool['sale.order'].search(cr, uid, [], limit=1, context=context)
-            if shop_ids:
-                res['shop_id'] = shop_ids[0]
+            res['shop_id'] = self._get_shop_id(cr, uid, context)
         if not res.get('section_id', False):
             section_ids = self.pool['crm.case.section'].search(cr, uid, [('user_id', '=', uid)], context=context)
             if section_ids:
                 res['section_id'] = section_ids[0]
+
+        company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+        res.update({
+            'need_tech_validation': company_id['need_tech_validation'],
+            'need_manager_validation': company_id['need_manager_validation'],
+            'skip_supervisor_validation_onstandard_product': company_id['skip_supervisor_validation_onstandard_product'],
+            'required_tech_validation': company_id['need_tech_validation'],
+            'required_manager_validation': company_id['need_manager_validation'],
+            'required_supervisor_validation': company_id['need_supervisor_validation'],
+            'validity': (datetime.today() + relativedelta(days=company_id['default_sale_order_validity'] or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
+        })
+        #
         return res
 
     def service_only(self, cr, uid, orders, context):
@@ -158,8 +172,7 @@ class sale_order(orm.Model):
         res = super(sale_order, self).onchange_partner_id(cr, uid, ids, part)
         if res.get('value', False) and part:
             if not res['value'].get('fiscal_position', False):
-                company_id = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id.id
-                company = self.pool['res.company'].browse(cr, uid, company_id, context)
+                company = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id
                 if company.default_property_account_position:
                     res['value']['fiscal_position'] = company.default_property_account_position and company.default_property_account_position.id
         return res
@@ -300,10 +313,6 @@ class sale_order(orm.Model):
             if option not in type_selection:
                 type_selection.append(option)
 
-    def _get_shop_id(self, cr, uid, context):
-        shop_ids = self.pool['sale.shop'].search(cr, uid, [], context=context, limit=1)
-        return shop_ids and shop_ids[0] or False
-
     _columns = {
         'create_uid': fields.many2one('res.users', 'Created by', readonly=True),
         'credit_limit': fields.function(_credit_limit, string="Remaining Credit Limit", type='float', readonly=True, method=True),
@@ -343,19 +352,21 @@ class sale_order(orm.Model):
         'product_id': fields.related('order_line', 'product_id', type='many2one', relation='product.product', string='Product'),
         'revision_note': fields.char('Reason', size=256, select=True),
         'lost_reason_id': fields.many2one('crm.lost.reason', string='Lost Reason'),
-        'last_revision_note': fields.related('sale_version_id', 'revision_note', type='char', string="Last Revision Note", store=True),
+        'last_revision_note': fields.related('sale_version_id', 'revision_note', type='char', string="Last Revision Note", store={
+            'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['sale_version_id'], 20),
+        }),
     }
 
-    _defaults = {
-        'need_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
-        'need_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
-        'skip_supervisor_validation_onstandard_product': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.skip_supervisor_validation_onstandard_product,
-        'required_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
-        'required_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
-        'required_supervisor_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_supervisor_validation,
-        'validity': lambda self, cr, uid, context: (datetime.today() + relativedelta(days=self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_sale_order_validity or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
-        'shop_id': lambda self, cr, uid, context: self._get_shop_id(cr, uid, context),
-    }
+    # _defaults = {
+    #     'need_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
+    #     'need_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
+    #     'skip_supervisor_validation_onstandard_product': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.skip_supervisor_validation_onstandard_product,
+    #     'required_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
+    #     'required_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
+    #     'required_supervisor_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_supervisor_validation,
+    #     'validity': lambda self, cr, uid, context: (datetime.today() + relativedelta(days=self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_sale_order_validity or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
+    #     'shop_id': lambda self, cr, uid, context: self._get_shop_id(cr, uid, context),
+    # }
 
     def action_reopen(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
