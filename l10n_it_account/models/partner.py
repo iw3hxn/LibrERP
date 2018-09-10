@@ -38,12 +38,12 @@ class res_partner(orm.Model):
     _inherit = 'res.partner'
 
     def check_fiscalcode(self, cr, uid, ids, context={}):
-        for partner in self.browse(cr, uid, ids, context):
-            if not partner.fiscalcode:
+        for partner in self.read(cr, uid, ids, ['fiscalcode'], context):
+            if not partner['fiscalcode']:
                 return True
-            if partner.fiscalcode.isdigit() or partner.fiscalcode[2:].isdigit():
+            if partner['fiscalcode'].isdigit() or partner['fiscalcode'][2:].isdigit():
                 return True
-            return isvalid(partner.fiscalcode.upper())
+            return isvalid(partner['fiscalcode'].upper())
         return True
 
     def _set_fiscalcode(self, cr, uid, ids, field_name, field_value, arg, context):
@@ -53,13 +53,10 @@ class res_partner(orm.Model):
     def _get_fiscalcode(self, cr, uid, ids, field_name, arg, context):
         if not ids:
             return False
-
         result = {}
-
-        partners = self.browse(cr, uid, ids, context=context)
+        partners = self.read(cr, uid, ids, ['fiscalcode'], context=context)
         for partner in partners:
-            result[partner.id] = partner.fiscalcode
-
+            result[partner['id']] = partner['fiscalcode']
         return result
 
     def _split_last_first_name(self, cr, uid, partner=None,
@@ -133,7 +130,9 @@ class res_partner(orm.Model):
             _split_name,
             string="First Name",
             type="char",
-            store=True,
+            store={
+                'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['name', 'splitmode'], 20),
+            },
             select=True,
             readonly=True,
             fnct_inv=_set_last_first_name,
@@ -143,7 +142,9 @@ class res_partner(orm.Model):
             _split_name,
             string="Last Name",
             type="char",
-            store=True,
+            store={
+                'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['name', 'splitmode'], 20),
+            },
             select=True,
             readonly=True,
             fnct_inv=_set_last_first_name,

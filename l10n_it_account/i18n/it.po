@@ -9200,7 +9200,7 @@ msgstr "Con le Note di Credito Fornitore , è possibile  gestire le note di cred
 #. module: account
 #: view:account.account.template:0
 msgid "Receivale Accounts"
-msgstr "Conti di Credito"
+msgstr "Conti clienti"
 
 #. module: account
 #: xsl:account.transfer:0
