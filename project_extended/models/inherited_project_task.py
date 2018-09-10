@@ -64,7 +64,7 @@ class project_task(orm.Model):
     }
 
     def do_open(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
+        context = context or self.pool['res.users'].context_get(cr, uid, context)
         for task in self.browse(cr, uid, ids, context):
             for parent_task in task.parent_ids:
                 if parent_task.state != 'done':
