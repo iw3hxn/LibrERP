@@ -47,7 +47,11 @@ class stock_move(orm.Model):
     def _get_running_balance(self, cr, uid, ids, name, args, context):
         res = {}
         balance = {}
-        location_ids = self.pool['stock.location'].search(cr, uid, ([('complete_name', 'ilike', context.get('own_values', {}).get('self', ''))]), limit=1, context=context)
+
+        location_ids = []
+        complete_name = context.get('own_values', {}).get('self', '')
+        if complete_name:
+            location_ids = self.pool['stock.location'].search(cr, uid, ([('complete_name', 'ilike', complete_name)]), limit=1, context=context)
         if location_ids:
             location_id = location_ids[0]
         ordered_ids = self.search(cr, uid, ([('id', 'in', ids)]), order='date ASC', context=context)
@@ -96,22 +100,16 @@ class stock_move(orm.Model):
         res = {}
         for move in self.browse(cr, uid, ids, context=context):
             origin = move.origin or ''
-
-            # SALE ORDER
-            res_model = 'sale.order'
-            sale_order_id = self._get_origin_id(cr, uid, res_model, origin, context)
-            if sale_order_id:
-                res[move.id] = self.pool[res_model].browse(cr, uid, sale_order_id[0]).date_order
-            else:
-                # PURCHASE ORDER
-                res_model = 'purchase.order'
-                purchase_order_id = self._get_origin_id(cr, uid, res_model, origin, context)
-                if purchase_order_id:
-                    res[move.id] = self.pool[res_model].browse(cr, uid, purchase_order_id[0]).date_order
-                else:
-                    res[move.id] = False
+            res[move.id] = False
+            for res_model in ['pos.order', 'sale.order', 'purchase.order']:
+                order_id = self._get_origin_id(cr, uid, res_model, origin, context)
+                if order_id:
+                    res[move.id] = self.pool[res_model].browse(cr, uid, order_id[0]).date_order
+                    break
         return res
 
+    #from profilehooks import profile
+    #@profile(immediate=True)
     def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
         """ Finds the incoming and outgoing quantity of product.
         @return: Dictionary of values
@@ -119,8 +117,20 @@ class stock_move(orm.Model):
 
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
-        # if line.order_id:
-        #     context['warehouse'] = self.order_id.shop_id.warehouse_id.id
+        # # if line.order_id:
+        # #     context['warehouse'] = self.order_id.shop_id.warehouse_id.id
+        # location_group = []
+        # for move in self.browse(cr, uid, ids, context):
+        #     if move.location_id.id not in location_group:
+        #         location_group[move.location_id.id] = [move.product_id.id]
+        #     else:
+        #         if move.product_id.id not in location_group[move.location_id.id]:
+        #             location_group[move.location_id.id].append([move.product_id.id])
+        # qty_availables = []
+        # for location_id in location_group:
+        #     c = context.copy()
+        #     c.update({'location': location_id})
+        #     qty_availables.append(self.pool['product.product']._product_available(cr, uid, location_group[location_id], field_names=['qty_available'], context=c))
 
         for move in self.browse(cr, uid, ids, context):
             c = context.copy()
@@ -259,10 +269,9 @@ class stock_move(orm.Model):
     def _get_stock_location(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = {}
-        for location in self.pool['stock.location'].browse(cr, uid, ids, context=context):
-            stock_move_ids = self.pool['stock.move'].search(cr, uid, ['|', ('location_id', '=', location.id), ('location_dest_id', '=', location.id)], context=context)
-            for move_id in stock_move_ids:
-                result[move_id] = True
+        stock_move_ids = self.pool['stock.move'].search(cr, uid, ['|', ('location_id', 'in', ids), ('location_dest_id', 'in', ids)], context=context)
+        for move_id in stock_move_ids:
+            result[move_id] = True
         return result.keys()
     
     _columns = {
