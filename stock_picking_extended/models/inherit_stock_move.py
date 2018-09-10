@@ -27,11 +27,10 @@ class stock_move(orm.Model):
     _inherit = "stock.move"
 
     def _line_ready(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
-        for move in self.browse(cr, uid, ids, context=context):
-            res[move.id] = False
-            if move.state == 'assigned':
-                res[move.id] = True
+        res = dict.fromkeys(ids, False)
+        move_assigned_ids = self.search(cr, uid, [('state', '=', 'assigned')], context=context)
+        for move_id in move_assigned_ids:
+            res[move_id] = True
         return res
 
     def _get_picking_sale(self, cr, uid, ids, context=None):
