@@ -39,7 +39,7 @@ class product_product(orm.Model):
         """
         When category changes, we search for taxes, UOM and product type
         """
-        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
+        context = context or self.pool['res.users'].context_get(cr, uid, context)
 
         res = {}
         warn = False
