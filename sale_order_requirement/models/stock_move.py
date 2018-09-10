@@ -42,8 +42,8 @@ class StockMove(orm.Model):
         self._force_production_order(cr, uid, stock_move_ids, context)
         return res
 
-    #from profilehooks import profile
-    #@profile(immediate=True)
+    # from profilehooks import profile
+    # @profile(immediate=True)
     def _get_connected_order_ids(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for stock_move in self.browse(cr, uid, ids, context):
@@ -68,28 +68,30 @@ class StockMove(orm.Model):
         return res
 
     def _line_ready(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
+        res = dict.fromkeys(ids, False)
 
         order_requirement_line_obj = self.pool['order.requirement.line']
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        stock_move_confirmed_ids = self.search(cr, uid, [('state', 'in', ['assigned', 'done']), ('id', 'in', ids)], context=context)
+        for stock_id in stock_move_confirmed_ids:
+            res[stock_id] = True
 
-        for stock_move in self.browse(cr, uid, ids, context=context):
-            res[stock_move.id] = False
-            sale_id = stock_move.sale_id and stock_move.sale_id.id or False
-            sale_order_line_id = stock_move.sale_line_id and stock_move.sale_line_id.id or False
-            if stock_move.state in ['assigned', 'done']:
-                res[stock_move.id] = True
-            elif sale_id and sale_order_line_id:
-                order_requirement_line_ids = order_requirement_line_obj.search(cr, uid, [
-                    ('sale_order_line_id', '=', sale_order_line_id)], context=context)
+        stock_move_sale_ids = self.search(cr, uid, [('sale_id', '!=', False), ('id', 'in', ids), ('state', 'not in', ['assigned', 'done'])], context=context)
+
+        for stock_move in self.read(cr, uid, stock_move_sale_ids, ['sale_line_id'], context=context):
+            res[stock_move['id']] = False
+            # sale_id = stock_move.sale_id and stock_move.sale_id.id or False
+            sale_order_line_id = stock_move['sale_line_id'] and stock_move['sale_line_id'][0] or False
+            if True:
+                order_requirement_line_ids = order_requirement_line_obj.search(cr, uid, [('sale_order_line_id', '=', sale_order_line_id)], context=context)
                 temp_mrp_bom_ids = temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', 'in', order_requirement_line_ids), ('mrp_production_id', '!=', False)], context=context)
-                if not temp_mrp_bom_ids:  # if not exist production order means that is a normal product
-                    if stock_move.state == 'assigned':
-                        res[stock_move.id] = True
+                # if not temp_mrp_bom_ids:  # if not exist production order means that is a normal product
+                #     if stock_move.state == 'assigned':
+                #         res[stock_move.id] = True
                 for temp_mrp_bom in temp_mrp_bom_obj.browse(cr, uid, temp_mrp_bom_ids, context):
-                    res[stock_move.id] = True
+                    res[stock_move['id']] = True
                     if temp_mrp_bom.mrp_production_id and temp_mrp_bom.mrp_production_id.state != 'done':
-                        res[stock_move.id] = False
+                        res[stock_move['id']] = False
 
         return res
 
@@ -146,15 +148,62 @@ class StockMove(orm.Model):
 
         return res
 
+    def _purchase_orders(self, cr, uid, ids, name, args, context=None):
+        # Get the order state by order requirement line, from sale order id
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ordreqline_obj = self.pool['order.requirement.line']
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+
+            try:
+                ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_id', '=', line.sale_id.id), ('new_product_id', '=', line.product_id.id)], context=context)
+
+                # Maybe useless, but is generic, it supports eventually multiple lines
+                ordreqlines = ordreqline_obj.browse(cr, uid, ordreqline_ids, context)
+
+                done = 0
+                tot = 0
+                for ordreqline in ordreqlines:
+                    d, t = ordreqline_obj.get_purchase_orders_state(ordreqline)
+                    done += d
+                    tot += t
+                    purchase_orders_state = ' '
+                if tot > 0:
+                    purchase_orders_state = '%d/%d' % (done, tot)
+
+                done = 0
+                tot = 0
+                for ordreqline in ordreqlines:
+                    d, t = ordreqline_obj.get_purchase_orders_approved(ordreqline)
+                    done += d
+                    tot += t
+                state_str = ' '
+                if tot > 0:
+                    state_str = '%d/%d' % (done, tot)
+
+
+            except Exception as e:
+                print '_purchase_orders_state ' + e.message
+                purchase_orders_state = ''
+                state_str = ''
+
+            res[line.id] = {
+                'purchase_orders_approved': state_str,
+                'purchase_orders_state': purchase_orders_state
+            }
+
+        return res
+
+
     _columns = {
         'analytic_account_id': fields.many2one('account.analytic.account', 'Analytic Account', ),
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
         'temp_mrp_bom_ids': fields.function(_get_connected_order_ids, type='one2many', relation='temp.mrp.bom', method=True, string='Bom Structure',
                                              multi="connected_order"),
         'temp_mrp_bom_list': fields.function(_get_connected_order_ids, type='char', method=True, string='Sale Orders', multi="connected_order"),
-        'purchase_orders_approved': fields.function(_purchase_orders_approved, method=True, type='string',
+        'purchase_orders_approved': fields.function(_purchase_orders, method=True, type='string', multi="purchase_orders",
                                                     string='Purch. orders approved', readonly=True),
-        'purchase_orders_state': fields.function(_purchase_orders_state, method=True, type='string',
+        'purchase_orders_state': fields.function(_purchase_orders, method=True, type='string',  multi="purchase_orders",
                                                  string='Deliveries', readonly=True),
         'product_bom_ids': fields.related(
             'sale_line_id', 'order_requirement_line_id', 'temp_mrp_bom_ids', 'product_id',
