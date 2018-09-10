@@ -156,7 +156,7 @@ class sale_order(orm.Model):
         return True
 
     def action_wait(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid, context=context)
+        context = context or self.pool['res.users'].context_get(cr, uid, context)
         result = super(sale_order, self).action_wait(cr, uid, ids, context)
         bom_obj = self.pool['mrp.bom']
         sale_line_bom_obj = self.pool.get('sale.order.line.mrp.bom')  # WARNING: in this mode test if exist object 'sale.order.line.mrp.bom'
