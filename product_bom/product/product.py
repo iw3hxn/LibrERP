@@ -614,7 +614,7 @@ class product_product(orm.Model):
                                       "bom costing like cost per cylce."),
         'prefered_supplier': fields.function(_get_prefered_supplier, type='many2one', relation='res.partner', string='Prefered Supplier'),
         'is_kit': fields.function(_is_kit, fnct_search=_kit_filter, method=True, type="boolean", string="Kit"),
-        # 'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
+        'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
         'qty_available': fields.function(
             _product_available,
             multi='qty_available',
