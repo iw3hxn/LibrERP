@@ -3,6 +3,7 @@
 
 import logging
 import multiprocessing
+import threading
 import time
 from datetime import datetime
 
@@ -25,7 +26,7 @@ class product_product(orm.Model):
     Inherit Product in order to add an "Bom Stock" field
     """
 
-    class UpdateCachePrice(multiprocessing.Process):
+    class UpdateCachePrice(threading.Thread):
 
         def __init__(self, cr, uid, product_product_obj, split_ids, context=None):
             self.cr = pooler.get_db(cr.dbname).cursor()
@@ -34,7 +35,7 @@ class product_product(orm.Model):
             self.context = context
             self.product_ids = split_ids
 
-            multiprocessing.Process.__init__(self)
+            threading.Thread.__init__(self)
 
         def run(self):
             try:
@@ -426,7 +427,6 @@ class product_product(orm.Model):
         return res
 
     def _kit_filter(self, cr, uid, obj, name, args, context):
-        start_time = datetime.now()
         context = context or self.pool['res.users'].context_get(cr, uid)
 
         if not args:
@@ -437,43 +437,29 @@ class product_product(orm.Model):
                 if search[2]:
                     bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', False)], context=context)
                     if bom_ids:
-                        res = [bom.product_id.id for bom in bom_obj.browse(cr, uid, bom_ids, context)]
-                        return [('id', 'in', res)]
+                        bom_product_ids = self.search(cr, uid, [('bom_ids', 'in', bom_ids)], context=context)
+                        # res = [bom.product_id.id for bom in bom_obj.browse(cr, uid, bom_ids, context)]
+                        return [('id', 'in', bom_product_ids)]
                     else:
                         return [('id', 'in', [])]
-        end_time = datetime.now()
-        duration_seconds = (end_time - start_time)
-        duration = '{sec}'.format(sec=duration_seconds)
-        _logger.info(u'KIT filter get in {duration}'.format(duration=duration))
         return []
-    
+
     def _is_kit(self, cr, uid, ids, product_uom=None, bom_properties=None, context=None):
         if not len(ids):
             return []
         '''
         Show if have or not a bom
         '''
-        start_time = datetime.now()
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        bom_properties = bom_properties or []
-
-        bom_obj = self.pool['mrp.bom']
-
         res = {}
         ids = ids or []
-
-        for product in self.browse(cr, uid, ids, context):
+        for product_id in ids:
             # bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
-            cr.execute("""SELECT id FROM mrp_bom WHERE product_id={product_id} and bom_id is null""".format(product_id=product.id))
+            cr.execute("""SELECT id FROM mrp_bom WHERE product_id={product_id} and bom_id is null""".format(product_id=product_id))
             bom_id = cr.fetchall()
             if not bom_id:
-                res[product.id] = False
+                res[product_id] = False
             else:
-                res[product.id] = True
-        end_time = datetime.now()
-        duration_seconds = (end_time - start_time)
-        duration = '{sec}'.format(sec=duration_seconds)
-        _logger.info(u'IS KIT get in {duration}'.format(duration=duration))
+                res[product_id] = True
         return res
     
     """
@@ -628,7 +614,7 @@ class product_product(orm.Model):
                                       "bom costing like cost per cylce."),
         'prefered_supplier': fields.function(_get_prefered_supplier, type='many2one', relation='res.partner', string='Prefered Supplier'),
         'is_kit': fields.function(_is_kit, fnct_search=_kit_filter, method=True, type="boolean", string="Kit"),
-        'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
+        # 'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
         'qty_available': fields.function(
             _product_available,
             multi='qty_available',
