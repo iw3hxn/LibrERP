@@ -554,8 +554,6 @@ class order_requirement_line(orm.Model):
         done = len([m for m in moves if m.state == 'done'])
         return done, tot
 
-    from profilehooks import profile
-    @profile(immediate=True)
     def _purchase_orders_state(self, cr, uid, ids, name, args, context=None):
         # Based on stock moves in purchase order lines => count stock moves in state 'done'
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -568,8 +566,6 @@ class order_requirement_line(orm.Model):
             res[line.id] = state_str
         return res
 
-    from profilehooks import profile
-    @profile(immediate=True)
     def _purchase_orders_approved(self, cr, uid, ids, name, args, context=None):
         # Based on purchase orders approved / total
         context = context or self.pool['res.users'].context_get(cr, uid)
