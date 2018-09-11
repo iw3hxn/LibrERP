@@ -154,6 +154,8 @@ class StockMove(orm.Model):
         ordreqline_obj = self.pool['order.requirement.line']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
+            state_str = ''
+            purchase_orders_state = ''
 
             try:
                 ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_id', '=', line.sale_id.id), ('new_product_id', '=', line.product_id.id)], context=context)
@@ -180,7 +182,6 @@ class StockMove(orm.Model):
                 state_str = ' '
                 if tot > 0:
                     state_str = '%d/%d' % (done, tot)
-
 
             except Exception as e:
                 print '_purchase_orders_state ' + e.message
