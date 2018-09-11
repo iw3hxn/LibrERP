@@ -532,19 +532,6 @@ class order_requirement_line(orm.Model):
     #
     #     return res
 
-    def _production_orders_state(self, cr, uid, ids, name, args, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        res = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            mrp_productions = set([temp.mrp_production_id for temp in line.temp_mrp_bom_ids if temp.mrp_production_id])
-            tot = len(mrp_productions)
-            done = len([prod for prod in mrp_productions if prod.state == 'done'])
-            state_str = ''
-            if tot > 0:
-                state_str = '%d/%d' % (done, tot)
-            res[line.id] = state_str
-        return res
-
     @staticmethod
     def get_purchase_orders_approved(ordreqline):
         # Based on purchase orders approved / total
@@ -567,6 +554,8 @@ class order_requirement_line(orm.Model):
         done = len([m for m in moves if m.state == 'done'])
         return done, tot
 
+    from profilehooks import profile
+    @profile(immediate=True)
     def _purchase_orders_state(self, cr, uid, ids, name, args, context=None):
         # Based on stock moves in purchase order lines => count stock moves in state 'done'
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -579,6 +568,8 @@ class order_requirement_line(orm.Model):
             res[line.id] = state_str
         return res
 
+    from profilehooks import profile
+    @profile(immediate=True)
     def _purchase_orders_approved(self, cr, uid, ids, name, args, context=None):
         # Based on purchase orders approved / total
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -589,6 +580,55 @@ class order_requirement_line(orm.Model):
             if tot > 0:
                 state_str = '%d/%d' % (done, tot)
             res[line.id] = state_str
+        return res
+
+    def _production_orders_state(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            mrp_productions = set([temp.mrp_production_id for temp in line.temp_mrp_bom_ids if temp.mrp_production_id])
+            tot = len(mrp_productions)
+            done = len([prod for prod in mrp_productions if prod.state == 'done'])
+            state_str = ''
+            if tot > 0:
+                state_str = '%d/%d' % (done, tot)
+            res[line.id] = state_str
+        return res
+
+    def _order_state(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        # res = dict.fromkeys(ids, {
+        #     'production_orders_state': '',
+        #     'purchase_orders_approved': '',
+        #     'purchase_orders_state': '',
+        # })
+        lines = self.browse(cr, uid, ids, context=context)
+
+        for line in lines:
+            mrp_productions = set([temp.mrp_production_id for temp in line.temp_mrp_bom_ids if temp.mrp_production_id])
+            tot = len(mrp_productions)
+            done = len([prod for prod in mrp_productions if prod.state == 'done'])
+            production_orders_state = ''
+            if tot > 0:
+                production_orders_state = '%d/%d' % (done, tot)
+
+            done, tot = self.get_purchase_orders_approved(line)
+            purchase_orders_approved = ''
+            if tot > 0:
+                purchase_orders_approved = '%d/%d' % (done, tot)
+
+            done, tot = self.get_purchase_orders_state(line)
+            purchase_orders_state = ''
+            if tot > 0:
+                purchase_orders_state = '%d/%d' % (done, tot)
+
+            res[line.id] = {
+                'production_orders_state': production_orders_state,
+                'purchase_orders_state': purchase_orders_state,
+                'purchase_orders_approved': purchase_orders_approved
+            }
+            
         return res
 
     def _has_bom(self, cr, uid, ids, name, args, context=None):
@@ -634,11 +674,11 @@ class order_requirement_line(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders'),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
-        'production_orders_state': fields.function(_production_orders_state, method=True, type='string',
+        'production_orders_state': fields.function(_order_state, method=True, type='string', multi='order_state',
                                                    string='Prod. orders', readonly=True),
-        'purchase_orders_approved': fields.function(_purchase_orders_approved, method=True, type='string',
+        'purchase_orders_approved': fields.function(_order_state, method=True, type='string', multi='order_state',
                                                     string='Purch. orders approved', readonly=True),
-        'purchase_orders_state': fields.function(_purchase_orders_state, method=True, type='string',
+        'purchase_orders_state': fields.function(_order_state, method=True, type='string', multi='order_state',
                                                  string='Deliveries', readonly=True),
         # 'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'), # TODO: needed?
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
