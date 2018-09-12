@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<record id="view_sale_orderform" model="ir.ui.view">
+			<field name="name">sale.order.line.dates.sale.order.form</field>
+			<field name="model">sale.order</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='delay']" position="after">
+					<newline />
+					<field name="requested_date" groups="base.group_extended" />
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</openerp>
