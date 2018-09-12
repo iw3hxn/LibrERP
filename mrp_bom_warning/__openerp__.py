@@ -3,7 +3,7 @@
 
 {
     "name": "BoM Warning",
-    "version": "4.0.0.0",
+    "version": "4.0.1.0",
     "depends": [
         "mrp",
         "base",
