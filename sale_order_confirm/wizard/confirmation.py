@@ -38,11 +38,10 @@ class sale_order_confirm_line(orm.TransientModel):
 
     def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         for line in self.browse(cr, uid, ids, context=context):
-            price_subtotal = self.calc_price_subtotal(line.quantity, line.discount, line.price_unit)
-            res[line.id] = price_subtotal
+            price_subtotal = self.calc_price_subtotal(line['quantity'], line['discount'], line['price_unit'])
+            res[line['id']] = price_subtotal
         return res
 
     def action_add(self, cr, uid, ids, context):
@@ -88,8 +87,7 @@ class sale_order_confirm_line(orm.TransientModel):
     }
 
     def onchange_product(self, cr, uid, ids, product_id, product_qty, sale_order_id, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         
         sale_order = self.pool['sale.order'].browse(cr, uid, sale_order_id, context=context)
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
@@ -195,25 +193,24 @@ class sale_order_confirm(orm.TransientModel):
             }, context)
 
     def get_sale_order_confirm_line_vals(self, cr, uid, sale_order_line, context=None):
-
         return {
             'sequence': sale_order_line.sequence,
             'price_unit': sale_order_line.price_unit,
             'quantity': sale_order_line.product_uom_qty,
             'product_uom': sale_order_line.product_uom.id,
-            'discount': sale_order_line.discount, }
+            'discount': sale_order_line.discount,
+        }
 
     def default_get(self, cr, uid, fields, context=None):
         sale_order_obj = self.pool['sale.order']
         sale_order_line_obj = self.pool['sale.order.line']
         # sale_order_confirm_line_obj = self.pool['sale.order.confirm.line')
         
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
             
-        res = super(sale_order_confirm, self).default_get(cr, uid, fields, context=context)
+        res = super(sale_order_confirm, self).default_get(cr, uid, fields, context)
 
-        sale_order = sale_order_obj.browse(cr, uid, context['active_ids'][0], context=context)
+        sale_order = sale_order_obj.browse(cr, uid, context['active_ids'][0], context)
 
         res.update({
             'partner_shipping_id': sale_order.partner_shipping_id.id,
@@ -310,11 +307,11 @@ class sale_order_confirm(orm.TransientModel):
             'order_date',
             'partner_shipping_id',
             'confirm_line_qty'
-        ])
+        ], context)
         new_order_id = False
 
         if sale_order_confirm_data['new_sale_order'] or not sale_order_confirm_data['confirm_line_qty'] == len(sale_order_confirm_data['confirm_line']):
-            old_sale_order_data = sale_order_obj.read(cr, uid, sale_order_confirm_data['sale_order_id'], ['shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'sale_version_id', 'version', 'name', 'order_policy', 'picking_policy', 'invoice_quantity', 'section_id', 'categ_id'])
+            old_sale_order_data = sale_order_obj.read(cr, uid, sale_order_confirm_data['sale_order_id'], ['shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'sale_version_id', 'version', 'name', 'order_policy', 'picking_policy', 'invoice_quantity', 'section_id', 'categ_id'], context)
             new_sale_order = {}
             for key in ('shop_id', 'partner_id', 'partner_order_id', 'partner_invoice_id', 'pricelist_id', 'contact_id'):
                 new_sale_order[key] = old_sale_order_data.get(key, False) and old_sale_order_data[key][0] or False
@@ -341,14 +338,13 @@ class sale_order_confirm(orm.TransientModel):
             new_order_id = sale_order_obj.create(cr, uid, new_sale_order, context=context)
 
             # sequence = 10
-            for sale_order_confirm_line_id in sale_order_confirm_data['confirm_line']:
-                sale_order_confirm_line_data = sale_order_confirm_line_obj.browse(cr, uid, sale_order_confirm_line_id)
+            for sale_order_confirm_line_data in sale_order_confirm_line_obj.browse(cr, uid, sale_order_confirm_data['confirm_line'], context):
                 sale_order_line_vals = self.get_sale_order_line_vals(cr, uid, new_order_id, sale_order_confirm_line_data, context)
                 sale_order_line_obj.create(cr, uid, sale_order_line_vals, context=context)
 
             wf_service.trg_validate(uid, 'sale.order', new_order_id, 'order_confirm', cr)
             # wf_service.trg_validate(uid, 'sale.order', sale_order_confirm_data['sale_order_id'], 'cancel', cr)
-            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {'active': False})
+            sale_order_obj.write(cr, uid, sale_order_confirm_data['sale_order_id'], {'active': False}, context)
 
             view_ids = self.pool['ir.model.data'].get_object_reference(cr, uid, 'sale', 'view_order_form')
             return {
