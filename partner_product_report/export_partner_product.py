@@ -260,6 +260,8 @@ class WizardExportPartnerProduct(orm.TransientModel):
             partner_address = self.get_address(cr, uid, partner_id, 'default', context)
             partner_delivery_address = self.get_address(cr, uid, partner_id, 'delivery', context)
             for product_id, product_row in partner_data.items():
+                if not product_id:
+                    continue
                 product = self.pool['product.product'].browse(cr, uid, product_id, context)
 
                 xls_row = {
