@@ -27,12 +27,11 @@ class res_partner(osv.osv):
 
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
-        partners = self.browse(cr, uid, ids, context)
-        for partner in partners:
-            if partner.blacklist:
-                value[partner.id] = 'red'
+        for partner in self.read(cr, uid, ids, ['blacklist'], context):
+            if partner['blacklist']:
+                value[partner['id']] = 'red'
             else:
-                value[partner.id] = 'black'
+                value[partner['id']] = 'black'
         return value
 
     def onchange_blacklist(self, cr, uid, ids, blacklist, context=None):
