@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_partner_last_sell" model="ir.ui.view">
+            <field name="name">res.partner.tree.last_sell</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="row_color" position="after">
+                    <field name="date_last_sale"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
