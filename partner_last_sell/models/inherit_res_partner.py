@@ -20,9 +20,10 @@ class res_partner(orm.Model):
 
     def _get_partner(self, cr, uid, ids, context=None):
         result = {}
-        for line in self.pool.get('sale.order').browse(cr, uid, ids, context=context):
-            if line.state in ['manual', 'progress', 'done']:
-                result[line.partner.id] = True
+        order_obj = self.pool['sale.order']
+        real_ids = order_obj.search(cr, uid, [('id', 'in', ids), ('state', 'in', ['manual', 'progress', 'done'])], context=context)
+        for order in order_obj.browse(cr, uid, real_ids, context=context):
+            result[order.partner.id] = True
         return result.keys()
 
     _columns = {
