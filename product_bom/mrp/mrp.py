@@ -168,7 +168,7 @@ class mrp_bom(orm.Model):
             return prtDatas
         for keyData in prtDatas.keys():
             tmpData = prtDatas[keyData]
-            if len(tmpData['bom_ids']) > 0:
+            if len(tmpData.get('bom_ids', [])) > 0:
                 relids[keyData] = tmpData['bom_ids'][0]
 
         if len(relids) < 1:

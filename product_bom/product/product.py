@@ -39,8 +39,8 @@ class product_product(orm.Model):
 
         def run(self):
             try:
-                for product in self.product_product_obj.browse(self.cr, self.uid, self.product_ids, self.context):
-                    cost_price = product.cost_price
+                for product in self.product_product_obj.read(self.cr, self.uid, self.product_ids, ['cost_price'], self.context):
+                    cost_price = product['cost_price']
                 self.cr.commit()
                 return True
             except Exception as e:
@@ -771,12 +771,15 @@ class product_product(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
         if ENABLE_CACHE:
-            cache_length = len(self.product_cost_cache)
-            cache_ids = self.product_cost_cache.keys()
-            cache_ids = [int(cache_id) for cache_id in cache_ids]
-            product_ids = self.search(cr, uid, [], context=context)
-            _logger.info(u'Cache {cache} of {product}'.format(cache=cache_length, product=len(product_ids)))
-            product_to_browse_ids = list(set(product_ids) - set(cache_ids))
+            if context.get('product_ids', False):
+                product_to_browse_ids = context['product_ids']
+            else:
+                cache_length = len(self.product_cost_cache)
+                cache_ids = self.product_cost_cache.keys()
+                cache_ids = [int(cache_id) for cache_id in cache_ids]
+                product_ids = self.search(cr, uid, [], context=context)
+                _logger.info(u'Cache {cache} of {product}'.format(cache=cache_length, product=len(product_ids)))
+                product_to_browse_ids = list(set(product_ids) - set(cache_ids))
             if product_to_browse_ids:
                 _logger.setLevel(logging.WARNING)
 
@@ -813,6 +816,10 @@ class product_product(orm.Model):
             for product_id in changed_product:
                 if int(product_id) in self.product_cost_cache:
                     del self.product_cost_cache[int(product_id)]
+            if CACHE_TYPE == 'redis':
+                ctx = context.copy()
+                ctx['product_ids'] = [int(product_id) for product_id in changed_product]
+                self.update_cache_price(cr, uid, context=ctx)
 
         return res
 
