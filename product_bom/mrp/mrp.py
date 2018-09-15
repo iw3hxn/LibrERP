@@ -20,6 +20,7 @@
 ##############################################################################
 
 import logging
+import re
 
 from openerp.osv import orm
 from openerp.tools.config import config
@@ -62,12 +63,12 @@ class mrp_bom(orm.Model):
         boms = self.browse(cr, uid, bom_ids, context)
         for product_id in [bom.product_id.id for bom in boms]:
             bom_ids_count = self.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], count=True)
-            
+
             if bom_ids_count == 1:
                 product_obj.write(cr, uid, product_id, {'supply_method': 'buy', 'purchase_ok': True}, context=context)
-        
+
         return super(mrp_bom, self).unlink(cr, uid, ids, context=context)
-    
+
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
@@ -137,30 +138,32 @@ class mrp_bom(orm.Model):
             sid = ids[1]
         oid = ids[0]
         relDatas.append(oid)
-        relDatas.append(self._implodebom(cr, uid, self._inbomid(cr, uid, oid, sid)))
-        prtDatas = self._getpackdatas(cr, uid, relDatas)
-        return (relDatas, prtDatas, self._getpackreldatas(cr, uid, relDatas, prtDatas))
+        relDatas.append(self._implodebom(cr, uid, self._inbomid(cr, uid, oid, sid, context), context))
+        prtDatas = self._getpackdatas(cr, uid, relDatas, context)
+        return (relDatas, prtDatas, self._getpackreldatas(cr, uid, relDatas, prtDatas, context))
 
-    def _getpackdatas(self, cr, uid, relDatas):
+    def _getpackdatas(self, cr, uid, relDatas, context=None):
         prtDatas = {}
+        non_decimal = re.compile(r'[^\d.]+')
         tmpbuf = (((str(relDatas).replace('[', '')).replace(']', '')).replace('(', '')).replace(')', '').split(',')
-        tmpids = [int(tmp) for tmp in tmpbuf if len(tmp.strip()) > 0]
+        tmpids = [int(non_decimal.sub('', tmp)) for tmp in tmpbuf if len(non_decimal.sub('', tmp).strip()) > 0]
         if len(tmpids) < 1:
             return prtDatas
         compType = self.pool['product.product']
-        tmpDatas = compType.read(cr, uid, tmpids)
+        tmpDatas = compType.read(cr, uid, tmpids, context)
         for tmpData in tmpDatas:
             for keyData in tmpData.keys():
-                if tmpData[keyData] == None:
+                if not tmpData[keyData]:
                     del tmpData[keyData]
             prtDatas[str(tmpData['id'])] = tmpData
         return prtDatas
 
-    def _getpackreldatas(self, cr, uid, relDatas, prtDatas):
+    def _getpackreldatas(self, cr, uid, relDatas, prtDatas, context=None):
         relids = {}
         relationDatas = {}
+        non_decimal = re.compile(r'[^\d.]+')
         tmpbuf = (((str(relDatas).replace('[', '')).replace(']', '')).replace('(', '')).replace(')', '').split(',')
-        tmpids = [int(tmp) for tmp in tmpbuf if len(tmp.strip()) > 0]
+        tmpids = [int(non_decimal.sub('', tmp)) for tmp in tmpbuf if len(non_decimal.sub('', tmp).strip()) > 0]
         if len(tmpids) < 1:
             return prtDatas
         for keyData in prtDatas.keys():
@@ -172,10 +175,10 @@ class mrp_bom(orm.Model):
             return relationDatas
         setobj = self.pool['mrp.bom']
         for keyData in relids.keys():
-            relationDatas[keyData] = setobj.read(cr, uid, relids[keyData])
+            relationDatas[keyData] = setobj.read(cr, uid, relids[keyData], context)
         return relationDatas
 
-    def _implodebom(self, cr, uid, bomObjs):
+    def _implodebom(self, cr, uid, bomObjs, context=None):
         """
             Execute implosion for a a bom object
         """
@@ -186,7 +189,7 @@ class mrp_bom(orm.Model):
             if bomObj.product_id.id in self._packed:
                 continue
             self._packed.append(bomObj.product_id.id)
-            innerids = self._implodebom(cr, uid, self._inbomid(cr, uid, bomObj.product_id.id))
+            innerids = self._implodebom(cr, uid, self._inbomid(cr, uid, bomObj.product_id.id, context))
             pids.append((bomObj.product_id.id, innerids))
         return (pids)
 
@@ -203,38 +206,38 @@ class mrp_bom(orm.Model):
             sid = ids[1]
         oid = ids[0]
         relDatas.append(oid)
-        relDatas.append(self._implodebom(cr, uid, self._inbomid(cr, uid, oid, sid)))
-        prtDatas = self._getpackdatas(cr, uid, relDatas)
+        relDatas.append(self._implodebom(cr, uid, self._inbomid(cr, uid, oid, sid, context), context))
+        prtDatas = self._getpackdatas(cr, uid, relDatas, context)
         return (relDatas, prtDatas, self._getpackreldatas(cr, uid, relDatas, prtDatas))
 
-    def _bomid(self, cr, uid, pid, sid=None):
-        if sid == None:
-            return self._getbomidnullsrc(cr, uid, pid)
+    def _bomid(self, cr, uid, pid, sid=None, context=None):
+        if sid:
+            return self._getbomid(cr, uid, pid, sid, context)
         else:
-            return self._getbomid(cr, uid, pid, sid)
+            return self._getbomidnullsrc(cr, uid, pid, context)
 
-    def _inbomid(self, cr, uid, pid, sid=None):
-        if sid == None:
-            return self._getinbomidnullsrc(cr, uid, pid)
+    def _inbomid(self, cr, uid, pid, sid=None, context=None):
+        if sid:
+            return self._getinbom(cr, uid, pid, sid, context)
         else:
-            return self._getinbom(cr, uid, pid, sid)
+            return self._getinbomidnullsrc(cr, uid, pid, context)
 
-    def _getbomid(self, cr, uid, pid, sid):
-        ids = self._getidbom(cr, uid, pid, sid)
-        return self.browse(cr, uid, list(set(ids)), context=None)
+    def _getbomid(self, cr, uid, pid, sid, context=None):
+        ids = self._getidbom(cr, uid, pid, sid, context)
+        return self.browse(cr, uid, list(set(ids)), context)
 
-    def _getidbom(self, cr, uid, pid, sid):
-        ids = self.search(cr, uid, [('product_id', '=', pid), ('bom_id', '=', False)])
+    def _getidbom(self, cr, uid, pid, sid, context):
+        ids = self.search(cr, uid, [('product_id', '=', pid), ('bom_id', '=', False)], context=context)
         return list(set(ids))
 
-    def _getinbom(self, cr, uid, pid, sid):
-        ids = self.search(cr, uid, [('product_id', '=', pid), ('bom_id', '!=', False)])
-        return self.browse(cr, uid, ids, context=None)
+    def _getinbom(self, cr, uid, pid, sid, context):
+        ids = self.search(cr, uid, [('product_id', '=', pid), ('bom_id', '!=', False)], context=context)
+        return self.browse(cr, uid, ids, context)
 
-    def _getinbomidnullsrc(self, cr, uid, pid):
+    def _getinbomidnullsrc(self, cr, uid, pid, context=None):
         counted = []
-        ids = self.search(cr, uid, [('product_id', '=', pid), ('bom_id', '!=', False)])
-        for obj in self.browse(cr, uid, ids, context=None):
+        ids = self.search(cr, uid, [('product_id', '=', pid), ('bom_id', '!=', False)], context=context)
+        for obj in self.browse(cr, uid, ids, context):
             if obj.bom_id in counted:
                 continue
             counted.append(obj.bom_id)
