@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-##############################################################################
+# © 2018 Didotech srl (www.didotech.com)
 
 from openerp.osv import orm, fields
 
@@ -19,12 +19,17 @@ class res_partner(orm.Model):
         return res
 
     def _get_partner(self, cr, uid, ids, context=None):
-        result = {}
+        # result = {}
+        result = set()
+
         order_obj = self.pool['sale.order']
         real_ids = order_obj.search(cr, uid, [('id', 'in', ids), ('state', 'in', ['manual', 'progress', 'done'])], context=context)
+
         for order in order_obj.browse(cr, uid, real_ids, context=context):
-            result[order.partner.id] = True
-        return result.keys()
+            # result[order.partner_id.id] = True
+            result.add(order.partner_id.id)
+
+        return list(result)
 
     _columns = {
         'date_last_sale': fields.function(_get_work_history, string="Last Sale Activity", type='date', store={
