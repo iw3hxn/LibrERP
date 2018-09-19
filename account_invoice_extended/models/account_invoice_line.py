@@ -47,11 +47,14 @@ class account_invoice_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if not isinstance(ids, (list, tuple)):
             ids = [ids]
-
+        sale_order_line_obj = self.pool['sale.order.line']
+        sale_order_line_ids = []
         for line in self.browse(cr, uid, ids, context):
             if line.origin_document and line.origin_document._name == 'sale.order.line':
+                sale_order_line_ids += sale_order_line_obj.search(cr, uid, [('id', '=', line.origin_document.id)], context=context)
                 # the invoice line is create directly form sale order.line
-                line.origin_document.write({'invoiced': False})
+        if sale_order_line_ids:
+            sale_order_line_obj.write(cr, uid, sale_order_line_ids, {'invoiced': False}, context)
         return super(account_invoice_line, self).unlink(cr, uid, ids, context=context)
 
     def onchange_account_id(self, cr, uid, ids, product_id, partner_id, inv_type, fposition_id, account_id):
