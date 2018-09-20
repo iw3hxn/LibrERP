@@ -20,7 +20,7 @@
 ##############################################################################
 {
     'name': 'Italian Localisation - Base',
-    'version': '3.1.0.3',
+    'version': '3.1.0.4',
     'category': 'Localisation/Italy',
     'description': """Italian Localization module - Base version
 

@@ -63,6 +63,9 @@
             <field name="type">search</field>
             <field name="inherit_id" ref="base.view_res_partner_address_filter"/>
             <field name="arch" type="xml">
+                <field name="partner_id" position="before">
+                    <field name="type" widget="selection"/>
+                </field>
                 <field name="country_id" position="before">
                     <field name="city"/>
                     <field name="province" widget="selection"/>
