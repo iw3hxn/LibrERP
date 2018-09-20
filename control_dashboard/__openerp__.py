@@ -57,7 +57,8 @@ If you need to manage your meetings, you should install the CRM module.
         "ir_alert_view.xml",
         "ir_alert_workflow.xml",
         "board_alert_view.xml",
-        "data/alert_config_data.xml"
+        "data/alert_config_data.xml",
+        "security/ir.model.access.csv",
     ],
     "test": [],
     "installable": True,
