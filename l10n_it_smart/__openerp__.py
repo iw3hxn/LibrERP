@@ -28,7 +28,7 @@
 ##############################################################################
 
 {
-    "name": "Italy - Accounting Smart 01",
+    "name": "Italy - Accounting Smart DT",
     "version": "0.1",
     "depends": ['base_vat', 'account_chart', 'base_iban'],
     "author": "Marco Marchiori",
@@ -40,9 +40,7 @@ Piano dei conti italiano di un'impresa che vende in IVA ordinaria ed acquista in
     "license": "AGPL-3",
     "category" : "Localization/Account Charts",
     'website': 'http://www.openerp-italia.org/',
-    'init_xml': [
-        ],
-    'update_xml': [
+    'data': [
         'data/account.account.template.csv',
         'data/account.tax.code.template.csv',
         'account_chart.xml',

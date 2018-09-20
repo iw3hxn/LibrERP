@@ -18,9 +18,34 @@ id,code,name,parent_id:id,user_type:id,type,reconcile
 3039,3039,utile d'esercizio ,30,account.data_account_type_liability,other,FALSE
 4,4,RICAVI,0,account.data_account_type_view,view,FALSE
 44,44,VENDITE,4,account.data_account_type_view,view,FALSE
-4404,4404,merci c/vendite ,44,account.data_account_type_income,other,FALSE
+440400,440400,merci c/vendite ,44,account.data_account_type_income,other,FALSE
+440500,440500,servizi ,44,account.data_account_type_income,other,FALSE
 5,5,COSTI,0,account.data_account_type_view,view,FALSE
 55,55,COSTO DEL VENDUTO ,5,account.data_account_type_view,view,FALSE
-5505,5505,merci c/acquisti ,55,account.data_account_type_expense,other,FALSE
+5501,5501,COSTO EDIFICIO,55,account.data_account_type_view,view,FALSE
+550100,550100,affitto / condominio,5501,account.data_account_type_expense,other,FALSE
+550101,550101,acqua,5501,account.data_account_type_expense,other,FALSE
+550102,550102,luce,5501,account.data_account_type_expense,other,FALSE
+550103,550103,gas,5501,account.data_account_type_expense,other,FALSE
+550104,550104,rifiuti,5501,account.data_account_type_expense,other,FALSE
+550105,550105,assicurazione,5501,account.data_account_type_expense,other,FALSE
+5502,5502,COSTO VEICOLI,55,account.data_account_type_view,view,FALSE
+550200,550200,gasolio,5502,account.data_account_type_expense,other,FALSE
+550202,550202,assicurazione / bollo,5502,account.data_account_type_expense,other,FALSE
+550203,550203,autostrade,5502,account.data_account_type_expense,other,FALSE
+550204,550204,manutenzione,5502,account.data_account_type_expense,other,FALSE
+5503,5503,COSTO AMMINISTRATIVI,55,account.data_account_type_view,view,FALSE
+550300,550300,consulenze generiche,5503,account.data_account_type_expense,other,FALSE
+550301,550301,commercialista,5503,account.data_account_type_expense,other,FALSE
+550302,550302,consulente lavoro,5503,account.data_account_type_expense,other,FALSE
+550303,550303,spese telefoniche,5503,account.data_account_type_expense,other,FALSE
+550304,550304,oneri bancari,5503,account.data_account_type_expense,other,FALSE
+5504,5504,COSTI GENERALI,55,account.data_account_type_view,view,FALSE
+550401,550401,acquisto servizi esterni,5504,account.data_account_type_expense,other,FALSE
+550402,550402,acquisto merci,5504,account.data_account_type_expense,other,FALSE
+550403,550403,noleggio,5504,account.data_account_type_expense,other,FALSE
+550404,550404,pubblicità,5504,account.data_account_type_expense,other,FALSE
+5507,5507,COSTI PERSONALE,55,account.data_account_type_view,view,FALSE
+550701,550701,stipendi,5507,account.data_account_type_expense,other,FALSE
 9,9,CONTI DI RISULTATO ,0,account.data_account_type_view,view,FALSE
 9101,9101,conto di risultato economico ,9,account.data_account_type_expense,other,FALSE

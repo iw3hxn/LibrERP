@@ -9,8 +9,8 @@
           	<field name="bank_account_view_id" ref="11"/>
             <field name="property_account_receivable" ref="1301"/>
             <field name="property_account_payable" ref="2202"/>
-            <field name="property_account_expense_categ" ref="5505"/>
-            <field name="property_account_income_categ" ref="4404"/>
+            <field name="property_account_expense_categ" ref="550402"/>
+            <field name="property_account_income_categ" ref="440400"/>
         </record>
 	</data>
 </openerp>
