@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <record id="ir_header_webkit_vat_registry_sale" model="ir.header_webkit">
             <field name="orientation">Landscape</field>
             <field name="format">A4</field>
@@ -52,7 +52,7 @@
             </tr>
             <tr>
                 <td>${company.partner_id.address and company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity}</td>
-                <td>Registro Imprese:</td>
+                <td>Registro Imprese: ${company.partner_id.vat or ''|entity}</td>
             </tr>
         </table> ${_debug or ''|n} 
     <br/>
@@ -144,7 +144,7 @@ thead{
             </tr>
             <tr>
                 <td>${company.partner_id.address and company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity}</td>
-                <td>Registro Imprese:</td>
+                <td>Registro Imprese: ${company.partner_id.vat or ''|entity}</td>
             </tr>
         </table> ${_debug or ''|n} 
     <br/>
@@ -236,7 +236,7 @@ thead{
             </tr>
             <tr>
                 <td>${company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity}</td>
-                <td>Registro Imprese:</td>
+                <td>Registro Imprese: ${company.partner_id.vat or ''|entity}</td>
             </tr>
         </table> ${_debug or ''|n} 
     <br/>
