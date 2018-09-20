@@ -43,10 +43,18 @@ class AccountTax(orm.Model):
         'law_reference': fields.char(
             'Law reference', size=128),
     }
-
+    _sql_constraints = [
+        ('description_uniq', 'unique(description)', _('Description must be unique !')),
+    ]
     # _defaults = {
     #     'payability': 'I',
     # }
+
+    def copy(self, cr, uid, ids, defaults, context=None):
+        defaults.update({
+            'description': False
+        })
+        return super(AccountTax, self).copy(cr, uid, ids, defaults, context)
 
     def get_tax_by_invoice_tax(self, cr, uid, invoice_tax, context=None):
         if ' - ' in invoice_tax:
