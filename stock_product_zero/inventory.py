@@ -153,6 +153,17 @@ class stock_inventory(orm.Model):
 class stock_inventory_line(orm.Model):
     _inherit = "stock.inventory.line"
 
+    _index_name = 'stock_inventory_line_prod_lot_id_index'
+
+    def _auto_init(self, cr, context={}):
+        super(stock_inventory_line, self)._auto_init(cr, context)
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s',
+                   (self._index_name,))
+
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON stock_inventory_line (prod_lot_id)'.format(name=self._index_name))
+        return
+
     def get_color(self, cr, uid, ids, field_name, arg, context):
         start_time = datetime.datetime.now()
         value = {}
