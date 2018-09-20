@@ -223,6 +223,11 @@ msgid "No required VAT"
 msgstr "Non obbligo P.IVA in emissione fattura"
 
 #. module: account
+#: field:account.fiscal.position,invoice_amount:0
+msgid "Invoiced Amount"
+msgstr "Fatturato Totale"
+
+#. module: account
 #: field:account.fiscal.position,required_tax:0
 msgid "Requiered Tax on invoice"
 msgstr "Deve esserci sempre una tassa"

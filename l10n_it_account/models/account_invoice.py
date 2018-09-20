@@ -226,6 +226,12 @@ class account_invoice(orm.Model):
         if not partner.property_payment_term:
             payment_term_company = company.default_property_payment_term.id
             result['value']['payment_term'] = payment_term_company
+
+        if i_type in ['out_invoice', 'out_refund']:
+            fiscal_position_domain = ['&', ('customer', '=', True), '|', ('partner_id', '=', False), ('partner_id', '=', partner_id)]
+        else:
+            fiscal_position_domain = ['&', ('supplier', '=', True), '|', ('partner_id', '=', False),  ('partner_id', '=', partner_id)]
+        result.update({'domain': {'fiscal_position': fiscal_position_domain}})
         return result
 
     def onchange_check_fiscal_position(self, cr, uid, ids, date_invoice, partner_id, context=None):
