@@ -26,24 +26,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-{
-    'name': 'Human Resources/Automobiles',
-    'version': '2.0.1',
-    'category': 'Generic Modules/Human Resources',
-    'description': """A generic module for automobile car rental company to manage the employee and car""",
-    "author": "Dhaval Patel",
-    'depends': ['hr',],
-    'data': [
-            'views/res_car_view.xml',
-            'views/res_car_document_view.xml',
-            'wizard/res_car_document_expiry_bymonth_view.xml',
-            'views/res_auto_workflow.xml',
-            'security/ir.model.access.csv',
-            'data/res.car.service.type.csv',
-            'data/res.car.document.type.csv',
-            ],
-    'demo_xml': ['views/res_car_demo.xml', 'views/res_car_document_demo.xml'],
-    'installable': True,
-    'active': False,
-}
+from . import res_car
+from . import res_car_document
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

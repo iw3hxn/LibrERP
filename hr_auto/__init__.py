@@ -26,10 +26,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-import res_car
-import res_car_document
-import wizard
-import report
+from . import models
+from . import wizard
+from . import report
 
 
 

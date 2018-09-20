@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import orm, fields
 import time
 from tools.translate import _
 
@@ -34,7 +34,9 @@ from tools.translate import _
 #--OpenERP Model class to manage Car Type
 #--E.g. luxurious, economy, compact, intermediate, sports, minivan, Premium
 #--
-class res_car_type(osv.osv):
+
+
+class res_car_type(orm.Model):
     _description = "Car Types"
     _name = 'res.car.type'
     _columns = {
@@ -42,12 +44,13 @@ class res_car_type(osv.osv):
         'code': fields.char("Code", size=64),
     }
     _order = "name desc"
-res_car_type()
 
 #--
 #--OpenERP Model to manage Car
 #--
-class res_car(osv.osv):
+
+
+class res_car(orm.Model):
     _description = "Car"
     _name = 'res.car'
     _rec_name = 'plate'
@@ -55,61 +58,64 @@ class res_car(osv.osv):
     def _get_current_driver(self, cr, uid, ids, context, *a):
         res = {}
         date_start = time.strftime('%Y-%m-%d')
-        for line in self.browse(cr, uid, ids):
-            cr.execute( "select rs.employee_id from res_car_contract as rs  where state in ('draft', 'assigned') "\
-                        " and ( rs.car_id = %s )"\
-                        " and ( "\
-                        "         rs.start_date <= %s and (rs.end_date is null or rs.end_date >= %s )  "\
-                        " )", (line.id,date_start,date_start)
+        for line in self.browse(cr, uid, ids, context):
+            cr.execute("select rs.employee_id from res_car_contract as rs  where state in ('draft', 'assigned') " \
+                       " and ( rs.car_id = %s )" \
+                       " and ( " \
+                       "         rs.start_date <= %s and (rs.end_date is null or rs.end_date >= %s )  " \
+                       " )", (line.id, date_start, date_start)
                        )
             employee = cr.fetchone()
             if employee:
-                emps = self.pool.get('hr.employee').read(cr,uid,[employee[0]],['id','name'])
+                emps = self.pool['hr.employee'].read(cr, uid, [employee[0]], ['id', 'name'], context)
                 obj = emps[0]
-                res[line.id] = (obj['id'],obj['name'])
+                res[line.id] = (obj['id'], obj['name'])
             else:
                 res[line.id] = False
         return res
-    
+
     _columns = {
-        'plate': fields.char("Plate", size=256 , required=True),
-        'fuel_card_number': fields.char("Fuel card number", size = 256),
-        'car_type_id':fields.many2one('res.car.type','Type'),
+        'plate': fields.char("Plate", size=256, required=True),
+        'fuel_card_number': fields.char("Fuel card number", size=256),
+        'car_type_id': fields.many2one('res.car.type', 'Type'),
         'telepass': fields.char("Telepass", size=256),
-        'employee_id':fields.many2one('hr.employee','Employee',ondelete='cascade'),
+        'employee_id': fields.many2one('hr.employee', 'Employee', ondelete='cascade'),
         'documents_ids': fields.one2many('res.car.document', 'car_id', 'Documents'),
         'km_ids': fields.one2many('res.car.km', 'car_id', 'Km'),
         'telepass_ids': fields.one2many('res.telepass', 'car_id', 'Telepass'),
         'service_ids': fields.one2many('res.car.service', 'car_id', 'Servcies'),
         'contract_ids': fields.one2many('res.car.contract', 'car_id', 'Employee History'),
-        'current_driver': fields.function(_get_current_driver, method=True, type='many2one', relation='hr.employee', string='Employee'),
+        'current_driver': fields.function(_get_current_driver, method=True, type='many2one', relation='hr.employee',
+                                          string='Employee'),
         'note': fields.text('Note'),
-        'is_available' : fields.boolean("Available"),
-        #'lat': fields.char('Latitude', size = 22),
-        #'lng': fields.char('Longitude', size = 22),
-        #'map': fields.dummy(),
+        'is_available': fields.boolean("Available"),
+        'document_ids': fields.one2many('res.car.document', 'car_id', 'Documents'),
+        # 'lat': fields.char('Latitude', size = 22),
+        # 'lng': fields.char('Longitude', size = 22),
+        # 'map': fields.dummy(),
     }
     _defaults = {
         'is_available': 1,
     }
 
     _order = "plate desc"
+
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = {}
         return super(res_car, self).write(cr, uid, ids, vals, context=context)
+
     _sql_constraints = [
         ('plate_uniq', 'unique(plate)', 'Plate name must be unique !'),
     ]
-res_car()
-
-
 
 #--
 #--OpenERP Model to manage Car Service Type
 #--E.g. interim, full
 #--
-class res_car_service_type(osv.osv):
+
+
+class res_car_service_type(orm.Model):
     _description = "Service Types"
     _name = 'res.car.service.type'
     _columns = {
@@ -122,22 +128,23 @@ class res_car_service_type(osv.osv):
 #--
 #--OpenERP Model to manage Car Service
 #--
-class res_car_service(osv.osv):
+
+
+class res_car_service(orm.Model):
     _description = "Service"
     _name = 'res.car.service'
     _rec_name = 'service_date'
     _columns = {
         'service_date': fields.date("Date", required=True),
-        'service_type_id':fields.many2one('res.car.service.type','Type'),
-        'km':fields.integer('Km'),
-        'next_service_km':fields.integer('Next service in km'),
-        'car_id':fields.many2one('res.car','Car',ondelete='cascade'),
+        'service_type_id': fields.many2one('res.car.service.type', 'Type'),
+        'km': fields.integer('Km'),
+        'next_service_km': fields.integer('Next service in km'),
+        'car_id': fields.many2one('res.car', 'Car', ondelete='cascade'),
         'required_next_service': fields.boolean('Have next service ?'),
-        'note':fields.text("Note"),
+        'note': fields.text("Note"),
         'spent': fields.float('Spent'),
     }
 
-  
     def _check_next_service_km(self, cr, uid, ids, context=None):
         for i in self.browse(cr, uid, ids, context=context):
             if i.required_next_service and not i.next_service_km:
@@ -151,59 +158,65 @@ class res_car_service(osv.osv):
         if service_type_id:
             service_type_obj = self.pool['res.car.service.type']
             service_type = service_type_obj.browse(cr, uid, [service_type_id], context)
-            if service_type and service_type[0].required_next_service == True:required_next_service = True
+            if service_type and service_type[0].required_next_service:
+                required_next_service = True
         return {'value': {'required_next_service': required_next_service}}
-res_car_service()
 
 #--
 #--OpenERP Model to manage Car fuel history
 #--
-class res_car_km(osv.osv):
+
+
+class res_car_km(orm.Model):
     _description = "Km"
     _name = 'res.car.km'
     _rec_name = 'date'
     _columns = {
         'date': fields.date("Date", required=True),
-        'km':fields.integer('Km'),
+        'km': fields.integer('Km'),
         'month_fuel_cost': fields.float('Monthly Fuel Cost', required=True),
-        'car_id':fields.many2one('res.car','Car',ondelete='cascade'),
-        'fuel_card_number': fields.related('car_id', 'fuel_card_number', string='Fuel Card Number', type='char', size=256, store=True),
+        'car_id': fields.many2one('res.car', 'Car', ondelete='cascade'),
+        'fuel_card_number': fields.related('car_id', 'fuel_card_number', string='Fuel Card Number', type='char',
+                                           size=256, store=True),
         'note': fields.text('Note'),
     }
-res_car_km()
 
-class res_telepass(osv.osv):
+
+class res_telepass(orm.Model):
     _description = "Telepass"
     _name = 'res.telepass'
     _rec_name = 'date'
     _columns = {
         'date': fields.date("Date", required=True),
-        'spent':fields.float('Spent'),
-        'car_id':fields.many2one('res.car','Car',ondelete='cascade'),
+        'spent': fields.float('Spent'),
+        'car_id': fields.many2one('res.car', 'Car', ondelete='cascade'),
         'telepass': fields.related('car_id', 'telepass', string='Telepass', type='char', size=256, store=True),
-        'note':fields.text('Note'),
+        'note': fields.text('Note'),
     }
-res_telepass()
 
-class hr_employee(osv.osv):
+
+class hr_employee(orm.Model):
     _description = "Employee"
     _inherit = 'hr.employee'
     _columns = {
-        'car_id':fields.many2one('res.car','Car'),
+        'car_id':fields.many2one('res.car', 'Car'),
         'contract_ids': fields.one2many('res.car.contract', 'employee_id', 'Car History'),
     }
-hr_employee()
 
-class res_car_contract(osv.osv):
+
+class res_car_contract(orm.Model):
     _description = "Contract"
     _name = 'res.car.contract'
     _rec_name = 'employee_id'
     _columns = {
-        'employee_id':fields.many2one('hr.employee','Employee', required=True, readonly=True, states={'draft':[('readonly',False)]}),
-        'car_id':fields.many2one('res.car','Car',ondelete='cascade', required=True , readonly=True, states={'draft':[('readonly',False)]}),
-        'start_date': fields.date("Start Date" , required=True , readonly=True, states={'draft':[('readonly',False)]}),
-        'end_date': fields.date("End Date" , readonly=True, states={'draft':[('readonly',False)]}),
-        'state': fields.selection([('draft', 'Draft'),('assigned', 'Assigned'),('released', 'Released')], 'State', required=True, readonly=True),
+        'employee_id': fields.many2one('hr.employee', 'Employee', required=True, readonly=True,
+                                       states={'draft': [('readonly', False)]}),
+        'car_id': fields.many2one('res.car', 'Car', ondelete='cascade', required=True, readonly=True,
+                                  states={'draft': [('readonly', False)]}),
+        'start_date': fields.date("Start Date", required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'end_date': fields.date("End Date", readonly=True, states={'draft': [('readonly', False)]}),
+        'state': fields.selection([('draft', 'Draft'), ('assigned', 'Assigned'), ('released', 'Released')], 'State',
+                                  required=True, readonly=True),
         'isactive': fields.boolean('Active'),
     }
 
@@ -214,21 +227,18 @@ class res_car_contract(osv.osv):
     }
 
     def _check_dates(self, cr, uid, ids, context=None):
-        car = self.pool.get("res.car")
-        employee = self.pool.get("hr.employee")
-        contract = self.pool.get("res.car.contract")
-        for i in self.read(cr, uid, ids, ['id','employee_id','car_id', 'start_date','end_date'], context=context):
-            emp_id=i.get('employee_id',False)
-            car_id=i.get('car_id',False)
-            date_start =i.get('start_date',False)
-            date_end =i.get('end_date', False) or '9999-12-31'
-            cr.execute( "select * from res_car_contract where state in ('draft', 'assigned') "\
-                        " and id != %s "\
-                        " and ( employee_id = %s or car_id = %s )"\
-                        " and ( "\
-                        "        ( start_date <= %s and (end_date is null or end_date >= %s ))  "\
-                        "        or ( start_date >= %s  and start_date <= %s)"\
-                        " )", (i.get('id',0),emp_id[0],car_id[0],date_start,date_start,date_start,date_end)
+        for contract in self.browse(cr, uid, ids, context=context):
+            emp_id = contract.get('employee_id', False)
+            car_id = contract.get('car_id', False)
+            date_start = contract.get('start_date', False)
+            date_end = contract.get('end_date', False) or '9999-12-31'
+            cr.execute("select * from res_car_contract where state in ('draft', 'assigned') " \
+                       " and id != %s " \
+                       " and ( employee_id = %s or car_id = %s )" \
+                       " and ( " \
+                       "        ( start_date <= %s and (end_date is null or end_date >= %s ))  " \
+                       "        or ( start_date >= %s  and start_date <= %s)" \
+                       " )", (contract.get('id', 0), emp_id.id, car_id.id, date_start, date_start, date_start, date_end)
                        )
             contract_ids = cr.fetchall()
             if len(contract_ids):
@@ -240,47 +250,28 @@ class res_car_contract(osv.osv):
     #    self.write(cr, uid, ids, {'state':'confirmed'})
     #    return True
 
-    def action_assigned(self, cr, uid, ids):
-        for contract in self.read(cr,uid,ids):
-            if contract['start_date'] == time.strftime('%Y-%m-%d'):
-                self.write(cr, uid, [contract['id']], {'state':'assigned'})
-                self.pool.get('res.car').write(cr,uid,[contract['car_id'][0]], {'employee_id':contract['employee_id'][0]})
-                self.pool.get('hr.employee').write(cr,uid,[contract['employee_id'][0]], {'car_id':contract['car_id'][0]})
+    def action_assigned(self, cr, uid, ids, context=None):
+        for contract in self.browse(cr, uid, ids, context):
+            if contract.start_date == time.strftime('%Y-%m-%d'):
+                self.write(cr, uid, [contract.id], {'state': 'assigned'}, context)
+                self.pool['res.car'].write(cr, uid, [contract.car_id.id],
+                                           {'employee_id': contract.employee_id.id}, context)
+                self.pool['hr.employee'].write(cr, uid, [contract.employee_id.id],
+                                               {'car_id': contract.car_id.id}, context)
             else:
-                raise osv.except_osv(_('Invalid Could Not Be Performed !'), _('Cannot assign Car which start date is different then current date!'))
+                raise orm.except_orm(_('Invalid Could Not Be Performed !'),
+                                     _('Cannot assign Car which start date is different then current date!'))
         return True
 
     #def action_cancel(self, cr, uid, ids):
     #    self.write(cr, uid, ids, {'state':'cancel','end_date':time.strftime('%Y-%m-%d')})
     #    return True
 
-    def action_released(self, cr, uid, ids):
-        for contract in self.read(cr,uid,ids):
-            self.write(cr, uid, [contract['id']], {'state':'released','end_date':time.strftime('%Y-%m-%d'),'isactive':False})
-            self.pool.get('res.car').write(cr,uid,[contract['car_id'][0]], {'employee_id':False})
-            self.pool.get('hr.employee').write(cr,uid,[contract['employee_id'][0]], {'car_id':False})
-        #self.write(cr, uid, ids, {'state':'released','end_date':time.strftime('%Y-%m-%d')})
+    def action_released(self, cr, uid, ids, context=None):
+        for contract in self.browse(cr, uid, ids, context):
+            self.write(cr, uid, [contract.id],
+                       {'state': 'released', 'end_date': time.strftime('%Y-%m-%d'), 'isactive': False})
+            self.pool['res.car'].write(cr, uid, [contract.car_id.id], {'employee_id': False}, context)
+            self.pool['hr.employee'].write(cr, uid, [contract.employee_id.id], {'car_id': False}, context)
+        # self.write(cr, uid, ids, {'state':'released','end_date':time.strftime('%Y-%m-%d')})
         return True
-
-res_car_contract()
-
-
-
-
-
-#class gallery_docs(osv.osv):
-#    _inherit = "web.gallery.docs"
-#    _columns = {
-#        'car_document_id': fields.many2one('res.car.document', "Car Document")
-#    }
-#gallery_docs()
-#
-#class res_car_document1(osv.osv):
-#    _inherit = "res.car.document"
-#    _columns = {
-#        # galleries
-#        'web_gallery_doc_ids': fields.one2many('web.gallery.docs',
-#                                   'car_document_id',
-#                                   'Documents'),
-#    }
-#res_car_document1()
