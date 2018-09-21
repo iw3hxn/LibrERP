@@ -39,7 +39,7 @@ class order_requirement_line(orm.Model):
 
         if location_id:
             order_point_ids = warehouse_order_point_obj.search(cr, uid, [('product_id', '=', product_id),
-                                                                     ('warehouse_id', '=', warehouse_id)
+                                                                     ('warehouse_id', '=', warehouse_id),
                                                                      ('location_id', '=', location_id)], context=context, limit=1)
             ctx['location'] = location_id
 
