@@ -116,3 +116,19 @@ msgstr "Prezzo Netto"
 #: view:product.product:0
 msgid "Stock By Location"
 msgstr "Giacenza per Punto di Stoccaggio"
+
+#. module: product_extended
+#: view:product.category:0
+#: field:product.category,have_product:0
+msgid "Have Product"
+msgstr "Ha prodotti"
+
+#. module: product_extended
+#: view:product.category:0
+msgid "Childless and without products"
+msgstr "Senza figli e senza prodotti"
+
+#. module: product_extended
+#: view:product.category:0
+msgid "Without Product"
+msgstr "Senza Prodotti"
