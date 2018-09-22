@@ -53,8 +53,38 @@ class product_supplierinfo(orm.Model):
             result[supplier_cost.id] = price_subtotal or price or 0.0
         return result
 
+    def _last_order(self, cr, uid, ids, name, arg, context):
+        res = {}
+        for supinfo in self.browse(cr, uid, ids, context):
+            cr.execute(
+                "select po.id, max(po.date_approve) from purchase_order as po, purchase_order_line as line where po.id=line.order_id and line.product_id=%s and po.partner_id=%s and po.state in ('approved', 'done') group by po.id order by max desc",
+                (supinfo.product_id.id, supinfo.name.id,))
+            record = cr.fetchone()
+            if record:
+                res[supinfo.id] = record[0]
+            else:
+                res[supinfo.id] = False
+        return res
+
+    def _last_order_date(self, cr, uid, ids, name, arg, context):
+        res = {}
+        purchase_order_obj = self.pool['purchase.order']
+        last_orders = self._last_order(cr, uid, ids, name, arg, context)
+        dates = purchase_order_obj.read(cr, uid, filter(None, last_orders.values()), ['date_approve'], context)
+        for suppinfo in ids:
+            date_approve = [x['date_approve'] for x in dates if x['id'] == last_orders[suppinfo]]
+            if date_approve:
+                res[suppinfo] = date_approve[0]
+            else:
+                res[suppinfo] = False
+        return res
+
     _columns = {
         'cost_price': fields.function(_get_cost_price, type='float', string="Cost Price", digits_compute=dp.get_precision('Purchase Price')),
         'list_price': fields.related('pricelist_ids', 'price', type='float', string="Price", digits_compute=dp.get_precision('Purchase Price'), ),
+        'last_order': fields.function(_last_order, type='many2one', obj='purchase.order', method=True,
+                                      string='Last Order'),
+        'last_order_date': fields.function(_last_order_date, type='date', method=True, string='Last Order date'),
+
     }
 

@@ -132,3 +132,13 @@ msgstr "Senza figli e senza prodotti"
 #: view:product.category:0
 msgid "Without Product"
 msgstr "Senza Prodotti"
+
+#. module: product_extended
+#: field:product.supplierinfo,last_order:0
+msgid "Last Order"
+msgstr "Ultimo Ordine"
+
+#. module: product_extended
+#: field:product.supplierinfo,last_order_date:0
+msgid "Last Order date"
+msgstr "Data Ultimo Acquisto"

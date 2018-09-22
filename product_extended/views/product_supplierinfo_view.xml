@@ -12,11 +12,25 @@
                     <field name="product_code" />
                 </field>
                 <field name="min_qty" position="after" >
+                    <field name="last_order_date" />
                     <field name="list_price" />
                     <field name="cost_price" />
                 </field>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="product_supplierinfo_ext_form_view">
+            <field name="name">product_extended.supplierinfo.form.view</field>
+            <field name="type">form</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="inherit_id" ref="product.product_supplierinfo_form_view" />
+            <field name="arch" type="xml">
+                <field name="min_qty" position="after">
+                    <field name="last_order" colspan="4"/>
+                </field>
+            </field>
+        </record>
+
 
     </data>
 </openerp>

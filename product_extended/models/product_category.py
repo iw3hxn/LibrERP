@@ -14,16 +14,14 @@ class product_category(orm.Model):
         '''
         Show if category have or not a bom
         '''
-        context = context or self.pool['res.users'].context_get(cr, uid)
-
-        product_obj = self.pool['product.template']
-
         res = {}
         ids = ids or []
 
-        for category in self.browse(cr, uid, ids, context):
-            bom_id = product_obj.search(cr, uid, [('categ_id', '=', category.id)], context=context)
-            res[category.id] = bom_id and True or False
+        cr.execute("select categ_id from product_template group by categ_id")
+        record = [categ_id[0] for categ_id in cr.fetchall()]
+
+        for category_id in ids:
+            res[category_id] = category_id in record
 
         return res
 
@@ -31,19 +29,17 @@ class product_category(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if not args:
             return []
-        product_obj = self.pool['product.template']
         for search in args:
             if search[0] == 'have_product':
-                product_ids = product_obj.search(cr, uid, [], context=context)
-                if product_ids:
+                cr.execute("select categ_id from product_template group by categ_id")
+                record = [categ_id[0] for categ_id in cr.fetchall()]
+                if record:
                     if search[2]:
-                        res = list(
-                            set([product.categ_id.id for product in product_obj.browse(cr, uid, product_ids, context)])
-                        )
+                        res = list(set(record))
                         return [('id', 'in', res)]
                     else:
                         categ_ids = self.search(cr, uid, [('type', '!=', 'view')], context=context)
-                        res = set([product.categ_id.id for product in product_obj.browse(cr, uid, product_ids, context)])
+                        res = set(record)
                         return [('id', 'in', list(set(categ_ids) - res))]
                 else:
                     return [('id', 'in', [])]
