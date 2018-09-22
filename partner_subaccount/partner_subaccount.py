@@ -67,7 +67,7 @@ class res_partner(orm.Model):
                 # if it's not a view type code, it's another branch without partner_subaccount
                 account_template = getattr(chart_template, property_chart)
                 if account_template.type == 'view':
-                    account_account_ids = self.pool['account.account'].search(cr, uid, [('code', '=', account_template.code)])
+                    account_account_ids = self.pool['account.account'].search(cr, uid, [('code', '=', account_template.code)], context=context)
                     if account_account_ids:
                         return account_account_ids[0]
                     else:
@@ -100,7 +100,7 @@ class res_partner(orm.Model):
         property_account_id = vals.get(property_account, False)
         if property_account_id:
             property_account = account_obj.browse(cr, uid, property_account_id, context)
-            account_ids = account_obj.search(cr, uid, [('code', '=', '{0}{1}'.format(property_account.code, vals.get(property_ref, '')))])
+            account_ids = account_obj.search(cr, uid, [('code', '=', '{0}{1}'.format(property_account.code, vals.get(property_ref, '')))], context=context)
             if account_ids:
                 return account_ids[0]
             else:
@@ -133,8 +133,7 @@ class res_partner(orm.Model):
         if vals.get('customer', False):
             vals['block_ref_customer'] = True
             if not vals.get('property_customer_ref', False):
-                vals['property_customer_ref'] = self.pool['ir.sequence'].get(
-                    cr, uid, 'SEQ_CUSTOMER_REF') or ''
+                vals['property_customer_ref'] = self.pool['ir.sequence'].next_by_code(cr, uid, 'SEQ_CUSTOMER_REF', context) or ''
             if enable_partner_subaccount:
                 if vals.get('selection_account_receivable', False):
                     vals['property_account_receivable'] = vals['selection_account_receivable']
@@ -145,13 +144,11 @@ class res_partner(orm.Model):
         if vals.get('supplier', False):
             vals['block_ref_supplier'] = True
             if not vals.get('property_supplier_ref', False):
-                vals['property_supplier_ref'] = self.pool['ir.sequence'].get(
-                    cr, uid, 'SEQ_SUPPLIER_REF') or ''
+                vals['property_supplier_ref'] = self.pool['ir.sequence'].next_by_code(cr, uid, 'SEQ_SUPPLIER_REF') or ''
             if enable_partner_subaccount:
                 if vals.get('selection_account_payable', False):
                     vals['property_account_payable'] = vals['selection_account_payable']
                 vals['property_account_payable'] = self.get_create_partner_account(cr, uid, vals, 'supplier', context)
-
 
         return super(res_partner, self).create(cr, uid, vals, context=context)
 
@@ -205,8 +202,7 @@ class res_partner(orm.Model):
             if vals.get('customer', False):
                 vals['block_ref_customer'] = True
                 if not (vals.get('property_customer_ref', False) or partner.property_customer_ref):
-                    vals['property_customer_ref'] = self.pool['ir.sequence'].get(
-                        cr, uid, 'SEQ_CUSTOMER_REF') or ''
+                    vals['property_customer_ref'] = self.pool['ir.sequence'].next_by_code(cr, uid, 'SEQ_CUSTOMER_REF') or ''
                 if enable_partner_subaccount:
                     if vals.get('selection_account_receivable', False):
                         vals['property_account_receivable'] = vals['selection_account_receivable']
@@ -218,8 +214,7 @@ class res_partner(orm.Model):
             if vals.get('supplier', False):
                 vals['block_ref_supplier'] = True
                 if not (vals.get('property_supplier_ref', False) or partner.property_supplier_ref):
-                    vals['property_supplier_ref'] = self.pool['ir.sequence'].get(
-                        cr, uid, 'SEQ_SUPPLIER_REF') or ''
+                    vals['property_supplier_ref'] = self.pool['ir.sequence'].next_by_code(cr, uid, 'SEQ_SUPPLIER_REF') or ''
                 if enable_partner_subaccount:
                     if vals.get('selection_account_payable', False):
                         vals['property_account_payable'] = vals['selection_account_payable']
