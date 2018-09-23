@@ -253,8 +253,12 @@ class product_product(orm.Model):
         for product in self.browse(cr, uid, ids, context):
             # res[product.id] = self._compute_product_purchase_price(cr, uid, product.id, bom_properties,
             #                                                        log_product=product, context=context)
-            res[product.id] = self._compute_product_purchase_price(cr, uid, product, bom_properties,
-                                                                   context=context)
+            try:
+                res[product.id] = self._compute_product_purchase_price(cr, uid, product, bom_properties, context=context)
+            except Exception as e:
+                res[product.id] = 99999999
+                _logger.error(u'{product} ERRORE: {error}'.format(product=product.name_get()[0][1], error=e))
+
         # else:
         #     for product_id in ids:
         #         res[product_id] = self._compute_product_purchase_price(cr, uid, product_id, bom_properties, context=context)
