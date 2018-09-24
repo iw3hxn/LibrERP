@@ -23,7 +23,7 @@ class res_contact_function(orm.Model):
     _description = "Contact Function"
     _order = "name"
     _columns = {
-        'name': fields.char('Name', size=32),
+        'name': fields.char('Name', size=32, required=1, select=1),
         'code': fields.char('Code', size=8),
     }
 
