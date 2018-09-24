@@ -24,6 +24,7 @@ class res_contact_function(orm.Model):
     _order = "name"
     _columns = {
         'name': fields.char('Name', size=32),
+        'code': fields.char('Code', size=8),
     }
 
 

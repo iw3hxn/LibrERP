@@ -4,7 +4,7 @@
 
 {
     'name': 'Base Address Contact',
-    'version': '3.3.12.11',
+    'version': '3.3.13.11',
     'category': 'Base',
     'description': """
 This module allows you to manage your contacts

@@ -23,6 +23,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Contact Function" editable="top">
+                <field name="ref" />
                 <field name="name" select="1"/>
             </tree>
         </field>
@@ -45,6 +46,7 @@
                 <field name="opt_out"/>
                 <field name="lang_id"/>
                 <field name="partner_id"/>
+                <field name="function_id"/>
             </tree>
         </field>
     </record>

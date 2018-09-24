@@ -49,6 +49,11 @@ msgid "Name"
 msgstr "Nome"
 
 #. module: base_address_contacts
+#: field:res.contact.function,code:0
+msgid "Code"
+msgstr "Codice"
+
+#. module: base_address_contacts
 #: field:res.partner.address.contact,function_id:0
 msgid "Function"
 msgstr "Funzione"
