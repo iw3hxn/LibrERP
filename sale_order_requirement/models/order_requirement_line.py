@@ -49,7 +49,7 @@ class order_requirement_line(orm.Model):
                                                                context=context, limit=1)
 
         if order_point_ids:
-            spare = warehouse_order_point_obj.browse(cr, uid, order_point_ids, context)[0].product_min_qty
+            spare = warehouse_order_point_obj.read(cr, uid, order_point_ids, ['product_min_qty'], context)[0]['product_min_qty']
 
         product = self.pool['product.product'].browse(cr, uid, product_id, ctx)
 
@@ -594,14 +594,14 @@ class order_requirement_line(orm.Model):
     def _order_state(self, cr, uid, ids, name, args, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
-        # res = dict.fromkeys(ids, {
-        #     'production_orders_state': '',
-        #     'purchase_orders_approved': '',
-        #     'purchase_orders_state': '',
-        # })
-        lines = self.browse(cr, uid, ids, context=context)
 
-        for line in lines:
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = {
+                'production_orders_state': '',
+                'purchase_orders_approved': '',
+                'purchase_orders_state': '',
+            }
+
             mrp_productions = set([temp.mrp_production_id for temp in line.temp_mrp_bom_ids if temp.mrp_production_id])
             tot = len(mrp_productions)
             done = len([prod for prod in mrp_productions if prod.state == 'done'])
@@ -624,7 +624,7 @@ class order_requirement_line(orm.Model):
                 'purchase_orders_state': purchase_orders_state,
                 'purchase_orders_approved': purchase_orders_approved
             }
-            
+
         return res
 
     def _has_bom(self, cr, uid, ids, name, args, context=None):
@@ -632,7 +632,7 @@ class order_requirement_line(orm.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             try:
-                has_bom = bool(line.new_product_id.bom_ids)
+                has_bom = bool(line.new_product_id.bom_ids) or bool(line.product_id.bom_ids)
             except:
                 has_bom = False
             res[line.id] = has_bom
@@ -658,7 +658,7 @@ class order_requirement_line(orm.Model):
         'spare': fields.function(_stock_availability, method=True, multi='stock_availability', type='float',
                                  string='Spare', readonly=True),
         'order_requirement_id': fields.many2one('order.requirement', 'Order Reference', required=True,
-                                                ondelete='cascade', select=True),
+                                                ondelete='cascade', select=True, auto_join=True),
         'sale_order_line_id': fields.many2one('sale.order.line', string='Sale Order Line', select=True),
         'sale_order_id': fields.related('order_requirement_id', 'sale_order_id', string='Sale Order',
                                         relation='sale.order', type='many2one', readonly=True),

@@ -140,7 +140,7 @@ class temp_mrp_bom(orm.Model):
                                       "If a Phantom BoM is used for a root product, it will be sold and shipped as a set of components, instead of being produced."),
         'level_name': fields.char('Level', readonly=True),
         'order_requirement_line_id': fields.many2one('order.requirement.line', 'Order requirement line', required=True,
-                                                     ondelete='cascade', select=True),
+                                                     ondelete='cascade', select=True, auto_join=True),
         'bom_id': fields.many2one('temp.mrp.bom', 'Parent BoM', select=True, ondelete='cascade'),
         'bom_lines': fields.one2many('temp.mrp.bom', 'bom_id', 'BoM Lines'),
         'product_id': fields.many2one('product.product', 'Product', required=True),

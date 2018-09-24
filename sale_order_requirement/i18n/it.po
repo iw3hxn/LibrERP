@@ -133,6 +133,11 @@ msgid "Choosen Product"
 msgstr "Prodotto Scelto"
 
 #. module: sale_order_requirement
+#: field:order.requirement.line,has_bom:0
+msgid "Product has bom?"
+msgstr "Distinta"
+
+#. module: sale_order_requirement
 #: field:mrp.production,account_analytic_id:0
 #: field:stock.move,account_analytic_id:0
 msgid "Analytic Account"
@@ -311,17 +316,20 @@ msgid "Original Product"
 msgstr "Prodotto Originale"
 
 #. module: sale_order_requirement
+#: field:order.requirement,production_orders_state:0
 #: field:order.requirement.line,production_orders_state:0
 msgid "Prod. orders"
 msgstr "Ord. produzione"
 
 #. module: sale_order_requirement
+#: field:order.requirement,purchase_orders_approved:0
 #: field:order.requirement.line,purchase_orders_approved:0
 #: field:stock.move,purchase_orders_approved:0
 msgid "Purch. orders approved"
 msgstr "Ord. acquisto approvati"
 
 #. module: sale_order_requirement
+#: field:order.requirement,purchase_orders_state:0
 #: field:order.requirement.line,purchase_orders_state:0
 #: field:stock.move,purchase_orders_state:0
 msgid "Deliveries"

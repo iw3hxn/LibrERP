@@ -67,6 +67,9 @@
                     <field name="week_nbr" />
                     <field name="month" />
                     <field name="state" />
+                    <field name="production_orders_state"/>
+                    <field name="purchase_orders_approved"/>
+                    <field name="purchase_orders_state"/>
                 </tree>
             </field>
         </record>

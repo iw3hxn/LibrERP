@@ -37,6 +37,45 @@ class order_requirement(orm.Model):
 
     _order = 'state, date'
 
+    def _order_state(self, cr, uid, ids, name, args, context=None):
+        order_requirement_line_obj = self.pool['order.requirement.line']
+        purchase_order_obj = self.pool['purchase.order']
+        purchase_order_line_obj = self.pool['purchase.order.line']
+        temp_mrp_bom_obj = self.pool['temp.mrp.bom']
+        mrp_production_obj = self.pool['mrp.production']
+        stock_move_obj = self.pool['stock.move']
+
+        res = dict.fromkeys(ids, {})
+        for order in self.browse(cr, uid, ids, context):
+            res[order.id] = {
+                 'production_orders_state': '',
+                 'purchase_orders_approved': '',
+                 'purchase_orders_state': '',
+            }
+
+            temp_bom_with_product_order_ids = list(set(temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id.order_requirement_id', '=', order.id), ('mrp_production_id', '!=', False)], context=context)))
+
+            done = len(mrp_production_obj.search(cr, uid, [('temp_bom_id', 'in', temp_bom_with_product_order_ids), ('state', '=', 'done')]))
+            tot = len(temp_bom_with_product_order_ids)
+
+            purchase_order_line_ids = list(set(purchase_order_line_obj.search(cr, uid, [('order_requirement_ids', '=', order.id)], context=context)))
+            purchase_order_ids = purchase_order_obj.search(cr, uid, [('order_line', 'in', purchase_order_line_ids)], context=context)
+            tot_order_approved = len(purchase_order_ids)
+            done_order_approved = len(purchase_order_obj.search(cr, uid, [('id', 'in', purchase_order_ids), ('state', 'in', ('approved', 'done'))], context=context))
+
+            stock_move_ids = stock_move_obj.search(cr, uid, [('purchase_line_id', 'in', purchase_order_line_ids), ('state', '!=', 'cancel')], context=context)
+            tot_order_state = len(stock_move_ids)
+            done_order_state = len(stock_move_obj.search(cr, uid, [('purchase_line_id', 'in', purchase_order_line_ids), ('state', '=', 'done')], context=context))
+
+            if tot > 0:
+                res[order.id]['production_orders_state'] = '%d/%d' % (done, tot)
+            if tot_order_approved > 0:
+                res[order.id]['purchase_orders_approved'] = '%d/%d' % (done_order_approved, tot_order_approved)
+            if tot_order_state > 0:
+                res[order.id]['purchase_orders_state'] = '%d/%d' % (done_order_state, tot_order_state)
+
+        return res
+
     _columns = {
         'date': fields.date('Data'),
         'sale_order_id': fields.many2one('sale.order', 'Order', required=True, ondelete='cascade', select=True),
@@ -65,6 +104,12 @@ class order_requirement(orm.Model):
                                      string='Product'),
         'new_product_id': fields.related('order_requirement_line_ids', 'new_product_id', type='many2one', relation='product.product',
                                      string='Choosen Product'),
+        'production_orders_state': fields.function(_order_state, method=True, type='string', multi='order_state',
+                                                   string='Prod. orders', readonly=True),
+        'purchase_orders_approved': fields.function(_order_state, method=True, type='string', multi='order_state',
+                                                    string='Purch. orders approved', readonly=True),
+        'purchase_orders_state': fields.function(_order_state, method=True, type='string', multi='order_state',
+                                                 string='Deliveries', readonly=True),
     }
 
     _defaults = {
