@@ -31,6 +31,15 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 class product_supplierinfo(orm.Model):
     _inherit = 'product.supplierinfo'
 
+    _index_name = 'product_supplierinfo_name_index'
+
+    def _auto_init(self, cr, context={}):
+        super(product_supplierinfo, self)._auto_init(cr, context)
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name,))
+
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON product_supplierinfo (name)'.format(name=self._index_name))
+
     def _get_cost_price(self, cr, uid, ids, field_name, arg, context):
         result = {}
         user = self.pool['res.users'].browse(cr, uid, uid, context)
