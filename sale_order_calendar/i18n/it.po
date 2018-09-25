@@ -93,3 +93,8 @@ msgstr "Prossima Azione dal"
 #: view:sale.order:0
 msgid "Next Action To"
 msgstr "Prossima Azione al"
+
+#. module: sale_order_calendar
+#: view:sale.order:0
+msgid "Next Action"
+msgstr "Prossima Azione"
