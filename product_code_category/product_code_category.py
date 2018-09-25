@@ -42,6 +42,31 @@ class product_category(orm.Model):
     _order = 'name, parent_id'
 
 
+class product_supplierinfo(orm.Model):
+    _inherit = 'product.supplierinfo'
+
+    def _check_product_code(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        for supplierinfo in self.browse(cr, uid, ids, context):
+            if supplierinfo.product_code:
+                res = self.search(cr, uid, [('product_code', '=', supplierinfo.product_code),
+                                            ('name', '=', supplierinfo.name.id)
+                                            ], context=context)
+            else:
+                res = []
+            if supplierinfo.id in res:
+                res.remove(supplierinfo.id)
+            if len(res):
+                _logger.error(u"Exist other product with code '{code}'".format(code=supplierinfo.product_code))
+                raise orm.except_orm(_('Error!'),
+                                     _(u"Exist other product with code '{code}'").format(code=supplierinfo.product_code))
+        return True
+
+    _constraints = [
+        (_check_product_code, _('Duplicate code'), ['product_code'])
+    ]
+
+
 class product_product(orm.Model):
     """
     Add sequence on product on create with sequence
