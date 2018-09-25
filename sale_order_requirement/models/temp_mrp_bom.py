@@ -171,7 +171,7 @@ class temp_mrp_bom(orm.Model):
         'mrp_production_id': fields.many2one('mrp.production', string='Manufacturing Order', select=True),
         # 'mrp_production_line_id': fields.many2one('mrp.production.???', string='Manufacturing Order'),
         'purchase_order_id': fields.many2one('purchase.order', string='Purchase Order', select=True),
-        'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order Line'),
+        'purchase_order_line_id': fields.many2one('purchase.order.line', string='Purchase Order Line', select=True),
         'level': fields.integer('Level'),
         'is_manufactured': fields.boolean('Manufacture'),
         'buy': fields.boolean('Buy'),

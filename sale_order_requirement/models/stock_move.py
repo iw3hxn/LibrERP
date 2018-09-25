@@ -11,6 +11,15 @@ from openerp.osv import orm, fields
 class StockMove(orm.Model):
     _inherit = 'stock.move'
 
+    _index_name = 'stock_move_purchase_line_id_state_index'
+
+    def _auto_init(self, cr, context={}):
+        super(StockMove, self)._auto_init(cr, context)
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name,))
+
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON stock_move (purchase_line_id, state)'.format(name=self._index_name))
+
     def _force_production_order(self, cr, uid, stock_move_ids, context):
         user = self.pool['res.users'].browse(cr, uid, uid, context)
 
@@ -153,35 +162,37 @@ class StockMove(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         ordreqline_obj = self.pool['order.requirement.line']
         res = {}
-        for line in self.browse(cr, uid, ids, context=context):
+        lines = self.browse(cr, uid, ids, context=context)
+        for line in lines:
             state_str = ''
             purchase_orders_state = ''
 
             try:
-                ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_id', '=', line.sale_id.id), ('new_product_id', '=', line.product_id.id)], context=context)
+                ordreqline_ids = ordreqline_obj.search(cr, uid, [('sale_order_line_id', '=', line.sale_line_id.id), ('new_product_id', '=', line.product_id.id)], context=context)
 
                 # Maybe useless, but is generic, it supports eventually multiple lines
                 ordreqlines = ordreqline_obj.browse(cr, uid, ordreqline_ids, context)
 
                 done = 0
                 tot = 0
+
+                done_approved = 0
+                tot_approved = 0
+
                 for ordreqline in ordreqlines:
                     d, t = ordreqline_obj.get_purchase_orders_state(ordreqline)
                     done += d
                     tot += t
-                    purchase_orders_state = ' '
+
+                    d_approved, t_approved = ordreqline_obj.get_purchase_orders_approved(ordreqline)
+                    done_approved += d_approved
+                    tot_approved += t_approved
+
                 if tot > 0:
                     purchase_orders_state = '%d/%d' % (done, tot)
 
-                done = 0
-                tot = 0
-                for ordreqline in ordreqlines:
-                    d, t = ordreqline_obj.get_purchase_orders_approved(ordreqline)
-                    done += d
-                    tot += t
-                state_str = ' '
-                if tot > 0:
-                    state_str = '%d/%d' % (done, tot)
+                if tot_approved > 0:
+                    state_str = '%d/%d' % (done_approved, tot_approved)
 
             except Exception as e:
                 print '_purchase_orders_state ' + e.message
@@ -194,7 +205,6 @@ class StockMove(orm.Model):
             }
 
         return res
-
 
     _columns = {
         'analytic_account_id': fields.many2one('account.analytic.account', 'Analytic Account', ),

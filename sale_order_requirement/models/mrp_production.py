@@ -11,9 +11,25 @@ class mrp_production(orm.Model):
 
     _inherit = 'mrp.production'
 
+    _index_name = 'mrp_production_state_index'
+    _index_name2 = 'mrp_production_id_state_index'
+
+    def _auto_init(self, cr, context={}):
+        res = super(mrp_production, self)._auto_init(cr, context)
+
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name,))
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON mrp_production (state)'.format(name=self._index_name))
+
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name2,))
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON mrp_production (id, state)'.format(name=self._index_name2))
+
+        return res
+
     _columns = {
         'is_from_order_requirement': fields.boolean('is from order requirement'),
-        'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material Line', readonly=True),
+        'temp_bom_id': fields.many2one('temp.mrp.bom', 'Bill of Material Line', readonly=True, select=1),
         'order_requirement_line_id': fields.related('temp_bom_id', 'order_requirement_line_id', string='Order Requirement Line',
                                                     relation='order.requirement.line', type='many2one', readonly=True),
         'level': fields.integer('Level', required=True),

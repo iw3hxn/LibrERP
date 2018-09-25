@@ -38,41 +38,73 @@ class order_requirement(orm.Model):
     _order = 'state, date'
 
     def _order_state(self, cr, uid, ids, name, args, context=None):
-        order_requirement_line_obj = self.pool['order.requirement.line']
+        # order_requirement_obj = self.pool['order.requirement']
+        # order_requirement_line_obj = self.pool['order.requirement.line']
         purchase_order_obj = self.pool['purchase.order']
-        purchase_order_line_obj = self.pool['purchase.order.line']
+        # purchase_order_line_obj = self.pool['purchase.order.line']
         temp_mrp_bom_obj = self.pool['temp.mrp.bom']
         mrp_production_obj = self.pool['mrp.production']
         stock_move_obj = self.pool['stock.move']
 
         res = dict.fromkeys(ids, {})
-        for order in self.browse(cr, uid, ids, context):
-            res[order.id] = {
-                 'production_orders_state': '',
-                 'purchase_orders_approved': '',
-                 'purchase_orders_state': '',
+
+        cr.execute(
+            "select order_requirement_id, id from order_requirement_line where order_requirement_id in (%s) group by order_requirement_id, id" % ",".join(
+                [str(x) for x in ids if x]))
+        order_requirement_line2_ids = cr.fetchall()
+
+        for order_id in ids:
+            res[order_id] = {
+                'production_orders_state': '',
+                'purchase_orders_approved': '',
+                'purchase_orders_state': '',
             }
+            tot = 0
+            done_order_approved = 0
+            tot_order_state = 0
 
-            temp_bom_with_product_order_ids = list(set(temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id.order_requirement_id', '=', order.id), ('mrp_production_id', '!=', False)], context=context)))
+            order_requirement_line_ids = [x[1] for x in order_requirement_line2_ids if x[0] == order_id]
+            temp_bom_ids = list(set(
+                temp_mrp_bom_obj.search(cr, uid, [('order_requirement_line_id', 'in', order_requirement_line_ids)],
+                                        context=context)))
+            if temp_bom_ids:
+                cr.execute(
+                    "select mrp_production_id from temp_mrp_bom where id in (%s) group by mrp_production_id" % ",".join(
+                        [str(x) for x in temp_bom_ids if x]))
+                query_result = cr.fetchall()
+                production_ids = list(set([x[0] for x in query_result if x[0]]))
+                tot = len(production_ids)
+                done = len(mrp_production_obj.search(cr, uid, [('id', 'in', production_ids), ('state', '=', 'done')],
+                                                     context=context))
 
-            done = len(mrp_production_obj.search(cr, uid, [('temp_bom_id', 'in', temp_bom_with_product_order_ids), ('state', '=', 'done')]))
-            tot = len(temp_bom_with_product_order_ids)
+            cr.execute(
+                "select purchase_order_id from order_requirement_line_purchase_order_rel where order_requirement_line_id in (%s)" % ",".join(
+                    [str(x) for x in order_requirement_line_ids if x]))
+            query_result = cr.fetchall()
+            purchase_order_ids = list(set([x[0] for x in query_result if x[0]]))
 
-            purchase_order_line_ids = list(set(purchase_order_line_obj.search(cr, uid, [('order_requirement_ids', '=', order.id)], context=context)))
-            purchase_order_ids = purchase_order_obj.search(cr, uid, [('order_line', 'in', purchase_order_line_ids)], context=context)
             tot_order_approved = len(purchase_order_ids)
-            done_order_approved = len(purchase_order_obj.search(cr, uid, [('id', 'in', purchase_order_ids), ('state', 'in', ('approved', 'done'))], context=context))
+            if purchase_order_ids:
+                done_order_approved = len(purchase_order_obj.search(cr, uid, [('id', 'in', purchase_order_ids),
+                                                                              ('state', 'in', ('approved', 'done'))],
+                                                                    context=context))
 
-            stock_move_ids = stock_move_obj.search(cr, uid, [('purchase_line_id', 'in', purchase_order_line_ids), ('state', '!=', 'cancel')], context=context)
-            tot_order_state = len(stock_move_ids)
-            done_order_state = len(stock_move_obj.search(cr, uid, [('purchase_line_id', 'in', purchase_order_line_ids), ('state', '=', 'done')], context=context))
+                cr.execute(
+                    "SELECT  stock_move.id FROM stock_move, purchase_order_line, purchase_order WHERE stock_move.purchase_line_id = purchase_order_line.id AND purchase_order_line.order_id = purchase_order.id AND purchase_order.id in (%s)" % ",".join(
+                        [str(x) for x in purchase_order_ids if x]))
+                query_result = cr.fetchall()
+                stock_move_ids = list(set([x[0] for x in query_result if x[0]]))
+                tot_order_state = len(stock_move_ids)
+                done_order_state = len(
+                    stock_move_obj.search(cr, uid, [('id', 'in', stock_move_ids), ('state', '=', 'done')],
+                                          context=context))
 
             if tot > 0:
-                res[order.id]['production_orders_state'] = '%d/%d' % (done, tot)
+                res[order_id]['production_orders_state'] = '%d/%d' % (done, tot)
             if tot_order_approved > 0:
-                res[order.id]['purchase_orders_approved'] = '%d/%d' % (done_order_approved, tot_order_approved)
+                res[order_id]['purchase_orders_approved'] = '%d/%d' % (done_order_approved, tot_order_approved)
             if tot_order_state > 0:
-                res[order.id]['purchase_orders_state'] = '%d/%d' % (done_order_state, tot_order_state)
+                res[order_id]['purchase_orders_state'] = '%d/%d' % (done_order_state, tot_order_state)
 
         return res
 
