@@ -39,9 +39,9 @@ class product_product(orm.Model):
 
         def run(self):
             try:
-                for product in self.product_product_obj.read(self.cr, self.uid, self.product_ids, ['cost_price'], self.context):
+                time.sleep(5)
+                for product in self.product_product_obj.browse(self.cr, self.uid, self.product_ids, self.context):
                     cost_price = product['cost_price']
-                self.cr.commit()
                 return True
             except Exception as e:
                 # Rollback
@@ -789,6 +789,8 @@ class product_product(orm.Model):
 
                 if CACHE_TYPE == 'redis':
                     workers = multiprocessing.cpu_count()
+                    if workers > 1:
+                        workers = workers / 2
                     # threads = []
                     for split in _chunkIt(product_to_browse_ids, workers):
                         if split:
