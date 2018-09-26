@@ -26,6 +26,7 @@ import time
 import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools.translate import _
 
 
 class product_supplierinfo(orm.Model):
@@ -79,7 +80,7 @@ class product_supplierinfo(orm.Model):
         res = {}
         purchase_order_obj = self.pool['purchase.order']
         last_orders = self._last_order(cr, uid, ids, name, arg, context)
-        dates = purchase_order_obj.read(cr, uid, filter(None, last_orders.values()), ['date_approve'], context)
+        dates = purchase_order_obj.read(cr, uid, list(set(filter(None, last_orders.values()))), ['date_approve'], context)
         for suppinfo in ids:
             date_approve = [x['date_approve'] for x in dates if x['id'] == last_orders[suppinfo]]
             if date_approve:
@@ -94,6 +95,8 @@ class product_supplierinfo(orm.Model):
         'last_order': fields.function(_last_order, type='many2one', obj='purchase.order', method=True,
                                       string='Last Order'),
         'last_order_date': fields.function(_last_order_date, type='date', method=True, string='Last Order date'),
-
     }
 
+    _sql_constraints = [
+        ('supplier_product_uniq', 'unique(name, product_id)', _('Supplier must be unique for product')),
+    ]
