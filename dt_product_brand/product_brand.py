@@ -56,8 +56,7 @@ class product_product(Model):
         """
         When category changes, we search for taxes, UOM and product type
         """
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid, context=context)
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         res = {}
 
