@@ -37,12 +37,33 @@ class res_users(orm.Model):
                     res_users_ids.remove(res_user_id)
         return res_users_ids
 
+    def write(self, cr, uid, ids, vals, context):
+        res = super(res_users, self).write(cr, uid, ids, vals, context)
+        res_groups = self.pool['res.groups']
+        res_groups.cache_id_from_xml_id = {}
+        res_groups.cache_user_in_group = {}
+        return res
+
 
 class groups(orm.Model):
     _name = 'res.groups'
     _inherit = 'res.groups'
-    
+
+    def __init__(self, cr, uid):
+        super(groups, self).__init__(cr, uid)
+        self.cache_id_from_xml_id = {}
+        self.cache_user_in_group = {}
+
+    def write(self, cr, uid, ids, vals, context):
+        res = super(groups, self).write(cr, uid, ids, vals, context)
+        self.cache_id_from_xml_id = {}
+        self.cache_user_in_group = {}
+        return res
+
     def id_from_xml_id(self, cr, uid, xml_id, context=None):
+        cache_key = '{0}_{1}'.format(uid, xml_id).replace('.', '_')
+        if self.cache_id_from_xml_id.get(cache_key, False):
+            return self.cache_id_from_xml_id[cache_key]
         context = context or self.pool['res.users'].context_get(cr, uid)
         group_obj = self.pool['res.groups']
         group_all_ids = group_obj.search(cr, uid, [], context=context)
@@ -51,19 +72,26 @@ class groups(orm.Model):
         for key in group_xml_ids.keys():
             xml_id_it = group_xml_ids[key]
             if xml_id_it == xml_id:
+                self.cache_id_from_xml_id[cache_key] = key
                 return key
+        self.cache_id_from_xml_id[cache_key] = False
         return False
-        
+
     def user_in_group(self, cr, uid, user_id, group_xml_id, context=None):
+        cache_key = '{0}_{1}'.format(user_id, group_xml_id).replace('.', '_')
+        if self.cache_user_in_group.get(cache_key, False):
+            return self.cache_user_in_group[cache_key]
         context = context or self.pool['res.users'].context_get(cr, uid)
         user_obj = self.pool['res.users']
-        user = user_obj.browse(cr, uid, user_id, context=context)
+        user = user_obj.read(cr, uid, user_id, ['groups_id'], context=context)
         if isinstance(user, list):
             user = user[0]
         
         group_id = self.id_from_xml_id(cr, uid, group_xml_id, context=context)
-        for group in user.groups_id:
-            if group.id == group_id:
+        for group in user['groups_id']:
+            if group == group_id:
+                self.cache_user_in_group[cache_key] = True
                 return True
+        self.cache_user_in_group[cache_key] = False
         return False
 
