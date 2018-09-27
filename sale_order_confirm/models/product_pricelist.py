@@ -21,12 +21,6 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
-from openerp.tools.translate import _
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-import decimal_precision as dp
-import re
 
 
 class product_pricelist(orm.Model):
