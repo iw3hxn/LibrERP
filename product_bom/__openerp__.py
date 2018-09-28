@@ -42,10 +42,10 @@
     "update_xml": [
         "security/security.xml",		# always load groups first!
         "security/ir.model.access.csv",        # load access rights after groups
-        "company/company.xml",
-        "product/product.xml",
-        "product/cron.xml",
-        "mrp/mrp.xml",
+        "views/company.xml",
+        "views/product.xml",
+        "data/cron.xml",
+        "views/mrp.xml",
     ],
     "auto_install": False,
     "installable": True,

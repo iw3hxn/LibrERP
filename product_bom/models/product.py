@@ -829,6 +829,17 @@ class product_product(orm.Model):
 
         return res
 
+    def fields_get(self, cr, uid, allfields=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        group_obj = self.pool['res.groups']
+        ret = super(product_product, self).fields_get(cr, uid, allfields=allfields, context=context)
+
+        if not group_obj.user_in_group(cr, uid, uid, 'product_bom.group_modify_product', context=context):
+            for fields in ret.keys():
+                ret[fields]['readonly'] = True
+        return ret
+
+
 # CANCEL CACHE IF SOMETHING CHANGE ON PRICELIST
 
 #
@@ -878,20 +889,3 @@ class product_product(orm.Model):
 #         return res
 
 
-class res_partner(orm.Model):
-
-    _inherit = 'res.partner'
-
-    def create(self, cr, uid, vals, context=None):
-        res = super(res_partner, self).create(cr, uid, vals, context)
-        if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
-            self.pool['product.product'].product_cost_cache.empty()
-            _logger.info(u'_cost_price CREATE cache empty')
-        return res
-
-    def write(self, cr, uid, ids, vals, context=None):
-        res = super(res_partner, self).write(cr, uid, ids, vals, context)
-        if ENABLE_CACHE and 'property_product_pricelist_purchase' in vals:
-            self.pool['product.product'].product_cost_cache.empty()
-            _logger.info(u'_cost_price WRITE cache empty')
-        return res

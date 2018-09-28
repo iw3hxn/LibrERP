@@ -20,9 +20,10 @@
             <field name="name">Product / Can Create</field>
             <field name="category_id" ref="product.module_category_product"/>
         </record>
-        <record model="res.groups" id="group_unlink_product">
-            <field name="name">Product / Can Unlink</field>
+        <record model="res.groups" id="group_modify_product">
+            <field name="name">Product / Can Modify</field>
             <field name="category_id" ref="product.module_category_product"/>
+            <field name="implied_ids" eval="[(4, ref('product_bom.group_create_product'))]"/>
         </record>
         <record model="res.groups" id="group_unlink_product">
             <field name="name">Product / Can Unlink</field>

@@ -21,6 +21,11 @@ msgid "Product / Can Create"
 msgstr "Prodotto / Può Crearli"
 
 #. module: product_bom
+#: model:res.groups,name:product_bom.group_modify_product
+msgid "Product / Can Modify"
+msgstr "Prodotto / Può Modificare"
+
+#. module: product_bom
 #: selection:res.company,ref_stock:0
 msgid "Real Stock"
 msgstr "Stock Reale"
