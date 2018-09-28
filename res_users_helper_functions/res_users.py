@@ -37,7 +37,7 @@ class res_users(orm.Model):
                     res_users_ids.remove(res_user_id)
         return res_users_ids
 
-    def write(self, cr, uid, ids, vals, context):
+    def write(self, cr, uid, ids, vals, context=None):
         res = super(res_users, self).write(cr, uid, ids, vals, context)
         res_groups = self.pool['res.groups']
         res_groups.cache_id_from_xml_id = {}
@@ -54,7 +54,7 @@ class groups(orm.Model):
         self.cache_id_from_xml_id = {}
         self.cache_user_in_group = {}
 
-    def write(self, cr, uid, ids, vals, context):
+    def write(self, cr, uid, ids, vals, context=None):
         res = super(groups, self).write(cr, uid, ids, vals, context)
         self.cache_id_from_xml_id = {}
         self.cache_user_in_group = {}
