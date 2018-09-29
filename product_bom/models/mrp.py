@@ -35,8 +35,7 @@ class mrp_bom(orm.Model):
     _inherit = 'mrp.bom'
     
     def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not vals.get('bom_id', False):
             self.pool['product.product'].write(
                 cr, uid, vals['product_id'],

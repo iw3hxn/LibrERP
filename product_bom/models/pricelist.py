@@ -178,7 +178,7 @@ class product_pricelist(orm.Model):
                 elif rule.base == -3:
                     if rule.price_version_id:
                         price = rule.fixed_price
-
+                        break
                 elif rule.base == -4:
                     price = product.cost_price
 
