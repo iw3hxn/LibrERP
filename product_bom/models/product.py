@@ -204,8 +204,7 @@ class product_product(orm.Model):
                 else:
                     partner_id = False
                 if pricelist:
-                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, partner_id,
-                                                                 context=ctx)[pricelist.id] or 0
+                    price, rule = self.pool['product.pricelist'].price_rule_get_multi(cr, uid, [pricelist.id], products_by_qty_by_partner=[(product, 1, partner_id)], context=context)[product.id][pricelist.id]
                 else:
                     raise orm.except_orm(
                         _("Error"),
@@ -265,130 +264,130 @@ class product_product(orm.Model):
 
         return res
 
-    def _compute_purchase_price(self, cr, uid, ids,
-                                product_uom=None,
-                                bom_properties=None,
-                                context=None):
-        '''
-        Compute the purchase price, taking into account sub products and routing
-        '''
-
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        bom_properties = bom_properties or []
-        user = self.pool['res.users'].browse(cr, uid, uid, context)
-
-        bom_obj = self.pool['mrp.bom']
-        uom_obj = self.pool['product.uom']
-
-        res = {}
-        ids = ids or []
-
-        for product in self.browse(cr, uid, ids, context):
-            if ENABLE_CACHE:
-                _logger.debug(u'[{product.default_code}] {product.name}'.format(product=product))
-            bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
-            if bom_id:
-                sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
-                sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
-
-                price = 0.
-                if ENABLE_CACHE:
-                    _logger.debug(u'[{product.default_code}] Start Explosion ========================'.format(product=product))
-                for sub_product in sub_products:
-                    if sub_product.product_id.id == product.id:
-                        error = "Product '{product.name}' (id: {product.id}) is referenced to itself".format(product=product)
-                        _logger.error(error)
-                        continue
-
-                    # std_price = sub_product.standard_price
-                    if ENABLE_CACHE:
-                        if sub_product.product_id.id in self.product_cost_cache:
-                            std_price = self.product_cost_cache[sub_product.product_id.id]
-                        else:
-                            std_price = sub_product.product_id.cost_price
-                            self.product_cost_cache[sub_product.product_id.id] = std_price
-                    else:
-                        std_price = sub_product.product_id.cost_price
-
-                    qty = uom_obj._compute_qty(cr, uid,
-                                               from_uom_id=sub_product.product_uom.id,
-                                               qty=sub_product.product_qty,
-                                               to_uom_id=sub_product.product_id.uom_po_id.id)
-                    if ENABLE_CACHE:
-                        _logger.debug(u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id, std_price=std_price, qty=qty))
-
-                    price += std_price * qty
-                    # if sub_product.routing_id:
-                    #     for wline in sub_product.routing_id.workcenter_lines:
-                    #         wc = wline.workcenter_id
-                    #         cycle = wline.cycle_nbr
-                    #         # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
-                    #         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
-
-                if sub_products:
-                    # Don't use browse when we already have it
-                    bom = sub_products[0].bom_id
-                else:
-                    bom = bom_obj.browse(cr, uid, bom_id, context)
-
-                if bom.routing_id and not context.get('exclude_routing', False):
-                    for wline in bom.routing_id.workcenter_lines:
-                        wc = wline.workcenter_id
-                        cycle = wline.cycle_nbr
-                        # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
-                        price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
-                price /= bom.product_qty
-                price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
-                if ENABLE_CACHE:
-                    _logger.debug(
-                        u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
-                res[product.id] = price
-            else:
-                # no BoM: use standard_price
-                # use standard_price if no supplier indicated
-
-                if product.id in self.product_cost_cache and ENABLE_CACHE and not context.get('partner_name', False):
-                    res[product.id] = self.product_cost_cache[product.id]
-                    continue
-
-                if product.prefered_supplier:
-                    pricelist = product.prefered_supplier.property_product_pricelist_purchase or False
-                    ctx = {
-                        'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                    }
-                    if context.get('partner_name', False):
-                        partner_name = context.get('partner_name')
-                        partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
-                        partner_id = partner_ids[0]
-                    else:
-                        partner_id = False
-                    price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, partner_id, context=ctx)[pricelist.id] or 0
-
-                    price_subtotal = 0.0
-                    if pricelist:
-                        from_currency = pricelist.currency_id.id
-                        to_currency = user.company_id.currency_id.id
-                        price_subtotal = self.pool['res.currency'].compute(
-                            cr, uid,
-                            from_currency_id=from_currency,
-                            to_currency_id=to_currency,
-                            from_amount=price,
-                            context=context
-                        )
-                    cost_price = price_subtotal or price or product.standard_price
-                else:
-                    cost_price = self._hook_compute_purchase_price_no_supplier(product)
-
-                res[product.id] = cost_price
-                if ENABLE_CACHE:
-                    _logger.debug(
-                        u'NO BOM [{product.default_code}] price = {price}'.format(product=product, price=cost_price))
-
-                if ENABLE_CACHE and not context.get('partner_name', False):
-                    self.product_cost_cache[product.id] = res[product.id]
-                continue
-
-        return res
+    # def _compute_purchase_price(self, cr, uid, ids,
+    #                             product_uom=None,
+    #                             bom_properties=None,
+    #                             context=None):
+    #     '''
+    #     Compute the purchase price, taking into account sub products and routing
+    #     '''
+    #
+    #     context = context or self.pool['res.users'].context_get(cr, uid)
+    #     bom_properties = bom_properties or []
+    #     user = self.pool['res.users'].browse(cr, uid, uid, context)
+    #
+    #     bom_obj = self.pool['mrp.bom']
+    #     uom_obj = self.pool['product.uom']
+    #
+    #     res = {}
+    #     ids = ids or []
+    #
+    #     for product in self.browse(cr, uid, ids, context):
+    #         if ENABLE_CACHE:
+    #             _logger.debug(u'[{product.default_code}] {product.name}'.format(product=product))
+    #         bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
+    #         if bom_id:
+    #             sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
+    #             sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
+    #
+    #             price = 0.
+    #             if ENABLE_CACHE:
+    #                 _logger.debug(u'[{product.default_code}] Start Explosion ========================'.format(product=product))
+    #             for sub_product in sub_products:
+    #                 if sub_product.product_id.id == product.id:
+    #                     error = "Product '{product.name}' (id: {product.id}) is referenced to itself".format(product=product)
+    #                     _logger.error(error)
+    #                     continue
+    #
+    #                 # std_price = sub_product.standard_price
+    #                 if ENABLE_CACHE:
+    #                     if sub_product.product_id.id in self.product_cost_cache:
+    #                         std_price = self.product_cost_cache[sub_product.product_id.id]
+    #                     else:
+    #                         std_price = sub_product.product_id.cost_price
+    #                         self.product_cost_cache[sub_product.product_id.id] = std_price
+    #                 else:
+    #                     std_price = sub_product.product_id.cost_price
+    #
+    #                 qty = uom_obj._compute_qty(cr, uid,
+    #                                            from_uom_id=sub_product.product_uom.id,
+    #                                            qty=sub_product.product_qty,
+    #                                            to_uom_id=sub_product.product_id.uom_po_id.id)
+    #                 if ENABLE_CACHE:
+    #                     _logger.debug(u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id, std_price=std_price, qty=qty))
+    #
+    #                 price += std_price * qty
+    #                 # if sub_product.routing_id:
+    #                 #     for wline in sub_product.routing_id.workcenter_lines:
+    #                 #         wc = wline.workcenter_id
+    #                 #         cycle = wline.cycle_nbr
+    #                 #         # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
+    #                 #         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
+    #
+    #             if sub_products:
+    #                 # Don't use browse when we already have it
+    #                 bom = sub_products[0].bom_id
+    #             else:
+    #                 bom = bom_obj.browse(cr, uid, bom_id, context)
+    #
+    #             if bom.routing_id and not context.get('exclude_routing', False):
+    #                 for wline in bom.routing_id.workcenter_lines:
+    #                     wc = wline.workcenter_id
+    #                     cycle = wline.cycle_nbr
+    #                     # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
+    #                     price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
+    #             price /= bom.product_qty
+    #             price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
+    #             if ENABLE_CACHE:
+    #                 _logger.debug(
+    #                     u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
+    #             res[product.id] = price
+    #         else:
+    #             # no BoM: use standard_price
+    #             # use standard_price if no supplier indicated
+    #
+    #             if product.id in self.product_cost_cache and ENABLE_CACHE and not context.get('partner_name', False):
+    #                 res[product.id] = self.product_cost_cache[product.id]
+    #                 continue
+    #
+    #             if product.prefered_supplier:
+    #                 pricelist = product.prefered_supplier.property_product_pricelist_purchase or False
+    #                 ctx = {
+    #                     'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+    #                 }
+    #                 if context.get('partner_name', False):
+    #                     partner_name = context.get('partner_name')
+    #                     partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
+    #                     partner_id = partner_ids[0]
+    #                 else:
+    #                     partner_id = False
+    #                 price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, partner_id, context=ctx)[pricelist.id] or 0
+    #
+    #                 price_subtotal = 0.0
+    #                 if pricelist:
+    #                     from_currency = pricelist.currency_id.id
+    #                     to_currency = user.company_id.currency_id.id
+    #                     price_subtotal = self.pool['res.currency'].compute(
+    #                         cr, uid,
+    #                         from_currency_id=from_currency,
+    #                         to_currency_id=to_currency,
+    #                         from_amount=price,
+    #                         context=context
+    #                     )
+    #                 cost_price = price_subtotal or price or product.standard_price
+    #             else:
+    #                 cost_price = self._hook_compute_purchase_price_no_supplier(product)
+    #
+    #             res[product.id] = cost_price
+    #             if ENABLE_CACHE:
+    #                 _logger.debug(
+    #                     u'NO BOM [{product.default_code}] price = {price}'.format(product=product, price=cost_price))
+    #
+    #             if ENABLE_CACHE and not context.get('partner_name', False):
+    #                 self.product_cost_cache[product.id] = res[product.id]
+    #             continue
+    #
+    #     return res
 
     def get_cost_field(self, cr, uid, ids, context=None):
         start_time = datetime.now()
@@ -420,13 +419,13 @@ class product_product(orm.Model):
             duration_seconds = (end_time - start_time)
             duration = '{sec}'.format(sec=duration_seconds)
             _logger.info(u'_cost_price_new get in {duration} for {qty} products'.format(duration=duration, qty=len(ids)))
-        else:
-            start_time = datetime.now()
-            res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties, context=ctx)
-            end_time = datetime.now()
-            duration_seconds = (end_time - start_time)
-            duration = '{sec}'.format(sec=duration_seconds)
-            _logger.info(u'_cost_price get in {duration} for {qty} products'.format(duration=duration, qty=len(ids)))
+        # else:
+        #     start_time = datetime.now()
+        #     res = self._compute_purchase_price(cr, uid, ids, product_uom, bom_properties, context=ctx)
+        #     end_time = datetime.now()
+        #     duration_seconds = (end_time - start_time)
+        #     duration = '{sec}'.format(sec=duration_seconds)
+        #     _logger.info(u'_cost_price get in {duration} for {qty} products'.format(duration=duration, qty=len(ids)))
 
         return res
 
