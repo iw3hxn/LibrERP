@@ -840,29 +840,27 @@ class product_product(orm.Model):
 
 
 # CANCEL CACHE IF SOMETHING CHANGE ON PRICELIST
+class product_pricelist_item(orm.Model):
 
-#
-# class product_pricelist_item(orm.Model):
-#
-#     _inherit = 'product.pricelist.item'
-#
-#     def create(self, cr, uid, vals, context=None):
-#         res = super(product_pricelist_item, self).create(cr, uid, vals, context)
-#         if ENABLE_CACHE:
-#             self.pool['product.product'].product_cost_cache.empty()
-#         return res
-#
-#     def write(self, cr, uid, ids, vals, context=None):
-#         res = super(product_pricelist_item, self).write(cr, uid, ids, vals, context)
-#         if ENABLE_CACHE:
-#             self.pool['product.product'].product_cost_cache.empty()
-#         return res
-#
-#     def unlink(self, cr, uid, ids, context=None):
-#         res = super(product_pricelist_item, self).unlink(cr, uid, ids, context)
-#         if ENABLE_CACHE:
-#             self.pool['product.product'].product_cost_cache.empty()
-#         return res
+    _inherit = 'product.pricelist.item'
+
+    def create(self, cr, uid, vals, context=None):
+        res = super(product_pricelist_item, self).create(cr, uid, vals, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache.empty()
+        return res
+
+    def write(self, cr, uid, ids, vals, context=None):
+        res = super(product_pricelist_item, self).write(cr, uid, ids, vals, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache.empty()
+        return res
+
+    def unlink(self, cr, uid, ids, context=None):
+        res = super(product_pricelist_item, self).unlink(cr, uid, ids, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache.empty()
+        return res
 
 
 # class pricelist_partnerinfo(orm.Model):
