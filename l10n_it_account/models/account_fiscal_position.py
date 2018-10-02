@@ -60,7 +60,11 @@ class account_fiscal_position(orm.Model):
             amount_untaxed = 0
             for invoice in account_invoice_obj.browse(cr, uid, invoice_ids, context):
                 amount_untaxed += invoice.amount_untaxed
-            value[dichirazione.id] = amount_untaxed
+            value[dichirazione.id] = {
+                'invoice_amount': amount_untaxed,
+                'account_invoice_ids': invoice_ids
+            }
+
         return value
     
     _columns = {
@@ -70,10 +74,12 @@ class account_fiscal_position(orm.Model):
         'no_check_vat': fields.boolean('No required VAT'),
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'number': fields.char('Numero Dichiarante', size=32),
+        'protocol': fields.char('Numero Protocollo', size=32),
         'date': fields.date('Data Dichiarazione'),
         'end_validity': fields.date('Fine Periodo Dichiarazione'),
         'amount': fields.float('Amount', digits_compute=dp.get_precision('Account')),
-        'invoice_amount': fields.function(_get_invoice_amount, string='Invoiced Amount', type='float', readonly=True, method=True, digits_compute=dp.get_precision('Account')),
+        'invoice_amount': fields.function(_get_invoice_amount, string='Invoiced Amount', type='float', readonly=True, method=True, multi='invoice_amount', digits_compute=dp.get_precision('Account')),
+        'account_invoice_ids': fields.function(_get_invoice_amount, string='Invoiced Amount', type='one2many', readonly=True, method=True, multi='invoice_amount', relation='account.invoice'),
         'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,)
     }
     

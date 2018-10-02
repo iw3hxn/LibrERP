@@ -40,43 +40,51 @@
             <field name="inherit_id" ref=""/>
             <field name="arch" type="xml">
                 <form string="Fiscal Position">
-                    <group colspan="4" col="6">
-                        <field name="name" select="1"/>
-                        <field name="partner_id_readonly" invisible="1"/>
-                        <field name="company_id" widget="selection" groups="base.group_multi_company"/>
-                        <field name="active" groups="base.group_extended"/>
-                        <field name="is_tax_exemption" invisible="1"/>
-                        <field name="partner_id" attrs="{'readonly':[('partner_id_readonly', '=', True)], 'required': [('is_tax_exemption', '=', True)]}"/>
-                        <field name="number"/>
-                        <field name="date"/>
-                        <field name="end_validity" attrs="{'required': [('is_tax_exemption', '=', True)]}"/>
-                        <field name="amount"/>
-                        <field name="invoice_amount"/>
-                    </group>
-                    <separator string="Mapping" colspan="4"/>
-                    <newline/>
-                    <field name="tax_ids" colspan="2" widget="one2many_list" nolabel="1">
-                        <tree string="Tax Mapping" editable="bottom">
-                            <field name="tax_src_id" domain="[('parent_id','=',False)]"/>
-                            <field name="tax_dest_id" domain="[('parent_id','=',False)]"/>
-                        </tree>
-                        <form string="Tax Mapping">
-                            <field name="tax_src_id" domain="[('parent_id','=',False)]"/>
-                            <field name="tax_dest_id" domain="[('parent_id','=',False)]"/>
-                        </form>
-                    </field>
-                    <field name="account_ids" colspan="2" widget="one2many_list" nolabel="1">
-                        <tree string="Account Mapping" editable="bottom">
-                            <field name="account_src_id"/>
-                            <field name="account_dest_id"/>
-                        </tree>
-                        <form string="Account Mapping">
-                            <field name="account_src_id"/>
-                            <field name="account_dest_id"/>
-                        </form>
-                    </field>
-                    <separator string="Notes" colspan="4"/>
-                    <field name="note" colspan="4" nolabel="1"/>
+                    <notebook colspan="4">
+                        <page string="Information">
+                            <group colspan="4" col="6">
+                                <field name="name" select="1"/>
+                                <field name="partner_id_readonly" invisible="1"/>
+                                <field name="company_id" widget="selection" groups="base.group_multi_company"/>
+                                <field name="active" groups="base.group_extended"/>
+                                <field name="is_tax_exemption" invisible="1"/>
+                                <field name="partner_id" attrs="{'readonly':[('partner_id_readonly', '=', True)], 'required': [('is_tax_exemption', '=', True)]}"/>
+                                <field name="number"/>
+                                <field name="protocol"/>
+                                <field name="amount"/>
+                                <field name="date"/>
+                                <field name="end_validity" attrs="{'required': [('is_tax_exemption', '=', True)]}"/>
+                                <field name="invoice_amount"/>
+                            </group>
+                            <separator string="Mapping" colspan="4"/>
+                            <newline/>
+                            <field name="tax_ids" colspan="2" widget="one2many_list" nolabel="1">
+                                <tree string="Tax Mapping" editable="bottom">
+                                    <field name="tax_src_id" domain="[('parent_id','=',False)]"/>
+                                    <field name="tax_dest_id" domain="[('parent_id','=',False)]"/>
+                                </tree>
+                                <form string="Tax Mapping">
+                                    <field name="tax_src_id" domain="[('parent_id','=',False)]"/>
+                                    <field name="tax_dest_id" domain="[('parent_id','=',False)]"/>
+                                </form>
+                            </field>
+                            <field name="account_ids" colspan="2" widget="one2many_list" nolabel="1">
+                                <tree string="Account Mapping" editable="bottom">
+                                    <field name="account_src_id"/>
+                                    <field name="account_dest_id"/>
+                                </tree>
+                                <form string="Account Mapping">
+                                    <field name="account_src_id"/>
+                                    <field name="account_dest_id"/>
+                                </form>
+                            </field>
+                            <separator string="Notes" colspan="4"/>
+                            <field name="note" colspan="4" nolabel="1"/>
+                        </page>
+                        <page string="Invoices" >
+                            <field name="account_invoice_ids" readonly="1" nolabel="1"/>
+                        </page>
+                    </notebook>
                 </form>
 
 

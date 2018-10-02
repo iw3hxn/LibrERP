@@ -10884,3 +10884,8 @@ msgstr "Campi obbligatori per l'emissione della fattura"
 #: field:check.account.invoice,message:0
 msgid "Message"
 msgstr "Messaggio"
+
+#. module: l10n_it_account
+#: view:account.fiscal.position:0
+msgid "Invoices"
+msgstr "Fatture"
