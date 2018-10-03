@@ -36,7 +36,8 @@
         'sale',
         'mrp',
         'product_manufacturer',
-        'core_extended'
+        'core_extended',
+        'res_users_helper_functions'
     ],
     "demo_xml": [],
     "update_xml": [
