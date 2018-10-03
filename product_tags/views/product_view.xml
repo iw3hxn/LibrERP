@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="product_product_tag_search_inherit" model="ir.ui.view">
+            <field name="name">product.product.tag.view.search</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="tag_ids" string="Tags" filter_domain="[('tag_ids','ilike',self)]"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_product_form_inherit" model="ir.ui.view">
+            <field name="name">product.product.view.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="tag_ids" widget="many2many_tags" placeholder="Tags..."/>
+                </field>
+            </field>
+        </record>
+
+		<!--  kanban view   -->
+
+       	<!--<record model="ir.ui.view" id="product_product_kanban">-->
+            <!--<field name="name">Product Product Tag Kanban</field>-->
+            <!--<field name="model">product.product</field>-->
+            <!--<field name="inherit_id" ref="product.product_kanban_view"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<div name="tags" position="inside">-->
+                    <!--<ul>-->
+                        <!--<li><field name="tag_ids"/></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</field>-->
+        <!--</record>-->
+        
+
+    </data>
+</openerp>
