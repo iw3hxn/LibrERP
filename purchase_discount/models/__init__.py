@@ -19,5 +19,6 @@
 ##############################################################################
 from . import inherit_purchase_order
 from . import inherit_purchase_order_line
+from . import inherit_stock_picking
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
