@@ -27,7 +27,6 @@ import decimal_precision as dp
 _logger = logging.getLogger(__name__)
 
 
-
 class purchase_order_line(orm.Model):
     _name = "purchase.order.line"
     _inherit = "purchase.order.line"
@@ -43,6 +42,7 @@ class purchase_order_line(orm.Model):
             item_obj = self.pool['product.pricelist.item']
             price_type_obj = self.pool['product.price.type']
             product_obj = self.pool['product.product']
+            product_uom_obj = self.pool['product.uom']
 
             product = product_obj.browse(cr, uid, product_id, context)
             price = product.cost_price
@@ -58,7 +58,15 @@ class purchase_order_line(orm.Model):
                     if context.get('partner_id', False):
                         for seller in product.seller_ids:
                             if seller.name.id == context['partner_id']:
-                                price = seller.pricelist_ids[0].price
+                                qty_in_seller_uom = qty
+                                seller_uom = seller.product_uom.id
+                                if uom != seller_uom:
+                                    qty_in_seller_uom = product_uom_obj._compute_qty(cr, uid, uom, qty, to_uom_id=seller_uom)
+
+                                for line in seller.pricelist_ids:
+                                    if line.min_quantity <= qty_in_seller_uom:
+                                        price = line.price
+                                        # price = seller.pricelist_ids[0].price
                     else:
                         price = product.seller_ids[0].pricelist_ids[0].price
                     # not supported:
@@ -67,7 +75,7 @@ class purchase_order_line(orm.Model):
             factor = 1.0
             if uom and uom != product.uom_id.id:
                 # the unit price is in a different uom
-                factor = self.pool['product.uom']._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
+                factor = product_uom_obj._compute_qty(cr, uid, uom, 1.0, product.uom_id.id)
             return price * factor
 
         if not context:
@@ -82,7 +90,7 @@ class purchase_order_line(orm.Model):
         pricelist_obj = self.pool['product.pricelist']
         product_obj = self.pool['product.product']
         
-        if product_id:
+        if product_id and pricelist_id:
             if result.get('price_unit', False):
                 price = result['price_unit']
             else:
@@ -92,18 +100,19 @@ class purchase_order_line(orm.Model):
             list_price = pricelist_obj.price_rule_get(cr, uid, [pricelist_id],
                     product.id, qty or 1.0, partner_id, {'uom': uom_id, 'date': date_order})
 
-            so_pricelist = pricelist_obj.browse(cr, uid, pricelist_id, context=context)
-
+            po_pricelist = pricelist_obj.browse(cr, uid, pricelist_id, context=context)
+            result['rules'] = list_price[pricelist_id][1]
             new_list_price = get_real_price(list_price, product_id, qty, uom, pricelist_id)
-            if so_pricelist.visible_discount and list_price[pricelist_id][0] != 0 and new_list_price != 0:
-                if product.company_id and so_pricelist.currency_id.id != product.company_id.currency_id.id:
+            if po_pricelist.visible_discount and list_price[pricelist_id][0] != 0 and new_list_price != 0:
+                if product.company_id and po_pricelist.currency_id.id != product.company_id.currency_id.id:
                     # new_list_price is in company's currency while price in pricelist currency
                     ctx = context.copy()
                     ctx['date'] = date_order
                     new_list_price = self.pool['res.currency'].compute(cr, uid,
                                                                        product.company_id.currency_id.id,
-                                                                       so_pricelist.currency_id.id,
+                                                                       po_pricelist.currency_id.id,
                                                                        new_list_price, context=ctx)
+
                 discount = (new_list_price - price) / new_list_price * 100
                 if discount >= 0:
                     result['price_unit'] = new_list_price
@@ -127,82 +136,6 @@ class purchase_order_line(orm.Model):
     _defaults = {
         'discount': lambda *a: 0.0,
     }
-
-
-class purchase_order(orm.Model):
-    _name = "purchase.order"
-    _inherit = "purchase.order"
-
-    def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
-        cur_obj = self.pool['res.currency']
-        for order in self.browse(cr, uid, ids, context=context):
-            res[order.id] = {
-                'amount_untaxed': 0.0,
-                'amount_tax': 0.0,
-                'amount_total': 0.0,
-            }
-            val = val1 = 0.0
-            cur = order.pricelist_id.currency_id
-            for line in order.order_line:
-                val1 += line.price_subtotal
-                for c in self.pool.get('account.tax').compute_all(cr, uid, line.taxes_id, line.price_unit * (
-                    1 - (line.discount or 0.0) / 100.0), line.product_qty, line.product_id, order.partner_id)['taxes']:
-                    val += c.get('amount', 0.0)
-            res[order.id]['amount_tax'] = cur_obj.round(cr, uid, cur, val)
-            res[order.id]['amount_untaxed'] = cur_obj.round(cr, uid, cur, val1)
-            res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] + res[order.id]['amount_tax']
-        return res
-
-    def _get_order(self, cr, uid, ids, context=None):
-        result = {}
-        for line in self.pool['purchase.order.line'].browse(cr, uid, ids, context=context):
-            result[line.order_id.id] = True
-        return result.keys()
-
-    _columns = {
-        'amount_untaxed': fields.function(_amount_all, digits_compute=dp.get_precision('Purchase Price'), string='Untaxed Amount',
-            store={
-                'purchase.order.line': (_get_order, None, 10),
-            }, multi="sums", help="The amount without tax"),
-        'amount_tax': fields.function(_amount_all, digits_compute=dp.get_precision('Purchase Price'), string='Taxes',
-            store={
-                'purchase.order.line': (_get_order, None, 10),
-            }, multi="sums", help="The tax amount"),
-        'amount_total': fields.function(_amount_all, digits_compute=dp.get_precision('Purchase Price'), string='Total',
-            store={
-                'purchase.order.line': (_get_order, None, 10),
-            }, multi="sums", help="The total amount"),
-    }
-
-    def _prepare_inv_line(self, cr, uid, account_id, order_line, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
-
-        res = super(purchase_order, self)._prepare_inv_line(cr, uid, account_id, order_line, context=context)
-        res.update({'discount': order_line.discount or 0.0,
-                    'price_unit': order_line.price_unit, })
-        return res
-
-    def _get_price_unit_invoice(self, cursor, user, move_line, type):
-
-        res = super(stock_picking, self)._get_price_unit_invoice(cursor, user, move_line, type)
-
-        if move_line.purchase_line_id:
-            res.update({'discount': move_line.purchase_line_id.discount or 0.0, })
-        return res
-
-
-class stock_picking(orm.Model):
-    _inherit = 'stock.picking'
-
-    def _invoice_line_hook(self, cr, uid, move_line, invoice_line_id):
-        if move_line.purchase_line_id:
-            self.pool['account.invoice.line'].write(cr, uid, [invoice_line_id], {
-                'discount': move_line.purchase_line_id.discount,
-                })
-        return super( stock_picking, self)._invoice_line_hook(cr, uid, move_line, invoice_line_id)
-
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

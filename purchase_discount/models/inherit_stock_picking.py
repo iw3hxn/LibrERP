@@ -19,20 +19,32 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-{
-    "name": "Purchase Order Lines With Discounts",
-    "author": "Tiny,Pexego",
-    "version": "1.0.3",
-    "category": "Generic Modules/Sales & Purchases",
-    'description': """ """,
-    "depends": [
-        "stock",
-        "purchase",
-        "product_visible_discount"
-    ],
-    "data": ["views/purchase_discount_view.xml"],
-    "active": False,
-    "installable": True
-}
+import logging
+
+from openerp.osv import orm, fields
+import decimal_precision as dp
+
+_logger = logging.getLogger(__name__)
+
+
+class stock_picking(orm.Model):
+    _inherit = 'stock.picking'
+
+    # def _invoice_line_hook(self, cr, uid, move_line, invoice_line_id):
+    #     if move_line.purchase_line_id:
+    #         self.pool['account.invoice.line'].write(cr, uid, [invoice_line_id], {
+    #             'discount': move_line.purchase_line_id.discount,
+    #             })
+    #     return super( stock_picking, self)._invoice_line_hook(cr, uid, move_line, invoice_line_id)
+
+    def _get_price_unit_invoice(self, cursor, user, move_line, type):
+
+        res = super(stock_picking, self)._get_price_unit_invoice(cursor, user, move_line, type)
+
+        if move_line.purchase_line_id:
+            res.update({'discount': move_line.purchase_line_id.discount or 0.0, })
+        return res
+
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

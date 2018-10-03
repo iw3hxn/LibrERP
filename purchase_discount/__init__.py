@@ -17,6 +17,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-import purchase_discount
+from . import models
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

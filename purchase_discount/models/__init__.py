@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #    
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
-#    Copyright (C) 2012 Pexego Sistemas Informáticos (<http://tiny.be>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,20 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-{
-    "name": "Purchase Order Lines With Discounts",
-    "author": "Tiny,Pexego",
-    "version": "1.0.3",
-    "category": "Generic Modules/Sales & Purchases",
-    'description': """ """,
-    "depends": [
-        "stock",
-        "purchase",
-        "product_visible_discount"
-    ],
-    "data": ["views/purchase_discount_view.xml"],
-    "active": False,
-    "installable": True
-}
+from . import inherit_purchase_order
+from . import inherit_purchase_order_line
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
