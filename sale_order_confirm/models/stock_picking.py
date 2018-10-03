@@ -24,34 +24,34 @@ from tools.translate import _
 
 
 class stock_picking(orm.Model):
-    """Modificamos la creación de factura desde albarán para incluir el comportamiento de comisiones"""
 
     _inherit = 'stock.picking'
 
-    def _invoice_hook(self, cr, uid, picking_browse, invoice_id):
+    def _prepare_invoice(self, cr, uid, picking, partner, inv_type, journal_id, context=None):
+        res = super(stock_picking, self)._prepare_invoice(cr, uid, picking, partner, inv_type, journal_id, context)
+        if not res.get('fiscal_position', False):
+            res['fiscal_position'] = partner.property_account_position and partner.property_account_position.id or False
+        if not res.get('payment_term', False):
+            res['payment_term'] = partner.property_payment_term and partner.property_payment_term.id or False
+
+        return res
+
+    def _invoice_hook(self, cr, uid, picking, invoice_id):
         '''Call after the creation of the invoice'''
-        res = super(stock_picking, self)._invoice_hook(cr, uid, picking_browse, invoice_id)
+        res = super(stock_picking, self)._invoice_hook(cr, uid, picking, invoice_id)
         context = self.pool['res.users'].context_get(cr, uid)
         account_invoice_obj = self.pool['account.invoice']
         account_invoice_line_obj = self.pool['account.invoice.line']
-        invoice = account_invoice_obj.browse(cr, uid, invoice_id, context)
-        picking = self.browse(cr, uid, picking_browse.id, context)
 
-        if not invoice.fiscal_position:
-            if invoice.partner_id.property_account_position:
-                invoice.write({'fiscal_position': invoice.partner_id.property_account_position.id})
-        if not invoice.payment_term:
-            if invoice.partner_id.property_payment_term:
-                invoice.write({'payment_term': invoice.partner_id.property_payment_term.id})
         if picking.sale_id:
             for invoice in picking.sale_id.invoice_ids:
                 if invoice.advance_order_id:
+                    note = _('Invoice {name}').format(name=invoice.number)
                     # here i need to check fiscal_position
                     if invoice.fiscal_position.split_invoice_advanced:
                         journal_ids = self.pool['account.journal'].search(cr, uid, [('type', '=', 'sale_refund')], limit=1, context=context)
                         journal_id = journal_ids and journal_ids[0] or False
                         new_invoice_id = account_invoice_obj.copy(cr, uid, invoice.id, {'type': 'out_refund', 'invoice_line': False, 'journal_id': journal_id}, context=context)
-                        note = _('Invoice {name}').format(name=invoice.number)
                         for line in invoice.invoice_line:
                             line_vals = {
                                 'invoice_id': new_invoice_id,
@@ -66,6 +66,7 @@ class stock_picking(orm.Model):
                                 'invoice_id': invoice_id,
                                 'price_unit': -line.price_unit,
                                 'sequence': 1000,
+                                'note': note
                             }
                             account_invoice_line_obj.copy(cr, uid, line.id, line_vals, context=context)
                         invoice.button_compute()
