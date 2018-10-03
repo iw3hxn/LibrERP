@@ -19,13 +19,17 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
-from openerp import tools
-import time
 import logging
+import time
+
+from openerp import tools
+from openerp.osv import orm, fields
+from openerp.tools.config import config
+from openerp.tools.translate import _
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
+ENABLE_CACHE = config.get('product_cache', False)
 
 
 class product_pricelist_item(orm.Model):
@@ -43,6 +47,24 @@ class product_pricelist_item(orm.Model):
 
 class product_pricelist(orm.Model):
     _inherit = 'product.pricelist'
+
+    def create(self, cr, uid, vals, context=None):
+        res = super(product_pricelist, self).create(cr, uid, vals, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache.empty()
+        return res
+
+    def write(self, cr, uid, ids, vals, context=None):
+        res = super(product_pricelist, self).write(cr, uid, ids, vals, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache.empty()
+        return res
+
+    def unlink(self, cr, uid, ids, context=None):
+        res = super(product_pricelist, self).unlink(cr, uid, ids, context)
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache.empty()
+        return res
 
     def _price_rule_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner, context=None):
         context = context or {}
@@ -185,7 +207,7 @@ class product_pricelist(orm.Model):
 
                 else:
                     if rule.base not in price_types:
-                        price_types[rule.base] = price_type_obj.browse(cr, uid, int(rule.base))
+                        price_types[rule.base] = price_type_obj.browse(cr, uid, int(rule.base), context)
                     price_type = price_types[rule.base]
 
                     # price_get returns the price in the context UoM, i.e. qty_uom_id
