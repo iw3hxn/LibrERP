@@ -71,6 +71,7 @@
         'views/res_request_link.xml',
         'views/account_invoice_view.xml',
         'views/crm_lost_reason.xml',
+        'views/product_pricelist_view.xml',
     ],
     "demo_xml": [],
     "installable": True,
