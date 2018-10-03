@@ -279,9 +279,11 @@ class stock_picking(orm.Model):
                               group=False, type='out_invoice', context=None):
         invoice_dict = super(stock_picking, self).action_invoice_create(cr, uid,
                                                                         ids, journal_id, group, type, context=context)
-
+        invoice_ids = []
         for picking_key in invoice_dict:
-            invoice = self.pool['account.invoice'].browse(cr, uid, invoice_dict[picking_key], context=context)
+            invoice_ids.append(invoice_dict[picking_key])
+
+        for invoice in self.pool['account.invoice'].browse(cr, uid, list(set(invoice_ids)), context=context):
             if not invoice.company_id.is_group_invoice_line:
                 continue
 
