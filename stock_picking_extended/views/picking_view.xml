@@ -333,7 +333,7 @@
                     <field name="state"/>
                     <button name="action_check_goods_ready" string="Check" type="object" icon="gtk-ok"
                             attrs="{'invisible': [('state', 'in', ['assigned', 'done'])]}"/>
-                    <field name="line_price_subtotal" sum="line_price_subtotal"/>
+                    <field name="line_price_subtotal" sum="line_price_subtotal" groups="base.group_sale_salesman"/>
                 </tree>
             </field>
         </record>
