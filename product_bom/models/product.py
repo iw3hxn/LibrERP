@@ -821,10 +821,10 @@ class product_product(orm.Model):
             for product_id in changed_product:
                 if int(product_id) in self.product_cost_cache:
                     del self.product_cost_cache[int(product_id)]
-            if CACHE_TYPE == 'redis':
-                ctx = context.copy()
-                ctx['product_ids'] = [int(product_id) for product_id in changed_product]
-                self.update_cache_price(cr, uid, context=ctx)
+            # if CACHE_TYPE == 'redis':
+            #     ctx = context.copy()
+            #     ctx['product_ids'] = [int(product_id) for product_id in changed_product]
+            #     self.update_cache_price(cr, uid, context=ctx)
 
         return res
 
