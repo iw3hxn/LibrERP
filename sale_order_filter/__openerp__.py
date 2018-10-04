@@ -24,7 +24,7 @@
 
 {
     "name": "Sale Order Filter",
-    "version": "3.2.1.3",
+    "version": "3.2.1.4",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Sale',

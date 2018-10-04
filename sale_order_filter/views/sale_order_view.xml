@@ -16,11 +16,15 @@
                         domain="[
                             '|',
                             '&amp;',
+                            '&amp;',
                             ('date_order', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')),
                             ('date_order', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')),
+                            ('state', 'not in', ('manual', 'progress', 'done')),
+                            '&amp;',
                             '&amp;',
                             ('date_confirm', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')),
-                            ('date_confirm', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))
+                            ('date_confirm', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')),
+                            ('state', 'in', ('manual', 'progress', 'done'))
                         ]"
                     />                    
                     <filter icon="terp-go-month"
@@ -30,11 +34,15 @@
                         domain="[
                             '|',
                             '&amp;',
+                            '&amp;',
                             ('date_order', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')),
                             ('date_order', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00')),
+                            ('state', 'not in', ('manual', 'progress', 'done')),
+                            '&amp;',
                             '&amp;',
                             ('date_confirm', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')),
-                            ('date_confirm', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))
+                            ('date_confirm', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00')),
+                            ('state', 'in', ('manual', 'progress', 'done')),
                         ]"
                     />
                     <separator orientation="vertical"/>
