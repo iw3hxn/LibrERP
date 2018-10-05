@@ -14,11 +14,12 @@ class StockMove(orm.Model):
     _index_name = 'stock_move_purchase_line_id_state_index'
 
     def _auto_init(self, cr, context={}):
-        super(StockMove, self)._auto_init(cr, context)
+        res = super(StockMove, self)._auto_init(cr, context)
         cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name,))
 
         if not cr.fetchone():
             cr.execute('CREATE INDEX {name} ON stock_move (purchase_line_id, state)'.format(name=self._index_name))
+        return res
 
     def _force_production_order(self, cr, uid, stock_move_ids, context):
         user = self.pool['res.users'].browse(cr, uid, uid, context)
