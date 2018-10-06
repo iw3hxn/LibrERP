@@ -54,7 +54,7 @@ class account_invoice_line(orm.Model):
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid, context=context)
-        if vals.get('discount', False):
+        if vals.get('discount', False) and not (context.get('active_model', False) == 'stock.picking'):
             if self.check_invoice_type(cr, uid, False, vals, context=context):
                 self.check_discount_constrains(cr, uid, False, vals, context=context)
         return super(account_invoice_line, self).create(cr, uid, vals, context=context)
@@ -64,7 +64,7 @@ class account_invoice_line(orm.Model):
             context = self.pool['res.users'].context_get(cr, uid, context=context)
         if not isinstance(ids, list):
             ids = [ids]
-        if vals.get('discount', False):
+        if vals.get('discount', False) and not (context.get('active_model', False) == 'stock.picking'):
             for line_id in ids:
                 if self.check_invoice_type(cr, uid, line_id, vals, context=context):
                     self.check_discount_constrains(cr, uid, line_id, vals, context=context)
