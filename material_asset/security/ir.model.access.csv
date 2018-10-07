@@ -1,6 +1,7 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "access_assets_manager_asset","asset.asset","model_asset_asset","group_assets_manager",1,1,1,1
 "access_assets_user_asset","asset.asset","model_asset_asset","group_assets_user",1,0,0,0
+"access_assets_group_partner_manager","asset.asset","model_asset_asset","base.group_partner_manager",1,0,0,0
 "access_assets_employee_asset","asset.asset","model_asset_asset","base.group_user",1,0,0,0
 "access_assets_manager_category","asset.category","model_asset_category","group_assets_manager",1,1,1,1
 "access_assets_user_category","asset.category","model_asset_category","group_assets_user",1,0,0,0
@@ -28,3 +29,4 @@
 "access_assets_user_use","asset.use","model_asset_use","group_assets_user",1,0,0,0
 "access_assets_user_use_employee","asset.use","model_asset_use","base.group_user",1,0,0,0
 "access_assets_location",asset.location.property","model_asset_location_property","base.group_user",1,0,0,0
+"access_assets_location_group_partner_manager","asset.location.property","model_asset_location_property","base.group_partner_manager",1,0,0,0

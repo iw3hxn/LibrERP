@@ -1,3 +1,4 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "read_pallet_move","pallet.move","model_pallet_move","",1,0,0,0
 "full_pallet_move","pallet.move","model_pallet_move","stock.view_pallet",1,1,1,1
+"access_model_product_ul_group_partner_manager","model_product_ul group_partner_manager","product.model_product_ul","base.group_partner_manager",1,0,0,0
