@@ -16,7 +16,7 @@
                     <field name="invoice_date" readonly="1"/>
                     <!--<field name="invoice_origin" readonly="1"/>-->
                     <field name="partner_id" string="Partner" readonly="1"/>
-                    <field name="partner_ref" readonly="1"/>
+                    <!--<field name="partner_ref" readonly="1"/>-->
                     <field name="payment_term_id" readonly="1"/>
                     <field name="payment_term_type" readonly="1"/>
                     <field name="bank_id" readonly="1"/>
@@ -41,7 +41,7 @@
             <field name="type">calendar</field>
             <field name="priority" eval="20"/>
             <field name="arch" type="xml">
-                <calendar string="Sales Orders" color="direction" date_start="date_maturity">
+                <calendar string="Payments Calendar" color="direction" date_start="date_maturity">
                     <field name="partner_id"/>
                     <field name="invoice_date"/>
                     <field name="residual"/>
