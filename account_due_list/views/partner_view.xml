@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <record id="res_partner_account_move_form" model="ir.ui.view">
+            <field name="name">res.partner.view.move.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Schedule" groups="account.group_account_invoice">
+                        <separator string="Schedule" colspan="4"/>
+                        <field name="payment_ids" nolabel="1" readonly="1"
+                               context="{'tree_view_ref': 'account_due_list.view_payments_tree'}">
+                            <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
+                                <field name="stored_invoice_id" readonly="1"/>
+                                <button name="action_view_invoice" string="Open Invoice" type="object"
+                                        icon="gtk-print"/>
+                                <field name="invoice_date" readonly="1"/>
+                                <!--<field name="invoice_origin" readonly="1"/>-->
+                                <field name="partner_id" string="Partner" readonly="1"/>
+                                <!--<field name="partner_ref" readonly="1"/>-->
+                                <field name="payment_term_id" readonly="1"/>
+                                <field name="payment_term_type" readonly="1"/>
+                                <field name="bank_id" readonly="1"/>
+                                <field name="account_id" readonly="1"/>
+                                <field name="debit" readonly="1" sum="Total Debit"
+                                       invisible="not context.get('payment_filter', False)"/>
+                                <field name="credit" readonly="1" sum="Total Credit"
+                                       invisible="not context.get('payment_filter', False)"/>
+                                <field name="residual" sum="Total Residual"/>
+                                <field name="date_maturity"/>
+                                <field name="move_id" readonly="1" invisible="context.get('reconciled',False)"/>
+                                <field name="reconcile_id" readonly="1" invisible="context.get('reconciled',False)"/>
+                                <field name="reconcile_partial_id" readonly="1"
+                                       invisible="context.get('reconciled',False)"/>
+                                <field name="day" invisible="1"/>
+                                <field name="company_id" invisible="1"/>
+                            </tree>
+
+                        </field>
+                    </page>
+                </notebook>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>

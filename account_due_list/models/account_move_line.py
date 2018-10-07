@@ -43,7 +43,6 @@ class account_move_line(orm.Model):
 
     _inherit = 'account.move.line'
 
-
     def _residual(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for line in self.read(cr, uid, ids, ['debit', 'credit'], context=context):
@@ -88,7 +87,7 @@ class account_move_line(orm.Model):
         invoice_pool = self.pool['account.invoice']
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            inv_ids = invoice_pool.search(cr, uid, [('move_id', '=', line.move_id.id)])
+            inv_ids = invoice_pool.search(cr, 1, [('move_id', '=', line.move_id.id)], context=context)
             if len(inv_ids) > 1:
                 raise orm.except_orm(_('Error'), _('Incongruent data: move %s has more than one invoice') % line.move_id.name)
             if inv_ids:

@@ -22,21 +22,26 @@
 
 
 {
-	'name': 'Partner Blacklist',
-	'version': '1.2',
-	'category': 'Generic Modules/Others',
-	'description': """
-	Aggiunge un campo per indicare i partner bloccati
-		""",
-	'author': 'Didotech SRL',
-	'website': 'www.didotech.com/',
-	'depends': ['base',
-                    'sale',
-                    'warning',], 
-	'init_xml': [],
-	'update_xml': ['partner_view.xml'],
-	'demo_xml': [],
-	'installable': True,
-	'active': False,
+    'name': 'Partner Blacklist and Color',
+    'version': '1.2',
+    'category': 'Generic Modules/Others',
+    'description': """
+	    Aggiunge un campo per indicare i partner bloccati
+	""",
+    'author': 'Didotech SRL',
+    'website': 'www.didotech.com/',
+    'depends': [
+        'base',
+        'sale',
+        'warning',
+        'account_due_list',
+        'res_users_helper_functions'
+    ],
+    'data': [
+        'views/partner_view.xml',
+        'security/security.xml'
+    ],
+    'demo_xml': [],
+    'installable': True,
+    'active': False,
 }
-

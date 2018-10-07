@@ -93,6 +93,7 @@ msgstr "Documento di origine"
 
 #. module: account_due_list
 #: model:ir.ui.menu,name:account_due_list.schedule
+#: view:res.partner:0
 msgid "Schedule"
 msgstr "Scadenzario Pagamenti"
 
