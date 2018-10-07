@@ -833,7 +833,7 @@ class product_product(orm.Model):
         group_obj = self.pool['res.groups']
         ret = super(product_product, self).fields_get(cr, uid, allfields=allfields, context=context)
 
-        if not group_obj.user_in_group(cr, uid, uid, 'product_bom.group_modify_product', context=context):
+        if not (group_obj.user_in_group(cr, uid, uid, 'product_bom.group_modify_product', context=context) or group_obj.user_in_group(cr, uid, uid, 'product_bom.group_create_product', context=context)):
             for fields in ret.keys():
                 ret[fields]['readonly'] = True
         return ret
