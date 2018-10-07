@@ -14,7 +14,7 @@
                             <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
                                 <field name="stored_invoice_id" readonly="1"/>
                                 <button name="action_view_invoice" string="Open Invoice" type="object"
-                                        icon="gtk-print"/>
+                                        icon="gtk-zoom-in"/>
                                 <field name="invoice_date" readonly="1"/>
                                 <!--<field name="invoice_origin" readonly="1"/>-->
                                 <field name="partner_id" string="Partner" readonly="1"/>
