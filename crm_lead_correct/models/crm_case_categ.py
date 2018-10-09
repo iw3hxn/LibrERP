@@ -51,7 +51,7 @@ class crm_case_categ(orm.Model):
         value = {}
         for categ in self.read(cr, uid, ids, ['color'], context):
             if categ['color']:
-                value[categ['id']] = categ.color
+                value[categ['id']] = categ['color']
             else:
                 value[categ['id']] = 'black'
 
