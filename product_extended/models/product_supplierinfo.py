@@ -21,12 +21,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import logging
 import time
 
 import decimal_precision as dp
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
 
 class product_supplierinfo(orm.Model):
@@ -49,18 +53,22 @@ class product_supplierinfo(orm.Model):
         }
         for supplier_cost in self.browse(cr, uid, ids, context):
             pricelist = supplier_cost.name.property_product_pricelist_purchase
-            price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], supplier_cost.product_id.id, 1, supplier_cost.name.id, context=ctx)[pricelist.id] or 0
-            if pricelist:
-                from_currency = pricelist.currency_id.id
-                to_currency = user.company_id.currency_id.id
-                price_subtotal = self.pool['res.currency'].compute(
-                    cr, uid,
-                    from_currency_id=from_currency,
-                    to_currency_id=to_currency,
-                    from_amount=price,
-                    context=context
-                )
-            result[supplier_cost.id] = price_subtotal or price or 0.0
+            if not pricelist:
+                _logger.error(u'Missing pricelist for supplier {supplier}'.format(supplier=supplier_cost.name.name))
+                result[supplier_cost.id] = 0.0
+            else:
+                price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], supplier_cost.product_id.id, 1, supplier_cost.name.id, context=ctx)[pricelist.id] or 0
+                if pricelist:
+                    from_currency = pricelist.currency_id.id
+                    to_currency = user.company_id.currency_id.id
+                    price_subtotal = self.pool['res.currency'].compute(
+                        cr, uid,
+                        from_currency_id=from_currency,
+                        to_currency_id=to_currency,
+                        from_amount=price,
+                        context=context
+                    )
+                result[supplier_cost.id] = price_subtotal or price or 0.0
         return result
 
     def _last_order(self, cr, uid, ids, name, arg, context):
