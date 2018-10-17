@@ -40,8 +40,7 @@ class sale_order(orm.Model):
             if order['project_id']:
                 project_ids = project_obj.search(cr, uid, [('analytic_account_id', '=', order['project_id'][0])], context=context)
                 if project_ids:
-                    project = project_obj.read(cr, uid, project_ids[0], ['name'], context)
-                    result[order['id']] = (project['id'], project['name'])
+                    result[order['id']] = project_obj.name_get(cr, uid, project_ids, context)[0]
                 else:
                     result[order['id']] = False
             else:
