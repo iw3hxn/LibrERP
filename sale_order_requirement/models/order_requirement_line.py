@@ -1096,7 +1096,12 @@ class order_requirement_line(orm.Model):
             # Create manufacturing order
             mrp_production_id = mrp_production_obj.create(cr, uid, mrp_production_values, context=context)
 
-        mrp_production_obj.action_compute(cr, uid, mrp_production_id, context=context)
+        if isinstance(mrp_production_id, (int, long)):
+            mrp_production_ids = [mrp_production_id]
+        else:
+            mrp_production_ids = mrp_production_id
+
+        mrp_production_obj.action_compute(cr, uid, mrp_production_ids, context=context)
         temp_mrp_bom_obj.write(cr, uid, temp.id, {'mrp_production_id': mrp_production_id}, context)
         return True
 
