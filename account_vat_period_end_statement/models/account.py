@@ -468,7 +468,7 @@ class account_vat_period_end_statement(orm.Model):
                 'journal_id': statement.journal_id.id,
                 'period_id': period_ids[0],
             }
-            move_id = move_obj.create(cr, uid, move_data)
+            move_id = move_obj.create(cr, uid, move_data, context)
             statement.write({'move_id': move_id})
 
             for debit_line in statement.debit_vat_account_line_ids:
@@ -488,7 +488,10 @@ class account_vat_period_end_statement(orm.Model):
                         debit_vat_data['debit'] = math.fabs(debit_line.amount)
                     else:
                         debit_vat_data['credit'] = math.fabs(debit_line.amount)
-                    line_obj.create(cr, uid, debit_vat_data)
+                    if not debit_vat_data.get('account_id', False):
+                        raise orm.except_orm(_('Error'), _(
+                            "No Account for line {line}".format(line=debit_line.base_code_id.name)))
+                    line_obj.create(cr, uid, debit_vat_data, context)
 
             for credit_line in statement.credit_vat_account_line_ids:
                 if credit_line.amount != 0.0:
@@ -871,6 +874,7 @@ class account_vat_period_end_statement(orm.Model):
                                    'message':'Fiscal code len must be 11 or 16'}
                 }
             else:
+                fiscalcode = fiscalcode.upper()
                 chk = codicefiscale.control_code(fiscalcode[0:15])
                 if chk != fiscalcode[15]:
                     value = fiscalcode[0:15] + chk
