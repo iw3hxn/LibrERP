@@ -51,9 +51,40 @@ class Parser(report_sxw.rml_parse):
             'get_full_delivery': self._get_full_delivery,
             'today': self._get_today,
             'raggruppa_righe_prodotto': self._raggruppa_righe_prodotto,
+            'spese_incasso': self._get_spese_incasso,
+            'delivery_cost': self._get_delivery_cost,
         })
         self.context = context
         self.product_line = {}
+        self.delivery_cost = False
+        self.spese_incasso = False
+
+    def _get_spese_incasso(self, lines):
+        if self.spese_incasso:
+            return self.spese_incasso
+        excluse_product_ids = self.pool['account.payment.term'].get_product_incasso(self.cr, self.uid, self.context)
+        spese_incasso = 0.0
+        for line in lines:
+            if line.product_id and line.product_id.id in excluse_product_ids:
+                spese_incasso += line.price_subtotal
+        self.spese_incasso = spese_incasso
+        return spese_incasso
+
+    def _get_delivery_cost(self, order_line):
+        if self.delivery_cost:
+            return self.delivery_cost
+
+        delivery_product = []
+        delivery_ids = self.pool['delivery.carrier'].search(self.cr, self.uid, [('product_id', '!=', False)], context=self.context)
+        for delivery in self.pool['delivery.carrier'].browse(self.cr, self.uid, delivery_ids, self.context):
+            if delivery.product_id.id not in delivery_product:
+                delivery_product.append(delivery.product_id.id)
+        delivery_cost = 0
+        for line in order_line:
+            if line.product_id and line.product_id.id in delivery_product:
+                delivery_cost += line.price_unit
+        self.delivery_cost = delivery_cost
+        return delivery_cost
 
     def _get_today(self):
         today = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
