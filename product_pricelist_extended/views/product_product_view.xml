@@ -1,0 +1,52 @@
+<openerp>
+    <data>
+
+        <record id="product_product_code_form_view" model="ir.ui.view">
+            <field name="name">product.product.code.form</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="priority">1</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+
+                <page string="Suppliers" position="after">
+
+                    <page string="Customer" groups="product_bom.group_sell_price" attrs="{'invisible':[('sale_ok', '=', False)]}">
+
+                        <field colspan="4" name="generic_pricelist_ids" nolabel="1" context="{'product_id': id, 'form_view_ref': 'profile_giolo.product_pricelist_version_simply_form_view'}" readonly="1">
+                            <tree string="Customs Rate List" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                <field name="row_color" invisible="1"/>
+                                <field name="pricelist_id" />
+                                <field name="name"/>
+                                <field name="pricelist_rule_id" />
+                                <field name="price" />
+                                <field name="price_error" />
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                            </tree>
+
+                        </field>
+
+                        <field colspan="4" name="partner_pricelist_ids" nolabel="1" context="{'product_id': id, 'form_view_ref': 'profile_giolo.product_pricelist_version_simply_form_view'}" readonly="1">
+                            <tree string="Customs Rate List" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
+                                <field name="row_color" invisible="1"/>
+                                <field name="pricelist_id" />
+                                <field name="partner_id"/>
+                                <field name="pricelist_rule_id" />
+                                <field name="price" />
+                                <field name="price_error" />
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                            </tree>
+
+                        </field>
+                    </page>
+                </page>
+
+            </field>
+        </record>
+
+        <delete id="point_of_sale.product_normal_form_pos_view" model="ir.ui.view"/>
+
+    </data>
+</openerp>

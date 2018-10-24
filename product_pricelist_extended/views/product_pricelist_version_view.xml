@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="product_pricelist_version_tree_view">
+            <field name="name">product.pricelist.version.tree</field>
+            <field name="model">product.pricelist.version</field>
+            <field name="inherit_id" ref="product.product_pricelist_version_tree_view"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="pricelist_id" position="before">
+                    <field name="partner_id"/>
+                    <field name="type"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_pricelist_version_view_search">
+            <field name="name">product.pricelist.search</field>
+            <field name="model">product.pricelist.version</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Products Listprices Version">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="pricelist_id"/>
+                    <field name="type"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <newline/>
+                    <group expand="0" string="Group by..." groups="base.group_extended">
+                        <filter string="Pricelist" icon="terp-stock_symbol-selection" domain="[]"
+                                context="{'group_by' : 'pricelist_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="product_pricelist_version_simply_form_view" model="ir.ui.view">
+            <field name="name">product.pricelist.version.form</field>
+            <field name="model">product.pricelist.version</field>
+            <field name="priority">1000</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Pricelist Version">
+                    <group col="4" colspan="4">
+                        <field name="price"/>
+                        <field name="price_error" invisible="1"/>
+                        <field name="pricelist_rule_id" attrs="{'invisible': [('price_error','!=', False)]}"/>
+                        <field name="date_start" select="1"/>
+                        <field name="date_end" select="1"/>
+                    </group>
+                    <group col="4" colspan="4">
+                        <field name="partner_ids" nolabel="1" colspan="4"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

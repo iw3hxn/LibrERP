@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="product_pricelist_view_form">
+            <field name="name">product.pricelist.form</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <field name="type" position="attributes">
+                    <attribute name="on_change">onchange_type(type, context)</attribute>
+                </field>
+                <field name="currency_id" position="before">
+                    <field name="partner_id"/>
+                </field>
+                <field name="version_id" position="after">
+                    <field name="partner_ids" colspan="4" nolabel="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_pricelist_view_tree">
+            <field name="name">product.pricelist.tree</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="partner_id"/>
+                    <field name="partner_num"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_pricelist_view_search">
+            <field name="name">product.pricelist.tree</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view_search"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="partner_id"/>
+                </field>
+            </field>
+        </record>
+
+
+        <!--<record id="action_view_shopping_list" model="ir.actions.act_window">-->
+            <!--<field name="name">Shopping List</field>-->
+            <!--<field name="res_model">pos.order</field>-->
+            <!--<field name="context">{'nodelete': '1', 'noduplicate': '1', 'default_pos_order_type': 2}</field>-->
+            <!--<field name="domain">[('pos_order_type','=',2)]</field>-->
+            <!--<field name="search_view_id" ref="view_pos_order_filter"/>-->
+        <!--</record>-->
+
+        <!--<record id="actwindow_view_shopping_list_tree" model="ir.actions.act_window.view">-->
+            <!--<field eval="1" name="sequence"/>-->
+            <!--<field name="view_mode">tree</field>-->
+            <!--<field name="view_id" ref="action_view_shopping_list_tree"/>-->
+            <!--<field name="act_window_id" ref="action_view_shopping_list"/>-->
+        <!--</record>-->
+
+        <!--<record id="actwindow_view_shopping_list_form" model="ir.actions.act_window.view">-->
+            <!--<field eval="2" name="sequence"/>-->
+            <!--<field name="view_mode">form</field>-->
+            <!--<field name="view_id" ref="action_view_shopping_list_form"/>-->
+            <!--<field name="act_window_id" ref="action_view_shopping_list"/>-->
+        <!--</record>-->
+
+        <!--<menuitem name="Shopping List" action="action_view_shopping_list" id="menu_view_shopping_list"-->
+                  <!--parent="point_of_sale.menu_point_of_sale" sequence="3"/>-->
+
+
+    </data>
+</openerp>

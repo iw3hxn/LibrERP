@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="product_pricelist_item_tree_view">
+            <field name="name">product.pricelist.item.tree</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="type">tree</field>
+            <field name="priority">1000</field>
+            <field name="arch" type="xml">
+                <tree string="Products Listprices Items" editable="top">
+                    <field name="partner_id" readonly="1"/>
+                    <field name="type" readonly="1"/>
+                    <field name="price_version_id" />
+                    <field name="name" select="1"/>
+                    <field name="product_id" on_change="product_id_change(product_id)" select="1"/>
+                    <field name="product_tmpl_id" select="1" groups="product.group_product_variant"/>
+                    <field name="categ_id" select="1"/>
+                    <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                    <field name="min_quantity"/>
+                    <field name="sequence"/>
+                    <field name="base"/>
+                    <field name="base_pricelist_id" attrs="{'required': [('base','=', -1)], 'readonly': [('base','!=', -1)]}"/>
+                    <field name="string_discount" on_change="Calcolo_Sconto(string_discount)"/>
+                    <field name="price_discount" nolabel="1" attrs="{'readonly': [('base','==', -3)]}"/>
+                    <field name="price_surcharge" nolabel="1" attrs="{'readonly': [('base','==', -3)]}"/>
+                    <field name="price_round" string="Rounding Method" attrs="{'readonly': [('base','==', -3)]}"/>
+                    <field name="price_min_margin" string="Min. Margin" attrs="{'readonly': [('base','==', -3)]}"/>
+                    <field name="price_max_margin" string="Max. Margin" attrs="{'readonly': [('base','==', -3)]}"/>
+                    <field name="fixed_price" colspan="3" attrs="{'readonly': [('base','!=', -3)]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_pricelist_item_search_view">
+            <field name="name">product.pricelist.item.search</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Products Listprices Items">
+                    <field name="price_version_id" />
+                    <field name="sequence"/>
+                    <field colspan="4" name="name" select="1"/>
+                    <field name="product_id"/>
+                    <field name="product_tmpl_id" select="1" groups="product.group_product_variant"/>
+                    <field name="categ_id" select="1"/>
+                    <field name="min_quantity"/>
+                    <field name="base"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_product_pricelist_item" model="ir.actions.act_window">
+            <field name="name">Products Listprices Items</field>
+            <field name="res_model">product.pricelist.item</field>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+            <field name="search_view_id" ref="product_pricelist_item_search_view"/>
+        </record>
+
+        <record id="actwindow_view_pricelist_item_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="product_pricelist_item_tree_view"/>
+            <field name="act_window_id" ref="action_product_pricelist_item"/>
+        </record>
+
+        <menuitem name="Products Listprices Items" action="action_product_pricelist_item" id="menu_product_pricelist_item"
+                  parent="product.menu_product_pricelist_main" sequence="3"/>
+
+
+    </data>
+</openerp>
