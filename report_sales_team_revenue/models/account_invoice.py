@@ -36,7 +36,8 @@ class account_invoice(orm.Model):
                                       required=[('type', 'in', ['out_invoice', 'out_refund'])]),
     }
 
-    def create(self, cr, uid, vals, context):
+    def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # NEED TO BE SURE TO HAVE SALES TEAM WITH VALUE
         if not vals.get('section_id', False) and vals.get('type') in ['out_invoice', 'out_refund']:
             section = self.pool['res.partner'].browse(cr, uid, vals.get('partner_id'), context).section_id
