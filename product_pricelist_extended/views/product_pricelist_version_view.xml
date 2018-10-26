@@ -39,7 +39,7 @@
         <record id="product_pricelist_version_simply_form_view" model="ir.ui.view">
             <field name="name">product.pricelist.version.form</field>
             <field name="model">product.pricelist.version</field>
-            <field name="priority">1000</field>
+            <field name="priority">1</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Pricelist Version">

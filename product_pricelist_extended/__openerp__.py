@@ -2,6 +2,7 @@
 
 {
     'name': 'Product Pricelist Extended',
+    'version': "3.0.0.0",
     'author': "Didotech SRL",
     'website': "http://www.didotech.com",
     'category': 'Sales Management',
