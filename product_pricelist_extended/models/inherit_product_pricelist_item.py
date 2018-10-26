@@ -46,7 +46,7 @@ class ProductPricelistItem(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         for id in ids:
             if int(id) in self.product_cost_cache:
-                del self.product_cost_cache[int(id)]
+                del self._name_get[int(id)]
         return super(ProductPricelistItem, self).write(cr, uid, ids, vals, context)
 
     def name_get(self, cr, uid, ids, context=None):
@@ -58,8 +58,9 @@ class ProductPricelistItem(orm.Model):
         for id in ids:
             if id in self._name_get:
                 res.append((id, self._name_get[id]))
-                continue
-            new_ids.append(id)
+                _logger.debug('Returning from cache')
+            else:
+                new_ids.append(id)
 
         for rule in self.read(cr, uid, new_ids, ['product_id', 'categ_id', 'base', 'base_pricelist_id', 'string_discount', 'fixed_price'], context=context):
             name = u''
