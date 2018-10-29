@@ -34,10 +34,7 @@ class account_invoice(orm.Model):
 
     # copy from account/account_invoice.py
     def _get_invoice_line(self, cr, uid, ids, context=None):
-        result = {}
-        for line in self.pool['account.invoice.line'].browse(cr, uid, ids, context=context):
-            result[line.invoice_id.id] = True
-        return result.keys()
+        return self.pool['account.invoice'].search(cr, uid, [('invoice_line', 'in', ids)], context=context)
 
     def _get_invoice_tax(self, cr, uid, ids, context=None):
         result = {}

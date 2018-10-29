@@ -36,8 +36,8 @@
             </field>
         </record>
 
-        <record id="view_account_invoice_fiscal_position_form" model="ir.ui.view">
-            <field name="name">view.account.invoice.fiscal.position.form</field>
+        <record id="account_invoice_fiscal_position_form" model="ir.ui.view">
+            <field name="name">account.invoice.fiscal.position.form</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
@@ -65,6 +65,22 @@
                 </data>
             </field>
         </record>
+
+
+        <record id="view_account_invoice_fiscal_position_form" model="ir.ui.view">
+            <field name="name">view.account.invoice.fiscal.position.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account_invoice_extended.account_invoice_form_onchange_fiscal_position"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="fiscal_position" position="attributes" >
+                        <attribute name="domain">['|', ('partner_id', '=', False), ('partner_id', '=', partner_id)]</attribute>
+                    </field>
+                </data>
+            </field>
+        </record>
+
+
 
         <!--re-create invoice line for supplier invoice-->
         <record id="view_invoice_line_form_supplier" model="ir.ui.view">
