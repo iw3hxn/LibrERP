@@ -43,4 +43,3 @@ class account_invoice_maturity_preview_lines(orm.TransientModel):
         'pay_overv_currency': fields.function(_get_void,
                                   type="char", string="Currency"),
     }
-

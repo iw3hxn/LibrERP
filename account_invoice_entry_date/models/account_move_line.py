@@ -27,20 +27,21 @@ from tools.translate import _
 
 class account_move_line(orm.Model):
     _inherit = 'account.move.line'
-    
+
     def _maturity_amount(self, cr, uid, ids, field_names, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context):
-            if 'maturity_currency' in field_names:
-                res[line.id] = line.currency_id and line.currency_id.symbol or line.company_id and line.company_id.currency_id.symbol
-            if 'maturity_debit' in field_names:
-                res[line.id] = line.amount_currency or line.debit or ''
+            res[line.id] = {
+                'maturity_currency': line.currency_id and line.currency_id.symbol or line.company_id and line.company_id.currency_id.symbol or '',
+                'maturity_debit': line.amount_currency or line.debit or '',
+            }
+
         return res
     
     _columns = {
         'maturity_currency': fields.function(
-            _maturity_amount, type="char", store=False, string="Currency", method=True),
+            _maturity_amount, type="char", store=False, string="Currency", method=True, multi='maturity_amount'),
         'maturity_debit': fields.function(
-            _maturity_amount, type="float", store=False, method=True)
+            _maturity_amount, type="float", store=False, method=True, multi='maturity_amount')
     }

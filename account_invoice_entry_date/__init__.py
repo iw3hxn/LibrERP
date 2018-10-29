@@ -19,6 +19,4 @@
 #
 ##############################################################################
 
-from . import invoice
-from . import account_move_line
-from . import account_invoice_maturity_preview_lines
+from . import models
