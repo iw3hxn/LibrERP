@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<openerp>
+    <data>
+        
+        <record id="view_product_product_bom_inh_cost" model="ir.ui.view">
+            <field name="name">product.product.bom.inh.cost</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product_bom.product_get_cost_field_form"/>
+            <field name="arch" type="xml">
+                <!--<field name="type" position="after">-->
+                    <!--<field name="cost_price" groups="product_bom.group_cost_price" />-->
+                <!--</field>-->
+                <xpath expr="//field[@name='bom_lines']//tree//field[@name='type']" position="after">
+                    <field name="cost_price" groups="product_bom.group_cost_price" />
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -557,13 +557,11 @@ class product_product(orm.Model):
         duration = '{sec}'.format(sec=duration_seconds)
         _logger.info(u'_product_available get in {duration}'.format(duration=duration))
         return res
-    
+
     def _get_boms(self, cr, uid, ids, field_name, arg, context):
         result = {}
-        
         for product_id in ids:
             result[product_id] = self.pool['mrp.bom'].search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
-        
         return result
 
     def _get_prefered_supplier(self, cr, uid, ids, field_name, arg, context):
