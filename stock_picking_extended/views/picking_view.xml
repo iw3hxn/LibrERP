@@ -370,7 +370,7 @@
         </record>
 
         <record id="action_view_stock_move" model="ir.actions.act_window">
-            <field name="domain">[('picking_id.sale_id', '!=', False), ('picking_id.state', '!=', 'cancel'), ('picking_id.type', '=', 'out'), ('picking_id.ddt_number', '=', False)]</field>
+            <field name="domain">[('product_id.type', '!=', 'service'), ('picking_id.sale_id', '!=', False), ('picking_id.state', 'not in', ('cancel', 'done')), ('picking_id.type', '=', 'out'), ('picking_id.ddt_number', '=', False)]</field>
             <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1', 'order': 'minimum_planned_date desc'}</field>
             <field name="name">Line Order Board</field>
             <field name="res_model">stock.move</field>
