@@ -473,6 +473,9 @@ class product_product(orm.Model):
                 'virtual': 'virtual_available',
                 'immediately': 'immediately_usable_qty'}
 
+    # from profilehooks import profile
+    # @profile(immediate=True)
+
     def _compute_bom_stock(self, cr, uid, product,
                            quantities, company, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -541,7 +544,16 @@ class product_product(orm.Model):
             field_names.append('immediately_usable_qty')
             field_names.append('virtual_available')
 
-        res = super(product_product, self)._product_available(cr, uid, ids, field_names, arg, context)
+        res = {}
+        for product_id in ids:
+            res[product_id] = {}.fromkeys(field_names, 0.0)
+        #todo think a mode to be parametric
+        if False:
+            product_stock_ids = self.search(cr, uid, [('id', 'in', ids), ('type', 'not in', ['consu', 'service'])], context=context)
+        else:
+            product_stock_ids = ids
+        if product_stock_ids:  # if product_stock_ids is [] get_product_available on stock search for all product
+            res.update(super(product_product, self)._product_available(cr, uid, product_stock_ids, field_names, arg, context))
 
         if 'bom_stock' in field_names:
             company = user_obj.browse(cr, uid, uid, context=context).company_id
