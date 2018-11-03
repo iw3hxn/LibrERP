@@ -34,6 +34,21 @@ class sale_order_line(orm.Model):
     _defaults = {
         'with_bom': False,
     }
+
+    def _get_mrp_bom_value(self, cr, uid, ids, bom_line, price_unit, sequence, context=None):
+
+        line_bom = {
+            'parent_id': False,
+            'product_id': bom_line.product_id.id,
+            'product_uom_qty': bom_line.product_qty,
+            'product_uom': bom_line.product_uom.id,
+            'price_unit': price_unit,
+            'price_subtotal': bom_line.product_qty * price_unit,
+            'sequence': sequence,
+        }
+        if ids and len(ids) == 1:
+            line_bom['order_id'] = ids[0]
+        return line_bom
     
     def product_id_change(self, cr, uid, ids, pricelist, product_id, qty=0,
                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
@@ -62,32 +77,17 @@ class sale_order_line(orm.Model):
                                                                                          bom_sub_line.product_id.uom_id.id,
                                                                                          bom_sub_line.product_id.cost_price,
                                                                                          bom_sub_line.product_uom.id)
-                                    line_bom = {
+
+                                    line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_sub_line, price_unit, sequence, context)
+                                    line_bom.update({
                                         'parent_id': bom_line.product_id.id,
-                                        'product_id': bom_sub_line.product_id.id,
-                                        'product_uom_qty': bom_sub_line.product_qty,
-                                        'product_uom': bom_sub_line.product_uom.id,
-                                        'price_unit': price_unit,
-                                        'price_subtotal': bom_sub_line.product_qty * price_unit,
-                                        'sequence': sequence,
-                                    }
-                                    if ids and len(ids) == 1:
-                                        line_bom['order_id'] = ids[0]
+                                    })
                                     result['value']['mrp_bom'].append(line_bom)
                             else:
                                 sequence += 1
                                 price_unit = self.pool['product.uom']._compute_price(cr, uid, bom_line.product_id.uom_id.id, bom_line.product_id.cost_price, bom_line.product_uom.id)
-                                line_bom = {
-                                    'parent_id': False,
-                                    'product_id': bom_line.product_id.id,
-                                    'product_uom_qty': bom_line.product_qty,
-                                    'product_uom': bom_line.product_uom.id,
-                                    'price_unit': price_unit,
-                                    'price_subtotal': bom_line.product_qty * price_unit,
-                                    'sequence': sequence,
-                                }
-                                if ids and len(ids) == 1:
-                                    line_bom['order_id'] = ids[0]
+                                line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_line, price_unit, sequence, context)
+
                                 result['value']['mrp_bom'].append(line_bom)
             else:
                 result['value']['with_bom'] = False
