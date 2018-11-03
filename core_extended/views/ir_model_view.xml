@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="ir_model_view_rules" model="ir.ui.view">
+            <field name="name">ir_model_view_rules</field>
+            <field name="model">ir.model</field>
+            <field name="inherit_id" ref="base.view_model_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+
+                <page string="Views" position="after">
+                    <page string="Rules">
+                        <field name="ir_rules_ids" nolabel="1"/>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+
+
+    </data>
+</openerp>
