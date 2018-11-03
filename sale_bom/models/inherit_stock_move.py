@@ -37,7 +37,7 @@ class StockMove(orm.Model):
             location_dest_id = move.picking_id.partner_id.property_stock_customer.id
         move_obj = self.pool['stock.move']
         processed_ids = [move.id]
-        if move.sale_line_id and move.sale_line_id.with_bom:
+        if move.sale_line_id and move.sale_line_id._columns.get('with_bom', False) and move.sale_line_id.with_bom:
             if move.sale_line_id.product_id.bom_lines and move.sale_line_id.product_id.bom_lines[0].type == 'normal':
                 return processed_ids
             factor = move.product_qty
