@@ -27,7 +27,7 @@ class stock_picking(orm.Model):
     _inherit = "stock.picking"
     _columns = {
         'ddt_number': fields.char('DDT', size=64),
-        'ddt_date': fields.date('DDT date'),
+        'ddt_date': fields.date('DDT date', states={'done': [('readonly', True)]}),
         'ddt_in_reference': fields.char('In DDT', size=32),
         'ddt_in_date': fields.date('In DDT Date'),
         'cig': fields.char('CIG', size=64, help="Codice identificativo di gara"),
