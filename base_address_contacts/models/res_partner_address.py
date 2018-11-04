@@ -156,8 +156,8 @@ class res_partner_address(orm.Model):
                     if re.name and (re.city or re.country_id):
                         addr += ', '
             addr += (re.city or '') + ', ' + (re.street or '')
-            if re.partner_id and context.get('contact_display', False) == 'partner_address':
-                addr = "%s: %s" % (re.partner_id.name, addr.strip())
+            if re.partner_id and context.get('contact_display', False) in ['partner_address', 'partner']:
+                addr = "%s: %s" % (re.partner_id.name.upper(), addr.strip())
                 # addr = re.partner_id.name + ': ' + addr
             else:
                 addr = addr.strip()
@@ -194,7 +194,7 @@ class res_partner_address(orm.Model):
             search_domain.append(('complete_name', operator, n))
 
         ids = self.search(cr, uid, search_domain + args, limit=limit, context=context)
-        context['contact_display'] = 'partner_address'
+        # context['contact_display'] = 'partner_address'
         return self.name_get(cr, uid, ids, context=context)
 
     _columns = {
