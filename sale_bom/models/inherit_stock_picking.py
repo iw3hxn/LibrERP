@@ -43,7 +43,7 @@ class stock_picking(orm.Model):
                 continue
 
             for line in invoice.invoice_line:
-                if line.move_line_id and line.move_line_id.sale_line_id and line.move_line_id.sale_line_id.mrp_bom:
+                if line.move_line_id and line.move_line_id.sale_line_id and line.move_line_id.sale_line_id._columns.get('mrp_bom', False) and line.move_line_id.sale_line_id.mrp_bom:
 
                     qty_delivery = 0
                     for bom_line in line.move_line_id.sale_line_id.mrp_bom:
