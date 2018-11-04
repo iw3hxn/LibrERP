@@ -3251,7 +3251,7 @@ msgstr "Condizioni"
 #. module: account
 #: field:account.bank.statement,total_entry_encoding:0
 msgid "Cash Transaction"
-msgstr "Transazione in contanti"
+msgstr "Transazioni Registrata"
 
 #. module: account
 #: view:res.partner:0
