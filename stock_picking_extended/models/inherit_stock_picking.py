@@ -335,22 +335,26 @@ class stock_picking(orm.Model):
         return where
 
     _columns = {
+        'stock_journal_id': fields.many2one('stock.journal', 'Stock Journal', select=True, states={'done': [('readonly', True)]}),
+        'type': fields.selection([('out', 'Sending Goods'), ('in', 'Getting Goods'), ('internal', 'Internal')],
+                                 'Shipping Type', required=True, select=True, states={'done': [('readonly', True)]},
+                                 help="Shipping type specify, goods coming in or going out."),
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Name'),
         'goods_ready': fields.function(_is_goods_ready, type="boolean", string="Have Posa", fnct_search=_filter_goods_ready),
         'carriage_condition_id': fields.many2one(
-            'stock.picking.carriage_condition', 'Carriage condition'),
+            'stock.picking.carriage_condition', 'Carriage condition', states={'done': [('readonly', True)]}),
         'goods_description_id': fields.many2one(
-            'stock.picking.goods_description', 'Description of goods'),
+            'stock.picking.goods_description', 'Description of goods', states={'done': [('readonly', True)]}),
         'transportation_condition_id': fields.many2one(
-            'stock.picking.transportation_condition', 'Transportation condition'),
+            'stock.picking.transportation_condition', 'Transportation condition', states={'done': [('readonly', True)]}),
         # address_id is overridden because it's used 2binvoiced
         # n.b.: partner_id is only a related, so not useful for the workflow
         'address_id': fields.many2one(
-            'res.partner.address', 'Partner', help="Partner to be invoiced"
+            'res.partner.address', 'Partner', help="Partner to be invoiced", states={'done': [('readonly', True)]}
         ),
         'address_delivery_id': fields.many2one(
             'res.partner.address', 'Address', help='Delivery address of \
-            partner'
+            partner', states={'done': [('readonly', True)]}
         ),
         'invoice_state': fields.selection([
             ("invoiced", "Invoiced"),

@@ -37,7 +37,7 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <field name="carrier_id" position="before">
-                    <field name="address_delivery_id" context="{'name_lenght': '180'}" colspan="6" />
+                    <field name="address_delivery_id" context="{'name_lenght': '180', 'contact_display': 'partner'}" colspan="6" />
                     <field name="goods_description_id" widget="selection"/>
                     <field name="carriage_condition_id" widget="selection"/>
                     <field name="transportation_condition_id" widget="selection"/>
@@ -74,11 +74,12 @@
                     <field name="credit_limit" attrs="{'invisible': [('visible_credit_limit','!=',True)]}"/>
                     <field name="visible_credit_limit" invisible="1"/>
                 </field>
-                <notebook position="inside">
+
+                <page string="Notes" position="after">
                     <page string="Internal Notes">
                         <field colspan="4" name="internal_note" nolabel="1"/>
                     </page>
-                </notebook>
+                </page>
             </field>
         </record>
 
