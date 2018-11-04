@@ -52,8 +52,8 @@ class sale_order_line_mrp_bom(orm.Model):
 
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
-            partner_id = context.get('partner_id', False)
-            self.pool['sale.order.line'].product_id_change(cr, uid, ids, 1, product_id, qty=product_qty, uom=uom_id, partner_id=partner_id, context=context)
+            # partner_id = context.get('partner_id', False)
+            # self.pool['sale.order.line'].product_id_change(cr, uid, ids, 1, product_id, qty=product_qty, uom=uom_id, partner_id=partner_id, context=context)
             price_unit = price_unit or product.cost_price
             return {'value': {
                 'price_unit': price_unit,
