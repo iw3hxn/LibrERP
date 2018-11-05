@@ -91,7 +91,7 @@ class sale_order_line(orm.Model):
                                 result['value']['mrp_bom'].append(line_bom)
             else:
                 result['value']['with_bom'] = False
-            result['value']['with_bom'] = True
+            # result['value']['with_bom'] = True
         # {'value': result, 'domain': domain, 'warning': warning}
         return result
 
