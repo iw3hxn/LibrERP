@@ -176,8 +176,8 @@
             <field name="inherit_id" ref="delivery.view_delivery_order_inherit_stock"/>
             <field name="arch" type="xml">
                 <button name="%(delivery.report_shipping)d" position="after">
-					<group attrs="{'invisible': [('ddt_number', '!=', False)]}">
-						<button name="%(action_wizard_assign_ddt)d" string="Assign DDT" states="done" type="action"/>
+					<group attrs="{'invisible': ['|', ('ddt_number', '!=', False), ('invoice_state', '=', 'invoiced')]}">
+						<button name="%(action_wizard_assign_ddt)d" string="Assign DDT" states="done" type="action" />
 					</group>
                 </button>
             </field>
