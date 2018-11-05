@@ -3,7 +3,7 @@
 
 {
     "name": "Order from XML",
-    "version": "4.1.4.1",
+    "version": "4.1.5.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     'category': 'Sales Management',
