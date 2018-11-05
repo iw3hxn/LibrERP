@@ -14,6 +14,8 @@
        
        If 'Confirm automatically imported orders' (inside Company -> Configuration) is set to True, 
        imported orders will be automatically confirmed after import
+       
+       Tag <Ean> può contenere product code
     """,
     "depends": [
         'base',
