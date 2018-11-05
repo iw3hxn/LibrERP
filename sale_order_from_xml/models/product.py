@@ -9,7 +9,7 @@ class ProductProduct(orm.Model):
     _inherit = 'product.product'
 
     def get_create(self, cr, uid, values, context):
-        if len(values['Ean']) == 13:
+        if len(values['Ean']) == 13 and values['Ean'].isdigit():
             product_ids = self.search(cr, uid, [('ean13', '=', values['Ean'])], context=context)
         else:
             product_ids = self.search(cr, uid, [('default_code', '=', values['Ean'])], context=context)

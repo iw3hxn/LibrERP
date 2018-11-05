@@ -3,7 +3,7 @@
 
 {
     "name": "Order from XML",
-    "version": "4.1.4.1",
+    "version": "4.1.5.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     'category': 'Sales Management',
@@ -14,6 +14,8 @@
        
        If 'Confirm automatically imported orders' (inside Company -> Configuration) is set to True, 
        imported orders will be automatically confirmed after import
+       
+       Tag <Ean> può contenere product code
     """,
     "depends": [
         'base',
