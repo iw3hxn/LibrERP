@@ -559,7 +559,7 @@ class stock_picking(orm.Model):
                 partner_vals['goods_description_id'] = vals.get('goods_description_id')
             if not picking.partner_id.property_delivery_carrier:
                 partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
-            if partner_vals:
+            if partner_vals and self.pool['res.groups'].user_in_group(cr, uid, uid, 'base.group_partner_manager', context):
                 self.pool['res.partner'].write(cr, uid, [picking.partner_id.id], partner_vals, context)
         return ids
 
