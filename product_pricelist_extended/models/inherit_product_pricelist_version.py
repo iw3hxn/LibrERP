@@ -20,13 +20,8 @@ class ProductPricelistVersion(orm.Model):
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
         pricelist_versions = self.browse(cr, uid, ids, context)
         product_pricelist_obj = self.pool.get('product.pricelist')
-        res_multi = product_pricelist_obj.price_rule_get_multi(cr, uid,
-                                                               [pricelist_version.pricelist_id.id for
-                                                                pricelist_version in pricelist_versions],
-                                                               products_by_qty_by_partner=[
-                                                                   (product, quantity, partner)],
-                                                               context=context)[product_id]
-        cost_price = product.cost_price
+        if product_id:
+            cost_price = product.cost_price
         rule_ids = []
         for pricelist_version in pricelist_versions:
             res[pricelist_version.id] = {
@@ -38,16 +33,24 @@ class ProductPricelistVersion(orm.Model):
                 # 'pricelist_rule_type': ''
             }
 
-            pricelist_id = pricelist_version.pricelist_id.id
-            price, rule = res_multi[pricelist_id]
-            res[pricelist_version.id]['price'] = price
-            if price < cost_price:
-                res[pricelist_version.id]['row_color'] = 'red'
-            if rule:
-                res[pricelist_version.id]['pricelist_rule_id'] = rule
-                rule_ids.append(rule)
-            else:
-                res[pricelist_version.id]['price_error'] = True
+            if product_id:
+                res_multi = product_pricelist_obj.price_rule_get_multi(cr, uid,
+                                                                       [pricelist_version.pricelist_id.id for
+                                                                        pricelist_version in pricelist_versions],
+                                                                       products_by_qty_by_partner=[
+                                                                           (product, quantity, partner)],
+                                                                       context=context)[product_id]
+
+                pricelist_id = pricelist_version.pricelist_id.id
+                price, rule = res_multi[pricelist_id]
+                res[pricelist_version.id]['price'] = price
+                if price < cost_price:
+                    res[pricelist_version.id]['row_color'] = 'red'
+                if rule:
+                    res[pricelist_version.id]['pricelist_rule_id'] = rule
+                    rule_ids.append(rule)
+                else:
+                    res[pricelist_version.id]['price_error'] = True
 
         rules = self.pool['product.pricelist.item'].read(cr, uid, list(set(rule_ids)), ['string_discount'], context=context)
         for pricelist_version in pricelist_versions:
