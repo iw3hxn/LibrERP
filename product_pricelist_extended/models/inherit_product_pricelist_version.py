@@ -22,6 +22,12 @@ class ProductPricelistVersion(orm.Model):
         product_pricelist_obj = self.pool.get('product.pricelist')
         if product_id:
             cost_price = product.cost_price
+            res_multi = product_pricelist_obj.price_rule_get_multi(cr, uid,
+                                                               [pricelist_version.pricelist_id.id for
+                                                                pricelist_version in pricelist_versions],
+                                                               products_by_qty_by_partner=[
+                                                                   (product, quantity, partner)],
+                                                               context=context)[product_id]
         rule_ids = []
         for pricelist_version in pricelist_versions:
             res[pricelist_version.id] = {
@@ -34,12 +40,6 @@ class ProductPricelistVersion(orm.Model):
             }
 
             if product_id:
-                res_multi = product_pricelist_obj.price_rule_get_multi(cr, uid,
-                                                                       [pricelist_version.pricelist_id.id for
-                                                                        pricelist_version in pricelist_versions],
-                                                                       products_by_qty_by_partner=[
-                                                                           (product, quantity, partner)],
-                                                                       context=context)[product_id]
 
                 pricelist_id = pricelist_version.pricelist_id.id
                 price, rule = res_multi[pricelist_id]
