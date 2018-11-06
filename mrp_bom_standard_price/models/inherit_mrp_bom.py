@@ -20,9 +20,11 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from datetime import datetime
+
+import decimal_precision as dp
 from openerp.osv import osv, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class mrp_bom(osv.Model):
@@ -70,12 +72,12 @@ class mrp_bom(osv.Model):
             view_load=True,
             help="This pricelist will be used, instead of the default one, for purchases from the current partner"),
         # 'list_price': fields.function(_compute_list_price, string='List Price', type='float'),
-        'list_price': fields.related('product_id', 'list_price',
+        'list_price': fields.related('product_id', 'list_price', digits_compute=dp.get_precision('Sale Price'),
                                          type='float', relation='product.product', string='List Price', readonly=True),
-        'standard_price': fields.related('product_id', 'standard_price',
+        'standard_price': fields.related('product_id', 'standard_price', digits_compute=dp.get_precision('Purchase Price'),
             type='float', relation='product.product', string='Cost price', readonly=True),
-        'cost_price': fields.function(_compute_list_price, string='Cost Price for Unit of Product', type='float', multi='cost_price'),
-        'bom_cost_price': fields.function(_compute_list_price, string='Cost Price', type='float', multi='cost_price'),
+        'cost_price': fields.function(_compute_list_price, string='Cost Price for Unit of Product', type='float', multi='cost_price', digits_compute=dp.get_precision('Purchase Price')),
+        'bom_cost_price': fields.function(_compute_list_price, string='Cost Price', type='float', multi='cost_price', digits_compute=dp.get_precision('Purchase Price')),
     }
 
     def onchange_product_id2(self, cr, uid, ids, product_id, name, product_qty, product_uom, context=None):
