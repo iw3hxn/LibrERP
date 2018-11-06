@@ -21,6 +21,11 @@ msgid "Last Month"
 msgstr "Mese Precedente"
 
 #. module: stock_picking_filter
+#: view:stock.picking:0
+msgid "Done Last Month"
+msgstr "Emesse nel Mese Precedente"
+
+#. module: stock_picking_filter
 #: help:stock.picking,year:0
 msgid "Select year"
 msgstr "Scegli l'Anno"
@@ -29,6 +34,11 @@ msgstr "Scegli l'Anno"
 #: view:stock.picking:0
 msgid "Current Month"
 msgstr "Mese Corrente"
+
+#. module: stock_picking_filter
+#: view:stock.picking:0
+msgid "Done Current Month"
+msgstr "Emesse nel Mese Corrente"
 
 #. module: stock_picking_filter
 #: view:stock.picking:0

@@ -13,14 +13,38 @@
                     <filter icon="terp-go-month"
                         string="Last Month"
                         name="last_month"
-                        help="Picking of the last month"
-                        domain="[('date_done', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')), ('date_done', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))]"
-                    />                    
+                        help="DDT Number assigned during last month"
+                        domain="[
+                            ('ddt_date', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')),
+                            ('ddt_date', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))
+                        ]"
+                    />
                     <filter icon="terp-go-month"
                         string="Current Month"
                         name="current_month"
+                        help="DDT Number assigned during current month"
+                        domain="[
+                            ('ddt_date', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')),
+                            ('ddt_date', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))
+                        ]"
+                    />
+                    <filter icon="terp-calendar"
+                        string="Done Last Month"
+                        name="last_month_done"
+                        help="Picking of the last month"
+                        domain="[
+                            ('date_done', '&lt;', datetime.date.today().strftime('%%Y-%%m-01 00:00:00')),
+                            ('date_done', '&gt;=', (datetime.date.today() - relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00'))
+                        ]"
+                    />
+                    <filter icon="terp-calendar"
+                        string="Done Current Month"
+                        name="current_month_done"
                         help="Picking of the current month"
-                        domain="[('date_done', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')), ('date_done', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))]"
+                        domain="[
+                            ('date_done', '&lt;', (datetime.date.today() + relativedelta(months=1)).strftime('%%Y-%%m-01 00:00:00')),
+                            ('date_done', '&gt;=', (datetime.date.today()).strftime('%%Y-%%m-01 00:00:00'))
+                        ]"
                     />
                     <field name="date_from" filter_domain="[('date_done','&gt;=',self)]"/>
                     <field name="date_to" filter_domain="[('date_done','&lt;=',self)]"/>
