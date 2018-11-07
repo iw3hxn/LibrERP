@@ -16,6 +16,18 @@ class ProductPricelistVersion(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         quantity = 1.0
         product_id = context.get('product_id', False)
+        if not product_id:
+            for version_id in ids:
+                res[version_id] = {
+                    'price': 0.0,
+                    'price_error': False,
+                    'pricelist_rule_id': False,
+                    'string_discount': '',
+                    'row_color': 'black',
+                    # 'pricelist_rule_type': ''
+                }
+            return res
+
         partner = False
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
         pricelist_versions = self.browse(cr, uid, ids, context)
@@ -39,18 +51,16 @@ class ProductPricelistVersion(orm.Model):
                 # 'pricelist_rule_type': ''
             }
 
-            if product_id:
-
-                pricelist_id = pricelist_version.pricelist_id.id
-                price, rule = res_multi[pricelist_id]
-                res[pricelist_version.id]['price'] = price
-                if price < cost_price:
-                    res[pricelist_version.id]['row_color'] = 'red'
-                if rule:
-                    res[pricelist_version.id]['pricelist_rule_id'] = rule
-                    rule_ids.append(rule)
-                else:
-                    res[pricelist_version.id]['price_error'] = True
+            pricelist_id = pricelist_version.pricelist_id.id
+            price, rule = res_multi[pricelist_id]
+            res[pricelist_version.id]['price'] = price
+            if price < cost_price:
+                res[pricelist_version.id]['row_color'] = 'red'
+            if rule:
+                res[pricelist_version.id]['pricelist_rule_id'] = rule
+                rule_ids.append(rule)
+            else:
+                res[pricelist_version.id]['price_error'] = True
 
         rules = self.pool['product.pricelist.item'].read(cr, uid, list(set(rule_ids)), ['string_discount'], context=context)
         for pricelist_version in pricelist_versions:
