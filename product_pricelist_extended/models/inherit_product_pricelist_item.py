@@ -30,7 +30,7 @@ class ProductPricelistItem(orm.Model):
             except:
                 _logger.error("Unable to import Redis")
                 from openerp.addons.core_extended.dict_cache import SimpleCache
-                self.product_cost_cache = SimpleCache()
+                self._name_get = SimpleCache()
         else:
             from openerp.addons.core_extended.dict_cache import SimpleCache
             self._name_get = SimpleCache()
@@ -45,7 +45,7 @@ class ProductPricelistItem(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         for id in ids:
-            if int(id) in self.product_cost_cache:
+            if int(id) in self._name_get:
                 del self._name_get[int(id)]
         return super(ProductPricelistItem, self).write(cr, uid, ids, vals, context)
 
