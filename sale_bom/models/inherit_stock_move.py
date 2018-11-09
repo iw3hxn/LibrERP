@@ -30,11 +30,6 @@ class StockMove(orm.Model):
         @param move: Stock moves
         @return: True
         """
-
-        if move.picking_id.type == 'in':
-            location_dest_id = move.picking_id.partner_id.property_stock_customer.id
-        elif move.picking_id.type == 'out':
-            location_dest_id = move.picking_id.partner_id.property_stock_customer.id
         move_obj = self.pool['stock.move']
         processed_ids = [move.id]
         if move.sale_line_id and move.sale_line_id._columns.get('with_bom', False) and move.sale_line_id.with_bom:
@@ -44,6 +39,11 @@ class StockMove(orm.Model):
             state = 'confirmed'
             if move.state == 'assigned':
                 state = 'assigned'
+            if move.picking_id.type == 'in':
+                location_dest_id = move.picking_id.partner_id.property_stock_customer.id
+            elif move.picking_id.type == 'out':
+                location_dest_id = move.picking_id.partner_id.property_stock_customer.id
+
             for line in move.sale_line_id.mrp_bom:
                 if line.product_id.type != 'service':
                     valdef = {
