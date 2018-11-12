@@ -14,5 +14,17 @@
             </field>
         </record>
 
+        <record id="view_account_journal_tree_inherit" model="ir.ui.view">
+            <field name="name">account.journal.tree</field>
+            <field name="model">account.journal</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.view_account_journal_tree"/>
+            <field name="arch" type="xml">
+                <field name="code" position="before">
+                    <field name="sequence" />
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>
