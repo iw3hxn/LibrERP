@@ -42,12 +42,9 @@ class account_invoice(orm.Model):
             result[tax.invoice_id.id] = True
         return result.keys()
 
-    def get_total_tax_fiscal(self, cr, uid, ids, filed_name=None, args=None, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
+    def get_total_tax_fiscal_browse(self, invoices):
         result = {}
-        if isinstance(ids, (long, int)):
-            ids = [ids]
-        for invoice in self.browse(cr, uid, ids, context):
+        for invoice in invoices:
             amount_withholding = 0.0
             result[invoice.id] = invoice.amount_tax
             for line in invoice.tax_line:
@@ -57,12 +54,17 @@ class account_invoice(orm.Model):
                 result[invoice.id] = invoice.amount_tax - amount_withholding
         return result
 
-    def get_total_fiscal(self, cr, uid, ids, filed_name=None, args=None, context=None):
+    def get_total_tax_fiscal(self, cr, uid, ids, filed_name=None, args=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        result = {}
         if isinstance(ids, (long, int)):
             ids = [ids]
-        for invoice in self.browse(cr, uid, ids, context):
+        invoices = self.browse(cr, uid, ids, context)
+        result = self.get_total_tax_fiscal_browse(invoices)
+        return result
+
+    def get_total_fiscal_browse(self, invoices):
+        result = {}
+        for invoice in invoices:
             amount_withholding = 0.0
             result[invoice.id] = invoice.amount_total
             for line in invoice.tax_line:
@@ -70,6 +72,14 @@ class account_invoice(orm.Model):
                     amount_withholding += line.tax_amount
             if amount_withholding != 0.0:
                 result[invoice.id] = invoice.amount_total - amount_withholding
+        return result
+
+    def get_total_fiscal(self, cr, uid, ids, filed_name=None, args=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if isinstance(ids, (long, int)):
+            ids = [ids]
+        invoices = self.browse(cr, uid, ids, context)
+        result = self.get_total_fiscal_browse(invoices)
         return result
 
     def action_cancel(self, cr, uid, ids, context=None):
