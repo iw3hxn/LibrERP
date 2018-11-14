@@ -81,6 +81,8 @@ class sale_order_line(orm.Model):
                                     line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_sub_line, price_unit, sequence, context)
                                     line_bom.update({
                                         'parent_id': bom_line.product_id.id,
+                                        'product_uom_qty': line_bom['product_uom_qty'] * bom_line.product_qty,
+                                        'price_subtotal': line_bom['price_subtotal'] * bom_line.product_qty,
                                     })
                                     result['value']['mrp_bom'].append(line_bom)
                             else:

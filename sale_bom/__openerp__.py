@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2013-2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2013-2018 Didotech srl (<http://www.didotech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
 
 {
     "name": "Bom in Sales Orders",
-    "version": "3.4.14.17",
+    "version": "3.4.15.17",
     "category": "Sales Management",
     "description": """
 This module adds the 'BOM' on sales order.
