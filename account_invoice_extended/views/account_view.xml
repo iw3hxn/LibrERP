@@ -68,6 +68,17 @@
             </field>
         </record>
 
+        <record id="invoice_line_analytic" model="ir.ui.view">
+            <field name="name">account.invoice.tree.analytic</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="account.view_invoice_line_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="account_id" position="after">
+                    <field domain="[('type','&lt;&gt;','view'), ('company_id', '=', parent.company_id), ('parent_id', '!=', False)]" name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
+                </field>
+            </field>
+        </record>
 
         <record id="invoice_supplier_form_reg_date" model="ir.ui.view">
             <field name="name">account.invoice.supplier.form.reg_date</field>
