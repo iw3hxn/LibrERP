@@ -40,6 +40,7 @@
     ],
     "data": [
         'security/security.xml',
+        'security/ir.model.access.csv',
         'views/account_analytic_line.xml',
         'views/project.xml',
         'views/project_task.xml',
