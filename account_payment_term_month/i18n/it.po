@@ -110,3 +110,7 @@ msgstr "Seconda data a partire dalla quale il pagamento sarà spostato"
 msgid "First date from which payment will be delayed"
 msgstr "Prima data a partire dalla quale il pagamento sarà spostato"
 
+#. module: account_payment_term_month
+#: view:account.payment.term:0
+msgid "Auto Creation"
+msgstr "Auto Creazione"
