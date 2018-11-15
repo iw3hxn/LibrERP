@@ -80,3 +80,22 @@ msgstr "Rifatturazione al Cliente"
 #: field:project.project,project_task_work_ids:0
 msgid "Project Task Work"
 msgstr "Rapportini Ore"
+
+#. modules: project_extended
+#: constraint:account.analytic.account:0
+#: code:addons/project_extended/models/inherited_account_analytic_account.py:43
+#, python-format
+msgid "Name and Parent must be unique"
+msgstr "Nome e Padre devono essere univoci"
+
+#. modules: base, document
+#: code:addons/orm.py:2728
+#: code:addons/orm.py:2738
+#: code:addons/document/document.py:250
+#: code:addons/document/document.py:329
+#: code:addons/document/document_directory.py:266
+#: code:addons/document/document_directory.py:271
+#: code:addons/document/document_directory.py:276
+#, python-format
+msgid "ValidateError"
+msgstr "Errore di Convalida"

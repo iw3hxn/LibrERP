@@ -32,6 +32,41 @@ _logger.setLevel(logging.DEBUG)
 class project_project(orm.Model):
     _inherit = 'project.project'
 
+    def search(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False):
+        # order by name
+        res = super(project_project, self).search(cr, user, args, offset=offset, limit=limit, order=order, context=context, count=count)
+        if res:
+            cr.execute("""SELECT 
+                    project_project.id
+                FROM 
+                    project_project, 
+                    account_analytic_account
+                WHERE 
+                    project_project.analytic_account_id = account_analytic_account.id AND
+                    project_project.id in ({project_ids}) 
+                ORDER BY
+                  account_analytic_account.name ASC
+            """.format(project_ids=', '.join([str(project_id) for project_id in res])))
+            sql = cr.fetchall()
+            return [(r[0]) for r in sql]
+        else:
+            return res
+
+    def unlink(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        cr.execute("""SELECT 
+                project_project.analytic_account_id
+            FROM 
+                public.project_project
+            WHERE
+                project_project.id in ({project_ids}) 
+        """.format(project_ids=', '.join([str(project_id) for project_id in ids])))
+        sql = cr.fetchall()
+        account_analytic_account_ids = list(set([(r[0]) for r in sql]))
+        res = super(project_project, self).unlink(cr, uid, ids, context)
+        self.pool['account.analytic.account'].unlink(cr, uid, account_analytic_account_ids, context)
+        return res
+
     def color_hook(self, cr, uid, ids, value, context):
         return value
 

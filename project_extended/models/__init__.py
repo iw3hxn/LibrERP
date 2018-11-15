@@ -18,9 +18,10 @@
 #
 ##############################################################################
 
-from . import inherited_project_task
+from . import inherited_account_analytic_account
 from . import inherited_project_project
-from . import inherited_sale_order_line
+from . import inherited_project_task
 from . import inherited_project_task_work
+from . import inherited_sale_order_line
 
 
