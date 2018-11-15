@@ -24,6 +24,7 @@ from datetime import datetime
 
 import decimal_precision as dp
 from openerp.osv import orm, fields
+from tools.translate import _
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -63,6 +64,11 @@ class project_project(orm.Model):
         """.format(project_ids=', '.join([str(project_id) for project_id in ids])))
         sql = cr.fetchall()
         account_analytic_account_ids = list(set([(r[0]) for r in sql]))
+        if self.pool['account.analytic.line'].search(cr, uid, [('account_id', 'in', account_analytic_account_ids)], context=context):
+            raise orm.except_orm(
+                _('Error'),
+                _('There are same analytic line'))
+
         res = super(project_project, self).unlink(cr, uid, ids, context)
         self.pool['account.analytic.account'].unlink(cr, uid, account_analytic_account_ids, context)
         return res

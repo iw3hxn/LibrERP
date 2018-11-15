@@ -19,5 +19,17 @@
             </field>
         </record>
 
+        <record id="view_account_analytic_line_invoice_inherit" model="ir.ui.view">
+            <field name="name">account.analytic.line.add.invoice</field>
+            <field name="model">account.analytic.line</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="account.view_account_analytic_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="date" position="before">
+                    <field name="invoice_id" />
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>

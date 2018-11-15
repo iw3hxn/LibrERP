@@ -88,6 +88,12 @@ msgstr "Rapportini Ore"
 msgid "Name and Parent must be unique"
 msgstr "Nome e Padre devono essere univoci"
 
+#. modules: project_extended
+#: code:addons/project_extended/models/inherited_project_project.py:67
+#, python-format
+msgid "There are same analytic line"
+msgstr "Ci sono delle righe analitiche"
+
 #. modules: base, document
 #: code:addons/orm.py:2728
 #: code:addons/orm.py:2738
