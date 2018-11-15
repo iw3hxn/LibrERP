@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_account_stock_picking","stock_picking_account","stock.model_stock_picking","account.group_account_user","1","0","0","0"
+"access_account_stock_move","stock_move_account","stock.model_stock_move","account.group_account_user","1","0","0","0"

@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice extended",
-    "version": "3.5.13.17",
+    "version": "3.5.13.18",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules/Accounting",
@@ -55,6 +55,7 @@
         'stock_picking_extended',
     ],
     "data": [
+        'security/ir.model.access.csv',
         'security/account_security.xml',
         'views/account_view.xml',
         'views/account_menu.xml',
