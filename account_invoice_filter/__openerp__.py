@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice Extended",
-    "version": "2.1.1.4",
+    "version": "3.2.1.5",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Accounting & Finance',
@@ -37,16 +37,11 @@
         'base',
         'account',
     ],
-    "init_xml": [],
-    "update_xml": [
-        'account_invoice_view.xml'
+    "data": [
+        'views/account_invoice_view.xml'
     ],
     "active": False,
     "installable": True,
     'auto_install': True
-    #'external_dependencies': {
-    #    'python': [
-    #        'xlrd',
-    #    ]  
-    #}
+
 }

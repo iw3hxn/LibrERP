@@ -61,6 +61,8 @@ class account_invoice(orm.Model):
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'product_id': fields.related('invoice_line', 'product_id', type='many2one', relation='product.product', string='Product'),
+        'account_analytic_id': fields.related('invoice_line', 'account_analytic_id', type='many2one', relation='account.analytic.account',
+                                     string='Analytic Account'),
     }
     
     def search(self, cr, uid, args, offset=0, limit=0, order=None, context=None, count=False):

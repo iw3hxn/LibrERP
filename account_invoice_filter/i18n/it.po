@@ -64,3 +64,8 @@ msgstr "Al"
 #: field:account.invoice,product_id:0
 msgid "Product"
 msgstr "Prodotto"
+
+#. module: account_invoice_filter
+#: field:account.invoice,account_analytic_id:0
+msgid "Analytic Account"
+msgstr "Contabilità Analitica"
