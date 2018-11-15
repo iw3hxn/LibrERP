@@ -32,7 +32,7 @@
         </record>
 
         <record id="invoice_filter_reg_date" model="ir.ui.view">
-            <field name="name">account.invoice.filter.by.year</field>
+            <field name="name">account.invoice.filter.inherit</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.view_account_invoice_filter"/>
             <field name="type">search</field>
