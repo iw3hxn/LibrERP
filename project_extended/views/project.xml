@@ -131,5 +131,9 @@
             <field name="act_window_id" ref="project.action_view_task"/>
         </record>
 
+        <record id="base.menu_main_pm" model="ir.ui.menu">
+		    <field name="action" ref=""/>
+	    </record>
+
     </data>
 </openerp>
