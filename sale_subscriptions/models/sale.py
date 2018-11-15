@@ -60,7 +60,7 @@ class sale_order_line(orm.Model):
         return res
 
     # Dangerous! Overwrites standard method
-    def _product_margin(self, s2, cr, uid, ids, field_name, arg, context=None):
+    def _product_margin(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             res[line.id] = 0
@@ -74,8 +74,9 @@ class sale_order_line(orm.Model):
                     price_subtotal = line.price_subtotal
                 else:
                     price_subtotal = line.price_unit * line.product_uos_qty
-
-                res[line.id] = round((price_subtotal * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
+                res[line.id] = {
+                    'margin': round((price_subtotal * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
+                }
         return res
 
     def __init__(self, registry, cr):
