@@ -63,3 +63,7 @@ class account_tax(orm.Model):
         res = super(account_tax, self).create(cr, uid, vals, context)
         self._set_is_base(cr, uid, vals, context)
         return res
+
+    _columns = {
+        'description': fields.char('Tax Code', size=32, required=True),
+    }
