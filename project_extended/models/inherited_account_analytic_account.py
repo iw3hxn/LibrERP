@@ -33,7 +33,7 @@ class account_analytic_account(orm.Model):
         if len(ids) == 1:
             account = self.read(cr, uid, ids[0], ['name', 'parent_id'], context)
             name = account['name']
-            parent_id = account['parent_id'][0]
+            parent_id = account['parent_id'] and account['parent_id'][0] or False
             account_ids = self.search(cr, uid, [('name', '=', name), ('parent_id', '=', parent_id)], context=context)
             if len(account_ids) > 1:
                 return False
