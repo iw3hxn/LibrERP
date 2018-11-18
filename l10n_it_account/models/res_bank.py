@@ -19,16 +19,21 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
 
 
 class res_bank(orm.Model):
     _inherit = "res.bank"
 
+    _columns = {
+        'abi': fields.char('ABI', size=5),
+        'cab': fields.char('CAB', size=5),
+    }
+
     def on_change_city(self, cr, uid, ids, city, zip_code=None):
         res = self.pool['res.partner.address'].on_change_city(cr, uid, ids, city, zip_code=zip_code)
         return res
 
-    def on_change_zip(self, cr, uid, ids, zip_code):
+    def on_change_zip(self, cr, uid, ids, zip_code, context=None):
         res = self.pool['res.partner.address'].on_change_zip(cr, uid, ids, zip_code=zip_code)
         return res

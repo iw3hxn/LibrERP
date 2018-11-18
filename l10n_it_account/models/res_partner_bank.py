@@ -25,9 +25,27 @@ from openerp.osv import orm
 class res_partner_bank(orm.Model):
     _inherit = "res.partner.bank"
 
+    _defaults = {
+        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'res.partner.bank', context=c),
+    }
+
     def _check_bank(self, cr, uid, ids, context=None):
         return True
 
-    _constraints = [
-        (_check_bank, '\nPlease define BIC/Swift code on bank for bank type IBAN Account to make valid payments', ['bic'])
-    ]
+    def _prepare_name(self, bank):
+        "Return the name to use when creating a bank journal"
+        return (bank.bank_name or bank.bank and bank.bank.name or '')
+
+    def on_change_acc_number(self, cr, uid, ids, acc_number, context=None):
+        res = {
+            'value': {}
+        }
+        if acc_number:
+            acc_number = acc_number.replace(' ', '')
+            if acc_number[0:2] == 'IT':
+                abi = acc_number[5:10]
+                cab = acc_number[10:15]
+                bank_ids = self.pool['res.bank'].search(cr, uid, [('abi', '=', abi), ('cab', '=', cab)], context=context)
+                if bank_ids:
+                    res['value']['bank'] = bank_ids[0]
+        return res

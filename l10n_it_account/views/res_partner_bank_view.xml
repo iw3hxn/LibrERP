@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <record id="view_partner_bank_form_form_inh_onchange" model="ir.ui.view">
+            <field name="name">res.partner.bank.form</field>
+            <field name="model">res.partner.bank</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_partner_bank_form"/>
+            <field name="arch" type="xml">
+                <field name="footer" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="acc_number" position="attributes">
+                    <attribute name="on_change">on_change_acc_number(acc_number, context)</attribute>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

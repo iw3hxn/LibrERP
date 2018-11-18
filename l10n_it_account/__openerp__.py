@@ -21,7 +21,7 @@
 
 {
     'name': 'Italian Localisation',
-    'version': '3.23.51.48',
+    'version': '3.23.51.49',
     'category': 'Localisation/Italy',
     'description': """This module customizes OpenERP in order to fit italian laws and mores - Account version
 
@@ -61,6 +61,7 @@ Functionalities:
         'data/bank_iban_data.xml',
         'views/account_move.xml',
         'views/res_bank_view.xml',
+        'views/res_partner_bank_view.xml',
         'views/account_tax_view.xml',
         'views/res_company_view.xml'
     ],

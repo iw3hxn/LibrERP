@@ -8,10 +8,10 @@
             <field name="inherit_id" ref="base.view_res_bank_form"/>
             <field name="arch" type="xml">
                 <field name="zip" position="attributes">
-                    <attribute name="on_change">on_change_zip(zip)</attribute>
+                    <attribute name="on_change">on_change_zip(zip, context)</attribute>
                 </field>
                 <field name="city" position="attributes">
-                    <attribute name="on_change">on_change_city(city,zip)</attribute>
+                    <attribute name="on_change">on_change_city(city, zip, context)</attribute>
                 </field>
             </field>
         </record>
