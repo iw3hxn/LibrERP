@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="sale_bom_sale_order_line">
+            <field name="name">sale.order.line.history.view.form</field>
+            <field name="type">form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="priority">1100</field>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='order_line' or @name='abstract_line_ids']/form/notebook" position="inside">
+                    <page string="Product Sell History" attrs="{'invisible': [('product_id', '=', False)]}">
+                        <field colspan="4" name="product_sale_order_history_ids" nolabel="1" readonly="1">
+                            <tree string="Sell History" editable="bottom">
+                                <!--<field name="sale_order_date" />-->
+                                <field name="order_id"/>
+                                <field name="order_partner_id"/>
+                                <field name="product_id" />
+                                <field name="product_uom_qty" string="Qty(UoM)"/>
+                                <field name="product_uom" string="UoM"/>
+                                <field groups="product.group_uos" name="product_uos_qty" string="Qty(UoS)"/>
+                                <field groups="product.group_uos" name="product_uos" string="UoS"/>
+                                <field name="price_unit"/>
+                                <field name="discount"/>
+                                <field name="price_subtotal"/>
+                                <field name="state" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
