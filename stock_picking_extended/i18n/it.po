@@ -612,6 +612,7 @@ msgstr "Aspetto Esteriore dei Beni"
 #. module: stock_picking_extended
 #: view:stock.picking:0
 #: field:stock.picking,internal_note:0
+#: field:stock.move,internal_note:0
 msgid "Internal Note"
 msgstr "Nota Interna"
 
@@ -661,3 +662,7 @@ msgstr "Mese Scorso"
 msgid "Order Delivery"
 msgstr "Data di Consegna"
 
+#. module: stock_picking_extended
+#: view:stock.move:0
+msgid "Note on Picking Line"
+msgstr "Nota nella Riga del DDT"
