@@ -264,8 +264,11 @@ class sale_order(orm.Model):
     def copy(self, cr, uid, id, default=None, context=None):
         if default is None:
             default = {}
-        default.update({'project_project': False,
-                        'project_id': False, })
+        if not context.get('versioning', False):
+            default.update({
+                'project_project': False,
+                'project_id': False,
+            })
         return super(sale_order, self).copy(cr, uid, id, default, context)
 
     def write(self, cr, uid, ids, vals, context=None):
