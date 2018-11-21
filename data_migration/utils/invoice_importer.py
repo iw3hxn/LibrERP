@@ -28,6 +28,7 @@ from collections import namedtuple
 from datetime import datetime
 from pprint import pprint
 
+import netsvc
 import pooler
 import xlrd
 from openerp.addons.core_extended.file_manipulation import import_sheet
@@ -61,7 +62,8 @@ class ImportFile(threading.Thread, Utils):
         self.account_invoice_obj = self.pool['account.invoice']
         self.account_invoice_line_obj = self.pool['account.invoice.line']
         self.product_obj = self.pool['product.product']
-
+        self.payment_term_obj = self.pool['account.payment.term']
+        self.wf_service = netsvc.LocalService('workflow')
 
         # Necessario creare un nuovo cursor per il thread,
         # quello fornito dal metodo chiamante viene chiuso
@@ -189,13 +191,13 @@ class ImportFile(threading.Thread, Utils):
     
     def import_row(self, cr, uid, row_list):
         if self.first_row:
-            row_str_list = [self.simple_string(value) for value in row_list]
+            row_str_list = [self.toStr(value) for value in row_list]
             for column in row_str_list:
                 # print column
                 if column in self.HEADER:
                     _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
-                    self.first_row = False
                     return True
+            self.first_row = False
 
         if not len(row_list) == len(self.HEADER):
             row_str_list = [self.simple_string(value) for value in row_list]
@@ -362,4 +364,72 @@ class ImportFile(threading.Thread, Utils):
                 invoice_id = False
             return invoice_id
         elif self.format == 'FormatThree':
-            pass
+            partner_code = record.partner_code
+            partner_ids = self.partner_obj.search(cr, uid, ['|', ('property_supplier_ref', '=', partner_code), ('property_customer_ref', '=', partner_code)], context=self.context)
+            if partner_ids:
+                validation_check = True
+                partner_id = partner_ids[0]
+                vals_invoice = {
+                    'type': self.type
+                }
+                vals_invoice.update(self.account_invoice_obj.onchange_journal_id(cr, uid, [], self.journal_id.id, self.context).get('value'))
+                if record.date_invoice:
+                    date_invoice = datetime(*xlrd.xldate_as_tuple(float(record.date_invoice), 0)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+                else:
+                    date_invoice = ''
+                vals_invoice.update(self.account_invoice_obj.onchange_partner_id(cr, uid, [], self.type, partner_id, date_invoice=date_invoice or '').get('value'))
+
+
+                payment_term_ids = self.payment_term_obj.search(cr, uid, [('code', '=', record.payment_code)], context=self.context)
+                if payment_term_ids:
+                    vals_invoice['payment_term'] = payment_term_ids[0]
+                else:
+                    validation_check = False
+
+                account_id = self.account_id and self.account_id.id or False
+                vals_account_invoice_line = self.account_invoice_line_obj.default_get(cr, uid, [], context={'type': self.type, 'fiscal_position': vals_invoice['fiscal_position']})
+                vals_account_invoice_line.update(self.account_invoice_line_obj.product_id_change(cr, uid, [], False, False, qty=0, name='', type=self.type, partner_id=partner_id, fposition_id=vals_invoice['fiscal_position'], price_unit=False, address_invoice_id=False, currency_id=False, context=self.context, company_id=None).get('value'))
+                if account_id:
+                    vals_account_invoice_line['account_id'] = account_id
+                # if vals_account_invoice_line.get('invoice_line_tax_id', False):
+                #     tax_tab = [(6, 0, vals_account_invoice_line['invoice_line_tax_id'])]
+                #     vals_account_invoice_line['invoice_line_tax_id'] = tax_tab
+
+                vals_account_invoice_line.update({
+                    'name': _('Import Total Amount'),
+                    'quantity': 1.0,
+                    'price_unit': record.total_amount or 0.0
+                })
+
+                vals_invoice.update({
+                    'partner_id': partner_id,
+                    'name': record.number_invoice.split('.')[0],
+                    'internal_number': record.number_invoice.split('.')[0],
+                    'date_invoice': date_invoice,
+                    'journal_id': self.journal_id.id,
+                    'invoice_line': [(0, 0, vals_account_invoice_line)]
+                })
+
+                invoice_id = self.account_invoice_obj.create(cr, uid, vals_invoice, self.context)
+                self.account_invoice_obj.button_reset_taxes(cr, uid, [invoice_id], context=self.context)
+
+                _logger.info(u'Row {row}: Adding amount {amount} to Invoice {invoice}'.format(row=self.processed_lines,
+                                                                                              amount=record.total_amount,
+                                                                                              invoice=invoice_id))
+                amoun_tax = self.account_invoice_obj.read(cr, uid, invoice_id, ['amount_tax'], context=self.context)['amount_tax']
+                if amoun_tax == record.total_tax:
+                    _logger.info(u'Row {row}: Validation to Invoice {invoice}'.format(row=self.processed_lines, invoice=invoice_id))
+                    validation_check = False
+                else:
+                    error = u'Row {row}: Invoice {invoice} have different tax amout {invoice} != {file}'.format(row=self.processed_lines, invoice=record.number_invoice, file=record.total_tax)
+                    _logger.error(error)
+                    self.error.append(error)
+                if validation_check:
+                    self.wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                self.uo_new += 1
+            else:
+                error = u'Row {row}: Not Find {partner}'.format(row=self.processed_lines, partner=record.partner_name)
+                _logger.error(error)
+                self.error.append(error)
+                invoice_id = False
+            return invoice_id
