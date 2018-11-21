@@ -411,17 +411,17 @@ class ImportFile(threading.Thread, Utils):
                 })
 
                 invoice_id = self.account_invoice_obj.create(cr, uid, vals_invoice, self.context)
-                self.account_invoice_obj.button_reset_taxes(cr, uid, [invoice_id], context=self.context)
-
+                invoice = self.account_invoice_obj.browse(cr, uid, invoice_id, context=self.context)
+                invoice.button_reset_taxes()
                 _logger.info(u'Row {row}: Adding amount {amount} to Invoice {invoice}'.format(row=self.processed_lines,
                                                                                               amount=record.total_untax,
                                                                                               invoice=invoice_id))
-                amoun_tax = self.account_invoice_obj.read(cr, uid, invoice_id, ['amount_tax'], context=self.context)['amount_tax']
-                if amoun_tax == record.total_tax:
+                amount_tax = invoice.amount_tax
+                if amount_tax == float(record.total_tax):
                     _logger.info(u'Row {row}: Validation to Invoice {invoice}'.format(row=self.processed_lines, invoice=invoice_id))
-                    validation_check = False
                 else:
-                    error = u'Row {row}: Invoice {invoice} have different tax amout {invoice} != {file}'.format(row=self.processed_lines, invoice=record.number_invoice, file=record.total_tax)
+                    validation_check = False
+                    error = u'Row {row}: Invoice {invoice} have different tax amout {invoice} != {file}'.format(row=self.processed_lines, invoice=amount_tax, file=record.total_tax)
                     _logger.error(error)
                     self.error.append(error)
                 if validation_check:
