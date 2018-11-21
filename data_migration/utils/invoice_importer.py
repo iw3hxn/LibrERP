@@ -398,7 +398,7 @@ class ImportFile(threading.Thread, Utils):
                 vals_account_invoice_line.update({
                     'name': _('Import Total Amount'),
                     'quantity': 1.0,
-                    'price_unit': record.total_amount or 0.0
+                    'price_unit': record.total_untax or 0.0
                 })
 
                 vals_invoice.update({
@@ -414,7 +414,7 @@ class ImportFile(threading.Thread, Utils):
                 self.account_invoice_obj.button_reset_taxes(cr, uid, [invoice_id], context=self.context)
 
                 _logger.info(u'Row {row}: Adding amount {amount} to Invoice {invoice}'.format(row=self.processed_lines,
-                                                                                              amount=record.total_amount,
+                                                                                              amount=record.total_untax,
                                                                                               invoice=invoice_id))
                 amoun_tax = self.account_invoice_obj.read(cr, uid, invoice_id, ['amount_tax'], context=self.context)['amount_tax']
                 if amoun_tax == record.total_tax:
