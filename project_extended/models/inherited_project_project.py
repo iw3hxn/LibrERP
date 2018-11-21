@@ -33,25 +33,27 @@ _logger.setLevel(logging.DEBUG)
 class project_project(orm.Model):
     _inherit = 'project.project'
 
-    def search(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False):
-        # order by name
-        res = super(project_project, self).search(cr, user, args, offset=offset, limit=limit, order=order, context=context, count=count)
-        if res:
-            cr.execute("""SELECT 
-                    project_project.id
-                FROM 
-                    project_project, 
-                    account_analytic_account
-                WHERE 
-                    project_project.analytic_account_id = account_analytic_account.id AND
-                    project_project.id in ({project_ids}) 
-                ORDER BY
-                  account_analytic_account.name ASC
-            """.format(project_ids=', '.join([str(project_id) for project_id in res])))
-            sql = cr.fetchall()
-            return [(r[0]) for r in sql]
-        else:
-            return res
+    # def search(self, cr, user, args, offset=0, limit=None, order=None, context=None, count=False):
+    #     # order by name
+    #     res = super(project_project, self).search(cr, user, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    #     if count:
+    #         return res
+    #     if res:
+    #         cr.execute("""SELECT
+    #                 project_project.id
+    #             FROM
+    #                 project_project,
+    #                 account_analytic_account
+    #             WHERE
+    #                 project_project.analytic_account_id = account_analytic_account.id AND
+    #                 project_project.id in ({project_ids})
+    #             ORDER BY
+    #               account_analytic_account.name ASC
+    #         """.format(project_ids=', '.join([str(project_id) for project_id in res])))
+    #         sql = cr.fetchall()
+    #         return [(r[0]) for r in sql]
+    #     else:
+    #         return res
 
     def unlink(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
