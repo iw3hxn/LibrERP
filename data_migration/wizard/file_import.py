@@ -479,6 +479,7 @@ class invoice_import(filedata_import):
             (
                 ('FormatOne', _('Format One')),
                 ('FormatTwo', _('Format Two')),
+                ('FormatThree', _('Format Three')),
             ), 'Formato Dati', required=True, readonly=False
         ),
         'content_base64': fields.binary(

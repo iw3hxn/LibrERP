@@ -278,6 +278,10 @@ class FormatThree():
     REQUIRED_INVENTORY_ITEM = ['default_code']
     INVENTORY_PRODUCT_SEARCH = ['default_code']
 
+    HEADER_INVOICE_ITEM = ('Numero documento', 'Data documento', 'Codice Cliente', 'Ragione sociale', 'Codice pagamento', 'Descrizione pagamento', 'Imponibile', 'IVA', 'Totale documento')
+    COLUMNS_INVOICE_ITEM = "number_invoice, date_invoice, partner_code, partner_name, payment_code, payment_name, total_untax, total_tax, total_amount"
+    REQUIRED_INVOICE_ITEM = ['number_invoice', 'date_invoice', 'partner_code', 'total_untax']
+
 
 class FormatFour():
     # TP Extended (differs only for product import)
