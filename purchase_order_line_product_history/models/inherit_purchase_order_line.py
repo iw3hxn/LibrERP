@@ -23,8 +23,8 @@ class PurchaseOrderLine(orm.Model):
                                                                    date_planned,
                                                                    name, price_unit, notes, context)
         if product_id and partner_id:
-            product_sell_ids = self.search(cr, uid, [('product_id', '=', product_id), ('partner_id', '!=', partner_id), ('state', '!=', 'draft')], context=context)
-            partner_sell_ids = self.search(cr, uid, [('product_id', '=', product_id), ('partner_id', '=', partner_id), ('state', '!=', 'draft')], context=context)
+            product_sell_ids = self.search(cr, uid, [('product_id', '=', product_id), ('partner_id', '!=', partner_id), ('order_id.state', '!=', 'draft')], context=context)
+            partner_sell_ids = self.search(cr, uid, [('product_id', '=', product_id), ('partner_id', '=', partner_id), ('order_id.state', '!=', 'draft')], context=context)
 
             res['value']['product_purchase_order_history_ids'] = partner_sell_ids + product_sell_ids
         return res
