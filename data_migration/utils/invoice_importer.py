@@ -194,8 +194,8 @@ class ImportFile(threading.Thread, Utils):
                 # print column
                 if column in self.HEADER:
                     _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
+                    self.first_row = False
                     return True
-            self.first_row = False
 
         if not len(row_list) == len(self.HEADER):
             row_str_list = [self.simple_string(value) for value in row_list]
@@ -361,3 +361,5 @@ class ImportFile(threading.Thread, Utils):
                 _logger.warning(u'Row {row}: Not Found {product}'.format(row=self.processed_lines, product=record.item))
                 invoice_id = False
             return invoice_id
+        elif self.format == 'FormatThree':
+            pass
