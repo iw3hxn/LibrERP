@@ -80,7 +80,6 @@ class sale_order(orm.Model):
             if order.project_project:
                 project_obj = self.pool['project.project']
                 task_obj = self.pool['project.task']
-                analytic_account_obj = self.pool['account.analytic.account']
                 analytic_account_line_obj = self.pool['account.analytic.line']
                 unlink_project = True
                 for task in order.project_project.tasks:
@@ -93,9 +92,7 @@ class sale_order(orm.Model):
                 analytic_account_line_ids = analytic_account_line_obj.search(cr, uid, [('account_id', '=', order.project_project.analytic_account_id.id)], context=context)
                 sale_order_ids = self.search(cr, uid, [('project_project', '=', order.project_project.id)], context=context)
                 if unlink_project and not analytic_account_line_ids and len(sale_order_ids) > 1:
-                    analytic_account_id = order.project_project.analytic_account_id.id
                     project_obj.unlink(cr, uid, [order.project_project.id], context=context)
-                    analytic_account_obj.unlink(cr, uid, [analytic_account_id], context=context)
                 else:
                     project_obj.set_done(cr, uid, [order.project_project.id], context=context)
 

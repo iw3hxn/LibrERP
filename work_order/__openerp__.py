@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2018 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -24,7 +24,7 @@
 
 {
     "name": "Job Order management",
-    "version": "3.19.43.36",
+    "version": "3.19.44.36",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Sales Management",
