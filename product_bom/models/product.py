@@ -52,11 +52,6 @@ class product_product(orm.Model):
                     self.cr.close()
             return True
 
-        def __del__(self):
-            if not self.cr.closed:
-                self.cr.close()
-            return True
-
         def terminate(self):
             if not self.cr.closed:
                 self.cr.close()
