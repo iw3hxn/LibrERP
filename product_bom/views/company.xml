@@ -12,7 +12,21 @@
                     <separator string="Stock - Various" colspan="4"/>
                     <field name="ref_stock" />
                     <field name="exclude_routing" />
+                    <field name="exclude_consu_stock"/>
                 </page>   
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="clear_cache">
+            <field name="name">res.company.clear.cachetree.inherit</field>
+            <field name="model">res.company</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="base.view_company_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <button name="action_clear_cache" string="Clear Cache" icon="gtk-refresh" type="object"
+                                confirm="Are you sure you want to clear cache?"/>
+                </field>
             </field>
         </record>
 

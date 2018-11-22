@@ -9,6 +9,7 @@ from datetime import datetime
 
 import decimal_precision as dp
 import pooler
+import psutil
 from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.config import config
@@ -26,6 +27,75 @@ class product_product(orm.Model):
     Inherit Product in order to add an "Bom Stock" field
     """
 
+    class CreateWarehouseProcess(multiprocessing.Process):
+
+        def __init__(self, cr, uid, ids, field_names, arg, context, return_funct_dict):
+            # Inizializzazione superclasse
+            multiprocessing.Process.__init__(self)
+            self.cr = pooler.get_db(cr.dbname).cursor()
+            self.uid = uid
+            self.ids = ids
+            self.field_names = field_names
+            self.arg = arg
+            self.context = context
+            self.return_funct_dict = return_funct_dict
+            self.product_product_obj = pooler.get_pool(self.cr.dbname).get('product.product')
+
+        def run(self):
+            try:
+                self.return_funct_dict.update(
+                    self.product_product_obj._product_available(self.cr, self.uid, self.ids, self.field_names, self.arg,
+                                                                self.context))
+            except Exception as e:
+                # Annulla le modifiche fatte
+                _logger.error(u'Error: {error}'.format(error=e))
+                self.cr.rollback()
+            if not self.cr.closed:
+                self.cr.close()
+            p = psutil.Process(self.pid)
+            p.kill()
+            _logger.info(u'STOP: {error}'.format(error=self))
+            return True
+
+        def __del__(self):
+            if not self.cr.closed:
+                self.cr.close()
+            return True
+
+    class CreateProductCost(multiprocessing.Process):
+
+        def __init__(self, cr, uid, ids, bom_properties, context, return_funct_dict):
+            # Inizializzazione superclasse
+            multiprocessing.Process.__init__(self)
+            self.cr = pooler.get_db(cr.dbname).cursor()
+            self.uid = uid
+            self.ids = ids
+            self.bom_properties = bom_properties
+            self.context = context
+            self.return_funct_dict = return_funct_dict
+            self.product_product_obj = pooler.get_pool(self.cr.dbname).get('product.product')
+
+        def run(self):
+            try:
+                for product in self.product_product_obj.browse(self.cr, self.uid, self.ids, context=self.context):
+                    self.return_funct_dict[product.id] = self.product_product_obj._compute_product_purchase_price(self.cr, self.uid, product, self.bom_properties, context=self.context)
+            except Exception as e:
+                # Annulla le modifiche fatte
+                _logger.error(u'Error: {error}'.format(error=e))
+                self.cr.rollback()
+            if not self.cr.closed:
+                self.cr.close()
+            p = psutil.Process(self.pid)
+            p.kill()
+            _logger.info(u'STOP: {error}'.format(error=self))
+            return True
+
+        def __del__(self):
+            _logger.info(u'TERMINATE: {error}'.format(error=self))
+            if not self.cr.closed:
+                self.cr.close()
+            return True
+
     class UpdateCachePrice(threading.Thread):
 
         def __init__(self, cr, uid, product_product_obj, split_ids, context=None):
@@ -39,8 +109,7 @@ class product_product(orm.Model):
 
         def run(self):
             try:
-                time.sleep(5)
-                for product in self.product_product_obj.browse(self.cr, self.uid, self.product_ids, self.context):
+                for product in self.product_product_obj.read(self.cr, self.uid, self.product_ids, ['cost_price'], self.context):
                     cost_price = product['cost_price']
                 return True
             except Exception as e:
@@ -56,6 +125,14 @@ class product_product(orm.Model):
             if not self.cr.closed:
                 self.cr.close()
             return True
+
+    @staticmethod
+    def _chunkIt(seq, size):
+        newseq = []
+        splitsize = 1.0 / size * len(seq)
+        for line in range(size):
+            newseq.append(seq[int(round(line * splitsize)):int(round((line + 1) * splitsize))])
+        return newseq
 
     _inherit = 'product.product'
     
@@ -227,9 +304,9 @@ class product_product(orm.Model):
             return cost_price
 
     def _compute_purchase_price_new(self, cr, uid, ids,
-                                product_uom=None,
-                                bom_properties=None,
-                                context=None):
+                                    product_uom=None,
+                                    bom_properties=None,
+                                    context=None):
         '''
         Compute the purchase price, taking into account sub products and routing
         '''
@@ -244,13 +321,14 @@ class product_product(orm.Model):
             ids = self.search(cr, uid, [])
 
         # workers = multiprocessing.cpu_count() / 2
+        # res = dict.fromkeys(ids, 0.0)
         # with multiprocessing.Manager() as manager:
         #     return_funct_dict = manager.dict()
         #     threads = []
         #     for product_ids in self._chunkIt(ids, workers):
         #         if product_ids:
         #             thread = self.CreateProductCost(cr, uid, product_ids, bom_properties, context, return_funct_dict)
-        #             thread.daemon = True
+        #             # thread.daemon = True
         #             thread.start()
         #             threads.append(thread)
         #     # wait for finish all multiprocessing created
@@ -259,146 +337,15 @@ class product_product(orm.Model):
         #     for return_funct_dict_key in return_funct_dict.keys():
         #         res[return_funct_dict_key] = return_funct_dict[return_funct_dict_key]
 
-        # if debug_logger:
         for product in self.browse(cr, uid, ids, context):
-            # res[product.id] = self._compute_product_purchase_price(cr, uid, product.id, bom_properties,
-            #                                                        log_product=product, context=context)
             try:
-                res[product.id] = self._compute_product_purchase_price(cr, uid, product, bom_properties, context=context)
+                res[product.id] = self._compute_product_purchase_price(cr, uid, product, bom_properties,
+                                                                       context=context)
             except Exception as e:
                 res[product.id] = 99999999
                 _logger.error(u'{product} ERRORE: {error}'.format(product=product.name_get()[0][1], error=e))
 
-        # else:
-        #     for product_id in ids:
-        #         res[product_id] = self._compute_product_purchase_price(cr, uid, product_id, bom_properties, context=context)
-
         return res
-
-    # def _compute_purchase_price(self, cr, uid, ids,
-    #                             product_uom=None,
-    #                             bom_properties=None,
-    #                             context=None):
-    #     '''
-    #     Compute the purchase price, taking into account sub products and routing
-    #     '''
-    #
-    #     context = context or self.pool['res.users'].context_get(cr, uid)
-    #     bom_properties = bom_properties or []
-    #     user = self.pool['res.users'].browse(cr, uid, uid, context)
-    #
-    #     bom_obj = self.pool['mrp.bom']
-    #     uom_obj = self.pool['product.uom']
-    #
-    #     res = {}
-    #     ids = ids or []
-    #
-    #     for product in self.browse(cr, uid, ids, context):
-    #         if ENABLE_CACHE:
-    #             _logger.debug(u'[{product.default_code}] {product.name}'.format(product=product))
-    #         bom_id = bom_obj._bom_find(cr, uid, product.id, product_uom=None, properties=bom_properties)
-    #         if bom_id:
-    #             sub_bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', bom_id)], context=context)
-    #             sub_products = bom_obj.browse(cr, uid, sub_bom_ids, context)
-    #
-    #             price = 0.
-    #             if ENABLE_CACHE:
-    #                 _logger.debug(u'[{product.default_code}] Start Explosion ========================'.format(product=product))
-    #             for sub_product in sub_products:
-    #                 if sub_product.product_id.id == product.id:
-    #                     error = "Product '{product.name}' (id: {product.id}) is referenced to itself".format(product=product)
-    #                     _logger.error(error)
-    #                     continue
-    #
-    #                 # std_price = sub_product.standard_price
-    #                 if ENABLE_CACHE:
-    #                     if sub_product.product_id.id in self.product_cost_cache:
-    #                         std_price = self.product_cost_cache[sub_product.product_id.id]
-    #                     else:
-    #                         std_price = sub_product.product_id.cost_price
-    #                         self.product_cost_cache[sub_product.product_id.id] = std_price
-    #                 else:
-    #                     std_price = sub_product.product_id.cost_price
-    #
-    #                 qty = uom_obj._compute_qty(cr, uid,
-    #                                            from_uom_id=sub_product.product_uom.id,
-    #                                            qty=sub_product.product_qty,
-    #                                            to_uom_id=sub_product.product_id.uom_po_id.id)
-    #                 if ENABLE_CACHE:
-    #                     _logger.debug(u'[{product.default_code}] price += {std_price} * {qty}'.format(product=sub_product.product_id, std_price=std_price, qty=qty))
-    #
-    #                 price += std_price * qty
-    #                 # if sub_product.routing_id:
-    #                 #     for wline in sub_product.routing_id.workcenter_lines:
-    #                 #         wc = wline.workcenter_id
-    #                 #         cycle = wline.cycle_nbr
-    #                 #         # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
-    #                 #         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
-    #
-    #             if sub_products:
-    #                 # Don't use browse when we already have it
-    #                 bom = sub_products[0].bom_id
-    #             else:
-    #                 bom = bom_obj.browse(cr, uid, bom_id, context)
-    #
-    #             if bom.routing_id and not context.get('exclude_routing', False):
-    #                 for wline in bom.routing_id.workcenter_lines:
-    #                     wc = wline.workcenter_id
-    #                     cycle = wline.cycle_nbr
-    #                     # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
-    #                     price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
-    #             price /= bom.product_qty
-    #             price = uom_obj._compute_price(cr, uid, bom.product_uom.id, price, bom.product_id.uom_id.id)
-    #             if ENABLE_CACHE:
-    #                 _logger.debug(
-    #                     u'==== SUM [{product.default_code}] bom_price = {price}'.format(product=product, price=price))
-    #             res[product.id] = price
-    #         else:
-    #             # no BoM: use standard_price
-    #             # use standard_price if no supplier indicated
-    #
-    #             if product.id in self.product_cost_cache and ENABLE_CACHE and not context.get('partner_name', False):
-    #                 res[product.id] = self.product_cost_cache[product.id]
-    #                 continue
-    #
-    #             if product.prefered_supplier:
-    #                 pricelist = product.prefered_supplier.property_product_pricelist_purchase or False
-    #                 ctx = {
-    #                     'date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-    #                 }
-    #                 if context.get('partner_name', False):
-    #                     partner_name = context.get('partner_name')
-    #                     partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
-    #                     partner_id = partner_ids[0]
-    #                 else:
-    #                     partner_id = False
-    #                 price = self.pool['product.pricelist'].price_get(cr, uid, [pricelist.id], product.id, 1, partner_id, context=ctx)[pricelist.id] or 0
-    #
-    #                 price_subtotal = 0.0
-    #                 if pricelist:
-    #                     from_currency = pricelist.currency_id.id
-    #                     to_currency = user.company_id.currency_id.id
-    #                     price_subtotal = self.pool['res.currency'].compute(
-    #                         cr, uid,
-    #                         from_currency_id=from_currency,
-    #                         to_currency_id=to_currency,
-    #                         from_amount=price,
-    #                         context=context
-    #                     )
-    #                 cost_price = price_subtotal or price or product.standard_price
-    #             else:
-    #                 cost_price = self._hook_compute_purchase_price_no_supplier(product)
-    #
-    #             res[product.id] = cost_price
-    #             if ENABLE_CACHE:
-    #                 _logger.debug(
-    #                     u'NO BOM [{product.default_code}] price = {price}'.format(product=product, price=cost_price))
-    #
-    #             if ENABLE_CACHE and not context.get('partner_name', False):
-    #                 self.product_cost_cache[product.id] = res[product.id]
-    #             continue
-    #
-    #     return res
 
     def get_cost_field(self, cr, uid, ids, context=None):
         start_time = datetime.now()
@@ -475,10 +422,11 @@ class product_product(orm.Model):
             else:
                 res[product_id] = True
         return res
-    
+
     """
     Inherit Product in order to add an "Bom Stock" field
     """
+
     def _bom_stock_mapping(self, cr, uid, context=None):
         return {'real': 'qty_available',
                 'virtual': 'virtual_available',
@@ -488,12 +436,12 @@ class product_product(orm.Model):
     # @profile(immediate=True)
 
     def _compute_bom_stock(self, cr, uid, product,
-                           quantities, company, context=None):
+                           quantities, ref_stock, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         bom_obj = self.pool['mrp.bom']
         uom_obj = self.pool['product.uom']
         mapping = self._bom_stock_mapping(cr, uid, context=context)
-        stock_field = mapping[company.ref_stock]
+        stock_field = mapping[ref_stock]
 
         product_qty = quantities.get(stock_field, 0.0)
         # find a bom on the product
@@ -509,7 +457,7 @@ class product_product(orm.Model):
                 # get the minimal number of items we can produce with them
                 for line in bom.bom_lines:
                     prod_min_quantity = 0.0
-                    bom_qty = line.product_id[stock_field] # expressed in product UOM
+                    bom_qty = line.product_id[stock_field]  # expressed in product UOM
                     # the reference stock of the component must be greater
                     # than the quantity of components required to
                     # build the bom
@@ -541,40 +489,53 @@ class product_product(orm.Model):
                 product_qty += produced_qty
         return product_qty
 
-    def _product_available(self, cr, uid, ids, field_names=[],
-                           arg=False, context=None):
+    def _product_available_thread(self, cr, uid, ids, field_names=[], arg=False, context=None):
+
         # We need available, virtual or immediately usable
         # quantity which is selected from company to compute Bom stock Value
         # so we add them in the calculation.
         context = context or self.pool['res.users'].context_get(cr, uid)
         start_time = datetime.now()
-        user_obj = self.pool['res.users']
         comp_obj = self.pool['res.company']
         if 'bom_stock' in field_names:
             field_names.append('qty_available')
             field_names.append('immediately_usable_qty')
             field_names.append('virtual_available')
 
+        company_id = self.pool['res.users']._get_company(cr, uid, context=context)
+        company = comp_obj.read(cr, uid, company_id, ['exclude_consu_stock', 'ref_stock'], context=context)
+
         res = {}
         for product_id in ids:
             res[product_id] = {}.fromkeys(field_names, 0.0)
-        #todo think a mode to be parametric
-        if False:
-            product_stock_ids = self.search(cr, uid, [('id', 'in', ids), ('type', 'not in', ['consu', 'service'])], context=context)
+
+        if company['exclude_consu_stock']:
+            product_stock_ids = self.search(cr, uid, [('id', 'in', ids), ('type', 'not in', ['consu', 'service'])],
+                                            context=context)
         else:
             product_stock_ids = ids
         if product_stock_ids:  # if product_stock_ids is [] get_product_available on stock search for all product
-            res.update(super(product_product, self)._product_available(cr, uid, product_stock_ids, field_names, arg, context))
+            workers = multiprocessing.cpu_count() / 2
+            with multiprocessing.Manager() as manager:
+                return_funct_dict = manager.dict()
+                threads = []
+                for split in self._chunkIt(product_stock_ids, workers):
+                    if split:
+                        thread = self.CreateWarehouseProcess(cr, uid, split, field_names, arg, context, return_funct_dict)
+                        thread.daemon = True
+                        thread.start()
+                        threads.append(thread)
+                # wait for finish all multiprocessing created
+                for job in threads:
+                    job.join()
+                for return_funct_dict_key in return_funct_dict.keys():
+                    res[return_funct_dict_key] = return_funct_dict[return_funct_dict_key]
 
         if 'bom_stock' in field_names:
-            company = user_obj.browse(cr, uid, uid, context=context).company_id
-            if not company:
-                company_id = comp_obj.search(cr, uid, [], context=context)[0]
-                company = comp_obj.browse(cr, uid, company_id, context=context)
-
             for product_id, stock_qty in res.iteritems():
                 product = self.browse(cr, uid, product_id, context=context)
-                res[product_id]['bom_stock'] = self._compute_bom_stock(cr, uid, product, stock_qty, company, context=context)
+                res[product_id]['bom_stock'] = self._compute_bom_stock(cr, uid, product, stock_qty,
+                                                                       company['ref_stock'], context=context)
         end_time = datetime.now()
         duration_seconds = (end_time - start_time)
         duration = '{sec}'.format(sec=duration_seconds)
@@ -584,7 +545,9 @@ class product_product(orm.Model):
     def _get_boms(self, cr, uid, ids, field_name, arg, context):
         result = {}
         for product_id in ids:
-            result[product_id] = self.pool['mrp.bom'].search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
+            result[product_id] = self.pool['mrp.bom'].search(cr, uid,
+                                                             [('product_id', '=', product_id), ('bom_id', '=', False)],
+                                                             context=context)
         return result
 
     def _get_prefered_supplier(self, cr, uid, ids, field_name, arg, context):
@@ -592,7 +555,7 @@ class product_product(orm.Model):
         for product in self.browse(cr, uid, ids, context):
             result[product.id] = product.seller_ids and product.seller_ids[0].name.id or False
         return result
-    
+
     def price_get(self, cr, uid, ids, ptype='list_price', context=None):
         start_time = datetime.now()
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -620,13 +583,14 @@ class product_product(orm.Model):
                 # Take the price_type currency from the product field
                 # This is right cause a field cannot be in more than one currency
                 res[product.id] = self.pool['res.currency'].compute(cr, uid, price_type_currency_id,
-                                                                        context['currency_id'], res[product.id], context=context)
+                                                                    context['currency_id'], res[product.id],
+                                                                    context=context)
         end_time = datetime.now()
         duration_seconds = (end_time - start_time)
         duration = '{sec}'.format(sec=duration_seconds)
         _logger.info(u'price_get get in {duration}'.format(duration=duration))
         return res
-        
+
     _columns = {
         'date_inventory': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date Inventory"),
         'cost_price': fields.function(_cost_price,
@@ -634,13 +598,14 @@ class product_product(orm.Model):
                                       string=_('Cost Price (incl. BoM)'),
                                       digits_compute=dp.get_precision('Purchase Price'),
                                       help="The cost price is the standard price or, if the product has a bom, "
-                                      "the sum of all standard price of its components. it take also care of the "
-                                      "bom costing like cost per cylce."),
-        'prefered_supplier': fields.function(_get_prefered_supplier, type='many2one', relation='res.partner', string='Prefered Supplier'),
+                                           "the sum of all standard price of its components. it take also care of the "
+                                           "bom costing like cost per cylce."),
+        'prefered_supplier': fields.function(_get_prefered_supplier, type='many2one', relation='res.partner',
+                                             string='Prefered Supplier'),
         'is_kit': fields.function(_is_kit, fnct_search=_kit_filter, method=True, type="boolean", string="Kit"),
         'bom_lines': fields.function(_get_boms, relation='mrp.bom', string='Boms', type='one2many', method=True),
         'qty_available': fields.function(
-            _product_available,
+            _product_available_thread,
             multi='qty_available',
             type='float',
             digits_compute=dp.get_precision('Product UoM'),
@@ -658,7 +623,7 @@ class product_product(orm.Model):
                  "Otherwise, this includes goods stored in any Stock Location "
                  "typed as 'internal'."),
         'virtual_available': fields.function(
-            _product_available,
+            _product_available_thread,
             multi='qty_available',
             type='float',
             digits_compute=dp.get_precision('Product UoM'),
@@ -677,7 +642,7 @@ class product_product(orm.Model):
                  "Otherwise, this includes goods stored in any Stock Location "
                  "typed as 'internal'."),
         'incoming_qty': fields.function(
-            _product_available,
+            _product_available_thread,
             multi='qty_available',
             type='float',
             digits_compute=dp.get_precision('Product UoM'),
@@ -694,7 +659,7 @@ class product_product(orm.Model):
                  "Otherwise, this includes goods arriving to any Stock "
                  "Location typed as 'internal'."),
         'outgoing_qty': fields.function(
-            _product_available,
+            _product_available_thread,
             multi='qty_available',
             type='float',
             digits_compute=dp.get_precision('Product UoM'),
@@ -711,7 +676,7 @@ class product_product(orm.Model):
                  "Otherwise, this includes goods leaving from any Stock "
                  "Location typed as 'internal'."),
         'immediately_usable_qty': fields.function(
-            _product_available,
+            _product_available_thread,
             digits_compute=dp.get_precision('Product UoM'),
             type='float',
             string='Immediately Usable',
@@ -719,7 +684,7 @@ class product_product(orm.Model):
             help="Quantity of products really available for sale." \
                  "Computed as: Quantity On Hand - Outgoing."),
         'bom_stock': fields.function(
-            _product_available,
+            _product_available_thread,
             digits_compute=dp.get_precision('Product UoM'),
             type='float',
             string='Bill of Materials Stock',
@@ -752,7 +717,8 @@ class product_product(orm.Model):
 
         if 'bom_ids' not in default:
             bom_obj = self.pool['mrp.bom']
-            bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)], context=context)
+            bom_ids = bom_obj.search(cr, uid, [('product_id', '=', product_id), ('bom_id', '=', False)],
+                                     context=context)
 
             for bom_id in bom_ids:
                 bom_obj.copy(cr, uid, bom_id, {'product_id': copy_id}, context=context)
@@ -785,15 +751,8 @@ class product_product(orm.Model):
         """
         This Function is called by scheduler.
         """
-        def _chunkIt(seq, size):
-            newseq = []
-            splitsize = 1.0 / size * len(seq)
-            for line in range(size):
-                newseq.append(seq[int(round(line * splitsize)): int(round((line + 1) * splitsize))])
-            return newseq
-
         context = context or self.pool['res.users'].context_get(cr, uid)
-
+        return True
         if ENABLE_CACHE:
             if context.get('product_ids', False):
                 product_to_browse_ids = context['product_ids']
@@ -812,7 +771,7 @@ class product_product(orm.Model):
                     if workers > 1:
                         workers = workers / 2
                     # threads = []
-                    for split in _chunkIt(product_to_browse_ids, workers):
+                    for split in self._chunkIt(product_to_browse_ids, workers):
                         if split:
                             thread = self.UpdateCachePrice(cr, uid, self, split, context)
                             thread.start()
@@ -854,7 +813,10 @@ class product_product(orm.Model):
         group_obj = self.pool['res.groups']
         ret = super(product_product, self).fields_get(cr, uid, allfields=allfields, context=context)
 
-        if not (group_obj.user_in_group(cr, uid, uid, 'product_bom.group_modify_product', context=context) or group_obj.user_in_group(cr, uid, uid, 'product_bom.group_create_product', context=context)):
+        if not (group_obj.user_in_group(cr, uid, uid, 'product_bom.group_modify_product',
+                                        context=context) or group_obj.user_in_group(cr, uid, uid,
+                                                                                    'product_bom.group_create_product',
+                                                                                    context=context)):
             for fields in ret.keys():
                 ret[fields]['readonly'] = True
         return ret
@@ -862,7 +824,6 @@ class product_product(orm.Model):
 
 # CANCEL CACHE IF SOMETHING CHANGE ON PRICELIST
 class product_pricelist_item(orm.Model):
-
     _inherit = 'product.pricelist.item'
 
     def create(self, cr, uid, vals, context=None):
@@ -882,7 +843,6 @@ class product_pricelist_item(orm.Model):
         if ENABLE_CACHE:
             self.pool['product.product'].product_cost_cache.empty()
         return res
-
 
 # class pricelist_partnerinfo(orm.Model):
 #

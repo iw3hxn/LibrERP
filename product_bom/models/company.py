@@ -35,6 +35,7 @@ class res_company(orm.Model):
              ('immediately', 'Immediately Usable Stock')],
             'Reference Stock for BoM Stock'),
         'exclude_routing': fields.boolean('Exclude Routing on BOM Cost'),
+        'exclude_consu_stock': fields.boolean('Exclude consumable from Stock')
     }
 
     _defaults = {
@@ -47,3 +48,8 @@ class res_company(orm.Model):
         if ENABLE_CACHE and 'exclude_routing' in vals:
             self.pool['product.product'].product_cost_cache.empty()
         return res
+
+    def action_clear_cache(self, cr, uid, ids, context):
+        if ENABLE_CACHE:
+            self.pool['product.product'].product_cost_cache.empty()
+        return True
