@@ -314,36 +314,33 @@ class product_product(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         bom_properties = bom_properties or []
 
-        res = {}
-        debug_logger = True
-
         if not ids:
             ids = self.search(cr, uid, [])
 
-        # workers = multiprocessing.cpu_count() / 2
-        # res = dict.fromkeys(ids, 0.0)
-        # with multiprocessing.Manager() as manager:
-        #     return_funct_dict = manager.dict()
-        #     threads = []
-        #     for product_ids in self._chunkIt(ids, workers):
-        #         if product_ids:
-        #             thread = self.CreateProductCost(cr, uid, product_ids, bom_properties, context, return_funct_dict)
-        #             # thread.daemon = True
-        #             thread.start()
-        #             threads.append(thread)
-        #     # wait for finish all multiprocessing created
-        #     for job in threads:
-        #         job.join()
-        #     for return_funct_dict_key in return_funct_dict.keys():
-        #         res[return_funct_dict_key] = return_funct_dict[return_funct_dict_key]
-
-        for product in self.browse(cr, uid, ids, context):
-            try:
-                res[product.id] = self._compute_product_purchase_price(cr, uid, product, bom_properties,
-                                                                       context=context)
-            except Exception as e:
-                res[product.id] = 99999999
-                _logger.error(u'{product} ERRORE: {error}'.format(product=product.name_get()[0][1], error=e))
+        workers = multiprocessing.cpu_count() / 2
+        res = dict.fromkeys(ids, 0.0)
+        with multiprocessing.Manager() as manager:
+            return_funct_dict = manager.dict()
+            threads = []
+            for product_ids in self._chunkIt(ids, workers):
+                if product_ids:
+                    thread = self.CreateProductCost(cr, uid, product_ids, bom_properties, context, return_funct_dict)
+                    # thread.daemon = True
+                    thread.start()
+                    threads.append(thread)
+            # wait for finish all multiprocessing created
+            for job in threads:
+                job.join()
+            for return_funct_dict_key in return_funct_dict.keys():
+                res[return_funct_dict_key] = return_funct_dict[return_funct_dict_key]
+        #
+        # for product in self.browse(cr, uid, ids, context):
+        #     try:
+        #         res[product.id] = self._compute_product_purchase_price(cr, uid, product, bom_properties,
+        #                                                                context=context)
+        #     except Exception as e:
+        #         res[product.id] = 99999999
+        #         _logger.error(u'{product} ERRORE: {error}'.format(product=product.name_get()[0][1], error=e))
 
         return res
 
