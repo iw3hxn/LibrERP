@@ -351,7 +351,7 @@
                     </group>
 
                     <group colspan="8" col="8" states="end">
-                        <label string="Importing Pricelist. You will be notified with a message when the import process is finished"/>
+                        <label string="Importing Invoice. You will be notified with a message when the import process is finished"/>
                         <!-- <label string="Import file. Verra segnalata la fine del'importazione, nelle 'Richieste' (Configurazione -> Personalizzazione -> Oggetti Basso Livello -> Richieste -> Richieste)."/> -->
                     </group>
 
@@ -361,7 +361,7 @@
 
                     <group colspan="8" col="8" states="import">
                         <button icon="gtk-cancel" special="cancel" string="Cancel"/>
-                        <button type="object" name="actionCheckEncoding" string="Start Import Sales" icon="gtk-ok"/>
+                        <button type="object" name="actionCheckEncoding" string="Start Import Invoice" icon="gtk-ok"/>
                     </group>
 
                     <group colspan="8" col="8" states="preview">

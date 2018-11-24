@@ -384,6 +384,9 @@ class ImportFile(threading.Thread, Utils):
                 if payment_term_ids:
                     vals_invoice['payment_term'] = payment_term_ids[0]
                 else:
+                    error = u'Row {row}: Invoice {invoice} Not find Payment Term {payment_term} {name}'.format(row=self.processed_lines, invoice=record.number_invoice, payment_term=record.payment_code, name=record.payment_name)
+                    _logger.error(error)
+                    self.error.append(error)
                     validation_check = False
 
                 account_id = self.account_id and self.account_id.id or False
@@ -421,7 +424,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.info(u'Row {row}: Validation to Invoice {invoice}'.format(row=self.processed_lines, invoice=invoice_id))
                 else:
                     validation_check = False
-                    error = u'Row {row}: Invoice {invoice} have different tax amout {invoice} != {file}'.format(row=self.processed_lines, invoice=amount_tax, file=record.total_tax)
+                    error = u'Row {row}: Invoice {invoice} have different tax amout {amount_tax} != {file}'.format(row=self.processed_lines, invoice=record.number_invoice, amount_tax=amount_tax, file=record.total_tax)
                     _logger.error(error)
                     self.error.append(error)
                 if validation_check:
