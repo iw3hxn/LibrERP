@@ -365,6 +365,10 @@ class ImportFile(threading.Thread, Utils):
             return invoice_id
         elif self.format == 'FormatThree':
             partner_code = record.partner_code
+            number = record.number_invoice.split('.')[0]
+            invoice_ids = self.account_invoice_obj.search(cr, uid, [('number', '=', number)], context=self.context)
+            if invoice_ids:
+                return invoice_ids[0]
             partner_ids = self.partner_obj.search(cr, uid, ['|', ('property_supplier_ref', '=', partner_code), ('property_customer_ref', '=', partner_code)], context=self.context)
             if partner_ids:
                 validation_check = True
@@ -428,7 +432,13 @@ class ImportFile(threading.Thread, Utils):
                     _logger.error(error)
                     self.error.append(error)
                 if validation_check:
-                    self.wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                    try:
+                        self.wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                    except Exception as e:
+                        error = u'Row {row}: Invoice {invoice} get Error {error}'.format(
+                            row=self.processed_lines, invoice=record.number_invoice, error=e)
+                        _logger.error(error)
+                        self.error.append(error)
                 self.uo_new += 1
             else:
                 error = u'Row {row}: Not Find {partner}'.format(row=self.processed_lines, partner=record.partner_name)
