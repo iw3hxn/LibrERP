@@ -78,11 +78,11 @@ class account_document_template(orm.Model):
                 _('Code "%s" refers to non existing line') % line.python_code)
         return self._computed_lines[line_number]
 
-    def compute_lines(self, cr, uid, template_id, input_lines):
+    def compute_lines(self, cr, uid, template_id, input_lines, context=None):
         # input_lines: dictionary in the form {line_number: line_amount}
         # returns all the lines (included input lines)
         # in the form {line_number: line_amount}
-        template = self.browse(cr, uid, template_id)
+        template = self.browse(cr, uid, template_id, context)
         if len(input_lines) != self._input_lines(cr, uid, template):
             raise orm.except_orm(
                 _('Error'),
