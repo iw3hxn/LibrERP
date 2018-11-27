@@ -63,7 +63,9 @@ class sale_order_line(orm.Model):
     def _product_margin(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
-            res[line.id] = 0
+            res[line.id] = {
+                'margin': 0
+            }
             if line.product_id:
                 if line.purchase_price:
                     purchase_price = line.purchase_price
