@@ -42,6 +42,11 @@
         <field name="category_id" ref="sale.module_category_sale"/>
     </record>
 
+    <record id="sale.view_after_sale_service" model="res.groups">
+        <field name="name">View After Sale Service</field>
+        <field name="category_id" ref="sale.module_category_sale"/>
+    </record>
+
     <record id="sale.sale_order_line_personal_rule" model="ir.rule">
         <field name="name">Personal Order Lines</field>
         <field ref="sale.model_sale_order_line" name="model_id"/>

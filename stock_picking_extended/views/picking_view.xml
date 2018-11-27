@@ -216,9 +216,14 @@
                                             attrs="{'invisible': [('state', 'in', ['assigned', 'done'])]}"/>
                                 </tree>
                                 <form string="Move">
-                                    <field name="product_id" readonly="1"/>
+                                    <field name="picking_id" readonly="1"/>
                                     <field name="product_qty" readonly="1"/>
+                                    <field name="sale_id" readonly="1"/>
                                     <field name="state"/>
+                                    <separator string="Internal Note" colspan="4"/>
+                                    <field name="internal_note" colspan="4" nolabel="1"/>
+                                    <separator string="Note on Picking Line" colspan="4"/>
+                                    <field name="note" colspan="4" nolabel="1"/>
                                 </form>
                             </field>
                         </page>
