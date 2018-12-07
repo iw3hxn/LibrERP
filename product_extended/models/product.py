@@ -96,6 +96,7 @@ class product_product(orm.Model):
             'last_sale_order_id': False,
             'last_customer_invoice_id': False,
             'last_supplier_invoice_id': False,
+            'stock_location_ids': False
         })
         return super(product_product, self).copy(cr, uid, id, default, context)
 
