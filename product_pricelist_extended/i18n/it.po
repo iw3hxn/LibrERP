@@ -70,13 +70,18 @@ msgstr "Listino Clienti"
 msgid "Cost Price with Delivery"
 msgstr "Prezzo Netto con Spedizione"
 
-#. module: profile_giolo
+#. module: product_extended
 #: field:product.pricelist.version,partner_ids:0
 #: field:product.pricelist,partner_ids:0
 msgid "Partners"
 msgstr "Partners"
 
-#. module: profile_giolo
+#. module: product_extended
 #: field:product.pricelist,partner_num:0
 msgid "Partners number"
 msgstr "Numero Partner"
+
+#. module: product_extended
+#: field:product.product,partner_id:0
+msgid "Customer"
+msgstr "Cliente"

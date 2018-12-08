@@ -53,6 +53,18 @@
             </field>
         </record>
 
+        <record id="product_product_partner_search_view" model="ir.ui.view">
+            <field name="name">product.product.partner.search</field>
+            <field name="model">product.product</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="profile_base.product_product_search_inherit"/>
+            <field name="arch" type="xml">
+                <field name="default_code" position="before">
+                    <field name="partner_id" context="{'pricelist': True, 'partner_name': self}"/>
+                </field>
+            </field>
+        </record>
+
         <delete id="point_of_sale.product_normal_form_pos_view" model="ir.ui.view"/>
 
     </data>
