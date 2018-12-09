@@ -47,11 +47,11 @@ class product_product(orm.Model):
         for product in self.browse(cr, uid, ids, context):
             if context.get('partner_name', False):
                 partner_name = context.get('partner_name')
-                partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name)], context=context)
+                partner_ids = self.pool['res.partner'].search(cr, uid, [('name', '=', partner_name), ('supplier', '=', True)], context=context)
                 if partner_ids:
                     result[product.id] = partner_ids[0]
                 else:
-                    result[product.id] = ''
+                    result[product.id] = product.seller_ids and product.seller_ids[0].name.id or ''
             else:
                 result[product.id] = product.seller_ids and product.seller_ids[0].name.id or ''
         return result
