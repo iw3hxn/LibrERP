@@ -2,4 +2,4 @@
 "access_account_move_line_group_user","account_move_line group_user","account.model_account_move_line","base.group_user",1,0,0,0
 "access_model_account_account_group_user","account_account group_user","account.model_account_account","base.group_user",1,0,0,0
 "access_model_account_invoice_group_user","account_invoice group_user","account.model_account_invoice","base.group_user",1,0,0,0
-"access_model_account_invoice_line_group_user","account_invoice line_group_user","account.model_account_invoiceline_","base.group_user",1,0,0,0
+"access_model_account_invoice_line_group_user","account_invoice line_group_user","account.model_account_invoice_line","base.group_user",1,0,0,0
