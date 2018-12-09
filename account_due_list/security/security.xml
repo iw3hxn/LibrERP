@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="can_view_due_list" model="res.groups">
+            <field name="name">Can View Due List on Partner</field>
+        </record>
+
+        <delete id="account.invoice_comp_rule" model="ir.rule"/>
+        <delete id="account.account_invoice_line_comp_rule" model="ir.rule"/>
+    </data>
+</openerp>

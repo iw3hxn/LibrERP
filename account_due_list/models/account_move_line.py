@@ -175,7 +175,8 @@ class account_move_line(orm.Model):
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
     }
 
-    _order = "date_maturity desc, move_id asc, ref asc, id asc"
+    _order = "date desc, ref asc, move_id asc, id asc"
+    # _order = "date_maturity desc, date desc, ref asc, move_id asc, id asc"
     # _order = "date_maturity desc, date asc, move_id asc, id asc"
     # _sql_constraints = [
     #     ('maturity_date', "CHECK (date_maturity>='1900-01-01')", 'Wrong date maturity in accounting entry !'),

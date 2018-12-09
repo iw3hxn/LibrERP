@@ -19,8 +19,7 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, orm, osv
-from openerp.tools.translate import _
+from openerp.osv import fields, orm
 
 
 class res_partner(orm.Model):
@@ -28,10 +27,10 @@ class res_partner(orm.Model):
 
     def _get_invoice_payment(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        for partner in self.browse(cr, uid, ids, context=context):
-            res[partner.id] = self.pool['account.move.line'].search(cr, uid, [
+        for partner_id in ids:
+            res[partner_id] = self.pool['account.move.line'].search(cr, uid, [
                 ('account_id.type', 'in', ['receivable', 'payable']), ('stored_invoice_id', '!=', False),
-                ('partner_id', '=', partner.id), ('reconcile_id', '=', False)], context=context)
+                ('partner_id', '=', partner_id), ('reconcile_id', '=', False)], context=context)
         return res
 
     _columns = {

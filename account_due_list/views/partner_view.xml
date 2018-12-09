@@ -7,20 +7,20 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <notebook position="inside">
-                    <page string="Schedule" groups="account.group_account_invoice">
+                    <page string="Schedule" groups="account_due_list.can_view_due_list">
                         <separator string="Schedule" colspan="4"/>
                         <field name="payment_ids" nolabel="1" readonly="1"
-                               context="{'tree_view_ref': 'account_due_list.view_payments_tree'}">
+                               context="{'tree_view_ref': 'account_due_list.view_payments_tree', 'reconciled': True}">
                             <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
                                 <field name="stored_invoice_id" readonly="1"/>
                                 <button name="action_view_invoice" string="Open Invoice" type="object"
                                         icon="gtk-zoom-in"/>
-                                <field name="invoice_date" readonly="1"/>
+
                                 <!--<field name="invoice_origin" readonly="1"/>-->
-                                <field name="partner_id" string="Partner" readonly="1"/>
+                                <field name="partner_id" string="Partner" readonly="1" invisible="1"/>
                                 <!--<field name="partner_ref" readonly="1"/>-->
                                 <field name="payment_term_id" readonly="1"/>
-                                <field name="payment_term_type" readonly="1"/>
+                                <!--<field name="payment_term_type" readonly="1"/>-->
                                 <field name="bank_id" readonly="1"/>
                                 <field name="account_id" readonly="1"/>
                                 <field name="debit" readonly="1" sum="Total Debit"
@@ -30,6 +30,7 @@
                                 <field name="residual" sum="Total Residual"/>
                                 <field name="date_maturity"/>
                                 <field name="move_id" readonly="1" invisible="context.get('reconciled',False)"/>
+                                <field name="invoice_date" readonly="1"/>
                                 <field name="reconcile_id" readonly="1" invisible="context.get('reconciled',False)"/>
                                 <field name="reconcile_partial_id" readonly="1"
                                        invisible="context.get('reconciled',False)"/>
