@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <form string="Compute Asset" >
                     <group colspan="2" col="2">
-                        <field name="fy_id"/>
+                        <field name="fy_id" widget="selection"/>
                         <separator colspan="2"/>
                         <field name="set_init"/>
                     </group>

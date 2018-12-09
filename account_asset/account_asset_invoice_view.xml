@@ -8,7 +8,7 @@
       <field name="inherit_id" ref="l10n_it_account.view_invoice_line_form_customer"/>
       <field name="arch" type="xml">
         <field name="account_id" position="after">
-          <field name="asset_category_id" on_change="onchange_asset_ctg_id(asset_category_id)"/>
+          <field name="asset_category_id" on_change="onchange_asset_ctg_id(asset_category_id)" widget="selection"/>
           <field name="asset_id" on_change="onchange_asset_id(asset_id)"/>
         </field>
       </field>
@@ -20,7 +20,7 @@
       <field name="inherit_id" ref="l10n_it_account.view_invoice_line_form_supplier"/>
       <field name="arch" type="xml">
         <field name="account_id" position="before">
-          <field name="asset_category_id" on_change="onchange_asset_ctg_id(asset_category_id)"/>
+          <field name="asset_category_id" on_change="onchange_asset_ctg_id(asset_category_id)" widget="selection"/>
           <field name="asset_id" on_change="onchange_asset_id(asset_id)"/>
         </field>
       </field>

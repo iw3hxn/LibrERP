@@ -83,35 +83,25 @@ class asset_depreciation_confirmation_wizard(orm.TransientModel):
         init_move_ids = []
         for asset in ass_obj.browse(cr, uid, asset_ids, context):
 
-            if not asset_board_obj.search(cr, uid, [
-                    ('asset_id', '=', asset.id),
-                    ('move_id', '!=', False),
-                    ('type', '=', 'depreciate')]):
-                if not asset_board_obj.search(cr, uid, [
-                    ('asset_id', '=', asset.id),
-                    ('line_date', '>=', fy.date_start),
-                    ('line_date', '<=', fy.date_stop),
-                    ('move_id', '=', False),
-                    ('init_entry', '=', True)
-                ]):
+            if not asset_board_obj.search(cr, uid, [('asset_id', '=', asset.id), ('move_id', '!=', False), ('type', '=', 'depreciate')], context=context):
+                if not asset_board_obj.search(cr, uid, [('asset_id', '=', asset.id), ('line_date', '>=', fy.date_start), ('line_date', '<=', fy.date_stop), ('move_id', '=', False), ('init_entry', '=', True)], context=context):
                     asset.compute_depreciation_board()
-                    asset_board_moves = asset_board_obj.search(cr, uid, [
+                asset_board_moves = asset_board_obj.search(cr, uid, [
                         ('asset_id', '=', asset.id),
                         ('line_date', '>=', fy.date_start),
                         ('line_date', '<=', fy.date_stop),
-                        ('move_id', '=', False)])
-                    for asset_board in asset_board_obj.browse(
+                        ('move_id', '=', False), ('type', '=', 'depreciate')])
+                for asset_board in asset_board_obj.browse(
                             cr, uid, asset_board_moves, context):
-                        if set_init:
-                            asset_board.write({'init_entry': True})
-                        init_move_ids.append(asset_board.id)
+                    if set_init:
+                        asset_board.write({'init_entry': True})
+                    init_move_ids.append(asset_board.id)
         return {
             'name': _('Asset Moves Confirmed as Init entry'),
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': 'account.asset.depreciation.line',
             'view_id': False,
-            'domain': "[('id','in',[" + ','.join(
-                map(str, init_move_ids)) + "])]",
+            'domain': "[('id','in',[" + ','.join(map(str, init_move_ids)) + "])]",
             'type': 'ir.actions.act_window',
         }

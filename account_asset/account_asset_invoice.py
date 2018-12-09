@@ -28,11 +28,11 @@ _logger = logging.getLogger(__name__)
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
-    def action_number(self, cr, uid, ids, *args):
-        super(account_invoice, self).action_number(cr, uid, ids, *args)
-        asset_obj = self.pool.get('account.asset.asset')
-        asset_line_obj = self.pool.get('account.asset.depreciation.line')
-        for inv in self.browse(cr, uid, ids):
+    def action_number(self, cr, uid, ids, context=None):
+        super(account_invoice, self).action_number(cr, uid, ids, context)
+        asset_obj = self.pool['account.asset.asset']
+        asset_line_obj = self.pool['account.asset.depreciation.line']
+        for inv in self.browse(cr, uid, ids, context):
             for aml in inv.move_id.line_id:
                 if aml.asset_id and not aml.subsequent_asset:
                     asset = aml.asset_id
@@ -45,16 +45,16 @@ class account_invoice(orm.Model):
 
         return True
 
-    def action_cancel(self, cr, uid, ids, *args):
+    def action_cancel(self, cr, uid, ids, context=None):
         assets = []
-        for inv in self.browse(cr, uid, ids):
+        for inv in self.browse(cr, uid, ids, context):
             move = inv.move_id
             #assets = move and [aml.asset_id for aml in filter(lambda x: x.asset_id, move.line_id)]
             assets = move and [aml.asset_id for aml in [i for i in move.line_id if i.asset_id]]
             adl_obj = self.pool['account.asset.depreciation.line']
-            adl_ids = adl_obj.search(cr, uid, [('move_id', '=', move.id)])
+            adl_ids = adl_obj.search(cr, uid, [('move_id', '=', move.id)], context=context)
 
-        super(account_invoice, self).action_cancel(cr, uid, ids, *args)
+        super(account_invoice, self).action_cancel(cr, uid, ids, context)
         if assets:
             asset_obj = self.pool.get('account.asset.asset')
             for asset in asset_obj.browse(cr, uid, [x.id for x in assets]):
