@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- Wizard: schermata che chiede percorso del file ed encoding del testo -->
+        <record id="view_account_bank_statement_import_form" model="ir.ui.view">
+            <field name="name">account.bank.statement.import.form</field>
+            <field name="model">account.bank.statement.import</field>
+            <!-- Tipo di vista, ovvero architettura principale della vista, in questo caso è un form -->
+            <field name="type">form</field>
+            <!-- Specifica della struttura della vista usando XML -->
+            <field name="arch" type="xml">
+                <form>
+                    <!-- Percorso del file -->
+                    <field name="file_name" invisible="1"/>
+                    <field name="content_base64" filename="file_name" />
+                    <newline/>
+                    <field name="template_id" widget="selection" />
+                </form>
+            </field>
+        </record>
+
+        <!-- Azione per aprire il wizard, questa azione viene associata ad una voce di menu definita in purchase_import_pricelist/partner_properties_view.xml -->
+        <record id="action_account_bank_statement_import" model="ir.actions.act_window">
+            <field name="name">Importazione Account Bank Statement in formato Excel (xls)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.bank.statement.import</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_account_bank_statement_import_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+            action="action_account_bank_statement_import"
+            id="menu_action_account_bank_statement_import"
+            parent="account.menu_finance_bank_and_cash" sequence="30"/>
+
+    </data>
+</openerp>
