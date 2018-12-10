@@ -108,7 +108,7 @@ class stock_picking(orm.Model):
         @return: True
         """
         _logger = logging.getLogger(__name__)
-        self.allow_reopen(cr, uid, ids, context=None)
+        self.allow_reopen(cr, uid, ids, context=context)
         move_line_obj = self.pool['stock.move']
         # account_move_line_obj = self.pool['account.move.line']
         account_move_obj = self.pool['account.move']
@@ -117,7 +117,7 @@ class stock_picking(orm.Model):
         attachment_obj = self.pool['ir.attachment']
 
         now = ' ' + _('Invalid') + time.strftime(' [%Y%m%d %H%M%S]')
-        for pick in self.browse(cr, uid, ids):
+        for pick in self.browse(cr, uid, ids, context):
             _logger.debug('FGF picking action reopen pick %s ' % (pick.name))
             ml_ids = []
             ml_real_time_ids = []
@@ -126,7 +126,7 @@ class stock_picking(orm.Model):
                 if ml.product_id.valuation == 'real_time':
                     ml_real_time_ids.append(ml.id)
             _logger.debug('FGF picking action reopen pick %s ' % (ml_ids))
-            move_line_obj.write(cr, uid, ml_ids, {'state': 'draft'})
+            move_line_obj.write(cr, uid, ml_ids, {'state': 'draft'}, context)
             # we have to handle real time accounting stock moves
             if ml_real_time_ids:
                 # FIXME - performance, should be an id - link to picking
@@ -137,7 +137,7 @@ class stock_picking(orm.Model):
                 move_inv_ids = []
                 move_ids = []
                 invoice_ids = account_invoice_obj.search(cr, uid, [('move_id', 'in', move_all_ids)])
-                for inv in account_invoice_obj.browse(cr, uid, invoice_ids):
+                for inv in account_invoice_obj.browse(cr, uid, invoice_ids, context):
                     move_inv_ids.append(inv.move_id)
                 for m in move_all_ids:
                     if m not in move_inv_ids:
@@ -149,12 +149,12 @@ class stock_picking(orm.Model):
                 #        move_ids.append(aml.move_id.id)
                 _logger.debug('FGF picking action reopen move %s ' % (move_ids))
                 # account_move_obj.write(cr, uid, [aml.id], {'ref': aml.ref or '' + now})
-                for move in account_move_obj.browse(cr, uid, move_ids):
-                    account_move_obj.write(cr, uid, [move.id], {'name': move.name + now})
+                for move in account_move_obj.browse(cr, uid, move_ids, context):
+                    account_move_obj.write(cr, uid, [move.id], {'name': move.name + now}, context)
                     _logger.debug('FGF picking action pre copy %s ' % (move.id))
-                    move_copy_id = account_move_obj.copy(cr, uid, move.id, )
+                    move_copy_id = account_move_obj.copy(cr, uid, move.id, context)
                     _logger.debug('FGF picking action post copy %s ' % (move.id))
-                    account_move_obj.write(cr, uid, [move_copy_id], {'name': move.name + now + '*'})
+                    account_move_obj.write(cr, uid, [move_copy_id], {'name': move.name + now + '*'}, context)
                     _logger.debug('FGF picking action post write %s ' % (move.id))
                     cr.execute("""update account_move_line
                                     set debit=credit, credit=debit,
@@ -163,7 +163,7 @@ class stock_picking(orm.Model):
                     # rename attachments (reports)
             # for some reason datas_fname has .pdf.pdf extension
             report_ids = report_xml_obj.search(cr, uid, [('model', '=', 'stock.picking'), ('attachment', '!=', False)])
-            for report in report_xml_obj.browse(cr, uid, report_ids):
+            for report in report_xml_obj.browse(cr, uid, report_ids, context):
                 if report.attachment:
                     aname = report.attachment.replace('object', 'pick')
                     if eval(aname):
@@ -171,14 +171,14 @@ class stock_picking(orm.Model):
                         attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'stock.picking'),
                                                                          ('datas_fname', '=', aname),
                                                                          ('res_id', '=', pick.id)])
-                        for a in attachment_obj.browse(cr, uid, attachment_ids):
+                        for a in attachment_obj.browse(cr, uid, attachment_ids, context):
                             vals = {
                                 'name': a.name.replace('.pdf', now + '.pdf'),
                                 'datas_fname': a.datas_fname.replace('.pdf.pdf', now + '.pdf.pdf')
                             }
-                            attachment_obj.write(cr, uid, a.id, vals)
+                            attachment_obj.write(cr, uid, a.id, vals, context)
 
-            self.write(cr, uid, pick.id, {'state': 'draft'})
+            self.write(cr, uid, pick.id, {'state': 'draft'}, context)
             wf_service = netsvc.LocalService("workflow")
 
             wf_service.trg_delete(uid, 'stock.picking', pick.id, cr)
