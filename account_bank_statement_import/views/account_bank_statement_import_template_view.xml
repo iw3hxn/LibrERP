@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <record id="view_account_bank_statement_import_template_form" model="ir.ui.view">
+            <field name="name">account.bank.statement.import.template.form</field>
+            <field name="model">account.bank.statement.import.template</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Account Bank Statement Import Template">
+                    <field name="name" />
+                    <separator string="Column Mapping" colspan="4"/>
+                    <newline/>
+                    <field name="start_row"/>
+                    <field name="col_description"/>
+                    <newline/>
+                    <field name="col_operation_date"/>
+                    <field name="col_value_date"/>
+                    <field name="col_value"/>
+                    <field name="col_causal"/>
+                    <separator string="Rules" colspan="4"/>
+                    <field name="rules" colspan="4" nolabel="1">
+                        <form string="Rules">
+                            <field name="starts_with"/>
+                            <newline/>
+                            <field name="account_id"/>
+                        </form>
+                        <tree>
+                            <field name="starts_with"/>
+                            <field name="account_id"/>
+                        </tree>
+                    </field>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_account_bank_statement_import_template_tree" model="ir.ui.view">
+            <field name="name">account.bank.statement.import.template.tree</field>
+            <field name="model">account.bank.statement.import.template</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Account Bank Statement Import Template">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_account_bank_statement_import_template" model="ir.actions.act_window">
+            <field name="name">Account Bank Statement Import Template</field>
+            <field name="res_model">account.bank.statement.import.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+            action="action_account_bank_statement_import_template"
+            id="menu_action_account_bank_statement_import_template"
+            parent="account.menu_finance_bank_and_cash" sequence="31"/>
+
+    </data>
+</openerp>
