@@ -45,6 +45,7 @@
                 <form string="Pricelist Version">
                     <group col="4" colspan="4">
                         <field name="price"/>
+                        <field name="price_uos" groups="product.group_uos"/>
                         <field name="price_error" invisible="1"/>
                         <field name="pricelist_rule_id" attrs="{'invisible': [('price_error','!=', False)]}"/>
                         <field name="date_start" select="1"/>

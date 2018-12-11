@@ -53,7 +53,13 @@ msgstr "Descrizione errore di calcolo"
 #. module: profile_giolo
 #: field:product.pricelist.version,price:0
 msgid "Pricelist"
-msgstr "Prezzo Listino"
+msgstr "Prezzo Netto"
+
+#. module: profile_giolo
+#: field:product.pricelist.version,price:0
+msgid "Pricelist UoS"
+msgstr "Prezzo Netto UdV"
+
 
 #. module: profile_giolo
 #: field:product.pricelist.version,string_discount:0

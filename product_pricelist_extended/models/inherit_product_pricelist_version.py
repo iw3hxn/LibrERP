@@ -24,6 +24,7 @@ class ProductPricelistVersion(orm.Model):
                     'pricelist_rule_id': False,
                     'string_discount': '',
                     'row_color': 'black',
+                    'price_uos': False,
                     # 'pricelist_rule_type': ''
                 }
             return res
@@ -53,7 +54,11 @@ class ProductPricelistVersion(orm.Model):
 
             pricelist_id = pricelist_version.pricelist_id.id
             price, rule = res_multi[pricelist_id]
-            res[pricelist_version.id]['price'] = price
+            uos_coeff = product.uos_coeff or 1
+            res[pricelist_version.id].update({
+                'price': price,
+                'price_uos': price / uos_coeff
+            })
             if price < cost_price:
                 res[pricelist_version.id]['row_color'] = 'red'
             if rule:
@@ -111,6 +116,8 @@ class ProductPricelistVersion(orm.Model):
     _columns = {
         'type': fields.related('pricelist_id', 'type', type='selection', selection=_pricelist_type_get, string='Pricelist Type'),
         'price': fields.function(_product_price, type='float', string='Pricelist', method=True, multi='product_price',
+                                 digits_compute=dp.get_precision('Sale Price')),
+        'price_uos': fields.function(_product_price, type='float', string='Pricelist UoS', method=True, multi='product_price',
                                  digits_compute=dp.get_precision('Sale Price')),
         'pricelist_rule_id': fields.function(_product_price, obj='product.pricelist.item', type='many2one', string='Rule', method=True, multi='product_price'),
         # 'pricelist_rule_type': fields.function(_product_price, type='char', string='Rule type', method=True, multi='product_price'),
