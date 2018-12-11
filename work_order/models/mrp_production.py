@@ -39,6 +39,7 @@ class mrp_production(orm.Model):
 
             project_ids = self.pool['project.project'].search(cr, uid, [('analytic_account_id', '=', production.analytic_account_id.id)],
                                              context=context)
-            picking_vals.update({'project_id': project_ids[0]})
+            if project_ids:
+                picking_vals.update({'project_id': project_ids[0]})
             self.pool['stock.picking'].write(cr, uid, picking_id, picking_vals, context)
         return picking_id
