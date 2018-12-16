@@ -113,7 +113,8 @@ class virtual_purchase_requisition_partner(orm.TransientModel):
 
                 if not len(list_line):
                     continue
-                purchase_id = order_obj.create(cr, uid, {
+
+                order_vals = {
                     'origin': requisition.purchase_ids and requisition.purchase_ids[0].origin or requisition.name,
                     'partner_id': partner_id,
                     'partner_address_id': delivery_address_id,
@@ -126,7 +127,12 @@ class virtual_purchase_requisition_partner(orm.TransientModel):
                     'warehouse_id': requisition.warehouse_id.id and requisition.warehouse_id.id,
                     'location_id': location_id,
                     'company_id': requisition.company_id.id,
-                }, context)
+                }
+                shop_ids = self.pool['sale.shop'].search(cr, uid, [('warehouse_id', '=', requisition.warehouse_id.id and requisition.warehouse_id.id)], context=context)
+                if shop_ids:
+                    order_vals.update({'shop_id': shop_ids[0]})
+
+                purchase_id = order_obj.create(cr, uid, order_vals, context)
                 order_ids = []
                 for order_line in list_line:
                     order_line.update({

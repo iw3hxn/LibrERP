@@ -31,7 +31,7 @@
 
 {
     "name": "Purchase Requisition Extended",
-    "version": "3.1.2.8",
+    "version": "3.1.3.8",
     "author": "Andrei Levin",
     "category": "Sales & Purchases",
     "description": '''
@@ -42,6 +42,7 @@
     "depends": [
         "base",
         'purchase_requisition',
+        'purchase_no_gap',
     ],
     "data": [
         'wizard/purchase_requisition_partner_view.xml',
