@@ -22,7 +22,7 @@
 
 {
     'name': 'Price Security',
-    'version': '2.1.3.3',
+    'version': '2.1.4.3',
     'description': """
     Creates a new permission to restrict the users that can modify the prices
     of the products.

@@ -48,7 +48,7 @@ class account_invoice_line(orm.Model):
                                                     string='Product Can modify prices'),
     }
 
-    def onchange_price_unit(self, cr, uid, ids, price_unit):
+    def onchange_price_unit(self, cr, uid, ids, product_id, price_unit, context=None):
         return {'value': {'price_unit_copy': price_unit}}
 
     def create(self, cr, uid, vals, context=None):

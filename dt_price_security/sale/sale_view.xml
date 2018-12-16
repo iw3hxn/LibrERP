@@ -19,7 +19,7 @@
                     
                     <xpath expr="//form[@string='Sales Order']//field[@name='order_line']//form[@string='Sales Order Lines']//field[@name='price_unit']" position="replace">
                         <group colspan="2" col="2">
-                            <field name="price_unit" on_change="onchange_price_unit(price_unit)"
+                            <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, context)"
                                   attrs="{'invisible':[('user_can_modify_prices','=', False), ('product_can_modify_prices','=', False)]}" />
                             <field name="price_unit_copy" attrs="{'invisible':['|', ('user_can_modify_prices','=', True), ('product_can_modify_prices','=', True)]}"/>
                             <field name="user_can_modify_prices" invisible="1" />

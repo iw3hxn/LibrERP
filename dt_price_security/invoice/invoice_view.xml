@@ -35,7 +35,7 @@
                 <data>
                     <field name="price_unit" position="replace">
                         <group colspan="2" col="2">
-                            <field name="price_unit" on_change="onchange_price_unit(price_unit)"
+                            <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, context)"
                                   />
                             <field name="price_unit_copy" />
                             <!-- <field name="can_modify_prices" invisible="0"/> -->
