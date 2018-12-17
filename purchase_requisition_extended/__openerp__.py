@@ -45,6 +45,7 @@
         'purchase_no_gap',
     ],
     "data": [
+        'security/purchase_security.xml',
         'wizard/purchase_requisition_partner_view.xml',
         'views/purchase_requisition_view.xml'
     ],
