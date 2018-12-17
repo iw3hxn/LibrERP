@@ -79,6 +79,10 @@ class product_product(orm.Model):
                 partner = partner_obj.browse(cr, uid, partner_ids[0], context=context)
                 context['pricelist'] = partner.property_product_pricelist and partner.property_product_pricelist.id or False
                 context['partner'] = partner.id
+            else:
+                del context['partner_name']
+                if 'pricelist' in context:
+                    del context['pricelist']
         res = self.pool['product.product']._product_price(cr, uid, ids, name, arg, context)
         # res = {}
         # for id in ids:
