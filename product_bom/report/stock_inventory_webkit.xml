@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <report
+                auto="False"
+                file="product_bom/report/stock_inventory.mako"
+                id="stock_product_zero.stock_inventory_webkit"
+                model="stock.inventory"
+                name="stock.inventory.webkit"
+                report_type="webkit"
+                string="WebKit Inventory"/>
+    </data>
+</openerp>
