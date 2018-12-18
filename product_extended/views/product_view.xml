@@ -48,9 +48,10 @@
                     </group>
                     <newline/>
                 </xpath>
-                <group name="misc" position="after">
-                      <group col="2" colspan="2" attrs="{'invisible':[('type', '=', 'service')]}">
-                          <separator string="Stock By Location" colspan="2"/>
+                <page string="Procurement &amp; Locations" position="after">
+                    <page string="Stock By Location" groups="product_extended.view_product_locations"
+                          attrs="{'invisible':[('type', '=', 'service')]}">
+
                           <field name="stock_location_ids" context="{'product_id': id}" nolabel="1" readonly="1">
                               <tree string="Stock Location">
                                   <field name="name"/>
@@ -58,8 +59,8 @@
                                   <field name="stock_virtual"/>
                               </tree>
                           </field>
-                      </group>
-                  </group>
+                    </page>
+                </page>
             </field>
         </record>
 

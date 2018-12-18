@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record model="res.groups" id="view_product_locations">
+            <field name="name">View Product by Location on Product</field>
+            <field name="category_id" ref="base.module_category_warehouse_management"/>
+        </record>
+    </data>
+</openerp>

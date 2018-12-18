@@ -3,7 +3,7 @@
 
 {
     "name": "Product Extended",
-    "version": "3.9.17.16",
+    "version": "3.9.17.17",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     'category': 'Sales Management',
@@ -25,6 +25,7 @@
     ],
     "data": [
         'security/ir.model.access.csv',
+        'security/security.xml',
         'views/product_view.xml',
         'views/product_supplierinfo_view.xml',
         'views/product_category_view.xml',
