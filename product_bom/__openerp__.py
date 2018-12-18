@@ -20,7 +20,7 @@
 
 {
     "name": "Show Bom in Product",
-    "version": "3.4.24.17",
+    "version": "3.4.25.17",
     "category": "Sales Management",
     "description": """
         This module adds the 'BOM' on Product. And also use BOM as WBS
@@ -37,7 +37,8 @@
         'mrp',
         'product_manufacturer',
         'core_extended',
-        'res_users_helper_functions'
+        'res_users_helper_functions',
+        'stock_product_zero'
     ],
     "demo_xml": [],
     "update_xml": [
@@ -47,6 +48,7 @@
         "views/product.xml",
         "data/cron.xml",
         "views/mrp.xml",
+        "report/stock_inventory_webkit.xml"
     ],
     "auto_install": False,
     "installable": True,
