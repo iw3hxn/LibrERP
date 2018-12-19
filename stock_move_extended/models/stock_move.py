@@ -174,8 +174,8 @@ class stock_move(orm.Model):
         # Open up the picking's form
         return {
             'name': name,
-            'view_type': 'form',
-            'view_mode': 'form',
+            'view_type': 'page',
+            'view_mode': 'page',
             'view_id': [view_id],
             'res_model': res_model,
             'context': ctx,
@@ -190,8 +190,8 @@ class stock_move(orm.Model):
         def return_value():
             return {
                 'name': name,
-                'view_type': 'form',
-                'view_mode': 'form',
+                'view_type': 'page',
+                'view_mode': 'page',
                 'view_id': [view_id],
                 'res_model': res_model,
                 'context': ctx,
