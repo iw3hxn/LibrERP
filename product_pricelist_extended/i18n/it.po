@@ -91,3 +91,8 @@ msgstr "Numero Partner"
 #: field:product.product,partner_id:0
 msgid "Customer"
 msgstr "Cliente"
+
+#. module: product_pricelist_extended
+#: field:product.pricelist.version,price_uos:0
+msgid "Pricelist UoS"
+msgstr "Prezzo Listino UdV"

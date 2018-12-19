@@ -53,14 +53,15 @@ class ProductPricelistItem(orm.Model):
         if not len(ids):
             return []
         res = []
-        context = context or self.pool['res.users'].context_get(cr, uid)
         new_ids = []
         for id in ids:
             if id in self._name_get:
                 res.append((id, self._name_get[id]))
-                _logger.debug('Returning from cache')
             else:
                 new_ids.append(id)
+        if not new_ids:
+            return res
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         for rule in self.read(cr, uid, new_ids, ['product_id', 'categ_id', 'base', 'base_pricelist_id', 'string_discount', 'fixed_price'], context=context):
             name = u''
@@ -81,4 +82,5 @@ class ProductPricelistItem(orm.Model):
                 name += u' con sconto {discount}'.format(discount=rule['string_discount'])
             self._name_get[id] = name
             res.append((rule['id'], name))
+        _logger.debug('ProductPricelistItem - compute {0} from {1}'.format(len(new_ids), len(ids)))
         return res
