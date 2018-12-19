@@ -29,9 +29,11 @@ class SaleOrder(orm.Model):
         return lines
 
     def create(self, cr, uid, values, context=None):
-        values['order_line'] = self.set_sequence(values['order_line'])
+        if 'order_line' in values:
+            values['order_line'] = self.set_sequence(values['order_line'])
         return super(SaleOrder, self).create(cr, uid, values, context)
 
     def write(self, cr, uid, ids, values, context=None):
-        values['order_line'] = self.set_sequence(values['order_line'])
+        if 'order_line' in values:
+            values['order_line'] = self.set_sequence(values['order_line'])
         return super(SaleOrder, self).write(cr, uid, ids, values, context)
