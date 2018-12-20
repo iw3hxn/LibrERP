@@ -62,36 +62,39 @@ class sale_order_line(orm.Model):
         if product_id:
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
             sequence = 0
-            if product.supply_method == 'produce':
+            if product.bom_lines:
                 result['value']['with_bom'] = True
-                if product.bom_lines:
-                    mrp_bom = product.bom_lines[0]
-                    # line_mrp_bom_obj = self.pool.get('sale.order.line.mrp.bom')
-                    if mrp_bom.bom_lines:
-                        result['value']['mrp_bom'] = []
-                        for bom_line in mrp_bom.bom_lines:
-                            if bom_line.product_id.bom_lines:
-                                for bom_sub_line in bom_line.product_id.bom_lines[0].bom_lines:
-                                    sequence += 1
-                                    price_unit = self.pool['product.uom']._compute_price(cr, uid,
-                                                                                         bom_sub_line.product_id.uom_id.id,
-                                                                                         bom_sub_line.product_id.cost_price,
-                                                                                         bom_sub_line.product_uom.id)
 
-                                    line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_sub_line, price_unit, sequence, context)
-                                    line_bom.update({
-                                        'parent_id': bom_line.product_id.id,
-                                        'product_uom_qty': line_bom['product_uom_qty'] * bom_line.product_qty,
-                                        'price_subtotal': line_bom['price_subtotal'] * bom_line.product_qty,
-                                    })
-                                    result['value']['mrp_bom'].append(line_bom)
-                            else:
+                mrp_bom = product.bom_lines[0]
+                # line_mrp_bom_obj = self.pool.get('sale.order.line.mrp.bom')
+                if mrp_bom.bom_lines:
+                    result['value']['mrp_bom'] = []
+                    for bom_line in mrp_bom.bom_lines:
+                        if bom_line.product_id.bom_lines:
+                            for bom_sub_line in bom_line.product_id.bom_lines[0].bom_lines:
                                 sequence += 1
-                                price_unit = self.pool['product.uom']._compute_price(cr, uid, bom_line.product_id.uom_id.id, bom_line.product_id.cost_price, bom_line.product_uom.id)
-                                line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_line, price_unit, sequence, context)
+                                price_unit = self.pool['product.uom']._compute_price(cr, uid,
+                                                                                     bom_sub_line.product_id.uom_id.id,
+                                                                                     bom_sub_line.product_id.cost_price,
+                                                                                     bom_sub_line.product_uom.id)
 
+                                line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_sub_line, price_unit, sequence,
+                                                                   context)
+                                line_bom.update({
+                                    'parent_id': bom_line.product_id.id,
+                                    'product_uom_qty': line_bom['product_uom_qty'] * bom_line.product_qty,
+                                    'price_subtotal': line_bom['price_subtotal'] * bom_line.product_qty,
+                                })
                                 result['value']['mrp_bom'].append(line_bom)
-            else:
+                        else:
+                            sequence += 1
+                            price_unit = self.pool['product.uom']._compute_price(cr, uid, bom_line.product_id.uom_id.id,
+                                                                                 bom_line.product_id.cost_price,
+                                                                                 bom_line.product_uom.id)
+                            line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_line, price_unit, sequence, context)
+
+                            result['value']['mrp_bom'].append(line_bom)
+        else:
                 result['value']['with_bom'] = False
             # result['value']['with_bom'] = True
         # {'value': result, 'domain': domain, 'warning': warning}
