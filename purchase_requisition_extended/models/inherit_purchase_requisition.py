@@ -28,6 +28,22 @@ from openerp.tools.translate import _
 class purchase_requisition(orm.Model):
     _inherit = "purchase.requisition"
 
+    def __init__(self, registry, cr):
+        """
+            Add state "To Process"
+        """
+        res = super(purchase_requisition, self).__init__(registry, cr)
+        options = [('to_progress', _('To Process'))]
+
+        type_selection = self._columns['state'].selection
+        for option in options:
+            if option not in type_selection:
+                type_selection.append(option)
+        return res
+
+    def tender_to_progress(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state': 'to_progress'}, context=context)
+
     def tender_done(self, cr, uid, ids, context=None):
         res = super(purchase_requisition, self).tender_done(cr, uid, ids, context)
         wf_service = netsvc.LocalService("workflow")

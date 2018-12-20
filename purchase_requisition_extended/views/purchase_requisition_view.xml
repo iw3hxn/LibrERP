@@ -24,6 +24,10 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <data>
+                    <button name="tender_in_progress" position="replace">
+                        <button name="tender_to_progress" states="draft" string="List Ready" type="object" icon="gtk-ok"/>
+                        <button name="tender_in_progress" states="to_progress" string="Start" type="object" icon="gtk-apply" groups="purchase.group_purchase_user"/>
+                    </button>
                     <tree string="Products" position="replace">
                         <tree string="Products" colors="green: color=='green'; orange: color=='orange'; red: color=='red';" editable="bottom">
                             <field name="product_id" on_change="onchange_product_id(product_id,product_uom_id)"/>
@@ -46,7 +50,7 @@
                         </form>
                     </form>
                     <xpath expr="/form/notebook/page[@string='Quotations']/group" position="replace">
-                        <group col="8" colspan="4">
+                        <group col="8" colspan="4" groups="purchase.group_purchase_user">
                             <label colspan="2"  string=""/>
                             <button name="request_prefered_suppliers" type="object" string="Request to Prefered Suppliers" icon="gtk-execute" attrs="{'readonly': [('state', '=', 'done')]}" colspan="2"/>
                             <button name="request_to_suppliers" type="object" string="Request to All Suppliers" icon="gtk-execute" attrs="{'readonly': [('state', '=', 'done')]}" colspan="2" />
