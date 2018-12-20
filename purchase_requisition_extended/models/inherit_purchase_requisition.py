@@ -83,3 +83,8 @@ class purchase_requisition(orm.Model):
 
         self.tender_in_progress(cr, uid, ids, context=context)
         return True
+
+    _columns = {
+        'product_id': fields.related('line_ids', 'product_id', type='many2one', relation='product.product',
+                                     string='Product'),
+    }

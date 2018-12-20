@@ -109,3 +109,8 @@ msgstr "Non ci sono fornitori preferenziali"
 #: model:ir.ui.menu,name:base.menu_procurement_management_supplier_name
 msgid "Suppliers"
 msgstr "Fornitori"
+
+#. module: purchase_requisition_extended
+#: field:purchase.requisition,product_id:0
+msgid "Product"
+msgstr "Prodotto"

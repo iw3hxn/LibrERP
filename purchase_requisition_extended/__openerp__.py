@@ -31,7 +31,7 @@
 
 {
     "name": "Purchase Requisition Extended",
-    "version": "3.1.3.8",
+    "version": "3.1.3.9",
     "author": "Andrei Levin",
     "category": "Sales & Purchases",
     "description": '''
