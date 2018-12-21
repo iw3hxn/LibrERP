@@ -163,7 +163,7 @@ class stock_move(orm.Model):
             view_id = view and view[1] or False
             name = _('Picking')
             res_model = 'stock.picking'
-            ctx = "{}"
+            ctx = context.copy()
             doc_id = move.picking_id.id
 
             if not doc_id:
@@ -171,6 +171,7 @@ class stock_move(orm.Model):
         else:
             return {}
 
+        ctx.update({'default_type': 'out', 'contact_display': 'partner'})
         # Open up the picking's form
         return {
             'name': name,
