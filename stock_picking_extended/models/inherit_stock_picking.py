@@ -24,6 +24,7 @@
 import multiprocessing
 from datetime import date, datetime
 
+from openerp import netsvc
 import pooler
 from openerp.osv import orm, fields
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
@@ -463,9 +464,16 @@ class stock_picking(orm.Model):
     def action_process(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if self.check_limit(cr, uid, ids, context):
+            auto_picking_ids = self.search(cr, uid, [('id', 'in', ids), ('auto_picking', '=', True)], context=context)
+            if auto_picking_ids:
+                wf_service = netsvc.LocalService("workflow")
+                for pick_id in ids:
+                    self.action_move(cr, uid, [pick_id], context)
+                    wf_service.trg_validate(uid, 'stock.picking', pick_id, 'button_done', cr)
+                return True
             return super(stock_picking, self).action_process(cr, uid, ids, context=context)
-        else:
-            return False
+
+        return False
 
     def print_picking(self, cr, uid, ids, context):
         return self.pool['account.invoice'].print_report(cr, uid, ids, 'delivery.report_shipping', context)
