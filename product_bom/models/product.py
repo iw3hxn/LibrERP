@@ -448,14 +448,15 @@ class product_product(orm.Model):
         bom_obj = self.pool['mrp.bom']
         for search in args:
             if search[0] == 'is_kit':
+                bom_product_ids = []
                 if search[2]:
                     bom_ids = bom_obj.search(cr, uid, [('bom_id', '=', False)], context=context)
                     if bom_ids:
                         bom_product_ids = self.search(cr, uid, [('bom_ids', 'in', bom_ids)], context=context)
                         # res = [bom.product_id.id for bom in bom_obj.browse(cr, uid, bom_ids, context)]
-                        return [('id', 'in', bom_product_ids)]
-                    else:
-                        return [('id', 'in', [])]
+                if search[1] == '!=':
+                    return [('id', 'not in', bom_product_ids)]
+                return [('id', 'in', bom_product_ids)]
         return []
 
     def _is_kit(self, cr, uid, ids, product_uom=None, bom_properties=None, context=None):
