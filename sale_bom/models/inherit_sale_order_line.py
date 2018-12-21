@@ -94,9 +94,17 @@ class sale_order_line(orm.Model):
                             line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_line, price_unit, sequence, context)
 
                             result['value']['mrp_bom'].append(line_bom)
+            else:
+                result['value'].update(
+                    {'with_bom': False,
+                     'mrp_bom': [],
+                     })
+
         else:
-                result['value']['with_bom'] = False
-            # result['value']['with_bom'] = True
+            result['value'].update(
+                {'with_bom': False,
+                 'mrp_bom': [],
+                 })
         # {'value': result, 'domain': domain, 'warning': warning}
         return result
 
