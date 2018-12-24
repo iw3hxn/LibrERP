@@ -33,6 +33,24 @@ class stock_move(orm.Model):
             res[move_id] = True
         return res
 
+    def _get_related_fields(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for move in self.read(cr, uid, ids, ['picking_id'], context):
+            res[move['id']] = {
+                'minimum_planned_date': '',
+                'sale_id': False,
+                'week_nbr': False
+            }
+            if move['picking_id']:
+                picking = self.pool['stock.picking'].browse(cr, uid, move['picking_id'][0], context)
+                res[move['id']]['week_nbr'] = picking.week_nbr
+                if picking.sale_id:
+                    res[move['id']].update({
+                        'sale_id': picking.sale_id.id,
+                        'minimum_planned_date': picking.sale_id.minimum_planned_date
+                    })
+        return res
+
     def _get_picking_sale(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         stock_picking_model = self.pool['stock.picking']
@@ -49,17 +67,18 @@ class stock_move(orm.Model):
 
     _columns = {
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
-        'minimum_planned_date': fields.related('picking_id', 'sale_id', 'minimum_planned_date', type='date', string='Expected Date', store={
+        'minimum_planned_date': fields.function(_get_related_fields, type='date', string='Expected Date', multi='related_fields', store={
                                         'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['picking_id'], 20),
                                         'stock.picking': (_get_picking, ['sale_id', 'move_lines'], 5000),
                                         'sale.order': (_get_picking_sale, ['minimum_planned_date'], 8000),
                                         }),
+        'sale_id': fields.function(_get_related_fields, relation='sale.order', type='many2one', string='Sale Order', multi='related_fields'),
+        'week_nbr': fields.function(_get_related_fields, type='integer', string="Week Number", multi='related_fields'),
         'line_price_subtotal': fields.related('sale_line_id', 'price_subtotal', type='float', string='Line Amount (VAT Excluded)', digits_compute=dp.get_precision('Sale Price'),
                                        readonly=True, store=False, auto_join=True),
-        'sale_id': fields.related('picking_id', 'sale_id', relation='sale.order', type='many2one', string='Sale Order'),
+
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
-        'week_nbr': fields.related('picking_id', 'week_nbr', type='integer', string="Week Number"),
         'internal_note': fields.text('Internal Note'),
     }
 
