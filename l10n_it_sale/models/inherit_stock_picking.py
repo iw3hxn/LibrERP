@@ -37,8 +37,11 @@ class stock_picking(orm.Model):
     def name_get(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = []
-        for picking in self.read(cr, uid, ids, ['id', 'ddt_number', 'ddt_in_reference', 'name'], context):
-            res.append((picking['id'], picking['ddt_number'] or picking['ddt_in_reference'] or picking['name']))
+        for picking in self.read(cr, uid, ids, ['id', 'ddt_number', 'ddt_in_reference', 'name', 'state'], context):
+            picking_name = picking['ddt_number'] or picking['ddt_in_reference'] or picking['name']
+            if picking['state'] != 'done':
+                picking_name = '* ' + picking_name
+            res.append((picking['id'], picking_name))
         return res
         
     def _check_ddt_in_reference_unique(self, cr, uid, ids, context=None):
