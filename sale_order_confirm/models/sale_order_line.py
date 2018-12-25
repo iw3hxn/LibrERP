@@ -32,7 +32,7 @@ class sale_order_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         vals = super(sale_order_line, self)._prepare_order_line_invoice_line(cr, uid, line, account_id, context)
         if vals:
-            vals.update({'origin_document': 'sale.order.line, {line_id}'.format(line_id=line.id)})
+            vals.update({'origin_document': '{table_name}, {line_id}'.format(table_name=line._table_name, line_id=line.id)})
         return vals
 
     def _delivered_qty(self, cr, uid, ids, field_name, arg, context=None):
