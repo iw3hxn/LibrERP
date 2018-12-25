@@ -22,6 +22,7 @@
 #
 ##############################################################################
 
+from openerp.addons import base
 from openerp.osv import orm, fields
 from tools.translate import _
 
@@ -29,12 +30,6 @@ from tools.translate import _
 class account_invoice_line(orm.Model):
     _inherit = 'account.invoice.line'
 
-    def _links_get(self, cr, uid, context=None):
-        model_obj = self.pool['ir.model']
-        ids = model_obj.search(cr, uid, [], context=context)
-        res = model_obj.read(cr, uid, ids, ['model', 'name'], context)
-        return [(r['model'], r['name']) for r in res]
-
     _columns = {
-        'origin_document': fields.reference(_("Origin Document"), selection=_links_get, size=None)
+        'origin_document': fields.reference(_("Origin Document"), selection=base.res.res_request._links_get, size=None)
     }
