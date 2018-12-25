@@ -19,8 +19,9 @@
 #
 ##############################################################################
 
-from openerp.osv import orm
+import decimal_precision as dp
 from openerp.osv import fields
+from openerp.osv import orm
 
 
 class account_invoice_line(orm.Model):
@@ -41,7 +42,7 @@ class account_invoice_line(orm.Model):
         return res
 
     _columns = {
-        'price_unit_copy': fields.related('price_unit', type="float", readonly=True, store=False, string='Unit Price'),
+        'price_unit_copy': fields.related('price_unit', type="float", readonly=True, store=False, string='Unit Price', digits_compute= dp.get_precision('Account')),
         'user_can_modify_prices': fields.function(_get_user_can_modify, type='boolean',
                                                   string='User Can modify prices'),
         'product_can_modify_prices': fields.related('product_id', 'can_modify_prices', type='boolean',

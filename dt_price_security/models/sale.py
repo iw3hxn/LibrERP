@@ -18,8 +18,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+import decimal_precision as dp
 from openerp.osv import orm, fields
+
 
 class sale_order(orm.Model):
     _name = 'sale.order'
@@ -75,7 +76,7 @@ class sale_order_line(orm.Model):
         return res
         
     _columns = {
-        'price_unit_copy': fields.related('price_unit', type="float", readonly=True, store=False, string='Unit Price'),
+        'price_unit_copy': fields.related('price_unit', type="float", readonly=True, store=False, string='Unit Price', digits_compute=dp.get_precision('Sale Price')),
         'user_can_modify_prices': fields.function(_get_user_can_modify, type='boolean', string='User Can modify prices'),
         'product_can_modify_prices': fields.related('product_id', 'can_modify_prices', type='boolean', string='Product Can modify prices'),        
         # 'can_modify_prices': fields.boolean('Can modify prices'),

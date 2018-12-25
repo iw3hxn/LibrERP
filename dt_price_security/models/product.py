@@ -19,15 +19,17 @@
 #
 ##############################################################################
 
+import decimal_precision as dp
 from openerp.osv import orm, fields
 from tools.translate import _
+
 
 class product_product(orm.Model):
     _name = 'product.product'
     _inherit = 'product.product'
     
     _columns = {
-        'list_price_copy': fields.related('list_price', type="float", readonly=True, store=False, string='Sale Price',
+        'list_price_copy': fields.related('list_price', type="float", readonly=True, store=False, string='Sale Price', digits_compute=dp.get_precision('Sale Price'),
                                   help='Base price for computing the customer price. Sometimes called the catalog price.'),
         'can_modify_prices': fields.boolean('Can modify prices',
                     help='If checked all users can modify the price of this product in a sale order or invoice.'),
