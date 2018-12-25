@@ -22,7 +22,7 @@
 
 {
     'name': 'Price Security',
-    'version': '2.1.4.3',
+    'version': '3.1.4.3',
     'description': """
     Creates a new permission to restrict the users that can modify the prices
     of the products.
@@ -45,10 +45,10 @@
     ],
     'data': [
         'security/price_security_security.xml',
-        'res_user/res_users_view.xml',
-        'sale/sale_view.xml',
-        'invoice/invoice_view.xml',
-        'product/product_view.xml',
+        'views/res_users_view.xml',
+        'views/sale_view.xml',
+        'views/invoice_view.xml',
+        'views/product_view.xml',
     ],
     'installable': True,
 }

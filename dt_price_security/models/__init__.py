@@ -19,4 +19,7 @@
 #
 ##############################################################################
 
+from . import invoice
+from . import product
+from . import res_users
 from . import sale

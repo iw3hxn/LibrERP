@@ -31,6 +31,11 @@ class users(orm.Model):
                                                     string='Discount Restrictions'),
     }
 
+    def create(self, cr, uid, vals, context=None):
+        if not vals.get('discount_restriction_ids', False):
+            vals['discount_restriction_ids'] = [(0, False, {'name': 'All', 'min_discount': 0, 'max_discount': 100})]
+        return super(users, self).create(cr, uid, vals, context)
+
 
 class discount_restriction(orm.Model):
     _name = 'price_security.discount_restriction'

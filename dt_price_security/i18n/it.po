@@ -65,11 +65,6 @@ msgid "Product"
 msgstr "Prodotto"
 
 #. module: dt_price_security
-#: field:price_security.discount_restriction,max_discount:0
-msgid "Max. Discount"
-msgstr "Max. Discount"
-
-#. module: dt_price_security
 #: field:account.invoice.line,product_can_modify_prices:0
 #: field:sale.order.line,product_can_modify_prices:0
 msgid "Product Can modify prices"
@@ -151,6 +146,11 @@ msgid "Min. Discount"
 msgstr "Sconto Minimo"
 
 #. module: dt_price_security
+#: field:price_security.discount_restriction,max_discount:0
+msgid "Max. Discount"
+msgstr "Sconto Massimo"
+
+#. module: dt_price_security
 #: model:ir.model,name:dt_price_security.model_sale_order
 msgid "Sales Order"
 msgstr "Ordine di vendita"
@@ -171,3 +171,13 @@ msgstr "Sconto non consentito"
 #: field:res.users,discount_restriction_ids:0
 msgid "Discount Restrictions"
 msgstr "Restrizione Sconto"
+
+#. module: dt_price_security
+#: model:res.groups,name:dt_price_security.hide_purchase_prices
+msgid "Hide Warehouse prices"
+msgstr "Nasconde Impostazione Valorizzazione Magazzino"
+
+#. module: dt_price_security
+#: model:res.groups,name:dt_price_security.modify_warehouse_price
+msgid "Can Modify Warehouse prices"
+msgstr "Può Modificare le impostazioni della Valorizzazione Magazzino"

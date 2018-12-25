@@ -63,6 +63,13 @@ class product_product(orm.Model):
                 ret['standard_price']['invisible'] = True
             if 'cost_method' in ret:
                 ret['cost_method']['invisible'] = True
+
+        if not group_obj.user_in_group(cr, uid, uid, 'dt_price_security.modify_warehouse_price', context=context):
+            if 'standard_price' in ret:
+                ret['standard_price']['readonly'] = True
+            if 'cost_method' in ret:
+                ret['cost_method']['readonly'] = True
+
         return ret
 
     def write(self, cr, uid, ids, vals, context=None):

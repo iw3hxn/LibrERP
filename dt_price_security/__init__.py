@@ -19,8 +19,4 @@
 #
 ##############################################################################
 
-from . import invoice
-from . import product
-from . import res_user
-from . import sale
-
+from . import models
