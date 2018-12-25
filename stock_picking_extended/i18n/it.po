@@ -666,3 +666,9 @@ msgstr "Data di Consegna"
 #: view:stock.move:0
 msgid "Note on Picking Line"
 msgstr "Nota nella Riga del DDT"
+
+#. module: stock_picking_extended
+#: code:addons/stock_picking_extended/models/inherit_stock_picking.py:561
+#, python-format
+msgid "Is not possible to add product, use only Sale Order"
+msgstr "Non è possibile aggiungere una riga, va fatto solo creando un Ordine di Vendita"

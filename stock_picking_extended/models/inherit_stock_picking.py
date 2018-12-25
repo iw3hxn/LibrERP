@@ -544,6 +544,23 @@ class stock_picking(orm.Model):
         if vals.get('minimum_planned_date', False):
             text = _(u'has change delivery date to {date}').format(date=vals.get('minimum_planned_date', False))
             self.message_append(cr, uid, ids, text, body_text=text, context=context)
+        if vals.get('move_lines'):
+            stock_journal_ids = []
+            check_create = False
+            for move_line in vals['move_lines']:
+                if move_line[0] == 0:
+                    check_create = True
+            if check_create:
+                if vals.get('stock_journal_id', False):
+                    stock_journal_ids.append(vals['stock_journal_id'])
+                else:
+                    for stock_journal in self.read_group(cr, uid, [('id', 'in', ids)], ['stock_journal_id'], ['stock_journal_id']):
+                        stock_journal_ids.append(stock_journal['stock_journal_id'][0])
+                if self.pool['sale.shop'].search(cr, uid, [('stock_journal_id', '=', stock_journal_ids)], context=context):
+                    raise orm.except_orm(
+                        _('Error'),
+                        _('Is not possible to add product, use only Sale Order'))
+
         res = super(stock_picking, self).write(cr, uid, ids, vals, context)
         return res
 
@@ -562,11 +579,11 @@ class stock_picking(orm.Model):
             picking = self.browse(cr, uid, ids, context)
             partner_vals = {}
             if picking.partner_id:
-                if not picking.partner_id.carriage_condition_id:
+                if not picking.partner_id.carriage_condition_id and vals.get('carriage_condition_id', False):
                     partner_vals['carriage_condition_id'] = vals.get('carriage_condition_id')
-                if not picking.partner_id.goods_description_id:
+                if not picking.partner_id.goods_description_id and vals.get('goods_description_id', False):
                     partner_vals['goods_description_id'] = vals.get('goods_description_id')
-                if not picking.partner_id.property_delivery_carrier:
+                if not picking.partner_id.property_delivery_carrier and vals.get('carrier_id', False):
                     partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
                 if partner_vals and self.pool['res.groups'].user_in_group(cr, uid, uid, 'base.group_partner_manager', context):
                     self.pool['res.partner'].write(cr, uid, [picking.partner_id.id], partner_vals, context)
