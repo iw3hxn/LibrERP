@@ -288,7 +288,7 @@ class stock_move(orm.Model):
         #     'sale.order': (_get_sale_order, ['date_order'], 20),
         #     'purchase.order': (_get_purchase_order, ['date_order'], 20),
         # }),
-        'sell_price': fields.related('sale_line_id', 'price_unit', type='float', relation='sale.order.line', string='Sell Price Unit', readonly=True),
+        'sell_price': fields.related('sale_line_id', 'price_unit', type='float', relation='sale.order.line', string='Sell Price Unit', readonly=True, digits_compute= dp.get_precision('Sale Price')),
         'qty_available': fields.function(_product_available, multi='qty_available',
                                          type='float', digits_compute=dp.get_precision('Product UoM'),
                                          string='Quantity On Hand'),

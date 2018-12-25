@@ -20,7 +20,7 @@
 ##############################################################################
 {
     "name": "Stock Move Extended",
-    "version": "3.6.7.14",
+    "version": "3.7.7.14",
     "depends": ["stock"],
     "author": "Didotech SRL",
     "category": "Custom Modules",
