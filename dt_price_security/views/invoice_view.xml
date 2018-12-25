@@ -47,21 +47,21 @@
             </field>
         </record>
         
-        <record id="view_price_security_invoice_line_tree" model="ir.ui.view">
-            <field name="name">price_security.invoice.line.tree</field>
-            <field name="priority" eval="30"/>
-            <field name="model">account.invoice.line</field>
-            <field name="type">form</field>
-            <field name="inherit_id" ref="account.view_invoice_line_tree"/>
-            <field name="arch" type="xml">
-                <data>
-                    <field name="price_unit" position="replace">
-                        <field name="price_unit" />
-                        <field name="price_unit_copy" />
-                    </field>
-                </data>
-            </field>
-        </record>
+        <!--<record id="view_price_security_invoice_line_tree" model="ir.ui.view">-->
+            <!--<field name="name">price_security.invoice.line.tree</field>-->
+            <!--<field name="priority" eval="30"/>-->
+            <!--<field name="model">account.invoice.line</field>-->
+            <!--<field name="type">form</field>-->
+            <!--<field name="inherit_id" ref="account.view_invoice_line_tree"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<data>-->
+                    <!--<field name="price_unit" position="replace">-->
+                        <!--<field name="price_unit" />-->
+                        <!--<field name="price_unit_copy" />-->
+                    <!--</field>-->
+                <!--</data>-->
+            <!--</field>-->
+        <!--</record>-->
         
     </data>
 </openerp>
