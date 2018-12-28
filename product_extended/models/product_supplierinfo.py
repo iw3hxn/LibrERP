@@ -62,7 +62,7 @@ class product_supplierinfo(orm.Model):
                     from_currency = pricelist.currency_id.id
                     to_currency = user.company_id.currency_id.id
                     price_subtotal = self.pool['res.currency'].compute(
-                        cr, uid,
+                        cr, uid, round=False,
                         from_currency_id=from_currency,
                         to_currency_id=to_currency,
                         from_amount=price,
