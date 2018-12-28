@@ -37,7 +37,7 @@ class stock_move(orm.Model):
         res = {}
         for move in self.read(cr, uid, ids, ['picking_id'], context):
             res[move['id']] = {
-                'minimum_planned_date': '',
+                'minimum_planned_date': False,
                 'sale_id': False,
                 'week_nbr': False
             }
