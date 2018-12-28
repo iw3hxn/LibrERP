@@ -182,19 +182,18 @@ class stock_picking(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for picking in self.browse(cr, uid, ids, context=context):
-            res[picking.id] = {
-                'week_nbr': False,
-            }
-            if not picking.minimum_planned_date:
-                continue
+            if picking.minimum_planned_date:
+                start_date = datetime.strptime(picking.minimum_planned_date, DEFAULT_SERVER_DATE_FORMAT)
+                start_date = date(start_date.year, start_date.month, start_date.day)
 
-            start_date = datetime.strptime(picking.minimum_planned_date, DEFAULT_SERVER_DATE_FORMAT)
-            start_date = date(start_date.year, start_date.month, start_date.day)
-
-            # mese in italiano start_date.strftime('%B').capitalize()
-            res[picking.id] = {
-                'week_nbr': start_date.isocalendar()[1]
-            }
+                # month in italian start_date.strftime('%B').capitalize()
+                res[picking.id] = {
+                    'week_nbr': start_date.isocalendar()[1]
+                }
+            else:
+                res[picking.id] = {
+                    'week_nbr': False
+                }
 
         return res
 
