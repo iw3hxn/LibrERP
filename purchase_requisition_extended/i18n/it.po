@@ -119,3 +119,16 @@ msgstr "Prodotto"
 #: view:purchase.requisition:0
 msgid "List Ready"
 msgstr "Lista Completa"
+
+#. modules: purchase_requisition, purchase_requisition_extended
+#: selection:purchase.requisition,state:0
+#: code:addons/purchase_requisition_extended/models/inherit_purchase_requisition.py:36
+#, python-format
+msgid "To Process"
+msgstr "Da Processare"
+
+#. modules: purchase_requisition, purchase_requisition_extended
+#: view:purchase.requisition:0
+#: view:purchase.requisition:0
+msgid "Start"
+msgstr "Inizia a Processare"
