@@ -114,3 +114,8 @@ msgstr "Fornitori"
 #: field:purchase.requisition,product_id:0
 msgid "Product"
 msgstr "Prodotto"
+
+#. module: purchase_requisition_extended
+#: view:purchase.requisition:0
+msgid "List Ready"
+msgstr "Lista Completa"
