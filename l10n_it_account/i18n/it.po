@@ -10889,3 +10889,14 @@ msgstr "Messaggio"
 #: view:account.fiscal.position:0
 msgid "Invoices"
 msgstr "Fatture"
+
+#. module: l10n_it_account
+#: field:account.fiscal.position.tax,tax_src_id:0
+#: field:account.fiscal.position.tax.template,tax_src_id:0
+msgid "Tax Source"
+msgstr "Tassa Sorgente"
+
+#. modules: l10n_it_account
+#: view:account.fiscal.position:0
+msgid "Information"
+msgstr "Informazione"
