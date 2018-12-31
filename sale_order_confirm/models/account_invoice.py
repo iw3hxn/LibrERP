@@ -25,7 +25,7 @@ from openerp.osv import orm, fields
 class account_invoice(orm.Model):
     _inherit = 'account.invoice'
 
-    def print_report(self, cr, uid, ids, xml_id, context):
+    def print_report(self, cr, uid, ids, xml_id, context=None):
         def id_from_xml_id():
             report_obj = self.pool['ir.actions.report.xml']
             report_all = report_obj.search(cr, uid, [], context=context)
