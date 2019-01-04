@@ -25,12 +25,10 @@ from openerp.osv import orm
 class res_partner_bank(orm.Model):
     _inherit = "res.partner.bank"
 
-    _defaults = {
-        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'res.partner.bank', context=c),
-    }
+    # _defaults = {
+    #     'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'res.partner.bank', context=c),
+    # }
 
-    def _check_bank(self, cr, uid, ids, context=None):
-        return True
 
     def _prepare_name(self, bank):
         "Return the name to use when creating a bank journal"
