@@ -23,4 +23,10 @@ msgstr "Ricalcola prezzi"
 #. module: sale_order_price_recalculation
 #: view:sale.order:0
 msgid "Recalculate prices No Discount"
-msgstr "Ricalcola prezzi senza sconto"
+msgstr "Ricalcola prezzi senza mantenere lo sconto"
+
+#. module: sale_order_price_recalculation
+#: view:sale.order:0
+msgid "Recalculate prices"
+msgstr "Ricalcola prezzi mantendendo lo sconto"
+
