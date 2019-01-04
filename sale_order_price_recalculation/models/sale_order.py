@@ -36,6 +36,14 @@ class sale_order(orm.Model):
             ret.update({'value': {'recalculate_prices': True}})
         return ret
 
+    def _get_price_recalculation_pricelist(self, line, res):
+        line_value = {
+            'discount': line.discount,
+            'price_unit': res['value'].get('price_unit', False),
+            'purchase_price': res['value'].get('purchase_price', False),
+        }
+        return line_value
+
     def recalculate_prices(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         for sale in self.browse(cr, uid, ids, context):
@@ -48,14 +56,19 @@ class sale_order(orm.Model):
                     name=line.name, partner_id=order.partner_id.id, lang=False,
                     update_tax=True, date_order=order.date_order, packaging=False,
                     fiscal_position=order.fiscal_position.id, flag=False)
-                line_value = {
-                    'discount': line.discount,
-                    'price_unit': res['value'].get('price_unit', False),
-                    'purchase_price': res['value'].get('purchase_price', False),
-                }
+                line_value = self._get_price_recalculation_pricelist(line, res)
                 line.write(line_value)
             sale.write({'recalculate_prices': False})
         return True
+
+
+    def _get_price_recalculation_pricelist(self, line, res):
+        line_value = {
+            'discount': res['value'].get('discount', False),
+            'price_unit': res['value'].get('price_unit', False),
+            'purchase_price': res['value'].get('purchase_price', False),
+        }
+        return line_value
 
     def recalculate_prices_no_discount(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -69,11 +82,7 @@ class sale_order(orm.Model):
                     name=line.name, partner_id=order.partner_id.id, lang=False,
                     update_tax=True, date_order=order.date_order, packaging=False,
                     fiscal_position=order.fiscal_position.id, flag=False)
-                line_value = {
-                    'discount': res['value'].get('discount', False),
-                    'price_unit': res['value'].get('price_unit', False),
-                    'purchase_price': res['value'].get('purchase_price', False),
-                }
+                line_value = self._get_price_recalculation_pricelist(line, res)
                 line.write(line_value)
             sale.write({'recalculate_prices': False})
         return True

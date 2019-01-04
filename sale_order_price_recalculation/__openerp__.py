@@ -21,7 +21,7 @@
 
 {
     "name": "Sale Pricelist Update",
-    "version": "3.0.3.1",
+    "version": "3.0.4.1",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Custom Modules",
