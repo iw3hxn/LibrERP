@@ -301,7 +301,7 @@ class stock_move(orm.Model):
         if values.get('product_uos', False):
             to_unit = self.pool['product.uom'].browse(cr, uid, values.get('product_uos'), context)
             for move in self.browse(cr, uid, ids, context):
-                if move.product_uos.category_id.id != to_unit.category_id.id:
+                if move.product_uos and move.product_uos.category_id.id != to_unit.category_id.id:
                     raise orm.except_orm(_('Error !'),
                                          _('Conversion from Product UoM %s to Default UoM %s is not possible as they both belong to different Category!.') % (move.product_uos.category_id.name, to_unit.category_id.name))
         return super(stock_move, self).write(cr, uid, ids, values, context)
