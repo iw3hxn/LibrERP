@@ -46,9 +46,7 @@ class purchase_order(orm.Model):
     def onchange_partner_id(self, cr, uid, ids, partner_id):
         res = super(purchase_order, self).onchange_partner_id(cr, uid, ids, partner_id)
         supplier = self.pool['res.partner'].browse(cr, uid, partner_id)
-        payment_term = supplier.property_payment_term_payable and supplier.property_payment_term_payable.id or False
-        if not payment_term:
-            payment_term = supplier.property_payment_term and supplier.property_payment_term.id or False
+        payment_term = supplier.property_payment_term and supplier.property_payment_term.id or False
         carriage_condition_id = supplier.carriage_condition_id and supplier.carriage_condition_id.id or False
         res['value'].update(
             {
