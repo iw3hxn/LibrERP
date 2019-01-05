@@ -24,7 +24,7 @@
 
 {
     "name": "Purchase Order Extended",
-    "version": "3.3.23.4",
+    "version": "3.3.24.4",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Purchase',
@@ -35,7 +35,8 @@
     """,
     "depends": [
         'purchase',
-        'core_extended'
+        'core_extended',
+        'stock_picking_extended',
     ],
     "init_xml": [],
     "data": [

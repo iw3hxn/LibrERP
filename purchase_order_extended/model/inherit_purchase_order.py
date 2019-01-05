@@ -186,3 +186,14 @@ class purchase_order(orm.Model):
             else:
                 order_line.append(line)
         return {'value': {'order_line': order_line, 'amount_untaxed': False, 'amount_tax': False, 'amount_total': False}}
+
+    def onchange_partner_id(self, cr, uid, ids, partner_id):
+        res = super(purchase_order, self).onchange_partner_id(cr, uid, ids, partner_id)
+        supplier = self.pool['res.partner'].browse(cr, uid, partner_id)
+        payment_term = supplier.property_payment_term_payable and supplier.property_payment_term_payable.id or supplier.property_payment_term and supplier.property_payment_term.id or False
+        res['value'].update(
+            {
+                'payment_term': payment_term,
+            }
+        )
+        return res
