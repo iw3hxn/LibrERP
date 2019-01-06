@@ -128,6 +128,12 @@ class virtual_purchase_requisition_partner(orm.TransientModel):
                     'location_id': location_id,
                     'company_id': requisition.company_id.id,
                 }
+
+                onchange_partner_vals = order_obj.onchange_partner_id(cr, uid, [], partner_id).get('value')
+                for onchange_partner_key in onchange_partner_vals.keys():
+                    if onchange_partner_key not in order_vals.keys():
+                        order_vals[onchange_partner_key] = onchange_partner_vals[onchange_partner_key]
+
                 shop_ids = self.pool['sale.shop'].search(cr, uid, [('warehouse_id', '=', requisition.warehouse_id.id and requisition.warehouse_id.id)], context=context)
                 if shop_ids:
                     order_vals.update({'shop_id': shop_ids[0]})
