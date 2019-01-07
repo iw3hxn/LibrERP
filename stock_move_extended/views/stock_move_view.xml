@@ -71,11 +71,11 @@
                     <field name="qty_available" groups="stock.view_qty_warehouse"/>
                 </xpath>
 
-                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_uom']" position="after">
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//tree//field[@name='product_uos']" position="after">
                     <field name="price_unit" groups="stock.view_price" />
                     <field name="sell_price" groups="stock.view_price_sell"/>
                 </xpath>
-                <xpath expr="//form//notebook//page//field[@name='move_lines']//form/group//field[@name='product_uom']" position="after">
+                <xpath expr="//form//notebook//page//field[@name='move_lines']//form/group//field[@name='product_uos']" position="after">
                     <field name="price_unit" groups="stock.view_price" />
                     <field name="sell_price" groups="stock.view_price_sell"/>
                 </xpath>
