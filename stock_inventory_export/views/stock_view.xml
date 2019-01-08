@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="action_print_inventory_costs" model="ir.actions.server">
+            <field name="name">Inventory Costs</field>
+            <field name="model_id" ref="model_stock_inventory"/>
+            <field name="state">code</field>
+            <field name="code">action = self.print_inventory_costs(cr, uid, context=context)</field>
+        </record>
+
+        <record id="menu_merge_orders" model="ir.values">
+            <field name="object" eval="True" />
+            <field name="name">Inventory Costs Menu</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%d'%action_print_inventory_costs" />
+            <field name="key">action</field>
+            <field name="model">stock.inventory</field>
+        </record>
+
+    </data>
+</openerp>
