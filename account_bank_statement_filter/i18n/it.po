@@ -59,3 +59,28 @@ msgstr "Al"
 #: field:account.bank.statement,partner_id:0
 msgid "Partner"
 msgstr "Partner"
+
+#. module: account_bank_statement_filter
+#: model:ir.model,name:account_bank_statement_filter.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Voce del movimento bancario"
+
+#. module: account_bank_statement_filter
+#: field:account.bank.statement.line,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: account_bank_statement_filter
+#: field:account.bank.statement.line,date_to:0
+msgid "Date to"
+msgstr "Al"
+
+#. module: account_bank_statement_filter
+#: view:account.bank.statement.line:0
+msgid "Extended Filters..."
+msgstr "Filtri Aggiuntivi..."
+
+#. module: account_bank_statement_filter
+#: view:account.bank.statement.line:0
+msgid "Group By..."
+msgstr "Raggruppa Per..."
