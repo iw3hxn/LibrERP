@@ -33,4 +33,11 @@ class account_bank_statement_line(orm.Model):
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'journal_id': fields.related('statement_id', 'journal_id', type='many2one', relation='account.journal',
                                      string='Journal', store=True, readonly=True),
+
+        'state': fields.related('statement_id', 'state', type='selection', selection=[('draft', 'New'), ('open', 'Open'), ('confirm', 'Closed')], string='Status', readonly=True),
     }
+
+    def unlink(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        open_line_ids = self.search(cr, uid, [('id', 'in', ids), ('statement_id.state', '=', 'draft')])
+        return super(account_bank_statement_line, self).unlink(cr, uid, open_line_ids, context)

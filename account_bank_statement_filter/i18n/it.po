@@ -66,6 +66,12 @@ msgid "Bank Statement Line"
 msgstr "Voce del movimento bancario"
 
 #. module: account_bank_statement_filter
+#: model:ir.actions.act_window,name:account_bank_statement_filter.action_bank_statement_line
+#: model:ir.ui.menu,name:account_bank_statement_filter.bank_statement_line
+msgid "Bank Statement Lines"
+msgstr "Righe dei movimenti bancari"
+
+#. module: account_bank_statement_filter
 #: field:account.bank.statement.line,date_from:0
 msgid "Date from"
 msgstr "Dal"
@@ -84,3 +90,19 @@ msgstr "Filtri Aggiuntivi..."
 #: view:account.bank.statement.line:0
 msgid "Group By..."
 msgstr "Raggruppa Per..."
+
+#. module: account_bank_statement_filter
+#: selection:account.bank.statement.line,state:0
+msgid "New"
+msgstr "Nuovo"
+
+#. module: account_bank_statement_filter
+#: selection:account.bank.statement.line,state:0
+#, python-format
+msgid "Open"
+msgstr "Aperto"
+
+#. module: account_bank_statement_filter
+#: selection:account.bank.statement.line,state:0
+msgid "Closed"
+msgstr "Chiuso"

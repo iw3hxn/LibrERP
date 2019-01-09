@@ -7,7 +7,7 @@
             <field name="model">account.bank.statement.line</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Statement Lines">
+                <tree string="Statement Lines" colors="blue:state in ('draft', 'open');black:state not in ('draft', 'open')">
                     <field name="journal_id" />
                     <field name="sequence" readonly="1" invisible="1"/>
                     <field name="date" />
@@ -20,7 +20,7 @@
                     <field name="analytic_account_id" groups="analytic.group_analytic_accounting"
                            domain="[('company_id', '=', parent.company_id), ('type', '&lt;&gt;', 'view')]"/>
                     <field name="amount" sum="Sum"/>
-
+                    <field name="state" />
                 </tree>
             </field>
         </record>
