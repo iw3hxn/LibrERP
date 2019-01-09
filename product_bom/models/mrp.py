@@ -82,7 +82,7 @@ class mrp_bom(orm.Model):
                 self.pool['product.product'].write(cr, uid, vals['product_id'], {'supply_method': 'produce', 'purchase_ok': False}, context)
                 bom_ids_count = self.search(cr, uid, [('product_id', '=', product_old_id), ('bom_id', '=', False)], count=True)
                 if bom_ids_count == 1:
-                    self.pool['product.product'].write(cr, uid, product_old_id, {'supply_method': 'buy', 'purchase_ok': True})
+                    self.pool['product.product'].write(cr, uid, product_old_id, {'supply_method': 'buy', 'purchase_ok': True}, context)
             if ('bom_lines' in vals or 'routing_id' in vals) and ENABLE_CACHE:
                 product_ids.append(product_old_id)
                 if vals.get('product_id', False):
