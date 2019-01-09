@@ -39,5 +39,5 @@ class account_bank_statement_line(orm.Model):
 
     def unlink(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        open_line_ids = self.search(cr, uid, [('id', 'in', ids), ('statement_id.state', '=', 'draft')])
+        open_line_ids = self.search(cr, uid, [('id', 'in', ids), ('statement_id.state', 'in', ['draft', 'open'])])
         return super(account_bank_statement_line, self).unlink(cr, uid, open_line_ids, context)
