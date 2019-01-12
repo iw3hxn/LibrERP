@@ -59,7 +59,7 @@ class product_product(orm.Model):
     def _get_stock_location_ids(self, cr, uid, ids, field_name, arg, context):
         res = {}
         stock_location_ids = self.pool['stock.location'].search(cr, uid, [('usage', '=', 'internal'),
-                                                                          ('chained_location_type', '=', 'none')])
+                                                                          ('chained_location_type', '=', 'none')], context=context)
         for product_id in ids:
             res[product_id] = stock_location_ids
         return res
