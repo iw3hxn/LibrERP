@@ -59,9 +59,9 @@
             <field name="name">product.product.partner.search</field>
             <field name="model">product.product</field>
             <field name="type">search</field>
-            <field name="inherit_id" ref="profile_base.product_product_search_inherit"/>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
             <field name="arch" type="xml">
-                <field name="default_code" position="before">
+                <field name="name" position="before">
                     <field name="partner_id" context="{'pricelist': True, 'partner_name': self}"/>
                 </field>
             </field>
