@@ -12,7 +12,7 @@
                 <data>
                     <field name="list_price" position="replace">
                         <field name="list_price"
-                               on_change="onchange_list_price(list_price)"/>
+                               on_change="onchange_list_price(list_price, uos_coeff, context)"/>
                         <field name="list_price_copy" />
                     </field>
                     

@@ -39,7 +39,7 @@ class product_product(orm.Model):
         'can_modify_prices': False,
     }
 
-    def onchange_list_price(self, cr, uid, ids, list_price):
+    def onchange_list_price(self, cr, uid, ids, list_price, uos_coeff, context=None):
         return {'value': {'list_price_copy': list_price}}
 
     def fields_get(self, cr, uid, allfields=None, context=None):
