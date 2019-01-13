@@ -42,6 +42,7 @@ class AccountTax(orm.Model):
             ], string="VAT payability"),
         'law_reference': fields.char(
             'Law reference', size=128),
+        'withholding_tax': fields.boolean("Ritenuta d'acconto"),
     }
     _sql_constraints = [
         ('description_uniq', 'unique(description)', _('Description must be unique !')),

@@ -14,6 +14,7 @@
                             <field name="law_reference" attrs="{'required': [('non_taxable_nature', '!=', False),('type_tax_use', '!=', 'purchase')], 'invisible': ['|',('non_taxable_nature', '=', False),('type_tax_use', '=', 'purchase')]}"></field>
                             <field name="payability"></field>
                         </group>
+                        <field name="withholding_tax"/>
                     </page>
                 </notebook>
             </field>
