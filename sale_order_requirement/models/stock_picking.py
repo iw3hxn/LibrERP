@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
+# © 2018-2019 Andrei Levin - Didotech srl (www.didotech.com)
 
 from openerp.osv import orm, fields
 import netsvc
@@ -21,7 +22,7 @@ class stock_picking(orm.Model):
         result = super(stock_picking, self).action_done(cr, uid, ids, context=context)
 
         for picking in self.browse(cr, uid, ids, context):
-            if picking.sale_id and picking.sale_id.id:
+            if picking.sale_id and picking.sale_id.id and picking.type == 'out':
                 wf_service.trg_validate(uid, 'sale.order', picking.sale_id.id, 'close_sale_order', cr)
 
         return result
