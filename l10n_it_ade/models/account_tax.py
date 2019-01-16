@@ -2,6 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2015 Lorenzo Battistini <lorenzo.battistini@agilebg.com>
+#    © 2017-2019 Didotech srl (www.didotech.com)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -21,6 +22,30 @@
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
 
+SOCIAL_SECURITY_TYPE = [
+    ('TC01', 'Cassa Nazionale Previdenza e Assistenza Avvocati e Procuratori Legali'),
+    ('TC02', 'Cassa Previdenza Dottori Commercialisti'),
+    ('TC03', 'Cassa Previdenza e Assistenza Geometri'),
+    ('TC04', 'Cassa Nazionale Previdenza e Assistenza Ingegneri e Architetti Liberi Professionisti'),
+    ('TC05', 'Cassa Nazionale del Notariato'),
+    ('TC06', 'Cassa Nazionale Previdenza e Assistenza Ragionieri e Periti Commerciali'),
+    ('TC07', 'Ente Nazionale Assistenza Agenti e Rappresentanti di Commercio (ENASARCO)'),
+    ('TC08', 'Ente Nazionale Previdenza e Assistenza Consulenti del Lavoro (ENPACL)'),
+    ('TC09', 'Ente Nazionale Previdenza e Assistenza Medici (ENPAM)'),
+    ('TC10', 'Ente Nazionale Previdenza e Assistenza Farmacisti (ENPAF)'),
+    ('TC11', 'Ente Nazionale Previdenza e Assistenza Veterinari (ENPAV)'),
+    ('TC12', "Ente Nazionale Previdenza e Assistenza Impiegati dell'Agricoltura (ENPAIA)"),
+    ('TC13', "Fondo Previdenza Impiegati Imprese di Spedizione e Agenzie Marittime"),
+    ('TC14', 'Istituto Nazionale Previdenza Giornalisti Italiani (INPGI)'),
+    ('TC15', 'Opera Nazionale Assistenza Orfani Sanitari Italiani (ONAOSI)'),
+    ('TC16', 'Cassa Autonoma Assistenza Integrativa Giornalisti Italiani (CASAGIT)'),
+    ('TC17', 'Ente Previdenza Periti Industriali e Periti Industriali Laureati (EPPI)'),
+    ('TC18', 'Ente Previdenza e Assistenza Pluricategoriale (EPAP)'),
+    ('TC19', 'Ente Nazionale Previdenza e Assistenza Biologi (ENPAB)'),
+    ('TC20', 'Ente Nazionale Previdenza e Assistenza Professione Infermieristica (ENPAPI)'),
+    ('TC21', 'Ente Nazionale Previdenza e Assistenza Psicologi (ENPAP)'),
+    ('TC22', 'INPS')
+]
 
 class AccountTax(orm.Model):
     _inherit = 'account.tax'
@@ -67,8 +92,9 @@ class AccountTax(orm.Model):
             ('X', "Canoni corrisposti nel 2004 da società o enti residenti, ovvero da stabili organizzazioni di società estere di cui all'art. 26-quater, c. 1, lett. a) e b) D.P.R. 600/1973, a società o stabili organizzazioni di società, situate in altro Stato membro dell'Unione Europea in presenza dei relativi requisiti richiesti, per i quali è stato effettuato nel 2006 il rimborso della ritenuta ai sensi dell'art. 4 D. Lgs. 143/2005"),
             ('Y', "Canoni corrisposti dal 1.01.2005 al 26.07.2005 da soggetti di cui al punto precedente"),
             ('Z', "Titolo diverso dai precedenti")
-
-        ], string="Causale Ritenuta")
+        ], string="Causale Ritenuta"),
+        'social_security': fields.boolean("Cassa Previdenziale"),
+        'social_security_type': fields.selection(SOCIAL_SECURITY_TYPE, string='Tipo Cassa Previdenziale')
     }
     _sql_constraints = [
         ('description_uniq', 'unique(description)', _('Description must be unique !')),

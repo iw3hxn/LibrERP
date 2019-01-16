@@ -14,9 +14,15 @@
                             <field name="law_reference" attrs="{'required': [('non_taxable_nature', '!=', False),('type_tax_use', '!=', 'purchase')], 'invisible': ['|',('non_taxable_nature', '=', False),('type_tax_use', '=', 'purchase')]}"></field>
                             <field name="payability"></field>
                         </group>
+                        <newline />
                         <group string="Ritenuta Acconto">
                             <field name="withholding_tax"/>
                             <field name="causale_pagamento_id"/>
+                        </group>
+                        <newline />
+                        <group string="Cassa Previdenziale">
+                            <field name="social_security" />
+                            <field name="social_security_type" />
                         </group>
                     </page>
                 </notebook>
