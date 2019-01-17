@@ -13,7 +13,7 @@
             <field name="arch" type="xml">
                 <form string="Issue Ri.Ba.">
                     <separator string="This wizard generates the Ri.Ba. list, do you confirm?" colspan="4"/>
-                    <field name="configurazione"/>
+                    <field name="configurazione" widget="selection"/>
                     <group col="4" colspan="4">
                         <button string="Cancel" special="cancel" icon="gtk-cancel" colspan="2"/>
                         <button string="Create" name="crea_distinta" type="object" icon="gtk-ok" colspan="2"/>
