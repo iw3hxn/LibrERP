@@ -22,10 +22,13 @@
 #
 ##############################################################################
 
+import logging
+
+import openerp.tools as tools
 from openerp.osv import orm
 from openerp.tools.config import config
-import openerp.tools as tools
-import logging
+from tools.translate import _
+
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
@@ -47,7 +50,19 @@ def name_get(self, cr, user, ids, context=None):
         ids = [ids]
 
     result = []
+    # TODO Antonio Mignolli sol.1 test before apply!
+    # When ids are in the form 'one2many_v_id_*' the following 'read' raise error (SQL: SELECT ... WHERE ID in ('one2many_v_')
+    for i in ids:
+        if i and isinstance(i, str) and 'one2many' in i:
+            raise orm.except_orm(_('Warning'), _('Save main element first'))
+
     for r in self.read(cr, user, ids, [self._rec_name], context, load='_classic_write'):
+    # TODO Antonio sol.2, version, don't popup but avoid SQL error, comment the read above and de-comment this
+    # for i in ids:
+    #     if i and isinstance(i, str) and 'one2many' in i:
+    #         result.append((i, ''))
+    #         continue
+    #     r = self.read(cr, user, i, [self._rec_name], context, load='_classic_write')
         if self._rec_name not in self._columns and not r.get(self._rec_name, False):
             _logger.error(u"Column '{column}' or function name_get() are not defined for table '{table}'".format(column=self._rec_name, table=self._name))
         if config['debug_mode']:
