@@ -2,7 +2,7 @@
 
 {
     "name": "Management System - Nonconformity",
-    "version": "1.0c",
+    "version": "1.0d",
     "author": "Savoir-faire Linux,Odoo Community Association (OCA) - refactoring by Antonio Mignolli - Didotech SRL",
     "website": "http://www.savoirfairelinux.com",
     "license": "AGPL-3",
