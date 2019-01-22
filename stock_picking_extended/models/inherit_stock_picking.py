@@ -543,23 +543,6 @@ class stock_picking(orm.Model):
         if vals.get('minimum_planned_date', False):
             text = _(u'has change delivery date to {date}').format(date=vals.get('minimum_planned_date', False))
             self.message_append(cr, uid, ids, text, body_text=text, context=context)
-        if vals.get('move_lines'):
-            stock_journal_ids = []
-            check_create = False
-            for move_line in vals['move_lines']:
-                if move_line[0] == 0:
-                    check_create = True
-            if check_create:
-                if vals.get('stock_journal_id', False):
-                    stock_journal_ids.append(vals['stock_journal_id'])
-                else:
-                    for stock_journal in self.read_group(cr, uid, [('id', 'in', ids)], ['stock_journal_id'], ['stock_journal_id']):
-                        stock_journal_ids.append(stock_journal['stock_journal_id'][0])
-                if self.pool['sale.shop'].search(cr, uid, [('stock_journal_id', 'in', stock_journal_ids)], context=context):
-                    raise orm.except_orm(
-                        _('Error'),
-                        _('Is not possible to add product, use only Sale Order'))
-
         res = super(stock_picking, self).write(cr, uid, ids, vals, context)
         return res
 
