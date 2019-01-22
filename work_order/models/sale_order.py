@@ -148,6 +148,12 @@ class sale_order(orm.Model):
 
         return True
 
+    def _change_project_name(self, cr, uid, ids, order, context):
+        project_name = order.name.split(' ')[0]
+        if order.client_order_ref:
+            project_name = project_name + ' - ' + order.client_order_ref
+        return project_name
+
     def action_wait(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid, context)
         result = super(sale_order, self).action_wait(cr, uid, ids, context)
@@ -163,9 +169,8 @@ class sale_order(orm.Model):
                     invoice_ratio = 1
                 else:
                     invoice_ratio = 3
-                project_name = order.name.split(' ')[0]
-                if order.client_order_ref:
-                    project_name = project_name + ' - ' + order.client_order_ref
+                project_name = self._change_project_name(cr, uid, ids, order, context)
+
                 self.pool['project.project'].write(cr, uid, project_id, {'to_invoice': invoice_ratio, 'state': 'open', 'name': project_name}, context=context)
                 for order_line in order.order_line:
                     task_number = 1
