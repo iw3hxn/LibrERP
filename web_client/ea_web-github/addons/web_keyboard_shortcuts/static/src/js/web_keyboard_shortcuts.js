@@ -37,7 +37,7 @@ $.ctrl('O', function() {
 });
 
 //Duplicate the current object
-$.ctrl('D', function() {
+$.ctrl('P', function() {
 	$('.oe_form_button_duplicate').each(function() {
 		if($(this).parents('div:hidden').length == 0){
 			$(this).trigger('click');

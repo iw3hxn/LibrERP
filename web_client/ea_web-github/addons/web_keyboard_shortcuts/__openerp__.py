@@ -23,7 +23,7 @@
 
 {
     'name': 'Keyboard shortcuts',
-    'version': '1.1',
+    'version': '1.1.2',
     'category': 'Tools',
     'description': """
     This module add some keyboard shortcuts similar to the ones in the GTK-client.
@@ -34,7 +34,7 @@
     On a form, mode view:
     Ctrl + Delete      :  Delete the current object
     Ctrl + N           :  New object
-    Ctrl + D           :  Duplicate the current object
+    Ctrl + P           :  Duplicate the current object
     Ctrl + Page Up     :  First object
     Ctrl + Arrow Up    :  Previous object
     Ctrl + Arrow Down  :  Next object
