@@ -87,7 +87,7 @@ class sale_order_line(orm.Model):
                            lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False,
                            flag=False, sale_agent_ids=False, context=None):
 
-        res = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty, uom, qty_uos, uos,
+        res = self.product_id_change(cr, uid, ids, pricelist, product, qty, uom, qty_uos, uos,
                                                              name, partner_id, lang, update_tax, date_order, packaging,
                                                              fiscal_position, flag, context)
 
