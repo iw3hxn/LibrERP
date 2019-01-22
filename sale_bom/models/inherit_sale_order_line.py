@@ -21,6 +21,7 @@
 
 from openerp.osv import orm, fields
 import decimal_precision as dp
+from openerp import tools
 
 
 class sale_order_line(orm.Model):
@@ -108,7 +109,10 @@ class sale_order_line(orm.Model):
         # {'value': result, 'domain': domain, 'warning': warning}
         return result
 
-    def onchange_mrp_bom(self, cr, uid, ids, mrp_bom, context=None):
+    def onchange_mrp_bom(self, cr, uid, ids, product_id, mrp_bom, context=None):
+
+        if not mrp_bom:
+            return {'value': {}}
 
         price = 0.
         no_change_line_id = []
@@ -123,5 +127,35 @@ class sale_order_line(orm.Model):
             for line_bom in self.pool['sale.order.line.mrp.bom'].browse(cr, uid, no_change_line_id, context):
                 price += line_bom.price_subtotal
 
-        return {'value': {'purchase_price': price}}
+        res = {'purchase_price': price}
+
+        if product_id:
+            product_rules = super(sale_order_line, self).product_id_change(cr, uid, ids, context.get('pricelist_id'), product_id, qty=0,
+                              uom=False, qty_uos=0, uos=False, name='', partner_id=context.get('partner_id'),
+                              lang=False, update_tax=False, date_order=context.get('date_order', False),
+                              packaging=False, fiscal_position=context.get('fiscal_position', False), flag=False, context=context).get('value', {}).get('rules')
+            if product_rules:
+                rule = self.pool['product.pricelist.item'].browse(cr, uid, product_rules, context)
+                if rule.base == -4:
+                    price *= (1.0 + (rule.price_discount or 0.0))
+                    res.update(price_unit=price)
+                    # if rule.price_round:
+                    #     price = tools.float_round(price, precision_rounding=rule.price_round)
+
+                    # convert_to_price_uom = (lambda price: product_uom_obj._compute_price(
+                    #     cr, uid, product.uom_id.id,
+                    #     price, price_uom_id))
+                    # if rule.price_surcharge:
+                    #     price_surcharge = convert_to_price_uom(rule.price_surcharge)
+                    #     price += price_surcharge
+                    #
+                    # if rule.price_min_margin:
+                    #     price_min_margin = convert_to_price_uom(rule.price_min_margin)
+                    #     price = max(price, price_limit + price_min_margin)
+                    #
+                    # if rule.price_max_margin:
+                    #     price_max_margin = convert_to_price_uom(rule.price_max_margin)
+                    #     price = min(price, price_limit + price_max_margin)
+
+        return {'value': res}
 
