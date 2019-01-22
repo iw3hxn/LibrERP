@@ -555,7 +555,7 @@ class stock_picking(orm.Model):
                 else:
                     for stock_journal in self.read_group(cr, uid, [('id', 'in', ids)], ['stock_journal_id'], ['stock_journal_id']):
                         stock_journal_ids.append(stock_journal['stock_journal_id'][0])
-                if self.pool['sale.shop'].search(cr, uid, [('stock_journal_id', '=', stock_journal_ids)], context=context):
+                if self.pool['sale.shop'].search(cr, uid, [('stock_journal_id', 'in', stock_journal_ids)], context=context):
                     raise orm.except_orm(
                         _('Error'),
                         _('Is not possible to add product, use only Sale Order'))
