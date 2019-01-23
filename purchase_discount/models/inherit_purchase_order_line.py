@@ -130,7 +130,7 @@ class purchase_order_line(orm.Model):
 
     _columns = {
         'discount': fields.float('Discount (%)', digits=(3, 2)),
-        'price_subtotal': fields.function(_amount_line, method=True, string='Subtotal'),
+        'price_subtotal': fields.function(_amount_line, method=True, string='Subtotal', digits_compute=dp.get_precision('Purchase Price')),
     }
 
     _defaults = {
