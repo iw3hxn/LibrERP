@@ -45,11 +45,15 @@ class purchase_order_line(orm.Model):
     #     return result.keys()
 
     _columns = {
-        'sequence': fields.function(_get_order_line_sequence, string='Line #', type='integer', method=True),
-        'date_order': fields.related('order_id', 'date_order', type='date', string='Order Date', readonly=True, store=
-        # {
-        #         'purchase.order': (_get_purchase_line_date, ['date_order'], 100),
-        # }
-        False)
+        'seq': fields.function(_get_order_line_sequence, string='Line #', type='integer', method=True),
+        'sequence': fields.integer('Sequence',
+                                   help="Gives the sequence order when displaying a list of sales order lines."),
+        'date_order': fields.related('order_id', 'date_order', type='date', string='Order Date', readonly=True, store=False)
+    }
+
+    _order = 'sequence asc, id'
+
+    _defaults = {
+        'sequence': 10,
     }
 

@@ -197,3 +197,32 @@ class purchase_order(orm.Model):
             }
         )
         return res
+
+    @staticmethod
+    def set_sequence(lines):
+        sequence = 10
+        for line in lines:
+            if line[0] == 0:
+                if line[2].get('sequence', 0) == 10:
+                    line[2]['sequence'] = sequence
+                    sequence += 10
+                elif line[2].get('sequence', 0) > sequence:
+                    next_sequence = line[2]['sequence'] / 10 * 10 + 10
+                    if line[2]['sequence'] / 10 * 10 == line[2]['sequence']:
+                        line[2]['sequence'] = sequence
+                    sequence = next_sequence
+            elif line[0] == 4:
+                sequence += 10
+
+        return lines
+
+    def create(self, cr, uid, values, context=None):
+        if 'order_line' in values:
+            values['order_line'] = self.set_sequence(values['order_line'])
+        return super(purchase_order, self).create(cr, uid, values, context)
+
+    def write(self, cr, uid, ids, values, context=None):
+        if 'order_line' in values:
+            values['order_line'] = self.set_sequence(values['order_line'])
+        return super(purchase_order, self).write(cr, uid, ids, values, context)
+

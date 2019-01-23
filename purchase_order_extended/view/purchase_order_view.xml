@@ -9,7 +9,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='order_line']/tree//field[@name='date_planned']" position="before">
-                    <field name="sequence"/>
+                    <field name="seq"/>
                 </xpath>
                 <field name="fiscal_position" position="attributes">
                     <attribute name="on_change">onchange_fiscal_position(fiscal_position, order_line, context)</attribute>
