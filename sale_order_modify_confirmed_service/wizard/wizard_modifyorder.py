@@ -92,8 +92,9 @@ class wizard_modifyorder(orm.TransientModel):
                     'product_id': line.product_id.id,
                     'price_unit': line.price_unit,
                     'discount': line.discount,
-
-                    'order_id': order.id
+                    'tax_id': [(6, 0, line_value.get('tax_id'))],
+                    'order_id': order.id,
+                    'product_sale_order_history_ids': []
                 })
                 line_id = sale_order_line_obj.create(cr, uid, line_value, context)
                 line.write({'line_id': line_id})
