@@ -242,6 +242,7 @@
                         <field name="city"/>
                         <field name="country_id"/>
                         <field name="phone"/>
+                        <field name="mobile"/>
                         <field name="fax" />
                         <field name="email" />
                     </tree>
