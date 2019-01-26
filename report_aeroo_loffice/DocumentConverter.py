@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2018 Didotech srl (www.didotech.com)
+# © 2018-2019 Didotech srl (www.didotech.com)
 
 # from os.path import abspath
 import os
@@ -9,6 +9,7 @@ import logging
 # from tools.translate import _
 import time
 import tempfile
+import shutil
 
 try:
     from cStringIO import StringIO
@@ -77,17 +78,28 @@ class DocumentConversionException(Exception):
 #     def ServiceManager(self):
 #         pass
 
+class DummyLock(object):
+    def __enter__(self):
+        print("Enter dummy lock")
+
+    def __exit__(self, one, two, three):
+        print("Exit dummy lock")
+
 
 class DocumentConverter(object):
     def __init__(self, soffice, prefix='aeroo-', dir_tmp='/tmp', suffix='.odt'):
         self.path = dir_tmp
         self.prefix = prefix
         self.suffix = suffix
-        self.command = u"{bin} --headless --convert-to {format} --outdir {path} {source}".format(
+
+        self.lock = DummyLock()
+
+        self.command = u"{bin} -env:UserInstallation=file://{tmpdir} --headless --convert-to {format} --outdir {outdir} {source}".format(
             bin=soffice,
             format='{format}',
-            path=dir_tmp,
-            source='{file_name}'
+            outdir=dir_tmp,
+            source='{file_name}',
+            tmpdir='{tmp_dir}'
         )
 
     def putDocument(self, data):
@@ -114,15 +126,21 @@ class DocumentConverter(object):
             }
         }
 
+        document = self.document
+
         try:
+            tmp_dir = tempfile.mkdtemp()
             conversion = subprocess.Popen(self.command.format(
                 format=filters[filter_name]['ext'],
-                file_name=self.document.name
+                file_name=self.document.name,
+                tmp_dir=tmp_dir
             ), shell=True, stdin=None, stdout=None, stderr=None)
             conversion.wait()
+            shutil.rmtree(tmp_dir)
         except:
             _logger.error("Failed to convert document to '{}' format".format(filter_name))
 
+        self.document = document
         self.new_file = os.path.splitext(self.document.name)[0] + '.{ext}'.format(ext=filters[filter_name]['ext'])
 
         for count in range(1, 10):
