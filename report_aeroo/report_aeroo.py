@@ -34,7 +34,7 @@
 
 import os, sys, traceback
 from tempfile import NamedTemporaryFile
-import report
+# import report
 from report.report_sxw import report_sxw, report_rml, browse_record_list
 from report.pyPdf import PdfFileWriter, PdfFileReader
 
@@ -73,6 +73,7 @@ from ExtraFunctions import ExtraFunctions
 
 try:
     aeroo_lock = threading.Lock()
+
     msg = "Aeroo lock instantiated."
     _logger.info(msg)
     # logger.notifyChannel('report_aeroo', netsvc.LOG_INFO, msg)
@@ -447,7 +448,12 @@ class Aeroo_report(report_sxw):
         return data, output
 
     def _generate_doc(self, DC, data, report_xml, print_id):
-        with aeroo_lock:
+        if hasattr(DC, 'lock'):
+            lock = DC.lock
+        else:
+            lock = aeroo_lock
+
+        with lock:
             DC.putDocument(data)
             # subreports = self.oo_subreports.get(print_id)
             aeroo_print = self.active_prints.get(print_id, False)
