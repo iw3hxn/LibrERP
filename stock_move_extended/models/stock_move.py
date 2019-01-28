@@ -298,7 +298,7 @@ class stock_move(orm.Model):
 
     def write(self, cr, uid, ids, values, context=None):  # check if when change unit of sale is the same category of product
         context = context or self.pool['res.users'].context_get(cr, uid)
-        if values.get('product_uos', False):
+        if values.get('product_uos', False) and not values.get('product_uom', False):
             to_unit = self.pool['product.uom'].browse(cr, uid, values.get('product_uos'), context)
             for move in self.browse(cr, uid, ids, context):
                 if move.product_uos and move.product_uos.category_id.id != to_unit.category_id.id:
