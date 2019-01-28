@@ -1,0 +1,24 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* product_tags
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-19 14:08+0000\n"
+"PO-Revision-Date: 2013-11-19 14:08+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_tags
+#: code:addons\models\product_tag.py:18
+#: sql_constraint:tagging.tags:0
+#, python-format
+msgid "The tag names must be unique!"
+msgstr "Il nome del tag deve essere unico!"
+

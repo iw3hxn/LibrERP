@@ -21,7 +21,7 @@
 
 {
     "name": "Product Tags",
-    "version": "1.0",
+    "version": "1.1",
     "author": "Julius Network Solutions",
     "website": "http://julius.fr",
     "category": "Sales Management",

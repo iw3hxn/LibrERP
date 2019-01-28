@@ -19,6 +19,7 @@
 #
 #################################################################################
 from openerp.osv import fields, orm
+from openerp.tools.translate import _
 
 
 class product_tag(orm.Model):
@@ -26,3 +27,7 @@ class product_tag(orm.Model):
     _columns = {
         'name': fields.char('Tag Name', required=True, size=64),
     }
+
+    _sql_constraints = [
+        ('tagging_tags_name_unique', 'unique (name)', _('The tag names must be unique!')),
+    ]
