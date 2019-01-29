@@ -82,13 +82,31 @@ class account_invoice(orm.Model):
 
         return result
 
+    def _check_invoice_pre_validate(self, cr, uid, invoice, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        context['no_except'] = True
+        return not self.invoice_validate_check(cr, uid, [invoice.id], context)
+
+    def show_error(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        return self.invoice_validate_check(cr, uid, ids, context)
+
+    def _get_invoice_error(self, cr, uid, ids, field_name, model_name, context=None):
+        result = dict.fromkeys(ids, False)
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        invoice_check_ids = self.search(cr, uid, [('id', 'in', ids), ('state', '=', 'draft'), ('type', '=', 'out_invoice')], context=context)
+        for invoice in self.browse(cr, uid, invoice_check_ids, context):
+            result[invoice.id] = self._check_invoice_pre_validate(cr, uid, invoice, context)
+        return result
+
     _columns = {
         'supplier_invoice_number': fields.char('Supplier invoice nr', size=32),
         # 'sale_order_ids': fields.function(_get_sale_order, 'Sale Order', type='one2many', relation="sale.order", readonly=True, method=True),
         'stock_picking_ids': fields.function(_get_stock_picking, 'Stock Picking', type='one2many', relation="stock.picking", readonly=True, method=True),
         'sale_order_ids': fields.many2many(
             'sale.order', 'sale_order_invoice_rel', 'invoice_id', 'order_id', 'Sale orders'
-        )
+        ),
+        'error_invoice': fields.function(_get_invoice_error, 'Invoice Error', type='boolean', method=True)
     }
     
     def copy(self, cr, uid, order_id, default, context=None):
@@ -100,11 +118,13 @@ class account_invoice(orm.Model):
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
+        show_except = not context.get('no_except', False)
         for invoice in self.browse(cr, uid, ids, context):
             if invoice.type == 'out_invoice' and invoice.fiscal_position and invoice.fiscal_position.sale_journal_id and invoice.fiscal_position.sale_journal_id != invoice.journal_id:
-                raise orm.except_orm(_('Fattura Cliente'),
-                    _('Impossibile to valide invoice of {partner} because journal on invoive \'{invoice_journal}\' is different from journal \'{fiscal_position_journal}\' set on fiscal position \'{invoice_fiscal_position}\'').format(
-                        partner=invoice.partner_id.name, invoice_journal=invoice.journal_id.name, fiscal_position_journal=invoice.fiscal_position.sale_journal_id.name, invoice_fiscal_position=invoice.fiscal_position.name))
+                if show_except:
+                    raise orm.except_orm(_('Fattura Cliente'),
+                        _('Impossibile to valide invoice of {partner} because journal on invoive \'{invoice_journal}\' is different from journal \'{fiscal_position_journal}\' set on fiscal position \'{invoice_fiscal_position}\'').format(
+                            partner=invoice.partner_id.name, invoice_journal=invoice.journal_id.name, fiscal_position_journal=invoice.fiscal_position.sale_journal_id.name, invoice_fiscal_position=invoice.fiscal_position.name))
                 return False
         return True
 
