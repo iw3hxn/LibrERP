@@ -338,6 +338,7 @@ class account_invoice(orm.Model):
     def invoice_validate_check(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(account_invoice, self).invoice_validate_check(cr, uid, ids, context)
+        show_except = not context.get('no_except', False)
         if not res:
             return res
 
@@ -345,29 +346,38 @@ class account_invoice(orm.Model):
             if invoice.type in ['out_invoice', 'out_refund']:
                 partner = invoice.partner_id
                 if partner.invoice_warn == 'block':
-                    raise orm.except_orm(_('Alert for %s !') % (partner.name), partner.invoice_warn_msg)
+                    if show_except:
+                        raise orm.except_orm(_('Alert for %s !') % (partner.name), partner.invoice_warn_msg)
+                    else:
+                        return False
 
                 if invoice.fiscal_position and invoice.fiscal_position.is_tax_exemption:
                     # i'm on a Lettera intento, so check validity
                     date_invoice = invoice.date_invoice or datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
                     if date_invoice > invoice.fiscal_position.end_validity:
-                        raise orm.except_orm(_('Invoice'),
+                        if show_except:
+                            raise orm.except_orm(_('Invoice'),
                                              _('Impossible to Validate, fiscal position {fiscal} is overdue').format(
                                                  fiscal=invoice.fiscal_position.name))
+                        else:
+                            return False
                     if invoice.fiscal_position.amount:
                         plafond_amount = invoice.fiscal_position.amount - invoice.fiscal_position.invoice_amount - invoice.amount_untaxed
                         if plafond_amount < 0:
-                            raise orm.except_orm(_('Invoice'),
+                            if show_except:
+                                raise orm.except_orm(_('Invoice'),
                                                  _(
                                                      'Impossible to Validate, fiscal position {fiscal} is overdue').format(
                                                      fiscal=invoice.fiscal_position.name))
+                            else:
+                                return False
 
                 if invoice.company_id.stop_invoice_internal_number:
                     invoice_ids = self.search(cr, 1, [('internal_number', '!=', True), ('type', '=', 'out_invoice'),
                                                       ('journal_id', '=', invoice.journal_id.id), ('state', '=', 'draft')],
                                               context=context)
                     for invoice_old in self.browse(cr, 1, [x for x in invoice_ids if x not in ids], context):
-                        if not context.get('no_except', False):
+                        if show_except:
                             raise orm.except_orm(_('Invoice'),
                                              _(
                                                  'Impossible to Validate, there are just an invoice of {partner} that was just validate with number {invoice_number}').format(
@@ -377,7 +387,7 @@ class account_invoice(orm.Model):
                             return False
 
                 if not invoice.payment_term and invoice.company_id.check_invoice_payment_term:
-                    if not context.get('no_except', False):
+                    if show_except:
                         raise orm.except_orm(_('Invoice'),
                                          _(
                                              'Impossible to Validate, need to set Payment Term on invoice of {partner}').format(
@@ -388,7 +398,7 @@ class account_invoice(orm.Model):
                 if invoice.payment_term and invoice.company_id.check_invoice_payment_term and invoice.payment_term.type == 'BB' and not invoice.partner_bank_id and invoice.type == 'out_invoice':
                     if invoice.partner_id.company_bank_id:
                         invoice.write({'partner_bank_id': invoice.partner_id.company_bank_id.id})
-                    elif not context.get('no_except', False):
+                    elif show_except:
                         raise orm.except_orm(_('Invoice'),
                                          _(
                                              'Impossible to Validate, need to set Bank on invoice of {partner}').format(
@@ -397,7 +407,7 @@ class account_invoice(orm.Model):
                         return False
 
                 if not invoice.fiscal_position and invoice.company_id.check_invoice_fiscal_position:
-                    if not context.get('no_except', False):
+                    if show_except:
                         raise orm.except_orm(_('Invoice'),
                                          _(
                                              'Impossible to Validate, need to set Fiscal Position on invoice of {partner}').format(
@@ -409,15 +419,18 @@ class account_invoice(orm.Model):
                     if invoice.type in ['out_invoice', 'out_refund']:
                         invoice.button_reset_taxes()
                         if not invoice.tax_line:
-                            raise orm.except_orm(_('Invoice'),
+                            if show_except:
+                                raise orm.except_orm(_('Invoice'),
                                                  _(
                                                      'Impossible to Validate, need to set on Tax Line on invoice of {partner}').format(
                                                      partner=invoice.partner_id.name))
+                            else:
+                                return False
                         else:
                             return True
 
                 if self.required_vat(cr, uid, invoice, context):
-                    if not context.get('no_except', False):
+                    if show_except:
                         raise orm.except_orm(_('Invoice'),
                                          _('Impossible to Validate, need to set on Partner {partner} VAT').format(
                                              partner=invoice.partner_id.name))
@@ -425,7 +438,7 @@ class account_invoice(orm.Model):
                         return False
 
             elif not invoice.supplier_invoice_number:
-                if not context.get('no_except', False):
+                if show_except:
                     raise orm.except_orm(_('Supplier Invoice'),
                                      _('Impossible to Validate, need to set Supplier invoice nr'))
                 else:
