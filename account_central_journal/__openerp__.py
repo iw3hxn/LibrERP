@@ -21,7 +21,7 @@
 
 {
     'name': 'Account Central Journal',
-    'version': '3',
+    'version': '3.1',
     'author': "ISA S.r.l.,Odoo Community Association (OCA)",
     'website': 'http://www.isa.it',
     'category': 'Generic Modules/Accounting',

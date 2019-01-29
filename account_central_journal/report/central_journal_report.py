@@ -88,6 +88,7 @@ class central_journal_report(report_sxw.rml_parse):
             'set_wizard_params': self._set_wizard_params,
             'get_movements': self._get_movements,
         })
+        self.context = context
 
 
 report_sxw.report_sxw(
