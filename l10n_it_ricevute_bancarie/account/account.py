@@ -154,9 +154,10 @@ class account_invoice(orm.Model):
                             invoice.button_compute()
 
                     if invoice.payment_term.riba and invoice.type == 'out_invoice':
-                        if not invoice.partner_id.bank_riba_id and show_except:
-                            raise orm.except_orm(u'Fattura Cliente',
+                        if not invoice.partner_id.bank_riba_id:
+                            if show_except:
+                                raise orm.except_orm(u'Fattura Cliente',
                                    u'Impossibile da validare in quanto non è impostata la banca appoggio Riba nel partner {partner}'.format(partner=invoice.partner_id.name))
-                        else:
-                            return False
+                            else:
+                                return False
         return True
