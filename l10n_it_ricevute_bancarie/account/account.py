@@ -124,7 +124,9 @@ class account_invoice(orm.Model):
     }
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(account_invoice, self).invoice_validate_check(cr, uid, ids, context)
+        show_except = not context.get('no_except', False)
         if not res:
             return False
         else:
@@ -147,12 +149,14 @@ class account_invoice(orm.Model):
 
                             if account_invoice_line_vals.get('invoice_line_tax_id', False):
                                 account_invoice_line_vals['invoice_line_tax_id'] = [(6, False, account_invoice_line_vals.get('invoice_line_tax_id'))]
+                            account_invoice_line_vals['quantity'] = len(invoice.payment_term.line_ids)
                             account_invoice_line_obj.create(cr, uid, account_invoice_line_vals, context)
                             invoice.button_compute()
 
                     if invoice.payment_term.riba and invoice.type == 'out_invoice':
-                        if not invoice.partner_id.bank_riba_id:
+                        if not invoice.partner_id.bank_riba_id and show_except:
                             raise orm.except_orm(u'Fattura Cliente',
                                    u'Impossibile da validare in quanto non è impostata la banca appoggio Riba nel partner {partner}'.format(partner=invoice.partner_id.name))
+                        else:
                             return False
         return True
