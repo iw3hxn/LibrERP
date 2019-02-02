@@ -146,3 +146,11 @@ class stock_picking(orm.Model):
 
                 self.pool['ir.sequence_recovery'].set(cr, uid, [picking.id], 'stock.picking', 'ddt_number', '', sequence_id)
         return super(stock_picking, self).unlink(cr, uid, ids, context)
+
+    def _get_group_keys(self, cr, uid, partner, picking, context=None):
+        res = super(stock_picking, self)._get_group_keys(cr, uid, partner, picking, context)
+        if picking.cig:
+            res = '{0}_CIG{1}'.format(res, picking.cig)
+        if picking.cup:
+            res = '{0}_CUP{1}'.format(res, picking.cup)
+        return res
