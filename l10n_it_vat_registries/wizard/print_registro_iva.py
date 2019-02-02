@@ -26,6 +26,7 @@ from openerp.tools.translate import _
 class wizard_registro_iva(osv.osv_memory):
 
     def _get_period(self, cr, uid, context=None):
+        return []
         ctx = dict(context or {}, account_period_prefer_normal=True)
         period_ids = self.pool['account.period'].find(cr, uid, context=ctx)
         return period_ids
@@ -93,6 +94,7 @@ class wizard_registro_iva(osv.osv_memory):
             'model': 'account.move',
             'fiscal_page_base': wizard.fiscal_page_base,
             'period_ids': [p.id for p in wizard.period_ids],
+            'journal_ids': [p.id for p in wizard.journal_ids],
             'layout': wizard['type'],
             'tax_sign': wizard['tax_sign'],
         }

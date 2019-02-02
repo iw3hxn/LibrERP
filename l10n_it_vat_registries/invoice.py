@@ -130,17 +130,16 @@ class Parser(report_sxw.rml_parse):
         res_dict = {}
         tax_code_obj = self.pool['account.tax.code']
         for period_id in self.localcontext['data']['period_ids']:
-            for tax_code in tax_code_obj.browse(
-                self.cr, self.uid,
-                tax_code_ids, context={
-                    'period_id': period_id,
-                }
-            ):
-                if not res_dict.get(tax_code.id):
-                    res_dict[tax_code.id] = 0.0
-                res_dict[tax_code.id] += (
-                    tax_code.sum_period *
-                    self.localcontext['data']['tax_sign'])
+            move_state = ('posted', )
+            journal_ids = (','.join([str(x) for x in self.localcontext['data']['journal_ids']]))
+            sum_p = tax_code_obj._sum(self.cr, self.uid, tax_code_ids, '', '', self.localcontext, where=' AND line.period_id=%s AND move.state IN %s AND line.journal_id IN (%s) ', where_params=(period_id, move_state, journal_ids))
+
+            for tax_code_id in tax_code_ids:
+                if not res_dict.get(tax_code_id):
+                    res_dict[tax_code_id] = 0.0
+
+                sum_period = sum_p[tax_code_id]
+                res_dict[tax_code_id] += (sum_period * self.localcontext['data']['tax_sign'])
         for tax_code_id in res_dict:
             tax_code = tax_code_obj.browse(self.cr, self.uid, tax_code_id)
             if res_dict[tax_code_id]:
