@@ -222,6 +222,10 @@ class FormatTwo():
     BOM_DEFAULTS = {
     }
 
+    HEADER_PRICELIST_ITEM = ('Articolo', 'Prezzo')
+    COLUMNS_PRICELIST_ITEM = "code, price_surcharge"
+    REQUIRED_PRICELIST_ITEM = ['code', 'price_surcharge']
+
 
 class FormatThree():
     # TP

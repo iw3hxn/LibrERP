@@ -211,8 +211,9 @@
                         </group>
                         
                         <group colspan="8" col="8" states="import">
-                            <field name="pricelist_id" />
-                            <field name="pricelist_version_id" required="True"  />
+                            <field name="pricelist_id" attrs="{'required': [('format', '=', 'FormatOne')], 'invisible': [('format', '=', 'FormatTwo')]}"/>
+                            <field name="pricelist_version_id" attrs="{'required': [('format', '=', 'FormatOne')], 'invisible': [('format', '=', 'FormatTwo')]}" />
+                            <field name="partner_id" attrs="{'required': [('format', '=', 'FormatTwo')], 'invisible': [('format', '=', 'FormatOne')]}"/>
                         </group>
                     </group>
                     

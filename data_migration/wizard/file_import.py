@@ -332,8 +332,9 @@ class pricelist_import(filedata_import):
     importer = pricelist_importer
 
     _columns = {
+        'partner_id': fields.many2one('res.partner', 'Supplier', required=True, domain="[('supplier', '=', True)]"),
         'pricelist_id': fields.many2one(
-            'product.pricelist', 'Pricelist', required=True
+            'product.pricelist', 'Pricelist'
         ),
         'pricelist_version_id': fields.many2one(
             'product.pricelist.version',
@@ -350,6 +351,7 @@ class pricelist_import(filedata_import):
         'format': fields.selection(
             (
                 ('FormatOne', _('Format One')),
+                ('FormatTwo', _('Format Two')),
             ), 'Formato Dati', required=True, readonly=False
         ),
         'content_base64': fields.binary(

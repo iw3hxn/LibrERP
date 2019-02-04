@@ -77,6 +77,8 @@ class ImportFile(threading.Thread, Utils):
             self.pricelistImportID,
             context=self.context
         )
+        self.format = self.pricelistImportRecord.format
+        self.partner_id = self.pricelistImportRecord.partner_id
         self.file_name = self.pricelistImportRecord.file_name.split('\\')[-1]
         self.pricelist_id = self.pricelistImportRecord.pricelist_id
 
@@ -123,9 +125,7 @@ class ImportFile(threading.Thread, Utils):
                 self.cr.rollback()
                 self.cr.commit()
                 title = "Import failed"
-                message = "Errore alla linea %s" % (
-                    str(self.processed_lines) + "\nDettaglio:\n\n" + str(e)
-                )
+                message = "Errore nell'importazione del file %s" % self.file_name + "\nDettaglio:\n\n" + str(e)
 
                 if DEBUG:
                     # Debug
@@ -149,12 +149,15 @@ class ImportFile(threading.Thread, Utils):
         # NB: il + 1 alla fine serve ad evitare divisioni per zero
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
-        wizard = self.pricelistImportRecord
-        # self.browse(cr, uid, ids[0], context=context)
-        pricelist_version_id = wizard.pricelist_version_id
-        pricelist_version_id.write({
-            'items_id': [(2, item.id) for item in pricelist_version_id.items_id]
-        })
+        pricelist_version_id = False
+        if self.format == 'FormatOne':
+            wizard = self.pricelistImportRecord
+            # self.browse(cr, uid, ids[0], context=context)
+
+            pricelist_version_id = wizard.pricelist_version_id
+            pricelist_version_id.write({
+                'items_id': [(2, item.id) for item in pricelist_version_id.items_id]
+            })
 
         for self.processed_lines, row_list in enumerate(table, start=1):
 
@@ -218,37 +221,60 @@ class ImportFile(threading.Thread, Utils):
             pprint(zip(self.HEADER, row_str_list))
         record = self.RecordPriceListItem._make([self.toStr(value) for value in row_list])
 
-
         product = record.code
-        if self.cache_product.get(product, False):
-            # product_ids = [self.cache_product[product]]
-            warning = u'Product {0} already processed in cache'.format(product)
-            _logger.warning(warning)
-            self.warning.append(warning)
-            return False
-        else:
-            product_ids = self.pool['product.product'].search(cr, uid, [('default_code', '=', product)], context=self.context)
+        if self.format == 'FormatOne':
+            if self.cache_product.get(product, False):
+                # product_ids = [self.cache_product[product]]
+                warning = u'Product {0} already processed in cache'.format(product)
+                _logger.warning(warning)
+                self.warning.append(warning)
+                return False
+            else:
+                product_ids = self.pool['product.product'].search(cr, uid, [('default_code', '=', product)], context=self.context)
+                if not product_ids:
+                    product_ids = self.pool['product.product'].search(cr, uid, [('default_code', '=ilike', '%{product}'.format(product=product))], context=self.context)
+
             if not product_ids:
-                product_ids = self.pool['product.product'].search(cr, uid, [('default_code', '=ilike', '%{product}'.format(product=product))], context=self.context)
+                error = u'Row {row} => Not Find code: {product}'.format(row=self.processed_lines, product=record.code)
+                _logger.error(error)
+                self.error.append(error)
+                return False
 
-        if not product_ids:
-            error = u'Row {row} => Not Find code: {product}'.format(row=self.processed_lines, product=record.code)
-            _logger.error(error)
-            self.error.append(error)
-            return False
+            product_id = product_ids.pop()
+            self.cache_product[product] = product_id
+            pricelist_version_item_vals = {
+                'price_version_id': pricelist_version_id.id,
+                'name': record.code,
+                'product_id': product_id,
+                'base': 1,
+                'price_discount': -1,
+                'price_surcharge': float(record.price_surcharge) or False
+            }
 
-        product_id = product_ids.pop()
-        self.cache_product[product] = product_id
-        pricelist_version_item_vals = {
-            'price_version_id': pricelist_version_id.id,
-            'name': record.code,
-            'product_id': product_id,
-            'base': 1,
-            'price_discount': -1,
-            'price_surcharge': float(record.price_surcharge) or False
-        }
+            pricelist_version_item_id = self.pricelist_item_obj.create(cr, uid, pricelist_version_item_vals, self.context)
+        elif self.format == 'FormatTwo':
 
-        pricelist_version_item_id = self.pricelist_item_obj.create(cr, uid, pricelist_version_item_vals, self.context)
+            if self.cache_product.get(product, False):
+                # product_ids = [self.cache_product[product]]
+                warning = u'Product {0} already processed in cache'.format(product)
+                _logger.warning(warning)
+                self.warning.append(warning)
+                return False
+            else:
+                supplierinfo_ids = self.pool['product.supplierinfo'].search(cr, uid, [('product_code', '=', product), ('name', '=', self.partner_id.id)], context=self.context)
+
+            if not supplierinfo_ids:
+                error = u'Row {row} => Not Find code: {product}'.format(row=self.processed_lines, product=record.code)
+                _logger.error(error)
+                self.error.append(error)
+                return False
+            supplierinfo_id = supplierinfo_ids.pop()
+            self.cache_product[product] = supplierinfo_id
+            supplierinfo = self.pool['product.supplierinfo'].browse(cr, uid, supplierinfo_id, self.context)
+            if supplierinfo.pricelist_ids:
+                supplierinfo.pricelist_ids[0].write({'price': float(record.price_surcharge) or 0.0})
+            else:
+                supplierinfo.write({'pricelist_ids': [(0, 0, {'price': float(record.price_surcharge) or 0.0, 'min_quantity': 0.0})]})
 
         self.uo_new += 1
-        return pricelist_version_item_id
+        return True
