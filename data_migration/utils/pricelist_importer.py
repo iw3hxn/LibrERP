@@ -271,8 +271,15 @@ class ImportFile(threading.Thread, Utils):
             supplierinfo_id = supplierinfo_ids.pop()
             self.cache_product[product] = supplierinfo_id
             supplierinfo = self.pool['product.supplierinfo'].browse(cr, uid, supplierinfo_id, self.context)
+            try:
+                price_surcharge = float(record.price_surcharge)
+            except Exception as e:
+                error = u'Row {row} => Error: {error}'.format(row=self.processed_lines, error=e)
+                _logger.error(error)
+                self.error.append(error)
+                return False
             if supplierinfo.pricelist_ids:
-                supplierinfo.pricelist_ids[0].write({'price': float(record.price_surcharge) or 0.0})
+                supplierinfo.pricelist_ids[0].write({'price': price_surcharge or 0.0})
             else:
                 supplierinfo.write({'pricelist_ids': [(0, 0, {'price': float(record.price_surcharge) or 0.0, 'min_quantity': 0.0})]})
 
