@@ -126,12 +126,12 @@ class account_invoice(orm.Model):
                 date_start = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                 date_stop = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
             period_ids = self.pool['account.period'].search(
-                cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop), ('company_id', '=', invoice.company_id.id), ('special', '!=', True)])
+                cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop), ('company_id', '=', invoice.company_id.id), ('special', '!=', True)], context=context)
             if period_ids:
                 period_id = period_ids[0]
-                self.write(cr, uid, [invoice.id], {'registration_date': reg_date, 'period_id': period_id})
+                self.write(cr, uid, [invoice.id], {'registration_date': reg_date, 'period_id': period_id}, context=context)
                 mov_date = reg_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                self.pool['account.move'].write(cr, uid, [invoice.move_id.id], {'state': 'draft'})
+                self.pool['account.move'].write(cr, uid, [invoice.move_id.id], {'state': 'draft'}, context=context)
                 if hasattr(invoice, 'supplier_invoice_number') and invoice.supplier_invoice_number:
                     sql = "update account_move_line set period_id = " + \
                         str(period_id) + ", date = '" + mov_date + "' , ref = '" + \
@@ -151,7 +151,7 @@ class account_invoice(orm.Model):
                         cr, uid, [invoice.move_id.id], {'period_id': period_id, 'date': mov_date}, context=context)
                 self.pool['account.move'].write(cr, uid, [invoice.move_id.id], {'state': 'posted'}, context=context)
 
-        self._log_event(cr, uid, ids)
+        # self._log_event(cr, uid, ids)
         return True
 
     def copy(self, cr, uid, ids, default=None, context=None):
