@@ -47,12 +47,12 @@ class res_bank(osv.osv):
 
     def name_get(self, cr, uid, ids, context=None):
         res = []
-        for bank in self.browse(cr, uid, ids, context=context):
-            if bank.abi and bank.cab:
-                name = u"[{abi} {cab}] {name}".format(abi=bank.abi, cab=bank.cab, name=bank.name)
+        for bank in self.read(cr, uid, ids, ['name', 'abi', 'cab'], context=context):
+            if bank['abi'] and bank['cab']:
+                name = u"[{abi} {cab}] {name}".format(abi=bank['abi'], cab=bank['cab'], name=bank['name'])
             else:
-                name = bank.name
-            res.append((bank.id, name))
+                name = bank['name']
+            res.append((bank['id'], name))
         return res
 
 
