@@ -57,7 +57,7 @@ class project_issue(orm.Model):
             task_id = False
 
         vals = {
-            'partner_id': project.partner_id and project.partner_id.id,
+            'partner_id': project.partner_id and project.partner_id.id or False,
             'task_id': task_id,
             'analytic_account_id': project.analytic_account_id.id,
         }
