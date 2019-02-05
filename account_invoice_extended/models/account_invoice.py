@@ -22,6 +22,7 @@
 #
 ##############################################################################
 
+import time
 from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
@@ -259,6 +260,7 @@ class account_invoice(orm.Model):
     # override to merge description (after will be trunked to x character everyway)
     def group_lines(self, cr, uid, iml, line, inv):
         """Merge account move lines (and hence analytic lines) if invoice line hashcodes are equals"""
+        cur_obj = self.pool['res.currency']
         if inv.journal_id.group_invoice_lines:
             line2 = {}
             for x, y, l in line:
@@ -277,6 +279,8 @@ class account_invoice(orm.Model):
                     line2[tmp] = l
             line = []
             for key, val in line2.items():
+                val['debit'] = cur_obj.compute(cr, uid, inv.currency_id.id, inv.currency_id.id, val['debit'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=True)
+                val['credit'] = cur_obj.compute(cr, uid, inv.currency_id.id, inv.currency_id.id, val['credit'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=True)
                 line.append((0, 0, val))
         return line
 
