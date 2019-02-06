@@ -66,7 +66,7 @@ class AccountTax(orm.Model):
             ('S', 'Split payment'),
             ], string="VAT payability"),
         'law_reference': fields.char(
-            'Law reference', size=128),
+            'Law reference', size=100),
         'withholding_tax': fields.boolean("Ritenuta d'acconto"),
         'causale_pagamento_id': fields.selection([
             ('A', "Prestazioni di lavoro autonomo rientranti nell'esercizio di arte o professione abituale"),

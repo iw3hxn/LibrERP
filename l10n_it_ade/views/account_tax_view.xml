@@ -5,14 +5,14 @@
         <record id="view_tax_form" model="ir.ui.view">
             <field name="name">account.tax.form</field>
             <field name="model">account.tax</field>
-            <field name="inherit_id" ref="account.view_tax_form"></field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
             <field name="arch" type="xml">
                 <notebook position="inside">
                     <page string="Italy AdE">
                         <group string = "IVA">
-                            <field name="non_taxable_nature"></field>
-                            <field name="law_reference" attrs="{'required': [('non_taxable_nature', '!=', False),('type_tax_use', '!=', 'purchase')], 'invisible': ['|',('non_taxable_nature', '=', False),('type_tax_use', '=', 'purchase')]}"></field>
-                            <field name="payability"></field>
+                            <field name="non_taxable_nature"/>
+                            <field name="law_reference" attrs="{'required': [('non_taxable_nature', '!=', False),('type_tax_use', '!=', 'purchase')], 'invisible': ['|',('non_taxable_nature', '=', False),('type_tax_use', '=', 'purchase')]}"/>
+                            <field name="payability"/>
                         </group>
                         <newline />
                         <group string="Ritenuta Acconto">
@@ -26,6 +26,19 @@
                         </group>
                     </page>
                 </notebook>
+            </field>
+        </record>
+
+        <record id="view_tax_search" model="ir.ui.view">
+            <field name="name">account.tax.form</field>
+            <field name="model">account.tax</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="account.view_account_tax_search"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="type_tax_use" />
+                    <field name="non_taxable_nature"/>
+                </field>
             </field>
         </record>
 
