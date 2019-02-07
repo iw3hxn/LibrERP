@@ -408,6 +408,10 @@ class riba_distinta_line(osv.osv):
         'abi': fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
         'cab': fields.related('partner_id', 'bank_riba_id', 'cab', type='char', string='CAB', store=False),
     }
+
+    _default = {
+        'tobeaccredited': True,
+    }
     
     def confirm(self, cr, uid, ids, context=None):
         move_pool = self.pool['account.move']
