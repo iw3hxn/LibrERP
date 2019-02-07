@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- ====================================================== -->
+        <!--                     CAMPI AGGIUNTIVI                    -->
+        <!-- ====================================================== -->
+        <record id="view_sdd_add_text_field" model="ir.ui.view">
+            <field name="name">account.riba.add.text.field</field>
+            <field name="model">account.payment.term</field>
+            <field name="inherit_id" ref="account.view_payment_term_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="active" position="after">
+                    <field name="sdd"/>
+                </field>
+            </field>
+        </record>
+
+
+        <!-- Riba da emettere Action -->
+
+        <record model="ir.actions.act_window" id="action_sdd_da_emettere">
+            <field name="name">Issue SDD</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.move.line</field>
+            <field name="src_model">account.move.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="l10n_it_ricevute_bancarie.view_riba_da_emettere_tree"/>
+            <field name="context">{'search_default_da_emettere':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}
+            </field>
+            <field name="domain">['&amp;','|',('sdd','=','True'),('unsolved_invoice_ids','!=',False),('account_id.type','=','receivable'), ('reconcile_id', '=', False)]</field>
+            <field name="search_view_id" ref="l10n_it_ricevute_bancarie.riba_filter"/>
+        </record>
+
+
+        <menuitem name="Issue SDD" parent="l10n_it_ricevute_bancarie.menu_riba"
+                  id="menu_sdd_da_emettere" action="action_sdd_da_emettere" sequence="1"/>
+
+
+    </data>
+</openerp>
