@@ -88,6 +88,7 @@ class sale_order(orm.Model):
         mod_obj = self.pool['ir.model.data']
         res = mod_obj.get_object_reference(cr, uid, 'sale', 'view_order_form')
         res_id = res and res[1] or False,
+        self.write(cr, uid, order_ids, {}, context)
 
         return {
             'name': _('Sale Order'),
