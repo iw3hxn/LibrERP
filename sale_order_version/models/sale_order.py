@@ -55,21 +55,27 @@ class sale_order(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
         attachment_obj = self.pool['ir.attachment']
+        sale_order_line_obj = self.pool['sale.order.line']
 
         order_ids = []
         for order in self.browse(cr, uid, ids, context=context):
             vals = {
                 'version': (order.version and order.version or 1) + 1,
                 'date_order': fields.date.context_today(cr, uid, context),
+                'order_line': []
             }
 
             if not order.sale_version_id:
                 vals['sale_version_id'] = order.id
 
             context['versioning'] = True
-            vals['name'] = (order.sale_version_id and order.sale_version_id.name or order.name) + u" V." + ustr(
-                vals['version'])
+            vals['name'] = (order.sale_version_id and order.sale_version_id.name or order.name) + u" V." + ustr(vals['version'])
+
             new_order_id = self.copy(cr, uid, order.id, vals, context=context)
+
+            old_order_lines_ids = self.read(cr, uid, order.id, ['order_line'], context)['order_line']
+            for order_line_id in old_order_lines_ids:
+                sale_order_line_obj.copy(cr, uid, order_line_id, {'order_id': new_order_id}, context=context)
 
             attachment_ids = attachment_obj.search(cr, uid,
                                                    [('res_model', '=', 'sale.order'), ('res_id', '=', order.id)], context=context)
