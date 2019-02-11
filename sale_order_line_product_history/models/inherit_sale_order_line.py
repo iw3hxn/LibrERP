@@ -18,7 +18,7 @@ class SaleOrderLine(orm.Model):
                           flag=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(SaleOrderLine, self).product_id_change(cr, uid, ids, pricelist, product_id, qty, uom, qty_uos, uos, name, partner_id, lang, update_tax, date_order, packaging, fiscal_position, flag, context)
-        if product_id and partner_id and context.get('pos_order_type', False):
+        if (product_id and partner_id) and not context.get('pos_order_type', False):
             product_sell_ids = self.search(cr, uid, [('product_id', '=', product_id), ('order_partner_id', '!=', partner_id)], context=context)
             partner_sell_ids = self.search(cr, uid, [('product_id', '=', product_id), ('order_partner_id', '=', partner_id)], context=context)
             res['value']['product_sale_order_history_ids'] = partner_sell_ids + product_sell_ids
