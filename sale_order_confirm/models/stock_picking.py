@@ -75,7 +75,7 @@ class stock_picking(orm.Model):
 
     def _get_group_keys(self, cr, uid, partner, picking, context=None):
         res = super(stock_picking, self)._get_group_keys(cr, uid, partner, picking, context)
-        if picking.sale_id and picking.sale_id.payment_term:
+        if picking.type == 'out' and picking.sale_id and picking.sale_id.payment_term:
             res = '{0}_{1}'.format(res, picking.sale_id.payment_term.id)
         # if picking.cig:
         #     res = '{0}_CIG{1}'.format(res, picking.cig)
