@@ -681,7 +681,7 @@ class commitment_line(orm.AbstractModel):
         res = {'xml_Error': ''}
 
         if partner.vat:
-            vat = partner.vat.replace(' ', '')
+            vat = partner.vat.replace(' ', '').upper()
             res['xml_IdPaese'] = vat and vat[0:2] or ''
             res['xml_IdCodice'] = vat and vat[2:] or ''
         res['xml_Nazione'] = address.country_id.code or res.get('xml_IdPaese')
@@ -697,12 +697,15 @@ class commitment_line(orm.AbstractModel):
             if 'warning' in r:
                 res['xml_Error'] += self._get_error(_('Invalid fiscalcode of %s') % partner.name, context)
 
-            res['xml_CodiceFiscale'] = partner.fiscalcode.upper()
+            res['xml_CodiceFiscale'] = partner.fiscalcode.upper().replace(' ', '')
         elif res.get('xml_IdPaese', '') == 'IT':
             # res['xml_CodiceFiscale'] = res['xml_IdCodice']
             pass
         elif not partner.vat:
             res['xml_CodiceFiscale'] = '99999999999'
+        if res.get('xml_CodiceFiscale'):
+            if len(res['xml_CodiceFiscale']) not in [11, 16]:
+                res['xml_Error'] += self._get_error(_('Invalid fiscalcode lenght of %s') % partner.name, context)
 
         if partner.individual and not partner.vat:
             if release.major_version == '6.1':
