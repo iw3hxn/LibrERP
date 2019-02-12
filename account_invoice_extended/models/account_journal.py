@@ -25,10 +25,12 @@ class account_journal(orm.Model):
     _inherit = 'account.journal'
     _columns = {
         'sequence': fields.integer('Sequence'),
+        'active': fields.boolean('Active'),
     }
 
     _defaults = {
-        'sequence': 10
+        'sequence': 10,
+        'active': True
     }
 
     _order = 'sequence, type, code'
