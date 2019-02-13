@@ -49,6 +49,7 @@ SOCIAL_SECURITY_TYPE = [
 
 class AccountTax(orm.Model):
     _inherit = 'account.tax'
+
     _columns = {
         'non_taxable_nature': fields.selection([
             ('N1', 'escluse ex art. 15'),
@@ -94,7 +95,10 @@ class AccountTax(orm.Model):
             ('Z', "Titolo diverso dai precedenti")
         ], string="Causale Ritenuta"),
         'social_security': fields.boolean("Cassa Previdenziale"),
-        'social_security_type': fields.selection(SOCIAL_SECURITY_TYPE, string='Tipo Cassa Previdenziale')
+        'social_security_type': fields.selection(SOCIAL_SECURITY_TYPE, string='Tipo Cassa Previdenziale'),
+        'amount_e_invoice': fields.integer(
+            'Amount in XML', required=False,
+            help="For taxes of type percentage, enter % ratio between 0-100"),
     }
     _sql_constraints = [
         ('description_uniq', 'unique(description)', _('Description must be unique !')),
