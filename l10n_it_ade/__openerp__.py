@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright 2017 - Antonio M. Vigliotti <antoniomaria.vigliotti@gmail.com>
 #                  Associazione Odoo Italia <http://www.odoo-italia.org>
+# Copyright 2019 Didotech srl <info@didotech.com>
+#
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
 {
     "name": "Base xml Agenzia delle Entrate",
-    "version": "6.1.4.4.7",
+    "version": "6.1.5.5.8",
     "category": "Localization/Italy",
     "summary": "Codice con le definizioni dei file xml Agenzia delle Entrate",
     "author": "SHS-AV s.r.l.,"

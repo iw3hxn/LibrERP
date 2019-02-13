@@ -7,6 +7,10 @@
             <field name="model">account.tax</field>
             <field name="inherit_id" ref="account.view_tax_form"/>
             <field name="arch" type="xml">
+                <field name="amount" position="after">
+                    <label /><label />
+                    <field name="amount_e_invoice" />
+                </field>
                 <notebook position="inside">
                     <page string="Italy AdE">
                         <group string = "IVA">
