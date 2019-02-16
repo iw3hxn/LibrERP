@@ -149,17 +149,30 @@ class stock_inventory(orm.Model):
         return super(stock_inventory, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order,
                                                  context=context, count=count)
 
-    def unlink(self, cr, uid, ids, context):
+    def unlink(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         move_to_unlink_ids = []
         for inventory in self.browse(cr, uid, ids, context):
             for move in inventory.move_ids:
                 move_to_unlink_ids.append(move.id)
-        res = super(stock_inventory, self).unlink(cr, uid, ids, context)
         if move_to_unlink_ids:
             ctx = context.copy()
             ctx['call_unlink'] = True
             self.pool['stock.move'].unlink(cr, uid, move_to_unlink_ids, ctx)
+        res = super(stock_inventory, self).unlink(cr, uid, ids, context)
+        return res
+
+    def action_cancel_draft(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        move_to_unlink_ids = []
+        for inventory in self.browse(cr, uid, ids, context):
+            for move in inventory.move_ids:
+                move_to_unlink_ids.append(move.id)
+        if move_to_unlink_ids:
+            ctx = context.copy()
+            ctx['call_unlink'] = True
+            self.pool['stock.move'].unlink(cr, uid, move_to_unlink_ids, ctx)
+        res = super(stock_inventory, self).action_cancel_draft(cr, uid, ids, context)
         return res
 
 
