@@ -35,11 +35,12 @@
         <record id="view_invoice_form_picking_origin" model="ir.ui.view">
             <field name="name">account.invoice.picking_origin</field>
             <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="account.invoice_form"></field>
+            <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
-                    <page string="Sale / Stock Picking" colspan="4">
-                        <separator string="Sale" colspan="4" />
+                    <page string="Sale / Stock Picking" colspan="4" groups="account.group_account_user">
+
+                        <separator string="Sale" colspan="4"/>
                         <field name="sale_order_ids" nolabel="1" colspan="4">
                             <tree>
                                 <field name="shop_id"/>
@@ -49,8 +50,12 @@
                                 <field name="amount_untaxed" sum="SUM"/>
                             </tree>
                         </field>
+
+
                         <separator string="Stock Picking" colspan="4"/>
-                        <field name="stock_picking_ids" nolabel="1" context="{'view_print': True, 'type':'out', 'form_view_ref':'stock.view_picking_out_form', 'tree_view_ref':'stock.view_picking_out_tree'}"/>
+                        <field name="stock_picking_ids" nolabel="1"
+                               context="{'view_print': True, 'type':'out', 'form_view_ref':'stock.view_picking_out_form', 'tree_view_ref':'stock.view_picking_out_tree'}"/>
+
                     </page>
                 </xpath>
             </field>
