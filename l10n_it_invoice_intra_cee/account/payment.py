@@ -39,6 +39,7 @@ class account_payment_term(orm.Model):
             date_ref = datetime.now().strftime('%Y-%m-%d')
         pt = self.browse(cr, uid, id, context=context)
         amount = value
+        sign = lambda x: (1, -1)[x < 0]
         obj_precision = self.pool['decimal.precision']
         prec = obj_precision.precision_get(cr, uid, 'Account')
         amount_tax = context.get('amount_tax', False)
@@ -53,7 +54,7 @@ class account_payment_term(orm.Model):
                 if context.get('reverse_charge', False):
                     continue
                 else:
-                    amt = round(line.value_amount * amount_tax, prec)
+                    amt = sign(value) * round(line.value_amount * amount_tax, prec)
                     value -= amt
             elif line.value == 'fixed':
                 amt = round(line.value_amount, prec)

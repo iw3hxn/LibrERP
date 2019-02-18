@@ -126,12 +126,13 @@ class account_payment_term(orm.Model):
             date_ref = datetime.now().strftime('%Y-%m-%d')
         pt = self.browse(cr, uid, id, context=context)
         amount = value
+        sign = lambda x: (1, -1)[x < 0]
         amount_tax = context.get('amount_tax', 0.0)
         obj_precision = self.pool['decimal.precision']
         prec = obj_precision.precision_get(cr, uid, 'Account')
         for line in pt.line_ids:
             if line.value == 'tax':
-                amt = round(line.value_amount * amount_tax, prec)
+                amt = sign(value) * round(line.value_amount * amount_tax, prec)
                 value -= amt
             elif line.value == 'fixed':
                 amt = round(line.value_amount, prec)
