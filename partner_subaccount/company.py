@@ -31,5 +31,5 @@ class res_company(orm.Model):
     }
 
     _defaults = {
-        'enable_partner_subaccount': True,
+        'enable_partner_subaccount': False,
     }
