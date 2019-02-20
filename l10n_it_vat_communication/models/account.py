@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #    Copyright (C) 2017-2018 SHS-AV s.r.l. <https://www.zeroincombenze.it>
-#    Copyright (C) 2017-2018 Didotech srl <http://www.didotech.com>
+#    Copyright (C) 2017-2019 Didotech srl <http://www.didotech.com>
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
@@ -643,6 +643,11 @@ class commitment_line(orm.AbstractModel):
             fields = self._dati_partner(cr, uid, line.partner_id, args, context=ctx)
             if not line.tax_rate and not line.tax_nature:
                 fields['xml_Error'] += _('No tax Nature')
+            elif line.tax_nature and line.tax_nature == 'N6' and not line.tax_rate:
+                if line.invoice_id.type in ('in_invoice', 'in_refund'):
+                    fields['xml_Error'] += """la natura N6 -
+        Reverse Charge è compatibile solo con l'aliquota diversa da 0 per le
+        fatture ricevute"""
             result = {}
             for f in fname:
                 if fields.get(f, ''):
