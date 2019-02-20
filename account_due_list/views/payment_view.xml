@@ -119,7 +119,7 @@
             <field name="view_mode">tree,form,calendar</field>
             <field name="view_id" ref="view_payments_tree"/>
             <field name="search_view_id" ref="view_payments_filter"/>
-            <field name="domain">[('account_id.type','in',['receivable','payable']),('stored_invoice_id','!=',False)]</field>
+            <field name="domain">[('account_id.type','in',['receivable','payable']),('stored_invoice_id','!=',False),('blocked', '!=', True)]</field>
             <field name="context">{'payment_filter': 1, 'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
         </record>
 
@@ -141,7 +141,7 @@
             <field name="view_mode">tree,form,calendar</field>
             <field name="view_id" ref="view_payments_tree"/>
             <field name="search_view_id" ref="view_payments_filter"/>
-            <field name="domain">[('account_id.type','in',['payable']),('stored_invoice_id','!=',False),('debit','=', 0)]</field>
+            <field name="domain">[('account_id.type','in',['payable']),('stored_invoice_id','!=',False),('debit','=', 0),('blocked', '!=', True)]</field>
             <field name="context">{'search_default_unreconciled':1, 'search_default_month':1, 'nodelete': '1', 'nocreate': '1'}</field>
         </record>
 
@@ -252,7 +252,7 @@
             <field name="type">tree</field>
             <field name="priority" eval="20"/>
             <field name="arch" type="xml">
-                <tree string="Account Ledger">
+                <tree string="Account Ledger" colors="red:state == 'draft';" >
                     <field name="move_id" required="False" readonly="1" />
                     <button name="action_view_account_move" string="Open Journal Entries" type="object" icon="gtk-zoom-in"/>
                     <field name="ref" readonly="1"/>
@@ -274,6 +274,7 @@
                     <field name="state" width="60" />
                     <field name="reconcile_id"/>
                     <button name="action_view_reconcile" string="Open Reconcile" type="object" icon="gtk-zoom-in"/>
+                    <field name="running_balance" />
                 </tree>
             </field>
         </record>

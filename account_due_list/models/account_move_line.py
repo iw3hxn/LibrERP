@@ -125,7 +125,7 @@ class account_move_line(orm.Model):
             res[id] = cr.fetchone()[0]
         return res
 
-    # todo writi this function, speedup of 20% but need to write also search function, at the moment not necessary
+    # todo write this function, speedup of 20% but need to write also search function, at the moment not necessary
     # def _get_stored_invoice_vals(self, cr, uid, ids, field_name, arg, context=None):
     #     res = {}
     #     for move in self.browse(cr, uid, ids, context):
@@ -143,6 +143,14 @@ class account_move_line(orm.Model):
     #                 'payment_term_type': move.stored_invoice_id.payment_term and move.stored_invoice_id.payment_term.type or '',
     #             }
     #     return res
+
+    def _get_running_balance(self, cr, uid, ids, name, args, context):
+        res = {}
+        balance = 0
+        for line in self.read(cr, uid, ids, ['debit', 'credit'], context=context):
+            balance += line['debit'] - line['credit']
+            res[line['id']] = balance
+        return res
 
     _columns = {
         'invoice_origin': fields.related('stored_invoice_id', 'origin', type='char', string='Source Doc', store=False),
@@ -173,6 +181,7 @@ class account_move_line(orm.Model):
         'balance': fields.function(_balance, method=True, string='Balance', type='float', store=False),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
+        'running_balance': fields.function(_get_running_balance, method=True, string="Running Balance", store=False),
     }
 
     _order = "date desc, ref asc, move_id asc, id asc"

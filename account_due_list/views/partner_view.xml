@@ -36,6 +36,7 @@
                                        invisible="context.get('reconciled',False)"/>
                                 <field name="day" invisible="1"/>
                                 <field name="company_id" invisible="1"/>
+                                <field name="running_balance" />
                             </tree>
 
                         </field>

@@ -19,5 +19,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from . import account_invoice
 from . import account_move_line
 from . import res_partner
