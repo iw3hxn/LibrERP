@@ -389,7 +389,7 @@ class CommonReportHeaderWebkit(common_report_header):
         res = {}
 
         for acc in self.pool.get('account.account').browse(self.cursor, self.uid, account_ids):
-            res[acc.id] = self._compute_init_balance_by_date(default_values=True)
+            # res[acc.id] = self._compute_init_balance_by_date(default_values=True)
             res[acc.id] = self._compute_init_balance_by_date(acc.id, start_date)
         return res
 
@@ -460,7 +460,7 @@ class CommonReportHeaderWebkit(common_report_header):
         if mode == 'exclude_opening':
             opening = self._get_opening_periods()
             if opening:
-                search_period += ['period_id', 'not in', opening]
+                search_period += [('period_id', 'not in', opening)]
 
         if target_move == 'posted':
             search_period += [('move_id.state', '=', 'posted')]
@@ -476,7 +476,7 @@ class CommonReportHeaderWebkit(common_report_header):
             return self._get_move_ids_from_periods(account_id, start, stop, target_move)
             
         elif main_filter == 'filter_date':
-            return self._get_move_ids_from_dates(account_id, start, stop, target_move)
+            return self._get_move_ids_from_dates(account_id, start, stop, target_move, mode='exclude_opening')
         else:
             raise osv.except_osv(_('No valid filter'), _('Please set a valid time filter'))
 
