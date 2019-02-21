@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2018 Didotech SRL (info at didotech.com)
+# Copyright (c) 2018-2019 Didotech SRL (info at didotech.com)
 # All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -29,7 +29,7 @@
 
 {
     "name": "Sale Order Extended",
-    "version": "3.0.0.0",
+    "version": "3.0.1.0",
     "category": "Sales Management",
     "description": """This Module increases usability on sale order
     """,
