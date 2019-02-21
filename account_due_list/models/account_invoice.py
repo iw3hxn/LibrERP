@@ -22,7 +22,7 @@ class account_invoice(orm.Model):
     def copy(self, cr, uid, id, default=None, context=None):
         default = default or {}
         default.update({
-            'to_pay': False,
+            'to_pay': True,
         })
         return super(account_invoice, self).copy(cr, uid, id, default, context)
 
