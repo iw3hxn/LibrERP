@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013-2015 Didotech SRL (info at didotech.com)
+# Copyright (c) 2014 Didotech SRL
 #                          All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -26,28 +26,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-
-{
-    'name': 'Module added sub account for accounting in res.partner.',
-    'version': '3.0.14.5',
-    'category': 'Generic Modules',
-    'description': """A module for res.partner. email's contacts of reference """,
-    "author": "Didotech SRL.",
-    'depends': [
-        'base',
-        'account',
-        'base_address_contacts',
-        'base_partner_ref',
-    ],
-    'data': [
-        'ref_sequences.xml',
-        'views/partner_subaccount_view.xml',
-        'security/ir.model.access.csv',
-        'views/partner_subaccount_view.xml',
-        'views/company_view.xml',
-    ],
-    'demo': [],
-    'test': ['test/partner_create_modify.yml',],
-    'installable': True,
-    'active': False,
-}
+from . import account_invoice
+from . import account_move_line
+from . import company
+from . import partner_subaccount
