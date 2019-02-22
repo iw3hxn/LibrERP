@@ -103,9 +103,9 @@
                             ## move
                             <div class="act_as_cell" style="width: 70px;">${_('Entry')}</div>
                             ## journal
-                            <div class="act_as_cell" style="width: 70px;">${_('Journal')}</div>
+                            <div class="act_as_cell" style="width: 250px;">${_('Journal')}</div>
                             ## partner
-                            <div class="act_as_cell" style="width: 180px;">${_('Partner')}</div>
+                            ## <div class="act_as_cell" style="width: 180px;">${_('Partner')}</div>
                             ## label
                             <div class="act_as_cell" style="width: 220px;">${_('Label')} - ${_('Invoice Number')}</div>
                             ## reconcile
@@ -148,7 +148,7 @@
                               ## journal
                               <div class="act_as_cell"></div>
                               ## partner
-                              <div class="act_as_cell"></div>
+                              ## <div class="act_as_cell"></div>
                               ## label
                               <div class="act_as_cell" >${_('Initial Balance')}</div>
                               ## reconcile
@@ -189,9 +189,9 @@
                               ## move
                               <div class="act_as_cell">${line.get('move_name') or ''}</div>
                               ## journal
-                              <div class="act_as_cell">${line.get('jcode') or ''}</div>
+                              <div class="act_as_cell">${line.get('jname') or ''}</div>
                               ## partner
-                              <div class="act_as_cell overflow_ellipsis">${line.get('partner_name') or ''}</div>
+                              ## <div class="act_as_cell overflow_ellipsis">${line.get('partner_name') or ''}</div>
                               ## label
                               <div class="act_as_cell">${label}</div>
                               ## reconcile
@@ -221,7 +221,7 @@
                           ## journal
                           <div class="act_as_cell"></div>
                           ## partner
-                          <div class="act_as_cell"></div>
+                          ## <div class="act_as_cell"></div>
                           ## label
                           <div class="act_as_cell">${_('Cumulated Balance on Partner')}</div>
                           ## reconcile
