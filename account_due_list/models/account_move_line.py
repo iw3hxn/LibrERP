@@ -147,7 +147,8 @@ class account_move_line(orm.Model):
     def _get_running_balance(self, cr, uid, ids, name, args, context):
         res = {}
         balance = 0
-        for line in self.read(cr, uid, ids, ['debit', 'credit'], context=context):
+        new_ids = self.search(cr, uid, [('id', 'in', ids)], order='date_maturity asc', context=context)
+        for line in self.read(cr, uid, new_ids, ['debit', 'credit'], context=context):
             balance += line['debit'] - line['credit']
             res[line['id']] = balance
         return res

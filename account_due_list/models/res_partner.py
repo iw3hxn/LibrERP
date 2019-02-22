@@ -30,7 +30,7 @@ class res_partner(orm.Model):
         for partner_id in ids:
             res[partner_id] = self.pool['account.move.line'].search(cr, uid, [
                 ('account_id.type', 'in', ['receivable', 'payable']), ('stored_invoice_id', '!=', False),
-                ('partner_id', '=', partner_id), ('reconcile_id', '=', False)], context=context)
+                ('partner_id', '=', partner_id), ('reconcile_id', '=', False)], order='date_maturity asc', context=context)
         return res
 
     _columns = {
