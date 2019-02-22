@@ -111,11 +111,9 @@
                             ## reconcile
                             <div class="act_as_cell" style="width: 50px;">${_('Rec.')}</div>
                             ## debit
-                            ## <div class="act_as_cell amount" style="width: 80px;">${_('Debit')}</div>
-                            <div class="act_as_cell amount" style="width: 80px;">${_('Credit')}</div>
-                            ## credit
-                            ## <div class="act_as_cell amount" style="width: 80px;">${_('Credit')}</div>
                             <div class="act_as_cell amount" style="width: 80px;">${_('Debit')}</div>
+                            ## credit
+                            <div class="act_as_cell amount" style="width: 80px;">${_('Credit')}</div>
                             ## balance cumulated
                             <div class="act_as_cell amount" style="width: 80px;">${_('Cumul. Bal.')}</div>
                             %if amount_currency(data):
