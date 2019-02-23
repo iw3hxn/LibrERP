@@ -863,6 +863,9 @@ class ImportFile(threading.Thread, Utils):
             if self.ok_supplier_code:
                 product_ids = self.product_obj.search(cr, uid, [('supplier_code', '=', product_code)], context=self.context)
 
+        if not product_ids and self.FORMAT == 'FormatStandardPriceUpdate':
+            product_ids = self.product_obj.search(cr, uid, [('supplier_code', '=', identifier)], context=self.context)
+
         if product_ids:
             product_id = product_ids[0]
             if not self.update_product_name and 'name' in vals_product:
