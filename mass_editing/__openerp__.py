@@ -23,7 +23,7 @@
 
 {
     "name": "Mass Editing",
-    "version": "1.3",
+    "version": "1.4",
     "author": "Serpent Consulting Services",
     "category": "Tools",
     "website": "http://www.serpentcs.com",

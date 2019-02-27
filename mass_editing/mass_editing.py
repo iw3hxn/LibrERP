@@ -21,6 +21,7 @@
 ##############################################################################
 
 
+from openerp import SUPERUSER_ID
 from openerp.osv import orm, fields
 from tools.translate import _
 
@@ -60,9 +61,10 @@ class mass_object(orm.Model):
         vals = {}
         action_obj = self.pool['ir.actions.act_window']
         data_obj = self.pool['ir.model.data']
+        uid = SUPERUSER_ID
         for data in self.browse(cr, uid, ids, context=context):
             src_obj = data.model_id.model
-            button_name = _('Mass Editing ({name})'.format(name=data.name))
+            button_name = _(u'Mass Editing ({name})'.format(name=data.name))
             vals['ref_ir_act_window'] = action_obj.create(cr, uid, {
                 'name': button_name,
                 'type': 'ir.actions.act_window',
@@ -89,6 +91,7 @@ class mass_object(orm.Model):
         return True
 
     def unlink_action(self, cr, uid, ids, context=None):
+        uid = SUPERUSER_ID
         for template in self.browse(cr, uid, ids, context=context):
             try:
                 if template.ref_ir_act_window:
