@@ -15,6 +15,26 @@ class Sequence(unittest.TestCase):
         tests = [
             {
                 'lines': [
+                    (4, False, False),
+                    (0, False, {'sequence': 20}),
+                    (0, False, {'sequence': 20}),
+                    (0, False, {'sequence': 20})
+                ],
+                'reply': (False, 20, 30, 40)
+            },
+            {
+                'lines': [
+                    (4, False, False),
+                    (0, False, {'sequence': 15}),
+                    (4, False, False),
+                    (0, False, {'sequence': 30}),
+                    (0, False, {'sequence': 30}),
+                    (0, False, {'sequence': 30})
+                ],
+                'reply': (False, 15, False, 30, 40, 50)
+            },
+            {
+                'lines': [
                     (0, False, {'sequence': 10}),
                     (0, False, {'sequence': 20}),
                     (0, False, {'sequence': 30})
@@ -71,7 +91,7 @@ class Sequence(unittest.TestCase):
                     (0, False, {'sequence': 18}),
                     (0, False, {'sequence': 18}),
                 ],
-                'reply': (False, 18, 20, 22)
+                'reply': (False, 20, 30, 40)
             },
             {
                 'lines': [
@@ -80,7 +100,7 @@ class Sequence(unittest.TestCase):
                     (4, False, False),
                     (0, False, {'sequence': 15})
                 ],
-                'reply': (False, False, False, 15)
+                'reply': (False, False, False, 40)
             },
         ]
 

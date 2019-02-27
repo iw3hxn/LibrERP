@@ -29,7 +29,7 @@
 
 {
     "name": "Sale Order Extended",
-    "version": "3.0.1.0",
+    "version": "3.0.2.0",
     "category": "Sales Management",
     "description": """This Module increases usability on sale order
     """,
