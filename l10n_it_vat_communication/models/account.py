@@ -384,6 +384,18 @@ class AccountVatCommunication(orm.Model):
         else:
             return
 
+        fatturapa_attachment = False
+        for period in commitment.period_ids:
+            if period.fiscalyear_id and period.fiscalyear_id.name > '2018':
+                fatturapa_attachment = True
+                continue
+
+        if fatturapa_attachment:
+            if dte_dtr_id == 'DTE':
+                where.append(('fatturapa_attachment_out_id', '=', False))
+            elif dte_dtr_id == 'DTR':
+                where.append(('fatturapa_attachment_in_id', '=', False))
+
         comm_lines, sum_amounts = self.load_invoices(
             cr, uid, commitment, commitment_line_model,
             dte_dtr_id, where, {}, context)
