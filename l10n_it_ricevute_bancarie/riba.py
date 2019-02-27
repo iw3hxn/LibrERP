@@ -450,6 +450,7 @@ class riba_distinta_line(osv.osv):
                     'debit': (riba_move_line.amount < 0.0) and riba_move_line.amount * -1,
                     'move_id': move_id,
                     'date': date_accepted,
+                    'date_maturity': line.due_date,
                 }, context=context)
                 to_be_reconciled.append([move_line_id, riba_move_line.move_line_id.id])
                 riba_move_line_name += riba_move_line.move_line_id.invoice.number
