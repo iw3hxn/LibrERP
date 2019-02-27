@@ -6,8 +6,11 @@
 # Copyright 2017, Associazione Odoo Italia <https://odoo-italia.org>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
-from openerp.osv import fields, orm
 from openerp.tools.translate import _
+from datetime import datetime
+
+from openerp.osv import fields, orm
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class Mandate(orm.Model):
@@ -31,14 +34,13 @@ class Mandate(orm.Model):
 
     _columns = {
         'partner_bank_id': fields.many2one(
-            'res.partner.bank', 'Bank Account', track_visibility='onchange'),
+            'res.partner.bank', 'Bank Account'),
         'partner_id': fields.related(
             'partner_bank_id', 'partner_id', type='many2one',
             relation='res.partner', string='Partner', readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'unique_mandate_reference': fields.char(
-            'Unique Mandate Reference', size=35, readonly=True,
-            track_visibility='always'),
+            'Unique Mandate Reference', size=35, readonly=True),
         'signature_date': fields.date(
             'Date of Signature of the Mandate', track_visibility='onchange'),
         'scan': fields.binary('Scan of the Mandate'),
@@ -137,7 +139,7 @@ class Mandate(orm.Model):
                     self.pool['ir.sequence'].next_by_code(
                         cr, uid, 'account.banking.mandate')
             vals['state'] = 'valid'
-            self.write(cr, uid, Mandate.id, vals)
+            Mandate.write(vals)
         return True
 
     def cancel(self, cr, uid, ids, context=None):
@@ -165,3 +167,21 @@ class Mandate(orm.Model):
         self.write(
             cr, uid, to_draft_ids, {'state': 'draft'}, context=context)
         return True
+
+    def name_get(self, cr, uid, ids, context=None):
+        if not len(ids):
+            return []
+        res = []
+
+        context = context or self.pool['res.users'].context_get(cr, uid)
+
+        for mandate in self.browse(cr, uid, ids, context=context):
+            if mandate.signature_date:
+                signature_date = datetime.strptime(mandate.signature_date[0:10], DEFAULT_SERVER_DATE_FORMAT)
+                signature_date = signature_date.strftime("%d/%m/%Y")
+            else:
+                signature_date = ''
+            iban = mandate.partner_bank_id and mandate.partner_bank_id.acc_number or ''
+            name = u'{code} | {name} | {iban}'.format(code=mandate.unique_mandate_reference, name=signature_date, iban=iban.replace(' ', ''))
+            res.append((mandate.id, name))
+        return res
