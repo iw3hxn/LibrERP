@@ -731,6 +731,11 @@ msgid "Default day of validity"
 msgstr "Giorni prestabiliti validità preventivo"
 
 #. module: sale_order_confirm
+#: field:res.company,sale_order_validity_end_of_month:0
+msgid "End of Month"
+msgstr "Fine Mese"
+
+#. module: sale_order_confirm
 #: field:sale.order,validity:0
 msgid "Validity"
 msgstr "Validità"

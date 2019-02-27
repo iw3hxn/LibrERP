@@ -16,6 +16,7 @@
                     <field name="date_max_overdue"/>
                     <separator string="Manage Validity on Sale Order" colspan="4"/>
                     <field name="default_sale_order_validity"/>
+                    <field name="sale_order_validity_end_of_month" />
                     <separator string="Margin Manager" colspan="4"/>
                     <field name="enable_margin_validation"/>
                     <field name="minimum_margin"/>

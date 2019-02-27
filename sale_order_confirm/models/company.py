@@ -43,6 +43,7 @@ class res_company(orm.Model):
         'minimum_margin': fields.float(string='Minimun margin %', digits=(2, 2)),
         'max_discount': fields.float(string='Max Discount %', digits=(2, 2)),
         'default_sale_order_validity': fields.integer('Default day of validity'),
+        'sale_order_validity_end_of_month': fields.boolean('End of Month'),
         'default_property_account_position': fields.property(
             'account.fiscal.position',
             type='many2one',

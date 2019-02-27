@@ -49,6 +49,11 @@ class sale_order(orm.Model):
                 res['section_id'] = section_ids[0]
 
         company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+        days = 0
+        if company_id.sale_order_validity_end_of_month:
+            days = 31
+        validity = (datetime.today() + relativedelta(days=company_id['default_sale_order_validity'] or 0.0) + relativedelta(day=days)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+
         res.update({
             'need_tech_validation': company_id['need_tech_validation'],
             'need_manager_validation': company_id['need_manager_validation'],
@@ -56,7 +61,7 @@ class sale_order(orm.Model):
             'required_tech_validation': company_id['need_tech_validation'],
             'required_manager_validation': company_id['need_manager_validation'],
             'required_supervisor_validation': company_id['need_supervisor_validation'],
-            'validity': (datetime.today() + relativedelta(days=company_id['default_sale_order_validity'] or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
+            'validity': validity,
         })
         #
         return res
@@ -357,17 +362,6 @@ class sale_order(orm.Model):
         }),
     }
 
-    # _defaults = {
-    #     'need_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
-    #     'need_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
-    #     'skip_supervisor_validation_onstandard_product': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.skip_supervisor_validation_onstandard_product,
-    #     'required_tech_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_tech_validation,
-    #     'required_manager_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_manager_validation,
-    #     'required_supervisor_validation': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.need_supervisor_validation,
-    #     'validity': lambda self, cr, uid, context: (datetime.today() + relativedelta(days=self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_sale_order_validity or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
-    #     'shop_id': lambda self, cr, uid, context: self._get_shop_id(cr, uid, context),
-    # }
-
     def action_reopen(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         result = super(sale_order, self).action_reopen(cr, uid, ids, context=context)
@@ -545,8 +539,16 @@ class sale_order(orm.Model):
     def copy(self, cr, uid, ids, default={}, context=None):
         default = default or {}
         context = context or self.pool['res.users'].context_get(cr, uid)
+        company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+        days = 0
+        if company_id.sale_order_validity_end_of_month:
+            days = 31
+        validity = (datetime.today() + relativedelta(
+            days=company_id['default_sale_order_validity'] or 0.0) + relativedelta(day=days)).strftime(
+            DEFAULT_SERVER_DATE_FORMAT)
+
         default.update({
-            'validity': (datetime.today() + relativedelta(days=self.pool['res.users'].browse(cr, uid, uid, context).company_id.default_sale_order_validity or 0.0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
+            'validity': validity,
             'tech_validation': False,
             'manager_validation': False,
             'customer_validation': False,
