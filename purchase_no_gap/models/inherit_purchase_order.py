@@ -74,3 +74,10 @@ class purchase_order(orm.Model):
                 self.write(cr, uid, purchase.id, {'name': sequence, 'purchase_order_request': purchase_order_request}, context)
         res = super(purchase_order, self).wkf_confirm_order(cr, uid, ids, context)
         return res
+    
+    def copy(self, cr, uid, ids, defaults, contex=None):
+        defaults.update({
+            'name': '/'
+        })
+        res = super(purchase_order, self).copy(cr, uid, ids, defaults, contex)
+        return res
