@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="wizard_product_pricelist_item_form_view" model="ir.ui.view">
+            <field name="name">wizard.product.pricelist.item.form</field>
+            <field name="model">wizard.product.pricelist.item</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Products Listprices Items">
+                    <notebook>
+                        <page string="Pricelist">
+                            <separator colspan="4" string="Rules Test Match"/>
+                            <field colspan="4" name="name" select="1"/>
+                            <field name="product_id" on_change="product_id_change(product_id)" select="1"/>
+                            <field name="product_tmpl_id" select="1" groups="product.group_product_variant"/>
+                            <field name="categ_id" select="1"/>
+                            <newline/>
+                            <field name="min_quantity"/>
+                            <field name="sequence"/>
+                            <separator colspan="4" string="Price Computation"/>
+
+                            <field name="base"/>
+                            <field name="base_pricelist_id"
+                                   attrs="{'required': [('base','=', -1)], 'readonly': [('base','!=', -1)]}"/>
+                            <group col="6" colspan="5">
+                                <label string="New Price ="/>
+                                <label string="Base Price"/>
+                                <label string="* ( 1 + "/>
+                                <field name="price_discount" nolabel="1"/>
+                                <label string=" ) + "/>
+                                <field name="price_surcharge" nolabel="1"/>
+                                <newline/>
+                                <field name="price_round" string="Rounding Method"/>
+                                <field name="price_min_margin" string="Min. Margin"/>
+                                <field name="price_max_margin" string="Max. Margin"/>
+                            </group>
+                        </page>
+                        <page string="Price List">
+                            <field name="pricelist_ids" nolabel="1" required="1"/>
+                        </page>
+                        <page string="Advance">
+                            <button name="add_rule" string="Add Rule" type="object" icon="gtk-execute"
+                                    colspan="2"
+                                    help="Add Rule on all Pricelist"/>
+
+                        </page>
+                    </notebook>
+
+
+                </form>
+            </field>
+        </record>
+
+
+        <record id="wizard_product_pricelist_item_form_view_action" model="ir.actions.act_window">
+            <field name="name">Create Pricelist Item</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.product.pricelist.item</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_product_pricelist_item_form_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="wizard_product_pricelist_item_form_view_menu"
+                  name="Create Pricelist Item"
+                  action="wizard_product_pricelist_item_form_view_action"
+                  sequence="20"
+                  parent="product.menu_product_pricelist_main"
+        />
+
+    </data>
+</openerp>
