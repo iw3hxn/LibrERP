@@ -8,11 +8,11 @@
       <frame id="first" x1="28.0" y1="60.0" width="539" height="758"/>
       <pageGraphics>
         <fill color="#A0A0A0"/>
-        <setFont name="Times" size="6"/>
+        <setFont name="Helvetica" size="6"/>
         <drawCentredString x="4.1in" y="0.8in">[[ company.rml_footer1 or '' ]]</drawCentredString>
-        <setFont name="Times" size="8"/>
+        <setFont name="Helvetica" size="8"/>
         <drawCentredString x="4.1in" y="0.48in">[[ company.name ]]</drawCentredString>
-        <setFont name="Times" size="8"/>
+        <setFont name="Helvetica" size="8"/>
         <drawCentredString x="4.1in" y="0.34in">[[ company.partner_id.address and company.partner_id.address[0].street or '' ]] [[ company.partner_id.address and company.partner_id.address[0].zip or '' ]] [[ company.partner_id.address and company.partner_id.address[0].city or '' ]] P.IVA [[ company.vat or '' ]] PHONE [[ company.partner_id.address and company.partner_id.address[0].phone or '' ]] mail: [[ company.partner_id.address and company.partner_id.address[0].email or '' ]]</drawCentredString>
       </pageGraphics>
     </pageTemplate>
@@ -57,8 +57,8 @@
     <paraStyle name="terp_tblheader_General" fontName="Helvetica-Bold" fontSize="8" leading="10" alignment="LEFT" spaceBefore="6.0" spaceAfter="6.0"/>
     <paraStyle name="terp_tblheader_General_Centre" textColor="#808080" fontName="Helvetica" fontSize="8.0" leading="8" alignment="CENTER" spaceBefore="6.0" spaceAfter="6.0"/>
     <paraStyle name="company_header_text1" textColor="#c8a690" fontName="Helvetica" fontSize="14.0" leading="20" alignment="CENTER" spaceBefore="0" spaceAfter="0"/> 
-    <paraStyle name="company_header_text2" textColor="#808080" fontName="Helvetica" fontSize="10.0" leading="12" alignment="CENTER" spaceBefore="0" spaceAfter="0"/>
-    <paraStyle name="company_header_text3" textColor="#808080" fontName="Helvetica" fontSize="8.0" leading="8" alignment="CENTER" spaceBefore="0" spaceAfter="0"/>
+    <paraStyle name="company_header_text2" textColor="#808080" fontName="Helvetica" fontSize="8.0" leading="12" alignment="CENTER" spaceBefore="0" spaceAfter="0"/>
+    <paraStyle name="company_header_text3" textColor="#808080" fontName="Helvetica-Bold" fontSize="10.0" leading="8" alignment="CENTER" spaceBefore="0" spaceAfter="0"/>
     <paraStyle name="terp_default_Centre_8" textColor="#808080" fontName="Helvetica" fontSize="6.0" leading="6" alignment="CENTER" spaceBefore="0" spaceAfter="0"/>
     <paraStyle name="terp_default_Centre_1" fontName="Helvetica" leading="6" alignment="LEFT" spaceBefore="0.0" spaceAfter="1.0"/>
     <paraStyle name="terp_tblheader_Details" fontName="Helvetica-Bold" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="6.0" spaceAfter="6.0"/>

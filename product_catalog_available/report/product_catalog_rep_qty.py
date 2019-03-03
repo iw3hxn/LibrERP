@@ -90,7 +90,7 @@ class product_catalog_rep_qty(report_sxw.rml_parse):
         return lst
 
     def get_pricelist_name(self, form, pricelist_id):
-        pricelist_data = self.pool['product.pricelist'].browse(self.cr, self.uid, form[pricelist_id][0])
+        pricelist_data = self.pool['product.pricelist'].browse(self.cr, self.uid, form[pricelist_id])
         return '%s (%s)' % (pricelist_data.name, pricelist_data.currency_id.name)
 
     def get_products(self, c):
@@ -106,9 +106,9 @@ class product_catalog_rep_qty(report_sxw.rml_parse):
                 prod_ids = prod_ids + [prod_qty_dict['id']]
         price_context = {}
         if self.pricelist_id not in ('', False, [], None):
-            price_context['pricelist'] = self.pricelist_id[0]
+            price_context['pricelist'] = self.pricelist_id
         if self.pricelist_id2 not in ('', False, [], None):
-            price_context['pricelist2'] = self.pricelist_id2[0]
+            price_context['pricelist2'] = self.pricelist_id2
         prods = self.pool.get('product.product').browse(self.cr, self.uid, prod_ids, context=price_context)
         return prods
 

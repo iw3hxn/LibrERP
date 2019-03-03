@@ -42,9 +42,12 @@ class product_catalog_available(osv.osv_memory):
         if context is None:
             context = {}
         datas = {'ids': context.get('active_ids', [])}
-        res = self.read(cr, uid, ids, ['category_id', 'pricelist_id', 'pricelist_id2'], context=context)
-        res = res and res[0] or {}
-        datas['form'] = res
+        res = self.browse(cr, uid, ids[0], context=context)
+        # res = res and res[0] or {}
+        datas['form'] = {}
+        for key in ['category_id', 'pricelist_id', 'pricelist_id2']:
+            datas['form'][key] = res[key] and res[key].id or False
+
         datas['form']['ids'] = context.get('active_ids', [])
         report_name = res['pricelist_id2'] and 'product.catalog.qty2' or 'product.catalog.qty'
         return {
