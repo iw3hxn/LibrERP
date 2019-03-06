@@ -331,10 +331,9 @@ openerp.web.format_cell = function (row_data, column, options) {
                         row_data[column.filename].value, {type: 'char'}));
             }
         }
-        return _.template('<a href="<%-href%>"><%-text%></a> (%<-size%>)', {
+        return _.template('<a href="<%-href%>"><%-text%></a>', {
             text: text,
             href: download_url,
-            size: row_data[column.id].value
         });
     case 'progressbar': 
         return QWeb.render('ListView.ProgressBar', {value: _.str.sprintf("%.0f", row_data[column.id].value || 0)})
