@@ -74,9 +74,12 @@ class ExcelExportView(ExcelExport):
                         len_cell = len('{num}'.format(num=cell_value)) * 500
                         style = xlwt.easyxf(num_format_str='#,##0.00;[RED]-#,##0.00')
                     elif date_pattern.match(cell_value):
-                        cell_value = datetime.strptime(cell_value, separators['date_format'])
-                        # style = xlwt.easyxf(num_format_str='dd/mm/yyyy')
-                        style = xlwt.easyxf(num_format_str='d mmm yyyy')
+                        try:
+                            cell_value = datetime.strptime(cell_value, separators['date_format'])
+                            # style = xlwt.easyxf(num_format_str='dd/mm/yyyy')
+                            style = xlwt.easyxf(num_format_str='d mmm yyyy')
+                        except Exception as e:
+                            cell_value = re.sub("\r", " ", cell_value)
                         len_cell = 4000
                     else:
                         len_cell = len(cell_value) * 250
