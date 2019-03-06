@@ -22,7 +22,7 @@
                     <field name="is_manufactured" attrs="{'invisible': [('has_bom','=',False)]}"
                            on_change="onchange_is_manufactured(is_manufactured,new_product_id,qty)"/>
                     <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True)],
-                                'required': [('is_manufactured', '=', False)],
+                                'required': [('is_manufactured', '=', False), ('buy', '=', True)],
                                 'readonly': [('state','!=','draft')]}"/>
                     <field name="supplier_ids" invisible="1"/>
                     <field name="id" invisible="1"/>
