@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013 Andrei Levin (andrei at lanart.it)
+#    Copyright (c) 2018 Carlo Vettore (carlo.vettore at didotech.com)
 #
 #                          All Rights Reserved.
 #

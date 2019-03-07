@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (c) 2012-2014 Andrei Levin (andrei.levin at didotech.com)
+#    Copyright (c) 2018 Carlo Vettore (carlo.vettore at didotech.com)
 #
 #                          All Rights Reserved.
 #

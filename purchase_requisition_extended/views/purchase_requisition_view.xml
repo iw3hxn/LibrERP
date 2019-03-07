@@ -30,7 +30,7 @@
                     </button>
                     <tree string="Products" position="replace">
                         <tree string="Products" colors="green: color=='green'; orange: color=='orange'; red: color=='red';" editable="bottom">
-                            <field name="product_id" on_change="onchange_product_id(product_id,product_uom_id)"/>
+                            <field name="product_id" on_change="onchange_product_id(product_id,product_uom_id)" required="True" />
                             <field name="product_qty"/>
                             <field name="prefered_supplier" />
                             <field name="multy_supplier" />
