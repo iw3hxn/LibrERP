@@ -23,6 +23,8 @@ class stock_picking(orm.Model):
 
         for picking in self.browse(cr, uid, ids, context):
             if picking.sale_id and picking.sale_id.id and picking.type == 'out':
-                wf_service.trg_validate(uid, 'sale.order', picking.sale_id.id, 'close_sale_order', cr)
+                if not self.search(cr, uid, [('sale_id', '=', picking.sale_id.id), ('type', '=', 'out'),
+                                             ('state', '!=', 'done')]):
+                    wf_service.trg_validate(uid, 'sale.order', picking.sale_id.id, 'close_sale_order', cr)
 
         return result
