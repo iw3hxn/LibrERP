@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (c) 2012-2014 Andrei Levin (andrei.levin at didotech.com)
+#    Copyright (c) 2018 Carlo Vettore (carlo.vettore at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -57,9 +57,12 @@ class purchase_requisition_line(orm.Model):
         
         requisition_lines = self.browse(cr, uid, ids, context=context)
         for line in requisition_lines:
-            cr.execute(query.format(product_id=line.product_id.id, requisition_id=line.requisition_id.id, state=state))
-            res[line.id] = cr.fetchall()[0][0]
-        
+            if line.product_id:
+                cr.execute(query.format(product_id=line.product_id.id, requisition_id=line.requisition_id.id, state=state))
+                res[line.id] = cr.fetchall()[0][0]
+            else:
+                res[line.id] = False
+
         return res
     
     def _get_color(self, cr, uid, ids, field_name, args, context):
