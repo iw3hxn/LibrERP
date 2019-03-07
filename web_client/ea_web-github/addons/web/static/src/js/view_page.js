@@ -302,6 +302,7 @@ openerp.web.page = function (openerp) {
         'float': 'openerp.web.page.FieldFloatReadonly',
         'integer': 'openerp.web.page.FieldCharReadonly',
         'float_time': 'openerp.web.page.FieldCharReadonly',
+        'float_time_second': 'openerp.web.page.FieldCharReadonly',
         'binary': 'openerp.web.page.FieldBinaryFileReadonly',
         'image': 'openerp.web.page.FieldBinaryImageReaonly',
         'screen_draw': 'openerp.web.page.FieldBinaryImageReaonly'

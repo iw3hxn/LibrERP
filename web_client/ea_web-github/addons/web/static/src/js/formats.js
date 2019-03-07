@@ -131,6 +131,18 @@ openerp.web.format_value = function (value, descriptor, value_if_empty) {
             return _.str.sprintf(pattern,
                     Math.floor(value),
                     Math.round((value % 1) * 60));
+        case 'float_time_second':
+            var pattern = '%02d:%02d:%02d';
+            if (value < 0) {
+                value = Math.abs(value);
+                pattern = '-' + pattern;
+            }
+
+            var hours = Math.floor(value);
+            var minutes = Math.round((value - hours) * 60);
+            var seconds = parseInt(((value - hours) * 3600) - (minutes * 60));
+
+            return _.str.sprintf(pattern, hours, minutes, seconds);
         case 'many2one':
             // name_get value format
             return value[1];
@@ -212,6 +224,20 @@ openerp.web.parse_value = function (value, descriptor, value_if_empty) {
             var hours = openerp.web.parse_value(float_time_pair[0], {type: "integer"});
             var minutes = openerp.web.parse_value(float_time_pair[1], {type: "integer"});
             return factor * (hours + (minutes / 60));
+        case 'float_time_second':
+            var factor = 1;
+            if (value[0] === '-') {
+                value = value.slice(1);
+                factor = -1;
+            }
+            var float_time_pair = value.split(":");
+            if (float_time_pair.length != 3)
+                return factor * openerp.web.parse_value(value, {type: "float"});
+            var hours = openerp.web.parse_value(float_time_pair[0], {type: "integer"});
+            var minutes = openerp.web.parse_value(float_time_pair[1], {type: "integer"});
+            var seconds = openerp.web.parse_value(float_time_pair[2], {type: "integer"});
+            var result = factor * (hours + (minutes / 60) + (seconds / 3600))
+            return result;
         case 'progressbar':
             return openerp.web.parse_value(value, {type: "float"});
         case 'datetime':
