@@ -28,6 +28,8 @@ class project_task(orm.Model):
 
     _inherit = 'project.task'
     _order = 'date_deadline asc, priority asc, partner_id'
+
+    _group_by_full = {}
     
     def name_get(self, cr, uid, ids, context=None):
         if not len(ids):
