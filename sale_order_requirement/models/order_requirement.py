@@ -76,12 +76,13 @@ class order_requirement(orm.Model):
                 tot = len(production_ids)
                 done = len(mrp_production_obj.search(cr, uid, [('id', 'in', production_ids), ('state', '=', 'done')],
                                                      context=context))
-
-            cr.execute(
-                "select purchase_order_id from order_requirement_line_purchase_order_rel where order_requirement_line_id in (%s)" % ",".join(
-                    [str(x) for x in order_requirement_line_ids if x]))
-            query_result = cr.fetchall()
-            purchase_order_ids = list(set([x[0] for x in query_result if x[0]]))
+            purchase_order_ids = []
+            if order_requirement_line_ids:
+                cr.execute(
+                    "select purchase_order_id from order_requirement_line_purchase_order_rel where order_requirement_line_id in (%s)" % ",".join(
+                        [str(x) for x in order_requirement_line_ids if x]))
+                query_result = cr.fetchall()
+                purchase_order_ids = list(set([x[0] for x in query_result if x[0]]))
 
             tot_order_approved = len(purchase_order_ids)
             if purchase_order_ids:
