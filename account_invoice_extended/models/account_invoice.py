@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014-2018 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2019 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -321,8 +321,8 @@ class account_invoice(orm.Model):
                 picking_to_write_ids += stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
 
         if picking_to_write_ids:
+            # Deduplicate ids:
+            picking_to_write_ids = list(set(picking_to_write_ids))
             stock_picking_obj.write(cr, uid, picking_to_write_ids, {'invoice_state': '2binvoiced'}, context=context)
 
         return super(account_invoice, self).unlink(cr, uid, ids, context=context)
-
-
