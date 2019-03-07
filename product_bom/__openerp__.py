@@ -20,7 +20,7 @@
 
 {
     "name": "Show Bom in Product",
-    "version": "3.4.26.17",
+    "version": "3.4.27.17",
     "category": "Sales Management",
     "description": """
         This module adds the 'BOM' on Product. And also use BOM as WBS

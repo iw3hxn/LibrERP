@@ -20,8 +20,10 @@
 
 from . import company
 from . import mrp
+from . import mrp_routing_workcenter
+from . import mrp_workcenter
 from . import pricelist
-#from . import product_multiprocessing
+# from . import product_multiprocessing
 from . import product
 from . import res_partner
 

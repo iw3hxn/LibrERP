@@ -173,6 +173,7 @@ class product_pricelist(orm.Model):
                         price_tmp = self._price_get_multi(cr, uid,
                                 rule.base_pricelist_id, [(product,
                                 qty, partner)], context=context)[product.id]
+                        # price_tmp, rule_id = self._price_rule_get_multi(cr, uid, rule.base_pricelist_id, [(product, qty, partner)], context=context)[product.id]
                         ptype_src = rule.base_pricelist_id.currency_id.id
                         price_uom_id = qty_uom_id
                         price = currency_obj.compute(cr, uid,
@@ -239,7 +240,8 @@ class product_pricelist(orm.Model):
                         price_max_margin = convert_to_price_uom(rule.price_max_margin)
                         price = min(price, price_limit + price_max_margin)
 
-                    rule_id = rule.id
+                    if not rule_id:
+                        rule_id = rule.id
                     break
 
             # Final price conversion to target UoM
