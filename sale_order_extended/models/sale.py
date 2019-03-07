@@ -23,15 +23,22 @@ class SaleOrder(orm.Model):
 
     def set_sequence(self, cr, uid, lines):
         order_line_model = self.pool['sale.order.line']
-        for line in lines:
-            if line[0] == 1:
+        for count, line in enumerate(lines, start=1):
+            if line[0] == 0:
+                # Create
+                if not 'sequence' in line[2]:
+                    line[2]['sequence'] = count * 10
+            elif line[0] == 1:
+                # Update
                 order_line = order_line_model.read(cr, uid, line[1], ('name', 'sequence'))
                 if not 'sequence' in line[2]:
                     line[2]['sequence'] = order_line['sequence']
             elif line[0] == 2:
+                # Delete
                 order_line = order_line_model.read(cr, uid, line[1], ('name', 'sequence'))
                 line[2] = {'sequence': order_line['sequence']}
             elif line[0] == 4:
+                # Link
                 order_line = order_line_model.read(cr, uid, line[1], ('name', 'sequence'))
                 line[0] = 1
                 line[2] = {'sequence': order_line['sequence']}
