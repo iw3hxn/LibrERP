@@ -213,9 +213,9 @@ class StockMove(orm.Model):
         'temp_mrp_bom_ids': fields.function(_get_connected_order_ids, type='one2many', relation='temp.mrp.bom', method=True, string='Bom Structure',
                                              multi="connected_order"),
         'temp_mrp_bom_list': fields.function(_get_connected_order_ids, type='char', method=True, string='Sale Orders', multi="connected_order"),
-        'purchase_orders_approved': fields.function(_purchase_orders, method=True, type='string', multi="purchase_orders",
+        'purchase_orders_approved': fields.function(_purchase_orders, method=True, type='char', size=128, multi="purchase_orders",
                                                     string='Purch. orders approved', readonly=True),
-        'purchase_orders_state': fields.function(_purchase_orders, method=True, type='string',  multi="purchase_orders",
+        'purchase_orders_state': fields.function(_purchase_orders, method=True, type='char', size=128,  multi="purchase_orders",
                                                  string='Deliveries', readonly=True),
         'product_bom_ids': fields.related(
             'sale_line_id', 'order_requirement_line_id', 'temp_mrp_bom_ids', 'product_id',

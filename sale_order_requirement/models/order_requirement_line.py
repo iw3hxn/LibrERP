@@ -670,11 +670,11 @@ class order_requirement_line(orm.Model):
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True),
         'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders'),
         'purchase_order_line_ids': fields.many2many('purchase.order.line', string='Purchase Order lines'),
-        'production_orders_state': fields.function(_order_state, method=True, type='string', multi='order_state',
+        'production_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
                                                    string='Prod. orders', readonly=True),
-        'purchase_orders_approved': fields.function(_order_state, method=True, type='string', multi='order_state',
+        'purchase_orders_approved': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
                                                     string='Purch. orders approved', readonly=True),
-        'purchase_orders_state': fields.function(_order_state, method=True, type='string', multi='order_state',
+        'purchase_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
                                                  string='Deliveries', readonly=True),
         # 'mrp_production_ids': fields.many2many('mrp.production', string='Production Orders'), # TODO: needed?
         'temp_mrp_bom_ids': fields.one2many('temp.mrp.bom', 'order_requirement_line_id', 'BoM Hierarchy'),
@@ -1355,3 +1355,9 @@ class order_requirement_line(orm.Model):
         bom_ids = mrp_bom_obj.search(cr, uid, [('product_id', 'in', product_ids)], context=context)
         return self.pool['account.invoice'].print_report(cr, uid, bom_ids, 'mrp.report_bom_structure', context)
 
+    def create(self, cr, uid, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if vals.get('new_product_id', False) and not vals.get('product_id', False):
+            vals['product_id'] = vals['new_product_id']
+
+        return super(order_requirement_line, self).create(cr, uid, vals, context)

@@ -62,8 +62,18 @@ class sale_order(orm.Model):
             result[order_id] = mrp_production_ids
         return result
 
+    def _get_sale_order_requirement(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        sale_order_requirement_obj = self.pool['order.requirement']
+        for order_id in ids:
+            order_requirement_ids = sale_order_requirement_obj.search(cr, uid, [('sale_order_id', '=', order_id)], context=context)
+            result[order_id] = order_requirement_ids
+        return result
+
     _columns = {
         'internal_note': fields.text('Internal Note'),
+        'sale_order_requirement_ids': fields.function(_get_sale_order_requirement, string="Order Requirement", type='one2many', method=True, relation='order.requirement'),
         'mrp_production_ids': fields.function(_get_production_order, string="Production Order", type='one2many',
                                               method=True, relation='mrp.production'),
         'purchase_order_ids': fields.many2many('purchase.order', string='Purchase Orders', readonly=True)

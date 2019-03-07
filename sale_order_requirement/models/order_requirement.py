@@ -137,11 +137,11 @@ class order_requirement(orm.Model):
                                      string='Product'),
         'new_product_id': fields.related('order_requirement_line_ids', 'new_product_id', type='many2one', relation='product.product',
                                      string='Choosen Product'),
-        'production_orders_state': fields.function(_order_state, method=True, type='string', multi='order_state',
+        'production_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
                                                    string='Prod. orders', readonly=True),
-        'purchase_orders_approved': fields.function(_order_state, method=True, type='string', multi='order_state',
+        'purchase_orders_approved': fields.function(_order_state, method=True, type='char', size=16,multi='order_state',
                                                     string='Purch. orders approved', readonly=True),
-        'purchase_orders_state': fields.function(_order_state, method=True, type='string', multi='order_state',
+        'purchase_orders_state': fields.function(_order_state, method=True, type='char', size=16, multi='order_state',
                                                  string='Deliveries', readonly=True),
     }
 
