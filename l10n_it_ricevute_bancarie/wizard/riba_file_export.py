@@ -62,26 +62,27 @@ $ricevute_bancarie = array bidimensionale con i seguenti index:
 '''
 
 import base64
-from openerp.osv import fields, osv
+from openerp.osv import fields, orm
 from openerp.tools.translate import _
 from datetime import datetime
 
 
-class riba_file_export(osv.osv_memory):
+class riba_file_export(orm.TransientModel):
+    def __init__(self, *args, **kwargs):
+        super(riba_file_export, self).__init__(*args, **kwargs)
+        self._progressivo = 0
+        self._assuntrice = 0
+        self._sia = 0
+        self._data = 0
+        self._valuta = 0
+        self._supporto = 0
+        self._totale = 0
+        self._creditore = 0
+        self._descrizione = ''
+        self._codice = ''
+        self._comune_provincia_debitor = ''
 
-    _progressivo = 0
-    _assuntrice = 0
-    _sia = 0
-    _data = 0
-    _valuta = 0
-    _supporto = 0
-    _totale = 0
-    _creditore = 0
-    _descrizione = ''
-    _codice = ''
-    _comune_provincia_debitor = ''
-
-    def _RecordIB(self, sia_assuntrice, abi_assuntrice, data_creazione, nome_supporto, codice_divisa): #record di testa
+    def _RecordIB(self, sia_assuntrice, abi_assuntrice, data_creazione, nome_supporto, codice_divisa):  #record di testa
         self._sia = sia_assuntrice.rjust(5, '0')
         self._assuntrice = abi_assuntrice.rjust(5, '0')
         self._data = data_creazione.rjust(6, '0')
@@ -94,7 +95,7 @@ class riba_file_export(osv.osv_memory):
         return " 14" + str(self._progressivo).rjust(7, '0') + " " * 12 + scadenza + "30000" + str(int(round(importo * 100))).rjust(13, '0') + "-" + abi_assuntrice.rjust(5, '0') + cab_assuntrice.rjust(5,'0') + conto.ljust(12,'0') + abi_domiciliataria.rjust(5,'0') + cab_domiciliataria.rjust(5,'0') + " " * 12 + str(sia_credit).rjust(5,'0') + "4" + codice_cliente.ljust(16) + " " * 6 + self._valuta + "\r\n"
 
     def _Record20(self, ragione_soc1_creditore, indirizzo_creditore, cap_citta_creditore, ref_creditore,):
-        self._creditore =  ragione_soc1_creditore.ljust(24)
+        self._creditore = ragione_soc1_creditore.ljust(24)
         return " 20" + str(self._progressivo).rjust(7, '0') + self._creditore[0:24] + indirizzo_creditore.ljust(24)[0:24] + cap_citta_creditore.ljust(24)[0:24]+ ref_creditore.ljust(24)[0:24]  + " " * 14 + "\r\n"
 
     def _Record30(self, nome_debitore, codice_fiscale_debitore):
@@ -123,7 +124,7 @@ class riba_file_export(osv.osv_memory):
         for value in ricevute_bancarie:  # estraggo le ricevute dall'array
             self._progressivo += 1
             if not value[9] or not value[10]:
-                raise osv.except_osv('Error', _('No ABI / CAB specified for bank in ') + value[3])
+                raise orm.except_orm('Error', _('No ABI / CAB specified for bank in ') + value[3])
             accumulatore += self._Record14(
                 value[1], value[2], intestazione[1], intestazione[2], intestazione[3], value[9], value[10],
                 intestazione[0], value[12])
@@ -141,25 +142,38 @@ class riba_file_export(osv.osv_memory):
         return accumulatore.replace(u'�', ' ')
 
     def act_getfile(self, cr, uid, ids, context=None):
+
+        self._progressivo = 0
+        self._assuntrice = 0
+        self._sia = 0
+        self._data = 0
+        self._valuta = 0
+        self._supporto = 0
+        self._totale = 0
+        self._creditore = 0
+        self._descrizione = ''
+        self._codice = ''
+        self._comune_provincia_debitor = ''
+
         active_ids = context and context.get('active_ids', [])
         order_obj = self.pool['riba.distinta'].browse(cr, uid, active_ids, context=context)[0]
         credit_bank = order_obj.config.bank_id
         name_company = order_obj.config.company_id.partner_id.name
         if not credit_bank.iban:
-            raise osv.except_osv('Error', _('No IBAN specified'))
+            raise orm.except_orm('Error', _('No IBAN specified'))
         iban = credit_bank.iban.replace(" ", "")
         credit_abi = credit_bank.bank.abi or iban[-22:-17]
         credit_cab = credit_bank.bank.cab or iban[-17:-12]
         credit_conto = iban[-12:]
         if not credit_bank.codice_sia:
-            raise osv.except_osv('Error', _('No SIA Code specified for: ') + name_company)
+            raise orm.except_orm('Error', _('No SIA Code specified for: ') + name_company)
         credit_sia = credit_bank.codice_sia
         credit_account = iban[15:27]
         dataemissione = datetime.now().strftime("%d%m%y")
         nome_supporto = datetime.now().strftime("%d%m%y%H%M%S") + credit_sia
         creditor_address = order_obj.config.company_id.partner_id.address
         if not creditor_address[0].street:
-            raise osv.except_osv('Error', _('No address specified for: ') + name_company)
+            raise orm.except_orm('Error', _('No address specified for: ') + name_company)
         creditor_city = ''
         if creditor_address[0].city:
             creditor_city = creditor_address[0].city
@@ -167,7 +181,7 @@ class riba_file_export(osv.osv_memory):
         if creditor_address[0].province:
             creditor_province = creditor_address[0].province.code
         if not order_obj.config.company_id.partner_id.vat and not order_obj.config.company_id.partner_id.fiscalcode:
-            raise osv.except_osv('Error', _('No VAT or Fiscalcode specified for: ') + name_company)
+            raise orm.except_orm('Error', _('No VAT or Fiscalcode specified for: ') + name_company)
         array_testata = [
                credit_sia,
                credit_abi,
@@ -192,7 +206,7 @@ class riba_file_export(osv.osv_memory):
                     debit_abi = debit_riba_bank.abi
                     debit_cab = debit_riba_bank.cab
                     if not debit_abi or not debit_cab:
-                        raise osv.except_osv('Error', _('No bank or IBAN specified for ') + line.bank_riba_id.name)
+                        raise orm.except_orm('Error', _('No bank or IBAN specified for ') + line.bank_riba_id.name)
                 debit_bank_name = debit_riba_bank.name
             elif line.bank_id:
                 debit_bank = line.bank_id
@@ -201,29 +215,29 @@ class riba_file_export(osv.osv_memory):
                     debit_abi = debit_iban[5:10]
                     debit_cab = debit_iban[10:15]
                     if not debit_abi or not debit_cab:
-                        raise osv.except_osv('Error', _('No bank or IBAN specified for ') + debit_bank.name)
+                        raise orm.except_orm('Error', _('No bank or IBAN specified for ') + debit_bank.name)
 
                 debit_bank_name = debit_bank.bank.name or debit_bank.bank_name
             else:
-                raise osv.except_osv('Error', _('No bank or IBAN specified for ') + line.partner_id.name)
+                raise orm.except_orm('Error', _('No bank or IBAN specified for ') + line.partner_id.name)
 
             if not line.partner_id.address:
-                raise osv.except_osv('Error', _('No address specified for ') + line.partner_id.name)
+                raise orm.except_orm('Error', _('No address specified for ') + line.partner_id.name)
             debitor_address = line.partner_id.address
             if debitor_address[0].street:
                 debitor_street = debitor_address[0].street
             else:
-                raise osv.except_osv('Error', _('No Street specified for ') + line.partner_id.name)
+                raise orm.except_orm('Error', _('No Street specified for ') + line.partner_id.name)
             if debitor_address[0].zip:
                 debitor_zip = debitor_address[0].zip.replace('x', '0')[0:5]
             else:
-                raise osv.except_osv('Error', _('No CAP specified for ') + line.partner_id.name)
+                raise orm.except_orm('Error', _('No CAP specified for ') + line.partner_id.name)
             # TODO search for bank_riba_id: if exists, use its abi cab
             
             if debitor_address[0].city:
                 debitor_city = debitor_address[0].city.ljust(23)[0:23] or ''
             else:
-                raise osv.except_osv('Error', _('No City specified for ') + line.partner_id.name)
+                raise orm.except_orm('Error', _('No City specified for ') + line.partner_id.name)
             debitor_province = ''
             if debitor_address[0].province:
                 debitor_province = debitor_address[0].province.code
@@ -233,9 +247,9 @@ class riba_file_export(osv.osv_memory):
                 due_date = datetime.strptime(line.due_date[:10], '%Y-%m-%d').strftime("%d%m%y")
 
             if not line.partner_id.vat and not line.partner_id.fiscalcode:
-                raise osv.except_osv('Error', _('No VAT or Fiscal code specified for ') + line.partner_id.name)
+                raise orm.except_orm('Error', _('No VAT or Fiscal code specified for ') + line.partner_id.name)
             if not debit_bank_name:  # .bank and debit_bank.bank.name or debit_bank.bank_name):
-                raise osv.except_osv('Error', _('No debit_bank specified for ') + line.partner_id.name)
+                raise orm.except_orm('Error', _('No debit_bank specified for ') + line.partner_id.name)
             cup = ''
             cig = ''
             if line.cup:
@@ -243,26 +257,29 @@ class riba_file_export(osv.osv_memory):
             if line.cig:
                 cig = ' CIG: ' + str(line.cig) + ' '
             Riba = [
-                        line.sequence,
-                        due_date,
-                        line.amount,
-                        line.partner_id.name,
-                        line.partner_id.vat and line.partner_id.vat[2:] or line.partner_id.fiscalcode,
-                        debitor_street,
-                        debitor_zip,
-                        debitor_city,
-                        debitor_province,
-                        debit_abi,
-                        debit_cab,
-                        debit_bank_name, # .bank and debit_bank.bank.name or debit_bank.bank_name,
-                        line.partner_id.ref or '',
-                        # line.move_line_id.name,
-                        line.invoice_number,
-                        # datetime.strptime(line.distinta_id.date_created, '%Y-%m-%d').strftime("%d/%m/%Y"),
-                        line.invoice_date,
-                        cup,
-                        cig,
-                    ]
+                line.sequence,
+                due_date,
+                line.amount,
+                line.partner_id.name,
+                line.partner_id.vat and line.partner_id.vat[2:] or line.partner_id.fiscalcode,
+                debitor_street,
+                debitor_zip,
+                debitor_city,
+                debitor_province,
+                debit_abi,
+                debit_cab,
+                debit_bank_name,  # .bank and debit_bank.bank.name or debit_bank.bank_name,
+                line.partner_id.ref or '',
+                # line.move_line_id.name,
+                line.invoice_number,
+                # datetime.strptime(line.distinta_id.date_created, '%Y-%m-%d').strftime("%d/%m/%Y"),
+                line.invoice_date,
+                cup,
+                cig,
+            ]
+
+            if not debit_abi and not debit_cab:
+                import pdb;pdb.set_trace()
             arrayRiba.append(Riba)
 
         out = base64.encodestring(self._creaFile(array_testata, arrayRiba).encode("iso-8859-1"))
@@ -281,5 +298,3 @@ class riba_file_export(osv.osv_memory):
         'state': lambda *a: 'choose',
     }
 
-
-riba_file_export()
