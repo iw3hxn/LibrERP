@@ -83,6 +83,9 @@ class account_move_line(orm.Model):
 
         return res
 
+    def _hook_get_invoice_line(self, cr, uid, line, context):
+        return False
+
     def _get_invoice(self, cr, uid, ids, field_name, arg, context=None):
         invoice_pool = self.pool['account.invoice']
         res = {}
@@ -93,7 +96,7 @@ class account_move_line(orm.Model):
             if inv_ids:
                 res[line.id] = inv_ids[0]
             else:
-                res[line.id] = False
+                res[line.id] = self._hook_get_invoice_line(cr, uid, line, context)
         return res
 
     def _get_day(self, cr, uid, ids, field_name, arg, context=None):
