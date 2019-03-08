@@ -79,7 +79,7 @@ class account_invoice(orm.Model):
                         pickings_name = origin
                     picking_ids += stock_picking_obj.search(cr, uid, [('name', '=', pickings_name)], context=context)
 
-            result[invoice.id] = picking_ids
+            result[invoice.id] = list(set(picking_ids))
 
         return result
 
