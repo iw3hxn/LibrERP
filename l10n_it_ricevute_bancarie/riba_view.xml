@@ -61,7 +61,7 @@
                     <notebook colspan="4">
                         <page string="General">
                             <field name="line_ids" nolabel="1" colspan="4">
-                                <tree string="Detail" editable="top">
+                                <tree string="Detail" editable="top" colors="red:amount&lt;0">
                                     <field name="tobeaccredited"/>
                                     <field name="sequence"/>
                                     <field name="invoice_number"/>
@@ -178,6 +178,7 @@
             <field name="src_model">riba.distinta</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
             <field name="search_view_id" ref="view_distinta_riba_filtri"/>
         </record>
         
@@ -253,7 +254,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_distinta_riba_line_filtri"/>
-            <field name="context">{'search_default_not_accredited':1}</field>
+            <field name="context">{'search_default_not_accredited':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
         </record>
         
         <!-- ====================================================== -->

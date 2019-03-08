@@ -109,24 +109,46 @@
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_riba_da_emettere_tree" />
         <field name="context">{'search_default_da_emettere':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
-        <field name="domain">['&amp;','|',('riba','=','True'),('unsolved_invoice_ids','!=',False),('account_id.type','=','receivable'), ('reconcile_id', '=', False)]</field>
+        <field name="domain">['&amp;','|',('riba','=','True'),('unsolved_invoice_ids','!=',False),('account_id.type','=','receivable'), ('reconcile_id', '=', False), ('partner_id', '!=', False)]</field>
         <field name="search_view_id" ref="riba_filter"/>
     </record>
 
 
-        <menuitem name="Issue Ri.Ba." parent="menu_riba" 
-            id="menu_riba_da_emettere" action="action_riba_da_emettere" sequence="1"/>
+        <menuitem name="Issue Ri.Ba." parent="menu_riba"
+                  id="menu_riba_da_emettere" action="action_riba_da_emettere" sequence="1"/>
 
         <menuitem name="Issue Ri.Ba." parent="account_due_list.schedule"
-            id="menu_riba_da_emettere_due_list" action="action_riba_da_emettere" sequence="10"/>
+                  id="menu_riba_da_emettere_due_list" action="action_riba_da_emettere" sequence="10"/>
 
-    <!-- Invoice -->
+        <!--&lt;!&ndash; Riba da ricevere Action &ndash;&gt;-->
+
+        <!--<record model="ir.actions.act_window" id="action_riba_da_ricevere">-->
+            <!--<field name="name">Receive Ri.Ba.</field>-->
+            <!--<field name="type">ir.actions.act_window</field>-->
+            <!--<field name="res_model">account.move.line</field>-->
+            <!--<field name="src_model">account.move.line</field>-->
+            <!--<field name="view_type">form</field>-->
+            <!--<field name="view_mode">tree,form</field>-->
+            <!--<field name="view_id" ref="view_riba_da_emettere_tree"/>-->
+            <!--<field name="context">{'search_default_da_emettere':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}-->
+            <!--</field>-->
+            <!--<field name="domain">['&amp;','|',('riba','=','True'),('unsolved_invoice_ids','!=',False),('account_id.type','=','payable'), ('reconcile_id', '=', False)]</field>-->
+            <!--<field name="search_view_id" ref="riba_filter"/>-->
+        <!--</record>-->
+
+        <!--<menuitem name="Receive Ri.Ba." parent="menu_riba"-->
+                  <!--id="menu_riba_da_ricevere" action="action_riba_da_ricevere" sequence="1"/>-->
+
+        <!--<menuitem name="Receive Ri.Ba." parent="account_due_list.schedule"-->
+                  <!--id="menu_riba_da_emettere_due_list" action="action_riba_da_ricevere" sequence="10"/>-->
+
+        <!-- Invoice -->
 
         <record id="invoice_form" model="ir.ui.view">
             <field name="name">account.invoice.form</field>
             <field name="model">account.invoice</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="account.invoice_form"></field>
+            <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <field name="payment_ids" position="after">
                     <separator string="Unsolved Ri.Ba." colspan="4"/>

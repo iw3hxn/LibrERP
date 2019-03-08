@@ -90,6 +90,14 @@ class account_move_line(orm.Model):
         'distinta_line_ids': None,
     }
 
+    def _hook_get_invoice_line(self, cr, uid, line, context):
+        invoice_pool = self.pool['account.invoice']
+        res = invoice_pool.search(cr, 1, [('unsolved_move_line_ids', '=', line.id)], context=context)
+        if res:
+            return res[0]
+        else:
+            return super(account_move_line, self)._hook_get_invoice_line(cr, uid, line, context)
+
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
         view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(
             cr, uid, 'l10n_it_ricevute_bancarie', 'view_riba_da_emettere_tree')
