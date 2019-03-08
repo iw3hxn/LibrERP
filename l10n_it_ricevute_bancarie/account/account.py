@@ -168,4 +168,11 @@ class account_invoice(orm.Model):
                                    u'Impossibile da validare in quanto non è impostata la banca appoggio Riba nel partner {partner}'.format(partner=invoice.partner_id.name))
                             else:
                                 return False
+                        if not invoice.partner_id.bank_riba_id.abi or not invoice.partner_id.bank_riba_id.cab:
+                            if show_except:
+                                raise orm.except_orm(u'Fattura Cliente',
+                                   u'Impossibile da validare in quanto non è impostata ABI o CAB nella fattura di {partner}'.format(partner=invoice.partner_id.name))
+                            else:
+                                return False
+
         return True
