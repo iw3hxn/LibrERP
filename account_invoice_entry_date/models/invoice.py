@@ -119,6 +119,10 @@ class account_invoice(orm.Model):
                 if date_invoice > reg_date:
                     raise orm.except_orm(_('Error date !'), _('The invoice date cannot be later than the date of registration!'))
             # periodo
+
+            if invoice.period_id:
+                continue
+
             if invoice.type in ['in_invoice', 'in_refund']:
                 date_start = invoice.registration_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                 date_stop = invoice.registration_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
