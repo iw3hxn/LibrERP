@@ -3,15 +3,8 @@
 from openerp.osv import fields, orm
 
 
-class riba_didtinta_line(orm.Model):
+class riba_distinta_line(orm.Model):
     _inherit = "riba.distinta.line"
-
-    def _get_move_lines(self, cr, uid, ids, context=None):
-        result = []
-        for move in self.pool.get('account.move').browse(cr, uid, ids, context=context):
-            for line in move.line_id:
-                result.append(line.id)
-        return result
 
     def _get_mandate(self, cr, uid, ids, field_name, arg, context=None):
         mandate_pool = self.pool['account.banking.mandate']
@@ -26,9 +19,8 @@ class riba_didtinta_line(orm.Model):
 
     _columns = {
         'mandate_id': fields.function(_get_mandate, method=True, string="Mandate", type="many2one", relation="account.banking.mandate",
-                                             store={
+                                      store={
                                                  'riba.distinta.line': (lambda self, cr, uid, ids, c={}: ids, ['partner_id'], 10),
-                                                 'account.invoice': (_get_move_lines, ['move_id'], 10),
                                              }),
 
     }
