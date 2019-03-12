@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2012 Didotech SRL (info @ didotech.com)
+# Copyright (c) 2012 Bortolatto Ivan (bortolatto.ivan at gmail.com)
 #                          All Rights Reserved.
 #
 # WARNING: This program as such is intended to be used by professional
@@ -26,16 +26,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-{
-    'name': 'Module extended res.partner for mail addresses of reference',
-    'version': '3.0.1.0',
-    'category': 'contacts',
-    'description': """A module for res.partner. email's contacts of reference """,
-    "author": "Didotech SRL",
-    'depends': ['base', 'base_address_contacts', 'email_template'],
-    'update_xml': ['views/email_extended_view.xml',
-                   'views/company_view.xml'],
-    'demo_xml': [],
-    'installable': True,
-    'active': False,
-}
+from . import inherit_ir_mail_server
+from . import inherit_res_company
+from . import inherit_res_partner
