@@ -121,16 +121,16 @@ class account_invoice(orm.Model):
             # periodo
 
             if invoice.period_id:
-                continue
-
-            if invoice.type in ['in_invoice', 'in_refund']:
-                date_start = invoice.registration_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                date_stop = invoice.registration_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-            elif invoice.type in ['out_invoice', 'out_refund']:
-                date_start = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                date_stop = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-            period_ids = self.pool['account.period'].search(
-                cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop), ('company_id', '=', invoice.company_id.id), ('special', '!=', True)], context=context)
+                period_ids = [invoice.period_id.id]
+            else:
+                if invoice.type in ['in_invoice', 'in_refund']:
+                    date_start = invoice.registration_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    date_stop = invoice.registration_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                elif invoice.type in ['out_invoice', 'out_refund']:
+                    date_start = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    date_stop = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                period_ids = self.pool['account.period'].search(
+                    cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop), ('company_id', '=', invoice.company_id.id), ('special', '!=', True)], context=context)
             if period_ids:
                 period_id = period_ids[0]
                 self.write(cr, uid, [invoice.id], {'registration_date': reg_date, 'period_id': period_id}, context=context)
