@@ -55,6 +55,8 @@
                 <!--field name="iban" readonly="1"/-->
                 <field name="abi" readonly="1"/>
                 <field name="cab" readonly="1"/>
+                <field name="cig" readonly="1"/>
+                <field name="cup" readonly="1"/>
                 <field name="partner_ref" readonly="1"/>
                 <field name="payment_term_id" readonly="1"/>
                 <field name="account_id" readonly="1"/>

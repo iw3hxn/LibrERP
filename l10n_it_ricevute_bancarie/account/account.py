@@ -77,6 +77,20 @@ class res_partner_bank_add(orm.Model):
 class account_move_line(orm.Model):
     _inherit = "account.move.line"
 
+    def _get_line_values(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = {
+                'cup': '',
+                'cig': '',
+            }
+            if line.invoice:
+                if line.invoice.cig:
+                    res[line.id]['cig'] = line.invoice.cig
+                if line.invoice.cup:
+                    res[line.id]['cup'] = line.invoice.cup
+        return res
+
     _columns = {
         'distinta_line_ids': fields.one2many('riba.distinta.move.line', 'move_line_id', "Dettaglio riba"),
         'riba': fields.related('stored_invoice_id', 'payment_term', 'riba',
@@ -85,6 +99,8 @@ class account_move_line(orm.Model):
         'iban': fields.related('partner_id', 'bank_ids', 'iban', type='char', string='IBAN', store=False),
         'abi': fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
         'cab': fields.related('partner_id', 'bank_riba_id', 'cab', type='char', string='CAB', store=False),
+        'cig': fields.function(_get_line_values, string="Cig", type='char', size=64, method=True, multi="line"),
+        'cup': fields.function(_get_line_values, string="Cup", type='char', size=64, method=True, multi="line"),
     }
     _defaults = {
         'distinta_line_ids': None,
