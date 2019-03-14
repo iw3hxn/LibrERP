@@ -314,7 +314,8 @@ class account_invoice(orm.Model):
         for origin in origins:
             if origin:
                 # OUTxxx:SOyy
-                if len(origin.split(':')) == 2:
+                # if len(origin.split(':')) == 2:
+                if ':' in origin:
                     pickings_name = origin.split(':')[0]
                 else:
                     pickings_name = origin
