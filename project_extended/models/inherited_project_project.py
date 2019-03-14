@@ -153,11 +153,19 @@ class project_project(orm.Model):
     #            res[project_id.id]['total_sell'] += sale.amount_untaxed
     #    return res
 
+    def _sale_order_search_vals_for_total_account(self, cr, uid, project, context):
+        return [
+            ('project_id', '=', project.analytic_account_id.id),
+            ('state', 'not in',
+             ['draft', 'wait_technical_validation', 'wait_manager_validation', 'send_to_customer',
+              'wait_customer_validation', 'wait_supervisor_validation', 'cancel'])
+        ]
+
     def _total_account(self, cr, uid, ids, field_name, arg, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
-        for project_id in self.browse(cr, uid, ids, context=context):
-            res[project_id.id] = {
+        for project in self.browse(cr, uid, ids, context=context):
+            res[project.id] = {
                 'total_spent': 0.0,
                 'total_invoice': 0.0,
                 'total_sell': 0.0,
@@ -165,7 +173,7 @@ class project_project(orm.Model):
                 'total_service_spent': 0.0,
             }
             # import pdb; pdb.set_trace()
-            account_id = project_id.analytic_account_id.id
+            account_id = project.analytic_account_id.id
             account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', account_id), ('invoice_id', '!=', False)], context=context)
             if account_ids:
                 cr.execute("""
@@ -174,7 +182,7 @@ class project_project(orm.Model):
                     WHERE account_analytic_line.id IN ({account_ids})
                 """.format(account_ids=', '.join([str(account) for account in account_ids])))
                 total_invoice = cr.fetchone()[0] or 0.0
-                res[project_id.id]['total_invoice'] = total_invoice
+                res[project.id]['total_invoice'] = total_invoice
 
             account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', account_id), ('invoice_id', '=', False)], context=context)
             if account_ids:
@@ -184,7 +192,7 @@ class project_project(orm.Model):
                     WHERE account_analytic_line.id IN ({account_ids}) AND account_analytic_line.amount < 0
                 """.format(account_ids=', '.join([str(account) for account in account_ids])))
                 total_spent = cr.fetchone()[0] or 0.0
-                res[project_id.id]['total_spent'] = total_spent
+                res[project.id]['total_spent'] = total_spent
 
                 account_ids = self.pool['account.analytic.line'].search(cr, uid, [('account_id', '=', account_id), ('product_id.type', '=', 'service'), ('invoice_id', '=', False)], context=context)
                 if account_ids:
@@ -194,7 +202,7 @@ class project_project(orm.Model):
                         WHERE account_analytic_line.id IN ({account_ids}) AND account_analytic_line.amount < 0
                     """.format(account_ids=', '.join([str(account) for account in account_ids])))
                     total_service_spent = cr.fetchone()[0] or 0.0
-                    res[project_id.id]['total_service_spent'] = total_service_spent
+                    res[project.id]['total_service_spent'] = total_service_spent
 
             # for account in self.pool['account.analytic.line'].browse(cr, uid, account_ids, context):
             #     if account.amount > 0:
@@ -207,12 +215,9 @@ class project_project(orm.Model):
             #     if not account.amount > 0:
             #         res[project_id.id]['total_service_spent'] += abs(account.amount)
 
-            sale_ids = self.pool['sale.order'].search(cr, uid, [
-                ('project_id', '=', project_id.analytic_account_id.id),
-                ('state', 'not in',
-                 ['draft', 'wait_technical_validation', 'wait_manager_validation', 'send_to_customer',
-                  'wait_customer_validation', 'wait_supervisor_validation', 'cancel'])
-            ], context=context)
+            sale_order_search_vals = self._sale_order_search_vals_for_total_account(cr, uid, project, context)
+
+            sale_ids = self.pool['sale.order'].search(cr, uid, sale_order_search_vals, context=context)
 
             if sale_ids:
                 cr.execute("""
@@ -222,7 +227,7 @@ class project_project(orm.Model):
                 """.format(sale_ids=', '.join([str(sale_id) for sale_id in sale_ids])))
 
                 total_sell = cr.fetchone()[0] or 0.0
-                res[project_id.id]['total_sell'] = total_sell
+                res[project.id]['total_sell'] = total_sell
                 cr.execute("""
                     SELECT COALESCE(SUM(price_subtotal))
                     FROM sale_order_line
@@ -232,7 +237,7 @@ class project_project(orm.Model):
                     AND product_template.type ILIKE 'service'
                 """.format(sale_ids=', '.join([str(sale_id) for sale_id in sale_ids])))
                 total_sell_service = cr.fetchone()[0] or 0.0
-                res[project_id.id]['total_sell_service'] = total_sell_service
+                res[project.id]['total_sell_service'] = total_sell_service
 
             # for sale in self.pool['sale.order'].browse(cr, uid, sale_ids, context):
             #     res[project_id.id]['total_sell'] += sale.amount_untaxed
