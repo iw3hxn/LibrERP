@@ -38,6 +38,7 @@ from utils import Utils
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
+COUNTRY_CODES = settings.COUNTRY_CODES
 DEBUG = settings.DEBUG
 
 if DEBUG:
@@ -61,6 +62,10 @@ class ImportFile(threading.Thread, Utils):
         # alla fine del metodo e diventa inutilizzabile
         # all'interno del thread.
         self.cr = pooler.get_db(self.dbname).cursor()
+        self.city_obj = self.pool['res.city']
+        self.province_obj = self.pool['res.province']
+        self.state_obj = self.pool['res.country.state']
+        self.categoty_obj = self.pool['res.partner.category']
         
         self.crmImportID = ids[0]
         
@@ -175,7 +180,27 @@ class ImportFile(threading.Thread, Utils):
         
         return True
 
+    # def _country_by_code(self, cr, uid, code):
+    #     if code in COUNTRY_CODES:
+    #         code = COUNTRY_CODES[code]
+    #
+    #     if len(code) == 2:
+    #         country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
+    #     else:
+    #         country_ids = False
+    #
+    #     if country_ids:
+    #         return country_ids[0]
+    #     else:
+    #         # search also for name
+    #         country_ids = self.pool['res.country'].search(cr, uid, [('name', '=ilike', code)], context=self.context)
+    #         if country_ids:
+    #             return country_ids[0]
+    #         else:
+    #             return False
+
     def import_row(self, cr, uid, row_list):
+
         if self.first_row:
             row_str_list = [self.simple_string(value) for value in row_list]
             for column in row_str_list:
@@ -236,20 +261,37 @@ class ImportFile(threading.Thread, Utils):
             self.error.append(error)
             return False
 
-        vals_crm['vat'] = '' # Null value
-        for field in self.COLUMNS_CRM:
-            if hasattr(record, field) and getattr(record, field):
-                vals_crm[field] = getattr(record, field)
+        if self.format == 'FormatOne':
 
-        # import pdb; pdb.set_trace()
-        if len(vals_crm['vat']) == 11:
-            vat_country = 'IT'
-            vat_number = vals_crm['vat']
-            vals_crm['vat'] = (vat_country + vat_number).upper()
+            vals_crm['vat'] = ''  # Null value
+            for field in self.COLUMNS_CRM:
+                if hasattr(record, field) and getattr(record, field):
+                    vals_crm[field] = getattr(record, field)
 
-        vals_crm['shop_id'] = self.shop_id and self.shop_id.id
+            # import pdb; pdb.set_trace()
+            if len(vals_crm['vat']) == 11:
+                vat_country = 'IT'
+                vat_number = vals_crm['vat']
+                vals_crm['vat'] = (vat_country + vat_number).upper()
 
-        crm_ids = self.crm_lead_obj.search(cr, uid, [(field, '=ilike', vals_crm['partner_name'].replace('\\', '\\\\'))], context=self.context)
+            vals_crm['shop_id'] = self.shop_id and self.shop_id.id
+
+            crm_ids = self.crm_lead_obj.search(cr, uid, [(field, '=ilike', vals_crm['partner_name'].replace('\\', '\\\\'))], context=self.context)
+        else:
+            vals_crm['zip'] = vals_crm.get('zip') and vals_crm['zip'].isdigit() and  self.simple_string(vals_crm['zip'], as_integer=True) or ''
+            vals_crm.update(self.crm_lead_obj.on_change_zip(cr, uid, [], vals_crm['zip']).get('value'))
+
+            if vals_crm.get('country_id'):
+                if not isinstance(vals_crm['country_id'], int):
+                    vals_crm['country_id'] = self._country_by_code(cr, uid, vals_crm['country_id'])
+
+            if vals_crm.get('partner_category_id'):
+                if not isinstance(vals_crm['partner_category_id'], int):
+                    partner_category_ids = self.categoty_obj.search(cr, uid, [('name', '=', vals_crm['partner_category_id'])])
+                    vals_crm['partner_category_id'] = partner_category_ids and partner_category_ids[0]
+            crm_ids = self.crm_lead_obj.search(cr, uid,
+                                               [('partner_name', '=', vals_crm['partner_name'].replace('\\', '\\\\')), ('email_from', '=', vals_crm['email_from'].replace('\\', '\\\\'))],
+                                               context=self.context)
         if crm_ids:
             _logger.info(u'Row {row}: Updating Lead Partner {partner}...'.format(row=self.processed_lines, partner=vals_crm['partner_name']))
             crm_id = crm_ids[0]

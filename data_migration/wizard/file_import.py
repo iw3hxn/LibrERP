@@ -598,6 +598,7 @@ class crm_import(filedata_import):
         'format': fields.selection(
             (
                 ('FormatOne', _('Format One')),
+                ('FormatTwo', _('Format Two')),
 
             ), 'Formato Dati', required=True, readonly=False
         ),

@@ -226,6 +226,20 @@ class FormatTwo():
     COLUMNS_PRICELIST_ITEM = "code, price_surcharge"
     REQUIRED_PRICELIST_ITEM = ['code', 'price_surcharge']
 
+    HEADER_CRM = (
+        'AZIENDA', 'INDIRIZZO', 'CAP', 'CITTA', 'NAZIONE', 'TELEFONO', 'EMAIL', 'SITO', 'CATEGORIA', 'NOTE'
+    )
+    COLUMNS_CRM = ['partner_name', 'street', 'zip', 'city', 'country_id', 'phone', 'email_from', 'website', 'partner_category_id', 'description']
+    CRM_SEARCH = ['partner_name', 'email_from']
+    REQUIRED_CRM = ['partner_name', 'email_from']
+    CRM_WARNINGS = []
+    CRM_ERRORS = []
+
+    # Default values
+    CRM_DEFAULTS = {
+        'optin': True
+    }
+
 
 class FormatThree():
     # TP
