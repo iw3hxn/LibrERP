@@ -93,21 +93,11 @@ class account_invoice(orm.Model):
 #                                    relation='account.invoice.maturity.preview.lines',
 #                                    string="Payments overview", readonly=True),
     }
-    
-    def action_move_create(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        ait_obj = self.pool['account.invoice.tax']
 
-        for invoice in self.browse(cr, uid, ids, context):
-            # i need to process each invoice separately for calculation on tax amount
-            compute_taxes = ait_obj.compute(cr, uid, invoice.id, context=context)
-            amount_tax = 0
-            ctx = context.copy()
-            for tax in compute_taxes:
-                amount_tax += compute_taxes[tax]['amount']
-            ctx.update({'amount_tax': amount_tax})
-
-            super(account_invoice, self).action_move_create(cr, uid, [invoice.id], context=ctx)
+    def action_date_assign(self, cr, uid, ids, *args):
+        context = self.pool['res.users'].context_get(cr, uid)
+        res = super(account_invoice, self).action_date_assign(cr, uid, ids, *args)
+        for invoice in self.browse(cr, uid, ids, args):
             date_invoice = invoice.date_invoice
             reg_date = invoice.registration_date
             if not invoice.registration_date:
@@ -117,23 +107,50 @@ class account_invoice(orm.Model):
                     reg_date = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
             if date_invoice and reg_date:
                 if date_invoice > reg_date:
-                    raise orm.except_orm(_('Error date !'), _('The invoice date cannot be later than the date of registration!'))
+                    raise orm.except_orm(_('Error date !'),
+                                         _('The invoice date cannot be later than the date of registration!'))
             # periodo
 
             if invoice.period_id:
                 period_ids = [invoice.period_id.id]
             else:
                 if invoice.type in ['in_invoice', 'in_refund']:
-                    date_start = invoice.registration_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                    date_stop = invoice.registration_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    date_start = invoice.registration_date or invoice.date_invoice or time.strftime(
+                        DEFAULT_SERVER_DATE_FORMAT)
+                    date_stop = invoice.registration_date or invoice.date_invoice or time.strftime(
+                        DEFAULT_SERVER_DATE_FORMAT)
                 elif invoice.type in ['out_invoice', 'out_refund']:
-                    date_start = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                    date_stop = invoice.date_invoice or invoice.registration_date or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    date_start = invoice.date_invoice or invoice.registration_date or time.strftime(
+                        DEFAULT_SERVER_DATE_FORMAT)
+                    date_stop = invoice.date_invoice or invoice.registration_date or time.strftime(
+                        DEFAULT_SERVER_DATE_FORMAT)
                 period_ids = self.pool['account.period'].search(
-                    cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop), ('company_id', '=', invoice.company_id.id), ('special', '!=', True)], context=context)
+                    cr, uid, [('date_start', '<=', date_start), ('date_stop', '>=', date_stop),
+                              ('company_id', '=', invoice.company_id.id), ('special', '!=', True)], context=context)
             if period_ids:
                 period_id = period_ids[0]
-                self.write(cr, uid, [invoice.id], {'registration_date': reg_date, 'period_id': period_id}, context=context)
+                self.write(cr, uid, [invoice.id], {'registration_date': reg_date, 'period_id': period_id},
+                           context=context)
+        return res
+
+    def action_move_create(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        # ait_obj = self.pool['account.invoice.tax']
+        # ctx = context.copy()
+        res = super(account_invoice, self).action_move_create(cr, uid, ids, context=context)
+
+        for invoice in self.browse(cr, uid, ids, context):
+            # i need to process each invoice separately for calculation on tax amount
+            # compute_taxes = ait_obj.compute(cr, uid, invoice.id, context=context)
+            # amount_tax = 0
+            # ctx = context.copy()
+            # for tax in compute_taxes:
+            #     amount_tax += compute_taxes[tax]['amount']
+            # ctx.update({'amount_tax': amount_tax})
+
+            if invoice.period_id:
+                period_id = invoice.period_id.id
+                reg_date = invoice.registration_date
                 mov_date = reg_date or invoice.date_invoice or time.strftime(DEFAULT_SERVER_DATE_FORMAT)
                 self.pool['account.move'].write(cr, uid, [invoice.move_id.id], {'state': 'draft'}, context=context)
                 if hasattr(invoice, 'supplier_invoice_number') and invoice.supplier_invoice_number:
@@ -156,7 +173,7 @@ class account_invoice(orm.Model):
                 self.pool['account.move'].write(cr, uid, [invoice.move_id.id], {'state': 'posted'}, context=context)
 
         # self._log_event(cr, uid, ids)
-        return True
+        return res
 
     def copy(self, cr, uid, ids, default=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
