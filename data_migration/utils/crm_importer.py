@@ -85,12 +85,12 @@ class ImportFile(threading.Thread, Utils):
     def run(self):
         # Recupera il record dal database
         self.filedata_obj = self.pool['crm.import']
-        self.productImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.crmImportID, context=self.context)
-        self.file_name = self.productImportRecord.file_name.split('\\')[-1]
-        self.shop_id = self.productImportRecord.shop_id
+        self.CrmImportRecord = self.filedata_obj.browse(self.cr, self.uid, self.crmImportID, context=self.context)
+        self.file_name = self.CrmImportRecord.file_name.split('\\')[-1]
+        self.shop_id = self.CrmImportRecord.shop_id
 
         # ===================================================
-        Config = getattr(settings, self.productImportRecord.format)
+        Config = getattr(settings, self.CrmImportRecord.format)
 
         self.HEADER = Config.HEADER_CRM
         self.REQUIRED = Config.REQUIRED_CRM
@@ -98,8 +98,8 @@ class ImportFile(threading.Thread, Utils):
         self.CRM_SEARCH = Config.CRM_SEARCH
         self.CRM_WARNINGS = Config.CRM_WARNINGS
         self.CRM_ERRORS = Config.CRM_ERRORS
+        self.FORMAT = self.CrmImportRecord.format
 
-        
         # Default values
         self.CRM_DEFAULTS = Config.CRM_DEFAULTS
         
@@ -111,7 +111,7 @@ class ImportFile(threading.Thread, Utils):
 
         # ===================================================
         try:
-            table, self.numberOfLines = import_sheet(self.file_name, self.productImportRecord.content_text)
+            table, self.numberOfLines = import_sheet(self.file_name, self.CrmImportRecord.content_text)
         except Exception as e:
             # Annulla le modifiche fatte
             self.cr.rollback()
@@ -124,14 +124,14 @@ class ImportFile(threading.Thread, Utils):
                 ### Debug
                 _logger.debug(message)
                 pdb.set_trace()
-            self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
+            self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.CrmImportRecord)
 
         if DEBUG:
             # Importa il listino
             self.process(self.cr, self.uid, table)
             
             # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
+            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.CrmImportRecord)
         else:
             # Elaborazione del listino prezzi
             try:
@@ -139,7 +139,7 @@ class ImportFile(threading.Thread, Utils):
                 self.process(self.cr, self.uid, table)
                 
                 # Genera il report sull'importazione
-                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.productImportRecord)
+                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.CrmImportRecord)
             except Exception as e:
                 # Annulla le modifiche fatte
                 self.cr.rollback()
@@ -153,7 +153,7 @@ class ImportFile(threading.Thread, Utils):
                     _logger.debug(message)
                     pdb.set_trace()
                 
-                self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.productImportRecord)
+                self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.CrmImportRecord)
 
     def process(self, cr, uid, table):
         self.message_title = _("Importazione CRM")
@@ -180,24 +180,24 @@ class ImportFile(threading.Thread, Utils):
         
         return True
 
-    # def _country_by_code(self, cr, uid, code):
-    #     if code in COUNTRY_CODES:
-    #         code = COUNTRY_CODES[code]
-    #
-    #     if len(code) == 2:
-    #         country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
-    #     else:
-    #         country_ids = False
-    #
-    #     if country_ids:
-    #         return country_ids[0]
-    #     else:
-    #         # search also for name
-    #         country_ids = self.pool['res.country'].search(cr, uid, [('name', '=ilike', code)], context=self.context)
-    #         if country_ids:
-    #             return country_ids[0]
-    #         else:
-    #             return False
+    def _country_by_code(self, cr, uid, code):
+        if code in COUNTRY_CODES:
+            code = COUNTRY_CODES[code]
+
+        if len(code) == 2:
+            country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', code)], context=self.context)
+        else:
+            country_ids = False
+
+        if country_ids:
+            return country_ids[0]
+        else:
+            # search also for name
+            country_ids = self.pool['res.country'].search(cr, uid, [('name', '=ilike', code)], context=self.context)
+            if country_ids:
+                return country_ids[0]
+            else:
+                return False
 
     def import_row(self, cr, uid, row_list):
 
@@ -207,6 +207,7 @@ class ImportFile(threading.Thread, Utils):
                 # print column
                 if column in self.HEADER:
                     _logger.info('Riga {0}: Trovato Header'.format(self.processed_lines))
+                    self.first_row = True
                     return True
             self.first_row = False
         if not len(row_list) == len(self.HEADER):
@@ -261,14 +262,12 @@ class ImportFile(threading.Thread, Utils):
             self.error.append(error)
             return False
 
-        if self.format == 'FormatOne':
+        vals_crm['vat'] = ''  # Null value
+        for field in self.COLUMNS_CRM:
+            if hasattr(record, field) and getattr(record, field):
+                vals_crm[field] = getattr(record, field)
 
-            vals_crm['vat'] = ''  # Null value
-            for field in self.COLUMNS_CRM:
-                if hasattr(record, field) and getattr(record, field):
-                    vals_crm[field] = getattr(record, field)
-
-            # import pdb; pdb.set_trace()
+        if self.FORMAT == 'FormatOne':
             if len(vals_crm['vat']) == 11:
                 vat_country = 'IT'
                 vat_number = vals_crm['vat']
@@ -278,7 +277,10 @@ class ImportFile(threading.Thread, Utils):
 
             crm_ids = self.crm_lead_obj.search(cr, uid, [(field, '=ilike', vals_crm['partner_name'].replace('\\', '\\\\'))], context=self.context)
         else:
-            vals_crm['zip'] = vals_crm.get('zip') and vals_crm['zip'].isdigit() and  self.simple_string(vals_crm['zip'], as_integer=True) or ''
+            if record.zip:
+                vals_crm['zip'] = self.simple_string(record.zip, as_integer=True)
+
+            # vals_crm['zip'] = vals_crm.get('zip') and vals_crm['zip'].isdigit() and self.simple_string(record.zip, as_integer=False) or ''
             vals_crm.update(self.crm_lead_obj.on_change_zip(cr, uid, [], vals_crm['zip']).get('value'))
 
             if vals_crm.get('country_id'):

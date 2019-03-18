@@ -588,6 +588,7 @@ class crm_import(filedata_import):
     # data fields on DB table
     _columns = {
         # State of this wizard
+        'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
         'state': fields.selection(
             (
                 ('import', 'import'),

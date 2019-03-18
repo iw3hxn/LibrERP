@@ -453,12 +453,13 @@
             <field name="name">crm.import.form</field>
             <field name="model">crm.import</field>
             <field name="arch" type="xml">
-                <form string="Products import">
+                <form string="Crm import">
                     <!-- Invisible field used for hiding and showing widgets based on state value and accessing preview text -->
                     <field name="state" invisible="1"/>
                     <field name="preview_text_original" invisible="1"/>
                     <!-- Items visibles in state "import" -->
                     <group colspan="8" col="8" states="import">
+                        <field name="shop_id" widget="selection" />
                         <field name="file_name" invisible="1" />
                         <field name="content_base64" filename="file_name" required="True" />
                         <field name="format" />
