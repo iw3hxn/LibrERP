@@ -32,46 +32,44 @@ class account_invoice(orm.Model):
 
         company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
         enable_partner_subaccount = company.enable_partner_subaccount
+        if enable_partner_subaccount:
+            for invoice in self.browse(cr, uid, ids, context):
 
-        for invoice in self.browse(cr, uid, ids, context):
+                # check that each invoice have correct account_id field
+                if invoice.account_id.type == 'view' and enable_partner_subaccount:
+                    # i get a view account, but i can't validate an invoice, i need to ckeck if subaccount is activated
+                    if invoice.type in ['out_invoice', 'out_refund']:
+                        # is a customer partner
+                        if invoice.partner_id.property_account_receivable.type != 'view':
+                            property_account_receivable_id = invoice.partner_id.property_account_receivable.id
+                        else:
+                            vals = {
+                                'name': invoice.partner_id.name,
+                                'selection_account_receivable': invoice.partner_id.selection_account_receivable and invoice.partner_id.selection_account_receivable.id or False,
+                                'property_account_receivable': invoice.account_id.id,
+                                'property_customer_ref': invoice.partner_id.property_customer_ref
+                            }
 
-            # check that each invoice have correct account_id field
-            if invoice.account_id.type == 'view' and enable_partner_subaccount:
-                # i get a view account, but i can't validate an invoice, i need to ckeck if subaccount is activated
-                if invoice.type in ['out_invoice', 'out_refund']:
-                    # is a customer partner
-                    if invoice.partner_id.property_account_receivable.type != 'view':
-                        property_account_receivable_id = invoice.partner_id.property_account_receivable.id
-                    else:
-                        vals = {
-                            'name': invoice.partner_id.name,
-                            'selection_account_receivable': invoice.partner_id.selection_account_receivable and invoice.partner_id.selection_account_receivable.id or False,
-                            'property_account_receivable': invoice.account_id.id,
-                            'property_customer_ref': invoice.partner_id.property_customer_ref
-                        }
-
-                        property_account_receivable_id = self.pool['res.partner'].get_create_partner_account(cr, uid, vals, 'customer', context)
+                            property_account_receivable_id = self.pool['res.partner'].get_create_partner_account(cr, uid, vals, 'customer', context)
+                            if property_account_receivable_id:
+                                invoice.partner_id.write({'property_account_receivable': property_account_receivable_id})
                         if property_account_receivable_id:
-                            invoice.partner_id.write({'property_account_receivable': property_account_receivable_id})
-                    if property_account_receivable_id:
-                        invoice.write({'account_id': property_account_receivable_id})
-                else:
-                    # is a supplier partner
-                    if invoice.partner_id.property_account_payable.type != 'view':
-                        property_account_payable_id = invoice.partner_id.property_account_payable.id
+                            invoice.write({'account_id': property_account_receivable_id})
                     else:
-                        vals = {
-                            'name': invoice.partner_id.name,
-                            'selection_account_payable': invoice.partner_id.selection_account_payable and invoice.partner_id.selection_account_payable.id or False,
-                            'property_account_payable': invoice.account_id.id,
-                            'property_supplier_ref': invoice.partner_id.property_supplier_ref,
-                        }
-                        property_account_payable_id = self.pool['res.partner'].get_create_partner_account(cr, uid, vals, 'supplier', context)
+                        # is a supplier partner
+                        if invoice.partner_id.property_account_payable.type != 'view':
+                            property_account_payable_id = invoice.partner_id.property_account_payable.id
+                        else:
+                            vals = {
+                                'name': invoice.partner_id.name,
+                                'selection_account_payable': invoice.partner_id.selection_account_payable and invoice.partner_id.selection_account_payable.id or False,
+                                'property_account_payable': invoice.account_id.id,
+                                'property_supplier_ref': invoice.partner_id.property_supplier_ref,
+                            }
+                            property_account_payable_id = self.pool['res.partner'].get_create_partner_account(cr, uid, vals, 'supplier', context)
+                            if property_account_payable_id:
+                                invoice.partner_id.write({'property_account_payable': property_account_payable_id})
                         if property_account_payable_id:
-                            invoice.partner_id.write({'property_account_payable': property_account_payable_id})
-                    if property_account_payable_id:
-                        invoice.write({'account_id': property_account_payable_id})
+                            invoice.write({'account_id': property_account_payable_id})
 
-        super(account_invoice, self).action_move_create(cr, uid, ids, context=context)
-        self._log_event(cr, uid, ids)
-        return True
+        return super(account_invoice, self).action_move_create(cr, uid, ids, context=context)
