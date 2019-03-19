@@ -147,16 +147,16 @@ class account_move_line(orm.Model):
     #             }
     #     return res
 
-    def _get_running_balance(self, cr, uid, ids, name, args, context):
-        res = {}
-        balance = 0
-        new_ids = self.search(cr, uid, [('id', 'in', ids)], order='date_maturity asc', context=context)
-        for line_id in new_ids:
-        #for line in self.read(cr, uid, new_ids, ['debit', 'credit'], context=context):
-            line = self.read(cr, uid, line_id, ['debit', 'credit'], context=context)
-            balance += line['debit'] - line['credit']
-            res[line['id']] = balance
-        return res
+    # def _get_running_balance(self, cr, uid, ids, name, args, context):
+    #     res = {}
+    #     balance = 0
+    #     new_ids = self.search(cr, uid, [('id', 'in', ids)], order='date_maturity asc', context=context)
+    #     for line_id in new_ids:
+    #     #for line in self.read(cr, uid, new_ids, ['debit', 'credit'], context=context):
+    #         line = self.read(cr, uid, line_id, ['debit', 'credit'], context=context)
+    #         balance += line['debit'] - line['credit']
+    #         res[line['id']] = balance
+    #     return res
 
     _columns = {
         'invoice_origin': fields.related('stored_invoice_id', 'origin', type='char', string='Source Doc', store=False),
@@ -187,7 +187,7 @@ class account_move_line(orm.Model):
         'balance': fields.function(_balance, method=True, string='Balance', type='float', store=False),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
-        'running_balance': fields.function(_get_running_balance, method=True, string="Running Balance", store=False),
+        # 'running_balance': fields.function(_get_running_balance, method=True, string="Running Balance", store=False),
     }
 
     _order = "date desc, ref asc, move_id asc, id asc"

@@ -274,7 +274,7 @@
                     <field name="state" width="60" />
                     <field name="reconcile_id"/>
                     <button name="action_view_reconcile" string="Open Reconcile" type="object" icon="gtk-zoom-in"/>
-                    <field name="running_balance" />
+                    <!--<field name="running_balance" />-->
                 </tree>
             </field>
         </record>
