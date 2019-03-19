@@ -44,6 +44,11 @@ msgid "Stock Picking"
 msgstr "Uscita Merce / DDT"
 
 #. module: account_invoice_extended
+#: view:account.invoice:0
+msgid "In Stock Picking"
+msgstr "Ingresso Merce / DDT"
+
+#. module: account_invoice_extended
 #: model:res.groups,name:account.group_customer_account_invoice
 msgid "View Customer Invoice"
 msgstr "Visualizza Fatture Clienti"

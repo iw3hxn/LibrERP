@@ -51,11 +51,25 @@
                             </tree>
                         </field>
 
-
                         <separator string="Stock Picking" colspan="4"/>
                         <field name="stock_picking_ids" nolabel="1"
                                context="{'view_print': True, 'type':'out', 'form_view_ref':'stock.view_picking_out_form', 'tree_view_ref':'stock.view_picking_out_tree'}"/>
 
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_invoice_form_picking_in_origin" model="ir.ui.view">
+            <field name="name">account.invoice.picking_in_origin</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="In Stock Picking" colspan="4" groups="account.group_account_user">
+                        <separator string="In Stock Picking" colspan="4"/>
+                        <field name="stock_picking_ids" nolabel="1"
+                               context="{'view_print': True, 'type':'in', 'form_view_ref':'stock.view_picking_in_form', 'tree_view_ref':'stock.view_picking_in_tree'}"/>
                     </page>
                 </xpath>
             </field>
