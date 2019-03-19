@@ -72,7 +72,7 @@ class wizard_registro_iva(osv.osv_memory):
             ('journal_id', 'in', [j.id for j in wizard.journal_ids]),
             ('period_id', 'in', [p.id for p in wizard.period_ids]),
             ('state', '=', 'posted'),
-        ], order='date, name', context=context)
+        ], order='name', context=context)
         if not move_ids:
             self.write(cr, uid, ids, {'message': _('No documents found in the current selection')}, context)
             model_data_ids = obj_model_data.search(cr, uid, [('model', '=', 'ir.ui.view'), ('name', '=', 'wizard_registro_iva')], context=context)
