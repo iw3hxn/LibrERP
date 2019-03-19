@@ -336,6 +336,8 @@ class partners_balance_xls(report_xls):
             for (partner_code_name, partner_id, partner_ref, partner_name) \
                     in partners_order:
                 partner = current_partner_amounts.get(partner_id, {})
+                if _p.exclude_partner_zero and not partner.get('balance', 0.0):
+                    continue
                 # in single mode, we have to display all the partners even if
                 # their balance is 0.0 because the initial balance should match
                 # with the previous year closings
