@@ -155,7 +155,7 @@ class account_invoice(orm.Model):
             return False
         else:
             for invoice in self.browse(cr, uid, ids, context):
-                if invoice.payment_term:
+                if invoice.type == 'out_invoice' and invoice.payment_term:
                     if invoice.payment_term.spese_incasso_id:
                         account_invoice_line_obj = self.pool['account.invoice.line']
                         account_invoice_line_ids = account_invoice_line_obj.search(cr, uid, [('product_id', '=', invoice.payment_term.spese_incasso_id.id), ('invoice_id', '=', invoice.id)], context=context)
