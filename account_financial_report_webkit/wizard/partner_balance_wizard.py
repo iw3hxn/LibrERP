@@ -30,6 +30,7 @@ class AccountPartnerBalanceWizard(osv.osv_memory):
     _description = "Partner Balance Report"
 
     _columns = {
+        'exclude_partner_balance_zero': fields.boolean('Exclude Partner Balance Zero'),
         'result_selection': fields.selection([('customer','Receivable Accounts'),
                                               ('supplier','Payable Accounts'),
                                               ('customer_supplier','Receivable and Payable Accounts')],
@@ -47,7 +48,7 @@ class AccountPartnerBalanceWizard(osv.osv_memory):
         if context is None:
             context = {}
         vals = self.read(cr, uid, ids,
-                         ['result_selection', 'partner_ids'],
+                         ['result_selection', 'partner_ids', 'exclude_partner_balance_zero'],
                          context=context)[0]
         data['form'].update(vals)
         return data

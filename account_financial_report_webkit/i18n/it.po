@@ -1313,3 +1313,7 @@ msgstr "Valore di credito o debito errato nella registrazione contabile !"
 msgid "Compare By"
 msgstr "Confronta per "
 
+#. module: account_financial_report_webkit
+#: field:partner.balance.webkit,exclude_partner_balance_zero:0
+msgid "Exclude Partner Balance Zero"
+msgstr "Escludi Partner con Saldo a Zero"

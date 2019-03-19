@@ -184,6 +184,8 @@ class CommonPartnerBalanceReportHeaderWebkit(CommonBalanceReportHeaderWebkit, Co
 
         fiscalyear = self.get_fiscalyear_br(data)
 
+        exclude_partner_zero = self._get_form_param('exclude_partner_balance_zero', data)
+
         start_period = self.get_start_period_br(data)
         stop_period = self.get_end_period_br(data)
         target_move = self._get_form_param('target_move', data, default='all')
@@ -266,6 +268,7 @@ class CommonPartnerBalanceReportHeaderWebkit(CommonBalanceReportHeaderWebkit, Co
             'stop_period': stop_period,
             'chart_account': chart_account,
             'comparison_mode': comparison_mode,
+            'exclude_partner_zero': exclude_partner_zero,
             'nb_comparison': nb_comparisons,
             'comp_params': comparison_params,
             'initial_balance_mode': initial_balance_mode,

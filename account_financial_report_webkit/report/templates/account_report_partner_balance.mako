@@ -183,6 +183,8 @@
                     %for (partner_code_name, partner_id, partner_ref, partner_name) in partners_order:
                         <%
                         partner = current_partner_amounts.get(partner_id, {})
+                        if exclude_partner_zero and not partner.get('balance', 0.0):
+                            continue
 
                         # in single mode, we have to display all the partners
                         # even if their balance is 0.0 because the initial balance

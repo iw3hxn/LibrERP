@@ -22,9 +22,11 @@
                     </field>
                     <field name="target_move" position="after">
                         <field name="result_selection" colspan="4"/>
+                        <field name="exclude_partner_balance_zero" />
                     </field>
                     <page name="filters" position="after">
                         <page string="Accounts Filters" name="accounts">
+
                             <separator string="Print only" colspan="4"/>
                             <field name="account_ids" colspan="4" nolabel="1" domain="[('type', 'in', ['receivable', 'payable'])]">
                                 <tree>
