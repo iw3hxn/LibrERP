@@ -9,36 +9,33 @@
                 <notebook position="inside">
                     <page string="Schedule" groups="account_due_list.can_view_due_list">
                         <separator string="Schedule" colspan="4"/>
-                        <field name="payment_ids" nolabel="1" readonly="1"
-                               context="{'tree_view_ref': 'account_due_list.view_payments_tree', 'reconciled': True}">
-                            <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
-                                <field name="stored_invoice_id" readonly="1"/>
-                                <button name="action_view_invoice" string="Open Invoice" type="object"
+                        <field name="payment_ids" nolabel="1" readonly="1" context="{'order': 'date asc, ref desc, move_id desc, id desc', 'color': 'reconcile_function_id'}">
+                            <tree colors="row_color">
+                                <field name="row_color" invisible="1"/>
+                                <field name="move_id" required="False" readonly="1"/>
+                                <button name="action_view_account_move" string="Open Journal Entries" type="object"
                                         icon="gtk-zoom-in"/>
-
-                                <!--<field name="invoice_origin" readonly="1"/>-->
-                                <field name="partner_id" string="Partner" readonly="1" invisible="1"/>
-                                <!--<field name="partner_ref" readonly="1"/>-->
-                                <field name="payment_term_id" readonly="1"/>
-                                <!--<field name="payment_term_type" readonly="1"/>-->
-                                <field name="bank_id" readonly="1"/>
-                                <field name="account_id" readonly="1"/>
-                                <field name="debit" readonly="1" sum="Total Debit"
-                                       invisible="not context.get('payment_filter', False)"/>
-                                <field name="credit" readonly="1" sum="Total Credit"
-                                       invisible="not context.get('payment_filter', False)"/>
-                                <field name="residual" sum="Total Residual"/>
+                                <field name="date" readonly="1"/>
+                                <field name="period_id" invisible="context.get('period_id', False)"/>
+                                <field name="statement_id"
+                                       domain="[('state', '!=', 'confirm'),('journal_id.type', '=', 'bank')]"
+                                       invisible="True"/>
+                                <field name="account_id"
+                                       domain="[('journal_id', '=', journal_id),('type','!=','view'), ('type','!=','closed')]"
+                                       on_change="onchange_account_id(account_id, partner_id)"/>
+                                <field name="name"/>
                                 <field name="date_maturity"/>
-                                <field name="move_id" readonly="1" invisible="context.get('reconciled',False)"/>
-                                <field name="invoice_date" readonly="1"/>
-                                <field name="reconcile_id" readonly="1" invisible="context.get('reconciled',False)"/>
-                                <field name="reconcile_partial_id" readonly="1"
-                                       invisible="context.get('reconciled',False)"/>
-                                <field name="day" invisible="1"/>
-                                <field name="company_id" invisible="1"/>
+                                <field name="journal_id" context="{'journal_id': journal_id}"
+                                       invisible="context.get('filter_journal_id', False)"/>
+                                <field name="debit" sum="Total debit"/>
+                                <field name="credit" sum="Total credit"/>
+                                <field name="account_tax_id" domain="[('parent_id', '=' ,False)]"
+                                       context="{'journal_id': journal_id}"/>
+                                <field name="residual" sum="Total residual"/>
+                                <field name="state" width="60"/>
+                                <field name="reconcile_function_id" />
                                 <field name="running_balance" />
                             </tree>
-
                         </field>
                     </page>
                 </notebook>
