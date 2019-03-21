@@ -9438,7 +9438,7 @@ msgid "Subscription"
 msgstr "Abbonamento"
 
 #. module: l10n_it_account
-#: code:addons/l10n_it_account/account/invoice.py:200
+#: code:addons/l10n_it_account/models/account_invoice.py:200
 #, python-format
 msgid "Cannot create invoice! Post the invoice with a greater date of {invoice}"
 msgstr "Impossibile registrare la fattura in contabilità! Esistono fatture registrate con data successiva alla fattura corrente; inserisci una data superiore per il documento rispetto la fattura {invoice}"
@@ -10471,10 +10471,10 @@ msgid "Number of Periods"
 msgstr "Numero di periodi"
 
 #. module: account
-#: code:addons/account/account.py:1364
+#: code:addons/account/account.py:1615
 #, python-format
 msgid "You can not modify a posted entry of closed periods"
-msgstr "You can not modify a posted entry of closed periods"
+msgstr "Non si può modificare una registrazione già validata in un periodo chiuso"
 
 #. module: account
 #: report:account.general.journal:0
