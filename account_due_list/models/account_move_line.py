@@ -196,6 +196,15 @@ class account_move_line(orm.Model):
             res[line['id']] = color[line[key]]
         return res
 
+    def show_narration(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        for move in self.browse(cr, uid, ids, context):
+            if move.narration_internal:
+                raise orm.except_orm(
+                    u'Avviso',
+                    u'{0}'.format(move.narration_internal))
+        return True
+
     _columns = {
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, ),
         'invoice_origin': fields.related('stored_invoice_id', 'origin', type='char', string='Source Doc', store=False),
@@ -227,6 +236,7 @@ class account_move_line(orm.Model):
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'running_balance': fields.function(_get_running_balance, method=True, string="Running Balance", store=False),
+        'narration_internal': fields.text('Note Move only Internal'),
     }
 
     _order = "date desc, ref asc, move_id asc, id asc"

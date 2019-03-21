@@ -11,6 +11,7 @@
             <field name="priority" eval="20"/>
             <field name="arch" type="xml">
                 <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
+                    <button name="show_narration" string="" type="object" icon="gtk-dialog-error" attrs="{'invisible': [('narration_internal', '=', False)]}" />
                     <field name="stored_invoice_id" readonly="1"/>
                     <button name="action_view_invoice" string="Open Invoice" type="object" icon="gtk-zoom-in"/>
                     <field name="invoice_date" readonly="1"/>
@@ -28,8 +29,10 @@
                     <field name="move_id" readonly="1" invisible="context.get('reconciled',False)"/>
                     <field name="reconcile_id" readonly="1" invisible="context.get('reconciled',False)"/>
                     <field name="reconcile_partial_id" readonly="1" invisible="context.get('reconciled',False)"/>
+                    <field name="reconcile_function_id" readonly="1" invisible="not context.get('reconciled',False)"/>
                     <field name="day" invisible="1"/>
                     <field name="company_id" invisible="1"/>
+                    <field name="narration_internal" invisible="1" />
                 </tree>
             </field>
         </record>
