@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2016 Didotech SRL (info at didotech.com)
+# Copyright (c) 2016-2019 Didotech SRL (info at didotech.com)
 #
 #                          All Rights Reserved.
 #
@@ -41,8 +41,8 @@ _logger.setLevel(logging.DEBUG)
 COUNTRY_CODES = settings.COUNTRY_CODES
 DEBUG = settings.DEBUG
 
-if DEBUG:
-    import pdb
+# if DEBUG:
+#     import pdb
 
 
 class ImportFile(threading.Thread, Utils):
@@ -123,15 +123,21 @@ class ImportFile(threading.Thread, Utils):
             if DEBUG:
                 ### Debug
                 _logger.debug(message)
-                pdb.set_trace()
+                # pdb.set_trace()
             self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.CrmImportRecord)
 
         if DEBUG:
             # Importa il listino
-            self.process(self.cr, self.uid, table)
+            try:
+                self.process(self.cr, self.uid, table)
             
-            # Genera il report sull'importazione
-            self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.CrmImportRecord)
+                # Genera il report sull'importazione
+
+                self.notify_import_result(self.cr, self.uid, self.message_title, 'Importazione completata', record=self.CrmImportRecord)
+            except Exception as e:
+                title = "Import failed"
+                message = "Errore alla linea %s" % self.processed_lines + "\nDettaglio:\n\n" + str(e)
+
         else:
             # Elaborazione del listino prezzi
             try:
@@ -151,7 +157,7 @@ class ImportFile(threading.Thread, Utils):
                 if DEBUG:
                     ### Debug
                     _logger.debug(message)
-                    pdb.set_trace()
+                    # pdb.set_trace()
                 
                 self.notify_import_result(self.cr, self.uid, title, message, error=True, record=self.CrmImportRecord)
 
@@ -165,6 +171,7 @@ class ImportFile(threading.Thread, Utils):
         # Use counter of processed lines
         # If this line generate an error we will know the right Line Number
         for self.processed_lines, row_list in enumerate(table, start=1):
+
             if not self.import_row(cr, uid, row_list):
                 self.problems += 1
                 
@@ -176,7 +183,7 @@ class ImportFile(threading.Thread, Utils):
                 self.updateProgressIndicator(cr, uid, self.crmImportID)
         
         self.progressIndicator = 100
-        self.updateProgressIndicator(cr, uid, self.crmImportID)
+        self.updategressIndProicator(cr, uid, self.crmImportID)
         
         return True
 
@@ -280,8 +287,8 @@ class ImportFile(threading.Thread, Utils):
             if record.zip:
                 vals_crm['zip'] = self.simple_string(record.zip, as_integer=True)
 
-            # vals_crm['zip'] = vals_crm.get('zip') and vals_crm['zip'].isdigit() and self.simple_string(record.zip, as_integer=False) or ''
-            vals_crm.update(self.crm_lead_obj.on_change_zip(cr, uid, [], vals_crm['zip']).get('value'))
+                # vals_crm['zip'] = vals_crm.get('zip') and vals_crm['zip'].isdigit() and self.simple_string(record.zip, as_integer=False) or ''
+                vals_crm.update(self.crm_lead_obj.on_change_zip(cr, uid, [], vals_crm['zip']).get('value'))
 
             if vals_crm.get('country_id'):
                 if not isinstance(vals_crm['country_id'], int):
@@ -297,7 +304,11 @@ class ImportFile(threading.Thread, Utils):
         if crm_ids:
             _logger.info(u'Row {row}: Updating Lead Partner {partner}...'.format(row=self.processed_lines, partner=vals_crm['partner_name']))
             crm_id = crm_ids[0]
-            self.crm_lead_obj.write(cr, uid, crm_id, vals_crm, self.context)
+            if self.crm_lead_obj.search(cr, uid, [('id', '=', crm_id), ('state', '=', 'draft')]):
+                self.crm_lead_obj.write(cr, uid, crm_id, vals_crm, self.context)
+            else:
+                _logger.error(u'Row {row}: Lead Partner {partner} just exist and not in draft...'.format(row=self.processed_lines,
+                                                                                     partner=vals_crm['partner_name']))
             self.updated += 1
         else:
             _logger.info(u'Row {row}: Adding Lead Partner {partner}...'.format(row=self.processed_lines, partner=vals_crm['partner_name']))
@@ -308,3 +319,4 @@ class ImportFile(threading.Thread, Utils):
             self.uo_new += 1
 
         return crm_id
+
