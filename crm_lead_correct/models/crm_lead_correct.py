@@ -398,6 +398,9 @@ class crm_lead(orm.Model):
         if not context:
             context = {'force_stage_id': True}
 
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
         vals = self.pool['res.partner.address']._set_vals_city_data(cr, uid, vals)
 
         if vals.get('stage_id', False) and not context.get('force_stage_id', False):
