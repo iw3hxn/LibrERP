@@ -372,3 +372,12 @@ msgstr "Approva il Pagamento"
 msgid "This field will be marked when the purchase manager approve this invoice to be paid, and unmarked if the invoice will be blocked to pay"
 msgstr "Questo campo verrà contrassegnato quando il responsabile acquisti approverà questa fattura e non sarà contrassegnata se la fattura verrà bloccata per il pagamento"
 
+#. module: account
+#: view:account.account:0
+#: view:account.automatic.reconcile:0
+#: field:account.move.line,reconcile_function_id:0
+#: field:account.move.line,reconcile_id:0
+#: view:account.move.line.reconcile:0
+#: view:account.move.line.reconcile.writeoff:0
+msgid "Reconcile"
+msgstr "Riconciliazione"

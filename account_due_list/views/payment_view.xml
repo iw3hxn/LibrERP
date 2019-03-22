@@ -11,6 +11,7 @@
             <field name="priority" eval="20"/>
             <field name="arch" type="xml">
                 <tree string="Payments" colors="grey:reconcile_id!=False;red:date_maturity&lt;current_date">
+                    <button name="show_narration" string="" type="object" icon="gtk-dialog-error" attrs="{'invisible': [('narration_internal', '=', False)]}" />
                     <field name="stored_invoice_id" readonly="1"/>
                     <button name="action_view_invoice" string="Open Invoice" type="object" icon="gtk-zoom-in"/>
                     <field name="invoice_date" readonly="1"/>
@@ -28,8 +29,10 @@
                     <field name="move_id" readonly="1" invisible="context.get('reconciled',False)"/>
                     <field name="reconcile_id" readonly="1" invisible="context.get('reconciled',False)"/>
                     <field name="reconcile_partial_id" readonly="1" invisible="context.get('reconciled',False)"/>
+                    <field name="reconcile_function_id" readonly="1" invisible="not context.get('reconciled',False)"/>
                     <field name="day" invisible="1"/>
                     <field name="company_id" invisible="1"/>
+                    <field name="narration_internal" invisible="1" />
                 </tree>
             </field>
         </record>
@@ -204,8 +207,7 @@
                     <field name="balance"/>
                     <field name="date_maturity"/>
                     <field name="move_id" readonly="1"/>
-                    <field name="reconcile_id" readonly="1"/>
-                    <field name="reconcile_partial_id" readonly="1"/>
+                    <field name="reconcile_function_id" readonly="1"/>
                     <field name="day" invisible="1"/>
                 </tree>
             </field>
@@ -252,7 +254,8 @@
             <field name="type">tree</field>
             <field name="priority" eval="20"/>
             <field name="arch" type="xml">
-                <tree string="Account Ledger" colors="red:state == 'draft';" >
+                <tree string="Account Ledger" colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';" >
+                    <field name="row_color" invisible="1"/>
                     <field name="move_id" required="False" readonly="1" />
                     <button name="action_view_account_move" string="Open Journal Entries" type="object" icon="gtk-zoom-in"/>
                     <field name="ref" readonly="1"/>
@@ -272,9 +275,9 @@
                     <field name="residual" sum="Total residual" />
                     <field name="analytic_account_id"/>
                     <field name="state" width="60" />
-                    <field name="reconcile_id"/>
+                    <field name="reconcile_function_id"/>
                     <button name="action_view_reconcile" string="Open Reconcile" type="object" icon="gtk-zoom-in"/>
-                    <!--<field name="running_balance" />-->
+                    <field name="running_balance" />
                 </tree>
             </field>
         </record>
@@ -286,7 +289,8 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_account_ordered_tree"/>
             <field name="search_view_id" ref="view_account_ordered_filter"/>
-            <field name="context">{'search_default_start_year': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+            <field name="context">{'color': 'reconcile_function_id', 'search_default_start_year': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1'}</field>
+            <field name="limit">2500</field>
         </record>
 
         <record model="ir.actions.act_window.view"
