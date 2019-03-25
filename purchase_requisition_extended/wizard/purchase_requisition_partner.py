@@ -32,9 +32,11 @@ class purchase_requisition_partner(orm.TransientModel):
             context = self.pool['res.users'].context_get(cr, uid)
         requisition_id = context.get('active_id', None)
         prefered = context.get('prefered', False)
-        
+
+        product_id = False
         if prefered:
-            product_id = context.get('product_id', 0)
+            product_id = context.get('product_id', False)
+
         if requisition_id:
             sql = """
                 SELECT DISTINCT pso.name, pso.sequence
@@ -54,8 +56,8 @@ class purchase_requisition_partner(orm.TransientModel):
             if prefered and data:
                 res = [data[0][0]]
             else:
-                res = [row[0] for row in data]
-        
+                res = list(set([row[0] for row in data]))
+
         if not res:
             res = self.pool['res.partner'].search(cr, uid, [('supplier', '=', True)], context=context)
         return res

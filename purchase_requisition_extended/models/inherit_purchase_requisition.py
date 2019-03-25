@@ -104,3 +104,6 @@ class purchase_requisition(orm.Model):
         'product_id': fields.related('line_ids', 'product_id', type='many2one', relation='product.product',
                                      string='Product'),
     }
+
+    _order = "date_start desc, state asc"
+
