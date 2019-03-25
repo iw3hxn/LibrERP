@@ -76,7 +76,7 @@ class Parser(report_sxw.rml_parse):
 
     def _get_tax_lines(self, move):
         res = []
-        tax_code_obj = self.pool.get('account.tax.code')
+        tax_code_obj = self.pool['account.tax.code']
         # index è usato per non ripetere la stampa dei dati fattura quando ci
         # sono più codici IVA
         index = 0
@@ -89,9 +89,9 @@ class Parser(report_sxw.rml_parse):
                 invoice = move_line.invoice
         amounts_by_code = self._tax_amounts_by_code(move)
         for tax_code_id in amounts_by_code:
-            tax_code = tax_code_obj.browse(self.cr, self.uid, tax_code_id)
+            tax_code = tax_code_obj.read(self.cr, self.uid, tax_code_id, ['name'], self.context)
             tax_item = {
-                'tax_code_name': tax_code.name,
+                'tax_code_name': tax_code['name'],
                 'amount': amounts_by_code[tax_code_id],
                 'index': index,
                 'invoice_date': (invoice and invoice.date_invoice or
@@ -142,10 +142,9 @@ class Parser(report_sxw.rml_parse):
                 sum_period = sum_p[tax_code_id]
                 res_dict[tax_code_id] += (sum_period * self.localcontext['data']['tax_sign'])
         for tax_code_id in res_dict:
-            tax_code = tax_code_obj.browse(self.cr, self.uid, tax_code_id)
+            tax_code = tax_code_obj.read(self.cr, self.uid, tax_code_id, ['name', 'is_base'], context=self.context)
             if res_dict[tax_code_id]:
-                res.append(
-                    (tax_code.name, res_dict[tax_code_id], tax_code.is_base))
+                res.append((tax_code['name'], res_dict[tax_code_id], tax_code['is_base']))
         return res
 
     def _get_tax_codes(self):
@@ -155,7 +154,7 @@ class Parser(report_sxw.rml_parse):
         parent_codes = {}
         tax_code_obj = self.pool['account.tax.code']
         for tax_code in tax_code_obj.browse(self.cr, self.uid,
-                                            self.localcontext['used_tax_codes'].keys()):
+                                            self.localcontext['used_tax_codes'].keys(), context=self.context):
             parent_codes.update(self.build_parent_tax_codes(tax_code))
         return self._compute_totals(parent_codes.keys())
 
@@ -163,7 +162,7 @@ class Parser(report_sxw.rml_parse):
         period_obj = self.pool['account.period']
         start_date = False
         for period in period_obj.browse(self.cr, self.uid,
-                                        self.localcontext['data']['period_ids']):
+                                        self.localcontext['data']['period_ids'], context=self.context):
             period_start = datetime.strptime(period.date_start, DEFAULT_SERVER_DATE_FORMAT)
             if not start_date or start_date > period_start:
                 start_date = period_start
@@ -173,14 +172,14 @@ class Parser(report_sxw.rml_parse):
         period_obj = self.pool['account.period']
         end_date = False
         for period in period_obj.browse(self.cr, self.uid,
-                                        self.localcontext['data']['period_ids']):
+                                        self.localcontext['data']['period_ids'], context=self.context):
             period_end = datetime.strptime(period.date_stop, DEFAULT_SERVER_DATE_FORMAT)
             if not end_date or end_date < period_end:
                 end_date = period_end
         return end_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
     def __init__(self, cr, uid, name, context):
-        super(Parser, self).__init__(cr, uid, name, context)
+        res = super(Parser, self).__init__(cr, uid, name, context)
         self.localcontext.update({
             'tax_lines': self._get_tax_lines,
             'tax_codes': self._get_tax_codes,
@@ -190,6 +189,8 @@ class Parser(report_sxw.rml_parse):
             'end_date': self._get_end_date,
             'invoice_total': self._get_invoice_total,
         })
+        self.context = context
+        return res
 
     def set_context(self, objects, data, ids, report_type=None):
         self.localcontext.update({
