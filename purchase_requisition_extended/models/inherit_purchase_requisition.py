@@ -19,6 +19,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from datetime import datetime
 
 from openerp import netsvc
 from openerp.osv import orm, fields
@@ -40,6 +41,13 @@ class purchase_requisition(orm.Model):
             if option not in type_selection:
                 type_selection.append(option)
         return res
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        default.update({
+            'date_start': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        })
+        return super(purchase_requisition, self).copy(cr, uid, id, default, context)
 
     def tender_to_progress(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'to_progress'}, context=context)
@@ -99,6 +107,56 @@ class purchase_requisition(orm.Model):
 
         self.tender_in_progress(cr, uid, ids, context=context)
         return True
+
+    def make_purchase_order(self, cr, uid, ids, partner_id, context=None):
+        """
+        Create New RFQ for Supplier
+        """
+        if context is None:
+            context = {}
+        assert partner_id, 'Supplier should be specified'
+        purchase_order_obj = self.pool['purchase.order']
+        purchase_order_line_obj = self.pool['purchase.order.line']
+        res_partner_obj = self.pool['res.partner']
+        # fiscal_position = self.pool['account.fiscal.position']
+        supplier = res_partner_obj.browse(cr, uid, partner_id, context=context)
+        delivery_address_id = res_partner_obj.address_get(cr, uid, [supplier.id], ['delivery'])['delivery']
+        supplier_pricelist = supplier.property_product_pricelist_purchase or False
+        res = {}
+        for requisition in self.browse(cr, uid, ids, context=context):
+            list_line = []
+            if supplier.id in filter(lambda x: x, [rfq.state != 'cancel' and rfq.partner_id.id or None for rfq in
+                                                   requisition.purchase_ids]):
+                raise orm.except_orm(_('Warning'), _(
+                    'You have already one %s purchase order for this partner, you must cancel this purchase order to create a new quotation.') % rfq.partner_id.name)
+            location_id = requisition.warehouse_id.lot_input_id.id
+            purchase_vals = {
+                'origin': requisition.name,
+                'partner_id': supplier.id,
+                'partner_address_id': delivery_address_id,
+                'pricelist_id': supplier_pricelist.id,
+                'location_id': location_id,
+                'company_id': requisition.company_id.id,
+                'fiscal_position': supplier.property_account_position and supplier.property_account_position.id or False,
+                'requisition_id': requisition.id,
+                'notes': requisition.description,
+                'warehouse_id': requisition.warehouse_id.id,
+            }
+
+            res[requisition.id] = purchase_id
+            for line in requisition.line_ids:
+                product = line.product_id
+                seller_price, qty, default_uom_po_id, date_planned = self._seller_details(cr, uid, line, supplier, context=context)
+                purchase_order_line_vals = purchase_order_line_obj.onchange_product_id(cr, uid, [], purchase_vals['pricelist_id'], product.id, qty, default_uom_po_id,
+                                    partner_id, False, purchase_vals['fiscal_position'], date_planned=date_planned,
+                                    name=product.partner_ref, price_unit=seller_price, notes=product.description_purchase, context=context)
+                purchase_order_line_vals['taxes_id'] = [(6, 0, purchase_order_line_vals.get('taxes_id'))]
+                list_line.append(purchase_order_line_vals)
+
+            purchase_vals['order_line'] = [(0, 0, line) for line in list_line]
+            purchase_id = purchase_order_obj.create(cr, uid, purchase_vals, context=context)
+
+        return res
 
     _columns = {
         'product_id': fields.related('line_ids', 'product_id', type='many2one', relation='product.product',

@@ -25,12 +25,12 @@ from dateutil.relativedelta import relativedelta
 from openerp.osv import orm
 
 
-class purchase_requisition_partner(orm.TransientModel):
+class virtual_purchase_requisition_partner(orm.TransientModel):
     '''
     We need this class to disable view specific function view_init()
     '''
     
-    _name = "purchase.requisition.partner"
+    _name = "virtual.purchase.requisition.partner"
     _inherit = "purchase.requisition.partner"
 
     def view_init(self, cr, uid, fields_list, context=None):
@@ -64,55 +64,18 @@ class purchase_requisition_partner(orm.TransientModel):
             acc_pos_obj = self.pool['account.fiscal.position']
             partner_id = data[0].partner_id.id
 
-            supplier_data = partner_obj.browse(cr, uid, partner_id, context=context)
+            partner = partner_obj.browse(cr, uid, partner_id, context=context)
 
             delivery_address_id = partner_obj.address_get(cr, uid, [partner_id], ['delivery'])['delivery']
             list_line = []
-            purchase_order_line = {}
+            purchase_order_line_vals = {}
             for requisition in tender_obj.browse(cr, uid, record_ids, context=context):
                 location_id = requisition.warehouse_id.lot_input_id.id
-                for line in requisition.line_ids:
-                    supplier_info = [sinfo for sinfo in line.product_id.seller_ids if
-                                     sinfo and sinfo.name.id == partner_id]
-                    if not len(supplier_info):
-                        continue
-                    partner_list = sorted([(partner.sequence, partner) for partner in line.product_id.seller_ids if partner])
-                    partner_rec = partner_list and partner_list[0] and partner_list[0][1] or False
-                    uom_id = line.product_id.uom_po_id and line.product_id.uom_po_id.id or False
-
-                    if requisition.date_start:
-                        newdate = datetime.strptime(requisition.date_start, '%Y-%m-%d %H:%M:%S') - relativedelta(
-                            days=company.po_lead)
-                    else:
-                        newdate = datetime.today() - relativedelta(days=company.po_lead)
-                    delay = partner_rec and partner_rec.delay or 0.0
-                    if delay:
-                        newdate -= relativedelta(days=delay)
-
-                    partner = partner_rec and partner_rec.name or supplier_data
-                    pricelist_id = partner.property_product_pricelist_purchase and partner.property_product_pricelist_purchase.id or False
-                    price = pricelist_obj.price_get(cr, uid, [pricelist_id], line.product_id.id, line.product_qty, False,
-                                            {'uom': uom_id})[pricelist_id]
-                    product = prod_obj.browse(cr, uid, line.product_id.id, context=context)
-
-                    purchase_order_line = {
-                        'name': product.partner_ref,
-                        'product_qty': line.product_qty,
-                        'product_id': line.product_id.id,
-                        'product_uom': uom_id,
-                        'price_unit': price,
-                        'date_planned': newdate.strftime('%Y-%m-%d %H:%M:%S'),
-                        'notes': product.description_purchase,
-                    }
-                    taxes_ids = line.product_id.product_tmpl_id.supplier_taxes_id
-                    taxes = acc_pos_obj.map_tax(cr, uid, partner.property_account_position, taxes_ids)
-                    purchase_order_line.update({
-                        'taxes_id': [(6, 0, taxes)]
-                    })
-                    list_line.append(purchase_order_line)
-
-                if not len(list_line):
-                    continue
+                # partner_list = sorted(
+                #     [(partner.sequence, partner) for partner in line.product_id.seller_ids if partner])
+                # partner_rec = partner_list and partner_list[0] and partner_list[0][1] or False
+                # partner = partner_rec and partner_rec.name or supplier_data
+                pricelist_id = partner.property_product_pricelist_purchase and partner.property_product_pricelist_purchase.id or False
 
                 order_vals = {
                     'origin': requisition.purchase_ids and requisition.purchase_ids[0].origin or requisition.name,
@@ -125,25 +88,55 @@ class purchase_requisition_partner(orm.TransientModel):
                     'requisition_id': requisition.id,
                     'notes': requisition.description,
                     'warehouse_id': requisition.warehouse_id.id and requisition.warehouse_id.id,
-                    'location_id': location_id,
-                    'company_id': requisition.company_id.id,
                 }
-
                 onchange_partner_vals = order_obj.onchange_partner_id(cr, uid, [], partner_id).get('value')
                 for onchange_partner_key in onchange_partner_vals.keys():
                     if onchange_partner_key not in order_vals.keys():
                         order_vals[onchange_partner_key] = onchange_partner_vals[onchange_partner_key]
 
-                shop_ids = self.pool['sale.shop'].search(cr, uid, [('warehouse_id', '=', requisition.warehouse_id.id and requisition.warehouse_id.id)], context=context)
+                shop_ids = self.pool['sale.shop'].search(cr, uid, [
+                    ('warehouse_id', '=', requisition.warehouse_id.id and requisition.warehouse_id.id)],
+                                                         context=context)
                 if shop_ids:
                     order_vals.update({'shop_id': shop_ids[0]})
 
-                purchase_id = order_obj.create(cr, uid, order_vals, context)
-                order_ids = []
-                for order_line in list_line:
-                    order_line.update({
-                        'order_id': purchase_id
-                    })
-                    order_line_obj.create(cr, uid, order_line, context)
-        return {'type': 'ir.actions.act_window_close'}
+                for line in requisition.line_ids:
+                    supplier_info = [sinfo for sinfo in line.product_id.seller_ids if
+                                     sinfo and sinfo.name.id == partner_id]
+                    if not len(supplier_info):
+                        continue
 
+                    uom_id = line.product_id.uom_po_id and line.product_id.uom_po_id.id or False
+
+                    if requisition.date_start:
+                        newdate = datetime.strptime(requisition.date_start, '%Y-%m-%d %H:%M:%S') - relativedelta(days=company.po_lead)
+                    else:
+                        newdate = datetime.today() - relativedelta(days=company.po_lead)
+                    delay = supplier_info and supplier_info[0].delay or 0.0
+                    if delay:
+                        newdate -= relativedelta(days=delay)
+
+                    seller_price, qty, default_uom_po_id, date_planned = tender_obj._seller_details(cr, uid, line, partner, context=context)
+                    purchase_order_line_vals = order_line_obj.onchange_product_id(cr, uid, [], order_vals['pricelist_id'], line.product_id.id, line.product_qty, uom_id, partner_id, False,
+                                                                                           order_vals['fiscal_position'],
+                                                                                           date_planned=date_planned,
+                                                                                           name=line.product_id.partner_ref,
+                                                                                           price_unit=seller_price,
+                                                                                           notes=line.product_id.description_purchase,
+                                                                                           context=context).get('value')
+                    purchase_order_line_vals.update({
+                        'taxes_id': [(6, 0, purchase_order_line_vals.get('taxes_id'))],
+                        'product_id': line.product_id.id
+                    })
+                    if 'product_purchase_order_history_ids' in purchase_order_line_vals:
+                        del purchase_order_line_vals['product_purchase_order_history_ids']
+                    list_line.append(purchase_order_line_vals)
+
+                if not len(list_line):
+                    continue
+
+                order_vals['order_line'] = [(0, 0, line) for line in list_line]
+
+                purchase_id = order_obj.create(cr, uid, order_vals, context)
+
+        return {'type': 'ir.actions.act_window_close'}
