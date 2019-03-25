@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # © 2013 - 2018 Didotech srl (www.didotech.com)
 
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 from collections import OrderedDict
 
@@ -227,11 +227,11 @@ class FormatTwo():
     REQUIRED_PRICELIST_ITEM = ['code', 'price_surcharge']
 
     HEADER_CRM = (
-        'AZIENDA', 'INDIRIZZO', 'CAP', 'CITTA', 'NAZIONE', 'TELEFONO', 'EMAIL', 'SITO', 'CATEGORIA', 'NOTE'
+        'AZIENDA', 'INDIRIZZO', 'CAP', 'CITTA', 'NAZIONE', 'TELEFONO', 'NOME CONTATTO', 'EMAIL', 'SITO', 'CATEGORIA', 'NOTE'
     )
-    COLUMNS_CRM = ['partner_name', 'street', 'zip', 'city', 'country_id', 'phone', 'email_from', 'website', 'partner_category_id', 'description']
+    COLUMNS_CRM = ['partner_name', 'street', 'zip', 'city', 'country_id', 'phone', 'contact_name', 'email_from', 'website', 'partner_category_id', 'description']
     CRM_SEARCH = ['partner_name', 'email_from']
-    REQUIRED_CRM = ['partner_name', 'email_from']
+    REQUIRED_CRM = ['partner_name']
     CRM_WARNINGS = []
     CRM_ERRORS = []
 
