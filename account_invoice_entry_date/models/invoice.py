@@ -81,17 +81,13 @@ class account_invoice(orm.Model):
     _columns = {
         'registration_date': fields.date('Registration Date', states={'paid': [('readonly', True)], 'open': [('readonly', True)], 'close': [('readonly', True)]}, select=True, help="Keep empty to use the current date"),
         'maturity_ids': fields.function(
-            _maturity, type="one2many", store=False,
+            _maturity, type="one2many", store=False, string="Maturities",
             relation="account.move.line", method=True),
         'payments_preview': fields.function(_get_preview_lines,
                                     type="one2many",
                                     relation='account.invoice.maturity.preview.lines',
                                     string="Maturities preview (calculated at invoice validation time)",
                                     readonly=True),
-#        'payments_overview':  fields.function(_get_payments_overview,
-#                                    type="one2many",
-#                                    relation='account.invoice.maturity.preview.lines',
-#                                    string="Payments overview", readonly=True),
     }
 
     def action_date_assign(self, cr, uid, ids, *args):

@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Account Invoice entry Date',
-    'version': '3.2.10.6',
+    'version': '3.2.10.7',
     'category': 'Generic Modules/Accounting',
     'description': """This module allows to specify the date to be used by the move created while confirming (supplier) invoice""",
     'author': 'OpenERP Italian Community',
@@ -29,7 +29,7 @@
     'license': 'AGPL-3',
     "depends": [
         'account',
-        'account_payment_term_month', # for update payment with tax in function compute
+        'account_payment_term_month',  # for update payment with tax in function compute
     ],
     "data": [
         'views/invoice_view.xml'

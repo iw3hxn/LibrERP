@@ -7,14 +7,14 @@
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <field name="date_invoice" position="after">
-                    <field name="registration_date"></field>
+                    <field name="registration_date"/>
                 </field>
                 <field name="payment_ids" position="attributes">
                     <attribute name="attrs">{'invisible':[('state','not in',['open', 'paid'])]}</attribute>
                 </field>
                 <field name="payment_ids" position="before">
                     <field name="payments_preview" nolabel="1" attrs="{'invisible':[('state','not in',['draft'])]}">
-                        <tree string=" Virtual Maturities" > 
+                        <tree string="Virtual Maturities" >
                              <field name="date" />
                              <field name="amount" string="Amount" sum="sum"/>
                         </tree>
@@ -28,8 +28,6 @@
                         </tree>
                     </field>
                 </field>
-                
-
 <!--
                 <xpath expr="//page[@string='Payments']" position="attributes">
                     <attribute name="attrs">{'invisible':[('state','not in',['open', 'paid'])]}</attribute>
@@ -59,8 +57,14 @@
                     <field name="registration_date"/>
                 </field>
                 <field name="payment_ids" position="before">
+                    <field name="payments_preview" nolabel="1" attrs="{'invisible':[('state','not in',['draft'])]}">
+                        <tree string="Virtual Maturities" >
+                             <field name="date" />
+                             <field name="amount" string="Amount" sum="sum"/>
+                        </tree>
+                    </field>
                     <field name="maturity_ids" nolabel="1">
-                        <tree string="Maturities">
+                        <tree string="Maturities" attrs="{'invisible':[('state','in',['draft'])]}">
                             <field name="date_maturity"/>
                             <field name="maturity_debit" string="Amount"/>
                             <field name="maturity_currency" />
@@ -69,7 +73,7 @@
                     </field>
                 </field>
                 <xpath expr="//page[@string='Payments']" position="attributes">
-                    <attribute name="attrs">{'invisible':[('state','not in',['open', 'paid'])]}</attribute>
+                    <attribute name="attrs">{'invisible':[('state','not in',['draft', 'open', 'paid'])]}</attribute>
                 </xpath>
 
             </field>
