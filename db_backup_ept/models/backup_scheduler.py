@@ -2,18 +2,22 @@
 # © 2014 Emipro Technologies (www.emiprotechnologies.com)
 # © 2015-2018 Didotech srl (www.didotech.com)
 
-from openerp.osv import orm, fields
-import xmlrpclib
-import socket
-import os
-import time
-import tools
 import codecs
-import tarfile
 import ftplib
+import logging
+import os
+import socket
+import tarfile
+import threading
+import time
+import xmlrpclib
+from datetime import datetime
+
+import pooler
+import tools
+from openerp.osv import orm, fields
 from tools.translate import _
 
-import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
@@ -61,7 +65,51 @@ def execute(connector, method, *args):
             raise e
     return res
 
+
 addons_path = tools.config['addons_path'] + '/db_backup_ept/DBbackups'
+
+
+class DbBackupEpt_Thread(threading.Thread):
+
+    def __init__(self, cr, uid, context=None):
+        # Inizializzazione superclasse
+        threading.Thread.__init__(self)
+        self.cr = pooler.get_db(cr.dbname).cursor()
+        self.db_backup_ept_obj = pooler.get_pool(self.cr.dbname).get('db.autobackup.ept')
+        self.start_time = datetime.now()
+        self.uid = uid
+        self.context = context
+
+    def run(self):
+
+        conf_ids = self.db_backup_ept_obj.search(self.cr, self.uid, [('active', '=', 'True')], context=self.context)
+
+        self.db_backup_ept_obj.delete_obsolete_backups(self.cr, self.uid, conf_ids, self.context)
+
+        for rec in self.db_backup_ept_obj.browse(self.cr, self.uid, conf_ids, self.context):
+            db_list = self.db_backup_ept_obj.get_db_list(self.cr, self.uid, [], rec.host, rec.port)
+            if rec.name in db_list:
+                try:
+                    if not os.path.isdir(rec.backup_dir):
+                        os.makedirs(rec.backup_dir)
+                except:
+                    raise
+                self.db_backup_ept_obj.ept_backup(self.cr, self.uid, [rec.id], rec.name, rec.backup_dir, True, rec.ftp_enable, rec.FTP_id, rec, rec.keep_backup_local, self.context)
+                # self.hv_backup(cr, user,[Bak conf ID], db_name, db_bkp_dir,AUTO,FTP)
+
+        if not self.cr.closed:
+            self.cr.close()
+        end_time = datetime.now()
+        duration_seconds = (end_time - self.start_time).seconds
+        duration = '{min}m {sec}sec'.format(min=duration_seconds / 60,
+                                            sec=duration_seconds - duration_seconds / 60 * 60)
+        _logger.info(u'Execution time in: {0}'.format(duration))
+        return True
+
+    def terminate(self):
+        if not self.cr.closed:
+            self.cr.close()
+        return super(DbBackupEpt_Thread, self).terminate()
 
 
 class db_backup_ept(orm.Model):
@@ -136,22 +184,25 @@ class db_backup_ept(orm.Model):
         self._pg_psw_env_var_is_set = False
     
     def schedule_backup(self, cr, uid, context=None):
-        conf_ids = self.search(cr, uid, [('active', '=', 'True')], context=context)
+        final_process = DbBackupEpt_Thread(cr, uid, context)
+        final_process.start()
 
-        self.delete_obsolete_backups(cr, uid, conf_ids, context)
-
-        for rec in self.browse(cr, uid, conf_ids, context):
-            db_list = self.get_db_list(cr, uid, [], rec.host, rec.port)
-            if rec.name in db_list:
-                try:
-                    if not os.path.isdir(rec.backup_dir):
-                        os.makedirs(rec.backup_dir)
-                except:
-                    raise
-                self.ept_backup(
-                    cr, uid, [rec.id], rec.name, rec.backup_dir, True, rec.ftp_enable,
-                    rec.FTP_id, rec, rec.keep_backup_local, context)
-                # self.hv_backup(cr, user,[Bak conf ID], db_name, db_bkp_dir,AUTO,FTP)
+        # conf_ids = self.search(cr, uid, [('active', '=', 'True')], context=context)
+        #
+        # self.delete_obsolete_backups(cr, uid, conf_ids, context)
+        #
+        # for rec in self.browse(cr, uid, conf_ids, context):
+        #     db_list = self.get_db_list(cr, uid, [], rec.host, rec.port)
+        #     if rec.name in db_list:
+        #         try:
+        #             if not os.path.isdir(rec.backup_dir):
+        #                 os.makedirs(rec.backup_dir)
+        #         except:
+        #             raise
+        #         self.ept_backup(
+        #             cr, uid, [rec.id], rec.name, rec.backup_dir, True, rec.ftp_enable,
+        #             rec.FTP_id, rec, rec.keep_backup_local, context)
+        #         # self.hv_backup(cr, user,[Bak conf ID], db_name, db_bkp_dir,AUTO,FTP)
         return True
 
     def delete_obsolete_backups(self, cr, uid, ids, context):
