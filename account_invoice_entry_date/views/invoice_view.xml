@@ -63,8 +63,8 @@
                              <field name="amount" string="Amount" sum="sum"/>
                         </tree>
                     </field>
-                    <field name="maturity_ids" nolabel="1">
-                        <tree string="Maturities" attrs="{'invisible':[('state','in',['draft'])]}">
+                    <field name="maturity_ids" nolabel="1" attrs="{'invisible':[('state','in',['draft'])]}">
+                        <tree string="Maturities">
                             <field name="date_maturity"/>
                             <field name="maturity_debit" string="Amount"/>
                             <field name="maturity_currency" />
