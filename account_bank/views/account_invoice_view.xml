@@ -16,6 +16,17 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="invoice_out_form_bank_riba">
+            <field name="name">invoice.out.form.bank.riba</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account_invoice_entry_date.invoice_supplier_form_reg_date"/>
+            <field name="arch" type="xml">
+                <field name="payments_preview" position="before">
+                    <field name="bank_riba_id" groups="account.view_payment_term"/>
+                </field>
+            </field>
+        </record>
+
         <record id="invoice_tree_reg_date" model="ir.ui.view">
             <field name="name">account.invoice.tree.bank</field>
             <field name="model">account.invoice</field>

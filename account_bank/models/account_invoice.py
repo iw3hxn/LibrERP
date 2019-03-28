@@ -32,11 +32,12 @@ class account_invoice(orm.Model):
     def onchange_partner_id(self, cr, uid, ids, i_type, partner_id, date_invoice=False, payment_term=False, bank_riba_id=False, company_id=False, context=None):
         result = super(account_invoice, self).onchange_partner_id(
             cr, uid, ids, i_type, partner_id, date_invoice, payment_term, bank_riba_id, company_id)
-        
-        partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
-        if partner.bank_riba_id:
-            result['value']['bank_riba_id'] = partner.bank_riba_id.id
-        if partner.company_bank_id:
-            result['value']['partner_bank_id'] = partner.company_bank_id.id
+
+        if i_type in ['out_invoice', 'out_refund']:
+            partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
+            if partner.bank_riba_id:
+                result['value']['bank_riba_id'] = partner.bank_riba_id.id
+            if partner.company_bank_id:
+                result['value']['partner_bank_id'] = partner.company_bank_id.id
 
         return result

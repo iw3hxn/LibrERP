@@ -18,28 +18,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-{
-    'name': 'Italian Localisation - Account Didotech',
-    'version': '3.1.1.5',
-    'category': 'Localisation',
-    'description': """This module add res.bank for ri.ba. in partner
-
-""",
-    'author': 'Didotech SRL',
-    'website': 'http://www.didotech.com',
-    'license': 'AGPL-3',
-    "depends": [
-        'account',
-        'l10n_it_account',  # serve per onchange dentro account.invoice
-        'account_invoice_entry_date'
-    ],
-    "data": [
-        'security/security.xml',
-        'views/account_invoice_view.xml',
-        'views/res_partner_view.xml',
-    ],
-    "demo": [],
-    "active": False,
-    "installable": True
-}
+from . import res_partner
+from . import account_invoice
