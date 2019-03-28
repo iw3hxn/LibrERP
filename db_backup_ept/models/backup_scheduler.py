@@ -96,7 +96,7 @@ class DbBackupEpt_Thread(threading.Thread):
                     raise
                 self.db_backup_ept_obj.ept_backup(self.cr, self.uid, [rec.id], rec.name, rec.backup_dir, True, rec.ftp_enable, rec.FTP_id, rec, rec.keep_backup_local, self.context)
                 # self.hv_backup(cr, user,[Bak conf ID], db_name, db_bkp_dir,AUTO,FTP)
-
+                self.cr.commit()
         if not self.cr.closed:
             self.cr.close()
         end_time = datetime.now()
@@ -216,6 +216,7 @@ class db_backup_ept(orm.Model):
                     except:
                         pass
                     condemned.unlink()
+        return True
 
     def _set_pg_psw_env_var(self):
         #if os.name != 'nt' and not os.environ.get('PGPASSWORD', ''):
