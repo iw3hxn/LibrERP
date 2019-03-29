@@ -56,7 +56,9 @@
                 <field name="date_invoice" position="after">
                     <field name="registration_date"/>
                 </field>
+                <field name="payment_term" position="replace"/>
                 <field name="payment_ids" position="before">
+                    <field name="payment_term" widget="selection" colspan="4"/>
                     <field name="payments_preview" nolabel="1" attrs="{'invisible':[('state','not in',['draft'])]}">
                         <tree string="Virtual Maturities" >
                              <field name="date" />
