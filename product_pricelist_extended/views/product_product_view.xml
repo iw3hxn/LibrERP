@@ -11,11 +11,9 @@
 
                 <page string="Suppliers" position="after">
 
-                    <page string="Customer" groups="product_bom.group_sell_price"
-                          attrs="{'invisible':[('sale_ok', '=', False)]}">
-
+                    <page string="Customer" groups="product_bom.group_sell_price" attrs="{'invisible':[('sale_ok', '=', False)]}">
                         <field colspan="4" name="generic_pricelist_ids" nolabel="1"
-                               context="{'product_id': id, 'form_view_ref': 'product_pricelist_extended.product_pricelist_version_simply_form_view'}"
+                               context="{'product_id': id, 'form_view_ref': 'product_pricelist_extended.product_pricelist_version_simply_form_view', 'context': context}"
                                readonly="1">
                             <tree string="Customs Rate List"
                                   colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
@@ -33,7 +31,7 @@
                         </field>
 
                         <field colspan="4" name="partner_pricelist_ids" nolabel="1"
-                               context="{'product_id': id, 'form_view_ref': 'product_pricelist_extended.product_pricelist_version_simply_form_view'}"
+                               context="{'product_id': id, 'form_view_ref': 'product_pricelist_extended.product_pricelist_version_simply_form_view', 'context': context}"
                                readonly="1">
                             <tree string="Customs Rate List"
                                   colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
@@ -62,6 +60,7 @@
             <field name="inherit_id" ref="product.product_search_form_view"/>
             <field name="arch" type="xml">
                 <field name="name" position="before">
+                    <filter domain="[]" icon="terp-dolar" name="show_listprice" string="View List Price" context="{'show_listprice': True}" help="View List Price Detail"/>
                     <field name="partner_id" context="{'pricelist': True, 'partner_name': self}"/>
                 </field>
             </field>

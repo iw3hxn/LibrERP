@@ -11,58 +11,66 @@ class product_product(orm.Model):
     def _get_all_pricelist_ids(self, cr, uid, ids, field_name, arg, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         ret = {}
-        partner_name = context.get('partner_name', False)
-        if partner_name:
-            partner_obj = self.pool['res.partner']
-            partner_ids = partner_obj.search(cr, uid, [('name', '=', partner_name)], context=context)
-            if partner_ids:
-                partner = partner_obj.browse(cr, uid, partner_ids[0], context=context)
-                product_pricelist_id = partner.property_product_pricelist and partner.property_product_pricelist.id or False
-                pricelist_customer_version_ids = self.pool['product.pricelist.version'].search(cr, uid, [('pricelist_id', '=', product_pricelist_id)], context=context)
+        if context.get('show_listprice', False):
+            partner_name = context.get('partner_name', False)
+            if partner_name:
+                partner_obj = self.pool['res.partner']
+                partner_ids = partner_obj.search(cr, uid, [('name', '=', partner_name)], context=context)
+                if partner_ids:
+                    partner = partner_obj.browse(cr, uid, partner_ids[0], context=context)
+                    product_pricelist_id = partner.property_product_pricelist and partner.property_product_pricelist.id or False
+                    pricelist_customer_version_ids = self.pool['product.pricelist.version'].search(cr, uid, [('pricelist_id', '=', product_pricelist_id)], context=context)
+                    cr.execute(
+                        " SELECT sale_shop.pricelist_id FROM sale_shop GROUP BY pricelist_id;"
+                    )
+                    pricelist_version_ids = self.pool['product.pricelist.version'].search(cr, uid, [('pricelist_id', 'in', [pricelist_version_id[0] for pricelist_version_id in cr.fetchall()])], context=context)
+            else:
                 cr.execute(
-                    " SELECT sale_shop.pricelist_id FROM sale_shop  GROUP BY pricelist_id;"
+                    " SELECT product_pricelist_version.id " \
+                    " FROM " \
+                    "  product_pricelist, " \
+                    "  product_pricelist_version, " \
+                    "  res_partner " \
+                    " WHERE " \
+                    "  product_pricelist.partner_id = res_partner.id AND " \
+                    "  product_pricelist_version.pricelist_id = product_pricelist.id AND " \
+                    "  product_pricelist.type = 'sale' AND " \
+                    "  product_pricelist.partner_id IS NOT NULL  AND " \
+                    "  product_pricelist.active IS TRUE AND " \
+                    "  product_pricelist_version.active IS TRUE " \
+                    " ORDER BY" \
+                    "  res_partner.name ASC;"
                 )
-                pricelist_version_ids = self.pool['product.pricelist.version'].search(cr, uid, [('pricelist_id', 'in', [pricelist_version_id[0] for pricelist_version_id in cr.fetchall()])], context=context)
+                pricelist_customer_version_ids = [pricelist_version_id[0] for pricelist_version_id in cr.fetchall()]
+
+                cr.execute(
+                    " SELECT product_pricelist_version.id " \
+                    " FROM " \
+                    "  product_pricelist, " \
+                    "  product_pricelist_version " \
+                    " WHERE " \
+                    "  product_pricelist_version.pricelist_id = product_pricelist.id AND " \
+                    "  product_pricelist.type = 'sale' AND " \
+                    "  product_pricelist.partner_id IS NULL  AND " \
+                    "  product_pricelist.active IS TRUE AND " \
+                    "  product_pricelist_version.active IS TRUE " \
+                    " ORDER BY" \
+                    "  product_pricelist.name ASC;"
+                )
+                pricelist_version_ids = [pricelist_version_id[0] for pricelist_version_id in cr.fetchall()]
+
+            for product_id in ids:
+                ret[product_id] = {
+                    'partner_pricelist_ids': pricelist_customer_version_ids,
+                    'generic_pricelist_ids': pricelist_version_ids
+                }
         else:
-            cr.execute(
-                " SELECT product_pricelist_version.id " \
-                " FROM " \
-                "  product_pricelist, " \
-                "  product_pricelist_version, " \
-                "  res_partner " \
-                " WHERE " \
-                "  product_pricelist.partner_id = res_partner.id AND " \
-                "  product_pricelist_version.pricelist_id = product_pricelist.id AND " \
-                "  product_pricelist.type = 'sale' AND " \
-                "  product_pricelist.partner_id IS NOT NULL  AND " \
-                "  product_pricelist.active IS TRUE AND " \
-                "  product_pricelist_version.active IS TRUE " \
-                " ORDER BY" \
-                "  res_partner.name ASC;"
-            )
-            pricelist_customer_version_ids = [pricelist_version_id[0] for pricelist_version_id in cr.fetchall()]
-
-            cr.execute(
-                " SELECT product_pricelist_version.id " \
-                " FROM " \
-                "  product_pricelist, " \
-                "  product_pricelist_version " \
-                " WHERE " \
-                "  product_pricelist_version.pricelist_id = product_pricelist.id AND " \
-                "  product_pricelist.type = 'sale' AND " \
-                "  product_pricelist.partner_id IS NULL  AND " \
-                "  product_pricelist.active IS TRUE AND " \
-                "  product_pricelist_version.active IS TRUE " \
-                " ORDER BY" \
-                "  product_pricelist.name ASC;"
-            )
-            pricelist_version_ids = [pricelist_version_id[0] for pricelist_version_id in cr.fetchall()]
-
-        for product_id in ids:
-            ret[product_id] = {
-                'partner_pricelist_ids': pricelist_customer_version_ids,
-                'generic_pricelist_ids': pricelist_version_ids
-            }
+            for product_id in ids:
+                ret[product_id] = {
+                    'partner_pricelist_ids': [],
+                    'generic_pricelist_ids': []
+                }
+            return ret
 
         return ret
 

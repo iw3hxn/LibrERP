@@ -96,3 +96,13 @@ msgstr "Cliente"
 #: field:product.pricelist.version,price_uos:0
 msgid "Pricelist UoS"
 msgstr "Prezzo Listino UdV"
+
+#. module: product_pricelist_extended
+#: view:product.product:0
+msgid "View List Price"
+msgstr "Visualizza Listini"
+
+#. module: product_pricelist_extended
+#: view:product.product:0
+msgid "View List Price Detail"
+msgstr "Dentro la scheda del prodotto visualizza"
