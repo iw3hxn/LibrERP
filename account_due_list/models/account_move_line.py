@@ -160,8 +160,6 @@ class account_move_line(orm.Model):
             res[line_id] = balance
         return res
 
-    from profilehooks import profile
-    @profile(immediate=True)
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
         color = {}
