@@ -149,27 +149,19 @@ class account_move_line(orm.Model):
     #             }
     #     return res
 
-    # def _get_running_balance(self, cr, uid, ids, name, args, context):
-    #     res = {}
-    #     balance = 0
-    #     order_search = context.get('order', 'date_maturity asc')
-    #     new_ids = self.search(cr, uid, [('id', 'in', ids)], order=order_search, context=context)
-    #     # for line in self.read(cr, uid, new_ids, ['debit', 'credit'], context=context):
-    #     for line_id in new_ids:
-    #         line = self.read(cr, uid, line_id, ['debit', 'credit'], context=context)
-    #         balance += line['debit'] - line['credit']
-    #         res[line['id']] = balance
-    #     return res
-
     def _get_running_balance(self, cr, uid, ids, name, args, context):
         res = {}
         balance = 0
         for line_id in ids[::-1]:
-            line = self.read(cr, uid, line_id, ['debit', 'credit'], context=context)
-            balance += line['debit'] - line['credit']
-            res[line['id']] = balance
+            # line = self.read(cr, uid, line_id, ['debit', 'credit'], context=context)
+            cr.execute('SELECT SUM(debit-credit) FROM account_move_line WHERE id = {line_id}'.format(line_id=line_id))
+            line_balance = cr.fetchone()[0]
+            balance += line_balance # line['debit'] - line['credit']
+            res[line_id] = balance
         return res
 
+    from profilehooks import profile
+    @profile(immediate=True)
     def get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
         color = {}
@@ -177,23 +169,27 @@ class account_move_line(orm.Model):
         pointer = 0
         key = context.get('color', 'date_maturity')
         if key == 'reconcile_function_id':
+            cr.execute('SELECT id, coalesce(reconcile_partial_id, 0) + coalesce(reconcile_id, 0), state FROM account_move_line WHERE id in ({line_ids})'.format(line_ids=','.join(map(str, ids))))
             pointer += 1
-        for line in self.read(cr, uid, ids, [key, 'state'], context):
-            line_key = line[key]
-            if line['state'] == 'draft':
-                res[line['id']] = 'red'
+        else:
+            cr.execute('SELECT id, {key}, state FROM account_move_line WHERE id in ({line_ids})'.format(key=key, line_ids=','.join(map(str, ids))))
+        line_colors = cr.fetchall()
+        for line in line_colors:
+            line_key = line[1]
+            if line[2] == 'draft':
+                res[line[0]] = 'red'
                 continue
             if not line_key:
-                res[line['id']] = default_row_colors[0]
+                res[line[0]] = default_row_colors[0]
                 continue
             if line_key not in color:
-                color[line[key]] = default_row_colors[pointer]
+                color[line[1]] = default_row_colors[pointer]
                 pointer += 1
                 if pointer > (len(default_row_colors) - 1):
                     pointer = 0
                     if key == 'reconcile_function_id':
                         pointer += 1
-            res[line['id']] = color[line[key]]
+            res[line[0]] = color[line[1]]
         return res
 
     def show_narration(self, cr, uid, ids, context=None):
@@ -204,6 +200,22 @@ class account_move_line(orm.Model):
                     u'Avviso',
                     u'{0}'.format(move.narration_internal))
         return True
+
+    def _get_reconcile(self, cr, uid, ids, prop, unknown_none, context=None):
+        if not len(ids):
+            return {}
+
+        res = {}
+        cr.execute(
+            'SELECT id, coalesce(reconcile_partial_id, 0) + coalesce(reconcile_id, 0)FROM account_move_line WHERE id in ({line_ids})'.format(line_ids=','.join(map(str, ids))))
+        move_lines = cr.fetchall()
+        for move_line in move_lines:
+            if move_line[1]:
+                res[move_line[0]] = move_line[1]
+            else:
+                res[move_line[0]] = False
+
+        return res
 
     _columns = {
         'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True, ),
@@ -237,6 +249,12 @@ class account_move_line(orm.Model):
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'running_balance': fields.function(_get_running_balance, method=True, string="Running Balance", store=False),
         'narration_internal': fields.text('Note Move only Internal'),
+        'reconcile_function_id': fields.function(
+            _get_reconcile, method=False,
+            string='Reconcile',
+            type='many2one',
+            relation="account.move.reconcile", store=False
+        ),
     }
 
     _order = "date desc, ref asc, move_id asc, id asc"
