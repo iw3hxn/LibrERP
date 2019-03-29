@@ -61,7 +61,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="before">
                     <filter domain="[]" icon="terp-dolar" name="show_listprice" string="View List Price" context="{'show_listprice': True}" help="View List Price Detail"/>
-                    <field name="partner_id" context="{'pricelist': True, 'partner_name': self}"/>
+                    <field name="partner_id" context="{'pricelist': True, 'partner_name': self, 'show_listprice': True}"/>
                 </field>
             </field>
         </record>
