@@ -29,3 +29,8 @@ msgstr "Disponibilità > 0"
 #: view:product.product:0
 msgid "Availability < 0"
 msgstr "Disponibilità < 0"
+
+#. module: product_filter_availability_ext_isa
+#: view:product.product:0
+msgid "Availability = 0"
+msgstr "Disponibilità = 0"

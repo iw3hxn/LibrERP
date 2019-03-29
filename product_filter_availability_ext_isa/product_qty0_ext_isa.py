@@ -38,6 +38,9 @@ class product_qty0_ext_isa(orm.Model):
         elif 'lt0' in context:
             return self._search_available(cr, uid, args, offset, limit,
                                           order, context, count, sign='lt')
+        elif 'eq0' in context:
+            return self._search_available(cr, uid, args, offset, limit,
+                                          order, context, count, sign='eq')
         else:
             return super(product_qty0_ext_isa, self).search(cr, uid, args, offset, limit,
                                                             order, context=context, count=count)
@@ -106,7 +109,7 @@ class product_qty0_ext_isa(orm.Model):
                         AND stock_move_b.state IN ({states}))
                     ) > 0
                  """
-        else:
+        elif sign == 'lt':
             where = """
                         WHERE stock_move.product_id=product_product.id
                         AND stock_move.location_id IN ({locations})
@@ -123,6 +126,28 @@ class product_qty0_ext_isa(orm.Model):
                         AND stock_move_b.state IN ({states}))
                     ) > 0
                  """
+        else:
+             where = """
+                         WHERE stock_move.product_id=product_product.id
+                         AND stock_move.location_id NOT IN ({locations})
+                         AND stock_move.location_dest_id IN ({locations})
+                         AND stock_move.state IN ({states})
+                     """
+             having = """
+                         HAVING (SUM(stock_move.product_qty) - (
+                         SELECT coalesce(SUM(
+                         case
+                           when stock_move_b.state like 'cancel' then 0
+                           else stock_move_b.product_qty
+                         end
+                         ), 0)
+                         FROM stock_move stock_move_b
+                         WHERE stock_move_b.location_id IN ({locations})
+                         AND stock_move_b.location_dest_id NOT IN ({locations})
+                         AND stock_move_b.product_id=stock_move.product_id
+                         AND stock_move_b.state IN ({states}))
+                     ) = 0
+                  """
 
         group = """
                     GROUP BY stock_move.product_id, stock_move.product_uom
@@ -148,8 +173,41 @@ class product_qty0_ext_isa(orm.Model):
         # FIXME: servono i campi con i quali si fa l'ordinamento da mettere nel group by... per ora li prendo dall'order
         add_group_by = order_by.replace("ORDER BY", "").replace("asc", "").replace("desc", "")
         group += add_group_by and ',' + add_group_by
-        query_str = (select % from_clause) + where + group + having + order_by + limit_str + offset_str
+
+        # #############################################################################################################
+        # iF filter for availability equal to 0 then will add two union query:
+        # first union to retrive all ids in table product_product but not in move_stock table
+        # second union all the ids in move stock that have only cancel movement
+        #
+        # also it creates an head and a tail to wrap the sql script in order to have one product_ids table
+        # the table will be filtered again for the where clause, in order to do that it will extend the
+        # where_clause_params list with the same list
+        ###############################################################################################################
+
+        if sign == 'eq':
+            head = " select t3.product_id from ("
+            union1 = " union select product_product.id as product_id from stock_move right outer join product_product on stock_move.product_id = product_product.id where stock_move.product_id is null"
+            union2 = """ union select t1.product_id
+                        from
+                        (select count(stock_move.product_id) as mv_cancel, stock_move.product_id
+                            from stock_move
+                            where stock_move.state = 'cancel'
+                            group by (stock_move.product_id)) as t1,
+                                (select count(stock_move.product_id) as mv_total, stock_move.product_id
+                                from stock_move
+                                group by (stock_move.product_id)) as t2
+                            where t1.product_id = t2.product_id and t1.mv_cancel = t2.mv_total
+            """
+            union3 = "select stock_move.product_id"
+            tail = ") as t3, "
+
+            if '"product_product"' in from_clause.split(","):
+                query_str = head + (select % from_clause) + where + group + having + union1 + union2 + tail + from_clause + " where " + where_clause + " and t3.product_id = product_product.id " + limit_str + offset_str
+                where_clause_params.extend(where_clause_params)
+        else:
+            query_str = (select % from_clause) + where + group + having + order_by + limit_str + offset_str
+        # query_str = (select % from_clause) + where + group + having + order_by + limit_str + offset_str
 
         cr.execute(query_str, where_clause_params)
         res = cr.fetchall()
-        return [x[0] for x in res]
+        return list(set([x[0] for x in res]))
