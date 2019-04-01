@@ -298,14 +298,21 @@ class ImportFile(threading.Thread, Utils):
                 if not isinstance(vals_crm['partner_category_id'], int):
                     partner_category_ids = self.categoty_obj.search(cr, uid, [('name', '=', vals_crm['partner_category_id'])])
                     vals_crm['partner_category_id'] = partner_category_ids and partner_category_ids[0]
-            crm_ids = self.crm_lead_obj.search(cr, uid,
-                                               [('partner_name', '=', vals_crm['partner_name'].replace('\\', '\\\\')), ('email_from', '=', vals_crm['email_from'].replace('\\', '\\\\'))],
-                                               context=self.context)
+            search_domain = []
+            crm_ids = []
+            if vals_crm.get('partner_name', False):
+                search_domain.append(('partner_name', '=', vals_crm['partner_name'].replace('\\', '\\\\')))
+            if vals_crm.get('email_from', False):
+                search_domain.append(('email_from', '=', vals_crm['email_from'].replace('\\', '\\\\')))
+                crm_ids = self.crm_lead_obj.search(cr, uid, search_domain, context=self.context)
         if crm_ids:
             _logger.info(u'Row {row}: Updating Lead Partner {partner}...'.format(row=self.processed_lines, partner=vals_crm['partner_name']))
             crm_id = crm_ids[0]
             if self.crm_lead_obj.search(cr, uid, [('id', '=', crm_id), ('state', '=', 'draft')]):
-                self.crm_lead_obj.write(cr, uid, crm_id, vals_crm, self.context)
+                try:
+                    self.crm_lead_obj.write(cr, uid, crm_id, vals_crm, self.context)
+                except Exception as e:
+                    print (e)
             else:
                 _logger.error(u'Row {row}: Lead Partner {partner} just exist and not in draft...'.format(row=self.processed_lines,
                                                                                      partner=vals_crm['partner_name']))
