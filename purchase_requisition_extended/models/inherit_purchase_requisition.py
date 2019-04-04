@@ -143,18 +143,24 @@ class purchase_requisition(orm.Model):
                 'warehouse_id': requisition.warehouse_id.id,
             }
 
-            res[requisition.id] = purchase_id
             for line in requisition.line_ids:
                 product = line.product_id
                 seller_price, qty, default_uom_po_id, date_planned = self._seller_details(cr, uid, line, supplier, context=context)
                 purchase_order_line_vals = purchase_order_line_obj.onchange_product_id(cr, uid, [], purchase_vals['pricelist_id'], product.id, qty, default_uom_po_id,
                                     partner_id, False, purchase_vals['fiscal_position'], date_planned=date_planned,
-                                    name=product.partner_ref, price_unit=seller_price, notes=product.description_purchase, context=context)
-                purchase_order_line_vals['taxes_id'] = [(6, 0, purchase_order_line_vals.get('taxes_id'))]
+                                    name=product.partner_ref, price_unit=seller_price, notes=product.description_purchase, context=context).get('value')
+                purchase_order_line_vals.update({
+                    'product_id': product.id,
+                    'taxes_id': [(6, 0, purchase_order_line_vals.get('taxes_id'))]
+                })
+                if 'product_purchase_order_history_ids' in purchase_order_line_vals:
+                    del purchase_order_line_vals['product_purchase_order_history_ids']
+
                 list_line.append(purchase_order_line_vals)
 
             purchase_vals['order_line'] = [(0, 0, line) for line in list_line]
             purchase_id = purchase_order_obj.create(cr, uid, purchase_vals, context=context)
+            res[requisition.id] = purchase_id
 
         return res
 
