@@ -6,6 +6,20 @@ from osv import orm, fields
 class PurchaseOrderLine(orm.Model):
     _inherit = "purchase.order.line"
 
+    def _auto_init(self, cr, context={}):
+        res = super(PurchaseOrderLine, self)._auto_init(cr, context)
+
+        _index_name = 'purchase_order_line_product_id_index'
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (_index_name,))
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON purchase_order_line (product_id)'.format(name=_index_name))
+
+        _index_name = 'purchase_order_line_partner_id_index'
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (_index_name,))
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON purchase_order_line (partner_id)'.format(name=_index_name))
+        return res
+
     _columns = {
       #  'sale_order_date': fields.related('order_id', 'order_date', 'Date', type='date'),
         'product_purchase_order_history_id': fields.many2one('purchase.order.line', 'Parent Order', select=True),
