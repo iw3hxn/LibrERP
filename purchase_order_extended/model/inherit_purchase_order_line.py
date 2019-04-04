@@ -53,7 +53,12 @@ class purchase_order_line(orm.Model):
 
     _order = 'sequence asc, id'
 
-    _defaults = {
-        'sequence': 10,
-    }
+    def default_get(self, cr, uid, fields, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = super(purchase_order_line, self).default_get(cr, uid, fields, context)
 
+        if 'order_id' in context and context['order_id']:
+            order = self.pool['purchase.order'].browse(cr, uid, context['order_id'], context)
+            res['sequence'] = (len(order.order_line) + 1) * 10
+
+        return res

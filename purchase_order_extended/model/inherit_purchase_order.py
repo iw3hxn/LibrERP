@@ -76,6 +76,41 @@ class purchase_order(orm.Model):
         # function call if change state the purchase order
         return True
 
+    @staticmethod
+    def init_sequence(lines):
+        for count, line in enumerate(lines, start=1):
+            line[2]['sequence'] = count * 10
+        return lines
+
+    def set_sequence(self, cr, uid, lines, context=None):
+        purchase_order_line_obj = self.pool['purchase.order.line']
+        for count, line in enumerate(lines, start=1):
+            if line[0] == 0:
+                # Create
+                if not 'sequence' in line[2]:
+                    line[2]['sequence'] = count * 10
+            elif line[0] == 1:
+                # Update
+                order_line = purchase_order_line_obj.read(cr, uid, line[1], ('name', 'sequence'), context)
+                if not 'sequence' in line[2]:
+                    line[2]['sequence'] = order_line['sequence']
+            elif line[0] == 2:
+                # Delete
+                order_line = purchase_order_line_obj.read(cr, uid, line[1], ('name', 'sequence'), context)
+                line[2] = {'sequence': order_line['sequence']}
+            elif line[0] == 4:
+                # Link
+                order_line = purchase_order_line_obj.read(cr, uid, line[1], ('name', 'sequence'), context)
+                line[0] = 1
+                line[2] = {'sequence': order_line['sequence']}
+
+        lines = sorted(lines, key=lambda line: line[2]['sequence'])
+
+        for count, line in enumerate(lines, start=1):
+            line[2]['sequence'] = count * 10
+
+        return lines
+
     def create(self, cr, uid, vals, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         company = self.pool['res.users'].browse(cr, uid, uid).company_id
@@ -91,6 +126,8 @@ class purchase_order(orm.Model):
             if company.auto_order_policy:
                 default = self.default_get(cr, uid, ['invoice_method'], context)
                 vals.update({'invoice_method': default.get('invoice_method', 'manual')})
+        if 'order_line' in vals:
+            vals['order_line'] = self.init_sequence(vals['order_line'])
 
         ids = super(purchase_order, self).create(cr, uid, vals, context=context)
         if vals.get('carrier_id', False) or vals.get('payment_term', False):
@@ -137,6 +174,8 @@ class purchase_order(orm.Model):
                     partner_vals['property_payment_term'] = vals.get('payment_term')
                 if partner_vals:
                     self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
+            if 'order_line' in vals:
+                vals['order_line'] = self.set_sequence(cr, uid, vals['order_line'], context)
 
         if vals.get('state', False):
             self.hook_purchase_state(cr, uid, ids, vals, context)
@@ -197,32 +236,4 @@ class purchase_order(orm.Model):
             }
         )
         return res
-
-    @staticmethod
-    def set_sequence(lines):
-        sequence = 10
-        for line in lines:
-            if line[0] == 0:
-                if line[2].get('sequence', 0) == 10:
-                    line[2]['sequence'] = sequence
-                    sequence += 10
-                elif line[2].get('sequence', 0) > sequence:
-                    next_sequence = line[2]['sequence'] / 10 * 10 + 10
-                    if line[2]['sequence'] / 10 * 10 == line[2]['sequence']:
-                        line[2]['sequence'] = sequence
-                    sequence = next_sequence
-            elif line[0] == 4:
-                sequence += 10
-
-        return lines
-
-    def create(self, cr, uid, values, context=None):
-        if 'order_line' in values:
-            values['order_line'] = self.set_sequence(values['order_line'])
-        return super(purchase_order, self).create(cr, uid, values, context)
-
-    def write(self, cr, uid, ids, values, context=None):
-        if 'order_line' in values:
-            values['order_line'] = self.set_sequence(values['order_line'])
-        return super(purchase_order, self).write(cr, uid, ids, values, context)
 
