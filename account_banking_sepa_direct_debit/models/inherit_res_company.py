@@ -20,9 +20,7 @@ class res_company(orm.Model):
             country_code = company.country_id.code
         elif company.vat:
             country_code = company.vat[0:2].upper()
-            ids = pooler.get_pool(cr.dbname).\
-                get('res.country').search(cr, uid,
-                                          [('code', '=', country_code)])
+            ids = self.pool['res.country'].search(cr, uid, [('code', '=', country_code)], context=context)
             if ids:
                 country_id = ids[0]
         return country_id, country_code
