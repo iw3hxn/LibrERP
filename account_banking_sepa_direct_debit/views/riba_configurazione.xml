@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- ====================================================== -->
+        <!--                     CAMPI AGGIUNTIVI                    -->
+        <!-- ====================================================== -->
+        <record id="riba_configurazione_form_inherit" model="ir.ui.view">
+            <field name="name">riba.configurazione.form.inherit</field>
+            <field name="model">riba.configurazione</field>
+            <field name="inherit_id" ref="l10n_it_ricevute_bancarie.view_riba_configurazione_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="sdd"/>
+                    <field name="PrvtId" attrs="{'required': [('sdd', '=', True)], 'invisible': [('sdd', '=', False)]}"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

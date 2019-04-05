@@ -19,8 +19,9 @@
         'python': ['unidecode', 'lxml'],
     },
     'data': [
-        'views/account_view.xml'
-
+        'views/account_view.xml',
+        'views/riba_configurazione.xml',
+        'views/riba_distinta.xml'
     ],
 
     'description': '''

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- ====================================================== -->
+        <!--                     CAMPI AGGIUNTIVI                    -->
+        <!-- ====================================================== -->
+        <record id="riba_distinta_form_inherit" model="ir.ui.view">
+            <field name="name">riba.distinta.form.inherit</field>
+            <field name="model">riba.distinta</field>
+            <field name="inherit_id" ref="l10n_it_ricevute_bancarie.view_distinta_riba_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="config" position="after">
+                    <field name="sdd"/>
+                </field>
+                <field name="line_ids" position="attributes">
+                    <attribute name="context">{'sdd': sdd}</attribute>
+                </field>
+                <field name="abi" position="attributes">
+                    <attribute name="invisible">context.get('sdd',False)</attribute>
+                </field>
+                <field name="cab" position="attributes">
+                    <attribute name="invisible">context.get('sdd',False)</attribute>
+                </field>
+                <field name="abi" position="before">
+                    <field name="mandate_id" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
