@@ -121,7 +121,7 @@ class virtual_purchase_requisition_partner(orm.TransientModel):
                                                                                            order_vals['fiscal_position'],
                                                                                            date_planned=date_planned,
                                                                                            name=line.product_id.partner_ref,
-                                                                                           price_unit=seller_price,
+                                                                                           price_unit=False,
                                                                                            notes=line.product_id.description_purchase,
                                                                                            context=context).get('value')
                     purchase_order_line_vals.update({
