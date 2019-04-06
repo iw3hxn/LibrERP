@@ -893,7 +893,7 @@ class Aeroo_report(report_sxw):
         AerooPrint.print_ids.remove(aeroo_print.id)
         del self.active_prints[aeroo_print.id]
         ##############################
-        _logger.info("End total process %s (%s), total elapsed time: %s" % (
+        _logger.info("End total process %s (%s), total elapsed time:%s" % (
         self.name, self.table, time.time() - aeroo_print.start_total_time))  # debug mode
         return res
 
