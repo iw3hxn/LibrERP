@@ -391,6 +391,8 @@ class AccountVatCommunication(orm.Model):
                 continue
 
         if fatturapa_attachment:
+            country_ids = self.pool['res.country'].search(cr, uid, [('code', '=', 'IT')], context=context)
+            where.append(('partner_id.country', 'not in', country_ids))
             if dte_dtr_id == 'DTE':
                 where.append(('fatturapa_attachment_out_id', '=', False))
             elif dte_dtr_id == 'DTR':
