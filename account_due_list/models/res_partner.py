@@ -28,9 +28,22 @@ class res_partner(orm.Model):
     def _get_invoice_payment(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         for partner_id in ids:
-            res[partner_id] = self.pool['account.move.line'].search(cr, uid, [
-                ('account_id.type', 'in', ['receivable', 'payable']), ('stored_invoice_id', '!=', False),
-                ('partner_id', '=', partner_id), ('reconcile_id', '=', False)], order='date_maturity asc', context=context)
+            res[partner_id] = []
+        if len(ids) != 1:
+            return res
+        for partner in self.browse(cr, uid, ids, context):
+            account_view_ids = [partner.property_account_receivable.id, partner.property_account_payable.id]
+            fposition_id = partner.property_account_position
+            for account_id in [partner.property_account_receivable.id, partner.property_account_payable.id]:
+                account_view_ids.append(
+                    self.pool['account.fiscal.position'].map_account(cr, uid, fposition_id, account_id,
+                                                                     context=context))
+
+            account_view_ids = list(set(account_view_ids))
+            res[partner.id] = self.pool['account.move.line'].search(cr, uid, [('account_id', 'in', account_view_ids),
+                                                                              ('partner_id', '=', partner.id),
+                                                                              ('reconcile_id', '=', False)],
+                                                                    context=context)
         return res
 
     _columns = {
