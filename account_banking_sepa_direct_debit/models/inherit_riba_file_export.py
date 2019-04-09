@@ -20,7 +20,7 @@ except ImportError:
 from lxml import etree
 
 
-class riba_file_export(orm.Model):
+class riba_file_export(orm.TransientModel):
     _inherit = "riba.file.export"
 
     def act_getfile(self, cr, uid, ids, context=None):
