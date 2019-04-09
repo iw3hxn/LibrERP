@@ -54,6 +54,7 @@ class stock_picking(orm.Model):
                         new_invoice_id = account_invoice_obj.copy(cr, uid, invoice.id, {'type': 'out_refund', 'invoice_line': False, 'journal_id': journal_id}, context=context)
                         for line in invoice.invoice_line:
                             line_vals = {
+                                'quantity': 1,
                                 'invoice_id': new_invoice_id,
                                 'price_unit': line.price_unit,
                                 'sequence': 1000,
@@ -63,6 +64,7 @@ class stock_picking(orm.Model):
                     else:
                         for line in invoice.invoice_line:
                             line_vals = {
+                                'quantity': 1,
                                 'invoice_id': invoice_id,
                                 'price_unit': -line.price_unit,
                                 'sequence': 1000,
