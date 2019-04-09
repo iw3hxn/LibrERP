@@ -206,6 +206,7 @@
                 </field>
                 <field name="country_id" position="after">
                     <field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
+                    <field name="partner_category_id"/>
                     <field name="channel_id" widget="selection"/>
                     <filter domain="[]" icon="terp-stock_zoom" name="show_extended" string="Show Note" context="{'show_note': True}"/>
                 </field>
@@ -234,6 +235,7 @@
                     <field name="phone"/>
 
                     <field name="categ_id" invisible="1"/>
+                    <field name="partner_category_id" widget="selection"/>
                     <field name="type_id" invisible="1"/>
                     <field name="referred" invisible="1"/>
                     <field name="channel_id"/>
@@ -273,6 +275,9 @@
             <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
+                <field name="referred" position="after">
+                    <field name="partner_category_id" widget="selection"/>
+                </field>
                 <field name="description" position="after">
                     <field name="phonecall_ids" context="{'default_partner_id' : partner_id}" nolabel="1" colspan="4"/>
                     <field name="meeting_ids"

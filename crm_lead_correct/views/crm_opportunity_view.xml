@@ -279,6 +279,7 @@
                 <field name="user_id"/>
                 <field name="priority" invisible="1"/>
                 <field name="categ_id" />
+                <field name="partner_category_id" widget="selection"/>
 				<field name="state"/>
                 <button name="case_open" string="Open" states="draft,pending" type="object" icon="gtk-go-forward" />
                 <button name="case_pending" string="Pending" states="open,draft" type="object" icon="gtk-media-pause" />
@@ -317,6 +318,7 @@
             <field name="province" widget="selection"/>
             <field name="region" widget="selection"/>
             <field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
+            <field name="partner_category_id"/>
             <field name="channel_id" widget="selection" />
         </field>
         </field>
