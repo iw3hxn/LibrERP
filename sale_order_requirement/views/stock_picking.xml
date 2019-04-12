@@ -21,7 +21,6 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <field name="picked_rate" position="before">
-                    <field name="sale_id" invisible="0"/>
                     <field name="purchase_orders_approved"/>
                     <field name="purchase_orders_state"/>
                 </field>
