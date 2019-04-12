@@ -100,16 +100,12 @@ class product_product(orm.Model):
         })
         return super(product_product, self).copy(cr, uid, id, default, context)
 
-    # def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
-    #     res = super(product_product, self).name_search(cr, uid, name, args, operator, context, limit)
-    #     ids_supplier = self.search(
-    #         cr, uid, args + [('supplier_code', operator, name)], limit=limit, context=context)
-    #
-    #     ids = res + ids_supplier
-    #     ids = list(set(ids))
-    #     return ids
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         context = context or self.pool['res.users'].context_get(cr, uid)
+        if context.get('show_categ', False):
+            for arg in args:
+                if arg[0] == 'categ_id':
+                    arg[1] = 'child_of'
 
         return super(product_product, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
 

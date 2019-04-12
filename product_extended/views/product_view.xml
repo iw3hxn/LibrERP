@@ -9,7 +9,7 @@
             <field name="inherit_id" ref="product.product_search_form_view"/>
             <field name="arch" type="xml">
                 <field name="categ_id" position="replace" >
-                    <field name="categ_id" operator="child_of" groups="base.group_extended"/>
+                    <field name="categ_id" operator="child_of" groups="base.group_extended" context="{'show_categ': True}"/>
                     <field name="supplier_id" domain="[('supplier', '=', True)]" context="{'partner_name': self}"/>
                     <field name="supplier_code" />
                 </field>
