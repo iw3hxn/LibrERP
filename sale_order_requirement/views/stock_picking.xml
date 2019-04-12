@@ -14,6 +14,20 @@
             </field>
         </record>
 
+        <record id="view_stock_picking_tree" model="ir.ui.view">
+            <field name="name">stock.picking.order.board.tree.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock_picking_extended.view_stock_picking_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="picked_rate" position="before">
+                    <field name="sale_id" invisible="0"/>
+                    <field name="purchase_orders_approved"/>
+                    <field name="purchase_orders_state"/>
+                </field>
+            </field>
+        </record>
+
         <record id="view_stock_picking_form" model="ir.ui.view">
             <field name="name">stock.picking.order.board.form.inherit</field>
             <field name="model">stock.picking</field>
@@ -22,16 +36,22 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='product_id']"
                        position="before">
-                    <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in"/>
-                    <button name="print_bom_explode" string="Print BOM" type="object" icon="gtk-print"/>
-                    <button name="print_production_order" string="Print All production Order" type="object" help="Print All production Order"
+                    <field name="production_order_ids" invisible="1"/>
+                    <field name="has_bom" invisible="1"/>
+                    <button name="action_view_bom" string="Open BOM" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('has_bom','=',False)]}"/>
+                    <button name="print_bom_explode" string="Print BOM" type="object" icon="gtk-print" attrs="{'invisible': [('has_bom','=',False)]}"/>
+                    <button name="print_production_order" string="Print All production Order" type="object" help="Print All production Order" attrs="{'invisible': [('production_order_ids','=',False)]}"
                             icon="gtk-print"/>
-
                 </xpath>
                 <xpath expr="//page[@string='Moves']/field[@name='move_lines']/tree/field[@name='goods_ready']" position="after">
                     <field name="sale_id" invisible="0"/>
                     <field name="purchase_orders_approved"/>
                     <field name="purchase_orders_state"/>
+                    <field name="production_order_state" />
+                </xpath>
+                <xpath expr="//page[@string='Moves']/field[@name='move_lines']/form/field[@name='note']" position="after">
+                    <separator string="Production Order" colspan="4"/>
+                    <field name="production_order_ids" nolabel="1" colspan="4"/>
                 </xpath>
             </field>
         </record>
@@ -69,6 +89,7 @@
                 <field name="line_price_subtotal" position="before">
                     <field name="purchase_orders_approved" />
                     <field name="purchase_orders_state" />
+                    <field name="production_order_state" />
                 </field>
             </field>
         </record>

@@ -2,9 +2,10 @@
 # © 2017 Antonio Mignolli - Didotech srl (www.didotech.com)
 
 import netsvc
+import logging
 from osv import osv
 from tools.translate import _
-
+_logger = logging.getLogger(__name__)
 from openerp.osv import orm, fields
 
 
@@ -29,21 +30,14 @@ class StockMove(orm.Model):
             order_requirement_line_obj = self.pool['order.requirement.line']
             wf_service = netsvc.LocalService("workflow")
             for stock_move in self.browse(cr, uid, stock_move_ids, context):
-                sale_id = stock_move.sale_id and stock_move.sale_id.id or False
-                sale_order_line_id = stock_move.sale_line_id and stock_move.sale_line_id.id or False
-                if sale_id and sale_order_line_id:
-                    order_requirement_line_ids = order_requirement_line_obj.search(cr, uid, [
-                        ('sale_order_line_id', '=', sale_order_line_id)], context=context)
-                    for order_requirement_line in order_requirement_line_obj.browse(cr, uid, order_requirement_line_ids,
-                                                                                    context):
-                        for temp in order_requirement_line.temp_mrp_bom_ids:
-                            mrp_production = temp.mrp_production_id or False
-                            if mrp_production and mrp_production.state != 'done':
-                                wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'button_confirm', cr)
-                                wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'force_production', cr)
-                                wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'button_produce', cr)
-                                mrp_production_obj.action_produce(cr, uid, mrp_production.id, mrp_production.product_qty,
-                                                                  'consume_produce', context=context)
+                for mrp_production in stock_move.production_order_ids:
+
+                    if mrp_production and mrp_production.state != 'done':
+                        wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'button_confirm', cr)
+                        wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'force_production', cr)
+                        wf_service.trg_validate(uid, 'mrp.production', mrp_production.id, 'button_produce', cr)
+                        mrp_production_obj.action_produce(cr, uid, mrp_production.id, mrp_production.product_qty,
+                                                          'consume_produce', context=context)
             return True
         return False
 
@@ -126,7 +120,7 @@ class StockMove(orm.Model):
                 if tot > 0:
                     state_str = '%d/%d' % (done, tot)
             except Exception as e:
-                print '_purchase_orders_approved ' + e.message
+                _logger.error('_purchase_orders_approved ' + e.message)
                 state_str = ''
             res[line.id] = state_str
         return res
@@ -150,9 +144,9 @@ class StockMove(orm.Model):
                     tot += t
                 state_str = ''
                 if tot > 0:
-                    state_str = '%d/%d' % (done, tot)
+                    state_str = '{0}/{1}'.format(done, tot)
             except Exception as e:
-                print '_purchase_orders_state ' + e.message
+                _logger.error('_purchase_orders_state ' + e.message)
                 state_str = ''
             res[line.id] = state_str
 
@@ -163,8 +157,7 @@ class StockMove(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         ordreqline_obj = self.pool['order.requirement.line']
         res = {}
-        lines = self.browse(cr, uid, ids, context=context)
-        for line in lines:
+        for line in self.browse(cr, uid, ids, context=context):
             state_str = ''
             purchase_orders_state = ''
 
@@ -190,13 +183,13 @@ class StockMove(orm.Model):
                     tot_approved += t_approved
 
                 if tot > 0:
-                    purchase_orders_state = '%d/%d' % (done, tot)
+                    purchase_orders_state = '{0}/{1}'.format(done, tot)
 
                 if tot_approved > 0:
-                    state_str = '%d/%d' % (done_approved, tot_approved)
+                    state_str = '{0}/{1}'.format(done_approved, tot_approved)
 
             except Exception as e:
-                print '_purchase_orders_state ' + e.message
+                _logger.error('_purchase_orders_state ' + e.message)
                 purchase_orders_state = ''
                 state_str = ''
 
@@ -205,6 +198,49 @@ class StockMove(orm.Model):
                 'purchase_orders_state': purchase_orders_state
             }
 
+        return res
+
+    def _has_bom(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for move in self.browse(cr, uid, ids, context=context):
+            try:
+                has_bom = bool(move.product_id.bom_ids)
+            except Exception as e:
+                _logger.error(e)
+                has_bom = False
+            res[move.id] = has_bom
+        return res
+
+    def _get_production_order(self, cr, uid, ids, name, args, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        order_requirement_line_obj = self.pool['order.requirement.line']
+
+        for stock_move in self.browse(cr, uid, ids, context):
+            mrp_production_ids = []
+            sale_id = stock_move.sale_id and stock_move.sale_id.id or False
+            sale_order_line_id = stock_move.sale_line_id and stock_move.sale_line_id.id or False
+            done = 0
+            tot = 0
+            state_str = ''
+            if sale_id and sale_order_line_id:
+                order_requirement_line_ids = order_requirement_line_obj.search(cr, uid, [('sale_order_line_id', '=', sale_order_line_id)], context=context)
+                for order_requirement_line in order_requirement_line_obj.browse(cr, uid, order_requirement_line_ids, context):
+                    for temp in order_requirement_line.temp_mrp_bom_ids:
+                        mrp_production = temp.mrp_production_id or False
+                        if mrp_production:
+                            tot += 1
+                            mrp_production_ids.append(mrp_production.id)
+                            if mrp_production.state == 'done':
+                                done += 1
+            if tot > 0:
+                state_str = '{0}/{1}'.format(done, tot)
+
+            res[stock_move.id] = {
+                'production_order_ids': list(set(mrp_production_ids)),
+                'production_order_state': state_str
+            }
         return res
 
     _columns = {
@@ -216,10 +252,15 @@ class StockMove(orm.Model):
         'purchase_orders_approved': fields.function(_purchase_orders, method=True, type='char', size=128, multi="purchase_orders",
                                                     string='Purch. orders approved', readonly=True),
         'purchase_orders_state': fields.function(_purchase_orders, method=True, type='char', size=128,  multi="purchase_orders",
-                                                 string='Deliveries', readonly=True),
+                                                 string='Incoming Deliveries', readonly=True),
+        'production_order_ids': fields.function(_get_production_order, type='one2many', relation='mrp.production', method=True, string='Production Orders', multi="production_order"),
+        'production_order_state': fields.function(_get_production_order, type='char', size=128, method=True, string='Production Order', multi="production_order"),
+
         'product_bom_ids': fields.related(
             'sale_line_id', 'order_requirement_line_id', 'temp_mrp_bom_ids', 'product_id',
             string='Product BOM', relation='product.product', type='many2one'),
+        'has_bom': fields.function(_has_bom, method=True, type='boolean', string='Product has bom?', readonly=True),
+
     }
 
     def print_production_order(self, cr, uid, ids, context):

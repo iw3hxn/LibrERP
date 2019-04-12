@@ -325,6 +325,7 @@ msgstr "Ord. produzione"
 #: field:order.requirement,purchase_orders_approved:0
 #: field:order.requirement.line,purchase_orders_approved:0
 #: field:stock.move,purchase_orders_approved:0
+#: field:stock.picking,purchase_orders_approved:0
 msgid "Purch. orders approved"
 msgstr "Ord. acquisto approvati"
 
@@ -332,8 +333,14 @@ msgstr "Ord. acquisto approvati"
 #: field:order.requirement,purchase_orders_state:0
 #: field:order.requirement.line,purchase_orders_state:0
 #: field:stock.move,purchase_orders_state:0
-msgid "Deliveries"
+#: field:stock.picking,purchase_orders_state:0
+msgid "Incoming Deliveries"
 msgstr "Materiale Arrivato"
+
+#. module: sale_order_requirement
+#: field:stock.move,production_order_ids:0
+msgid "Production Orders"
+msgstr "Ordini di Produzione"
 
 #. module: sale_order_requirement
 #: field:order.requirement.line,stock_availability:0
@@ -568,7 +575,9 @@ msgstr "Nota Ordine"
 
 #. module: sale_order_requirement
 #: field:sale.order,mrp_production_ids:0
+#: field:stock.move,production_order_state:0
 #: view:sale.order:0
+#: view:stock.move:0
 msgid "Production Order"
 msgstr "Ordini di Produzione"
 
