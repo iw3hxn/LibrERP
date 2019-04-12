@@ -30,8 +30,9 @@ class sale_order_line(orm.Model):
     _columns = {
         'mrp_bom': fields.one2many('sale.order.line.mrp.bom', 'order_id', 'Bom Lines', readonly=True, states={'draft': [('readonly', False)]}),
         'with_bom': fields.boolean(string='With BOM'),
+        'cost_price_unit_rounting': fields.float('Cost Price Routing', digits_compute=dp.get_precision('Purchase Price')),
     }
-    
+
     _defaults = {
         'with_bom': False,
     }
@@ -61,6 +62,7 @@ class sale_order_line(orm.Model):
         # if not isinstance(ids, list):
         #     ids = [ids]
         if product_id:
+            uom_obj = self.pool['product.uom']
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
             sequence = 0
             if product.bom_lines:
@@ -95,6 +97,16 @@ class sale_order_line(orm.Model):
                             line_bom = self._get_mrp_bom_value(cr, uid, ids, bom_line, price_unit, sequence, context)
 
                             result['value']['mrp_bom'].append(line_bom)
+                price = 0
+                if mrp_bom.routing_id and not context.get('exclude_routing', False):
+                    for wline in mrp_bom.routing_id.workcenter_lines:
+                        wc = wline.workcenter_id
+                        cycle = wline.cycle_nbr
+                        # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
+                        price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
+                price /= mrp_bom.product_qty
+                price = uom_obj._compute_price(cr, uid, mrp_bom.product_uom.id, price, mrp_bom.product_id.uom_id.id)
+                result['value']['cost_price_unit_rounting'] = price
             else:
                 result['value'].update(
                     {'with_bom': False,
@@ -109,7 +121,7 @@ class sale_order_line(orm.Model):
         # {'value': result, 'domain': domain, 'warning': warning}
         return result
 
-    def onchange_mrp_bom(self, cr, uid, ids, product_id, mrp_bom, context=None):
+    def onchange_mrp_bom(self, cr, uid, ids, product_id, mrp_bom, cost_price_unit_rounting, context=None):
 
         if not mrp_bom:
             return {'value': {}}
@@ -127,20 +139,7 @@ class sale_order_line(orm.Model):
             for line_bom in self.pool['sale.order.line.mrp.bom'].browse(cr, uid, no_change_line_id, context):
                 price += line_bom.price_subtotal
 
-        res = {'purchase_price': price}
-
-        if product_id:
-            product_rules = super(sale_order_line, self).product_id_change(cr, uid, ids, context.get('pricelist_id'), product_id, qty=0,
-                              uom=False, qty_uos=0, uos=False, name='', partner_id=context.get('partner_id'),
-                              lang=False, update_tax=False, date_order=context.get('date_order', False),
-                              packaging=False, fiscal_position=context.get('fiscal_position', False), flag=False, context=context).get('value', {}).get('rules')
-            if product_rules:
-                rule = self.pool['product.pricelist.item'].browse(cr, uid, product_rules, context)
-                if rule.base == -4:
-                    price *= (1.0 + (rule.price_discount or 0.0))
-                    res.update(price_unit=price)
-                    # if rule.price_round:
-                    #     price = tools.float_round(price, precision_rounding=rule.price_round)
+        res = {'purchase_price': price + cost_price_unit_rounting}
 
                     # convert_to_price_uom = (lambda price: product_uom_obj._compute_price(
                     #     cr, uid, product.uom_id.id,

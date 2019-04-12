@@ -35,8 +35,8 @@ class sale_order_line_mrp_bom(orm.Model):
         'product_uom_qty': fields.float('Quantity (UoM)', digits_compute=dp.get_precision('Product UoS'), required=True),
         'product_uom': fields.many2one('product.uom', 'Unit of Measure ', required=True),
         'sequence': fields.integer('Sequence', help="Gives the sequence order when displaying a list of sales order lines."),
-        'price_unit': fields.float('Unit Price', required=True, digits_compute=dp.get_precision('Sale Price')),
-        'price_subtotal': fields.float('Subtotal', required=True, digits_compute=dp.get_precision('Sale Price')),
+        'price_unit': fields.float('Unit Price', required=True, digits_compute=dp.get_precision('Purchase Price')),
+        'price_subtotal': fields.float('Subtotal', required=True, digits_compute=dp.get_precision('Purchase Price')),
     }
     
     _order = 'sequence, id'
