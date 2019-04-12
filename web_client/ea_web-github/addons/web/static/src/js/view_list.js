@@ -1301,7 +1301,7 @@ openerp.web.ListView.Groups = openerp.web.Class.extend( /** @lends openerp.web.L
             }
             self.indent($group_column, group.level);
             // count column
-            $('<td>').text(group.length).appendTo($row);
+            //$('<td>').text(group.length).appendTo($row);
 
             if (self.options.selectable) {
                 $row.append('<td>');
