@@ -1238,7 +1238,8 @@ label.error {
 }
 .openerp .oe-listview .oe-group-name,
 .openerp .oe-listview .oe-group-pagination {
-    white-space: nowrap;
+    background-color: #eeeeee;
+   /* white-space: nowrap; */
 }
 
 .openerp .oe-listview tfoot td {
