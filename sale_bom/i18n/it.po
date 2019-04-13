@@ -99,3 +99,8 @@ msgstr "Subtotale"
 #: model:ir.model,name:sale_bom.model_sale_order_line
 msgid "Sales Order Line"
 msgstr "Linea ordine di vendita"
+
+#. module: sale_bom
+#: field:sale.order.line,cost_price_unit_routing
+msgid "Cost Price Routing"
+msgstr "Prezzo di Costo Routing"

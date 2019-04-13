@@ -30,7 +30,7 @@ class sale_order_line(orm.Model):
     _columns = {
         'mrp_bom': fields.one2many('sale.order.line.mrp.bom', 'order_id', 'Bom Lines', readonly=True, states={'draft': [('readonly', False)]}),
         'with_bom': fields.boolean(string='With BOM'),
-        'cost_price_unit_rounting': fields.float('Cost Price Routing', digits_compute=dp.get_precision('Purchase Price')),
+        'cost_price_unit_routing': fields.float('Cost Price Routing', digits_compute=dp.get_precision('Purchase Price'), readonly=True, states={'draft': [('readonly', False)]}),
     }
 
     _defaults = {
@@ -106,7 +106,7 @@ class sale_order_line(orm.Model):
                         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
                 price /= mrp_bom.product_qty
                 price = uom_obj._compute_price(cr, uid, mrp_bom.product_uom.id, price, mrp_bom.product_id.uom_id.id)
-                result['value']['cost_price_unit_rounting'] = price
+                result['value']['cost_price_unit_routing'] = price
             else:
                 result['value'].update(
                     {'with_bom': False,
@@ -121,7 +121,7 @@ class sale_order_line(orm.Model):
         # {'value': result, 'domain': domain, 'warning': warning}
         return result
 
-    def onchange_mrp_bom(self, cr, uid, ids, product_id, mrp_bom, cost_price_unit_rounting, context=None):
+    def onchange_mrp_bom(self, cr, uid, ids, product_id, mrp_bom, cost_price_unit_routing, context=None):
 
         if not mrp_bom:
             return {'value': {}}
@@ -139,7 +139,7 @@ class sale_order_line(orm.Model):
             for line_bom in self.pool['sale.order.line.mrp.bom'].browse(cr, uid, no_change_line_id, context):
                 price += line_bom.price_subtotal
 
-        res = {'purchase_price': price + cost_price_unit_rounting}
+        res = {'purchase_price': price + cost_price_unit_routing}
 
                     # convert_to_price_uom = (lambda price: product_uom_obj._compute_price(
                     #     cr, uid, product.uom_id.id,
