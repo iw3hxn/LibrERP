@@ -1,0 +1,121 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_banking_sepa_direct_debit
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-07 11:32+0000\n"
+"PO-Revision-Date: 2019-04-07 11:32+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_banking_sepa_direct_debit
+#: model:ir.model,name:account_banking_sepa_direct_debit.model_riba_file_export
+msgid "riba.file.export"
+msgstr "riba.file.export"
+
+#. module: account_banking_sepa_direct_debit
+#: code:addons/account_banking_sepa_direct_debit/models/inherit_riba_file_export.py:126
+#, python-format
+msgid "The SEPA Direct Debit mandate with reference '%s' for partner '%s' has expired."
+msgstr "Il mandato SEPA con numero '%s' per il partner '%s' è scaduto."
+
+#. module: account_banking_sepa_direct_debit
+#: field:riba.configurazione,PrvtId:0
+msgid "Identificativo creditore"
+msgstr "Identificativo creditore"
+
+#. module: account_banking_sepa_direct_debit
+#: model:ir.actions.act_window,name:account_banking_sepa_direct_debit.action_sdd_da_emettere
+#: model:ir.ui.menu,name:account_banking_sepa_direct_debit.menu_sdd_da_emettere
+msgid "Issue SDD"
+msgstr "Emetti SDD"
+
+#. module: account_banking_sepa_direct_debit
+#: field:account.move.line,sdd:0
+#: field:account.payment.term,sdd:0
+#: field:riba.configurazione,sdd:0
+#: field:riba.distinta,sdd:0
+msgid "SDD"
+msgstr "SDD"
+
+#. module: account_banking_sepa_direct_debit
+#: model:ir.model,name:account_banking_sepa_direct_debit.model_riba_configurazione
+msgid "Parametri di configurazione per le Ricevute Bancarie"
+msgstr "Parametri di configurazione per le Ricevute Bancarie"
+
+#. module: account_banking_sepa_direct_debit
+#: field:riba.distinta.line,mandate_id:0
+msgid "Mandate"
+msgstr "Mandate"
+
+#. module: account_banking_sepa_direct_debit
+#: model:ir.model,name:account_banking_sepa_direct_debit.model_account_move_line
+msgid "Journal Items"
+msgstr "Voci sezionale"
+
+#. module: account_banking_sepa_direct_debit
+#: constraint:account.move.line:0
+msgid "You can not create journal items on an account of type view."
+msgstr "Non è possibile effettuare registrazioni su un conto di tipo vista."
+
+#. module: account_banking_sepa_direct_debit
+#: code:addons/account_banking_sepa_direct_debit/models/inherit_riba_file_export.py:117
+#: code:addons/account_banking_sepa_direct_debit/models/inherit_riba_file_export.py:125
+#: code:addons/account_banking_sepa_direct_debit/models/inherit_riba_file_export.py:135
+#, python-format
+msgid "Error:"
+msgstr "Error:e"
+
+#. module: account_banking_sepa_direct_debit
+#: model:ir.model,name:account_banking_sepa_direct_debit.model_riba_distinta
+msgid "Distinta Riba"
+msgstr "Distinta Riba"
+
+#. module: account_banking_sepa_direct_debit
+#: model:ir.model,name:account_banking_sepa_direct_debit.model_riba_distinta_line
+msgid "Riba details"
+msgstr "Dettagli Ri.Ba."
+
+#. module: account_banking_sepa_direct_debit
+#: code:addons/account_banking_sepa_direct_debit/models/inherit_riba_file_export.py:118
+#, python-format
+msgid "Missing SEPA Direct Debit mandate on the payment line with partner '%s' and Invoice ref '%s'."
+msgstr "Missing SEPA Direct Debit mandate on the payment line with partner '%s' and Invoice ref '%s'."
+
+#. module: account_banking_sepa_direct_debit
+#: code:addons/account_banking_sepa_direct_debit/models/inherit_riba_file_export.py:136
+#, python-format
+msgid "The mandate with reference '%s' for partner '%s' has type set to 'One-Off' and it has a last debit date set to '%s', so we can't use it."
+msgstr "The mandate with reference '%s' for partner '%s' has type set to 'One-Off' and it has a last debit date set to '%s', so we can't use it."
+
+#. module: account_banking_sepa_direct_debit
+#: constraint:account.move.line:0
+msgid "You can not create journal items on closed account."
+msgstr "You can not create journal items on closed account."
+
+#. module: account_banking_sepa_direct_debit
+#: sql_constraint:account.payment.term:0
+msgid "The code must be unique"
+msgstr "Il codice categoria deve essere univoco"
+
+#. module: account_banking_sepa_direct_debit
+#: model:ir.model,name:account_banking_sepa_direct_debit.model_account_payment_term
+msgid "Payment Term"
+msgstr "Termine di pagamento"
+
+#. module: account_banking_sepa_direct_debit
+#: constraint:account.move.line:0
+msgid "The selected account of your Journal Entry forces to provide a secondary currency. You should remove the secondary currency on the account or select a multi-currency view on the journal."
+msgstr "The selected account of your Journal Entry forces to provide a secondary currency. You should remove the secondary currency on the account or select a multi-currency view on the journal."
+
+#. module: account_banking_sepa_direct_debit
+#: constraint:account.move.line:0
+msgid "The date of your Journal Entry is not in the defined period! You should change the date or remove this constraint from the journal."
+msgstr "The date of your Journal Entry is not in the defined period! You should change the date or remove this constraint from the journal."
