@@ -23,11 +23,11 @@
 from datetime import datetime
 
 import decimal_precision as dp
-from openerp.osv import osv, fields
+from openerp.osv import orm, fields
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
-class mrp_bom(osv.Model):
+class mrp_bom(orm.Model):
     _inherit = 'mrp.bom'
 
     def _compute_list_price(self, cr, uid, ids, field_name, arg, context=None):
@@ -36,10 +36,11 @@ class mrp_bom(osv.Model):
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             cost_price = line.product_id.cost_price
-            qty = uom_obj._compute_qty(cr, uid,
-                                       from_uom_id=line.product_uom.id,
-                                       qty=line.product_qty,
-                                       to_uom_id=line.product_id.uom_po_id.id)
+            if line.product_uom.category_id.id != line.product_id.uom_id.category_id.id:
+                uos_coeff = line.product_id.uos_coeff or 1
+                qty = line.product_qty / uos_coeff
+            else:
+                qty = uom_obj._compute_qty(cr, uid, from_uom_id=line.product_uom.id, qty=line.product_qty, to_uom_id=line.product_id.uom_id.id)
             res[line.id] = {
                 'cost_price': cost_price,
                 'bom_cost_price': cost_price * qty,
