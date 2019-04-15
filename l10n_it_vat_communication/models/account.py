@@ -659,7 +659,7 @@ class commitment_line(orm.AbstractModel):
                 fields['xml_Error'] += _('No tax Nature')
             elif line.tax_nature and line.tax_nature == 'N6' and not line.tax_rate:
                 if line.invoice_id.type in ('in_invoice', 'in_refund'):
-                    fields['xml_Error'] += """la natura N6 -
+                    fields['xml_Error'] += u"""la natura N6 -
         Reverse Charge è compatibile solo con l'aliquota diversa da 0 per le
         fatture ricevute"""
             result = {}
