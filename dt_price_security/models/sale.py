@@ -122,9 +122,10 @@ class sale_order_line(orm.Model):
 
         pricelist = self.get_order_pricelist(cr, uid, line_id, vals, context=context)
         
-        if discount:
+        if discount and pricelist:
             restriction_obj = self.pool['price_security.discount_restriction']
             restriction_obj.check_discount_with_restriction(cr, uid, discount, pricelist.id, company_id, context=context)
+        return True
         
     def get_order_pricelist(self, cr, uid, line_id, vals, context=None):
         if context is None:
