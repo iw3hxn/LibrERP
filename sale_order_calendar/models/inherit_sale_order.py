@@ -20,10 +20,11 @@ class sale_order(orm.Model):
     def copy(self, cr, uid, id, default=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         default = default or {}
-        default.update({
-            'date_action_next': False,
-            'next_activity_id': False
-        })
+        if not context.get('versioning', False):
+            default.update({
+                'date_action_next': False,
+                'next_activity_id': False
+            })
         return super(sale_order, self).copy(cr, uid, id, default, context)
 
 
