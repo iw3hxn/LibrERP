@@ -768,3 +768,9 @@ msgstr "Partner %s senza provincia nell'indirizzo"
 #, python-format
 msgid "No tax Nature"
 msgstr "\n Manca la Natura della Tassa"
+
+#. module: l10n_it_vat_communication
+#: code:addons/l10n_it_vat_communication/wizard/add_period.py:29
+#, python-format
+msgid "Period %s is already associated to commitment"
+msgstr "Il periodo %s è già associato alla comunicazione"
