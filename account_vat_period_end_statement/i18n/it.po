@@ -694,3 +694,8 @@ msgstr "statement.generic.account.line"
 msgid "wizard.vat.settlement"
 msgstr "wizard.vat.settlement"
 
+#. module: account_vat_period_end_statement
+#: code:addons/account_vat_period_end_statement/models/account.py:432
+#, python-format
+msgid "You cannot delete a confirmed or paid statement"
+msgstr "Non si può cancellare una liquidazione confermata o pagata"
