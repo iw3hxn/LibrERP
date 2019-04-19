@@ -240,6 +240,7 @@ class AccountVatCommunication(orm.Model):
         for invoice in invoice_model.browse(cr, uid, invoice_ids, context):
             partner = invoice.partner_id
             if not partner.vat and not partner.cf:
+                _logger.error(u'{0} without'.format(partner.name))
                 continue
             inv_line = {}
             ait_obj = self.pool['account.invoice.tax']
@@ -294,7 +295,8 @@ class AccountVatCommunication(orm.Model):
                                     continue
                                 if child.tax_code_id.exclude_from_registries:
                                     continue
-                                tax_rate += child.amount
+                                if child.amount > 0:
+                                    tax_rate += child.amount
                         if tax_rate:
                             tax_nodet_rate = 1 - (tax.amount / tax_rate)
                         else:
