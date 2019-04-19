@@ -362,13 +362,13 @@ class account_invoice(orm.Model):
                         else:
                             return False
                     if invoice.fiscal_position.amount:
-                        plafond_amount = invoice.fiscal_position.amount - invoice.fiscal_position.invoice_amount - invoice.amount_untaxed
+                        plafond_amount = round(invoice.fiscal_position.amount - invoice.fiscal_position.invoice_amount - invoice.amount_untaxed)
                         if plafond_amount < 0:
                             if show_except:
                                 raise orm.except_orm(_('Invoice'),
                                                  _(
-                                                     'Impossible to Validate, fiscal position {fiscal} is overdue').format(
-                                                     fiscal=invoice.fiscal_position.name))
+                                                     'Impossible to Validate, fiscal position {fiscal} is overdue for amount {amount}').format(
+                                                     fiscal=invoice.fiscal_position.name, amount=plafond_amount))
                             else:
                                 return False
 

@@ -10842,6 +10842,12 @@ msgstr "Impossibile da Emettere. C'è la posizione fiscale {fiscal} scaduta"
 #. module: l10n_it_account
 #: code:addons/l10n_it_account/account/invoice.py:212
 #, python-format
+msgid "Impossible to Validate, fiscal position {fiscal} is overdue for amount {amount}"
+msgstr "Impossibile da Emettere. C'è la posizione fiscale {fiscal} scaduta per un impodibile di {amount}"
+
+#. module: l10n_it_account
+#: code:addons/l10n_it_account/account/invoice.py:212
+#, python-format
 msgid "Impossible to Proforma, need to cancel Internal Number {number}"
 msgstr "Impossibile da emettere la Proforma. Bisogna bisogna prima cancellare il 'FORZA NUMERO' {number}"
 
