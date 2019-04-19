@@ -3,7 +3,7 @@
 
 {
     'name': "Wizard Modifica Ordini Service",
-    'version': '3.0.1.4',
+    'version': '3.0.2.4',
     'category': 'Sales Management',
     'description': """Wizard per la modifica di sale order consegnati,
     solo per i prodotti di tipo service.

@@ -100,7 +100,7 @@ class wizard_modifyorder(orm.TransientModel):
                 line.write({'line_id': line_id})
         if wizard.order_id.picking_ids:
             for picking in order.picking_ids:
-                if picking.address_delivery_id.id != wizard.partner_shipping_id.id:
+                if wizard.order_id.partner_shipping_id.id != wizard.partner_shipping_id.id:
                     if hasattr(picking, 'ddt_number') and not picking.ddt_number:
                         picking.write({
                             'address_delivery_id': wizard.partner_shipping_id.id
