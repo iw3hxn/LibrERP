@@ -240,8 +240,8 @@ class AccountVatCommunication(orm.Model):
         for invoice in invoice_model.browse(cr, uid, invoice_ids, context):
             partner = invoice.partner_id
             if not partner.vat and not partner.cf:
-                _logger.error(u'{0} without'.format(partner.name))
-                continue
+                _logger.error(u'{0} without vat'.format(partner.name))
+                # continue
             inv_line = {}
             ait_obj = self.pool['account.invoice.tax']
 
@@ -705,6 +705,10 @@ class commitment_line(orm.AbstractModel):
             vat = partner.vat.replace(' ', '').upper()
             res['xml_IdPaese'] = vat and vat[0:2] or ''
             res['xml_IdCodice'] = vat and vat[2:] or ''
+        else:
+            res['xml_IdPaese'] = partner.country and partner.country.code or 'OO'
+            res['xml_IdCodice'] = '99999999999' or ''
+
         res['xml_Nazione'] = address.country_id.code or res.get('xml_IdPaese')
         if not res.get('xml_Nazione'):
             self._get_error(_('Unknow country of %s') % partner.name, context)

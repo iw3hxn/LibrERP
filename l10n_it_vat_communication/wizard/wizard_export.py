@@ -156,6 +156,11 @@ class WizardVatCommunication(orm.TransientModel):
                     _('Internal error: invalid partner selector'))
 
         if fields.get('xml_Nazione'):
+            if len(fields['xml_Nazione']) != 2:
+                raise orm.except_orm(
+                    _('Error!'),
+                    _('Country Code \'{code}\' is wrong for partner {partner}').format(code=fields['xml_Nazione'], partner=fields.get('xml_Denominazione'))
+                )
             sede.Nazione = fields['xml_Nazione']
         else:
             raise orm.except_orm(
