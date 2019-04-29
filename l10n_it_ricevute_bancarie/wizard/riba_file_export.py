@@ -283,8 +283,8 @@ class riba_file_export(orm.TransientModel):
             arrayRiba.append(Riba)
 
         out = base64.encodestring(self._creaFile(array_testata, arrayRiba).encode("iso-8859-1"))
-
-        return self.write(cr, uid, ids, {'state': 'get', 'riba_.txt': out}, context=context)
+        file_name = '{0}.txt'.format(order_obj.name.replace(' ', '').replace('/', '_'))
+        return self.write(cr, uid, ids, {'state': 'get', 'riba_export_file': out, 'riba_export_name': file_name}, context=context)
 
     _name = "riba.file.export"
 
@@ -292,7 +292,8 @@ class riba_file_export(orm.TransientModel):
         'state': fields.selection((('choose', 'choose'),  # choose accounts
                                    ('get', 'get'),        # get the file
                                    )),
-        'riba_.txt': fields.binary('File', readonly=True),
+        'riba_export_file': fields.binary('File', readonly=True),
+        'riba_export_name': fields.char('File Name', readonly=True)
     }
     _defaults = {
         'state': lambda *a: 'choose',
