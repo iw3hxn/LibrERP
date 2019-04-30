@@ -313,7 +313,7 @@
             <field name="arch" type="xml">
                 <form string="Move">
                     <field name="product_id" readonly="1"/>
-                    <field name="picking_id" readonly="1"/>
+                    <field name="picking_id" readonly="1" context="{'form_view_ref': 'stock_picking_extended.view_stock_picking_form'}"/>
                     <field name="product_qty" readonly="1"/>
                     <field name="sale_id" readonly="1"/>
                     <field name="state"/>
@@ -331,6 +331,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Line Order Board">
+                    <button name="action_view_order_board" string="Open Order Board" type="object" icon="gtk-zoom-in" />
                     <field name="picking_id" />
                     <field name="sale_id" />
                     <field name="minimum_planned_date"/>

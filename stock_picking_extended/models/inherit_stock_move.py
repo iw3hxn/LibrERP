@@ -152,3 +152,33 @@ class stock_move(orm.Model):
         'location_id': _default_journal_location_source,
         'location_dest_id': _default_journal_location_destination,
     }
+
+    def action_view_order_board(self, cr, uid, ids, context=None):
+        '''
+        This function returns an action that display existing delivery orders
+        of given sales order ids. It can either be a in a list or in a form
+        view, if there is only one delivery order to show.
+        '''
+
+        mod_obj = self.pool.get('ir.model.data')
+        act_obj = self.pool.get('ir.actions.act_window')
+
+        result = mod_obj.get_object_reference(cr, uid, 'stock_picking_extended', 'action_view_stock_picking')
+        id = result and result[1] or False
+        result = act_obj.read(cr, uid, [id], context=context)[0]
+
+        # compute the number of delivery orders to display
+        pick_ids = []
+        for move in self.browse(cr, uid, ids, context=context):
+            pick_ids += [move.picking_id.id]
+
+        # choose the view_mode accordingly
+        if len(pick_ids) > 1:
+            result['domain'] = "[('id','in',[" + ','.join(map(str, pick_ids)) + "])]"
+        else:
+            res = mod_obj.get_object_reference(cr, uid, 'stock_picking_extended', 'view_stock_picking_form')
+            result['views'] = [(res and res[1] or False, 'form')]
+            result['view_mode'] = 'page'
+            result['res_id'] = pick_ids and pick_ids[0] or False
+        # result['context'] = context
+        return result

@@ -672,3 +672,8 @@ msgstr "Nota nella Riga del DDT"
 #, python-format
 msgid "Is not possible to add product, use only Sale Order"
 msgstr "Non è possibile aggiungere una riga, va fatto solo creando un Ordine di Vendita"
+
+#. module: stock_picking_extended
+#: view:stock.move:0
+msgid "Open Order Board"
+msgstr "Apri Lavagna Ordini"
