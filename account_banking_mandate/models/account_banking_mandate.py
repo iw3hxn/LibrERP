@@ -40,9 +40,9 @@ class Mandate(orm.Model):
             relation='res.partner', string='Partner', readonly=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'unique_mandate_reference': fields.char(
-            'Unique Mandate Reference', size=35, readonly=True),
+            'Unique Mandate Reference', size=35, readonly=True, states={'draft': [('readonly', False)]}),
         'signature_date': fields.date(
-            'Date of Signature of the Mandate', track_visibility='onchange'),
+            'Date of Signature of the Mandate', readonly=True, states={'draft': [('readonly', False)]}),
         'scan': fields.binary('Scan of the Mandate'),
         'last_debit_date': fields.date(
             'Date of the Last Debit', readonly=True),
@@ -52,7 +52,7 @@ class Mandate(orm.Model):
             help="Only valid mandates can be used in a payment line. A "
             "cancelled mandate is a mandate that has been cancelled by "
             "the customer."),
-
+        'recurrent': fields.boolean('Recurrent')
     }
 
     _defaults = {
@@ -61,6 +61,7 @@ class Mandate(orm.Model):
             cr, uid, 'account.banking.mandate', context=context),
         'unique_mandate_reference': '/',
         'state': 'draft',
+        'recurrent': True
     }
 
     _sql_constraints = [(
@@ -129,12 +130,13 @@ class Mandate(orm.Model):
 
     def validate(self, cr, uid, ids, context=None):
         for Mandate in self.browse(cr, uid, ids, context=context):
+            if not Mandate.signature_date:
+                raise orm.except_orm('Mandate Error', _('Missing Signature Date'))
             if Mandate.state != 'draft':
                 raise orm.except_orm('StateError',
                                      _('Mandate should be in draft state'))
             vals = {}
-            if not Mandate.unique_mandate_reference or \
-                    Mandate.unique_mandate_reference == '/':
+            if not Mandate.unique_mandate_reference or Mandate.unique_mandate_reference == '/':
                 vals['unique_mandate_reference'] = \
                     self.pool['ir.sequence'].next_by_code(
                         cr, uid, 'account.banking.mandate')

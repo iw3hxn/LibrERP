@@ -9,9 +9,11 @@ class riba_configurazione(orm.Model):
 
     _columns = {
         'sdd': fields.boolean('SDD'),
-        'PrvtId': fields.char('Identificativo creditore')
+        'PrvtId': fields.char('Identificativo creditore'),
+        'sdd_type': fields.selection((('CORE', 'Core'), ('B2B', 'B2B')), 'Direct debit type'),
     }
 
     _defaults = {
         'sdd': False,
+        'sdd_type': 'CORE'
     }

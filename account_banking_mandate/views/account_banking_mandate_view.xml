@@ -26,6 +26,7 @@
                             <field name="signature_date"/>
 
                             <field name="last_debit_date"/>
+                            <field name="recurrent" />
                         </group>
                         <!--<group name="payment_lines" string="Related Payment Lines">-->
                         <!--<field name="payment_line_ids" nolabel="1"/>-->

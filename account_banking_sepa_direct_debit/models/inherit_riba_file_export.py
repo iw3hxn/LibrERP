@@ -28,29 +28,42 @@ class riba_file_export(orm.TransientModel):
         order_obj = self.pool['riba.distinta'].browse(cr, uid, active_ids, context=context)[0]
         if order_obj.sdd:
             # Create the creditor account from a tuple (ACCOUNT, BANKCODE)
-            creditor = Account(iban=order_obj.config.bank_id.acc_number.replace(' ', ''), name=order_obj.config.bank_id.partner_id.name)
+            iban = order_obj.config.bank_id.acc_number.replace(' ', '')
+            bic = order_obj.config.bank_id.bank.bic
+            creditor = Account(iban=(iban, bic), name=order_obj.config.bank_id.partner_id.name)
             # Assign the creditor id
             creditor.set_creditor_id(order_obj.config.PrvtId)
             # Create a SEPADirectDebit instance of type CORE
-            # sdd = SEPADirectDebit(account=creditor, type='CORE', pain_scheme='pain.008.001.02-CBI-IT')
-            sdd = SEPADirectDebit(account=creditor, type='CORE')
-            # sdd.pain_scheme = 'pain.008.001.02-CBI-IT'
+            sdd = SEPADirectDebit(account=creditor, type=order_obj.config.sdd_type)
+            existing_line = False
             for line in order_obj.line_ids:
+                existing_line = True
                 # Create the debtor account from a tuple (IBAN, BIC)
-                if line.mandate_id.partner_bank_id:
-                    debtor = Account(iban=line.mandate_id.partner_bank_id.acc_number.replace(' ', ''), name=line.partner_id.name)
+                if line.mandate_id and line.mandate_id.partner_bank_id:
+                    iban = line.mandate_id.partner_bank_id.acc_number.replace(' ', '')
+                    bic = line.mandate_id.partner_bank_id.bank.bic
+                    if not bic:
+                        raise orm.except_orm(
+                            'Error',
+                            'Missing BIC for bank for Partner {partner}'.format(partner=line.mandate_id.partner_id.name))
+                    debtor = Account(iban=(iban, bic), name=line.partner_id.name)
                     # For a SEPA direct debit a valid mandate is required
-                    debtor.set_mandate(mref=line.mandate_id.unique_mandate_reference, signed=line.mandate_id.signature_date, recurrent=True)
-                    # Add the transaction
-                    print(line.sequence)
+                    debtor.set_mandate(mref=line.mandate_id.unique_mandate_reference, signed=line.mandate_id.signature_date, recurrent=line.mandate_id.recurrent)
                     sdd.add_transaction(account=debtor, amount=line.amount, purpose=line.invoice_number, eref=u'{0}'.format(str(line.sequence)), due_date=line.due_date)
                 else:
-                    print "pippo"
+                    raise orm.except_orm(
+                        'Error',
+                        'Missing Mandate')
+
+            if not existing_line:
+                raise orm.except_orm(
+                    'Error',
+                    'No Line for export')
 
             # Render the SEPA document
             out = base64.encodestring(sdd.render().encode("iso-8859-1"))
-
-            return self.write(cr, uid, ids, {'state': 'get', 'riba_.txt': out}, context=context)
+            file_name = '{0}.xml'.format(order_obj.name.replace(' ', '').replace('/', '_'))
+            return self.write(cr, uid, ids, {'state': 'get', 'riba_export_file': out, 'riba_export_name': file_name}, context=context)
         else:
             return super(riba_file_export, self).act_getfile(cr, uid, ids, context)
 
@@ -60,7 +73,6 @@ class riba_file_export(orm.TransientModel):
         sepa_export = self.browse(cr, uid, ids[0], context=context)
         # Get country id for any customization
         country_id, country_code = self.pool['res.company']._get_country(cr, uid, sepa_export.payment_order_ids[0].company_id.id)
-
 
         pain_flavor = sepa_export.payment_order_ids[0].mode.type.code
         pain_name = sepa_export.payment_order_ids[0].mode.type.name

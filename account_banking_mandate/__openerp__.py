@@ -9,7 +9,7 @@
 {
     'name': 'Account Banking Mandate',
     'summary': 'Banking mandates',
-    'version': '7.0.0.2.1',
+    'version': '7.0.1.2.1',
     'license': 'AGPL-3',
     'author': "Compassion CH, Odoo Community Association (OCA), "
               "Odoo Italia Associazione",
