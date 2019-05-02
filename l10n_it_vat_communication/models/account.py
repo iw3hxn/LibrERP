@@ -726,7 +726,7 @@ class commitment_line(orm.AbstractModel):
         elif res.get('xml_IdPaese', '') == 'IT':
             # res['xml_CodiceFiscale'] = res['xml_IdCodice']
             pass
-        elif not partner.vat:
+        elif not res.get('xml_IdCodice', False):
             res['xml_CodiceFiscale'] = '99999999999'
         if res.get('xml_CodiceFiscale'):
             if len(res['xml_CodiceFiscale']) not in [11, 16]:
