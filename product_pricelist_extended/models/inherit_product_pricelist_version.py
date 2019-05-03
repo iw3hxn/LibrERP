@@ -3,6 +3,7 @@
 
 import decimal_precision as dp
 from openerp.osv import orm, fields
+import time
 
 
 class ProductPricelistVersion(orm.Model):
@@ -31,41 +32,44 @@ class ProductPricelistVersion(orm.Model):
 
         partner = False
         product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
-        pricelist_versions = self.browse(cr, uid, ids, context)
-        product_pricelist_obj = self.pool.get('product.pricelist')
+        date = time.strftime('%Y-%m-%d')
+        new_ids = self.search(cr, uid, [('id', 'in', ids), '|', ('date_end', '=', False), ('date_end', '>=', date)], context=context)
+        pricelist_versions = self.browse(cr, uid, new_ids, context)
+        product_pricelist_obj = self.pool['product.pricelist']
         if product_id:
             cost_price = product.cost_price
-            res_multi = product_pricelist_obj.price_rule_get_multi(cr, uid,
-                                                               [pricelist_version.pricelist_id.id for
-                                                                pricelist_version in pricelist_versions],
+            pricelist_ids = [pricelist_version.pricelist_id.id for pricelist_version in pricelist_versions]
+            res_multi = product_pricelist_obj.price_rule_get_multi(cr, uid, pricelist_ids,
                                                                products_by_qty_by_partner=[
                                                                    (product, quantity, partner)],
                                                                context=context)[product_id]
         rule_ids = []
-        for pricelist_version in pricelist_versions:
+        for pricelist_version in self.browse(cr, uid, ids, context):
             res[pricelist_version.id] = {
                 'price': 0.0,
-                'price_error': False,
-                'pricelist_rule_id': False,
-                'string_discount': '',
+                'price_uos': 0.0,
                 'row_color': 'black',
+                'pricelist_rule_id': False,
+                'price_error': True,
+                'string_discount': '',
+
                 # 'pricelist_rule_type': ''
             }
 
             pricelist_id = pricelist_version.pricelist_id.id
-            price, rule = res_multi[pricelist_id]
-            uos_coeff = product.uos_coeff or 1
-            res[pricelist_version.id].update({
-                'price': price,
-                'price_uos': price / uos_coeff
-            })
-            if price < cost_price:
-                res[pricelist_version.id]['row_color'] = 'red'
-            if rule:
-                res[pricelist_version.id]['pricelist_rule_id'] = rule
-                rule_ids.append(rule)
-            else:
-                res[pricelist_version.id]['price_error'] = True
+            if pricelist_id in res_multi:
+                res[pricelist_version.id]['price_error'] = False
+                price, rule = res_multi[pricelist_id]
+                uos_coeff = product.uos_coeff or 1
+                res[pricelist_version.id].update({
+                    'price': price,
+                    'price_uos': price / uos_coeff
+                })
+                if price < cost_price:
+                    res[pricelist_version.id]['row_color'] = 'red'
+                if rule:
+                    res[pricelist_version.id]['pricelist_rule_id'] = rule
+                    rule_ids.append(rule)
 
         rules = self.pool['product.pricelist.item'].read(cr, uid, list(set(rule_ids)), ['string_discount'], context=context)
         for pricelist_version in pricelist_versions:
