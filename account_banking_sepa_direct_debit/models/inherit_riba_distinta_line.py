@@ -19,9 +19,7 @@ class riba_distinta_line(orm.Model):
 
     _columns = {
         'mandate_id': fields.function(_get_mandate, method=True, string="Mandate", type="many2one", relation="account.banking.mandate",
-                                      store={
-                                                 'riba.distinta.line': (lambda self, cr, uid, ids, c={}: ids, ['partner_id'], 10),
-                                             }),
+                                      store=False),
 
     }
 

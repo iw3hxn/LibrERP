@@ -6,7 +6,7 @@
 {
     'name': 'Account Banking SEPA Direct Debit',
     'summary': 'Create SEPA files for Direct Debit',
-    'version': '6.0.2.3.1',
+    'version': '6.0.2.4.1',
     'license': 'AGPL-3',
     'author': "Didotech SRL",
     'website': 'http://www.akretion.com',

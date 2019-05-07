@@ -30,6 +30,10 @@ class riba_file_export(orm.TransientModel):
             # Create the creditor account from a tuple (ACCOUNT, BANKCODE)
             iban = order_obj.config.bank_id.acc_number.replace(' ', '')
             bic = order_obj.config.bank_id.bank.bic
+            if not bic:
+                raise orm.except_orm(
+                    'Error',
+                    'Missing BIC on configuration Bank')
             creditor = Account(iban=(iban, bic), name=order_obj.config.bank_id.partner_id.name)
             # Assign the creditor id
             creditor.set_creditor_id(order_obj.config.PrvtId)
@@ -51,9 +55,14 @@ class riba_file_export(orm.TransientModel):
                     debtor.set_mandate(mref=line.mandate_id.unique_mandate_reference, signed=line.mandate_id.signature_date, recurrent=line.mandate_id.recurrent)
                     sdd.add_transaction(account=debtor, amount=line.amount, purpose=line.invoice_number, eref=u'{0}'.format(str(line.sequence)), due_date=line.due_date)
                 else:
-                    raise orm.except_orm(
-                        'Error',
-                        'Missing Mandate')
+                    if not line.mandate_id:
+                        raise orm.except_orm(
+                            'Error',
+                            'Missing Mandate on line {seq}'.format(seq=line.sequence))
+                    else:
+                        raise orm.except_orm(
+                            'Error',
+                            'Missing Bank on Mandate in line {seq}'.format(seq=line.sequence))
 
             if not existing_line:
                 raise orm.except_orm(
