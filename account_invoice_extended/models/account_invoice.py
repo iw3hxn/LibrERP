@@ -326,5 +326,6 @@ class account_invoice(orm.Model):
             # Deduplicate ids:
             picking_to_write_ids = list(set(picking_to_write_ids))
             stock_picking_obj.write(cr, uid, picking_to_write_ids, {'invoice_state': '2binvoiced'}, context=context)
-
+            if context:
+                context['picking_to_write_ids'] = picking_to_write_ids
         return super(account_invoice, self).unlink(cr, uid, ids, context=context)
