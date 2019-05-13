@@ -198,6 +198,8 @@ class riba_file_export(orm.TransientModel):
             ]
         arrayRiba = []
         for line in order_obj.line_ids:
+            if line.state == 'unsolved':
+                continue
             debit_abi = False
             debit_cab = False
             if line.bank_riba_id:
