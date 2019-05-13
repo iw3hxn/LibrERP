@@ -166,13 +166,29 @@ class riba_distinta(osv.osv):
     def riba_cancel(self, cr, uid, ids, context=None):
         for distinta in self.browse(cr, uid, ids, context=context):
             # TODO remove ervery other move
+            account_move_ids = []
             for line in distinta.line_ids:
                 if line.acceptance_move_id:
-                    line.acceptance_move_id.unlink()
+                    reconcile_ids = []
+                    for move_line in line.acceptance_move_id.line_id:
+                        if move_line.reconcile_id:
+                            reconcile_ids.append(move_line.reconcile_id.id)
+                    self.pool['account.move.reconcile'].unlink(cr, uid, list(set(reconcile_ids)), context=context)
+                    line.acceptance_move_id.button_cancel()
+                    account_move_ids.append(line.acceptance_move_id.id)
+
                 if line.unsolved_move_id:
                     line.unsolved_move_id.unlink()
                 if line.accreditation_move_id:
-                    line.accreditation_move_id.unlink()
+                    line.accreditation_move_id.write({'state': 'draft'})
+                    account_move_ids.append(line.accreditation_move_id.id)
+                line.write({'state': 'draft'})
+
+            for line in distinta.accreditation_move_ids:
+                line.button_cancel()
+                account_move_ids.append(line.id)
+
+        self.pool['account.move'].unlink(cr, uid, list(set(account_move_ids)), context=context)
         self.write(cr, uid, ids, {
             'state': 'cancel',
             }, context=context)
