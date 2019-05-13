@@ -64,7 +64,7 @@ class purchase_requisition(orm.Model):
     def request_prefered_suppliers(self, cr, uid, ids, context):
         if not len(ids) == 1:
             return True
-        virtual_partner_obj = self.pool['virtual.purchase.requisition.partner']
+        virtual_partner_obj = self.pool['purchase.requisition.partner']
         purchase_requisition_line_obj = self.pool['purchase.requisition.line']
         new_context = context.copy()
         new_context.update({'active_id': ids[0], 'prefered': True})
@@ -92,7 +92,7 @@ class purchase_requisition(orm.Model):
         return True
         
     def request_to_suppliers(self, cr, uid, ids, context):
-        virtual_partner_obj = self.pool['virtual.purchase.requisition.partner']
+        virtual_partner_obj = self.pool['purchase.requisition.partner']
         for requisition in self.browse(cr, uid, ids, context):
             suppliers = virtual_partner_obj._get_requisition_suppliers(cr, uid, context={'active_id': requisition.id})
             if not suppliers:

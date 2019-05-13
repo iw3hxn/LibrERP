@@ -25,12 +25,12 @@ from dateutil.relativedelta import relativedelta
 from openerp.osv import orm
 
 
-class virtual_purchase_requisition_partner(orm.TransientModel):
+class purchase_requisition_partner(orm.TransientModel):
     '''
     We need this class to disable view specific function view_init()
     '''
     
-    _name = "virtual.purchase.requisition.partner"
+    # _name = "purchase.requisition.partner"
     _inherit = "purchase.requisition.partner"
 
     def view_init(self, cr, uid, fields_list, context=None):

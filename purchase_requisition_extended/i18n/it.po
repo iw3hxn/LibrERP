@@ -46,7 +46,7 @@ msgid "Draft"
 msgstr "Preventivi"
 
 #. module: purchase_requisition_extended
-#: field:virtual.purchase.requisition.partner,partner_address_id:0
+#: field:purchase.requisition.partner,partner_address_id:0
 msgid "Address"
 msgstr "Indirizzo"
 
@@ -56,7 +56,7 @@ msgid "Request to All Suppliers"
 msgstr "Richiesta a tutti i Fornitori"
 
 #. module: purchase_requisition_extended
-#: field:virtual.purchase.requisition.partner,partner_id:0
+#: field:purchase.requisition.partner,partner_id:0
 msgid "Partner"
 msgstr "Partner"
 
