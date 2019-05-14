@@ -221,11 +221,11 @@
             <field name="arch" type="xml">
                 <search string="Account Ledger">
                     <group>
-                        <field name="account_id"/>
+                        <field name="account_id" context="{'filter_account_id': True}"/>
                         <field name="name"/>
                         <separator orientation="vertical"/>
                         <field name="journal_id" context="{'filter_journal_id': True}"/>
-                        <field name="partner_id"/>
+                        <field name="partner_id" context="{'filter_partner_id': True}"/>
                         <separator orientation="vertical"/>
                         <field string="Invoice from" name="date_from" filter_domain="[('invoice_date','&gt;=',self)]"/>
                         <field string="Invoice to" name="date_to" filter_domain="[('invoice_date','&lt;=',self)]"/>
@@ -263,8 +263,8 @@
                     <field name="period_id" invisible="context.get('period_id', False)"/>
                     <field name="statement_id" domain="[('state', '!=', 'confirm'),('journal_id.type', '=', 'bank')]"
                            invisible="True"/>
-                    <field name="partner_id" />
-                    <field name="account_id" domain="[('journal_id', '=', journal_id),('type','!=','view'), ('type','!=','closed')]" on_change="onchange_account_id(account_id, partner_id)"/>
+                    <field name="partner_id" invisible="context.get('filter_partner_id', False)"/>
+                    <field name="account_id" invisible="context.get('filter_account_id', False)" domain="[('journal_id', '=', journal_id),('type','!=','view'), ('type','!=','closed')]" on_change="onchange_account_id(account_id, partner_id)"/>
                     <field name="name" />
                     <field name="date_maturity" />
                     <field name="journal_id" context="{'journal_id': journal_id}" invisible="context.get('filter_journal_id', False)"/>
@@ -273,7 +273,7 @@
                     <field name="account_tax_id" domain="[('parent_id', '=' ,False)]"
                            context="{'journal_id': journal_id}" />
                     <field name="residual" sum="Total residual" />
-                    <field name="analytic_account_id"/>
+                    <field name="analytic_account_id" group="analytic.group_analytic_accounting"/>
                     <field name="state" width="60" />
                     <field name="reconcile_function_id"/>
                     <button name="action_view_reconcile" string="Open Reconcile" type="object" icon="gtk-zoom-in"/>
