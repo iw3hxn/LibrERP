@@ -33,6 +33,8 @@ class stock_picking(orm.Model):
 
         invoice_dict = super(stock_picking, self).action_invoice_create(cr, uid,
                             ids, journal_id, group, type, context=context)
+        if type != 'out_invoice':
+            return invoice_dict
         processed_invoice = []
         for picking_key in invoice_dict:
             if invoice_dict[picking_key] in processed_invoice:
