@@ -469,7 +469,10 @@ class riba_distinta_line(osv.osv):
                     'date_maturity': line.due_date,
                 }, context=context)
                 to_be_reconciled.append([move_line_id, riba_move_line.move_line_id.id])
-                riba_move_line_name += riba_move_line.move_line_id.invoice.number
+                if riba_move_line.move_line_id.invoice:
+                    riba_move_line_name += riba_move_line.move_line_id.invoice.number
+                else:
+                    riba_move_line_name += riba_move_line.move_line_id.name
             if total_credit < 0.0:
                 raise osv.except_osv(_('Warning'), _('Total of riba cannot be negative'))
             move_line_pool.create(cr, uid, {

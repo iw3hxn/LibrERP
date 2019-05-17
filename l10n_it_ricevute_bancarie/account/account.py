@@ -77,7 +77,8 @@ class res_partner_bank_add(orm.Model):
 class account_move_line(orm.Model):
     _inherit = "account.move.line"
 
-    def _get_line_values(self, cr, uid, ids, field_name, arg, context):
+    def _get_line_values(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             res[line.id] = {
@@ -91,10 +92,48 @@ class account_move_line(orm.Model):
                     res[line.id]['cup'] = line.invoice.cup
         return res
 
+    def _get_riba(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = dict.fromkeys(ids, False)
+        for line in self.browse(cr, uid, ids, context):
+            if line.stored_invoice_id:
+                if line.stored_invoice_id.payment_term:
+                    res[line.id] = line.stored_invoice_id.payment_term.riba
+        return res
+
+    # def _riba_search(self, cr, uid, obj, name, args, context):
+    #     if args:
+    #         payment_obj = self.pool.get('account.payment.term')
+    #         payment_ids = payment_obj.search(cr, uid, args)
+    #         if payment_ids:
+    #             move_ids = self.search(cr, uid, [('payment_term_id', 'in', payment_ids)])
+    #             return [('id', 'in', move_ids)]
+    #     return False
+
+    def _get_riba_from_account_invoice(self, cr, uid, ids, context=None):
+        return self.pool['account.move.line'].search(cr, uid, [('stored_invoice_id', 'in', ids)], context=context)
+
+    def _get_riba_from_payment_term(self, cr, uid, ids, context=None):
+        account_invoice_ids = self.pool['account.invoice'].search(cr, uid, [('payment_term', 'in', ids)], context=context)
+        return self.pool['account.move.line'].search(cr, uid, [('stored_invoice_id', 'in', account_invoice_ids)], context=context)
+
+    def _set_riba(self, cr, uid, ids, name, value, arg, context=None):
+        if not value:
+            return False
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        cr.execute("""update account_move_line set
+                    riba=%s where id in (%s)""", (value, ', '.join([str(line_id) for line_id in ids])))
+        return True
+
     _columns = {
         'distinta_line_ids': fields.one2many('riba.distinta.move.line', 'move_line_id', "Dettaglio riba"),
-        'riba': fields.related('stored_invoice_id', 'payment_term', 'riba',
-            type='boolean', string='RiBa', store=False),
+        'riba': fields.function(_get_riba, type='boolean', string='RiBa', fnct_inv=_set_riba, store={
+            'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['stored_invoice_id'], 6000),
+            'account.invoice': (_get_riba_from_account_invoice, ['payment_term'], 6000),
+            'account.payment.term': (_get_riba_from_payment_term, ['riba'], 6000),
+        }),
         'unsolved_invoice_ids': fields.many2many('account.invoice', 'invoice_unsolved_line_rel', 'line_id', 'invoice_id', 'Unsolved Invoices'),
         'iban': fields.related('partner_id', 'bank_ids', 'iban', type='char', string='IBAN', store=False),
         'abi': fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
@@ -106,7 +145,8 @@ class account_move_line(orm.Model):
         'distinta_line_ids': None,
     }
 
-    def _hook_get_invoice_line(self, cr, uid, line, context):
+    def _hook_get_invoice_line(self, cr, uid, line, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         invoice_pool = self.pool['account.invoice']
         res = invoice_pool.search(cr, 1, [('unsolved_move_line_ids', '=', line.id)], context=context)
         if res:
@@ -192,3 +232,19 @@ class account_invoice(orm.Model):
                                 return False
 
         return True
+
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res_bank_obj = self.pool['res.bank']
+        result = super(account_invoice, self).fields_view_get(cr, uid, view_id, view_type, context=context, toolbar=toolbar, submenu=submenu)
+        if view_type == 'form' and context.get('type', False) == 'in_invoice':
+            if result['fields'].get('bank_riba_id', False):
+                company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
+                cr.execute("select bank from res_partner_bank where company_id = {company_id}".format(company_id=company_id))
+                bank_ids = []
+                for rec in cr.fetchall():
+                    bank_ids.append(rec[0])
+                result['fields']['bank_riba_id']['domain'] = [('id', 'in', bank_ids)]
+                result['fields']['bank_riba_id']['selection'] = res_bank_obj.name_search(cr, uid, '', [('id', 'in', bank_ids)], context=context)
+
+        return result

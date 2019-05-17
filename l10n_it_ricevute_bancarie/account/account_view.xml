@@ -159,6 +159,17 @@
             </field>
         </record>
 
+        <!--<record model="ir.ui.view" id="invoice_out_form_bank_riba">-->
+            <!--<field name="name">invoice.out.form.bank.riba</field>-->
+            <!--<field name="model">account.invoice</field>-->
+            <!--<field name="inherit_id" ref="account_bank.invoice_out_form_bank_riba"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<field name="bank_riba_id" position="attributes">-->
+                    <!--<attribute name="widget">selection</attribute>-->
+                <!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
+
         <record id="action_invoice_tree1" model="ir.actions.act_window">
             <field name="name">Unsolved Invoices</field>
             <field name="res_model">account.invoice</field>

@@ -357,6 +357,7 @@
                                     <field name="state"/>
                                     <field name="reconcile_id"/>
                                     <field name="reconcile_partial_id" groups="base.group_extended"/>
+                                    <field name="riba" />
                                 </tree>
                             </field>
                             <separator colspan="4" string="Internal Note"/>
