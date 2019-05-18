@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+    <!-- FatturaPA Document Type -->
+    <record id="fatturapa_TD01" model="italy.ade.invoice.type">
+        <field name="code">TD01</field>
+        <field name="name">Fattura</field>
+        <field name="scope">IT,out_invoice,Out_refund</field>
+        <field name="help">Documento fiscale obbligatorio emesso da un soggetto fiscale per comprovare l'avvenuta cessione di beni o prestazione di servizi.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD02" model="italy.ade.invoice.type">
+        <field name="code">TD02</field>
+        <field name="name">Acconto / anticipo su fattura</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="help">Fattura di anticipo senza movimentazione di beni servizi.
+               Attesta la ricezione di un anticipo che verrà detratto nella fattura di saldo.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD03" model="italy.ade.invoice.type">
+        <field name="code">TD03</field>
+        <field name="name">Acconto / anticipo su parcella</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="help">Il professionsta attesta l'avvenuta ricezione di una somma prima dell'erogazione delle relative prestazioni,
+               il cui ammontare verrà detratto nella parcella di saldo.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD04" model="italy.ade.invoice.type">
+        <field name="code">TD04</field>
+        <field name="name">Nota di credito</field>
+        <field name="scope">IT,out_refund,Out_invoice</field>
+        <field name="help">Documento emesso per rettificare totalmente o parzialmente importi precedentemente fatturati.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD05" model="italy.ade.invoice.type">
+        <field name="code">TD05</field>
+        <field name="name">Nota di debito</field>
+        <field name="scope">IT,out_invoice,Out_refund</field>
+        <field name="help">Documento emesso al fine di integrare gli importi esposti in una fattura emessa in precedenza.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD06" model="italy.ade.invoice.type">
+        <field name="code">TD06</field>
+        <field name="name">Parcella</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="help">Documento (a volte chiamato notula) emesso da un libero professionista per prestazioni effettuate.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD07" model="italy.ade.invoice.type">
+        <field name="code">TD07</field>
+        <field name="name">Fattura semplificata</field>
+        <field name="scope">IT,out_invoice,Out_refund</field>
+        <field name="help">Documento semplificato in cui è sufficiente inserire la partita IVA senza i dettagli anagrafici del cliente.
+               Usata ad esempio nella ristorazione.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD08" model="italy.ade.invoice.type">
+        <field name="code">TD08</field>
+        <field name="name">Nota di credito semplificata</field>
+        <field name="scope">IT,out_refund,Out_invoice</field>
+        <field name="help">Documento emesso per rettificare totalmente o parzialmente importi precedentemente con una fattura semplificata;
+               è sufficiente inserire la partita IVA senza i dettagli anagrafici del cliente.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD10" model="italy.ade.invoice.type">
+        <field name="code">TD10</field>
+        <field name="name">Fattura di acquisto intracomunitario beni</field>
+        <field name="scope">EU,in_invoice</field>
+        <field name="help">Documento ricevuto da un fornitore della UE per l'acquisto di beni.
+               Deve essere registrata con la procedura di integrazione.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD11" model="italy.ade.invoice.type">
+        <field name="code">TD11</field>
+        <field name="name">Fattura di acquisto intracomunitario servizi</field>
+        <field name="scope">EU,in_invoice</field>
+        <field name="help">Documento ricevuto da un fornitore della UE per l'acquisto di servizi.
+               Deve essere registrata con la procedura di integrazione.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD12" model="italy.ade.invoice.type">
+        <field name="code">TD12</field>
+        <field name="name">Documento riepilogativo (art.6, DPR 695/1996)</field>
+        <field name="scope">IT,in_invoice</field>
+        <field name="help">Riepilogo di fatture da fornitore per importi inferiori a 300€.</field>
+        <field name="active">1</field>
+    </record>
+    <record id="fatturapa_TD20" model="italy.ade.invoice.type">
+        <field name="code">TD20</field>
+        <field name="name">Autofattura</field>
+        <field name="scope">IT,out_invoice</field>
+        <field name="help">Documento auto emesso.</field>
+        <field name="active">1</field>
+    </record>
+
+</data>
+</openerp>
+

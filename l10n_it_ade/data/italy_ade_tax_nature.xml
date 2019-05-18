@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+    <record model="italy.ade.tax.nature" id="n1">
+        <field name="code">N1</field>
+        <field name="name">Escluse ex art. 15</field>
+        <field name="help">Escluso base imponibile: interessi moratori, beni ceduti a titolo di sconto o abbuono, rimborsi di anticipazioni, imballi a spesa concordata, rivalse (es. artt. 2, 3, 5, 13, 15)</field>
+        <field name="active">True</field>
+    </record>
+    <record model="italy.ade.tax.nature" id="n2">
+        <field name="code">N2</field>
+        <field name="name">Non soggette</field>
+        <field name="help">Operazioni che non determinano il giro d'affari, che non rientrano nell'attività dell'impresa, conferimenti in denaro, attività di enti pubblici (es. artt. 7-bis, 7-ter, 7-quater, 7-quinques)</field>
+        <field name="active">True</field>
+    </record>
+    <record model="italy.ade.tax.nature" id="n3">
+        <field name="code">N3</field>
+        <field name="name">Non imponibili</field>
+        <field name="help">Operazioni senza presupposto territoriale (es. art. 8, 8-bis, 9, 71, 72)</field>
+        <field name="active">True</field>
+    </record>
+    <record model="italy.ade.tax.nature" id="n4">
+        <field name="code">N4</field>
+        <field name="name">Esenti</field>
+        <field name="help">Operazioni escluse dal campo di applicazione dell'IVA per presupposto di legge (art 10)</field>
+        <field name="active">True</field>
+    </record>
+    <record model="italy.ade.tax.nature" id="n5">
+        <field name="code">N5</field>
+        <field name="name">Regime del margine / IVA non esposta</field>
+        <field name="help">Cessioni di prodotti usati / editoria / agenzie di viaggio e turismo</field>
+        <field name="active">True</field>
+    </record>
+    <record model="italy.ade.tax.nature" id="n6">
+        <field name="code">N6</field>
+        <field name="name">Inversione contabile (acq. in reverse charge)</field>
+        <field name="help">IVA assolta del fornitore causa inversione contabile (per le operazioni in reverse charge ovvero nei casi di autofatturazione per acquisti extra UE di servizi ovvero per importazioni di beni nei soli casi previsti)(es. Artt. 74 c7 e c8, 17 c2 e c6, 38 e 40)</field>
+        <field name="active">True</field>
+    </record>
+    <record model="italy.ade.tax.nature" id="n7">
+        <field name="code">N7</field>
+        <field name="name">IVA assolta in altro stato UE</field>
+        <field name="help">IVA per operazione con soggetto in un altro stato UE (vendite a distanza ex art. 40 c. 3 e 4 e art. 41 c. 1 lett. b, DL 331/93; prestazione di servizi di telecomunicazioni, tele-radiodiffusione ed elettronici ex art. 7-sexies lett. f, g, art. 74-sexies DPR 633/72)</field>
+        <field name="active">True</field>
+    </record>
+    <record model="italy.ade.tax.nature" id="fc">
+        <field name="code">FC</field>
+        <field name="name">FC applicazione IVA</field>
+        <field name="help">Operazione esclusa dell'IVA: attenzione! Operazione esclusa da comunicazioni fiscali</field>
+        <field name="active">True</field>
+    </record>
+
+</data>
+</openerp>
+

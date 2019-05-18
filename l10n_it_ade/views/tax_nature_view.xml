@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record id="view_tax_nature_tree" model="ir.ui.view">
+        <field name="name">view.tax.nature.tree</field>
+        <field name="model">italy.ade.tax.nature</field>
+        <field name="arch" type="xml">
+            <tree string="Natura IVA">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="help"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tax_nature_form" model="ir.ui.view">
+        <field name="name">view.tax.nature.form</field>
+        <field name="model">italy.ade.tax.nature</field>
+        <field name="arch" type="xml">
+            <form string="Tax Nature">
+                <group>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="help"/>
+                    <field name="active"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tax_nature" model="ir.actions.act_window">
+        <field name="name">Tax Nature</field>
+        <field name="res_model">italy.ade.tax.nature</field>
+        <field name="view_id" ref="view_tax_nature_tree"/>
+    </record>
+
+    <menuitem id="menu_tax_nature" name="Tax Nature"
+              action="action_tax_nature" parent="menu_ade"
+              groups="account.group_account_manager"/>
+
+</data>
+</openerp>

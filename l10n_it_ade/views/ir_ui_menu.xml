@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <menuitem id="menu_fiscal_report" name="Fiscal Statements"
+              parent="account.menu_finance_periodical_processing"
+              groups="account.group_account_user"
+              sequence="45"/>
+
+    <menuitem id="menu_ade" name="Tax Authority Definitions"
+              parent="account.next_id_27"
+              groups="account.group_account_manager" sequence="45"/>
+
+</data>
+</openerp>

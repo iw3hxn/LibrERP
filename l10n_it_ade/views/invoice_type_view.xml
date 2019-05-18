@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record id="view_invoice_type_tree" model="ir.ui.view">
+        <field name="name">view.invoice.type.tree</field>
+        <field name="model">italy.ade.invoice.type</field>
+        <field name="arch" type="xml">
+            <tree string="Invoice Type">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="help"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_invoice_type_form" model="ir.ui.view">
+        <field name="name">view.invoice.type.form</field>
+        <field name="model">italy.ade.invoice.type</field>
+        <field name="arch" type="xml">
+            <form string="Invoice Type">
+                <group>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="help"/>
+                    <field name="scope"/>
+                    <field name="active"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_invoice_type" model="ir.actions.act_window">
+        <field name="name">Invoice Type</field>
+        <field name="res_model">italy.ade.invoice.type</field>
+        <field name="view_id" ref="view_invoice_type_tree"/>
+    </record>
+
+    <menuitem id="menu_invoice_type" name="Invoice Type"
+              action="action_invoice_type" parent="menu_ade"
+              groups="account.group_account_manager"/>
+
+</data>
+</openerp>
+
