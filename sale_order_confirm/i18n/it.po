@@ -1048,7 +1048,6 @@ msgstr "Conferma Ordine Cliente"
 #: field:account.invoice,address_delivery_id:0
 #: field:purchase.order,partner_address_id:0
 #: field:purchase.requisition.partner,partner_address_id:0
-#: field:virtual.purchase.requisition.partner,partner_address_id:0
 #: view:sale.order.confirm:0
 #: field:stock.picking,address_delivery_id:0
 msgid "Address"

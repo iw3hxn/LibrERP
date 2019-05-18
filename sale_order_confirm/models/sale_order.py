@@ -446,6 +446,7 @@ class sale_order(orm.Model):
 
     def action_validate(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
+        self.button_dummy(cr, uid, ids, context=context)
         for order in self.browse(cr, uid, ids, context):
             if not order.partner_id.validate and order.company_id.enable_partner_validation:
                 title = _('Partner To Validate')
