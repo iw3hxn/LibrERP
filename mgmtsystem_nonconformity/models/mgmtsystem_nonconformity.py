@@ -252,7 +252,7 @@ class mgmtsystem_nonconformity(orm.Model):
                                       help='Total cost of Nonconformity, sum of all nonconformities and actions costs'),
         # 6. Action connected
         'action_date_close': fields.function(_calculate_action_status, method=True, type='date', string='Date Close', multi='date_action'),
-        'action_open': fields.function(_calculate_action_status, method=True, type='string', string='Close of', multi='date_action')
+        'action_open': fields.function(_calculate_action_status, method=True, type='char', size=128, string='Close of', multi='date_action')
     }
     _defaults = {
         'date': lambda *a: time.strftime(DATE_FORMAT),
