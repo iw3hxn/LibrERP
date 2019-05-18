@@ -487,6 +487,8 @@ class account_invoice(orm.Model):
             context = {}
         ait_obj = self.pool.get('account.invoice.tax')
         amount_tax = 0.0
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         for inv in self.browse(cr, uid, ids, context=context):
             compute_taxes = ait_obj.compute(cr, uid, inv.id, context=context)
             for tax in compute_taxes:
