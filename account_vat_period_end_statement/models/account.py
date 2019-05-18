@@ -2,15 +2,20 @@
 #    Copyright (C) 2011-12 Domsense s.r.l. <http://www.domsense.com>.
 #    Copyright (C) 2012-15 Agile Business Group sagl <http://www.agilebg.com>
 #    Copyright (C) 2013-15 LinkIt Spa <http://http://www.linkgroup.it>
-#    Copyright (C) 2013-17 Associazione Odoo Italia
+#    Copyright (C) 2013-18 Associazione Odoo Italia
 #                          <http://www.odoo-italia.org>
 #    Copyright (C) 2017    Didotech srl <http://www.didotech.com>
-#    Copyright (C) 2017    SHS-AV s.r.l. <https://www.zeroincombenze.it>
+#    Copyright (C) 2017-18 SHS-AV s.r.l. <https://www.zeroincombenze.it>
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
+
 import logging
 import math
+from datetime import date, datetime
+
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+
 
 import decimal_precision as dp
 from openerp.osv import orm, fields
@@ -24,7 +29,7 @@ except (ImportError, IOError) as err:
     _logger.error(err)
 
 
-class account_vat_period_end_statement(orm.Model):
+class AccountVatPeriodEndStatement(orm.Model):
 
     def _compute_authority_vat_amount(self, cr, uid, ids, field_name, arg, context):
         res = {}
@@ -76,17 +81,20 @@ class account_vat_period_end_statement(orm.Model):
         res = {}
         if not ids:
             return res
-        cr.execute("""SELECT statement.id, l.id
-                      FROM account_move_line l
-                      LEFT JOIN account_vat_period_end_statement statement ON (statement.move_id=l.move_id)
-                      WHERE statement.id IN %s
-                      AND l.account_id=statement.authority_vat_account_id""", (tuple(ids),))
+        cr.execute('SELECT statement.id, l.id '
+                   'FROM account_move_line l '
+                   'LEFT JOIN account_vat_period_end_statement statement ON '
+                   '(statement.move_id=l.move_id) '
+                   'WHERE statement.id IN %s '
+                   'AND l.account_id=statement.authority_vat_account_id',
+                   (tuple(ids),))
         for r in cr.fetchall():
             res.setdefault(r[0], [])
             res[r[0]].append(r[1])
         return res
 
-    # return the ids of the move lines which has the same account than the statement
+    # return the ids of the move lines which has the same account than the
+    # statement
     # whose id is in ids
     def move_line_id_payment_get(self, cr, uid, ids, *args):
         if not ids:
@@ -195,21 +203,44 @@ class account_vat_period_end_statement(orm.Model):
         return result
 
     def _get_default_interest(self, cr, uid, context=None):
-        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        user = self.pool.get('res.users').browse(cr, uid, uid, context)
         company = user.company_id
         return company.of_account_end_vat_statement_interest
 
     def _get_default_interest_percent(self, cr, uid, context=None):
-        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        user = self.pool.get('res.users').browse(cr, uid, uid, context)
         company = user.company_id
         if not company.of_account_end_vat_statement_interest:
             return 0
         return company.of_account_end_vat_statement_interest_percent
 
+    def _get_default_journal(self, cr, uid, context=None):
+        journal_model = self.pool.get('account.journal')
+        ids = journal_model.search(cr, uid, [('code', 'like', 'MISC')])
+        if ids:
+            return ids[0]
+        return 0
+
+    def _get_default_soggetto_codice_fiscale(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        company = user.company_id.partner_id
+        if company.vat:
+            return company.vat[2:]
+        return ''
+
+    def _get_default_dichiarante_codice_fiscale(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        company = user.company_id.partner_id
+        if company.fiscalcode and len(company.fiscalcode) == 16:
+            return company.fiscalcode
+        return ''
+
     _name = "account.vat.period.end.statement"
     _rec_name = 'date'
     _order = 'date'
     _columns = {
+        'name': fields.char('Descrizione',
+                            required=True,),
         'debit_vat_account_line_ids': fields.one2many(
             'statement.debit.account.line', 'statement_id', 'Debit VAT',
             help='The accounts containing the debit VAT amount to write-off',
@@ -277,7 +308,7 @@ class account_vat_period_end_statement(orm.Model):
                 'paid': [('readonly', True)],
                 'draft': [('readonly', False)]}),
         'authority_vat_account_id': fields.many2one(
-            'account.account', 'Tax Authority VAT Account', required=True,
+            'account.account', 'Tax Authority VAT Account',
             states={
                 'confirmed': [('readonly', True)],
                 'paid': [('readonly', True)],
@@ -367,41 +398,48 @@ class account_vat_period_end_statement(orm.Model):
             readonly=True),
         'show_zero': fields.boolean('Show zero amount lines'),
         'soggetto_codice_fiscale':
-            fields.char('Codice fiscale dichiarante',
-                        size=16, required=True,
-                        help="CF del soggetto che presenta la comunicazione "
-                            "se PF o DI o con la specifica carica"),
-        'codice_carica': fields.selection([
-            ('0', 'Azienda PF (Ditta indivisuale/Professionista/eccetera)'),
-            ('1', 'Legale rappresentante, socio amministratore'),
-            ('2', 'Rappresentante di minore,interdetto,eccetera'),
-            ('3', 'Curatore fallimentare'),
-            ('4', 'Commissario liquidatore'),
-            ('5', 'Custode giudiziario'),
-            ('6', 'Rappresentante fiscale di soggetto non residente'),
-            ('7', 'Erede'),
-            ('8', 'Liquidatore'),
-            ('9', 'Obbligato di soggetto estinto'),
-            ('10', 'Rappresentante fiscale art. 44c3 DLgs 331/93'),
-            ('11', 'Tutore di minore'),
-            ('12', 'Liquidatore di DI'),
-            ('13', 'Amministratore di condominio'),
-            ('14', 'Pubblica Amministrazione'),
-            ('15', 'Commissario PA'),],
-            'Codice carica',),
-        'progressivo_telematico':
-            fields.integer('Progressivo telematico', readonly=True),
+            fields.char(
+                'Codice fiscale contribuente',
+                size=16, required=True,
+                help="CF del soggetto a cui riferiscono i dati "
+                     "della liquidazione."),
+        'dichiarante_codice_fiscale':
+            fields.char(
+                'Codice fiscale dichiarante',
+                size=16,
+                help="CF del soggetto responabile della trasmissione;"
+                     "PF con la specifica carica se il contribuente "
+                     "è persona giuridica"),
+        'codice_carica': fields.many2one(
+            'italy.ade.codice.carica', 'Codice carica',
+            help="Codice carica responsabile trasmissione"),
         'incaricato_trasmissione_codice_fiscale':
-            fields.char('Codice Fiscale Incaricato',
-                        size=16,
-                        help="CF intermediario "
-                             "che effettua la trasmissione telematica"),
+            fields.char(
+                'Codice Fiscale Incaricato',
+                size=16,
+                help="CF intermediario che trasmette la comuicazione"),
         'incaricato_trasmissione_numero_CAF':
             fields.integer('Numero CAF intermediario',
                            size=5,
                            help="Eventuale numero iscrizione albo del C.A.F."),
         'incaricato_trasmissione_data_impegno':
-            fields.date('Data data impegno')    }
+            fields.date('Data data impegno'),
+        'type': fields.selection([
+            ('xml', 'Liquidazione elettronica + Ordinaria'),
+            ('xml2', 'Liquidazione elettronica'),
+            ('month', 'Liquidazione ordinaria'),
+            ('year', 'Liquidazione annuale'), ],
+            'Tipo',
+            required=True,
+            help="Tipo di liquidazione\n"
+                 "liquidazione elettronica per generare file xml da inviare\n"
+                 "Liquidazione ordinaria: calcola IVA periodo\n"
+                 "Liquidazione annuale per riepilogo annuale"),
+        'y_period_ids': fields.one2many(
+            'account.period', 'y_vat_statement_id', 'Periods'),
+        'e_period_ids': fields.one2many(
+            'account.period', 'e_vat_statement_id', 'Periods'),
+    }
 
     _defaults = {
         'date': fields.date.context_today,
@@ -412,14 +450,69 @@ class account_vat_period_end_statement(orm.Model):
             self.pool['res.company']._company_default_get(
                 cr, uid, 'account.vat.period.end.statement', context=c),
         'show_zero': False,
+        'type': 'xml',
+        'journal_id': _get_default_journal,
+        'soggetto_codice_fiscale': _get_default_soggetto_codice_fiscale,
+        'dichiarante_codice_fiscale': _get_default_dichiarante_codice_fiscale,
+        'name': 'Liquidazione periodica'
     }
+
+    def create(self, cr, uid, vals, context=None):
+        res = super(AccountVatPeriodEndStatement, self).create(
+            cr, uid, vals, context)
+        if 'company_id' in vals:
+            sequence_ids = self.search_sequence(cr, uid, vals['company_id'],
+                                                context=None)
+            if not sequence_ids:
+                self.create_sequence(cr, uid, vals['company_id'], context)
+        return res
+
+    def search_sequence(self, cr, uid, company_id, context=None):
+        return self.pool['ir.sequence'].search(
+            cr, uid, [
+                ('name', '=', 'VAT statement'),
+                ('company_id', '=', company_id)
+            ])
+
+    def create_sequence(self, cr, uid, company_id, context=None):
+        """ Create new no_gap entry sequence for progressivo_telematico
+        """
+        # Company sent own statement, so set next number as the nth quarter
+        next_number = int((date.today().toordinal() - 
+                           date(2017, 7, 1).toordinal()) / 90) + 1
+        sequence_model = self.pool['ir.sequence']
+        vals = {
+            'name' : 'VAT statement',
+            'implementation': 'no_gap',
+            'company_id': company_id,
+            'prefix': '',
+            'number_increment': 1,
+            'number_next': next_number,
+            'number_next_actual': next_number,
+        }
+        return [sequence_model.create(cr, uid, vals)]
+
+    def set_progressivo_telematico(self, cr, uid, statement, context=None):
+        context = context or {}
+        sequence_model = self.pool['ir.sequence']
+        company_id = statement.company_id.id
+        sequence_ids = self.search_sequence(cr, uid, company_id,
+                                                context=None)
+        if not sequence_ids:
+            sequence_ids = self.create_sequence(cr, uid, company_id,
+                                                context=context)
+        if len(sequence_ids) != 1:
+            raise orm.except_orm(
+                _('Error!'), _('VAT statement sequence not set!'))
+        number = int(sequence_model.next_by_id(
+            cr, uid, sequence_ids[0], context=context))
+        return number
 
     def _get_tax_code_amount(self, cr, uid, tax_code_id, period_id, context):
         if not context:
             context = {}
         context['period_id'] = period_id
-        return self.pool['account.tax.code'].browse(
-            cr, uid, tax_code_id, context)._sum_period(
+        return self.pool.get('account.tax.code').browse(cr, uid, tax_code_id, context)._sum_period(
             None, None, context)[tax_code_id]
 
     def unlink(self, cr, uid, ids, context=None):
@@ -430,7 +523,7 @@ class account_vat_period_end_statement(orm.Model):
                 raise orm.except_orm(
                     _('Error!'),
                     _('You cannot delete a confirmed or paid statement'))
-        res = super(account_vat_period_end_statement, self).unlink(
+        res = super(AccountVatPeriodEndStatement, self).unlink(
             cr, uid, ids, context)
         return res
 
@@ -438,7 +531,7 @@ class account_vat_period_end_statement(orm.Model):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
         defaults['vat_settlement_attachment_id'] = False
-        return super(account_vat_period_end_statement, self).copy(
+        return super(AccountVatPeriodEndStatement, self).copy(
             cr, uid, ids, defaults, context)
 
     def statement_draft(self, cr, uid, ids, context=None):
@@ -451,10 +544,10 @@ class account_vat_period_end_statement(orm.Model):
         self.write(cr, uid, ids, {'state': 'paid'})
 
     def create_move(self, cr, uid, ids, context=None):
-        move_obj = self.pool['account.move']
-        term_pool = self.pool['account.payment.term']
-        line_obj = self.pool['account.move.line']
-        period_obj = self.pool['account.period']
+        move_obj = self.pool.get('account.move')
+        term_pool = self.pool.get('account.payment.term')
+        line_obj = self.pool.get('account.move.line')
+        period_obj = self.pool.get('account.period')
         for statement in self.browse(cr, uid, ids, context):
             period_ids = period_obj.find(
                 cr, uid, dt=statement.date, context=context)
@@ -468,7 +561,7 @@ class account_vat_period_end_statement(orm.Model):
                 'journal_id': statement.journal_id.id,
                 'period_id': period_ids[0],
             }
-            move_id = move_obj.create(cr, uid, move_data, context)
+            move_id = move_obj.create(cr, uid, move_data)
             statement.write({'move_id': move_id})
 
             for debit_line in statement.debit_vat_account_line_ids:
@@ -653,6 +746,28 @@ class account_vat_period_end_statement(orm.Model):
                         tax_tree[type][basevat][left] = False
         return tax_tree
 
+    def get_date_start_stop(self, statement, context=None):
+        date_start = False
+        date_stop = False
+        for period in statement.period_ids:
+            if not date_start:
+                date_start = period.date_start
+            else:
+                if period.date_start < date_start:
+                    date_start = period.date_start
+            if not date_stop:
+                date_stop = period.date_stop
+            else:
+                if period.date_stop > date_stop:
+                    date_stop = period.date_stop
+        if date_start:
+            date_start = datetime.strptime(date_start,
+                                           DEFAULT_SERVER_DATE_FORMAT)
+        if date_stop:
+            date_stop = datetime.strptime(date_stop,
+                                          DEFAULT_SERVER_DATE_FORMAT)
+        return date_start, date_stop
+
     def compute_amount_dbt_crd(self, cr, uid, statement, company_id,
                                tax_tree, show_zero=None, context=None):
         context = {} if context is None else context
@@ -664,6 +779,15 @@ class account_vat_period_end_statement(orm.Model):
             ('exclude_from_registries', '=', False),
             ('company_id', '=', company_id),
         ], context=context)
+        stmt_type = statement.type
+        if stmt_type == 'xml':
+            stmt_periods = 'period_ids'
+        elif stmt_type == 'xml2':
+            stmt_periods = 'e_period_ids'
+        elif stmt_type == 'month':
+            stmt_periods = 'period_ids'
+        elif stmt_type == 'year':
+            stmt_periods = 'y_period_ids'
         for dbt_crd_tax_code_id in dbt_crd_tax_code_ids:
             if tax_code_pool.search(cr, uid, [('parent_id',
                                                '=',
@@ -672,7 +796,7 @@ class account_vat_period_end_statement(orm.Model):
             dbt_crd_tax_code = tax_code_pool.browse(
                 cr, uid, dbt_crd_tax_code_id, context)
             total = 0.0
-            for period in statement.period_ids:
+            for period in statement[stmt_periods]:
                 ctx = context.copy()
                 ctx['period_id'] = period.id
                 total += tax_code_pool.browse(
@@ -767,9 +891,29 @@ class account_vat_period_end_statement(orm.Model):
         tax_tree = self.build_tax_tree(cr, uid, company_id, context)
         for statement in self.browse(cr, uid, ids, context):
             company_id = statement.company_id.id
-            statement.write({'previous_debit_vat_amount': 0.0})
+            date_start, date_stop = self.get_date_start_stop(statement,
+                                                             context=context)
+            name = False
+            if date_start and date_stop:
+                if date_start.month == date_stop.month:
+                    name = 'Mese %d %d' % (date_stop.month, date_stop.year)
+                else:
+                    if date_start.month in (1, 4, 7, 10) and \
+                            date_stop.month in (3, 6, 9, 12):
+                        name = '%d° Trimestre %d' % (int(date_stop.month/3),
+                                                     date_stop.year)
+                    else:
+                        name = False
+            if name:
+                statement.write({'name': name,
+                                 'date': date_stop,
+                                 'previous_debit_vat_amount': 0.0})
+            else:
+                statement.write({'previous_debit_vat_amount': 0.0})
+            type = statement.type
             prev_statement_ids = self.search(cr, uid, [(
-                'date', '<', statement.date)], order='date', context=context)
+                'date', '<', statement.date),
+                ('type', '=', type)], order='date')
             if prev_statement_ids:
                 prev_statement = self.browse(
                     cr, uid, prev_statement_ids[len(prev_statement_ids) - 1],
@@ -835,7 +979,8 @@ class account_vat_period_end_statement(orm.Model):
         return True
 
     def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
-        partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
+        partner = self.pool.get('res.partner').browse(
+            cr, uid, partner_id, context)
         return {
             'value': {
                 'authority_vat_account_id': partner.property_account_payable.id
@@ -846,9 +991,7 @@ class account_vat_period_end_statement(orm.Model):
         res = {}
         if not ids:
             return res
-        user = self.pool['res.users'].browse(cr, uid, uid, context)
-        company = user.company_id
-
+        company = self.browse(cr, uid, ids[0]).company_id
         res = {'value': {
             'interest_percent':
                 company.of_account_end_vat_statement_interest_percent,
@@ -856,39 +999,46 @@ class account_vat_period_end_statement(orm.Model):
         return res
 
     def onchange_fiscalcode(self, cr, uid, ids, fiscalcode, name,
-                            context=None):
+                            country_id=None, context=None):
+        name = name or 'fiscalcode'
         if fiscalcode:
-            if len(fiscalcode) == 11:
-                res_partner_pool = self.pool.get('res.partner')
-                chk = res_partner_pool.simple_vat_check(
+            country_model = self.pool.get('res.country')
+            if country_id and country_model.browse(
+                    cr, uid, country_id, context).code != 'IT':
+                return {'value': {name: fiscalcode}}
+            elif len(fiscalcode) == 11:
+                res_partner_model = self.pool.get('res.partner')
+                chk = res_partner_model.simple_vat_check(
                     cr, uid, 'it', fiscalcode)
                 if not chk:
-                    return {'value':{name: False},
-                           'warning': {'title':'Invalid fiscalcode!',
-                                       'message':
-                                            'Invalid vat number'}
+                    return {'value': {name: False},
+                            'warning': {
+                        'title': 'Invalid fiscalcode!',
+                        'message': 'Invalid vat number'}
                     }
+                individual = False
             elif len(fiscalcode) != 16:
-                return {'value':{name: False},
-                       'warning': {'title':'Invalid len!',
-                                   'message':'Fiscal code len must be 11 or 16'}
+                return {'value': {name: False},
+                        'warning': {
+                    'title': 'Invalid len!',
+                    'message': 'Fiscal code len must be 11 or 16'}
                 }
             else:
                 fiscalcode = fiscalcode.upper()
                 chk = codicefiscale.control_code(fiscalcode[0:15])
                 if chk != fiscalcode[15]:
                     value = fiscalcode[0:15] + chk
-                    return {'value':{name: value},
-                            'warning': {'title':'Invalid fiscalcode!',
-                                        'message':
-                                             'Fiscal code could be %s' % (value)}
-                     }
-            return {'value':{name: fiscalcode}}
-        return {}
+                    return {'value': {name: value},
+                            'warning': {
+                                'title': 'Invalid fiscalcode!',
+                                'message': 'Fiscal code could be %s' % (value)}
+                            }
+                individual = True
+            return {'value': {name: fiscalcode}}
+        return {'value': {'individual': False}}
 
     def get_account_interest(self, cr, uid, ids, context=None):
-        user = self.pool['res.users'].browse(cr, uid, uid, context)
-        company = user.company_id
+        company = self.browse(cr, uid, ids[0]).company_id
         if (
             company.of_account_end_vat_statement_interest or
             any([s.interest for s in self.browse(cr, uid, ids, context)])
@@ -908,10 +1058,9 @@ class account_vat_period_end_statement(orm.Model):
                     _('You should delete VAT Settlement before'
                       ' deleting Vat Period End Statement')
                 )
-        return super(account_vat_period_end_statement, self).action_cancel(cr, uid, ids, context)
+        return super(AccountVatPeriodEndStatement, self).action_cancel(cr, uid, ids, context)
 
-
-class statement_debit_account_line(orm.Model):
+class StatementDebitAccountLine(orm.Model):
     _name = 'statement.debit.account.line'
     _columns = {
         'account_id': fields.many2one(
@@ -922,14 +1071,14 @@ class statement_debit_account_line(orm.Model):
             'account.vat.period.end.statement', 'VAT statement'),
         'amount': fields.float(
             'Amount', digits_compute=dp.get_precision('Account')),
-        'base_code_id':  fields.many2one(
+        'base_code_id': fields.many2one(
             'account.tax.code', 'Base Tax Code'),
         'base_amount': fields.float(
             'Base amount', digits_compute=dp.get_precision('Account')),
     }
 
 
-class statement_credit_account_line(orm.Model):
+class StatementCreditAccountLine(orm.Model):
     _name = 'statement.credit.account.line'
     _columns = {
         'account_id': fields.many2one(
@@ -940,14 +1089,14 @@ class statement_credit_account_line(orm.Model):
             'account.vat.period.end.statement', 'VAT statement'),
         'amount': fields.float(
             'Amount', digits_compute=dp.get_precision('Account')),
-        'base_code_id':  fields.many2one(
+        'base_code_id': fields.many2one(
             'account.tax.code', 'Base Tax Code'),
         'base_amount': fields.float(
             'Base amount', digits_compute=dp.get_precision('Account')),
     }
 
 
-class statement_generic_account_line(orm.Model):
+class StatementGenericAccountLine(orm.Model):
     _name = 'statement.generic.account.line'
     _columns = {
         'account_id': fields.many2one(
@@ -958,7 +1107,7 @@ class statement_generic_account_line(orm.Model):
             'account.vat.period.end.statement', 'VAT statement'),
         'amount': fields.float(
             'Amount', digits_compute=dp.get_precision('Account')),
-        'base_code_id':  fields.many2one(
+        'base_code_id': fields.many2one(
             'account.tax.code', 'Base Tax Code'),
         'base_amount': fields.float(
             'Base amount', digits_compute=dp.get_precision('Account')),
@@ -967,17 +1116,16 @@ class statement_generic_account_line(orm.Model):
     def on_change_vat_account_id(
         self, cr, uid, ids, vat_account_id=False, context=None
     ):
-        res = {
-            'value': {}
-        }
+        res = {}
+        res['value'] = {}
         if not vat_account_id:
             return res
-        res['value']['amount'] = self.pool['account.account'].browse(
+        res['value']['amount'] = self.pool.get('account.account').browse(
             cr, uid, vat_account_id, context).balance
         return res
 
 
-class account_tax_code(orm.Model):
+class AccountTaxCode(orm.Model):
     _inherit = "account.tax.code"
     _columns = {
         'vat_statement_account_id': fields.many2one(
@@ -987,11 +1135,11 @@ class account_tax_code(orm.Model):
                  "Please, leave empty if no VAT amount record"),
         'vat_statement_type': fields.selection(
             [('credit', 'Credit'), ('debit', 'Debit')], 'Type',
-            help="This establish whether amount will "
-                 "be loaded as debit or credit"),
+            help="This value is ignored if vat code type is sale or purchase;"
+                 "Set this value id vat code type is both"),
         'vat_statement_sign': fields.integer(
             'Sign used in statement',
-            help="If tax code period sum is usually negative, set '-1' here"),
+            help="Do not use: value is deprecated."),
     }
     _defaults = {
         'vat_statement_type': 'debit',
@@ -999,10 +1147,14 @@ class account_tax_code(orm.Model):
     }
 
 
-class account_period(orm.Model):
+class AccountPeriod(orm.Model):
     _inherit = "account.period"
     _columns = {
         'vat_statement_id': fields.many2one(
+            'account.vat.period.end.statement', "VAT statement"),
+        'y_vat_statement_id': fields.many2one(
+            'account.vat.period.end.statement', "VAT statement"),
+        'e_vat_statement_id': fields.many2one(
             'account.vat.period.end.statement', "VAT statement"),
     }
 

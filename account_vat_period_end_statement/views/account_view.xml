@@ -10,33 +10,40 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Vat statement">
-                <field name="journal_id" widget="selection" select="1" domain="[('type', '=', 'general')]"/>
-                <field name="date" select="1" />
-                <!-- TODO check if it's manageable
-                        <button name="open_chart_of_taxes" string="View chart of taxes for selected period" type="object"/>
-                        -->
-                <field name="move_id" select="1"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-                <field name="interest" on_change="onchange_interest(interest)"/>
-                <field name="interest_percent"
-                       attrs="{'invisible': [('interest', '=', False)], 'required': [('interest', '=', True)]}"/>
-                <field name="payment_term_id" select="1"/>
+                <group colspan="4">
+                    <field name="type"/>
+                    <field name="name"/>
+                    <field name="journal_id" widget="selection" select="1" domain="[('type', '=', 'general')]"/>
+                    <field name="date" select="1" />
+                    <field name="move_id" select="1"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="interest" on_change="onchange_interest(interest)"/>
+                    <field name="interest_percent"
+                           attrs="{'invisible': [('interest', '=', False)], 'required': [('interest', '=', True)]}"/>
+                    <field name="payment_term_id" select="1"/>
+                </group>
                 <notebook colspan="4">
                     <page string="Periods">
-                        <button type='action' name="%(action_add_period)d" string="Add period" colspan="2" attrs="{'readonly': [('state', 'in', ('confirmed', 'paid'))]}"></button>
-                        <button type='action' name="%(action_remove_period)d" string="Remove period" colspan="2" attrs="{'readonly': [('state', 'in', ('confirmed', 'paid'))]}"></button>
-                        <field name="period_ids" colspan="4" nolabel="1" readonly="1"/>
+                        <button type='action' name="%(action_add_period)d" string="Add period" colspan="1" attrs="{'readonly': [('state', 'in', ('confirmed', 'paid'))]}"/>
+                        <button type='action' name="%(action_remove_period)d" string="Remove period" colspan="1" attrs="{'readonly': [('state', 'in', ('confirmed', 'paid'))]}"/>
+                        <button type="object" name="compute_amounts" colspan="1" string="Recompute amounts" states="draft"/>
+                        <field name="period_ids" colspan="4" nolabel="1" readonly="1"
+                               attrs="{'invisible': [('type', 'not in', ('month', 'xml'))]}"/>
+                        <field name="e_period_ids" colspan="4" nolabel="1" readonly="1"
+                               attrs="{'invisible': [('type', 'not in', ('xml', 'xml2'))]}"/>
+                        <field name="y_period_ids" colspan="4" nolabel="1" readonly="1"
+                               attrs="{'invisible': [('type', '!=', 'year')]}"/>
                     </page>
                     <page string="Accounts">
                         <group colspan="4" col="10">
                             <group col="2" colspan="5">
-                                <field name="debit_vat_account_line_ids" nolabel="1" >
+                                <field name="debit_vat_account_line_ids" nolabel="1" string="Sales" >
                                     <tree editable="bottom" string="Debit Account Lines">
                                         <field name="account_id" />
                                         <field name="base_code_id" />
-                                        <field name="base_amount" />
+                                        <field name="base_amount" sum="Total Base" />
                                         <field name="tax_code_id" />
-                                        <field name="amount" sum="SUM"/>
+                                        <field name="amount" sum="Total Amount"/>
                                     </tree>
                                     <form>
                                         <field name="account_id" />
@@ -46,13 +53,15 @@
                                         <field name="amount" />
                                     </form>
                                 </field>
-                                <field name="credit_vat_account_line_ids" nolabel="1">
+                            </group>
+                            <group col="2" colspan="5">
+                                <field name="credit_vat_account_line_ids" nolabel="1" string="Purchases" >
                                     <tree editable="bottom" string="Credit Account Lines">
                                         <field name="account_id" />
                                         <field name="base_code_id" />
-                                        <field name="base_amount" />
+                                        <field name="base_amount" sum="Total Base" />
                                         <field name="tax_code_id" />
-                                        <field name="amount" sum="SUM"/>
+                                        <field name="amount" sum="Total Amount"/>
                                     </tree>
                                     <form>
                                         <field name="account_id" />
@@ -64,13 +73,16 @@
                                 </field>
                             </group>
                         </group>
+                        <field name="show_zero"/>
+                    </page>
+                    <page string="Tax Authority">
                         <group colspan="4">
                             <separator colspan="4" string="Previous Credits VAT"/>
-                            <field colspan="2" name="previous_credit_vat_account_id" nolabel="1"
+                            <field name="previous_credit_vat_account_id" nolabel="1"
                                    attrs="{'required':[('previous_credit_vat_amount','!=',0)]}"/>
                             <field name="previous_credit_vat_amount" nolabel="1"/>
                             <separator colspan="4" string="Previous Debits VAT"/>
-                            <field colspan="2" name="previous_debit_vat_account_id" nolabel="1"
+                            <field name="previous_debit_vat_account_id" nolabel="1"
                                    attrs="{'required':[('previous_debit_vat_amount','!=',0)]}"/>
                             <field name="previous_debit_vat_amount" nolabel="1"/>
                             <separator colspan="4" string="Other VAT Credits / Debits or Tax Compensations (Positive amounts for credits, negative for debits)"/>
@@ -84,16 +96,15 @@
                                     <field name="amount" />
                                 </form>
                             </field>
-                            <button type="object" name="compute_amounts" string="Recompute amounts" states="draft"></button>
                         </group>
-                    </page>
-                    <page string="Tax Authority">
-                        <field name="authority_partner_id" select="1" on_change="on_change_partner_id(authority_partner_id)"/>
-                        <field name="authority_vat_amount" />
-                        <field name="authority_vat_account_id" select="1" />
-                        <field name="residual" />
-                        <separator string="Payments" colspan="4"/>
-                        <field name="payment_ids" nolabel="1" colspan="4"/>
+                        <group colspan="4">
+                            <field name="authority_vat_amount" />
+                            <field name="authority_vat_account_id" select="1" />
+                            <field name="authority_partner_id" select="1" on_change="on_change_partner_id(authority_partner_id)"/>
+                            <field name="residual" />
+                            <separator string="Payments" colspan="4"/>
+                            <field name="payment_ids" nolabel="1" colspan="4"/>
+                        </group>
                     </page>
                     <page string="Print Options">
                         <group colspan="4" string="Page Number">
@@ -103,20 +114,20 @@
                             <field name="soggetto_codice_fiscale"
                                    on_change="onchange_fiscalcode(soggetto_codice_fiscale,
                                    'soggetto_codice_fiscale')" />
+                            <field name="dichiarante_codice_fiscale"
+                                   on_change="onchange_fiscalcode(dichiarante_codice_fiscale,
+                                   'dichiarante_codice_fiscale')" />
                             <field name="codice_carica" />
                             <field name="incaricato_trasmissione_codice_fiscale"
                                    on_change="onchange_fiscalcode(incaricato_trasmissione_codice_fiscale,
                                    'incaricato_trasmissione_codice_fiscale')" />
-                            <field name="incaricato_trasmissione_numero_CAF" />
                             <field name="incaricato_trasmissione_data_impegno" />
-                            <field name="progressivo_telematico"
-                                   readonly="1"/>
+                            <field name="incaricato_trasmissione_numero_CAF" />
                         </group>
                     </page>
                 </notebook>
                 <field name="state" select="1"/>
                 <field name="reconciled"/>
-                <field name="show_zero"/>
                 <button name="create_move" states="draft" string="Create Move" colspan="2"/>
                 <button name="set_draft" states="confirmed,paid" string="Set to draft" colspan="2"/>
             </form>
@@ -128,11 +139,13 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Vat statement">
-                <field name="date" />
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="type" />
+                <field name="name" />
                 <field name="journal_id" />
+                <field name="previous_credit_vat_amount" />
                 <field name="authority_vat_amount" />
                 <field name="state" />
-                <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>
@@ -195,7 +208,6 @@
         </field>
     </record>
 
-
     <!-- Attachment -->
     <record id="view_vat_settlement_attachment_form" model="ir.ui.view">
         <field name="name">account.vat.settlement.attachment.form</field>
@@ -220,3 +232,4 @@
 
 </data>
 </openerp>
+
