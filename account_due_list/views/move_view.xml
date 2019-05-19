@@ -56,5 +56,12 @@
             </field>
         </record>
 
+        <record model="ir.actions.act_window.view" id="act_account_partner_account_move_all">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="account_due_list.view_account_ledger_tree"/>
+            <field name="act_window_id" ref="account.act_account_partner_account_move_all"/>
+        </record>
+
     </data>
 </openerp>

@@ -251,7 +251,9 @@ class account_move_line(orm.Model):
             _get_reconcile, method=False,
             string='Reconcile',
             type='many2one',
-            relation="account.move.reconcile", store=False
+            relation="account.move.reconcile", store={
+                                                 'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['reconcile_partial_id', 'reconcile_id'], 10),
+            }
         ),
     }
 

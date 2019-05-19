@@ -240,7 +240,14 @@
                         <filter icon="terp-go-today" string="From Start Current Month"
                                 domain="[('date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="Start Date"
                                 name="start_month"/>
-
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Journal" icon="terp-folder-orange" domain="[]" context="{'group_by':'journal_id'}"/>
+                        <separator orientation="vertical"/>
+                        <filter string="Riconciliazione" icon="terp-go-month" domain="[('reconcile_function_id', '!=', False)]" context="{'group_by':'reconcile_function_id'}"/>
                     </group>
                 </search>
             </field>
@@ -276,7 +283,7 @@
                     <field name="analytic_account_id" group="analytic.group_analytic_accounting"/>
                     <field name="state" width="60" />
                     <field name="reconcile_function_id"/>
-                    <button name="action_view_reconcile" string="Open Reconcile" type="object" icon="gtk-zoom-in"/>
+                    <button name="action_view_reconcile" string="Open Reconcile" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('reconcile_function_id', '=', False)]}"/>
                     <field name="running_balance" />
                 </tree>
             </field>
