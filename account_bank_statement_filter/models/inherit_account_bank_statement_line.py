@@ -41,3 +41,49 @@ class account_bank_statement_line(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         open_line_ids = self.search(cr, uid, [('id', 'in', ids), ('statement_id.state', 'in', ['draft', 'open'])])
         return super(account_bank_statement_line, self).unlink(cr, uid, open_line_ids, context)
+
+    def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
+        obj_partner = self.pool.get('res.partner')
+        if context is None:
+            context = {}
+        if not partner_id:
+            return {}
+        part = obj_partner.browse(cr, uid, partner_id, context=context)
+        if not part.supplier and not part.customer:
+            partner_type = 'general'
+        elif part.supplier and part.customer:
+            if self.pool['account.invoice'].search(cr, uid, [('partner_id', '=', part.id), ('state', '=', 'open'), ('type', 'in', ['out_invoice', 'out_refund'])], context=context):
+                partner_type = 'customer'
+            else:
+                partner_type = 'supplier'
+        else:
+            if part.supplier:
+                partner_type = 'supplier'
+            if part.customer:
+                partner_type = 'customer'
+
+        res_type = self.onchange_type(cr, uid, ids, partner_id=partner_id, type=partner_type, context=context)
+        if res_type['value'] and res_type['value'].get('account_id', False):
+            return {'value': {'type': partner_type, 'account_id': res_type['value']['account_id']}}
+        return {'value': {'type': partner_type}}
+
+    def onchange_type(self, cr, uid, line_id, partner_id, type, context=None):
+        res = {'value': {}}
+        obj_partner = self.pool.get('res.partner')
+        if context is None:
+            context = {}
+        if not partner_id:
+            return res
+        account_id = False
+        line = self.browse(cr, uid, line_id, context=context)
+        #if not line or (line and not line[0].account_id):
+        part = obj_partner.browse(cr, uid, partner_id, context=context)
+        if type == 'supplier':
+            account_id = part.property_account_payable.id
+        else:
+            account_id = part.property_account_receivable.id
+
+        fpos = part.property_account_position
+        res['value']['account_id'] = self.pool.get('account.fiscal.position').map_account(cr, uid, fpos, account_id)
+
+        return res
