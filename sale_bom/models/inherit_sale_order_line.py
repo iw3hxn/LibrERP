@@ -59,8 +59,11 @@ class sale_order_line(orm.Model):
 
         result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product_id, qty, uom, qty_uos, uos, name, partner_id,
                                                                 lang, update_tax, date_order, packaging, fiscal_position, flag, context)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         # if not isinstance(ids, list):
         #     ids = [ids]
+        if not context.get('calculate_bom', True):
+            return result
         if product_id:
             uom_obj = self.pool['product.uom']
             product = self.pool['product.product'].browse(cr, uid, product_id, context=context)
