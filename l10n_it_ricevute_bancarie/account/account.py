@@ -109,7 +109,7 @@ class account_move_line(orm.Model):
         return self.pool['account.move.line'].search(cr, uid, [('stored_invoice_id', 'in', account_invoice_ids)], context=context)
 
     def _set_riba(self, cr, uid, ids, name, value, arg, context=None):
-        if not value:
+        if not name:
             return False
         if isinstance(ids, (int, long)):
             ids = [ids]
