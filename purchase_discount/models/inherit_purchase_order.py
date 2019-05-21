@@ -82,6 +82,11 @@ class purchase_order(orm.Model):
                     'price_unit': order_line.price_unit, })
         return res
 
+    def _get_do_merge_order_line_keys(self):
+        res = super(purchase_order, self)._get_do_merge_order_line_keys()
+        res.append('discount')
+        return res
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
