@@ -27,12 +27,6 @@
                 <field name="state" position="after">
                     <field name="running_balance" />
                 </field>
-                <field name="debit" position="attributes">
-                    <attribute name="invisible">not context.get('payment_filter', False)</attribute>
-                </field>
-                <field name="credit" position="attributes">
-                    <attribute name="invisible">not context.get('payment_filter', False)</attribute>
-                </field>
             </field>
         </record>
 
@@ -45,9 +39,9 @@
                 <filter name="posted" position="after">
                     <separator/>
                     <filter icon="terp-sale" string="Receivable" domain="[('account_id.type','=','receivable')]"
-                                help="Receivable payments" invisible="not context.get('payment_filter', False)"/>
+                                help="Receivable payments" invisible="context.get('payment_filter', False)"/>
                     <filter icon="terp-purchase" string="Payable" domain="[('account_id.type','=','payable')]"
-                                help="Payable payments" invisible="not context.get('payment_filter', False)"/>
+                                help="Payable payments" invisible="context.get('payment_filter', False)"/>
                 </filter>
                 <field name="partner_id" position="attributes">
                     <attribute name="context">{'filter_partner_id': True}</attribute>

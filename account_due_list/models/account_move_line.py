@@ -204,15 +204,9 @@ class account_move_line(orm.Model):
             return {}
 
         res = {}
-        cr.execute(
-            'SELECT id, coalesce(reconcile_partial_id, 0) + coalesce(reconcile_id, 0)FROM account_move_line WHERE id in ({line_ids})'.format(line_ids=','.join(map(str, ids))))
-        move_lines = cr.fetchall()
-        for move_line in move_lines:
-            if move_line[1]:
-                res[move_line[0]] = move_line[1]
-            else:
-                res[move_line[0]] = False
-
+        for move_line in self.read(cr, uid, ids, ['reconcile_partial_id', 'reconcile_partial_id'], context=context, load='_obj'):
+            reconcile_id = move_line['reconcile_partial_id'] or move_line['reconcile_id'] or False
+            res[move_line.id] = reconcile_id
         return res
 
     _columns = {
@@ -251,9 +245,7 @@ class account_move_line(orm.Model):
             _get_reconcile, method=False,
             string='Reconcile',
             type='many2one',
-            relation="account.move.reconcile", store={
-                                                 'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['reconcile_partial_id', 'reconcile_id'], 10),
-            }
+            relation="account.move.reconcile", store=False
         ),
     }
 
