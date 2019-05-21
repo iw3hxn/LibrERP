@@ -19,5 +19,16 @@
             </field>
         </record>
 
+        <record id="res_bank_riba" model="ir.ui.view">
+            <field name="name">res.bank.riba</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account_bank.res_bank_riba"/>
+            <field name="arch" type="xml">
+                <field name="company_bank_id" position="after">
+                    <field name="company_riba_bank_id" domain="[('company_id', '=', company_id), ('state', '=', 'iban')]" />
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>

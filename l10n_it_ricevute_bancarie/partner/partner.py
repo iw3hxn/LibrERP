@@ -24,10 +24,10 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import fields, orm
 
 
-class res_partner(osv.osv):
+class res_partner(orm.Model):
 
     _name = "res.partner"
     _inherit = "res.partner"
@@ -35,6 +35,6 @@ class res_partner(osv.osv):
     _columns = {
         'group_riba': fields.boolean("Group Ri.Ba.",
             help="Group Ri.Ba. by customer while issuing"),
+        'company_riba_bank_id': fields.many2one('res.partner.bank', string='Company Ri.Ba bank for Bank Transfer'),
     }
 
-res_partner()

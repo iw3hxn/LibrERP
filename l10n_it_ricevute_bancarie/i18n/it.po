@@ -1120,3 +1120,7 @@ msgstr "Nessuna banca o IBAN specificati per "
 msgid "Ri.Ba. %s - line %s"
 msgstr "Ri.Ba. %s - riga %s"
 
+#. module: l10n_it_ricevute_bancarie
+#: field:res.partner,company_riba_bank_id:0
+msgid "Company Ri.Ba bank for Bank Transfer"
+msgstr "Banca Aziendale per appoggio Ri.Ba. fornitori"
