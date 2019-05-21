@@ -48,7 +48,11 @@ class purchase_order(orm.Model):
                     line.product_qty, line.product_uom.id,
                     order.partner_id.id, order.date_order, order.fiscal_position.id,
                     line.date_planned, line.name, notes=line.notes, context=context)
-
-                line.write(res['value'])
+                line_vals = res['value'].copy()
+                if 'taxes_id' in line_vals:
+                    del line_vals['taxes_id']
+                if 'product_purchase_order_history_ids' in line_vals:
+                    del line_vals['product_purchase_order_history_ids']
+                line.write(line_vals)
             purchase.write({'recalculate_prices': False})
         return True
