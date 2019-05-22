@@ -4,8 +4,7 @@
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
 
 
-from openerp.osv import fields, orm, osv
-from openerp.tools.translate import _
+from openerp.osv import fields, orm
 
 
 class account_invoice(orm.Model):
@@ -35,7 +34,7 @@ class account_invoice(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
         self._update_blocked_payment(cr, uid, ids, False, context)
 
-        return self.write(cr, uid, ids, {'to_pay': True})
+        return self.write(cr, uid, ids, {'to_pay': True}, context)
 
     def payment_disapproves(self, cr, uid, ids, context=None):
         '''
