@@ -362,7 +362,10 @@ class StockMove(orm.Model):
         res = super(StockMove, self).default_get(cr, uid, fields, context)
         if context.get('edit_mrp_production', False):
             location_id = context.get('location_id', False)
-            location_dest_id = context.get('location_dest_id', False)
+            product_id = context.get('production_product_id', False)
+            location_dest_id = False
+            if product_id:
+                location_dest_id = self.pool['product.product'].browse(cr, uid, product_id, context).product_tmpl_id.property_stock_production.id
             res['location_id'] = location_id
             res['location_dest_id'] = location_dest_id
         return res
