@@ -204,9 +204,9 @@ class account_move_line(orm.Model):
             return {}
 
         res = {}
-        for move_line in self.read(cr, uid, ids, ['reconcile_partial_id', 'reconcile_partial_id'], context=context, load='_obj'):
-            reconcile_id = move_line['reconcile_partial_id'] or move_line['reconcile_id'] or False
-            res[move_line.id] = reconcile_id
+        for line in self.read(cr, uid, ids, ['reconcile_partial_id', 'reconcile_id'], context=context, load='_obj'):
+            reconcile_id = line['reconcile_partial_id'] or line['reconcile_id'] or False
+            res[line['id']] = reconcile_id
         return res
 
     _columns = {
