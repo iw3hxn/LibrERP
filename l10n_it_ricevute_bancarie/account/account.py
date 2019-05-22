@@ -73,6 +73,31 @@ class res_partner_bank_add(orm.Model):
     }
 
 
+class action_move(orm.Model):
+    _inherit = "account.move"
+
+    def button_validate(self, cr, uid, ids, context=None):
+        res = super(action_move, self).button_validate(cr, uid, ids, context)
+        distinta_line_pool = self.pool['riba.distinta.line']
+        invoice_pool = self.pool['account.invoice']
+        for move in self.browse(cr, uid, ids, context=context):
+            distinta_line_ids = distinta_line_pool.search(cr, uid, [('unsolved_move_id', '=', move.id)], context=context)
+            if distinta_line_ids:
+                distinta_line = distinta_line_pool.browse(cr, uid, distinta_line_ids[0], context)
+                for move_line in move.line_id:
+                    account_id = distinta_line.partner_id.property_account_receivable.id
+                    fpos = distinta_line.partner_id.property_account_position
+                    account_id = self.pool['account.fiscal.position'].map_account(cr, uid, fpos, account_id)
+                    if move_line.account_id.id == account_id and move_line.partner_id:  # wizard.over
+                        # due_effects_account_id.id:
+                        for riba_move_line in distinta_line.move_line_ids:
+                            invoice_pool.write(cr, uid, riba_move_line.move_line_id.invoice.id, {
+                                'unsolved_move_line_ids': [(4, move_line.id)],
+                            }, context=context)
+
+        return res
+
+
 # se distinta_line_ids == None allora non è stata emessa
 class account_move_line(orm.Model):
     _inherit = "account.move.line"
