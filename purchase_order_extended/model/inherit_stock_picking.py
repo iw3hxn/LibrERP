@@ -46,19 +46,20 @@ class stock_picking(orm.Model):
         purchase_line_obj = self.pool['purchase.order.line']
         invoice_obj = self.pool['account.invoice']
         invoice_line_obj = self.pool['account.invoice.line']
-        purchase_lines = picking.purchase_id.order_line
-        inv_line_data = {}
-        for line in purchase_lines:
-            if line.product_id.type == 'service' and not line.invoiced:
-                if line.invoiced:
-                    continue
-                acc_id = purchase_obj._choose_account_from_po_line(cr, uid, line, context=context)
-                inv_line_data = purchase_obj._prepare_inv_line(cr, uid, acc_id, line, context=context)
-                inv_line_data.update({'origin': line.order_id.name, 'invoice_id': invoice_id})
-                inv_id = invoice_line_obj.create(cr, uid, inv_line_data, context=context)
-                purchase_line_obj.write(cr, uid, [line.id], {'invoiced': True, 'invoice_lines': [(4, inv_id)]})
+        if picking.purchase_id:
+            purchase_lines = picking.purchase_id.order_line
+            inv_line_data = {}
+            for line in purchase_lines:
+                if line.product_id.type == 'service' and not line.invoiced:
+                    if line.invoiced:
+                        continue
+                    acc_id = purchase_obj._choose_account_from_po_line(cr, uid, line, context=context)
+                    inv_line_data = purchase_obj._prepare_inv_line(cr, uid, acc_id, line, context=context)
+                    inv_line_data.update({'origin': line.order_id.name, 'invoice_id': invoice_id})
+                    inv_id = invoice_line_obj.create(cr, uid, inv_line_data, context=context)
+                    purchase_line_obj.write(cr, uid, [line.id], {'invoiced': True, 'invoice_lines': [(4, inv_id)]})
 
-        if inv_line_data:
-            invoice_obj.button_reset_taxes(cr, uid, [invoice_id], context=context)
+            if inv_line_data:
+                invoice_obj.button_reset_taxes(cr, uid, [invoice_id], context=context)
 
         return res
