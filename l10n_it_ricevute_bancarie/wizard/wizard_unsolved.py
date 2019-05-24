@@ -146,24 +146,25 @@ class RibaUnsolved(orm.TransientModel):
                     'date_maturity': wizard.new_due_date,  # distinta_line.due_date,
                 }))
 
-        if wizard.effects_amount:
-            line_id_vals.append(
-                (0, 0, {
-                    'name': _('Effects'),
-                    'account_id': wizard.overdue_effects_account_id.id,
-                    'credit': wizard.effects_amount,
-                    'debit': 0.0,
-                }))
+        if (wizard.effects_amount and wizard.riba_bank_amount) and wizard.effects_amount != wizard.riba_bank_amount:
+            if wizard.effects_amount:
+                line_id_vals.append(
+                    (0, 0, {
+                        'name': _('Effects'),
+                        'account_id': wizard.overdue_effects_account_id.id,
+                        'credit': wizard.effects_amount,
+                        'debit': 0.0,
+                    }))
 
-        if wizard.riba_bank_amount:
-            line_id_vals.append(
-                (0, 0, {
-                    'name': _('Ri.Ba. Bank'),
-                    'account_id': wizard.overdue_effects_account_id.id,
-                    'debit': wizard.riba_bank_amount,
-                    'credit': 0.0,
-                })
-            )
+            if wizard.riba_bank_amount:
+                line_id_vals.append(
+                    (0, 0, {
+                        'name': _('Ri.Ba. Bank'),
+                        'account_id': wizard.overdue_effects_account_id.id,
+                        'debit': wizard.riba_bank_amount,
+                        'credit': 0.0,
+                    })
+                )
 
         if wizard.bank_amount:
             line_id_vals.append(
