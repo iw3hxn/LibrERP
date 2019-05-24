@@ -213,8 +213,8 @@ msgid ""
 "L(3)'; '1250'"
 msgstr ""
 "Si può fare riferimento alle altre righe usando il loro numero di sequenza "
-"(ad es. 'L(1)' per la prima riga). Esempi di codice: 'L(1) * 0.2'; 'L(2) - "
-"L(1)'; 'L(1) + L(2) + L(3)'; '1250.00'"
+"(ad es. L(1) per la prima riga). Esempi di codice: L(1) * 0.2 o L(2) - "
+"L(1) o L(1) + L(2) + L(3) o 1250.00"
 
 #. module: account_move_template
 #: selection:account.document.template.line,type:0
