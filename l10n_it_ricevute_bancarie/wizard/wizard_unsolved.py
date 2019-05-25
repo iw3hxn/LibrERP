@@ -132,49 +132,73 @@ class RibaUnsolved(orm.TransientModel):
                 not wizard.bank_account_id or
                 not wizard.bank_expense_account_id):
             raise orm.except_orm(_('Error'), _('Every account is mandatory'))
-        move_vals = {
-            'ref': _('Unsolved Ri.Ba. %s - line %s') % (
-                distinta_line.distinta_id.name, distinta_line.sequence),
-            'journal_id': wizard.unsolved_journal_id.id,
-            'line_id': [
+
+        line_id_vals = []
+        if wizard.overdue_effects_amount:
+            line_id_vals.append(
                 (0, 0, {
                     'name': _('Overdue Effects'),
-                    'account_id': distinta_line.partner_id.property_account_receivable.id,#wizard.overdue_effects_account_id.id,
+                    'account_id': distinta_line.partner_id.property_account_receivable.id,
+                    # wizard.overdue_effects_account_id.id, #todo in realtà va mappato con il fiscal_position
                     'debit': wizard.overdue_effects_amount,
                     'credit': 0.0,
                     'partner_id': distinta_line.partner_id.id,
-                    'date_maturity': wizard.new_due_date,#distinta_line.due_date,
-                    }),
-                (0, 0, {
-                    'name': _('Effects'),
-                    'account_id': wizard.overdue_effects_account_id.id,
-                    'credit': wizard.effects_amount,
-                    'debit': 0.0,
-                    }),
-                (0, 0, {
-                    'name': _('Ri.Ba. Bank'),
-                    'account_id': wizard.overdue_effects_account_id.id,
-                    'debit': wizard.riba_bank_amount,
-                    'credit': 0.0,
-                    }),
+                    'date_maturity': wizard.new_due_date,  # distinta_line.due_date,
+                }))
+
+        if (wizard.effects_amount and wizard.riba_bank_amount) and wizard.effects_amount != wizard.riba_bank_amount:
+            if wizard.effects_amount:
+                line_id_vals.append(
+                    (0, 0, {
+                        'name': _('Effects'),
+                        'account_id': wizard.overdue_effects_account_id.id,
+                        'credit': wizard.effects_amount,
+                        'debit': 0.0,
+                    }))
+
+            if wizard.riba_bank_amount:
+                line_id_vals.append(
+                    (0, 0, {
+                        'name': _('Ri.Ba. Bank'),
+                        'account_id': wizard.overdue_effects_account_id.id,
+                        'debit': wizard.riba_bank_amount,
+                        'credit': 0.0,
+                    })
+                )
+
+        if wizard.bank_amount:
+            line_id_vals.append(
                 (0, 0, {
                     'name': _('Bank'),
                     'account_id': wizard.bank_account_id.id,
                     'credit': wizard.bank_amount,
                     'debit': 0.0,
-                }),
+                })
+            )
+
+        if wizard.expense_amount:
+            line_id_vals.append(
                 (0, 0, {
                     'name': _('Expenses'),
                     'account_id': wizard.bank_expense_account_id.id,
                     'debit': wizard.expense_amount,
                     'credit': 0.0,
-                }),
-            ]
+                })
+            )
+
+        move_vals = {
+            'ref': _('Unsolved Ri.Ba. %s - line %s') % (
+                distinta_line.distinta_id.name, distinta_line.sequence),
+            'journal_id': wizard.unsolved_journal_id.id,
+            'line_id': line_id_vals
         }
         move_id = move_pool.create(cr, uid, move_vals, context=context)
 
         for move_line in move_pool.browse(cr, uid, move_id, context=context).line_id:
-            if move_line.account_id.id == distinta_line.partner_id.property_account_receivable.id: #wizard.overdue_effects_account_id.id:
+            account_id = distinta_line.partner_id.property_account_receivable.id
+            fpos = distinta_line.partner_id.property_account_position
+            account_id = self.pool['account.fiscal.position'].map_account(cr, uid, fpos, account_id)
+            if move_line.account_id.id == account_id and move_line.partner_id:  # wizard.overdue_effects_account_id.id:
                 for riba_move_line in distinta_line.move_line_ids:
                     invoice_pool.write(cr, uid, riba_move_line.move_line_id.invoice.id, {
                         'unsolved_move_line_ids': [(4, move_line.id)],
@@ -186,6 +210,11 @@ class RibaUnsolved(orm.TransientModel):
             })
         wf_service.trg_validate(
             uid, 'riba.distinta', distinta_line.distinta_id.id, 'unsolved', cr)
+
+        view = self.pool['ir.model.data'].get_object_reference(cr, uid, 'l10n_it_ricevute_bancarie',
+                                                               'view_account_move_riba_form')
+        view_id = view and view[1] or False
+
         return {
             'name': _('Unsolved Entry'),
             'view_type': 'form',
@@ -193,5 +222,6 @@ class RibaUnsolved(orm.TransientModel):
             'res_model': 'account.move',
             'type': 'ir.actions.act_window',
             'target': 'current',
+            'view_id': view_id,
             'res_id': move_id or False,
         }

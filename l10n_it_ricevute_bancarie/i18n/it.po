@@ -376,6 +376,13 @@ msgid "Issue Ri.Ba."
 msgstr "Emetti Ri.Ba."
 
 #. module: l10n_it_ricevute_bancarie
+#: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.action_riba_da_ricevere
+#: model:ir.ui.menu,name:l10n_it_ricevute_bancarie.menu_riba_da_emettere_due_list
+#: model:ir.ui.menu,name:l10n_it_ricevute_bancarie.menu_riba_da_ricevere
+msgid "Receive Ri.Ba."
+msgstr "Pagamenti Ri.Ba."
+
+#. module: l10n_it_ricevute_bancarie
 #: view:account.invoice:0
 msgid "Unsolved Ri.Ba."
 msgstr "Ri.Ba. insolute"
@@ -1120,3 +1127,13 @@ msgstr "Nessuna banca o IBAN specificati per "
 msgid "Ri.Ba. %s - line %s"
 msgstr "Ri.Ba. %s - riga %s"
 
+#. module: l10n_it_ricevute_bancarie
+#: field:res.partner,company_riba_bank_id:0
+msgid "Company Ri.Ba bank for Bank Transfer"
+msgstr "Banca Aziendale per appoggio Ri.Ba. fornitori"
+
+#. module: account
+#: model:ir.actions.act_window,name:account.action_bank_tree
+#: model:ir.ui.menu,name:account.menu_action_bank_tree
+msgid "Setup your Bank Accounts"
+msgstr "Conti Bancari Aziendali"

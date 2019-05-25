@@ -14,6 +14,9 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Distinte Ri.Ba.">
+                    <filter string="Clienti" name="customer" icon="terp-personal" domain="[('configuration_type','=', 'customer')]" help="Distinte Clienti"/>
+                    <filter string="Fornitori" name="supplier" icon="terp-personal" domain="[('configuration_type','=', 'supplier')]" help="Distinte Fornitori"/>
+                    <separator orientation="vertical"/>
                     <filter icon="terp-check" string="Draft" domain="[('state','=','draft')]" help="Draft"/>
                     <filter icon="terp-dolar" string="Confirmed" domain="[('state','=','accepted')]" help="Accepted"/>
                     <filter icon="terp-dolar_ok!" string="Paid" domain="[('state','=','paid')]" help="Paid"/>
@@ -36,6 +39,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Distinte Ri.Ba.">
+                    <field name="configuration_type" />
                     <field name="name" />
                     <field name="config" />
                     <field name="date_accepted" />
@@ -287,9 +291,7 @@
                     <notebook colspan="4">
                         <page string="Journal Items">
                             <field name="balance" invisible="1"/>
-                            <field colspan="4" name="line_id" nolabel="1" height="250" widget="one2many_list" 
-                            on_change="onchange_line_id(line_id)"
-                            context="{'balance': balance , 'journal': journal_id }">
+                            <field colspan="4" name="line_id" nolabel="1" height="250" widget="one2many_list" on_change="onchange_line_id(line_id)" context="{'balance': balance , 'journal': journal_id }">
                                 <form string="Journal Item">
                                     <group col="6" colspan="4">
                                         <field name="name"/>
@@ -357,6 +359,7 @@
                                     <field name="state"/>
                                     <field name="reconcile_id"/>
                                     <field name="reconcile_partial_id" groups="base.group_extended"/>
+                                    <field name="riba" />
                                 </tree>
                             </field>
                             <separator colspan="4" string="Internal Note"/>

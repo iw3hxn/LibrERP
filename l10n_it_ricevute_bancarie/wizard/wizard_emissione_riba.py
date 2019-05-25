@@ -38,6 +38,30 @@ class emissione_riba(orm.TransientModel):
         'configurazione': fields.many2one('riba.configurazione', 'Configurazione', required=True),
     }
 
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        riba_configurazione_obj = self.pool['riba.configurazione']
+        result = super(emissione_riba, self).fields_view_get(cr, uid, view_id, view_type, context=context, toolbar=toolbar, submenu=submenu)
+        if view_type == 'form':
+            if result['fields'].get('configurazione', False):
+                account_move_line_obj = self.pool['account.move.line']
+                account_move_customer_ids = account_move_line_obj.search(cr, uid, [('id', 'in', context.get('active_ids', [])), ('account_id.type', '=', 'receivable')], context=context)
+                account_move_supplier_ids = account_move_line_obj.search(cr, uid, [('id', 'in', context.get('active_ids', [])), ('account_id.type', '=', 'payable')], context=context)
+                if account_move_customer_ids and not account_move_supplier_ids:
+                    configuration_type = 'customer'
+                elif not account_move_customer_ids and account_move_supplier_ids:
+                    configuration_type = 'supplier'
+                else:
+                    raise orm.except_orm(
+                        'Errore',
+                        'Crediti / Debiti assieme')
+                context['configuration_type'] = configuration_type
+                configurazione_ids = riba_configurazione_obj.search(cr, uid, [('configuration_type', '=', configuration_type)], context=context)
+                result['fields']['configurazione']['domain'] = [('id', 'in', configurazione_ids)]
+                result['fields']['configurazione']['selection'] = riba_configurazione_obj.name_search(cr, uid, '', [('id', 'in', configurazione_ids)], context=context)
+
+        return result
+
     def crea_distinta(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -87,30 +111,40 @@ class emissione_riba(orm.TransientModel):
 
         # create lines
         conta = 1
-        no_bank = []
-        for move_line in move_line_obj.browse(cr, uid, move_line_ids, context=context):
-            if not (move_line.partner_id.bank_riba_id or move_line.partner_id.bank_ids):
-                if move_line.partner_id.name not in no_bank:
-                    no_bank.append(move_line.partner_id.name)
-                continue
-        if no_bank:
-            raise orm.except_orm('Attenzione!', 'Il cliente %s non ha la banca!!!' % '\n'.join(no_bank))
+
+
+        # check bank but only for customer
+        if wizard_obj.configurazione.configuration_type == 'customer':
+            no_bank = []
+            for move_line in move_line_obj.browse(cr, uid, move_line_ids, context=context):
+                if not (move_line.partner_id.bank_riba_id or move_line.partner_id.bank_ids):
+                    if move_line.partner_id.name not in no_bank:
+                        no_bank.append(move_line.partner_id.name)
+                    continue
+            if no_bank:
+                raise orm.except_orm('Attenzione!', 'Il cliente %s non ha la banca!!!' % '\n'.join(no_bank))
 
         for move_line in move_line_obj.browse(cr, uid, move_line_ids, context=context):
-            if move_line.partner_id.bank_riba_id:
-                bank_riba_id = move_line.partner_id.bank_riba_id
-            elif move_line.partner_id.bank_ids:
-                bank_riba_id = []
-                bank_id = move_line.partner_id.bank_ids[0]
+            if wizard_obj.configurazione.configuration_type == 'customer':
+                if move_line.partner_id.bank_riba_id:
+                    bank_riba_id = move_line.partner_id.bank_riba_id.id
+                    bank_id = False
+                elif move_line.partner_id.bank_ids:
+                    bank_riba_id = False
+                    bank_id = move_line.partner_id.bank_ids and move_line.partner_id.bank_ids[0].id
+            else:
+                bank_riba_id = False
+                bank_id = False
+
             if move_line.partner_id.group_riba:
                 for key in grouped_lines:
                     if key[0] == move_line.partner_id.id and key[1] == move_line.date_maturity:
                         if bank_riba_id:
                             rdl_id = create_rdl(conta, rd_id, move_line.date_maturity, move_line.partner_id.id,
-                                            wizard_obj.configurazione.acceptance_account_id.id, None, bank_riba_id.id)
+                                            wizard_obj.configurazione.acceptance_account_id.id, None, bank_riba_id)
                         else:
                             rdl_id = create_rdl(conta, rd_id, move_line.date_maturity, move_line.partner_id.id,
-                                            wizard_obj.configurazione.acceptance_account_id.id, bank_id.id, None)
+                                            wizard_obj.configurazione.acceptance_account_id.id, bank_id, None)
 #                        total = 0.0
 #                        invoice_date_group = ''
                         for grouped_line in grouped_lines[key]:
@@ -124,10 +158,11 @@ class emissione_riba(orm.TransientModel):
             else:
                 if bank_riba_id:
                     rdl_id = create_rdl(conta, rd_id, move_line.date_maturity, move_line.partner_id.id,
-                                    wizard_obj.configurazione.acceptance_account_id.id, None, bank_riba_id.id)
+                                    wizard_obj.configurazione.acceptance_account_id.id, None, bank_riba_id)
                 else:
                     rdl_id = create_rdl(conta, rd_id, move_line.date_maturity, move_line.partner_id.id,
-                                    wizard_obj.configurazione.acceptance_account_id.id, bank_id.id, None)
+                                    wizard_obj.configurazione.acceptance_account_id.id, bank_id, None)
+
                 riba_distinta_move_line_obj.create(cr, uid, {
                     'riba_line_id': rdl_id,
                     'amount': move_line.residual,

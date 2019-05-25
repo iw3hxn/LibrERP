@@ -24,9 +24,9 @@
 #
 ##############################################################################
 
-import configurazione
-import partner
-import riba
-import account
-import wizard
-import bank
+from . import account
+from . import bank
+from . import configurazione
+from . import partner
+from . import riba
+from . import wizard

@@ -10,6 +10,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Ri.Ba. - Configurazione">
+                    <field name="configuration_type" on_change="onchange_configuration_type(configuration_type, context)"/>
                     <field name="name" />
                     <field name="tipo" />
                     <field name="bank_id" />
@@ -29,6 +30,20 @@
                         <field name="protest_charge_account_id" />
                     </group>
                 </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_riba_configurazione_tree">
+            <field name="name">riba.configurazione.tree</field>
+            <field name="model">riba.configurazione</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Ri.Ba. - Configurazione">
+                    <field name="configuration_type" />
+                    <field name="name" />
+                    <field name="tipo" />
+                    <field name="bank_id" />
+                </tree>
             </field>
         </record>
         <!-- ====================================================== -->

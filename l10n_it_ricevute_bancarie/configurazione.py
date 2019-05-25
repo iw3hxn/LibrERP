@@ -26,12 +26,19 @@
 
 from osv import fields, osv
 
+CONFIGURATION_TYPE_SELECTION = [
+            ('customer', 'Cliente'),
+            ('supplier', 'Fornitore')
+]
+
+
 class riba_configurazione(osv.osv):
 
     _name = "riba.configurazione"
     _description = "Parametri di configurazione per le Ricevute Bancarie"
 
     _columns = {
+        'configuration_type': fields.selection(CONFIGURATION_TYPE_SELECTION, 'Tipo di Configurazione', select=True, required='True'),
         'name' : fields.char("Descrizione", size=64, required=True),
         'tipo' : fields.selection((('sbf', 'Salvo buon fine'),('incasso', 'Al dopo incasso')), 
             "Modalità Emissione", required=True),
@@ -42,7 +49,7 @@ class riba_configurazione(osv.osv):
             domain=[('type', '=', 'bank')],
             help="Journal used when Ri.Ba. is accepted by the bank"),
         'acceptance_account_id' : fields.many2one('account.account', "Acceptance account", 
-            domain=[('type', '=', 'receivable')], help='Account used when Ri.Ba. is accepted by the bank'),
+            domain=[('type', 'in', ('receivable', 'payable'))], help='Account used when Ri.Ba. is accepted by the bank'),
             
         'company_id': fields.many2one('res.company', 'Company',required=True),
         
@@ -58,14 +65,23 @@ class riba_configurazione(osv.osv):
             domain=[('type', '=', 'bank')],
             help="Journal used when Ri.Ba. is unsolved"),
         'overdue_effects_account_id' : fields.many2one('account.account', "Overdue Effects account", 
-            domain=[('type', '=', 'receivable')]),
+            domain=[('type', 'in', ('receivable', 'payable'))]),
         'protest_charge_account_id' : fields.many2one('account.account', "Protest charge account"),
     }
 
     _defaults = {
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'riba.configurazione', context=c),
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.company')._company_default_get(cr, uid, 'riba.configurazione', context=c),
+        'configuration_type': 'customer'
     }
-    
+
+    def onchange_configuration_type(self, cr, uid, ids, configuration_type, context=None):
+        account_type = 'receivable' if configuration_type == 'customer' else 'payable'
+        domain = {
+            'acceptance_account_id': [('type', '=', account_type)],
+            'overdue_effects_account_id': [('type', '=', account_type)],
+        }
+        return {'value': {}, 'domain': domain, 'warning': {}}
+
     def get_default_value_by_distinta(self, cr, uid, field_name, context=None):
         if context is None:
             context = {}

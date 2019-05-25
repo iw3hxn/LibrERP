@@ -73,11 +73,37 @@ class res_partner_bank_add(orm.Model):
     }
 
 
+class action_move(orm.Model):
+    _inherit = "account.move"
+
+    def button_validate(self, cr, uid, ids, context=None):
+        res = super(action_move, self).button_validate(cr, uid, ids, context)
+        distinta_line_pool = self.pool['riba.distinta.line']
+        invoice_pool = self.pool['account.invoice']
+        for move in self.browse(cr, uid, ids, context=context):
+            distinta_line_ids = distinta_line_pool.search(cr, uid, [('unsolved_move_id', '=', move.id)], context=context)
+            if distinta_line_ids:
+                distinta_line = distinta_line_pool.browse(cr, uid, distinta_line_ids[0], context)
+                for move_line in move.line_id:
+                    account_id = distinta_line.partner_id.property_account_receivable.id
+                    fpos = distinta_line.partner_id.property_account_position
+                    account_id = self.pool['account.fiscal.position'].map_account(cr, uid, fpos, account_id)
+                    if move_line.account_id.id == account_id and move_line.partner_id:  # wizard.over
+                        # due_effects_account_id.id:
+                        for riba_move_line in distinta_line.move_line_ids:
+                            invoice_pool.write(cr, uid, riba_move_line.move_line_id.invoice.id, {
+                                'unsolved_move_line_ids': [(4, move_line.id)],
+                            }, context=context)
+
+        return res
+
+
 # se distinta_line_ids == None allora non è stata emessa
 class account_move_line(orm.Model):
     _inherit = "account.move.line"
 
-    def _get_line_values(self, cr, uid, ids, field_name, arg, context):
+    def _get_line_values(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = {}
         for line in self.browse(cr, uid, ids, context=context):
             res[line.id] = {
@@ -91,22 +117,104 @@ class account_move_line(orm.Model):
                     res[line.id]['cup'] = line.invoice.cup
         return res
 
+    def _get_fields_riba_function(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = dict.fromkeys(ids, False)
+        for line in self.browse(cr, uid, ids, context):
+            if line.stored_invoice_id:
+                if line.stored_invoice_id.payment_term:
+                    res[line.id] = line.stored_invoice_id.payment_term.riba
+        return res
+
+    def _get_riba_from_account_invoice(self, cr, uid, ids, context=None):
+        return self.pool['account.move.line'].search(cr, uid, [('stored_invoice_id', 'in', ids)], context=context)
+
+    def _get_riba_from_payment_term(self, cr, uid, ids, context=None):
+        account_invoice_ids = self.pool['account.invoice'].search(cr, uid, [('payment_term', 'in', ids)], context=context)
+        return self.pool['account.move.line'].search(cr, uid, [('stored_invoice_id', 'in', account_invoice_ids)], context=context)
+
+    def _set_riba(self, cr, uid, ids, name, value, arg, context=None):
+        if not name:
+            return False
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        cr.execute("""update account_move_line set
+                    riba=%s where id in (%s)""", (value, ', '.join([str(line_id) for line_id in ids])))
+        return True
+
+    def _get_invoice(self, cr, uid, ids, field_name, arg, context=None):
+        return super(account_move_line, self)._get_invoice(cr, uid, ids, field_name, arg, context)
+
+    def _get_move_lines_riba(self, cr, uid, ids, context=None):
+        res = self.pool['account.move.line']._get_move_lines(cr, uid, ids, context)
+        for invoice in self.browse(cr, uid, ids, context=context):
+            for line in invoice.unsolved_move_line_ids:
+                if line.id not in res:
+                    res.append(line.id)
+        return res
+
+    def _get_riba_bank_id(self, cr, uid, ids, field_name, arg, context=None):
+        res = dict.fromkeys(ids, False)
+        context['only_iban'] = True
+
+        cr.execute("""SELECT 
+                account_move_line.id,
+                res_partner_bank.id,
+                account_payment_term.riba
+            FROM
+                public.account_invoice,
+                public.account_move_line,
+                public.account_payment_term,
+                public.res_partner_bank,
+                public.riba_configurazione
+            WHERE
+                account_move_line.stored_invoice_id = account_invoice.id AND
+                account_payment_term.id = account_invoice.payment_term AND
+                res_partner_bank.bank = account_invoice.bank_riba_id AND
+                res_partner_bank.partner_id = account_invoice.company_id AND
+                riba_configurazione.bank_id = res_partner_bank.id AND
+                account_invoice.bank_riba_id IS NOT NULL AND
+                account_move_line.id in ({move_ids})
+        """.format(move_ids=', '.join([str(move_id) for move_id in ids])))
+        val = cr.fetchall()
+
+        for el in val:
+            res[el[0]] = el[1]
+
+        return res
+
     _columns = {
         'distinta_line_ids': fields.one2many('riba.distinta.move.line', 'move_line_id', "Dettaglio riba"),
-        'riba': fields.related('stored_invoice_id', 'payment_term', 'riba',
-            type='boolean', string='RiBa', store=False),
+        'riba': fields.function(_get_fields_riba_function, type='boolean', string='RiBa', fnct_inv=_set_riba, store={
+            'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['stored_invoice_id'], 6000),
+            'account.invoice': (_get_riba_from_account_invoice, ['payment_term'], 6000),
+            'account.payment.term': (_get_riba_from_payment_term, ['riba'], 6000),
+        }),
         'unsolved_invoice_ids': fields.many2many('account.invoice', 'invoice_unsolved_line_rel', 'line_id', 'invoice_id', 'Unsolved Invoices'),
         'iban': fields.related('partner_id', 'bank_ids', 'iban', type='char', string='IBAN', store=False),
         'abi': fields.related('partner_id', 'bank_riba_id', 'abi', type='char', string='ABI', store=False),
         'cab': fields.related('partner_id', 'bank_riba_id', 'cab', type='char', string='CAB', store=False),
         'cig': fields.function(_get_line_values, string="Cig", type='char', size=64, method=True, multi="line"),
         'cup': fields.function(_get_line_values, string="Cup", type='char', size=64, method=True, multi="line"),
+        'stored_invoice_id': fields.function(_get_invoice, method=True, string="Invoice", type="many2one", relation="account.invoice",
+                                             store={
+                                                 'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['move_id'], 10),
+                                                 'account.invoice': (_get_move_lines_riba, ['move_id', 'unsolved_move_line_ids'], 10),
+                                             }),
+        'riba_bank_id': fields.function(_get_riba_bank_id, method=True, string="Bank Ri.Ba.", type="many2one", relation="riba.configurazione",
+                                        store={
+                                            'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['move_id'], 7000),
+                                            'account.invoice': (_get_move_lines_riba, ['payment_term', 'bank_riba_id'], 7000),
+                                            'account.payment.term': (_get_riba_from_payment_term, ['riba'], 7000),
+                                        }),
     }
     _defaults = {
         'distinta_line_ids': None,
     }
 
-    def _hook_get_invoice_line(self, cr, uid, line, context):
+    def _hook_get_invoice_line(self, cr, uid, line, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         invoice_pool = self.pool['account.invoice']
         res = invoice_pool.search(cr, 1, [('unsolved_move_line_ids', '=', line.id)], context=context)
         if res:
@@ -139,6 +247,13 @@ class account_move_line(orm.Model):
                         riba_distinta_line_obj.unlink(cr, uid, riba_line_ids, context=context)
                         # TODO: unlink in 'accepted' state too?
         return super(account_move_line, self).unlink(cr, uid, ids, context=context, check=check)
+
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if not order and context.get('order', False):
+            order = context['order']
+        res = super(account_move_line, self).search(cr, uid, args, offset, limit, order, context, count)
+        return res
 
 
 class account_invoice(orm.Model):
@@ -192,3 +307,30 @@ class account_invoice(orm.Model):
                                 return False
 
         return True
+
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res_bank_obj = self.pool['res.bank']
+        result = super(account_invoice, self).fields_view_get(cr, uid, view_id, view_type, context=context, toolbar=toolbar, submenu=submenu)
+        if view_type == 'form' and context.get('type', False) == 'in_invoice':
+            if result['fields'].get('bank_riba_id', False):
+                company_id = self.pool['res.users'].browse(cr, uid, uid, context).company_id.id
+                cr.execute("select bank from res_partner_bank where company_id = {company_id}".format(company_id=company_id))
+                bank_ids = []
+                for rec in cr.fetchall():
+                    bank_ids.append(rec[0])
+                result['fields']['bank_riba_id']['domain'] = [('id', 'in', bank_ids)]
+                result['fields']['bank_riba_id']['selection'] = res_bank_obj.name_search(cr, uid, '', [('id', 'in', bank_ids)], context=context)
+
+        return result
+
+    def onchange_partner_id(self, cr, uid, ids, i_type, partner_id, date_invoice=False, payment_term=False, bank_riba_id=False, company_id=False, context=None):
+        result = super(account_invoice, self).onchange_partner_id(
+            cr, uid, ids, i_type, partner_id, date_invoice, payment_term, bank_riba_id, company_id)
+
+        if i_type in ['in_invoice']:
+            partner = self.pool['res.partner'].browse(cr, uid, partner_id, context)
+            if partner.company_riba_bank_id and partner.company_riba_bank_id.bank:
+                result['value']['bank_riba_id'] = partner.company_riba_bank_id.bank.id
+
+        return result
