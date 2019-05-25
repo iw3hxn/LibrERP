@@ -25,7 +25,7 @@
             <field name="inherit_id" ref="account_bank.res_bank_riba"/>
             <field name="arch" type="xml">
                 <field name="company_bank_id" position="after">
-                    <field name="company_riba_bank_id" domain="[('company_id', '=', company_id), ('state', '=', 'iban')]" />
+                    <field name="company_riba_bank_id" widget="selection" context="{'default_partner_id': 1, 'default_company_id': 1, 'company_hide': False, 'search_default_my_bank': 1}"/>
                 </field>
             </field>
         </record>
