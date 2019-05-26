@@ -413,7 +413,7 @@ class stock_picking(orm.Model):
                 'stock.picking': (lambda self, cr, uid, ids, c={}: ids, ['sale_id'], 6000),
             }),
         'board_date': fields.related('sale_id', 'date_confirm', type='date', string='Order Board Delivery date'),
-        'amount_partial': fields.function(_get_amount_partial, string='Partial Amount (VAT Excluded)', readonly=True,
+        'amount_partial': fields.function(_get_amount_partial, type='float', string='Partial Amount (VAT Excluded)', readonly=True,
                                           store=False),
         'amount_total': fields.related('sale_id', 'amount_untaxed', type='float', string='Total Amount (VAT Excluded)',
                                        readonly=True,
@@ -484,11 +484,14 @@ class stock_picking(orm.Model):
 
         stock_journal_obj = self.pool['stock.journal']
         default_invoice_state = False
+        value = {}
         if stock_journal_id:
-            default_invoice_state = stock_journal_obj.browse(
-                cr, uid, stock_journal_id, context).default_invoice_state
+            default_invoice_state = stock_journal_obj.browse(cr, uid, stock_journal_id, context).default_invoice_state
 
-        return {'value': {'invoice_state': default_invoice_state or 'none'}}
+        if default_invoice_state:
+            value = {'invoice_state': default_invoice_state or 'none'}
+
+        return {'value': value}
 
     def onchange_partner_in(self, cr, uid, ids, address_id=None, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
