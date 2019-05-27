@@ -11,3 +11,5 @@
 "access_add_period_to_vat_statement_accountant","access_add_period_to_vat_statement_accountant","model_add_period_to_vat_statement","account.group_account_user","1","1","1","1"
 "access_add_period_to_vat_statement_manager","access_add_period_to_vat_statement_manager","model_add_period_to_vat_statement","account.group_account_manager","1","1","1","1"
 "access_remove_period_from_vat_statement","access_remove_period_from_vat_statement","model_remove_period_from_vat_statement","","1","1","1","1"
+"access_user_account_vat_settlement_attachment","access_account_vat_settlement_attachment","model_account_vat_settlement_attachment","account.group_account_user","1","1","1","1"
+"access_manager_account_vat_settlement_attachment","access_account_vat_settlement_attachment","model_account_vat_settlement_attachment","account.group_account_manager","1","1","1","1"
