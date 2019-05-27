@@ -172,13 +172,15 @@ class stock_move(orm.Model):
         for move in self.browse(cr, uid, ids, context=context):
             pick_ids += [move.picking_id.id]
 
-        # choose the view_mode accordingly
-        if len(pick_ids) > 1:
-            result['domain'] = "[('id','in',[" + ','.join(map(str, pick_ids)) + "])]"
-        else:
-            res = mod_obj.get_object_reference(cr, uid, 'stock_picking_extended', 'view_stock_picking_form')
-            result['views'] = [(res and res[1] or False, 'form')]
-            result['view_mode'] = 'page'
-            result['res_id'] = pick_ids and pick_ids[0] or False
-        # result['context'] = context
-        return result
+        return {
+            'name': result['name'],
+            'view_type': 'page',
+            'view_mode': 'page',
+            'view_id': [result['view_id'][0]],
+            'res_model': result['res_model'],
+            'context': result['context'],
+            'type': 'ir.actions.act_window',
+            'nodestroy': False,
+            'target': 'current',
+            'res_id': pick_ids and pick_ids[0] or False
+        }
