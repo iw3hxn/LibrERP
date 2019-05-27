@@ -45,7 +45,10 @@ class WizardVatSettlement(orm.TransientModel):
     def get_date_start_stop(self, statement, context=None):
         date_start = False
         date_stop = False
-        for period in statement.e_period_ids:  # todo passare come parametro
+
+        periods = statement.e_period_ids or statement.period_ids
+
+        for period in periods:  # todo passare come parametro
             if not date_start:
                 date_start = period.date_start
             else:
@@ -229,8 +232,7 @@ class WizardVatSettlement(orm.TransientModel):
                 if statement.codice_carica:
                     settlement.Comunicazione.Frontespizio.CodiceCaricaDichiarante = \
                         statement.codice_carica.code
-            date_start, date_stop = self.get_date_start_stop(statement,
-                                                             context=context)
+            date_start, date_stop = self.get_date_start_stop(statement, context=context)
             settlement.Comunicazione.Frontespizio.AnnoImposta = str(
                 date_stop.year)
             settlement.Comunicazione.Frontespizio.PartitaIVA = \
