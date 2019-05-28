@@ -28,9 +28,13 @@
 #
 ##############################################################################
 
-from tools.translate import _
+import logging
 
 from openerp.osv import orm, fields
+from tools.translate import _
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
 
 class res_company(orm.Model):
@@ -47,17 +51,15 @@ class res_company(orm.Model):
         
         res = {}
         for module_id in ids:
-                res[module_id] = True
+            res[module_id] = True
         return res
     
     def _need_upgrade(self, cr, uid, ids, field_name=None, arg=None, context=None):
-        res = dict.fromkeys(ids, '')
+        res = dict.fromkeys(ids, False)
         
         for module in self.browse(cr, uid, ids, context):
             if not module.latest_version == self.get_module_info(module.name).get('version', ''):
                 res[module.id] = True
-            else:
-                res[module.id] = False
         return res
     
     _columns = {
@@ -78,14 +80,14 @@ class res_company(orm.Model):
         if modules_to_upgrade_ids:
             self.pool['base.module.upgrade'].upgrade_module(cr, uid, modules_to_upgrade_ids, context)
 
-        modules_to_upgrade_ids = self.search(cr, uid, [('state', '=', 'to upgrade')], context)
+        modules_to_upgrade_ids = self.search(cr, uid, [('state', '=', 'to upgrade')], context=context)
 
         if count > 5:
             print 'Too many attempts'
             return False
         elif modules_to_upgrade_ids:
             count += 1
-            print 'Count:', count
+            _logger.info(u'Count: {count}'.format(count=count))
             context['active_ids'] = modules_to_upgrade_ids
             return self.upgrade_modules(cr, uid, context, count)
         else:
