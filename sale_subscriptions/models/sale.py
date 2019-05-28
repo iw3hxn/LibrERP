@@ -235,7 +235,7 @@ class sale_order_line(orm.Model):
             remains_to_invoice = order_line.price_unit * order_line.product_uom_qty / 12 * sale_order_obj.get_duration_in_months(order_line.order_id.order_duration) - invoiced
 
         # Control how much were invoiced and if 100% of line.price_unit is invoiced:
-        if remains_to_invoice <= 0:
+        if abs(remains_to_invoice) <= 0:
             _logger.debug(u'All invoices for line "%s: %s" order - %s are created' % (order_line.id, order_line.name, order_line.order_id.name))
 
             sale_order_line_obj.write(cr, uid, [order_line.id], {'invoiced': True}, context)
@@ -250,7 +250,7 @@ class sale_order_line(orm.Model):
             invoice_line_ids = sale_order_line_obj.invoice_line_create(cr, uid, [order_line.id], context)
 
             # Adjust price_unit of invoice.line
-            sale_order_obj.adjust_price(cr, uid, order_line, invoice_line_ids, remains_to_invoice, invoice_period)
+            sale_order_obj.adjust_price(cr, uid, order_line, invoice_line_ids, remains_to_invoice, invoice_period, context)
             values = {'origin_document': 'sale.order.line, {0}'.format(str(order_line.id))}
             if invoice:
                 values.update({
@@ -588,6 +588,7 @@ class sale_order(orm.Model):
         return True
 
     def manual_invoice(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if len(ids) == 1:
             order = self.browse(cr, uid, ids[0], context)
             if order.have_subscription:
@@ -597,8 +598,8 @@ class sale_order(orm.Model):
                 }
                 if not order.order_start_date:
                     values['order_start_date'] = datetime.datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
-                self.write(cr, uid, [order.id], values)
-                self.auto_invoice(cr, uid, ids, context=None)
+                self.write(cr, uid, [order.id], values, context)
+                self.auto_invoice(cr, uid, ids, context)
                 return True
 
         return super(sale_order, self).manual_invoice(cr, uid, ids, context)
@@ -619,7 +620,7 @@ class sale_order(orm.Model):
         }
         return duration[duration_in_days]
 
-    def adjust_price(self, cr, uid, order_line, invoice_line_ids, remains_to_invoice, period):
+    def adjust_price(self, cr, uid, order_line, invoice_line_ids, remains_to_invoice, period, context=None):
         if not order_line.product_id.subscription:
             return
         
@@ -636,16 +637,17 @@ class sale_order(orm.Model):
         price_unit = round(price_unit / 12 * duration / payments_quantity,
                            self.pool.get('decimal.precision').precision_get(cr, uid, 'Sale Price'))
         
-        if remains_to_invoice - price_unit * invoice_line.quantity < price_unit * invoice_line.quantity / 2:
+        if abs(remains_to_invoice - price_unit * invoice_line.quantity) < abs(price_unit * invoice_line.quantity / 2):
             price_unit = remains_to_invoice / invoice_line.quantity
             invoiced = True
         else:
             invoiced = False
         
         ## Adjust price_unit
-        self.pool['account.invoice.line'].write(cr, uid, [invoice_line.id], {'price_unit': price_unit, 'note': period})
-            
-        self.pool['sale.order.line'].write(cr, uid, [order_line.id], {'invoiced': invoiced})
+        self.pool['account.invoice.line'].write(cr, uid, [invoice_line.id], {'price_unit': price_unit, 'note': period}, context)
+        if not invoiced:
+            order_line.write({'invoiced': invoiced})
+        return True
 
     def get_invoice_dates(self, cr, uid, order, order_duration, order_invoice_duration, delta_month=0, context={}):
         """
@@ -797,6 +799,7 @@ class sale_order(orm.Model):
                 invoice_id = make_invoice(order, new_invoice_line_ids, invoice_date)
                 cr.execute("""INSERT INTO sale_order_invoice_rel
                            (order_id, invoice_id) values (%s, %s)""", (order_id, invoice_id))
+        return True
 
     def suspend(self, cr, uid, ids, context):
         wf_service = netsvc.LocalService('workflow')
