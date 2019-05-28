@@ -34,7 +34,7 @@
         'base',
     ],
     'data': [
-        "module_view.xml"
+        "views/module_view.xml"
     ],
     'test': [],
     'installable': True,
