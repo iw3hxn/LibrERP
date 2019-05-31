@@ -46,7 +46,7 @@ msgstr "Sequenza"
 #. module: sale_order_calendar
 #: field:crm.activity,days:0
 msgid "Number of days"
-msgstr "Numer di Giorni"
+msgstr "Numero di Giorni"
 
 #. module: sale_order_calendar
 #: help:crm.activity,days:0
