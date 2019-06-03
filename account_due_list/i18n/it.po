@@ -381,3 +381,14 @@ msgstr "Questo campo verrà contrassegnato quando il responsabile acquisti appro
 #: view:account.move.line.reconcile.writeoff:0
 msgid "Reconcile"
 msgstr "Riconciliazione"
+
+#. modules: account_due_list
+#: sql_constraint:account.move.line:0
+msgid "Wrong date maturity in accounting entry !"
+msgstr "Data di scadenza Errata"
+
+#. module: account_due_list
+#: code:addons/account_due_list/models/account_move_line.py:262
+#, python-format
+msgid "Date maturity less of date in Journal Entries"
+msgstr "Data di scadenza inferiore alla scrittura contabile"
