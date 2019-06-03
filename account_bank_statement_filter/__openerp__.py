@@ -24,7 +24,7 @@
 
 {
     "name": "Account Bank Statement Filter",
-    "version": "3.2.4.4",
+    "version": "3.2.4.5",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Accounting & Finance',
