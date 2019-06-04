@@ -39,13 +39,13 @@ class riba_configurazione(osv.osv):
 
     _columns = {
         'configuration_type': fields.selection(CONFIGURATION_TYPE_SELECTION, 'Tipo di Configurazione', select=True, required='True'),
-        'name' : fields.char("Descrizione", size=64, required=True),
-        'tipo' : fields.selection((('sbf', 'Salvo buon fine'),('incasso', 'Al dopo incasso')), 
+        'name': fields.char("Descrizione", size=64, required=True),
+        'tipo': fields.selection((('sbf', 'Salvo buon fine'), ('incasso', 'Al dopo incasso')),
             "Modalità Emissione", required=True),
-        'bank_id' : fields.many2one('res.partner.bank', "Banca",
+        'bank_id': fields.many2one('res.partner.bank', "Banca", domain=[('partner_id', '=', 'company_id')],
             required=True, help="Bank account used for Ri.Ba. issuing"),
             
-        'acceptance_journal_id' : fields.many2one('account.journal', "Acceptance journal", 
+        'acceptance_journal_id': fields.many2one('account.journal', "Acceptance journal",
             domain=[('type', '=', 'bank')],
             help="Journal used when Ri.Ba. is accepted by the bank"),
         'acceptance_account_id' : fields.many2one('account.account', "Acceptance account", 
