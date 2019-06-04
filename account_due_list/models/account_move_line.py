@@ -258,7 +258,7 @@ class account_move_line(orm.Model):
 
     def _check_maturity_date(self, cr, uid, ids, context=None):
         for line in self.browse(cr, uid, ids, context=context):
-            if line.date_maturity < line.move_id.date:
+            if line.date_maturity and line.date_maturity < line.move_id.date:
                 raise orm.except_orm(_(u'Error'), _('Date maturity less of date in Journal Entries'))
         return True
 
