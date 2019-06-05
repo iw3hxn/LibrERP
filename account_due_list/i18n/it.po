@@ -272,12 +272,12 @@ msgstr "Rif. Partner"
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "From Start Current Month"
-msgstr "Dall'inizio dell'Anno Corrente"
+msgstr "Dall'inizio del Mese Corrente"
 
 #. module: account_due_list
 #: view:account.move.line:0
 msgid "From Start Current Year"
-msgstr "Dall'inizio del Mese Corrente"
+msgstr "Dall'inizio dell'Anno Corrente"
 
 #. module: account_due_list
 #: view:account.move.line:0
