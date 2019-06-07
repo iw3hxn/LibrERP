@@ -33,7 +33,7 @@ class account_invoice(orm.Model):
 
     def onchange_internal_number(self, cr, uid, ids, internal_number, invoice_type, journal_id, context={}):
         if not internal_number:
-            return False
+            return {'value': {}, 'warning': {}}
 
         warning = {}
         if invoice_type in ['out_invoice', 'out_refund']:

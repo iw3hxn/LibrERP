@@ -686,11 +686,11 @@ class Aeroo_report(report_sxw):
                     #    results.append((d,'pdf'))
                     #    continue
                     cr.execute(
-                        "SELECT id, datas_fname FROM ir_attachment WHERE datas_fname ilike %s and res_model=%s and res_id=%s LIMIT 1",
+                        "SELECT id, datas_fname FROM ir_attachment WHERE datas_fname ilike %s AND res_model=%s AND res_id=%s AND active LIMIT 1",
                         (aname + '.%', self.table, obj.id))
                     search_res = cr.dictfetchone()
                     if search_res:
-                        brow_rec = pool.get('ir.attachment').browse(cr, uid, search_res['id'])
+                        brow_rec = pool.get('ir.attachment').browse(cr, uid, search_res['id'], context)
                         if not brow_rec.datas:
                             continue
                         d = base64.decodestring(brow_rec.datas)
@@ -849,7 +849,7 @@ class Aeroo_report(report_sxw):
             report_rml.report_sxw = None
             copies_ids = []
             if not report_xml.report_wizard and report_xml > 1:
-                while (report_xml.copies):
+                while report_xml.copies:
                     copies_ids.extend(ids)
                     report_xml.copies -= 1
             ids = copies_ids or ids
@@ -894,7 +894,7 @@ class Aeroo_report(report_sxw):
         del self.active_prints[aeroo_print.id]
         ##############################
         _logger.info("End total process %s (%s), total elapsed time:%s" % (
-        self.name, self.table, time.time() - aeroo_print.start_total_time))  # debug mode
+            self.name, self.table, time.time() - aeroo_print.start_total_time))  # debug mode
         return res
 
 

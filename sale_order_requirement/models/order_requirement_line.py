@@ -1061,16 +1061,27 @@ class order_requirement_line(orm.Model):
 
         product = temp.product_id
 
-        # If another production order for the same sale order is present and not started, queue to it
+        # Search for another production order for the same sale order
         mrp_productions = mrp_production_obj.search_browse(cr, uid, [('product_id', '=', product.id),
                                                                      ('sale_id', '=', temp.sale_order_id.id),
                                                                      ('state', '=', 'draft')], context=context)
         if not isinstance(mrp_productions, list):
             mrp_productions = [mrp_productions]
 
+        append_production = False
+        # If another production order for the same sale order is present and not started, append to it
+        #   but ONLY if the production order has a bom (production orders confirmed)
         if mrp_productions:
-            # Take first
-            mrp_production = mrp_productions[0]
+            # Take first that has a bom
+            for mrp_production in mrp_productions:
+                bom_point = mrp_production.temp_bom_id
+                bom_id = mrp_production.temp_bom_id.id
+                if bom_point or bom_id:
+                    append_production = True
+                    break
+
+        # From for above, mrp_production is the mrp order to which to append
+        if append_production:
             mrp_production_id = mrp_production.id
             # Calculate qty according to UoM
             qty = uom_obj._compute_qty(cr, uid, temp.product_uom.id, temp.product_qty, mrp_production.product_uom.id)

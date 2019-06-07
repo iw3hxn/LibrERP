@@ -127,7 +127,14 @@ class account_move_line(orm.Model):
         return res
 
     def _get_riba_from_account_invoice(self, cr, uid, ids, context=None):
-        return self.pool['account.move.line'].search(cr, uid, [('stored_invoice_id', 'in', ids)], context=context)
+        invoice_pool = self.pool['account.invoice']
+        res = []
+        for invoice in invoice_pool.browse(cr, uid, ids, context=context):
+            if invoice.move_id:
+                for line in invoice.move_id.line_id:
+                    if line.id not in res:
+                        res.append(line.id)
+        return res
 
     def _get_riba_from_payment_term(self, cr, uid, ids, context=None):
         account_invoice_ids = self.pool['account.invoice'].search(cr, uid, [('payment_term', 'in', ids)], context=context)
@@ -188,7 +195,7 @@ class account_move_line(orm.Model):
         'distinta_line_ids': fields.one2many('riba.distinta.move.line', 'move_line_id', "Dettaglio riba"),
         'riba': fields.function(_get_fields_riba_function, type='boolean', string='RiBa', fnct_inv=_set_riba, store={
             'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['stored_invoice_id'], 6000),
-            'account.invoice': (_get_riba_from_account_invoice, ['payment_term'], 6000),
+            'account.invoice': (_get_riba_from_account_invoice, ['payment_term', 'move_id'], 6000),
             'account.payment.term': (_get_riba_from_payment_term, ['riba'], 6000),
         }),
         'unsolved_invoice_ids': fields.many2many('account.invoice', 'invoice_unsolved_line_rel', 'line_id', 'invoice_id', 'Unsolved Invoices'),

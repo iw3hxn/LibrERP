@@ -247,6 +247,8 @@
                         <separator orientation="vertical"/>
                         <filter string="Journal" icon="terp-folder-orange" domain="[]" context="{'group_by':'journal_id'}"/>
                         <separator orientation="vertical"/>
+                        <filter string="Period" icon="terp-go-month" domain="[]" context="{'group_by':'period_id'}"/>
+                        <separator orientation="vertical"/>
                         <filter string="Riconciliazione" icon="terp-go-month" domain="[('reconcile_function_id', '!=', False)]" context="{'group_by':'reconcile_function_id'}"/>
                     </group>
                 </search>

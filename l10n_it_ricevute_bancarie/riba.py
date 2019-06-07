@@ -454,8 +454,9 @@ class riba_distinta_line(osv.osv):
                 'period_id': period_id
             }, context=context)
             to_be_reconciled = []
-            riba_move_line_name = ''
+
             for riba_move_line in line.move_line_ids:
+                riba_move_line_name = ''
                 total_credit += riba_move_line.amount
                 if riba_move_line.move_line_id.invoice.number:
                     riba_move_line_name += riba_move_line.move_line_id.invoice.number
@@ -466,8 +467,8 @@ class riba_distinta_line(osv.osv):
                     'name': riba_move_line_name,
                     'partner_id': line.partner_id.id,
                     'account_id': riba_move_line.move_line_id.account_id.id,
-                    'credit': (riba_move_line.amount >= 0.0) and riba_move_line.amount,
-                    'debit': (riba_move_line.amount < 0.0) and riba_move_line.amount * -1,
+                    'credit': (riba_move_line.amount >= 0.0) and riba_move_line.amount or 0.0,
+                    'debit': (riba_move_line.amount < 0.0) and -riba_move_line.amount or 0.0,
                     'move_id': move_id,
                     'date': date_accepted,
                     'date_maturity': line.due_date,
@@ -477,15 +478,18 @@ class riba_distinta_line(osv.osv):
                     riba_move_line_name += riba_move_line.move_line_id.invoice.number
                 else:
                     riba_move_line_name += riba_move_line.move_line_id.name
+
             if total_credit < 0.0:
-                raise osv.except_osv(_('Warning'), _('Total of riba cannot be negative'))
+                if line.distinta_id.configuration_type == 'customer':
+                    raise osv.except_osv(_('Warning'), _('Total of riba cannot be negative'))
+
             move_line_pool.create(cr, uid, {
                 'name': 'Ri.Ba. %s-%s Rif. %s - %s' % (line.distinta_id.name, line.sequence, riba_move_line_name, line.partner_id.name),
                 'account_id': line.acceptance_account_id.id,
                 # 'partner_id': line.partner_id.id,
                 'date_maturity': line.due_date,
-                'credit': 0.0,
-                'debit': total_credit,
+                'credit': total_credit < 0 and abs(total_credit) or 0.0,
+                'debit': total_credit > 0 and abs(total_credit) or 0.0,
                 'move_id': move_id,
                 'date': date_accepted,
             }, context=context)

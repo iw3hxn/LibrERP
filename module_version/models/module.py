@@ -28,32 +28,38 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+import logging
+
+from openerp.osv import orm, fields
 from tools.translate import _
 
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
-class module(osv.osv):
+
+class res_company(orm.Model):
     _inherit = "ir.module.module"
     
     def _check_upgrade(self, cr, uid, ids, field_name=None, arg=None, context=None):
-        installed_module_ids = self.search(cr, uid, [('state', 'in', ['installed', 'to upgrade', 'to remove'])])
-        for module in self.browse(cr, uid, installed_module_ids):
+        installed_module_ids = self.search(cr, uid, [('state', 'in', ['installed', 'to upgrade', 'to remove'])], context=context)
+        update_module_ids = []
+        for module in self.browse(cr, uid, installed_module_ids, context):
             if not module.latest_version == self.get_module_info(module.name).get('version', '') and not module.need_upgrade:
-                self.write(cr, uid, module.id, {'need_upgrade': True})
+                update_module_ids.append(module.id)
+        if update_module_ids:
+            self.write(cr, uid, update_module_ids, {'need_upgrade': True}, context)
         
         res = {}
         for module_id in ids:
-                res[module_id] = True
+            res[module_id] = True
         return res
     
     def _need_upgrade(self, cr, uid, ids, field_name=None, arg=None, context=None):
-        res = dict.fromkeys(ids, '')
+        res = dict.fromkeys(ids, False)
         
-        for module in self.browse(cr, uid, ids):
+        for module in self.browse(cr, uid, ids, context):
             if not module.latest_version == self.get_module_info(module.name).get('version', ''):
                 res[module.id] = True
-            else:
-                res[module.id] = False
         return res
     
     _columns = {
@@ -61,26 +67,27 @@ class module(osv.osv):
         'check_upgrade': fields.function(_check_upgrade, string=_('Need Upgrade'), method=True, type='boolean', store=False)
     }
 
-    def upgrade_modules(self, cr, uid, context, count=0):
+    def upgrade_modules(self, cr, uid, count=0, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if context.get('active_ids'):
             module_ids = context.get('active_ids')
         else:
-            module_ids = self.search([('need_upgrade', '=', True), ('state', 'in', ('installed', 'to upgrade', 'to remove'))])
+            module_ids = self.search([('need_upgrade', '=', True), ('state', 'in', ('installed', 'to upgrade', 'to remove'))], context=context)
 
         self.button_upgrade(cr, uid, module_ids, context)
 
-        modules_to_upgrade_ids = self.search(cr, uid, [('state', '=', 'to upgrade')])
+        modules_to_upgrade_ids = self.search(cr, uid, [('state', '=', 'to upgrade')], context=context)
         if modules_to_upgrade_ids:
             self.pool['base.module.upgrade'].upgrade_module(cr, uid, modules_to_upgrade_ids, context)
 
-        modules_to_upgrade_ids = self.search(cr, uid, [('state', '=', 'to upgrade')])
+        modules_to_upgrade_ids = self.search(cr, uid, [('state', '=', 'to upgrade')], context=context)
 
         if count > 5:
             print 'Too many attempts'
             return False
         elif modules_to_upgrade_ids:
             count += 1
-            print 'Count:', count
+            _logger.info(u'Count: {count}'.format(count=count))
             context['active_ids'] = modules_to_upgrade_ids
             return self.upgrade_modules(cr, uid, context, count)
         else:

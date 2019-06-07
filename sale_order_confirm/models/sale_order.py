@@ -194,12 +194,14 @@ class sale_order(orm.Model):
             credit = partner.credit
             # We sum from all the sale orders that are aproved, the sale order lines that are not yet invoiced
             order_obj = self.pool['sale.order']
-            approved_invoices_ids = order_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', 'not in', ['draft', 'cancel', 'done'])], context=context)
+            order_line_obj = self.pool['sale.order.line']
+
+            approved_order_ids = order_obj.search(cr, uid, [('partner_id', '=', partner.id), ('state', 'not in', ['draft', 'cancel', 'done'])], context=context)
+            approved_order_line_ids = order_line_obj.search(cr, uid, [('invoiced', '=', False), ('order_id', 'in', approved_order_ids)], context=context)
+
             approved_invoices_amount = 0.0
-            for orders in order_obj.browse(cr, uid, approved_invoices_ids, context=context):
-                for order_line in orders.order_line:
-                    if not order_line.invoiced:
-                        approved_invoices_amount += order_line.price_subtotal
+            for order_line in order_line_obj.read(cr, uid, approved_order_line_ids, ['price_subtotal'], context=context):
+                approved_invoices_amount += order_line['price_subtotal']
 
             # We sum from all the invoices that are in draft the total amount
             invoice_obj = self.pool['account.invoice']

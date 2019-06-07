@@ -38,3 +38,16 @@ class res_partner(orm.Model):
         'company_riba_bank_id': fields.many2one('res.partner.bank', string='Company Ri.Ba bank for Bank Transfer', domain="[('company_id','=', company_id)]"),
     }
 
+    def write(self, cr, uid, ids, vals, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        if 'company_riba_bank_id' in vals:
+            # search invoice
+            invoice_obj = self.pool['account.invoice']
+            invoice_ids = invoice_obj.search(cr, uid, [('partner_id', 'in', ids), ('type', '=', 'in_invoice'), ('state', '=', 'open'), ('bank_riba_id', '=', False)], context=context)
+            if invoice_ids:
+                bank_id = self.pool['res.partner.bank'].read(cr, uid, vals['company_riba_bank_id'], ['bank'], context, load='_obj')['bank']
+                invoice_obj.write(cr, uid, invoice_ids, {'bank_riba_id': bank_id}, context)
+        return super(res_partner, self).write(cr, uid, ids, vals, context)

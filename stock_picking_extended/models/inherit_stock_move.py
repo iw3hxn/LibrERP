@@ -172,11 +172,16 @@ class stock_move(orm.Model):
         for move in self.browse(cr, uid, ids, context=context):
             pick_ids += [move.picking_id.id]
 
+        view_id = False
+        for view in result['views']:
+            if view[1] == 'form':
+                view_id = view[0]
+
         return {
             'name': result['name'],
             'view_type': 'page',
             'view_mode': 'page',
-            'view_id': [result['view_id'][0]],
+            'view_id': [view_id],
             'res_model': result['res_model'],
             'context': result['context'],
             'type': 'ir.actions.act_window',

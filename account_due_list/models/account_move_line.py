@@ -252,9 +252,20 @@ class account_move_line(orm.Model):
     _order = "date desc, ref asc, move_id asc, id asc"
     # _order = "date_maturity desc, date desc, ref asc, move_id asc, id asc"
     # _order = "date_maturity desc, date asc, move_id asc, id asc"
-    # _sql_constraints = [
-    #     ('maturity_date', "CHECK (date_maturity>='1900-01-01')", 'Wrong date maturity in accounting entry !'),
-    # ]
+    _sql_constraints = [
+        ('maturity_date', "CHECK (date_maturity>='1900-01-01')", 'Wrong date maturity in accounting entry !'),
+    ]
+
+    def _check_maturity_date(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.date_maturity and line.date_maturity < line.move_id.date:
+                if line.move_id.journal_id.allow_date:
+                    raise orm.except_orm(_(u'Error'), _('Date maturity less of date in Journal Entries'))
+        return True
+
+    _constraints = [
+        (_check_maturity_date, 'Date maturity less of date in Journal Entries', ['maturity_date']),
+    ]
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context={}, toolbar=False, submenu=False):
         view_payments_tree_id = self.pool['ir.model.data'].get_object_reference(cr, uid, 'account_due_list', 'view_payments_tree')

@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2016 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2018 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -23,26 +23,24 @@
 ##############################################################################
 
 {
-    "name": "Account Bank Statement Filter",
-    "version": "3.2.4.5",
+    "name": "Account Account Extended",
+    "version": "3.0.0.0",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
-    "category": 'Accounting & Finance',
+    "category": "Base",
     "description": """
-        Module adds extra functionality to account bank statement:
-            - possibility to filter statement by year
-            - possibility to see statement of last or current month
-            - possibility to see statement where there are a selected partner
+        Module extended OpenERP core functionality
+        
+        Now is possible to recompute Chart of Account       
+
     """,
     "depends": [
-        'base',
-        'account',
+        'account'
     ],
     "data": [
-        'views/account_bank_view.xml',
-        'views/account_bank_statement_line_view.xml'
+        'views/company_view.xml',
     ],
     "active": False,
     "installable": True,
-    'auto_install': True
+    "auto_install": True,
 }

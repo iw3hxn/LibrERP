@@ -20,7 +20,7 @@
             <field name="name">product.normal.tree.subscription</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_product_tree_view"/>
-            <field name="type">form</field>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
                  <field name="variants" position="after">
                     <!--<field name="subscription" on_change="onchange_subscription(subscription)"/>-->

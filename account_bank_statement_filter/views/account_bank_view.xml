@@ -34,6 +34,18 @@
                 </field>
             </field>
         </record>
+
+        <record id="view_account_bank_statement_filter_by_user" model="ir.ui.view">
+            <field name="name">account.bank.statement.filter.by.year</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account.view_account_bank_statement_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <filter string="Period" position="after">
+                     <filter string="User" context="{'group_by': 'user_id'}" icon="terp-personal"/>
+                </filter>
+            </field>
+        </record>
     
     </data>
 </openerp>

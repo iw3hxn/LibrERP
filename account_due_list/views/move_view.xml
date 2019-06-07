@@ -18,7 +18,7 @@
             <field name="name">account.move.line.tree.inherit</field>
             <field name="model">account.move.line</field>
             <field name="type">tree</field>
-            <field eval="1" name="priority"/>
+            <field eval="100" name="priority"/>
             <field name="inherit_id" ref="account.view_move_line_tree"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="attributes">
@@ -28,6 +28,13 @@
                     <field name="running_balance" />
                 </field>
             </field>
+        </record>
+
+        <record id="act_account_acount_move_line_open_tree" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="account.act_account_acount_move_line_open"/>
+            <field name="view_id" ref="account_due_list.view_account_ledger_tree"/>
         </record>
 
         <record id="view_account_move_line_filter_inherit" model="ir.ui.view">

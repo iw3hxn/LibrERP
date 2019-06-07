@@ -701,7 +701,7 @@
                 </table>
             </th>
         </tr>
-        <tr t-if="options.header" class="oe-listview-header-columns">
+        <tr t-if="options.header" class="oe-listview-header-columns" style="position: sticky;">
             <t t-foreach="columns" t-as="column">
                 <th t-if="column.meta">
                     <t t-esc="column.string"/>
@@ -717,6 +717,14 @@
                 </th>
             </t>
             <th t-if="options.deletable" width="1"/>
+        </tr>
+        <tr class="oe-listview-header-columns">
+            <td t-if="options.selectable"/>
+
+            <td t-foreach="aggregate_columns" t-as="column" class="oe-list-footer oe-number" style="border-left: 1px solid #dfdfdf; border-top: 1px; color: #333"
+                t-att-data-field="column.id" t-att-title="column.label">
+            </td>
+            <td t-if="options.deletable"/>
         </tr>
     </thead>
     <tfoot class="ui-widget-footer">
@@ -1949,7 +1957,7 @@
 
 <t t-name="About-Page">
     <div>
-        <a class="oe_activate_debug_mode" href="?debug" style="float:right; font-size: 80%;">Activate the developper mode</a>
+        <a class="oe_activate_debug_mode" href="?debug" style="float:right; font-size: 80%;">Activate the developer mode</a>
         <h1 style="margin:0;">LibrERP</h1>
         <h3 style="margin:15px 0;padding:0;">Version <t t-esc="version_info.version"/></h3>
         <p>
