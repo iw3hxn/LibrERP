@@ -38,12 +38,13 @@
     'data': [
         'security/ir.model.access.csv',
         'security/security.xml',
+        'wizard/sale_change_subscriptions_view.xml',
         'views/product_view.xml',
         'views/sale_view.xml',
         'views/sale_order_menu.xml',
         'orders_renew.xml',
         'cron.xml',
-        'views/company_view.xml'
+        'views/company_view.xml',
     ],
     'installable': True,
     'active': False,

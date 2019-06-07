@@ -34,8 +34,8 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
 
 import locale
-locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
-# locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+#locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 class sale_order_line(orm.Model):
@@ -53,34 +53,44 @@ class sale_order_line(orm.Model):
             taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, line.product_uom_qty, line.order_id.partner_invoice_id.id, line.product_id, line.order_id.partner_id)
             cur = line.order_id.pricelist_id.currency_id
             if line.order_id.have_subscription and line.product_id.subscription:
+                if line.product_id.order_duration:
+                    ratio = 365 / line.product_id.order_duration
+                else:
+                    ratio = 1
                 k = order_obj.get_duration_in_months(line.order_id.order_duration) / order_obj.get_duration_in_months(line.product_id.order_duration)
-                res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'] * k)
+                res[line.id] = cur_obj.round(cr, uid, cur, (taxes['total']/ratio) * k)
             else:
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
         return res
 
-    # Dangerous! Overwrites standard method
     def _product_margin(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
+        price_subtotal = self._amount_line(cr, uid, ids, field_name, arg, context)
+        order_obj = self.pool['sale.order']
         for line in self.browse(cr, uid, ids, context=context):
-            if line.product_id:
-                if line.purchase_price:
-                    purchase_price = line.purchase_price
-                else:
-                    purchase_price = line.product_id.standard_price
-
-                if line.order_id.have_subscription and line.product_id.subscription:
-                    price_subtotal = line.price_subtotal
-                else:
-                    price_subtotal = line.price_unit * line.product_uos_qty
-                res[line.id] = {
-                    'margin': round((price_subtotal * (100.0 - line.discount) / 100.0) - (purchase_price * line.product_uos_qty), 2)
-                }
+            res[line.id] = {
+                'margin': 0,
+                'total_purchase_price': 0,
+            }
+            price_subtotal_line = price_subtotal[line.id]
+            if line.purchase_price:
+                total_purchase_price = line.product_uom_qty * line.purchase_price
+            elif line.product_id:
+                total_purchase_price = line.product_uom_qty * line.product_id.standard_price
             else:
-                res[line.id] = {
-                    'margin': line.margin or 0
-                }
+                total_purchase_price = 0
+            if line.order_id.have_subscription and line.product_id.subscription:
+                k = order_obj.get_duration_in_months(line.order_id.order_duration) / order_obj.get_duration_in_months(line.product_id.order_duration)
+                total_purchase_price = total_purchase_price * k
+            else:
+                total_purchase_price = total_purchase_price
+
+            res[line.id] = {
+                'margin': round((price_subtotal_line * (100.0 - line.discount) / 100.0) - total_purchase_price, 2),
+                'total_purchase_price': total_purchase_price,
+            }
         return res
+
 
     def __init__(self, registry, cr):
         """
@@ -95,7 +105,7 @@ class sale_order_line(orm.Model):
         'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute=dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
         'subscription': fields.related('product_id', 'subscription', type='boolean', string=_('Subscription')),
         'automatically_create_new_subscription': fields.boolean(_('Automatically create new subscription')),
-        'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute=dp.get_precision('Sale Price')),
+        'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute=dp.get_precision('Sale Price'), store=True),
         'suspended': fields.boolean(_('Suspended')),
         'partner_id': fields.related('order_id', 'partner_id', 'name', type='char', string=_('Customer'), store=True),
         'order_start_date': fields.related('order_id', 'order_start_date', type='date', string=_('Order Start')),
@@ -126,7 +136,13 @@ class sale_order_line(orm.Model):
         'order_end_date': fields.related('order_id', 'order_end_date', type='date', string=_('Order End'), store=True),
         'user_id': fields.related('order_id', 'user_id', 'name', type='char', string=_('Salesman'), store=True),
         'section_id': fields.related('order_id', 'section_id', 'name', type='char', string=_('Sales Team'), store=True),
-        'can_activate': fields.boolean("Activate ?")
+        'can_activate': fields.boolean("Activate ?"),
+        'margin': fields.function(_product_margin, string='Margin', multi='sums', type='float', digits_compute=dp.get_precision('Account'), store={
+            'sale.order.line': (lambda self, cr, uid, ids, c={}: ids, ['price_unit', 'product_uos_qty', 'discount', 'purchase_price', 'product_id'], 100),
+        }),
+        'total_purchase_price': fields.function(_product_margin, multi='sums', type='float', string='Total Cost Price', digits_compute=dp.get_precision('Account'), store={
+            'sale.order.line': (lambda self, cr, uid, ids, c={}: ids, ['price_unit', 'product_uos_qty', 'discount', 'purchase_price', 'product_id'], 100),
+        }),
     }
 
     _defaults = {
@@ -372,13 +388,13 @@ class sale_order(orm.Model):
                 value[order.id] = end_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
         
         return value
-    
+
     def _get_order(self, cr, uid, ids, context=None):
         result = {}
         for line in self.pool['sale.order.line'].browse(cr, uid, ids, context=context):
             result[line.order_id.id] = True
         return result.keys()
-    
+  
     def get_color(self, cr, uid, ids, field_name, arg, context):
         value = {}
         orders = self.browse(cr, uid, ids, context)
@@ -400,7 +416,7 @@ class sale_order(orm.Model):
                 value[order.id] = 'black'
 
         return value
-        
+
     _columns = {
         'presentation': fields.boolean('Allega Presentazione'),
         'automatically_create_new_subscription': fields.boolean('Automatically create new subscription', readonly=False, required=False, 
@@ -471,6 +487,7 @@ class sale_order(orm.Model):
 
     _defaults = {
         'subscription_invoice_day': lambda self, cr, uid, context: self.pool['res.users'].browse(cr, uid, uid, context).company_id.subscription_invoice_day,
+        'order_duration': 30,
     }
 
     def copy(self, cr, uid, ids, default=None, context=None):
@@ -613,6 +630,7 @@ class sale_order(orm.Model):
             547: 18,
             365: 12,
             180: 6,
+            120: 4,
             90: 3,
             60: 2,
             30: 1
