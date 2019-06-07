@@ -23,7 +23,7 @@
 
 {
     "name": "Subscrption Sale",
-    "version": "3.8.27.19",
+    "version": "3.8.27.20",
     "author": "Agile Business Group & Domsense & Didotech",
     'website': 'http://www.didotech.com',
     'category': 'Generic Modules/Sales & Purchases',

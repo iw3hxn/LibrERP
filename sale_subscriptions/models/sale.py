@@ -567,7 +567,7 @@ class sale_order(orm.Model):
         """
             Function is called when Order is Confirmed
         """
-
+        res = super(sale_order, self).action_wait(cr, uid, ids, *args)
         for order in self.browse(cr, uid, ids):
             values = {
                 'date_confirm': time.strftime(DEFAULT_SERVER_DATE_FORMAT)
@@ -582,10 +582,8 @@ class sale_order(orm.Model):
                 self.write(cr, uid, [order.id], values)
                 
             self.pool['sale.order.line'].button_confirm(cr, uid, [line.id for line in order.order_line])
-            message = _("The quotation '%s' has been converted to a sales order.") % (order.name,)
-            self.log(cr, uid, order.id, message)
                 
-        return True
+        return res
 
     def manual_invoice(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
