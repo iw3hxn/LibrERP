@@ -167,10 +167,10 @@ class account_move_line(orm.Model):
         pointer = 0
         key = context.get('color', 'date_maturity')
         if key == 'reconcile_function_id':
-            cr.execute('SELECT id, coalesce(reconcile_partial_id, 0) + coalesce(reconcile_id, 0), state FROM account_move_line WHERE id in ({line_ids})'.format(line_ids=','.join(map(str, ids))))
+            cr.execute('SELECT id, coalesce(reconcile_partial_id, 0) + coalesce(reconcile_id, 0), state FROM account_move_line WHERE id in %s', (tuple(ids),))
             pointer += 1
         else:
-            cr.execute('SELECT id, {key}, state FROM account_move_line WHERE id in ({line_ids})'.format(key=key, line_ids=','.join(map(str, ids))))
+            cr.execute('SELECT id, %s, state FROM account_move_line WHERE id in %s', (key, tuple(ids)))
         line_colors = cr.fetchall()
         for line in line_colors:
             line_key = line[1]
