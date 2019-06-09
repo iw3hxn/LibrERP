@@ -58,7 +58,7 @@ class res_partner(orm.Model):
                                                                     context=context)
         return res
 
-    def _get_credit_activity_history(self, cr, uid, ids, field_name, arg, context=None):
+    def _get_credit_activity_history_last(self, cr, uid, ids, field_name, arg, context=None):
         res = dict.fromkeys(ids, False)
 
         cr.execute("""SELECT
@@ -70,14 +70,58 @@ class res_partner(orm.Model):
                             credit_phonecall.state = 'done' AND
                             credit_phonecall.partner_id in %s
                         GROUP BY
-                            credit_phonecall.partner_id,
-                            credit_phonecall.date;
+                            credit_phonecall.partner_id;
                         """, (tuple(ids),))
         res_sql = cr.fetchall()
         for res_id in res_sql:
             res[res_id[0]] = res_id[1]
 
         return res
+
+    def _get_credit_activity_history_next(self, cr, uid, ids, field_name, arg, context=None):
+        res = dict.fromkeys(ids, False)
+
+        cr.execute("""SELECT
+                            credit_phonecall.partner_id,
+                            MIN(credit_phonecall.date)
+                        FROM
+                            credit_phonecall
+                        WHERE
+                            credit_phonecall.state in ('draft', 'open', 'pending') AND
+                            credit_phonecall.partner_id in %s
+                        GROUP BY
+                            credit_phonecall.partner_id;
+                        """, (tuple(ids),))
+        res_sql = cr.fetchall()
+        for res_id in res_sql:
+            res[res_id[0]] = res_id[1]
+
+        return res
+
+    def _search_next_overdue_credit_activity_date(self, cr, uid, obj, name, args, context=None):
+        if args:
+            current_date = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+            cr.execute("""SELECT 
+                    credit_phonecall.partner_id
+                FROM 
+                    credit_phonecall
+                WHERE 
+                    credit_phonecall.state in ('draft', 'open', 'pending') AND 
+                    credit_phonecall.date < %s
+                GROUP BY
+                    partner_id;
+            """, (current_date, ))
+
+            res = cr.fetchall()
+            partner_ids = []
+            if res:
+                partner_ids = [x[0] for x in res]
+
+            if not partner_ids:
+                return [('id', '=', 0)]
+            return [('id', 'in', list(set(partner_ids)))]
+
+        return []
 
     def _get_overdue_credit(self, cr, uid, ids, field_name, arg, context=None):
         res = dict.fromkeys(ids, 0.0)
@@ -102,20 +146,6 @@ class res_partner(orm.Model):
         res_sql = cr.fetchall()
         for res_id in res_sql:
             res[res_id[0]] = res_id[1]
-
-        # for partner_id in ids:
-        #     account_move_line_obj = self.pool['account.move.line']
-        #     payment_overdue_ids = account_move_line_obj.search(cr, uid, [('partner_id', '=', partner_id),
-        #                                                                  ('account_id.type', 'in',
-        #                                                                   ['receivable']),
-        #                                                                  ('state', '!=', 'draft'),
-        #                                                                  ('reconcile_id', '=', False),
-        #                                                                  ('date_maturity', '<', current_date)],
-        #                                                        context=context)
-        #     res[partner_id] = 0
-        #     for move_line in account_move_line_obj.read(cr, uid, payment_overdue_ids, ['credit', 'debit'],
-        #                                                 context=context):
-        #         res[partner_id] += (move_line['debit'] - move_line['credit'])
         return res
 
     def _search_overdue_credit(self, cr, uid, obj, name, args, context=None):
@@ -124,17 +154,17 @@ class res_partner(orm.Model):
             cr.execute("""SELECT 
                     account_move_line.partner_id
                 FROM 
-                    public.account_account, 
-                    public.account_move_line
+                    account_account, 
+                    account_move_line
                 WHERE 
                     account_move_line.account_id = account_account.id AND
                     account_move_line.state != 'draft' AND 
                     account_account.type = 'receivable' AND 
                     account_move_line.reconcile_id IS NULL AND
-                    account_move_line.date_maturity < '{date_maturity}'
+                    account_move_line.date_maturity < %s
                 GROUP BY
                     partner_id;
-            """.format(date_maturity=current_date))
+            """, (current_date, ))
 
             res = cr.fetchall()
             partner_ids = []
@@ -145,13 +175,13 @@ class res_partner(orm.Model):
                 return [('id', '=', 0)]
             return [('id', 'in', list(set(partner_ids)))]
 
-
         return []
 
     _columns = {
         'payment_ids': fields.function(_get_invoice_payment, string="All Open Payment", type='one2many',
                                        method=True, relation='account.move.line'),
         'overdue_credit': fields.function(_get_overdue_credit, fnct_search=_search_overdue_credit, string="Overdue Payment", type='float', method=True),
-        'last_overdue_credit_activity_date': fields.function(_get_credit_activity_history, method=True, string="Last Activity On", type='date'),
+        'last_overdue_credit_activity_date': fields.function(_get_credit_activity_history_last, method=True, string="Last Activity On", type='date'),
+        'next_overdue_credit_activity_date': fields.function(_get_credit_activity_history_next, fnct_search=_search_next_overdue_credit_activity_date, method=True, string="Next Activity On", type='date'),
     }
 

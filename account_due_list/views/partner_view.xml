@@ -51,7 +51,8 @@
             <field name="arch" type="xml">
                 <field name="user_id" position="after" >
                     <field name="overdue_credit" groups="account_due_list.can_view_due_list" />
-                    <field name="last_overdue_credit_activity_date" groups="account_due_list.can_view_due_list" />
+                    <field name="last_overdue_credit_activity_date" groups="account_due_list.can_view_due_list" invisible="not context.get('show_overdue_activity', False)"/>
+                    <field name="next_overdue_credit_activity_date" groups="account_due_list.can_view_due_list" invisible="not context.get('show_overdue_activity', False)"/>
                 </field>
             </field>
         </record>
@@ -64,6 +65,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="before">
                     <filter string="Overdue Credit" name="overdue_credit" icon="terp-dolar_ok!" context="{'show_overdue_activity': True}" domain="[('overdue_credit','=',1)]" groups="account_due_list.can_view_due_list"/>
+                    <filter string="To Recall for Credit" icon="terp-gnome-cpu-frequency-applet+" context="{'show_overdue_activity': True}" domain="[('next_overdue_credit_activity_date','&lt;', current_date)]" groups="account_due_list.can_view_due_list"/>
                     <separator orientation="vertical"/>
                 </field>
             </field>

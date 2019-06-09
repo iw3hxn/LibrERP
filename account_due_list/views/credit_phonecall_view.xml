@@ -9,7 +9,7 @@
         <field name="model">credit.phonecall</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree colors="gray:state in ('cancel','done');blue:state in ('pending',)" string="Phone Calls">
+            <tree colors="gray:state in ('cancel','done');blue:state in ('pending',); red:state in ('draft', 'open')" string="Phone Calls">
                 <field name="date"/>
                 <field name="name"/>
                 <field name="partner_id" invisible="1"/>
@@ -80,7 +80,7 @@
         <field name="model">credit.phonecall</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Phone Calls" editable="top">
+            <tree string="Phone Calls" editable="top" colors="gray:state in ('cancel','done');blue:state in ('pending',); red:state in ('draft', 'open')">
                 <field name="date"/>
                 <field name="name"/>
                 <field name="partner_id"

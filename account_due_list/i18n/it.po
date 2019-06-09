@@ -404,9 +404,19 @@ msgid "Last Activity On"
 msgstr "Ultima Attività Recupero"
 
 #. module: account_due_list
+#: field:res.partner,next_overdue_credit_activity_date:0
+msgid "Next Activity On"
+msgstr "Prossima Attività Recupero"
+
+#. module: account_due_list
 #: view:res.partner:0
 msgid "Overdue Credit"
 msgstr "Con Scaduto"
+
+#. module: account_due_list
+#: view:res.partner:0
+msgid "To Recall for Credit"
+msgstr "Con Richiami entro Oggi"
 
 #. module: account_due_list
 #: view:credit.phonecall:0
