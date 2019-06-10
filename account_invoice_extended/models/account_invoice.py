@@ -354,8 +354,7 @@ class account_invoice(orm.Model):
 
         return res
 
-    def test_paid(self, cr, uid, ids, *args):
+    def action_move_create(self, cr, uid, ids, context=None):
+        result = super(account_invoice, self).action_move_create(cr, uid, ids, context)
         res = self._force_paid_zero_invoice(cr, uid, ids)
-
-        result = super(account_invoice, self).test_paid(cr, uid, ids, *args)
         return result
