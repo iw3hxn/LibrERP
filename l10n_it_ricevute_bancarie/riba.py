@@ -291,6 +291,15 @@ class riba_distinta_line(osv.osv):
                             res[line.id]['cig'] = str(move_line.move_line_id.invoice.cig)
                         else:
                             res[line.id]['cig'] += ', '+str(move_line.move_line_id.invoice.cig)
+                elif move_line.move_line_id:
+                    if not res[line.id]['invoice_number']:
+                        res[line.id]['invoice_number'] = str(move_line.move_line_id.name)
+                    else:
+                        res[line.id]['invoice_number'] += ', ' + str(move_line.move_line_id.name)
+                    if not res[line.id]['invoice_date']:
+                        res[line.id]['invoice_date'] = str(datetime.strptime(move_line.move_line_id.date, '%Y-%m-%d').strftime('%d/%m/%Y'))
+                    else:
+                        res[line.id]['invoice_date'] += ', ' + str(datetime.strptime(move_line.move_line_id.date, '%Y-%m-%d').strftime('%d/%m/%Y'))
         return res
 
     def _reconciled(self, cr, uid, ids, name, args, context=None):
