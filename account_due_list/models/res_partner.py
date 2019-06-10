@@ -35,6 +35,11 @@ class res_partner(orm.Model):
             account_view_partner_ids.append(partner.property_account_payable.id)
         if context.get('search_default_customer', False):
             account_view_partner_ids.append(partner.property_account_receivable.id)
+
+        if not account_view_ids:
+            account_view_partner_ids.append(partner.property_account_payable.id)
+            account_view_partner_ids.append(partner.property_account_receivable.id)
+
         fposition_id = partner.property_account_position
         if fposition_id:
             for account_id in account_view_partner_ids:
