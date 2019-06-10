@@ -26,7 +26,6 @@
                             domain="[('reconcile_id','=',False), ('account_id.reconcile','=',True)]"
                             help="Unreconciled Journal Items"
                             name="unreconciled"/>
-                    <newline/>
                     <field name="move_id" string="Number (Move)"/>
                     <field name="date"/>
                     <field name="account_id"/>
@@ -38,7 +37,7 @@
 
                     <newline/>
 
-                    <field name="journal_id" widget="selection" context="{'journal_id':self}"/>
+                    <field name="journal_id" context="{'journal_id':self}"/>
                     <field name="period_id" context="{'period_id':self}"/>
 
                     <newline/>

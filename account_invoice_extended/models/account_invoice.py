@@ -329,3 +329,33 @@ class account_invoice(orm.Model):
             if context:
                 context['picking_to_write_ids'] = picking_to_write_ids
         return super(account_invoice, self).unlink(cr, uid, ids, context=context)
+
+    def _force_paid_zero_invoice(self, cr, uid, ids, context=None):
+        res = {}
+        if not ids:
+            return res
+        cr.execute("""SELECT i.id, i.amount_untaxed, i.period_id, l.id 
+                           FROM account_move_line l 
+                           LEFT JOIN account_invoice i ON (i.move_id=l.move_id) 
+                           WHERE i.id IN %s 
+                           AND l.account_id=i.account_id
+                           AND l.reconcile_id IS NULL""",
+                   (tuple(ids),))
+        sql_result = cr.fetchall()
+        account_move_line_obj = self.pool['account.move.line']
+        for r in sql_result:
+            if not r[1]:
+                res.setdefault(r[0], [])
+                account_id = False
+                period_id = r[2]
+                journal_id = False
+                account_move_line_obj.reconcile(cr, uid, [r[3]], 'manual', account_id, period_id, journal_id, context=None)
+                res[r[0]].append(r[3])
+
+        return res
+
+    def test_paid(self, cr, uid, ids, *args):
+        res = self._force_paid_zero_invoice(cr, uid, ids)
+
+        result = super(account_invoice, self).test_paid(cr, uid, ids, *args)
+        return result
