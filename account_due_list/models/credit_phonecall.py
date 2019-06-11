@@ -79,7 +79,7 @@ class CreditPhonecall(orm.Model):
         return True
 
     def case_cancel(self, cr, uid, ids, context):
-        """Resets case as Todo
+        """Resets case as Cancel
         """
         self.write(cr, uid, ids, {'duration': 0.0, 'state': 'cancel'}, context)
         return True
@@ -88,6 +88,12 @@ class CreditPhonecall(orm.Model):
         """Overrides cancel for crm_case for setting Open Date
         """
         self.write(cr, uid, ids, {'date_open': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)}, context)
+        return True
+
+    def case_pending(self, cr, uid, ids, context):
+        """Resets case as Pending
+        """
+        self.write(cr, uid, ids, {'state': 'pending'}, context)
         return True
 
     def onchange_partner_id(self, cr, uid, ids, part, email=False, context=None):

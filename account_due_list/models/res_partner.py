@@ -112,10 +112,10 @@ class res_partner(orm.Model):
                     credit_phonecall
                 WHERE 
                     credit_phonecall.state in ('draft', 'open', 'pending') AND 
-                    credit_phonecall.date < %s
+                    credit_phonecall.date <= %s 
                 GROUP BY
                     partner_id;
-            """, (current_date, ))
+            """, (current_date + ' 23:59:59', ))
 
             res = cr.fetchall()
             partner_ids = []
@@ -143,11 +143,14 @@ class res_partner(orm.Model):
                             account_move_line.state != 'draft' AND
                             account_account.type = 'receivable' AND
                             account_move_line.reconcile_id IS NULL AND
-                            account_move_line.date_maturity < %s AND
-                            partner_id in %s
+                            partner_id in %s AND
+                            (account_move_line.date_maturity <= %s 
+                                OR
+                            account_move_line.date <= %s AND account_move_line.date_maturity IS NULL)
+                            
                         GROUP BY
                             partner_id;
-                    """, (current_date, tuple(ids)))
+                    """, (tuple(ids), current_date, current_date))
         res_sql = cr.fetchall()
         for res_id in res_sql:
             res[res_id[0]] = res_id[1]
@@ -166,7 +169,7 @@ class res_partner(orm.Model):
                     account_move_line.state != 'draft' AND 
                     account_account.type = 'receivable' AND 
                     account_move_line.reconcile_id IS NULL AND
-                    account_move_line.date_maturity < %s
+                    account_move_line.date_maturity <= %s
                 GROUP BY
                     partner_id;
             """, (current_date, ))
