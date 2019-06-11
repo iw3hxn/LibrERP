@@ -25,18 +25,20 @@ class account_invoice(orm.Model):
     _inherit = "account.invoice"
 
     def invoice_validate_check(self, cr, uid, ids, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(account_invoice, self).invoice_validate_check(cr, uid, ids, context)
+        show_except = not context.get('no_except', False)
         if not res:
             return False
         else:
             for invoice in self.browse(cr, uid, ids, context):
 
                 if invoice.payment_term and invoice.payment_term.teamsystem_code == 0:
-                    raise orm.except_orm('Fattura Cliente',
+                    if show_except:
+                        raise orm.except_orm('Fattura Cliente',
                                          'Impossibile da validare la fattura di {partner} in quanto sul termine di pagamento \'{payment}\' manca il codice TeamSystem'.format(partner=invoice.partner_id.name, payment=invoice.payment_term.name))
-                    return False
+                    else:
+                        return False
         return True
 
     def action_cancel(self, cr, uid, ids, context=None):
