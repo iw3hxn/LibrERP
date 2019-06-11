@@ -63,8 +63,8 @@
         padding: 3px 5px;
         text-align: right;
         }
-        
-    /* COLUMNS WIDTH 
+
+    /* COLUMNS WIDTH
     .p_cell_progr_row { width: 15px;}
     .p_cell_date { width: 45px;}
     .p_cell_ref { width: 70px;}
@@ -103,15 +103,16 @@
     <%
         debit_tot = print_info['start_debit']
         credit_tot = print_info['start_credit']
-    %>        
-    <% result_rows and result_rows[0] and result_rows[0].company_id and result_rows[0].company_id.partner_id and result_rows[0].company_id and result_rows[0].company_id.partner_id.lang and setLang(result_rows[0].company_id and result_rows[0].company_id.partner_id.lang) %>
+    %>
+
+    <% get_company(fiscalyear_id) and setLang(get_company(fiscalyear_id).company_id.partner_id.lang) %>
 
     %for line in result_rows :
         <% num_row = num_row + 1 %>
         <% progr_row = progr_row + 1 %>
         % if new_page == True:
-            <% 
-            new_page = False 
+            <%
+            new_page = False
             progr_page = progr_page + 1
             %>
             <div class="page_block">
@@ -152,22 +153,22 @@
         % endif
         <tr class="p_row">
             <td class="p_cell p_cell_progr_row"><span class="p_text p_progr_row">${progr_row}</span></td>
-            <td class="p_cell p_cell_date"><span class="p_text p_date">${ formatLang(line.date, date=True) or ''|entity }</span></td>
-            <td class="p_cell p_cell_ref"><span class="p_text p_ref">${ line.ref or ''|entity }</span></td>
-            <td class="p_cell p_cell_move_id_name"><span class="p_text p_move_id_name">${ line.move_id.name or ''|entity }</span></td>
-            <td class="p_cell p_cell_account_id_code"><span class="p_text p_account_id_code">${ line.account_id.code or ''|entity }</span></td>
-            <td class="p_cell p_cell_account_id_name"><span class="p_text p_account_id_name">${ line.account_id.name or ''|entity }</span></td>
-            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line.name or ''|entity }</span></td>
-            <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(line.debit, digits=get_digits(dp='Account')) |entity }</span></td>
-            <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(line.credit, digits=get_digits(dp='Account')) |entity }</span></td>
+            <td class="p_cell p_cell_date"><span class="p_text p_date">${ formatLang(line['date'], date=True) or ''|entity }</span></td>
+            <td class="p_cell p_cell_ref"><span class="p_text p_ref">${ line['ref'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_move_id_name"><span class="p_text p_move_id_name">${ line['move_id'][1] or ''|entity }</span></td>
+            <td class="p_cell p_cell_account_id_code"><span class="p_text p_account_id_code">${ get_account(line['account_id'][0])['code'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_account_id_name"><span class="p_text p_account_id_name">${ get_account(line['account_id'][0])['name'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['name'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(line['debit'], digits=get_digits(dp='Account')) |entity }</span></td>
+            <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(line['credit'], digits=get_digits(dp='Account')) |entity }</span></td>
         </tr>
         <%
-        debit_tot = debit_tot + line.debit
-        credit_tot = credit_tot + line.credit
-        %>        
+        debit_tot = debit_tot + line['debit']
+        credit_tot = credit_tot + line['credit']
+        %>
         % if (num_row % page_rows) == 0 or num_row == num_rows :
-            <% 
-            new_page = True 
+            <%
+            new_page = True
             %>
             <tr class="p_row p_row_total p_row_total_down">
             <td colspan="6"></td>

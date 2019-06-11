@@ -17,7 +17,7 @@
                         <field name="fiscalyear" on_change="onchange_fiscalyear(fiscalyear)"/>
                         <separator colspan="4" string="Dates movements"/>
                         <field name="date_move_line_from" invisible="1"/>
-                        <field name="date_move_line_from_view" readonly="1"/>
+                        <field name="date_move_line_from_view" />
                         <field name="date_move_line_to" attrs="{'readonly':[('print_state','!=','print')]}"/>
                     </group>
                     <newline/>

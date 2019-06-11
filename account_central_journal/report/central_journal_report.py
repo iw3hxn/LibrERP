@@ -73,11 +73,33 @@ class central_journal_report(report_sxw.rml_parse):
         move_line_obj = self.pool.get('account.move.line')
         line_ids = move_line_obj.search(
             self.cr, self.uid, self.filters, order="date, move_id asc", context=self.context)
-        report_lines = move_line_obj.browse(self.cr, self.uid, line_ids, context=self.context)
+        report_lines = move_line_obj.read(self.cr, self.uid, line_ids, ['date', 'ref', 'move_id', 'account_id', 'name', 'debit', 'credit'], context=self.context)
         return report_lines
+
+    def _get_company(self, fiscalyear_id):
+        fiscalyear_obj = self.pool['account.fiscalyear']
+        return fiscalyear_obj.browse(self.cr, self.uid, int(fiscalyear_id), context=self.context)
+
+    def _get_account(self, account_id):
+        account_id = int(account_id)
+        if account_id in self._cache_account:
+            return {
+                'code': self._cache_account[account_id]['code'],
+                'name': self._cache_account[account_id]['name']
+            }
+        account = self.pool['account.account'].read(self.cr, self.uid, account_id, ['code', 'name'], context=self.context)
+        self._cache_account[account_id] = {
+            'code': account['code'],
+            'name': account['name']
+        }
+        return {
+            'code': account['code'],
+            'name': account['name']
+        }
 
     def __init__(self, cr, uid, name, context):
         self.filters = []
+        self._cache_account = {}
         super(central_journal_report, self).__init__(cr, uid, name, context)
         self.localcontext.update({
             'time': time,
@@ -87,6 +109,8 @@ class central_journal_report(report_sxw.rml_parse):
             'set_print_info': self._set_print_info,
             'set_wizard_params': self._set_wizard_params,
             'get_movements': self._get_movements,
+            'get_company': self._get_company,
+            'get_account': self._get_account,
         })
         self.context = context
 
