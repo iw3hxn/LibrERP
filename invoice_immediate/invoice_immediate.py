@@ -180,14 +180,15 @@ class account_invoice(orm.Model):
                 else:
                     move_location_id, move_dest_id = location_id, dest_id
 
+                uos_coeff = line.product_id.uos_coeff
                 vals = {
                     'name': line.name,
-                    'product_uom': line.product_id.uom_id.id,
-                    'product_uos': line.uos_id.id,
+                    'product_qty': abs(line.quantity),
+                    'product_uom': line.uos_id.id,
+                    'product_uos_qty': abs(line.quantity) * uos_coeff,
+                    'product_uos': line.product_id.uos_id.id,
                     'picking_id': picking_id,
                     'product_id': line.product_id.id,
-                    'product_uos_qty': abs(line.quantity),
-                    'product_qty': abs(line.quantity),
                     'tracking_id': False,
                     'state': 'draft',
                     'location_id': move_location_id,
