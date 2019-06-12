@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2017 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2019 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -21,8 +21,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import inherit_account_invoice
-from . import inherit_purchase_order
-from . import inherit_purchase_order_line
-from . import inherit_res_partner
-from . import inherit_stock_picking
+
+from openerp.osv import orm
+
+
+class AccountInvoice(orm.Model):
+
+    _inherit = 'account.invoice'
+
+    def onchange_partner_id(self, cr, uid, ids, type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+        res = super(AccountInvoice, self).onchange_partner_id(cr, uid, ids, type, partner_id, date_invoice, payment_term, partner_bank_id, company_id)
+        if partner_id:
+            property_payment_term_id = self.pool['res.partner'].read(cr, uid, partner_id, ['property_payment_term_payable'])['property_payment_term_payable']
+            if property_payment_term_id:
+                res['value']['payment_term'] = property_payment_term_id[0]
+        return res
