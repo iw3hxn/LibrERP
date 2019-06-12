@@ -99,6 +99,7 @@
         
         progr_page = print_info['start_page']
         progr_row = print_info['start_row']
+        old_move_id = False
     %>
     <%
         debit_tot = print_info['start_debit']
@@ -139,13 +140,14 @@
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Account move") }</span></td>
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Account code") }</span></td>
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Account name") }</span></td>
+                <td class="p_cell p_cell_head"><span class="p_text">${ _("Partner") }</span></td>
                 <td class="p_cell p_cell_head"><span class="p_text">${ _("Name") }</span></td>
                 <td class="p_cell p_cell_head p_cell_debit"><span class="p_text">${ _("Debit") }</span></td>
                 <td class="p_cell p_cell_head p_cell_credit"><span class="p_text">${ _("Credit") }</span></td>
             </tr>
 
             <tr class="p_row p_row_total p_row_total_up">
-                <td colspan="6"></td>
+                <td colspan="7"></td>
                 <td class="p_cell p_cell_progressive"><span class="p_text">${ _("Progressives =>") }</span></td>
                 <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(debit_tot, digits=get_digits(dp='Account')) |entity }</span></td>
                 <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(credit_tot, digits=get_digits(dp='Account')) |entity }</span></td>
@@ -158,6 +160,7 @@
             <td class="p_cell p_cell_move_id_name"><span class="p_text p_move_id_name">${ line['move_id'][1] or ''|entity }</span></td>
             <td class="p_cell p_cell_account_id_code"><span class="p_text p_account_id_code">${ get_account(line['account_id'][0])['code'] or ''|entity }</span></td>
             <td class="p_cell p_cell_account_id_name"><span class="p_text p_account_id_name">${ get_account(line['account_id'][0])['name'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['partner_id'] and line['partner_id'][1] or ''|entity }</span></td>
             <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['name'] or ''|entity }</span></td>
             <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(line['debit'], digits=get_digits(dp='Account')) |entity }</span></td>
             <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(line['credit'], digits=get_digits(dp='Account')) |entity }</span></td>
@@ -171,7 +174,7 @@
             new_page = True
             %>
             <tr class="p_row p_row_total p_row_total_down">
-            <td colspan="6"></td>
+            <td colspan="7"></td>
             <td class="p_cell p_cell_progressive"><span class="p_text">${ _("Progressives =>") }</span></td>
             <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(debit_tot, digits=get_digits(dp='Account')) |entity }</span></td>
             <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(credit_tot, digits=get_digits(dp='Account')) |entity }</span></td>
