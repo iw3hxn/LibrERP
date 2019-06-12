@@ -15,7 +15,7 @@ class CreditPhonecall(orm.Model):
     _order = "date desc"
     _columns = {
         # From crm.case
-        'name': fields.char('Call Summary', size=64, required=True),
+        'name': fields.char('Call Summary', size=512, required=True),
         'active': fields.boolean('Active', required=False),
         'date_action_last': fields.datetime('Last Action', readonly=1),
         'date_action_next': fields.datetime('Next Action', readonly=1),

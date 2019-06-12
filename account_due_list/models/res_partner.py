@@ -66,7 +66,7 @@ class res_partner(orm.Model):
     def _get_credit_activity_history_last(self, cr, uid, ids, field_name, arg, context=None):
         res = dict.fromkeys(ids, False)
 
-        cr.execute("""SELECT
+        cr.execute("""SELECT DISTINCT
                             credit_phonecall.partner_id,
                             MAX(credit_phonecall.date)
                         FROM
@@ -75,7 +75,7 @@ class res_partner(orm.Model):
                             credit_phonecall.state = 'done' AND
                             credit_phonecall.partner_id in %s
                         GROUP BY
-                            credit_phonecall.partner_id;
+                            credit_phonecall.partner_id
                         """, (tuple(ids),))
         res_sql = cr.fetchall()
         for res_id in res_sql:
@@ -86,7 +86,7 @@ class res_partner(orm.Model):
     def _get_credit_activity_history_next(self, cr, uid, ids, field_name, arg, context=None):
         res = dict.fromkeys(ids, False)
 
-        cr.execute("""SELECT
+        cr.execute("""SELECT DISTINCT
                             credit_phonecall.partner_id,
                             MIN(credit_phonecall.date)
                         FROM
@@ -95,7 +95,7 @@ class res_partner(orm.Model):
                             credit_phonecall.state in ('draft', 'open', 'pending') AND
                             credit_phonecall.partner_id in %s
                         GROUP BY
-                            credit_phonecall.partner_id;
+                            credit_phonecall.partner_id
                         """, (tuple(ids),))
         res_sql = cr.fetchall()
         for res_id in res_sql:
@@ -163,15 +163,18 @@ class res_partner(orm.Model):
                     account_move_line.partner_id
                 FROM 
                     account_account, 
-                    account_move_line
+                    account_move_line,
+                    res_partner
                 WHERE 
                     account_move_line.account_id = account_account.id AND
+                    account_move_line.partner_id = res_partner.id AND
+                    res_partner.collections_out is NULL AND
                     account_move_line.state != 'draft' AND 
                     account_account.type = 'receivable' AND 
                     account_move_line.reconcile_id IS NULL AND
                     account_move_line.date_maturity <= %s
                 GROUP BY
-                    partner_id;
+                    partner_id
             """, (current_date, ))
 
             res = cr.fetchall()
@@ -191,5 +194,6 @@ class res_partner(orm.Model):
         'overdue_credit': fields.function(_get_overdue_credit, fnct_search=_search_overdue_credit, string="Overdue Payment", type='float', method=True),
         'last_overdue_credit_activity_date': fields.function(_get_credit_activity_history_last, method=True, string="Last Activity On", type='date'),
         'next_overdue_credit_activity_date': fields.function(_get_credit_activity_history_next, fnct_search=_search_next_overdue_credit_activity_date, method=True, string="Next Activity On", type='date'),
+        'collections_out': fields.boolean('Recupero Presso Terzi')
     }
 
