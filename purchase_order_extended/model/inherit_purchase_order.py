@@ -137,8 +137,8 @@ class purchase_order(orm.Model):
             partner_vals = {}
             if not order.partner_id.property_delivery_carrier:
                 partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
-            if not order.partner_id.property_payment_term:
-                partner_vals['property_payment_term'] = vals.get('payment_term')
+            if not order.partner_id.property_payment_term_payable:
+                partner_vals['property_payment_term_payable'] = vals.get('payment_term')
             if partner_vals:
                 self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
         return ids
@@ -170,8 +170,8 @@ class purchase_order(orm.Model):
                 partner_vals = {}
                 if not order.partner_id.property_delivery_carrier:
                     partner_vals['property_delivery_carrier'] = vals.get('carrier_id')
-                if not order.partner_id.property_payment_term:
-                    partner_vals['property_payment_term'] = vals.get('payment_term')
+                if not order.partner_id.property_payment_term_payable:
+                    partner_vals['property_payment_term_payable'] = vals.get('payment_term')
                 if partner_vals:
                     self.pool['res.partner'].write(cr, uid, [order.partner_id.id], partner_vals, context)
             if 'order_line' in vals:
