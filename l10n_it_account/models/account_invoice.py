@@ -84,17 +84,18 @@ class account_invoice(orm.Model):
 
     def action_cancel(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        for invoice in self.browse(cr, uid, ids, context):
-            period = invoice.period_id
-            vat_statement = self.pool['account.vat.period.end.statement'].search(
-                cr, uid, [('period_ids', 'in', period.id)], context=context)
-            if vat_statement and self.pool['account.vat.period.end.statement'].browse(
-                    cr, uid, vat_statement, context)[0].state != 'draft':
-                raise orm.except_orm(
-                    _('Period Mismatch Error!'),
-                    _('Period %s have already a closed vat statement.')
-                    % period.name
-                )
+        if not context.get('force_invoice_recreate', False):
+            for invoice in self.browse(cr, uid, ids, context):
+                period = invoice.period_id
+                vat_statement = self.pool['account.vat.period.end.statement'].search(
+                    cr, uid, [('period_ids', 'in', period.id)], context=context)
+                if vat_statement and self.pool['account.vat.period.end.statement'].browse(
+                        cr, uid, vat_statement, context)[0].state != 'draft':
+                    raise orm.except_orm(
+                        _('Period Mismatch Error!'),
+                        _('Period %s have already a closed vat statement.')
+                        % period.name
+                    )
         super(account_invoice, self).action_cancel(cr, uid, ids, context)
         self.write(cr, uid, ids, {'period_id': False})
 
@@ -134,6 +135,8 @@ class account_invoice(orm.Model):
         context = context or self.pool['res.users'].context_get(cr, uid)
 
         result = super(account_invoice, self).action_number(cr, uid, ids, context)
+        if context.get('force_invoice_recreate', False):
+            return result
 
         for invoice in self.browse(cr, uid, ids, context):
             inv_type = invoice.type
