@@ -54,11 +54,11 @@ class sale_order_line(orm.Model):
             cur = line.order_id.pricelist_id.currency_id
             if line.order_id.have_subscription and line.product_id.subscription:
                 if line.product_id.order_duration:
-                    ratio = 365 / line.product_id.order_duration
+                    ratio = 365 / line.product_id.order_duration or 1
                 else:
                     ratio = 1
                 k = order_obj.get_duration_in_months(line.order_id.order_duration) / order_obj.get_duration_in_months(line.product_id.order_duration)
-                res[line.id] = cur_obj.round(cr, uid, cur, (taxes['total']/ratio) * k)
+                res[line.id] = cur_obj.round(cr, uid, cur, (taxes['total'] / ratio) * k)
             else:
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
         return res
