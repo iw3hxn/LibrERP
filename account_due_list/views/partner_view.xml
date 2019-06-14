@@ -37,6 +37,7 @@
                                 <field name="running_balance" />
                             </tree>
                         </field>
+                        <field name="credit_phonecall_ids" colspan="4" nolabel="1" context="{'tree_view_ref':'account_due_list.credit_case_inbound_phone_tree_view' }"/>
                     </page>
                 </notebook>
 

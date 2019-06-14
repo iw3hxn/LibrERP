@@ -194,6 +194,7 @@ class res_partner(orm.Model):
         'overdue_credit': fields.function(_get_overdue_credit, fnct_search=_search_overdue_credit, string="Overdue Payment", type='float', method=True),
         'last_overdue_credit_activity_date': fields.function(_get_credit_activity_history_last, method=True, string="Last Activity On", type='date'),
         'next_overdue_credit_activity_date': fields.function(_get_credit_activity_history_next, fnct_search=_search_next_overdue_credit_activity_date, method=True, string="Next Activity On", type='date'),
-        'collections_out': fields.boolean('Recupero Presso Terzi')
+        'collections_out': fields.boolean('Recupero Presso Terzi'),
+        'credit_phonecall_ids': fields.one2many('credit.phonecall', 'partner_id', 'Phonecalls'),
     }
 
