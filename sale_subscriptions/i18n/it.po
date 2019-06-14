@@ -427,3 +427,9 @@ msgstr "2 anni"
 #: selection:product.product,order_duration:0
 msgid "3 years"
 msgstr "3 anni"
+
+#. module: sale_subscriptions
+#: view:sale.change.subscriptions:0
+#: view:sale.order:0
+msgid "Change Subscriptions"
+msgstr "Cambia Periodo Fatturazione"
