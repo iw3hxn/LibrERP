@@ -200,5 +200,20 @@
         </record>
         <menuitem name="Unsolved Invoices" parent="menu_riba" 
             id="menu_invoices" action="action_invoice_tree1" sequence="3"/>
+
+
+        <record model="ir.ui.view" id="view_account_move_riba_form">
+            <field name="name">account.move.riba.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@string='Journal Items']/field[@name='line_id']/tree/field[@name='state']"
+                       position="before">
+                    <field name="riba"/>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </openerp>

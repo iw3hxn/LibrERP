@@ -46,8 +46,8 @@
                         <field name="date_invoice" on_change="onchange_check_fiscal_position(date_invoice, partner_id)" />
                     </field>
                     <field name="payment_term" position="after">
-                        <field name="cig" />
-                        <field name="cup" />
+                        <field name="cig" readonly="1"/>
+                        <field name="cup" readonly="1"/>
                     </field>
                     <!--insert in the customer invoice the new line invoice created with 'form_view_ref' tag-->
                     <xpath expr="/form/notebook/page[@string='Invoice']/field[@name='invoice_line']" position="attributes">

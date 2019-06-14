@@ -73,6 +73,7 @@
                                 </field>
                             </group>
                         </group>
+                        <field name="authority_vat_amount" />
                         <field name="show_zero"/>
                     </page>
                     <page string="Tax Authority">
@@ -98,7 +99,7 @@
                             </field>
                         </group>
                         <group colspan="4">
-                            <field name="authority_vat_amount" />
+
                             <field name="authority_vat_account_id" select="1" />
                             <field name="authority_partner_id" select="1" on_change="on_change_partner_id(authority_partner_id)"/>
                             <field name="residual" />

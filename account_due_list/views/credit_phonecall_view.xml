@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+<!--  PhoneCalls Tree View -->
+
+    <record model="ir.ui.view" id="credit_case_phone_tree_view">
+        <field name="name">Credit - Phone Calls Tree</field>
+        <field name="model">credit.phonecall</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree colors="gray:state in ('cancel','done');blue:state in ('pending',); red:state in ('draft', 'open')" string="Phone Calls">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="partner_id" invisible="1"/>
+                <field name="user_id"/>
+                <field name="create_date" invisible="1"/>
+                <field name="state"/>
+                <button name="case_cancel" string="Cancel" states="open,pending" type="object" icon="gtk-cancel"/>
+                <button name="case_open" string="Todo" states="pending" type="object" icon="gtk-go-forward"/>
+                <button name="case_close" string="Held" states="open,pending" type="object" icon="gtk-jump-to"/>
+                <button name="case_pending" string="Not Held" states="open" type="object" icon="gtk-media-pause"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Phonecalls Form View -->
+
+    <record model="ir.ui.view" id="credit_case_phone_form_view">
+        <field name="name">CRM - Phone Call Form</field>
+        <field name="model">credit.phonecall</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Phone Call">
+                 <group colspan="6" col="7">
+                    <field name="name" required="1"/>
+                    <field name="duration" widget="float_time"/>
+                    <field name="date"/>
+                    <field name="user_id"/>
+                </group>
+
+                <group col="3" colspan="2">
+                    <separator colspan="3" string="Contacts" />
+                    <field name="partner_id"
+                        on_change="onchange_partner_id(partner_id)" />
+
+                </group>
+                <group col="2" colspan="2">
+                    <field name="priority"/>
+
+                </group>
+                <separator string="Description" colspan="4" />
+                <field name="description" nolabel="1" colspan="4" />
+                <separator colspan="4" />
+                <group col="8" colspan="4">
+                    <field name="state" widget="statusbar" statusbar_visible="open,done" statusbar_colors='{"pending":"red"}' select="1"/>
+                    <button name="case_cancel" string="Cancel"
+                        states="open,pending" type="object"
+                        icon="gtk-cancel" />
+                    <button name="case_open" string="Todo"
+                        states="pending" type="object"
+                        icon="gtk-go-forward" />
+                    <button name="case_pending" string="Not Held"
+                        states="open" type="object" icon="gtk-media-pause" />
+                    <button name="case_close" string="Held"
+                        states="open,pending" type="object"
+                        icon="gtk-jump-to" />
+                    <button name="case_reset" string="Reset to Todo"
+                        states="cancel" type="object"
+                        icon="gtk-convert" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!--Logged Phonecalls Tree View -->
+
+    <record model="ir.ui.view" id="credit_case_inbound_phone_tree_view">
+        <field name="name">CREDIT - Logged Phone Calls Tree</field>
+        <field name="model">credit.phonecall</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Phone Calls" editable="top" colors="gray:state in ('cancel','done');blue:state in ('pending',); red:state in ('draft', 'open')">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="partner_id"
+                    on_change="onchange_partner_id(partner_id)"
+                    string="Partner" invisible="1"/>
+                <field name="user_id" groups="base.group_extended"/>
+                <field name="state" readonly="1"/>
+                <field name="create_date" invisible="1"/>
+                <button name="case_cancel" string="Cancel" states="open,pending" type="object" icon="gtk-cancel"/>
+                <button name="case_open" string="Todo" states="pending" type="object" icon="gtk-go-forward"/>
+                <button name="case_close" string="Held" states="open,pending" type="object" icon="gtk-jump-to"/>
+                <button name="case_pending" string="Not Held" states="open" type="object" icon="gtk-media-pause"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Phonecalls Calendar View -->
+
+    <record model="ir.ui.view" id="credit_case_phone_calendar_view">
+        <field name="name">CREDIT - Phone Calls Calendar</field>
+        <field name="model">credit.phonecall</field>
+        <field name="type">calendar</field>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <calendar string="Phone Calls" date_start="date" color="user_id" date_delay="duration">
+                <field name="name"/>
+                <field name="partner_id"/>
+            </calendar>
+        </field>
+    </record>
+
+<!-- Phonecalls Search View  -->
+
+    <record id="view_credit_case_phonecalls_filter" model="ir.ui.view">
+        <field name="name">CREDIT - Phone Calls Search</field>
+        <field name="model">credit.phonecall</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Search Phonecalls">
+               <filter icon="terp-go-today" string="Today"
+                   domain="[('date','&lt;', time.strftime('%%Y-%%m-%%d 23:59:59')),
+                    ('date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00'))]"
+                   name="today"
+                   help="Todays's Phonecalls"
+               />
+               <filter icon="terp-go-week"
+                   string="7 Days"
+                   help="Phonecalls during last 7 days"
+                   domain="[('date','&gt;=',(datetime.date.today()-datetime.timedelta(days=7)).strftime('%%Y-%%m-%%d'))]"
+               />
+
+               <separator orientation="vertical"/>
+               <field name="name"/>
+               <field name="partner_id"/>
+               <field name="user_id">
+                   <filter icon="terp-personal-"
+                       domain="[('user_id','=',False)]"
+                       help="Unassigned Phonecalls" />
+               </field>
+
+               <newline/>
+               <group expand="0" string="Group By...">
+                   <filter string="Partner" icon="terp-partner" domain="[]"
+                       context="{'group_by':'partner_id'}" />
+                   <filter string="Responsible" icon="terp-personal"
+                       domain="[]" context="{'group_by':'user_id'}" />
+                   <separator orientation="vertical" />
+                   <filter string="Creation" icon="terp-go-month" help="Creation Date"
+                       domain="[]" context="{'group_by':'create_date'}" />
+                   <filter string="Date" icon="terp-go-month" domain="[]"
+                       context="{'group_by':'date'}" help="Date of Call" />
+               </group>
+           </search>
+        </field>
+    </record>
+
+    <!-- Scheduled a phonecall search view-->
+    <record id="view_credit_case_scheduled_phonecalls_filter" model="ir.ui.view">
+        <field name="name">CREDIT - Scheduled Calls Search</field>
+        <field name="model">credit.phonecall</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Scheduled Phonecalls">
+               <filter icon="terp-gtk-go-back-rtl" string="To Do" name="current" domain="[('state','=','open')]"/>    
+               <separator orientation="vertical"/>
+               <filter icon="terp-go-today" string="Today"
+                   domain="[('date','&lt;', time.strftime('%%Y-%%m-%%d 23:59:59')),
+                    ('date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00'))]"
+                   name="today"
+                   help="Todays's Phonecalls"
+               />
+               <filter icon="terp-go-week"
+                   string="7 Days"
+                   help="Phonecalls during last 7 days"
+                   domain="[('date','&gt;=',(datetime.date.today()-datetime.timedelta(days=7)).strftime('%%Y-%%m-%%d'))]"
+               />
+
+               <separator orientation="vertical"/>
+               <field name="name"/>
+               <field name="partner_id"/>
+               <field name="user_id">
+                   <filter icon="terp-personal-"
+                       domain="[('user_id','=',False)]"
+                       help="Unassigned Phonecalls" />
+               </field>
+               <newline/>
+               <group expand="0" string="Group By...">
+                   <filter string="Partner" icon="terp-partner" domain="[]"
+                       context="{'group_by':'partner_id'}" />
+                   <filter string="Responsible" icon="terp-personal"
+                       domain="[]" context="{'group_by':'user_id'}" />
+                   <separator orientation="vertical" />
+                   <filter string="Creation" icon="terp-go-month" help="Creation Date"
+                       domain="[]" context="{'group_by':'create_date'}" />
+                   <filter string="Date" icon="terp-go-month" domain="[]"
+                       context="{'group_by':'date'}" help="Date of Call" />
+               </group>
+           </search>
+        </field>
+    </record>   
+
+    </data>
+</openerp>

@@ -392,3 +392,206 @@ msgstr "Data di scadenza Errata"
 #, python-format
 msgid "Date maturity less of date in Journal Entries"
 msgstr "Data di scadenza inferiore alla scrittura contabile"
+
+#. module: account_due_list
+#: field:res.partner,overdue_credit:0
+msgid "Overdue Payment"
+msgstr "Totale Scaduto"
+
+#. module: account_due_list
+#: field:res.partner,last_overdue_credit_activity_date:0
+msgid "Last Activity On"
+msgstr "Ultima Attività Recupero"
+
+#. module: account_due_list
+#: field:res.partner,next_overdue_credit_activity_date:0
+msgid "Next Activity On"
+msgstr "Prossima Attività Recupero"
+
+#. module: account_due_list
+#: view:res.partner:0
+msgid "Overdue Credit"
+msgstr "Con Scaduto"
+
+#. module: account_due_list
+#: view:res.partner:0
+msgid "To Recall for Credit"
+msgstr "Con Richiami entro Oggi"
+
+#. module: account_due_list
+#: view:credit.phonecall:0
+msgid "Today"
+msgstr "Oggi"
+
+#. module: account_due_list
+#: view:credit.phonecall:0
+#: model:ir.actions.act_window,name:credit.phonecall_to_phonecall_act
+msgid "Schedule Other Call"
+msgstr "Pianifica altra chiamata"
+
+#. module: account_due_list
+#: code:addons/crm/crm_phonecall.py:216
+#: view:credit.phonecall:0
+#, python-format
+msgid "Phone Call"
+msgstr "Telefonata"
+
+#. module: account_due_list
+#: field:credit.phonecall,state:0
+msgid "State"
+msgstr "Stato"
+
+#. module: account_due_list
+#: field:credit.phonecall,date_action_next:0
+msgid "Next Action"
+msgstr "Prossima Azione"
+
+#. module: account_due_list
+#: view:credit.phonecall:0
+#: field:credit.phonecall,user_id:0
+msgid "Responsible"
+msgstr "Responsabile"
+
+#. module: account_due_list
+#: view:credit.phonecall:0
+#: field:credit.phonecall,create_date:0
+msgid "Creation Date"
+msgstr "Data di Creazione"
+
+#. module: account_due_list
+#: help:credit.phonecall,duration:0
+msgid "Duration in Minutes"
+msgstr "Durata in minuti"
+
+#. module: account_due_list
+#: view:credit.phonecall:0
+#: field:credit.phonecall,date:0
+msgid "Date"
+msgstr "Data"
+
+#. module: account_due_list
+#: selection:credit.phonecall,priority:0
+msgid "High"
+msgstr "Alta"
+
+#. module: account_due_list
+#: selection:credit.phonecall,priority:0
+msgid "Highest"
+msgstr "Massima"
+
+#. module: account_due_list
+#: view:credit.phonecall:0 selection:credit.phonecall,state:0
+#: view:res.partner:0
+msgid "Held"
+msgstr "Gestito"
+
+#. module: account_due_list
+#: field:credit.phonecall,priority:0
+msgid "Priority"
+msgstr "Priorità"
+
+#. module: account_due_list
+#: view:credit.phonecall:0 selection:credit.phonecall,state:0
+msgid "Not Held"
+msgstr "Non gestito"
+
+#. module: account_due_list
+#: selection:credit.phonecall,priority:0
+msgid "Low"
+msgstr "Bassa"
+
+#. module: account_due_list
+#: field:credit.phonecall,date_closed:0
+msgid "Closed"
+msgstr "Chiuso"
+
+#. module: account_due_list
+#: field:credit.phonecall,partner_phone:0 field:credit.phonecall2phonecall,phone:0
+msgid "Phone"
+msgstr "Telefono"
+
+#. module: account_due_list
+#: field:credit.phonecall,active:0
+msgid "Active"
+msgstr "Attivo"
+
+#. module: account_due_list
+#: field:credit.phonecall,date_action_last:0
+msgid "Last Action"
+msgstr "Ultima Azione"
+
+#. module: account_due_list
+#: field:credit.phonecall,duration:0
+#: field:credit.phonecall.report,duration:0
+msgid "Duration"
+msgstr "Durata"
+
+#. module: account_due_list
+#: field:credit.phonecall,company_id:0
+msgid "Company"
+msgstr "Azienda"
+
+#. module: account_due_list
+#: view:credit.phonecall:0 selection:credit.phonecall,state:0
+#: view:res.partner:0
+msgid "Todo"
+msgstr "Da fare"
+
+#. module: account_due_list
+#: selection:credit.phonecall,state:0
+msgid "Cancelled"
+msgstr "Annullato"
+
+#. module: account_due_list
+#: field:credit.phonecall,name:0 view:res.partner:0
+msgid "Call Summary"
+msgstr "Riepilogo chiamata"
+
+#. module: account_due_list
+#: field:credit.phonecall,email_from:0
+msgid "Email"
+msgstr "Email"
+
+#. module: account_due_list
+#: field:crm.lead,date_open:0 field:credit.phonecall,date_open:0
+msgid "Opened"
+msgstr "Aperto"
+
+#. module: account_due_list
+#: selection:credit.phonecall,state:0
+#, python-format
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: account_due_list
+#: selection:credit.phonecall,priority:0
+msgid "Normal"
+msgstr "Normale"
+
+#. module: account_due_list
+#: field:credit.phonecall,description:0
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: account_due_list
+#: selection:credit.phonecall,priority:0
+msgid "Lowest"
+msgstr "Minima"
+
+#. module: account_due_list
+#: view:credit.phonecall:0
+#: model:ir.actions.act_window,name:credit.crm_case_categ_phone0
+msgid "Phone Calls"
+msgstr "Chiamate Telefoniche"
+
+#. module: account_due_list
+#: view:credit.phonecall:0
+#: field:credit.phonecall,description:0
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: account_due_list
+#: view:credit.phonecall:0
+msgid "Contacts"
+msgstr "Contatti"
+

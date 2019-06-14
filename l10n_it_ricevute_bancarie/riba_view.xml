@@ -357,8 +357,8 @@
                                     <field name="debit" sum="Total Debit"/>
                                     <field name="credit" sum="Total Credit"/>
                                     <field name="state"/>
-                                    <field name="reconcile_id"/>
-                                    <field name="reconcile_partial_id" groups="base.group_extended"/>
+<!--                                    <field name="reconcile_id"/>-->
+<!--                                    <field name="reconcile_partial_id" groups="base.group_extended"/>-->
                                     <field name="riba" />
                                 </tree>
                             </field>

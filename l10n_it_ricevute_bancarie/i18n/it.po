@@ -527,7 +527,7 @@ msgstr "Raggruppa per..."
 #: field:riba.accreditation,date_accreditation:0
 #: field:riba.distinta,date_accreditation:0
 msgid "Accreditation date"
-msgstr "Data accredito"
+msgstr "Data di Presentazione"
 
 #. module: l10n_it_ricevute_bancarie
 #: code:addons/l10n_it_ricevute_bancarie/wizard/riba_file_export.py:156

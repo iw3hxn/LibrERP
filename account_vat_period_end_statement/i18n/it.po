@@ -699,3 +699,8 @@ msgstr "wizard.vat.settlement"
 #, python-format
 msgid "You cannot delete a confirmed or paid statement"
 msgstr "Non si può cancellare una liquidazione confermata o pagata"
+
+#. module: account_vat_period_end_statement
+#: field:account.vat.period.end.statement,show_zero:0
+msgid "Show zero amount lines"
+msgstr "Mostra tutto, anche le righe a 0"

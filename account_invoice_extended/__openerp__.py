@@ -45,6 +45,8 @@
         Also add on account invoice line the field origin_document that is a reference to the document that have create it
         
         add sequence on journal
+        
+        Set to paid invoice with amount of 0
 
     """,
     "depends": [
