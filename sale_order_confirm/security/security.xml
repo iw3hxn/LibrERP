@@ -50,7 +50,7 @@
     <record id="sale.sale_order_line_personal_rule" model="ir.rule">
         <field name="name">Personal Order Lines</field>
         <field ref="sale.model_sale_order_line" name="model_id"/>
-        <field name="domain_force">['|', '|', '|', ('order_id.user_id','=',False), ('order_id.user_id','=',user.id), ('order_id.shop_id.member_ids','in', [user.id]), ('order_id.shop_id.member_ids','=', False) ]</field>
+        <field name="domain_force">['|', ('order_id.user_id', '=', False), ('order_id.user_id', '=', user.id), '|', ('order_id.shop_id.member_ids', 'in', [user.id]), ('order_id.shop_id.member_ids', '=', False) ]</field>
         <field name="groups" eval="[(4, ref('base.group_sale_salesman'))]"/>
     </record>
 
