@@ -567,7 +567,7 @@ class AccountVatPeriodEndStatement(orm.Model):
             for debit_line in statement.debit_vat_account_line_ids:
                 if debit_line.amount != 0.0:
                     debit_vat_data = {
-                        'name': _('Debit VAT'),
+                        'name': _('Debit VAT') + (debit_line.tax_code_id and u' - {}'.format(debit_line.tax_code_id.name)),
                         'account_id': debit_line.account_id.id,
                         'move_id': move_id,
                         'journal_id': statement.journal_id.id,
@@ -589,7 +589,7 @@ class AccountVatPeriodEndStatement(orm.Model):
             for credit_line in statement.credit_vat_account_line_ids:
                 if credit_line.amount != 0.0:
                     credit_vat_data = {
-                        'name': _('Credit VAT'),
+                        'name': _('Credit VAT') + (credit_line.tax_code_id and u' - {}'.format(credit_line.tax_code_id.name)),
                         'account_id': credit_line.account_id.id,
                         'move_id': move_id,
                         'journal_id': statement.journal_id.id,

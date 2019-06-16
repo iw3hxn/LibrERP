@@ -106,7 +106,7 @@ tr {
         <tr >
             <td style="text-align:left" colspan="3"><strong>${ _('Period') + ' ' + period.name}</strong></td>
         </tr>
-        <% credit_amounts = tax_codes_amounts(period.id, [l.tax_code_id.id for l in statement.credit_vat_account_line_ids]) %>
+        <% credit_amounts = tax_codes_amounts(period.id, [l.tax_code_id.id for l in statement.credit_vat_account_line_ids if l.tax_code_id]) %>
         %for tax_code in credit_amounts :
             <% if tax_code not in totals_by_tax_code: totals_by_tax_code[tax_code]={'base':0.0,'vat':0.0} %>
             <% totals_by_tax_code[tax_code]['base'] += credit_amounts[tax_code]['base'] %>
