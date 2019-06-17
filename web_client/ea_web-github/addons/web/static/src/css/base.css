@@ -1284,7 +1284,7 @@ label.error {
 .openerp .oe-listview table.oe-listview-content tfoot tr:last-child th:last-child,
 .openerp .oe-listview table.oe-listview-content tfoot tr:last-child td:last-child,
 .openerp .oe-listview table.oe-listview-content tbody:last-child tr:last-child td:last-child {
-    text-align: right;
+    /* text-align: right; */
     white-space: nowrap;
 }
 
