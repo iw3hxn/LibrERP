@@ -93,7 +93,7 @@
                     </td><td class="right_without_line">
                 %endif
                 %if line['index']==0:
-                    ${ formatLang(invoice_total(object)) | entity}
+                    ${ formatLang(invoice_total(object)) or 0 | entity}
                 %endif
                 </td>
                 %if line['index']==0:
@@ -102,9 +102,9 @@
                     <td class="right_without_line"><div style="page-break-inside: avoid">${ (line['tax_code_name'])  or ''| entity}</div></td>
                 %endif
                 %if line['index']==0:
-                    <td class="right_with_line"><div style="page-break-inside: avoid">${ formatLang(line['amount'])| entity}</div></td>
+                    <td class="right_with_line"><div style="page-break-inside: avoid">${ formatLang(line['amount']) or 0 | entity}</div></td>
                 %else:
-                    <td class="right_without_line"><div style="page-break-inside: avoid">${ formatLang(line['amount'])| entity}</div></td>
+                    <td class="right_without_line"><div style="page-break-inside: avoid">${ formatLang(line['amount']) or 0| entity}</div></td>
                 %endif
                 </tr>
             %endfor

@@ -65,12 +65,12 @@ class wizard_registro_iva(osv.osv_memory):
 
     def print_registro(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-        wizard = self.browse(cr, uid, ids, context)[0]
+        wizard = self.read(cr, uid, ids, context=context)[0]
         move_obj = self.pool.get('account.move')
         obj_model_data = self.pool.get('ir.model.data')
         move_ids = move_obj.search(cr, uid, [
-            ('journal_id', 'in', [j.id for j in wizard.journal_ids]),
-            ('period_id', 'in', [p.id for p in wizard.period_ids]),
+            ('journal_id', 'in', wizard['journal_ids']),
+            ('period_id', 'in', wizard['period_ids']),
             ('state', '=', 'posted'),
         ], order='name', context=context)
         if not move_ids:
@@ -92,9 +92,9 @@ class wizard_registro_iva(osv.osv_memory):
         datas = {
             'ids': move_ids,
             'model': 'account.move',
-            'fiscal_page_base': wizard.fiscal_page_base,
-            'period_ids': [p.id for p in wizard.period_ids],
-            'journal_ids': [p.id for p in wizard.journal_ids],
+            'fiscal_page_base': wizard['fiscal_page_base'],
+            'period_ids': wizard['period_ids'],
+            'journal_ids': wizard['journal_ids'],
             'layout': wizard['type'],
             'tax_sign': wizard['tax_sign'],
         }
