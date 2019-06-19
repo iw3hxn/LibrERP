@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Didotech SRL
+#    Copyright (C) 2016-2019 Didotech SRL
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -22,9 +22,12 @@ from openerp.osv import fields, orm
 
 
 DIRECTIONS = [
-    (0, 'Sinistra'),
-    (1, 'Destra')
+    (0, 'Sinistra (0)'),
+    (1, '1'),
+    (2, '2')
 ]
+
+
 class account_journal(orm.Model):
     _inherit = 'account.journal'
     _columns = {

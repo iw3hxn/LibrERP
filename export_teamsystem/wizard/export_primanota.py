@@ -32,7 +32,7 @@ from openerp.addons.export_teamsystem.team_system_template import maturity_templ
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
-import pdb
+from pprint import pprint
 
 
 def get_phone_number(number, prefix=''):
@@ -186,10 +186,12 @@ class WizardExportPrimaNota(orm.TransientModel):
         account = {}
         account_data = ''
         for line in invoice.invoice_line:
-            if line.account_id.code in account:
-                account[line.account_id.code] += line.price_subtotal
+            code = line.account_id.teamsystem_code or line.account_id.code
+
+            if code in account:
+                account[code] += line.price_subtotal
             else:
-                account[line.account_id.code] = line.price_subtotal
+                account[code] = line.price_subtotal
 
         if not account:
             raise orm.except_orm('Errore', 'Non ci sono conti ricavo/costo definite nella fattura {invoice}'.format(invoice=invoice.number))
@@ -197,7 +199,16 @@ class WizardExportPrimaNota(orm.TransientModel):
             raise orm.except_orm('Errore', 'Ci sono più di 8 conti ricavo/costo nella fattura {invoice}'.format(invoice=invoice.number))
 
         for account_code in account.keys():
-            code = account_code.isdigit() and int(account_code) or 5810501  # 5810501 è un numero fisso merci/vendita
+            if isinstance(account_code, int):
+                code = account_code
+            else:
+                code = account_code.isdigit() and int(account_code) or 5810501  # 5810501 è un numero fisso merci/vendita
+
+            if len(str(code)) > 7:
+                raise orm.except_orm(
+                    'Errore',
+                    'Il codice {} è troppo lungo. Fornire il codice specifico TeamSystem'.format(code))
+
             account_data += account_template.format(**{
                 'account_proceeds': code,
                 'total_proceeds': int(account.get(account_code) * 100)
@@ -319,7 +330,9 @@ class WizardExportPrimaNota(orm.TransientModel):
             'document_number': invoice.supplier_invoice_number or 0,  # Numero documento fornitore compreso sezionale
 
             # TODO: Verifica TRF-NDOC e TRF-SERIE perché sono sbagliati
-            'document_number_no_sectional': int(invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]),  # Numero documento (numero doc senza sezionale)
+            'document_number_no_sectional': int(
+                invoice.number.split('/')[invoice.journal_id.teamsystem_invoice_position]
+            ),  # Numero documento (numero doc senza sezionale)
             'vat_sectional': invoice.journal_id.teamsystem_code,
 
             #  es. 1501 per una fattura numero 15 del sez. 1)
@@ -340,7 +353,9 @@ class WizardExportPrimaNota(orm.TransientModel):
             'tax_data': tax_data,
 
             # Totale fattura 723
-            'invoice_total': int(round(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 100, 0)),  # Imponibile 6 dec?
+            'invoice_total': int(
+                round(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context)[invoice_id] * 100, 0)
+            ),  # Imponibile 6 dec?
 
             # Conti di ricavo/costo 735
             'account_data': account_data,
@@ -358,7 +373,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'val_0': 0,
             'empty': '',
         }
-        print res
+        pprint(res)
         return res
 
     def maturity_creation(self, cr, uid, invoice, context=None):
@@ -436,7 +451,7 @@ class WizardExportPrimaNota(orm.TransientModel):
             'cab': invoice.partner_id.bank_riba_id and int(invoice.partner_id.bank_riba_id.cab) or 0,  #
             'agency_description': invoice.partner_id.bank_riba_id and invoice.partner_id.bank_riba_id.name.encode('latin', 'ignore')[:30],  # Descrizione agenzia
             'total_number_of_payments': len(invoice.maturity_ids),  # Numero totale rate
-            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context) * 100),  # Totale documento (totale fattura)
+            'invoice_total': int(self.pool['account.invoice'].get_total_fiscal(cr, uid, [invoice_id], context)[invoice_id] * 100),  # Totale documento (totale fattura)
 
             'maturity_data': maturity_data,
 
@@ -468,6 +483,7 @@ class WizardExportPrimaNota(orm.TransientModel):
                                             # 58100503
             'sign': '',  # ??? Segno ( D o A )
             'total_ammount': 0,  # Importo movimento o costo complessivo
+            'quantity': 0
         }
 
         for line in invoice.invoice_line:
