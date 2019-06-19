@@ -169,7 +169,7 @@ class riba_distinta(osv.osv):
     
     def riba_cancel(self, cr, uid, ids, context=None):
         for distinta in self.browse(cr, uid, ids, context=context):
-            # TODO remove ervery other move
+            # TODO remove every other move
             account_move_ids = []
             for line in distinta.line_ids:
                 if line.acceptance_move_id:
@@ -177,9 +177,9 @@ class riba_distinta(osv.osv):
                     for move_line in line.acceptance_move_id.line_id:
                         if move_line.reconcile_id:
                             reconcile_ids.append(move_line.reconcile_id.id)
+                    account_move_ids.append(line.acceptance_move_id.id)
                     self.pool['account.move.reconcile'].unlink(cr, uid, list(set(reconcile_ids)), context=context)
                     line.acceptance_move_id.button_cancel()
-                    account_move_ids.append(line.acceptance_move_id.id)
 
                 if line.unsolved_move_id:
                     line.unsolved_move_id.unlink()
@@ -200,15 +200,15 @@ class riba_distinta(osv.osv):
     
     def riba_accepted(self, cr, uid, ids, context=None):
         for distinta in self.browse(cr, uid, ids, context):
-            self.write(cr, uid, ids, {
+            self.write(cr, uid, [distinta.id], {
                 'state': 'accepted',
-                'date_accepted': distinta.date_accepted or fields.date.context_today(cr,uid,context),
+                'date_accepted': distinta.date_accepted or fields.date.context_today(cr, uid, context),
                 }, context=context)
         return True
     
     def riba_accredited(self, cr, uid, ids, context=None):
         for distinta in self.browse(cr, uid, ids, context):
-            self.write(cr, uid, ids, {
+            self.write(cr, uid, [distinta.id], {
                 'state': 'accredited',
                 'date_accreditation': distinta.date_accreditation or fields.date.context_today(cr,uid,context),
                 }, context=context)
