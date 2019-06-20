@@ -44,6 +44,14 @@ class account_invoice(orm.Model):
     #             result[crm_lead.id] = sale_order_obj.search(cr, uid, [('partner_id', '=', partner_id)])
     #     return result
 
+    _index_name_partner_id = 'account_invoice_partner_id_index'
+
+    def _auto_init(self, cr, context={}):
+        super(account_invoice, self)._auto_init(cr, context)
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name_partner_id,))
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON account_invoice (partner_id)'.format(name=self._index_name_partner_id))
+
     def name_get(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if not ids:
