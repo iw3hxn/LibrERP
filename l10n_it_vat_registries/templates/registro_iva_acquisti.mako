@@ -19,7 +19,7 @@
 <body>
     Fatture Ricevute dal <strong>${formatLang(start_date(),date=True)| entity}</strong> al <strong>${formatLang(end_date(),date=True)| entity}</strong>
     <% setLang(objects[0].company_id.partner_id.lang or "en_US") %>
-    <table style="width:100%; font-size: small;" cellspacing="0">
+    <table style="width:100%; font-size: xx-small;" cellspacing="0">
         <thead>
         <tr>
             <th class="left_without_line">Data registrazione</th>
