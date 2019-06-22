@@ -206,7 +206,7 @@
                 </field>
                 <field name="country_id" position="after">
                     <field name="categ_id" widget="selection" domain="[('object_id.model', '=', 'crm.lead')]"/>
-                    <field name="partner_category_id"/>
+                    <field name="partner_category_id" filter_domain="[('partner_category_id', 'child_of', self)]" />
                     <field name="channel_id" widget="selection"/>
                     <filter domain="[]" icon="terp-stock_zoom" name="show_extended" string="Show Note" context="{'show_note': True}"/>
                 </field>
