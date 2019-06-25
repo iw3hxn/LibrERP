@@ -24,11 +24,11 @@
     <body style="border:0; margin: 0;" onload="subst()">
     <% setLang(company.partner_id.lang or "en_US") %>
 
-    <h3>VAT Statement Summary</h3>
+    <h3>_("VAT Statement Summary")</h3>
     <table style="border-bottom: 4px solid black; width: 100%; padding-bottom: 8px">
      <tr>
         <td>
-            <div> <strong>${company.partner_id.name or ''|entity} </strong> - ${company.partner_id.address and company.partner_id.address[0].street or ''|entity} ${company.partner_id.address and company.partner_id.address[0].street2 or ''|entity} - ${company.partner_id.address and company.partner_id.address[0].zip or ''|entity} ${company.partner_id.address and company.partner_id.address[0].city or ''|entity} ( ${company.partner_id.address and company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity} ) - P. IVA: ${company.partner_id.vat or ''|entity} / Codice Fiscale: ${company.partner_id.fiscalcode or ''|entity}
+            <div> <strong>${company.partner_id.name or ''|entity} </strong> - ${company.partner_id.address and company.partner_id.address[0].street or ''|entity} ${company.partner_id.address and company.partner_id.address[0].street2 or ''|entity} - ${company.partner_id.address and company.partner_id.address[0].zip or ''|entity} ${company.partner_id.address and company.partner_id.address[0].city or ''|entity} ( ${company.partner_id.address and company.partner_id.address[0].province and company.partner_id.address[0].province.code or ''|entity} ) - P. IVA: ${company.partner_id.vat or ''|entity} / Codice Fiscale: ${company.partner_id.fiscalcode or company.partner_id.vat or ''|entity}
             </div>
         </td>
      </tr> 

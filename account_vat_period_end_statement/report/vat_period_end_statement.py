@@ -59,8 +59,8 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
                             _('Not every tax linked to tax code %s is linked '
                               'the same base code') % tax_code.name)
                 res[tax_code.name] = {
-                    'vat': tax_code.sum_period,
-                    'base': base_code.sum_period,
+                    'vat': not tax_code.exclude_from_registries and tax_code.sum_period or 0,
+                    'base': not base_code.exclude_from_registries and base_code.sum_period or 0,
                 }
             for child_code in tax_code.child_ids:
                 res = self._build_codes_dict(
