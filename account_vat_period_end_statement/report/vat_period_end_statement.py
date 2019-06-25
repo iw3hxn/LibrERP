@@ -14,6 +14,8 @@ from report import report_sxw
 from tools.translate import _
 from openerp.osv import orm
 
+from openerp.addons.core_extended.ordereddict import OrderedDict
+
 
 class print_vat_period_end_statement(report_sxw.rml_parse):
     _name = 'parser.vat.period.end.statement'
@@ -81,7 +83,7 @@ class print_vat_period_end_statement(report_sxw.rml_parse):
             self.cr, self.uid, tax_code_ids, context=context
         ):
             res = self._build_codes_dict(tax_code, res=res, context=context)
-        return res
+        return OrderedDict(sorted(res.items(), key=lambda t: t[0]))
 
     def find_period(self, date, context=None):
         if context is None:
