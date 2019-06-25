@@ -167,20 +167,18 @@ class account_move_line(orm.Model):
 
         cr.execute("""SELECT 
                 account_move_line.id,
-                res_partner_bank.id,
-                account_payment_term.riba
+                riba_configurazione.id
             FROM
                 public.account_invoice,
-                public.account_move_line,
-                public.account_payment_term,
+                public.account_move_line
                 public.res_partner_bank,
                 public.riba_configurazione
             WHERE
                 account_move_line.stored_invoice_id = account_invoice.id AND
-                account_payment_term.id = account_invoice.payment_term AND
                 res_partner_bank.bank = account_invoice.bank_riba_id AND
                 res_partner_bank.partner_id = account_invoice.company_id AND
                 riba_configurazione.bank_id = res_partner_bank.id AND
+                riba_configurazione.configuration_type = 'supplier' AND
                 account_invoice.bank_riba_id IS NOT NULL AND
                 account_move_line.id in ({move_ids})
         """.format(move_ids=', '.join([str(move_id) for move_id in ids])))

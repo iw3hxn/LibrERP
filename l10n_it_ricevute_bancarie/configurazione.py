@@ -42,7 +42,7 @@ class riba_configurazione(osv.osv):
         'name': fields.char("Descrizione", size=64, required=True),
         'tipo': fields.selection((('sbf', 'Salvo buon fine'), ('incasso', 'Al dopo incasso')),
             "Modalità Emissione", required=True),
-        'bank_id': fields.many2one('res.partner.bank', "Banca", domain=[('partner_id', '=', 'company_id')],
+        'bank_id': fields.many2one('res.partner.bank', "Banca", domain=[('company_id', '!=', False)],
             required=True, help="Bank account used for Ri.Ba. issuing"),
             
         'acceptance_journal_id': fields.many2one('account.journal', "Acceptance journal",
