@@ -43,6 +43,8 @@ tr {
 <h1 style="text-align: center;">${_("VAT Statement Summary")} </h1>
 <h2 style="text-align: center;">${_("Date")}: ${formatLang(statement.date, date=True)|entity} </h2>
 
+<% period_ids =  statement.period_ids or statement.e_period_ids or []%>
+
 <table width="100%"  class="tax_codes">
     <tr >
         <th  colspan="3">${ _('Sales') }</th>
@@ -55,7 +57,9 @@ tr {
     <% debit_total_base = 0.0 %>
     <% debit_total_vat = 0.0 %>
     <% totals_by_tax_code = {} %>
-    %for period in statement.period_ids:
+
+
+    %for period in period_ids:
         <tr >
             <td style="text-align:left" colspan="3"><strong>${ _('Period') + ' ' + period.name}</strong></td>
         </tr>
@@ -102,7 +106,7 @@ tr {
     <% credit_total_base = 0.0 %>
     <% credit_total_vat = 0.0 %>
     <% totals_by_tax_code = {} %>
-    %for period in statement.period_ids:
+    %for period in period_ids:
         <tr >
             <td style="text-align:left" colspan="3"><strong>${ _('Period') + ' ' + period.name}</strong></td>
         </tr>
