@@ -170,7 +170,7 @@ class account_move_line(orm.Model):
                 riba_configurazione.id
             FROM
                 public.account_invoice,
-                public.account_move_line
+                public.account_move_line,
                 public.res_partner_bank,
                 public.riba_configurazione
             WHERE
