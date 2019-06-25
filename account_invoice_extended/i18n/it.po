@@ -124,6 +124,7 @@ msgstr "I nostri sistemi indicano che i seguenti pagamenti sono ancora dovuti. S
 "Per domande riguardanti la Sua posizione Vi preghiamo di contattarci.\n"
 "Grazie in anticipo.\n"
 ""
+
 #. modules: account_invoice_extended
 #: field:account.journal,active:0
 msgid "Active"
