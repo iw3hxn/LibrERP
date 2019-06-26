@@ -43,7 +43,7 @@ tr {
 <h1 style="text-align: center;">${_("VAT Statement Summary")} </h1>
 <h2 style="text-align: center;">${_("Date")}: ${formatLang(statement.date, date=True)|entity} </h2>
 
-<% period_ids =  statement.period_ids or statement.e_period_ids or []%>
+<% period_ids =  statement.period_ids or statement.e_period_ids or statement.y_period_ids or []%>
 
 <table width="100%"  class="tax_codes">
     <tr >
