@@ -152,7 +152,7 @@ tr {
     </tr>
     %for debit_line in statement.debit_vat_account_line_ids :
         <tr >
-            <td>${ debit_line.account_id.name|entity }</td>
+            <td>${ debit_line.base_code_id.name|entity }</td>
             <td>${ formatLang(debit_line.amount)|entity }</td>
             <td></td>
         </tr>
@@ -165,7 +165,7 @@ tr {
     -->
     %for credit_line in statement.credit_vat_account_line_ids :
         <tr >
-            <td>${ credit_line.account_id.name|entity }</td>
+            <td>${ credit_line.base_code_id.name|entity }</td>
             <td></td>
             <td>${ formatLang(credit_line.amount)|entity }</td>
         </tr>
