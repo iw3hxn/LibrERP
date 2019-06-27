@@ -15,6 +15,8 @@
 					<field name="name" colspan="4" required="1"/>
 					<field name="price_type" colspan="4" required="1" on_change="onchange_price_type(price_type, context)"/>
 					<field name="supplier_id" attrs="{'invisible':[('price_type','!=', 'supplier_form')]}"/>
+					<field name="mku_price_source"  attrs="{'invisible':[('price_type','!=', 'sale')], 'required': [('price_type','=', 'sale')]}" colspan="4" />
+					<field name="no_update_if_less" attrs="{'invisible':[('mku_price_source','!=', 'supplier_form')]}"/>
 					<field name="value" colspan="4" required="1"/>
 					<button string="Close" special="cancel" icon="gtk-cancel" />
 					<button string="Change" name="change" type="object" icon="gtk-ok" />

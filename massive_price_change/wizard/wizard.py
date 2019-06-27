@@ -28,11 +28,15 @@ class wzd_massive_price_change(orm.TransientModel):
         'name': fields.selection(
             (('mku', 'MarkUp'), ('fix', 'Fix Price')),
             'Standard Price MarkUp Type'),
+        'mku_price_source': fields.selection(
+            (('sale', 'Sale'), ('supplier_form', 'Supplier Form')),
+            'Price Type Source'),
         'price_type': fields.selection(
             (('sale', 'Sale'), ('cost', 'Cost'), ('supplier_form', 'Supplier Form')),
             'Price Type'),
         'value': fields.float('Value', help="Insert a fix price or a value from 0 to 100 to markup old price"),
         'supplier_id': fields.many2one('res.partner', 'Supplier'),
+        'no_update_if_less': fields.boolean('No Update if less')
     }
 
     def onchange_price_type(self, cr, uid, ids, price_type, context=None):
@@ -44,14 +48,18 @@ class wzd_massive_price_change(orm.TransientModel):
             if product_supplierinfo.name.id not in supplier_ids:
                 supplier_ids.append(product_supplierinfo.name.id)
         res = {
-            'value': {},
-            'domain': {'supplier_id': [('id', 'in', supplier_ids)]}
+            'value': {
+                'mku_price_source': False,
+                'no_update_if_less': False
+            },
+            'domain': {
+                'supplier_id': [('id', 'in', supplier_ids)]
+            }
         }
 
         return res
 
-
-    def change(self, cr, uid, ids, context={}):
+    def change(self, cr, uid, ids, context=None):
         wzd = self.browse(cr, uid, ids[0], context)
 
         # test if user have authorization
@@ -69,8 +77,19 @@ class wzd_massive_price_change(orm.TransientModel):
                 self.pool['product.product'].write(cr, uid, context['active_ids'], {'list_price': wzd.value}, context)
             else:
                 for product in product_obj.browse(cr, uid,  context['active_ids'], context):
-                    new_price = product.list_price + ((product.list_price * wzd.value) / 100.00)
+                    if wzd.mku_price_source == 'sale':
+                        new_price = product.list_price + ((product.list_price * wzd.value) / 100.00)
+                    elif wzd.mku_price_source == 'supplier_form':
+                        if not product.seller_ids:
+                            raise orm.except_orm(_("Need to define supplier for product {product}".format(product=product.name)))
+                        old_price = product.seller_ids[0].pricelist_ids[0].price
+                        new_price = (old_price * wzd.value) / 100.00
+
+                    if wzd.no_update_if_less:
+                        if new_price < product.list_price:
+                            continue
                     product_obj.write(cr, uid, [product.id], {'list_price': new_price}, context)
+
         elif wzd.price_type == 'cost':
             if wzd.name == 'fix':
                 self.pool['product.product'].write(cr, uid, context['active_ids'], {'standard_price': wzd.value}, context)

@@ -56,6 +56,7 @@ msgstr "Prezzo Fisso"
 
 #. module: massive_price_change
 #: selection:wzd.massive_price_change,price_type:0
+#: selection:wzd.massive_price_change,mku_price_source:0
 msgid "Sale"
 msgstr "Vendita"
 
@@ -66,11 +67,13 @@ msgstr "Tipo di Ricarico Prezzo Standard"
 
 #. module: massive_price_change
 #: selection:wzd.massive_price_change,price_type:0
+#: selection:wzd.massive_price_change,mku_price_source:0
 msgid "Cost"
 msgstr "Costo"
 
 #. module: massive_price_change
 #: selection:wzd.massive_price_change,price_type:0
+#: selection:wzd.massive_price_change,mku_price_source:0
 msgid "Supplier Form"
 msgstr "Modulo Fornitore"
 
@@ -103,6 +106,16 @@ msgstr "Modifica"
 #: field:wzd.massive_price_change,price_type:0
 msgid "Price Type"
 msgstr "Tipo di Prezzo"
+
+#. module: massive_price_change
+#: field:wzd.massive_price_change,mku_price_source:0
+msgid "Price Type"
+msgstr "Sorgente del Prezzo"
+
+#. module: massive_price_change
+#: field:wzd.massive_price_change,no_update_if_less:0
+msgid "No Update if less"
+msgstr "Non aggiornare se inferiore"
 
 #. module: massive_price_change
 #: field:wzd.massive_price_change,supplier_id:0
