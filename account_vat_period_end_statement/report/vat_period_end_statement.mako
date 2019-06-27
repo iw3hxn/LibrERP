@@ -96,7 +96,7 @@ tr {
 <br/><br/>
 <table width="100%"  class="tax_codes">
     <tr >
-        <th  colspan="3">${ _('Purchases') }</th>
+        <th colspan="3">${ _('Purchases') }</th>
     </tr>
     <tr >
         <th >${ _('Tax Code') }</th>
@@ -153,46 +153,51 @@ tr {
     %for debit_line in statement.debit_vat_account_line_ids :
         <tr >
             <td>${ debit_line.base_code_id.name|entity }</td>
-            <td>${ formatLang(debit_line.amount)|entity }</td>
+            <td style="text-align:right">${ formatLang(debit_line.amount)|entity }</td>
             <td></td>
         </tr>
     %endfor
     <!--
     <tr >
         <td>${_("Total")}</td>
-        <td>${ statement.payable_vat_amount|entity }</td>
+        <td style="text-align:right">${ statement.payable_vat_amount|entity }</td>
     </tr>
     -->
     %for credit_line in statement.credit_vat_account_line_ids :
         <tr >
             <td>${ credit_line.base_code_id.name|entity }</td>
             <td></td>
-            <td>${ formatLang(credit_line.amount)|entity }</td>
+            <td style="text-align:right">${ formatLang(credit_line.amount)|entity }</td>
         </tr>
     %endfor
     <!--
     <tr >
         <td>${_("Total")}</td>
-        <td>${ statement.deductible_vat_amount|entity }</td>
+        <td style="text-align:right">${ statement.deductible_vat_amount|entity }</td>
     </tr>
     -->
     <tr >
         <td>${_("Previous Credits VAT")}</td>
         <td></td>
-        <td>${ formatLang(statement.previous_credit_vat_amount)|entity }</td>
+        <td style="text-align:right">${ formatLang(statement.previous_credit_vat_amount)|entity }</td>
     </tr>
     <tr >
         <td>${_("Previous Debits VAT")}</td>
-        <td>${ formatLang(statement.previous_debit_vat_amount)|entity }</td>
+        <td style="text-align:right">${ formatLang(statement.previous_debit_vat_amount)|entity }</td>
         <td></td>
     </tr>
     %for generic_line in statement.generic_vat_account_line_ids :
         <tr >
             <td>${ generic_line.account_id.name|entity }</td>
-            <td>${ generic_line.amount < 0 and formatLang(generic_line.amount) or ''|entity }</td>
-            <td>${ generic_line.amount > 0 and formatLang(generic_line.amount) or ''|entity }</td>
+            <td style="text-align:right">${ generic_line.amount < 0 and formatLang(generic_line.amount) or ''|entity }</td>
+            <td style="text-align:right">${ generic_line.amount > 0 and formatLang(generic_line.amount) or ''|entity }</td>
         </tr>
     %endfor
+    <tr >
+        <td><strong>${_("Total")}</strong></td>
+        <td style="text-align:right">${ statement.payable_vat_amount|entity }</td>
+        <td style="text-align:right">${ statement.deductible_vat_amount|entity }</td>
+    </tr>
     <tr >
         <td><strong>${_("Amount to pay")}</strong></td>
         <td colspan="2" style="text-align:center"><strong>${ formatLang(statement.authority_vat_amount)|entity }</strong></td>
