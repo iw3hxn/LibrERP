@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <record id="print_product_label_view_form" model="ir.ui.view">
+            <field name="name">print.product.label.view.form</field>
+            <field name="model">print.product.label</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group colspan="4" col="8">
+                        <button name="action_print" string="Print"
+                                help="Print product labels"
+                                type="object" icon="gtk-print"
+                        />
+                        <group colspan="8">
+                            <field name="template" string="Label template"/>
+                        </group>
+                        <group colspan="8">
+                            <field name="qty_per_product"/>
+                            <button name="action_set_qty" string="Set quantity"
+                                    help="Set a certain quantity for each line."
+                                    type="object"/>
+                            <button name="action_restore_initial_qty" string="Restore quantity"
+                                    help="Restore initial quantity."
+                                    type="object"/>
+                        </group>
+                        <field name="label_ids" mode="tree" nolabel="1" colspan="8">
+                            <tree editable="top">
+                                <field name="selected"/>
+                                <field name="product_id"/>
+                                <button name="action_minus_qty" type="object" string="" icon="gtk-remove"/>
+                                <field name="qty" sum="Total"/>
+                                <button name="action_plus_qty" type="object" string="" icon="gtk-add"/>
+                            </tree>
+                        </field>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+
+        <act_window id="action_print_label_from_template"
+                    name="Custom Product Labels"
+                    src_model="product.template"
+                    res_model="print.product.label"
+                    view_mode="form"
+                    view_type="form"
+                    target="inline"
+                    multi="False"
+                    context="{'default_product_ids': active_ids}"
+                    key2="client_print_multi"/>
+
+        <act_window id="action_print_label_from_product"
+                    name="Custom Product Labels"
+                    src_model="product.product"
+                    res_model="print.product.label"
+                    view_mode="form"
+                    view_type="form"
+                    target="inline"
+                    multi="False"
+                    context="{'default_product_ids': active_ids}"
+                    key2="client_print_multi"/>
+    </data>
+</openerp>

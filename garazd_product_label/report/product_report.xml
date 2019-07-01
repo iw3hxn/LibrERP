@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="report_product_label_70x36_template" model="ir.actions.report.xml">
+            <field name="name">Products Labels</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">print.product.label</field>
+            <field name="report_name">report_product_label_70x36_template</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_loffice.report_mimetypes_pdf_odt')"/>
+            <field name="parser_loc">garazd_product_label/report/product_label_parser.py</field>
+            <field name="report_rml">garazd_product_label/report/product_label.odt</field>
+            <field name="parser_state">loc</field>
+        </record>
+
+    </data>
+</openerp>
