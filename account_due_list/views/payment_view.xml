@@ -272,7 +272,7 @@
                     <field name="period_id" invisible="context.get('period_id', False)"/>
                     <field name="statement_id" domain="[('state', '!=', 'confirm'),('journal_id.type', '=', 'bank')]"
                            invisible="True"/>
-                    <field name="partner_id" invisible="context.get('filter_partner_id', False)"/>
+                    <field name="partner_id" />
                     <field name="account_id" invisible="context.get('filter_account_id', False)" domain="[('journal_id', '=', journal_id),('type','!=','view'), ('type','!=','closed')]" on_change="onchange_account_id(account_id, partner_id)"/>
                     <field name="name" />
                     <field name="date_maturity" />
