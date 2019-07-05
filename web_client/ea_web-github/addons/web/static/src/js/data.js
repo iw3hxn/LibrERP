@@ -297,7 +297,7 @@ openerp.web.DataSet =  openerp.web.OldWidget.extend( /** @lends openerp.web.Data
     read_ids: function (ids, fields, options) {
         var options = options || {};
         for (var i in ids) {
-            if (isNaN(ids[i])) {
+            if (isNaN(ids[i].toString().replace('-', ''))) {
                 console.warn('data.js #308 ids found NaN: ',ids[i],' -> -999');
                 ids[i] = -999;
             }
