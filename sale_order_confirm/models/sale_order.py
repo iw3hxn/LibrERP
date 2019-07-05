@@ -20,13 +20,17 @@
 #
 ##############################################################################
 
-from openerp.osv import orm, fields
-from openerp.tools.translate import _
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-import decimal_precision as dp
+import logging
 import re
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
+from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools.translate import _
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
 
 
 class sale_order(orm.Model):
@@ -107,14 +111,14 @@ class sale_order(orm.Model):
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = self.pool['res.users'].context_get(cr, uid)
+        if vals:
+            if not isinstance(ids, (list, tuple)):
+                ids = [ids]
 
-        if not isinstance(ids, (list, tuple)):
-            ids = [ids]
-
-        orders = self.browse(cr, uid, ids, context)
-        self.adaptative_function(cr, uid, orders, vals, context)
-        if vals.get('state', False):
-            self.hook_sale_state(cr, uid, orders, vals, context)
+            orders = self.browse(cr, uid, ids, context)
+            self.adaptative_function(cr, uid, orders, vals, context)
+            if vals.get('state', False):
+                self.hook_sale_state(cr, uid, orders, vals, context)
 
         return super(sale_order, self).write(cr, uid, ids, vals, context=context)
 
@@ -134,21 +138,6 @@ class sale_order(orm.Model):
                     order.write({'order_policy': default.get('order_policy')})
 
         return super(sale_order, self).action_wait(cr, uid, ids, context)
-
-    def copy(self, cr, uid, ids, default, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid)
-        default.update(
-            {
-                'tech_validation': False,
-                'manager_validation': False,
-                'customer_validation': False,
-                'email_sent_validation': False,
-                'supervisor_validation': False,
-                'date_order': fields.date.context_today,
-            }
-        )
-        default.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
-        return super(sale_order, self).copy(cr, uid, ids, default, context)
 
     def action_cancel_draft(self, cr, uid, ids, *args):
         self.write(cr, uid, ids, {
@@ -442,7 +431,8 @@ class sale_order(orm.Model):
             max_discount = order.company_id.max_discount
             for line in order.order_line:
                 if line.discount > max_discount:
-                    order.write({'need_manager_validation': True})
+                    _logger.info(u'Line have discount {discount} > {max_discount}'.format(discount=line.discount, max_discount=max_discount))
+                    # order.write({'need_manager_validation': True})
                     return True
         return False
 
@@ -460,7 +450,7 @@ class sale_order(orm.Model):
                 vals = {
                     'state': 'wait_technical_validation',
                 }
-            elif self.check_discount(order):
+            elif not order.manager_validation and self.check_discount(order):
                 vals = {
                     'state': 'wait_manager_validation',
                 }
@@ -551,6 +541,7 @@ class sale_order(orm.Model):
             DEFAULT_SERVER_DATE_FORMAT)
 
         default.update({
+            'date_order': fields.date.context_today,
             'validity': validity,
             'tech_validation': False,
             'manager_validation': False,
@@ -559,4 +550,5 @@ class sale_order(orm.Model):
             'supervisor_validation': False,
             'lost_reason_id': False
         })
+        default.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
         return super(sale_order, self).copy(cr, uid, ids, default, context=context)

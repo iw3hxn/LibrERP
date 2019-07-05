@@ -229,8 +229,10 @@ msgstr "Anullato"
 msgid "Required Technical Validation"
 msgstr "Richiede Validazione Tecnica"
 
-#. module: sale_order_confirm
-#: code:addons/sale_order_confirm/sale.py:147
+#. modules: sale_order_confirm, sale
+#: selection:sale.order,state:0
+#: code:addons/sale_order_confirm/models/sale_order.py:298
+#: code:addons/sale_order_confirm/models/sale_order.py:396
 #: field:sale.order,need_manager_validation:0
 #, python-format
 msgid "Manager Validation"
@@ -975,12 +977,6 @@ msgstr "Non è possibile confermare, per {shop} è autorizzato solo l'utente {us
 #, python-format
 msgid "Technical Validation"
 msgstr "Validazione Tecnica"
-
-#. modules: sale_order_confirm
-#: code:addons/sale_order_confirm/sale.py:312
-#, python-format
-msgid "Manager Validation"
-msgstr "Validazione Manager"
 
 #. modules: sale_order_confirm
 #: code:addons/sale_order_confirm/sale.py:312
