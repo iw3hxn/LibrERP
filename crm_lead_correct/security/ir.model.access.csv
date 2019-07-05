@@ -3,3 +3,4 @@ simple_access_crm_case_categ,crm.case.categ,model_crm_case_categ,base.group_sale
 simple_access_crm_case_stage,crm.case.categ,model_crm_case_stage,base.group_sale_salesman,1,0,0,0
 access_crm_sale_stage,crm.sale.stage,model_crm_sale_stage,base.group_user,1,0,0,0
 access_crm_sale_stage_manager,crm.sale.stage,model_crm_sale_stage,base.group_sale_manager,1,1,1,1
+access_crm_super_calendar,crm_super_calendar,model_crm_super_calendar,,1,0,0,0

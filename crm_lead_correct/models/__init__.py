@@ -26,11 +26,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-from . import sale_shop
 from . import crm_case_categ
-from . import crm_sale_stage
+from . import crm_case_stage
 from . import crm_lead_correct
 from . import crm_meeting
-from . import crm_case_stage
+from . import crm_sale_stage
+from . import crm_super_calendar
 from . import res_partner_category
 from . import sale_order
+from . import sale_shop

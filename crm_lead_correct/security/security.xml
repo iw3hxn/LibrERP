@@ -21,6 +21,33 @@
         <field name="name">CRM Extended View</field>
         <field name="category_id" ref="crm.module_category_crm"/>
     </record>
-    
+
+    <record id="own_phone_call" model="ir.rule">
+        <field name="name">Own Phone Call or not assigned</field>
+        <field model="ir.model" name="model_id" ref="crm.model_crm_phonecall"/>
+        <field name="domain_force">['|',('user_id','=',user.id),('user_id','=',False)]</field>
+        <field name="groups" eval="[(4,ref('base.group_sale_salesman'))]"/>
+    </record>
+
+    <record id="manage_phone_call" model="ir.rule">
+        <field name="name">All Phone Calls</field>
+        <field model="ir.model" name="model_id" ref="crm.model_crm_phonecall"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4,ref('base.group_sale_salesman_all_leads'))]"/>
+    </record>
+
+    <record id="own_super_calendar" model="ir.rule">
+        <field name="name">Own Calendar</field>
+        <field model="ir.model" name="model_id" ref="crm_lead_correct.model_crm_super_calendar"/>
+        <field name="domain_force">['|',('user_id','=',user.id),('user_id','=',False)]</field>
+        <field name="groups" eval="[(4,ref('base.group_sale_salesman'))]"/>
+    </record>
+
+    <record id="manage_super_calendar" model="ir.rule">
+        <field name="name">All Calendar</field>
+        <field model="ir.model" name="model_id" ref="crm_lead_correct.model_crm_super_calendar"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4,ref('base.group_sale_salesman_all_leads'))]"/>
+    </record>
 </data>
 </openerp>
