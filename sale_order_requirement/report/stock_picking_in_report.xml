@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record id="report_stock_move_group" model="ir.actions.report.xml">
+            <field name="name">Products Labels</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">stock.picking</field>
+            <field name="report_name">label.stock.picking.in</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_loffice.report_mimetypes_pdf_odt')"/>
+            <field name="parser_loc">l10n_sale_report/ddt.py</field>
+            <field name="report_rml">sale_order_requirement/report/Etichetta_Ingresso.odt</field>
+            <field name="parser_state">loc</field>
+        </record>
+
+    </data>
+</openerp>
+
