@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="crm_super_calendar" model="ir.ui.view">
+            <field name="name">crm.super.calendar</field>
+            <field name="model">crm.super.calendar</field>
+            <field name="type">calendar</field>
+            <field name="arch" type="xml">
+                <calendar string="Super Calendar" date_start="date_action" color="type">
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="date_action"/>
+                    <field name="source_id" />
+                    <field name="type" />
+                </calendar>
+            </field>
+        </record>
+
+        <record id="crm_super_calendar_form" model="ir.ui.view">
+            <field name="name">crm.super.calendar</field>
+            <field name="model">crm.super.calendar</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Super Calendar" >
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="date_action"/>
+                    <field name="source_id" />
+                    <field name="type" />
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_super_calendar_search" model="ir.ui.view">
+            <field name="name">crm.super.calendar</field>
+            <field name="model">crm.super.calendar</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Super Calendar">
+                    <field name="partner_id"/>
+                    <field name="user_id">
+                        <filter domain="[('user_id','=',uid)]" help="My" icon="terp-personal"/>
+                    </field>
+                    <field name="type" />
+               </search>
+            </field>
+        </record>
+
+        <record id="action_crm_super_calendar" model="ir.actions.act_window">
+            <field name="name">Super Calendar</field>
+            <field name="res_model">crm.super.calendar</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="context">{'nocreate': '1', 'nodelete': '1', 'noduplicate': '1'}</field>
+        </record>
+
+        <menuitem name="Super Calendar" action="action_crm_super_calendar" id="menu_crm_super_calendar"
+                  parent="base.menu_crm" sequence="2000" />
+
+    </data>
+</openerp>
