@@ -541,7 +541,7 @@ class sale_order(orm.Model):
             DEFAULT_SERVER_DATE_FORMAT)
 
         default.update({
-            'date_order': fields.date.context_today,
+            'date_order': datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
             'validity': validity,
             'tech_validation': False,
             'manager_validation': False,
