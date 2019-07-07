@@ -264,6 +264,7 @@ class sale_order(orm.Model):
         return result
 
     def copy(self, cr, uid, id, default=None, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if default is None:
             default = {}
         if not context.get('versioning', False):
