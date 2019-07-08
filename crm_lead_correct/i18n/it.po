@@ -426,3 +426,52 @@ msgstr "Manca il Nome del Contatto"
 #: view:crm.lead:0
 msgid "Show Note"
 msgstr "Vedi Note"
+
+#. module: crm_lead_correct
+#: view:crm.super.calendar:0
+#: model:ir.actions.act_window,name:crm_lead_correct.action_crm_super_calendar
+#: model:ir.model,name:crm_lead_correct.model_crm_super_calendar
+#: model:ir.ui.menu,name:crm_lead_correct.menu_crm_super_calendar
+msgid "Super Calendar"
+msgstr "Calendario Globale"
+
+#. module: crm_lead_correct
+#: field:crm.super.calendar,date_action:0
+msgid "Date"
+msgstr "Data"
+
+#. modules: crm_lead_correct
+#: code:addons/crm_lead_correct/models/crm_super_calendar.py:30
+#: selection:crm.super.calendar,source_id:0
+#: selection:crm.super.calendar,type:0
+#, python-format
+msgid "Lead/Opportunity"
+msgstr "Lead/Opportunità"
+
+#. modules: crm_lead_correct
+#: selection:crm.super.calendar,source_id:0
+#: selection:crm.super.calendar,type:0
+#, python-format
+msgid "Phone Call"
+msgstr "Telefonata"
+
+#. module: crm_lead_correct
+#: view:crm.super.calendar:0
+msgid "My"
+msgstr "Miei"
+
+#. module: crm_lead_correct
+#: field:crm.super.calendar,user_id:0
+msgid "User"
+msgstr "Utente"
+
+#. module: crm_lead_correct
+#: field:crm.super.calendar,type:0
+msgid "Type"
+msgstr "Tipo"
+
+#. modules: crm_lead_correct
+#: selection:crm.super.calendar,source_id:0
+#: selection:crm.super.calendar,type:0
+msgid "Meeting"
+msgstr "Riunione"
