@@ -54,21 +54,36 @@ openerp.web_export_view = function(openerp) {
                 },
                 {
                     label: _t("Export Excel"),
-                    callback: this.on_sidebar_export_view
+                    callback: this.on_sidebar_export_view_first
+                },
+                {
+                    label: _t("Export Excel Second"),
+                    callback: this.on_sidebar_export_view_second
                 }
             ]);
         },
 
-        on_sidebar_export_view: function() {
+        on_sidebar_export_view_first: function() {
+            this.on_sidebar_export_view(0);
+        },
+
+        on_sidebar_export_view_second: function() {
+            this.on_sidebar_export_view(1);
+        },
+
+        on_sidebar_export_view: function(section) {
             // Select the first list of the current (form) view
             // or assume the main view is a list view and use that
             var self = this,
             view = this.widget_parent; // valid for list view
             if (view.widget_children) {
+                var counter = 0;
                 view.widget_children.every(function(child) {
                     if (child.field && child.field.type == 'one2many') {
-                        view = child.viewmanager.views.list.controller;
-                        return false; // break out of the loop
+                        if (counter++ == section) {
+                            view = child.viewmanager.views.list.controller;
+                            return false; // break out of the loop
+                        }
                     }
                     if (child.field && child.field.type == 'many2many') {
                         view = child.list_view;
