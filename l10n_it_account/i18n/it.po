@@ -3945,7 +3945,7 @@ msgstr "Prezzo unitario"
 #. module: account
 #: model:ir.actions.act_window,name:account.action_account_tree1
 msgid "Analytic Items"
-msgstr "Movimenti Anal"
+msgstr "Movimenti Analitici"
 
 #. module: account
 #: report:account.aged_trial_balance:0
