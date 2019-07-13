@@ -69,7 +69,7 @@ class emissione_riba(orm.TransientModel):
         def create_rdl(conta, rd_id, date_maturity, partner_id, acceptance_account_id, bank_id=None, bank_riba_id=None):
             riba_line_vals = {
                 'tobeaccredited': True,
-                'sequence': conta,
+                # 'sequence': conta,
                 'bank_id': bank_id,
                 'distinta_id': rd_id,
                 'due_date': date_maturity,

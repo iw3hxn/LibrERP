@@ -67,7 +67,7 @@
                 <field name="residual" readonly="1" sum="Total Amount" />
                 <!--<field name="amount_residual" readonly="1" sum="Total Amount" />-->
                 <field name="date_maturity"/>
-                <field name="riba" />
+                <field name="riba" invisible="not context.get('view_riba_flag', False)"/>
                 <field name="distinta_line_ids" invisible="1" />
                 <field name="reconcile_id" invisible="1" />
             </tree>
@@ -115,7 +115,7 @@
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_riba_da_emettere_tree" />
-        <field name="context">{'default_configuration_type': 'customer', 'search_default_da_emettere':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1', 'order': 'date_maturity asc', 'color': 'date_maturity'}</field>
+        <field name="context">{'default_configuration_type': 'customer', 'search_default_da_emettere': 1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1', 'order': 'date_maturity asc', 'color': 'date_maturity', 'view_riba_flag': True}</field>
         <field name="domain">[('riba','=','True'),('account_id.type','=','receivable'), ('reconcile_id', '=', False)]</field>
         <field name="search_view_id" ref="riba_filter"/>
     </record>
@@ -137,7 +137,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_riba_da_emettere_tree"/>
-            <field name="context">{'default_configuration_type': 'supplier', 'invisible_supplier_riba': True, 'search_default_da_emettere':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1', 'order': 'date_maturity asc', 'color': 'date_maturity'}</field>
+            <field name="context">{'default_configuration_type': 'supplier', 'invisible_supplier_riba': True, 'search_default_da_emettere':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1', 'order': 'date_maturity asc', 'color': 'date_maturity', 'view_riba_flag': True}</field>
             <field name="domain">['&amp;','|',('riba','=','True'),('unsolved_invoice_ids','!=',False),('account_id.type','=','payable'), ('reconcile_id', '=', False)]</field>
             <field name="search_view_id" ref="riba_filter"/>
         </record>

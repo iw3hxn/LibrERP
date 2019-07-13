@@ -398,8 +398,17 @@ class riba_distinta_line(osv.osv):
     _description = 'Riba details'
     _rec_name = 'sequence'
 
+    def _get_line_sequence(self, cr, uid, ids, field_name, arg, context):
+        result = {}
+        for line in self.browse(cr, uid, ids, context):
+            if line.distinta_id:
+                result[line.id] = line.distinta_id.line_ids.index(line) + 1
+            else:
+                result[line.id] = 0
+        return result
+
     _columns = {
-        'sequence': fields.integer('Number'),
+        'sequence': fields.function(_get_line_sequence, string='Number', type='integer', method=True),
         'move_line_ids': fields.one2many('riba.distinta.move.line', 'riba_line_id', 'Credit move lines'),
         'acceptance_move_id': fields.many2one('account.move', 'Acceptance Entry', readonly=True),
         'unsolved_move_id': fields.many2one('account.move', 'Unsolved Entry', readonly=True),
