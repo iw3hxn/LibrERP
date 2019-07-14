@@ -24,7 +24,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="riba" position="after">
-                    <field name="sdd" invisible="not context.get('view_sdd_flag', False)"/>
+                    <field name="sdd"/>
                 </field>
             </field>
         </record>
@@ -39,8 +39,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="l10n_it_ricevute_bancarie.view_riba_da_emettere_tree"/>
-            <field name="context">{'search_default_da_emettere':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1', 'view_sdd_flag': True}
-            </field>
+            <field name="context">{'search_default_da_emettere':1, 'nodelete': '1', 'nocreate': '1', 'noduplicate': '1', 'view_sdd_flag': True}</field>
             <field name="domain">[('sdd','=','True'),('account_id.type','=','receivable'), ('reconcile_id', '=', False)]</field>
             <field name="search_view_id" ref="l10n_it_ricevute_bancarie.riba_filter"/>
         </record>
