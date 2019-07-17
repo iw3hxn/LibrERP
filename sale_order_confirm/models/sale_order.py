@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
-#    Copyraght (c) 2013-2016 Didotech srl (<http://www.didotech.com>)
+#    Copyright © 2013-2019 Didotech srl (<http://www.didotech.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -540,6 +540,8 @@ class sale_order(orm.Model):
             days=company_id['default_sale_order_validity'] or 0.0) + relativedelta(day=days)).strftime(
             DEFAULT_SERVER_DATE_FORMAT)
 
+        # For unknown reason default_get() returns more values than required
+        default_values = self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context)
         default.update({
             'date_order': datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
             'validity': validity,
@@ -548,7 +550,10 @@ class sale_order(orm.Model):
             'customer_validation': False,
             'email_sent_validation': False,
             'supervisor_validation': False,
-            'lost_reason_id': False
+            'lost_reason_id': False,
+            'order_policy': default_values['order_policy'],
+            'picking_policy': default_values['picking_policy'],
+            'invoice_quantity': default_values['invoice_quantity']
         })
-        default.update(self.default_get(cr, uid, ['order_policy', 'picking_policy', 'invoice_quantity'], context))
+
         return super(sale_order, self).copy(cr, uid, ids, default, context=context)
