@@ -73,7 +73,8 @@ class central_journal_report(report_sxw.rml_parse):
         move_line_obj = self.pool.get('account.move.line')
         line_ids = move_line_obj.search(
             self.cr, self.uid, self.filters, order="date, move_id asc", context=self.context)
-        report_lines = move_line_obj.read(self.cr, self.uid, line_ids, ['date', 'ref', 'move_id', 'account_id', 'name', 'debit', 'credit', 'partner_id'], context=self.context)
+        # report_lines = move_line_obj.read(self.cr, self.uid, line_ids, ['date', 'ref', 'move_id', 'account_id', 'name', 'debit', 'credit', 'partner_id'], context=self.context)
+        report_lines = move_line_obj.browse(self.cr, self.uid, line_ids, context=self.context)
         return report_lines
 
     def _get_company(self, fiscalyear_id):

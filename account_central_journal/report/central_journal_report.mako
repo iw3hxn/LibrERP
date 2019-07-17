@@ -157,10 +157,10 @@
             <td class="p_cell p_cell_progr_row"><span class="p_text p_progr_row">${progr_row}</span></td>
             <td class="p_cell p_cell_date"><span class="p_text p_date">${ formatLang(line['date'], date=True) or ''|entity }</span></td>
             <td class="p_cell p_cell_ref"><span class="p_text p_ref">${ line['ref'] or ''|entity }</span></td>
-            <td class="p_cell p_cell_move_id_name"><span class="p_text p_move_id_name">${ line['move_id'][1] or ''|entity }</span></td>
-            <td class="p_cell p_cell_account_id_code"><span class="p_text p_account_id_code">${ get_account(line['account_id'][0])['code'] or ''|entity }</span></td>
-            <td class="p_cell p_cell_account_id_name"><span class="p_text p_account_id_name">${ get_account(line['account_id'][0])['name'] or ''|entity }</span></td>
-            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['partner_id'] and line['partner_id'][1] or ''|entity }</span></td>
+            <td class="p_cell p_cell_move_id_name"><span class="p_text p_move_id_name">${ line['move_id'].name or ''|entity }</span></td>
+            <td class="p_cell p_cell_account_id_code"><span class="p_text p_account_id_code">${ get_account(line['account_id'].id)['code'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_account_id_name"><span class="p_text p_account_id_name">${ get_account(line['account_id'].id)['name'] or ''|entity }</span></td>
+            <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['partner_id'] and line['partner_id'].name or ''|entity }</span></td>
             <td class="p_cell p_cell_name"><span class="p_text p_name">${ line['name'] or ''|entity }</span></td>
             <td class="p_cell p_cell_debit"><span class="p_text p_debit">${ formatLang(line['debit'], digits=get_digits(dp='Account')) |entity }</span></td>
             <td class="p_cell p_cell_credit"><span class="p_text p_credit">${ formatLang(line['credit'], digits=get_digits(dp='Account')) |entity }</span></td>
