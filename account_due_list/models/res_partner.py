@@ -57,10 +57,7 @@ class res_partner(orm.Model):
 
         for partner in self.browse(cr, uid, ids, context):
             account_view_ids = self._get_account_to_view(cr, uid, partner, context)
-            res[partner.id] = self.pool['account.move.line'].search(cr, uid, [('account_id', 'in', account_view_ids),
-                                                                              ('partner_id', '=', partner.id),
-                                                                              ('reconcile_id', '=', False)], order='date_maturity desc',
-                                                                    context=context)
+            res[partner.id] = self.pool['account.move.line'].search(cr, uid, [('account_id', 'in', account_view_ids), ('partner_id', '=', partner.id), ('reconcile_id', '=', False)], context=context)
         return res
 
     def _get_credit_activity_history_last(self, cr, uid, ids, field_name, arg, context=None):

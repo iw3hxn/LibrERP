@@ -9,7 +9,7 @@
                 <notebook position="inside">
                     <page string="Schedule" groups="account_due_list.can_view_due_list">
                         <separator string="Schedule" colspan="4"/>
-                        <field name="payment_ids" nolabel="1" readonly="1" context="{'order': 'date asc, ref desc, move_id desc, id desc', 'color': 'reconcile_function_id'}">
+                        <field name="payment_ids" nolabel="1" readonly="1" context="{'color': 'reconcile_function_id', 'order': 'date_maturity desc, date asc, ref desc, move_id desc, id desc'}">
                             <tree colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                                 <field name="row_color" invisible="1"/>
                                 <field name="move_id" required="False" readonly="1"/>
