@@ -3,7 +3,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 {
     'name': 'Custom Product Labels',
-    'version': '10.0.1.0.2',
+    'version': '10.0.1.0.3',
     'category': 'Product Management',
     'author': 'Garazd Creation',
     'website': "https://garazd.biz",
@@ -12,7 +12,8 @@
     'images': ['static/description/banner.png'],
     'description': """
 Module allows to print custom product labels on different paper formats.
-Label size: 60x35mm, paperformat: A4 (24 pcs per sheet, 3 pcs x 8 rows).
+Label size: 60x35mm, paperformat: 
+    - A4 (24 pcs per sheet, 3 pcs x 8 rows).
     """,
     'depends': ['product'],
     'data': [
