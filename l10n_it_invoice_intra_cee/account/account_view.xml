@@ -37,7 +37,7 @@
                             attrs="{'required':[('active_extra_ue_service', '=', True)]}"/>
                         <field name="extra_ue_line_detail" colspan="2"
                             attrs="{'required':[('active_extra_ue_service', '=', True)]}"
-                            help="Text accept mako markdown. for example ${object.partner_id.name} for partner or ${object.number} for invoice number, etc..."/>
+                        />
                     </group>
                     <newline />
                 </group>
