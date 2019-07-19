@@ -370,7 +370,6 @@ msgstr "Voci Accredito"
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.action_riba_da_emettere
 #: model:ir.actions.act_window,name:l10n_it_ricevute_bancarie.emissione_riba_action
 #: model:ir.ui.menu,name:l10n_it_ricevute_bancarie.menu_riba_da_emettere
-#: model:ir.ui.menu,name:l10n_it_ricevute_bancarie.menu_riba_da_emettere_due_list
 #: view:riba.emissione:0
 msgid "Issue Ri.Ba."
 msgstr "Emetti Ri.Ba."
