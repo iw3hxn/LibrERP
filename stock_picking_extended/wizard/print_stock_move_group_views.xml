@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="print_stock_move_group_view_form" model="ir.ui.view">
+            <field name="name">print.stock.move.group.view.form</field>
+            <field name="model">print.stock.move.group</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group colspan="4" col="8">
+
+                        <group colspan="8">
+                            <field name="date_from" />
+                            <field name="show_partner" />
+                            <field name="date_to"/>
+                            <field name="show_journal"/>
+                        </group>
+                        <group colspan="8">
+                            <field name="product_id" colspan="8"/>
+                            <field name="location_id" colspan="8" widget="selection"/>
+                        </group>
+
+                        <button name="action_print" string="Print"
+                                help="Print Stock Move"
+                                type="object" icon="gtk-print"
+                        />
+
+
+                    </group>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_print_stock_move_group_menu" model="ir.actions.act_window">
+            <field name="name">Stock Movements</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">print.stock.move.group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="print_stock_move_group_view_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+                icon="STOCK_PRINT"
+                name="Stock Movements"
+                parent="account.final_accounting_reports"
+                action="action_print_stock_move_group_menu"
+                id="menu_print_stock_move_group"
+               />
+
+    </data>
+</openerp>

@@ -677,3 +677,206 @@ msgstr "Non è possibile aggiungere una riga, va fatto solo creando un Ordine di
 #: view:stock.move:0
 msgid "Open Order Board"
 msgstr "Apri Lavagna Ordini"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,real_date:0
+msgid "Real Date"
+msgstr "Data"
+
+#. module: stock_picking_extended
+#: view:stock.move.group:0
+msgid "Group By..."
+msgstr "Raggruppa per..."
+
+#. module: stock_picking_extended
+#: field:stock.move.group,date_from:0
+#: field:print.stock.move.group,date_from:0
+msgid "Date from"
+msgstr "Dal"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,date_to:0
+#: field:print.stock.move.group,date_to:0
+msgid "Date to"
+msgstr "Al"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,origin:0
+msgid "Origin"
+msgstr "Origine"
+
+#. module: stock_picking_extended
+#: selection:stock.move.group,source_location_id:0
+msgid "Sale Order"
+msgstr "Ordine Cliente"
+
+#. module: stock_picking_extended
+#: model:ir.model,name:stock_picking_extended.model_purchase_order
+#: selection:stock.move.group,source_location_id:0
+msgid "Purchase Order"
+msgstr "Ordine di Acquisto"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,stock_balance:0
+msgid "Product Qty on Hand"
+msgstr "Qtà disponibile"
+
+#. module: stock_picking_extended
+#: view:stock.move:0
+#: view:stock.move.group:0
+#: view:stock.picking:0
+msgid "Move"
+msgstr "Movimento"
+
+#. module: stock_picking_extended
+#: field:print.stock.move.group,show_journal:0
+msgid "Show Journal"
+msgstr "Mostra Causale"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,average:0
+msgid "Average Price"
+msgstr "Prezzo Medio"
+
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_stock_move_group
+#: model:ir.ui.menu,name:stock_picking_extended.menu_stock_move_group
+#: view:stock.move.group:0
+msgid "Move Line"
+msgstr "Righe movimenti"
+
+#. module: stock_picking_extended
+#: field:print.stock.move.group,location_id:0
+#: view:stock.move.group:0
+#: field:stock.move.group,location_id:0
+msgid "Location"
+msgstr "Punto di Stoccaggio"
+
+#. module: stock_picking_extended
+#: view:print.stock.move.group:0
+#: view:stock.picking:0
+msgid "Print"
+msgstr "Stampa"
+
+#. module: stock_picking_extended
+#: field:print.stock.move.group,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,qty_in:0
+msgid "In Qty"
+msgstr "Qtà +"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,qty_out:0
+msgid "Out Qty"
+msgstr "Qtà -"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,average_year:0
+msgid "Average Price Year"
+msgstr "Prezzo Medio per Anno"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,location_amount:0
+msgid "Location Amount"
+msgstr "Ammontare per Locazione"
+
+#. module: stock_picking_extended
+#: view:stock.move.group:0
+msgid "Month"
+msgstr "Mese"
+
+#. module: stock_picking_extended
+#: view:stock.move.group:0
+msgid "Last Month"
+msgstr "Mese Scorso"
+
+#. module: stock_picking_extended
+#: view:stock.move.group:0
+msgid "Search Moves"
+msgstr "Ricerca Movimenti"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,document_date:0
+msgid "Date"
+msgstr "Data Documento"
+
+#. module: stock_picking_extended
+#: field:print.stock.move.group,show_partner:0
+msgid "Show Partner"
+msgstr "Mostra il Partner"
+
+#. module: stock_picking_extended
+#: selection:stock.move.group,source_location_id:0
+msgid "Pos Order"
+msgstr "Pos Order"
+
+#. module: stock_picking_extended
+#: view:stock.move.group:0
+msgid "Out"
+msgstr "Uscita"
+
+#. module: stock_picking_extended
+#: view:stock.move.group:0
+msgid "In"
+msgstr "Ingresso"
+
+#. module: stock_picking_extended
+#: field:print.stock.move.group,product_id:0
+#: view:stock.move.group:0
+#: field:stock.move.group,product_id:0
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,stock_journal_id:0
+msgid "Journal"
+msgstr "Causale"
+
+#. module: stock_picking_extended
+#: view:print.stock.move.group:0
+msgid "Print Stock Move"
+msgstr "Stampa Movimenti Magazzino"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,move_value:0
+msgid "Move Price"
+msgstr "Ammontare Movimento"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,year:0
+msgid "Year"
+msgstr "Anno"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,price:0
+msgid "Price Unit"
+msgstr "Prezzo Unitario"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,location_amount_year:0
+msgid "Location Amount Year"
+msgstr "Ammontare per Locazione Annuale"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,source_location_id:0
+msgid "Source Location"
+msgstr "Locatione Sorgente"
+
+#. module: stock_picking_extended
+#: field:stock.move.group,product_uom:0
+msgid "Product Uom"
+msgstr "UdM"
+
+#. module: stock_picking_extended
+#: model:ir.actions.act_window,name:stock_picking_extended.action_print_stock_move_group_menu
+#: model:ir.ui.menu,name:stock_picking_extended.menu_print_stock_move_group
+msgid "Stock Movements"
+msgstr "Movimenti di Magazzino"
+
+#. module: stock_picking_extended
+#: model:ir.actions.report.xml,name:stock_picking_extended.report_stock_move_group
+msgid "Products Move by Location"
+msgstr "Movimenti di Magazzino per Locazione"

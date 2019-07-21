@@ -22,7 +22,7 @@
 
 {
     'name': 'Stock picking extended',
-    'version': '3.46.50.60',
+    'version': '3.46.51.61',
     'category': 'Others',
     'description': """LibrERP - Stock picking extension
 
@@ -63,6 +63,9 @@ Functionalities:
         'views/res_partner_address_view.xml',
         'views/purchase_order_view.xml',
         'views/sale_order_view.xml',
+        'views/stock_move_group_view.xml',
+        'wizard/print_stock_move_group_views.xml',
+        'reports/stock_move_group_report.xml',
         'data/sale_data.xml',
         'data/stock.journal.csv',
         'data/crontab_data.xml'

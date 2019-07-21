@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="report_stock_move_group" model="ir.actions.report.xml">
+            <field name="name">Products Move by Location</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">stock.move.group</field>
+            <field name="report_name">report_stock_move_group</field>
+            <field name="report_type">aeroo</field>
+            <field name="tml_source">file</field>
+            <field name="in_format">oo-odt</field>
+            <field name="out_format" eval="ref('report_aeroo_loffice.report_mimetypes_pdf_odt')"/>
+            <field name="parser_loc">stock_picking_extended/reports/stock_move_group_parser.py</field>
+            <field name="report_rml">stock_picking_extended/reports/stock_move_group.odt</field>
+            <field name="parser_state">loc</field>
+        </record>
+
+    </data>
+</openerp>
