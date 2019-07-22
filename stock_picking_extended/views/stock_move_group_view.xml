@@ -19,9 +19,9 @@
                     <field name="qty_in" sum="qty_in" />
                     <field name="qty_out" sum="qty_out" />
                     <field name="product_qty" sum="product_qty" />
+                    <field name="stock_balance"/>
                     <field name="product_uom"/>
                     <field name="price"/>
-                    <field name="stock_balance" />
                     <field name="move_value" sum="Move"/>
                     <field name="average" />
                     <field name="average_year" />

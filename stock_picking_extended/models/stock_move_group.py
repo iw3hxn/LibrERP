@@ -43,7 +43,7 @@ class stock_move_group(orm.Model):
         'location_amount_year': fields.float(string='Location Amount Year', digits_compute=dp.get_precision('Purchase Price')),
     }
 
-    _order = "document_date"
+    _order = "document_date, id"
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'stock_move_group')
@@ -80,11 +80,11 @@ class stock_move_group(orm.Model):
                         
                         FROM (
                             SELECT *, 
-                            SUM(qty_in - qty_out) OVER (PARTITION by product_id, location_id ORDER by document_date) AS stock_balance,
-                            SUM(case when purchase_id is not Null and partner_id != 1 THEN move_value ELSE 0 END) OVER (PARTITION BY product_id, location_id, year ORDER by document_date) AS sum_move_value,
-                            SUM(case when purchase_id is not Null and partner_id != 1 THEN qty_in ELSE 0 END) OVER (PARTITION BY product_id, location_id, year ORDER by document_date) AS sum_product_qty,
-                            SUM(case when purchase_id is not Null and partner_id != 1 THEN move_value ELSE 0 END) OVER (PARTITION BY product_id, location_id ORDER by document_date) AS sum_move_value_year,
-                            SUM(case when purchase_id is not Null and partner_id != 1 THEN qty_in ELSE 0 END) OVER (PARTITION BY product_id, location_id ORDER by document_date) AS sum_product_qty_year
+                            SUM(qty_in - qty_out) OVER (PARTITION by product_id, location_id ORDER by document_date, id) AS stock_balance,
+                            SUM(case when purchase_id is not Null and partner_id != 1 THEN move_value ELSE 0 END) OVER (PARTITION BY product_id, location_id ORDER by document_date, id) AS sum_move_value,
+                            SUM(case when purchase_id is not Null and partner_id != 1 THEN qty_in ELSE 0 END) OVER (PARTITION BY product_id, location_id ORDER by document_date, id) AS sum_product_qty,
+                            SUM(case when purchase_id is not Null and partner_id != 1 THEN move_value ELSE 0 END) OVER (PARTITION BY product_id, location_id, year ORDER by document_date, id) AS sum_move_value_year,
+                            SUM(case when purchase_id is not Null and partner_id != 1 THEN qty_in ELSE 0 END) OVER (PARTITION BY product_id, location_id, year ORDER by document_date, id) AS sum_product_qty_year
                         
                         FROM (
                             SELECT 
@@ -117,7 +117,8 @@ class stock_move_group(orm.Model):
                                 
                                 
                                 FROM (
-                                    SELECT 	sm.date AS document_date,
+                                    SELECT 	sm.create_date AS move_line_id,
+                                            sm.date AS document_date,
                                             sm.partner_id as partner_id, 
                                             sp.stock_journal_id AS stock_journal_id, 
                                             sm.product_id AS product_id,
@@ -137,7 +138,8 @@ class stock_move_group(orm.Model):
                                             
                                     UNION ALL
                                     
-                                    SELECT 	sm.date AS document_date,
+                                    SELECT 	sm.create_date AS move_line_id,
+                                            sm.date AS document_date,
                                             sm.partner_id as partner_id,
                                             Null AS stock_journal_id, 
                                             sm.product_id AS product_id,
@@ -155,7 +157,8 @@ class stock_move_group(orm.Model):
                                     
                                     UNION ALL
                                     
-                                    SELECT 	sm.date AS document_date,
+                                    SELECT 	sm.create_date AS move_line_id,
+                                            sm.date AS document_date,
                                             sm.partner_id as partner_id,
                                             sp.stock_journal_id AS stock_journal_id, 
                                             sm.product_id AS product_id,
@@ -174,7 +177,8 @@ class stock_move_group(orm.Model):
                                             
                                     UNION ALL
                                     
-                                    SELECT 	sm.date AS document_date,
+                                    SELECT 	sm.create_date AS move_line_id,
+                                            sm.date AS document_date,
                                             sm.partner_id as partner_id,
                                             Null AS stock_journal_id, 
                                             sm.product_id AS product_id,
