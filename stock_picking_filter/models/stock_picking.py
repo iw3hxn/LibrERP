@@ -22,22 +22,22 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import orm, fields
 import datetime
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 # dummy call to workaround strptime bug (https://bugs.launchpad.net/openobject-server/+bug/947231/comments/8):
-datetime.datetime.strptime('2012-01-01 11:11:11', DEFAULT_SERVER_DATETIME_FORMAT)
+# datetime.datetime.strptime('2012-01-01 11:11:11', DEFAULT_SERVER_DATETIME_FORMAT)
 
 
-class stock_picking(osv.osv):
+class stock_picking(orm.Model):
     _inherit = 'stock.picking'
     
     def _get_stock_picking_years(self, cr, uid, fields, context=None):
         result = []
-        first_stock_picking_id = self.search(cr, uid, [('date', '!=', False)], order='date asc', limit=1)
+        first_stock_picking_id = self.search(cr, uid, [('date', '!=', False)], order='date asc', limit=1, context=context)
         if first_stock_picking_id:
-            first_stock_picking = self.browse(cr, uid, first_stock_picking_id[0])
+            first_stock_picking = self.browse(cr, uid, first_stock_picking_id[0], context)
             first_year = datetime.datetime.strptime(first_stock_picking.date, DEFAULT_SERVER_DATETIME_FORMAT).year
         else:
             first_year = datetime.date.today().year
@@ -48,7 +48,7 @@ class stock_picking(osv.osv):
         return result
 
     def _get_stock_picking_year(self, cr, uid, ids, field_name, arg, context):
-        stock_pickings = self.browse(cr, uid, ids)
+        stock_pickings = self.browse(cr, uid, ids, context)
 
         result = {}
 

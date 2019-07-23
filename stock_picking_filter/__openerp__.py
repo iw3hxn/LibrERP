@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice Extended",
-    "version": "2.1.3.4",
+    "version": "3.1.3.4",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": 'Accounting & Finance',
@@ -37,10 +37,10 @@
         'base',
         'account',
         'stock',
+        'stock_picking_extended'
     ],
-    "init_xml": [],
-    "update_xml": [
-        'stock_picking_view.xml'
+    "data": [
+        'views/stock_picking_view.xml'
     ],
     "active": False,
     "installable": True,
