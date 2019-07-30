@@ -39,7 +39,8 @@ class stock_move(orm.Model):
             res[move['id']] = {
                 'minimum_planned_date': False,
                 'sale_id': False,
-                'week_nbr': False
+                'week_nbr': False,
+                'shop_id': False
             }
             if move['picking_id']:
                 picking = self.pool['stock.picking'].browse(cr, uid, move['picking_id'][0], context)
@@ -47,7 +48,8 @@ class stock_move(orm.Model):
                 if picking.sale_id:
                     res[move['id']].update({
                         'sale_id': picking.sale_id.id,
-                        'minimum_planned_date': picking.sale_id.minimum_planned_date
+                        'minimum_planned_date': picking.sale_id.minimum_planned_date,
+                        'shop_id': picking.sale_id.shop_id.id
                     })
         return res
 
@@ -67,6 +69,11 @@ class stock_move(orm.Model):
 
     _columns = {
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
+        'shop_id': fields.function(_get_related_fields, type='many2one', relation='sale.shop', string='Shop', multi='related_fields', store={
+                                                    'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['picking_id'], 20),
+                                                    'stock.picking': (_get_picking, ['sale_id', 'move_lines'], 5000),
+                                                    'sale.order': (_get_picking_sale, ['shop_id'], 8000),
+                                                }),
         'minimum_planned_date': fields.function(_get_related_fields, type='date', string='Expected Date', multi='related_fields', store={
                                         'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['picking_id'], 20),
                                         'stock.picking': (_get_picking, ['sale_id', 'move_lines'], 5000),

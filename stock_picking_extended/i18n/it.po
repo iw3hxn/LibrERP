@@ -880,3 +880,9 @@ msgstr "Movimenti di Magazzino"
 #: model:ir.actions.report.xml,name:stock_picking_extended.report_stock_move_group
 msgid "Products Move by Location"
 msgstr "Movimenti di Magazzino per Locazione"
+
+#. module: stock_picking_extended
+#: view:stock.move:0
+#: field:stock.move,shop_id:0
+msgid "Shop"
+msgstr "Business Unit"

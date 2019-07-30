@@ -298,6 +298,8 @@
                     <group expand="0" string="Group By...">
                         <filter string="Partner" icon="terp-personal" domain="[]" context="{'group_by':'partner_id'}"/>
                         <separator orientation="vertical"/>
+                        <filter string="Shop" icon="terp-personal" domain="[]" context="{'group_by':'shop_id'}"/>
+                        <separator orientation="vertical"/>
                         <filter string="Product" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'product_id'}"/>
                         <separator orientation="vertical"/>
                         <filter string="Order Delivery" icon="terp-go-month" domain="[]" context="{'group_by':'minimum_planned_date'}"/>
@@ -331,6 +333,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Line Order Board">
+                    <field name="shop_id" />
                     <button name="action_view_order_board" string="Open Order Board" type="object" icon="gtk-zoom-in" />
                     <field name="picking_id" />
                     <field name="sale_id" />
