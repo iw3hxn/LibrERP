@@ -23,7 +23,7 @@
 
 {
     'name': 'Sale No Dashboard',
-    'version': '1.1',
+    'version': '1.2',
     'category': 'Generic Modules/Sale',
     'description': """
 This module disable the sale dashboard, which makes OpenERP fast again with the web-client and real production data that otherwise makes the dashboard very slow and that break your navigation.
