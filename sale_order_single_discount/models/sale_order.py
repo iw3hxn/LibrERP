@@ -44,5 +44,5 @@ class sale_order(orm.Model):
             #     line.write({'discount': sale.discount_rate})
             # sale.write({'recalculate_prices': False})
             self.pool['sale.order.line'].write(cr, uid, [line.id for line in sale.order_line], {'discount': sale.discount_rate}, context)
-        self.write(cr, uid, ids, {'recalculate_discount': False})
+        self.write(cr, uid, ids, {'recalculate_discount': False}, context)
         return True
