@@ -165,7 +165,7 @@ class res_partner(orm.Model):
                 WHERE 
                     account_move_line.account_id = account_account.id AND
                     account_move_line.partner_id = res_partner.id AND
-                    res_partner.collections_out is NULL AND
+                    (res_partner.collections_out != 'True' OR res_partner.collections_out IS NULL) AND
                     account_move_line.state != 'draft' AND 
                     account_account.type = 'receivable' AND 
                     account_move_line.reconcile_id IS NULL AND
