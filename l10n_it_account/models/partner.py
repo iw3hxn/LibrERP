@@ -29,7 +29,7 @@ from openerp.osv import fields, orm
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 try:
-    from codicefiscale import build, isvalid
+    from codicefiscale import build, isvalid, control_code
 except (ImportError, IOError) as err:
     _logger.error(err)
 
@@ -238,7 +238,7 @@ class res_partner(orm.Model):
                 }
             else:
                 fiscalcode = fiscalcode.upper()
-                chk = codicefiscale.control_code(fiscalcode[0:15])
+                chk = control_code(fiscalcode[0:15])
                 if chk != fiscalcode[15]:
                     value = fiscalcode[0:15] + chk
                     return {'value': {name: value},
