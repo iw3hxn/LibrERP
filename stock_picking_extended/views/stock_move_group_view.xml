@@ -14,6 +14,7 @@
                     <field name="source_location_id" />
                     <field name="stock_journal_id" invisible="context.get('filter_stock_journal_id', False)"/>
                     <field name="partner_id" />
+                    <field name="categ_id" />
                     <field name="product_id" invisible="context.get('filter_product_id', False)"/>
                     <field name="location_id" invisible="context.get('filter_location_id', False)"/>
                     <field name="qty_in" sum="qty_in" />
@@ -81,10 +82,9 @@
 
 
                     <field name="stock_journal_id" context="{'filter_stock_journal_id': True}"/>
+                    <field name="categ_id" operator="child_of"/>
                     <field name="product_id" context="{'filter_product_id': True}"/>
                     <field name="location_id" context="{'filter_location_id': True}" domain="[('usage', '=', 'internal')]"/>
-
-
 
                     <newline/>
                     <group expand="0" string="Group By...">

@@ -219,30 +219,30 @@ class stock_picking(orm.Model):
                 'picked_rate': 0.0
             }
 
-            # if picking.ddt_number:
-            #     res[picking.id]['order_sent'] = True
-
-            if picking.state == 'done':
-                res[picking.id].update(
-                    {
-                        # 'order_ready': True,
-                        'picked_rate': 100.0
-                    })
-            else:
-                move_obj = self.pool['stock.move']
-                total_move_ids = move_obj.search(cr, uid, [('picking_id', '=', picking.id)], context=context)
-                ready_move_ids = move_obj.search(cr, uid, [('picking_id', '=', picking.id), ('state', '=', 'assigned')],
-                                                 context=context)
-                total_move = len(total_move_ids)
-                ready_move = len(ready_move_ids)
-                if total_move:
-                    ratio = (ready_move * 100.0) / total_move
-                    res[picking.id].update(
-                        {
-                            'picked_rate': ratio
-                        })
-                    if ratio == 100.0:
-                        picking.write({'order_ready': True})
+            # # if picking.ddt_number:
+            # #     res[picking.id]['order_sent'] = True
+            #
+            # if picking.state == 'done':
+            #     res[picking.id].update(
+            #         {
+            #             # 'order_ready': True,
+            #             'picked_rate': 100.0
+            #         })
+            # else:
+            #     move_obj = self.pool['stock.move']
+            #     total_move_ids = move_obj.search(cr, uid, [('picking_id', '=', picking.id)], context=context)
+            #     ready_move_ids = move_obj.search(cr, uid, [('picking_id', '=', picking.id), ('state', '=', 'assigned')],
+            #                                      context=context)
+            #     total_move = len(total_move_ids)
+            #     ready_move = len(ready_move_ids)
+            #     if total_move:
+            #         ratio = (ready_move * 100.0) / total_move
+            #         res[picking.id].update(
+            #             {
+            #                 'picked_rate': ratio
+            #             })
+            #         if ratio == 100.0:
+            #             picking.write({'order_ready': True})
         return res
 
     def _get_picking_move(self, cr, uid, ids, context=None):

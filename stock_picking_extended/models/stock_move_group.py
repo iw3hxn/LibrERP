@@ -22,6 +22,7 @@ class stock_move_group(orm.Model):
         'stock_journal_id': fields.many2one('stock.journal', 'Journal'),
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'product_id': fields.many2one('product.product', 'Product'),
+        'categ_id': fields.many2one('product.category', 'Category'),
         'location_id': fields.many2one('stock.location', 'Location'),
         'qty_out': fields.float(string='Out Qty', digits_compute=dp.get_precision('Product UoM')),
         'qty_in': fields.float(string='In Qty', digits_compute=dp.get_precision('Product UoM')),
@@ -51,10 +52,10 @@ class stock_move_group(orm.Model):
             cr.execute("""
                 create or replace view stock_move_group AS (
                 SELECT 
-                    *,
+                    D.*,
                     average * stock_balance AS location_amount,
-                    average_year * stock_balance AS location_amount_year
-                
+                    average_year * stock_balance AS location_amount_year,
+                    pt.categ_id
                 FROM(
                     SELECT
                         to_char(C.document_date, 'MM') as month,
@@ -198,10 +199,10 @@ class stock_move_group(orm.Model):
                                     ORDER BY document_date
                         ) AS B
                         ) AS C
-                        ) as D
-                ) 
-                
-                
+                        ) as D, product_template as pt , product_product as pp 
+                    WHERE pp.product_tmpl_id = pt.id AND pp.id = D.product_id 
+                        
+                )                 
                 
             """)
         except Exception as e:

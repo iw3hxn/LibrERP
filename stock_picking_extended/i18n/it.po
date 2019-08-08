@@ -871,6 +871,11 @@ msgid "Product Uom"
 msgstr "UdM"
 
 #. module: stock_picking_extended
+#: field:stock.move.group,categ_id:0
+msgid "Category"
+msgstr "Categoria"
+
+#. module: stock_picking_extended
 #: model:ir.actions.act_window,name:stock_picking_extended.action_print_stock_move_group_menu
 #: model:ir.ui.menu,name:stock_picking_extended.menu_print_stock_move_group
 msgid "Stock Movements"
