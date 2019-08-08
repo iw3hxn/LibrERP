@@ -171,7 +171,7 @@ class product_qty0_ext_isa(orm.Model):
         where += add_where_str
         having = having.format(locations=locations, sign=sign, states=states)
         # FIXME: servono i campi con i quali si fa l'ordinamento da mettere nel group by... per ora li prendo dall'order
-        add_group_by = order_by.replace("ORDER BY", "").replace("asc", "").replace("desc", "")
+        add_group_by = order_by.replace("ORDER BY", "").replace("ASC", "").replace("DESC", "")
         group += add_group_by and ',' + add_group_by
 
         # #############################################################################################################
