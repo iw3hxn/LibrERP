@@ -114,3 +114,8 @@ msgstr "Prima data a partire dalla quale il pagamento sarà spostato"
 #: view:account.payment.term:0
 msgid "Auto Creation"
 msgstr "Auto Creazione"
+
+#. modules: account_payment_term_month
+#: selection:account.payment.term.line,value:0
+msgid "Tax Amount"
+msgstr "Importo Imposta"
