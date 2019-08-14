@@ -483,9 +483,8 @@ class account_invoice(orm.Model):
             cr, uid, ids, context)
 
     def action_move_create(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        ait_obj = self.pool.get('account.invoice.tax')
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        ait_obj = self.pool['account.invoice.tax']
         amount_tax = 0.0
         if isinstance(ids, (int, long)):
             ids = [ids]
@@ -493,10 +492,12 @@ class account_invoice(orm.Model):
             compute_taxes = ait_obj.compute(cr, uid, inv.id, context=context)
             for tax in compute_taxes:
                 amount_tax += compute_taxes[tax]['amount']
-            if inv.fiscal_position.active_reverse_charge and \
-                    inv.type in ['in_invoice', 'in_refund']:
+            if inv.fiscal_position.active_reverse_charge and inv.type in ['in_invoice', 'in_refund']:
                 context.update({'amount_tax': amount_tax, 'reverse_charge': True})
-        super(account_invoice, self).action_move_create(cr, uid, ids, context=context)
+            else:
+                context.update({'amount_tax': amount_tax})
+            super(account_invoice, self).action_move_create(cr, uid, [inv.id], context=context)
+
         return True
 
     def copy(self, cr, uid, id, default=None, context=None):
