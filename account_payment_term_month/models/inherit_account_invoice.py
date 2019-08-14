@@ -57,7 +57,7 @@ class account_invoice(orm.Model):
             pterm_list.sort()
             res = {'value': {'date_due': pterm_list[-1]}}
         else:
-            payment = self.pool['account.payment.term'].browse(cr, uid, payment_term_id)
+            payment = self.pool['account.payment.term'].browse(cr, uid, payment_term_id, context)
             raise orm.except_orm(_('Data Insufficient "{0}" !'.format(payment.name)),
                                  _('The payment term of supplier does not have a payment term line!'))
         return res
