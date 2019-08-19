@@ -47,6 +47,19 @@
             </field>
         </record>
 
+        <record id="stock.view_inventory_tree" model="ir.ui.view">
+            <field name="name">stock.inventory.tree</field>
+            <field name="model">stock.inventory</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Lot Inventory" colors="grey:state == 'cancel';blue:state == 'draft'">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="stock_inventory_tree" model="ir.ui.view">
             <field name="name">stock.inventory.tree</field>
             <field name="model">stock.inventory</field>
