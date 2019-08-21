@@ -43,6 +43,36 @@ class stock_picking(orm.Model):
                 picking_name = '* ' + picking_name
             res.append((picking['id'], picking_name))
         return res
+
+    def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
+
+        if not args:
+            args = []
+
+        if name:
+            for column in ('ddt_number', 'origin', 'name', 'ddt_in_reference'):
+                ids = self.search(cr, user, [(column, '=', name)] + args, limit=limit, context=context)
+                if ids:
+                    break
+
+            if not len(ids):
+                if len(name) == 1 and operator == 'ilike':
+                    operator = '=ilike'
+                    name = name + '%'
+
+                domain = [
+                        '|', '|', '|',
+                        ('ddt_number', operator, name),
+                        ('origin', operator, name),
+                        ('name', operator, name),
+                        ('ddt_in_reference', operator, name)
+                    ]
+
+                ids = self.search(cr, user, args + domain, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        result = self.name_get(cr, user, ids, context=context)
+        return result
         
     def _check_ddt_in_reference_unique(self, cr, uid, ids, context=None):
         # qui và cercato da gli stock.picking quelli che hanno ddt_in_reference e partner_id uguali
