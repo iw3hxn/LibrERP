@@ -208,7 +208,7 @@ class db_backup_ept(orm.Model):
     def delete_obsolete_backups(self, cr, uid, ids, context):
         for backup in self.browse(cr, uid, ids, context):
             if backup.backups_to_keep and len(backup.history_line) > backup.backups_to_keep:
-                backups_to_delete = backup.history_line[backup.backups_to_keep:]
+                backups_to_delete = backup.history_line[(backup.backups_to_keep - 1):]
                 for condemned in backups_to_delete:
                     _logger.info(u'Deleting backup {} ...'.format(condemned.path))
                     try:
