@@ -102,6 +102,7 @@ class emissione_riba(orm.TransientModel):
         # group by partner and due date
         grouped_lines = {}
         move_line_ids = move_line_obj.search(cr, uid, [('id', 'in', active_ids)], context=context)
+        move_line_obj.write(cr, uid, move_line_ids, {'riba_selected': False}, context)
         for move_line in move_line_obj.browse(cr, uid, move_line_ids, context=context):
             if move_line.partner_id.group_riba:
                 if not grouped_lines.get((move_line.partner_id.id, move_line.date_maturity), False):

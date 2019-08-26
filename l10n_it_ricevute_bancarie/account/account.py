@@ -189,7 +189,16 @@ class account_move_line(orm.Model):
 
         return res
 
+    def action_add(self, cr, uid, ids, context):
+        self.write(cr, uid, ids, {'riba_selected': True}, context)
+        return True
+
+    def action_remove(self, cr, uid, ids, context):
+        self.write(cr, uid, ids, {'riba_selected': False}, context)
+        return True
+
     _columns = {
+        'riba_selected': fields.boolean('RiBa Selezionata'),
         'distinta_line_ids': fields.one2many('riba.distinta.move.line', 'move_line_id', "Dettaglio riba"),
         'riba': fields.function(_get_fields_riba_function, type='boolean', string='RiBa', fnct_inv=_set_riba, store={
             'account.move.line': (lambda self, cr, uid, ids, c={}: ids, ['stored_invoice_id'], 6000),

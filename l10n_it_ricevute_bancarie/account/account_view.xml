@@ -49,6 +49,9 @@
         <field name="arch" type="xml">
             <tree colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                 <field name="row_color" invisible="1"/>
+                <field name="riba_selected" invisible="not context.get('invisible_supplier_riba', False)"/>
+                <button name="action_add" string="Add" type="object" icon="gtk-add"  attrs="{'invisible': [('riba_selected', '=', True)]}" invisible="not context.get('invisible_supplier_riba', False)"/>
+                <button name="action_remove" string="Remove" type="object" icon="gtk-remove"  attrs="{'invisible': [('riba_selected', '!=', True)]}" invisible="not context.get('invisible_supplier_riba', False)"/>
                 <field name="stored_invoice_id" readonly="1"/>
                 <field name="invoice_date" readonly="1"/>
                 <field name="invoice_origin" readonly="1" invisible="context.get('invisible_supplier_riba', False)"/>
@@ -82,13 +85,15 @@
         <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Journal Items">
-                <filter icon="terp-go-today" string="To Issue" 
+                <filter icon="terp-go-today" string="To Issue"
                     domain="[('distinta_line_ids', '=', False)]" name="da_emettere"/>
-                <filter icon="terp-go-today" string="Issued" 
+                <filter icon="terp-go-today" string="Issued"
                     domain="[('distinta_line_ids', '!=', False)]" name="emesse"/>
+                <filter icon="gtk-ok" string="RiBa Selezionate"
+                    domain="[('distinta_line_ids', '=', False), ('riba_selected', '=', True)]" name="selezionate" invisible="not context.get('invisible_supplier_riba', False)"/>
+                <field name="riba_bank_id" readonly="1" invisible="not context.get('invisible_supplier_riba', False)"/>
                 <field name="account_id"/>
                 <field name="partner_id"/>
-                <field name="riba_bank_id" readonly="1" invisible="not context.get('invisible_supplier_riba', False)"/>
                 <field name="invoice"/>
                 <field name="invoice_origin"/>
                 <field name="date_maturity"/>
