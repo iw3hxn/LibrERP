@@ -3,7 +3,7 @@
 
 {
     "name": "BoM Warning",
-    "version": "4.0.1.0",
+    "version": "4.0.1.1",
     "depends": [
         "mrp",
         "base",
@@ -18,7 +18,8 @@
     "category": "Manufacture Resource Planning",
 
     "data": [
-        'views/product_view.xml'
+        'views/product_view.xml',
+        'views/mrp_bom_view.xml'
     ],
     "demo": [],
     "active": False,

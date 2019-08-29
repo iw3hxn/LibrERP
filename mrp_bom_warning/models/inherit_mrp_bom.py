@@ -11,6 +11,23 @@ class MrpBom(orm.Model):
     
     _inherit = "mrp.bom"
 
+    from profilehooks import profile
+    @profile(immediate=True)
+    def _get_color(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+
+        product_obsolete_ids = self.pool['product.product'].search(cr, uid, [('state', 'in', ('draft', 'end', 'obsolete'))], context=context)
+        for line in self.read(cr, uid, ids, ['product_id'], context=context, load='_obj'):
+            if line['product_id'] in product_obsolete_ids:
+                res[line['id']] = 'blue'
+            else:
+                res[line['id']] = 'black'
+        return res
+
+    _columns = {
+        'row_color': fields.function(_get_color, string='Row color', type='char', readonly=True, method=True),
+    }
+
     def onchange_product_id(self, cr, uid, ids, product_id, name, context=None):
         result = super(MrpBom, self).onchange_product_id(cr, uid, ids, product_id, name, context)
         

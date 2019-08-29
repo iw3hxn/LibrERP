@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<openerp>
+    <data>
+
+        <record id="view_mrp_bom_inh" model="ir.ui.view">
+            <field name="name">mrp.bom.inh</field>
+            <field name="model">mrp.bom</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bom_lines']/tree" position="attributes">
+                    <attribute name="colors">aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';</attribute>
+                </xpath>
+                <xpath expr="//field[@name='bom_lines']//tree//field[@name='product_id']" position="before">
+                    <field name="row_color" invisible="1"/>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
