@@ -11,8 +11,6 @@ class MrpBom(orm.Model):
     
     _inherit = "mrp.bom"
 
-    from profilehooks import profile
-    @profile(immediate=True)
     def _get_color(self, cr, uid, ids, field_name, arg, context):
         res = {}
 
