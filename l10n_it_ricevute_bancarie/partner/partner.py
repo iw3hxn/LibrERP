@@ -35,6 +35,7 @@ class res_partner(orm.Model):
     _columns = {
         'group_riba': fields.boolean("Group Ri.Ba.",
             help="Group Ri.Ba. by customer while issuing"),
+        'not_use_vat_on_riba': fields.boolean("Non usare la P.IVA nella Ri.Ba.", help="Se selezionato nell'esportazione "),
         'company_riba_bank_id': fields.many2one('res.partner.bank', string='Company Ri.Ba bank for Bank Transfer', domain="[('company_id','=', company_id)]"),
     }
 

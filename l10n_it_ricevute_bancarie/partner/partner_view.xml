@@ -14,6 +14,7 @@
                     <separator string="Ri.Ba. properties" colspan="2"/>
                     <group col="4" colspan="2">
                         <field name="group_riba"/>
+                        <field name="not_use_vat_on_riba" />
                     </group>
                 </field>
             </field>

@@ -263,7 +263,7 @@ class riba_file_export(orm.TransientModel):
                 due_date,
                 line.amount,
                 line.partner_id.name,
-                line.partner_id.vat and line.partner_id.vat[2:] or line.partner_id.fiscalcode,
+                not line.partner_id.not_use_vat_on_riba and line.partner_id.vat and line.partner_id.vat[2:] or line.partner_id.fiscalcode,
                 debitor_street,
                 debitor_zip,
                 debitor_city,
