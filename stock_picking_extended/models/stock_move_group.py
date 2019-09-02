@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
 
-class stock_move_group(orm.Model):
+class StockMoveGroup(orm.Model):
     _name = 'stock.move.group'
 
     _auto = False
@@ -42,6 +42,7 @@ class stock_move_group(orm.Model):
         'average_year': fields.float(string='Average Price Year', digits_compute=dp.get_precision('Purchase Price')),
         'location_amount': fields.float(string='Location Amount', digits_compute=dp.get_precision('Purchase Price')),
         'location_amount_year': fields.float(string='Location Amount Year', digits_compute=dp.get_precision('Purchase Price')),
+        'move_line_id': fields.many2one('stock.move', 'Move', readonly=True),
     }
 
     _order = "document_date, id"
@@ -101,11 +102,14 @@ class stock_move_group(orm.Model):
                                 product_uom AS product_uom,
                                 price AS price,
                                 origin AS origin,
+                                move_line_id AS move_line_id,
                                 CASE
                                     WHEN purchase_id is not Null
                                         THEN concat('purchase.order,', purchase_id)
                                     WHEN sale_id is not Null
-                                        THEN concat('sale.order,', sale_id)
+                                        THEN concat('pos.order,', sale_id)
+                                    WHEN picking_id is not Null
+                                        THEN concat('stock.picking,', picking_id)
                                     ELSE Null
                                 END AS source_location_id,
                                 
@@ -114,11 +118,11 @@ class stock_move_group(orm.Model):
                                         THEN qty_in * price
                                     ELSE 0
                                 END AS move_value,
-                                purchase_id AS purchase_id
-                                
+                                purchase_id AS purchase_id,
+                                move_line_id AS move_line_id                                
                                 
                                 FROM (
-                                    SELECT 	sm.create_date AS move_line_id,
+                                    SELECT 	sm.create_date AS move_line_create,
                                             sm.date AS document_date,
                                             sm.partner_id as partner_id, 
                                             sp.stock_journal_id AS stock_journal_id, 
@@ -130,8 +134,9 @@ class stock_move_group(orm.Model):
                                             sm.price_unit AS price,
                                             sp.origin AS origin,
                                             sp.sale_id AS sale_id,
-                                            sp.purchase_id AS purchase_id 
-                                            
+                                            sp.purchase_id AS purchase_id, 
+                                            sm.id AS move_line_id,
+                                            sm.picking_id AS picking_id
                                     FROM    stock_move AS sm, 
                                             stock_picking AS sp
                                     WHERE   sm.state = 'done' and sm.picking_id = sp.id AND
@@ -139,7 +144,7 @@ class stock_move_group(orm.Model):
                                             
                                     UNION ALL
                                     
-                                    SELECT 	sm.create_date AS move_line_id,
+                                    SELECT 	sm.create_date AS move_line_create,
                                             sm.date AS document_date,
                                             sm.partner_id as partner_id,
                                             Null AS stock_journal_id, 
@@ -151,14 +156,16 @@ class stock_move_group(orm.Model):
                                             sm.price_unit AS price,
                                             sm.name as origin,
                                             Null AS sale_id,
-                                            Null AS purchase_id 
+                                            Null AS purchase_id,
+                                            sm.id AS move_line_id,
+                                            sm.picking_id AS picking_id
                                     FROM    stock_move AS sm
                                     WHERE   sm.state = 'done' and sm.picking_id is Null AND
                                             sm.location_id in (SELECT id FROM stock_location WHERE usage='internal')
                                     
                                     UNION ALL
                                     
-                                    SELECT 	sm.create_date AS move_line_id,
+                                    SELECT 	sm.create_date AS move_line_create,                                            
                                             sm.date AS document_date,
                                             sm.partner_id as partner_id,
                                             sp.stock_journal_id AS stock_journal_id, 
@@ -170,7 +177,9 @@ class stock_move_group(orm.Model):
                                             sm.price_unit AS price,
                                             sp.origin AS origin,
                                             sp.sale_id AS sale_id,
-                                            sp.purchase_id AS purchase_id 
+                                            sp.purchase_id AS purchase_id,
+                                            sm.id AS move_line_id,
+                                            sm.picking_id AS picking_id
                                     FROM    stock_move AS sm, 
                                             stock_picking AS sp
                                     WHERE   sm.state = 'done' and sm.picking_id = sp.id and
@@ -178,7 +187,7 @@ class stock_move_group(orm.Model):
                                             
                                     UNION ALL
                                     
-                                    SELECT 	sm.create_date AS move_line_id,
+                                    SELECT 	sm.create_date AS move_line_create,
                                             sm.date AS document_date,
                                             sm.partner_id as partner_id,
                                             Null AS stock_journal_id, 
@@ -190,7 +199,9 @@ class stock_move_group(orm.Model):
                                             sm.price_unit AS price,
                                             sm.name as origin,
                                             Null AS sale_id,
-                                            Null AS purchase_id 
+                                            Null AS purchase_id ,
+                                            sm.id AS move_line_id,
+                                            sm.picking_id AS picking_id
                                     FROM    stock_move AS sm
                                     WHERE   sm.state = 'done' AND sm.picking_id is Null AND
                                             sm.location_dest_id in (SELECT id FROM stock_location WHERE usage='internal')

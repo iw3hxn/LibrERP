@@ -67,6 +67,30 @@ class stock_move(orm.Model):
         move_ids = stock_move_model.search(cr, uid, [('picking_id', 'in', ids)], context=context)
         return move_ids
 
+    def _get_average_price(self, cr, uid, ids, field_name, arg, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        stock_move_group_read_ids = []
+        stock_move_group_obj = self.pool['stock.move.group']
+        for move in self.read(cr, uid, ids, ['product_id', 'location_id'], context=context, load='_obj'):
+            res[move['id']] = {
+                'average_price': 0,
+                'stock_move_group_id': False
+            }
+            product_id = move['product_id']
+            location_id = move['location_id']
+            stock_move_group_ids = stock_move_group_obj.search(cr, uid, [('product_id', '=', product_id), ('location_id', '=', location_id), ('move_line_id', '=', move['id'])], context=context)
+            if stock_move_group_ids:
+                res[move['id']]['stock_move_group_id'] = stock_move_group_ids[0]
+                stock_move_group_read_ids.append(stock_move_group_ids[0])
+
+        for move_group in stock_move_group_obj.browse(cr, uid, stock_move_group_read_ids, context=context):
+            move_id = move_group.move_line_id.id
+            average_price = move_group.average
+            res[move_id]['average_price'] = average_price
+
+        return res
+
     _columns = {
         'goods_ready': fields.function(_line_ready, string='Goods Ready', type='boolean', store=False),
         'shop_id': fields.function(_get_related_fields, type='many2one', relation='sale.shop', string='Shop', multi='related_fields', store={
@@ -83,7 +107,8 @@ class stock_move(orm.Model):
         'week_nbr': fields.function(_get_related_fields, type='integer', string="Week Number", multi='related_fields'),
         'line_price_subtotal': fields.related('sale_line_id', 'price_subtotal', type='float', string='Line Amount (VAT Excluded)', digits_compute=dp.get_precision('Sale Price'),
                                        readonly=True, store=False, auto_join=True),
-
+        'average_price': fields.function(_get_average_price, type='float', string="Average Price", digits_compute=dp.get_precision('Purchase Price'), multi='related_move_group'),
+        'stock_move_group_id': fields.function(_get_average_price, type='many2one', relation='stock.move.group', string="Stock Move Group", multi='related_move_group'),
         'date_from': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date from"),
         'date_to': fields.function(lambda *a, **k: {}, method=True, type='date', string="Date to"),
         'internal_note': fields.text('Internal Note'),
