@@ -118,8 +118,7 @@ class StockMoveGroup(orm.Model):
                                         THEN qty_in * price
                                     ELSE 0
                                 END AS move_value,
-                                purchase_id AS purchase_id,
-                                move_line_id AS move_line_id                                
+                                purchase_id AS purchase_id                             
                                 
                                 FROM (
                                     SELECT 	sm.create_date AS move_line_create,
