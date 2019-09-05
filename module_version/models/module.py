@@ -67,7 +67,7 @@ class res_company(orm.Model):
         'check_upgrade': fields.function(_check_upgrade, string=_('Need Upgrade'), method=True, type='boolean', store=False)
     }
 
-    def upgrade_modules(self, cr, uid, count=0, context=None):
+    def upgrade_modules(self, cr, uid, context=None, count=0):
         context = context or self.pool['res.users'].context_get(cr, uid)
         if context.get('active_ids'):
             module_ids = context.get('active_ids')
