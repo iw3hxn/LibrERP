@@ -716,3 +716,9 @@ msgstr "Non è impostato il codice iva per la tassa '{tax}'"
 #, python-format
 msgid "No Tax Authority VAT"
 msgstr "Non è impostata il conto Iva Erario per la liquidazione"
+
+#. module: account_vat_period_end_statement
+#: code:addons/account_vat_period_end_statement/models/account.py:643
+#, python-format
+msgid "Not set Account for Previous Vat Credit"
+msgstr "Non è impostato il conto su IVA crediti precedenti"

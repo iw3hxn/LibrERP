@@ -638,6 +638,10 @@ class AccountVatPeriodEndStatement(orm.Model):
                     line_obj.create(cr, uid, credit_vat_data)
 
             if statement.previous_credit_vat_amount:
+                if not statement.previous_credit_vat_account_id:
+                    raise orm.except_orm(_('Error'), _(
+                        "Not set Account for Previous Vat Credit"))
+
                 previous_credit_vat_data = {
                     'name': _('Previous Credits VAT'),
                     'account_id': statement.previous_credit_vat_account_id.id,
@@ -654,7 +658,7 @@ class AccountVatPeriodEndStatement(orm.Model):
                 else:
                     previous_credit_vat_data['credit'] = math.fabs(
                         statement.previous_credit_vat_amount)
-                line_obj.create(cr, uid, previous_credit_vat_data)
+                line_obj.create(cr, uid, previous_credit_vat_data, context)
 
             if statement.previous_debit_vat_amount:
                 previous_debit_vat_data = {
