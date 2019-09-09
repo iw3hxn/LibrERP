@@ -24,7 +24,7 @@
     <body style="border:0; margin: 0;" onload="subst()">
     <% setLang(company.partner_id.lang or "en_US") %>
 
-    <h3>_("VAT Statement Summary")</h3>
+    <h3>${_("VAT Statement Summary")}</h3>
     <table style="border-bottom: 4px solid black; width: 100%; padding-bottom: 8px">
      <tr>
         <td>

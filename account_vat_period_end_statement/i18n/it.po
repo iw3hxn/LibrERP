@@ -704,3 +704,15 @@ msgstr "Non si può cancellare una liquidazione confermata o pagata"
 #: field:account.vat.period.end.statement,show_zero:0
 msgid "Show zero amount lines"
 msgstr "Mostra tutto, anche le righe a 0"
+
+#. module: account_vat_period_end_statement
+#: code:addons/account_vat_period_end_statement/models/account.py:595
+#, python-format
+msgid "No Account for Tax '{tax}'"
+msgstr "Non è impostato il codice iva per la tassa '{tax}'"
+
+#. module: account_vat_period_end_statement
+#: code:addons/account_vat_period_end_statement/models/account.py:707
+#, python-format
+msgid "No Tax Authority VAT"
+msgstr "Non è impostata il conto Iva Erario per la liquidazione"

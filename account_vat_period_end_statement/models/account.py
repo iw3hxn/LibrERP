@@ -9,16 +9,14 @@
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
-
 import logging
 import math
 from datetime import date, datetime
 
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-
-
 import decimal_precision as dp
+import one2many_sorted
 from openerp.osv import orm, fields
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
@@ -239,6 +237,31 @@ class AccountVatPeriodEndStatement(orm.Model):
     _rec_name = 'date'
     _order = 'date'
     _columns = {
+
+        # 'name': fields.char('Descrizione', required=True),
+        #
+        # 'debit_vat_account_line_ids': one2many_sorted.one2many_sorted('statement.debit.account.line', 'statement_id',
+        #                                                               'Debit VAT',
+        #                                                               help='The accounts containing the debit VAT amount to write-off',
+        #                                                               readonly=True,
+        #                                                               states={
+        #                                                                   'confirmed': [('readonly', True)],
+        #                                                                   'paid': [('readonly', True)],
+        #                                                                   'draft': [('readonly', False)]
+        #                                                               },
+        #                                                               order='tax_code_id.name'),
+        #
+        # 'credit_vat_account_line_ids': one2many_sorted.one2many_sorted('statement.credit.account.line', 'statement_id',
+        #                                                                'Credit VAT',
+        #                                                                help='The accounts containing the credit VAT amount to write-off',
+        #                                                                readonly=True,
+        #                                                                states={
+        #                                                                    'confirmed': [('readonly', True)],
+        #                                                                    'paid': [('readonly', True)],
+        #                                                                    'draft': [('readonly', False)]
+        #                                                                },
+        #                                                                order='tax_code_id.name'),
+
         'name': fields.char('Descrizione',
                             required=True,),
         'debit_vat_account_line_ids': fields.one2many(
@@ -538,12 +561,13 @@ class AccountVatPeriodEndStatement(orm.Model):
         for statement in self.browse(cr, uid, ids, context):
             if statement.move_id:
                 statement.move_id.unlink()
-        self.write(cr, uid, ids, {'state': 'draft'})
+        self.write(cr, uid, ids, {'state': 'draft'}, context=context)
 
     def statement_paid(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'paid'})
+        self.write(cr, uid, ids, {'state': 'paid'}, context=context)
 
     def create_move(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         move_obj = self.pool.get('account.move')
         term_pool = self.pool.get('account.payment.term')
         line_obj = self.pool.get('account.move.line')
@@ -561,11 +585,15 @@ class AccountVatPeriodEndStatement(orm.Model):
                 'journal_id': statement.journal_id.id,
                 'period_id': period_ids[0],
             }
-            move_id = move_obj.create(cr, uid, move_data)
+            move_id = move_obj.create(cr, uid, move_data, context)
             statement.write({'move_id': move_id})
 
             for debit_line in statement.debit_vat_account_line_ids:
                 if debit_line.amount != 0.0:
+                    if not debit_line.account_id:
+                        raise orm.except_orm(_('Configuration error'), _(
+                            "No Account for Tax '{tax}'").format(tax=debit_line.tax_code_id.name))
+
                     debit_vat_data = {
                         'name': _('Debit VAT') + (debit_line.tax_code_id and u' - {}'.format(debit_line.tax_code_id.name)),
                         'account_id': debit_line.account_id.id,
@@ -583,11 +611,14 @@ class AccountVatPeriodEndStatement(orm.Model):
                         debit_vat_data['credit'] = math.fabs(debit_line.amount)
                     if not debit_vat_data.get('account_id', False):
                         raise orm.except_orm(_('Error'), _(
-                            "No Account for line {line}".format(line=debit_line.base_code_id.name)))
+                            "No Account for line {line}").format(line=debit_line.base_code_id.name))
                     line_obj.create(cr, uid, debit_vat_data, context)
 
             for credit_line in statement.credit_vat_account_line_ids:
                 if credit_line.amount != 0.0:
+                    if not credit_line.account_id:
+                        raise orm.except_orm(_('Configuration error'), _(
+                            "No Account for Tax '{tax}'").format(tax=credit_line.tax_code_id.name))
                     credit_vat_data = {
                         'name': _('Credit VAT') + (credit_line.tax_code_id and u' - {}'.format(credit_line.tax_code_id.name)),
                         'account_id': credit_line.account_id.id,
@@ -659,7 +690,7 @@ class AccountVatPeriodEndStatement(orm.Model):
                     generic_vat_data['debit'] = math.fabs(generic_line.amount)
                 else:
                     generic_vat_data['credit'] = math.fabs(generic_line.amount)
-                line_obj.create(cr, uid, generic_vat_data)
+                line_obj.create(cr, uid, generic_vat_data, context)
 
             end_debit_vat_data = {
                 'name': _('Tax Authority VAT'),
@@ -670,6 +701,11 @@ class AccountVatPeriodEndStatement(orm.Model):
                 'date': statement.date,
                 'period_id': period_ids[0],
             }
+
+            if not statement.authority_vat_account_id:
+                raise orm.except_orm(_('Configuration error'), _(
+                    "No Tax Authority VAT"))
+
             if statement.authority_vat_amount > 0:
                 end_debit_vat_data['debit'] = 0.0
                 end_debit_vat_data['credit'] = math.fabs(
@@ -688,16 +724,16 @@ class AccountVatPeriodEndStatement(orm.Model):
                         current_line = end_debit_vat_data
                         current_line['credit'] = term[1]
                         current_line['date_maturity'] = term[0]
-                        line_obj.create(cr, uid, current_line)
+                        line_obj.create(cr, uid, current_line, context)
                 else:
-                    line_obj.create(cr, uid, end_debit_vat_data)
+                    line_obj.create(cr, uid, end_debit_vat_data, context)
             elif statement.authority_vat_amount < 0:
                 end_debit_vat_data['debit'] = math.fabs(
                     statement.authority_vat_amount)
                 end_debit_vat_data['credit'] = 0.0
-                line_obj.create(cr, uid, end_debit_vat_data)
+                line_obj.create(cr, uid, end_debit_vat_data, context)
 
-            self.write(cr, uid, statement.id, {'state': 'confirmed'})
+            self.write(cr, uid, statement.id, {'state': 'confirmed'}, context)
 
         return True
 
@@ -720,10 +756,9 @@ class AccountVatPeriodEndStatement(orm.Model):
         context = {} if context is None else context
         tax_pool = self.pool['account.tax']
         tax_ids = tax_pool.search(
-            cr, uid, [('company_id', '=', company_id)])
+            cr, uid, [('company_id', '=', company_id)], context=context)
         tax_tree = {}
-        for tax_id in tax_ids:
-            tax = tax_pool.browse(cr, uid, tax_id)
+        for tax in tax_pool.browse(cr, uid, tax_ids, context=context):
             type = tax.type_tax_use
             if type not in tax_tree:
                 tax_tree[type] = {}
@@ -1059,6 +1094,7 @@ class AccountVatPeriodEndStatement(orm.Model):
                       ' deleting Vat Period End Statement')
                 )
         return super(AccountVatPeriodEndStatement, self).action_cancel(cr, uid, ids, context)
+
 
 class StatementDebitAccountLine(orm.Model):
     _name = 'statement.debit.account.line'
