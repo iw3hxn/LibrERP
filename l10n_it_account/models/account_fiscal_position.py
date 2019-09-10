@@ -59,7 +59,11 @@ class account_fiscal_position(orm.Model):
             ], context=context)
             amount_untaxed = 0
             for invoice in account_invoice_obj.browse(cr, uid, invoice_ids, context):
-                amount_untaxed += invoice.amount_untaxed
+                if invoice.type == 'out_invoice':
+                    amount_untaxed += invoice.amount_untaxed
+                elif invoice.type == 'out_refund':
+                    amount_untaxed -= invoice.amount_untaxed
+
             value[dichirazione.id] = {
                 'invoice_amount': amount_untaxed,
                 'account_invoice_ids': invoice_ids
