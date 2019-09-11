@@ -25,11 +25,11 @@
                                    colspan="4"/>
                             <separator string="Periods" colspan="4"/>
                             <field name="period_from"
-                                   domain="[('fiscalyear_id', '=', fiscalyear_id), ('special', '=', False)]"
+                                   domain="[('fiscalyear_id', '=', fiscalyear_id)]"
                                    attrs="{'readonly':[('filter','!=','filter_period')], 'required':[('filter', '=', 'filter_period')]}"
                                    colspan="4"/>
                             <field name="period_to"
-                                   domain="[('fiscalyear_id', '=', fiscalyear_id), ('special', '=', False)]"
+                                   domain="[('fiscalyear_id', '=', fiscalyear_id)]"
                                    attrs="{'readonly':[('filter','!=','filter_period')], 'required':[('filter', '=', 'filter_period')]}"
                                    colspan="4"/>
                         </page>
