@@ -190,18 +190,38 @@ class stock_inventory_line(orm.Model):
             cr.execute('CREATE INDEX {name} ON stock_inventory_line (prod_lot_id)'.format(name=self._index_name))
         return
 
-    def get_color(self, cr, uid, ids, field_name, arg, context):
+    def _get_value(self, cr, uid, ids, field_name, arg, context):
         start_time = datetime.datetime.now()
         value = {}
-        for inventory_line in self.browse(cr, uid, ids, context):
-            if inventory_line.product_qty_calc < 0:
-                value[inventory_line.id] = 'fuchsia'
-            elif inventory_line.product_qty_calc > inventory_line.product_qty:
-                value[inventory_line.id] = 'red'
-            elif inventory_line.product_qty_calc < inventory_line.product_qty:
-                value[inventory_line.id] = 'orange'
+        for line in self.browse(cr, uid, ids, context):
+            row_color = 'black'
+            if line.product_qty_calc < 0:
+                row_color = 'fuchsia'
+            elif line.product_qty_calc > line.product_qty:
+                row_color = 'red'
+            elif line.product_qty_calc < line.product_qty:
+                row_color = 'orange'
+
+            value[line.id] = {
+                'row_color': row_color,
+                'prefered_supplier_id': line.product_id.prefered_supplier and line.product_id.prefered_supplier.id or False,
+                'qty_diff': line.product_qty - line.product_qty_calc,
+            }
+
+            if line.product_id.is_kit:
+                value[line.id].update(
+                    {
+                        'product_value': line.product_id.cost_price,
+                        'total_value': line.product_qty * line.product_id.cost_price,
+                        'total_value_computed': line.product_qty_calc * line.product_id.cost_price
+                    })
             else:
-                value[inventory_line.id] = 'black'
+                value[line.id].update(
+                    {
+                        'product_value': line.product_id.standard_price,
+                        'total_value': line.product_qty * line.product_id.standard_price,
+                        'total_value_computed': line.product_qty_calc * line.product_id.standard_price
+                    })
 
         end_time = datetime.datetime.now()
         duration_seconds = (end_time - start_time)
@@ -210,9 +230,13 @@ class stock_inventory_line(orm.Model):
         return value
 
     _columns = {
-            'row_color': fields.function(get_color, string='Row color', type='char', readonly=True, method=True,
-                                         store=False),  # not possible to use store=true because function write value in sql
-            'product_qty_calc': fields.float('Quantity Calculated', digits_compute=dp.get_precision('Product UoM'), readonly=False)
+        'row_color': fields.function(_get_value, string='Row color', type='char', readonly=True, method=True, store=False, multi="_get_value"),
+        'product_qty_calc': fields.float('Quantity Calculated', digits_compute=dp.get_precision('Product UoM'), readonly=False),
+        'prefered_supplier_id': fields.function(_get_value, string="Default Supplier", type="many2one", relation="res.partner", multi="_get_value"),
+        'qty_diff': fields.function(_get_value, string="Diff", type="float",  multi="_get_value"),
+        'product_value':  fields.function(_get_value, string="Value", type="float", multi="_get_value"),
+        'total_value': fields.function(_get_value, string="Total Value counted", type="float",  multi="_get_value"),
+        'total_value_computed': fields.function(_get_value, string="Total Value computed", type="float",  multi="_get_value"),
     }
 
     def on_change_product_id(self, cr, uid, ids, location_id, product, uom=False, to_date=False):

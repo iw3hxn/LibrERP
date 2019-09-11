@@ -92,6 +92,15 @@
                     <field context="{'location':location_id, 'uom':product_uom, 'to_date':parent.date}" name="product_qty_calc" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)" />
                     <field name="row_color" invisible="1" />
                 </field>
+
+                <field name="prod_lot_id" position="after">
+                    <field name="prefered_supplier_id" />
+                    <field name="qty_diff" />
+                    <field name="product_value" />
+                    <field name="total_value" sum="total_value"/>
+                    <field name="total_value_computed" sum="total_value_computed"/>
+                </field>
+
                 <xpath expr="/form/notebook/page[@string='General Informations']" position="after">
                     <page string="Order by Location, Product" position="after">
                         <field colspan="4" name="inventory_line_loc_id" nolabel="1" widget="one2many_list" readonly="1">

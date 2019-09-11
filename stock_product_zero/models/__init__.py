@@ -21,31 +21,7 @@
 ##############################################################################
 
 
-{
-    'name': 'Stock suppress all zero lines',
-    'version': '3.2.4.5',
-    'category': 'Warehouse Management',
-    'description': """
-This module will not print/display products with zero quantity values in many reports and tree lists.
-Especially important if the company has a lot of locations with a very limited number of products
-like consignations locations at supplieres or customers
-Adds a nice inventory report based on webkit
+from . import stock
+from . import inventory
 
-""",
-    'author': 'Camptocamp Austria, Didotech srl',
-    'depends': [
-        'stock',
-        'one2many_sorted',
-        'report_webkit'
-    ],
-    'update_xml': [
-        'views/stock_view.xml',
-        'views/inventory_view.xml',
-        'views/stock_inventory_webkit.xml',
-    ],
-
-    'demo_xml': [],
-    'installable': True,
-    'active': False,
-}
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
