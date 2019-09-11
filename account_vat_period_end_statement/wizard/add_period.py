@@ -40,8 +40,8 @@ class AddPeriod(orm.TransientModel):
                 linked_vat = wizard.period_id.e_vat_statement_id
         elif type == 'xml2':
             field = 'e_vat_statement_id'
-            if wizard.period_id.e_vat_statement_id:
-                linked_vat = wizard.period_id.e_vat_statement_id
+            # if wizard.period_id.e_vat_statement_id:
+            #     linked_vat = wizard.period_id.e_vat_statement_id
         elif type == 'month':
             field = 'vat_statement_id'
             if wizard.period_id.vat_statement_id:

@@ -378,7 +378,7 @@ msgstr "Periodo"
 #: code:addons/account_vat_period_end_statement/wizard/add_period.py:32
 #, python-format
 msgid "Period %s is associated to statement %s yet"
-msgstr "Period %s is associated to statement %s yet"
+msgstr "Periodo %s già associato alla liquidazione %s"
 
 #. module: account_vat_period_end_statement
 #: view:account.vat.period.end.statement:0
