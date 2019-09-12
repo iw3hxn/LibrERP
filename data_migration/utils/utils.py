@@ -29,51 +29,57 @@ class Utils():
 
     @staticmethod
     def toStr(value):
-        if value and not value == '\\N':
-            if isinstance(value, (unicode, str)):
-                if value.lower() == 'null':
-                    return False
+        if isinstance(value, str):
+            value = value.decode('UTF8')
+        try:
+            if value and not value == '\\N':
+                if isinstance(value, (unicode, str)):
+                    if value.lower() == 'null':
+                        return False
 
-                number = re.compile(r'^(?!0[0-9])[0-9.,]+(?<![.,])$')
-                number_with_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
-                number_with_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
+                    number = re.compile(r'^(?!0[0-9])[0-9.,]+(?<![.,])$')
+                    number_with_thousands_separator_italian = re.compile(r'[0-9]{1,3}(\.+[0-9]{3})+,[0-9]{2}$')
+                    number_with_thousands_separator = re.compile(r'[0-9]{1,3}(,+[0-9]{3})+\.[0-9]{2}$')
 
-                value = value.strip(u'€ ')
+                    value = value.strip(u'€ ')
 
-                if number.match(value):
-                    if ',' in value or '.' in value:
-                        if number_with_thousands_separator_italian.match(value):
-                            value = value.replace('.', '')
-                        elif number_with_thousands_separator.match(value):
-                            value = value.replace(',', '')
+                    if number.match(value):
+                        if ',' in value or '.' in value:
+                            if number_with_thousands_separator_italian.match(value):
+                                value = value.replace('.', '')
+                            elif number_with_thousands_separator.match(value):
+                                value = value.replace(',', '')
+                            else:
+                                if value[0] == '+':
+                                    return unicode(value)
+                                elif value.count('.') > 1:
+                                    # not a number
+                                    return unicode(value)
+
+                            value = value.replace(',', '.')
+
+                            if value in ['.', ',']:
+                                return 0
+
+                            value = float(value)
                         else:
-                            if value[0] == '+':
-                                return unicode(value)
-                            elif value.count('.') > 1:
-                                # not a number
-                                return unicode(value)
-
-                        value = value.replace(',', '.')
-
-                        if value in ['.', ',']:
-                            return 0
-
-                        value = float(value)
-                    else:
-                        value = int(value)
-                    return unicode(value)
-                else:
-                    return value.strip()
-            else:
-                if value:
-                    if int(value) == value:
-                        # Trim .0
-                        return unicode(int(value))
-                    else:
+                            value = int(value)
                         return unicode(value)
+                    else:
+                        return value.strip()
                 else:
-                    return False
-        else:
+                    if value:
+                        if int(value) == value:
+                            # Trim .0
+                            return unicode(int(value))
+                        else:
+                            return unicode(value)
+                    else:
+                        return False
+            else:
+                return False
+        except Exception as e:
+            _logger.error(u'Error {error}'.format(error=e))
             return False
 
     def simple_string(self, value, as_integer=False):
