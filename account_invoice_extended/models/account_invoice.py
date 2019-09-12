@@ -342,7 +342,7 @@ class account_invoice(orm.Model):
         res = {}
         if not ids:
             return res
-        cr.execute("""SELECT i.id, i.amount_untaxed, i.period_id, l.id 
+        cr.execute("""SELECT i.id, i.amount_total, i.period_id, l.id 
                            FROM account_move_line l 
                            LEFT JOIN account_invoice i ON (i.move_id=l.move_id) 
                            WHERE i.id IN %s 
