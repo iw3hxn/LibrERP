@@ -771,11 +771,11 @@ class order_requirement_line(orm.Model):
 
     def onchange_product_id(self, cr, uid, ids, new_product_id, qty=0, supplier_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
-
+        result_dict = {}
         if new_product_id:
             temp_mrp_bom_obj = self.pool['temp.mrp.bom']
             product = self.pool['product.product'].browse(cr, uid, new_product_id, context)
-            result_dict = self.get_suppliers(cr, uid, ids, product, context)
+            suppliers = self.get_suppliers(cr, uid, ids, product, context)
             # Update BOM according to new product
             # Removing existing temp mrp bom
             line = self.browse(cr, uid, ids, context)[0]  # MUST BE ONE LINE
@@ -783,7 +783,8 @@ class order_requirement_line(orm.Model):
                 temp_mrp_bom_ids = [temp['id'] for temp in line.temp_mrp_bom_ids]
                 temp_mrp_bom_obj.unlink(cr, uid, temp_mrp_bom_ids, context)
 
-            supplier_ids_formatted = result_dict['supplier_ids']
+            supplier_ids_formatted = suppliers['supplier_ids']
+            result_dict.update(supplier_ids=suppliers['supplier_ids'][0][2], supplier_id=suppliers['supplier_id'])
             self.write(cr, uid, line.id, {'new_product_id': product.id, 'supplier_ids': supplier_ids_formatted}, context)
             temp_ids, temp_routing_ids = self.create_temp_mrp_bom(cr, uid, ids, product, qty, False, 0, 0, True, True, context)
             # TODO: maybe another option create_if_leaf in create temp mrp bom
