@@ -105,7 +105,7 @@ class account_invoice(orm.Model):
                         }
                 if not vals_line:
                     if invoice.partner_id.section_id and invoice.partner_id.section_id.sale_agent_id:
-                        invoice.write({'section_id': section.id})
+                        # invoice.write({'section_id': section.id})
                         vals_line = {
                             'agent_id': invoice.partner_id.section_id.sale_agent_id.id,
                             'commission_id': invoice.partner_id.section_id.sale_agent_id.commission.id
