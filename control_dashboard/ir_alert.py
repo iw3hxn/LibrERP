@@ -759,7 +759,7 @@ class inherit_ir_alert(osv.osv):
                     obj_object_id = int(obj_alert_data['link'][position_field:])
 
                 if obj_object_id != -1:
-                    obj_examine_data = examine_obj.read(cr, uid, obj_object_id, context=context)
+                    obj_examine_data = examine_obj.read(cr, uid, obj_object_id, ['state'], context=context)
                     #control state for change
                     update_state_done = False
                     if obj_config_alert_datas['flag_not_state']:
