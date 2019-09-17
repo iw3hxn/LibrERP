@@ -34,8 +34,8 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
 
 import locale
-#locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+# locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
+# locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 ORDER_DURATION = [
@@ -71,7 +71,7 @@ class sale_order_line(orm.Model):
                     ratio = 365 / line.product_id.order_duration or 1
                 else:
                     ratio = 1
-                k = float(order_obj.get_duration_in_months(line.order_id.order_duration) / order_obj.get_duration_in_months(line.product_id.order_duration))
+                k = float(order_obj.get_duration_in_months(line.order_id.order_duration)) / float(order_obj.get_duration_in_months(line.product_id.order_duration))
                 res[line.id] = cur_obj.round(cr, uid, cur, (taxes['total'] / ratio) * k)
             else:
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
@@ -606,7 +606,7 @@ class sale_order(orm.Model):
             60: 2,
             30: 1
         }
-        return float(duration[duration_in_days])
+        return duration[duration_in_days]
 
     def adjust_price(self, cr, uid, order_line, invoice_line_ids, remains_to_invoice, period, context=None):
         if not order_line.product_id.subscription:
