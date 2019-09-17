@@ -23,22 +23,15 @@
 from openerp.osv import orm, fields
 from tools.translate import _
 
+from openerp.addons.sale_subscriptions.models.sale import ORDER_DURATION
+
 
 class product_product(orm.Model):
     _inherit = "product.product"
 
     _columns = {
         'subscription': fields.boolean('Subscription'),
-        'order_duration': fields.selection([
-            (30, '1 month'),
-            (60, '2 months'),
-            (90, '3 months'),
-            (120, '4 months'),
-            (180, '6 months'),
-            (365, '1 year'),
-            (730, '2 years'),
-            (1095, '3 years'),
-        ], 'Subscription Duration'),
+        'order_duration': fields.selection(ORDER_DURATION, 'Subscription Duration'),
     }
 
     _defaults = {

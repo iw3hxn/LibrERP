@@ -38,6 +38,20 @@ import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
+ORDER_DURATION = [
+            (30, '1 month'),
+            (60, '2 months'),
+            (90, '3 months'),
+            (120, '4 months'),
+            (180, '6 months'),
+            (365, '1 year'),
+            (730, '2 years'),
+            (1095, '3 years'),
+            (1460, '4 years'),
+            (1825, '5 years')
+        ]
+
+
 class sale_order_line(orm.Model):
     _inherit = "sale.order.line"
     
@@ -57,7 +71,7 @@ class sale_order_line(orm.Model):
                     ratio = 365 / line.product_id.order_duration or 1
                 else:
                     ratio = 1
-                k = order_obj.get_duration_in_months(line.order_id.order_duration) / order_obj.get_duration_in_months(line.product_id.order_duration)
+                k = float(order_obj.get_duration_in_months(line.order_id.order_duration) / order_obj.get_duration_in_months(line.product_id.order_duration))
                 res[line.id] = cur_obj.round(cr, uid, cur, (taxes['total'] / ratio) * k)
             else:
                 res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
@@ -91,7 +105,6 @@ class sale_order_line(orm.Model):
             }
         return res
 
-
     def __init__(self, registry, cr):
         """
             Overwriting _product_margin method and adding state "Suspended"
@@ -105,34 +118,14 @@ class sale_order_line(orm.Model):
         'price_unit': fields.float('Unit Price', help="Se abbonamento intero importo nell'anno ", required=True, digits_compute=dp.get_precision('Sale Price'), readonly=True, states={'draft': [('readonly', False)]}),
         'subscription': fields.related('product_id', 'subscription', type='boolean', string=_('Subscription')),
         'automatically_create_new_subscription': fields.boolean(_('Automatically create new subscription')),
-        'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute=dp.get_precision('Sale Price'), store=True),
+        'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute=dp.get_precision('Sale Price'), store={
+                                            'sale.order.line': (lambda self, cr, uid, ids, c={}: ids, [], 2),
+        },),
         'suspended': fields.boolean(_('Suspended')),
         'partner_id': fields.related('order_id', 'partner_id', 'name', type='char', string=_('Customer'), store=True),
         'order_start_date': fields.related('order_id', 'order_start_date', type='date', string=_('Order Start')),
-        'order_duration': fields.related('order_id', 'order_duration', type='selection', string=_('Duration'), selection=[
-            (30, '1 month'),
-            (60, '2 months'),
-            (90, '3 months'),
-            (120, '4 months'),
-            (180, '6 months'),
-            (365, '1 year'),
-            (730, '2 years'),
-            (1095, '3 years'),
-            (1460, '4 years'),
-            (1825, '5 years')
-        ]),
-        'product_duration': fields.related('product_id', 'order_duration', type='selection', string=_('Duration'), selection=[
-            (30, '1 month'),
-            (60, '2 months'),
-            (90, '3 months'),
-            (120, '4 months'),
-            (180, '6 months'),
-            (365, '1 year'),
-            (730, '2 years'),
-            (1095, '3 years'),
-            (1460, '4 years'),
-            (1825, '5 years')
-        ]),
+        'order_duration': fields.related('order_id', 'order_duration', type='selection', string=_('Duration'), selection=ORDER_DURATION),
+        'product_duration': fields.related('product_id', 'order_duration', type='selection', string=_('Duration'), selection=ORDER_DURATION),
         'order_end_date': fields.related('order_id', 'order_end_date', type='date', string=_('Order End'), store=True),
         'user_id': fields.related('order_id', 'user_id', 'name', type='char', string=_('Salesman'), store=True),
         'section_id': fields.related('order_id', 'section_id', 'name', type='char', string=_('Sales Team'), store=True),
@@ -419,7 +412,8 @@ class sale_order(orm.Model):
 
     _columns = {
         'presentation': fields.boolean('Allega Presentazione'),
-        'automatically_create_new_subscription': fields.boolean('Automatically create new subscription', readonly=False, required=False, 
+        'automatically_create_new_subscription': fields.boolean('Automatically create new subscription', readonly=False,
+                                                                required=False,
                                                                 states={
                                                                     'progress': [('readonly', False)],
                                                                     'done': [('readonly', True)],
@@ -430,55 +424,33 @@ class sale_order(orm.Model):
                                                 'progress': [('readonly', True)],
                                                 'done': [('readonly', True)],
                                                 'cancel': [('readonly', True)]
-                                            }, help="If set, the total sale price will be allocated in the number of invoices provided by the order in which you enter the product" ),
-        'order_duration': fields.selection(
-            [
-                (30, '1 month'),
-                (60, '2 months'),
-                (90, '3 months'),
-                (120, '4 months'),
-                (180, '6 months'),
-                (365, '1 year'),
-                (730, '2 years'),
-                (1095, '3 years'),
-                (1460, '4 years'),
-                (1825, '5 years')
-            ],
-            'Subscription Duration',
-            help='Subscription duration in days',
-            states={
-                'progress': [('readonly', True)],
-                'done': [('readonly', True)],
-                'cancel': [('readonly', True)]
-            },
-            readonly=False),
-        'order_invoice_duration': fields.selection(
-            [
-                (30, 'Monthly'),
-                (60, 'Bimestral'),
-                (90, 'Trimestral'),
-                (180, 'Semiannual'),
-                (365, 'Annual'),
-                (730, 'Biennial'),
-                (1095, 'Triennial'),
-                (1460, 'Quadrennial'),
-                (1825, 'Quinquennial')
-            ], 'Invoice Period',
-            help='Invoice Period',
-            states={
-                'progress': [('readonly', True)],
-                'done': [('readonly', True)],
-                'cancel': [('readonly', True)]
-            },
-            readonly=False),
-        'order_start_date': fields.date('Subscription Beginning Date', readonly=False, required=False, 
+                                            },
+                                            help="If set, the total sale price will be allocated in the number of invoices provided by the order in which you enter the product"),
+        'order_duration': fields.selection(ORDER_DURATION, 'Subscription Duration',
+                                           help='Subscription duration in days',
+                                           states={
+                                               'progress': [('readonly', True)],
+                                               'done': [('readonly', True)],
+                                               'cancel': [('readonly', True)]
+                                           },
+                                           readonly=False),
+        'order_invoice_duration': fields.selection(ORDER_DURATION, 'Invoice Period',
+                                                   help='Invoice Period',
+                                                   states={
+                                                       'progress': [('readonly', True)],
+                                                       'done': [('readonly', True)],
+                                                       'cancel': [('readonly', True)]
+                                                   },
+                                                   readonly=False),
+        'order_start_date': fields.date('Subscription Beginning Date', readonly=False, required=False,
                                         states={
                                             'progress': [('readonly', True)],
                                             'done': [('readonly', True)],
                                             'cancel': [('readonly', True)]
                                         }),
-        'order_end_date': fields.function(get_order_end_date, 'Subscription Ending Date', type='date', readonly=True, method=True),
-        'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True,),
+        'order_end_date': fields.function(get_order_end_date, 'Subscription Ending Date', type='date', readonly=True,
+                                          method=True),
+        'row_color': fields.function(get_color, 'Row color', type='char', readonly=True, method=True, ),
         'subscription_invoice_day': fields.selection((
             ('1', _('First day of month')),
             ('31', _('Last day of month'))
@@ -634,7 +606,7 @@ class sale_order(orm.Model):
             60: 2,
             30: 1
         }
-        return duration[duration_in_days]
+        return float(duration[duration_in_days])
 
     def adjust_price(self, cr, uid, order_line, invoice_line_ids, remains_to_invoice, period, context=None):
         if not order_line.product_id.subscription:
@@ -851,7 +823,6 @@ class sale_order(orm.Model):
         return True
 
     def reactivate(self, cr, uid, ids, context):
-        print "Reactivating..."
 
         for order in self.browse(cr, uid, ids, context):
             _logger.debug(u'Reactivating order {0}'.format(order.name))
@@ -887,3 +858,12 @@ class sale_order(orm.Model):
             else:
                 wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
         return True
+
+    def button_dummy(self, cr, uid, ids, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        res = super(sale_order, self).button_dummy(cr, uid, ids, context)
+        order_line_obj = self.pool['sale.order.line']
+        order_line_ids = order_line_obj.search(cr, uid, [('order_id', 'in', ids)], context=context)
+        order_line_obj.write(cr, uid, order_line_ids, {}, context=context)
+        return self.write(cr, uid, ids, {}, context=context)

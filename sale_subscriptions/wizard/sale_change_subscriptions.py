@@ -19,46 +19,34 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import orm, fields
+from openerp.addons.sale_subscriptions.models.sale import ORDER_DURATION
 
-class sale_change_subscriptions(osv.osv_memory):
+
+class sale_change_subscriptions(orm.TransientModel):
     _name = 'sale.change.subscriptions'
-    _description = 'Change Currency'
+    _description = 'Change Subscriptions Duration'
     _columns = {
-               'order_duration': fields.selection(
-            [
-                (30, '1 month'),
-                (60, '2 months'),
-                (90, '3 months'),
-                (120, '4 months'),
-                (180, '6 months'),
-                (365, '1 year'),
-                (730, '2 years'),
-                (1095, '3 years'),
-                (1460, '4 years'),
-                (1825, '5 years')
-            ],
-            'Subscription Duration',
-            help='Subscription duration in days',
-            readonly=False),
+        'order_duration': fields.selection(ORDER_DURATION,
+                                           'Subscription Duration',
+                                           help='Subscription duration in days',
+                                           readonly=False),
     }
 
     def change_subscriptions(self, cr, uid, ids, context=None):
-        tax_obj = self.pool['account.tax']
-        cur_obj = self.pool['res.currency']
+        context = context or self.pool['res.users'].context_get(cr, uid)
         order_obj = self.pool['sale.order']
-        order_obj_line = self.pool.get('sale.order.line')
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        order_obj_line = self.pool['sale.order.line']
+
         data = self.browse(cr, uid, ids, context=context)[0]
         order_duration = data.order_duration
         sale_order = order_obj.browse(cr, uid, context['active_id'], context=context)
         order_obj.write(cr, uid, [sale_order.id], {'order_duration': order_duration}, context=context)
         for line in sale_order.order_line:
-            unit_price = order_obj_line.browse(cr, uid, line.id).price_unit
+            unit_price = order_obj_line.browse(cr, uid, line.id, context).price_unit
             order_obj_line.write(cr, uid, [line.id], {'price_unit': unit_price}, context=context)
         return {'type': 'ir.actions.act_window_close'}
+
 
 sale_change_subscriptions()
 
