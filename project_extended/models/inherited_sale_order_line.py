@@ -31,6 +31,6 @@ class sale_order_line(orm.Model):
 
     _columns = {
         'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute=dp.get_precision('Sale Price'), store={
-                'sale.order.line': (lambda self, cr, uid, ids, c={}: ids, ['price_unit', 'discount', 'product_uom_qty', 'product_uos_qty'], 5),
+                'sale.order.line': (lambda self, cr, uid, ids, c={}: ids, [], 5000),
         }),
     }
