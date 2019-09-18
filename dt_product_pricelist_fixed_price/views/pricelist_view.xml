@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+
         <record model="ir.ui.view" id="product_pricelist_item_form_view_fixed">
             <field name="name">product.pricelist.item.form.fixed</field>
             <field name="model">product.pricelist.item</field>
@@ -31,5 +32,18 @@
                 </field>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="product_pricelist_item_form_view_fixed">
+            <field name="name">product.pricelist.item.tree.fixed</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_tree_view"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="min_quantity" position="after">
+                    <field name="string_discount"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>

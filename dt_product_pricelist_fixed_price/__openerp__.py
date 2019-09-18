@@ -22,7 +22,7 @@
 
 {
     "name": "Price List Fixed Price",
-    "version": "3.1.0.2",
+    "version": "3.1.0.3",
     'category': 'Generic Modules/Inventory Control',
     "depends": ["product"],
     "author": "Agile Business Group & Domsense",
