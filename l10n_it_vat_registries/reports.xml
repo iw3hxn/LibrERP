@@ -5,7 +5,8 @@
             <field name="orientation">Landscape</field>
             <field name="format">A4</field>
             <field name="margin_top">60</field>
-            <field name="html"><![CDATA[<html>
+            <field name="html"><![CDATA[<!DOCTYPE html>
+    <html>
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
         <script>
@@ -59,7 +60,8 @@
     </body>
 </html>]]>
 </field>
-            <field name="footer_html"><![CDATA[<html>
+            <field name="footer_html"><![CDATA[<!DOCTYPE html>
+    <html>
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
         <script>
@@ -97,7 +99,8 @@ thead{
             <field name="orientation">Landscape</field>
             <field name="format">A4</field>
             <field name="margin_top">60</field>
-            <field name="html"><![CDATA[<html>
+            <field name="html"><![CDATA[<!DOCTYPE html>
+    <html>
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
         <script>
@@ -151,7 +154,8 @@ thead{
     </body>
 </html>]]>
 </field>
-            <field name="footer_html"><![CDATA[<html>
+            <field name="footer_html"><![CDATA[<!DOCTYPE html>
+    <html>
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
         <script>
@@ -189,7 +193,8 @@ thead{
             <field name="orientation">Landscape</field>
             <field name="format">A4</field>
             <field name="margin_top">60</field>
-            <field name="html"><![CDATA[<html>
+            <field name="html"><![CDATA[<!DOCTYPE html>
+    <html>
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
         <script>
@@ -243,7 +248,8 @@ thead{
     </body>
 </html>]]>
 </field>
-            <field name="footer_html"><![CDATA[<html>
+            <field name="footer_html"><![CDATA[<!DOCTYPE html>
+    <html>
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
         <script>
@@ -318,4 +324,3 @@ thead{
 -->
     </data>
 </openerp>
-
