@@ -1,11 +1,12 @@
 <?xml version="1.0" ?>
 <openerp>
-    <data noupdate="1"> 
+    <data noupdate="0">
         <record id="ir_header_central_journal_report" model="ir.header_webkit">
             <field name="footer_html"></field>
             <field eval="&quot;&quot;&quot;Landscape&quot;&quot;&quot;" name="orientation"/>
             <field eval="&quot;&quot;&quot;A4&quot;&quot;&quot;" name="format"/>
-            <field name="html"><![CDATA[<html>
+            <field name="html"><![CDATA[<!DOCTYPE html>
+    <html>
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
         <script>

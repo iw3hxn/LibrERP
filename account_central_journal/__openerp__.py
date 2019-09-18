@@ -21,27 +21,27 @@
 
 {
     'name': 'Account Central Journal',
-    'version': '3.1.2',
+    'version': '3.1.3.0',
     'author': "ISA S.r.l.,Odoo Community Association (OCA)",
     'website': 'http://www.isa.it',
     'category': 'Generic Modules/Accounting',
     'description': """
 Managing the printing of the "Central Journal" """,
-    'depends' : [
+    'depends': [
         'base',
         'account',
-        'report_webkit',
-        ],
-    'init_xml' : [],
+        'report_webkit'
+    ],
+    'init_xml': [],
     'update_xml': [
         'report/webkit_model.xml',
         'report/report.xml',
         'wizard/central_journal_report.xml',
-        'account_view.xml',
-        ],
+        'account_view.xml'
+    ],
     'demo_xml': [],
-    'test':[],
+    'test': [],
     'installable': True,
     'active': False,
-    'certificate': '',
+    'certificate': ''
 }
