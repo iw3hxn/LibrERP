@@ -547,12 +547,12 @@ class account_invoice(orm.Model):
                     for sale_order in sale_order_obj.browse(cr, uid, order_ids, context):
                         invoice_ids += [invoice.id for invoice in sale_order.invoice_ids]
 
-                    condition[0] = 'id'
-                    condition[1] = 'in'
-                    condition[2] = invoice_ids
+                    # condition[0] = 'id'
+                    # condition[1] = 'in'
+                    # condition[2] = invoice_ids
                     # Don't limit e don't offset even if it can produce much more than 80 results.
                     invoice_ids = super(account_invoice, self).search(
-                        cr, uid, sale_order_args, offset=0, limit=0, order=order, context=context, count=False
+                        cr, uid, [('id', 'in', invoice_ids)], offset=0, limit=0, order=order, context=context, count=False
                     )
                     break
 
