@@ -107,7 +107,7 @@ class StockMoveGroup(orm.Model):
                                     WHEN purchase_id is not Null
                                         THEN concat('purchase.order,', purchase_id)
                                     WHEN sale_id is not Null
-                                        THEN concat('pos.order,', sale_id)
+                                        THEN concat('sale.order,', sale_id)
                                     WHEN picking_id is not Null
                                         THEN concat('stock.picking,', picking_id)
                                     ELSE Null
