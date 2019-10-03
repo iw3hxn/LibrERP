@@ -485,13 +485,15 @@ class account_invoice(orm.Model):
     def action_move_create(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         ait_obj = self.pool['account.invoice.tax']
-        amount_tax = 0.0
         if isinstance(ids, (int, long)):
             ids = [ids]
         for inv in self.browse(cr, uid, ids, context=context):
-            compute_taxes = ait_obj.compute(cr, uid, inv.id, context=context)
-            for tax in compute_taxes:
-                amount_tax += compute_taxes[tax]['amount']
+            amount_tax = context.get('amount_tax', 0.0)
+            if not amount_tax:
+                compute_taxes = ait_obj.compute(cr, uid, inv.id, context=context)
+                for tax in compute_taxes:
+                    amount_tax += compute_taxes[tax]['amount']
+
             if inv.fiscal_position.active_reverse_charge and inv.type in ['in_invoice', 'in_refund']:
                 context.update({'amount_tax': amount_tax, 'reverse_charge': True})
             else:
