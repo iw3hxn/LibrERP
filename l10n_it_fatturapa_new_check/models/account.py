@@ -32,6 +32,9 @@ class NewInvoices(orm.Model):
         if invoice_ids:
             body = u'Nel giorno {} sono state ricevute le seguenti fatture:\n\n'.format(datetime.now().strftime('%d/%m/%Y'))
 
+            # order invoices by date
+            invoice_ids = self.pool['account.invoice'].search(cr, uid, [('id', 'in', invoice_ids)],
+                                                              order='date_invoice')
             for invoice in self.pool['account.invoice'].browse(cr, uid, invoice_ids):
 
                 body += u"""Nome fornitore: {inv.partner_id.name};
