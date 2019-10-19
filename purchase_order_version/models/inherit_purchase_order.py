@@ -52,7 +52,7 @@ class purchase_order(orm.Model):
             context['versioning'] = True
             vals['name'] = (purchase_order.purchase_version_id and purchase_order.purchase_version_id.name or purchase_order.name) + u" V." + ustr(
                 vals['version'])
-            new_order_id = self.copy(cr, uid, purchase_order.id, vals, context=context)
+            new_order_id = self.copy(cr, uid, purchase_order.id, vals, context)
 
             attachment_ids = attachment_obj.search(cr, uid, [('res_model', '=', 'purchase.order'), ('res_id', '=', purchase_order.id)], context=context)
             if attachment_ids:
