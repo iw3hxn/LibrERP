@@ -65,13 +65,13 @@ class project_task(orm.Model):
         'project_id': fields.many2one('project.project', 'Project', ondelete='set null', select="1", required=True),
     }
 
-    def do_open(self, cr, uid, ids, context=None):
-        context = context or self.pool['res.users'].context_get(cr, uid, context)
-        for task in self.browse(cr, uid, ids, context):
-            for parent_task in task.parent_ids:
-                if parent_task.state != 'done':
-                    raise orm.except_orm(_('Error!'), _("You can start only task with closed delegated"))
-        return super(project_task, self).do_open(cr, uid, ids, context)
+    # def do_open(self, cr, uid, ids, context=None):
+    #     context = context or self.pool['res.users'].context_get(cr, uid, context)
+    #     for task in self.browse(cr, uid, ids, context):
+    #         for parent_task in task.parent_ids:
+    #             if parent_task.state != 'new':
+    #                 raise orm.except_orm(_('Error!'), _("You can start only task with closed delegated"))
+    #     return super(project_task, self).do_open(cr, uid, ids, context)
 
     def onchange_project(self, cr, uid, id, project_id):
         context = self.pool['res.users'].context_get(cr, uid)
