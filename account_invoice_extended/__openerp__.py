@@ -24,7 +24,7 @@
 
 {
     "name": "Account Invoice extended",
-    "version": "3.6.19.21",
+    "version": "3.6.19.22",
     "author": "Didotech SRL",
     "website": "http://www.didotech.com",
     "category": "Generic Modules/Accounting",
@@ -55,6 +55,7 @@
         'web_hide_buttons',
         'account_due_list',
         'stock_picking_extended',
+        'sale'
     ],
     "data": [
         'security/ir.model.access.csv',
@@ -66,6 +67,7 @@
         'views/account_menu_clear.xml',
         'views/fiscal_position_view.xml',
         'views/account_journal_view.xml',
+        'views/stock_picking_view.xml',
         'workflows/account_invoice_workflow.xml',
     ],
     "active": False,

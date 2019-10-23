@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="stock_picking_out_inherit_sale" model="ir.ui.view">
+            <field name="name">Outgoing picking Inherited</field>
+            <field name="model">stock.picking</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.stock_picking_out_inherit_sale"/>
+            <field name="arch" type="xml">
+                <field name="sale_id" position="after">
+                    <field name="account_invoice_id" context="{'type':'out_invoice', 'form_view_ref':'account.invoice_form', 'tree_view_ref':'account.invoice_tree', 'show_type': True }"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
