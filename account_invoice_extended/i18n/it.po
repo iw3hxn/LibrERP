@@ -134,3 +134,8 @@ msgstr "Attivo"
 #: field:account.journal,sequence:0
 msgid "Sequence"
 msgstr "Sequenza"
+
+#. modules: account_invoice_extended
+#: field:stock.picking,account_invoice_id:0
+msgid "Account Invoice"
+msgstr "Fattura"

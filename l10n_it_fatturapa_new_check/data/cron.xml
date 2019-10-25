@@ -16,9 +16,14 @@
             <field name="args" eval="" />
         </record>
 
-        <record id="email_einvoices_report" model="ir.config_parameter">
-            <field name="key">email_einvoices_report</field>
-            <field name="value">report@test.com</field>
+        <record id="email_einvoices_report_send_to" model="ir.config_parameter">
+            <field name="key">email_einvoices_report_send_to</field>
+            <field name="value">report_send_to@test.com</field>
+        </record>
+
+        <record id="email_einvoices_report_from" model="ir.config_parameter">
+            <field name="key">email_einvoices_report_from</field>
+            <field name="value">report_from@test.com</field>
         </record>
     </data>
 </openerp>
