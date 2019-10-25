@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # © 2019 - Giovanni Monteverde - Didotech srl
+# © 2019 - Trevisan Michele - Didotech srl
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
@@ -36,20 +37,19 @@ class NewInvoices(orm.Model):
             invoice_ids = self.pool['account.invoice'].search(cr, uid, [('id', 'in', invoice_ids)],
                                                               order='date_invoice')
             for invoice in self.pool['account.invoice'].browse(cr, uid, invoice_ids):
+                body += u'''<p>Nome fornitore: <strong>{inv.partner_id.name}</strong></p>
+                    <p>Numero fattura: {inv.supplier_invoice_number}</p>
+                    <p>Data: {inv.date_invoice}</p>
+                    <p>Importo: <strong>{inv.amount_total}</strong></p>
+                    <p>Numero registrazione: {inv.number}</p><br>\n\n'''.format(inv=invoice)
 
-                body += u"""Nome fornitore: {inv.partner_id.name};
-                    Numero fattura: {inv.supplier_invoice_number};
-                    Data: {inv.date_invoice};
-                    Importo: {inv.amount_total};
-                    Numero registrazione: {inv.number}\n\n""".format(inv=invoice)
-            body += u'Legnolandia'
-            
+            company = self.pool['res.users'].browse(cr, uid, uid, context).company_id
+            body += u'{company.name}'.format(company=company)
             mail_message = self.pool['mail.message']
             subject = u'Report importazione fatture elettroniche'
-
-            email_from = self.pool['res.users'].browse(cr, uid, uid, context).company_id.partner_id.email.encode('utf-8')
-            email_to = [parameter_model.get_param(cr, uid, 'email_einvoices_report').encode('utf-8')]
-            mail_message.schedule_with_attach(cr, uid, email_from, email_to, subject, body)
+            email_from = parameter_model.get_param(cr, uid, 'email_einvoices_report_from').encode('utf-8')
+            email_to = parameter_model.get_param(cr, uid, 'email_einvoices_report_send_to').encode('utf-8')
+            mail_message.schedule_with_attach(cr, uid, email_from, [email_to], subject, body, subtype='html')
 
         parameter_model.set_param(
             cr, uid, 'invoice_last_check', datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT), context

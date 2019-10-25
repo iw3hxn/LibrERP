@@ -5,7 +5,7 @@
 #
 {
     'name': 'Report Electronic Invoice Import',
-    'version': '3.0.1.0',
+    'version': '3.0.2.1',
     'category': 'Localization/Italy',
     'description': """
         Sent a Email with a list of new imported Electronic Invoices
