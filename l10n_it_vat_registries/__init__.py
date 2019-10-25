@@ -20,5 +20,4 @@
 ##############################################################################
 
 import wizard
-import invoice
-import account
+from . import models
