@@ -356,7 +356,7 @@ class account_invoice(orm.Model):
                         if not account_invoice_line_ids:
                             # i have to add spese incasso
                             fiscal_position_id = invoice.fiscal_position and invoice.fiscal_position.id
-                            account_invoice_line_vals = self._spese_incasso_vals(self, cr, uid, ids, invoice.payment_term.spese_incasso_id.id, invoice.id, invoice.type, invoice.partner_id.id, invoice.company_id.id, fiscal_position_id, context=context)
+                            account_invoice_line_vals = self._spese_incasso_vals(cr, uid, ids, invoice.payment_term.spese_incasso_id.id, invoice.id, invoice.type, invoice.partner_id.id, invoice.company_id.id, fiscal_position_id, context=context)
                             account_invoice_line_obj.create(cr, uid, account_invoice_line_vals, context)
                             invoice.button_compute()
 
