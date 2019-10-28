@@ -276,6 +276,71 @@ class account_invoice(orm.Model):
         'unsolved_move_line_ids': fields.many2many('account.move.line', 'invoice_unsolved_line_rel', 'invoice_id', 'line_id', 'Unsolved journal items'),
     }
 
+    def _spese_incasso_vals(self, cr, uid, ids, spese_incasso_id, invoice_id, invoice_type, partner_id, company_id, payment_term_id, fiscal_position_id=False, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        account_invoice_line_obj = self.pool['account.invoice.line']
+        account_invoice_line_vals = {
+            'product_id': spese_incasso_id,
+        }
+        if invoice_id:
+            account_invoice_line_vals.update(invoice_id=invoice_id)
+        account_invoice_line_vals.update(
+            account_invoice_line_obj.product_id_change(cr, uid, ids, spese_incasso_id, False,
+                                                       type=invoice_type,
+                                                       partner_id=partner_id,
+                                                       fposition_id=fiscal_position_id,
+                                                       context=context,
+                                                       company_id=company_id).get('value'))
+
+        if account_invoice_line_vals.get('invoice_line_tax_id', False):
+            account_invoice_line_vals['invoice_line_tax_id'] = [(6, False, account_invoice_line_vals.get('invoice_line_tax_id'))]
+
+        quantity = len(self.pool['account.payment.term'].read(cr, uid, payment_term_id, ['line_ids'], context=context)['line_ids'])
+        account_invoice_line_vals['quantity'] = quantity
+        return account_invoice_line_vals
+
+    def onchange_payment_term(self, cr, uid, ids, partner_id, payment_term_id, invoice_line, fiscal_position_id, company_id, invoice_type, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        res = {'value': {}}
+        if payment_term_id and invoice_line:
+            payment_term_obj = self.pool['account.payment.term']
+            account_invoice_line_obj = self.pool['account.invoice.line']
+            payment_with_spese_incasso_ids = payment_term_obj.search(cr, uid, [('spese_incasso_id', '!=', False)], context=context)
+            product_spese_incasso_ids = [payment.spese_incasso_id.id for payment in payment_term_obj.browse(cr, uid, payment_with_spese_incasso_ids, context)]
+
+            invoice_line_ids = []
+
+            for line in invoice_line:
+                if line[0] == 4:
+                    invoice_line_ids.append(line[1])
+
+            if invoice_line_ids:
+                account_invoice_line_ids = account_invoice_line_obj.search(cr, uid, [('id', 'in', invoice_line_ids), ('product_id', 'in', product_spese_incasso_ids)], context=context)
+            else:
+                account_invoice_line_ids = []
+
+            new_invoice_line = []
+            for line in invoice_line:
+                if line[0] == 4:
+                    if line[1] in account_invoice_line_ids:
+                        new_invoice_line.append([(2, line[1], False)])
+                        continue
+                if line[0] == 0 or line[0] == 1:
+                    if 'product_id' in line[2] and line[2]['product_id'] in product_spese_incasso_ids:
+                        continue
+
+                new_invoice_line.append(line)
+
+            spese_incasso_id = payment_term_obj.read(cr, uid, payment_term_id, ['spese_incasso_id'], context=context, load='_obj')['spese_incasso_id']
+
+            if spese_incasso_id:
+                account_invoice_line_vals = self._spese_incasso_vals(cr, uid, ids, spese_incasso_id, invoice_id=False, invoice_type=invoice_type, partner_id=partner_id, company_id=company_id, payment_term_id=payment_term_id, fiscal_position_id=fiscal_position_id, context=context)
+                new_invoice_line.append([0, 0, account_invoice_line_vals])
+
+            res['value']['invoice_line'] = new_invoice_line
+
+        return res
+
     def invoice_validate_check(self, cr, uid, ids, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
         res = super(account_invoice, self).invoice_validate_check(cr, uid, ids, context)
@@ -290,19 +355,8 @@ class account_invoice(orm.Model):
                         account_invoice_line_ids = account_invoice_line_obj.search(cr, uid, [('product_id', '=', invoice.payment_term.spese_incasso_id.id), ('invoice_id', '=', invoice.id)], context=context)
                         if not account_invoice_line_ids:
                             # i have to add spese incasso
-                            account_invoice_line_vals = {
-                                'product_id': invoice.payment_term.spese_incasso_id.id,
-                                'invoice_id': invoice.id
-                            }
-
-                            account_invoice_line_vals.update(account_invoice_line_obj.product_id_change(cr, uid, ids, invoice.payment_term.spese_incasso_id.id, False, type=invoice.type,
-                                                           partner_id=invoice.partner_id.id, fposition_id=invoice.fiscal_position and invoice.fiscal_position.id,
-                                                           context=context,
-                                                           company_id=invoice.company_id.id).get('value'))
-
-                            if account_invoice_line_vals.get('invoice_line_tax_id', False):
-                                account_invoice_line_vals['invoice_line_tax_id'] = [(6, False, account_invoice_line_vals.get('invoice_line_tax_id'))]
-                            account_invoice_line_vals['quantity'] = len(invoice.payment_term.line_ids)
+                            fiscal_position_id = invoice.fiscal_position and invoice.fiscal_position.id
+                            account_invoice_line_vals = self._spese_incasso_vals(self, cr, uid, ids, invoice.payment_term.spese_incasso_id.id, invoice.id, invoice.type, invoice.partner_id.id, invoice.company_id.id, fiscal_position_id, context=context)
                             account_invoice_line_obj.create(cr, uid, account_invoice_line_vals, context)
                             invoice.button_compute()
 

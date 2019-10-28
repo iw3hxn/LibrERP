@@ -28,6 +28,7 @@
                  </field>
              </field>
         </record>
+
         <record id="view_partner_bank_sia_form" model="ir.ui.view">
             <field name="name">res.partner.bank.form.sia.inherit</field>
             <field name="model">res.partner.bank</field>
@@ -36,6 +37,18 @@
             <field name="arch" type="xml">
                 <field name="acc_number" position="after">
                     <field name="codice_sia"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_invoice_form" model="ir.ui.view">
+            <field name="name">account.invoice.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="payment_term" position="attributes">
+                    <attribute name="on_change">onchange_payment_term(partner_id, payment_term, invoice_line, fiscal_position, company_id, type, context)</attribute>
                 </field>
             </field>
         </record>
