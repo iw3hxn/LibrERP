@@ -323,7 +323,7 @@ class account_invoice(orm.Model):
             for line in invoice_line:
                 if line[0] == 4:
                     if line[1] in account_invoice_line_ids:
-                        new_invoice_line.append([(2, line[1], False)])
+                        new_invoice_line.append([2, line[1], False])
                         continue
                 if line[0] == 0 or line[0] == 1:
                     if 'product_id' in line[2] and line[2]['product_id'] in product_spese_incasso_ids:
