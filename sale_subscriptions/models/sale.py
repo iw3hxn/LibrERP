@@ -866,4 +866,5 @@ class sale_order(orm.Model):
         order_line_obj = self.pool['sale.order.line']
         order_line_ids = order_line_obj.search(cr, uid, [('order_id', 'in', ids)], context=context)
         order_line_obj.write(cr, uid, order_line_ids, {}, context=context)
-        return self.write(cr, uid, ids, {}, context=context)
+        self.write(cr, uid, ids, {}, context=context)
+        return res
