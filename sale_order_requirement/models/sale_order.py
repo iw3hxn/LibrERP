@@ -8,6 +8,15 @@ from openerp.tools.translate import _
 class sale_order(orm.Model):
     _inherit = 'sale.order'
 
+    def _create_order_requirement(self, cr, uid, order, context):
+        order_requirement_obj = self.pool['order.requirement']
+        order_requirement_vals = {
+            'sale_order_id': order.id,
+            'note': order.note
+        }
+        order_req_id = order_requirement_obj.create(cr, uid, order_requirement_vals, context)
+        return order_req_id
+
     # this is for not creating manufacture (create pickings but *NO* procurements)
     def _create_pickings_and_procurements(self, cr, uid, order, order_lines, picking_id=False, context=None):
         context = context or self.pool['res.users'].context_get(cr, uid)
@@ -16,16 +25,11 @@ class sale_order(orm.Model):
             cr, uid, order, order_lines, picking_id, context)
         if self.service_only(cr, uid, [order], context):
             return res
-        order_requirement_obj = self.pool['order.requirement']
+
         order_requirement_line_obj = self.pool['order.requirement.line']
         sale_order_line_obj = self.pool['sale.order.line']
 
-        # ONE sale.order => ONE order.requirement
-        order_requirement_vals = {
-            'sale_order_id': order.id,
-            'note': order.note
-        }
-        order_req_id = order_requirement_obj.create(cr, uid, order_requirement_vals, context)
+        order_req_id = self._create_order_requirement(cr, uid, order, context)
 
         # For every sale.order.line => one order.requirement.line
         for line in order.order_line:
