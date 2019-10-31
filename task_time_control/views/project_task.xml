@@ -179,6 +179,8 @@
                     <group expand="0" string="Group By..." >
                         <filter string="Date" icon="terp-go-month" domain="[]" context="{'group_by':'date'}"/>
                         <separator orientation="vertical"/>
+                        <filter string="Project" icon="terp-folder-green" domain="[]" context="{'group_by':'project_id'}"/>
+                        <separator orientation="vertical"/>
                         <filter string="Task" icon="terp-folder-green" domain="[]" context="{'group_by':'task_id'}"/>
                         <separator orientation="vertical"/>
                         <filter string="Users" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
