@@ -7,10 +7,14 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Order Requirement">
-                    <field name="product_id"/>
-                    <field name="stock_availability"/>
-                    <field name="spare"/>
-                    <field name="sale_order_id" />
+                    <group colspan="4" col="4">
+                        <field name="product_id"/>
+                        <field name="sale_order_id" />
+                    </group>
+                    <group name="product_availability" colspan="4" col="4">
+                        <field name="stock_availability"/>
+                        <field name="spare"/>
+                    </group>
                     <field name="state" invisible="1"/>
                     <newline/>
                     <field name="new_product_id" on_change="onchange_product_id(new_product_id,qty,context)"/>
@@ -21,7 +25,7 @@
                     <field name="buy" attrs="{'readonly': ['|', ('is_manufactured','=',True)]}"/>
                     <field name="is_manufactured" attrs="{'invisible': [('has_bom','=',False)]}"
                            on_change="onchange_is_manufactured(is_manufactured,new_product_id,qty)"/>
-                    <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True)],
+                    <field name="supplier_id" attrs="{'invisible': [('is_manufactured', '=', True), ('buy', '=', False)],
                                 'required': [('is_manufactured', '=', False), ('buy', '=', True)],
                                 'readonly': [('state','!=','draft')]}"/>
                     <field name="supplier_ids" invisible="1"/>
@@ -115,10 +119,14 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Order Requirement">
-                    <field name="product_id"/>
-                    <field name="stock_availability"/>
-                    <field name="spare"/>
-                    <field name="sale_order_id" />
+                    <group colspan="4" col="4">
+                        <field name="product_id"/>
+                        <field name="sale_order_id" />
+                    </group>
+                    <group name="product_availability" colspan="4" col="4">
+                        <field name="stock_availability"/>
+                        <field name="spare"/>
+                    </group>
                     <field name="state" invisible="1"/>
                     <newline/>
                     <field name="new_product_id" on_change="onchange_product_id(new_product_id,qty,context)"/>

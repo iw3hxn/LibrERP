@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_order_requirement_line_tree" model="ir.ui.view">
+            <field name="name">order.requirement.line.tree.inherit</field>
+            <field name="model">order.requirement.line</field>
+            <field name="inherit_id" ref="sale_order_requirement.view_order_requirement_line_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="row_color" position="before">
+                    <field name="product_type_small" />
+                </field>
+                <field name="production_orders_state" position="before">
+                    <field name="project_task_state" />
+                </field>
+            </field>
+        </record>
+
+        <record id="view_order_requirement_line_form" model="ir.ui.view">
+            <field name="name">order.requirement.line.form.inherit</field>
+            <field name="model">order.requirement.line</field>
+            <field name="inherit_id" ref="sale_order_requirement.view_order_requirement_line_form"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <field name="product_type_small" invisible="1"/>
+                </field>
+<!--                <group name="product_availability" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </group>-->
+            </field>
+        </record>
+
+    </data>
+</openerp>
