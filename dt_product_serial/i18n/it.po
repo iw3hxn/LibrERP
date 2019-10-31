@@ -449,8 +449,6 @@ msgid "Logistical Unit"
 msgstr "Lotto"
 
 #. module: dt_product_serial
-#: field:pallet.move,pallet_id:0
-#: field:stock.move,pallet_id:0
 #: field:stock.partial.picking.line,code:0
 msgid "Supplier Reference"
 msgstr "Codice Fornitore"
