@@ -12,7 +12,7 @@
             text-align:left; vertical-align:text-top; padding:5px
         }
         .right_without_line {
-            text-align:right; vertical-align:text-top; padding:5px
+            text-align:right; vertical-align:text-top; padding:6px
         }
     </style>
 </head>
