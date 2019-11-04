@@ -26,3 +26,4 @@ from . import account_invoice
 from . import account_invoice_line
 from . import account_journal
 from . import fiscal_position
+from . import stock_picking

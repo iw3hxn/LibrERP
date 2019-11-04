@@ -3,7 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #
-#    Copyright (C) 2014-2016 Didotech srl (<http://www.didotech.com>).
+#    Copyright (C) 2014-2019 Didotech srl (<http://www.didotech.com>).
 #
 #                       All Rights Reserved
 #
@@ -22,29 +22,22 @@
 #
 ##############################################################################
 
-{
-    "name": "Purchase Order Extended",
-    "version": "3.4.25.8",
-    "author": "Didotech SRL",
-    "website": "http://www.didotech.com",
-    "category": 'Purchase',
-    "description": """
-        Module adds extra functionality to purchase_order:
-            - on purchase order line add the sequence number
-            - auto change of
-    """,
-    "depends": [
-        'purchase',
-        'core_extended',
-        'stock_picking_extended',
-    ],
-    "init_xml": [],
-    "data": [
-        'view/partner_view.xml',
-        'view/purchase_order_view.xml',
-        'view/purchase_order_menu.xml'
-    ],
-    "active": False,
-    "installable": True,
-    'auto_install': True,
-}
+from openerp.osv import orm, fields
+
+
+class StockPicking(orm.Model):
+    _inherit = 'stock.picking'
+
+    def _get_stock_picking(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        account_invoice_obj = self.pool['account.invoice']
+
+        for picking in self.browse(cr, uid, ids, context):
+            account_invoice_ids = account_invoice_obj.search(cr, uid, [('origin', 'like', picking.name)], context=context)
+            result[picking.id] = account_invoice_ids and account_invoice_ids[0] or False
+        return result
+
+    _columns = {
+        'account_invoice_id': fields.function(_get_stock_picking, string='Account Invoice', type='many2one', relation="account.invoice", readonly=True, method=True),
+    }

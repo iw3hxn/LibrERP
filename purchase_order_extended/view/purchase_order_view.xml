@@ -39,6 +39,9 @@
                 <xpath expr="//field[@name='order_line']" position="attributes">
                     <attribute name="context">{'default_company_id': company_id, 'order_id': id}</attribute>
                 </xpath>
+                <field name="validator" position="before">
+                    <field name="user_id" />
+                </field>
             </field>
         </record>
 

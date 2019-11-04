@@ -33,7 +33,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="product_pricelist_item_form_view_fixed">
+        <record model="ir.ui.view" id="product_pricelist_item_tree_view_fixed">
             <field name="name">product.pricelist.item.tree.fixed</field>
             <field name="model">product.pricelist.item</field>
             <field name="inherit_id" ref="product.product_pricelist_item_tree_view"/>

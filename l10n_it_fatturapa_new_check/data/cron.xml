@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="ir_cron_backup" forcecreate="True" model="ir.cron">
+            <field name="name">Daily Email Invoices</field>
+            <field eval="True" name="active" />
+            <field name="user_id" ref="base.user_root" />
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <!-- UTC time: 21:00 -> 23:00 -->
+            <field name="nextcall" eval="'{today} 21:00:00'.format(today=DateTime.now().strftime('%Y-%m-%d'))" />
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model" eval="'account.invoice'" />
+            <field name="function" eval="'email_new_invoices'" />
+            <field name="args" eval="" />
+        </record>
+
+        <record id="email_einvoices_report_send_to" model="ir.config_parameter">
+            <field name="key">email_einvoices_report_send_to</field>
+            <field name="value">report_send_to@test.com</field>
+        </record>
+
+        <record id="email_einvoices_report_from" model="ir.config_parameter">
+            <field name="key">email_einvoices_report_from</field>
+            <field name="value">report_from@test.com</field>
+        </record>
+    </data>
+</openerp>
