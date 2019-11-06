@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <menuitem name="Order Requirement" action="sale_order_requirement.action_view_order_requirement" id="menu_view_order_requirement"
+                  parent="project.menu_project_management" sequence="0"/>
+
+    </data>
+</openerp>

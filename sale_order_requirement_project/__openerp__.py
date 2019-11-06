@@ -1,6 +1,6 @@
 {
     "name": "Sale Order Requirement Project",
-    "version": "4.0.0.0",
+    "version": "4.0.0.1",
     "author": "Didotech SRL",
     "category": 'Sales Management',
     "description": """
@@ -13,7 +13,6 @@ This module extend Sale Order Requirement for task (service product)
 * Remember that must be deactive task creation of Work Order
 
 
-
     """,
     'website': 'www.didotech.com',
     "depends": [
@@ -22,7 +21,9 @@ This module extend Sale Order Requirement for task (service product)
         'work_order'
     ],
     'data': [
+        'data/company_data.xml',
         'views/order_requirement_line.xml',
+        'views/menu.xml'
     ],
     'installable': True,
     'auto_install': False,
