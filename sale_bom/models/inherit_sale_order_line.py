@@ -73,9 +73,11 @@ class sale_order_line(orm.Model):
 
                 mrp_bom = product.bom_lines[0]
                 # line_mrp_bom_obj = self.pool.get('sale.order.line.mrp.bom')
+                mrp_bom_ids = []
                 if mrp_bom.bom_lines:
                     result['value']['mrp_bom'] = []
                     for bom_line in mrp_bom.bom_lines:
+                        mrp_bom_ids.append(bom_line.id)
                         if bom_line.product_id.bom_lines:
                             for bom_sub_line in bom_line.product_id.bom_lines[0].bom_lines:
                                 sequence += 1
@@ -92,6 +94,7 @@ class sale_order_line(orm.Model):
                                     'price_subtotal': line_bom['price_subtotal'] * bom_line.product_qty,
                                 })
                                 result['value']['mrp_bom'].append(line_bom)
+                                mrp_bom_ids.append(bom_sub_line.id)
                         else:
                             sequence += 1
                             price_unit = self.pool['product.uom']._compute_price(cr, uid, bom_line.product_id.uom_id.id,
@@ -101,15 +104,22 @@ class sale_order_line(orm.Model):
 
                             result['value']['mrp_bom'].append(line_bom)
                 price = 0
-                if mrp_bom.routing_id and not context.get('exclude_routing', False):
-                    for wline in mrp_bom.routing_id.workcenter_lines:
+                if not context.get('exclude_routing', False):
+                    routing_ids = []
+                    for value in self.pool['mrp.bom']._get_ext_routing(cr, uid, mrp_bom_ids, '', '', context=context).values():
+                        if value:
+                            routing_ids.append(value)
+
+                    workcenter_obj = self.pool['mrp.routing.workcenter']
+                    workcenter_ids = workcenter_obj.search(cr, uid, [('routing_id', 'in', routing_ids)], context=context)
+                    for wline in workcenter_obj.browse(cr, uid, workcenter_ids, context):
                         wc = wline.workcenter_id
                         cycle = wline.cycle_nbr
-                        # hour = (wc.time_start + wc.time_stop + cycle * wc.time_cycle) * (wc.time_efficiency or 1.0)
                         price += wc.costs_cycle * cycle + wc.costs_hour * wline.hour_nbr
                 price /= mrp_bom.product_qty
                 price = uom_obj._compute_price(cr, uid, mrp_bom.product_uom.id, price, mrp_bom.product_id.uom_id.id)
                 result['value']['cost_price_unit_routing'] = price
+
             else:
                 result['value'].update(
                     {'with_bom': False,
