@@ -56,27 +56,41 @@ class OrderRequirementLine(orm.Model):
         return res
 
     _columns = {
-        'product_type_small': fields.function(_product_type_small, type='char', string=" "),
+        'product_type_small': fields.function(_product_type_small, type='char', string=" ", store=True),
         'project_task_ids': fields.many2many('project.task', string='Task'),
         'project_task_state': fields.function(_get_task_orders_state, method=True, type='char', size=16, multi='order_state', string='Tasks State', readonly=True),
-       # 'sale_order_line_id'
+        'description': fields.text('Task Note'),
+        'connected_task_id': fields.many2one('order.requirement.line', string='Connected Order Task'),
+        'product_order_requirement_id': fields.many2one('order.requirement.line', string='Hide reference field'),
+        'connected_product_ids': fields.one2many('order.requirement.line', 'product_order_requirement_id', string='Product Used for task'),
     }
-    
+
     def confirm_suppliers(self, cr, uid, ids, context):
         context = context or self.pool['res.users'].context_get(cr, uid)
         for line in self.browse(cr, uid, ids, context):
             if line.product_id.type == 'service':
                 self.write(cr, uid, line.id, {'state': 'done'}, context)
-                if line.sale_order_id.project_project:
+                if line.sale_order_id.project_project and not line.connected_task_id:
                     project_task_vals = {
                         'project_id': line.sale_order_id.project_project.id,
                         'name': re.compile('\[.*\]\ ').sub('', line.sale_order_line_id.name),
                         'user_id': line.user_id and line.user_id.id,
                         'order_requirement_line_ids': [(4, line.id)],
-                        'description': line.sale_order_line_id.notes,
+
                         'partner_id': line.sale_order_id.partner_id.id
                     }
-                self.pool['project.task'].create(cr, uid, project_task_vals, context)
+                    description = []
+                    for connect_product in line.connected_product_ids:
+                        description.append(connect_product.name_get()[0][1])
+
+                    if line.sale_order_line_id.notes:
+                        description.append(line.sale_order_line_id.notes)
+                    if description:
+                        project_task_vals.update({
+                            'description': '\n'.join(description)
+                        })
+
+                    self.pool['project.task'].create(cr, uid, project_task_vals, context)
 
             else:
                 super(OrderRequirementLine, self).confirm_suppliers(cr, uid, [line.id], context)

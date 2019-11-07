@@ -36,7 +36,9 @@ class riba_file_export(orm.TransientModel):
                     'Missing BIC on configuration Bank')
             creditor = Account(iban=(iban, bic), name=order_obj.config.bank_id.partner_id.name)
             # Assign the creditor id
-            creditor.set_creditor_id(order_obj.config.PrvtId)
+            # Requires Fintech > 6.0.7
+            # creditor.set_creditor_id(order_obj.config.PrvtId)
+            creditor._cid = order_obj.config.PrvtId
             # Create a SEPADirectDebit instance of type CORE
             sdd = SEPADirectDebit(account=creditor, type=order_obj.config.sdd_type)
             existing_line = False

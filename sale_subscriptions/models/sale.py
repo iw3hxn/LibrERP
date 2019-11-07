@@ -322,7 +322,9 @@ class sale_order_line(orm.Model):
 
     def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False):
         # no reason to sum price_units
-        fields.remove('price_unit')
+        if 'price_unit' in fields:
+            fields.remove('price_unit')
+
         result = super(sale_order_line, self).read_group(cr, uid, domain, fields, groupby, offset, limit=limit, context=context, orderby=orderby)
 
         if groupby:
