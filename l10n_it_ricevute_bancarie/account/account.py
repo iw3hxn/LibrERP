@@ -334,7 +334,12 @@ class account_invoice(orm.Model):
             spese_incasso_id = payment_term_obj.read(cr, uid, payment_term_id, ['spese_incasso_id'], context=context, load='_obj')['spese_incasso_id']
 
             if spese_incasso_id:
-                account_invoice_line_vals = self._spese_incasso_vals(cr, uid, ids, spese_incasso_id, invoice_id=False, invoice_type=invoice_type, partner_id=partner_id, company_id=company_id, payment_term_id=payment_term_id, fiscal_position_id=fiscal_position_id, context=context)
+                account_invoice_line_vals = self._spese_incasso_vals(
+                    cr, uid, ids, spese_incasso_id, invoice_id=False,
+                    invoice_type=invoice_type, partner_id=partner_id,
+                    company_id=company_id, payment_term_id=payment_term_id,
+                    fiscal_position_id=fiscal_position_id, context=context
+                )
                 new_invoice_line.append([0, 0, account_invoice_line_vals])
 
             res['value']['invoice_line'] = new_invoice_line
@@ -356,7 +361,10 @@ class account_invoice(orm.Model):
                         if not account_invoice_line_ids:
                             # i have to add spese incasso
                             fiscal_position_id = invoice.fiscal_position and invoice.fiscal_position.id
-                            account_invoice_line_vals = self._spese_incasso_vals(cr, uid, ids, invoice.payment_term.spese_incasso_id.id, invoice.id, invoice.type, invoice.partner_id.id, invoice.company_id.id, fiscal_position_id, context=context)
+                            account_invoice_line_vals = self._spese_incasso_vals(
+                                cr, uid, ids, invoice.payment_term.spese_incasso_id.id, invoice.id, invoice.type,
+                                invoice.partner_id.id, invoice.company_id.id, invoice.payment_term.id,
+                                fiscal_position_id, context=context)
                             account_invoice_line_obj.create(cr, uid, account_invoice_line_vals, context)
                             invoice.button_compute()
 

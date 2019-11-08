@@ -37,10 +37,10 @@
                         <button name="confirm_suppliers" string="OK" icon="gtk-apply" type="object"
                                 confirm="Are you sure you want to do this?"/>
                     </group>
-                    <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
-                                                                         ('is_manufactured','=',False)]}">
+<!--                    <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),-->
+<!--                                                                         ('is_manufactured','=',False)]}">-->
                         <notebook colspan="4">
-                            <page string="BOM">
+                            <page string="BOM" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False), ('is_manufactured','=',False)]}">
                                 <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" context=""
                                        on_change="onchange_temp_mrp_bom_ids(temp_mrp_bom_ids, context)"
                                        attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
@@ -91,7 +91,7 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Routing">
+                            <page string="Routing" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False), ('is_manufactured','=',False)]}">
                                 <field name="temp_mrp_bom_routing_ids" nolabel="1" colspan="4"
                                     attrs="{'invisible': ['|',('temp_mrp_bom_routing_ids','=',False),('is_manufactured','=',False)]}">
                                     <tree string="BoM Routing" editable="top"
@@ -107,7 +107,7 @@
                                 </field>
                             </page>
                         </notebook>
-                    </group>
+<!--                    </group>-->
                 </form>
            </field>
         </record>
@@ -137,13 +137,11 @@
                                 'readonly': [('state','!=','draft')]}"/>
                     <field name="supplier_ids" invisible="1"/>
                     <field name="id" invisible="1"/>
-                    <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
-                                                                         ('is_manufactured','=',False)]}">
+<!--                    <group colspan="8" col="8" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),-->
+<!--                                                                         ('is_manufactured','=',False)]}">-->
                         <notebook colspan="4">
-                            <page string="BOM">
-                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" readonly="1" widget="one2many_list"
-                                       attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False),
-                                                                 ('is_manufactured','=',False)]}">
+                            <page string="BOM" attrs="{'invisible': ['|',('temp_mrp_bom_ids','=',False), ('is_manufactured','=',False)]}">
+                                <field name="temp_mrp_bom_ids" nolabel="1" colspan="4" readonly="1" widget="one2many_list">
                                     <tree string="BoM Structure" editable="top"
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                                         <field name="row_color" invisible="1"/>
@@ -192,9 +190,8 @@
                                     </form>
                                 </field>
                             </page>
-                            <page string="Routing">
-                                <field name="temp_mrp_bom_routing_ids" nolabel="1" colspan="4"
-                                    attrs="{'invisible': ['|',('temp_mrp_bom_routing_ids','=',False),('is_manufactured','=',False)]}">
+                            <page string="Routing" attrs="{'invisible': ['|',('temp_mrp_bom_routing_ids','=',False),('is_manufactured','=',False)]}">
+                                <field name="temp_mrp_bom_routing_ids" nolabel="1" colspan="4">
                                     <tree string="BoM Routing" editable="top"
                                         colors="aqua:row_color=='aqua';black:row_color=='black';blue:row_color=='blue';brown:row_color=='brown';cadetblue:row_color=='cadetblue';darkblue:row_color=='darkblue';fuchsia:row_color=='fuchsia';forestgreen:row_color=='forestgreen';orange:row_color=='orange';green:row_color=='green';grey:row_color=='grey';red:row_color=='red';">
                                         <field name="row_color" invisible="1"/>
@@ -226,7 +223,7 @@
                                 <!--</field>-->
                             <!--</page>-->
                         </notebook>
-                    </group>
+<!--                    </group>-->
                 </form>
            </field>
         </record>

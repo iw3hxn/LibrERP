@@ -706,14 +706,14 @@ class order_requirement_line(orm.Model):
         if not len(ids):
             return []
 
-        result = {}
+        res = []
         for ordreqline in self.read(cr, user, ids, ['sale_order_line_id'], context=context):
             if ordreqline['sale_order_line_id']:
                 name = u'{}'.format(ordreqline['sale_order_line_id'][1])
             else:
                 name = "No order Line"
-            result[ordreqline['id']] = name
-        return result
+            res.append((ordreqline['id'], name))
+        return res
 
     def action_reload_bom(self, cr, uid, ids, context):
         for requirement_line in self.browse(cr, uid, ids, context):
