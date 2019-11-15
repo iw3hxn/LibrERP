@@ -19,7 +19,7 @@
 
 {
     "name": "Bom in Sales Orders",
-    "version": "3.5.20.21",
+    "version": "3.5.21.21",
     "category": "Sales Management",
     "description": """
 This module adds the 'BOM' on sales order.

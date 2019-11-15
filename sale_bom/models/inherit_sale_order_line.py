@@ -73,7 +73,7 @@ class sale_order_line(orm.Model):
 
                 mrp_bom = product.bom_lines[0]
                 # line_mrp_bom_obj = self.pool.get('sale.order.line.mrp.bom')
-                mrp_bom_ids = []
+                mrp_bom_ids = [mrp_bom.id]
                 if mrp_bom.bom_lines:
                     result['value']['mrp_bom'] = []
                     for bom_line in mrp_bom.bom_lines:
