@@ -24,7 +24,7 @@ from openerp.osv import orm
 
 class product_qty0_ext_isa(orm.Model):
     
-    _description = "Product extension for filter qty=0"
+    # _description = "Product extension for filter qty=0"
     _inherit = 'product.product'
     
     def search(self, cr, uid, args, offset=0, limit=None,
