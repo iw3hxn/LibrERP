@@ -23,7 +23,7 @@
 
 {
     "name": "Avanzosc Product Category Extension", 
-    "version": "3.0.7.9",
+    "version": "3.0.7.10",
     "depends": [
         "product",
         "product_bom",
@@ -36,9 +36,9 @@
 
     """,
     'data': [
-        'product_category_ext_view.xml',
-        'product_product_ext_view.xml',
-        'company_view.xml'
+        'views/product_category_ext_view.xml',
+        'views/product_product_ext_view.xml',
+        'views/company_view.xml'
     ],
     'installable': True,
     'active': False,
