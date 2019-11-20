@@ -23,6 +23,15 @@ from lxml import etree
 class riba_file_export(orm.TransientModel):
     _inherit = "riba.file.export"
 
+    def get_purpose(self, line):
+        purpose = line.invoice_number
+        if line.cig:
+            purpose += ',' + line.cig
+        if line.cup:
+            purpose += ',' + line.cup
+
+        return purpose.replace('\n', ',')[:140]
+
     def act_getfile(self, cr, uid, ids, context=None):
         active_ids = context and context.get('active_ids', [])
         order_obj = self.pool['riba.distinta'].browse(cr, uid, active_ids, context=context)[0]
@@ -56,7 +65,8 @@ class riba_file_export(orm.TransientModel):
                     debtor = Account(iban=(iban, bic), name=line.partner_id.name)
                     # For a SEPA direct debit a valid mandate is required
                     debtor.set_mandate(mref=line.mandate_id.unique_mandate_reference, signed=line.mandate_id.signature_date, recurrent=line.mandate_id.recurrent)
-                    sdd.add_transaction(account=debtor, amount=line.amount, purpose=line.invoice_number, eref=u'{0}'.format(str(line.sequence)), due_date=line.due_date)
+                    purpose = self.get_purpose(line)
+                    sdd.add_transaction(account=debtor, amount=line.amount, purpose=purpose, eref=u'{0}'.format(str(line.sequence)), due_date=line.due_date)
                 else:
                     if not line.mandate_id:
                         raise orm.except_orm(
