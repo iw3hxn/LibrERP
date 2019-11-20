@@ -211,6 +211,9 @@ class crm_lead(orm.Model):
         for crm in self.browse(cr, uid, ids, context=context):
             sale_ids += [crm.sale_order.id]
 
+        if self.pool['sale.order']._columns.get('sale_version_id', False):
+            sale_ids = self.pool['sale.order'].search(cr, uid, ['|', ('sale_version_id', 'in', sale_ids), ('id', '=', sale_ids)], context=context)
+
         # choose the view_mode accordingly
         if len(sale_ids) > 1:
             result['domain'] = "[('id','in'," + str(tuple(sale_ids)) + ")]"

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <document filename="test.pdf">
-  <template pageSize="(595.0,842.0)" title="Report Meetings per Province" author="Carlo Vettore" allowSplitting="20">
+  <template pageSize="(595.0,842.0)" title="Test" author="Martin Simon" allowSplitting="20">
     <pageTemplate id="first">
       <frame id="first" x1="57.0" y1="57.0" width="481" height="728"/>
     </pageTemplate>
@@ -89,12 +89,12 @@
           <blockTable colWidths="478.0" style="Table2">
             <tr>
               <td>
-                <para style="P8"><font face="Helvetica" size="8.0">Province: </font>[[o['name'] or '']]</para>
+                <para style="P8"><font face="Helvetica" size="8.0">Zone : </font>[[ o['name'] or '']]</para>
               </td>
             </tr>
             <tr>
               <td>
-                
+
                 <blockTable colWidths="90.0,100.0,90.0,75.0,180.0" style="Table3">
                   <tr>
                     <td>
@@ -141,9 +141,7 @@
               </td>
             </tr>
           </blockTable>
-          <para style="P2">
-            <font color="white"> </font>
-          </para>
+
         </td>
       </tr>
     </blockTable>
