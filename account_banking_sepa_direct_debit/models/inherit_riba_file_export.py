@@ -23,6 +23,15 @@ from lxml import etree
 class riba_file_export(orm.TransientModel):
     _inherit = "riba.file.export"
 
+    def get_purpose(self, line):
+        purpose = line.invoice_number
+        if line.cig:
+            purpose += ',' + line.cig
+        if line.cup:
+            purpose += ',' + line.cup
+
+        return purpose.replace('\n', ',')[:140]
+
     def act_getfile(self, cr, uid, ids, context=None):
         active_ids = context and context.get('active_ids', [])
         order_obj = self.pool['riba.distinta'].browse(cr, uid, active_ids, context=context)[0]
@@ -36,9 +45,10 @@ class riba_file_export(orm.TransientModel):
                     'Missing BIC on configuration Bank')
             creditor = Account(iban=(iban, bic), name=order_obj.config.bank_id.partner_id.name)
             # Assign the creditor id
-            # Requires Fintech > 6.0.7
-            # creditor.set_creditor_id(order_obj.config.PrvtId)
-            creditor._cid = order_obj.config.PrvtId
+            creditor.set_creditor_id(order_obj.config.PrvtId)
+            # Assign CUC (Requires Fintech > 6.0.7)
+            # creditor._cid = order_obj.config.PrvtId
+
             # Create a SEPADirectDebit instance of type CORE
             sdd = SEPADirectDebit(account=creditor, type=order_obj.config.sdd_type)
             existing_line = False
@@ -55,7 +65,8 @@ class riba_file_export(orm.TransientModel):
                     debtor = Account(iban=(iban, bic), name=line.partner_id.name)
                     # For a SEPA direct debit a valid mandate is required
                     debtor.set_mandate(mref=line.mandate_id.unique_mandate_reference, signed=line.mandate_id.signature_date, recurrent=line.mandate_id.recurrent)
-                    sdd.add_transaction(account=debtor, amount=line.amount, purpose=line.invoice_number, eref=u'{0}'.format(str(line.sequence)), due_date=line.due_date)
+                    purpose = self.get_purpose(line)
+                    sdd.add_transaction(account=debtor, amount=line.amount, purpose=purpose, eref=u'{0}'.format(str(line.sequence)), due_date=line.due_date)
                 else:
                     if not line.mandate_id:
                         raise orm.except_orm(
@@ -72,14 +83,24 @@ class riba_file_export(orm.TransientModel):
                     'No Line for export')
 
             # Render the SEPA document
-            out = base64.encodestring(sdd.render().encode("iso-8859-1"))
+            # out = base64.encodestring(sdd.render().encode("iso-8859-1"))
+
+            # Workaround until Fintech will produce the new code
+            out = self.set_cuc(sdd.render().encode("iso-8859-1"), order_obj.config.cuc)
+            out = base64.encodestring(out)
+
             file_name = '{0}.xml'.format(order_obj.name.replace(' ', '').replace('/', '_'))
             return self.write(cr, uid, ids, {'state': 'get', 'riba_export_file': out, 'riba_export_name': file_name}, context=context)
         else:
             return super(riba_file_export, self).act_getfile(cr, uid, ids, context)
 
+    def set_cuc(self, sepa_xml, cuc):
+        root = etree.XML(sepa_xml)
+        root.find('{*}GrpHdr/{*}InitgPty/{*}Id/{*}OrgId/{*}Othr/{*}Id').text = cuc
+        return etree.tostring(root)
+
     def create_sepa(self, cr, uid, ids, context=None):
-        """Creates the SEPA Direct Debit file. That's the important code !"""
+        """Creates the SEPA Direct Debit file. That's the important code!"""
         context = {} if context is None else context
         sepa_export = self.browse(cr, uid, ids[0], context=context)
         # Get country id for any customization

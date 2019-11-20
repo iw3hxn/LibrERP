@@ -13,8 +13,9 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="sdd"/>
-                    <field name="PrvtId" attrs="{'required': [('sdd', '=', True)], 'invisible': [('sdd', '=', False)]}"/>
                     <field name="sdd_type" attrs="{'required': [('sdd', '=', True)], 'invisible': [('sdd', '=', False)]}"/>
+                    <field name="PrvtId" attrs="{'required': [('sdd', '=', True)], 'invisible': [('sdd', '=', False)]}"/>
+                    <field name="cuc" attrs="{'required': [('sdd', '=', True)], 'invisible': [('sdd', '=', False)]}"/>
                 </field>
             </field>
         </record>

@@ -20,6 +20,7 @@
 #    along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
-from . import models
+from . import product_category_ext
+from . import product_product_ext
+from . import company
 

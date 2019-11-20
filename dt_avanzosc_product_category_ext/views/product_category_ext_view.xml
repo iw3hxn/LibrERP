@@ -15,7 +15,7 @@
                     		<field name="procure_method"/>
                     </group>
 					<field name="manage_tax_on_category" invisible="1" />
-					<group colspan="2" col="2" attrs="{'invisible': [('manage_tax_on_category','=',False)]}">
+					<group colspan="2" col="2" attrs="{'invisible': [('manage_tax_on_category','=',False)]}" groups="account.group_account_manager">
 						<separator string="Sale taxes" colspan="4"/>
 						<field name="sale_taxes_ids" nolabel="1" colspan="4" widget="many2many_tags"/>
 						<separator string="Purchase taxes" colspan="4"/>
@@ -32,6 +32,20 @@
                 </field>
 			</field>
 		</record>
+
+		 <record model="ir.ui.view" id="product_category_inh_new_fields_tree_view">
+            <field name="name">product.category.inh.new.fields.tree</field>
+            <field name="model">product.category</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="product.product_category_list_view"/>
+            <field name="arch" type="xml">
+                <field name="complete_name" position="after">
+                    <field name="property_account_income_categ" groups="account.group_account_manager"/>
+					<field name="property_account_expense_categ" groups="account.group_account_manager"/>
+                </field>
+            </field>
+        </record>
+
 		
 	</data>
 </openerp>
