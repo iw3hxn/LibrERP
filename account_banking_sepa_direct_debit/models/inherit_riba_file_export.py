@@ -36,9 +36,10 @@ class riba_file_export(orm.TransientModel):
                     'Missing BIC on configuration Bank')
             creditor = Account(iban=(iban, bic), name=order_obj.config.bank_id.partner_id.name)
             # Assign the creditor id
-            # Requires Fintech > 6.0.7
-            # creditor.set_creditor_id(order_obj.config.PrvtId)
-            creditor._cid = order_obj.config.PrvtId
+            creditor.set_creditor_id(order_obj.config.PrvtId)
+            # Assign CUC (Requires Fintech > 6.0.7)
+            # creditor._cid = order_obj.config.PrvtId
+
             # Create a SEPADirectDebit instance of type CORE
             sdd = SEPADirectDebit(account=creditor, type=order_obj.config.sdd_type)
             existing_line = False
@@ -72,14 +73,24 @@ class riba_file_export(orm.TransientModel):
                     'No Line for export')
 
             # Render the SEPA document
-            out = base64.encodestring(sdd.render().encode("iso-8859-1"))
+            # out = base64.encodestring(sdd.render().encode("iso-8859-1"))
+
+            # Workaround until Fintech will produce the new code
+            out = self.set_cuc(sdd.render().encode("iso-8859-1"), order_obj.config.cuc)
+            out = base64.encodestring(out)
+
             file_name = '{0}.xml'.format(order_obj.name.replace(' ', '').replace('/', '_'))
             return self.write(cr, uid, ids, {'state': 'get', 'riba_export_file': out, 'riba_export_name': file_name}, context=context)
         else:
             return super(riba_file_export, self).act_getfile(cr, uid, ids, context)
 
+    def set_cuc(self, sepa_xml, cuc):
+        root = etree.XML(sepa_xml)
+        root.find('{*}GrpHdr/{*}InitgPty/{*}Id/{*}OrgId/{*}Othr/{*}Id').text = cuc
+        return etree.tostring(root)
+
     def create_sepa(self, cr, uid, ids, context=None):
-        """Creates the SEPA Direct Debit file. That's the important code !"""
+        """Creates the SEPA Direct Debit file. That's the important code!"""
         context = {} if context is None else context
         sepa_export = self.browse(cr, uid, ids[0], context=context)
         # Get country id for any customization
