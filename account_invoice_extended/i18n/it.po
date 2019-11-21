@@ -139,3 +139,8 @@ msgstr "Sequenza"
 #: field:stock.picking,account_invoice_id:0
 msgid "Account Invoice"
 msgstr "Fattura"
+
+#. module: account_invoice_extended
+#: field:account.invoice.line,tax_list:0
+msgid "Tax Code"
+msgstr "Cod. Imp."
