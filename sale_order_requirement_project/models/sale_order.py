@@ -26,7 +26,7 @@ class SaleOrder(orm.Model):
         # For every sale.order.line => one order.requirement.line
         for line in order.order_line:
             # TODO: change it if you want to include services (maybe for creating routings)
-            if line.product_id.type == 'service' and line.product_id.procure_method == 'make_to_order':
+            if line.product_id.type == 'service':
                 ord_req_line_vals = {
                     'sale_order_line_id': line.id,
                     'product_id': line.product_id.id,
