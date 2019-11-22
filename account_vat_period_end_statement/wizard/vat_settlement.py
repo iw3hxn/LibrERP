@@ -1,6 +1,6 @@
 # flake8: noqa
 # -*- coding: utf-8 -*-
-# Copyright 2017 Didotech srl (<http://www.didotech.com>)
+# Copyright 2017-19 Didotech srl (<http://www.didotech.com>)
 #                Andrei Levin <andrei.levin@didotech.com>
 #                Antonio M. Vigliotti <antoniomaria.vigliotti@gmail.com>
 #                Odoo-Italia.org Community
@@ -12,17 +12,19 @@ import logging
 import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
-from openerp.addons.l10n_it_ade.bindings.vat_settlement_v_1_0 import (CTD_ANON,  # Intestazione,; Comunicazione,
-                                                                      Comunicazione_IVP_Type,
-                                                                      DatiContabili_IVP_Type,
-                                                                      Fornitura,
-                                                                      Frontespizio_IVP_Type,
-                                                                      Intestazione_IVP_Type)
+from openerp.addons.l10n_it_ade.bindings.vat_settlement_v_18 import (
+    CTD_ANON,  # Intestazione,; Comunicazione,
+    Comunicazione_IVP_Type,
+    DatiContabili_IVP_Type,
+    Fornitura,
+    Frontespizio_IVP_Type,
+    Intestazione_IVP_Type
+)
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
-codice_fornitura = 'IVP17'
+codice_fornitura = 'IVP18'
 identificativo_software = 'Odoo.6.1.4.0.0'
 
 
@@ -256,6 +258,8 @@ class WizardVatSettlement(orm.TransientModel):
             # modulo_period_end = datetime.datetime.strptime(statement.date,
             #                                                DEFAULT_SERVER_DATE_FORMAT)
             modulo = CTD_ANON()
+
+            modulo.NumeroModulo = '1'  # 1, 2, 3, 4, 5
             # <<<<< quarter_vat_period non esite nella 7.0 >>>>>
             # if statement.period_ids[0].fiscalyear_id.quarter_vat_period:
             #     # trimestrale
