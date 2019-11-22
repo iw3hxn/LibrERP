@@ -56,6 +56,11 @@ Per aggiungere nuovi schemi o modificare o aggiornare gli schemi gestiti:
 ### Le altre SO Unix-like
     $ pyxbgen -u Schema_del_file_xml_FatturaPA_versione_1.2.1.xsd -m fatturapa_v_1_2_1
 
+Example:
+
+    $ pyxbgen -u fornituraIvp_2018_v1.xsd -m vat_settlement_IVP18_1_2_4
+    Python for urn:www.agenziaentrate.gov.it:specificheTecniche:sco:ivp requires 3 modules
+
 
 Installation
 ------------

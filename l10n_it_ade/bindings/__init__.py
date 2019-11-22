@@ -6,6 +6,6 @@
 # Generated Sat 2019-03-09 09:37:23 by pyxbgen.sh 0.1.5.9
 # by Antonio Maria Vigliotti <antoniomaria.vigliotti@gmail.com>
 #
-from . import vat_settlement_v_1_0
+from . import vat_settlement_v_18
 from . import dati_fattura_v_2_1
 from . import fatturapa_v_1_2
