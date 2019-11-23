@@ -707,9 +707,9 @@ class order_requirement_line(orm.Model):
             return []
 
         res = []
-        for ordreqline in self.read(cr, user, ids, ['sale_order_line_id'], context=context):
+        for ordreqline in self.read(cr, user, ids, ['qty', 'sale_order_line_id'], context=context):
             if ordreqline['sale_order_line_id']:
-                name = u'{}'.format(ordreqline['sale_order_line_id'][1])
+                name = u'{} x {}'.format(ordreqline['qty'], ordreqline['sale_order_line_id'][1])
             else:
                 name = "No order Line"
             res.append((ordreqline['id'], name))

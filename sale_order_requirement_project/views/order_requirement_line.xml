@@ -39,5 +39,28 @@
             </field>
         </record>
 
+        <record id="view_order_requirement_line_form_readonly" model="ir.ui.view">
+            <field name="name">order.requirement.line.form.readonly.inherit</field>
+            <field name="model">order.requirement.line</field>
+            <field name="inherit_id" ref="sale_order_requirement.view_order_requirement_line_form_readonly"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <field name="product_type_small" invisible="1"/>
+                    <field name="order_requirement_id" />
+                </field>
+<!--                <group name="product_availability" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </group>-->
+                <notebook position="inside">
+                    <page string="Project" attrs="{'invisible': [('product_type_small', '!=', 'S')]}">
+                        <field name="" colspan="8"/>
+                        <field name="connected_task_id" colspan="8" domain="[('order_requirement_id', '=', order_requirement_id), ('id', '!=', id), ('product_type_small', '=', 'S')]" />
+                        <field name="connected_product_ids" colspan="8" domain="[('order_requirement_id', '=', order_requirement_id), ('id', '!=', id), ('product_type_small', '!=', 'S')]" widget="many2many_checkboxes"  />
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
     </data>
 </openerp>
