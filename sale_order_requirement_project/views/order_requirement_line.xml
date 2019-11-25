@@ -32,6 +32,7 @@
 <!--                </group>-->
                 <notebook position="inside">
                     <page string="Project" attrs="{'invisible': [('product_type_small', '!=', 'S')]}">
+                        <field name="planned_hours" colspan="8"/>
                         <field name="connected_task_id" colspan="8" domain="[('order_requirement_id', '=', order_requirement_id), ('id', '!=', id), ('product_type_small', '=', 'S')]" />
                         <field name="connected_product_ids" colspan="8" domain="[('order_requirement_id', '=', order_requirement_id), ('id', '!=', id), ('product_type_small', '!=', 'S')]" widget="many2many_checkboxes"  />
                     </page>
@@ -54,7 +55,7 @@
 <!--                </group>-->
                 <notebook position="inside">
                     <page string="Project" attrs="{'invisible': [('product_type_small', '!=', 'S')]}">
-                        <field name="" colspan="8"/>
+                        <field name="planned_hours" colspan="8"/>
                         <field name="connected_task_id" colspan="8" domain="[('order_requirement_id', '=', order_requirement_id), ('id', '!=', id), ('product_type_small', '=', 'S')]" />
                         <field name="connected_product_ids" colspan="8" domain="[('order_requirement_id', '=', order_requirement_id), ('id', '!=', id), ('product_type_small', '!=', 'S')]" widget="many2many_checkboxes"  />
                     </page>

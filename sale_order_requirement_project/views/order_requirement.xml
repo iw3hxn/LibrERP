@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_order_requirement_orm" model="ir.ui.view">
+            <field name="name">order.requirement.form.inherit</field>
+            <field name="model">order.requirement</field>
+            <field name="inherit_id" ref="sale_order_requirement.view_order_requirement_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="sale_order_id" position="after">
+                    <field name="project_id" readonly="1" attrs="{'invisible':[('project_id','=', False)]}"/>
+                    <button name="create_project" string="Create Project" icon="terp-stock" type="object" colspan="1"
+                            attrs="{'invisible':[('project_id','!=', False)]}"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

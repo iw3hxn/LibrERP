@@ -1,6 +1,6 @@
 {
     "name": "Sale Order Requirement Project",
-    "version": "4.1.0.1",
+    "version": "4.2.2.1",
     "author": "Didotech SRL",
     "category": 'Sales Management',
     "description": """
@@ -22,6 +22,7 @@ This module extend Sale Order Requirement for task (service product)
     ],
     'data': [
         'data/company_data.xml',
+        'views/order_requirement.xml',
         'views/order_requirement_line.xml',
         'views/product_view.xml',
         'views/menu.xml'
