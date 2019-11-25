@@ -310,6 +310,8 @@ class sale_order_line(orm.Model):
         return super(sale_order_line, self).create(cr, uid, values, context)
 
     def write(self, cr, uid, ids, values, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         if values.get('product_id'):
             product = self.pool['product.product'].browse(cr, uid, values['product_id'], context)
             for order_line in self.browse(cr, uid, ids, context):
