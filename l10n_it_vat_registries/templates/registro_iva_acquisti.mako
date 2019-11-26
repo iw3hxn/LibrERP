@@ -120,7 +120,8 @@
         %endfor
         </tbody>
     </table>
-    <div style="page-break-inside: avoid;">
+<!--    <div style="page-break-inside: avoid;">-->
+    <div style="page-break-before: always;">
         <br/>
         <% tax_code_list = tax_codes() %>
         <% tax_code_totals_list = tax_codes_totals() %>

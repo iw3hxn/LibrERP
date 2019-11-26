@@ -19,7 +19,7 @@
 ##############################################################################
 {
     'name': 'Project Extended',
-    'version': '3.16.26.30',
+    'version': '3.17.27.31',
     'category': 'Generic Modules/Projects & Services',
     'description': """Tasks list on a dedicated tab on the project form
 """,
@@ -47,6 +47,7 @@
         'views/project_view_menu.xml',
         'views/res_partner.xml',
         'views/project_task_work.xml',
+        'views/account_analytic_account.xml',
     ],
     "active": False,
     "installable": True

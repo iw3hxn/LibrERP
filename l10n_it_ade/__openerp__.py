@@ -2,13 +2,14 @@
 #
 # Copyright 2017-18 - Associazione Odoo Italia <https://www.odoo-italia.org>
 # Copyright 2018-19 - SHS-AV s.r.l. <https://www.zeroincombenze.it>
+# Copyright 2019 - Didotech s.r.l. <https://www.didotech.com>
 #
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 #
 {
     'name': 'Definizioni di Base Agenzia delle Entrate',
     'summary': 'Codice con le definizioni dei file xml Agenzia delle Entrate',
-    'version': '7.0.0.1.10',
+    'version': '7.0.0.2.10',
     'category': 'Localization/Italy',
     'author': 'SHS-AV s.r.l.,'
               ' Odoo Italia Associazione',

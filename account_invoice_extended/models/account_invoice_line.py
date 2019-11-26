@@ -38,9 +38,22 @@ class account_invoice_line(orm.Model):
 
         return change_digit_tax
 
+    def _get_tax_list(self, cr, uid, ids, field_name, arg, context=None):
+        if context is None:
+            context = self.pool['res.users'].context_get(cr, uid)
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            tax_list = []
+            for tax in line.invoice_line_tax_id:
+                if tax.description:
+                    tax_list.append(tax.description)
+            res[line.id] = ','.join(tax_list)
+        return res
+
     _columns = {
         'price_unit': fields.float('Unit Price', required=True, digits_compute=get_precision_tax()),
         'origin_document': fields.reference(_('Reference'), selection=base.res.res_request._links_get, size=None),
+        'tax_list': fields.function(_get_tax_list, type='text', string='Tax Code'),
     }
 
     def unlink(self, cr, uid, ids, context=None):

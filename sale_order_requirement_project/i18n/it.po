@@ -4,3 +4,8 @@
 #: view:order.requirement.line:0
 msgid "Order Requirement"
 msgstr "Fabbisogno Ordine"
+
+#. module: sale_order_requirement
+#: field:order.requirement,project_id:0
+msgid "Project"
+msgstr "Progetto"

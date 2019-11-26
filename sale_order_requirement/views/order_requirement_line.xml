@@ -252,7 +252,7 @@
                     <field name="production_orders_state"/>
                     <field name="purchase_orders_approved"/>
                     <field name="purchase_orders_state"/>
-                    <button name="print_production_order" string="Print All production Order" type="object" help="Print All production Order" icon="gtk-print" attrs="{'invisible': [('state','=','draft')]}" />
+                    <button name="print_production_order" string="Print All production Order" type="object" help="Print All production Order" icon="gtk-print" attrs="{'invisible': [('production_orders_state','=','')]}" />
                 </tree>
             </field>
         </record>

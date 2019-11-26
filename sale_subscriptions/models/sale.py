@@ -310,6 +310,8 @@ class sale_order_line(orm.Model):
         return super(sale_order_line, self).create(cr, uid, values, context)
 
     def write(self, cr, uid, ids, values, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         if values.get('product_id'):
             product = self.pool['product.product'].browse(cr, uid, values['product_id'], context)
             for order_line in self.browse(cr, uid, ids, context):
@@ -700,8 +702,7 @@ class sale_order(orm.Model):
         return dates
 
     def auto_invoice(self, cr, uid, ids, context=None):
-        if context is None:
-            context = self.pool['res.users'].context_get(cr, uid)
+        context = context or self.pool['res.users'].context_get(cr, uid)
 
         if not ids:
             return False
@@ -721,10 +722,7 @@ class sale_order(orm.Model):
             """
             
             a = order.partner_id.property_account_receivable.id
-            if order.partner_id and order.partner_id.property_payment_term.id:
-                pay_term = order.partner_id.property_payment_term.id
-            else:
-                pay_term = False
+            pay_term = order.payment_term and order.payment_term.id or order.partner_id and order.partner_id.property_payment_term.id or False
 
             inv = {
                 'name': order.name,

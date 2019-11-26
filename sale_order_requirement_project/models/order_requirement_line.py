@@ -60,6 +60,7 @@ class OrderRequirementLine(orm.Model):
         'project_task_ids': fields.many2many('project.task', string='Task'),
         'project_task_state': fields.function(_get_task_orders_state, method=True, type='char', size=16, multi='order_state', string='Tasks State', readonly=True),
         'description': fields.text('Task Note'),
+        'planned_hours': fields.float('Planned Hours'),
         'connected_task_id': fields.many2one('order.requirement.line', string='Connected Order Task'),
         'product_order_requirement_id': fields.many2one('order.requirement.line', string='Hide reference field'),
         'connected_product_ids': fields.one2many('order.requirement.line', 'product_order_requirement_id', string='Product Used for task'),
@@ -76,7 +77,7 @@ class OrderRequirementLine(orm.Model):
                         'name': re.compile('\[.*\]\ ').sub('', line.sale_order_line_id.name),
                         'user_id': line.user_id and line.user_id.id,
                         'order_requirement_line_ids': [(4, line.id)],
-
+                        'planned_hours': line.planned_hours,
                         'partner_id': line.sale_order_id.partner_id.id
                     }
                     description = []

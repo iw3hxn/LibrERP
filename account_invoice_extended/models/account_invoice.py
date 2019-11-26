@@ -357,12 +357,12 @@ class account_invoice(orm.Model):
                 account_id = False
                 period_id = r[2]
                 journal_id = False
-                account_move_line_obj.reconcile(cr, uid, [r[3]], 'manual', account_id, period_id, journal_id, context=None)
+                account_move_line_obj.reconcile(cr, uid, [r[3]], 'manual', account_id, period_id, journal_id, context=context)
                 res[r[0]].append(r[3])
 
         return res
 
     def action_move_create(self, cr, uid, ids, context=None):
         result = super(account_invoice, self).action_move_create(cr, uid, ids, context)
-        res = self._force_paid_zero_invoice(cr, uid, ids)
+        res = self._force_paid_zero_invoice(cr, uid, ids, context)
         return result

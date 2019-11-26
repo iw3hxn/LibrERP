@@ -31,10 +31,19 @@ class product_price_history(orm.Model):
     _rec_name = 'product_id'
     _order = 'date_to desc'
 
+    _index_name = 'product_price_history_product_id_index'
+
+    def _auto_init(self, cr, context={}):
+        super(product_price_history, self)._auto_init(cr, context)
+        cr.execute('SELECT 1 FROM pg_indexes WHERE indexname=%s', (self._index_name,))
+
+        if not cr.fetchone():
+            cr.execute('CREATE INDEX {name} ON product_price_history (product_id)'.format(name=self._index_name))
+
     _columns = {
         'supplier_id': fields.many2one('res.partner', 'Supplier', readonly=True),
         'date_to': fields.datetime('Date To', readonly=True, required=True),
-        'product_id': fields.many2one('product.template', 'Product', readonly=True, required=True, ondelete='cascade'),
+        'product_id': fields.many2one('product.template', 'Product', readonly=True, required=True, ondelete='cascade', select=True),
         'user_id': fields.many2one('res.users', 'User', readonly=True, required=True, ondelete='cascade'),
         'list_price': fields.float('Previous Sale Price', digits_compute=dp.get_precision('Sale Price'), readonly=True),
         'new_list_price': fields.float('New Sale Price', digits_compute=dp.get_precision('Sale Price'), readonly=True),
