@@ -42,3 +42,9 @@ class account_analytic_account(orm.Model):
     _constraints = [
         (_check_name_unique, _("Name and Parent must be unique"), ['name', 'parent_id'])
     ]
+
+    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+        if context.get('current_model') == 'project.project':
+            del context['current_model']
+        res = super(account_analytic_account, self).name_search(cr, uid, name, args, operator, context, limit)
+        return res

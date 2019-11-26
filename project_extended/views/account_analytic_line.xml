@@ -28,6 +28,10 @@
                 <field name="date" position="before">
                     <field name="invoice_id" />
                 </field>
+                <field name="amount" position="before">
+                    <field name="debit" sum="debit"/>
+                    <field name="credit" sum="debit"/>
+                </field>
             </field>
         </record>
 
