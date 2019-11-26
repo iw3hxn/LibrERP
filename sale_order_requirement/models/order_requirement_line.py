@@ -660,6 +660,8 @@ class order_requirement_line(orm.Model):
         'order_requirement_id': fields.many2one('order.requirement', 'Order Reference', required=True,
                                                 ondelete='cascade', select=True, auto_join=True),
         'sale_order_line_id': fields.many2one('sale.order.line', string='Sale Order Line', select=True),
+        'sale_order_line_description': fields.related('sale_order_line_id', 'name', string='Name', type='char', readonly=True),
+        'sale_order_line_notes': fields.related('sale_order_line_id', 'notes', string='Order Line Notes', type='text', readonly=True),
         'sale_order_id': fields.related('order_requirement_id', 'sale_order_id', string='Sale Order',
                                         relation='sale.order', type='many2one', readonly=True),
         'sequence': fields.integer('Sequence',
@@ -689,6 +691,28 @@ class order_requirement_line(orm.Model):
         'state': 'draft',
         'sequence': 10,
     }
+    
+    def unlink(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        order_requirement_ids = []
+        for line in self.browse(cr, uid, ids, context):
+            order_requirement_ids.append(line.order_requirement_id.id)
+        res = super(order_requirement_line, self).unlink(cr, uid, ids, context)
+
+        order_requirement_ids = list(set(order_requirement_ids))
+
+        order_requirement_to_close_ids = []
+        for order_requirement_id in order_requirement_ids:
+            lines_draft = len(self.search(cr, uid, [('order_requirement_id', '=', order_requirement_id), ('state', '=', 'draft')], context=context))
+            total_line = len(self.search(cr, uid, [('order_requirement_id', '=', order_requirement_id)], context=context))
+            if lines_draft == 0 and total_line:
+                # No more draft lefts
+                order_requirement_to_close_ids.append(order_requirement_id)
+
+        if order_requirement_to_close_ids:
+            order_requirement_obj = self.pool['order.requirement']
+            order_requirement_obj.write(cr, uid, order_requirement_to_close_ids, {'state': 'done'}, context)
+        return res
 
     # def fields_get(self, cr, uid, allfields=None, context=None):
     #     # Trying to show bom only if the button is pressed, not the click on the line
@@ -700,14 +724,13 @@ class order_requirement_line(orm.Model):
     #     ret['temp_mrp_bom_routing_ids']['invisible'] = not view_bom
     #     return ret
 
-    def name_get(self, cr, user, ids, context=None):
-        if context is None:
-            context = {}
+    def name_get(self, cr, uid, ids, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
         if not len(ids):
             return []
 
         res = []
-        for ordreqline in self.read(cr, user, ids, ['qty', 'sale_order_line_id'], context=context):
+        for ordreqline in self.read(cr, uid, ids, ['qty', 'sale_order_line_id'], context=context):
             if ordreqline['sale_order_line_id']:
                 name = u'{} x {}'.format(ordreqline['qty'], ordreqline['sale_order_line_id'][1])
             else:

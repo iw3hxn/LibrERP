@@ -49,12 +49,14 @@ class sale_order(orm.Model):
     def action_reopen(self, cr, uid, ids, context=None):
         for order in self.browse(cr, uid, ids, context):
             for line in order.order_line:
-                if line.order_requirement_line_id:
+                if line.order_requirement_line_id.state != 'draft':
                     raise orm.except_orm(
                         _('Error'),
                         _("You can't reopen Sale Order that already generated Requirement Order")
                     )
-
+        order_requirement_obj = self.pool['order.requirement']
+        order_requirement_ids = order_requirement_obj.search(cr, uid, [('sale_order_id', 'in', ids)], context=context)
+        order_requirement_obj.unlink(cr, uid, order_requirement_ids, context)
         return super(sale_order, self).action_reopen(cr, uid, ids, context=context)
 
     def _get_production_order(self, cr, uid, ids, field_name, model_name, context=None):
