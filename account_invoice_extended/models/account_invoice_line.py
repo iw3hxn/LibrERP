@@ -45,7 +45,8 @@ class account_invoice_line(orm.Model):
         for line in self.browse(cr, uid, ids, context=context):
             tax_list = []
             for tax in line.invoice_line_tax_id:
-                tax_list.append(tax.description)
+                if tax.description:
+                    tax_list.append(tax.description)
             res[line.id] = ','.join(tax_list)
         return res
 
