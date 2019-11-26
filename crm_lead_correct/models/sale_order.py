@@ -33,7 +33,19 @@ from openerp.osv import orm, fields
 class sale_order(orm.Model):
     _inherit = 'sale.order'
 
+    def _get_connected_sale_order(self, cr, uid, ids, field_name, model_name, context=None):
+        context = context or self.pool['res.users'].context_get(cr, uid)
+        result = {}
+        order_id = context.get('own_sale_id')
+        for sale in self.browse(cr, uid, ids, context):
+            result[sale.id] = False
+            if sale.id == order_id:
+                result[sale.id] = True
+
+        return result
+
     _columns = {
+        'connected_sale_order': fields.function(_get_connected_sale_order, string='Own Sale', type='boolean'),
         'contact_id': fields.many2one('res.partner.address.contact', 'Contact'), 
     }
 
