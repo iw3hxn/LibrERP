@@ -36,13 +36,14 @@ class sale_order(orm.Model):
             # TODO: change it if you want to include services (maybe for creating routings)
             if line.product_id.type != 'service':
                 ord_req_line_vals = {
+                    'sequence': line.sequence * 10,
                     'sale_order_line_id': line.id,
                     'product_id': line.product_id.id,
                     'qty': line.product_uom_qty,
                     'order_requirement_id': order_req_id,
                 }
                 ordreqline_id = order_requirement_line_obj.create(cr, uid, ord_req_line_vals, context)
-                sale_order_line_obj.write(cr, uid, line.id, {'order_requirement_line_id': ordreqline_id}, context)
+                # sale_order_line_obj.write(cr, uid, line.id, {'order_requirement_line_id': ordreqline_id}, context)
 
         return res
 

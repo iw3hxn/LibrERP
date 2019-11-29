@@ -492,6 +492,11 @@ msgstr "Inizia a Lavorare sul Prodotto"
 
 #. module: sale_order_requirement
 #: view:order.requirement.line:0
+msgid "Add Sale Order Line"
+msgstr "Collega una riga dell'ordine cliente"
+
+#. module: sale_order_requirement
+#: view:order.requirement.line:0
 msgid "Reload BOM"
 msgstr "Ricarica BOM"
 
@@ -666,6 +671,7 @@ msgstr "Riga Fabbisogno Ordine"
 
 #. module: sale_order_requirement
 #: view:purchase.order.line:0
+#: view:sale.order.line:0
 msgid "Sale Order Lines"
 msgstr "Ordine di Vendita Collegati"
 
